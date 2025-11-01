@@ -6,7 +6,7 @@ export interface GPUTask {
   id?: string;
   type: GPUTaskType;
   data: number[];
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
   priority?: number;
   timestamp?: string;
   service_origin?: string;

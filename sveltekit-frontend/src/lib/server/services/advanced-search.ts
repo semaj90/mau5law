@@ -5,7 +5,6 @@
 import { db, and, gte, like, lte, or } from '$lib/server/db/index';
 import type { SQL } from 'drizzle-orm/sql';
 import { cases, evidence } from '$lib/server/db/schema-postgres';
-
 // --- ADD: typed result shapes for selected columns (fixes missing names) ---
 type CaseRow = {
   id: number | string;
@@ -16,7 +15,6 @@ type CaseRow = {
   createdAt: Date | string | null;
   tags: string[] | null;
 };
-
 type EvidenceRow = {
   id: number | string;
   fileName: string | null;
@@ -25,7 +23,6 @@ type EvidenceRow = {
   uploadedAt: Date | string | null;
   caseId: number | string | null;
 };
-
 export interface SearchFilters {
   query?: string;
   caseStatus?: string[];
@@ -53,7 +50,6 @@ export interface SearchResponse {
   suggestions?: string[];
   queryTime: number;
 }
-
 // --- CHANGES START: explicit metadata types & discriminated union (no `any`) ---
 type CaseMetadata = {
   status?: string | null;
@@ -61,13 +57,11 @@ type CaseMetadata = {
   createdAt?: Date | string | null;
   tags?: string[] | null;
 };
-
 type EvidenceMetadata = {
   fileType?: string | null;
   uploadedAt?: Date | string | null;
   caseId?: number | string | null;
 };
-
 export type SearchResultCase = {
   type: 'case';
   id: string;
@@ -77,7 +71,6 @@ export type SearchResultCase = {
   metadata: CaseMetadata;
   highlights?: string[];
 };
-
 export type SearchResultEvidence = {
   type: 'evidence';
   id: string;
@@ -87,10 +80,8 @@ export type SearchResultEvidence = {
   metadata: EvidenceMetadata;
   highlights?: string[];
 };
-
 export type SearchResult = SearchResultCase | SearchResultEvidence;
 // --- CHANGES END ---
-
 class AdvancedSearch {
   /**
    * Perform comprehensive search across cases and evidence
@@ -120,7 +111,7 @@ class AdvancedSearch {
         suggestions,
         queryTime: Date.now() - startTime,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Minimal error surface
       console.error('Search failed:', error);
       throw error;
@@ -168,7 +159,6 @@ class AdvancedSearch {
       .from(cases)
       .where(whereClause)
       .limit(1000);
-
     // Use typed mapping instead of `any[]`
     return (results as CaseRow[]).map(case_ => {
       const text = `${case_.title || ''} ${case_.description || ''}`.trim();
@@ -214,7 +204,6 @@ class AdvancedSearch {
       .from(evidence)
       .where(whereClause)
       .limit(500);
-
     return (results as EvidenceRow[]).map(evid => {
       const text = `${evid.fileName || ''} ${evid.description || ''}`.trim();
       return {
@@ -324,14 +313,12 @@ class AdvancedSearch {
    */
   private sortResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
     const { sortBy = 'relevance', sortOrder = 'desc' } = filters;
-
     const getDateFromResult = (r: SearchResult): number => {
       if (r.type === 'case') {
         return new Date(r.metadata.createdAt ?? 0).getTime();
       }
       return new Date(r.metadata.uploadedAt ?? 0).getTime();
     };
-
     const getPriorityValue = (r: SearchResult): number => {
       if (r.type === 'case') {
         const order: Record<string, number> = { high: 3, medium: 2, low: 1 };
@@ -339,10 +326,8 @@ class AdvancedSearch {
       }
       return 0;
     };
-
     // helper to safely stringify possibly undefined values
-    const stringify = (v: unknown) => (v == null ? '' : String(v));
-
+    const stringify = (v: any) => (v == null ? '' : String(v));
     return results.slice().sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
@@ -378,6 +363,5 @@ class AdvancedSearch {
     return results.slice(offset, offset + limit);
   }
 }
-
 // Export singleton instance
 export const advancedSearch = new AdvancedSearch();

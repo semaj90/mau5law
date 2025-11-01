@@ -4,7 +4,7 @@ https://svelte.dev/e/bindable_invalid_location -->
 <!-- LazyAIAnalysis.svelte - Lazy loading wrapper for AI analysis components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import LazyLoader from '../LazyLoader.svelte';
+  import { LazyLoader } from '../LazyLoader.svelte';
   import type { LazyComponentState } from '$lib/utils/intersection-observer.js';
   // Props for AI analysis configuration
   let {
@@ -25,14 +25,14 @@ https://svelte.dev/e/bindable_invalid_location -->
     loadingText = 'Loading AI analysis...',
     errorText = 'Failed to load AI analysis',
     // Callbacks
-    onAnalysisComplete = undefined as ((result: unknown) => void) | undefined,
+    onAnalysisComplete = undefined as ((result: any) => void) | undefined,
     onAnalysisError = undefined as ((error: Error) => void) | undefined,
     // Component state binding
     lazyState = $bindable() as LazyComponentState | undefined;
   } = $props();
   // Dynamic import and analysis state
-  let analysisComponent: unknown = $state(null);
-  let analysisResult: unknown = $state(null);
+  let analysisComponent: any = $state(null);
+  let analysisResult: any = $state(null);
   let isAnalyzing = $state(false);
   let loadError: Error | null = $state(null);
   // Progress tracking
@@ -90,7 +90,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       }
       console.error('AI Analysis loading error:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   function updateProgress(progress: number, step: string) {
@@ -190,7 +190,6 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   const config = analysisConfig[analysisType];
 </script>
-
 <LazyLoader
   preset="HEAVY_COMPONENT"
   placeholderHeight={height}
@@ -280,22 +279,20 @@ https://svelte.dev/e/bindable_invalid_location -->
               <div class="result-findings">
                 <h4>Key Findings</h4>
                 <ul>
-                  {#each analysisResult.keyFindings as finding}
+                  {#each Array.isArray(analysisResult.keyFindings) ? analysisResult.keyFindings : [] as finding}
                     <li>{finding}</li>
                   {/each}
                 </ul>
-              </div>
-            {/if}
+              {/if}
             {#if analysisResult.recommendations}
               <div class="result-recommendations">
                 <h4>Recommendations</h4>
                 <ul>
-                  {#each analysisResult.recommendations as rec}
+                  {#each Array.isArray(analysisResult.recommendations) ? analysisResult.recommendations : [] as rec}
                     <li>{rec}</li>
                   {/each}
                 </ul>
-              </div>
-            {/if}
+              {/if}
             <div class="analysis-metadata">
               <div class="meta-grid">
                 <div class="meta-cell">
@@ -314,8 +311,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             </div>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Custom placeholder for AI analysis -->
   <div class="ai-placeholder-content" slot="placeholder" style="height: {height} background: {config.bgColor}">
@@ -333,7 +329,6 @@ https://svelte.dev/e/bindable_invalid_location -->
     </div>
   </div>
 </LazyLoader>
-
 <style>
   .lazy-ai-analysis {
     border-radius: 12px;
@@ -402,7 +397,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
     border-radius: 4px;
   }
   .progress-info {
@@ -528,7 +523,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     padding: 48px;
   }
   .placeholder-ai-brain {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -536,15 +531,15 @@ https://svelte.dev/e/bindable_invalid_location -->
   .brain-icon {
     font-size: 72px;
     z-index: 2,
-    position relative;
+    position: relative;
   }
   .brain-waves {
-    position absolute;
+    position: absolute;
     width: 120px;
     height: 120px;
   }
   .wave {
-    position absolute;
+    position: absolute;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     animation: brain-wave 2s infinite;
@@ -626,5 +621,3 @@ https://svelte.dev/e/bindable_invalid_location -->
     }
   }
 </style>
-
-

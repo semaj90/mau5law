@@ -10,7 +10,7 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
   import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   // Props
   interface Props {
     caseId: string;
@@ -63,10 +63,10 @@ if (!browser) return;
       if (collaborativeMode) {
         setupCollaboration();
       }
-      isLoading = false;
+      isLoading = $state(false);
     } catch (error) {
       console.error('Failed to initialize 3D visualization', error);
-      isLoading = false;
+      isLoading = $state(false);
     }
     })();
   });
@@ -537,10 +537,9 @@ THREE.Vector3): THREE.Object3D {
     });
   }
 </script>
-
 <div
   class="visualization-container"
-  style="position relative;
+  style="position: relative;
 e; width: {width}px; height: {height}px;"
 >
   <!-- Controls -->
@@ -583,8 +582,7 @@ e; width: {width}px; height: {height}px;"
     <div class="loading-overlay">
       <div class="spinner"></div>
       <p>Initializing 3D visualization...</p>
-    </div>
-  {/if}
+    {/if}
   <!-- Evidence details panel -->
   {#if selectedEvidence}
     <div class="evidence-panel">
@@ -597,21 +595,19 @@ e; width: {width}px; height: {height}px;"
       <div class="evidence-actions">
         <button class="btn-primary" onclick={() => (selectedEvidence = null)}>Close</button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- 3D visualization container -->
   <div bind:this={containerElement} class="three-container"></div>
 </div>
-
 <style>
   .visualization-container {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     border-radius: 8px;
     overflow: hidden;
-    position relative;
+    position: relative;
   }
   .controls-panel {
-    position absolute;
+    position: absolute;
     top: 10px;
     left: 10px;
     z-index: 100,
@@ -656,7 +652,7 @@ e; width: {width}px; height: {height}px;"
     font-size: 12px;
   }
   .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -687,7 +683,7 @@ e; width: {width}px; height: {height}px;"
     }
   }
   .evidence-panel {
-    position absolute;
+    position: absolute;
     top: 10px;
     right: 10px;
     width: 300px;
@@ -730,10 +726,9 @@ e; width: {width}px; height: {height}px;"
   .three-container {
     width: 100%;
     height: 100%;
-    position relative;
+    position: relative;
   }
   :global(.evidence-label) {
     pointer-events: none !important;
   }
 </style>
-

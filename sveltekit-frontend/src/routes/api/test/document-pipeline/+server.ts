@@ -5,7 +5,7 @@ interface PipelineTestResult {
   step: string;
   status: 'success' | 'error' | 'skipped';
   message: string;
-  data?: unknown;
+  data?: any;
   responseTime?: number;
   timestamp: string;
 }
@@ -38,7 +38,7 @@ async function testStep(stepName: string, testFn: () => Promise<unknown>): Promi
       responseTime,
       timestamp,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const responseTime = Date.now() - startTime;
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error(`❌ ${stepName} - Failed:`, errMsg);
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async event => {
   const apiClient = new LegalAIApiClient();
   const testResults: PipelineTestResult[] = [];
   // allow local quick testing toggle (used)
-  const mockModeFlag = false;
+  const mockModeFlag = $state(false);
   // Step 1: Test API Client Health
   testResults.push(
     await testStep('API Client Health Check', async () => {
@@ -325,7 +325,7 @@ export const POST: RequestHandler = async event => {
       message: 'Full test logic would be executed here',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {

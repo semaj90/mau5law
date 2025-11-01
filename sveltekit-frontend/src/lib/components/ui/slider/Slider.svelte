@@ -16,9 +16,7 @@
     value = [Math.min(max, Math.max(min, v))];
   }
 </script>
-
 <input type="range" {id} {min} {max} {step} value={value?.[0] ?? 0} class={klass} {disabled} oninput={onInput as any} />
-
 <style>
   input[type='range'] {
     width: 100%;

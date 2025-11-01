@@ -187,10 +187,10 @@ export const CriminalFormSteps = {
 // --- Add/replace a safer SubmitResult type and tighten context fields ---
 type SubmitResult = {
   id?: string;
-  embeddings?: unknown;
-  embeddingsError?: unknown;
+  embeddings?: any;
+  embeddingsError?: any;
   success?: boolean;
-  error?: unknown;
+  error?: any;
 } | null;
 
 // --- new helper types ---
@@ -272,7 +272,7 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput) {
   try {
     const d = data as Record<string, unknown>;
 
-    const joinTags = (v: unknown) => (Array.isArray(v) ? (v as string[]).join(' ') : '');
+    const joinTags = (v: any) => (Array.isArray(v) ? (v as string[]).join(' ') : '');
     const getStr = (k: string) => {
       const val = d[k];
       if (val === undefined || val === null) return '';
@@ -310,7 +310,7 @@ async function generateEmbeddingsActor(input: GenEmbeddingsInput) {
     }
     const embeddings = await response.json();
     return { success: true, embeddings };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Embedding generation error:', message);
     return { success: false, error: message };
@@ -410,7 +410,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
               stepData: {},
               errors: {},
             } as Partial<MultiStepFormContext>;
-          } catch (error: unknown) {
+          } catch (error: any) {
             if (error instanceof z.ZodError) {
               const fieldErrors: Record<string, string[]> = {};
               error.errors.forEach(err => {
@@ -441,14 +441,14 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
         onDone: {
           target: 'generating_embeddings',
           actions: assign({
-            submitResult: (_ctx: MultiStepFormContext, event: { output?: unknown }) =>
+            submitResult: (_ctx: MultiStepFormContext, event: { output?: any }) =>
               (event.output ?? null) as SubmitResult,
           }),
         },
         onError: {
           target: 'submit_error',
           actions: assign({
-            submitResult: (_ctx: MultiStepFormContext, event: { data?: unknown; error?: unknown }) =>
+            submitResult: (_ctx: MultiStepFormContext, event: { data?: any; error?: any }) =>
               ({ success: false, error: event.data ?? event.error }) as SubmitResult,
             isSubmitting: () => false,
           }),
@@ -478,7 +478,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
           target: 'success',
           actions: assign({
             isSubmitting: () => false,
-            submitResult: (ctx: MultiStepFormContext, event: { output?: unknown }) =>
+            submitResult: (ctx: MultiStepFormContext, event: { output?: any }) =>
               ({ ...(ctx.submitResult ?? {}), embeddings: event.output }) as SubmitResult,
           }),
         },
@@ -486,7 +486,7 @@ export const multiStepFormMachine = createMachine<MultiStepFormContext, Events>(
           target: 'success',
           actions: assign({
             isSubmitting: () => false,
-            submitResult: (ctx: MultiStepFormContext, event: { data?: unknown; error?: unknown }) =>
+            submitResult: (ctx: MultiStepFormContext, event: { data?: any; error?: any }) =>
               ({ ...(ctx.submitResult ?? {}), embeddingsError: event.data ?? event.error }) as SubmitResult,
           }),
         },

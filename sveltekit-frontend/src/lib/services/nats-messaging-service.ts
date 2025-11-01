@@ -29,7 +29,7 @@ export interface LegalAIMessage {
     | 'chat.message'
     | 'system.health'
     | 'quic.data'; // Added: 'quic.data'
-  data: unknown;
+  data: any;
   timestamp: string;
   userId?: string;
   caseId?: string;
@@ -46,7 +46,7 @@ export interface NATSConnection {
   drain(): Promise<void>;
   closed(): Promise<Error | void>; // Changed return type from any to Error | void
   isClosed(): boolean;
-  info?: unknown;
+  info?: any;
 }
 export interface NATSSubscription {
   unsubscribe(): void;
@@ -59,22 +59,22 @@ export interface NATSCodec<T> {
 }
 // Lightweight EventEmitter (browser + Node)
 class EventEmitter {
-  private listeners = new Map<string, Set<(...args: unknown[]) => void>>(); // Changed any[] to unknown[]
-  on(evt: string, fn: (...a: unknown[]) => void) {
+  private listeners = new Map<string, Set<(...args: any[]) => void>>(); // Changed any[] to unknown[]
+  on(evt: string, fn: (...a: any[]) => void) {
     if (!this.listeners.has(evt)) this.listeners.set(evt, new Set());
     this.listeners.get(evt)!.add(fn);
   } // Changed any[] to unknown[]
-  off(evt: string, fn: (...a: unknown[]) => void) {
+  off(evt: string, fn: (...a: any[]) => void) {
     this.listeners.get(evt)?.delete(fn);
   } // Changed any[] to unknown[]
-  once(evt: string, fn: (...a: unknown[]) => void) {
-    const wrap = (...x: unknown[]) => {
+  once(evt: string, fn: (...a: any[]) => void) {
+    const wrap = (...x: any[]) => {
       fn(...x);
       this.off(evt, wrap);
     };
     this.on(evt, wrap);
   } // Changed any[] to unknown[]
-  emit(evt: string, ...a: unknown[]) {
+  emit(evt: string, ...a: any[]) {
     this.listeners.get(evt)?.forEach(fn => {
       try {
         fn(...a);
@@ -111,7 +111,7 @@ export class NATSMessagingService extends EventEmitter {
   private connection: NATSConnection | null = null;
   private quicTransport: MockWebTransport | null = null; // New: QUIC WebTransport instance
   private quicStreamWriter: MockWritableStreamDefaultWriter | null = null; // New: QUIC stream writer
-  private isQuicStreamReading: boolean = false; // New: Flag to control QUIC stream reading loop
+  private isQuicStreamReading: boolean = $state(false); // New: Flag to control QUIC stream reading loop
   private subscriptions: Map<string, NATSSubscription> = new Map();
   private messageHandlers: Map<string, Set<MessageHandler>> = new Map();
   private stringCodec: NATSCodec<string> = {
@@ -223,7 +223,7 @@ export class NATSMessagingService extends EventEmitter {
       this.emit('connected');
       this.setupConnectionEvents();
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to connect to NATS Server:', error);
       this.emit('error', error);
       return false;
@@ -295,7 +295,7 @@ export class NATSMessagingService extends EventEmitter {
       this.quicConnectedAt = Date.now();
       this.emit('quicConnected');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to connect to QUIC WebTransport:', error);
       this.emit('error', error);
       return false;
@@ -311,7 +311,7 @@ export class NATSMessagingService extends EventEmitter {
         const { done, value } = await reader.read();
         if (done) {
           console.log('⚡ QUIC readable stream closed.');
-          this.isQuicStreamReading = false; // Stop reading when done
+          this.isQuicStreamReading = $state(false); // Stop reading when done
           break;
         }
         if (value) {
@@ -324,7 +324,7 @@ export class NATSMessagingService extends EventEmitter {
       }
     } catch (error) {
       console.error('❌ Error reading from QUIC stream:', error);
-      this.isQuicStreamReading = false; // Stop reading on error
+      this.isQuicStreamReading = $state(false); // Stop reading on error
     } finally {
       reader.releaseLock();
     }
@@ -346,7 +346,7 @@ export class NATSMessagingService extends EventEmitter {
       console.log('🔌 Disconnected from NATS Server');
     }
     if (this.quicTransport) {
-      this.isQuicStreamReading = false; // Ensure reading loop terminates
+      this.isQuicStreamReading = $state(false); // Ensure reading loop terminates
       if (this.quicStreamWriter) {
         await this.quicStreamWriter.close();
         this.quicStreamWriter = null;
@@ -359,7 +359,7 @@ export class NATSMessagingService extends EventEmitter {
   /**
    * Publish a message to a subject
    */
-  async publish(subject: string, data: unknown, _headers?: Record<string, string>): Promise<void> {
+  async publish(subject: string, data: any, _headers?: Record<string, string>): Promise<void> {
     if (!this.connection) {
       throw new Error('Not connected to NATS Server');
     }
@@ -375,7 +375,7 @@ export class NATSMessagingService extends EventEmitter {
       this.sampleSubject(subject, message);
       console.log(`📤 Published message to ${subject}:`, message);
       this.emit('publish', { subject, message });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to publish to ${subject}:`, error);
       this.emit('error', error);
       throw error;
@@ -385,7 +385,7 @@ export class NATSMessagingService extends EventEmitter {
   /**
    * Send data over QUIC WebTransport
    */
-  async sendQuicData(data: unknown): Promise<void> {
+  async sendQuicData(data: any): Promise<void> {
     if (!this.quicStreamWriter) {
       throw new Error('Not connected to QUIC WebTransport or stream not available');
     }
@@ -400,7 +400,7 @@ export class NATSMessagingService extends EventEmitter {
       this.quicSentCount++;
       console.log('⚡ Sent QUIC data:', message);
       this.emit('quicSend', message);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to send QUIC data:', error);
       this.emit('error', error);
       throw error;
@@ -417,7 +417,7 @@ export class NATSMessagingService extends EventEmitter {
   /**
    * Get connection info
    */
-  getConnectionInfo(): unknown {
+  getConnectionInfo(): any {
     return {
       nats: this.connection?.info,
       quic: this.quicTransport ? { status: 'connected', url: this.config.quicUrl } : { status: 'disconnected' },
@@ -474,13 +474,13 @@ export class NATSMessagingService extends EventEmitter {
           for (const handler of handlers) {
             try {
               handler(message);
-            } catch (error: unknown) {
+            } catch (error: any) {
               // Changed any to unknown
               console.error('❌ Error in message handler:', error);
             }
           }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed any to unknown
         console.error(`❌ Error processing message on ${subject}:`, error);
       }
@@ -499,7 +499,7 @@ export class NATSMessagingService extends EventEmitter {
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;
   }
-  private sampleSubject(subject: string, payload: unknown) {
+  private sampleSubject(subject: string, payload: any) {
     // Changed any to unknown
     const arr = this.subjectSamples.get(subject) || [];
     const hash = this.hashPayload(payload);
@@ -511,7 +511,7 @@ export class NATSMessagingService extends EventEmitter {
       this.subjectSamples.set(subject, arr);
     }
   }
-  private hashPayload(payload: unknown): string {
+  private hashPayload(payload: any): string {
     // Simple hash function for sampling - in real use, replace with a proper hash function
     return JSON.stringify(payload);
   }

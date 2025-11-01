@@ -14,7 +14,7 @@ type StoredMessage = {
   id: string;
   sessionId: string;
   type?: string;
-  payload?: unknown; // Changed from any to unknown
+  payload?: any; // Changed from any to unknown
   timestamp: string;
 };
 
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 					},
 				}
 			);
-		} catch (error: unknown) { // Changed from any to unknown
+		} catch (error: any) { // Changed from any to unknown
 			console.error('❌ Error getting missed messages:', error);
 			return new Response('Internal Server Error', { status: 500 });
 		}
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 				'Connection': 'Upgrade',
 			},
 		});
-	} catch (error: unknown) { // Changed from any to unknown
+	} catch (error: any) { // Changed from any to unknown
 		console.error('❌ WebSocket upgrade error:', error);
 		return new Response('WebSocket upgrade failed', { status: 500 });
 	}
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					keepAlive = setInterval(() => {
 						try {
 							controller.enqueue(encoder.encode('data: {"type":"heartbeat"}\n\n'));
-						} catch (error: unknown) { // Changed from any to unknown
+						} catch (error: any) { // Changed from any to unknown
 							// If enqueue fails, clear interval and let cancel handle deregistration
 							if (keepAlive) {
 								clearInterval(keepAlive);
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 				{ status: 400, headers: { 'Content-Type': 'application/json' } }
 			);
 		}
-	} catch (error: unknown) { // Changed from any to unknown
+	} catch (error: any) { // Changed from any to unknown
 		console.error('❌ Error in POST handler:', error);
 		return new Response('Internal Server Error', { status: 500 });
 	}

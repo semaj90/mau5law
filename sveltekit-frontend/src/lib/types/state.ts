@@ -134,7 +134,7 @@ export interface MachineConfig {
   id: string;
   initial: string;
   states: { [key: string]: any };
-  context?: unknown;
+  context?: any;
   on?: { [key: string]: any };
 }
 

@@ -1,6 +1,5 @@
 // This is a mock service. In a real scenario, this would integrate with Drizzle ORM,
 // pgvector (PostgreSQL) and Qdrant for actual vector search operations.
-
 export const enhancedVectorSearchService = {
   /**
    * Simulates searching documents based on an embedding.
@@ -13,7 +12,6 @@ export const enhancedVectorSearchService = {
     console.log(`Mock: Searching documents with embedding (first 5): ${embedding.slice(0, 5)}...`);
     // Simulate a delay for network/DB operation
     await new Promise(resolve => setTimeout(resolve, 200));
-
     // Return mock results that would typically come from pgvector or Qdrant
     const mockResults = [
       { id: 101, title: 'Legal Precedent on Contract Law', type: 'document', relevance_score: 0.95, content: 'Details about contract breach cases...' },
@@ -22,10 +20,8 @@ export const enhancedVectorSearchService = {
       { id: 104, title: 'Witness Testimony - Expert Opinion', type: 'document', relevance_score: 0.75, content: 'Expert witness statement on forensic accounting...' },
       { id: 105, title: 'Regulatory Compliance Guidelines', type: 'document', relevance_score: 0.65, content: 'Overview of recent compliance changes...' },
     ];
-
     return mockResults.filter(item => item.relevance_score >= threshold).slice(0, limit);
   },
-
   /**
    * Simulates generating an embedding for a given text using an LLM (e.g., Ollama).
    * @param text The text to embed.

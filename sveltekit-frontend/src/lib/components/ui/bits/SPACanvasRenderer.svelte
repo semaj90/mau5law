@@ -13,8 +13,8 @@
     legalData?: {
       documents?: LegalDocument[];
       evidence?: EvidenceItem[];
-      cases?: unknown[];
-      chatMessages?: unknown[];
+      cases?: any[];
+      chatMessages?: any[];
     }
     onnavigate?: (data: { view: string; data: any }) => void;
     oninteract?: (data: { type: string; position: { x: number; y: number }; view: string; data: any }) => void;
@@ -32,13 +32,13 @@
   let webgpuStreamer: WebGPUTextureStreaming;
   let animationFrame: number;
   // SPA Navigation state
-  let navigationItems = [
+  let navigationItems = $state([
     { id: 'dashboard', icon: '🏠', label: 'Dashboard', color: '#0066cc' },
     { id: 'evidence', icon: '📋', label: 'Evidence', color: '#00cc66' },
     { id: 'documents', icon: '📄', label: 'Documents', color: '#cccc00' },
     { id: 'chat', icon: '💬', label: 'AI Chat', color: '#cc0000' },
     { id: 'cases', icon: '⚖️', label: 'Cases', color: '#cd9a5b' }
-  ];
+  ]);
   // Canvas dimensions and viewport
   let canvasWidth = 1200;
   let canvasHeight = 800;
@@ -135,7 +135,7 @@ if (!canvas) return;
     const itemWidth = canvasWidth / navigationItems.length;
     navigationItems.forEach((item, index) => {
       const x = index * itemWidth;
-      const isActive = (item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).id === currentView;
+      const isActive = (item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).id === currentView;
       // Item background
       if (isActive) {
         ctx.fillStyle = colors.primary;
@@ -236,17 +236,17 @@ if (!canvas) return;
         medium: colors.primary,
         low: colors.accent, // Fixed: semicolon to comma
       }
-      ctx.fillStyle = priorityColors[(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority];
+      ctx.fillStyle = priorityColors[(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority];
       ctx.fillRect(20, itemY, 5, itemHeight - 10);
       // Item title
       ctx.font = 'bold 16px: "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
-      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title, 35, itemY + 25); // Fixed: fillText.title -> fillText(item.title
+      ctx.fillText((item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title, 35, itemY + 25); // Fixed: fillText.title -> fillText(item.title
       // Item type and confidence
       ctx.font = '12px "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText(`${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45); // Fixed: fillText.type -> fillText(`${item.type...
+      ctx.fillText(`${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type.toUpperCase()} | Confidence: ${(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).confidence}%`, 35, itemY + 45); // Fixed: fillText.type -> fillText(`${item.type...
     });
   }
   function renderDocuments(y: number, height: number) {
@@ -428,13 +428,13 @@ if (!canvas) return;
     <p>Powered by gemma3:legal-latest AI model</p>
     {#if legalData.evidence}
       <h2>Evidence ({legalData.evidence.length} items)</h2>
-      {#each legalData.evidence.slice(0, 5) as item}
-        <p>{(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title} - {(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type} - {(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).priority} priority</p>
+      {#each Array.isArray(legalData.evidence.slice(0, 5)) ? legalData.evidence.slice(0, 5) : [] as item}
+        <p>{(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).title} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).type} - {(item as { id?: any; icon?: any; label?: any; priority?: any; title?: any; type?: any; confidence?: any }).priority} priority</p>
       {/each}
     {/if}
     {#if legalData.documents}
       <h2>Documents ({legalData.documents.length} items)</h2>
-      {#each legalData.documents.slice(0, 5) as doc}
+      {#each Array.isArray(legalData.documents.slice(0, 5)) ? legalData.documents.slice(0, 5) : [] as doc}
         <p>{doc.title} - Confidence: {doc.confidence}%</p>
       {/each}
     {/if}
@@ -442,14 +442,14 @@ if (!canvas) return;
 </div>
 <style>
   .spa-canvas-container {
-    position: relative; /* Fixed: position relative; -> position: relative; */
+    position: relative; /* Fixed: position: relative; -> position: relative; */
     background: var(--yorha-black, #454138);
     border: none;
     margin: 0;
     padding: 0;
   }
   .spa-canvas-container.fullscreen {
-    position: fixed; /* Fixed: position fixed;d; -> position: fixed; */
+    position: fixed; /* Fixed: position: fixed;d; -> position: fixed; */
     top: 0; /* Fixed: top: 0, -> top: 0; */
     left: 0;
     width: 100vw;

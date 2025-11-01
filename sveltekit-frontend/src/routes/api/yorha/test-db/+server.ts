@@ -206,7 +206,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         break;
       default:
-        results.success = false;
+        results.success = $state(false);
         results.error = `Unknown action: ${action}`;
     }
     return json(results);

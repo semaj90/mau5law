@@ -3,8 +3,8 @@
  * Used when the full NES orchestrator must not be imported in SSR builds.
  */
 export class NESCacheOrchestrator {
-  private initialized = false;
-  private sprites = new Map<string, { data: unknown; metadata?: Record<string, unknown>; region?: string }>();
+  private initialized = $state(false);
+  private sprites = new Map<string, { data: any; metadata?: Record<string, unknown>; region?: string }>();
 
   async initialize(): Promise<void> {
     this.initialized = true;
@@ -16,7 +16,7 @@ export class NESCacheOrchestrator {
 
   async storeSprite(
     key: string,
-    sprite: { data: unknown; metadata?: Record<string, unknown>; region?: string }
+    sprite: { data: any; metadata?: Record<string, unknown>; region?: string }
   ): Promise<boolean> {
     this.sprites.set(key, sprite);
     return true;
@@ -38,17 +38,17 @@ export class NESCacheOrchestrator {
     };
   }
 
-  async cacheYoRHaComponent(_args: unknown): Promise<void> {
+  async cacheYoRHaComponent(_args: any): Promise<void> {
     /* no-op for server */
   }
 
-  async cacheGPUAnimation(_args: unknown): Promise<void> {
+  async cacheGPUAnimation(_args: any): Promise<void> {
     /* no-op for server */
   }
 
   async shutdown(): Promise<void> {
     this.sprites.clear();
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 

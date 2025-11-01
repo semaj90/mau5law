@@ -70,24 +70,19 @@ class EnhancedOllamaService extends EventEmitter {
               ? (perf['timeoutMs'] as number)
               : 3000;
       const id = setTimeout(() => controller.abort(), timeout);
-
       const res = await fetch(url, { method: 'GET', signal: controller.signal });
       clearTimeout(id);
-
       if (!res.ok) {
         // Non-2xx response -> fallback
         await this.ensureModels();
         return;
       }
-
       const data = await res.json().catch(() => null);
       if (!data) {
         await this.ensureModels();
         return;
       }
-
       let models: string[] = [];
-
       // Accept several shapes:
       // 1) Array of strings: ["gemma:legal", "nomic-embed-text"]
       // 2) Array of objects: [{ name: "gemma:legal" }, ...]
@@ -102,10 +97,8 @@ class EnhancedOllamaService extends EventEmitter {
         // Safe, typed access to potential `models` field without using `any`
         const obj = data as Record<string, unknown>;
         const maybeModels = obj['models'];
-
         if (Array.isArray(maybeModels)) {
           const arr = maybeModels as unknown[];
-
           // case array of strings
           if (arr.length > 0 && arr.every(item => typeof item === 'string')) {
             models = arr as string[];
@@ -146,7 +139,6 @@ class EnhancedOllamaService extends EventEmitter {
           }
         }
       }
-
       // If parsing produced a non-empty list, adopt it; otherwise fallback
       if (models.length > 0) {
         // Deduplicate and preserve order
@@ -154,7 +146,7 @@ class EnhancedOllamaService extends EventEmitter {
       } else {
         await this.ensureModels();
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Keep the existing local list on any error and avoid throwing to preserve stub behavior.
       // Optionally log in dev-only environments:
       try {
@@ -172,7 +164,6 @@ class EnhancedOllamaService extends EventEmitter {
     prompt?: string
   ): Promise<string> {
     await this.ensureModels();
-
     // Prefer an explicit embedding-capable model when task is embedding
     if (task === 'embedding') {
       const preferredEmbeddingCandidates = ['embeddinggemma:latest', 'nomic-embed-text'];
@@ -184,9 +175,7 @@ class EnhancedOllamaService extends EventEmitter {
       // final fallback to first available model
       return this.availableModels[0] ?? 'nomic-embed-text';
     }
-
     const isLegal = !!(prompt && isLegalTask(prompt)) || task === 'legal-analysis';
-
     if (isLegal) {
       // Prefer more specific gemma3/legal variants, handle common separators and name variants
       const legalCandidates = [
@@ -198,15 +187,12 @@ class EnhancedOllamaService extends EventEmitter {
       ];
       const foundLegal = legalCandidates.find(m => this.availableModels.includes(m));
       if (foundLegal) return foundLegal;
-
       // fallback: any available model whose name suggests legal capability
       const regexLike = this.availableModels.find(m => /gemma.*legal|legal-bert|legal/i.test(m));
       if (regexLike) return regexLike;
     }
-
     return this.availableModels[0];
   }
-
   async generate(prompt: string, options: Partial<OllamaGenerateRequest> = {}): Promise<OllamaResponse> {
     // Use queueRequest to honor the lightweight parallelism limit
     return this.queueRequest(async () => {
@@ -228,7 +214,6 @@ class EnhancedOllamaService extends EventEmitter {
       return resp;
     });
   }
-
   async generateEmbeddings(text: string): Promise<number[]> {
     const base = text || '';
     const len = 64;
@@ -244,12 +229,10 @@ class EnhancedOllamaService extends EventEmitter {
     if ((input as LegalDocument).content !== undefined) {
       return input as LegalDocument;
     }
-
     // Treat as a DOM Document: extract textual content and synthesize required fields
     const dom = input as Document;
     const content = dom?.documentElement?.textContent ?? '';
     const title = dom?.title ?? (content ? content.slice(0, 80) : 'dom-doc-unknown');
-
     return {
       id: 'dom-doc-unknown',
       type: 'other',
@@ -266,7 +249,6 @@ class EnhancedOllamaService extends EventEmitter {
       chunks: [] as DocumentChunk[],
     } as LegalDocument;
   }
-
   // Accept either a DOM Document or a LegalDocument
   async analyzeLegalDocument(doc: Document | LegalDocument): Promise<AnalysisResult> {
     const ld = this.normalizeToLegalDocument(doc);
@@ -324,11 +306,9 @@ class EnhancedOllamaService extends EventEmitter {
     await this.ensureModels();
     // compute an embedding fallback from availableModels to avoid mismatches
     const embeddingFallback = this.availableModels.find(m => /embed/i.test(m)) ?? 'embeddinggemma:latest';
-
     // derive a reasonable legal fallback from availableModels
     const legalFallbackModel =
       this.availableModels.find(m => /gemma3.*legal|gemma.*legal|legal-bert/i.test(m)) ?? 'gemma3-legal:latest';
-
     return {
       ollamaAvailable: true,
       availableModels: this.availableModels,
@@ -355,7 +335,7 @@ class EnhancedOllamaService extends EventEmitter {
         timestamp: new Date().toISOString(),
         details: { models: this.availableModels.length, cache: this.cache.size },
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Safely extract a string message from unknown error
       const message =
         err instanceof Error
@@ -410,7 +390,6 @@ class EnhancedOllamaService extends EventEmitter {
       this.requestQueue.push(job);
     });
   }
-
   private startQueueProcessor(): void {
     setInterval(() => {
       const parallel = OLLAMA_CONFIG.performance?.parallelRequests ?? 4;

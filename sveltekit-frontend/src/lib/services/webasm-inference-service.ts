@@ -22,7 +22,7 @@ type ExportFunction = (
 
 type WebASMExportValue =
   | ExportFunction
-  | ((...args: unknown[]) => unknown)
+  | ((...args: any[]) => unknown)
   | number
   | WebAssembly.Memory
   | undefined;
@@ -111,7 +111,7 @@ export class WebASMInferenceService {
     reject: (e: Error) => void;
     timestamp: number;
   }> = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   private performanceMonitor: PerformanceObserver | null = null;
 
   constructor() {
@@ -191,7 +191,7 @@ export class WebASMInferenceService {
       const loadTime = performance.now() - startTime;
       console.log(`✅ WebASM model: '${name}' loaded in ${loadTime.toFixed(2)}ms`);
       return model;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to load WebASM model: '${name}':`, error);
       throw new Error(
         `WebASM model loading failed: ${error instanceof Error ? error.message : String(error)}`
@@ -223,12 +223,12 @@ export class WebASMInferenceService {
         try {
           const result = await this.executeInference(item.request);
           item.resolve(result);
-        } catch (err: unknown) {
+        } catch (err: any) {
           item.reject(err instanceof Error ? err : new Error(String(err)));
         }
       }
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
     }
   }
 
@@ -323,7 +323,7 @@ export class WebASMInferenceService {
         memoryUsage,
         metrics,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       performance.clearMarks?.(`webasm-inference-${modelName}-start`);
       performance.clearMarks?.(`webasm-inference-${modelName}-end`);
       throw new Error(
@@ -392,7 +392,7 @@ export class WebASMInferenceService {
   destroy(): void {
     this.models.clear();
     this.inferenceQueue.length = 0;
-    this.isProcessing = false;
+    this.isProcessing = $state(false);
     if (this.performanceMonitor) {
       try {
         this.performanceMonitor.disconnect();

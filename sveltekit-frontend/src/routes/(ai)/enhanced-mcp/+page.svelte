@@ -310,7 +310,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="system-logs">
     <h2>📋 System Activity Logs</h2>
     <div class="logs-container">
-      {#each $systemLogs as log}
+      {#each Array.isArray($systemLogs) ? $systemLogs : [] as log}
         <div class="log-entry log-{log.level}">
           <span class="log-timestamp">{log.timestamp.toLocaleTimeString()}</span>
           <span class="log-source">[{log.source}]</span>

@@ -135,7 +135,7 @@ export interface ComprehensiveSummaryResponse {
 class ComprehensiveOllamaSummarizer {
   private config: SummarizerConfig;
   private langChainService: any;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private stats: SummarizerStats;
 
   constructor(config: Partial<SummarizerConfig> = {}) {
@@ -699,12 +699,12 @@ class ComprehensiveOllamaSummarizer {
   updateConfig(newConfig: Partial<SummarizerConfig>): void {
     this.config = { ...this.config, ...newConfig };
     if (newConfig.baseUrl || newConfig.primaryModel) {
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
 
   async reset(): Promise<void> {
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.initializeStats();
     if (this.config.enableCaching && typeof comprehensiveCachingService?.clearByTags === 'function') {
       try { await comprehensiveCachingService.clearByTags(['summary']); } catch { /* ignore */ }

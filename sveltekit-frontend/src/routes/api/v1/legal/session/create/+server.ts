@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
       session,
       message: 'Legal AI session created successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize error details without using `any`
     console.error('[Legal AI] Session creation error:', error);
     let details: string;
@@ -89,20 +89,20 @@ export const GET: RequestHandler = async () => {
   });
 };
 // Helper functions
-function isObject(value: unknown): value is Record<string, unknown> {
+function isObject(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
-function isString(value: unknown): value is string {
+function isString(value: any): value is string {
   return typeof value === 'string';
 }
-function isStringArray(value: unknown): value is string[] {
+function isStringArray(value: any): value is string[] {
   return Array.isArray(value) && value.every(item => typeof item === 'string');
 }
-function isNumber(value: unknown): value is number {
+function isNumber(value: any): value is number {
   return typeof value === 'number' && Number.isFinite(value);
 }
 
-function validateAndEnhanceContext(context: unknown): LegalContext {
+function validateAndEnhanceContext(context: any): LegalContext {
   const defaultContext: LegalContext = {
     jurisdiction: 'Global',
     practice_area: ['General Legal'],
@@ -138,7 +138,7 @@ function validateAndEnhanceContext(context: unknown): LegalContext {
     key_entities,
   };
 }
-function isValidSecurityLevel(level: unknown): level is SecurityLevel {
+function isValidSecurityLevel(level: any): level is SecurityLevel {
   const validLevels: SecurityLevel[] = ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'];
   return isString(level) && (validLevels as readonly string[]).includes(level as string);
 }

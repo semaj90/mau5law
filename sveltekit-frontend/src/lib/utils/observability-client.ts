@@ -44,7 +44,7 @@ class ObservabilityClient {
   }
   private metricsBuffer: RouteMetrics[] = [];
   private flushTimer?: number;
-  private initialized = false;
+  private initialized = $state(false);
   private currentRoute?: string;
   /**
    * Initialize observability client with configuration
@@ -258,7 +258,7 @@ class ObservabilityClient {
     }
     this.flushMetrics(); // Final flush
     timingMetrics.destroy();
-    this.initialized = false;
+    this.initialized = $state(false);
     if (this.config.debugMode) {
       console.log('🔍 Observability client destroyed');
     }

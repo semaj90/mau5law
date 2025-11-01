@@ -2,29 +2,23 @@
  * Integration Tests for Recommendation Routing Machine
  * Tests XState v5 state machine for recommendation workflow orchestration
  */
-
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createActor } from 'xstate';
 import { recommendationRoutingMachine } from './recommendation-routing-machine';
-
 describe('Recommendation Routing Machine', () => {
   let actor: ReturnType<typeof createActor<typeof recommendationRoutingMachine>>;
-
   beforeEach(() => {
     actor = createActor(recommendationRoutingMachine);
     actor.start();
   });
-
   afterEach(() => {
     actor.stop();
   });
-
   describe('Initial State', () => {
     it('should start in idle state', () => {
       const snapshot = actor.getSnapshot();
       expect(snapshot.value).toBe('idle');
     });
-
     it('should have correct initial context', () => {
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.sessionId).toBe('');
@@ -35,7 +29,6 @@ describe('Recommendation Routing Machine', () => {
       expect(snapshot.context.recommendations.risks).toEqual([]);
     });
   });
-
   describe('Session Management', () => {
     it('should transition from idle to session_active on START_SESSION', () => {
       actor.send({
@@ -43,49 +36,39 @@ describe('Recommendation Routing Machine', () => {
         userId: 'user-123',
         caseId: 'case-456',
       });
-
       const snapshot = actor.getSnapshot();
       expect(snapshot.value).toMatchObject({ session_active: 'waiting_for_input' });
     });
-
     it('should set userId and caseId in context when starting session', () => {
       actor.send({
         type: 'START_SESSION',
         userId: 'user-123',
         caseId: 'case-456',
       });
-
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.userId).toBe('user-123');
       expect(snapshot.context.caseId).toBe('case-456');
       expect(snapshot.context.sessionId).toBeTruthy();
     });
-
     it('should generate unique sessionId for each session', () => {
       const actor2 = createActor(recommendationRoutingMachine);
       actor2.start();
-
       actor.send({
         type: 'START_SESSION',
         userId: 'user-1',
         caseId: 'case-1',
       });
-
       actor2.send({
         type: 'START_SESSION',
         userId: 'user-2',
         caseId: 'case-2',
       });
-
       const snapshot1 = actor.getSnapshot();
       const snapshot2 = actor2.getSnapshot();
-
       expect(snapshot1.context.sessionId).not.toBe(snapshot2.context.sessionId);
-
       actor2.stop();
     });
   });
-
   describe('Document Analysis', () => {
     beforeEach(() => {
       actor.send({
@@ -94,31 +77,26 @@ describe('Recommendation Routing Machine', () => {
         caseId: 'case-456',
       });
     });
-
     it('should accept ANALYZE_DOCUMENT event', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
         documentType: 'evidence',
       });
-
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.currentDocument).toBeDefined();
       expect(snapshot.context.currentDocument?.id).toBe('doc-789');
       expect(snapshot.context.currentDocument?.type).toBe('evidence');
     });
-
     it('should set document confidence to 0 initially', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
         documentType: 'brief',
       });
-
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.currentDocument?.confidence).toBe(0);
     });
-
     it('should handle different document types', () => {
       const documentTypes: Array<'evidence' | 'contract' | 'brief' | 'deposition'> = [
         'evidence',
@@ -126,20 +104,17 @@ describe('Recommendation Routing Machine', () => {
         'brief',
         'deposition',
       ];
-
       for (const docType of documentTypes) {
         actor.send({
           type: 'ANALYZE_DOCUMENT',
           documentId: `doc-${docType}`,
           documentType: docType,
         });
-
         const snapshot = actor.getSnapshot();
         expect(snapshot.context.currentDocument?.type).toBe(docType);
       }
     });
   });
-
   describe('Error Handling', () => {
     beforeEach(() => {
       actor.send({
@@ -148,33 +123,27 @@ describe('Recommendation Routing Machine', () => {
         caseId: 'case-456',
       });
     });
-
     it('should transition to error state when error occurs', () => {
       // Note: In a real scenario, this would be triggered by a failed invoke
       // For now, we'll test the RESET transition from error state
       actor.send({ type: 'RESET' });
-
       // After RESET, should be back in idle
       const snapshot = actor.getSnapshot();
       expect(snapshot.value).toBe('idle');
     });
-
     it('should clear session data on RESET', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
         documentType: 'evidence',
       });
-
       actor.send({ type: 'RESET' });
-
       const snapshot = actor.getSnapshot();
       expect(snapshot.context.userId).toBe('');
       expect(snapshot.context.caseId).toBeUndefined();
       expect(snapshot.context.currentDocument).toBeUndefined();
     });
   });
-
   describe('Recommendations State', () => {
     it('should have empty recommendations initially', () => {
       const snapshot = actor.getSnapshot();
@@ -183,28 +152,23 @@ describe('Recommendation Routing Machine', () => {
       expect(snapshot.context.recommendations.actions).toHaveLength(0);
       expect(snapshot.context.recommendations.risks).toHaveLength(0);
     });
-
     it('should maintain recommendation structure', () => {
       const snapshot = actor.getSnapshot();
       const { recommendations } = snapshot.context;
-
       expect(recommendations).toHaveProperty('legal');
       expect(recommendations).toHaveProperty('documents');
       expect(recommendations).toHaveProperty('actions');
       expect(recommendations).toHaveProperty('risks');
-
       expect(Array.isArray(recommendations.legal)).toBe(true);
       expect(Array.isArray(recommendations.documents)).toBe(true);
       expect(Array.isArray(recommendations.actions)).toBe(true);
       expect(Array.isArray(recommendations.risks)).toBe(true);
     });
   });
-
   describe('RabbitMQ Routing Context', () => {
     it('should have correct RabbitMQ routing queues', () => {
       const snapshot = actor.getSnapshot();
       const { rabbitMQRouting } = snapshot.context;
-
       expect(rabbitMQRouting.exchange).toBe('legal-ai-exchange');
       expect(rabbitMQRouting.queues.highPriority).toBe('legal.priority.high');
       expect(rabbitMQRouting.queues.standardPriority).toBe('legal.priority.standard');
@@ -213,36 +177,30 @@ describe('Recommendation Routing Machine', () => {
       expect(rabbitMQRouting.queues.recommendations).toBe('legal.recommendations');
     });
   });
-
   describe('AI Models Context', () => {
     it('should have default AI models configured', () => {
       const snapshot = actor.getSnapshot();
       const { aiModels } = snapshot.context;
-
       expect(aiModels.primary).toBe('gemma3:legal-latest');
       expect(aiModels.fallback).toContain('ollama:latest');
       expect(aiModels.fallback).toContain('openai:gpt-4');
       expect(aiModels.confidence).toBe(0);
     });
   });
-
   describe('Processing Metrics', () => {
     it('should initialize processing metrics', () => {
       const snapshot = actor.getSnapshot();
       const { processingMetrics } = snapshot.context;
-
       expect(processingMetrics.averageLatency).toBe(0);
       expect(processingMetrics.queueDepth).toBe(0);
       expect(processingMetrics.throughput).toBe(0);
       expect(processingMetrics.errorRate).toBe(0);
     });
   });
-
   describe('Cache Context', () => {
     it('should initialize cache with empty keys and 0 hit rate', () => {
       const snapshot = actor.getSnapshot();
       const { cache } = snapshot.context;
-
       expect(cache.redisKeys).toEqual([]);
       expect(cache.hitRate).toBe(0);
       expect(cache.lastUpdate).toBeInstanceOf(Date);

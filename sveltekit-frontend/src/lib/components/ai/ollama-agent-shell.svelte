@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
   import { cn } from "$lib/utils";
   import { useMachine } from "@xstate/svelte";
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
+  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
   import { Bot, Check, Copy, Send, Terminal, User, X } from "lucide-svelte";
   import { onDestroy, onMount } from "svelte";
   // Props with Svelte 5 runes and centralized types
@@ -177,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
       messages[messages.length - 1].content = `❌ Error: ${error}`;
       messages[messages.length - 1].status = "error";
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       scrollToBottom();
     }
   }
@@ -334,8 +334,7 @@ https://svelte.dev/e/js_parse_error -->
             {:else}
               <div class="p-2 bg-accent rounded-full shrink-0">
                 <Terminal class="h-4 w-4" />
-              </div>
-            {/if}
+              {/if}
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-xs nes-text is-disabled">

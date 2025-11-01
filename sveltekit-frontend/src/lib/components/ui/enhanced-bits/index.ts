@@ -1,22 +1,15 @@
+// Import Svelte components as defaults
 import Button from './Button.svelte';
 import Card from './Card.svelte';
-import CardHeader from './Card.svelte';
-import CardTitle from './Card.svelte';
-import CardContent from './Card.svelte';
+import Modal from './Modal.svelte';
+import Input from './Input.svelte';
 
-// Export defaults/named to match existing import patterns
-export default Button;
-export { Button, Card, CardHeader, CardTitle, CardContent };
+// Re-export as named exports for consistency
+export { Button, Card, Modal, Input };
+
+// Export other components
 export { default as Dialog } from '../dialog/Dialog.svelte';
 export { default as DialogCompound } from '../dialog/Dialog.svelte';
-
-// Form elements
-export { default as Input } from '../input/Input.svelte';
-export { Textarea } from '../textarea/index.js';
-
-// Utility components
-export { Badge } from '../badge/index.js';
-
-// Aliases for future migration (MeltUI → BitsUI)
-// These can point to stubs or current replacements
 export { default as Tabs } from '../tabs/Tabs.svelte';
+export { Textarea } from '../textarea/index.js';
+export { Badge } from '../badge/index.js';

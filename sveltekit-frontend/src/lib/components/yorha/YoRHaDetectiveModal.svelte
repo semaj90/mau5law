@@ -29,7 +29,6 @@
     }
   });
 </script>
-
 {#if showModal}
   <!-- Modal Backdrop -->
   <div
@@ -55,12 +54,10 @@
         {/if}
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .modal-backdrop {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -143,4 +140,3 @@ d;
     }
   }
 </style>
-

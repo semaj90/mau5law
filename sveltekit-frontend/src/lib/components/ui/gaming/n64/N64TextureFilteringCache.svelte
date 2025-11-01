@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     onTextureLoaded?: (entry: TextureCacheEntry) => void;
     onCacheHit?: (textureId: string) => void;
     onCacheMiss?: (textureId: string) => void;
-    onPerformanceUpdate?: (metrics: unknown) => void;
+    onPerformanceUpdate?: (metrics: any) => void;
   }
   let {
     textureId,
@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeTextureCache(): Promise<void> {
     try {
       isLoading = true;
-      hasError = false;
+      hasError = $state(false);
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
@@ -154,12 +154,12 @@ https://svelte.dev/e/js_parse_error -->
         startPerformanceMonitoring();
       }
       isInitialized = true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       hasError = true;
       errorMessage = error.message || 'Failed to initialize texture cache';
       console.error('Texture cache initialization error:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
       // Notify texture loaded
       onTextureLoaded?.(cacheEntry);
       console.log(`🎨 Texture: "${textureId}" cached with ${currentFilteringType} filtering in ${textureLoadTime.toFixed(2)}ms`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Failed to load and cache texture: ${error.message}`);
     }
   }
@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
         compressionRatio: 1.0,
         qualityScore: calculateQualityScore(renderingOptions)
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Failed to load texture: ${error.message}`);
     }
   }
@@ -363,7 +363,6 @@ if (preloadTextures) {
     }
   });
 </script>
-
 <!-- N64 Texture Filtering Cache Component -->
 <div class="n64-texture-cache-container {filteringQualityClass}" class:debug-mode={enableDebugMode}>
   <!-- Main Canvas for GPU-accelerated rendering -->
@@ -385,8 +384,7 @@ if (preloadTextures) {
           <div class="cache-hit-rate">{(cacheHitRate * 100).toFixed(1)}%</div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Performance Metrics Overlay -->
   {#if showPerformanceMetrics && isInitialized}
     <div class="performance-overlay">
@@ -415,8 +413,7 @@ if (preloadTextures) {
           <span class="metric-value">{performanceMetrics.memoryUsage.toFixed(1)}MB</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Loading State -->
   {#if isLoading}
     <div class="loading-overlay">
@@ -424,16 +421,14 @@ if (preloadTextures) {
         <div class="spinner-ring"></div>
         <div class="spinner-text">LOADING TEXTURE</div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Error State -->
   {#if hasError}
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
       <button class="retry-button" onclick={() => initializeTextureCache()}> RETRY </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Debug Information -->
   {#if enableDebugMode && cacheEntry}
     <div class="debug-panel">
@@ -448,13 +443,11 @@ if (preloadTextures) {
         <div><strong>Quality Score:</strong> {(cacheEntry.qualityScore * 100).toFixed(1)}%</div>
         <div><strong>Load Time:</strong> {textureLoadTime.toFixed(2)}ms</div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .n64-texture-cache-container {
-    position relative;
+    position: relative;
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
@@ -485,7 +478,7 @@ if (preloadTextures) {
   }
   /* Cache Status Overlay */
   .cache-status-overlay {
-    position absolute;
+    position: absolute;
     top: 8px;
     right: 8px;
     z-index: 10;
@@ -520,7 +513,7 @@ if (preloadTextures) {
   }
   /* Performance Overlay */
   .performance-overlay {
-    position absolute;
+    position: absolute;
     bottom: 8px;
     left: 8px;
     right: 8px;
@@ -567,7 +560,7 @@ if (preloadTextures) {
   }
   /* Loading Overlay */
   .loading-overlay {
-    position absolute;
+    position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
@@ -600,7 +593,7 @@ if (preloadTextures) {
   }
   /* Error Overlay */
   .error-overlay {
-    position absolute;
+    position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
@@ -638,7 +631,7 @@ if (preloadTextures) {
   }
   /* Debug Panel */
   .debug-panel {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 0;
     right: 0;
@@ -741,4 +734,3 @@ if (preloadTextures) {
     }
   }
 </style>
-

@@ -10,12 +10,12 @@
     Card,
     Input,
     Badge
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-  } from '$lib/components/ui/orchestrated';
+  } from '$lib/components/ui/orchestrated.svelte'';
   // Icons for Redis admin
   import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
@@ -68,7 +68,7 @@
   async function refreshData() {
     isLoading = true;
     await invalidateAll();
-    isLoading = false;
+    isLoading = $state(false);
   }
   // Key management
   async function viewKeyDetails(_key: string) {
@@ -83,7 +83,7 @@
       console.error('Failed to load key details:', error);
       keyDetails = null;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Format bytes to human readable
@@ -303,7 +303,7 @@
           />
           <!-- Key List -->
           <div class="grid gap-2 max-h-96 overflow-y-auto">
-            {#each filteredKeys as key}
+            {#each Array.isArray(filteredKeys) ? filteredKeys : [] as key}
               <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
                 <div class="flex-1">
                   <p class="font-mono text-sm">{key.key}</p>

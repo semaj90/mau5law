@@ -3,10 +3,10 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   interface Props {
-    children?: unknown;
-    fallback?: unknown;
+    children?: any;
+    fallback?: any;
     title?: string;
     showReportButton?: boolean;
     showRefreshButton?: boolean;
@@ -71,12 +71,11 @@
     }
   }
   function reset() {
-    hasError = false;
+    hasError = $state(false);
     errorDetails = null;
     errorStack = null;
   }
 </script>
-
 {#if hasError && !fallback}
   <div class="error-boundary-container">
     <div class="error-boundary-content">
@@ -116,9 +115,8 @@
 {:else if hasError && fallback}
   {@render fallback()}
 {:else}
-  {@render children?.()}
+  <slot />
 {/if}
-
 <style>
   .error-boundary-container {
     min-height: 60vh;
@@ -202,4 +200,3 @@
     }
   }
 </style>
-

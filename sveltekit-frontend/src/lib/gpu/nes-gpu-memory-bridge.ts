@@ -5,7 +5,6 @@ type LegalDocument = {
 	type: string;
 	metadata?: Record<string, unknown>;
 };
-
 // Minimal typed shim for nesGPUBridge used by ultra-json-parser.
 // Replace with the real GPU/FlatBuffer implementation when available.
 export const nesGPUBridge = {
@@ -15,12 +14,11 @@ export const nesGPUBridge = {
       const json = safeStringify(doc ?? {});
       const encoder = createTextEncoder(); // instance factory
       return encoder.encode(json);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('nesGPUBridge.createFlatBufferFromDocument: encode failed', err);
       return new Uint8Array();
     }
   },
-
   // accept Uint8Array | ArrayBuffer for wider compatibility
   parseFlatBufferToDocument(buffer: Uint8Array | ArrayBuffer): LegalDocument {
     // lightweight fallback: parse JSON bytes back to object
@@ -36,15 +34,14 @@ export const nesGPUBridge = {
         console.warn('nesGPUBridge.parseFlatBufferToDocument: parsed object missing required fields, returning empty document');
         return getEmptyLegalDocument();
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('nesGPUBridge.parseFlatBufferToDocument: parse failed', err);
       return getEmptyLegalDocument();
     }
   },
 };
-
 // Safe JSON stringify that handles circular refs and BigInt
-function safeStringify(obj: unknown): string {
+function safeStringify(obj: any): string {
   try {
     const seen = new WeakSet();
     return JSON.stringify(obj, (_key, value) => {
@@ -65,7 +62,6 @@ function safeStringify(obj: unknown): string {
     }
   }
 }
-
 // Replace constructor-returning helpers with instance factories
 function createTextEncoder(): { encode(s: string): Uint8Array } {
   if (typeof TextEncoder !== 'undefined') {
@@ -95,7 +91,6 @@ function createTextEncoder(): { encode(s: string): Uint8Array } {
     },
   };
 }
-
 function createTextDecoder(): { decode(buf: Uint8Array | ArrayBuffer): string } {
   if (typeof TextDecoder !== 'undefined') {
     return new TextDecoder();
@@ -127,15 +122,13 @@ function createTextDecoder(): { decode(buf: Uint8Array | ArrayBuffer): string } 
     },
   };
 }
-
 // Helper: minimal runtime validator for LegalDocument
-function isLegalDocumentShape(obj: unknown): obj is LegalDocument {
+function isLegalDocumentShape(obj: any): obj is LegalDocument {
   if (!obj || typeof obj !== 'object') return false;
   const asAny = obj as Record<string, unknown>;
   // require at least id (string) and type (string) — adapt as needed
   return typeof asAny['id'] === 'string' && typeof asAny['type'] === 'string';
 }
-
 function getEmptyLegalDocument(): LegalDocument {
   // minimal safe default; adjust fields to match real LegalDocument where needed
   return { id: '', type: 'evidence', metadata: {} } as LegalDocument;

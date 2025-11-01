@@ -75,7 +75,7 @@ export interface SystemIntegration {
 
 export class RevolutionaryAIOrchestrator {
   private systems: Partial<SystemIntegration> = {}
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private performanceBaseline: number = 0;
   private optimizationMultiplier = 1;
   private gemmaEmbeddingService = getGemmaEmbeddingService(); // Initialize embedding service
@@ -607,7 +607,7 @@ export class RevolutionaryAIOrchestrator {
         this.systems.memoryPalace.dispose();
       }
       this.systems = {}
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       console.log('✅ Revolutionary AI Architecture disposed');
     } catch (error) {
       console.error('❌ System disposal failed:', error);

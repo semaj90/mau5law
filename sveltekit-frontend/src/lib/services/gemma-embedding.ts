@@ -101,7 +101,7 @@ export class GemmaEmbeddingService {
         // data.models might be string[] or { name: string }[]
         if (Array.isArray(data?.models)) {
           // Helper to safely extract a model name from unknown entries
-          const extractModelName = (entry: unknown): string => {
+          const extractModelName = (entry: any): string => {
             if (typeof entry === 'string') return entry;
             if (entry && typeof entry === 'object') {
               const obj = entry as Record<string, unknown>;
@@ -110,10 +110,10 @@ export class GemmaEmbeddingService {
             return String(entry);
           };
 
-          this.availableModels = data.models.map((m: unknown) => extractModelName(m));
+          this.availableModels = data.models.map((m: any) => extractModelName(m));
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Could not refresh available models:', error instanceof Error ? error.message : String(error));
     } finally {
       clearTimeout(timeoutId);
@@ -152,7 +152,7 @@ export class GemmaEmbeddingService {
       if (selectedModel !== this.fallbackModel && this.availableModels.includes(this.fallbackModel)) {
         modelsToTry.push(this.fallbackModel);
       }
-      let lastError: unknown = null;
+      let lastError: any = null;
       // Try models in order of preference
       for (const model of modelsToTry) {
         const controller = new AbortController();
@@ -202,7 +202,7 @@ export class GemmaEmbeddingService {
             model,
             processingTime,
           };
-        } catch (err: unknown) {
+        } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn(`❌ Model ${model} failed:`, msg);
           lastError = err;
@@ -222,7 +222,7 @@ export class GemmaEmbeddingService {
         model: selectedModel,
         processingTime: Date.now() - startTime,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
@@ -291,7 +291,7 @@ export class GemmaEmbeddingService {
           totalProcessingTime,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         success: false,
         error: `Batch processing failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -407,7 +407,7 @@ export class GemmaEmbeddingService {
             ? `No embedding models available. Install models: ${this.modelHierarchy.join(', ')}`
             : undefined,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
@@ -449,7 +449,7 @@ export class GemmaEmbeddingService {
           capabilities: ['text-embedding', 'semantic-search', 'document-analysis'],
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,

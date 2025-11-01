@@ -36,7 +36,7 @@ type UserShape = { id?: string | number };
 type LocalsShape = { user?: UserShape; session?: { user?: UserShape } };
 
 // Helper to safely get user id from locals
-function getUserIdFromLocals(locals: unknown): string | null {
+function getUserIdFromLocals(locals: any): string | null {
   // locals shape varies; check common locations
   const l = locals as LocalsShape;
   if (l?.user?.id) return String(l.user.id);
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Citation GET error:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -155,7 +155,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         action: 'citation_updated',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Citation PUT error:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -214,7 +214,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         action: 'citation_deleted',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Citation DELETE error:', err);
     if (err instanceof z.ZodError) {
       return error(

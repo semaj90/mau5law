@@ -20,18 +20,18 @@ type ExecutionMetrics = {
   totalLatency?: number;
   cacheHitRate?: number;
   gpuAccelerated?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type OrchestratorResult = {
   success?: boolean;
-  response?: unknown;
+  response?: any;
   orchestratorUsed?: OrchestratorName;
   modelUsed?: string;
   confidence?: number;
   executionMetrics?: ExecutionMetrics;
   error?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // GET - Quick health check
@@ -178,8 +178,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const apiLatency = Date.now() - startTime;
 
     // Safe helper getters for unknown objects
-    const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
-    const getString = (obj: unknown, ...keys: string[]): string | undefined => {
+    const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+    const getString = (obj: any, ...keys: string[]): string | undefined => {
       if (!isRecord(obj)) return undefined;
       for (const k of keys) {
         const v = obj[k];
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       return undefined;
     };
-    const getNumber = (obj: unknown, ...keys: string[]): number | undefined => {
+    const getNumber = (obj: any, ...keys: string[]): number | undefined => {
       if (!isRecord(obj)) return undefined;
       for (const k of keys) {
         const v = obj[k];
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       return undefined;
     };
-    const getBoolean = (obj: unknown, ...keys: string[]): boolean | undefined => {
+    const getBoolean = (obj: any, ...keys: string[]): boolean | undefined => {
       if (!isRecord(obj)) return undefined;
       for (const k of keys) {
         const v = obj[k];
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       return undefined;
     };
-    const getRecord = (obj: unknown, ...keys: string[]): Record<string, unknown> | undefined => {
+    const getRecord = (obj: any, ...keys: string[]): Record<string, unknown> | undefined => {
       if (!isRecord(obj)) return undefined;
       for (const k of keys) {
         const v = obj[k];
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       return undefined;
     };
-    const getFirst = (obj: unknown, ...keys: string[]): unknown => {
+    const getFirst = (obj: any, ...keys: string[]): any => {
       if (!isRecord(obj)) return undefined;
       for (const k of keys) {
         if (k in obj) return obj[k];

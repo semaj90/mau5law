@@ -5,9 +5,7 @@
   import type { User } from '$lib/types/user';
   import type { Case } from '$lib/types/index';
   import { createEventDispatcher } from 'svelte';
-
   const dispatch = createEventDispatcher();
-
   let {
     case_ = undefined,
     user = undefined
@@ -15,7 +13,6 @@
     case_?: Case | undefined;
     user?: User | undefined;
   } = $props();
-
   // New: explicit FormData interface for the form to avoid depending on Case shape
   interface FormData {
     title: string;
@@ -35,7 +32,6 @@
     tags: string[];
     metadata: Record<string, any>;
   }
-
   // Form data matching the database schema
   let formData = $state<FormData>({
     title: case_?.title ?? "",
@@ -58,10 +54,8 @@
     tags: case_?.tags ?? [],
     metadata: case_?.metadata ?? {}
   });
-
   let loading = $state(false);
   let errors = $state<Record<string, string>>({});
-
   // Form validation
   function validateForm() {
     errors = {};
@@ -79,7 +73,6 @@
     }
     return Object.keys(errors).length === 0;
   }
-
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
@@ -91,7 +84,6 @@
       });
       return;
     }
-
     loading = true;
     try {
       // Prepare data for API - match schema exactly
@@ -117,12 +109,10 @@
           lastModified: new Date().toISOString()
         }
       };
-
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
       }
-
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
       const method = case_ ? "PUT" : "POST";
       const response = await fetch(url, {
@@ -132,21 +122,17 @@
         },
         body: JSON.stringify(apiData)
       });
-
       // explicitly type parsed response to avoid implicit any
       type SavedCaseResponse = Case & { error?: string };
       const savedCase = (await response.json()) as SavedCaseResponse;
-
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
       }
-
       (notifications as any).add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
         message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
-
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (err) {
       console.error("Error saving caseItem:", err);
@@ -156,10 +142,9 @@
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   // Handle tag management
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement | null;
@@ -172,7 +157,6 @@
   function removeTag(tag: string) {
     formData.tags = formData.tags.filter((t) => t !== tag);
   }
-
   // Handle team assignment
   function addTeamMember() {
     const memberInput = document.getElementById("new-member") as HTMLInputElement | null;
@@ -186,7 +170,6 @@
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
   }
 </script>
-
 <form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
@@ -350,14 +333,13 @@
         </div>
         {#if formData.assignedTeam.length > 0}
           <div class="container mx-auto px-4">
-            {#each formData.assignedTeam as member}
+            {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
               <span class="container mx-auto px-4 tag">
                 {member}
                 <button type="button" onclick={() => removeTeamMember(member)}>×</button>
               </span>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Tags -->
       <div class="container mx-auto px-4">
@@ -373,18 +355,16 @@
         </div>
         {#if formData.tags.length > 0}
           <div class="container mx-auto px-4 tags-list">
-            {#each formData.tags as tag}
+            {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
               <span class="container mx-auto px-4 tag">
                 {tag}
                 <button type="button" onclick={() => removeTag(tag)}>×</button>
               </span>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
     </section>
   </div>
-
   <!-- Form Actions -->
   <div class="form-actions container mx-auto px-4">
     <button type="button" onclick={() => dispatch('cancel')}>Cancel</button>
@@ -397,7 +377,6 @@
     </button>
   </div>
 </form>
-
 <style>
   /* @unocss-include */
   .enhanced-case-form {

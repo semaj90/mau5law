@@ -16,12 +16,12 @@ const _globals = globalThis as unknown as {
   describe?: (name: string, fn: () => void) => void;
   it?: (name: string, fn: () => void) => void;
   test?: (name: string, fn: () => void) => void;
-  expect?: (value: unknown) => {
-    toBe?: (expected: unknown) => boolean;
-    toEqual?: (expected: unknown) => boolean;
+  expect?: (value: any) => {
+    toBe?: (expected: any) => boolean;
+    toEqual?: (expected: any) => boolean;
     toBeTruthy?: () => boolean;
     toBeFalsy?: () => boolean;
-    toContain?: (expected: unknown) => boolean;
+    toContain?: (expected: any) => boolean;
     toHaveLength?: (expected: number) => boolean;
     toThrow?: () => boolean;
   };
@@ -36,12 +36,12 @@ export const testingFramework = {
   // Provide a simple expect shim that accepts a value parameter
   expect:
     _globals.expect ||
-    ((value: unknown) => ({
-      toBe: (expected: unknown) => value === expected,
-      toEqual: (expected: unknown) => JSON.stringify(value) === JSON.stringify(expected),
+    ((value: any) => ({
+      toBe: (expected: any) => value === expected,
+      toEqual: (expected: any) => JSON.stringify(value) === JSON.stringify(expected),
       toBeTruthy: () => !!value,
       toBeFalsy: () => !value,
-      toContain: (expected: unknown) => {
+      toContain: (expected: any) => {
         try {
           if (Array.isArray(value)) return (value as unknown[]).includes(expected);
           if (typeof value === 'string') return (value as string).includes(String(expected));
@@ -71,7 +71,7 @@ export const testingFramework = {
 export const cacheLayerMethods = {
   memory: {
     get: async (_key: string) => null as unknown,
-    set: async (_key: string, _value: unknown) => true,
+    set: async (_key: string, _value: any) => true,
     delete: async (_key: string) => true,
     clear: async () => true,
     size: () => 0,
@@ -82,7 +82,7 @@ export const cacheLayerMethods = {
   },
   redis: {
     get: async (_key: string) => null as unknown,
-    set: async (_key: string, _value: unknown) => true,
+    set: async (_key: string, _value: any) => true,
     delete: async (_key: string) => true,
     exists: async (_key: string) => false,
     expire: async (_key: string, _seconds: number) => true,
@@ -91,9 +91,9 @@ export const cacheLayerMethods = {
     ttl: 7200,
   },
   postgres: {
-    query: async (_sql: string, _params?: unknown[]) => ({ rows: [] as unknown[], rowCount: 0 }),
-    execute: async (_sql: string, _params?: unknown[]) => true,
-    transaction: async (callback: (tx: unknown) => Promise<unknown>) => callback({} as unknown),
+    query: async (_sql: string, _params?: any[]) => ({ rows: [] as unknown[], rowCount: 0 }),
+    execute: async (_sql: string, _params?: any[]) => true,
+    transaction: async (callback: (tx: any) => Promise<unknown>) => callback({} as unknown),
     close: async () => true,
   },
   vector: {
@@ -105,7 +105,7 @@ export const cacheLayerMethods = {
   },
   filesystem: {
     read: async (_path: string) => null as unknown,
-    write: async (_path: string, _content: unknown) => true,
+    write: async (_path: string, _content: any) => true,
     delete: async (_path: string) => true,
     exists: async (_path: string) => false,
     list: async (_path: string) => [] as string[],
@@ -113,7 +113,7 @@ export const cacheLayerMethods = {
   },
   cdn: {
     get: async (_url: string) => null as unknown,
-    put: async (_url: string, _content: unknown) => true,
+    put: async (_url: string, _content: any) => true,
     delete: async (_url: string) => true,
     purge: async (_pattern: string) => true,
   },
@@ -133,7 +133,7 @@ export const cacheLayerMethods = {
     indexedDB: {
       open: async (_name: string) => null as unknown,
       get: async (_key: string) => null as unknown,
-      set: async (_key: string, _value: unknown) => true,
+      set: async (_key: string, _value: any) => true,
       delete: async (_key: string) => true,
     },
   },
@@ -141,14 +141,14 @@ export const cacheLayerMethods = {
 // ===== DATABASE ENTITY PROPERTIES BARREL STORE =====
 export const databaseEntityProperties = {
   // Common database entity properties that are missing in type definitions
-  withProperty: (obj: Record<string, unknown> | null, property: string, defaultValue: unknown = null) => {
+  withProperty: (obj: Record<string, unknown> | null, property: string, defaultValue: any = null) => {
     if (obj && typeof obj === 'object' && !(property in obj)) {
       (obj as Record<string, unknown>)[property] = defaultValue;
     }
     return obj;
   },
   // Ensure common properties exist
-  ensureProperties: (obj: Record<string, unknown> | null, properties: { [key: string]: unknown }) => {
+  ensureProperties: (obj: Record<string, unknown> | null, properties: { [key: string]: any }) => {
     if (!obj || typeof obj !== 'object') return obj;
     for (const [prop, defaultValue] of Object.entries(properties)) {
       if (!(prop in obj)) {
@@ -191,7 +191,7 @@ export const databaseEntityProperties = {
 // ===== WEBGPU EXTENDED METHODS BARREL STORE =====
 export const webGPUExtendedMethods = {
   // Enhanced GPUDevice with missing methods
-  enhanceGPUDevice: (device: unknown) => {
+  enhanceGPUDevice: (device: any) => {
     if (!device || typeof device !== 'object') return device;
     const dev = device as DeviceLike;
     // Add missing destroy method
@@ -217,7 +217,7 @@ export const webGPUExtendedMethods = {
           listeners.delete(listener);
         }
       };
-      dev.dispatchEvent = (event: { type: string; [k: string]: unknown }) => {
+      dev.dispatchEvent = (event: { type: string; [k: string]: any }) => {
         const listeners = eventListeners.get(event.type);
         if (listeners) {
           for (const listener of Array.from(listeners)) {
@@ -239,7 +239,7 @@ export const webGPUExtendedMethods = {
     timestamp: Date.now(),
   }),
   // GPU uncaptured error event
-  createGPUUncapturedErrorEvent: (error: unknown) => ({
+  createGPUUncapturedErrorEvent: (error: any) => ({
     type: 'uncapturederror',
     error,
     timestamp: Date.now(),
@@ -248,12 +248,12 @@ export const webGPUExtendedMethods = {
 // ===== LOKI.JS COLLECTION METHODS BARREL STORE =====
 export const lokiCollectionMethods = {
   // Enhanced collection with missing methods
-  enhanceCollection: (collection: unknown) => {
+  enhanceCollection: (collection: any) => {
     if (!collection || typeof collection !== 'object') return collection;
     const coll = collection as CollectionLike;
     // Add missing remove method
     if (!coll.remove) {
-      coll.remove = (doc: unknown) => {
+      coll.remove = (doc: any) => {
         if (coll.data && Array.isArray(coll.data)) {
           const index = coll.data.indexOf(doc);
           if (index > -1) {
@@ -266,7 +266,7 @@ export const lokiCollectionMethods = {
     }
     // Add missing removeWhere method
     if (!coll.removeWhere) {
-      coll.removeWhere = (query: unknown) => {
+      coll.removeWhere = (query: any) => {
         if (coll.data && Array.isArray(coll.data) && typeof coll.find === 'function') {
           const toRemove = coll.find ? coll.find(query) : [];
           (toRemove as unknown[]).forEach(doc => coll.remove && coll.remove(doc));
@@ -278,7 +278,7 @@ export const lokiCollectionMethods = {
     return coll;
   },
   // Enhanced Loki database with missing methods
-  enhanceLoki: (loki: unknown) => {
+  enhanceLoki: (loki: any) => {
     if (!loki || typeof loki !== 'object') return loki;
     const l = loki as LokiLike;
     // Add missing removeCollection method
@@ -298,11 +298,11 @@ export const lokiCollectionMethods = {
     if (!l.LokiMemoryAdapter) {
       l.LokiMemoryAdapter = class LokiMemoryAdapter {
         constructor() {}
-        loadDatabase(_dbname: string, callback: (data: unknown | null) => void) {
+        loadDatabase(_dbname: string, callback: (data: any | null) => void) {
           // pass `null` to signal: "no data"
           callback(null);
         }
-        saveDatabase(_dbname: string, _dbstring: string, callback: (err?: unknown) => void) {
+        saveDatabase(_dbname: string, _dbstring: string, callback: (err?: any) => void) {
           // success -> invoke callback without error
           callback(undefined);
         }
@@ -389,9 +389,9 @@ export const configurationProperties = {
 // ===== UTILITY FUNCTIONS BARREL STORE =====
 export const utilityFunctions = {
   // Safe property access
-  safeAccess: (obj: unknown, path: string, defaultValue: unknown = null) => {
+  safeAccess: (obj: any, path: string, defaultValue: any = null) => {
     const keys = path.split('.');
-    let current: unknown = obj;
+    let current: any = obj;
     for (const key of keys) {
       if (current && typeof current === 'object' && key in (current as Record<string, unknown>)) {
         current = (current as Record<string, unknown>)[key];
@@ -402,7 +402,7 @@ export const utilityFunctions = {
     return current;
   },
   // Type assertion with fallback
-  assertType: <T>(_value: unknown, fallback: T): T => {
+  assertType: <T>(_value: any, fallback: T): T => {
     return _value !== null && _value !== undefined ? (_value as unknown as T) : fallback;
   },
   // Promise with timeout
@@ -413,9 +413,9 @@ export const utilityFunctions = {
     ]);
   },
   // Debounce function (use spread operator; typed timeout handle)
-  debounce: (func: (...args: unknown[]) => void, wait: number) => {
+  debounce: (func: (...args: any[]) => void, wait: number) => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
-    return (...args: unknown[]) => {
+    return (...args: any[]) => {
       if (timeout !== null) clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };

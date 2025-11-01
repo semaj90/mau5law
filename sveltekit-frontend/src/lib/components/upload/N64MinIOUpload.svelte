@@ -1,7 +1,6 @@
 <script lang="ts">
   import UploadManager from './upload-core';
   import { onMount } from 'svelte';
-
   let {
     multiple = false,
     accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff',
@@ -13,10 +12,8 @@
     maxConcurrency?: number;
     maxRetries?: number;
   } = $props();
-
   let fileInput: HTMLInputElement | null = null;
   const manager = new UploadManager({ maxConcurrency, maxRetries });
-
   function handleFileSelect(e: Event) {
     const input = e.currentTarget as HTMLInputElement | null;
     if (!input?.files?.length) return;
@@ -24,22 +21,18 @@
     manager.addFiles(files);
     manager.start();
   }
-
   // Expose cancel helper
   function cancelAll() { manager.cancelAll(); }
-
   onMount(() => {
     // no-op: placeholder for future session restore
   });
 </script>
-
 <div class="n64-upload">
   <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" onchange={handleFileSelect} />
   <button onclick={() => fileInput?.click()} class="n64-select">Select files</button>
   <button onclick={cancelAll} class="n64-cancel ml-2">Cancel all</button>
-
   <div class="files mt-3">
-    {#each manager.fileStates as s}
+    {#each Array.isArray(manager.fileStates) ? manager.fileStates : [] as s}
       <div class="file-row">
         <div class="file-name">{s.file.name}</div>
         <div class="file-status">{s.status}</div>
@@ -48,7 +41,6 @@
     {/each}
   </div>
 </div>
-
 <style>
   .n64-upload { padding: 8px; }
   .n64-select, .n64-cancel { padding: 6px 10px; border-radius: 6px; }
@@ -56,7 +48,6 @@
   .file-row { display:flex; gap:12px; align-items:center; padding:6px 0; }
   .file-name { flex:1, }
 </style>
-
           dismissible: false,
           actions: [{,
             label: 'Cancel',
@@ -297,7 +288,7 @@ restoreSession();
       if (res.ok) {
         const data = await res.json();
         minioHealthy = !!data?.ok;
-      } else minioHealthy = false;
+      } else minioHealthy = $state(false);
     } catch { minioHealthy = false, }
     })();
   });
@@ -328,8 +319,7 @@ restoreSession();
         ragIntegration={enableGPUProcessing}
         yorhaMode={retro}
       />
-    </div>
-  {/if}
+    {/if}
   <!-- N64-style drop zone -->
   <div
     class="n64-drop-zone"
@@ -462,8 +452,7 @@ restoreSession();
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- N64 Upload Progress -->
   {#if uploadStatus !== 'idle'}
@@ -494,8 +483,7 @@ restoreSession();
           ❌ {errorMessage || 'UPLOAD FAILED'}
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- N64 Performance Metrics -->
   {#if uploading || performanceMetrics.completedFiles > 0}
     <div class="n64-performance-metrics" class:theme-{evolutionStage}>
@@ -516,22 +504,18 @@ restoreSession();
           <div class="n64-metric-item">
             <span class="n64-metric-label">AVG TIME:</span>
             <span class="n64-metric-value">{Math.round(performanceMetrics.averageUploadTime)}MS</span>
-          </div>
-        {/if}
+          {/if}
         {#if performanceMetrics.gpuTasksSubmitted > 0}
           <div class="n64-metric-item">
             <span class="n64-metric-label">GPU TASKS:</span>
             <span class="n64-metric-value">{performanceMetrics.gpuTasksSubmitted}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
       {#if enableGPUProcessing}
         <div class="n64-gpu-status">
           <span class="n64-gpu-indicator">🚀 GPU PROCESSING ENABLED [{evolutionStage.toUpperCase()}]</span>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- N64 Upload Actions -->
   <div class="n64-upload-actions">
     <button
@@ -580,8 +564,7 @@ restoreSession();
     <div class="n64-error-alert" role="alert">
       <AlertCircle class="w-4 h-4" />
       ⚠️ MINIO HEALTH CHECK FAILED – UPLOADS MAY NOT PERSIST
-    </div>
-  {/if}
+    {/if}
   <div class="sr-only" aria-live="polite">{liveMessage}</div>
 </div>
 <style>
@@ -590,7 +573,7 @@ restoreSession();
     max-width: 700px;
     margin: 0 auto;
     font-family: 'Courier New', monospace;
-    position relative;
+    position: relative;
   }
   .retro {
     image-rendering: pixelated;
@@ -598,7 +581,7 @@ restoreSession();
     image-rendering: crisp-edge;
   }
   .evolution-overlay {
-    position fixed;
+    position: fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -625,14 +608,14 @@ restoreSession();
     display: flex;
     align-items: center;
     justify-content: center;
-    position relative;
+    position: relative;
     box-shadow:
       inset 0 0 20px rgba(255, 215, 0, 0.1),
       0 0 20px rgba(255, 215, 0, 0.3);
   }
   .n64-drop-zone::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -732,14 +715,14 @@ restoreSession();
     border: 2px solid #FFD700;
     text-align: left;
     transition: all 0.3s ease;
-    position relative;
+    position: relative;
     box-shadow:
       inset 0 0 10px rgba(255, 215, 0, 0.1),
       0 0 10px rgba(0, 0, 0, 0.5);
   }
   .n64-file-item::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 4px;
     left: 4px;
     right: 4px;
@@ -989,7 +972,7 @@ restoreSession();
       0 0 10px rgba(255, 48, 48, 0.3);
   }
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,

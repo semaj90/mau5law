@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       { error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)' },
       { status: 502 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize unknown error into a safe string message without using `any`
     let message = 'Tensor error';
     if (error instanceof Error) {

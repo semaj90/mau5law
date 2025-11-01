@@ -11,16 +11,16 @@ export interface MatrixUINode {
   metadata?: {
     priority?: string;
     confidence?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Type definitions
 export interface LegalFormContext {
   evidenceFiles: File[];
   evidenceType?: string;
   confidence: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface Context7Phase8Query {
   component: string;
@@ -117,7 +117,7 @@ export class Context7Phase8Integrator {
       recommendations.push(...this.mergeRecommendations(stackAnalysis, ragInsights, workflowRecs, performanceRecs));
       // 6. Apply AI reranking based on current context
       return this.rerankRecommendations(recommendations, query);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 Phase 8 integration error:', msg);
       return this.getFallbackRecommendations(query);
@@ -364,7 +364,7 @@ const adaptiveLOD = {
         .sort((a, b) => b.aiConfidence - a.aiConfidence);
 
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Reranking failed, using original order:', msg);
       // Fallback: return recommendations sorted by original aiConfidence

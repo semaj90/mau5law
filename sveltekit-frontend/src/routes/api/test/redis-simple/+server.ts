@@ -22,14 +22,14 @@ export const GET: RequestHandler = async () => {
     // Get value using cache method
     const getValue = await redisService.getCache(testKey);
     // Delete value using cache method (if available) and capture result
-    let deleteResult: unknown = null;
+    let deleteResult: any = null;
     try {
       if (typeof redisService.deleteCache === 'function') {
         deleteResult = await redisService.deleteCache(testKey);
       } else {
         deleteResult = null;
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       const msg = e instanceof Error ? e.message : String(e);
       console.log('Delete method error:', msg);
       deleteResult = { error: msg };
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     const errStack = error instanceof Error ? error.stack : undefined;
     return json(

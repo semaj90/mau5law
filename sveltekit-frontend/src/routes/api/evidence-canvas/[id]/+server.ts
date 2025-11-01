@@ -21,17 +21,17 @@ import { eq } from 'drizzle-orm';
 type CanvasDBRow = {
   id: string;
   name?: string | null;
-  canvasData?: unknown;
+  canvasData?: any;
   version?: number;
   isDefault?: boolean;
   updatedAt?: string | null;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type AnnotationRow = {
   id?: string;
   evidenceId?: string;
-  fabricData?: unknown;
+  fabricData?: any;
   annotationType?: string;
   coordinates?: Record<string, unknown>;
   boundingBox?: Record<string, unknown>;
@@ -43,7 +43,7 @@ type AnnotationRow = {
   createdBy?: string | null;
   createdAt?: string;
   updatedAt?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type IncomingAnnotation = Partial<AnnotationRow>;
@@ -51,16 +51,16 @@ type IncomingAnnotation = Partial<AnnotationRow>;
 type CanvasPayload = {
   id: string;
   name?: string | null;
-  canvasData?: unknown;
+  canvasData?: any;
   annotations: AnnotationRow[];
   metadata: {
     version: number;
     isDefault: boolean;
     annotationCount: number;
-    [k: string]: unknown;
+    [k: string]: any;
   } & Record<string, unknown>;
   updatedAt?: string | null;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // Add a small alias to simplify annotations/assignments
@@ -176,7 +176,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 
     // rename incoming "metadata" to avoid shadowing the local metadata variable
     const payload = (await request.json()) as {
-      canvas_json?: unknown;
+      canvas_json?: any;
       metadata?: Record<string, unknown>;
       name?: string | null;
       annotations?: IncomingAnnotation[];

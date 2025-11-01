@@ -23,7 +23,7 @@ export interface EmbeddingMetadata {
   attempt?: number;
   timestamp?: string;
   originalMetadata?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface BatchEmbeddingRequest {
   texts: string[];
@@ -71,7 +71,7 @@ export interface VectorDocument {
     type?: string;
     source?: string;
     createdAt?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface SimilaritySearchOptions {

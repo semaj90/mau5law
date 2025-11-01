@@ -29,7 +29,7 @@
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function handleUpload() {
@@ -41,11 +41,10 @@
     } catch (error) {
       console.error('Upload failed:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 </script>
-
 <div class="nes-container is-rounded p-4 {className}" {...restProps}>
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-xl font-bold">Enhanced RAG Studio</h2>
@@ -103,14 +102,12 @@
                   {#if result.score}
                     <div class="text-xs text-gray-500">
                       Relevance: {Math.round((result.score || 0) * 100)}%
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if activeTab === 'upload'}
     <div class="space-y-4">
@@ -132,8 +129,7 @@
               ({Math.round(uploadFile.size / 1024)}KB)
             </span>
           </div>
-        </div>
-      {/if}
+        {/if}
       <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
         {#if isLoading}
           <RefreshCw class="w-4 h-4 animate-spin" />
@@ -154,10 +150,8 @@
       {#if children}
         {@render children()}
       {/if}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;

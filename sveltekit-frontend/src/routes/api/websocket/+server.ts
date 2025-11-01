@@ -10,7 +10,7 @@ type RawWebSocket = {
 // Enhanced WebSocket message types
 export interface WebSocketMessage {
   type: 'evidence_processing' | 'ai_result' | 'vector_match' | 'graph_update' | 'system_health' | 'cache_update';
-  data: unknown;
+  data: any;
   timestamp: Date;
   clientId?: string;
   priority?: number;
@@ -69,7 +69,7 @@ class EnhancedWebSocketManager {
       try {
         client.ws.send(JSON.stringify(message));
         client.lastSeen = new Date();
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Failed to send message to client ${clientId}:`, error);
         this.removeClient(clientId);
       }
@@ -87,7 +87,7 @@ class EnhancedWebSocketManager {
           client.lastSeen = new Date();
           successCount++;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Failed to broadcast to client ${client.id}:`, error);
         this.removeClient(client.id);
         failureCount++;
@@ -116,7 +116,7 @@ class EnhancedWebSocketManager {
     }
   }
   // Send evidence processing updates
-  broadcastEvidenceProcessing(evidenceId: string, stage: string, result: unknown) {
+  broadcastEvidenceProcessing(evidenceId: string, stage: string, result: any) {
     this.broadcast(
       {
         type: 'evidence_processing',
@@ -132,7 +132,7 @@ class EnhancedWebSocketManager {
     );
   }
   // Send AI analysis results
-  broadcastAIResult(evidenceId: string, resultType: string, result: unknown) {
+  broadcastAIResult(evidenceId: string, resultType: string, result: any) {
     this.broadcast(
       {
         type: 'ai_result',
@@ -148,7 +148,7 @@ class EnhancedWebSocketManager {
     );
   }
   // Send vector similarity matches
-  broadcastVectorMatches(evidenceId: string, matches: unknown[]) {
+  broadcastVectorMatches(evidenceId: string, matches: any[]) {
     this.broadcast(
       {
         type: 'vector_match',
@@ -167,7 +167,7 @@ class EnhancedWebSocketManager {
     );
   }
   // Send graph relationship updates
-  broadcastGraphUpdate(evidenceId: string, relationships: unknown[]) {
+  broadcastGraphUpdate(evidenceId: string, relationships: any[]) {
     this.broadcast(
       {
         type: 'graph_update',
@@ -187,7 +187,7 @@ class EnhancedWebSocketManager {
     );
   }
   // Send system health updates
-  broadcastSystemHealth(healthData: unknown) {
+  broadcastSystemHealth(healthData: any) {
     this.broadcast(
       {
         type: 'system_health',
@@ -202,7 +202,7 @@ class EnhancedWebSocketManager {
     );
   }
   // Send cache performance updates
-  broadcastCacheUpdate(cacheStats: unknown) {
+  broadcastCacheUpdate(cacheStats: any) {
     this.broadcast(
       {
         type: 'cache_update',
@@ -246,7 +246,7 @@ class EnhancedWebSocketManager {
     for (const client of this.clients.values()) {
       try {
         client.ws.close();
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('Error closing WebSocket:', error);
       }
     }
@@ -305,22 +305,22 @@ export const GET: RequestHandler = async ({ request, url }) => {
         },
       }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('WebSocket setup error:', error);
     return new Response('WebSocket setup failed', { status: 500 });
   }
 };
 // Helper functions for external use (prefixed with: '_' to satisfy SvelteKit)
 export const _webSocketHelpers = {
-  broadcastEvidenceProcessing: (evidenceId: string, stage: string, result: unknown) =>
+  broadcastEvidenceProcessing: (evidenceId: string, stage: string, result: any) =>
     wsManager.broadcastEvidenceProcessing(evidenceId, stage, result),
-  broadcastAIResult: (evidenceId: string, resultType: string, result: unknown) =>
+  broadcastAIResult: (evidenceId: string, resultType: string, result: any) =>
     wsManager.broadcastAIResult(evidenceId, resultType, result),
-  broadcastVectorMatches: (evidenceId: string, matches: unknown[]) =>
+  broadcastVectorMatches: (evidenceId: string, matches: any[]) =>
     wsManager.broadcastVectorMatches(evidenceId, matches),
-  broadcastGraphUpdate: (evidenceId: string, relationships: unknown[]) =>
+  broadcastGraphUpdate: (evidenceId: string, relationships: any[]) =>
     wsManager.broadcastGraphUpdate(evidenceId, relationships),
-  broadcastSystemHealth: (healthData: unknown) => wsManager.broadcastSystemHealth(healthData),
-  broadcastCacheUpdate: (cacheStats: unknown) => wsManager.broadcastCacheUpdate(cacheStats),
+  broadcastSystemHealth: (healthData: any) => wsManager.broadcastSystemHealth(healthData),
+  broadcastCacheUpdate: (cacheStats: any) => wsManager.broadcastCacheUpdate(cacheStats),
   getStats: () => wsManager.getStats(),
 };

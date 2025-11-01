@@ -299,7 +299,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
     console.log(`✅ Ollama-SIMD complete: ${totalTime}ms (Ollama: ${ollamaTime}ms, SIMD: ${simdProcessingTime}ms)`);
     return json(enhancedResponse);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Ollama-SIMD processing error:', error);
     return json(
@@ -414,7 +414,7 @@ async function processWithWebWorker(
 // Helper function: Direct SIMD processing
 async function processSIMDDirect(
   text: string,
-  _config: unknown, // Renamed config to _config and changed type to unknown
+  _config: any, // Renamed config to _config and changed type to unknown
   taskType: SIMDTaskType // Added taskType parameter
 ): Promise<SIMDProcessingResult> {
   // Add return type

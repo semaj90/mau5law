@@ -5,13 +5,13 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   let isGenerating = $state(false);
   let results = $state([]);
   let selectedFormat = $state('webgpu');
@@ -91,7 +91,7 @@ https://svelte.dev/e/expected_token -->
       console.error('SIMD glyph generation failed:', error);
       alert(`Generation failed: ${error.message}`);
     } finally {
-      isGenerating = false;
+      isGenerating = $state(false);
     }
   }
   function updateProcessingStats(result) {
@@ -249,8 +249,7 @@ results = []} variant="ghost">
             </div>
             <div class="text-sm text-gray-600">Avg Time</div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Results Grid -->
@@ -288,8 +287,7 @@ results = []} variant="ghost">
                     alt={`Enhanced ${(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).style} artifact`}
                     class="w-full h-32 object-cover rounded-lg border-2 border-blue-200"
                   />
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- SIMD Optimization Stats -->
             {#if (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data}
@@ -342,8 +340,7 @@ downloadShaderCode(result)}
                     Shader Gen: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.shader_generation_time_ms}ms
                   </span>
                 </div>
-              </div>
-            {/if}
+              {/if}
             <div class="flex justify-between items-center text-xs text-gray-500 border-t pt-2">
               <span>Generated: {new Date((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).timestamp).toLocaleTimeString()}</span>
               <span>Total: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).processing_time}ms</span>
@@ -365,8 +362,7 @@ generateSIMDGlyph(demoPrompts[0])}
         >
           🚀 Generate Demo Glyph
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* Add custom styles for better visual presentation */

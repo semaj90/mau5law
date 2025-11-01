@@ -22,7 +22,7 @@ interface CollectionStatus {
 // Mock service implementation
 class MockVectorSearchService {
   private config: VectorSearchConfig;
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
   private searchCache: Map<string, SearchResult[]> = new Map();
 
   constructor(config: VectorSearchConfig) {

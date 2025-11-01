@@ -2,8 +2,8 @@
   import { createEventDispatcher, getContext } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import Button from './Button.svelte';
-  import Dialog from './Dialog.svelte';
+  import { Button } from './Button.svelte';
+  import { Dialog } from './Dialog.svelte';
   interface DocumentCardProps {
     title: string;
     fileType: 'pdf' | 'doc' | 'txt' | 'docx' | 'rtf' | 'html' | 'contract' | 'brief' | 'evidence' | 'citation';
@@ -150,8 +150,7 @@
       ${confidentialityColors[confidentialityLevel]}
     `}>
       {confidentialityLevel.toUpperCase()}
-    </div>
-  {/if}
+    {/if}
   <!-- File Type Icon and Extension -->
   <div class="flex flex-col items-center justify-center h-1/2 p-4">
     <div class={`
@@ -198,7 +197,7 @@
   {#if tags.length > 0}
     <div class="px-3 pb-2">
       <div class="flex flex-wrap gap-1">
-        {#each tags.slice(0, 2) as tag}
+        {#each Array.isArray(tags.slice(0, 2)) ? tags.slice(0, 2) : [] as tag}
           <span class={`
             px-1.5 py-0.5 text-xs rounded
             ${theme === 'gaming'
@@ -221,8 +220,7 @@
           </span>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Hover Actions -->
   {#if isHovered}
     <div
@@ -285,8 +283,7 @@
           </button>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <!-- Square Modal Dialog -->
 {#if showModal}
@@ -361,8 +358,7 @@
               `}>
                 {description}
               </p>
-            </div>
-          {/if}
+            {/if}
           {#if fileSize || lastModified}
             <div class="grid grid-cols-2 gap-4">
               {#if fileSize}
@@ -379,8 +375,7 @@
                   `}>
                     {formatFileSize(fileSize)}
                   </p>
-                </div>
-              {/if}
+                {/if}
               {#if lastModified}
                 <div>
                   <label class={`
@@ -395,10 +390,8 @@
                   `}>
                     {formatDate(lastModified)}
                   </p>
-                </div>
-              {/if}
-            </div>
-          {/if}
+                {/if}
+            {/if}
           {#if tags.length > 0}
             <div>
               <label class={`
@@ -408,7 +401,7 @@
                 Tags
               </label>
               <div class="flex flex-wrap gap-2">
-                {#each tags as tag}
+                {#each Array.isArray(tags) ? tags : [] as tag}
                   <span class={`
                     px-2 py-1 text-xs rounded
                     ${theme === 'gaming'
@@ -420,8 +413,7 @@
                   </span>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if confidentialityLevel !== 'public'}
             <div>
               <label class={`
@@ -436,8 +428,7 @@
               `}>
                 {confidentialityLevel.toUpperCase()}
               </span>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -471,8 +462,7 @@
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .line-clamp-2 {
     display: -webkit-box;

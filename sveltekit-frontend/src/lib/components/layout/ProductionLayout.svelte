@@ -25,22 +25,19 @@
   } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { auth as authStore } from '$lib/stores/unified';
-  import ClientSideAIChat from '$lib/components/ai/ClientSideAIChat.svelte';
-
+  import { ClientSideAIChat } from '$lib/components/ai/ClientSideAIChat.svelte';
   interface Props {
     title?: string;
     subtitle?: string;
     showBreadcrumbs?: boolean;
     fullWidth?: boolean;
   }
-
   let {
     title = 'Legal AI Platform',
     subtitle = 'Professional Legal Intelligence Suite',
     showBreadcrumbs = true,
     fullWidth = false,
   } = $props<Props>();
-
   // Navigation items (fixed object syntax)
   const mainNavItems = [
     {
@@ -86,7 +83,6 @@
       description: 'Data insights and trend analysis',
     },
   ];
-
   const toolsNavItems = [
     {
       id: 'yorha-command',
@@ -117,7 +113,6 @@
       description: 'System administration',
     },
   ];
-
   // State (Svelte 5 runes)
   let isSidebarOpen = $state(true);
   let isMobileMenuOpen = $state(false);
@@ -125,10 +120,8 @@
   let showClientChat = $state(false);
   let currentTime = $state(new Date());
   let systemStatus = $state({ ai: true, database: true, search: true, gpu: false });
-
   // Derived stores
   let currentPath = $derived(() => (browser && $page?.url ? $page.url.pathname : '/'));
-
   let breadcrumbs = $derived(() => {
     const path = $currentPath ?? '/';
     const pathSegments = path.split('/').filter(Boolean);
@@ -144,12 +137,10 @@
     });
     return crumbs;
   });
-
   $effect(() => {
     const timer = setInterval(() => {
       currentTime = new Date();
     }, 1000);
-
     const statusTimer = setInterval(async () => {
       try {
         const response = await fetch('/api/go/health');
@@ -168,17 +159,15 @@
         systemStatus = { ai: false, database: false, search: false, gpu: false };
       }
     }, 10000);
-
     return () => {
       clearInterval(timer);
       clearInterval(statusTimer);
     };
   });
-
   function handleNavigation(href: string, event?: MouseEvent) {
     event?.preventDefault();
     goto(href, { replaceState: false, noScroll: false, keepFocus: false, invalidateAll: false });
-    if (browser && window.innerWidth < 1024) isMobileMenuOpen = false;
+    if (browser && window.innerWidth < 1024) isMobileMenuOpen = $state(false);
   }
   function toggleSidebar() {
     isSidebarOpen = !isSidebarOpen;
@@ -208,10 +197,8 @@
   function getStatusColor(status: boolean) {
     return status ? 'text-green-400' : 'text-red-400';
   }
-
   let currentYear = $derived(() => new Date().getFullYear());
 </script>
-
 <div class={cn('yorha-production-layout min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white')}>
   {#if isMobileMenuOpen}
     <div
@@ -220,9 +207,7 @@
       tabindex="-1"
       onclick={toggleMobileMenu}
       onkeydown={(e) => e.key === 'Escape' && toggleMobileMenu()}
-    ></div>
-  {/if}
-
+    >{/if}
   <aside class={cn(
       'fixed top-0 left-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-amber-500/20 transition-all duration-300 z-40 shadow-2xl',
       isSidebarOpen ? 'w-80' : 'w-18',
@@ -243,8 +228,7 @@
               <div class="flex flex-col">
                 <h1 class="text-xl font-bold text-amber-400 tracking-tight">Legal AI Platform</h1>
                 <p class="text-sm text-slate-400 font-medium">Professional Intelligence Suite</p>
-              </div>
-            {/if}
+              {/if}
           </div>
           {#if isSidebarOpen}
             <button
@@ -265,8 +249,7 @@
               Core Functions
             </h3>
           {/if}
-
-          {#each mainNavItems as item}
+          {#each Array.isArray(mainNavItems) ? mainNavItems : [] as item}
             <button
               class={cn(
                 'w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative',
@@ -283,12 +266,10 @@
                 <div class="flex-1 text-left">
                   <div class="font-semibold text-base">{item.label}</div>
                   <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
-                </div>
-              {/if}
+                {/if}
             </button>
           {/each}
         </div>
-
         <!-- Professional Tools Section -->
         <div class="space-y-3">
           {#if isSidebarOpen}
@@ -296,8 +277,7 @@
               Advanced Tools
             </h3>
           {/if}
-
-          {#each toolsNavItems as item}
+          {#each Array.isArray(toolsNavItems) ? toolsNavItems : [] as item}
             <button
               class={cn(
                 'w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group',
@@ -314,12 +294,10 @@
                 <div class="flex-1 text-left">
                   <div class="font-semibold">{item.label}</div>
                   <div class="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{item.description}</div>
-                </div>
-              {/if}
+                {/if}
             </button>
           {/each}
         </div>
-
         <!-- Professional System Status -->
         {#if isSidebarOpen}
           <div class="space-y-4 pt-6 border-t border-amber-500/20">
@@ -365,10 +343,8 @@
                 </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </nav>
-
       <!-- Professional Sidebar Footer -->
       {#if isSidebarOpen}
         <div class="p-6 border-t border-amber-500/20">
@@ -389,11 +365,9 @@
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </aside>
-
   <!-- Professional Main Content Area -->
   <div class={cn('min-h-screen transition-all duration-300 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900', isSidebarOpen ? 'ml-80' : 'ml-18')}>
     <!-- Professional Top Header Bar -->
@@ -407,7 +381,6 @@
           <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50" onclick={toggleMobileMenu}>
             <Menu class="w-6 h-6" />
           </button>
-
           <!-- Breadcrumbs -->
           {#if showBreadcrumbs}
             <nav class="hidden md:flex items-center space-x-2 text-sm">
@@ -425,7 +398,6 @@
             </nav>
           {/if}
         </div>
-
         <!-- Professional Header Center - Page Title -->
         <div class="flex-1 text-center hidden lg:block">
           <h1 class="text-2xl font-bold text-amber-400 tracking-tight">{title}</h1>
@@ -433,7 +405,6 @@
             <p class="text-base text-slate-400 font-medium">{subtitle}</p>
           {/if}
         </div>
-
         <!-- Header Right -->
         <div class="flex items-center gap-3">
           <!-- Professional AI Chat Toggle -->
@@ -443,7 +414,6 @@
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-green-500 rounded-full group-hover:animate-pulse shadow-lg shadow-green-500/50"></div>
             </button>
           </div>
-
           <!-- Professional Notifications -->
           <div class="relative">
             <button class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50" onclick={() => (showNotifications = !showNotifications)}>
@@ -451,7 +421,6 @@
               <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-red-400 to-red-500 rounded-full shadow-lg shadow-red-500/50"></div>
             </button>
           </div>
-
           {#if authStore?.isAuthenticated}
             <div class="relative group">
               <button class="flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50">
@@ -464,7 +433,6 @@
                 </div>
                 <ChevronDown class="w-4 h-4 group-hover:rotate-180 transition-transform" />
               </button>
-
               <div class="absolute right-0 top-full mt-2 w-56 bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <div class="p-3 space-y-2">
                   <button class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left" onclick={(e) => handleNavigation('/profile', e)}>
@@ -491,26 +459,21 @@
               <button class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25" onclick={(e) => handleNavigation('/auth/register', e)}>
                 Get Started
               </button>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </header>
-
     <!-- Page Content -->
     <main id="app" class={cn('min-h-[calc(100vh-4rem)]', fullWidth ? '' : 'container mx-auto p-6')}>
       <!-- use slot instead of children prop -->
       <slot />
     </main>
-
     {#if showClientChat}
       <div class="fixed bottom-8 right-8 z-50 w-96 max-w-[calc(100vw-2rem)]">
         <div class="bg-slate-800/95 backdrop-blur-md border border-amber-500/20 rounded-2xl shadow-2xl shadow-amber-500/10">
           <ClientSideAIChat collapsed={false} showStatus={true} />
         </div>
-      </div>
-    {/if}
-
+      {/if}
     <!-- Professional Footer -->
     <footer class="border-t border-amber-500/20 bg-slate-900/95 backdrop-blur-md shadow-xl p-2">
       <div class="container mx-auto flex items-center justify-between text-xs text-slate-400">
@@ -532,7 +495,6 @@
     </footer>
   </div>
 </div>
-
 <style>
   .yorha-production-layout {
     font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -596,7 +558,6 @@
     </footer>
   </div>
 </div>
-
 <style>
   .yorha-production-layout {
     font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
@@ -655,4 +616,3 @@
       box-shadow 0.3s ease;
   }
 </style>
-

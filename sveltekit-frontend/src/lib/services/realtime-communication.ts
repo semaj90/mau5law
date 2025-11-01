@@ -22,7 +22,7 @@ export interface RealtimeMessage {
     | 'gpu_compute'
     | 'semantic_update';
   channel: 'websocket' | 'sse' | 'webrtc';
-  data: unknown; // Changed from 'any' to: 'unknown'
+  data: any; // Changed from 'any' to: 'unknown'
   timestamp: Date;
   userId?: string;
   sessionId?: string;
@@ -48,7 +48,7 @@ export interface WebRTCDataChannel {
 }
 
 // Helper function to revive dates during JSON parsing
-function dateReviver(key: string, value: unknown): unknown {
+function dateReviver(key: string, value: any): any {
   // Changed: 'any' to: 'unknown'
   if (key === 'timestamp' && typeof value === 'string') {
     const date = new Date(value);
@@ -121,7 +121,7 @@ class RealtimeCommunicationLayer {
         navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
           this.handleServiceWorkerMessage(event.data);
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed: 'any' to: 'unknown'
         console.warn('Service Worker registration failed:', error instanceof Error ? error.message : error);
       }
@@ -153,7 +153,7 @@ class RealtimeCommunicationLayer {
           message.channel = 'websocket';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed: 'any' to: 'unknown'
           console.error('WebSocket message parsing failed:', error instanceof Error ? error.message : error);
         }
@@ -173,7 +173,7 @@ class RealtimeCommunicationLayer {
         console.error('WebSocket error:', error instanceof Error ? error.message : error); // Changed: 'any' to: 'unknown' and added error handling
         connectionStatus.update(status => ({ ...status, websocket: 'error' }));
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebSocket initialization failed:', error instanceof Error ? error.message : error);
       connectionStatus.update(status => ({ ...status, websocket: 'error' }));
     }
@@ -202,7 +202,7 @@ class RealtimeCommunicationLayer {
           message.channel = 'sse';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed: 'any' to: 'unknown'
           console.error('SSE message parsing failed:', error instanceof Error ? error.message : error);
         }
@@ -226,7 +226,7 @@ class RealtimeCommunicationLayer {
         // Attempt reconnection
         this.scheduleReconnect('sse', userId, sessionId);
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('SSE initialization failed:', error instanceof Error ? error.message : error);
       connectionStatus.update(status => ({ ...status, sse: 'error' }));
@@ -267,7 +267,7 @@ class RealtimeCommunicationLayer {
           message.channel = 'webrtc';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed: 'any' to: 'unknown'
           console.error('WebRTC message parsing failed:', error instanceof Error ? error.message : error);
         }
@@ -287,7 +287,7 @@ class RealtimeCommunicationLayer {
       };
       // Handle ICE candidates and signaling
       await this.handleWebRTCSignaling(peerConnection, userId, sessionId);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebRTC initialization failed:', error instanceof Error ? error.message : error);
       connectionStatus.update(status => ({ ...status, webrtc: 'error' }));
     }
@@ -343,7 +343,7 @@ class RealtimeCommunicationLayer {
   async sendMessage(
     // Corrected function signature
     type: RealtimeMessage['type'],
-    data: unknown, // Changed from 'any' to: 'unknown'
+    data: any, // Changed from 'any' to: 'unknown'
     priority: RealtimeMessage['priority'] = 'normal'
   ): Promise<void> {
     const message: RealtimeMessage = {
@@ -365,7 +365,7 @@ class RealtimeCommunicationLayer {
     try {
       message.channel = channel; // Corrected typos
       await this.sendThroughChannel(message, channel); // Corrected typos
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error(`Failed to send message through ${channel}:`, error instanceof Error ? error.message : error);
       // Try alternative channels or queue
@@ -378,7 +378,7 @@ class RealtimeCommunicationLayer {
   async sendStreamingRequest(
     // Corrected function signature
     type: StreamingResponse['type'],
-    data: unknown // Changed from 'any' to: 'unknown'
+    data: any // Changed from 'any' to: 'unknown'
   ): Promise<string> {
     const requestId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Removed extra comma
     const streamingResponse: StreamingResponse = {
@@ -483,7 +483,7 @@ class RealtimeCommunicationLayer {
   /**
    * Handle streaming responses
    */
-  private handleStreamingResponse(data: unknown): void {
+  private handleStreamingResponse(data: any): void {
     // Changed: 'any' to: 'unknown'
     const { requestId, chunk, status, metadata } = data as {
       requestId: string;
@@ -525,7 +525,7 @@ class RealtimeCommunicationLayer {
   /**
    * Handle service worker messages
    */
-  private handleServiceWorkerMessage(data: unknown): void {
+  private handleServiceWorkerMessage(data: any): void {
     // Changed: 'any' to: 'unknown'
     if ((data as { type: string }).type === 'background-sync') {
       // Added type assertion for: 'data'

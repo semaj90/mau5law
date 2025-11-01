@@ -1,23 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Document as LegalDocument } from '$lib/types/global';
-
   // Types
   interface SimilarityResult extends LegalDocument {
     similarity: number;
   }
-
   // Props (Svelte 5 runes) — add explicit types to avoid accidental runtime issues
   let {
     selectedDocument = $bindable(),
     searchQuery = $bindable()
   }: { selectedDocument?: LegalDocument; searchQuery?: string } = $props();
-
   // State
   let similarDocuments = $state<SimilarityResult[]>([]);
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
-
   async function performSemanticSearch(query: string | undefined) {
     const q = String(query ?? '').trim();
     if (!q) {
@@ -57,10 +53,9 @@
       error = err instanceof Error ? err.message : 'Search failed';
       similarDocuments = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   // Reactive search when query changes
   // simple reactive trigger (debounce could be added later)
   $effect(() => {
@@ -74,7 +69,6 @@
     }
   });
 </script>
-
 <!-- Search Input -->
 <div class="mb-6">
   <label for="search-query" class="block text-sm font-medium mb-2"> 🔍 Semantic Search Legal Documents </label>
@@ -95,7 +89,6 @@
     </button>
   </div>
 </div>
-
 <!-- Selected Document Display -->
 {#if selectedDocument}
   <div class="bg-white rounded-lg shadow-md p-6 mb-6 border">
@@ -121,9 +114,7 @@
         </p>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <!-- Search Results -->
 <div class="bg-white rounded-lg shadow-md p-6 border">
   <h2 class="text-xl font-bold mb-4 text-gray-800">
@@ -140,8 +131,7 @@
           <p class="text-sm text-red-700 mt-1">{error}</p>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   {#if isLoading}
     <div class="flex items-center justify-center py-8">
       <div class="flex items-center space-x-2">
@@ -202,6 +192,5 @@
       <p class="text-sm text-gray-500">
         Use natural language like: "property deed transfer" or: "contract liability clauses"
       </p>
-    </div>
-  {/if}
+    {/if}
 </div>

@@ -4,30 +4,24 @@
  * It provides lightweight service stubs that can be expanded later with DB logic.
  */
 import { createMachine, assign, fromPromise } from 'xstate';
-
 export type CaseForm = {
   caseNumber?: string;
   title: string;
   description?: string;
   priority?: 'low' | 'medium' | 'high';
 };
-
 export interface LegalCase extends CaseForm {
   id: string;
 }
-
 export interface Evidence {
   id: string;
   title: string;
   description: string;
 }
-
 export type EvidenceInput = Omit<Evidence, 'id'>;
-
 export interface AIAnalysisResult {
   summary: string;
 }
-
 export interface EnhancedLegalCaseContext {
   currentCase: LegalCase | null;
   evidenceList: Evidence[];
@@ -37,14 +31,12 @@ export interface EnhancedLegalCaseContext {
   loading: boolean;
   error: string | null;
 }
-
 export type EnhancedLegalCaseEvent =
   | { type: 'LOAD_CASE'; caseId: string }
   | { type: 'CREATE_CASE'; data: CaseForm }
   | { type: 'ADD_EVIDENCE'; caseId: string; evidence: EvidenceInput }
   | { type: 'START_AI_ANALYSIS'; caseId: string }
   | { type: 'RESET' };
-
 const initialContext: EnhancedLegalCaseContext = {
   currentCase: null,
   evidenceList: [],
@@ -54,7 +46,6 @@ const initialContext: EnhancedLegalCaseContext = {
   loading: false,
   error: null,
 };
-
 export const enhancedLegalCaseMachine = createMachine(
   {
     id: 'enhancedLegalCase',

@@ -6,7 +6,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
-
   // Strong typing for store data to avoid: 'unknown' in templates
   interface Metrics {
     totalProcessed: number;
@@ -17,7 +16,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     errorRate: number;
   }
   interface ActiveJobs { gpu: number; cpu: number; }
-
   interface SystemStatus {
     status: string;
     services: Record<string, string>; // keep simple: service -> status string
@@ -26,7 +24,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     uptime: number;
     version: string;
   }
-
   interface ProcessingResult {
     timestamp: number;
     document: { id?: string; title: string; metadata?: { document_type?: string; court_level?: string } };
@@ -38,7 +35,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       metadata: { gpuUtilization?: number };
     };
   }
-
   // initialize stores with explicit generics
   const systemStatus = writable<SystemStatus>({
     status: 'unknown',
@@ -55,10 +51,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     uptime: 0,
     version: '2.0.0',
   });
-
   const processingResults = writable<ProcessingResult[]>([]);
   const isProcessing = writable<boolean>(false);
-
   // Derived stores for computed values
   const healthyServices = derived(systemStatus, ($status) => {
     const services = Object.values($status.services || {});
@@ -165,7 +159,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
           options: processingOptions,
         })
        });
-
        if (response.ok) {
          const data: any = await response.json();
          if (data?.success) {
@@ -211,14 +204,12 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
    function getProcessingPathIcon(path: string): string {
      return path === 'gpu' ? '🔥' : '⚙️';
    }
-
   // Safely read optional gpuUtilization and return a normalized number (0..1)
   function getGpuUtilization(r: ProcessingResult): number {
     // use optional chaining and default to 0 to satisfy TypeScript and templates
     return Number(r?.result?.metadata?.gpuUtilization ?? 0);
   }
 </script>
-
 <div class="unified-dashboard p-6 bg-gray-900 text-white min-h-screen">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
@@ -419,7 +410,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
       <div class="bg-gray-800 rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-4">📋 Recent Processing Results</h3>
         <div class="space-y-3 max-h-96 overflow-y-auto">
-          {#each $processingResults as result}
+          {#each Array.isArray($processingResults) ? $processingResults : [] as result}
             <div class="bg-gray-700 rounded-lg p-4">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center">
@@ -447,13 +438,11 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
                   <span class="text-white ml-1">{(result.result.analysis.confidence * 100).toFixed(1)}%</span>
                 </div>
               </div>
-
               {#if getGpuUtilization(result) > 0}
                 <div class="mt-2 text-xs">
                   <span class="text-purple-400">GPU Utilization</span>
                   <span class="text-white ml-1">{(getGpuUtilization(result) * 100).toFixed(1)}%</span>
-                </div>
-              {/if}
+                {/if}
             </div>
           {:else}
             <div class="text-center text-gray-500 py-8">No processing results yet. Try processing a document!</div>
@@ -489,7 +478,6 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     </div>
   </div>
 </div>
-
 <style>
   .unified-dashboard {
     font-family: 'Inter', system-ui, sans-serif;

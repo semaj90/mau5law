@@ -153,7 +153,7 @@ class EnhancedBitsUIOrchestrator {
 // 🚀 BVH Accelerator WASM Bridge
 class BVHAcceleratorOrchestrator {
   private wasmModule: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
     try {
@@ -223,7 +223,7 @@ class BVHAcceleratorOrchestrator {
 // 🐘 Cyber Elephant 3D Visualization Bridge
 class CyberElephantOrchestrator {
   private scene: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
     try {
@@ -278,7 +278,7 @@ class CyberElephantOrchestrator {
 // 🔄 Multipass Coordinator Bridge (Go Service)
 class MultipassCoordinatorOrchestrator {
   private serviceUrl = 'http://localhost:8080'
-  private isHealthy = false;
+  private isHealthy = $state(false);
   async checkHealth(): Promise<boolean> {
     try {
       const response = await fetch(`${this.serviceUrl}/health`, {
@@ -289,7 +289,7 @@ class MultipassCoordinatorOrchestrator {
       return this.isHealthy;
     } catch (error) {
       console.warn('⚠️ Multipass Coordinator service not available:', error);
-      this.isHealthy = false;
+      this.isHealthy = $state(false);
       return false;
     }
   }
@@ -356,7 +356,7 @@ class MultipassCoordinatorOrchestrator {
 // 🎯 Enhanced Neo4j Reranker Bridge
 class Neo4jRerankerOrchestrator {
   private reranker = createEnhancedNeo4jReranker();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
     try {

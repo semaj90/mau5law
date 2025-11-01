@@ -8,7 +8,7 @@ type GPULiveProcessConfig = {
   jobName?: string;
   targetFiles?: string[];
   maxErrorsToProcess?: number;
-  [key: string]: unknown; // allow flexible config values without using `any`
+  [key: string]: any; // allow flexible config values without using `any`
 };
 
 interface GPULiveProcess {
@@ -91,7 +91,7 @@ async function getLiveTypeScriptErrors(): Promise<string> {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // safely type the parsed body
-    const body = (await request.json()) as { action?: string; data?: unknown };
+    const body = (await request.json()) as { action?: string; data?: any };
     const action = body.action ?? '';
     const data = body.data;
 
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('GPU Live Processing error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url }) => {
         processes,
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('GPU Live Processing GET error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(

@@ -32,7 +32,6 @@ interface AmqpConnection {
   close(): Promise<void>;
 }
 
-
 // CUDA Service / RabbitMQ URLs (prefer envs)
 const CUDA_SERVICE_URL = process.env.CUDA_SERVICE_URL || 'http://localhost:8096';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672';
@@ -54,7 +53,7 @@ export const rabbitMQCudaState = writable({
 export interface CUDAJob {
   id: string;
   type: 'tensor_compute' | 'vector_similarity' | 'embedding_normalize' | 'batch_process';
-  payload: unknown;
+  payload: any;
   priority: number;
   createdAt: number;
   cudaAccelerated?: boolean;
@@ -62,7 +61,7 @@ export interface CUDAJob {
 
 export interface CUDAResponse {
   success: boolean;
-  result?: unknown;
+  result?: any;
   error?: string;
   processingTime: number;
   gpuUtilization?: number;
@@ -74,7 +73,7 @@ class EnhancedRabbitMQCudaBridge {
   // Use concrete amqplib types (nullable) instead of `any`
   private connection: AmqpConnection | null = null;
   private channel: AmqpChannel | null = null;
-  private cudaHealthy = false;
+  private cudaHealthy = $state(false);
   private jobQueue = new Map<string, CUDAJob>();
   private resultCache = new Map<string, CUDAResponse>();
 
@@ -99,7 +98,7 @@ class EnhancedRabbitMQCudaBridge {
       rabbitMQCudaState.update(s => ({ ...s, connected: true, cudaHealthy: this.cudaHealthy }));
       console.log('✅ Enhanced RabbitMQ-CUDA Bridge initialized successfully');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize RabbitMQ-CUDA bridge:', errMsg);
       rabbitMQCudaState.update(s => ({ ...s, connected: false, lastError: errMsg }));
@@ -173,7 +172,7 @@ class EnhancedRabbitMQCudaBridge {
       const parsed = JSON.parse(msg.content.toString());
       job = parsed as CUDAJob;
       rabbitMQCudaState.update(s => ({ ...s, activeJobs: s.activeJobs + 1 }));
-      let result: unknown;
+      let result: any;
       if (this.cudaHealthy) {
         result = await this.submitToCudaService({ type: 'tensor_compute', data: job.payload, priority: job.priority });
       } else {
@@ -195,7 +194,7 @@ class EnhancedRabbitMQCudaBridge {
           averageProcessingTime: (s.performance.averageProcessingTime + processingTime) / 2,
         },
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ Tensor job processing failed:', errMsg);
       await this.publishResult(job && job.id ? job.id : 'unknown', {
@@ -217,7 +216,7 @@ class EnhancedRabbitMQCudaBridge {
       const queryVector = (payload?.queryVector as number[] | undefined) ?? [];
       const candidateVectors = (payload?.candidateVectors as number[][] | undefined) ?? [];
       const algorithm = (payload?.algorithm as string | undefined) ?? 'cosine';
-      let similarities: unknown;
+      let similarities: any;
       if (this.cudaHealthy && Array.isArray(candidateVectors) && candidateVectors.length > 100) {
         similarities = await this.submitToCudaService({
           type: 'vector_similarity',
@@ -234,7 +233,7 @@ class EnhancedRabbitMQCudaBridge {
         processingTime,
         cudaAccelerated: !!(this.cudaHealthy && Array.isArray(candidateVectors) && candidateVectors.length > 100),
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ Vector similarity job failed:', errMsg);
       await this.publishResult(job && job.id ? job.id : 'unknown', {
@@ -255,7 +254,7 @@ class EnhancedRabbitMQCudaBridge {
       const payload = job.payload as Record<string, unknown> | undefined;
       const embeddings = (payload?.embeddings as number[][] | undefined) ?? [];
       const batchSize = (payload?.batchSize as number | undefined) ?? 100;
-      let normalizedEmbeddings: unknown;
+      let normalizedEmbeddings: any;
       if (this.cudaHealthy) {
         normalizedEmbeddings = await this.submitToCudaService({
           type: 'batch_normalize',
@@ -272,7 +271,7 @@ class EnhancedRabbitMQCudaBridge {
         processingTime,
         cudaAccelerated: this.cudaHealthy,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ Embedding normalization failed:', errMsg);
       await this.publishResult(job && job.id ? job.id : 'unknown', {
@@ -283,7 +282,7 @@ class EnhancedRabbitMQCudaBridge {
     }
   }
 
-  private async submitToCudaService(jobData: unknown): Promise<unknown> {
+  private async submitToCudaService(jobData: any): Promise<unknown> {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/compute`, {
         method: 'POST',
@@ -292,7 +291,7 @@ class EnhancedRabbitMQCudaBridge {
       });
       if (!response.ok) throw new Error(`CUDA service error: ${response.statusText}`);
       return await response.json();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.error('❌ CUDA service submission failed:', errMsg);
       throw new Error(errMsg);
@@ -303,7 +302,7 @@ class EnhancedRabbitMQCudaBridge {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`);
       if (!response.ok) {
-        this.cudaHealthy = false;
+        this.cudaHealthy = $state(false);
         rabbitMQCudaState.update(s => ({ ...s, cudaHealthy: this.cudaHealthy }));
         return;
       }
@@ -311,15 +310,15 @@ class EnhancedRabbitMQCudaBridge {
       this.cudaHealthy = health.status === 'healthy' && (health.ready_workers ?? 0) > 0;
       rabbitMQCudaState.update(s => ({ ...s, cudaHealthy: this.cudaHealthy }));
       if (this.cudaHealthy) console.log(`✅ CUDA service healthy: ${health.gpu_model ?? 'unknown'}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('⚠️ CUDA health check failed:', msg);
-      this.cudaHealthy = false;
+      this.cudaHealthy = $state(false);
       rabbitMQCudaState.update(s => ({ ...s, cudaHealthy: this.cudaHealthy }));
     }
   }
 
-  private async fallbackTensorCompute(_payload: unknown): Promise<unknown> {
+  private async fallbackTensorCompute(_payload: any): Promise<unknown> {
     console.log('🔄 Using WebAssembly fallback for tensor computation');
     await new Promise(resolve => setTimeout(resolve, 100));
     return { computed: true, fallback: 'wasm' };
@@ -360,7 +359,7 @@ class EnhancedRabbitMQCudaBridge {
     }
   }
 
-  async submitJob(type: CUDAJob['type'], payload: unknown, priority = 5): Promise<string> {
+  async submitJob(type: CUDAJob['type'], payload: any, priority = 5): Promise<string> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const jobId = `cuda_job_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
     const job: CUDAJob = { id: jobId, type, payload, priority, createdAt: Date.now() };

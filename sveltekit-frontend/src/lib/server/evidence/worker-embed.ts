@@ -2,9 +2,7 @@
 import { consume } from './rabbitmq';
 import { embedText } from './services/embedding';
 import { upsertEmbedding } from './services/drizzle-stub';
-
 const EMBED_QUEUE = 'evidence.embed';
-
 async function start() {
   console.log('Starting Embed worker - listening on', EMBED_QUEUE);
   await consume(EMBED_QUEUE, async job => {
@@ -14,7 +12,6 @@ async function start() {
     await upsertEmbedding(evidenceId, vector, { textSnippet: (text || '').slice(0, 200) });
   });
 }
-
 start().catch(err => {
   console.error(err);
   process.exit(1);

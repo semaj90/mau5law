@@ -472,7 +472,7 @@
             disabled={$isRunning}
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           >
-            {#each workflows as workflow}
+            {#each Array.isArray(workflows) ? workflows : [] as workflow}
               <option value={workflow.id}>{workflow.name}</option>
             {/each}
           </select>
@@ -583,7 +583,7 @@
    <div class="bg-white border border-gray-200 rounded-lg p-6">
      <h3 class="text-lg font-semibold mb-4">Real-time Orchestration Log</h3>
      <div class="max-h-96 overflow-y-auto space-y-3">
-       {#each $orchestrationLog as entry}
+       {#each Array.isArray($orchestrationLog) ? $orchestrationLog : [] as entry}
         <div class={logEntryClasses(entry.phase)}>
            <div class="flex items-center justify-between mb-1">
              <span class="text-sm font-medium">
@@ -616,7 +616,7 @@
      <div class="bg-white border border-gray-200 rounded-lg p-6">
        <h3 class="text-lg font-semibold mb-4">Agent Communication Network</h3>
        <div class="space-y-2">
-         {#each $agentCommunications as comm}
+         {#each Array.isArray($agentCommunications) ? $agentCommunications : [] as comm}
            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
              <div class="flex items-center gap-2">
                <span class="font-medium text-blue-600">{comm.from}</span>
@@ -643,7 +643,7 @@
      <div class="bg-white border border-gray-200 rounded-lg p-6">
        <h3 class="text-lg font-semibold mb-4">Agent Results Summary</h3>
        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-         {#each $agentResults as result}
+         {#each Array.isArray($agentResults) ? $agentResults : [] as result}
            <div class="border border-gray-200 rounded-lg p-4">
              <h4 class="font-medium text-gray-900 mb-2">
               {result.agent ?? 'Agent'}

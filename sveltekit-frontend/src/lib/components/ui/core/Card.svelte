@@ -23,7 +23,6 @@
   };
   let cardClass = $derived(cn(baseClasses, variantClasses[variant], paddingClasses[padding], className));
 </script>
-
 <div class={cardClass} {...restProps}>
-  {@render children?.()}
+  <slot />
 </div>

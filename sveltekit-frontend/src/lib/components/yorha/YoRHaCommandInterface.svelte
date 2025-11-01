@@ -4,13 +4,11 @@
   import { onMount } from 'svelte'; // createEventDispatcher is replaced by $event rune
   import { writable, get } from 'svelte/store'; // import 'get' for store access in functions
   import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData, LegalAISession } from '$lib/types/yorha-interface';
-
   // Define a new interface for command responses
   interface CommandResponse {
     output: string;
     data?: any; // Can be more specific if needed
   }
-
   // Core system stores
   const systemStatus = writable<'ONLINE' | 'DEGRADED' | 'OFFLINE'>('ONLINE');
   const powerLevel = writable<number>(98.7);
@@ -257,7 +255,7 @@
       result.status = 'ERROR';
       result.output = error instanceof Error ? error.message : 'Unknown error';
     } finally {
-      isProcessingCommand = false;
+      isProcessingCommand = $state(false);
       commandHistory.update(history => history.map(cmd => (cmd.id === result.id ? result : cmd)));
     }
   }
@@ -344,8 +342,8 @@
     glitchActive = true;
     hologramFlicker = true;
     setTimeout(() => {
-      glitchActive = false;
-      hologramFlicker = false;
+      glitchActive = $state(false);
+      hologramFlicker = $state(false);
     }, 200);
   }
   function handleKeyPress(_event: KeyboardEvent) {
@@ -366,7 +364,6 @@
       default: return '#00ff88';
     }
   }
-
   // Define props using Svelte 5 runes
   // Removed unused props: systemData, legalSession, holographicMode
   let {} = $props<{
@@ -374,19 +371,16 @@
     legalSession?: LegalAISession | null; // Made optional as it's not used internally
     holographicMode?: boolean; // Made optional as it's not used internally
   }>();
-
   // Define the event types that this component can dispatch
   type YoRHaEvents = {
     command: CommandResult;
   };
-
   // No event dispatching needed: removed unused $event rune and dispatch variable.
   // Removed unused function
   // Removed unused function handleExecuteCommand and its references to dispatch (Svelte 5 migration)
   // Removed unused variable
   // let currentCommandInput = $state('');
 </script>
-
 <!-- YoRHa Command Interface -->
 <div
   class="yorha-container min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900"
@@ -427,7 +421,7 @@
     </header>
     <!-- System modules grid -->
     <div class="grid grid-cols-3 gap-6 mb-8">
-      {#each $activeModules as module}
+      {#each Array.isArray($activeModules) ? $activeModules : [] as module}
         <div class="module-panel p-4 rounded-lg">
           <div class="flex justify-between items-start mb-3">
             <h3 class="hologram-text font-bold text-sm">{module.name}</h3>
@@ -480,12 +474,11 @@
             disabled={isProcessingCommand}
           />
           {#if isProcessingCommand}
-            <div class="hologram-text text-sm ml-2">PROCESSING...</div>
-          {/if}
+            <div class="hologram-text text-sm ml-2">PROCESSING...{/if}
         </div>
         <!-- Command history -->
         <div class="flex-1 overflow-y-auto space-y-2">
-          {#each $commandHistory as result}
+          {#each Array.isArray($commandHistory) ? $commandHistory : [] as result}
             <div class="border-b border-cyan-900 pb-2">
               <div class="flex justify-between items-center mb-1">
                 <span class="text-cyan-300 text-sm">$ {result.command}</span>
@@ -519,7 +512,6 @@
     </footer>
   </div>
 </div>
-
 <!-- YoRHa Interface Styles -->
 <style>
   /* @apply min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900; */

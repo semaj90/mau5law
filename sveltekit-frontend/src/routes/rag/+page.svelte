@@ -8,17 +8,17 @@
   export let data: any;
 
   // client state (explicitly declared to avoid undefined accesses)
-  let submitting = false;
-  let loadingDocuments = false;
+  let submitting = $state(false);
+  let loadingDocuments = $state(false);
   let documents: Array<any> = [];
   let selectedFile: File | null = null;
   let tags = '';
-  let uploading = false;
+  let uploading = $state(false);
   let uploadResult: any = null;
   let searchQuery = '';
   let searchTags = '';
   let searchType: 'hybrid' | 'vector' | 'fuzzy' = 'hybrid';
-  let searching = false;
+  let searching = $state(false);
   let searchResults: Array<any> = [];
   let systemStatus: any = null;
   let activeTab: 'upload' | 'documents' | 'search' = 'upload';
@@ -469,7 +469,7 @@
               <div>
                 {#if doc?.tags && doc.tags.length > 0}
                   <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
-                    {#each doc.tags.slice(0, 3) as tag}
+                    {#each Array.isArray(doc.tags.slice(0, 3)) ? doc.tags.slice(0, 3) : [] as tag}
                       <span class="nes-badge">
                         <span class="is-warning">{tag}</span>
                       </span>
@@ -628,7 +628,7 @@
                     </h4>
                     {#if result.tags && result.tags.length > 0}
                       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                        {#each result.tags as tag}
+                        {#each Array.isArray(result.tags) ? result.tags : [] as tag}
                           <span class="nes-badge">
                             <span class="is-warning">{tag}</span>
                           </span>
@@ -677,12 +677,6 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 </style>
-                    {result.content.slice(0, 200)}...
-                  </p>
-                {/if}
-
-                {#if result.createdAt}
-                  <p style="color: #6b7280; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
                     📅 {new Date(result.createdAt).toLocaleDateString()}
                   </p>
                 {/if}

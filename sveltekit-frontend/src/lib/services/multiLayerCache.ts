@@ -33,7 +33,7 @@ interface SearchableValue {
   title?: string;
   summary?: string;
   // Allow other properties for flexibility
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Define the structure for items stored in the search index
@@ -87,7 +87,7 @@ type LokiCondition<T> = {
   $gte?: T;
   $lte?: T;
   // allow other operators/values
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Keep IFuseResult as it is used later
@@ -149,11 +149,11 @@ export class MultiLayerCache {
       });
 
       // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
-      type LokiWithLoad = { loadDatabase(opts: unknown, callback: () => void): void };
+      type LokiWithLoad = { loadDatabase(opts: any, callback: () => void): void };
       await new Promise<void>(resolve => {
         (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize persistent storage:', error);
     }
   }
@@ -205,7 +205,7 @@ export class MultiLayerCache {
       // Update access time stats
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Cache set error:', error);
       throw error;
     }
@@ -587,7 +587,7 @@ class LokiIndexedAdapter {
   }
 
   // Accept: 'opts' as unknown to match how Loki may call the adapter
-  async loadDatabase(opts: unknown, callback: (data: string | null) => void): Promise<void> {
+  async loadDatabase(opts: any, callback: (data: string | null) => void): Promise<void> {
     try {
       const db = await this.getDb();
       const transaction = db.transaction(['database'], 'readonly');
@@ -600,7 +600,7 @@ class LokiIndexedAdapter {
       request.onerror = () => {
         callback(null);
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to load database:', error);
       callback(null);
     }
@@ -618,7 +618,7 @@ class LokiIndexedAdapter {
         console.error('Failed to save database');
         callback();
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Database save error:', error);
       callback();
     }

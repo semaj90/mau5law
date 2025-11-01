@@ -31,13 +31,11 @@
   		cn(baseClasses, variantClasses[variant], paddingClasses[padding], className)
   	);
 </script>
-
 <div class={cardClass} {...restProps}>
 	{#if children}
 		{@render children()}
 	{/if}
 </div>
-
 <style>
   .card { padding: 1rem; border-radius: 0.5rem; background: transparent; }
 </style>

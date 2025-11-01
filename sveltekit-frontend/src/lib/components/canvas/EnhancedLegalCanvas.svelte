@@ -369,7 +369,6 @@
     }
   });
 </script>
-
 <div class="canvas-container nes-container with-title">
   <p class="title">Legal Evidence Canvas</p>
   <div class="canvas-wrapper">
@@ -415,13 +414,11 @@
           <pre class="metadata">{JSON.stringify(selectedNode.metadata, null, 2)}</pre>
         </details>
       {/if}
-    </div>
-  {/if}
+    {/if}
   {#if children}
     {@render children()}
   {/if}
 </div>
-
 <style>
   .canvas-container {
     margin: 1rem;
@@ -430,7 +427,7 @@
     border: 2px solid var(--yorha-text-muted);
   }
   .canvas-wrapper {
-    position relative;
+    position: relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -525,4 +522,3 @@
     }
   }
 </style>
-

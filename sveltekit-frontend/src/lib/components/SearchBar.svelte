@@ -1,7 +1,6 @@
 <script lang="ts">
-  import SearchInput from './SearchInput.svelte';
-  import { Filter } from 'lucide-svelte';
-
+  import { SearchInput } from './SearchInput.svelte';
+  import Filter from 'lucide-svelte';
   interface Props {
     placeholder?: string;
     value?: string;
@@ -11,7 +10,6 @@
     onsortChanged?: (_event: CustomEvent) => void;
     onfiltersChanged?: (_event: CustomEvent) => void;
   }
-
   let {
     placeholder = 'Search...',
     value = '',
@@ -26,27 +24,22 @@
     onsortChanged,
     onfiltersChanged
   }: Props = $props();
-
   let selectedSort = $state('relevance');
   let filtersOpen = $state(false);
-
   // Filter state
   let selectedFileTypes: string[] = $state([]);
   let dateRange = $state({
     from '',
     to: ''
   });
-
   function handleSearch(_event: CustomEvent) {
     // forward the value/event to parent callback
     onsearch?.(_event);
   }
-
   function handleSortChange(sortId: string) {
     selectedSort = sortId;
     onsortChanged?.(new CustomEvent('sortChanged', { detail: { sort: sortId } }));
   }
-
   function toggleFilters() {
     filtersOpen = !filtersOpen;
     if (filtersOpen) {
@@ -54,7 +47,6 @@
       dispatchFilters();
     }
   }
-
   function handleFileTypeChange(_event: Event) {
     const target = _event.target as HTMLInputElement;
     const value = target.value;
@@ -65,11 +57,9 @@
     }
     dispatchFilters();
   }
-
   function handleDateChange() {
     dispatchFilters();
   }
-
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
       detail: {
@@ -79,7 +69,6 @@
     }));
   }
 </script>
-
 <div class="search-bar-container">
   <!-- Main Search Input -->
   <SearchInput {placeholder} {value} onsearch={handleSearch} />
@@ -94,11 +83,10 @@
           class="sort-select"
           aria-label="Sort by"
         >
-          {#each sortOptions as option}
+          {#each Array.isArray(sortOptions) ? sortOptions : [] as option}
             <option value={option.id}>{option.label}</option>
           {/each}
         </select>
-
         <!-- Inline chevron / sort icon to avoid import mismatch -->
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
           <path d="M6 9l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -115,10 +103,8 @@
       >
         <Filter size={16} />
       </button>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <!-- Advanced Filters -->
 {#if filtersOpen}
   <div class="filters-panel">
@@ -196,9 +182,7 @@
         Clear Filters
       </button>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
   .search-bar-container {
@@ -346,4 +330,3 @@
     }
   }
 </style>
-

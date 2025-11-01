@@ -26,7 +26,7 @@ interface WasmLLMService {
 }
 // Mock WebAssembly LLM service (replace with actual implementation)
 class MockWasmLLM implements WasmLLMService {
-  private initialized = false;
+  private initialized = $state(false);
   async initialize(): Promise<void> {
     // Initialize WebAssembly model
     console.log('Initializing WebAssembly LLM...');

@@ -1,15 +1,12 @@
 import { globalGPUManager } from './global-gpu-manager.js';
 import { vertexCacheManager } from './vertex-cache-manager.js';
-
 export interface StreamedVertexPayload {
   id: string;
   tensor: Float32Array;
   metadata: Record<string, unknown>;
 }
-
 export class WebGPUVertexStreamer {
   private activeStreams = new Map<string, GPUBuffer>();
-
   async streamTensor(id: string, tensor: Float32Array): Promise<void> {
     const ctx = globalGPUManager.getHybridGPU();
     if (ctx?.type !== 'webgpu' || !ctx.device) {
@@ -17,13 +14,11 @@ export class WebGPUVertexStreamer {
       await vertexCacheManager.createChunk(id, tensor);
       return;
     }
-
     const buffer = ctx.device.createBuffer({
       size: tensor.byteLength,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
-
     // Safely write into the mapped range
     const mapped = buffer.getMappedRange();
     try {
@@ -39,19 +34,16 @@ export class WebGPUVertexStreamer {
     } finally {
       buffer.unmap();
     }
-
     this.activeStreams.set(id, buffer);
     console.log(`📡 Streamed vertex tensor: ${id} (${tensor.length} floats)`);
   }
-
   closeStream(id: string): void {
-    const buf = this.activeStreams.get(id) as unknown as { destroy?: unknown };
+    const buf = this.activeStreams.get(id) as unknown as { destroy?: any };
     if (buf && typeof (buf as any).destroy === 'function') {
       try { (buf as any).destroy(); } catch {}
     }
     this.activeStreams.delete(id);
   }
-
   clear(): void {
     this.activeStreams.forEach(b => {
       if (b && typeof (b as any).destroy === 'function') {
@@ -61,5 +53,4 @@ export class WebGPUVertexStreamer {
     this.activeStreams.clear();
   }
 }
-
 export const webgpuVertexStreamer = new WebGPUVertexStreamer();

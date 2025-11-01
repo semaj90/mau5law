@@ -93,7 +93,7 @@ interface POIStoreState {
 
   // Risk analysis
   riskScores: Map<string, number>;
-  predictiveAnalysis?: unknown;
+  predictiveAnalysis?: any;
 
   // Metadata
   totalPOIs: number;

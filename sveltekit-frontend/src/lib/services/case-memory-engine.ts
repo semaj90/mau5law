@@ -91,7 +91,7 @@ class LLMSelfLearningModel {
   async updateFromInteractions(
     context: CaseMemoryContext,
     interactions: Interaction[],
-    outcomes: unknown[]
+    outcomes: any[]
   ): Promise<void> {
     try {
       // production: enqueue for training pipeline / telemetry
@@ -424,7 +424,7 @@ export class CaseMemoryEngine {
   }
 
   // Self-learning model update hook
-  private async updateLearningModel(context: CaseMemoryContext, interactions: Interaction[], outcomes: unknown[]) {
+  private async updateLearningModel(context: CaseMemoryContext, interactions: Interaction[], outcomes: any[]) {
     try {
       // forward context to the learning model (avoids "context declared but never read" and removes any)
       await this.learningModel.updateFromInteractions(context, interactions, outcomes);

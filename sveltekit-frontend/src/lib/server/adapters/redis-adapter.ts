@@ -1,8 +1,7 @@
 import type { RedisCacheService } from '../../types/external-services';
-
 // Lightweight wrapper that adapts a redis-like client to our RedisCacheService interface.
 // Uses `unknown` for the client type and narrows with guards to avoid `any`.
-export function createRedisAdapter(client: unknown): RedisCacheService {
+export function createRedisAdapter(client: any): RedisCacheService {
   return {
     async get(key: string) {
       if (!client) return null;
@@ -50,12 +49,12 @@ export function createRedisAdapter(client: unknown): RedisCacheService {
       if (!client) return null;
       const c = client as Record<string, unknown>;
       // function-like methods
-  if (typeof c.call === 'function') return (c.call as (...f: unknown[]) => unknown)(...args);
-  if (typeof c.sendCommand === 'function') return (c.sendCommand as (...f: unknown[]) => unknown)(args);
-  if (typeof c.executeCommand === 'function') return (c.executeCommand as (...f: unknown[]) => unknown)(args);
+  if (typeof c.call === 'function') return (c.call as (...f: any[]) => unknown)(...args);
+  if (typeof c.sendCommand === 'function') return (c.sendCommand as (...f: any[]) => unknown)(args);
+  if (typeof c.executeCommand === 'function') return (c.executeCommand as (...f: any[]) => unknown)(args);
       const cmd = String(args[0]).toLowerCase();
       const maybeFn = c[cmd];
-  if (typeof maybeFn === 'function') return (maybeFn as (...f: unknown[]) => unknown)(...args.slice(1));
+  if (typeof maybeFn === 'function') return (maybeFn as (...f: any[]) => unknown)(...args.slice(1));
       return null;
     },
     async disconnect() {
@@ -67,5 +66,4 @@ export function createRedisAdapter(client: unknown): RedisCacheService {
     }
   };
 }
-
 export default createRedisAdapter;

@@ -5,24 +5,20 @@
   import interpret from 'xstate';
   import { writable, derived, get, readable } from 'svelte/store';
   // Toast notifications removed - using simple state instead
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
-
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import { EnhancedButton } from '$lib/components/ui/EnhancedButton.svelte';
   // --- Types ---
   type ConversationEntry = { prompt: string; response: string; timestamp: number };
-
   interface AIContext {
     prompt: string;
     response: string;
     error: string | null;
     conversationHistory: ConversationEntry[];
   }
-
   type QueryEvent = { type: 'QUERY'; prompt: string };
   type RetryEvent = { type: 'RETRY' };
   type ClearEvent = { type: 'CLEAR' };
   type AIEvent = QueryEvent | RetryEvent | ClearEvent;
-
   // Legal AI Assistant State Machine (typed)
   const legalAIMachine = createMachine<AIContext, AIEvent>(
     {
@@ -64,7 +60,6 @@
                   presence_penalty: 0.0,
                 },
               };
-
               import { getOllamaEndpoint } from './AIAssistant.svelte.ts';
               const ollamaUrl = getOllamaEndpoint();
               const response = await fetch(`${ollamaUrl}/api/generate`, {
@@ -72,11 +67,9 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
               });
-
               if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
               }
-
               const data = await response.json();
               return { response: data.response ?? data.output ?? JSON.stringify(data) };
             },
@@ -143,25 +136,20 @@
       },
     } /* removed second-argument implementations; invoke uses inline src */
   );
-
   // Replace useMachine: create a running service and expose a readable: 'snapshot' store + send
   const service = interpret(legalAIMachine).start();
-
   const snapshot = readable(service.state, (set) => {
     const sub = service.subscribe((state: any) => set(state));
     return () => sub.unsubscribe();
   });
-
   function send(event: AIEvent) {
     service.send(event as any);
   }
-
   // Use explicit Svelte stores for local UI state
   // Local writable stores
   const promptInput = writable('');
   type Notification = { id: number; title: string; description: string };
   const notifications = writable<Notification[]>([]);
-
   // Derived stores based on the XState snapshot store
   const isLoading = derived(snapshot, $snapshot => $snapshot.matches('querying'));
   const currentResponse = derived(snapshot, $snapshot => ($snapshot.context as AIContext).response);
@@ -170,7 +158,6 @@
     [promptInput, isLoading],
     ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading
   );
-
   // Fixed: add missing colon and explicit return type
   function showNotification(title: string, description: string): void {
     const id = Date.now();
@@ -199,13 +186,11 @@
       handleQuery();
     }
   }
-
   // Add a permissive alias to bypass strict component event typings for Textarea
   const TextareaAny = Textarea as unknown as any;
   // Add a permissive alias to bypass strict component prop/event typings
   const EnhancedButtonAny = EnhancedButton as unknown as any;
 </script>
-
 <!-- Simple Notifications -->
 {#each $notifications as notification (notification.id)}
   <div class="fixed top-4 right-4 bg-blue-500 text-white p-4 rounded shadow-lg z-50">
@@ -288,8 +273,7 @@
         </div>
         <p class="mt-2 text-sm text-red-600">{$errorMessage}</p>
         <p class="mt-1 text-xs text-red-500">Please ensure Ollama is running with gemma3-legal:latest model</p>
-      </div>
-    {/if}
+      {/if}
     {#if $currentResponse}
       <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -314,8 +298,7 @@
             Follow-up Question
           </button>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Conversation History Preview (defensive access) -->
     {#if ($snapshot.context?.conversationHistory ?? []).length > 0}
       <details class="mt-6">
@@ -323,7 +306,7 @@
           Conversation History ({($snapshot.context?.conversationHistory ?? []).length} queries)
         </summary>
         <div class="mt-4 space-y-3 max-h-40 overflow-y-auto">
-          {#each ($snapshot.context?.conversationHistory ?? []).slice(-3) as item}
+          {#each Array.isArray(($snapshot.context?.conversationHistory ?? []).slice(-3)) ? ($snapshot.context?.conversationHistory ?? []).slice(-3) : [] as item}
             <div class="p-3 bg-gray-50 rounded border-l-4 border-blue-500">
               <div class="text-xs text-gray-500 mb-1">
                 {new Date(item.timestamp).toLocaleTimeString()}
@@ -337,7 +320,6 @@
     {/if}
   </div>
 </div>
-
 <style>
   /* YoRHa Legal AI Assistant Styling */
   :global(.yorha-card) {
@@ -394,4 +376,3 @@
     }
   }
 </style>
-

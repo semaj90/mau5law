@@ -74,7 +74,7 @@
   $effect(() => {
     mounted = true;
     return () => {
-      mounted = false;
+      mounted = $state(false);
       // Cleanup any ongoing uploads
       currentUploads.clear();
     }
@@ -111,7 +111,7 @@
     uploadProgress.clear();
     uploadQueue = [];
     currentUploads.clear();
-    isUploading = false;
+    isUploading = $state(false);
   }
   // Handle file selection
   async function handleFileSelection(_event: Event): Promise<void> {
@@ -202,7 +202,7 @@
       onAllUploadsComplete?.({ files: results });
       return result;
     } finally {
-      isUploading = false;
+      isUploading = $state(false);
     }
   }
   // Subscribe to upload progress for a specific upload
@@ -231,7 +231,6 @@
     return 'brief';
   }
 </script>
-
 <!-- Headless file input (hidden) -->
 <input
   bind:this={fileInput}

@@ -12,12 +12,12 @@ import { set as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
 // Provide a small, explicit interface for the collection so we avoid `any`.
 type LokiCollection<T = unknown> = {
   count: () => number;
-  find: (query: unknown) => T[];
-  findOne: (query: unknown) => T | null;
+  find: (query: any) => T[];
+  findOne: (query: any) => T | null;
   insert: (doc: T) => void;
   update: (doc: T) => void;
   remove: (doc: T) => void;
-  removeWhere: (query: unknown) => void;
+  removeWhere: (query: any) => void;
 };
 
 // Redis type (lightweight)
@@ -30,7 +30,7 @@ export interface RedisLike {
 // Optional SIMD client shape - avoid `any`
 const simdRedisClient: {
   healthCheck?: () => Promise<unknown>;
-  cacheJSON?: (k: string, v: unknown) => Promise<unknown>;
+  cacheJSON?: (k: string, v: any) => Promise<unknown>;
 } = {};
 
 // Config types
@@ -122,8 +122,8 @@ class ComprehensiveCachingService {
   private hitCounts = new Map<CacheLayer, number>();
   private missCounts = new Map<CacheLayer, number>();
   private evictionCounts = new Map<CacheLayer, number>();
-  private initialized = false;
-  private simdEnabled = false;
+  private initialized = $state(false);
+  private simdEnabled = $state(false);
 
   private constructor() {
     this.config = this.getDefaultConfig();
@@ -246,7 +246,7 @@ class ComprehensiveCachingService {
         console.log('ℹ️ SIMD not enabled or unavailable');
       }
     } catch (e) {
-      this.simdEnabled = false;
+      this.simdEnabled = $state(false);
       console.warn('⚠️ SIMD initialization failed, falling back to standard', e);
     }
     this.initialized = true;
@@ -292,7 +292,7 @@ class ComprehensiveCachingService {
           // Miss for this layer
           this.recordMiss(layer);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Cache layer: "${layer}" error while getting key: "${key}":`, error);
         this.recordMiss(layer);
       }
@@ -350,7 +350,7 @@ class ComprehensiveCachingService {
         const layerEntry = { ...entry };
         layerEntry.metadata.layer = layer;
         await this.setInLayer(layerEntry, layer);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.warn(`Failed to set key: "${key}" in layer: "${layer}":`, err);
       }
     });
@@ -366,7 +366,7 @@ class ComprehensiveCachingService {
     const promises = layers.map(async layer => {
       try {
         await this.deleteFromLayer(key, layer);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.warn(`Failed to delete key: "${key}" from layer: "${layer}":`, err);
       }
     });
@@ -427,7 +427,7 @@ class ComprehensiveCachingService {
       // If a specialized SIMD cache client exposes a read API in the future, call it here.
       // Current best-effort behavior: use the regular multi-layer get and keep SIMD client as write-only optimization.
       return await this.get<unknown>(key);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('SIMD get failed, falling back to regular get:', err);
       return await this.get<unknown>(key);
     }
@@ -436,7 +436,7 @@ class ComprehensiveCachingService {
   /**
    * SIMD-accelerated set (attempts SIMD path then falls back to regular set)
    */
-  public async setSIMD(key: string, value: unknown, ttl?: number, tags?: string[]): Promise<void> {
+  public async setSIMD(key: string, value: any, ttl?: number, tags?: string[]): Promise<void> {
     // If SIMD is not enabled or available, just use the normal multi-layer set
     if (!this.simdEnabled) {
       await this.set(key, value, { ttl, tags });
@@ -457,7 +457,7 @@ class ComprehensiveCachingService {
 
       // Always write to the normal multi-layer cache as the canonical store
       await this.set(key, value, { ttl, tags });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('SIMD set failed, falling back to normal set:', err);
       await this.set(key, value, { ttl, tags });
     }
@@ -479,7 +479,7 @@ class ComprehensiveCachingService {
    * Warm up cache with frequently accessed data
    * - avoid `any` by using `unknown` and typed options
    */
-  public async warmup(data: Array<{ key: string; value: unknown; options?: Record<string, unknown> }>): Promise<void> {
+  public async warmup(data: Array<{ key: string; value: any; options?: Record<string, unknown> }>): Promise<void> {
     console.log(`🔥 Warming up cache with ${data.length} entries`);
     // Use a typed call to set to avoid casting to `any`.
     const promises = data.map(({ key, value }) => this.set<unknown>(key, value, { strategy: 'fast' }));
@@ -505,7 +505,7 @@ class ComprehensiveCachingService {
         try {
           const redisResult = await this.redisClient.get(key);
           return redisResult ? (JSON.parse(redisResult) as CacheEntry<T>) : null;
-        } catch (e: unknown) {
+        } catch (e: any) {
           console.warn('Redis get failed', e);
           return null;
         }
@@ -549,7 +549,7 @@ class ComprehensiveCachingService {
         if (this.redisClient) {
           try {
             await this.redisClient.setex(entry.key, Math.floor(entry.metadata.ttl / 1000), JSON.stringify(entry));
-          } catch (err: unknown) {
+          } catch (err: any) {
             console.warn('Redis set failed', err);
           }
         }
@@ -585,7 +585,7 @@ class ComprehensiveCachingService {
         if (this.redisClient) {
           try {
             await this.redisClient.del(key);
-          } catch (err: unknown) {
+          } catch (err: any) {
             console.warn('Redis delete failed', err);
           }
         }
@@ -616,7 +616,7 @@ class ComprehensiveCachingService {
     return Date.now() > entry.metadata.createdAt + entry.metadata.ttl;
   }
 
-  private calculateSize(_value: unknown): number {
+  private calculateSize(_value: any): number {
     try {
       if (_value === null || _value === undefined) return 0;
       if (typeof _value === 'string') {

@@ -4,9 +4,7 @@
  * Demonstrates the enhanced CUDA cache optimizer with autoencoder compression
  * and Self-Organizing Map clustering for legal AI intent recognition.
  */
-
 import { cudaCacheOptimizer } from '../ai/cuda-cache-memory-optimizer';
-
 // Demo queries representing different legal AI use cases
 const testQueries = [
   'Review this contract for potential liability issues',
@@ -20,7 +18,6 @@ const testQueries = [
   'Find similar cases to Brown vs Board of Education',
   'Draft a response to this cease and desist letter',
 ];
-
 /**
  * Demonstrates the difference between heuristic and neural network intent analysis
  */
@@ -29,49 +26,39 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
     console.log('🚫 CUDA Cache Optimizer not available (not in browser environment)');
     return;
   }
-
   console.log('🧠 Neural Network Intent Analysis Demo');
   console.log('=====================================\n');
-
   // Wait for initialization
   await new Promise(resolve => setTimeout(resolve, 100));
-
   for (const query of testQueries) {
     console.log(`📝 Query: "${query}"`);
     console.log('─'.repeat(50));
-
     try {
       // Traditional heuristic analysis
       const heuristicIntent = await cudaCacheOptimizer.analyzeUserIntent(query);
-
       // Neural network analysis
       const nnIntent = await cudaCacheOptimizer.analyzeIntentWithNN(query, {
         deadline: Date.now() + (query.includes('urgent') ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000),
       });
-
       // Compare results
       console.log('🔍 Heuristic Analysis:');
       console.log(`   Category: ${heuristicIntent.intentCategory}`);
       console.log(`   Confidence: ${(heuristicIntent.confidence * 100).toFixed(1)}%`);
       console.log(`   Domain Specificity: ${(heuristicIntent.domainSpecificity * 100).toFixed(1)}%`);
       console.log(`   Urgency: ${heuristicIntent.urgency}`);
-
       console.log('\n🧠 Neural Network Analysis:');
       console.log(`   Category: ${nnIntent.intentCategory}`);
       console.log(`   Confidence: ${(nnIntent.confidence * 100).toFixed(1)}%`);
       console.log(`   Domain Specificity: ${(nnIntent.domainSpecificity * 100).toFixed(1)}%`);
       console.log(`   Urgency: ${nnIntent.urgency}`);
-
       // Model recommendation
       const recommendedModel = cudaCacheOptimizer.recommendOptimalModel(nnIntent);
       console.log(`\n🎯 Recommended Model: ${recommendedModel}`);
-
       console.log('\n' + '='.repeat(80) + '\n');
     } catch (error) {
       console.error(`❌ Error analyzing query: ${error}`);
     }
   }
-
   // Show optimizer statistics
   try {
     const stats = await cudaCacheOptimizer.getOptimizerStats();
@@ -83,7 +70,6 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
     console.log(`   Average Confidence: ${(stats.avgConfidence * 100).toFixed(1)}%`);
     console.log(`   Most Active Neuron: ${stats.mostActiveNeuron}`);
     console.log(`   Recent Categories: ${stats.recentIntentCategories.slice(-5).join(', ')}`);
-
     const memoryState = cudaCacheOptimizer.getMemoryState();
     console.log('\n💾 GPU Memory State:');
     console.log(`   Total: ${memoryState.totalMemoryMB} MB`);
@@ -95,7 +81,6 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
     console.error(`❌ Error getting statistics: ${error}`);
   }
 }
-
 /**
  * Demonstrates SOM neuron mapping and clustering behavior
  */
@@ -104,34 +89,27 @@ export async function demonstrateSOMClustering(): Promise<void> {
     console.log('🚫 CUDA Cache Optimizer not available');
     return;
   }
-
   console.log('\n🗺️  SOM Clustering Analysis');
   console.log('=============================\n');
-
   const legalQueries = [
     'contract review needed urgently',
     'analyze patent application',
     'copyright infringement case research',
     'trademark dispute analysis',
   ];
-
   const chatQueries = ['hello there', 'how are you doing', 'thanks for the help', 'have a great day'];
-
   console.log('📋 Testing Legal Queries:');
   for (const query of legalQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
     console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);
   }
-
   console.log('\n💬 Testing Chat Queries:');
   for (const query of chatQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
     console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);
   }
-
   console.log('\n✨ Neural network successfully clusters similar intents!');
 }
-
 // Auto-run demo if in browser environment
 if (typeof window !== 'undefined') {
   // Wait for page load
@@ -140,5 +118,4 @@ if (typeof window !== 'undefined') {
     await demonstrateSOMClustering();
   });
 }
-
 export { demonstrateIntentAnalysis, demonstrateSOMClustering };

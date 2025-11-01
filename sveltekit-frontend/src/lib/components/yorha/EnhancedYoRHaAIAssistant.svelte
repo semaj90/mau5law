@@ -74,19 +74,19 @@ https://svelte.dev/e/js_parse_error -->
         model: 'gemma3-legal',
         intent: getIntentForRole(userRole),
         endpoint: '/api/rag/stream',
-        contextIds: evidenceItems.map((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id),
+        contextIds: evidenceItems.map((item) => (item as { id?: any; name?: any; type?: any }).id),
         onToken: (token) => {
           responseContent += toke;
           // Update the last assistant message in real-time
           updateLastAssistantMessage(responseContent);
         },
         onDone: () => {
-          isProcessing = false;
+          isProcessing = $state(false);
         },
         onError: (error) => {
           console.error('RAG Error:', error);
           addMessage('assistant', `I encountered an error: ${error.message}. Please try again.`);
-          isProcessing = false;
+          isProcessing = $state(false);
         },
       });
       if (!responseContent) {
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
         'assistant',
         "I'm sorry, I encountered an error processing your request. Please try again."
       );
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function updateLastAssistantMessage(content: string) {
@@ -153,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
     }, 1000);
   }
   function removeEvidence(id: string) {
-    evidenceItems = evidenceItems.filter((item) => (item as { id?: unknown; name?: unknown; type?: unknown }).id !== id);
+    evidenceItems = evidenceItems.filter((item) => (item as { id?: any; name?: any; type?: any }).id !== id);
   }
   function exportEvidence() {
     const exportData = {
@@ -249,8 +249,7 @@ https://svelte.dev/e/js_parse_error -->
           {#if $ragStatus !== 'idle'}
             <div class="rag-status" class:processing={$ragStatus === 'streaming'}>
               RAG: {$ragStatus} ({$ragTokenCount} tokens)
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <!-- Context Panel -->
@@ -261,18 +260,16 @@ https://svelte.dev/e/js_parse_error -->
             <button onclick={() => (contextExpanded = false)}>✕</button>
           </div>
           <div class="context-items">
-            {#each evidenceItems.slice(0, 3) as item}
+            {#each Array.isArray(evidenceItems.slice(0, 3)) ? evidenceItems.slice(0, 3) : [] as item}
               <div class="context-item">
-                <span class="context-name">{(item as { id?: unknown; name?: unknown; type?: unknown }).name}</span>
-                <span class="context-type">{(item as { id?: unknown; name?: unknown; type?: unknown }).type}</span>
+                <span class="context-name">{(item as { id?: any; name?: any; type?: any }).name}</span>
+                <span class="context-type">{(item as { id?: any; name?: any; type?: any }).type}</span>
               </div>
             {/each}
             {#if evidenceItems.length > 3}
-              <div class="context-more">+{evidenceItems.length - 3} more items</div>
-            {/if}
+              <div class="context-more">+{evidenceItems.length - 3} more items{/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Main Content Area -->
       <main class="assistant-main">
         {#if currentMode === 'chat'}
@@ -301,8 +298,7 @@ https://svelte.dev/e/js_parse_error -->
                     <span></span><span></span><span></span>
                   </div>
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         {:else if currentMode === 'evidence'}
           <!-- Evidence Mode -->
@@ -335,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="evidence-type">{evidence.type}</div>
                     <div class="evidence-text">{evidence.content}</div>
                     <div class="evidence-tags">
-                      {#each evidence.tags as tag}
+                      {#each Array.isArray(evidence.tags) ? evidence.tags : [] as tag}
                         <span class="tag">{tag}</span>
                       {/each}
                     </div>
@@ -347,8 +343,7 @@ https://svelte.dev/e/js_parse_error -->
                   <div class="empty-icon">📁</div>
                   <p>No evidence items yet</p>
                   <button onclick={() => addEvidence()}>Add your first evidence item</button>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {:else if currentMode === 'analysis'}
@@ -388,16 +383,15 @@ https://svelte.dev/e/js_parse_error -->
               <section class="analysis-section">
                 <h3>Evidence Analysis</h3>
                 <div class="analysis-content">
-                  {#each evidenceItems.slice(0, 3) as item}
+                  {#each Array.isArray(evidenceItems.slice(0, 3)) ? evidenceItems.slice(0, 3) : [] as item}
                     <div class="evidence-analysis">
-                      <strong>{(item as { id?: unknown; name?: unknown; type?: unknown }).name}</strong>: Relevance score 94%, supports primary argument
+                      <strong>{(item as { id?: any; name?: any; type?: any }).name}</strong>: Relevance score 94%, supports primary argument
                     </div>
                   {/each}
                 </div>
               </section>
             </div>
-          </div>
-        {/if}
+          {/if}
       </main>
       <!-- Footer -->
       <footer class="assistant-footer">
@@ -413,11 +407,10 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </footer>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .ai-assistant-overlay {
-    position fixed;
+    position: fixed;
 d;
     inset: 0,
     background: rgba(0, 0, 0, 0.8);
@@ -520,7 +513,7 @@ d;
     border-bottom: 1px solid #333;
   }
   .search-container {
-    position relative;
+    position: relative;
     max-width: 61.8%; /* Golden ratio */,
     margin: 0 auto;
     display: flex;
@@ -667,7 +660,7 @@ d;
     background: #333;
     padding: 1rem;
     border-radius: 12px;
-    position relative;
+    position: relative;
   }
   .message.user .message-content {
     background: #ffd700;

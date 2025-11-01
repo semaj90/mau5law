@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate response
     const validatedResponse = BoilerplateResponseSchema.parse(response);
     return json(validatedResponse);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorId = crypto.randomUUID();
     console.error(`❌ AI Boilerplate generation error [${errorId}]:`, err);
     if (err instanceof z.ZodError) {
@@ -272,7 +272,7 @@ Generate the boilerplate text:`;
       confidence,
       prosecutionStrength: avgProsecutionScore,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('LLM generation failed:', error);
     // Fallback to template-based generation
     return generateFallbackBoilerplate(request.type, sourcePhrases);
@@ -454,7 +454,7 @@ export const GET: RequestHandler = async () => {
         high_performing_count: parseInt(stats[0]?.high_performing_phrases || '0'),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Template listing error:', err);
     throw error(500, 'Unable to fetch template information');
   }

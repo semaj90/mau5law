@@ -21,7 +21,7 @@ export const GET: RequestHandler = async () => {
     `);
     console.log('✅ Table Check:', tableCheck);
     // Test 4: Vector Extension Check
-    let vectorSupport = false;
+    let vectorSupport = $state(false);
     try {
       await db.execute(sql`SELECT '[1,2,3]'::vector`);
       vectorSupport = true;
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async () => {
     }
     // Test 5: Qdrant Connection Check
     const qdrant = unifiedDb.qdrant();
-    let qdrantSupport = false;
+    let qdrantSupport = $state(false);
     if (qdrant) {
       try {
         await qdrant.getCollections();

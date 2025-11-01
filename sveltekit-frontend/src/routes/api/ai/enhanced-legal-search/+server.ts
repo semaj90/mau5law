@@ -67,7 +67,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       filters: params,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Enhanced legal search API error:', err);
     return json(
       {
@@ -129,7 +129,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       advancedOptions,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Enhanced legal search POST API error:', err);
     return json(
       {
@@ -265,7 +265,7 @@ async function generateAIEnhancement(
       confidence: topResults.reduce((sum, r) => sum + r.confidence, 0) / topResults.length,
       recommendedNextSearch: topResults[0]?.category ? `${query} ${topResults[0].category}` : null,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('AI enhancement generation failed:', error);
     return null;
   }

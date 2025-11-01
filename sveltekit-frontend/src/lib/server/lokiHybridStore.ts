@@ -39,7 +39,7 @@ export interface NoteItem extends BaseKnowledgeItem {
 }
 
 export interface CanvasItem extends BaseKnowledgeItem {
-  canvasState?: unknown;
+  canvasState?: any;
   zoom?: number;
 }
 
@@ -140,7 +140,7 @@ export class LokiHybridStore {
   private readonly transformersModel?: string;
 
   private readonly instanceId = randomUUID();
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   constructor(cfg: HybridConfig = {}) {
     this.db = new Loki('kgcl.db', { persistenceMethod: 'memory' });
@@ -173,7 +173,7 @@ export class LokiHybridStore {
         : undefined);
     this.embeddings = cfg.openAIEmbeddings;
     this.openAiApiKey = cfg.openAIApiKey ?? process.env.OPENAI_API_KEY ?? process.env.OPENAI_KEY;
-    this.embeddingsExplicitlyDisabled = cfg.enableEmbeddings === false;
+    this.embeddingsExplicitlyDisabled = cfg.enableEmbeddings === $state(false);
     this.transformersModel = cfg.transformersModel ?? 'Xenova/distilbart-cnn-6-6';
 
     this.setupCollections(cfg.collections ?? DEFAULT_COLLECTIONS);

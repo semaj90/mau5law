@@ -1,38 +1,31 @@
 <script lang="ts">
 	import * as CanvasStore from '../stores/canvas';
-	import Dialog from './Dialog.svelte';
+	import { Dialog } from './Dialog.svelte';
 	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
-
 	// robust aiStore fallback if the module doesn't export aiStore exactly
 	const aiStore = (CanvasStore as any).aiStore ?? (CanvasStore as any).default ?? writable({
 		dialogOpen: false,
 		isGenerating: false,
 		lastRequest: null
 	});
-
-	let dialogOpen = false;
-	let isGenerating = false;
-
+	let dialogOpen = $state(false);
+	let isGenerating = $state(false);
 	const unsubscribe = aiStore.subscribe((state: any) => {
 		dialogOpen = !!state?.dialogOpen;
 		isGenerating = !!state?.isGenerating;
 	});
-
 	onDestroy(unsubscribe);
-
 	function toggleDialog() {
 		aiStore.update((state: any) => ({ ...state, dialogOpen: !state.dialogOpen }));
 	}
-
 	// accept unknown (what Svelte passes) and narrow to CustomEvent
-	function handleAIRequest(e: unknown) {
+	function handleAIRequest(e: any) {
 		const event = e as CustomEvent<any> | undefined;
 		const payload = event?.detail ?? null;
 		aiStore.update((state: any) => ({ ...state, lastRequest: payload }));
 	}
 </script>
-
 <!-- Floating Action Button -->
 <button
 	class="ai-fab-button"
@@ -66,13 +59,11 @@
 		{/if}
 	</span>
 </button>
-
 <!-- AI Dialog -->
 {#if dialogOpen}
 	<!-- wrap toggleDialog to avoid signature mismatch when Svelte passes an event -->
 	<Dialog title="AI Assistant" open={dialogOpen} on:airequest={handleAIRequest} on:close={() => toggleDialog()} />
 {/if}
-
 <style>
 	.ai-fab-button {
 		position: fixed;
@@ -161,4 +152,3 @@
 		}
 	}
 </style>
-

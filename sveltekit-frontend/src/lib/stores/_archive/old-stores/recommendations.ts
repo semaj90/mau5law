@@ -143,11 +143,11 @@ export const userProductivityScore = derived(recommendationStore, $store => {
 });
 
 // --- New: small runtime guards to avoid `any` ---
-function isRecord(v: unknown): v is Record<string, unknown> {
+function isRecord(v: any): v is Record<string, unknown> {
   // treat arrays as non-records for these checks
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
-function normalizeErrorMessage(err: unknown): string {
+function normalizeErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err ?? 'Unknown error');
@@ -157,7 +157,7 @@ function normalizeErrorMessage(err: unknown): string {
 }
 
 // --- NEW: Type guards / normalizers to fix TS casting errors ---
-function isBehaviorInsights(v: unknown): v is RecommendationState['behaviorInsights'] {
+function isBehaviorInsights(v: any): v is RecommendationState['behaviorInsights'] {
   if (!isRecord(v)) return false;
   const patterns = (v as Record<string, unknown>)['patterns'];
   const suggestions = (v as Record<string, unknown>)['suggestions'];
@@ -165,7 +165,7 @@ function isBehaviorInsights(v: unknown): v is RecommendationState['behaviorInsig
   return Array.isArray(patterns) && Array.isArray(suggestions) && Array.isArray(trends);
 }
 function normalizeBehaviorInsights(
-  v: unknown,
+  v: any,
   fallback: RecommendationState['behaviorInsights']
 ): RecommendationState['behaviorInsights'] {
   if (isBehaviorInsights(v)) return v;
@@ -182,7 +182,7 @@ function normalizeBehaviorInsights(
   }
   return fallback;
 }
-function isUserAnalytics(v: unknown): v is UserAnalytics {
+function isUserAnalytics(v: any): v is UserAnalytics {
   if (!isRecord(v)) return false;
   const userId = (v as Record<string, unknown>)['userId'];
   const profile = (v as Record<string, unknown>)['profile'];
@@ -223,7 +223,7 @@ export const recommendationActions = {
     const startTime = Date.now();
     try {
       // use safer unknown type and narrow before use
-      const rawResponse: unknown = await productionServiceClient.makeRequest('ai.recommendations', {
+      const rawResponse: any = await productionServiceClient.makeRequest('ai.recommendations', {
         userId,
         context,
         options: {
@@ -248,7 +248,7 @@ export const recommendationActions = {
         lastAnalysisTime: Date.now(),
         isAnalyzing: false,
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = normalizeErrorMessage(error);
       console.error('Recommendation generation failed:', msg);
       recommendationStore.update(state => ({
@@ -266,14 +266,14 @@ export const recommendationActions = {
     userId: string,
     activityData: {
       action: string;
-      context: unknown;
+      context: any;
       timestamp: number;
       duration?: number;
     }
   ): Promise<void> {
     if (!initialState.enableRealTimeAnalysis) return;
     try {
-      const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.behavior', {
+      const rawResponse: any = await productionServiceClient.makeRequest('analytics.behavior', {
         userId,
         activity: activityData,
         options: {
@@ -290,7 +290,7 @@ export const recommendationActions = {
         userAnalytics: isUserAnalytics(ua) ? ua : state.userAnalytics,
         behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Behavior analysis failed:', normalizeErrorMessage(error));
     }
   },
@@ -317,7 +317,7 @@ export const recommendationActions = {
         recommendations: state.recommendations.map(r => (r.id === recommendationId ? { ...r, accepted: true } : r)),
         activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId),
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to accept recommendation:', normalizeErrorMessage(error));
     }
   },
@@ -343,7 +343,7 @@ export const recommendationActions = {
             : state.dismissedRecommendations,
         };
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to dismiss recommendation:', normalizeErrorMessage(error));
     }
   },
@@ -353,7 +353,7 @@ export const recommendationActions = {
    */
   async loadUserAnalytics(userId: string): Promise<void> {
     try {
-      const rawResponse: unknown = await productionServiceClient.makeRequest('analytics.user', {
+      const rawResponse: any = await productionServiceClient.makeRequest('analytics.user', {
         userId,
         includePerformance: true,
         includeBehavior: true,
@@ -368,7 +368,7 @@ export const recommendationActions = {
         userAnalytics: isUserAnalytics(analytics) ? analytics : state.userAnalytics,
         behaviorInsights: normalizeBehaviorInsights(insights, state.behaviorInsights),
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = normalizeErrorMessage(error);
       console.error('Failed to load user analytics:', msg);
       recommendationStore.update(state => ({
@@ -406,7 +406,7 @@ export const recommendationActions = {
    */
   async checkModelsStatus(): Promise<void> {
     try {
-      const rawResponse: unknown = await productionServiceClient.makeRequest('models.status', {});
+      const rawResponse: any = await productionServiceClient.makeRequest('models.status', {});
       const resp = isRecord(rawResponse) ? rawResponse : {};
 
       const flag = (snake: string, camel?: string): boolean => {
@@ -426,7 +426,7 @@ export const recommendationActions = {
           recommendation_engine: flag('recommendation_engine', 'recommendationEngine'),
         },
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to check models status:', normalizeErrorMessage(error));
       recommendationStore.update(state => ({
         ...state,

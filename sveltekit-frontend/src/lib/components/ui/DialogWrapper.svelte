@@ -5,7 +5,7 @@
     open?: boolean;
     title?: string;
     description?: string;
-    analyticsLog?: (_event: unknown) => void;
+    analyticsLog?: (_event: any) => void;
     onClose?: () => void;
     children?: Snippet;
   }
@@ -25,11 +25,10 @@
     }
   });
   function handleClose() {
-    open = false;
+    open = $state(false);
     onClose();
   }
 </script>
-
 {#if open}
   <!-- simple accessible modal replacing bits-ui Dialog.* usage -->
   <!-- changed: expanded self-closing div to explicit element and use onclick (Svelte 5) -->
@@ -54,19 +53,16 @@
     </div>
     <!-- changed: use onclick instead of deprecated onclick -->
     <button class="modal-close" type="button" onclick={handleClose} aria-label="Close dialog">×</button>
-  </div>
-{/if}
-
+  {/if}
 <style>
   :global(.modal-overlay) {
-    position fixed;
+    position: fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     z-index: 40,
   }
-
   :global(.modal-content) {
-    position fixed;
+    position: fixed;
     left: 50%;
     top: 50%;
     z-index: 50,
@@ -79,21 +75,18 @@
     padding: 1.5rem; /* p-6 */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl-ish */
   }
-
   :global(.modal-title) {
     font-size: 1.25rem; /* text-xl */
     font-weight: 700; /* font-bold */
     color: var(--nier-accent, #38bdf8);
     margin-bottom: 0.5rem; /* mb-2 */
   }
-
   :global(.modal-description) {
     color: var(--nier-text-muted, #cbd5e1);
     margin-bottom: 1rem; /* mb-4 */
   }
-
   :global(.modal-close) {
-    position absolute;
+    position: absolute;
     top: 1rem; /* top-4 */
     right: 1rem; /* right-4 */
     width: 2rem; /* w-8 */
@@ -108,10 +101,8 @@
     transition: background-color 0.15s ease,
       color 0.15s ease; /* transition-color */
   }
-
   :global(.modal-close:hover) {
     background: var(--nier-surface-lighter, #374151);
     color: var(--nier-white, #ffffff);
   }
 </style>
-

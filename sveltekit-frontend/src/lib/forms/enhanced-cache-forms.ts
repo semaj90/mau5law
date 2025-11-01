@@ -66,7 +66,7 @@ type FormCacheData = EnhancedCaseForm | EvidenceUploadForm | UnknownRecord;
 type FormResult<T = unknown> = {
   type?: 'success' | 'error' | string;
   data?: T;
-  error?: unknown;
+  error?: any;
 };
 
 // Add a specific type for chain of custody entries to avoid `any`
@@ -120,8 +120,8 @@ export class CacheFirstFormManager {
       resetForm: false,
       invalidateAll: false,
       // Cache-first validation
-      onUpdate: ({ form }: { form: unknown }) => {
-        const fd = (form as { data?: unknown }).data as FormCacheData | undefined;
+      onUpdate: ({ form }: { form: any }) => {
+        const fd = (form as { data?: any }).data as FormCacheData | undefined;
         if (fd) {
           this.handleFormUpdate(formId, fd);
           this.startAutosave(formId, fd);
@@ -144,7 +144,7 @@ export class CacheFirstFormManager {
           return;
         }
       },
-      onResult: async (input: { result: unknown; formElement?: HTMLFormElement; cancel?: () => void }) => {
+      onResult: async (input: { result: any; formElement?: HTMLFormElement; cancel?: () => void }) => {
         const res = input.result as FormResult;
         if (res.type === 'success') {
           const caseData = res.data as UnknownRecord;
@@ -155,7 +155,7 @@ export class CacheFirstFormManager {
           this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));
         }
       },
-      onError: ({ result }: { result: unknown }) => {
+      onError: ({ result }: { result: any }) => {
         const res = result as FormResult;
         this.formErrors.update(errors => ({
           ...errors,
@@ -199,8 +199,8 @@ export class CacheFirstFormManager {
     const form = superForm(defaultData as unknown as Record<string, unknown>, {
       SPA: true,
       validators: zod(EvidenceUploadFormSchema),
-      onUpdate: ({ form }: { form: unknown }) => {
-        const fd = (form as { data?: unknown }).data as FormCacheData | undefined;
+      onUpdate: ({ form }: { form: any }) => {
+        const fd = (form as { data?: any }).data as FormCacheData | undefined;
         if (fd) {
           this.handleFormUpdate(formId, fd);
           // Auto-generate title from file name if possible
@@ -229,7 +229,7 @@ export class CacheFirstFormManager {
           await this.uploadFileWithProgress(formId, file as File);
         }
       },
-      onResult: async ({ result }: { result: unknown }) => {
+      onResult: async ({ result }: { result: any }) => {
         const res = result as FormResult;
         if (res.type === 'success') {
           const evidenceData = res.data as UnknownRecord;

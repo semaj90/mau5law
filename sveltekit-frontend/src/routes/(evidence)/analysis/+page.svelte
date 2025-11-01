@@ -2,12 +2,12 @@
   // Svelte 5 runes are auto-imported
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   // If migrating to a UI kit with named exports, use curly braces for consistency:
-  // import { WebGPUEvidenceGraphVisualization } from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization';
+  // import { WebGPUEvidenceGraphVisualization } from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte'';
   // For now, keep default import as the module doesn't provide a named export
-  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization';
+  import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte'';
 
-  import { Button } from '$lib/components/ui/button';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
 
   // Use Svelte 5 reactive state API so updates trigger reactivity
   let showWebGPUDemo = $state(false);

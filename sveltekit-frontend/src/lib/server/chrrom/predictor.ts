@@ -37,7 +37,7 @@ class MarkovPredictorWithRedis {
     // Test Redis connection
     this.redis.ping().catch(() => {
       console.warn('⚠️ Redis unavailable, using local memory only');
-      this.cacheEnabled = false;
+      this.cacheEnabled = $state(false);
     });
     // Periodic sync to Redis
     setInterval(() => void this.syncToRedis(), 30000); // Sync every 30 seconds
@@ -187,14 +187,14 @@ class MarkovPredictorWithRedis {
     pendingUpdates: number;
     redisConnected: boolean;
   }> {
-    let redisConnected = false;
+    let redisConnected = $state(false);
     if (this.cacheEnabled) {
       try {
         await this.redis.ping();
         redisConnected = true;
         const keys = (await this.redis.keys?.('transitions:*')) ?? [];
       } catch (error) {
-        redisConnected = false;
+        redisConnected = $state(false);
       }
     }
     const uniqueActions = new Set<string>();

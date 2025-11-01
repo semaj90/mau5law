@@ -17,7 +17,7 @@ type GlyphResult = {
   glyph_url?: string;
   neural_sprite_results?: {
     compression_ratio?: number;
-    predictive_frames?: unknown[]; // keep generic for now
+    predictive_frames?: any[]; // keep generic for now
   } | null;
   tensor_ids?: string[] | null;
   preview_with_tensors?: boolean;
@@ -35,7 +35,7 @@ type GRPMOContext = {
 
 export const POST: RequestHandler = async ({ request }) => {
   // bring body into outer scope so catch block can reference it
-  let body: unknown = null;
+  let body: any = null;
   try {
     body = (await request.json()) as Record<string, unknown>;
 
@@ -413,7 +413,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Add safe runtime wrapper for glyph generation (tries common method names)
-async function generateGlyphFromService(service: unknown, req: GlyphRequest): Promise<GlyphResult> {
+async function generateGlyphFromService(service: any, req: GlyphRequest): Promise<GlyphResult> {
   const s: any = service as any;
   if (typeof s.generateGlyph === 'function') {
     return (await s.generateGlyph(req)) as GlyphResult;

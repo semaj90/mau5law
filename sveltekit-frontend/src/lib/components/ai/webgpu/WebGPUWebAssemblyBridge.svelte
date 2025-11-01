@@ -13,8 +13,8 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Props
   interface Props {
     enableGPU?: boolean;
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
           console.log('✅ WebGPU client initialized');
         } catch (gpuError) {
           console.warn('⚠️ WebGPU initialization failed:', gpuError);
-          metrics.webgpuSupport = false;
+          metrics.webgpuSupport = $state(false);
         }
       }
       // 2. Initialize WebAssembly service
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
           }
         } catch (wasmError) {
           console.warn('⚠️ WebAssembly initialization failed:', wasmError);
-          metrics.webAssemblySupport = false;
+          metrics.webAssemblySupport = $state(false);
         }
       }
       // 3. Initialize AI adapter with fallbacks
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Unknown initialization error';
       console.error('❌ Initialization failed:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   async function runDemo() {
@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       demoResult = `❌ Demo failed: ${err instanceof Error ? err.message: 'Unknown error'}`;
     } finally {
-      demoProcessing = false;
+      demoProcessing = $state(false);
     }
   }
   function getStatusColor(status: boolean): string {
@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h4 class="font-semibold mb-2">🎮 Capabilities</h4>
             <div class="flex flex-wrap gap-1">
-              {#each capabilities as capability}
+              {#each Array.isArray(capabilities) ? capabilities : [] as capability}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{capability}</span>
               {/each}
             </div>
@@ -242,13 +242,12 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h4 class="font-semibold mb-2">⚡ Processing Modes</h4>
             <div class="flex flex-wrap gap-1">
-              {#each processingModes as mode}
+              {#each Array.isArray(processingModes) ? processingModes : [] as mode}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{mode}</span>
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- System Status -->
@@ -280,8 +279,7 @@ https://svelte.dev/e/js_parse_error -->
                   Model: {systemInfo.webGPU.info.name}<br>
                   Memory: {systemInfo.webGPU.info.memoryUsage}<br>
                   WebGPU: {systemInfo.webGPU.info.webgpuAccelerated ? 'Yes' : 'No'}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
           <!-- WebAssembly Status -->
@@ -305,8 +303,7 @@ https://svelte.dev/e/js_parse_error -->
                   Cache: {systemInfo.webAssembly.health.cacheSize} entries<br>
                   Threads: {systemInfo.webAssembly.health.threadsCount}<br>
                   Worker: {systemInfo.webAssembly.health.workerEnabled ? 'Yes' : 'No'}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
           <!-- Performance Metrics -->
@@ -329,14 +326,12 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex justify-between">
                   <span>Last Process:</span>
                   <span class="text-gray-600">{metrics.lastProcessingTime.toFixed(2)}ms</span>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Interactive Demo -->
   {#if initialized && enableDemo}
     <div class="nes-container">
@@ -364,12 +359,10 @@ https://svelte.dev/e/js_parse_error -->
             <div class="mt-4 p-4 bg-gray-50 border rounded-md">
               <h4 class="font-semibold mb-2">📊 Result:</h4>
               <pre class="text-sm text-gray-800 whitespace-pre-wrap">{demoResult}</pre>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .animate-spin {

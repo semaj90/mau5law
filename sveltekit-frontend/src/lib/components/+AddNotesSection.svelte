@@ -1,22 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-
   type Option = { value: string; label: string };
-
   // createEventDispatcher is deprecated in Svelte 5 — use callback props instead
   let { onsaved }: { onsaved?: (payload: { notesContent: string; selectedCaseForNotes: string; selectedPoiForNotes: string }) => void } = $props();
-
   let notesContent: string = $state('');
   let selectedCaseForNotes: string = $state(''); // Assuming notes can be linked to a case
   let selectedPoiForNotes: string = $state(''); // Assuming notes can be linked to a POI
-
   // Replace static dummy arrays with reactive arrays populated from API
   let caseOptions: Option[] = $state([]);
   let poiOptions: Option[] = $state([]);
-
   let optionsLoading = $state(false);
   let optionsError: string | null = $state(null);
-
   // Original dummy fallbacks
   const defaultCaseOptions: Option[] = [
     { value: 'case1', label: 'Case 2023-001' },
@@ -28,18 +22,15 @@
     { value: 'poi2', label: 'Jane Smith' },
     { value: 'poi3', label: 'Criminal X' },
   ];
-
   async function loadOptions() {
     optionsLoading = true;
     optionsError = null;
-
     try {
       // Fetch both endpoints in parallel; adapt paths if your server uses different routes
       const [casesRes, poisRes] = await Promise.all([
         fetch('/api/cases'),
         fetch('/api/pois'),
       ]);
-
       // Map responses to { value, label } — handle multiple response shapes
       if (casesRes.ok) {
         const data = await casesRes.json();
@@ -52,7 +43,6 @@
       } else {
         caseOptions = defaultCaseOptions;
       }
-
       if (poisRes.ok) {
         const data = await poisRes.json();
         poiOptions = Array.isArray(data)
@@ -70,14 +60,12 @@
       caseOptions = defaultCaseOptions;
       poiOptions = defaultPoiOptions;
     } finally {
-      optionsLoading = false;
+      optionsLoading = $state(false);
     }
   }
-
   onMount(() => {
     loadOptions();
   });
-
   const handleSubmit = async () => {
     // In a real application, you would send this data to your backend API
     const payload = {
@@ -108,14 +96,12 @@
         // ignore in non-browser contexts
       }
     }
-
     // Reset form
     notesContent = '';
     selectedCaseForNotes = '';
     selectedPoiForNotes = '';
   };
 </script>
-
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Add Notes</h3>
@@ -129,7 +115,7 @@
       <label for="caseSelectNotes" class="form-label">Link to Case (Optional):</label>
       <select id="caseSelectNotes" class="form-control" bind:value={selectedCaseForNotes}>
         <option value="">Select a case</option>
-        {#each caseOptions as option}
+        {#each Array.isArray(caseOptions) ? caseOptions : [] as option}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
@@ -138,7 +124,7 @@
       <label for="poiSelectNotes" class="form-label">Link to POI (Optional):</label>
       <select id="poiSelectNotes" class="form-control" bind:value={selectedPoiForNotes}>
         <option value="">Select a POI</option>
-        {#each poiOptions as option}
+        {#each Array.isArray(poiOptions) ? poiOptions : [] as option}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
@@ -148,7 +134,6 @@
     </button>
   </div>
 </div>
-
 <style>
   /* Align styles with actual markup classes used in the template */
   .nier-bits-card {
@@ -170,7 +155,6 @@
   .nier-bits-card-body {
     /* body wrapper spacing */
   }
-
   .form-label {
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -190,7 +174,6 @@
     resize: vertical;
     min-height: 5rem;
   }
-
   /* NES/nes.css button combo used in markup: class="btn nes-btn is-primary" */
   button.btn.nes-btn.is-primary,
   .btn.nes-btn.is-primary {
@@ -206,7 +189,6 @@
   .btn.nes-btn.is-primary:hover {
     background-color: #0056b3;
   }
-
   /* Utility spacing used in markup (mb-3 etc.) */
   .mb-3 {
     margin-bottom: 0.75rem;

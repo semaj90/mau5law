@@ -9,7 +9,7 @@
   		glowEffect?: boolean;
   		soundEnabled?: boolean;
   		onclick?: () => void;
-  		children: unknown;
+  		 unknown;
   	}
   	let { variant = 'primary',
   		size = 'md',
@@ -27,7 +27,7 @@
   		soundEnabled = true,
   		onclick,
   		children
-  	: unknown } = $props();
+  	: any } = $props();
   	let buttonElement: HTMLButtonElement = $state(undefined as any);
   	let isPressed = $state(false);
   	function handleClick(_event: MouseEvent) {
@@ -70,8 +70,7 @@
 	onclick={handleClick}
 >
 	{#if loading}
-		<div class="loading-spinner"></div>
-	{/if}
+		<div class="loading-spinner">{/if}
 	<span class="button-content" class:loading>
 		{@render children()}
 	</span>
@@ -81,7 +80,7 @@
 </button>
 <style>
 	.gaming-button {
-		position relative;
+		position: relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -197,7 +196,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		animation: gaming-glow 2s ease-in-out infinite alternate;
 	}
 /* Button Content */ .button-content {
-		position relative;
+		position: relative;
 		z-index: 2,
 		display: flex;
 		align-items: center;
@@ -208,7 +207,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		opacity: 0.7;
 	}
 /* Loading Spinner */ .loading-spinner {
-		position absolute;
+		position: absolute;
 		width: 20px;
 		height: 20px;
 		border: 2px solid rgba(255, 255, 255, 0.3);
@@ -218,20 +217,20 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		z-index: 3,
 	}
 /* Gaming Effects */ .button-overlay {
-		position absolute;
+		position: absolute;
 		top: 0,
 		left: -100%;
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-		transition: left 0.5s ease;
+		transition: left: 0.5s ease;
 		z-index: 1,
 	}
 	.gaming-buttonhover:not(:disabled) .button-overlay {
 		left: 100%;
 	}
 	.scan-line {
-		position absolute;
+		position: absolute;
 		top: 0,
 		left: 0;
 		right: 0,

@@ -248,7 +248,6 @@ https://svelte.dev/e/js_parse_error -->
     }, 2000);
   }
 </script>
-
 <div class="phase8-demo {className}">
   <div class="demo-header yorha-panel p-6 mb-6">
     <h2 class="text-2xl font-bold text-yellow-400 mb-2">Phase 8: AI-Aware Matrix UI System</h2>
@@ -393,18 +392,15 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 </div>
-
 <style>
   /* Replaced @apply usages with explicit CSS so component styles do not rely on @apply processing. */
   /* @unocss-include (kept as a hint for UnoCSS but no @apply usage) */
-
   .phase8-demo {
     max-width: 80rem; /* tailwind max-w-7xl */
     margin-left: auto;
     margin-right: auto;
     padding: 1.5rem; /* p-6 */
   }
-
   .indicator {
     width: 0.5rem; /* w-2 */
     height: 0.5rem; /* h-2 */
@@ -412,21 +408,18 @@ https://svelte.dev/e/js_parse_error -->
     display: inline-block;
     margin-right: 0.5rem; /* mr-2 */
   }
-
   .status-item {
     display: flex;
     align-items: center;
     font-size: 0.875rem; /* text-sm */
     color: #d1d5db; /* gray-300 */
   }
-
   /* Support both the original .tech-card name and the rendered .tech-nier-bits-card */
   .tech-card,
   .tech-nier-bits-card {
     background-color: #1f2937; /* gray-800 */
     border: 1px solid #374151; /* gray-700 */
   }
-
   /* Demo-specific styling (replacing ring utilities with outline/box-shadow fallbacks) */
   :global(.demo-highlight) {
     /* emulate ring-2 ring-yellow-400 ring-opacity-50 + bg-yellow-400 bg-opacity-10 */
@@ -434,43 +427,35 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgba(245, 158, 11, 0.1); /* yellow-400 at 10% */
     animation: pulse 2s ease-in-out infinite;
   }
-
   :global(.ai-enhanced) {
     /* emulate ring-2 ring-blue-400 ring-opacity-50 */
     outline: 2px solid rgba(59, 130, 246, 0.5); /* blue-400 at 50% */
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
-
   :global(.lod-demo) {
     transition: transform 0.3s ease,
       opacity 0.3s ease;
   }
-
   :global(.lod-low) {
     opacity: 0.6; /* opacity-60 */
     transform: scale(0.95); /* scale-95 */
   }
-
   :global(.lod-mid) {
     opacity: 0.8; /* opacity-80 */
     transform: scale(0.95); /* scale-95 */
   }
-
   :global(.lod-high) {
     opacity: 1; /* opacity-100 */
     transform: scale(1); /* scale-100 */
   }
-
   .canvas-container canvas {
     background: linear-gradient(45deg, #1a1a1a 0%, #2d2d2d 100%);
   }
-
   .overlay {
     background: rgba(0, 0, 0, 0.7);
     padding: 4px 8px;
     border-radius: 4px;
   }
-
   @keyframes pulse {
     0%,
     100% {
@@ -481,4 +466,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

@@ -1,13 +1,10 @@
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import postgres from 'postgres';
 import * as schema from './schema-postgres.js';
-
 // ===============================
 // Configuration & Environment
 // ===============================
-
 const isDev = process.env.NODE_ENV !== 'production';
-
 // Simple env helpers (you can centralize these later)
 function getDatabaseUrl(): string {
   return (
@@ -17,7 +14,6 @@ function getDatabaseUrl(): string {
     }/legal_ai_db`
   );
 }
-
 function getAdminDatabaseUrl(): string {
   return (
     process.env.ADMIN_DATABASE_URL ||
@@ -28,20 +24,16 @@ function getAdminDatabaseUrl(): string {
     getDatabaseUrl()
   );
 }
-
 // ===============================
 // Connection Singletons
 // ===============================
-
 let runtimeConnectionSingleton: postgres.Sql | null = null;
 let adminConnectionSingleton: postgres.Sql | null = null;
 let runtimeDb: NodePgDatabase<typeof schema> | null = null;
 let adminDb: NodePgDatabase<typeof schema> | null = null;
-
 // ===============================
 // Connection Creators
 // ===============================
-
 export function createRuntimeConnection(): NodePgDatabase<typeof schema> {
   if (!runtimeConnectionSingleton) {
     const url = getDatabaseUrl();
@@ -53,7 +45,6 @@ export function createRuntimeConnection(): NodePgDatabase<typeof schema> {
   }
   return runtimeDb!;
 }
-
 export function createAdminConnection(): NodePgDatabase<typeof schema> {
   if (!adminConnectionSingleton) {
     const url = getAdminDatabaseUrl();
@@ -65,16 +56,14 @@ export function createAdminConnection(): NodePgDatabase<typeof schema> {
   }
   return adminDb!;
 }
-
 // ===============================
 // Health Checks
 // ===============================
-
 export async function testRuntimeConnection(): Promise<boolean> {
   try {
     const client = runtimeConnectionSingleton ?? postgres(getDatabaseUrl());
     // avoid `any` by using unknown and runtime checks
-    const res: unknown = await client`SELECT 1 as ok`;
+    const res: any = await client`SELECT 1 as ok`;
     // Only close if we created a temporary connection and it supports .end()
     if (!runtimeConnectionSingleton && typeof (client as { end?: () => Promise<void> }).end === 'function') {
       await (client as { end: () => Promise<void> }).end();
@@ -85,11 +74,10 @@ export async function testRuntimeConnection(): Promise<boolean> {
     return false;
   }
 }
-
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = adminConnectionSingleton ?? postgres(getAdminDatabaseUrl());
-    const res: unknown = await client`SELECT 1 as ok`;
+    const res: any = await client`SELECT 1 as ok`;
     // Only close the connection if we created a new one and it's not the singleton
     if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') {
       await (client as unknown as { end: () => Promise<void> }).end();
@@ -100,11 +88,9 @@ export async function testAdminConnection(): Promise<boolean> {
     return false;
   }
 }
-
 // ===============================
 // Connection Cleanup
 // ===============================
-
 export async function closeConnections(): Promise<void> {
   try {
     if (runtimeConnectionSingleton && typeof runtimeConnectionSingleton.end === 'function') {
@@ -125,15 +111,12 @@ export async function closeConnections(): Promise<void> {
 }
 // Legacy alias removed for consistency
 export const closeConnection = closeConnections;
-
 // ===============================
 // Optional Initialization
 // ===============================
-
-let initialized = false;
+let initialized = $state(false);
 async function initializeDatabase(): Promise<void> {
   if (initialized) return;
-
   if (!isDev) {
     console.log('🔄 initializeDatabase: production initialization placeholder');
     // Recommended: Use Drizzle ORM migrations.
@@ -141,39 +124,30 @@ async function initializeDatabase(): Promise<void> {
     // await migrate(runtimeDb, { migrationsFolder: './drizzle/migrations' });
     // See https://orm.drizzle.team/docs/migrations for details.
   }
-
   // mark as initialized to prevent re-run
   initialized = true;
 }
-
 // Single fire-and-forget initialization in non-dev
 if (!isDev) {
   initializeDatabase().catch(e => {
     console.warn('[DB] Production initialization error in initializeDatabase:', e);
   });
 }
-
 // ===============================
 // Default Export
 // ===============================
-
 const dbManager = {
   getDb: createRuntimeConnection,
   getAdminDb: createAdminConnection,
   closeConnections,
 };
-
 export default dbManager;
-
 // ===============================
 // Convenience Exports for hooks.server.ts
 // ===============================
-
 export const getDbClient = createRuntimeConnection;
 export const getAdminDbClient = createAdminConnection;
-
 // ===============================
 // Re-export schema
 // ===============================
-
 export * from './schema-postgres.js';

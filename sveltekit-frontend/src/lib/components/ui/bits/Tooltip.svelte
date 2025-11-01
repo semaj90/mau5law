@@ -55,10 +55,9 @@
     }
   }
 </script>
-
 <BitsTooltip.Root {delayDuration} {...props}>
   <BitsTooltip.Trigger asChild>
-    {@render children?.()}
+    <slot />
   </BitsTooltip.Trigger>
   <BitsTooltip.Portal>
     <BitsTooltip.Content
@@ -96,7 +95,6 @@
     </BitsTooltip.Content>
   </BitsTooltip.Portal>
 </BitsTooltip.Root>
-
 <style>
 /* Gaming theme glow effect */ {}
   :global([data-bits-tooltip-content][data-theme='gaming']) {
@@ -122,4 +120,3 @@ box-shadow: {}
     transform-origin: var(--bits-tooltip-content-transform-origin);
   }
 </style>
-

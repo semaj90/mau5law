@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
   import { fly, fade } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-
   interface Props {
     position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
     size?: 'sm' | 'md' | 'lg';
@@ -16,7 +15,6 @@
     onactivate?: () => void;
     ondeactivate?: () => void;
   }
-
   let {
     position = 'bottom-right',
     size = 'md',
@@ -30,19 +28,16 @@
     onactivate,
     ondeactivate,
   }: Props = $props();
-
   // State management (Svelte 5 $state)
   let mounted = $state(false);
   let buttonElement = $state<HTMLButtonElement | null>(null);
   let showTooltip = $state(false);
-
   // Size configurations
   const sizeClasses = {
     sm: 'w-12 h-12 text-sm',
     md: 'w-16 h-16 text-base',
     lg: 'w-20 h-20 text-lg',
   } as const;
-
   // Position configurations
   const positionClasses = {
     'bottom-right': 'bottom-6 right-6',
@@ -50,7 +45,6 @@
     'top-right': 'top-6 right-6',
     'top-left': 'top-6 left-6',
   } as const;
-
   // Variant configurations
   const variantClasses = {
     primary:
@@ -60,7 +54,6 @@
     accent:
       'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400 hover:to-yorha-accent border-yorha-accent',
   } as const;
-
   // Handle button click
   function handleClick() {
     if (disabled || loading) return;
@@ -71,7 +64,6 @@
       navigator.vibrate(50);
     }
   }
-
   // Handle keyboard events
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
@@ -79,7 +71,6 @@
       handleClick();
     }
   }
-
   // Show/hide tooltip
   function showTooltipHandler() {
     if (tooltip && !disabled) {
@@ -87,9 +78,8 @@
     }
   }
   function hideTooltipHandler() {
-    showTooltip = false;
+    showTooltip = $state(false);
   }
-
   $effect(() => {
     mounted = true;
     // Add global keyboard shortcut (Ctrl/Cmd + K)
@@ -105,7 +95,6 @@
     };
   });
 </script>
-
 {#if mounted}
   <!-- AI Assistant Button -->
   <div class="fixed {positionClasses[position]} z-50">
@@ -120,8 +109,7 @@
         <div
           class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-yorha-border"
         ></div>
-      </div>
-    {/if}
+      {/if}
     <button
       type="button"
       bind:this={buttonElement}
@@ -205,12 +193,9 @@
           in:fly={{ y: -10, duration 300 }}
         >
           {notificationCount > 9 ? '9+' : notificationCount}
-        </div>
-      {/if}
+        {/if}
     </button>
-  </div>
-{/if}
-
+  {/if}
 <style>
   @keyframes float {
     0%,
@@ -233,4 +218,3 @@
     animation: float 3s linear infinite;
   }
 </style>
-

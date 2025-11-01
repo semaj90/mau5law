@@ -13,7 +13,7 @@
     console.log(`Selected case ${caseId}`);
     // cast the payload to the expected Partial<ContextData> to satisfy TS
     await ContextService.updateCaseContext({ caseId } as unknown as Partial<any>);
-    showModal = false;
+    showModal = $state(false);
   }
 </script>
 
@@ -28,7 +28,7 @@
       <h2 class="text-lg font-semibold mb-2">Select a Case</h2>
       <p class="text-sm text-slate-600 dark:text-slate-300">Choose a case to view its details and evidence.</p>
       <div class="mt-4 space-y-3">
-        {#each cases as caseItem}
+        {#each Array.isArray(cases) ? cases : [] as caseItem}
           <button class="w-full text-left px-4 py-2 border rounded hover:bg-slate-100 dark:hover:bg-slate-800"
             onclick={() => selectCase(caseItem.id)}>
             {caseItem.name}
@@ -39,5 +39,4 @@
         <button class="px-3 py-1 border rounded" onclick={() => (showModal = false)}>Close</button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}

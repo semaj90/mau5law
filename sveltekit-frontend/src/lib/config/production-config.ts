@@ -2,7 +2,6 @@
  * Production Configuration and Optimization Settings
  * Centralized configuration for production-ready legal AI platform
  */
-
 export interface ProductionConfig {
   // Performance Settings
   performance: {

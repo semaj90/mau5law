@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js'
 import os from 'os';
 
 // helper to safely extract error messages
-function getErrorMessage(e: unknown): string {
+function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   if (typeof e === 'string') return e;
   return 'Unknown error';
@@ -13,7 +13,7 @@ interface ServiceHealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown'
   message?: string
   // changed `any` -> `unknown` to avoid unexpected any and enforce safer typing
-  details?: unknown
+  details?: any
   responseTime?: number
   lastChecked: string
 }
@@ -59,7 +59,7 @@ type CheckResultStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
 interface CheckResult {
   status: CheckResultStatus;
   responseTime: number;
-  details?: unknown;
+  details?: any;
 }
 
 // replace function signature and remove `any` casts
@@ -77,12 +77,12 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
     const responseTime = Date.now() - startTime;
     if (response.ok) {
       // parse JSON defensively; fallback to an empty object
-      const data: unknown = await response.json().catch(() => ({}));
+      const data: any = await response.json().catch(() => ({}));
       return { status: 'healthy', responseTime, details: data };
     } else {
       return { status: 'degraded', responseTime, details: { statusCode: response.status } };
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const responseTime = Date.now() - startTime;
     if ((err as { name?: string })?.name === 'AbortError') {
       return { status: 'unhealthy', responseTime, details: { error: 'Request timeout' } };
@@ -103,7 +103,7 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unhealthy',
       message: `Database health check failed: ${getErrorMessage(error)}`,
@@ -124,7 +124,7 @@ async function checkRedisHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Redis health endpoint not accessible',
@@ -145,7 +145,7 @@ async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Neo4j health endpoint not accessible',
@@ -166,7 +166,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unhealthy',
       message: 'Ollama service unavailable',
@@ -195,7 +195,7 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unhealthy',
       message: 'OCR service unavailable',
@@ -220,7 +220,7 @@ async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Vector search health endpoint not accessible',
@@ -241,7 +241,7 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'degraded',
       message: 'MinIO service unavailable - file storage in degraded mode',
@@ -394,7 +394,7 @@ export const GET: RequestHandler = async () => {
       `Health check complete: ${response.summary.healthyServices}/${response.summary.totalServices} services healthy (${response.summary.overallHealthScore}% overall health)`
     );
     return json(response, { status: httpStatus, headers });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Comprehensive health check failed:', getErrorMessage(error));
     return json(
       {
@@ -463,7 +463,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // If force is true or no specific service, do full health check
     const { response, httpStatus, headers } = await buildAggregatedHealthPayload();
     return json(response, { status: httpStatus, headers });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         error: 'Invalid request',

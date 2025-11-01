@@ -5,7 +5,6 @@
   let { children }: Props = $props();
   // Context menu item component
 </script>
-
 <button class="space-y-4">
-  {@render children?.()}
+  <slot />
 </button>

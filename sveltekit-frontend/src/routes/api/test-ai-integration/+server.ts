@@ -15,7 +15,7 @@ import {
 
 // Helper type for AI/API responses to reduce repetition
 type AiApiResponse = {
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export interface TestResult {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       testSuites: results,
       recommendations: generateRecommendations(results),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Test suite execution failed:', error);
     return json(
       {
@@ -184,7 +184,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
  */
 interface OllamaModel {
   name: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 async function testAIServices(verbose: boolean): Promise<TestSuite> {
   const tests: TestResult[] = [];
@@ -285,7 +285,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
         return 'AI returned JSON but with incorrect values';
       }
       return 'AI successfully returned structured JSON response';
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (verbose) console.error('Failed to parse JSON response:', data.response);
       return 'AI response was not valid JSON format';
     }
@@ -305,7 +305,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
  */
 interface FindApiResult {
   aiConfidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Add a more specific type for the find API response
@@ -317,9 +317,9 @@ interface FindApiResponse {
     processingTime?: number;
     mcpAnalysis?: boolean;
   };
-  mcpContext?: unknown;
-  autoSuggestions?: unknown[];
-  suggestions?: unknown[];
+  mcpContext?: any;
+  autoSuggestions?: any[];
+  suggestions?: any[];
 }
 
 async function testFindAPI(verbose: boolean): Promise<TestSuite> {
@@ -573,11 +573,11 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
         throw new Error(`Qdrant connection failed: ${response.status}`);
       }
       const data: AiApiResponse = await response.json();
-      if (!data.result || !(data.result as { collections: unknown[] }).collections) {
+      if (!data.result || !(data.result as { collections: any[] }).collections) {
         return 'Qdrant connected but no collections found';
       }
-      return `Qdrant connected, ${(data.result as { collections: unknown[] }).collections.length} collections available`;
-    } catch (error: unknown) {
+      return `Qdrant connected, ${(data.result as { collections: any[] }).collections.length} collections available`;
+    } catch (error: any) {
       if (verbose) console.error('Qdrant connection error:', (error as Error).message);
       return 'Qdrant vector database not available (may be expected)';
     }
@@ -616,7 +616,7 @@ async function runTest(tests: TestResult[], name: string, testFn: () => Promise<
       duration,
       details,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     tests.push({
       name,
       status: 'fail',
@@ -690,7 +690,7 @@ export const GET: RequestHandler = async () => {
       duration: Date.now() - startTime,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         healthy: false,

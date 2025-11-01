@@ -547,7 +547,7 @@ class LegalRAGEmbeddingOrchestrator {
   }
 
   // Placeholder methods for data conversion
-  private convertToLegalLaws(results: unknown[]): LegalLaw[] {
+  private convertToLegalLaws(results: any[]): LegalLaw[] {
     return results.map((result) => {
       const r = (result as Record<string, unknown>) || {};
       const meta = (r.metadata as Record<string, unknown>) || {};
@@ -582,7 +582,7 @@ class LegalRAGEmbeddingOrchestrator {
     });
   }
 
-  private convertToLegalCases(results: unknown[]): LegalCase[] {
+  private convertToLegalCases(results: any[]): LegalCase[] {
     return results.map((result) => {
       const r = (result as Record<string, unknown>) || {};
       const meta = (r.metadata as Record<string, unknown>) || {};

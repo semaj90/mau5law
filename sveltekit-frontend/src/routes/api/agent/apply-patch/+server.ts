@@ -37,7 +37,7 @@ type DemoPatch = {
 const demoPatchStorage = new Map<string, DemoPatch>();
 
 // helper to safely stringify unknown errors
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
         filePath: updatedPatch.filePath,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = getErrorMessage(error);
     console.error('Error applying patch:', message);
     return json(
@@ -201,7 +201,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       patch: demoPatch,
       message: 'Demo patch created successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = getErrorMessage(error);
     console.error('Error creating demo patch:', message);
     return json(

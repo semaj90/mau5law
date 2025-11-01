@@ -30,7 +30,7 @@ export const db: PostgresJsDatabase<typeof schema> = new Proxy({} as any, {
   },
 });
 export const isPostgreSQL = true;
-export const isSQLite = false;
+export const isSQLite = $state(false);
 export * from '$lib/server/db/schema-postgres';
 export function closeDatabase() {
   if (_pool) {

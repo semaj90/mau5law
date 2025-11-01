@@ -4,7 +4,6 @@
  * Simplified wrapper around the main production client for testing purposes
  */
 import type { ServiceResponse } from './production-client.js';
-
 export interface IntegrationServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
@@ -18,13 +17,10 @@ class ProductionServiceClient {
   }
   async makeRequest(endpoint: string, options: IntegrationServiceRequest): Promise<ServiceResponse> {
     const url = `${this.baseUrl}${endpoint}`;
-
     // Cross-runtime safe: "now" (performance.now if available, otherwise Date.now)
     const perf = globalThis as unknown as { performance?: Performance | { now?: () => number } };
     const now = typeof perf.performance?.now === 'function' ? () => perf.performance!.now() : () => Date.now();
-
     const startTime = now();
-
     // Build fetch options without signal for now; create signal below with fallback
     const fetchOptions: RequestInit = {
       method: options.method,
@@ -33,7 +29,6 @@ class ProductionServiceClient {
         ...options.headers,
       },
     };
-
     // Handle body data
     if (options.body) {
       if (typeof options.body === 'string') {
@@ -42,7 +37,6 @@ class ProductionServiceClient {
         fetchOptions.body = JSON.stringify(options.body);
       }
     }
-
     // Prepare signal: prefer AbortSignal.timeout if available, otherwise AbortController fallback
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let controllerForFallback: AbortController | null = null;
@@ -59,13 +53,12 @@ class ProductionServiceClient {
           controllerForFallback?.abort();
         }, options.timeout ?? 5000);
       }
-
       const response = await fetch(url, fetchOptions);
       const latency = now() - startTime;
-      let data: unknown;
+      let data: any;
       try {
         data = await response.json();
-      } catch (parseError: unknown) {
+      } catch (parseError: any) {
         // Handle non-JSON responses safely without `any`
         const parseErrMessage = parseError instanceof Error ? parseError.message : String(parseError);
         const text = await response.text().catch(() => '');
@@ -75,7 +68,6 @@ class ProductionServiceClient {
           parseError: parseErrMessage,
         };
       }
-
       return {
         data,
         status: response.status,
@@ -84,7 +76,7 @@ class ProductionServiceClient {
         service: this.extractServiceFromEndpoint(endpoint),
         latency,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const latency = now() - startTime;
       // Safely extract message/name from unknown error
       const message = error instanceof Error ? error.message : String(error);

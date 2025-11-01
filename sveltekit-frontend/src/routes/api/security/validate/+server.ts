@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      response.success = false;
+      response.success = $state(false);
       response.riskLevel = 'high';
       response.warnings.push('Invalid email format');
       return json(response, { status: 400 });
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-Validation-Id': validationId,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMessage =
       error instanceof Error
         ? `${error.message}${error.stack ? `\n${error.stack}` : ''}`

@@ -11,8 +11,8 @@ https://svelte.dev/e/attribute_duplicate -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  	import Button from '$lib/components/ui/Button.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  	import { Button } from '$lib/components/ui/Button.svelte';
   	// Badge replaced with span - not available in enhanced-bits
   	import {
   		Bold, Italic, Underline, List, ListOrdered,
@@ -115,7 +115,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		isEditing = true;
   	}
   	function handleBlur() {
-  		isEditing = false;
+  		isEditing = $state(false);
   		if (autosave) {
   			saveContent();
   		}
@@ -474,7 +474,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	/* Scanlines Effect */
 	.scanlines::after {
 		content: '';
-		position absolute;
+		position: absolute;
 		top: 0,
 		left: 0;
 		right: 0,
@@ -535,7 +535,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 	/* Save Indicator */
 	:global(.save-indicator) {
-		position fixed;
+		position: fixed;
 d;
 		top: 20px;
 		right: 20px;

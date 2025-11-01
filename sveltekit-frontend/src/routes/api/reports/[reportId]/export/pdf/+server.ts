@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types'; // fixed import path
 import { json } from '@sveltejs/kit';
 
 // typed helper to extract user id from SvelteKit locals without using `any`
-function getUserId(locals: unknown): string {
+function getUserId(locals: any): string {
   // locals shape is app-specific; guard safely
   try {
     const maybeId = (locals as { user?: { id?: string } })?.user?.id;
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       metadata: pdfMetadata,
       note: 'This is a mock response. In production, actual PDF generation would occur here.',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Narrow unknown to a safe message instead of using `any`
     const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : String(error);
     console.error('Error initiating PDF export:', errorMessage);

@@ -9,7 +9,7 @@ export interface TelemetryEvent {
 }
 class TelemetryService {
   private events: TelemetryEvent[] = [];
-  private isEnabled = false;
+  private isEnabled = $state(false);
   constructor() {
     // Enable in browser for development logging
     this.isEnabled = browser;
@@ -41,7 +41,7 @@ class TelemetryService {
     this.isEnabled = true;
   }
   disable() {
-    this.isEnabled = false;
+    this.isEnabled = $state(false);
   }
   isTracking(): boolean {
     return this.isEnabled;

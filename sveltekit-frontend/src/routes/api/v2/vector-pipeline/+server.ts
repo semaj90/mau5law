@@ -13,7 +13,7 @@ import embeddingService from '$lib/services/embedding-service';
  */
 // Tighten DB typing (avoid `any`)
 type DBExecuteResultRow = Record<string, unknown>;
-type DBClient = { execute(sql: string, params?: unknown[]): Promise<DBExecuteResultRow[]> };
+type DBClient = { execute(sql: string, params?: any[]): Promise<DBExecuteResultRow[]> };
 const dbClient = db as unknown as DBClient;
 
 function vectorToPgVectorString(vec: number[]): string {
@@ -21,7 +21,7 @@ function vectorToPgVectorString(vec: number[]): string {
   return `[${vec.join(',')}]`;
 }
 
-function parseVectorString(vecValue: unknown): number[] {
+function parseVectorString(vecValue: any): number[] {
   if (!vecValue && vecValue !== 0) return [];
   if (Array.isArray(vecValue)) return vecValue.map(v => Number(v));
   if (typeof vecValue === 'string') {
@@ -88,7 +88,7 @@ interface SimilarityResult {
 // Define a typed stats return shape instead of `any`
 interface PipelineStats {
   database_stats: Record<string, unknown> | null;
-  fastembed_service: unknown;
+  fastembed_service: any;
   pipeline_config: {
     fastembed_url: string;
     cuda_enabled: boolean;
@@ -205,7 +205,7 @@ class VectorPipelineService {
       return new Promise<Buffer>((resolve, reject) => {
         stream.on('data', (chunk: Buffer) => chunks.push(chunk)); // <-- closed with );
         stream.on('end', () => resolve(Buffer.concat(chunks))); // <-- closed with );
-        stream.on('error', (err: unknown) => reject(err)); // <-- closed with );
+        stream.on('error', (err: any) => reject(err)); // <-- closed with );
       });
     } catch (err) {
       throw new Error(`Failed to download ${objectKey} from MinIO: ${err}`);
@@ -275,7 +275,7 @@ class VectorPipelineService {
             maybeResult &&
             typeof maybeResult === 'object' &&
             'embeddings' in (maybeResult as object) &&
-            Array.isArray((maybeResult as { embeddings?: unknown }).embeddings)
+            Array.isArray((maybeResult as { embeddings?: any }).embeddings)
           ) {
             return (maybeResult as { embeddings: number[][] }).embeddings;
           }
@@ -307,7 +307,7 @@ class VectorPipelineService {
       if (Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
         return result as number[][];
       }
-      if (result && typeof result === 'object' && Array.isArray((result as { embeddings?: unknown }).embeddings)) {
+      if (result && typeof result === 'object' && Array.isArray((result as { embeddings?: any }).embeddings)) {
         return (result as { embeddings: number[][] }).embeddings;
       }
       throw new Error('FastEmbed returned unexpected payload shape; expected embeddings array');
@@ -411,7 +411,7 @@ class VectorPipelineService {
       const objectsList: string[] = [];
       const stream = minio.listObjects(bucketName, '', true);
       return new Promise<string[]>((resolve, reject) => {
-        stream.on('data', (obj: unknown) => {
+        stream.on('data', (obj: any) => {
           if (obj && typeof obj === 'object') {
             const o = obj as Record<string, unknown>;
             if (typeof o.name === 'string') {
@@ -420,7 +420,7 @@ class VectorPipelineService {
           }
         });
         stream.on('end', () => resolve(objectsList));
-        stream.on('error', (err: unknown) => reject(err));
+        stream.on('error', (err: any) => reject(err));
       });
     } catch (err) {
       throw new Error(`Failed to list bucket objects: ${err}`);
@@ -444,7 +444,7 @@ class VectorPipelineService {
     const queryVector = `[${queryEmbedding[0].join(',')}]`;
     // Build SQL query with filters
     let whereClause = '';
-    const params: unknown[] = [queryVector, options.limit || 10];
+    const params: any[] = [queryVector, options.limit || 10];
     if (options.filters) {
       const filterConditions = Object.entries(options.filters).map(([key, value]) => {
         params.push(value);
@@ -524,7 +524,7 @@ class VectorPipelineService {
 				FROM document_embeddings
 			`);
       // Get FastEmbed service health
-      let fastEmbedHealth: unknown = null;
+      let fastEmbedHealth: any = null;
       try {
         const healthResponse = await fetch(`${this.fastEmbedUrl}/health`);
         if (healthResponse.ok) {
@@ -557,8 +557,8 @@ type EmbedParams = {
 interface EmbeddingService {
   embed(params: EmbedParams): Promise<number[][] | { embeddings: number[][] }>;
 }
-function isEmbeddingService(obj: unknown): obj is EmbeddingService {
-  return typeof obj === 'object' && obj !== null && typeof (obj as { embed?: unknown }).embed === 'function';
+function isEmbeddingService(obj: any): obj is EmbeddingService {
+  return typeof obj === 'object' && obj !== null && typeof (obj as { embed?: any }).embed === 'function';
 }
 
 const vectorPipelineService = new VectorPipelineService();

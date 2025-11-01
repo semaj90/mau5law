@@ -3,9 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Replaced script to fix Svelte 5 runes, imports, types and logic typos
-
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Textarea } from '$lib/components/ui/textarea.svelte'';
   import {
     aiPersonality,
     chatActions,
@@ -18,27 +17,22 @@ https://svelte.dev/e/js_parse_error -->
   import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
   import { Bot, Loader2, Send } from 'lucide-svelte';
   import { onDestroy, tick } from 'svelte';
-  import ChatMessage from './ChatMessage.svelte';
-  import ProactivePrompt from './ProactivePrompt.svelte';
-  import ThinkingStyleToggle from './ThinkingStyleToggle.svelte';
+  import { ChatMessage } from './ChatMessage.svelte';
+  import { ProactivePrompt } from './ProactivePrompt.svelte';
+  import { ThinkingStyleToggle } from './ThinkingStyleToggle.svelte';
   import { ThinkingProcessor } from '$lib/ai/thinking-processor';
-
   // props (Svelte 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
-
   // reactive state
   let messageInput = $state('');
   let errorMessage = $state('');
   let messagesContainer = $state<HTMLElement | undefined>();
   let inputElement = $state<HTMLTextAreaElement | undefined>();
   let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
-
   let thinkingStyleEnabled = $state(false);
   let analysisMode = $state(false);
   let lastAnalysisResult = $state<any>(null);
-
   const IDLE_TIMEOUT = 60_000;
-
   function handleUserActivity() {
     if (inactivityTimer) clearTimeout(inactivityTimer);
     chatActions.updateActivity();
@@ -46,31 +40,25 @@ https://svelte.dev/e/js_parse_error -->
       triggerProactivePrompt();
     }, IDLE_TIMEOUT);
   }
-
   function triggerProactivePrompt() {
     if ($currentConversation && $currentConversation.messages?.length > 0) {
       showProactivePrompt.set(true);
     }
   }
-
   async function sendMessage() {
     if (!messageInput || !messageInput.trim()) return;
     const userMessage = messageInput.trim();
     messageInput = '';
     handleUserActivity();
     chatActions.addMessage(userMessage, 'user');
-
     try {
       chatActions.setLoading(true);
       chatActions.setTyping(true);
-
       const isAnalysisRequest =
         userMessage.toLowerCase().includes('analyze') ||
         userMessage.toLowerCase().includes('evidence') ||
         userMessage.toLowerCase().includes('case');
-
       let response: Response;
-
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         const payload = {
           text: userMessage,
@@ -99,17 +87,13 @@ https://svelte.dev/e/js_parse_error -->
           body: JSON.stringify(requestBody)
         });
       }
-
       if (!response.ok) {
         throw new Error(`Failed to get AI response: ${response.status}`);
       }
-
       const apiResponse = (await response.json()) as ApiResponse<any>;
-
       if (!apiResponse || apiResponse.success === false) {
         throw new Error(apiResponse?.error || 'Invalid response format');
       }
-
       // analysis response
       if (apiResponse.analysis) {
         lastAnalysisResult = apiResponse.analysis;
@@ -127,7 +111,6 @@ https://svelte.dev/e/js_parse_error -->
         // fallback shape
         chatActions.addMessage(apiResponse.message, 'assistant', apiResponse.metadata || {});
       }
-
       setTimeout(scrollToBottom, 100);
     } catch (err) {
       console.error('Chat error:', err);
@@ -142,20 +125,16 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(false);
     }
   }
-
   function formatAnalysisResponse(analysis: any, metadata: any): string {
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
-
     if (analysis.thinking && thinkingStyleEnabled) {
       responseText += '## 🧠 Reasoning Process\n\n';
       responseText += '*Showing step-by-step AI reasoning:*\n\n';
       responseText += String(analysis.thinking).replace(/\n/g, '\n\n') + '\n\n';
       responseText += '---\n\n';
     }
-
     responseText += '## 📋 Analysis Results\n\n';
-
     const analysisData = analysis.analysis || analysis; // tolerate shapes
     if (analysisData) {
       if (analysisData.key_findings) {
@@ -183,7 +162,6 @@ https://svelte.dev/e/js_parse_error -->
         responseText += analysisData.raw_analysis + '\n\n';
       }
     }
-
     responseText += '## 📊 Analysis Metadata\n\n';
     try {
       const confidence = typeof analysis.confidence === 'number' ? Math.round(analysis.confidence * 100) : 'N/A';
@@ -200,17 +178,14 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       // ignore metadata formatting errors
     }
-
     return responseText;
   }
-
   async function handleProactiveResponse() {
     if (!$showProactivePrompt || !$currentConversation) return;
     try {
       chatActions.setLoading(true);
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
-
       const requestBody: ChatRequest = {
         messages: $currentConversation.messages,
         context: {
@@ -220,25 +195,20 @@ https://svelte.dev/e/js_parse_error -->
         },
         proactiveMode: true
       };
-
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-
       if (!response.ok) throw new Error('Failed to get proactive response');
-
       const apiResponse = (await response.json()) as ApiResponse<ChatResponse>;
       if (!apiResponse.success || !apiResponse.data) {
         throw new Error(apiResponse.error || 'Invalid response format');
       }
-
       chatActions.addMessage(apiResponse.data.content, 'assistant', {
         ...(apiResponse.data.metadata || {}),
         proactive: true
       });
-
       setTimeout(scrollToBottom, 100);
     } catch (err) {
       console.error('Proactive response error:', err);
@@ -248,7 +218,6 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(false);
     }
   }
-
   function handleThinkingToggle(event: CustomEvent) {
     // Many components already bind enabled; but handle external toggle events too
     const enabled = event?.detail?.enabled ?? Boolean(event?.detail);
@@ -258,7 +227,6 @@ https://svelte.dev/e/js_parse_error -->
       : '⚡ Quick Mode enabled. AI will provide concise responses.';
     notifications.add({ type: 'info', title: 'AI Mode Changed', message });
   }
-
   async function quickAnalyzeEvidence() {
     if (!caseId) {
       notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
@@ -282,13 +250,11 @@ https://svelte.dev/e/js_parse_error -->
       errorMessage = err instanceof Error ? err.message : String(err);
     }
   }
-
   function scrollToBottom() {
     if (messagesContainer) {
       (messagesContainer as HTMLElement).scrollTop = (messagesContainer as HTMLElement).scrollHeight;
     }
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -296,14 +262,12 @@ https://svelte.dev/e/js_parse_error -->
     }
     handleUserActivity();
   }
-
   function autoResize() {
     if (inputElement) {
       inputElement.style.height = 'auto';
       inputElement.style.height = Math.min(inputElement.scrollHeight, 120) + 'px';
     }
   }
-
   $effect(() => {
     if (!$currentConversation) {
       chatActions.newConversation(caseId ? `Case ${caseId}` : undefined);
@@ -312,17 +276,14 @@ https://svelte.dev/e/js_parse_error -->
     window.addEventListener('mousemove', handleUserActivity);
     window.addEventListener('keydown', handleUserActivity);
     window.addEventListener('click', handleUserActivity);
-
     if (inputElement) inputElement.focus();
   });
-
   onDestroy(() => {
     if (inactivityTimer) clearTimeout(inactivityTimer);
     window.removeEventListener('mousemove', handleUserActivity);
     window.removeEventListener('keydown', handleUserActivity);
     window.removeEventListener('click', handleUserActivity);
   });
-
   // Auto-scroll when messages change
   $effect(() => {
     if ($currentConversation?.messages) {
@@ -330,7 +291,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="mx-auto px-4 max-w-7xl">
   <!-- Enhanced Header with Thinking Toggle -->
   <div class="mx-auto px-4 max-w-7xl">
@@ -394,8 +354,7 @@ https://svelte.dev/e/js_parse_error -->
             <p class="mx-auto px-4 max-w-7xl">
               ⚡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.
             </p>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       <!-- Messages -->
@@ -424,8 +383,7 @@ https://svelte.dev/e/js_parse_error -->
             <p class="mx-auto px-4 max-w-7xl">Thinking step by step...</p>
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Proactive Prompt -->
   {#if $showProactivePrompt}
@@ -434,8 +392,7 @@ https://svelte.dev/e/js_parse_error -->
         accept={handleProactiveResponse}
         dismiss={() => showProactivePrompt.set(false)}
       />
-    </div>
-  {/if}
+    {/if}
   <!-- Input Area -->
   <div class="mx-auto px-4 max-w-7xl">
     <div class="mx-auto px-4 max-w-7xl">

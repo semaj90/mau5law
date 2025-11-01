@@ -65,7 +65,7 @@ export interface GPUTaskResult {
   legalVerification?: {
     verified: boolean;
     confidence: number;
-    details?: unknown;
+    details?: any;
   };
 }
 
@@ -185,7 +185,7 @@ class MCPGPUOrchestrator {
         securityScore,
         legalVerification,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.taskQueue.delete(task.id);
       this.activeGPUTasks.delete(task.id);
       const message = error instanceof Error ? error.message : String(error);
@@ -379,16 +379,16 @@ Provide a complete, working fix with explanation.`;
     return 'http';
   }
 
-  private isObject(v: unknown): v is Record<string, unknown> {
+  private isObject(v: any): v is Record<string, unknown> {
     return typeof v === 'object' && v !== null;
   }
-  private isString(v: unknown): v is string {
+  private isString(v: any): v is string {
     return typeof v === 'string';
   }
-  private isNumber(v: unknown): v is number {
+  private isNumber(v: any): v is number {
     return typeof v === 'number';
   }
-  private isArray(v: unknown): v is Array<unknown> {
+  private isArray(v: any): v is Array<unknown> {
     return Array.isArray(v);
   }
 
@@ -396,10 +396,10 @@ Provide a complete, working fix with explanation.`;
    * Safely walk an unknown object and validate the final value with a validator.
    * Returns undefined if any step is missing or validation fails.
    */
-  private getNested<T>(obj: unknown, path: string[], validator: (v: unknown) => v is T): T | undefined;
-  private getNested<T>(obj: unknown, path: string[], validator: (v: unknown) => boolean): T | undefined;
-  private getNested<T>(obj: unknown, path: string[], validator: (v: unknown) => boolean): T | undefined {
-    let cur: unknown = obj;
+  private getNested<T>(obj: any, path: string[], validator: (v: any) => v is T): T | undefined;
+  private getNested<T>(obj: any, path: string[], validator: (v: any) => boolean): T | undefined;
+  private getNested<T>(obj: any, path: string[], validator: (v: any) => boolean): T | undefined {
+    let cur: any = obj;
     for (const key of path) {
       if (!this.isObject(cur)) return undefined;
       cur = (cur as Record<string, unknown>)[key];
@@ -428,7 +428,7 @@ Provide a complete, working fix with explanation.`;
       );
 
       // Attempt lightweight AI augmentation if model configured
-      let aiAnalysis: unknown = null;
+      let aiAnalysis: any = null;
       if (this.modelConfigs.has('gemma3-legal')) {
         const prompt = `Analyze the following authentication attempt for security risks:
 Email: ${email}
@@ -534,7 +534,7 @@ Respond with JSON: {"riskScore": 0.0, "reasoning": "explanation", "recommendatio
       );
 
       // Explicitly typed to allow optional details field
-      let legalVerification: { verified: boolean; confidence: number; details?: unknown } = {
+      let legalVerification: { verified: boolean; confidence: number; details?: any } = {
         verified: false,
         confidence: 0,
       };

@@ -55,7 +55,7 @@
       if (!browser || !enableGPU) {
         // Fallback for SSR or disabled GPU
         textureData = fallbackContent || generateFallbackPattern();
-        isLoading = false;
+        isLoading = $state(false);
         return;
       }
       try {
@@ -64,7 +64,7 @@
         if (!webgpuSupported) {
           console.log('🎮 WebGPU not supported, using CPU fallback');
           textureData = generateFallbackPattern();
-          isLoading = false;
+          isLoading = $state(false);
           return;
         }
         // Initialize NES texture streaming
@@ -73,7 +73,7 @@
         console.error('🎮 WebGPU initialization failed:', err);
         error = err instanceof Error ? err.message : 'WebGPU failed';
         textureData = generateFallbackPattern();
-        isLoading = false;
+        isLoading = $state(false);
       }
     })();
   });
@@ -85,7 +85,6 @@
     // For now just proceed to streaming logic executed below
     return Promise.resolve();
   }
-
   (async () => {
     try {
       // Calculate optimal LOD level based on context
@@ -104,7 +103,7 @@
       } else {
         throw new Error(`Failed to stream texture for ${assetId}`);
       }
-      isLoading = false;
+      isLoading = $state(false);
       // Set up progressive enhancement - load higher quality on hover/interaction
       if (containerElement) {
         setupProgressiveEnhancement();
@@ -112,7 +111,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message : 'Streaming failed';
       textureData = generateFallbackPattern();
-      isLoading = false;
+      isLoading = $state(false);
     }
   })();
   /**
@@ -217,7 +216,6 @@
     return lodManager.getMemoryStats();
   }
 </script>
-
 <!-- SSR-safe rendering with progressive enhancement -->
 <div
   bind:this={containerElement}
@@ -235,8 +233,7 @@
       {#if overlay && children?.overlay}
         <div class="nes-overlay">
           {@render children.overlay(currentLOD, webgpuSupported, assetId)}
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if browser && isLoading}
     <!-- Client-side loading state -->
@@ -260,23 +257,20 @@
           <div class="nes-pattern-block" style:background={hashToColor(assetId)}>
             {assetId.toUpperCase()}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if children?.fallback}
         {@render children.fallback(assetId)}
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Debug info slot -->
   {#if debug && children?.debug}
     {@render children.debug(getMemoryStats(), currentLOD, webgpuSupported)}
   {/if}
 </div>
-
 <style>
   /* NES-inspired container styling */
   .nes-container {
-    position relative;
+    position: relative;
     border: 2px solid #000;
     background: #fcfcfc;
     image-rendering: pixelated;
@@ -291,13 +285,13 @@
     background: #ffeee6;
   }
   .nes-texture-container {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
   .nes-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -377,4 +371,3 @@
     }
   }
 </style>
-

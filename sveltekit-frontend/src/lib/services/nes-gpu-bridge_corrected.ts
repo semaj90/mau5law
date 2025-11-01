@@ -75,14 +75,14 @@ export class NESStyleGPUBridge {
   private sharedBuffer: SharedArrayBuffer | null = null;
 
   // Added/missing properties
-  private verbose: boolean = false;
+  private verbose: boolean = $state(false);
   private webgpuAdapter: any | null = null;
   private queue: Map<string, (msg: GPUMessage | any) => void> = new Map();
   private bitDepthDetector: BitDepthDetector = new BitDepthDetector();
 
   // XState integration (system monitor actor + local fallback flag)
   private systemMonitor: any | null = null;
-  private useFallback: boolean = false;
+  private useFallback: boolean = $state(false);
 
   // Expose constructor (was private) and initialize stats with fields that exist in BridgeStats
   constructor() {

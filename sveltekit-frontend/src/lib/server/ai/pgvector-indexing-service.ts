@@ -14,10 +14,8 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-
 import { sql } from 'drizzle-orm';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
-
 /**
  * Vector Index Configuration
  */
@@ -28,7 +26,6 @@ export interface VectorIndexConfig {
   distanceMetric?: 'cosine' | 'l2' | 'inner_product';
   maxResults?: number;
 }
-
 /**
  * Vector Document for Indexing
  */
@@ -47,12 +44,11 @@ export interface VectorDocument {
     createdAt?: string;
     updatedAt?: string;
     tags?: string[];
-    [key: string]: unknown;
+    [key: string]: any;
   };
   modelUsed?: string;
   processingTime?: number;
 }
-
 /**
  * Vector Search Result
  */
@@ -67,7 +63,6 @@ export interface VectorSearchResult {
   metadata?: Record<string, unknown>;
   embeddingType?: string;
 }
-
 /**
  * Batch Upsert Result
  */
@@ -77,7 +72,6 @@ export interface BatchUpsertResult {
   deleted: number;
   totalProcessingTime: number;
 }
-
 /**
  * PgVector Indexing Service
  */
@@ -87,7 +81,6 @@ export class PgVectorIndexingService {
   private indexType: string;
   private distanceMetric: string;
   private maxResults: number;
-
   constructor(config: VectorIndexConfig) {
     this.db = config.database;
     this.dimensions = config.embeddingDimensions;
@@ -95,7 +88,6 @@ export class PgVectorIndexingService {
     this.distanceMetric = config.distanceMetric || 'cosine';
     this.maxResults = config.maxResults || 10;
   }
-
   /**
    * Index a single vector document
    */
@@ -107,7 +99,6 @@ export class PgVectorIndexingService {
           `Embedding dimension mismatch: expected ${this.dimensions}, got ${doc.embedding.length}`
         );
       }
-
       // Upsert using raw SQL for pgvector support
       await this.db.execute(sql`
         INSERT INTO document_chunks (
@@ -138,7 +129,6 @@ export class PgVectorIndexingService {
           metadata = ${JSON.stringify(doc.metadata || {})},
           updated_at = NOW()
       `);
-
       // Store embedding in vector table
       await this.db.execute(sql`
         INSERT INTO embeddings (
@@ -164,21 +154,18 @@ export class PgVectorIndexingService {
         )
         ON CONFLICT DO NOTHING
       `);
-
       return doc.id;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to index document: ${message}`);
     }
   }
-
   /**
    * Index multiple documents in batch
    */
   async indexBatch(docs: VectorDocument[]): Promise<BatchUpsertResult> {
     const startTime = Date.now();
     const inserted = docs.length;
-
     try {
       // Validate all embeddings first
       for (const doc of docs) {
@@ -188,7 +175,6 @@ export class PgVectorIndexingService {
           );
         }
       }
-
       // Batch insert document chunks
       const chunksValues = docs
         .map(
@@ -207,7 +193,6 @@ export class PgVectorIndexingService {
             )`
         )
         .join(',');
-
       if (chunksValues) {
         await this.db.execute(sql.raw(`
           INSERT INTO document_chunks (
@@ -220,7 +205,6 @@ export class PgVectorIndexingService {
             updated_at = NOW()
         `));
       }
-
       // Batch insert embeddings
       const embeddingValues = docs
         .map(
@@ -238,7 +222,6 @@ export class PgVectorIndexingService {
             )`
         )
         .join(',');
-
       if (embeddingValues) {
         await this.db.execute(sql.raw(`
           INSERT INTO embeddings (
@@ -248,7 +231,6 @@ export class PgVectorIndexingService {
           ON CONFLICT DO NOTHING
         `));
       }
-
       return {
         inserted,
         updated: 0,
@@ -260,7 +242,6 @@ export class PgVectorIndexingService {
       throw new Error(`Failed to batch index documents: ${message}`);
     }
   }
-
   /**
    * Search similar documents using cosine similarity
    */
@@ -280,11 +261,9 @@ export class PgVectorIndexingService {
           `Embedding dimension mismatch: expected ${this.dimensions}, got ${embedding.length}`
         );
       }
-
       const limit = options.limit || this.maxResults;
       const threshold = options.threshold || 0.5;
       const vectorStr = this.vectorToString(embedding);
-
       let query = `
         SELECT
           e.id,
@@ -299,28 +278,22 @@ export class PgVectorIndexingService {
         FROM embeddings e
         WHERE (1 - (e.vector <-> '${vectorStr}'::vector)) > ${threshold}
       `;
-
       // Add optional filters
       if (options.documentType) {
         query += ` AND e.embedding_type = '${this.escape(options.documentType)}'`;
       }
-
       if (options.caseId) {
         query += ` AND e.metadata->>'caseId' = '${this.escape(options.caseId)}'`;
       }
-
       if (options.confidentialityLevel) {
         query += ` AND e.metadata->>'confidentialityLevel' = '${this.escape(
           options.confidentialityLevel
         )}'`;
       }
-
       query += ` ORDER BY e.vector <-> '${vectorStr}'::vector LIMIT ${limit}`;
-
       const results = (await this.db.execute(
         sql.raw(query)
       )) as unknown as VectorSearchResult[];
-
       return results.map((r, idx) => ({
         ...r,
         rank: idx + 1
@@ -330,7 +303,6 @@ export class PgVectorIndexingService {
       throw new Error(`Similarity search failed: ${message}`);
     }
   }
-
   /**
    * Hybrid search combining keyword and vector similarity
    */
@@ -347,15 +319,12 @@ export class PgVectorIndexingService {
       const limit = options.limit || this.maxResults;
       const vectorWeight = options.vectorWeight || 0.7;
       const keywordWeight = options.keywordWeight || 0.3;
-
       if (embedding.length !== this.dimensions) {
         throw new Error(
           `Embedding dimension mismatch: expected ${this.dimensions}, got ${embedding.length}`
         );
       }
-
       const vectorStr = this.vectorToString(embedding);
-
       let query = `
         SELECT
           e.id,
@@ -378,17 +347,13 @@ export class PgVectorIndexingService {
         FROM embeddings e
         WHERE 1=1
       `;
-
       if (keyword) {
         query += ` AND (e.content ILIKE: '%${this.escape(keyword)}%' OR e.vector <-> '${vectorStr}'::vector < 0.5)`;
       }
-
       query += ` ORDER BY similarity DESC LIMIT ${limit}`;
-
       const results = (await this.db.execute(
         sql.raw(query)
       )) as unknown as VectorSearchResult[];
-
       return results.map((r, idx) => ({
         ...r,
         rank: idx + 1
@@ -398,7 +363,6 @@ export class PgVectorIndexingService {
       throw new Error(`Hybrid search failed: ${message}`);
     }
   }
-
   /**
    * Delete document and its embeddings
    */
@@ -409,20 +373,17 @@ export class PgVectorIndexingService {
         DELETE FROM embeddings
         WHERE document_id = ${documentId}
       `);
-
       // Delete from document_chunks table
       await this.db.execute(sql`
         DELETE FROM document_chunks
         WHERE document_id = ${documentId}
       `);
-
       return Array.isArray(embedResult) ? embedResult.length : 0;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to delete document: ${message}`);
     }
   }
-
   /**
    * Get document statistics
    */
@@ -441,14 +402,12 @@ export class PgVectorIndexingService {
           (SELECT COUNT(*) FROM embeddings) as total_embeddings,
           (SELECT AVG(embedding_dimension) FROM document_chunks) as avg_dimension
       `));
-
       const row = (stats as unknown[])[0] as {
         total_documents: number;
         total_chunks: number;
         total_embeddings: number;
         avg_dimension: number;
       };
-
       return {
         totalDocuments: row.total_documents,
         totalChunks: row.total_chunks,
@@ -465,7 +424,6 @@ export class PgVectorIndexingService {
       };
     }
   }
-
   /**
    * Create or rebuild HNSW index for fast search
    */
@@ -476,21 +434,18 @@ export class PgVectorIndexingService {
         ON embeddings USING hnsw (vector vector_cosine_ops)
         WITH (m = 16, ef_construction = 64)
       `));
-
       console.log('HNSW index created successfully');
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to create HNSW index: ${message}`);
     }
   }
-
   /**
    * Convert number array to PostgreSQL vector string format
    */
   private vectorToString(vector: number[]): string {
     return `[${vector.join(',')}]`;
   }
-
   /**
    * Escape SQL strings to prevent injection
    */
@@ -498,7 +453,6 @@ export class PgVectorIndexingService {
     return str.replace(/'/g, "''");
   }
 }
-
 /**
  * Factory function to create PgVector Indexing Service
  */
@@ -506,17 +460,14 @@ export async function createPgVectorIndexingService(
   config: VectorIndexConfig
 ): Promise<PgVectorIndexingService> {
   const service = new PgVectorIndexingService(config);
-
   // Attempt to create HNSW index on initialization
   try {
     await service.createHNSWIndex();
   } catch (error) {
     console.warn('HNSW index creation skipped:', error);
   }
-
   return service;
 }
-
 /**
  * Default configuration for PgVector Indexing Service
  */

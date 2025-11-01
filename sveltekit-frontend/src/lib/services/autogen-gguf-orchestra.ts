@@ -38,7 +38,7 @@ export interface OrchestraTask {
   retryCount: number;
   maxRetries: number;
   metadata?: Record<string, unknown>; // tightened type, avoid `any`
-  context?: unknown; // optional task-level context used by steps
+  context?: any; // optional task-level context used by steps
 }
 // Workflow Step
 export interface OrchestraWorkflowStep {
@@ -74,7 +74,7 @@ export interface OrchestraMetrics {
   agentUtilization: Record<string, number>;
   modelUtilization: Record<string, number>;
 }
-/* Added / adjusted types to remove `any` and `never[]` inference issues */
+/* Added / adjusted types to remove `any` and `any[]` inference issues */
 type GGUFReadyStore = { subscribe: (fn: (v: boolean) => void) => () => void };
 type GGUFRuntime = {
   generate?: (req: GGUFInferenceRequest) => Promise<GGUFInferenceResponse>;
@@ -118,13 +118,13 @@ export class AutoGenGGUFOrchestra {
   private activeTasks: Map<string, OrchestraTask> = new Map();
   private taskHistory: OrchestraTask[] = [];
   private ggufRuntime: GGUFRuntime | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Performance tracking
   private startTime = Date.now();
   private totalTasks = 0;
   private completedTasks = 0;
   private failedTasks = 0;
-  // Reactive stores (typed to avoid never[] and any)
+  // Reactive stores (typed to avoid any[] and any)
   public orchestraStatus = writable<OrchestraStatus>({
     initialized: false,
     activeAgents: 0,
@@ -183,7 +183,7 @@ export class AutoGenGGUFOrchestra {
         modelsLoaded: ['gemma3-legal', 'nomic-embed-text'],
       }));
       console.log('✅ AutoGen GGUF Orchestra initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(
         '❌ AutoGen Orchestra initialization failed:',
         error instanceof Error ? error.message : String(error)
@@ -215,7 +215,7 @@ export class AutoGenGGUFOrchestra {
     try {
       await flashAttentionMulticoreBridge.initialize();
       console.log('⚡ FlashAttention2 integrated with AutoGen Orchestra');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ FlashAttention integration failed:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -344,7 +344,7 @@ export class AutoGenGGUFOrchestra {
       this.activeTasks.delete(fullTask.id);
       this.taskHistory.push(fullTask);
       return response;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Orchestra task failed: ${error instanceof Error ? error.message : String(error)}`);
       this.failedTasks++;
       // Update task status
@@ -410,7 +410,7 @@ export class AutoGenGGUFOrchestra {
           // fallback deterministic placeholder using helper
           response = this.buildFallbackGGUFResponse(step.stepId, `[[simulated response for step ${step.stepId}]]`);
         }
-      } catch (e: unknown) {
+      } catch (e: any) {
         // use helper for error fallback
         response = this.buildFallbackGGUFResponse(
           step.stepId,
@@ -444,7 +444,7 @@ export class AutoGenGGUFOrchestra {
   /**
    * Build agent-specific prompt
    */
-  private buildAgentPrompt(agent: AutoGenAgent, instruction: string, inputs: string, context?: unknown): string {
+  private buildAgentPrompt(agent: AutoGenAgent, instruction: string, inputs: string, context?: any): string {
     let prompt = `${agent.systemPrompt}\n\n`;
     prompt += `Task: ${instruction}\n\n`;
     if (inputs) {
@@ -609,7 +609,7 @@ export class AutoGenGGUFOrchestra {
     // Clear data
     this.agents.clear();
     this.activeTasks.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.orchestraStatus.set({
       initialized: false,
       activeAgents: 0,

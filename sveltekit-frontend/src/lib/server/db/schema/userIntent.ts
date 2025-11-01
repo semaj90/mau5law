@@ -1,5 +1,4 @@
 import { pgTable, serial, text, timestamp, real } from "drizzle-orm/pg-core";
-
 export const userIntentLogs = pgTable("user_intent_logs", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),

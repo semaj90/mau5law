@@ -89,7 +89,7 @@ export interface UnifiedVectorResponse {
     neo4jData?: GraphData;
     // Added: allow visualization-specific neo4j payloads
     neo4jVisualization?: GraphData;
-    somClusters?: unknown;
+    somClusters?: any;
     processingTime: number;
     confidence: number;
     cacheHit?: boolean;
@@ -106,8 +106,8 @@ export interface UnifiedVectorResponse {
 
 /* New external service interfaces (minimal surface) */
 interface UltraJSONParser {
-  parse(s: string): unknown;
-  stringify(v: unknown): string;
+  parse(s: string): any;
+  stringify(v: any): string;
 }
 
 interface WasmClusteringService {
@@ -149,7 +149,7 @@ interface QdrantIndexerLike {
 }
 
 interface PostgresJSONPersistenceLike {
-  execute(query: string, params?: unknown[]): Promise<unknown>;
+  execute(query: string, params?: any[]): Promise<unknown>;
 }
 
 interface RAGEngineLike {
@@ -171,7 +171,7 @@ export class UnifiedVectorOrchestrator {
   private lokiDb: Loki;
   // avoid `any` by specifying Document type for Fuse
   private fuseIndex: Fuse<Document> | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private performanceMetrics = new Map<string, number[]>();
   // Typed wrappers for imported untyped modules
   // use an intermediate `unknown` cast to silence structural mismatch errors from TypeScript
@@ -235,7 +235,7 @@ export class UnifiedVectorOrchestrator {
       console.log('   - RabbitMQ async processing');
       console.log('   - Fuse.js fuzzy search');
       console.log('   - Lokijs in-memory DB');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize Unified Vector Orchestrator:', msg);
       throw error;
@@ -369,7 +369,7 @@ export class UnifiedVectorOrchestrator {
 
         return response;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Unified Vector Orchestrator processing error:', error);
       const errMsg = error instanceof Error ? error.message : String(error);
       return {
@@ -421,7 +421,7 @@ export class UnifiedVectorOrchestrator {
           ragResults.length > 0
             ? (ragResults as RAGResult[]).reduce((sum, r) => sum + (r.finalScore ?? 0), 0) / ragResults.length
             : 0;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`RAG processing: ${msg}`);
       }
@@ -481,7 +481,7 @@ export class UnifiedVectorOrchestrator {
 
         performance.vectorSearch = Date.now() - vectorStart;
         componentsUsed.push('Hybrid Search (Qdrant+PostgreSQL+Fuse+Loki)');
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`Hybrid vector search: ${msg}`);
       }
@@ -508,7 +508,7 @@ export class UnifiedVectorOrchestrator {
         results.glyphs = glyphs.filter(g => g && g.success) as GlyphResult[];
         performance.glyphGeneration = Date.now() - glyphStart;
         componentsUsed.push('Glyph Diffusion');
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`Glyph generation: ${msg}`);
       }
@@ -532,7 +532,7 @@ export class UnifiedVectorOrchestrator {
         }
         performance.neo4jProcessing = Date.now() - neo4jStart;
         componentsUsed.push('Neo4j Graph');
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`Neo4j processing: ${msg}`);
       }
@@ -583,7 +583,7 @@ export class UnifiedVectorOrchestrator {
           componentsUsed.push('Vector Search');
           return vectorResults;
         })
-        .catch((error: unknown) => {
+        .catch((error: any) => {
           const msg = error instanceof Error ? error.message : String(error);
           errors.push(`Vector search: ${msg}`);
           return [];
@@ -605,7 +605,7 @@ export class UnifiedVectorOrchestrator {
             componentsUsed.push('RAG + PageRank');
             return ragResults;
           })
-          .catch((error: unknown) => {
+          .catch((error: any) => {
             const msg = error instanceof Error ? error.message : String(error);
             errors.push(`RAG search: ${msg}`);
             return [];
@@ -682,7 +682,7 @@ export class UnifiedVectorOrchestrator {
           ? recommendations.reduce((sum: number, r: Recommendation) => sum + (r.confidence ?? 0), 0) /
             recommendations.length
           : 0;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       errors.push(`Recommendations: ${msg}`);
     }
@@ -818,7 +818,7 @@ export class UnifiedVectorOrchestrator {
 
       performance.vectorIngestion = Date.now() - ingestStart;
       componentsUsed.push('RabbitMQ Async Ingestion (512-dim)');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       errors.push(`Vector ingestion: ${msg}`);
     }
@@ -846,7 +846,7 @@ export class UnifiedVectorOrchestrator {
         }
         performance.ragIngestion = Date.now() - ragStart;
         componentsUsed.push('RAG Knowledge Base');
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`RAG ingestion: ${msg}`);
       }
@@ -863,7 +863,7 @@ export class UnifiedVectorOrchestrator {
         );
         performance.cacheIngestion = Date.now() - cacheStart;
         componentsUsed.push('Redis Caching');
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         errors.push(`Cache ingestion: ${msg}`);
       }
@@ -898,7 +898,7 @@ export class UnifiedVectorOrchestrator {
 
     // Text search: use unknown and narrow to avoid `any`
     const results = chain
-      .where((doc: unknown) => {
+      .where((doc: any) => {
         const d = doc as Record<string, unknown>;
         const searchText =
           `${(d.content as string) || ''} ${(d.filename as string) || ''} ${JSON.stringify(d.metadata || {})}`.toLowerCase();
@@ -956,7 +956,7 @@ export class UnifiedVectorOrchestrator {
    * Merge search results from different systems (legacy method)
    */
   private mergeSearchResults(vectorResults: VectorResult[], ragResults: RAGResult[]): VectorResult[] {
-    type Out = VectorResult & { combinedScore?: number; ragData?: unknown; source?: string };
+    type Out = VectorResult & { combinedScore?: number; ragData?: any; source?: string };
     const merged = new Map<string, Out>();
 
     // Add vector results
@@ -1062,7 +1062,7 @@ export class UnifiedVectorOrchestrator {
     try {
       health.webgpuSOM = this.webgpuSOM.isInitialized();
     } catch {
-      health.webgpuSOM = false;
+      health.webgpuSOM = $state(false);
     }
 
     // Check Hybrid Vector Search (NEW - 512-dim embeddinggemma + Qdrant)
@@ -1072,16 +1072,16 @@ export class UnifiedVectorOrchestrator {
       health.pgvector = Boolean(hybridHealth.services?.pgvector);
       health.hybridVectorSearch = Boolean(hybridHealth.healthy);
     } catch {
-      health.qdrant = false;
-      health.pgvector = false;
-      health.hybridVectorSearch = false;
+      health.qdrant = $state(false);
+      health.pgvector = $state(false);
+      health.hybridVectorSearch = $state(false);
     }
 
     // Check Fuse.js
     try {
       health.fuseSearch = this.fuseIndex !== null;
     } catch {
-      health.fuseSearch = false;
+      health.fuseSearch = $state(false);
     }
 
     // Check Lokijs
@@ -1089,7 +1089,7 @@ export class UnifiedVectorOrchestrator {
       const docs = this.lokiDb.getCollection('documents');
       health.lokiDb = docs !== null;
     } catch {
-      health.lokiDb = false;
+      health.lokiDb = $state(false);
     }
 
     // Check Vector Service (legacy) - call defensive
@@ -1102,21 +1102,21 @@ export class UnifiedVectorOrchestrator {
         health.vectorService = !!this.hybrid;
       }
     } catch {
-      health.vectorService = false;
+      health.vectorService = $state(false);
     }
 
     // Check RAG Engine - coerce to boolean
     try {
       health.ragEngine = !!(this.ragEngine && this.ragEngine.engine);
     } catch {
-      health.ragEngine = false;
+      health.ragEngine = $state(false);
     }
 
     // Check Recommendation Engine
     try {
       health.recommendationEngine = this.recommendationEngine !== null;
     } catch {
-      health.recommendationEngine = false;
+      health.recommendationEngine = $state(false);
     }
 
     // Check Neo4j / Database connectivity
@@ -1124,7 +1124,7 @@ export class UnifiedVectorOrchestrator {
       await db.execute('SELECT 1');
       health.database = true;
     } catch {
-      health.database = false;
+      health.database = $state(false);
     }
 
     // Check Redis
@@ -1132,7 +1132,7 @@ export class UnifiedVectorOrchestrator {
       await this.redisClient.ping();
       health.redis = true;
     } catch {
-      health.redis = false;
+      health.redis = $state(false);
     }
 
     // return the assembled health object
@@ -1186,7 +1186,7 @@ export class UnifiedVectorOrchestrator {
           return s;
         }
       },
-      stringify: (v: unknown) => {
+      stringify: (v: any) => {
         try {
           return JSON.stringify(v);
         } catch (err) {
@@ -1198,7 +1198,7 @@ export class UnifiedVectorOrchestrator {
   }
 
   // NEW helper: normalize unknown Neo4j payloads into GraphData | undefined
-  private normalizeGraphData(raw: unknown): GraphData | undefined {
+  private normalizeGraphData(raw: any): GraphData | undefined {
     if (!raw) return undefined;
     // If already an object, return as GraphData
     if (typeof raw === 'object') return raw as GraphData;

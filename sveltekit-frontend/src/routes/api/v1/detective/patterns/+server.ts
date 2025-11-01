@@ -37,7 +37,7 @@ interface Pattern {
   confidence: number;
   occurrences?: number;
   // allow additional fields from mock detectors without using `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface Anomaly {
@@ -47,7 +47,7 @@ interface Anomaly {
   description?: string;
   confidence: number;
   severity?: 'low' | 'medium' | 'high' | 'very_high' | string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface DetectionResults {
@@ -56,7 +56,7 @@ interface DetectionResults {
   insights?: string[];
   confidence: number;
   summary?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 type DetectionPart = {
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: 'pattern_detection_completed',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error in pattern detection:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -161,8 +161,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  * Detect suspicious patterns in case data
  */
 async function detectSuspiciousPatterns(
-  caseData: unknown,
-  evidence: unknown[],
+  caseData: any,
+  evidence: any[],
   patternTypes?: string[],
   sensitivity: number = 0.7,
   options: GenericRecord = {}
@@ -243,7 +243,7 @@ async function detectSuspiciousPatterns(
  * Detect temporal patterns and anomalies
  */
 async function detectTemporalPatterns(
-  evidence: unknown[],
+  evidence: any[],
   sensitivity: number,
   options: GenericRecord
 ): Promise<DetectionPart> {
@@ -288,7 +288,7 @@ async function detectTemporalPatterns(
  * Detect location-based patterns
  */
 async function detectLocationPatterns(
-  _evidence: unknown[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -328,7 +328,7 @@ async function detectLocationPatterns(
  * Detect behavioral patterns
  */
 async function detectBehavioralPatterns(
-  evidence: unknown[],
+  evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -364,7 +364,7 @@ async function detectBehavioralPatterns(
  * Detect communication patterns
  */
 async function detectCommunicationPatterns(
-  _evidence: unknown[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -401,7 +401,7 @@ async function detectCommunicationPatterns(
  * Detect financial patterns
  */
 async function detectFinancialPatterns(
-  _evidence: unknown[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -439,7 +439,7 @@ async function detectFinancialPatterns(
  * Detect digital forensics patterns
  */
 async function detectDigitalPatterns(
-  _evidence: unknown[],
+  _evidence: any[],
   _sensitivity: number,
   _options: GenericRecord
 ): Promise<DetectionPart> {
@@ -525,15 +525,15 @@ type DetectiveLocals = {
     id?: string;
     sub?: string;
     // allow other user properties without using `any`
-    [key: string]: unknown;
+    [key: string]: any;
   } | null;
   session?: {
     userId?: string;
     // other session props
-    [key: string]: unknown;
+    [key: string]: any;
   } | null;
   // permit additional entries on locals (e.g., auth providers) without `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 /* Add small GET health/placeholder handler (keeps endpoint available for simple checks) */

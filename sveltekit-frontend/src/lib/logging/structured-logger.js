@@ -23,10 +23,8 @@ class StructuredLogger {
     console.debug('[search]', entry.query || 'unknown', entry.resultsCount || 0);
   }
 }
-
 export const logger = {
   // ...existing methods like logError, logPerformance, logAPIRequest, logAPIResponse, etc. ...
-
   /**
    * Log a user action in a structured way.
    * Kept compatible/safe so components can call logger.logUserAction(...)
@@ -38,7 +36,6 @@ export const logger = {
         timestamp: Date.now(),
         ...payload,
       };
-
       // Prefer existing event/info logger helpers if present
       if (typeof this.logEvent === 'function') {
         return await this.logEvent(entry);
@@ -46,7 +43,6 @@ export const logger = {
       if (typeof this.logInfo === 'function') {
         return await this.logInfo(entry);
       }
-
       // Fallback: attempt to POST to a /api/logs endpoint if available (non-blocking)
       if (typeof fetch === 'function') {
         try {
@@ -62,7 +58,6 @@ export const logger = {
         // Last fallback: console.debug
         console.debug('[logger] user action', entry);
       }
-
       return Promise.resolve(true);
     } catch (err) {
       // Ensure logging failures don't surface to callers
@@ -70,6 +65,5 @@ export const logger = {
       return Promise.resolve(false);
     }
   },
-
   // ...existing methods...
 };

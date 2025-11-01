@@ -9,7 +9,7 @@
   		scanEffect?: boolean;
   		minimizable?: boolean;
   		closable?: boolean;
-  		children: unknown;
+  		 unknown;
   	}
   	let { title,
   		subtitle,
@@ -27,7 +27,7 @@
   		minimizable = false,
   		closable = false,
   		children
-  	: unknown } = $props();
+  	: any } = $props();
   	let isMinimized = $state(false);
   	let isClosed = $state(false);
   	function toggleMinimize() {
@@ -37,7 +37,6 @@
   		isClosed = true;
   	}
 </script>
-
 {#if !isClosed}
   <div class="gaming-panel {variant}" class:glow={borderGlow} class:scan={scanEffect} class:minimized={isMinimized}>
     <!-- Panel Header -->
@@ -50,8 +49,7 @@
               {#if subtitle}
                 <span class="subtitle-text">{subtitle}</span>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
         <div class="header-controls">
           {#if minimizable}
@@ -67,14 +65,12 @@
             <button class="control-button close" onclick={closePanel} aria-label="Close panel"> ✕ </button>
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Panel Content -->
     {#if !isMinimized}
       <div class="panel-content">
         {@render children()}
-      </div>
-    {/if}
+      {/if}
     <!-- Gaming Effects -->
     <div class="corner-decoration top-left"></div>
     <div class="corner-decoration top-right"></div>
@@ -82,14 +78,11 @@
     <div class="corner-decoration bottom-right"></div>
     {#if scanEffect}
       <div class="scan-line-horizontal"></div>
-      <div class="scan-line-vertical"></div>
-    {/if}
-  </div>
-{/if}
-
+      <div class="scan-line-vertical">{/if}
+  {/if}
 <style>
 	.gaming-panel {
-position relative;
+position: relative;
 background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
 		border: 2px solid;
 		border-radius: 8px;
@@ -194,11 +187,11 @@ cursor: pointer; transition: all 0.2s ease;
 	}
 /* Panel Content */ .panel-content {
 		padding: 16px;
-position relative;
+position: relative;
 z-index: 1,
 	}
 /* Corner Decorations */ .corner-decoration {
-position absolute;
+position: absolute;
 width: 16px;
 		height: 16px;
 		border: 2px solid currentColor;
@@ -223,7 +216,7 @@ border-top: none border-right: none }
 border-top: none;
 border-left: none, }
 /* Scan Effects */ .scan-line-horizontal {
-position absolute;
+position: absolute;
 top: 0,
 		left: 0;
 		right: 0,
@@ -234,7 +227,7 @@ top: 0,
 		z-index: 0,
 	}
 	.scan-line-vertical {
-position absolute;
+position: absolute;
 top: 0,
 		bottom: 0;
 		left: 0,
@@ -323,5 +316,3 @@ top: 0,
 		}
 	}
 </style>
-
-

@@ -18,24 +18,23 @@ const schemaPromise = import('../db/schema-postgres.js').then(m => m).catch(() =
 // Enhanced RabbitMQ Manager with improved error handling and type safety
 // --- CHANGES START ---
 // Local alias for incoming AMQP message (avoid using non-exported ConsumeMessage)
-type AmqpMessage = { content: Buffer; fields?: unknown; properties?: unknown } | null;
-
+type AmqpMessage = { content: Buffer; fields?: any; properties?: any } | null;
 export class RabbitMQManager extends EventEmitter {
   // tighten types for connection/channel
   private connection: Connection | null = null;
   private channel: Channel | null = null;
   private embeddings: OllamaEmbeddings;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   // Services (loaded dynamically to avoid circular dependencies)
-  private redisService: unknown = null;
-  private lokiRedisCache: unknown = null;
-  private enhancedRAGPipeline: unknown = null;
-  private instantSearchEngine: unknown = null;
-  private db: unknown = null;
-  private sql: unknown = null;
-  private schema: unknown = null;
+  private redisService: any = null;
+  private lokiRedisCache: any = null;
+  private enhancedRAGPipeline: any = null;
+  private instantSearchEngine: any = null;
+  private db: any = null;
+  private sql: any = null;
+  private schema: any = null;
   private readonly exchanges = {
     cache_invalidation: 'cache.invalidation',
     document_processing: 'document.processing',
@@ -80,7 +79,7 @@ export class RabbitMQManager extends EventEmitter {
       this.emit('initialized');
       console.log('🚀 RabbitMQ Manager initialized successfully');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ RabbitMQ initialization failed:', this.formatError(error));
       return false;
     }
@@ -99,7 +98,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       this.schema = await schemaPromise;
       console.log('✅ Services loaded successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Some services failed to load:', this.formatError(error));
       // Continue without failing services
     }
@@ -115,7 +114,7 @@ export class RabbitMQManager extends EventEmitter {
       });
       this.channel.on('error', this.handleChannelError.bind(this));
       console.log('✅ RabbitMQ connected');
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`RabbitMQ connection failed: ${this.formatError(error)}`);
     }
   }
@@ -296,12 +295,12 @@ export class RabbitMQManager extends EventEmitter {
       } else {
         console.log(`📤 Published to ${exchange}:${routingKey}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Publish failed for ${exchange}:${routingKey}:`, this.formatError(error));
     }
   }
   // helper to format unknown errors
-  private formatError(err: unknown): string {
+  private formatError(err: any): string {
     if (err instanceof Error) return err.message;
     try {
       return typeof err === 'string' ? err : JSON.stringify(err);
@@ -332,7 +331,7 @@ export class RabbitMQManager extends EventEmitter {
         await this.instantSearchEngine.clearCache();
       }
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Cache invalidation error:', this.formatError(error));
       this.safeNack(msg);
     }
@@ -409,7 +408,7 @@ export class RabbitMQManager extends EventEmitter {
         keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`],
       });
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Document embedding error:', this.formatError(error));
       this.safeNack(msg);
     }
@@ -456,7 +455,7 @@ export class RabbitMQManager extends EventEmitter {
                 },
               },
             });
-        } catch (dbError: unknown) {
+        } catch (dbError: any) {
           console.warn('⚠️ Database storage failed:', this.formatError(dbError));
         }
       }
@@ -483,7 +482,7 @@ export class RabbitMQManager extends EventEmitter {
         });
       }
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Evidence processing error:', this.formatError(error));
       this.safeNack(msg);
     }
@@ -536,7 +535,7 @@ export class RabbitMQManager extends EventEmitter {
           break;
       }
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Vector indexing error:', this.formatError(error));
       this.safeNack(msg);
     }
@@ -572,7 +571,7 @@ export class RabbitMQManager extends EventEmitter {
               created_at: new Date().toISOString(),
             },
           });
-        } catch (dbError: unknown) {
+        } catch (dbError: any) {
           console.warn('⚠️ Chat storage failed:', this.formatError(dbError));
         }
       }
@@ -594,7 +593,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       console.log(`✅ Stored chat context for session ${session_id}`);
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Chat context error:', this.formatError(error));
       this.safeNack(msg);
     }
@@ -616,7 +615,6 @@ export class RabbitMQManager extends EventEmitter {
         typeof data.response_time_ms === 'number' ? data.response_time_ms : Number(data.responseTimeMs ?? 0) || 0;
       const cache_hit = Boolean(data.cache_hit ?? data.cacheHit ?? false);
       const user_id = data.user_id ?? data.userId ?? null;
-
       console.log(`📊 Analytics event: ${eventType}`);
       // Store analytics in database if available
       if (user_id && this.db && this.schema?.userAiQueries) {
@@ -641,7 +639,7 @@ export class RabbitMQManager extends EventEmitter {
               errorMessage: event_data?.error || null,
             })
             .onConflictDoNothing();
-        } catch (dbError: unknown) {
+        } catch (dbError: any) {
           console.warn('⚠️ Analytics storage failed:', this.formatError(dbError));
         }
       }
@@ -662,7 +660,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       console.log(`✅ Analytics tracked for ${eventType}`);
       this.channel.ack(msg as any);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Analytics tracking error:', this.formatError(error));
       this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics
     }
@@ -674,7 +672,7 @@ export class RabbitMQManager extends EventEmitter {
       const raw = msg.content?.toString?.() ?? '';
       if (!raw) return null;
       return JSON.parse(raw) as Record<string, any>;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Failed to parse message JSON:', this.formatError(error));
       return null;
     }
@@ -684,7 +682,7 @@ export class RabbitMQManager extends EventEmitter {
     for (const key of keys) {
       try {
         await (this.redisService as any).del(key);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Failed to delete key ${key}:`, this.formatError(error));
       }
     }
@@ -704,7 +702,7 @@ export class RabbitMQManager extends EventEmitter {
           await (this.redisService as any).del(key);
         }
         console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Pattern invalidation failed for ${pattern}:`, this.formatError(error));
       }
     }
@@ -724,7 +722,7 @@ export class RabbitMQManager extends EventEmitter {
     if (msg && this.channel) {
       try {
         this.channel.nack(msg as any, false, true); // Requeue
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Failed to nack message:', this.formatError(error));
       }
     }
@@ -758,7 +756,7 @@ export class RabbitMQManager extends EventEmitter {
         await this.initialize();
         this.reconnectAttempts = 0;
         console.log('✅ RabbitMQ reconnected successfully');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('❌ Reconnection failed:', this.formatError(error));
         this.attemptReconnect();
       }
@@ -787,7 +785,7 @@ export class RabbitMQManager extends EventEmitter {
           schema: !!this.schema,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         status: 'unhealthy',
         error: this.formatError(error),
@@ -798,7 +796,7 @@ export class RabbitMQManager extends EventEmitter {
   // Graceful shutdown
   async close(): Promise<void> {
     try {
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       if (this.channel) {
         await this.channel.close();
         this.channel = null;
@@ -808,7 +806,7 @@ export class RabbitMQManager extends EventEmitter {
         this.connection = null;
       }
       console.log('✅ RabbitMQ connection closed gracefully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Error closing RabbitMQ connection:', this.formatError(error));
     }
   }
@@ -817,7 +815,7 @@ export class RabbitMQManager extends EventEmitter {
 export const rabbitmq = new RabbitMQManager();
 // Initialize on module load in server environment
 if (typeof window === 'undefined') {
-  rabbitmq.initialize().catch((error: unknown) => {
+  rabbitmq.initialize().catch((error: any) => {
     console.error('❌ RabbitMQ auto-initialization failed:', error instanceof Error ? error.message : String(error));
   });
 }

@@ -10,7 +10,7 @@ import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
 // Local endpoint-only response types (keeps this handler self-contained)
 type ErrorResponse = {
   success: false;
-  error: { message: string; details?: unknown };
+  error: { message: string; details?: any };
   timestamp: string;
 };
 

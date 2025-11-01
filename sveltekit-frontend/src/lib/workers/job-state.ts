@@ -68,7 +68,7 @@ class JobStateMachine {
     this.running.delete(id);
     return this.store.setJob({ id, state: 'succeeded' });
   }
-  async failJob(id: string, error: unknown, retry = false) {
+  async failJob(id: string, error: any, retry = false) {
     this.running.delete(id);
     const job = await this.store.getJob(id);
     const retries = (job?.retries ?? 0) + (retry ? 1 : 0);

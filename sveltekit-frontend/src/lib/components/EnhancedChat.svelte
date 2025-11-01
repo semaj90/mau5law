@@ -4,7 +4,7 @@
 	import { onMount, onDestroy, tick } from 'svelte';
 	import { createMachine, assign } from 'xstate';
 	import { useMachine } from '@xstate/svelte';
-	import { Button } from '$lib/components/ui/enhanced-bits';
+	import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
 
 	// small classnames helper (optional, replace with your cn)
 	const cn = (...args: Array<string | false | null | undefined>) => args.filter(Boolean).join(' ');
@@ -152,7 +152,7 @@
 				onchange={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
 				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
 			>
-				{#each models as m}
+				{#each Array.isArray(models) ? models : [] as m}
 					<option value={m.value}>{m.label}</option>
 				{/each}
 			</select>
@@ -197,8 +197,7 @@
 						<span class="text-sm text-gray-600">AI is thinking...</span>
 					</div>
 				</div>
-			</div>
-		{/if}
+			{/if}
 	</div>
 
 	<!-- Input -->

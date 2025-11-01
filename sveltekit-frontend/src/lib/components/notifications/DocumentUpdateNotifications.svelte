@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
     maxVisible = 5,
     autoHide = true,
     position = "top-right",
-  : unknown } = $props();
+  : any } = $props();
   // State
   let notifications = $state<UpdateNotification[]>([]);
   let activeUpdates = $state(new Map<string, UpdateNotification>();
@@ -82,19 +82,18 @@ https://svelte.dev/e/js_parse_error -->
     showNotifications = !showNotification;
   }
   function getProgressWidth(notification UpdateNotification): string {
-    if ((notification as { data?: unknown; id?: unknown }).data.progress !== undefined) {
-      return `${(notification as { data?: unknown; id?: unknown }).data.progress}%`;
+    if ((notification as { data?: any; id?: any }).data.progress !== undefined) {
+      return `${(notification as { data?: any; id?: any }).data.progress}%`;
     }
-    if ((notification as { data?: unknown; id?: unknown }).data.chunksProcessed != null && (notification as { data?: unknown; id?: unknown }).data.totalChunks != null) {
+    if ((notification as { data?: any; id?: any }).data.chunksProcessed != null && (notification as { data?: any; id?: any }).data.totalChunks != null) {
       const progress =
-        ((notification as { data?: unknown; id?: unknown }).data.chunksProcessed / (notification as { data?: unknown; id?: unknown }).data.totalChunks) *
+        ((notification as { data?: any; id?: any }).data.chunksProcessed / (notification as { data?: any; id?: any }).data.totalChunks) *
         100;
       return `${Math.round(progress)}%`;
     }
     return "0%";
   }
 </script>
-
 <!-- Notification Container -->
 <div
   class="document-notifications fixed {position === 'top-right'
@@ -168,8 +167,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex items-center space-x-2 text-xs text-gray-500">
                   <div class="animate-spin w-3 h-3 border border-blue-600 border-t-transparent rounded-full"></div>
                   <span>Processing...</span>
-                </div>
-              {/if}
+                {/if}
             </div>
             <div class="text-xs text-gray-400 ml-2">
               {formatNotificationTime(update.timestamp)}
@@ -177,8 +175,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Notification History -->
   {#if showNotifications && visibleNotifications.length > 0}
     <div
@@ -188,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-3 border-b border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">📋 Recent Updates</h4>
       </div>
-      {#each visibleNotifications as notification ((notification as { data?: unknown; id?: unknown }).id)}
+      {#each visibleNotifications as notification ((notification as { data?: any; id?: any }).id)}
         {@const typedNotification = notification as UpdateNotification}
         <div
           class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
@@ -242,10 +239,8 @@ https://svelte.dev/e/js_parse_error -->
           <button onclick={() => (showAll = true)} class="text-xs text-blue-600 hover:text-blue-800">
             Show all {notifications.length} notifications
           </button>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Empty State -->
   {#if showNotifications && notifications.length === 0 && activeUpdatesList.length === 0}
     <div
@@ -254,10 +249,8 @@ https://svelte.dev/e/js_parse_error -->
     >
       <div class="text-4xl mb-2">📭</div>
       <div class="text-sm text-gray-500">No document updates yet</div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .document-notifications {
     /* Ensure notifications appear above other elements */

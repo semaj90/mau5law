@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-
   import { uploadWithXhr } from '$lib/api/xhr';
-
   // Props using Svelte 5 syntax
   let {
     uploadUrl = '/api/upload',
@@ -23,28 +21,23 @@
     onerror?: (detail: { message: string }) => void;
     oncancel?: () => void;
   } = $props();
-
   let file: File | null = $state(null);
   let percent = $state(0);
   let uploading = $state(false);
   let controller: AbortController | null = $state(null);
-
   function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
     file = input.files && input.files[0] ? input.files[0] : null;
   }
-
   function onDrop(e: DragEvent) {
     e.preventDefault();
     if (e.dataTransfer?.files && e.dataTransfer.files.length) {
       file = e.dataTransfer.files[0];
     }
   }
-
   function onDragOver(e: DragEvent) {
     e.preventDefault();
   }
-
   function validateFile(f: File | null): string | null {
     if (!f) return 'No file selected';
     if (f.size > maxBytes) return `File too large (${Math.round(f.size / 1024 / 1024)}MB)`;
@@ -52,17 +45,15 @@
     if (allowedExtensions.length && !allowedExtensions.includes(ext)) return `Invalid file extension: '.${ext}'`;
     return null;
   }
-
   async function cancelUpload() {
     if (controller) {
       controller.abort();
       controller = null;
-      uploading = false;
+      uploading = $state(false);
       percent = 0;
       oncancel?.();
     }
   }
-
   async function startUpload() {
     const err = validateFile(file);
     if (err) {
@@ -70,14 +61,11 @@
       return;
     }
     if (!file) return;
-
     uploading = true;
     percent = 0;
     controller = new AbortController();
-
     const form = new FormData();
     form.append(fieldName, file as Blob, file?.name);
-
     try {
       const res = await uploadWithXhr(
         uploadUrl,
@@ -88,19 +76,17 @@
         },
         controller.signal
       );
-
-      uploading = false;
+      uploading = $state(false);
       controller = null;
       const ok = res.status >= 200 && res.status < 300;
       percent = ok ? 100 : percent;
       ondone?.({ ok, status: res.status, response: res.responseText });
     } catch (err) {
-      uploading = false;
+      uploading = $state(false);
       controller = null;
       onerror?.({ message: String(err) });
     }
   }
-
   onDestroy(() => {
     if (controller) {
       // Changed xhr to controller
@@ -110,27 +96,22 @@
     }
   });
 </script>
-
 <div class="flex flex-col gap-2 w-full">
   <div class="flex items-center gap-2">
     <input type="file" onchange={onFileChange} />
     <button onclick={startUpload} disabled={!file || uploading} class="btn">Upload</button>
     <button onclick={cancelUpload} disabled={!uploading} class="btn-ghost">Cancel</button>
   </div>
-
   <div aria-live="polite">
     {#if uploading}
       <div class="text-sm">Uploading: {percent}%</div>
     {:else if percent === 100}
-      <div class="text-sm">Upload complete</div>
-    {/if}
+      <div class="text-sm">Upload complete{/if}
   </div>
-
   <div class="progress-track mt-1" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}>
     <div class="progress-fill" style="width: {percent}%"></div>
   </div>
 </div>
-
 <style>
   .progress-track {
     background: rgba(0, 0, 0, 0.06);
@@ -142,7 +123,6 @@
     background: var(--accent, #0ea5a4);
     height: 100%;
     width: 0%;
-    transition: width 300ms ease;
+    transition: width: 300ms ease;
   }
 </style>
-

@@ -3,25 +3,19 @@
  * Creates test_rag_documents, test_rag_embeddings, test_rag_search_sessions tables
  * Run: npx tsx src/lib/server/db/migrate-test-rag.ts
  */
-
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { sql } from 'drizzle-orm';
-
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
-
 const migrationClient = postgres(connectionString, { max: 1 });
 const db = drizzle(migrationClient);
-
 async function migrate() {
   console.log('🚀 Starting Test RAG migration...\n');
-
   try {
     // Enable pgvector extension if not already enabled
     console.log('📦 Enabling pgvector extension...');
     await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector;`);
     console.log('✅ pgvector extension enabled\n');
-
     // Create test_rag_documents table
     console.log('📄 Creating test_rag_documents table...');
     await db.execute(sql`
@@ -38,7 +32,6 @@ async function migrate() {
       );
     `);
     console.log('✅ test_rag_documents table created\n');
-
     // Create test_rag_embeddings table with pgvector
     console.log('🔢 Creating test_rag_embeddings table with pgvector(768)...');
     await db.execute(sql`
@@ -52,7 +45,6 @@ async function migrate() {
       );
     `);
     console.log('✅ test_rag_embeddings table created\n');
-
     // Create test_rag_search_sessions table
     console.log('🔍 Creating test_rag_search_sessions table...');
     await db.execute(sql`
@@ -68,10 +60,8 @@ async function migrate() {
       );
     `);
     console.log('✅ test_rag_search_sessions table created\n');
-
     // Create indexes for performance
     console.log('⚡ Creating indexes...');
-
     // HNSW index for vector similarity search (fast but approximate)
     await db.execute(sql`
       CREATE INDEX IF NOT EXISTS test_rag_embeddings_vector_idx
@@ -80,33 +70,28 @@ async function migrate() {
       WITH (m = 16, ef_construction = 64);
     `);
     console.log('✅ Created HNSW index on embeddings (vector similarity)');
-
     // B-tree indexes for common queries
     await db.execute(sql`
       CREATE INDEX IF NOT EXISTS test_rag_embeddings_document_id_idx
       ON test_rag_embeddings(document_id);
     `);
     console.log('✅ Created index on document_id');
-
     await db.execute(sql`
       CREATE INDEX IF NOT EXISTS test_rag_documents_created_at_idx
       ON test_rag_documents(created_at DESC);
     `);
     console.log('✅ Created index on created_at');
-
     // GIN index for JSONB metadata searches
     await db.execute(sql`
       CREATE INDEX IF NOT EXISTS test_rag_documents_metadata_idx
       ON test_rag_documents USING gin(metadata jsonb_path_ops);
     `);
     console.log('✅ Created GIN index on metadata (JSONB)');
-
     await db.execute(sql`
       CREATE INDEX IF NOT EXISTS test_rag_documents_legal_analysis_idx
       ON test_rag_documents USING gin(legal_analysis jsonb_path_ops);
     `);
     console.log('✅ Created GIN index on legal_analysis (JSONB)\n');
-
     // Verify tables exist
     console.log('🔍 Verifying tables...');
     const tables = await db.execute(sql`
@@ -116,22 +101,18 @@ async function migrate() {
       AND table_name LIKE: 'test_rag%'
       ORDER BY table_name;
     `);
-
     console.log('\n📊 Created tables:');
     tables.forEach((row: any) => {
       console.log(`  ✅ ${row.table_name}`);
     });
-
     // Show table counts
     console.log('\n📈 Table stats:');
     const docCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_documents;`);
     const embCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_embeddings;`);
     const sesCount = await db.execute(sql`SELECT COUNT(*) as count FROM test_rag_search_sessions;`);
-
     console.log(`  📄 test_rag_documents: ${(docCount[0] as any).count} rows`);
     console.log(`  🔢 test_rag_embeddings: ${(embCount[0] as any).count} rows`);
     console.log(`  🔍 test_rag_search_sessions: ${(sesCount[0] as any).count} rows`);
-
     console.log('\n✅ Test RAG migration completed successfully!');
     console.log('\n📝 Next steps:');
     console.log('  1. Upload documents via /api/documents/upload-ocr');
@@ -145,7 +126,6 @@ async function migrate() {
     await migrationClient.end();
   }
 }
-
 migrate().catch(err => {
   console.error('Fatal error:', err);
   process.exit(1);

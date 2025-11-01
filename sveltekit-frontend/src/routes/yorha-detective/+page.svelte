@@ -22,7 +22,7 @@
       } else {
         clearInterval(bootInterval);
         setTimeout(() => {
-          isBooting = false;
+          isBooting = $state(false);
         }, 1000);
       }
     }, 800);

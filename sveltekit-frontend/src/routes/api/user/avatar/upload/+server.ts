@@ -33,7 +33,7 @@ type UploadFile = {
 function getUserId(locals: LocalsWithUser): string {
   return String(locals?.user?.id ?? locals?.user?.userId ?? 'unknown');
 }
-function isUploadFile(v: unknown): v is UploadFile {
+function isUploadFile(v: any): v is UploadFile {
   return (
     !!v &&
     typeof (v as UploadFile).arrayBuffer === 'function' &&
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       avatarUrl,
       message: 'Avatar uploaded successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Avatar upload error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
@@ -120,7 +120,7 @@ export const DELETE: RequestHandler = async ({ locals }) => {
       success: true,
       message: 'Avatar removed successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Avatar removal error:', error);
     return json({ error: 'Removal failed' }, { status: 500 });
   }

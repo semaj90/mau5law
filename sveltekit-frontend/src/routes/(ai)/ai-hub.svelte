@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/core';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Button } from '$lib/components/ui/core.svelte'';
   import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';
   import type { RouteDefinition as RGRouteDefinition } from '$lib/data/route-groups-config';
 
@@ -83,7 +83,7 @@
     <div class="services-section">
       <h2>🚀 AI Services & Tools</h2>
       <div class="services-grid">
-        {#each aiRoutes as route}
+        {#each Array.isArray(aiRoutes) ? aiRoutes : [] as route}
           <Card class="service-card">
             <CardHeader>
               <CardTitle>
@@ -106,7 +106,7 @@
   <div class="activities-section">
     <h2>📊 Recent AI Activities</h2>
     <div class="activities-list">
-      {#each recentActivities as activity}
+      {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
         <Card class="activity-card">
           <CardContent>
             <div class="activity-type">

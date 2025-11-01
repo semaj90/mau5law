@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from 'bits-ui';
-  import LLMProviderSelector from './LLMProviderSelector.svelte';
+  import { LLMProviderSelector } from './LLMProviderSelector.svelte';
   import { aiServiceWorkerManager, type AITaskResult } from '$lib/services/aiServiceWorkerManager';
   import type { LLMProvider } from '$lib/types/llm';
   import { fly } from 'svelte/transition';
@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   } = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
 
   let selectedProvider: LLMProvider | null = null;
-  let isProcessing = false;
+  let isProcessing = $state(false);
   let processingResults: AITaskResult[] = [];
   let testInput = "Analyze this legal document for key compliance issues and regulatory requirements.";
 
@@ -101,11 +101,11 @@ https://svelte.dev/e/js_parse_error -->
           }
         };
         processingResults = [mockResult, ...processingResults].slice(0, 10); // Keep last 10
-        isProcessing = false;
+        isProcessing = $state(false);
       }, Math.random() * 3000 + 1000);
     } catch (error) {
       console.error('Task processing failed:', error);
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   };
 
@@ -143,10 +143,10 @@ https://svelte.dev/e/js_parse_error -->
         }));
       }
       processingResults = [...results.reverse(), ...processingResults].slice(0, 10);
-      isProcessing = false;
+      isProcessing = $state(false);
     } catch (error) {
       console.error('Parallel processing failed:', error);
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   };
 
@@ -379,22 +379,19 @@ https://svelte.dev/e/js_parse_error -->
               {#if result.success && result.result}
                 <div class="text-sm bg-yorha-bg-primary p-2 rounded border">
                   <pre class="whitespace-pre-wrap text-yorha-text-primary overflow-x-auto">{JSON.stringify(result.result, null, 2)}</pre>
-                </div>
-              {/if}
+                {/if}
 
               {#if result.metrics}
                 <div class="flex items-center space-x-4 mt-2 text-xs text-yorha-text-secondary">
                   <span>Tokens: {result.metrics.tokensProcessed}</span>
                   <span>Throughput: {result.metrics.throughput} t/s</span>
                   <span>Memory: {result.metrics.memoryUsed}</span>
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Worker Status -->
   {#if workerStatus && workerStatus.length > 0}
@@ -426,8 +423,7 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </main>
 
 <style>

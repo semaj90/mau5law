@@ -21,7 +21,6 @@ import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
-
 export interface AutoEncoderConfig {
   inputDimension: number;
   hiddenLayers: number[];
@@ -108,7 +107,6 @@ export interface AutoEncoderTrainingMetrics {
   gpuUtilization: number;
   processingTime: number;
 }
-
 // Add a typed cache interface to avoid `any`
 type CacheLike = {
   get?: <T = unknown>(key: string) => Promise<T | undefined> | T | undefined;
@@ -123,13 +121,12 @@ type CacheLike = {
   store?: <T = unknown>(key: string, value: T, opts?: Record<string, unknown>) => Promise<void> | void;
   cleanup?: () => void | Promise<void>;
 };
-
 export class GraphPatternAutoEncoder {
   private config: AutoEncoderConfig;
   private encoder: LayersModel | null = null;
   private decoder: LayersModel | null = null;
   private autoencoder: LayersModel | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private trainingHistory: AutoEncoderTrainingMetrics[] = [];
   private gpuBackend: 'webgl' | 'webgpu' | 'cpu' = 'cpu';
   private cache: MultiLayerCache | null = null;
@@ -138,7 +135,7 @@ export class GraphPatternAutoEncoder {
   // Define a small typed surface for the RL cache to avoid `any`
   private rlCache: {
     initialize?: () => Promise<void>;
-    set?: (key: string, value: unknown) => Promise<void> | void;
+    set?: (key: string, value: any) => Promise<void> | void;
     getStats?: () => Record<string, unknown> | undefined;
   } | null = null;
   private patternLibrary = new Map<string, EncodedGraphPattern>();
@@ -173,7 +170,6 @@ export class GraphPatternAutoEncoder {
       console.warn('Failed to initialize auto-encoder cache:', error);
     }
   }
-
   // Added: safe cache access helpers to accommodate different MultiLayerCache APIs
   private async cacheGet<T>(key: string): Promise<T | undefined> {
     if (!this.cache) return undefined;
@@ -187,7 +183,6 @@ export class GraphPatternAutoEncoder {
     if (typeof c.retrieve === 'function') return await Promise.resolve(c.retrieve<T>(key));
     return undefined;
   }
-
   private async cacheSet<T>(key: string, value: T, opts?: Record<string, unknown>): Promise<void> {
     if (!this.cache) return;
     const c = this.cacheLike ?? (this.cache as unknown as CacheLike);

@@ -9,7 +9,7 @@ export type OllamaOptions = {
   mirostat?: number;
   num_ctx?: number; // context window
   // Add more options as needed per Ollama spec
-  [key: string]: unknown;
+  [key: string]: any;
 };
 export interface OllamaGenerateRequest {
   model: string;
@@ -47,13 +47,12 @@ export interface OllamaEmbeddingsResponse {
   embedding: number[];
 }
 import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
-
 function getDefaultHost(): string {
   // Delegate host resolution to the centralized helper which prefers Vite env,
   // Node env and falls back to localhost. This keeps client/server behavior consistent.
   return getOllamaEndpoint();
 }
-async function jsonFetch<T>(path: string, body: unknown): Promise<T> {
+async function jsonFetch<T>(path: string, body: any): Promise<T> {
   const host = getDefaultHost();
   const res = await fetch(`${host}${path}`, {
     method: 'POST',

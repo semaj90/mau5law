@@ -15,11 +15,9 @@ import {
 // If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
 import { users } from './schema-postgres';
 import { sql } from 'drizzle-orm';
-
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
 export * from './schema-gpu-cache';
-
 // Exported table definition used by the advanced-analysis endpoint
 export const analysisResults = pgTable('analysis_results', {
   analysisId: varchar('analysis_id', { length: 128 }).primaryKey(),
@@ -31,7 +29,6 @@ export const analysisResults = pgTable('analysis_results', {
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
 });
-
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 255 }).notNull(),
@@ -42,7 +39,6 @@ export const cases = pgTable('cases', {
   status: varchar('status', { length: 50 }).default('active'),
   metadata: jsonb('metadata'),
 });
-
 export const evidence = pgTable('evidence', {
   id: text('id').primaryKey().notNull().default(sql`gen_random_uuid()`),
   caseId: text('case_id').notNull(),
@@ -56,7 +52,6 @@ export const evidence = pgTable('evidence', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
-
 export const documents = pgTable('documents', cols => ({
   id: cols.uuid('id').defaultRandom().primaryKey(),
   userId: cols.text('user_id').notNull(),
@@ -65,7 +60,6 @@ export const documents = pgTable('documents', cols => ({
   embedding: cols.vector('embedding', { dimensions: 1536 }),
   createdAt: cols.timestamp('created_at').defaultNow(),
 }));
-
 export const sessions = pgTable('sessions', {
   id: uuid('id').primaryKey(), // Remove .default(sql`gen_random_uuid()`) or similar
   userId: uuid('user_id')
@@ -76,7 +70,6 @@ export const sessions = pgTable('sessions', {
     mode: 'date',
   }).notNull(),
 });
-
 // Define the chat_messages table
 export const chatMessages = pgTable('chat_messages', {
   id: varchar('id', { length: 256 }).primaryKey(),
@@ -98,7 +91,6 @@ export const chatMessages = pgTable('chat_messages', {
     };
   }>(),
 });
-
 // Define the chat_embeddings table
 export const chatEmbeddings = pgTable(
   'chat_embeddings',
@@ -130,7 +122,6 @@ export const chatEmbeddings = pgTable(
     };
   }
 );
-
 // 🧠 User Reports Table
 export const reports = pgTable('reports', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -146,7 +137,6 @@ export const reports = pgTable('reports', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 console.log('📝 Drizzle ORM schema defined');
   summary: text('summary'),
   tags: jsonb('tags').$type<string[]>().default([]),
@@ -157,5 +147,4 @@ console.log('📝 Drizzle ORM schema defined');
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 console.log('📝 Drizzle ORM schema defined');

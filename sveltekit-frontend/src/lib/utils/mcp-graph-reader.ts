@@ -20,7 +20,7 @@ interface GraphNode {
   type: string;
   label: string;
   data: Record<string, unknown>;
-  connections: unknown[];
+  connections: any[];
   metadata: Record<string, unknown>;
 }
 interface GraphRelation {
@@ -363,7 +363,7 @@ export class MCPGraphReader {
           mcpSource: 'drizzle-postgres-graph-reader',
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Graph reading error:', error);
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(`Failed to read graph: ${message}`);

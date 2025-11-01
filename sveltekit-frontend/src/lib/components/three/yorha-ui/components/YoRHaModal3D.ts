@@ -25,7 +25,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   private contentContainer: THREE.Group;
   private glitchEffect?: THREE.Group;
   private options: YoRHaModal3DOptions;
-  private isOpen = false;
+  private isOpen = $state(false);
   private animationProgress = 0;
   constructor(options: YoRHaModal3DOptions = {}) {
     const style = YoRHaModal3D.getVariantStyle(options.variant || 'default', options.size || 'medium');
@@ -72,7 +72,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       this.createGlitchEffect();
     }
     // Initially hidden
-    this.visible = false;
+    this.visible = $state(false);
   }
   protected createGeometry(): void {
     const width = this.style.width || 4;
@@ -388,14 +388,14 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   }
   public close(): void {
     if (!this.isOpen) return;
-    this.isOpen = false;
+    this.isOpen = $state(false);
     this.animationProgress = 0;
     // Animate closing
     this.addCustomAnimation('modalClose', deltaTime => {
       this.animationProgress += deltaTime * 6; // 6x speed for faster close
       if (this.animationProgress >= 1) {
         this.animationProgress = 1;
-        this.visible = false;
+        this.visible = $state(false);
         this.customAnimations.delete('modalClose');
         this.emitEvent('closed');
         return;

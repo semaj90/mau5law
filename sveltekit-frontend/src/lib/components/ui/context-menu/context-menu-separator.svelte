@@ -1,5 +1,4 @@
 <div class="context-menu-separator" role="separator" aria-orientation="horizontal"></div>
-
 <style>
   /* @unocss-include */
   .context-menu-separator {

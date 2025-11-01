@@ -19,7 +19,7 @@ type GPUConfig = {
   model?: string;
   gpu: { enabled: boolean; device?: string | number } | { enabled: boolean };
   // prefer unknown over any for extensible fields
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type FetchResult =
@@ -39,7 +39,7 @@ type FetchResult =
 let cached: { ts: number; payload: FetchResult } | null = null;
 
 // validate unknown payloads safely
-function isValidGpuConfig(payload: unknown): payload is GPUConfig {
+function isValidGpuConfig(payload: any): payload is GPUConfig {
   if (!payload || typeof payload !== 'object') return false;
   // treat as Record to inspect fields
   const obj = payload as Record<string, unknown>;
@@ -75,13 +75,13 @@ async function fetchWithRetries(
   delayMs = RETRY_DELAY_MS
 ): Promise<GPUConfig> {
   let attempt = 0;
-  let lastError: unknown = null;
+  let lastError: any = null;
   while (attempt <= retries) {
     try {
       const payload = await fetchOnce(path, timeoutMs);
       if (!isValidGpuConfig(payload)) throw new Error('invalid-payload');
       return payload as GPUConfig;
-    } catch (err: unknown) {
+    } catch (err: any) {
       lastError = err;
       attempt++;
       if (attempt > retries) break;
@@ -95,7 +95,7 @@ async function fetchWithRetries(
 }
 
 // helper to extract message from unknown errors
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async () => {
       const payload: FetchResult = { ok: true, source: 'go', config: cfg };
       cached = { ts: Date.now(), payload };
       return json(payload, { status: 200 });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('gpu-config: upstream fetch failed:', getErrorMessage(err));
       // On failure use cache if available; otherwise return shim but indicate fallback
       if (cached) {
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async () => {
       // do not cache shim as a positive result; it's a fallback only
       return json(payload, { status: 200 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('gpu-config: unexpected error', getErrorMessage(err));
     // Minimal exposure to clients; return shim and 500
     const payload: FetchResult = { ok: false, source: 'shim', config: DEFAULT_SHIM, reason: 'internal_error' };

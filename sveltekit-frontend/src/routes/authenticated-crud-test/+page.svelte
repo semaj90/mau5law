@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import Button from '$lib/components/ui/Button.svelte';
   // Type definitions
   interface User {
@@ -85,7 +85,7 @@
       const data = await readJson(response);
 
       if (response.status === 401 || !data || !data.user) {
-        isAuthenticated = false;
+        isAuthenticated = $state(false);
         currentUser = null;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
@@ -101,14 +101,14 @@
       }
 
       // Fallback: server did not provide expected shape
-      isAuthenticated = false;
+      isAuthenticated = $state(false);
       authError = 'Unexpected auth response';
       addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
       addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
-      isAuthenticated = false;
+      isAuthenticated = $state(false);
       currentUser = null;
       return false;
     }
@@ -144,7 +144,7 @@
       const data = await readJson(response);
 
       if (response.status === 401 || !data || !data.user) {
-        isAuthenticated = false;
+        isAuthenticated = $state(false);
         currentUser = null;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
@@ -160,14 +160,14 @@
       }
 
       // Fallback: server did not provide expected shape
-      isAuthenticated = false;
+      isAuthenticated = $state(false);
       authError = 'Unexpected auth response';
       addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
       addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
-      isAuthenticated = false;
+      isAuthenticated = $state(false);
       currentUser = null;
       return false;
     }
@@ -186,8 +186,8 @@
       const listData = await readJson(listResponse);
       if (listResponse.status === 401) {
         addResult('GET operation failed - session expired', 'error');
-        isAuthenticated = false;
-        isLoading = false;
+        isAuthenticated = $state(false);
+        isLoading = $state(false);
         return;
       }
       if (listResponse.ok && listData.success) {
@@ -220,7 +220,7 @@
     } catch (error) {
       addResult(`GET operations error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = false;
+    isLoading = $state(false);
   }
   // Test authenticated POST operation
   async function testAuthenticatedPOST() {
@@ -243,8 +243,8 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('POST operation failed - session expired', 'error');
-        isAuthenticated = false;
-        isLoading = false;
+        isAuthenticated = $state(false);
+        isLoading = $state(false);
         return null;
       }
       if (response.ok && data.success) {
@@ -253,7 +253,7 @@
         addResult(`Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`, 'info');
         // Refresh cases list
         await testAuthenticatedGET();
-        isLoading = false;
+        isLoading = $state(false);
         return data.data.id;
       } else {
         addResult(`POST /api/test-cases - Failed: ${data.message || data.error}`, 'error');
@@ -264,7 +264,7 @@
     } catch (error) {
       addResult(`POST operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = false;
+    isLoading = $state(false);
     return null;
   }
   // Test authenticated PUT operation
@@ -302,13 +302,13 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('PUT operation failed - session expired', 'error');
-        isAuthenticated = false;
-        isLoading = false;
+        isAuthenticated = $state(false);
+        isLoading = $state(false);
         return;
       }
       if (response.status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
-        isLoading = false;
+        isLoading = $state(false);
         return;
       }
       if (response.ok && data.success) {
@@ -327,7 +327,7 @@
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = false;
+    isLoading = $state(false);
   }
   // Test authenticated DELETE operation
   async function testAuthenticatedDELETE(caseId?: string) {
@@ -350,13 +350,13 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
-        isAuthenticated = false;
-        isLoading = false;
+        isAuthenticated = $state(false);
+        isLoading = $state(false);
         return;
       }
       if (response.status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
-        isLoading = false;
+        isLoading = $state(false);
         return;
       }
       if (response.ok && data.success) {
@@ -374,7 +374,7 @@
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = false;
+    isLoading = $state(false);
   }
   // Run full authenticated CRUD test suite
   async function runAuthenticatedCRUDTest() {
@@ -559,7 +559,7 @@
         <p class="text-gray-500">No cases found. Create some test cases to see them here.</p>
       {:else}
         <div class="space-y-2">
-          {#each cases as caseItem}
+          {#each Array.isArray(cases) ? cases : [] as caseItem}
             <div class="border rounded p-3 hover:bg-gray-50">
               <div class="flex justify-between items-start">
                 <div>
@@ -597,13 +597,13 @@
         <p class="text-gray-500">No test results yet. Run some tests to see results here.</p>
       {:else}
         <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1">
-          {#each testResults as result}
+          {#each Array.isArray(testResults) ? testResults : [] as result}
             <div
-              class={(result as { includes?: unknown }).includes('❌')
+              class={(result as { includes?: any }).includes('❌')
                 ? 'text-red-400'
-                : (result as { includes?: unknown }).includes('⚠️')
+                : (result as { includes?: any }).includes('⚠️')
                   ? 'text-yellow-400'
-                  : (result as { includes?: unknown }).includes('✅')
+                  : (result as { includes?: any }).includes('✅')
                     ? 'text-green-400'
                     : 'text-gray-300'}
             >

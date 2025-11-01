@@ -10,10 +10,8 @@
     ondownload?: (event?: any) => void;
   }
   let { evidence, disabled = false, onedit, ondelete, onview, ondownload }: Props = $props();
-
   import { formatDistanceToNow } from 'date-fns';
   import { Archive, Calendar, Download, Edit, Eye, FileText, Headphones, Image, Trash2, Video } from 'lucide-svelte';
-
   function getEvidenceIcon(type: string) {
     switch (type) {
       case 'document':
@@ -33,7 +31,6 @@
       default: return FileText;
     }
   }
-
   function getTypeColor(type: string) {
     switch (type) {
       case 'document':
@@ -53,39 +50,33 @@
       default: return 'bg-gray-100 text-gray-800';
     }
   }
-
   let evidenceIcon = $derived(getEvidenceIcon(evidence.evidenceType || evidence.type));
   let formattedDate = $derived(
     formatDistanceToNow(new Date(evidence.createdAt || evidence.dateCollected || Date.now()), {
       addSuffix: true,
     })
   );
-
   function handleEdit() {
     if (!disabled) {
       onedit?.();
     }
   }
-
   function handleDelete() {
     if (!disabled) {
       ondelete?.();
     }
   }
-
   function handleView() {
     if (!disabled) {
       onview?.();
     }
   }
-
   function handleDownload() {
     if (!disabled) {
       ondownload?.();
     }
   }
 </script>
-
 <div
   class="bg-white rounded-lg shadow-sm border p-4 transition-all hover:shadow-md"
   class:opacity-60={disabled}
@@ -155,7 +146,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .line-clamp-2 {

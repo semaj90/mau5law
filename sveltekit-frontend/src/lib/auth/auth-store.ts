@@ -135,16 +135,16 @@ export class AuthStore {
   // Use ReturnType<typeof setInterval> | ReturnType<typeof setTimeout> to avoid Node timeout vs number mismatch
   private static sessionCheckInterval: ReturnType<typeof setInterval> | null = null;
   private static activityTimeout: ReturnType<typeof setTimeout> | null = null;
-  private static activityHandler: ((e?: unknown) => void) | null = null;
-  private static visibilityHandler: ((e?: unknown) => void) | null = null;
-  private static listenersRegistered = false;
+  private static activityHandler: ((e?: any) => void) | null = null;
+  private static visibilityHandler: ((e?: any) => void) | null = null;
+  private static listenersRegistered = $state(false);
 
   // Helper to parse API responses without using `any`
   private static async parseApiResponse(response: Response): Promise<ApiResponse> {
     try {
       const raw = (await response.json()) as unknown;
       return raw as ApiResponse;
-    } catch (err: unknown) {
+    } catch (err: any) {
       return {};
     }
   }
@@ -161,7 +161,7 @@ export class AuthStore {
       this.startSessionMonitoring();
       // Setup activity tracking
       this.setupActivityTracking();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Auth initialization failed:', message);
       this.clearAuth();
@@ -199,7 +199,7 @@ export class AuthStore {
           requiresMFA: result.requiresMFA,
         };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Login error:', msg);
       return { success: false, error: 'Network error during login' };
@@ -235,7 +235,7 @@ export class AuthStore {
       } else {
         return { success: false, error: result.error || 'Registration failed' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Registration error:', msg);
       return { success: false, error: 'Network error during registration' };
@@ -250,7 +250,7 @@ export class AuthStore {
     authState.update(state => ({ ...state, isLoading: true }));
     try {
       await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Logout error:', msg);
     } finally {
@@ -277,7 +277,7 @@ export class AuthStore {
         this.clearAuth();
         return false;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Session check error:', msg);
       this.clearAuth();
@@ -311,7 +311,7 @@ export class AuthStore {
       } else {
         return { success: false, error: result.error || 'Profile update failed' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Profile update error:', msg);
       return { success: false, error: 'Network error during profile update' };
@@ -336,7 +336,7 @@ export class AuthStore {
         success: response.ok && !!result.success,
         error: result.error,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Password change error:', msg);
       return { success: false, error: 'Network error during password change' };
@@ -452,7 +452,7 @@ export class AuthStore {
       }
       this.activityHandler = null;
       this.visibilityHandler = null;
-      this.listenersRegistered = false;
+      this.listenersRegistered = $state(false);
     }
   }
 

@@ -175,7 +175,7 @@
     }
   }
   const closeDropdown = async () => {
-    isOpen = false;
+    isOpen = $state(false);
     selectedIndex = -1;
     searchTerm = '';
     await playSelectSound(440, 0.15);
@@ -209,7 +209,7 @@
     playSelectSound(500, 0.1);
   }
   const handleBlur = () => {
-    isFocused = false;
+    isFocused = $state(false);
   }
   const handleHover = () => {
     if (disabled) return;
@@ -217,7 +217,7 @@
     playSelectSound(480, 0.08);
   }
   const handleUnhover = () => {
-    isHovered = false;
+    isHovered = $state(false);
   }
   const handleKeyDown = (_event: KeyboardEvent) => {
     if (disabled) return;
@@ -439,15 +439,12 @@
       {#if loading}
         <div class="loading-indicator">
           <div class="n64-spinner"></div>
-        </div>
-      {/if}
+        {/if}
     </div>
     {#if enableLighting}
-      <div class="lighting-overlay"></div>
-    {/if}
+      <div class="lighting-overlay">{/if}
     {#if enableReflections}
-      <div class="reflection-overlay"></div>
-    {/if}
+      <div class="reflection-overlay">{/if}
     {#if isOpen}
       <div
         bind:this={dropdownElement}
@@ -466,8 +463,7 @@
               oninput={handleSearchInput}
               type="text"
             />
-          </div>
-        {/if}
+          {/if}
         <div class="options-container">
           {#each filteredOptions as option, index}
             <div
@@ -485,8 +481,7 @@
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                   </svg>
-                </div>
-              {/if}
+                {/if}
             </div>
           {:else}
             <div class="no-options">
@@ -495,10 +490,8 @@
           {/each}
         </div>
         {#if enableLighting}
-          <div class="dropdown-lighting"></div>
-        {/if}
-      </div>
-    {/if}
+          <div class="dropdown-lighting">{/if}
+      {/if}
   </div>
   {#if error || success}
     <div
@@ -506,12 +499,11 @@
       id="{id || name}-message"
     >
       {error || success}
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .n64-select-container {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -526,7 +518,7 @@
     font-size: var(--select-font-size);
     min-height: var(--select-min-height);
     font-weight: 500;
-    position relative;
+    position: relative;
     cursor: pointer;
     /* 3D transformations */
     transform: var(--transform-3d);
@@ -557,7 +549,7 @@
     align-items: center;
     justify-content: space-betweenn;
     gap: 12px;
-    position relative;
+    position: relative;
     z-index: 2,
   }
   .select-value {
@@ -604,7 +596,7 @@
     transform: rotate(180deg);
   }
   .loading-indicator {
-    position absolute;
+    position: absolute;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
@@ -623,7 +615,7 @@
   }
   /* Dropdown styling */
   .select-dropdown {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 0,
     right: 0;
@@ -687,7 +679,7 @@
     align-items: center;
     justify-content: space-betweenn;
     transition: all 150ms ease;
-    position relative;
+    position: relative;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
   .select-option hover
@@ -722,7 +714,7 @@
   }
   /* Lighting overlay */
   .lighting-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -739,7 +731,7 @@
     border-radius: 4px;
   }
   .dropdown-lighting {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -756,7 +748,7 @@
   }
   /* Reflection overlay */
   .reflection-overlay {
-    position absolute;
+    position: absolute;
     top: 15%;
     left: 15%;
     right: 70%;
@@ -902,4 +894,3 @@
     }
   }
 </style>
-

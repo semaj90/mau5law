@@ -151,7 +151,7 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
         'Cache-Control': 'no-cache, must-revalidate',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown system status error';
     console.error('System status check failed:', error);
     // Return a response that conforms to SystemStatusResponse, even in error cases

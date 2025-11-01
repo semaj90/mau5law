@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const totalCompression = response.simd_results?.processing_stats?.total_compression_ratio ?? 0;
     console.log(`✅ SIMD LangExtract complete: ${totalTime}ms, ${totalCompression.toFixed(1)}:1 compression`);
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('SIMD LangExtract error:', message);
     return json(

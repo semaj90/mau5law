@@ -56,17 +56,17 @@ export interface TestWorkflowResult {
     step: string;
     status: string;
     timestamp: string;
-    details: unknown;
+    details: any;
   }>;
-  postgresql: { status: string; [key: string]: unknown };
-  redis: { status: string; [key: string]: unknown };
-  ingestService: { status: string; [key: string]: unknown };
-  qdrantSync: { status: string; [key: string]: unknown };
+  postgresql: { status: string; [key: string]: any };
+  redis: { status: string; [key: string]: any };
+  ingestService: { status: string; [key: string]: any };
+  qdrantSync: { status: string; [key: string]: any };
   summary: { success: boolean; errors: string[] };
 }
 
 // helper: safe error-to-string
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               details: { streamName: 'autotag:requests', eventData },
             });
             console.log(`✅ Step 2: Published Redis event for evidence ${evidenceId}`);
-          } catch (error: unknown) {
+          } catch (error: any) {
             const msg = getErrorMessage(error);
             results.redis = {
               status: 'error',
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             } else {
               throw new Error(`Ingest service responded with ${ingestResponse.status}`);
             }
-          } catch (error: unknown) {
+          } catch (error: any) {
             const msg = getErrorMessage(error);
             results.ingestService = { status: 'error', error: msg };
             results.summary.errors.push(`Ingest service failed: ${msg}`);
@@ -256,14 +256,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
             } else {
               throw new Error('Sync returned false - no embedding available');
             }
-          } catch (error: unknown) {
+          } catch (error: any) {
             const msg = getErrorMessage(error);
             results.qdrantSync = { status: 'error', error: msg };
             results.summary.errors.push(`Qdrant sync failed: ${msg}`);
             console.error(`❌ Step 4 failed:`, msg);
           }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = getErrorMessage(error);
         results.postgresql = { status: 'error', error: msg };
         results.summary.errors.push(`PostgreSQL operation failed: ${msg}`);
@@ -285,7 +285,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         : 'PostgreSQL-first workflow test completed with errors',
       data: results,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('❌ Test endpoint error:', msg);
     return json(
@@ -338,13 +338,13 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     return json({ success: false, message: 'Failed to process request', error: msg }, { status: 500 });
   }
 };
 async function checkSystemHealth(): Promise<Record<string, unknown>> {
-  type ServiceStatus = { status: 'unknown' | 'healthy' | 'unhealthy' | 'degraded'; details: unknown | null };
+  type ServiceStatus = { status: 'unknown' | 'healthy' | 'unhealthy' | 'degraded'; details: any | null };
   const health: {
     postgresql: ServiceStatus;
     redis: ServiceStatus;
@@ -366,7 +366,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
       status: 'healthy',
       details: { connected: true, evidenceCount: (evidenceCount as { count: string | number })?.count ?? null },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     health.postgresql = { status: 'unhealthy', details: { error: msg } };
   }
@@ -384,7 +384,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
         details: { error: 'redis.createClient is not available in this environment' },
       };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     health.redis = { status: 'unhealthy', details: { error: msg } };
   }
@@ -397,7 +397,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
     } else {
       health.ingestService = { status: 'unhealthy', details: { httpStatus: response.status } };
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     health.ingestService = { status: 'unhealthy', details: { error: msg } };
   }
@@ -409,7 +409,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
       status: (qdrantHealth as { status?: string })?.status === 'healthy' ? 'healthy' : 'unhealthy',
       details: qdrantHealth,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     health.qdrant = { status: 'unhealthy', details: { error: msg } };
   }
@@ -457,7 +457,7 @@ async function getPostgreSQLStats(): Promise<Record<string, unknown>> {
       embeddings: embeddingStats,
       timestamp: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     throw new Error(`Failed to get PostgreSQL stats: ${getErrorMessage(error)}`);
   }
 }

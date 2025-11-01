@@ -76,7 +76,7 @@ type SearchResult = {
   similarity?: number;
   memoryBank?: string;
   priority?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // New: define VectorSearchStats so the name exists and matches usages elsewhere
@@ -86,7 +86,7 @@ type VectorSearchStats = {
   cacheHits?: number;
   avgLatencyMs?: number;
   lastUpdated?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type CachedVectorSearchLike = {
@@ -134,7 +134,7 @@ type RagSource = {
   similarity?: number;
   memoryBank?: string;
   priority?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 /**
@@ -454,7 +454,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Prefer using the typed memory service if available
     const memory = legalChatMemory as LegalChatMemoryLike;
 
-    let cleared = false;
+    let cleared = $state(false);
 
     // Try memory-level clearing APIs first (safe optional calls)
     if (typeof memory.clearHistory === 'function') {
@@ -520,10 +520,10 @@ type OllamaClientObject = Record<string, unknown> & {
 };
 
 // runtime guards
-function isCallable(v: unknown): v is OllamaCallable {
+function isCallable(v: any): v is OllamaCallable {
   return typeof v === 'function';
 }
-function isRecord(v: unknown): v is Record<string, unknown> {
+function isRecord(v: any): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null;
 }
 
@@ -571,7 +571,7 @@ async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
 }
 
 // --- Replaced: normalize response extraction so downstream code can expect a consistent shape (no `any`) ---
-function extractAIMessageContent(resp: unknown): string | null {
+function extractAIMessageContent(resp: any): string | null {
   if (resp === null || resp === undefined) return null;
 
   // Direct string response

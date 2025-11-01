@@ -11,7 +11,7 @@ const ollamaService = {
     try {
       const res = await fetch(`${ollamaUrl}/api/version`, { signal: AbortSignal.timeout(5000) });
       return res.ok;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // log safely even when err isn't an Error
       logger?.warn?.('Ollama health check failed', String(err));
       return false;
@@ -30,7 +30,7 @@ const ollamaService = {
         if (Array.isArray(obj['tags'])) return obj['tags'] as unknown[];
       }
       return [];
-    } catch (err: unknown) {
+    } catch (err: any) {
       logger?.warn?.('Failed to list Ollama models', String(err));
       return [];
     }
@@ -48,7 +48,7 @@ export const GET: RequestHandler = withErrorHandling(async event => {
     try {
       const models = await ollamaService.listModels();
       // safe stringifier for model entries (unknown)
-      const stringifyModel = (m: unknown): string => {
+      const stringifyModel = (m: any): string => {
         if (typeof m === 'string') return m;
         if (m && typeof m === 'object') {
           const obj = m as Record<string, unknown>;
@@ -65,7 +65,7 @@ export const GET: RequestHandler = withErrorHandling(async event => {
         return String(m);
       };
       availableModels = models.map(stringifyModel);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger?.warn?.('Failed to list Ollama models', String(error));
     }
   }

@@ -52,7 +52,7 @@ export interface WebLlamaResponse {
 }
 class WebAssemblyLlamaService {
   private module: any = null;
-  private modelLoaded = false;
+  private modelLoaded = $state(false);
   private currentModel: string | null = null;
   private config: WebLlamaConfig;
   private cache = new Map<string, WebLlamaResponse>();
@@ -169,7 +169,7 @@ class WebAssemblyLlamaService {
       console.log('[WebLlama] Ranking cache initialized successfully');
     } catch (error: any) {
       console.error('[WebLlama] Ranking cache initialization failed:', error);
-      this.config.enableRankingCache = false;
+      this.config.enableRankingCache = $state(false);
     }
   }
   /**
@@ -292,7 +292,7 @@ class WebAssemblyLlamaService {
           confidence?: any;
           text?: any;
         }
-      ).fromCache = false;
+      ).fromCache = $state(false);
       (
         result as {
           processingTime?: any;
@@ -303,7 +303,7 @@ class WebAssemblyLlamaService {
           confidence?: any;
           text?: any;
         }
-      ).cacheHit = false;
+      ).cacheHit = $state(false);
       (
         result as {
           processingTime?: any;
@@ -849,7 +849,7 @@ Provide analysis in structured format:
     this.cache.clear();
     // Reset state
     this.module = null;
-    this.modelLoaded = false;
+    this.modelLoaded = $state(false);
     console.log('[WebLlama] Resource cleanup complete');
   }
 }

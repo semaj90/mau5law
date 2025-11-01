@@ -25,7 +25,7 @@ console.debug('[Cache API] configured Redis URL:', $DOCKER_REDIS_URL);
 const mockCache = new Map<string, CacheEntry>();
 
 // Helper to safely parse an unknown error into a string message
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ params }) => {
       timestamp: entry.timestamp,
       ttl: entry.ttl,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = getErrorMessage(error);
     console.error('[Cache API] Individual key fetch failed:', error);
     return json({ success: false, error: msg }, { status: 500 });

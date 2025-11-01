@@ -49,12 +49,12 @@
   }
   function handleDragOver(e: DragEvent) { e.preventDefault(); isDragOver = true, }
   function handleDragLeave(e: DragEvent) { e.preventDefault(); isDragOver = false, }
-  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = false; const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files), }
+  function handleDrop(e: DragEvent) { e.preventDefault(); isDragOver = $state(false); const files = e.dataTransfer?.files; if (files?.length) handleFileUpload(files), }
   function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files), }
   function openFileDialog() { fileInput?.click(), }
   function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }), }
   async function handleFileUpload(files: FileList) {
-    lastError = null; canceled = false; statusMessage = '';
+    lastError = null; canceled = $state(false); statusMessage = '';
     try { validateFiles(files), } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return, }
     isUploading = true; uploadProgress = 0;
     const summary: UploadSummary = { count: files.length, totalBytes: 0, files: [] }
@@ -69,7 +69,7 @@
         break;
       }
     }
-    isUploading = false; currentXhr = null;
+    isUploading = $state(false); currentXhr = null;
     if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded', }
   }
   function uploadWithRetry(file: File, index: number, total: number): Promise {
@@ -152,7 +152,6 @@
     });
   }
 </script>
-
 <input
   type="file"
   bind:this={fileInput}
@@ -216,15 +215,11 @@
         <p class="text-xs text-gray-400">
           Retries: {maxRetries + 1} attempts{enableEmbedding ? ' • Embeddings on' : ''}
         </p>
-      </div>
-    {/if}
-  </div>
-{/if}
+      {/if}
+  {/if}
 <div class="sr-only" aria-live="polite">{statusMessage}</div>
-
 <!-- Telemetry markers (kept minimal) -->
 <!-- Events emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error -->
-
 <style>
   .upload-zone {
     cursor: pointer;
@@ -240,4 +235,3 @@
     cursor: not-allowed;
   }
 </style>
-

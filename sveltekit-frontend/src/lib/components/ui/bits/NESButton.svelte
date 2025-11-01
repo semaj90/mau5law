@@ -42,7 +42,7 @@
     // Visual press effect
     isPressed = true;
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 150);
     dispatch('click');
     onclick?.();
@@ -61,7 +61,6 @@
     // audio.play().catch(() => {})
   }
 </script>
-
 <button
   bind:this={buttonElement}
   class="nes-btn {variantClasses[variant]} {sizeClasses[size]}"
@@ -80,12 +79,11 @@
   {#if loading}
     <span class="loading-spinner">⚡</span>
   {/if}
-  {@render children?.()}
+  <slot />
 </button>
-
 <style>
   .nes-btn {
-    position relative;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -180,4 +178,3 @@
     51%, 100% { opacity: 0; }
   }
 </style>
-

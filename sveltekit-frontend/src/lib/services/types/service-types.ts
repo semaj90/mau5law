@@ -233,12 +233,12 @@ export interface ServiceStore<T> extends Writable<T> {
 }
 // XState Integration Types
 export interface MachineContext {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 }
 export interface MachineEvent {
   type: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Environment Types
 export interface ClientEnvironment {

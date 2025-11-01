@@ -3,7 +3,6 @@ import type { PoolClient } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-
 // Pool + Drizzle initialization (reads DATABASE_URL from env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -12,10 +11,8 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
 });
 export const db = drizzle(pool);
-
 // Add a stricter type for processing metadata to avoid `any`
 export type ProcessingMetadata = Record<string, unknown>;
-
 // Add input types to avoid `any`
 export type DocumentChunkInput = {
   id?: string;
@@ -25,7 +22,6 @@ export type DocumentChunkInput = {
   legalRelevance?: number;
   entities?: string[];
 };
-
 export type EntityInput = {
   id?: string;
   type: string;
@@ -35,7 +31,6 @@ export type EntityInput = {
   endIndex?: number;
   jurisdiction?: string;
 };
-
 export type FactCheckInput = {
   id?: string;
   claim: string;
@@ -44,7 +39,6 @@ export type FactCheckInput = {
   confidence?: number;
   jurisdiction?: string;
 };
-
 export type DocumentInput = {
   id?: string;
   filename: string;
@@ -56,7 +50,6 @@ export type DocumentInput = {
   entities?: EntityInput[];
   factChecks?: FactCheckInput[];
 };
-
 // Schema definitions
 export const legal_documents = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -69,7 +62,6 @@ export const legal_documents = pgTable('legal_documents', {
   processing_metadata: jsonb('processing_metadata').$type<ProcessingMetadata>().notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
-
 export const document_chunks = pgTable('document_chunks', {
   id: uuid('id').defaultRandom().primaryKey(),
   document_id: uuid('document_id').notNull(),
@@ -80,7 +72,6 @@ export const document_chunks = pgTable('document_chunks', {
   entities: jsonb('entities').$type<string[]>().notNull().default([]),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
-
 export const legal_entities = pgTable('legal_entities', {
   id: uuid('id').defaultRandom().primaryKey(),
   document_id: uuid('document_id').notNull(),
@@ -92,7 +83,6 @@ export const legal_entities = pgTable('legal_entities', {
   jurisdiction: varchar('jurisdiction', { length: 128 }).notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
-
 export const fact_checks = pgTable('fact_checks', {
   id: uuid('id').defaultRandom().primaryKey(),
   document_id: uuid('document_id').notNull(),
@@ -103,7 +93,6 @@ export const fact_checks = pgTable('fact_checks', {
   jurisdiction: varchar('jurisdiction', { length: 128 }).notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
-
 // Production-ready storage function
 export async function storeDocumentsInDatabase(documents: DocumentInput[], caseId: string): Promise<void> {
   const client = await pool.connect();
@@ -112,10 +101,8 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
     // Use the drizzle instance but keep transaction scope with the same client
     // assert as unknown first then as PoolClient to avoid value-import diagnostics
     const transactionalDb = drizzle(client as unknown as PoolClient);
-
     for (const doc of documents) {
       const documentId = doc.id ?? uuidv4();
-
       // Insert document row
       await transactionalDb
         .insert(legal_documents)
@@ -129,7 +116,6 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
           processing_metadata: doc.processingMetadata ?? {},
         })
         .execute();
-
       // Insert chunks (batching)
       if (Array.isArray(doc.chunks) && doc.chunks.length > 0) {
         const chunkInserts = doc.chunks.map((chunk: DocumentChunkInput) => ({
@@ -144,7 +130,6 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
         // Note: drizzle .insert(...).values([...]) is supported
         await transactionalDb.insert(document_chunks).values(chunkInserts).execute();
       }
-
       // Insert entities
       if (Array.isArray(doc.entities) && doc.entities.length > 0) {
         const entityInserts = doc.entities.map((ent: EntityInput) => ({
@@ -159,7 +144,6 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
         }));
         await transactionalDb.insert(legal_entities).values(entityInserts).execute();
       }
-
       // Insert fact checks
       if (Array.isArray(doc.factChecks) && doc.factChecks.length > 0) {
         const factInserts = doc.factChecks.map((fc: FactCheckInput) => ({
@@ -174,7 +158,6 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
         await transactionalDb.insert(fact_checks).values(factInserts).execute();
       }
     }
-
     await client.query('COMMIT');
   } catch (err) {
     await client.query('ROLLBACK');
@@ -184,12 +167,10 @@ export async function storeDocumentsInDatabase(documents: DocumentInput[], caseI
     client.release();
   }
 }
-
 // Optional: lightweight helper to close pool in deploy scripts / tests
 export async function closeDbPool(): Promise<void> {
   await pool.end();
 }
-
 // --- Context7, Bits UI, and Svelte 5 Integration Best Practices ---
 // This file is the main DB entry point for SvelteKit/Legal AI with Context7 MCP orchestration.
 // All DB, vector, and health utilities are exported here for type-safe, scalable use.
@@ -198,21 +179,17 @@ export async function closeDbPool(): Promise<void> {
 // Enhanced vector store with error handling
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import { OpenAIEmbeddings } from '@langchain/openai';
-
 // Local lightweight typings to avoid `any`
 type EmbeddingsLike = {
   embedDocuments?: (texts: string[]) => Promise<number[][]>;
   embedQuery?: (text: string) => Promise<number[]>;
   // allow other methods but avoid `any`
-  [k: string]: unknown;
+  [k: string]: any;
 };
-
-type PGVectorStoreConstructor = new (...args: unknown[]) => unknown;
-
+type PGVectorStoreConstructor = new (...args: any[]) => unknown;
 export async function getVectorStore(): Promise<unknown> {
   try {
     let embeddings: EmbeddingsLike | undefined;
-
     try {
       // Optional runtime import of a native embedding provider.
       // Use `unknown` casts and a guarded constructor to avoid `any`.
@@ -221,11 +198,9 @@ export async function getVectorStore(): Promise<unknown> {
         console.debug('embeddinggemma not available, falling back:', (err as Error)?.message ?? err);
         return undefined;
       });
-
       const GemCtor = (gemModule?.EmbeddingGemma ?? gemModule?.default) as
-        | (new (opts: { model?: string; [k: string]: unknown }) => EmbeddingsLike)
+        | (new (opts: { model?: string; [k: string]: any }) => EmbeddingsLike)
         | undefined;
-
       if (GemCtor) {
         try {
           embeddings = new GemCtor({ model: 'embeddinggemma:latest' });
@@ -243,7 +218,6 @@ export async function getVectorStore(): Promise<unknown> {
         (innerErr as Error)?.message ?? innerErr
       );
     }
-
     // Fallback: use nomic-embed-text via the OpenAIEmbeddings wrapper (local model usage)
     if (!embeddings) {
       embeddings = new OpenAIEmbeddings({
@@ -251,7 +225,6 @@ export async function getVectorStore(): Promise<unknown> {
         openAIApiKey: 'N/A', // local usage / no key
       }) as unknown as EmbeddingsLike;
     }
-
     // Instantiate PGVectorStore in a tolerant way without using `any`
     const PGCtor = PGVectorStore as unknown as PGVectorStoreConstructor;
     try {
@@ -289,7 +262,7 @@ export async function getVectorStore(): Promise<unknown> {
         return PGVectorStore;
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Vector store initialization failed:', message);
     throw new Error(`Vector store unavailable: ${message}`);

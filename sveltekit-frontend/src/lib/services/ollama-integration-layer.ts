@@ -79,7 +79,7 @@ class OllamaIntegrationLayer {
   public isInitialized: Writable<boolean>;
   public stats: Writable<SummarizerStats | null>;
   public activeRequests: Writable<number>;
-  private _initialized = false;
+  private _initialized = $state(false);
   private _requestCounter = 0;
   constructor() {
     this.serviceStatus = writable({

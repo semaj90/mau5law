@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log('📊 Test 4: XState Machine');
 
     // Helper: resolve initial state / states / context safely without using `any`
-    const resolveInitialStateValue = (machine: unknown): string | object => {
+    const resolveInitialStateValue = (machine: any): string | object => {
       if (machine && typeof machine === 'object') {
         const m = machine as Record<string, unknown>;
         // getInitialState() runtime API (if present)
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return 'unknown';
     };
 
-    const resolveStatesObject = (machine: unknown): Record<string, unknown> => {
+    const resolveStatesObject = (machine: any): Record<string, unknown> => {
       if (machine && typeof machine === 'object') {
         const m = machine as Record<string, unknown>;
         const config = m['config'];
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return {};
     };
 
-    const resolveContext = (machine: unknown): Record<string, unknown> => {
+    const resolveContext = (machine: any): Record<string, unknown> => {
       if (machine && typeof machine === 'object') {
         const m = machine as Record<string, unknown>;
         const config = m['config'];
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'X-Integration-Status': 'fully-operational',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('❌ WebAssembly inference test failed:', err);
     const errorTime = Date.now() - startTime;
@@ -283,7 +283,7 @@ export const GET: RequestHandler = async () => {
       });
       services.enhancedRAGService = response.ok;
     } catch (_error) {
-      services.enhancedRAGService = false;
+      services.enhancedRAGService = $state(false);
     }
     // Test PostgreSQL-Qdrant Sync
     try {
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async () => {
       const syncHealth = { status: 'healthy' }; // Assuming healthy if import succeeds.
       services.postgresqlQdrantSync = syncHealth.status === 'healthy';
     } catch (_error) {
-      services.postgresqlQdrantSync = false;
+      services.postgresqlQdrantSync = $state(false);
     }
     const overallHealth = Object.values(services).every(service => service === true);
     return json({
@@ -307,7 +307,7 @@ export const GET: RequestHandler = async () => {
       },
       version: '1.0.0',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     return json(
       {

@@ -35,7 +35,7 @@
     rippleY = event.clientY - rect.top;
     showRipple = true;
     // Reset ripple after animation: setTimeout(() => {
-      showRipple = false;
+      showRipple = $state(false);
     }, 600);
     // Call handlers
     onclick?.();
@@ -47,10 +47,10 @@
     }
   }
   function handleMouseUp() {
-    isPressed = false;
+    isPressed = $state(false);
   }
   function handleMouseLeave() {
-    isPressed = false;
+    isPressed = $state(false);
   }
   // N64 button styling variants
   let buttonStyles = $derived(() => {
@@ -89,7 +89,6 @@
     }
   });
 </script>
-
 <button
   class={buttonStyles}
   {style}
@@ -116,21 +115,17 @@
           {@render children()}
         </span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Ripple Effect -->
   {#if showRipple}
-    <div class="n64-button__ripple" style="left: {rippleX}px; top: {rippleY}px;"></div>
-  {/if}
+    <div class="n64-button__ripple" style="left: {rippleX}px; top: {rippleY}px;">{/if}
   <!-- Pressed Effect Overlay -->
   {#if isPressed}
-    <div class="n64-button__pressed-overlay"></div>
-  {/if}
+    <div class="n64-button__pressed-overlay">{/if}
 </button>
-
 <style>
   .n64-button {
-    position relative;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -247,7 +242,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     display: flex;
     align-items: center;
     gap: 8px;
-    position relative;
+    position: relative;
     z-index: 1,
   }
   .n64-button__icon {
@@ -276,7 +271,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
   }
 /* Ripple Effect */ {}
   .n64-button__ripple {
-    position absolute;
+    position: absolute;
     width: 20px;
     height: 20px;
     background: rgba(255, 255, 255, 0.5);
@@ -293,7 +288,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
   }
 /* Pressed Overlay */ {}
   .n64-button__pressed-overlay {
-    position absolute;
+    position: absolute;
     inset: 0,
     background: rgba(0, 0, 0, 0.1);
     pointer-events: none;
@@ -314,7 +309,7 @@ transform 0.15s ease, {}
 /* N64-specific enhancements */ {}
   .n64-buttonbefore {
     content: '';
-    position absolute;
+    position: absolute;
     inset: 1px;
     background: inherit;
     border-radius: inherit;
@@ -357,4 +352,3 @@ transform 0.15s ease, {}
     }
   }
 </style>
-

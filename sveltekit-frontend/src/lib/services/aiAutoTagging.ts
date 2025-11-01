@@ -64,13 +64,13 @@ type DBRow = Record<string, unknown>;
 interface OllamaEmbeddingResponse {
   embedding?: number[]; // may be absent on error
   // other fields allowed
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface OllamaGenerateResponse {
   response?: string;
   output?: string; // some Ollama variants use: 'output'
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 class AIAutoTaggingService {
@@ -112,7 +112,7 @@ class AIAutoTaggingService {
         embedding,
         relationships,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // MODIFIED: Changed: 'any' to: 'unknown'
       let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
@@ -150,7 +150,7 @@ class AIAutoTaggingService {
         }
       }
       throw new Error('Invalid embedding response shape from Ollama');
-    } catch (ollamaError: unknown) {
+    } catch (ollamaError: any) {
       console.warn('Ollama embedding failed, trying server-side Qdrant:', ollamaError);
       try {
         if (typeof window === 'undefined') {
@@ -167,7 +167,7 @@ class AIAutoTaggingService {
           }
           const payload = (await resp.json()) as unknown;
           // Safe typed extraction for server response
-          type ServerEmbeddingResponse = { embedding?: unknown };
+          type ServerEmbeddingResponse = { embedding?: any };
           if (typeof payload === 'object' && payload !== null) {
             const p = payload as ServerEmbeddingResponse;
             if (Array.isArray(p.embedding)) {
@@ -180,7 +180,7 @@ class AIAutoTaggingService {
           }
           throw new Error('Invalid server embedding response shape');
         }
-      } catch (fallbackError: unknown) {
+      } catch (fallbackError: any) {
         console.error('All embedding methods failed:', fallbackError);
         return new Array(768).fill(0);
       }
@@ -239,10 +239,10 @@ Return JSON format:
     if (jsonText) {
       try {
         const parsed = JSON.parse(jsonText) as {
-          tags?: unknown;
-          entities?: unknown;
-          summary?: unknown;
-          confidence?: unknown;
+          tags?: any;
+          entities?: any;
+          summary?: any;
+          confidence?: any;
         };
         const tags = Array.isArray(parsed.tags) ? parsed.tags.map((t) => String(t)) : [documentType, 'auto-generated'];
         const entities = Array.isArray(parsed.entities) ? (parsed.entities as unknown[]).map((e) => {
@@ -270,7 +270,7 @@ Return JSON format:
         const summary = typeof parsed.summary === 'string' ? parsed.summary : 'AI analysis completed with basic tagging.';
         const confidence = typeof parsed.confidence === 'number' ? parsed.confidence : 0.5;
         return { tags, entities, summary, confidence };
-      } catch (parseError: unknown) {
+      } catch (parseError: any) {
         console.warn('Failed to parse analysis JSON response:', parseError);
       }
     }
@@ -311,7 +311,7 @@ Return JSON format:
           similarity,
         } as SimilarDocumentRow;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Similar document search failed:', error);
       return [];
     }
@@ -384,7 +384,7 @@ Return JSON format:
           documentType: doc.type,
         });
         results.push({ id: doc.id, success: true, result });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // MODIFIED: Changed: 'any' to: 'unknown'
         let errorMessage = 'An unknown error occurred';
         if (error instanceof Error) {
@@ -425,7 +425,7 @@ Return JSON format:
         const similarity = typeof similarityRaw === 'number' ? similarityRaw : Number(similarityRaw);
         return { id, title, description, tags, summary, similarity } as SemanticSearchResultRow;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Semantic search failed:', error);
       return [];
     }

@@ -99,7 +99,7 @@ export class SIMDRedisClient {
   /**
    * Parse JSON using SIMD acceleration
    */
-  async parseJSON(data: unknown): Promise<SIMDParseResult> {
+  async parseJSON(data: any): Promise<SIMDParseResult> {
     const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
     try {
       // Try GPU parser first for better performance
@@ -166,7 +166,7 @@ export class SIMDRedisClient {
    */
   async cacheJSON(
     key: string,
-    data: unknown
+    data: any
   ): Promise<{ success: boolean; key: string; size: number; cached_at: string } & Record<string, unknown>> {
     const jsonString = typeof data === 'string' ? data : JSON.stringify(data);
     // For caching, we'll simulate Redis operations
@@ -202,7 +202,7 @@ export class SIMDRedisClient {
   /**
    * Benchmark SIMD parsing performance
    */
-  async benchmark(data: unknown, iterations: number = 100): Promise<SIMDBenchmarkResult> {
+  async benchmark(data: any, iterations: number = 100): Promise<SIMDBenchmarkResult> {
     const documents = Array.isArray(data) ? data : [data];
     const stringDocuments = documents.map(doc => (typeof doc === 'string' ? doc : JSON.stringify(doc)));
     try {
@@ -303,7 +303,7 @@ export class SIMDRedisClient {
    */
   async integrateWithWebGPUCache(
     cacheId: string,
-    data: unknown,
+    data: any,
     options?: {
       useGPUAcceleration?: boolean;
       batchSize?: number;

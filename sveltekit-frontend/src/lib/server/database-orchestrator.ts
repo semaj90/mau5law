@@ -6,7 +6,7 @@ export type EventData = {
   metadata?: Record<string, unknown>;
   timestamp?: string;
   source?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Reusable singleton for orchestrator events used across the app

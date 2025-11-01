@@ -92,7 +92,7 @@ const handler: RequestHandler = async ({ request }) => {
         embedding_model: embeddingModelFromServices || lastEmbeddingModelUsed,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ semantic-search error:', error);
     return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
@@ -143,9 +143,9 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
       const result = (await response.json()) as Record<string, unknown> | null;
 
       // Defensively extract embedding with typed checks
-      type EmbeddingShape = { embeddings?: unknown[]; embedding?: unknown };
+      type EmbeddingShape = { embeddings?: any[]; embedding?: any };
       const r = result as EmbeddingShape | null;
-      const embRaw: unknown | undefined = Array.isArray(r?.embeddings)
+      const embRaw: any | undefined = Array.isArray(r?.embeddings)
         ? r?.embeddings?.[0]
         : Array.isArray(r?.embedding)
           ? r?.embedding?.[0]
@@ -162,7 +162,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
       if (typeof embRaw === 'string') {
         try {
           const parsed = JSON.parse(embRaw);
-          if (Array.isArray(parsed) && parsed.every((x: unknown) => typeof x === 'number')) {
+          if (Array.isArray(parsed) && parsed.every((x: any) => typeof x === 'number')) {
             lastEmbeddingModelUsed = model;
             return parsed as number[];
           }
@@ -204,7 +204,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
       body: fastStringify(bodyObj),
     });
     if (!response.ok) throw new Error(`GPU similarity failed: ${response.statusText}`);
-    const result = (await response.json()) as { similarities?: unknown } | null;
+    const result = (await response.json()) as { similarities?: any } | null;
     const similarities: number[] = Array.isArray(result?.similarities) ? (result!.similarities as number[]) : [];
     return candidates.map((candidate, idx) => ({
       ...candidate,

@@ -22,7 +22,6 @@ export interface UserContext {
   userRole: 'prosecutor' | 'detective' | 'admin' | 'user';
   workflowState: 'draft' | 'review' | 'approved' | 'archived';
 }
-
 // Specific types to replace broad `any` usages in reranking logic
 export interface RerankMetadata {
   type?: string;
@@ -33,14 +32,12 @@ export interface RerankMetadata {
   relatedCases?: string[];
   userFrequency?: number;
 }
-
 export interface ResultPayload {
   text?: string;
   tags?: string[];
   caseId?: string;
   nodeId?: string;
 }
-
 export type ResultLike = {
   id: string;
   payload?: ResultPayload;
@@ -50,7 +47,6 @@ export type ResultLike = {
   confidence?: number;
   originalScore?: number;
 };
-
 export interface SynthesisResult {
   fixes: string[];
   codeReview: string;
@@ -60,7 +56,6 @@ export interface SynthesisResult {
   generativeAutocomplete: string;
   selfPrompt: string;
 }
-
 export class LegalAIReranker {
   private contextWeights = {
     intent: 2.0,
@@ -83,41 +78,31 @@ export class LegalAIReranker {
     const scored = await Promise.all(
       annResults.map(async result => {
         let base = result.originalScore ?? result.score ?? 0;
-
         // Intent matching (critical for legal workflows)
         if (result.intent === userContext.intent) base += this.contextWeights.intent;
-
         // Time-based relevance (court schedules, deadlines)
         if (result.timeOfDay === userContext.timeOfDay) base += this.contextWeights.timeOfDay;
-
         // UI position context (focused evidence, active case)
         if (result.position === userContext.focusedElement) base += this.contextWeights.position;
-
         // Role-based scoring (prosecutor vs detective needs)
         base += this.calculateRoleScore(result, userContext.userRole);
-
         // Workflow state relevance
         base += this.calculateWorkflowScore(result, userContext.workflowState);
-
         // Recency boost for legal case updates
         base += this.calculateRecencyScore(result, userContext.recentActions);
-
         // Semantic similarity boost
         if (queryEmbedding) {
           base += await this.calculateSemanticBoost(result, queryEmbedding);
         }
-
         // Confidence penalty (default to 100 if absent)
         const conf = result.confidence ?? 100;
         const finalScore = conf ? base * (conf / 100) : base;
-
         return {
           ...result,
           rerankScore: finalScore,
         } as RerankResult;
       })
     );
-
     return scored.sort((a, b) => (b.rerankScore ?? 0) - (a.rerankScore ?? 0));
   }
   /**
@@ -211,7 +196,6 @@ export interface Neo4jPathContext {
  * Enhanced search with Neo4j path context
  */
 import type { Schemas } from '@qdrant/js-client-rest/dist/types';
-
 export async function enhancedSearchWithNeo4j(
   query: string,
   userContext: UserContext,
@@ -228,7 +212,6 @@ export async function enhancedSearchWithNeo4j(
   const rerankInput: RerankResult[] = annResults.map((result: Schemas.ScoredPoint): RerankResult => {
     const payload = result.payload as ResultPayload | undefined;
     const metadata = result.payload as RerankMetadata | undefined;
-
     const resultLike: ResultLike = {
       id: result.id.toString(),
       payload: payload,
@@ -236,7 +219,6 @@ export async function enhancedSearchWithNeo4j(
       content: payload?.text,
       metadata: metadata,
     };
-
     return {
       id: result.id.toString(),
       content: payload?.text || '',
@@ -297,7 +279,6 @@ export async function enhancedSearch(
 export { LegalAIReranker as default };
 import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData, SynthesisResult } from './types.js';
 import { dimensionalCache } from './dimensional-cache-engine';
-
 /**
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.
@@ -320,7 +301,6 @@ export async function synthesizeMultiLLMOutput({
   if (cachedResult) {
     return cachedResult as SynthesisResult;
   }
-
   // 2. Aggregate LLM outputs, user history, uploaded files, and MCP data
   const allInputs = [
     ...llmOutputs.map(o => o.content),
@@ -329,33 +309,26 @@ export async function synthesizeMultiLLMOutput({
     ...uploadedFiles.map(f => f.textContent || f.name),
     ...mcpServers.map(s => s.dataSummary),
   ];
-
   // 3. Synthesize extra: "thinking" tokens from all sources
   const thinkingTokens = allInputs.join(' ');
-
   // 4. Apply best practices for legal AI: fixes, code review, analysis, summaries, next steps
   const fixes = llmOutputs.flatMap(o => o.suggestedFixes || []);
   const codeReview = llmOutputs
     .map(o => o.codeReview)
     .filter(Boolean)
     .join('\n---\n');
-
   const analysis = llmOutputs
     .map(o => o.analysis)
     .filter(Boolean)
     .join(' ');
-
   const summary = llmOutputs
     .map(o => o.summary)
     .filter(Boolean)
     .join(' ');
-
   const nextSteps = llmOutputs.flatMap(o => o.nextSteps || []);
-
   // 5. Generative autocomplete and self-prompting
   const generativeAutocomplete = `Auto-complete: ${thinkingTokens.slice(0, 200)}...`;
   const selfPrompt = `AI Assistant: Based on the user's recent actions and feedback, the following next steps are recommended for the prosecutor: ${nextSteps.join(', ')}.`;
-
   const result: SynthesisResult = {
     fixes,
     codeReview,
@@ -365,13 +338,11 @@ export async function synthesizeMultiLLMOutput({
     generativeAutocomplete,
     selfPrompt,
   };
-
   // 6. Optionally train/update cache with user feedback
   await dimensionalCache.cacheDimensionalArray(cacheKey, result, {
     userId: 'user-123',
     sessionId: 'session-456',
     behaviorPattern: 'power_user',
   });
-
   return result;
 }

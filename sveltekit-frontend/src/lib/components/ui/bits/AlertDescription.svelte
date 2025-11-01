@@ -23,13 +23,11 @@ Description content for alerts with NES styling
     )
   );
 </script>
-
 <div class={descriptionClasses}>
   {#if children}
     {@render children()}
   {/if}
 </div>
-
 <style>
   .bits-alert-description {
     font-family: 'Courier New', monospace;
@@ -60,4 +58,3 @@ Description content for alerts with NES styling
     font-size: 0.875em;
   }
 </style>
-

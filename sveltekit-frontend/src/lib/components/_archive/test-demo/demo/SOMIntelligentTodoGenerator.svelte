@@ -69,7 +69,7 @@ try {
       console.error('Error processing npm output:', error);
       alert('Failed to process errors: ' + error.message);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function extractErrorsFromOutput(output: string): NPMError[] {
@@ -229,7 +229,7 @@ try {
       <div class="flex flex-wrap gap-4">
         <select bind:value={filterCategory} class="px-3 py-2 border rounded-lg">
           <option value="all">All Categories</option>
-          {#each uniqueCategories as category}
+          {#each Array.isArray(uniqueCategories) ? uniqueCategories : [] as category}
             <option value={category}>{category}</option>
           {/each}
         </select>
@@ -268,7 +268,7 @@ try {
                 </div>
                 <p class="text-gray-600 mb-3">{todo.description}</p>
                 <div class="flex flex-wrap gap-2 mb-3">
-                  {#each todo.tags as tag}
+                  {#each Array.isArray(todo.tags) ? todo.tags : [] as tag}
                     <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
                       {tag}
                     </span>
@@ -291,7 +291,7 @@ try {
             <div class="mb-4">
               <h4 class="font-medium text-gray-900 mb-2">🔧 Suggested Fixes:</h4>
               <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                {#each todo.suggested_fixes as fix}
+                {#each Array.isArray(todo.suggested_fixes) ? todo.suggested_fixes : [] as fix}
                   <li>{fix}</li>
                 {/each}
               </ul>
@@ -303,7 +303,7 @@ try {
                   📋 Related Errors ({todo.related_errors.length}):
                 </h4>
                 <div class="space-y-2">
-                  {#each todo.related_errors.slice(0, 3) as error}
+                  {#each Array.isArray(todo.related_errors.slice(0, 3)) ? todo.related_errors.slice(0, 3) : [] as error}
                     <div class="bg-gray-50 p-3 rounded text-sm">
                       <div class="flex justify-between items-start mb-1">
                         <span class="font-medium text-gray-900">{error.file}:{error.line}</span>

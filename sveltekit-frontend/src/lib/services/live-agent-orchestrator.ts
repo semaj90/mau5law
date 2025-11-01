@@ -19,7 +19,7 @@ export interface AgentRequest {
   type: 'analyze' | 'summarize' | 'embed' | 'search' | 'orchestrate';
   payload: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  context?: unknown;
+  context?: any;
   agents?: string[]; // ['go-llama', 'ollama-direct', 'context7', 'rag']
 }
 }
@@ -27,17 +27,17 @@ export interface AgentResponse {
   id: string;
   agent: string;
   status: 'processing' | 'completed' | 'error' | 'timeout';
-  result?: unknown;
+  result?: any;
   error?: string;
   processingTime: number;
   confidence?: number;
-  metadata?: unknown;
+  metadata?: any;
 }
 }
 export interface OrchestrationResult {
   requestId: string;
   responses: AgentResponse[];
-  synthesized?: unknown;
+  synthesized?: any;
   totalTime: number;
   successRate: number;
   bestAgent?: string;

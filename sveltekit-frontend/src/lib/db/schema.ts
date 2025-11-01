@@ -19,13 +19,10 @@ import {
 import { vector } from 'pgvector/drizzle-orm';
 import { relations, type Relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
-
 // TODO: Ensure there is a dedicated `case_memories` table for storing serialized
 // case-level AI memory blobs (case_id uuid -> memory_json jsonb, updated_at timestamp).
 // This file currently does not declare `case_memories`. Add it when migrating
 // persistent AI memory from Redis to Postgres/Drizzle for deterministic backups.
-
-
 // Base Users table
 export const users = pgTable(
   'users',
@@ -46,7 +43,6 @@ export const users = pgTable(
     usernameIndex: index('users_username_idx').on(table.username),
   })
 );
-
 // Cases table
 export const cases = pgTable(
   'cases',
@@ -72,7 +68,6 @@ export const cases = pgTable(
     caseNumberIndex: index('cases_case_number_idx').on(table.caseNumber),
   })
 );
-
 // Documents table
 export const documents = pgTable(
   'documents',
@@ -103,11 +98,9 @@ export const documents = pgTable(
     embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   })
 );
-
   // TODO: Verify that `documents.case_id` and `evidence.case_id` maintain referential
   // integrity to `cases.id` in migrations and that cascade/delete behaviors match
   // business rules (soft-delete vs hard-delete).
-
 // Evidence table
 export const evidence = pgTable(
   'evidence',
@@ -139,7 +132,6 @@ export const evidence = pgTable(
     embeddingIndex: index('evidence_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   })
 );
-
 // Legal Documents with vector embeddings from gemma3-legal:latest
 export const legalDocuments = pgTable(
   'legal_documents',
@@ -280,7 +272,6 @@ export const sessions = pgTable('sessions', {
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(), // Added or updated
   messageCount: integer('message_count').default(0).notNull(), // Added or updated
 });
-
 // Messages table
 export const messages = pgTable('messages', {
   id: text('id').primaryKey(),
@@ -422,7 +413,6 @@ export const usersSelectZodSchema = extractZodSchema(usersSelectSchema);
 export const casesUpdateZodSchema = extractZodSchema(casesUpdateSchema);
 export const casesInsertZodSchema = extractZodSchema(casesInsertSchema);
 export const casesSelectZodSchema = extractZodSchema(casesSelectSchema);
-
 // RAG Documents table for uploaded documents
 export const ragDocuments = pgTable(
   'rag_documents',
@@ -443,7 +433,6 @@ export const ragDocuments = pgTable(
     contentHashIndex: index('rag_content_hash_idx').on(table.contentHash),
   })
 );
-
 // Knowledge Base table (unified semantic chunks from various sources)
 export const knowledgeBase = pgTable(
   'knowledge_base',
@@ -463,7 +452,6 @@ export const knowledgeBase = pgTable(
     sourceFileIndex: index('kb_source_file_idx').on(table.sourceFile),
   })
 );
-
 // Code Embeddings table for agentic programming
 export const codeEmbeddings = pgTable(
   'code_embeddings',
@@ -484,34 +472,28 @@ export const codeEmbeddings = pgTable(
     contentHashIndex: index('code_content_hash_idx').on(table.contentHash),
   })
 );
-
 // RAG document relations
 export const ragDocumentsRelations = relations(ragDocuments, ({ many }: Relations) => ({
   knowledgeChunks: many(knowledgeBase),
 }));
-
 export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }: Relations) => ({
   ragDocument: one(ragDocuments, {
     fields: [knowledgeBase.sourceFile],
     references: [ragDocuments.filename],
   }),
 }));
-
 // Type exports for RAG tables
 export type RagDocument = typeof ragDocuments.$inferSelect;
 export type NewRagDocument = typeof ragDocuments.$inferInsert;
 export type KnowledgeBase = typeof knowledgeBase.$inferSelect;
-
 export type NewKnowledgeBase = typeof knowledgeBase.$inferInsert;
 export type CodeEmbedding = typeof codeEmbeddings.$inferSelect;
 export type NewCodeEmbedding = typeof codeEmbeddings.$inferInsert;
-
 // Zod schemas for RAG tables
 export const ragDocumentsSelectSchema = createSelectSchema(ragDocuments);
 export const ragDocumentsInsertSchema = createInsertSchema(ragDocuments);
 export const knowledgeBaseSelectSchema = createSelectSchema(knowledgeBase);
 export const knowledgeBaseInsertSchema = createInsertSchema(knowledgeBase);
-
 // Document processing tasks table (single definition, with relations)
 export const documentProcessingTasks = pgTable('document_processing_tasks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -533,14 +515,12 @@ export const documentProcessingTasks = pgTable('document_processing_tasks', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
-
 export const documentProcessingTasksRelations = relations(documentProcessingTasks, (args: Relations) => ({
   document: args.one(legalDocuments, {
     fields: [documentProcessingTasks.documentId],
     references: [legalDocuments.id],
   }),
 }));
-
 // Schema for caching generated embeddings to avoid re-computation (single definition)
 export const embeddingCache = pgTable('embedding_cache', {
   textHash: text('text_hash').primaryKey(), // Unique hash of the text content

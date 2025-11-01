@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // Icons
   import {
     Users,
@@ -86,7 +86,7 @@
     } catch (error) {
       console.error('Failed to load system health:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function loadRecentActivity() {
@@ -309,7 +309,7 @@
       </div>
       <div class="space-y-4">
         {#if recentActivity.length > 0}
-          {#each recentActivity as activity}
+          {#each Array.isArray(recentActivity) ? recentActivity : [] as activity}
             {@const ActivityIconComp = getActivityIcon(activity.type)}
             <div
               class="flex items-start gap-3 p-3 border-l-4 {activity.status === 'success'

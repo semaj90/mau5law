@@ -1,28 +1,22 @@
 // AI Agentic Streaming with Ollama + TensorRT Fallback
 // Token-level streaming for real-time evidence analysis
-
 import type { AIResponse, ChatMessage } from '$lib/types/evidence';
-
 // Replace broken TENSORRT_BASE assignment with a proper env fallback
 // (used by streamFromTensorRT)
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost:8000';
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-legal:latest';
-
 type StreamCallback = (token: string, fullText: string) => void | Promise<void>;
-
 interface OllamaStreamResponse {
   model: string;
   created_at: string;
   response: string;
   done: boolean;
 }
-
 interface TensorRTRequest {
   model_name: string;
   inputs: Array<{ name: string; shape: number[]; datatype: string; data: string[] }>;
   outputs: Array<{ name: string }>;
 }
-
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
   prompt: string,
@@ -41,7 +35,6 @@ export async function runAIAgentStream(
     return result;
   } catch (ollamaError) {
     console.error('[AI] ❌ Ollama failed, falling back to TensorRT:', ollamaError);
-
     try {
       // Fallback to TensorRT
       const result = await streamFromTensorRT(prompt, onChunk, options);
@@ -52,7 +45,6 @@ export async function runAIAgentStream(
     }
   }
 }
-
 // Ollama streaming via WebSocket
 async function streamFromOllama(
   prompt: string,
@@ -67,7 +59,6 @@ async function streamFromOllama(
   const startTime = Date.now();
   let fullText = '';
   let tokensGenerated = 0;
-
   return new Promise((resolve, reject) => {
     // Use HTTP streaming endpoint (Ollama doesn't support WS for chat)
     fetch(`${getOllamaEndpoint()}/api/generate`, {
@@ -87,18 +78,14 @@ async function streamFromOllama(
         if (!response.ok) {
           throw new Error(`Ollama HTTP error: ${response.status}`);
         }
-
         const reader = response.body?.getReader();
         if (!reader) {
           throw new Error('No response body reader');
         }
-
         const decoder = new TextDecoder();
-
         // Read stream chunks
         const processChunk = async (): Promise<void> => {
           const { done, value } = await reader.read();
-
           if (done) {
             resolve({
               text: fullText,
@@ -109,10 +96,8 @@ async function streamFromOllama(
             });
             return;
           }
-
           const chunk = decoder.decode(value, { stream: true });
           const lines = chunk.split('\n').filter(line => line.trim());
-
           for (const line of lines) {
             try {
               const parsed: OllamaStreamResponse = JSON.parse(line);
@@ -125,16 +110,13 @@ async function streamFromOllama(
               console.error('[AI] ❌ Parse error:', error);
             }
           }
-
           return processChunk();
         };
-
         return processChunk();
       })
       .catch(reject);
   });
 }
-
 // TensorRT streaming via Triton Inference Server
 async function streamFromTensorRT(
   prompt: string,
@@ -147,7 +129,6 @@ async function streamFromTensorRT(
   }
 ): Promise<AIResponse> {
   const startTime = Date.now();
-
   // TensorRT doesn't natively support streaming - simulate it
   const response = await fetch(`${TENSORRT_BASE}/v2/models/legal-llm/infer`, {
     method: 'POST',
@@ -164,14 +145,11 @@ async function streamFromTensorRT(
       outputs: [{ name: 'output_text' }],
     } as TensorRTRequest),
   });
-
   if (!response.ok) {
     throw new Error(`TensorRT HTTP error: ${response.status}`);
   }
-
   const result = await response.json();
   const fullText = result.outputs[0]?.data?.[0] || '';
-
   // Simulate token-by-token streaming for UI consistency
   const tokens = fullText.split(' ');
   for (let i = 0; i < tokens.length; i++) {
@@ -180,7 +158,6 @@ async function streamFromTensorRT(
     // Small delay to simulate streaming
     await new Promise(resolve => setTimeout(resolve, 50));
   }
-
   return {
     text: fullText,
     source: 'tensorrt',
@@ -189,33 +166,26 @@ async function streamFromTensorRT(
     responseTimeMs: Date.now() - startTime,
   };
 }
-
 // AI tool execution (for agentic workflows)
 export async function executeAITool(toolName: string, params: Record<string, unknown>): Promise<unknown> {
   console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
-
   switch (toolName) {
     case 'web_search':
       return await webSearch(params.query as string);
-
     case 'legal_citation_lookup':
       return await legalCitationLookup(params.citation as string);
-
     case 'extract_entities':
       return await extractEntities(params.text as string);
-
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
 }
-
 // Stub: Web search tool
 async function webSearch(query: string): Promise<{ results: string[] }> {
   console.log('[AI] 🔍 Web search:', query);
   // TODO: Integrate with actual search API (DuckDuckGo, Brave, etc.)
   return { results: [`Search result for: ${query}`] };
 }
-
 // Stub: Legal citation lookup
 async function legalCitationLookup(citation: string): Promise<{ case string; summary: string }> {
   console.log('[AI] ⚖️ Legal citation lookup:', citation);
@@ -225,7 +195,6 @@ async function legalCitationLookup(citation: string): Promise<{ case string; sum
     summary: `Legal case summary for ${citation}`,
   };
 }
-
 // Stub: Entity extraction
 async function extractEntities(text: string): Promise<{ entities: string[] }> {
   console.log('[AI] 🏷️ Extracting entities from text...');
@@ -233,7 +202,6 @@ async function extractEntities(text: string): Promise<{ entities: string[] }> {
   const entities = text.match(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/g) || [];
   return { entities: [...new Set(entities)] };
 }
-
 // Generate embeddings for vector search
 export async function generateEmbedding(text: string): Promise<number[]> {
   const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
@@ -244,22 +212,18 @@ export async function generateEmbedding(text: string): Promise<number[]> {
       prompt: text,
     }),
   });
-
   if (!response.ok) {
     throw new Error(`Embedding generation failed: ${response.status}`);
   }
-
   const result = await response.json();
   return result.embedding as number[];
 }
-
 // Chat completion (non-streaming)
 export async function chatCompletion(
   messages: ChatMessage[],
   options?: { model?: string; temperature?: number }
 ): Promise<AIResponse> {
   const startTime = Date.now();
-
   const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -275,13 +239,10 @@ export async function chatCompletion(
       },
     }),
   });
-
   if (!response.ok) {
     throw new Error(`Chat completion failed: ${response.status}`);
   }
-
   const result = await response.json();
-
   return {
     text: result.message.content,
     source: 'ollama',
@@ -289,7 +250,6 @@ export async function chatCompletion(
     responseTimeMs: Date.now() - startTime,
   };
 }
-
 // Replace the local helper with an exported centralized helper so other modules
 // can import getOllamaEndpoint() instead of hardcoding Ollama URLs.
 export function getOllamaEndpoint(): string {

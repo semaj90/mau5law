@@ -3,24 +3,22 @@
   import { debounce } from '$lib/utils/debounce';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-
   // Props (exported for Svelte)
-  export let placeholder: string = 'Type your message...';
-  export let disabled: boolean = false;
-  export let autoFocus: boolean = false;
-  export let value: string = '';
-  export let maxLength: number = 2000;
-  export let rows: number = 1;
-  export let maxRows: number = 6;
-  export let ondispatch: ((value: string) => void) | undefined;
-
+  let { placeholder = 'Type your message...', disabled = false, autoFocus = false, value = '', maxLength = 2000, rows = 1, maxRows = 6, ondispatch = undefined } = $props<{
+    placeholder?: string;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    value?: string;
+    maxLength?: number;
+    rows?: number;
+    maxRows?: number;
+    ondispatch?: ((value: string) => void);
+  }>();
   // Elements / state
   let textarea: HTMLTextAreaElement | null = null;
-  let isMultiline: boolean = false;
-
+  let isMultiline = $state(false); // Changed to use $state rune
   // Debounced input handler
   const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
-
   // Auto-focus on mount and initialize textarea height
   onMount(() => {
     if (browser && autoFocus && textarea) {
@@ -28,7 +26,6 @@
     }
     resetTextareaHeight();
   });
-
   // Handle input changes
   function handleInput(event: Event) {
     const tgt = event.target as HTMLTextAreaElement;
@@ -36,7 +33,6 @@
     ondispatch?.(value);
     adjustTextareaHeight();
   }
-
   // Handle key press
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -50,7 +46,6 @@
       }
     }
   }
-
   // Send message
   function handleSend() {
     const trimmedValue = value.trim();
@@ -59,7 +54,6 @@
     value = '';
     resetTextareaHeight();
   }
-
   // Auto-resize textarea
   function adjustTextareaHeight() {
     if (!textarea) return;
@@ -72,7 +66,6 @@
     textarea.style.height = `${targetRows * lineHeight + paddingHeight}px`;
     isMultiline = targetRows > 1;
   }
-
   // Reset textarea height
   function resetTextareaHeight() {
     if (!textarea) return;
@@ -80,9 +73,8 @@
     const lineHeight = parseInt(computed.lineHeight || '0') || 20;
     const paddingHeight = (parseInt(computed.paddingTop || '0') || 0) + (parseInt(computed.paddingBottom || '0') || 0);
     textarea.style.height = `${rows * lineHeight + paddingHeight}px`;
-    isMultiline = false;
+    isMultiline = false; // Changed to assign directly to $state variable
   }
-
   // Handle focus/blur events (placeholders if needed)
   function handleFocus() {
     /* no-op for now */
@@ -90,13 +82,11 @@
   function handleBlur() {
     /* no-op for now */
   }
-
   // Reactive character count and limit flags
-  $: characterCount = value ? value.length : 0;
-  $: isNearLimit = characterCount > maxLength * 0.8;
-  $: isAtLimit = characterCount >= maxLength;
+  const characterCount = $derived(value ? value.length : 0);
+  const isNearLimit = $derived(characterCount > maxLength * 0.8);
+  const isAtLimit = $derived(characterCount >= maxLength);
 </script>
-
 <div class="chat-input-wrapper" class:multiline={isMultiline}>
   <div class="input-container">
     <textarea
@@ -152,13 +142,11 @@
       <span class="hint-text">
         <kbd>Shift + Enter</kbd> for new line, <kbd>Enter</kbd> to send
       </span>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .chat-input-wrapper {
-    position relative;
+    position: relative;
     width: 100%;
   }
   /* --- Chat Input Styles --- */
@@ -210,7 +198,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0,
+    flex-shrink: 0; /* Fixed typo: changed comma to semicolon */
   }
   .character-count {
     font-size: 0.75rem;
@@ -237,7 +225,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .send-buttonhover:not(:disabled) {
+  .send-button:hover:not(:disabled) { /* Corrected selector for hover state */
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
   }
@@ -248,7 +236,7 @@
   .send-button.has-content:hover:not(:disabled) {
     background: var(--accent-hover, #2563eb);
   }
-  .send-buttondisabled {
+  .send-button:disabled { /* Corrected selector for disabled state */
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -296,7 +284,7 @@
       background: var(--bg-muted, #334155);
       color: var(--text-muted, #94a3b8);
     }
-    .send-buttonhover:not(:disabled) {
+    .send-button:hover:not(:disabled) {
       background: var(--bg-hover, #475569);
       color: var(--text-primary, #f8fafc);
     }
@@ -321,4 +309,3 @@
     }
   }
 </style>
-

@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 interface QueryRequest {
   query: string;
-  context?: unknown[]; // tightened from any[] to unknown[]
+  context?: any[]; // tightened from any[] to unknown[]
   options?: {
     force_model?: 'fast' | 'legal' | 'embedding';
     bypass_cache?: boolean;
@@ -81,7 +81,7 @@ const embeddingService = new MockLLMClient('http://localhost:11434', 'embeddingg
 // Simple in-memory cache (in production, this would be Redis)
 const queryCache = new Map<string, { response: string; timestamp: number; model: string }>()
 const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
-function generateCacheKey(query: string, context?: unknown[]): string {
+function generateCacheKey(query: string, context?: any[]): string {
   const contextStr = context ? JSON.stringify(context) : ''
   return `query:${Buffer.from(query + contextStr)
     .toString('base64')

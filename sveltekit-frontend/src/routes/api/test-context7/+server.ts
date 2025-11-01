@@ -42,7 +42,7 @@ const summarize = (r: LibraryDocResult) => {
 };
 
 function wrapError<T>(promise: Promise<T>): Promise<T | LibraryDocError> {
-  return promise.catch((e: unknown) => ({
+  return promise.catch((e: any) => ({
     error: e instanceof Error ? e.message : String(e),
   }));
 }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async event => {
       results,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Context7 test error', err);
     return json(
       {

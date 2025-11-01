@@ -8,7 +8,6 @@ https://svelte.dev/e/js_parse_error -->
     uploadActions.closeModal();
   }
 </script>
-
 {#if isOpen}
   <div class="space-y-4">
     <div class="space-y-4">
@@ -16,5 +15,4 @@ https://svelte.dev/e/js_parse_error -->
       <p class="space-y-4">Modal is working!</p>
       <button class="space-y-4" onclick={() => closeModal()}> Close </button>
     </div>
-  </div>
-{/if}
+  {/if}

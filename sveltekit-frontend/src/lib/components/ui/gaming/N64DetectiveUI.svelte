@@ -58,7 +58,7 @@ if (!browser) return;
       // Update memory bank status periodically
       setInterval(updateMemoryStatus, 2000);
       console.log('✅ N64 Detective UI ready');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('N64 Detective UI initialization failed:', error);
     }
     })();
@@ -142,10 +142,10 @@ if (!browser) return;
         vertexBufferMemory: performanceMetrics.vertexBufferMemory + 512 * 1024 // 512KB
       }
       console.log(`✅ Analysis complete: ${totalTime.toFixed(2)}ms`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Evidence analysis failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       setTimeout(() => textureStreamingProgress = 0, 2000);
     }
   }
@@ -154,7 +154,7 @@ if (!browser) return;
    */
   async function handleSearchInput() {
     if (searchQuery.length < 3) {
-      showSuggestions = false;
+      showSuggestions = $state(false);
       return;
     }
     try {
@@ -163,7 +163,7 @@ if (!browser) return;
       showSuggestions = suggestions.length > 0;
     } catch (error) {
       console.error('Search suggestions failed:', error);
-      showSuggestions = false;
+      showSuggestions = $state(false);
     }
   }
   /**
@@ -171,7 +171,7 @@ if (!browser) return;
    */
   function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.query;
-    showSuggestions = false;
+    showSuggestions = $state(false);
     // Perform actual search here
     console.log(`🔍 Searching for: ${suggestion.query}`);
   }
@@ -218,7 +218,7 @@ if (!browser) return;
       });
       currentEvidence = enhanced;
       console.log('✅ Screenshot enhanced and analyzed');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Screenshot enhancement failed:', error);
     }
   }
@@ -269,8 +269,7 @@ if (!browser) return;
         ></div>
         <div class="n64-progress-text">{textureStreamingProgress.toFixed(0)}%</div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Navigation Tabs -->
   <div class="n64-tabs">
     <button
@@ -331,8 +330,7 @@ if (!browser) return;
               <button class="n64-button" onclick={() => fileInput?.click()}>
                 SELECT FILE
               </button>
-            </div>
-          {/if}
+            {/if}
         </div>
         {#if currentEvidence}
           <div class="evidence-details">
@@ -377,40 +375,36 @@ if (!browser) return;
                   {#if currentEvidence.analysis.detectedPatterns.length > 0}
                     <div class="patterns">
                       <strong>PATTERNS:</strong>
-                      {#each currentEvidence.analysis.detectedPatterns as pattern}
+                      {#each Array.isArray(currentEvidence.analysis.detectedPatterns) ? currentEvidence.analysis.detectedPatterns : [] as pattern}
                         <span class="pattern-tag">{pattern}</span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                   {#if currentEvidence.analysis.contextualClues.length > 0}
                     <div class="clues">
                       <strong>CLUES:</strong>
-                      {#each currentEvidence.analysis.contextualClues as clue}
+                      {#each Array.isArray(currentEvidence.analysis.contextualClues) ? currentEvidence.analysis.contextualClues : [] as clue}
                         <span class="clue-item">{clue}</span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                   {#if currentEvidence.analysis.suggestedActions.length > 0}
                     <div class="actions">
                       <strong>SUGGESTED ACTIONS:</strong>
                       <ul>
-                        {#each currentEvidence.analysis.suggestedActions as action}
+                        {#each Array.isArray(currentEvidence.analysis.suggestedActions) ? currentEvidence.analysis.suggestedActions : [] as action}
                           <li>{action}</li>
                         {/each}
                       </ul>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Evidence History -->
         {#if evidenceHistory.length > 0}
           <div class="evidence-history">
             <h4>RECENT EVIDENCE</h4>
             <div class="history-grid">
-              {#each evidenceHistory.slice(0, 6) as evidence}
+              {#each Array.isArray(evidenceHistory.slice(0, 6)) ? evidenceHistory.slice(0, 6) : [] as evidence}
                 <div class="history-item" role="button" tabindex="0"
                 onclick={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
@@ -421,8 +415,7 @@ if (!browser) return;
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else if selectedTab === 'conflicts'}
       <!-- Conflicts Tab -->
@@ -435,7 +428,7 @@ if (!browser) return;
           </div>
         {:else}
           <div class="conflicts-list">
-            {#each conflicts as conflict}
+            {#each Array.isArray(conflicts) ? conflicts : [] as conflict}
               <div class="conflict-item" class:critical={conflict.severity === 'critical'}>
                 <div class="conflict-header">
                   <div class="conflict-type">{conflict.type.replace.toUpperCase()}</div>
@@ -452,7 +445,7 @@ if (!browser) return;
                   <div class="llm-recommendations">
                     <strong>RECOMMENDATIONS:</strong>
                     <ul>
-                      {#each conflict.llmResponse.recommendations as recommendation}
+                      {#each Array.isArray(conflict.llmResponse.recommendations) ? conflict.llmResponse.recommendations : [] as recommendation}
                         <li>{recommendation}</li>
                       {/each}
                     </ul>
@@ -464,8 +457,7 @@ if (!browser) return;
                 </div>
               </div>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else if selectedTab === 'search'}
       <!-- Search Tab -->
@@ -485,7 +477,7 @@ if (!browser) return;
           <div class="search-suggestions">
             <h4>DID YOU MEAN?</h4>
             <div class="suggestions-list">
-              {#each searchSuggestions as suggestion}
+              {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
                 <button
                   class="suggestion-item"
                   onclick={() => applySuggestion(suggestion)}
@@ -499,8 +491,7 @@ if (!browser) return;
                 </button>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else if selectedTab === 'cache'}
       <!-- Cache Tab -->
@@ -550,8 +541,7 @@ if (!browser) return;
             </div>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- UI Settings -->
   <div class="n64-settings">
@@ -576,11 +566,11 @@ if (!browser) return;
     font-family: 'Courier New', monospace;
     min-height: 100vh;
     padding: 1rem;
-    position relative;
+    position: relative;
   }
   .n64-detective-ui.scanlines::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -646,7 +636,7 @@ if (!browser) return;
     text-align: center;
   }
   .n64-progress-bar {
-    position relative;
+    position: relative;
     height: 24px;
     background: #0a0a0a;
     border: 2px solid #00ff41;
@@ -656,11 +646,11 @@ if (!browser) return;
   .n64-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #00cc33);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
     box-shadow: 0 0 10px #00ff41;
   }
   .n64-progress-text {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -702,7 +692,7 @@ if (!browser) return;
     min-height: 500px;
   }
   .drop-zone {
-    position relative;
+    position: relative;
     border: 2px dashed #00ff41;
     border-radius: 8px;
     padding: 3rem;
@@ -720,10 +710,10 @@ if (!browser) return;
     background: rgba(255, 255, 0, 0.1);
   }
   .analyzing-overlay {
-    position relative;
+    position: relative;
   }
   .scan-line {
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
@@ -1084,7 +1074,7 @@ if (!browser) return;
   .usage-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #ffaa00, #ff4444);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .usage-text {
     font-size: 0.875rem;
@@ -1119,7 +1109,7 @@ if (!browser) return;
     color: #00cc33;
   }
   .n64-settings {
-    position fixed;
+    position: fixed;
 d;
     bottom: 1rem;
     right: 1rem;
@@ -1158,4 +1148,3 @@ d;
     }
   }
 </style>
-

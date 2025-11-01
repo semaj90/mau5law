@@ -502,7 +502,7 @@ function calculateEstimatedRunTime(testResults: any): string {
   const totalMinutes = Math.ceil((testCount * avgTestTime) / 60);
   return `${totalMinutes} minutes`;
 }
-function assessTestCoverage(testResults: any): unknown {
+function assessTestCoverage(testResults: any): any {
   return {
     ocrProcessing: '95%',
     jsonConversion: '90%',

@@ -2,8 +2,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Card, CardContent, CardHeader, CardTitle, Button, Alert } from './index.js';
-  import Bot from 'lucide-svelte/icons/bot.svelte';
-  import CheckCircle from 'lucide-svelte/icons/check-circle.svelte';
+  import { Bot } from 'lucide-svelte/icons/bot.svelte';
+  import { CheckCircle } from 'lucide-svelte/icons/check-circle.svelte';
   // Test data
   let testMessages = $state([
     {
@@ -61,7 +61,6 @@
     aiSearchTerm = '';
   }
 </script>
-
 <div class="p-6 max-w-4xl mx-auto space-y-6">
   <Card class="border-2 border-primary/20">
     <CardHeader>
@@ -103,8 +102,7 @@
               <span class="text-purple-800">AI search completed. Results added to conversation.</span>
             </div>
           </Alert>
-        </div>
-      {/if}
+        {/if}
       <!-- AI Search Bar Test (local replacement) -->
       <div class="space-y-2">
         <h3 class="font-semibold text-sm">AI Search Bar Component</h3>
@@ -135,7 +133,7 @@
               <p class="text-sm">No test messages. Try using the search bar above.</p>
             </div>
           {:else}
-            {#each testMessages as message}
+            {#each Array.isArray(testMessages) ? testMessages : [] as message}
               <!-- inline representation -->
               <div class="p-3 rounded bg-white/60 border">
                 <div class="flex justify-between items-center text-xs text-muted-foreground mb-1">
@@ -147,12 +145,11 @@
                   <div class="mt-2 text-xs text-muted-foreground">
                     <strong>References:</strong>
                     <ul class="list-disc list-inside ml-4">
-                      {#each message.references as ref}
+                      {#each Array.isArray(message.references) ? message.references : [] as ref}
                         <li>{ref.id} ({ref.score})</li>
                       {/each}
                     </ul>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
           {/if}
@@ -199,12 +196,10 @@
           <div class="bg-muted p-3 rounded text-sm font-mono">
             {searchQuery}
           </div>
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
 </div>
-
 <style>
   /* Enhanced-bits styling integration */
   :global(.ai-test-container) {

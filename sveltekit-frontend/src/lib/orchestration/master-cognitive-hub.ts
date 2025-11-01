@@ -514,7 +514,7 @@ export class MasterCognitiveHub {
       } else {
         console.log('⚠️ WebGPU RAG Service not available or not ready');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Narrow unknown to Error for safe logging, fallback to String() for other types
       if (error instanceof Error) {
         console.error('⚠️ System initialization error:', error.message, error);
@@ -872,7 +872,7 @@ export class MasterCognitiveHub {
     const achievements: string[] = [];
 
     // 1) Routing - call orchestrator if available, otherwise fallback
-    let routingResult: unknown = null;
+    let routingResult: any = null;
     try {
       if (hasRoute(cognitiveRoutingOrchestrator)) {
         routingResult = await cognitiveRoutingOrchestrator.route(request);
@@ -994,12 +994,12 @@ export class MasterCognitiveHub {
     return this.state.easterEggs;
   }
   // Helper methods (simplified implementations)
-  private arraysEqual(a: unknown[], b: unknown[]): boolean {
+  private arraysEqual(a: any[], b: any[]): boolean {
     return a.length === b.length && a.every((val, i) => val === (b as unknown[])[i]);
   }
 
   // Simple hash function for request data to generate stable cache keys
-  private hashRequestData(data: unknown): string {
+  private hashRequestData(data: any): string {
     try {
       const str = JSON.stringify(data ?? '');
       let hash = 0;
@@ -1061,11 +1061,11 @@ type ProcessingRequest<Data = unknown, Context extends Record<string, unknown> =
 
 type GPUWorkloadResult = {
   workloadId?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type ProcessingResponse = {
-  result: unknown;
+  result: any;
   intelligence: number;
   insights: string[];
   secrets: string[];
@@ -1082,10 +1082,10 @@ type RouterWithProcess = {
 };
 
 // Type guards
-function hasRoute(obj: unknown): obj is RouterWithRoute {
+function hasRoute(obj: any): obj is RouterWithRoute {
   return typeof obj === 'object' && obj !== null && typeof (obj as RouterWithRoute).route === 'function';
 }
-function hasProcessRequest(obj: unknown): obj is RouterWithProcess {
+function hasProcessRequest(obj: any): obj is RouterWithProcess {
   return typeof obj === 'object' && obj !== null && typeof (obj as RouterWithProcess).processRequest === 'function';
 }
 

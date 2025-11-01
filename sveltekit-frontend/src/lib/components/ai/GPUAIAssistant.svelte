@@ -5,7 +5,7 @@
   import { gpuAIService } from '$lib/services/gpu-ai-service';
   import { evidenceStore  } from '$lib/stores/unified';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
   interface ChatMessage {
     id: string;
@@ -203,7 +203,7 @@ await initializeAssistant();
       }
       showError('AI chat failed');
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
       streamingMessageId = null;
     }
   }
@@ -290,8 +290,7 @@ await initializeAssistant();
       </div>
       <div>Model: {gpuStatus.model}</div>
       {#if gpuStatus.queue_length > 0}
-        <div class="text-orange-500">Queue: {gpuStatus.queue_length}</div>
-      {/if}
+        <div class="text-orange-500">Queue: {gpuStatus.queue_length}{/if}
     </div>
   </CardHeader>
   <!-- Chat Messages -->
@@ -315,8 +314,7 @@ await initializeAssistant();
                 <Bot class="w-4 h-4 text-primary" />
               {/if}
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Message Content -->
         <div class="flex-1 max-w-[80%] {message.type === 'user' ? 'order-first' : ''}">
           <div class="
@@ -337,19 +335,18 @@ await initializeAssistant();
             <!-- Evidence tags -->
             {#if message.evidence_ids?.length}
               <div class="flex flex-wrap gap-1 mt-2">
-                {#each message.evidence_ids as evidenceId}
+                {#each Array.isArray(message.evidence_ids) ? message.evidence_ids : [] as evidenceId}
                   {@const evidence = evidenceList.find(e => e.id === evidenceId)}
                   <span class="px-2 py-1 text-xs bg-primary/20 rounded-full">
                     {evidence?.title || evidenceId}
                   </span>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             <!-- Suggestions -->
             {#if message.suggestions?.length}
               <div class="mt-3 space-y-2">
                 <p class="text-xs font-medium opacity-70">Suggestions:</p>
-                {#each message.suggestions as suggestion}
+                {#each Array.isArray(message.suggestions) ? message.suggestions : [] as suggestion}
                   <button
                     class="block w-full text-left p-2 rounded border border-current/20 hover:bg-current/10 transition-colors"
                     onclick={() => handleSuggestionClick(suggestion)}
@@ -361,13 +358,12 @@ await initializeAssistant();
                     <p class="text-xs opacity-70 mt-1">{suggestion.description}</p>
                   </button>
                 {/each}
-              </div>
-            {/if}
+              {/if}
             <!-- Insights -->
             {#if message.insights?.length}
               <div class="mt-3 space-y-2">
                 <p class="text-xs font-medium opacity-70">Insights:</p>
-                {#each message.insights as insight}
+                {#each Array.isArray(message.insights) ? message.insights : [] as insight}
                   <div class="p-2 rounded border border-current/20">
                     <div class="flex items-center gap-2">
                       <TrendingUp class="w-3 h-3" />
@@ -377,8 +373,7 @@ await initializeAssistant();
                     <p class="text-xs opacity-70 mt-1">{insight.description}</p>
                   </div>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Timestamp -->
           <div class="text-xs text-muted-foreground mt-1 {message.type === 'user' ? 'text-right' : ''}">
@@ -391,8 +386,7 @@ await initializeAssistant();
             <div class="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
               U
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
     <!-- Typing indicator -->
@@ -408,8 +402,7 @@ await initializeAssistant();
             <div class="w-2 h-2 bg-current rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Quick Actions -->
   <div class="p-3 border-t bg-muted/30">

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Dialog } from "bits-ui";
-  import { X } from "lucide-svelte";
+  import X from 'lucide-svelte';
   import { fade, fly } from "svelte/transition";
   interface Props {
     open?: boolean;
@@ -11,8 +11,8 @@
     class?: string;
     onopen?: () => void;
     onclose?: () => void;
-    children?: unknown;
-    footer?: unknown;
+    children?: any;
+    footer?: any;
   }
   let { open = $bindable(false),
     title = "",

@@ -87,7 +87,7 @@ class EnhancedFileUpload {
           result = await this.uploadWithFallback(file, options);
         }
         results.push(result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         results.push({
           success: false,
@@ -121,7 +121,7 @@ class EnhancedFileUpload {
         fileId: serverResult.fileId,
         url: serverResult.url
       };
-    } catch (serverError: unknown) {
+    } catch (serverError: any) {
       // server failed -> try localStorage
       try {
         const localResult = await this.uploadToLocalStorage(file, options);
@@ -129,7 +129,7 @@ class EnhancedFileUpload {
           ...localResult,
           fallbackUsed: true
         };
-      } catch (localError: unknown) {
+      } catch (localError: any) {
         const se = serverError instanceof Error ? serverError.message : String(serverError);
         const le = localError instanceof Error ? localError.message : String(localError);
         throw new Error(`Both server and localStorage upload failed: server=${se}; local=${le}`);
@@ -195,7 +195,7 @@ class EnhancedFileUpload {
         fileId: fileRecord.id,
         url: undefined
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`localStorage upload failed: ${msg}`);
     }

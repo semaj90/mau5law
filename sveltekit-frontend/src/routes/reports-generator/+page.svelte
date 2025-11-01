@@ -131,7 +131,7 @@
   		} catch (err) {
   			console.error('Failed to load demo data:', err);
   			error = 'Failed to load demo data';
-  			isLoading = false;
+  			isLoading = $state(false);
   }}
   	async function handleReportSave(report: Report) {
   		try {
@@ -239,7 +239,7 @@
         <h3>📚 Citation Library</h3>
         <p class="space-y-4">{citationPoints.length} citations available</p>
         <div class="space-y-4">
-          {#each citationPoints.slice(0, 3) as citation}
+          {#each Array.isArray(citationPoints.slice(0, 3)) ? citationPoints.slice(0, 3) : [] as citation}
             <div class="space-y-4">
               <div class="space-y-4">{citation.source}</div>
               <div class="space-y-4">{citation.text.substring(0, 60)}...</div>
@@ -251,12 +251,12 @@
         <h3>📋 Evidence Repository</h3>
         <p class="space-y-4">{evidence.length} pieces of evidence</p>
         <div class="space-y-4">
-          {#each evidence as item}
+          {#each Array.isArray(evidence) ? evidence : [] as item}
             <div class="space-y-4">
-              <div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).title}</div>
+              <div class="space-y-4">{(item as { title?: any; evidenceType?: any; type?: any }).title}</div>
               <div class="space-y-4">
-                {(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).evidenceType ||
-                  (item as { title?: unknown; evidenceType?: unknown; type?: unknown }).type ||
+                {(item as { title?: any; evidenceType?: any; type?: any }).evidenceType ||
+                  (item as { title?: any; evidenceType?: any; type?: any }).type ||
                   'unknown'}
               </div>
             </div>

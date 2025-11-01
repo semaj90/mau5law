@@ -14,7 +14,7 @@ export interface TensorOp {
     type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';
     inputA: Float32Array;
     inputB?: Float32Array;
-    params?: unknown;
+    params?: any;
 }
 export interface VertexCache {
     url: string;

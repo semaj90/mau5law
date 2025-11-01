@@ -4,7 +4,6 @@
   }
   let { children }: Props = $props();
 </script>
-
 <div role="menu">
-  {@render children?.()}
+  <slot />
 </div>

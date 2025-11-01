@@ -9,7 +9,6 @@ export { default as ReportNode } from './ReportNode.svelte';
 export type CanvasNodeType = 'evidence' | 'report' | 'connection' | 'note';
 export type CanvasPosition = { x: number; y: number };
 export type CanvasSize = { width: number; height: number };
-
 export interface CanvasNode {
   id: string;
   type: CanvasNodeType;

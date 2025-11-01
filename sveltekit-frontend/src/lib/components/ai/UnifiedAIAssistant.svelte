@@ -7,21 +7,19 @@
   // export component constructors (preferred) or import the exact component
   // constructors instead of namespace/instance objects.
   // @ts-nocheck
-
   import { onDestroy, tick } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   // If your UI lib exposes a dedicated Input component file, prefer importing it
   // directly. Keep this change minimal for now.
-  import Input from '$lib/components/ui/enhanced-bits'; // import as default to match typical Bits-UI exports
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte''; // import as default to match typical Bits-UI exports
   // Only import icons used in the template
   import { Bot, Send, Cpu, Zap, MessageSquare, Mic, MicOff, Download, Square, Activity } from 'lucide-svelte';
   // some service modules export named functions; import all to avoid default-export issues
   import * as goMicroserviceClient from '$lib/services/go-microservice-client';
   // use dynamic public env to avoid missing static exports in some environments
   import { env } from '$env/dynamic/public';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Tooltip from '$lib/components/ui/tooltip';
-
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte'';
   // Svelte 5 state management
   let messages = $state<any[]>([]);
   let currentMessage = $state('');
@@ -60,7 +58,6 @@
   let webgpuBridge: Worker | null = null;
   // Component props
   let { caseId = '', evidenceContext = [] as any[], readonly = false } = $props();
-
   // Initialize AI systems
   $effect(() => {
     (async () => {
@@ -72,7 +69,6 @@
       addSystemMessage('Legal AI Assistant initialized. How can I help you analyze your case today?');
     })();
   });
-
   async function initializeBackends() {
     console.log('🔌 Checking backend availability...');
     // Check vLLM
@@ -84,7 +80,7 @@
       aiBackends.vllm.available = vllmResponse.ok;
       aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
     } catch {
-      aiBackends.vllm.available = false;
+      aiBackends.vllm.available = $state(false);
       aiBackends.vllm.status = 'unavailable';
     }
     // Check Ollama
@@ -96,7 +92,7 @@
       aiBackends.ollama.available = ollamaResponse.ok;
       aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
     } catch {
-      aiBackends.ollama.available = false;
+      aiBackends.ollama.available = $state(false);
       aiBackends.ollama.status = 'unavailable';
     }
     // Check WebASM LLaMA.cpp support
@@ -108,7 +104,7 @@
         // which is not part of this initial browser capability check.
       }
     } catch {
-      aiBackends.webasm.available = false;
+      aiBackends.webasm.available = $state(false);
       aiBackends.webasm.status = 'unsupported';
     }
     // Check WebGPU support
@@ -118,7 +114,7 @@
         aiBackends.webgpu.available = !!adapter;
         aiBackends.webgpu.status = adapter ? 'supported' : 'unavailable';
       } catch {
-        aiBackends.webgpu.available = false;
+        aiBackends.webgpu.available = $state(false);
         aiBackends.webgpu.status = 'error';
       }
     }
@@ -128,12 +124,11 @@
       aiBackends.goMicroservice.available = !!initialized;
       aiBackends.goMicroservice.status = initialized ? 'healthy' : 'error';
     } catch {
-      aiBackends.goMicroservice.available = false;
+      aiBackends.goMicroservice.available = $state(false);
       aiBackends.goMicroservice.status = 'unavailable';
     }
     console.log('📊 Backend Status:', aiBackends);
   }
-
   async function setupWebGPUWorker() {
     if (aiBackends.webgpu.available && !webgpuBridge) {
       try {
@@ -164,13 +159,11 @@
       }
     }
   }
-
   function handleWebGPUTaskComplete(data: any) {
     console.log('✅ WebGPU task completed:', data);
     // Update performance metrics
     performanceMetrics.gpuUtilization = (data as { gpuUtilization?: any })?.gpuUtilization || 0;
   }
-
   async function loadConversationHistory() {
     if (caseId) {
       try {
@@ -185,7 +178,6 @@
       }
     }
   }
-
   async function sendMessage() {
     if (!currentMessage.trim() || isProcessing) return;
     const userMessage = {
@@ -234,13 +226,12 @@
       messages = [...messages, errorMessage];
       await scrollToBottom();
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       // focus management for UX
       await tick();
       try { messageInput?.focus?.(); } catch {}
     }
   }
-
   async function processAIRequest(message: string): Promise<any> {
     const context = buildContextPrompt(message);
     // Try backends in order of preference and availability
@@ -250,7 +241,6 @@
       return await useSpecificBackend(context, assistantConfig.preferredBackend);
     }
   }
-
   function buildContextPrompt(message: string): string {
     let contextPrompt = '';
     if (assistantConfig.legalContext) {
@@ -273,7 +263,6 @@
     contextPrompt += `User question ${message}`;
     return contextPrompt;
   }
-
   async function tryBackendsInOrder(context: string): Promise<any> {
     const backendOrder = ['goMicroservice', 'vllm', 'ollama', 'webasm'];
     for (const backendName of backendOrder) {
@@ -289,7 +278,6 @@
     }
     throw new Error('All AI backends are unavailable');
   }
-
   async function useSpecificBackend(context: string, backend: string): Promise<any> {
     switch (backend) {
       case 'vllm':
@@ -304,7 +292,6 @@
         throw new Error(`Unknown backend: ${backend}`);
     }
   }
-
   async function processWithVLLM(context: string): Promise<any> {
     const response = await fetch(`${aiBackends.vllm.endpoint}/v1/chat/completions`, {
       method: 'POST',
@@ -327,7 +314,6 @@
       tokensPerSecond: 0, // vLLM doesn't provide this directly
     };
   }
-
   async function processWithOllama(context: string): Promise<any> {
     const response = await fetch(`${aiBackends.ollama.endpoint}/api/chat`, {
       method: 'POST',
@@ -355,7 +341,6 @@
       tokensPerSecond: tps,
     };
   }
-
   async function processWithWebASM(context: string): Promise<any> {
     // WebASM LLaMA.cpp processing (placeholder implementation)
     // In a real implementation, this would load and run a WebAssembly version of LLaMA.cpp
@@ -369,7 +354,6 @@
       }, 2000);
     });
   }
-
   async function processWithGoMicroservice(context: string): Promise<any> {
     const processFn = (goMicroserviceClient as any).processChat ?? (goMicroserviceClient as any).process;
     if (!processFn) throw new Error('Go microservice client not available');
@@ -388,7 +372,6 @@
       tokensPerSecond: result?.metadata?.tokensPerSecond || 0,
     };
   }
-
   async function saveConversation() {
     if (caseId) {
       try {
@@ -406,7 +389,6 @@
       }
     }
   }
-
   function addSystemMessage(content: string) {
     const systemMessage = {
       id: `msg-${Date.now()}-system`,
@@ -417,14 +399,12 @@
     };
     messages = [...messages, systemMessage];
   }
-
   async function scrollToBottom() {
     await tick();
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }
-
   function handleKeyPress(e: KeyboardEvent) {
     // used with on:keydown on the Input below
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -432,7 +412,6 @@
       sendMessage();
     }
   }
-
   async function startVoiceRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -451,20 +430,17 @@
       console.error('❌ Voice recording failed:', error);
     }
   }
-
   function stopVoiceRecording() {
     if (voiceRecording.mediaRecorder && voiceRecording.isRecording) {
       voiceRecording.mediaRecorder.stop();
-      voiceRecording.isRecording = false;
+      voiceRecording.isRecording = $state(false);
     }
   }
-
   async function processVoiceInput(audioBlob: Blob) {
     // Voice-to-text processing (placeholder)
     // In a real implementation, this would use a speech-to-text service
     currentMessage = '[Voice input detected - speech-to-text processing would occur here]';
   }
-
   function clearConversation() {
     if (confirm('Are you sure you want to clear the conversation?')) {
       messages = [];
@@ -473,7 +449,6 @@
       tick().then(() => { try { messageInput?.focus?.(); } catch {} });
     }
   }
-
   function exportConversation() {
     const exportData = {
       caseId,
@@ -489,7 +464,6 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-
   onDestroy(() => {
     if (webgpuBridge) {
       try { webgpuBridge.terminate(); } catch (e) { /* ignore */ }
@@ -502,7 +476,6 @@
     }
   });
 </script>
-
 <!-- Unified AI Assistant Interface -->
 <div class="h-full flex flex-col bg-background">
   <!-- Header -->
@@ -582,7 +555,7 @@
   <div class="flex-1 mb-4 nes-container">
     <div class="yorha-panel-content p-0 h-full">
       <div bind:this={chatContainer} class="h-full overflow-y-auto p-4 space-y-4" aria-live="polite">
-        {#each messages as message}
+        {#each Array.isArray(messages) ? messages : [] as message}
           <div class="flex items-start gap-3" class:flex-row-reverse={message.role === 'user'}>
             <div
               class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
@@ -624,8 +597,7 @@
                     {#if message.tokensPerSecond > 0}
                       <span class="opacity-70">{message.tokensPerSecond.toFixed(1)} tok/s</span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           </div>
@@ -639,8 +611,7 @@
                 Processing your request...
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -712,7 +683,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for chat container */
   .overflow-y-auto {
@@ -756,4 +726,3 @@
     }
   }
 </style>
-

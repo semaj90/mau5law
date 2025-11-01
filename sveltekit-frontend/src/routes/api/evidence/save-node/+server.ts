@@ -28,12 +28,12 @@ type EvidenceNode = z.infer<typeof evidenceNodeSchema>;
 
 type ApiRequestBody = {
   action?: 'save_node' | 'save_canvas_state';
-  data?: unknown;
+  data?: any;
 };
 
 type CanvasPayload = unknown; // keep flexible, can be refined later
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return await saveCanvasState(data, user.id);
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Save API error:', getErrorMessage(err));
     return json(
       {
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 };
 
 // Save individual evidence node
-async function saveEvidenceNode(nodeData: unknown, userId: string): Promise<Response> {
+async function saveEvidenceNode(nodeData: any, userId: string): Promise<Response> {
   try {
     // Validate input (narrow nodeData before parsing)
     const validatedNode = evidenceNodeSchema.parse({
@@ -102,7 +102,7 @@ async function saveEvidenceNode(nodeData: unknown, userId: string): Promise<Resp
       evidence: evidenceData,
       message: 'Evidence saved successfully',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (err instanceof z.ZodError) {
       return json({ error: 'Validation failed', details: err.errors }, { status: 400 });
     }
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         return json({ success: true, canvasState: null, caseId });
       default: return json({ error: "Invalid action" }, { status: 400 })
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error("Load API error:", getErrorMessage(err))
     return json(
       {

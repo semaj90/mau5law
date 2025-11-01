@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Timeline GET error:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Timeline POST error:', err);
     if (err instanceof z.ZodError) {
       return error(

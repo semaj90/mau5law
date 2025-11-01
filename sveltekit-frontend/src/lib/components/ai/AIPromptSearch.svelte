@@ -6,23 +6,18 @@ https://svelte.dev/e/js_parse_error -->
   import Fuse from 'fuse.js';
   import { aiHistory } from '$lib/stores/unified';
   import type { Readable } from 'svelte/store';
-
   type HistoryItem = {
     prompt?: string;
     response?: string;
     timestamp?: string | number;
     [key: string]: any;
   };
-
   // query state
   let query = $state('');
-
   // local copy of history (reactive)
   let history = $state<HistoryItem[]>([]);
-
   // Fuse index
   let fuse: Fuse<HistoryItem> | undefined;
-
   // subscribe to store and update local history
   $effect(() => {
     const unsub = (aiHistory as Readable<HistoryItem[]>).subscribe((h) => {
@@ -30,7 +25,6 @@ https://svelte.dev/e/js_parse_error -->
     });
     return unsub;
   });
-
   // rebuild fuse whenever history changes (history identity)
   $effect(() => {
     if (history && history.length > 0) {
@@ -43,7 +37,6 @@ https://svelte.dev/e/js_parse_error -->
       fuse = undefined;
     }
   });
-
   // derived results: always return an array
   let results = $derived.by((): HistoryItem[] => {
     // dependencies
@@ -58,7 +51,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <div class="container mx-auto px-4">
   <input
     aria-label="Search AI history..."
@@ -71,13 +63,13 @@ https://svelte.dev/e/js_parse_error -->
     {#each results ?? [] as item (item.timestamp ?? item.prompt)}
       <li class="container mx-auto px-4">
         <div class="container mx-auto px-4">
-          {String((item as { prompt?: unknown }).prompt ?? '')}
+          {String((item as { prompt?: any }).prompt ?? '')}
         </div>
         <div class="container mx-auto px-4">
-          {String((item as { response?: unknown }).response ?? '')}
+          {String((item as { response?: any }).response ?? '')}
         </div>
         <div class="container mx-auto px-4">
-          {String((item as { timestamp?: unknown }).timestamp ?? '')}
+          {String((item as { timestamp?: any }).timestamp ?? '')}
         </div>
       </li>
     {/each}

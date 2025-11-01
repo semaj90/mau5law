@@ -6,7 +6,7 @@ type MinioFile = {
   name: string;
   size?: number | null;
   // include index signature only if other dynamic props are expected:
-  // [key: string]: unknown;
+  // [key: string]: any;
 };
 
 /**

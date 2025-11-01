@@ -4,7 +4,6 @@
  */
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
@@ -16,7 +15,7 @@ export interface ApiResponse<T = unknown> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: unknown;
+  details?: any;
 }
 /**
  * Create a successful API response
@@ -34,7 +33,7 @@ export function apiSuccess<T>(data: T, message?: string, requestId?: string) {
 /**
  * Create an error API response
  */
-export function apiError(message: string, status: number = 400, code?: string, details?: unknown, requestId?: string) {
+export function apiError(message: string, status: number = 400, code?: string, details?: any, requestId?: string) {
   const response: ApiResponse = {
     success: false,
     error: message,
@@ -49,7 +48,7 @@ export function apiError(message: string, status: number = 400, code?: string, d
 /**
  * Validate request body against required fields
  */
-export function validateRequest(body: unknown, requiredFields: string[]): string | null {
+export function validateRequest(body: any, requiredFields: string[]): string | null {
   if (typeof body !== 'object' || body === null) {
     return 'Invalid request body';
   }
@@ -91,17 +90,16 @@ export function withErrorHandling<T extends RequestEvent>(handler: (_event: T) =
     const requestId = getRequestId(_event);
     try {
       return await handler(_event);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       // Safely extract: 'code' if it exists and is a string
       const errorCode =
-        error instanceof Object && 'code' in error && typeof (error as { code: unknown }).code === 'string'
+        error instanceof Object && 'code' in error && typeof (error as { code: any }).code === 'string'
           ? (error as { code: string }).code
           : 'INTERNAL_ERROR';
       // Only include stack in development mode for Error instances
       const errorStack = error instanceof Error && process.env.NODE_ENV === 'development' ? error.stack : undefined;
-
       console.error(`API Error [${requestId}]:`, error);
       return apiError(
         errorMessage,

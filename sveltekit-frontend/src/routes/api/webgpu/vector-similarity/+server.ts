@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
             // explicit failure if user requested webgpu only
             throw new Error('WebGPU not available');
           }
-        } catch (webgpuErr: unknown) {
+        } catch (webgpuErr: any) {
           // For auto, fall through to try webgl then CPU; for explicit webgpu, rethrow
           if (mode === 'webgpu') throw webgpuErr;
         }
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } else {
             throw new Error('WebGL compute function not available');
           }
-        } catch (webglErr: unknown) {
+        } catch (webglErr: any) {
           if (mode === 'webgl') throw webglErr;
         }
       }
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         actualMode = 'cpu';
       }
-    } catch (computeError: unknown) {
+    } catch (computeError: any) {
       // Ultimate fallback to CPU if anything unexpected happens
       try {
         if (typeof polyfill.computeSimilarityCPU === 'function') {
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const hasPerf = typeof performance !== 'undefined' && typeof performance.now === 'function';
     const executionTime = hasPerf ? performance.now() - startTime : Date.now() - startTime;
     const errMsg = error instanceof Error ? error.message : String(error);

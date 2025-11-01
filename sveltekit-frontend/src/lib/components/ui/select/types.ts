@@ -16,7 +16,7 @@ export interface SelectItemProps extends SelectCommonProps {
   selected?: boolean;
 }
 export interface SelectProps {
-  value?: unknown;
+  value?: any;
   onValueChange?: (_value: any) => void;
   disabled?: boolean;
   class_?: string;

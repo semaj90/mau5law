@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   let ocrResults: OCRResult[] = ocrResultsProp ?? [];
 
   // simple boolean (avoid $state rune to prevent migration parse issues)
-  let isAnalyzing = false;
+  let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
 
@@ -82,13 +82,13 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Analysis failed:', error);
       alert('Analysis failed. Please try again.');
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   async function extractEntitiesFromText(): Promise<any[]> {
     const entities: any[] = [];
     for (const result of ocrResults) {
-      const text = String((result as { text?: unknown }).text || '');
+      const text = String((result as { text?: any }).text || '');
       // Mock entity extraction
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   async function identifyKeyFacts(): Promise<string[]> {
     const facts: string[] = [];
     for (const result of ocrResults) {
-      const text = String((result as { text?: unknown }).text || '');
+      const text = String((result as { text?: any }).text || '');
       const sentences = text.split(/(?<=[.?!])\s+/).filter((s) => s.trim().length > 20);
       const factIndicators = [
         'defendant', 'plaintiff', 'contract', 'breach', 'damages', 'evidence',
@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
   async function analyzeLegalIssues(): Promise<string[]> {
     const issues: string[] = [];
     const combinedText = ocrResults
-      .map((r) => String((r as { text?: unknown }).text || ''))
+      .map((r) => String((r as { text?: any }).text || ''))
       .join(' ')
       .toLowerCase();
     const issuePatterns = [
@@ -232,8 +232,7 @@ https://svelte.dev/e/js_parse_error -->
           🤖 Start Analysis
         </Button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Analysis Progress -->
   {#if isAnalyzing}
     <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
@@ -250,8 +249,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <p class="text-sm text-blue-700">{$currentAnalysisStep}</p>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Extracted Entities -->
   <div class="mb-8">
     <h3 class="text-lg font-medium text-gray-900 mb-4">Extracted Entities</h3>
@@ -340,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Select legal issue category</option>
-              {#each legalIssueCategories as category}
+              {#each Array.isArray(legalIssueCategories) ? legalIssueCategories : [] as category}
                 <option value={category}>{category}</option>
               {/each}
             </select>
@@ -362,7 +360,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mb-8">
       <h3 class="text-lg font-medium text-gray-900 mb-4">Relevant Precedents</h3>
       <div class="space-y-3">
-        {#each formData.precedents as precedent}
+        {#each Array.isArray(formData.precedents) ? formData.precedents : [] as precedent}
           <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transition:fade>
             <div class="flex items-start justify-between">
               <div class="flex-1">
@@ -376,8 +374,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button

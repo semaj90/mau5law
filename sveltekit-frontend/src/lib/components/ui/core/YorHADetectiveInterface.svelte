@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
-  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits.svelte'';
   interface ChatMessage {
     id: string;
     sender: 'assistant' | 'detective' | 'system';
@@ -77,7 +77,6 @@
   });
   async function sendMessage() {
     if (!currentInput.trim() || isTyping) return;
-
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       sender: 'detective',
@@ -87,7 +86,6 @@
     messages = [...messages, userMessage];
     const messageContent = currentInput;
     currentInput = '';
-
     // Start typing indicator
     isTyping = true;
     const typingMessage: ChatMessage = {
@@ -98,7 +96,6 @@
       isTyping: true,
     };
     messages = [...messages, typingMessage];
-
     try {
       // Call real API endpoint
       const response = await fetch('/api/yorha/chat', {
@@ -109,14 +106,11 @@
           sessionId,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-
       // Remove typing indicator
       messages = messages.filter(m => m.id !== 'typing');
-
       // Create AI response message
       const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -125,69 +119,57 @@
         timestamp: currentTime + ':' + (new Date().getSeconds() + 2).toString().padStart(2, '0'),
       };
       messages = [...messages, aiMessage];
-
       // Handle SSE stream
       if (response.body) {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
-
         try {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-
             buffer += decoder.decode(value, { stream: true });
-
             // Process SSE events
             let sepIndex: number;
             while ((sepIndex = buffer.indexOf('\n\n')) !== -1) {
               const packet = buffer.slice(0, sepIndex);
               buffer = buffer.slice(sepIndex + 2);
-
               const dataLines = packet
                 .split(/\r?\n/)
                 .filter(line => line.startsWith('data:'))
                 .map(line => line.replace(/^data:\s*/, ''))
                 .join('\n');
-
               if (!dataLines || dataLines === '[DONE]') {
-                isTyping = false;
+                isTyping = $state(false);
                 break;
               }
-
               try {
                 const eventData = JSON.parse(dataLines);
-
                 switch (eventData.type) {
                   case 'connection':
                     sessionId = eventData.sessionId;
                     isTestMode = eventData.isTestMode;
                     break;
-
                   case 'token':
                     if (eventData.fullResponse) {
                       aiMessage.content = eventData.fullResponse;
                       messages = [...messages];
                     }
                     break;
-
                   case 'complete':
                     aiMessage.content = eventData.fullResponse;
                     messages = [...messages];
-                    isTyping = false;
+                    isTyping = $state(false);
                     break;
-
                   case 'error':
                     console.error('Stream error:', eventData.error);
-                    isTyping = false;
+                    isTyping = $state(false);
                     break;
                 }
               } catch (parseError) {
                 console.warn('Failed to parse SSE:', dataLines);
               }
             }
-
             if (!isTyping) break;
           }
         } catch (streamError) {
@@ -200,10 +182,8 @@
       }
     } catch (error) {
       console.error('Send message error:', error);
-
       // Remove typing indicator and show error
       messages = messages.filter(m => m.id !== 'typing');
-
       const errorMessage: ChatMessage = {
         id: crypto.randomUUID(),
         sender: 'assistant',
@@ -211,7 +191,7 @@
         timestamp: currentTime + ':' + new Date().getSeconds().toString().padStart(2, '0'),
       };
       messages = [...messages, errorMessage];
-      isTyping = false;
+      isTyping = $state(false);
     }
   }
   function clearChat() {
@@ -231,7 +211,7 @@
       },
     ];
     sessionId = null;
-    isTestMode = false;
+    isTestMode = $state(false);
   }
   function selectSidebarItem(index: number) {
     sidebarItems = sidebarItems.map((item, i) => ({
@@ -245,7 +225,6 @@
     }
   }
 </script>
-
 <div class="yorha-detective-interface">
   <!-- Sidebar Navigation -->
   <div class="sidebar">
@@ -388,7 +367,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .yorha-detective-interface {
     display: flex;
@@ -790,5 +768,3 @@
     background: #00ff41;
   }
 </style>
-
-

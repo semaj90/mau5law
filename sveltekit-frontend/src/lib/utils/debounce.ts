@@ -2,13 +2,13 @@
  * Debounce utility for performance optimization
  * Prevents excessive function calls during rapid user input
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
+export function debounce<T extends (...args: any[]) => unknown>(
   func: T,
   wait: number,
   immediate?: boolean
 ): (...args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  return function executedFunction(this: unknown, ...args: Parameters<T>) {
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     const later = () => {
       timeout = null;
       if (!immediate) func.apply(this, args);
@@ -23,12 +23,12 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 /**
  * Throttle utility - limits function calls to once per specified interval
  */
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: any[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle = false;
-  return function executedFunction(this: unknown, ...args: Parameters<T>) {
+  let inThrottle = $state(false);
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
@@ -40,9 +40,9 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 /**
  * RequestAnimationFrame-based throttle for smooth animations
  */
-export function rafThrottle<T extends (...args: unknown[]) => unknown>(func: T): (...args: Parameters<T>) => void {
+export function rafThrottle<T extends (...args: any[]) => unknown>(func: T): (...args: Parameters<T>) => void {
   let rafId: number | null = null;
-  return function executedFunction(this: unknown, ...args: Parameters<T>) {
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     if (rafId !== null) return;
     rafId = requestAnimationFrame(() => {
       func.apply(this, args);

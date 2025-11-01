@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
       return computed;
     })();
-    const l1Cached = false; // L1 cache is bypassed as withCache is unavailable.
+    const l1Cached = $state(false); // L1 cache is bypassed as withCache is unavailable.
 
     // Ensure cached flag reflects L1 or remote caches
     const payload: EnhancedRAGResponse = { ...value, cached: Boolean(value.cached || l1Cached) };

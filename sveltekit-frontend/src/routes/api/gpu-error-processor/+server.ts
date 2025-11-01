@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json(await handleStatsRequest());
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('GPU Error Processor API error:', error);
     return json(
@@ -228,7 +228,7 @@ async function handleErrorProcessing(request: Request): Promise<ErrorProcessingR
       recommendations: mockResults.recommendations,
       timestamp: new Date().toISOString(),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error processing failed:', error);
     throw new Error(`Processing failed: ${error instanceof Error ? error.message : String(error)}`); // Re-throw to be caught by outer POST handler
   }
@@ -256,7 +256,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
       const ollamaResponse = await fetch('http://localhost:11434/api/tags');
       testResults.ollama = ollamaResponse.ok;
     } catch {
-      testResults.ollama = false;
+      testResults.ollama = $state(false);
     }
     // Test API endpoints
     testResults.apiEndpoints = true;
@@ -267,7 +267,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
       status: allPassed ? 'All tests passed' : 'Some tests failed',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     return json({
       success: false,

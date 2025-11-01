@@ -1,9 +1,7 @@
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
 import { logger } from './logger.js';
-
 export type JsonObject = Record<string, unknown>;
-
 export interface OllamaModel {
   name: string;
   size: string;
@@ -43,13 +41,11 @@ export interface OllamaResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 // Define specific interfaces for chat messages and responses
 export interface OllamaChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
-
 export interface OllamaChatResponse {
   model: string;
   created_at: string;
@@ -62,7 +58,6 @@ export interface OllamaChatResponse {
   eval_count?: number;
   eval_duration?: number;
 }
-
 class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
@@ -86,7 +81,7 @@ class OllamaLocalLLM {
       // Try to pull legal-specific models if not present
       await this.ensureLegalModels();
       logger.info('[OllamaLLM] Ollama service initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Initialization failed:', error);
     }
   }
@@ -97,7 +92,7 @@ class OllamaLocalLLM {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       return response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Check availability failed:', error); // Added logging for clarity
       return false;
     }
@@ -117,7 +112,7 @@ class OllamaLocalLLM {
         this.availableModels.set(model.name, model);
         logger.info(`[OllamaLLM] Available model: ${model.name} (${model.size})`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Failed to load models:', error);
     }
   }
@@ -178,11 +173,10 @@ TEMPLATE: """{{ if .System }}<|system|>
         const errorText = await response.text();
         throw new Error(`Failed to create model: ${response.statusText} - ${errorText}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[OllamaLLM] Failed to create legal model ${targetName}:`, error);
     }
   }
-
   /**
    * Select the best model from available options
    */
@@ -198,7 +192,6 @@ TEMPLATE: """{{ if .System }}<|system|>
     const firstModel = this.availableModels.keys().next().value;
     return firstModel || 'gemma3-legal';
   }
-
   /**
    * Generate completion using local LLM
    */
@@ -227,7 +220,7 @@ TEMPLATE: """{{ if .System }}<|system|>
         lastUsed: Date.now(),
       });
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Generation failed:', error);
       return null;
     }
@@ -259,7 +252,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      let done = false; // Initialize done flag
+      let done = $state(false); // Initialize done flag
       // Loop until the stream is done, as indicated by `reader.read()`
       while (!done) {
         // Use the done flag in the loop condition
@@ -280,13 +273,13 @@ TEMPLATE: """{{ if .System }}<|system|>
             if (data.done) {
               onComplete(fullResponse);
             }
-          } catch (e: unknown) {
+          } catch (e: any) {
             // Ignore parsing errors, as partial lines might occur
             logger.debug('[OllamaLLM] Error parsing stream chunk:', e);
           }
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Stream generation failed:', error);
       throw error;
     }
@@ -311,7 +304,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       }
       const result: { embedding: number[] } = await response.json(); // Type assertion for result
       return result.embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Embedding generation failed:', error);
       return null;
     }
@@ -336,7 +329,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       }
       const result = await response.json();
       return result.message?.content || null;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Chat completion failed:', error);
       return null;
     }
@@ -388,11 +381,10 @@ TEMPLATE: """{{ if .System }}<|system|>
         }
         return result.response;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('[OllamaLLM] Legal document processing failed:', error);
     }
     return null;
   }
 }
-
 export default OllamaLocalLLM;

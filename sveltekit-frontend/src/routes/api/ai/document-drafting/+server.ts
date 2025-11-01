@@ -32,7 +32,7 @@ export interface DocumentDraftingRequest {
     type?: 'individual' | 'corporation' | 'government';
   }[];
   keyTerms?: {
-    [key: string]: unknown;
+    [key: string]: any;
   };
   templateId?: string;
   userRole?: string;
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       recommendations: generateDraftingRecommendations(body, assistance),
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document drafting API error:', error);
     const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error';
     return json(
@@ -428,7 +428,7 @@ Provide specific language suggestions and alternatives for key sections:`;
     const aiResult = await processAIAssistantQuery(prompt);
     // Ensure we return a string (the helper may return an object in some implementations)
     return typeof aiResult === 'string' ? aiResult : JSON.stringify(aiResult);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('AI content suggestions failed:', error);
     return `Content Suggestions for ${request.documentType}:
 Key Language Recommendations:

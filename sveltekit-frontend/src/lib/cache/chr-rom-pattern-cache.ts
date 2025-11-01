@@ -444,7 +444,6 @@ export class CHRROMPatternCache {
   getAllPatterns(): CHRROMPattern[] {
     return Array.from(this.cache.patterns.values());
   }
-
   /**
    * Clear all patterns from the cache
    */
@@ -465,7 +464,6 @@ export class CHRROMPatternCache {
     }
     console.log('🧹 Cleared all CHR-ROM patterns from cache and Redis');
   }
-
   /**
    * Get cache metrics
    */
@@ -478,7 +476,6 @@ export class CHRROMPatternCache {
         this.cache.metrics.totalRequests > 0 ? this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0,
     };
   }
-
   /**
    * Clear specific bank
    */
@@ -494,7 +491,6 @@ export class CHRROMPatternCache {
     this.cache.metrics.bankUtilization[bankId] = 0;
     console.log(`🧹 Cleared CHR-ROM bank ${bankId}`);
   }
-
   /**
    * Dispose cache and connections
    */
@@ -514,5 +510,4 @@ export class CHRROMPatternCache {
     console.log('🗑️ CHR-ROM Pattern Cache disposed');
   }
 }
-
 export const chrRomPatternCache = new CHRROMPatternCache();

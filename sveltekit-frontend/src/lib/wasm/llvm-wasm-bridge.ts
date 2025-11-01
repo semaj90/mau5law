@@ -42,7 +42,7 @@ export interface LLVMModule {
 export class LLVMWASMBridge {
   private modules = new Map<string, LLVMModule>();
   private wasmRuntime: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Legal-specific C++ modules
   private legalModules = {
     textProcessor: {
@@ -602,11 +602,11 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         module.memory = null;
       }
       module.exports = {};
-      module.isLoaded = false;
+      module.isLoaded = $state(false);
     }
     this.modules.clear();
     this.wasmRuntime = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 LLVM-WASM Bridge disposed');
   }
 }

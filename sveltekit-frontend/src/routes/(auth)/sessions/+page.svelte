@@ -32,7 +32,7 @@
       message = 'Failed to load sessions';
       messageType = 'error';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 

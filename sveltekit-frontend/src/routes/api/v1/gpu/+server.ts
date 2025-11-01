@@ -6,12 +6,12 @@ type GPURequestBody = {
   service: string;
   operation: string;
   data: number[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
-type ErrorBody = { message: string; details?: unknown };
+type ErrorBody = { message: string; details?: any };
 
-function isGPURequestBody(body: unknown): body is GPURequestBody {
+function isGPURequestBody(body: any): body is GPURequestBody {
   if (typeof body !== 'object' || body === null) return false;
   const obj = body as Record<string, unknown>;
   if (typeof obj.service !== 'string' || typeof obj.operation !== 'string') return false;
@@ -19,7 +19,7 @@ function isGPURequestBody(body: unknown): body is GPURequestBody {
   return obj.data.every(n => typeof n === 'number');
 }
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   if (err instanceof Error) return err.message;
   try {
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processing_ms: 5,
       gpu_utilized: false,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('GPU proxy error:', getErrorMessage(err));
     const body: ErrorBody = { message: 'GPU proxy failed', details: getErrorMessage(err) };
     return error(500, body);

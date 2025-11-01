@@ -62,7 +62,7 @@ export interface AgenticResponse extends InferenceResponse {
   functionCalls: { // Made non-optional, will always be an array (possibly empty)
     name: string;
     arguments: Record<string, unknown>;
-    result?: unknown;
+    result?: any;
   }[];
   enhancedContext?: string;
 }
@@ -103,7 +103,7 @@ export class AIServiceOrchestrator {
       await ollamaClient.healthCheck();
       this.providers.set('ollama', ollamaClient as AIProvider); // Cast to AIProvider
       console.log(`✅ Ollama registered (PRIMARY) - ${AI_CONFIG.ollama.models.legal}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Ollama unavailable:', (error as Error).message);
     }
 
@@ -119,7 +119,7 @@ export class AIServiceOrchestrator {
         await tritonClient.initialize();
         this.providers.set('tensorrt', tritonClient);
         console.log('✅ TensorRT-Triton registered (PERFORMANCE)');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('⚠️ TensorRT-Triton unavailable:', (error as Error).message);
       }
     }
@@ -129,7 +129,7 @@ export class AIServiceOrchestrator {
       try {
         // vLLM client would go here
         console.log('✅ vLLM registered (TERTIARY)');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('⚠️ vLLM unavailable:', (error as Error).message);
       }
     }
@@ -139,7 +139,7 @@ export class AIServiceOrchestrator {
       try {
         // OpenAI client would go here
         console.log('✅ OpenAI registered (FALLBACK)');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('⚠️ OpenAI unavailable:', (error as Error).message);
       }
     }
@@ -254,7 +254,7 @@ export class AIServiceOrchestrator {
           model: provider.modelName
         }
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Inference failed with ${this.currentProvider}:`, error);
 
       // Update circuit breaker state
@@ -329,7 +329,7 @@ export class AIServiceOrchestrator {
         this.mcpDocsCache.set(libraryId, doc);
         // Push enriched doc to the result array
         docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error(`❌ Failed to fetch MCP docs for ${libraryId}:`, (error as Error).message);
       }
     }
@@ -362,7 +362,7 @@ export class AIServiceOrchestrator {
             result: undefined // Will be executed by caller
           });
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error(`❌ Failed to parse function call:`, (error as Error).message);
       }
     }

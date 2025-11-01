@@ -6,13 +6,12 @@ type LokiCollection<T> = {
 	// Loki's update() can return the updated document(s) or a number (changes) in some typings; accept all common possibilities
 	update: (doc: T) => T | T[] | number | void;
 	// Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape
-	find: (query?: Partial<T> | Record<string, unknown>, ...args: unknown[]) => T[];
+	find: (query?: Partial<T> | Record<string, unknown>, ...args: any[]) => T[];
 	// Loki's findOne may return T | null | undefined depending on typings/runtime
 	findOne: (query?: Partial<T> | Record<string, unknown>) => T | null | undefined;
 	remove?: (doc: T) => void;
 	// add any other minimal methods you rely on
 };
-
 // --- Added types to fix TS errors ---
 /**
  * Minimal Candidate shape used by rerank-client.
@@ -24,23 +23,20 @@ interface Candidate {
   rerankedScore?: number;
   metadata?: Record<string, unknown>;
   // allow extra properties produced by the reranker
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 /** Minimal request options shape for the rerank API */
 interface RerankRequest {
   options?: {
     topK?: number;
     model?: string;
     // additional optional flags
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 // --- End added types ---
-
 let db: Loki | null = null;
 let candidatesCollection: LokiCollection<Candidate> | null = null;
-
 if (browser) {
   db = new Loki('rerank_cache.db'); // Use a distinct database name
   candidatesCollection = db.addCollection<Candidate>('rerank_candidates', { unique: ['id', 'rerankedScore'] }); // Ensure unique by id and score for reranked results
@@ -50,7 +46,6 @@ if (browser) {
     else console.log('Loki.js database loaded.');
   });
 }
-
 /**
  * Lightweight WebGPU fallback reranker.
  * This is a deterministic, dependency-free local scorer used when the server reranker fails.
@@ -64,31 +59,25 @@ async function webgpuRerank(
     .toLowerCase()
     .split(/\s+/)
     .filter(Boolean);
-
   const scored = (candidates as Candidate[]).map((c) => {
     const textFromMeta =
       (c.metadata && (c.metadata['text'] as string)) ||
       (c['text'] as string) ||
       '';
-
     const text = (textFromMeta || '').toLowerCase();
     let overlap = 0;
     for (const t of qTokens) {
       if (text.includes(t)) overlap++;
     }
-
     const base = typeof c.score === 'number' ? c.score : 0;
     // Combine base score and overlap: weighted heuristic
     const rerankedScore = base * 0.7 + overlap * 0.3;
     return { ...c, rerankedScore };
   });
-
   // simple async boundary to mimic heavier computation
   await Promise.resolve();
-
   return scored.sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
 }
-
 export async function rerank(
   query: string,
   candidates: Candidate[],
@@ -96,7 +85,6 @@ export async function rerank(
 ): Promise<Candidate[]> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts
   let cacheKey: string | undefined;
-
   if (browser && candidatesCollection) {
     // Check if all candidates for this query are already cached
     // This is a simplified cache check. A more robust one would involve hashing the query and candidate IDs.
@@ -109,7 +97,6 @@ export async function rerank(
         .sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
     }
   }
-
   const res = await fetch('/api/rerank', {
     method: 'POST',
     headers: {
@@ -117,7 +104,6 @@ export async function rerank(
     },
     body: JSON.stringify({ query, candidates, options }),
   });
-
   let reranked: Candidate[] = [];
   if (!res.ok) {
     console.error('Rerank API call failed:', res.statusText);
@@ -132,7 +118,6 @@ export async function rerank(
   } else {
     reranked = await res.json();
   }
-
   if (browser) {
     try {
       // refine locally without unsafe casts
@@ -142,7 +127,6 @@ export async function rerank(
       console.warn('Local WebGPU rerank refinement failed:', err);
     }
   }
-
   if (browser && candidatesCollection && cacheKey) {
     // Cache the reranked results
     reranked.forEach(candidate => {
@@ -159,6 +143,5 @@ export async function rerank(
     });
     console.log('Cache set for rerank:', cacheKey);
   }
-
   return reranked;
 }

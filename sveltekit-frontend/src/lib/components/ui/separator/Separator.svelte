@@ -6,7 +6,6 @@
   }
   let { orientation = 'horizontal', decorative = true, class: className = '', ...restProps }: Props = $props();
 </script>
-
 <div
   role={decorative ? 'none' : 'separator'}
   aria-orientation={orientation}

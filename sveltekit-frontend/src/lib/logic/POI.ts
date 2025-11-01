@@ -36,7 +36,7 @@ export class POI {
   threatLevel: Writable<string>;
   status: Writable<string>;
   tags: Writable<string[]>;
-  isDirty: boolean = false;
+  isDirty: boolean = $state(false);
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
@@ -115,6 +115,6 @@ export class POI {
   }
   // Reset dirty flag after successful save
   markClean() {
-    this.isDirty = false;
+    this.isDirty = $state(false);
   }
 }

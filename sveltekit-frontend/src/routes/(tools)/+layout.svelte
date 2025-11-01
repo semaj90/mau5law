@@ -33,7 +33,7 @@
 
     <!-- Tools Navigation -->
     <nav class="tools-nav">
-      {#each toolsRoutes as route}
+      {#each Array.isArray(toolsRoutes) ? toolsRoutes : [] as route}
         <a
           href={route.href}
           class="tools-nav-item"

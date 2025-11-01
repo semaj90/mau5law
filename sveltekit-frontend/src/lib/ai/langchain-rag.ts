@@ -15,19 +15,17 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 // import { QdrantClient } from "@qdrant/js-client-rest"
 // Temporary type placeholders until proper imports are available
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
-
 // Replace loose any with a small typed interface for the parts we use
 interface QdrantCollectionInfo {
   result?: {
     points_count?: number;
   } | null;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 interface QdrantClient {
   url?: string;
   getCollection(collectionName: string): Promise<QdrantCollectionInfo>;
 }
-
 // --- REPLACED: previously `type QdrantVectorStore = any;` ---
 // Provide a minimal typed interface for the vector store surface we use.
 interface QdrantVectorStore {
@@ -36,19 +34,15 @@ interface QdrantVectorStore {
   collectionName?: string;
   contentPayloadKey?: string;
   metadataPayloadKey?: string;
-
   // Add documents and return their IDs
   addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
-
   // Perform a similarity search, returning documents
   similaritySearch(query: string, k: number): Promise<LangChainDocumentType[]>;
-
   // Provide a retriever adapter used later in the code
   asRetriever(opts: { k?: number; filter?: MetadataFilter }): {
     getRelevantDocuments(query: string): Promise<LangChainDocumentType[]>;
   };
 }
-
 // Import types
 interface LegalDocumentMetadata {
   id?: string;
@@ -59,7 +53,6 @@ interface LegalDocumentMetadata {
   createdAt?: string;
   [key: string]: any;
 }
-
 export interface LegalRAGConfig {
   qdrantUrl: string;
   ollamaGenerationUrl: string;
@@ -94,7 +87,6 @@ export interface RAGResult {
     semanticProcessingTime?: number; // Processing time from semantic search API
   };
 }
-
 /**
  * Advanced Legal RAG System with LangChain.js
  * Implements sophisticated retrieval and generation patterns for legal document analysis
@@ -107,13 +99,11 @@ export class LegalRAGService {
   private textSplitter: RecursiveCharacterTextSplitter;
   private config: LegalRAGConfig;
   private vectorStoreInitPromise: Promise<void> | null = null;
-
   // --- NEW: lightweight runtime statistics for dynamic getSystemStats() ---
   private queryCount = 0;
   private totalQueryTime = 0; // ms
   private totalIndexedChunks = 0;
   private totalIndexBytes = 0; // approximate bytes (sum of chunk lengths)
-
   // Legal-specific prompt templates
   private readonly LEGAL_PROMPTS = {
     STANDARD_RAG: ChatPromptTemplate.fromTemplate(`
@@ -192,7 +182,6 @@ Only return the queries, one per line.`),
         return { result: { points_count: 0 } };
       },
     } as QdrantClient;
-
     // Initialize text splitter optimized for legal documents
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1200, // Larger chunks for legal context
@@ -245,10 +234,9 @@ Only return the queries, one per line.`),
           };
         },
       } as QdrantVectorStore;
-
       this.vectorStore = mockStore;
       console.log('✅ Legal RAG vector store initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize vector store:', msg);
       throw error instanceof Error ? error : new Error(msg);
@@ -362,17 +350,14 @@ Only return the queries, one per line.`),
           console.warn('Enhanced semantic search failed, falling back to traditional RAG:', error);
         }
       }
-
       // Fallback to traditional LangChain RAG if enhanced semantic search fails
       await this.ensureVectorStoreInitialized();
-
       // Create retriever with legal-specific filtering
       // Use the strongly-typed QdrantVectorStore.asRetriever to avoid `any`
       const retriever = (this.vectorStore as QdrantVectorStore).asRetriever({
         k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
         filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
       });
-
       // Use MultiQueryRetriever for thinking mode
       // TODO: Fix MultiQueryRetriever import issue
       // if (thinkingMode) {
@@ -403,12 +388,10 @@ Only return the queries, one per line.`),
       } else if (verbose) {
         promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
       }
-
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
         formatDocumentsAsString,
       ]);
-
       const ragChain = RunnableSequence.from([
         RunnableMap.from({
           context: contextRetriever,
@@ -418,18 +401,16 @@ Only return the queries, one per line.`),
         this.llm,
         new StringOutputParser(),
       ]);
-
       const [answer, retrievedDocs] = await Promise.all([
-        ragChain.invoke(question).catch((error: unknown) => {
+        ragChain.invoke(question).catch((error: any) => {
           console.warn('RAG chain error:', error);
           return 'Unable to generate response due to processing error.';
         }),
-        retriever.getRelevantDocuments(question).catch((error: unknown) => {
+        retriever.getRelevantDocuments(question).catch((error: any) => {
           console.warn('Document retrieval error:', error);
           return [];
         }),
       ]);
-
       const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
       const processingTime = Date.now() - startTime;
       // record metrics for fallback query
@@ -446,7 +427,7 @@ Only return the queries, one per line.`),
           usedCompression: useCompression,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Error in RAG query:', msg);
       // record metrics even on error
@@ -495,7 +476,7 @@ Only return the queries, one per line.`),
       }
       console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
       return ids || [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Error indexing document:', msg);
       throw new Error(`Document indexing failed: ${msg}`);
@@ -575,7 +556,6 @@ Only return the queries, one per line.`),
       return Math.min(1.0, doc.pageContent.length / 1000);
     });
     const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-
     // Use threshold to penalize low-confidence retrievals.
     // If the average is below the threshold, scale it down proportionally to emphasize low confidence.
     let finalConfidence = averageScore;
@@ -584,7 +564,6 @@ Only return the queries, one per line.`),
         finalConfidence = averageScore * (averageScore / threshold);
       }
     }
-
     // Clamp to valid range [0, 1]
     return Math.max(0, Math.min(1, finalConfidence));
   }
@@ -602,7 +581,7 @@ Only return the queries, one per line.`),
         collectionExists,
         documentsCount,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Health check failed:', msg);
       return {
@@ -614,7 +593,6 @@ Only return the queries, one per line.`),
       };
     }
   }
-
   /**
    * Upload and index a document file with real file processing
    */
@@ -647,18 +625,15 @@ Only return the queries, one per line.`),
           fileSize = fileBuffer.length;
           const fileExtension = path.extname(filePath).toLowerCase();
           documentContent = await this.extractTextFromBuffer(fileBuffer, fileExtension);
-        } catch (error: unknown) {
+        } catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new Error(`Failed to read file: ${msg}`);
         }
       }
-
       if (!documentContent || documentContent.trim().length === 0) {
         throw new Error('No readable content found in the document');
       }
-
       const documentId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-
       const metadata: LegalDocumentMetadata = {
         id: documentId,
         title: options?.title || this.generateDocumentTitle(documentContent, fileName),
@@ -690,10 +665,8 @@ Only return the queries, one per line.`),
         filePath,
         caseId: options?.caseId,
       };
-
       const chunkIds = await this.indexDocument(documentContent, metadata);
       const processingTime = Date.now() - startTime;
-
       if (chunkIds.length > 0) {
         try {
           await this.notifySemanticSearchAPI(documentId, {
@@ -706,7 +679,6 @@ Only return the queries, one per line.`),
           console.warn('Failed to notify semantic search API:', error);
         }
       }
-
       return {
         success: true,
         documentId,
@@ -718,7 +690,7 @@ Only return the queries, one per line.`),
           chunksCreated: chunkIds.length,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       return {
         success: false,
@@ -796,26 +768,21 @@ Only return the queries, one per line.`),
    */ private async extractTextFromPDF(file: File): Promise<string> {
     // Local small types to avoid `any`
     type PDFTextItem = { str?: string };
-
     // Minimal text content shape returned by getTextContent()
     type PDFTextContent = { items: PDFTextItem[] };
-
     // Minimal page proxy used to read text content
     interface PDFPageProxy {
       getTextContent(): Promise<PDFTextContent>;
     }
-
     // Minimal document proxy exposing page count and page accessor
     interface PDFDocumentProxy {
       numPages?: number;
       getPage(pageNumber: number): Promise<PDFPageProxy>;
     }
-
     // Loading task that may expose a promise for the document (pdfjs returns either a LoadingTask or the document)
     interface PDFLoadingTask {
       promise?: Promise<PDFDocumentProxy>;
     }
-
     // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
     type PDFJSModule = {
       default?: {
@@ -825,7 +792,6 @@ Only return the queries, one per line.`),
       getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
       GlobalWorkerOptions?: { workerSrc?: string };
     };
-
     try {
       // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
       // Replace `any` with a narrow local type capturing only the members we use.
@@ -841,9 +807,7 @@ Only return the queries, one per line.`),
       if (!pdfjsModule) {
         throw new Error('PDF.js not found. Install pdfjs-dist (e.g. npm i pdfjs-dist).');
       }
-
       const pdfjs = pdfjsModule?.default ?? pdfjsModule;
-
       // Attempt to set workerSrc if available to avoid worker-loading issues in browser
       try {
         if (pdfjs?.GlobalWorkerOptions && !pdfjs.GlobalWorkerOptions.workerSrc) {
@@ -854,7 +818,6 @@ Only return the queries, one per line.`),
       } catch {
         // Non-fatal if worker configuration isn't possible in the runtime.
       }
-
       const arrayBuffer = await file.arrayBuffer();
       if (typeof pdfjs.getDocument !== 'function') {
         throw new Error('pdfjs.getDocument is not a function. PDF.js module may be corrupt or incompatible.');
@@ -875,22 +838,19 @@ Only return the queries, one per line.`),
           if (
             maybePromise &&
             typeof maybePromise === 'object' &&
-            typeof (maybePromise as { then?: unknown }).then === 'function'
+            typeof (maybePromise as { then?: any }).then === 'function'
           ) {
             // await the loading task's promise
             return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
           }
         }
-
         // If it looks like a Promise (has a then function), await it.
-        if (typeof task === 'object' && task !== null && typeof (task as { then?: unknown }).then === 'function') {
+        if (typeof task === 'object' && task !== null && typeof (task as { then?: any }).then === 'function') {
           return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
         }
-
         // Otherwise assume it's already a PDFDocumentProxy
         return task as PDFDocumentProxy;
       };
-
       const pdf = await resolvePDFDocument(loadingTask);
       let fullText = '';
       for (let pageNum = 1; pageNum <= (pdf.numPages || 0); pageNum++) {
@@ -900,7 +860,7 @@ Only return the queries, one per line.`),
         fullText += pageText + '\n';
       }
       return fullText.trim();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`PDF extraction failed: ${msg}`);
     }
@@ -918,7 +878,7 @@ Only return the queries, one per line.`),
         return data.text ?? '';
       }
       throw new Error('PDF processing requires pdf-parse library. Please install pdf-parse package.');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`PDF extraction failed: ${msg}`);
     }
@@ -937,7 +897,7 @@ Only return the queries, one per line.`),
         return result.value ?? '';
       }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Word document extraction failed: ${msg}`);
     }
@@ -955,7 +915,7 @@ Only return the queries, one per line.`),
         return result.value ?? '';
       }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Word document extraction failed: ${msg}`);
     }
@@ -1160,13 +1120,11 @@ Only return the queries, one per line.`),
       const health = await this.healthCheck();
       // Use a safe helper that works in both Node and browser without relying on Node types
       const uptimeMs = this.getUptimeMs();
-
       // Return dynamic statistics derived from health check and runtime counters
       const documentCount = health.documentsCount || this.totalIndexedChunks || 0;
       const indexSizeEstimate =
         this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200); // fallback estimate: avg chunk length ≈ 1200 chars
       const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0;
-
       return {
         documentCount,
         queryCount: this.queryCount || 0,
@@ -1176,7 +1134,7 @@ Only return the queries, one per line.`),
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
         uptime: Math.max(0, uptimeMs),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get system stats:', msg);
       return {
@@ -1190,7 +1148,6 @@ Only return the queries, one per line.`),
       };
     }
   }
-
   // Helper: obtain uptime in milliseconds in a cross-environment safe way.
   // Uses globalThis.process.uptime() in Node if available, otherwise falls back to performance.now() in browsers.
   private getUptimeMs(): number {
@@ -1211,7 +1168,6 @@ Only return the queries, one per line.`),
     }
     return 0;
   }
-
   // Added: record lightweight query metrics so calls to this.recordQueryMetrics(...) compile
   private recordQueryMetrics(processingTimeMs: number): void {
     try {
@@ -1223,7 +1179,6 @@ Only return the queries, one per line.`),
     }
   }
 }
-
 // --- MOVED TYPES: place these above the class so they are available when referenced ---
 // Add HealthCheckResult at top-level so class methods can reference it
 type HealthCheckResult = {
@@ -1233,13 +1188,10 @@ type HealthCheckResult = {
   documentsCount: number;
   errorMessage?: string;
 };
-
 type MetadataMatch = { value: string | number | boolean };
 type MetadataCondition = { key: string; match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
-
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
-
 interface UploadOptions {
   caseId?: string;
   documentType?: string;
@@ -1248,29 +1200,24 @@ interface UploadOptions {
   file?: File;
   content?: string;
 }
-
 type ProcessingDetails = {
   fileSize: number;
   extractedLength: number;
   processingTime: number;
   chunksCreated: number;
 };
-
 type UploadResultSuccess = {
   success: true;
   documentId: string;
   chunks: number;
   processingDetails: ProcessingDetails;
 };
-
 type UploadResultFailure = {
   success: false;
   error: string;
   processingDetails: ProcessingDetails;
 };
-
 type UploadResult = UploadResultSuccess | UploadResultFailure;
-
 // Add SystemStats type near the other top-level types
 type SystemStats = {
   documentCount: number;
@@ -1281,7 +1228,6 @@ type SystemStats = {
   indexStatus: 'healthy' | 'degraded' | 'error';
   uptime: number; // ms
 };
-
 // New type: strongly-typed payload for semantic search notifications
 type SemanticSearchDocumentInfo = {
   title: string;
@@ -1290,9 +1236,8 @@ type SemanticSearchDocumentInfo = {
   chunks?: number;
   summary?: string;
   sourceUrl?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 // Add a concrete type for enhanced semantic search results
 type SemanticSearchResult = {
   content?: string;
@@ -1301,9 +1246,8 @@ type SemanticSearchResult = {
   semantic_score?: number | null;
   distance?: number | null;
   document_type?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
   qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',

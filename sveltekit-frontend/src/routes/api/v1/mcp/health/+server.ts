@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
     };
     console.log('✅ MCP Health Check Passed');
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Narrow at runtime and provide a safe string fallback for unknown error shapes
     console.error('❌ MCP Health Check Failed:', error);
     return json(

@@ -2,15 +2,12 @@
   // make TypeScript aware of Svelte's $$restProps (module context for declare)
   declare const $$restProps: Record<string, any>;
 </script>
-
 <script lang="ts">
   // Use namespace import and resolve components at runtime to avoid brittle typings
   import * as BitsUI from 'bits-ui';
   import { cn } from '$lib/utils.js';
-
   // accept a className prop
   export let className: string = '';
-
   // runtime-safe resolution with fallbacks to plain elements
   const RootComp = (BitsUI as any).Root ?? (BitsUI as any).ScrollArea ?? (BitsUI as any).ScrollAreaRoot ?? 'div';
   const ViewportComp =
@@ -24,20 +21,16 @@
     (BitsUI as any).Scrollbar ??
     'div';
   const CornerComp = (BitsUI as any).Corner ?? (BitsUI as any).ScrollAreaCorner ?? 'div';
-
   // build class without reading $$restProps (we forward rest props in markup)
   const mergedClass = cn('relative overflow-hidden', className);
-
   // safely read potential `class` from rest props (cast to any to avoid TS reserved-word issues)
   const restClass = ( ($$restProps as any)?.class ?? '' ) as string;
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
-
 <svelte:component this={RootComp} class={mergedClassWithRest} {...$$restProps}>
   <svelte:component this={ViewportComp} class="h-full w-full rounded-[inherit]">
     <slot />
   </svelte:component>
-
   <svelte:component this={ScrollbarComp} orientation="vertical" />
   <svelte:component this={ScrollbarComp} orientation="horizontal" />
   <svelte:component this={CornerComp} />

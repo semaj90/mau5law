@@ -94,12 +94,12 @@ https://svelte.dev/e/component_invalid_directive -->
       }
       const data = await response.json();
       dashboardData = data.data || ;
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('❌ Failed to load feedback analytics:', err);
       error = err.message || 'Failed to load analytics data';
     } finally {
-      isLoading = false;
-      refreshing = false;
+      isLoading = $state(false);
+      refreshing = $state(false);
     }
   }
   /**
@@ -173,12 +173,12 @@ https://svelte.dev/e/component_invalid_directive -->
       <div class="header-actions">
         <div class="filters">
           <select bind:value={selectedTimeframe} onchange={loadDashboardData} class="filter-select">
-            {#each timeframeOptions as option}
+            {#each Array.isArray(timeframeOptions) ? timeframeOptions : [] as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
           <select bind:value={selectedRatingType} onchange={loadDashboardData} class="filter-select">
-            {#each ratingTypeOptions as option}
+            {#each Array.isArray(ratingTypeOptions) ? ratingTypeOptions : [] as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
@@ -209,8 +209,7 @@ https://svelte.dev/e/component_invalid_directive -->
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>
-    </div>
-  {/if}
+    {/if}
   {#if isLoading}
     <div class="loading-state">
       <div class="loading-spinner"></div>
@@ -291,7 +290,7 @@ https://svelte.dev/e/component_invalid_directive -->
       <section class="breakdown-section" /* transition: removed */}>
         <h2 class="section-title">Rating Breakdown by Category</h2>
         <div class="breakdown-grid">
-          {#each dashboardData.breakdown || [] as category}
+          {#each Array.isArray(dashboardData.breakdown || []) ? dashboardData.breakdown || [] : [] as category}
             <div class="breakdown-nier-bits-card">
               <div class="breakdown-header">
                 <h3 class="breakdown-title">{category.ratingType.replace.toUpperCase()}</h3>
@@ -315,7 +314,7 @@ https://svelte.dev/e/component_invalid_directive -->
                 </div>
               </div>
               <div class="rating-distribution">
-                {#each [5, 4, 3, 2, 1] as rating}
+                {#each Array.isArray([5, 4, 3, 2, 1]) ? [5, 4, 3, 2, 1] : [] as rating}
                   <div class="rating-bar">
                     <span class="rating-label">{rating}★</span>
                     <div class="bar">
@@ -342,7 +341,7 @@ https://svelte.dev/e/component_invalid_directive -->
               AI Insights
             </h2>
             <div class="insights-list">
-              {#each dashboardData.insights || [] as insight}
+              {#each Array.isArray(dashboardData.insights || []) ? dashboardData.insights || [] : [] as insight}
                 <div class="insight-item">
                   <div class="insight-header">
                     <h4 class="insight-title">{insight.title}</h4>
@@ -355,12 +354,11 @@ https://svelte.dev/e/component_invalid_directive -->
                     <div class="insight-recommendations">
                       <strong>Recommendations:</strong>
                       <ul>
-                        {#each insight.recommendations as rec}
+                        {#each Array.isArray(insight.recommendations) ? insight.recommendations : [] as rec}
                           <li>{rec}</li>
                         {/each}
                       </ul>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               {/each}
             </div>
@@ -372,7 +370,7 @@ https://svelte.dev/e/component_invalid_directive -->
               System Recommendations
             </h2>
             <div class="recommendations-list">
-              {#each dashboardData.recommendations || [] as recommendation}
+              {#each Array.isArray(dashboardData.recommendations || []) ? dashboardData.recommendations || [] : [] as recommendation}
                 <div class="recommendation-item">
                   <div class="recommendation-priority priority-{recommendation.priority}">
                     {recommendation.priority.toUpperCase()}
@@ -612,7 +610,7 @@ https://svelte.dev/e/component_invalid_directive -->
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .section-title {
     display: flex;
@@ -705,7 +703,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .bar-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .bar-fill.rating-5 { background: #10b981, }
   .bar-fill.rating-4 { background: #84cc16, }
@@ -887,4 +885,3 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
 </style>
-

@@ -22,7 +22,7 @@ export interface ServiceHealth {
 export class NativeWindowsServiceManager {
   private services: Map<string, WindowsService> = new Map();
   private healthMonitor: NodeJS.Timeout | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     this.initializeServiceDefinitions();
   }
@@ -475,7 +475,7 @@ pause
       this.healthMonitor = null;
     }
     this.services.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🛑 Native Windows Service Manager destroyed');
   }
 }

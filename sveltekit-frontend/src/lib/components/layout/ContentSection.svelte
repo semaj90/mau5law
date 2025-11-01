@@ -88,7 +88,6 @@
     );
   });
 </script>
-
 <section class={cn(sectionClass, className)} {...restProps}>
   {#if title || subtitle}
     <header class={headerClass}>
@@ -121,8 +120,7 @@
            - Admin panels
            - Demo components
       -->
-      <div class="nes-text is-disabled text-center p-8">Content section ready for children components</div>
-    {/if}
+      <div class="nes-text is-disabled text-center p-8">Content section ready for children components{/if}
   </div>
 </section>
 ;

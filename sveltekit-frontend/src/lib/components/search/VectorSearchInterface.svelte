@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { vectorSearchIndex, type SearchQuery, type VectorSearchResult } from '$lib/services/vector-search-index';
-  import ModernButton from '$lib/components/ui/Button.svelte';
+  import { ModernButton } from '$lib/components/ui/Button.svelte';
   let searchQuery = $state('');
   let isSearching = $state(false);
   let searchResults: VectorSearchResult[] = $state([]);
@@ -55,7 +55,7 @@ try {
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   function handleKeydown(_event: KeyboardEvent) {
@@ -85,7 +85,6 @@ try {
     return (score * 100).toFixed(1) + '%';
   }
 </script>
-
 <!-- Vector Search Interface -->
 <div
   class="border-2 border-cyan-400/20 rounded-lg bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 p-6 text-gray-200 font-mono"
@@ -96,8 +95,7 @@ try {
     {#if searchStats}
       <div class="text-sm text-gray-400">
         {searchStats.totalDocuments} documents indexed
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Search Input -->
   <div class="mb-6">
@@ -130,7 +128,7 @@ try {
         bind:value={rankingStrategy}
         class="w-full bg-gray-800/50 border border-cyan-400/30 rounded-lg px-3 py-2 text-gray-200 focus:border-cyan-400 focus:outline-none"
       >
-        {#each rankingStrategies as strategy}
+        {#each Array.isArray(rankingStrategies) ? rankingStrategies : [] as strategy}
           <option value={strategy.value}>{strategy.label}</option>
         {/each}
       </select>
@@ -155,7 +153,7 @@ try {
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Document Types</label>
           <div class="space-y-2">
-            {#each documentTypes as type}
+            {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
               <label class="flex items-center">
                 <input
                   type="checkbox"
@@ -172,7 +170,7 @@ try {
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Jurisdictions</label>
           <div class="space-y-2">
-            {#each jurisdictions as jurisdiction}
+            {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
               <label class="flex items-center">
                 <input
                   type="checkbox"
@@ -189,7 +187,7 @@ try {
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Risk Levels</label>
           <div class="space-y-2">
-            {#each riskLevels as risk}
+            {#each Array.isArray(riskLevels) ? riskLevels : [] as risk}
               <label class="flex items-center">
                 <input
                   type="checkbox"
@@ -217,8 +215,7 @@ try {
           />
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results -->
   {#if searchResults.length > 0}
     <div class="space-y-4">
@@ -258,26 +255,23 @@ try {
               <div>
                 <span class="text-gray-400">Legal Entities:</span>
                 <span class="text-gray-200">{result.metadata.legalEntities.join(', ')}</span>
-              </div>
-            {/if}
+              {/if}
             {#if result.metadata.caseReferences.length > 0}
               <div>
                 <span class="text-gray-400">Case References:</span>
                 <span class="text-gray-200">{result.metadata.caseReferences.length} citations</span>
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Text Chunks Preview -->
           {#if result.chunks && result.chunks.length > 0}
             <div class="mt-3 p-3 bg-gray-900/50 rounded border border-gray-700/50">
               <div class="text-sm text-gray-400 mb-2">Relevant Excerpts:</div>
-              {#each result.chunks.slice(0, 2) as chunk}
+              {#each Array.isArray(result.chunks.slice(0, 2)) ? result.chunks.slice(0, 2) : [] as chunk}
                 <div class="text-sm text-gray-300 mb-2 line-clamp-3">
                   "{chunk.text.substring(0, 200)}..."
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
           <!-- Actions -->
           <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-700/50">
             <div class="text-xs text-gray-500">
@@ -338,12 +332,9 @@ try {
             <div class="text-2xl font-bold text-cyan-400">{(searchStats.averageConfidence * 100).toFixed(0)}%</div>
             <div class="text-xs text-gray-500">Avg Confidence</div>
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   .line-clamp-3 {
     display: -webkit-box;

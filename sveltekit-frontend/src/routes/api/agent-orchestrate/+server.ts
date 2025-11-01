@@ -36,7 +36,7 @@ export interface AutoFixResults {
 export interface AgentOrchestrationContext {
   context7Analysis?: Context7Analysis;
   autoFixResults?: AutoFixResults;
-  [key: string]: unknown; // was any
+  [key: string]: any; // was any
 }
 // import { autoGenAgent } from '../../../../../agents/autogen-agent.js'
 // import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js'
@@ -61,7 +61,7 @@ export interface AgentResult {
   metadata?: Record<string, unknown>;
   error?: string;
   sources?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface AgentOrchestrationResponse {
   success: boolean;
@@ -82,7 +82,7 @@ export interface AgentOrchestrationResponse {
 }
 
 // Utility: safe error message extraction
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -92,7 +92,7 @@ function getErrorMessage(err: unknown): string {
 }
 
 // Map raw Context7 response into Context7Analysis
-function mapContext7Analysis(raw: unknown): Context7Analysis {
+function mapContext7Analysis(raw: any): Context7Analysis {
   // raw may be { summary: string; ok: boolean } or richer object
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
@@ -112,7 +112,7 @@ function mapContext7Analysis(raw: unknown): Context7Analysis {
 }
 
 // Map raw auto-fix result into AutoFixResults
-function mapAutoFixResults(raw: unknown, area?: string): AutoFixResults {
+function mapAutoFixResults(raw: any, area?: string): AutoFixResults {
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
     const fixes = Array.isArray(r.fixes) ? (r.fixes as AutoFixChange[]) : undefined;
@@ -133,7 +133,7 @@ function mapAutoFixResults(raw: unknown, area?: string): AutoFixResults {
 }
 
 // Normalize agent raw result into AgentResult
-function normalizeAgentResult(raw: unknown, agentName: string): AgentResult {
+function normalizeAgentResult(raw: any, agentName: string): AgentResult {
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
     return {
@@ -178,8 +178,8 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
     const results: AgentResult[] = []; // was any[]
-    let context7Enhanced = false;
-    let autoFixApplied = false;
+    let context7Enhanced = $state(false);
+    let autoFixApplied = $state(false);
     // Apply Context7 analysis and auto-fix if requested
     if (options.includeContext7) {
       const analysis = await context7Service.analyzeComponent('agent-orchestrator', 'legal-ai');
@@ -207,11 +207,11 @@ export const POST: RequestHandler = async ({ request }) => {
             area: options.autoFixArea,
           },
         })
-        .then((result: unknown) => ({
+        .then((result: any) => ({
           ...normalizeAgentResult(result, 'claude'),
           error: undefined,
         }))
-        .catch((error: unknown) => ({
+        .catch((error: any) => ({
           agent: 'claude',
           output: '',
           score: 0,
@@ -233,11 +233,11 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix,
           },
         })
-        .then((result: unknown) => ({
+        .then((result: any) => ({
           ...normalizeAgentResult(result, 'autogen'),
           error: undefined,
         }))
-        .catch((error: unknown) => ({
+        .catch((error: any) => ({
           agent: 'autogen',
           output: '',
           score: 0,
@@ -257,11 +257,11 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix,
           },
         })
-        .then((result: unknown) => ({
+        .then((result: any) => ({
           ...normalizeAgentResult(result, 'crewai'),
           error: undefined,
         }))
-        .catch((error: unknown) => ({
+        .catch((error: any) => ({
           agent: 'crewai',
           output: '',
           score: 0,
@@ -283,11 +283,11 @@ export const POST: RequestHandler = async ({ request }) => {
             confidenceThreshold: 0.7,
           },
         })
-        .then((result: unknown) => ({
+        .then((result: any) => ({
           ...normalizeAgentResult(result, 'rag'),
           error: undefined,
         }))
-        .catch((error: unknown) => ({
+        .catch((error: any) => ({
           agent: 'rag',
           output: '',
           score: 0,
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
             });
           }
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Timeout occurred, collect partial results
         console.error('Agent orchestration timeout:', error);
         results.push({
@@ -339,7 +339,7 @@ export const POST: RequestHandler = async ({ request }) => {
         try {
           const result = await agentPromise;
           results.push(result);
-        } catch (err: unknown) {
+        } catch (err: any) {
           results.push({
             agent: 'unknown',
             output: '',
@@ -366,7 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Agent orchestration failed:', err);
     return json(
       {

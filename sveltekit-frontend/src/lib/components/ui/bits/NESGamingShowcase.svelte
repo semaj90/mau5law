@@ -1,7 +1,7 @@
 <script lang="ts">
-  import NESButton from './NESButton.svelte';
-  import NESCard from './NESCard.svelte';
-  import NESModal from './NESModal.svelte';
+  import { NESButton } from './NESButton.svelte';
+  import { NESCard } from './NESCard.svelte';
+  import { NESModal } from './NESModal.svelte';
   interface NESGamingShowcaseProps {
     title?: string;
     showStats?: boolean;
@@ -57,7 +57,7 @@
         score = 0;
         break;
       case 'pause':
-        isPlaying = false;
+        isPlaying = $state(false);
         break;
       case 'powerup':
         score += 100;
@@ -65,13 +65,13 @@
         break;
       case 'damage':
         lives = Math.max(0, lives - 1);
-        if (lives === 0) isPlaying = false;
+        if (lives === 0) isPlaying = $state(false);
         break;
       case 'reset':
         score = 1337;
         level = 42;
         lives = 3;
-        isPlaying = false;
+        isPlaying = $state(false);
         break;
     }
   }
@@ -94,7 +94,6 @@
     }
   }
 </script>
-
 <div class="nes-gaming-showcase">
   <!-- Header Section -->
   <div class="showcase-header">
@@ -131,11 +130,10 @@
           </span>
         </div>
       </NESCard>
-    </div>
-  {/if}
+    {/if}
   <!-- Game Features Grid -->
   <div class="features-grid">
-    {#each gameFeatures as feature}
+    {#each Array.isArray(gameFeatures) ? gameFeatures : [] as feature}
       <NESCard
         variant={getStatusVariant(feature.status)}
         title={feature.title}
@@ -193,8 +191,7 @@
                 <span>{Math.floor(Math.random() * 100)}%</span>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       {:else}
         <div class="system-info">
           <h3>YoRHa Legal AI Platform</h3>
@@ -217,8 +214,7 @@
               <span>Fully Interactive</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <div class="modal-actions">
         <NESButton variant="success" onclick={() => (showModal = false)}>Awesome!</NESButton>
         <NESButton variant="default" onclick={() => (selectedCard = null)}>Clear Selection</NESButton>
@@ -226,7 +222,6 @@
     </div>
   </NESModal>
 </div>
-
 <style>
   .nes-gaming-showcase {
     padding: 2rem;
@@ -443,5 +438,3 @@
     }
   }
 </style>
-
-

@@ -1,12 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
-  import Badge from '$lib/components/ui/Badge.svelte';
-  import Separator from '$lib/components/ui/separator/Separator.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
+  import { Badge } from '$lib/components/ui/Badge.svelte';
+  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   import { enhancedRAGClient } from '$lib/services/enhanced-rag-client';
   import { browser } from '$app/environment';
-
   interface Message {
     role: 'user' | 'assistant';
     content: string;
@@ -14,14 +13,12 @@
     metadata?: MessageMetadata;
     timestamp: number;
   }
-
   interface FileAttachment {
     name: string;
     size: number;
     type: string;
     url?: string;
   }
-
   interface MessageMetadata {
     confidence?: number;
     tokensPerSecond?: number;
@@ -29,7 +26,6 @@
     processingTime?: number;
     model?: string;
   }
-
   interface ConnectionStatus {
     chat: boolean;
     quic: boolean;
@@ -37,13 +33,11 @@
     cuda: boolean;
     rag: boolean;
   }
-
   interface SystemStats {
     tokensPerSecond: number;
     embeddingsCount: number;
     lastUpdate: number;
   }
-
   // Component Props
   interface Props {
     class?: string;
@@ -52,7 +46,6 @@
     maxTokens?: number;
     temperature?: number;
   }
-
   let {
     class: className = '',
     model = 'gemma3-legal:latest',
@@ -60,14 +53,12 @@
     maxTokens = 2048,
     temperature = 0.7,
   }: Props = $props();
-
   // State using Svelte 5 runes
   let messages = $state<Message[]>([]);
   let inputMessage = $state('');
   let isLoading = $state(false);
   let isDragging = $state(false);
   let attachedFiles = $state<File[]>([]);
-
   let connectionStatus = $state<ConnectionStatus>({
     chat: false,
     quic: false,
@@ -75,29 +66,24 @@
     cuda: false,
     rag: false,
   });
-
   let systemStats = $state<SystemStats>({
     tokensPerSecond: 0,
     embeddingsCount: 0,
     lastUpdate: 0,
   });
-
   let scrollContainer: HTMLDivElement;
-
   // Test connections on mount
   $effect(() => {
     if (browser) {
       testConnections();
     }
   });
-
   // Auto-scroll to bottom when messages change
   $effect(() => {
     if (messages.length > 0 && scrollContainer) {
       scrollToBottom();
     }
   });
-
   async function testConnections() {
     try {
       // Test Chat API
@@ -111,39 +97,33 @@
         }),
       });
       connectionStatus.chat = chatResponse.ok;
-
       // Test RAG Service
       const ragHealth = await enhancedRAGClient.healthCheck();
       connectionStatus.rag = ragHealth.enhanced_rag_connected;
       connectionStatus.quic = ragHealth.quic_available;
-
       // Test Redis (via stats endpoint)
       try {
         const redisResponse = await fetch('/api/stats/redis');
         connectionStatus.redis = redisResponse.ok;
       } catch {
-        connectionStatus.redis = false;
+        connectionStatus.redis = $state(false);
       }
-
       // Test CUDA (via health endpoint)
       try {
         const cudaResponse = await fetch('/api/health/cuda');
         connectionStatus.cuda = cudaResponse.ok;
       } catch {
-        connectionStatus.cuda = false;
+        connectionStatus.cuda = $state(false);
       }
-
       // Update system stats
       systemStats.lastUpdate = Date.now();
     } catch (error) {
       console.error('Connection test failed:', error);
     }
   }
-
   async function handleSend() {
     if (!inputMessage.trim() && attachedFiles.length === 0) return;
     if (isLoading) return;
-
     const userMessage: Message = {
       role: 'user',
       content: inputMessage,
@@ -154,18 +134,15 @@
       })),
       timestamp: Date.now(),
     };
-
     messages = [...messages, userMessage];
     const currentInput = inputMessage;
     inputMessage = '';
     isLoading = true;
-
     try {
       // Upload files if attached
       if (attachedFiles.length > 0) {
         await uploadFiles(attachedFiles);
       }
-
       // Optional RAG search before sending
       let ragContext = '';
       let ragResultCount = 0;
@@ -177,7 +154,6 @@
             limit: 5,
             threshold: 0.7,
           });
-
           if (ragResponse.success && ragResponse.data?.results) {
             ragResultCount = ragResponse.data.results.length;
             ragContext = ragResponse.data.results.map((r: any) => r.content || r.text).join('\n\n');
@@ -186,12 +162,10 @@
           console.warn('RAG search failed, continuing without context:', ragError);
         }
       }
-
       // Prepare chat messages
       const chatMessages = messages
         .filter(m => !m.files || m.files.length === 0) // Skip file-only messages
         .map(m => ({ role: m.role, content: m.content }));
-
       // Add RAG context if available
       if (ragContext) {
         chatMessages.push({
@@ -204,7 +178,6 @@
           content: currentInput,
         });
       }
-
       // Send to chat API
       const startTime = Date.now();
       const response = await fetch('/api/ai/chat', {
@@ -218,19 +191,15 @@
           temperature,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Chat API error: ${response.statusText}`);
       }
-
       const data = await response.json();
       const processingTime = Date.now() - startTime;
-
       // Calculate tokens per second
       const tokensPerSecond = data.usage?.total_tokens
         ? Math.round((data.usage.total_tokens / processingTime) * 1000)
         : 0;
-
       // Update system stats
       if (tokensPerSecond > 0) {
         systemStats.tokensPerSecond = tokensPerSecond;
@@ -239,7 +208,6 @@
         systemStats.embeddingsCount += ragResultCount;
       }
       systemStats.lastUpdate = Date.now();
-
       // Add assistant message
       const assistantMessage: Message = {
         role: 'assistant',
@@ -253,11 +221,9 @@
         },
         timestamp: Date.now(),
       };
-
       messages = [...messages, assistantMessage];
     } catch (error) {
       console.error('Send message failed:', error);
-
       // Add error message
       const errorMessage: Message = {
         role: 'assistant',
@@ -270,64 +236,53 @@
         },
         timestamp: Date.now(),
       };
-
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       attachedFiles = [];
     }
   }
-
   async function uploadFiles(files: File[]) {
     const formData = new FormData();
     files.forEach(file => {
       formData.append('files', file);
     });
-
     try {
       const response = await fetch('/api/upload/rag-ingest', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error(`Upload failed: ${response.statusText}`);
       }
-
       console.log('Files uploaded successfully');
     } catch (error) {
       console.error('File upload error:', error);
       throw error;
     }
   }
-
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       handleSend();
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragging = true;
   }
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
+    isDragging = $state(false);
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
-
+    isDragging = $state(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       attachedFiles = [...attachedFiles, ...Array.from(files)];
     }
   }
-
   function handleFileInput(event: Event) {
     const target = event.target as HTMLInputElement;
     const files = target.files;
@@ -335,29 +290,24 @@
       attachedFiles = [...attachedFiles, ...Array.from(files)];
     }
   }
-
   function removeFile(index: number) {
     attachedFiles = attachedFiles.filter((_, i) => i !== index);
   }
-
   function scrollToBottom() {
     if (scrollContainer) {
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   }
-
   function formatTimestamp(timestamp: number): string {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 </script>
-
 <div class="integrated-ai-chat yorha-panel {className}">
   <!-- Header with System Status -->
   <div class="yorha-panel-header flex items-center justify-between p-4 border-b border-yellow-400/30">
@@ -365,7 +315,6 @@
       <h2 class="text-lg font-bold text-yellow-400">AI Legal Assistant</h2>
       <Badge variant="info" size="sm">{model}</Badge>
     </div>
-
     <div class="flex items-center gap-2">
       <Badge variant={connectionStatus.chat ? 'success' : 'destructive'} size="sm">
         Chat {connectionStatus.chat ? '' : ''}
@@ -384,7 +333,6 @@
       </Badge>
     </div>
   </div>
-
   <!-- System Stats -->
   {#if systemStats.tokensPerSecond > 0 || systemStats.embeddingsCount > 0}
     <div class="px-4 py-2 bg-black/20 border-b border-yellow-400/20 flex items-center gap-4 text-sm">
@@ -393,14 +341,12 @@
           <span class="text-gray-400">Speed:</span>
           <span class="text-yellow-400 font-mono">{systemStats.tokensPerSecond}</span>
           <span class="text-gray-500">tok/s</span>
-        </div>
-      {/if}
+        {/if}
       {#if systemStats.embeddingsCount > 0}
         <div class="flex items-center gap-1">
           <span class="text-gray-400">Embeddings:</span>
           <span class="text-yellow-400 font-mono">{systemStats.embeddingsCount}</span>
-        </div>
-      {/if}
+        {/if}
       <button
         type="button"
         onclick={testConnections}
@@ -408,9 +354,7 @@
       >
         Refresh Status
       </button>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Messages Container -->
   <div
     bind:this={scrollContainer}
@@ -425,10 +369,8 @@
           <p class="text-lg">No messages yet</p>
           <p class="text-sm">Start a conversation or drag & drop files to analyze</p>
         </div>
-      </div>
-    {/if}
-
-    {#each messages as message}
+      {/if}
+    {#each Array.isArray(messages) ? messages : [] as message}
       <div class="message-bubble {message.role === 'user' ? 'user-message' : 'assistant-message'}">
         <div class="message-header flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
@@ -437,7 +379,6 @@
             </Badge>
             <span class="text-xs text-gray-500">{formatTimestamp(message.timestamp)}</span>
           </div>
-
           {#if message.metadata}
             <div class="flex items-center gap-1">
               {#if message.metadata.confidence !== undefined}
@@ -455,26 +396,21 @@
                   {message.metadata.ragResults} RAG results
                 </Badge>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
-
         <div class="message-content nes-container is-rounded is-dark p-3">
           <p class="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
         </div>
-
         {#if message.files && message.files.length > 0}
           <div class="message-files mt-2 flex flex-wrap gap-2">
-            {#each message.files as file}
+            {#each Array.isArray(message.files) ? message.files : [] as file}
               <Badge variant="info" size="sm">
                 =� {file.name} ({formatFileSize(file.size)})
               </Badge>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
-
     {#if isLoading}
       <div class="assistant-message">
         <div class="message-header flex items-center gap-2 mb-2">
@@ -494,20 +430,15 @@
             ></div>
           </div>
         </div>
-      </div>
-    {/if}
-
+      {/if}
     {#if isDragging}
       <div
         class="absolute inset-0 bg-yellow-400/10 border-2 border-dashed border-yellow-400 rounded-lg flex items-center justify-center"
       >
         <p class="text-yellow-400 text-lg font-bold">Drop files here to upload</p>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <Separator />
-
   <!-- Attached Files Display -->
   {#if attachedFiles.length > 0}
     <div class="px-4 py-2 bg-black/10 border-b border-yellow-400/20">
@@ -529,9 +460,7 @@
           </Badge>
         {/each}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Input Area -->
   <div class="p-4 bg-black/20">
     <div class="flex items-end gap-2">
@@ -544,13 +473,11 @@
           class="w-full"
         />
       </div>
-
       <div class="flex items-center gap-2">
         <label class="nes-btn is-primary cursor-pointer">
           =�
           <input type="file" multiple onchange={handleFileInput} class="hidden" disabled={isLoading} />
         </label>
-
         <Button
           variant="yorha"
           onclick={handleSend}
@@ -562,7 +489,6 @@
         </Button>
       </div>
     </div>
-
     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
       <label class="flex items-center gap-1 cursor-pointer nes-checkbox">
         <input type="checkbox" bind:checked={useRAG} disabled={isLoading} />
@@ -571,7 +497,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .integrated-ai-chat {
     display: flex;
@@ -582,56 +507,44 @@
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
-
   .yorha-panel-header {
     background: linear-gradient(to right, #1a1a1a, #2a2a2a);
   }
-
   .yorha-panel-content {
-    position relative;
+    position: relative;
     scrollbar-width: thin;
     scrollbar-color: #facc15 #1a1a1a;
   }
-
   .yorha-panel-content::-webkit-scrollbar {
     width: 8px;
   }
-
   .yorha-panel-content::-webkit-scrollbar-track {
     background: #1a1a1a;
   }
-
   .yorha-panel-content::-webkit-scrollbar-thumb {
     background: #facc15;
     border-radius: 4px;
   }
-
   .message-bubble {
     max-width: 85%;
     animation: slideIn 0.3s ease-out;
   }
-
   .user-message {
     margin-left: auto;
   }
-
   .assistant-message {
     margin-right: auto;
   }
-
   .message-content {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(250, 204, 21, 0.2);
   }
-
   .user-message .message-content {
     border-color: rgba(59, 130, 246, 0.3);
   }
-
   .loading-pulse {
     animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-
   @keyframes slideIn {
     from {
       opacity: 0;
@@ -642,7 +555,6 @@
       transform: translateY(0);
     }
   }
-
   @keyframes pulse {
     0%,
     100% {
@@ -652,9 +564,8 @@
       opacity: 0.3;
     }
   }
-
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -665,4 +576,3 @@
     border-width: 0,
   }
 </style>
-

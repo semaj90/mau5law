@@ -7,7 +7,7 @@ import { createClient } from 'redis';
 class SSEConnectionManager {
   private connections: Map<string, Response> = new Map();
   private redisSubscriber: any;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   async initialize() {
     if (this.isInitialized) return;
     try {

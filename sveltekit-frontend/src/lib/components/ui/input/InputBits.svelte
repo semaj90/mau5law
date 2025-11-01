@@ -60,7 +60,6 @@
   const descriptionId = description ? `${inputId}-description` : undefined;
   const errorId = errorMessage ? `${inputId}-error` : undefined;
 </script>
-
 <div class="legal-ai-input-group space-y-2">
   {#if label}
     <label for={inputId} class="block text-sm font-semibold text-slate-300">
@@ -71,8 +70,7 @@
     {#if leftIcon}
       <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
         {@render leftIcon()}
-      </div>
-    {/if}
+      {/if}
     <input
       id={inputId}
       class={computedClasses}
@@ -83,8 +81,7 @@
     {#if rightIcon}
       <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
         {@render rightIcon()}
-      </div>
-    {/if}
+      {/if}
   </div>
   {#if description && !error}
     <p id={descriptionId} class="text-sm text-slate-500">
@@ -116,7 +113,6 @@
     </p>
   {/if}
 </div>
-
 <style>
   :global(.legal-ai-input) {
     font-family: var(--legal-ai-font-family-sans);

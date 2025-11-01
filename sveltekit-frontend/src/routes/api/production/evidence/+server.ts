@@ -15,7 +15,7 @@ export interface EvidenceItem {
   file_hash?: string;
   status: 'pending' | 'processing' | 'processed' | 'failed';
   extracted_text?: string;
-  smart_detection_results?: unknown[];
+  smart_detection_results?: any[];
   created_at: string;
   updated_at: string;
 }
@@ -25,7 +25,7 @@ export interface ProcessingJob {
   job_type: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
   progress: number;
-  result?: unknown;
+  result?: any;
   error_message?: string;
   created_at: string;
 }
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
         environment: 'production',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 201 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -249,7 +249,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       message: 'Evidence updated successfully',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

@@ -114,7 +114,7 @@ if (browser) {
       append(`❌ Test error: ${error}`);
       console.error('Performance test error:', error);
     } finally {
-      isTestingInProgress = false;
+      isTestingInProgress = $state(false);
       currentTest = '';
     }
   }

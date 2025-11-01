@@ -9,7 +9,7 @@ const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:800
 const RAG_TIMEOUT = 30000;
 
 // safer error extractor
-function errorMessage(err: unknown): string {
+function errorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -62,7 +62,7 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
       success: true,
     });
     return result;
-  } catch (err: unknown) {
+  } catch (err: any) {
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
     await librarySyncService.logAgentCall({
@@ -109,7 +109,7 @@ export async function handleUpload(request: Request): Promise<Response> {
       processing: result['processing'],
       metadata: result['metadata'],
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Upload error:', err);
     throw error(500, `Document upload failed: ${errorMessage(err)}`);
   }
@@ -137,7 +137,7 @@ export async function handleCrawl(request: Request): Promise<Response> {
       crawlStats: result['crawlStats'],
       processingTime: result['processingTime'],
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Crawl error:', err);
     throw error(500, `Web crawling failed: ${errorMessage(err)}`);
   }
@@ -162,7 +162,7 @@ export async function handleWorkflow(request: Request): Promise<Response> {
       workflow: result['result'],
       metadata: result['metadata'],
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Workflow error:', err);
     throw error(500, `Workflow execution failed: ${errorMessage(err)}`);
   }
@@ -186,7 +186,7 @@ export async function handleChat(request: Request): Promise<Response> {
       response: result['response'],
       metadata: result['metadata'],
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Chat error:', err);
     throw error(500, `AI chat failed: ${errorMessage(err)}`);
   }
@@ -263,7 +263,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
         processing_time_ms: 2500,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('pgai process error:', err);
     throw error(500, `Document processing failed: ${errorMessage(err)}`);
   }
@@ -292,7 +292,7 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
       success: true,
       data: result['response'] ?? null,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('pgai custom analysis error:', err);
     throw error(500, `Custom analysis failed: ${errorMessage(err)}`);
   }
@@ -328,7 +328,7 @@ Provide analysis covering:
       success: true,
       data: result['response'] ?? null,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('pgai comparison error:', err);
     throw error(500, `Document comparison failed: ${errorMessage(err)}`);
   }
@@ -358,7 +358,7 @@ Document content: ${content.substring(0, 4000)}`,
       success: true,
       data: result['response'] ?? null,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('pgai extraction error:', err);
     throw error(500, `Information extraction failed: ${errorMessage(err)}`);
   }

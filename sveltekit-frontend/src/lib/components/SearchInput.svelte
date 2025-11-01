@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Search } from 'lucide-svelte';
+  import Search from 'lucide-svelte';
   import X from 'lucide-svelte'; // use default import for X (TS hint suggested this)
   // Convert to Svelte 5 runes pattern
   let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300, onsearch = undefined } = $props();
@@ -29,7 +29,7 @@
     isFocused = true;
   }
   function handleBlur() {
-    isFocused = false;
+    isFocused = $state(false);
   }
   function clearValue() {
     value = '';
@@ -37,7 +37,6 @@
     inputElement?.focus();
   }
 </script>
-
 <div class="search-input-container" class:focused={isFocused}>
   <div class="search-icon" aria-hidden="true">
     <Search size={18} />
@@ -60,7 +59,6 @@
     </button>
   {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .search-input-container {
@@ -121,4 +119,3 @@
     transform: scale(0.95);
   }
 </style>
-

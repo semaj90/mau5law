@@ -85,6 +85,6 @@ export interface QUICEvent {
   type: QUICEventType;
   timestamp: number;
   connectionId: string;
-  data?: unknown;
+  data?: any;
   error?: Error;
 }

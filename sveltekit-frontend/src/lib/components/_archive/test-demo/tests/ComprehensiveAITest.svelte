@@ -3,7 +3,7 @@
   import { aiAssistant  } from '$lib/stores/unified';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
   import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');
   let testQuery = $state('Analyze the liability clauses in this employment contract');
@@ -61,7 +61,7 @@
     } catch (error) {
       console.error('Test failed:', error);
     } finally {
-      isRunning = false;
+      isRunning = $state(false);
     }
   }
   async function runAllTests() {
@@ -327,7 +327,7 @@
     <div class="text-sm">
       <span class="font-medium">Sample queries:</span>
       <div class="flex flex-wrap gap-2 mt-1">
-        {#each sampleQueries as query}
+        {#each Array.isArray(sampleQueries) ? sampleQueries : [] as query}
           <button
             onclick={() => (testQuery = query)}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
@@ -445,7 +445,7 @@
   {#if testResults.length > 0}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">🧪 Test Results</h2>
-      {#each testResults as result}
+      {#each Array.isArray(testResults) ? testResults : [] as result}
         <Card
           class="border-l-4 {result.success
             ? result.type === 'local'

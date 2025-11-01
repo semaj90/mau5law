@@ -4,7 +4,7 @@
   import { writable } from 'svelte/store';
   import type { SelectContext } from './types';
   interface Props {
-    value: unknown;
+    value: any;
     class_?: string;
     children?: import('svelte').Snippet;
   }
@@ -24,7 +24,6 @@
     open.set(false);
   }
 </script>
-
 <div
   class="space-y-4 {class_}"
   role="option"
@@ -37,7 +36,6 @@
     {@render children()}
   {/if}
 </div>
-
 <style>
 /* @unocss-include */ {}
   .select-item {

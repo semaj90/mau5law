@@ -7,7 +7,6 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-
 <div class={cn('flex items-start justify-between p-4', className)}>
-  {@render children?.()}
+  <slot />
 </div>

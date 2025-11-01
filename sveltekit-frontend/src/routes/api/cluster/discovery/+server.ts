@@ -70,7 +70,7 @@ interface RegisterServiceInput {
   autoFailover?: boolean;
   failoverThreshold?: number;
   // allow additional optional metadata without breaking strict checks
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // Service registry - in production, this would be persistent storage
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Service Discovery error:', error);
     return json(
       {
@@ -232,7 +232,7 @@ export const GET: RequestHandler = async ({ url }) => {
       response.failoverHistory = failoverHistory.slice(-20); // Last 20 events
     }
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -269,7 +269,7 @@ type DiscoveryConfig = {
 };
 
 // small helper to format unknown errors
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -398,7 +398,7 @@ async function checkServiceHealth(serviceId: string, $force: boolean = false): P
       health: { ...service.health },
       failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     service.health.consecutiveFailures++;
     service.status = 'unhealthy';
     service.health.lastCheck = new Date().toISOString();
@@ -459,7 +459,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       return { success: false, error: 'Target instance not found or unhealthy' };
     }
 
-    service.failover.primary = false;
+    service.failover.primary = $state(false);
     service.status = 'unhealthy';
     target.failover.primary = true;
 
@@ -485,7 +485,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       duration: failoverEvent.duration,
       event: failoverEvent,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const failoverEvent: FailoverEvent = {
       id: `failover-failed-${Date.now()}`,
       timestamp: new Date().toISOString(),

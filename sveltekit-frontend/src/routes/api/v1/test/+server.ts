@@ -15,7 +15,7 @@ export interface IntegrationTestResult {
   testName: string;
   status: 'passed' | 'failed' | 'skipped';
   duration: number;
-  details?: unknown;
+  details?: any;
   error?: string;
 }
 export interface ComprehensiveTestReport {
@@ -26,13 +26,13 @@ export interface ComprehensiveTestReport {
   skipped: number;
   duration: number;
   results: IntegrationTestResult[];
-  systemHealth: { [key: string]: unknown };
+  systemHealth: { [key: string]: any };
   recommendations: string[];
 }
 
 type TestFunctionResult = {
   success: boolean;
-  details?: unknown;
+  details?: any;
   error?: string;
 };
 
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         deployment: 'No Docker',
       },
     } satisfies APIResponse);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Integration Test Error:', err);
     return error(
       500,
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Test API Error:', err);
     return error(
       500,
@@ -213,7 +213,7 @@ function getTestsForSuite(testSuite: string): string[] {
 async function runSingleTest(testName: string, _context: APIRequestContext): Promise<IntegrationTestResult> {
   const testStartTime = Date.now();
   try {
-    let result: unknown;
+    let result: any;
     switch (testName) {
       case 'system_health_check':
         result = await testSystemHealth();
@@ -275,7 +275,7 @@ async function runSingleTest(testName: string, _context: APIRequestContext): Pro
       details: testResult.details,
       error: testResult.error,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       testName,
       status: 'failed',
@@ -313,7 +313,7 @@ async function testAPIOrchestrator(): Promise<TestFunctionResult> {
         metricsAvailable: Object.keys(metrics).length > 0,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: String(error),
@@ -333,7 +333,7 @@ async function testCoreServices(): Promise<TestFunctionResult> {
         status: health.status,
         config: !!config,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         service,
         healthy: false,
@@ -363,7 +363,7 @@ async function testRAGAPI(): Promise<TestFunctionResult> {
         healthData: response.ok ? healthData : undefined,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: String(error),
@@ -382,7 +382,7 @@ async function testUploadAPI(): Promise<TestFunctionResult> {
         healthData: response.ok ? healthData : undefined,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: String(error),
@@ -400,7 +400,7 @@ async function testDatabaseConnections(): Promise<TestFunctionResult> {
         configured: !!config,
         status: (config as { status: string })?.status || 'unknown',
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         database: db,
         configured: false,
@@ -427,7 +427,7 @@ async function testEmbeddingService(): Promise<TestFunctionResult> {
         modelCount: models.length,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       success: false,
       error: String(error),
@@ -486,7 +486,7 @@ async function testAIModelAvailability(): Promise<TestFunctionResult> {
 /*
  * Generate recommendations based on test results
  */
-function generateRecommendations(results: IntegrationTestResult[], systemHealth: { [key: string]: unknown }): string[] {
+function generateRecommendations(results: IntegrationTestResult[], systemHealth: { [key: string]: any }): string[] {
   const recommendations: string[] = [];
   const failedTests = results.filter(r => r.status === 'failed');
   const passRate =

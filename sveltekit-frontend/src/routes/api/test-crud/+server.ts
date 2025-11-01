@@ -8,7 +8,7 @@ import { users } from '$lib/server/db/schema-postgres';
 import type { RequestHandler } from './$types.js';
 
 // Helper: safely extract error info from unknown
-function getErrorInfo(err: unknown) {
+function getErrorInfo(err: any) {
   if (err instanceof Error) {
     return { message: err.message, code: undefined, detail: undefined };
   }
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[CRUD Test] Database error:', err);
     const { message } = getErrorInfo(err);
     return json(
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[CRUD Test] Create user error:', err);
     const { message, code, detail } = getErrorInfo(err);
 

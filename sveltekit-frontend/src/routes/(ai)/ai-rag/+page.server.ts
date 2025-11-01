@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         avgResponseTime: 0,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Failed to load RAG data:', errorMessage);
 

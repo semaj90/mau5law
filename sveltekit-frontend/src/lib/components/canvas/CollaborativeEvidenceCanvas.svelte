@@ -9,8 +9,7 @@
   import { websocketStore  } from '$lib/stores/unified';
   import { createPubSubHelper } from '$lib/server/redisPubSub';
   import { KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
-
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte'';
   // Dynamic fabric import to avoid SSR issues
   let _fabricModule: any = null;
   async function getFabric(): Promise<any> {
@@ -78,7 +77,6 @@
       return _fabricModule;
     }
   }
-
   // Types & props
   interface Props {
     caseId: string;
@@ -104,7 +102,6 @@
     showRulers = false,
     autoSave = true,
   }: Props = $props();
-
   // Canvas and state
   let canvasElement: HTMLCanvasElement;
   let fabricCanvas: any;
@@ -129,14 +126,12 @@
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
   let collaboratorCursors = new Map<string, any>();
   let pubSubController: any = null;
-
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
     collaboration: `legal:canvas:${caseId}:collab`, // Fixed: added colon
     cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`,
   };
-
   // Initialize on client
   $effect(() => {
     if (!browser) return;
@@ -153,13 +148,11 @@
       }
     })();
   });
-
   onDestroy(async () => {
     if (saveTimeout) clearTimeout(saveTimeout);
     if (pubSubController && pubSubController.stop) await pubSubController.stop();
     if (fabricCanvas && fabricCanvas.dispose) fabricCanvas.dispose();
   });
-
   async function initializeCanvas() {
     const fabric = await getFabric();
     fabricCanvas = new fabric.Canvas(canvasElement, {
@@ -170,17 +163,14 @@
       interactive: !readOnly,
       preserveObjectStacking: true,
     });
-
     // Free drawing defaults (guard for mock)
     if (fabricCanvas.freeDrawingBrush) {
       fabricCanvas.freeDrawingBrush.width = 2;
       fabricCanvas.freeDrawingBrush.color = '#4a90e2';
     }
-
     if (showGrid) await addGridToCanvas();
     await setupZoomPan();
   }
-
   async function addGridToCanvas() {
     const fabric = await getFabric();
     const gridSize = 20;
@@ -210,7 +200,6 @@
       if (fabricCanvas.sendToBack) fabricCanvas.sendToBack(line);
     });
   }
-
   async function setupZoomPan() {
     const fabric = await getFabric();
     fabricCanvas.on &&
@@ -230,14 +219,13 @@
           // ignore
         }
       });
-
-    let panning = false;
+    let panning = $state(false);
     fabricCanvas.on &&
       fabricCanvas.on('mouse:down', (opt: any) => {
         const evt = opt.e;
         if (evt && (evt.altKey || evt.button === 1)) {
           panning = true;
-          fabricCanvas.selection = false;
+          fabricCanvas.selection = $state(false);
           fabricCanvas.defaultCursor = 'grab';
         }
       });
@@ -254,12 +242,11 @@
       });
     fabricCanvas.on &&
       fabricCanvas.on('mouse:up', () => {
-        panning = false;
+        panning = $state(false);
         fabricCanvas.selection = true;
         fabricCanvas.defaultCursor = 'default';
       });
   }
-
   async function loadCanvasData() {
     try {
       const cached = await loadFromRedisCache();
@@ -282,7 +269,6 @@
       console.error('Failed to load canvas data:', err);
     }
   }
-
   async function addEvidenceNodes() {
     for (let i = 0; i < evidenceData.length; i++) {
       const evidence = evidenceData[i];
@@ -297,7 +283,6 @@
     }
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-
   async function createEvidenceNode(evidence: any, position: { x: number; y: number }) { // Fixed: added colon
     const fabric = await getFabric();
     const nodeGroup = new fabric.Group([], {
@@ -308,7 +293,6 @@
       hasBorders: !readOnly,
       lockScalingFlip: true,
     });
-
     const background = new fabric.Rect({
       width: 180,
       height: 120,
@@ -324,7 +308,6 @@
         offsetY: 2,
       }),
     });
-
     const title = new fabric.Text(evidence.title || `Evidence ${evidence.id}`, {
       fontSize: 14,
       fill: '#fff',
@@ -336,7 +319,6 @@
       originY: 'top',
       width: 160,
     });
-
     const typeIcon = new fabric.Text(getEvidenceIcon(evidence.type), {
       fontSize: 20,
       fill: '#fff',
@@ -346,7 +328,6 @@
       originX: 'center',
       originY: 'center',
     });
-
     const indicators: any[] = [];
     if (evidence.aiSummary) {
       indicators.push(
@@ -368,22 +349,18 @@
         })
       );
     }
-
     const objects = [background, title, typeIcon, ...indicators];
     objects.forEach(obj => nodeGroup.addWithUpdate(obj));
-
     nodeGroup.set({
       evidenceId: evidence.id,
       evidenceType: evidence.type,
       evidenceData: evidence,
       nodeType: 'evidence',
     });
-
     nodeGroup.on?.('mousedown', (e: any) => handleNodeClick(nodeGroup, e)); // Fixed: optional chaining
     nodeGroup.on?.('moving', () => saveCanvasState()); // Fixed: optional chaining
     return nodeGroup;
   }
-
   async function createConnection(fromNode: any, toNode: any, connectionType: string = 'related') {
     const fabric = await getFabric();
     const fromCenter = fromNode.getCenterPoint ? fromNode.getCenterPoint() : { x: fromNode.left, y: fromNode.top };
@@ -397,7 +374,6 @@
       strokeDashArray: connectionType === 'inferred' ? [10, 5] : undefined,
       shadow: new fabric.Shadow({ color: 'rgba(0,0,0,0.2)', blur: 5 }),
     });
-
     const arrow = new fabric.Triangle({
       width: 10,
       height: 10,
@@ -408,23 +384,19 @@
       selectable: false,
       evented: false,
     });
-
     const group = new fabric.Group([line, arrow], {
       selectable: !readOnly,
       hasControls: false,
       hasBorders: false,
     });
-
     group.set({
       connectionType,
       fromNodeId: fromNode.evidenceId,
       toNodeId: toNode.evidenceId,
       nodeType: 'connection',
     });
-
     return group;
   }
-
   async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') { // Fixed: added colon
     const fabric = await getFabric();
     const annotation = new fabric.Group([], {
@@ -433,7 +405,6 @@
       selectable: !readOnly,
       hasControls: !readOnly,
     });
-
     const background = new fabric.Rect({
       width: 200,
       height: 60,
@@ -443,7 +414,6 @@
       rx: 4,
       ry: 4,
     });
-
     const textObj = new fabric.Text(text, {
       fontSize: 12,
       fill: '#333',
@@ -452,7 +422,6 @@
       top: 10,
       left: 10,
     });
-
     annotation.addWithUpdate(background);
     annotation.addWithUpdate(textObj);
     annotation.set({
@@ -460,10 +429,8 @@
       annotationText: text,
       nodeType: 'annotation',
     });
-
     return annotation;
   }
-
   function getEvidenceColor(type: string): string {
     const colors: Record<string, string> = {
       document: '#4CAF50',
@@ -476,7 +443,6 @@
     };
     return colors[type] || '#607D8B';
   }
-
   function getEvidenceIcon(type: string): string {
     const icons: Record<string, string> = {
       document: '📄',
@@ -489,7 +455,6 @@
     };
     return icons[type] || '📄';
   }
-
   function getConnectionColor(type: string): string {
     const colors: Record<string, string> = {
       related: '#4CAF50',
@@ -501,13 +466,11 @@
     };
     return colors[type] || '#666';
   }
-
   function handleNodeClick(node: any, event: any) {
     if (readOnly) return;
     if (selectedTool === 'connection') handleConnectionStart(node);
     else selectNode(node);
   }
-
   function selectNode(node: any) {
     fabricCanvas.setActiveObject && fabricCanvas.setActiveObject(node);
     propertiesPanel = {
@@ -516,7 +479,6 @@
       position: { x: node.left ?? 0, y: node.top ?? 0 }, // Fixed: added colon
     };
   }
-
   let connectionStartNode: any = null;
   async function handleConnectionStart(node: any) {
     if (node.nodeType !== 'evidence') return;
@@ -538,39 +500,32 @@
       saveCanvasState();
     }
   }
-
   function setupEventHandlers() {
     fabricCanvas.on &&
       fabricCanvas.on('object:modified', () => {
         saveCanvasState();
         if (collaborative) broadcastCanvasChange('object_modified', fabricCanvas.toJSON());
       });
-
     fabricCanvas.on &&
       fabricCanvas.on('selectioncreated', (e: any) => {
         if (e.selected && e.selected.length === 1) selectNode(e.selected[0]);
       });
-
     fabricCanvas.on &&
       fabricCanvas.on('selectioncleared', () => {
         propertiesPanel = null;
       });
-
     fabricCanvas.on &&
       fabricCanvas.on('path:created', () => {
         saveCanvasState();
         if (collaborative) broadcastCanvasChange('drawing_added', fabricCanvas.toJSON());
       });
-
     fabricCanvas.on &&
       fabricCanvas.on('mouse:down', (e: any) => {
         if (e.e && e.e.button === 2) showContextMenu(e.e.clientX, e.e.clientY, e.target);
         else contextMenu = null;
       });
-
     document.addEventListener('keydown', handleKeyboardShortcuts);
   }
-
   function handleKeyboardShortcuts(e: KeyboardEvent) {
     if (!fabricCanvas) return;
     if (e.ctrlKey || e.metaKey) {
@@ -612,13 +567,11 @@
     }
     updateToolMode();
   }
-
   function updateToolMode() {
     fabricCanvas.isDrawingMode = selectedTool === 'draw';
     fabricCanvas.selection = selectedTool === 'select';
     fabricCanvas.defaultCursor = selectedTool === 'draw' ? 'crosshair' : 'default';
   }
-
   function deleteSelectedObjects() {
     const activeObjects = fabricCanvas.getActiveObjects ? fabricCanvas.getActiveObjects() : [];
     if (activeObjects.length === 0) return;
@@ -631,11 +584,9 @@
     saveCanvasState();
     if (collaborative) broadcastCanvasChange('objects_deleted', { count: activeObjects.length });
   }
-
   function showContextMenu(x: number, y: number, target: any) {
     contextMenu = { x, y, target, actions: getContextActions(target) };
   }
-
   function getContextActions(target: any) {
     const actions: any[] = [];
     if (target) {
@@ -661,7 +612,6 @@
     }
     return actions;
   }
-
   async function analyzeEvidence(evidenceId: string) {
     try {
       const resp = await fetch('/api/v1/evidence/advanced-analysis', {
@@ -677,7 +627,6 @@
       console.error('Failed to analyze evidence:', err);
     }
   }
-
   async function updateEvidenceNode(evidenceId: string, analysisResults: any) {
     const fabric = await getFabric();
     const node = evidenceNodes.get(evidenceId);
@@ -693,7 +642,6 @@
     node.addWithUpdate && node.addWithUpdate(indicator);
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-
   async function setupCollaboration() {
     try {
       pubSubController = createPubSubHelper({
@@ -707,7 +655,6 @@
       console.error('Failed to setup Redis collaboration', err);
     }
   }
-
   function handleRedisMessage({ channel, message }: { channel: string; message: string }) {
     try {
       const data = JSON.parse(message);
@@ -719,12 +666,10 @@
       console.error('Failed to parse Redis message:', err);
     }
   }
-
   function handleCanvasChange(data: any) {
     if (data.action === 'full_sync') loadCanvasFromRedis(data.canvasData);
     else if (data.action === 'object_change') applyObjectChange(data);
   }
-
   function handleCollaborativeChange(data: any) {
     // lightweight handlers reserved for future merging logic
     switch (data.action) {
@@ -736,7 +681,6 @@
         /* remove objects */ break;
     }
   }
-
   async function updateCollaboratorCursor(userId: string, cursorData: any) {
     const fabric = await getFabric();
     if (!collaboratorCursors.has(userId)) {
@@ -758,21 +702,17 @@
     }
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-
   function broadcastCanvasChange(action: string, data: any) { // Fixed: added colon
     if (websocketStore.connected)
       websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
   }
-
   function broadcastCursorPosition(x: number, y: number) {
     if (websocketStore.connected)
       websocketStore.broadcastCursorPosition && websocketStore.broadcastCursorPosition(caseId, { x, y });
   }
-
   function setupAIIntegration() {
     generateAISuggestions();
   }
-
   async function generateAISuggestions() {
     if (!aiAssisted) return;
     try {
@@ -789,7 +729,6 @@
       console.error('Failed to generate AI suggestions:', err);
     }
   }
-
   async function applyAILayout() {
     isGeneratingLayout = true;
     try {
@@ -805,10 +744,9 @@
     } catch (err) {
       console.error('Failed to generate AI layout:', err);
     } finally {
-      isGeneratingLayout = false;
+      isGeneratingLayout = $state(false);
     }
   }
-
   async function applyLayout(positions: any) {
     evidenceNodes.forEach((node, evidenceId) => {
       const pos = positions[evidenceId];
@@ -820,7 +758,6 @@
     fabricCanvas.renderAll && fabricCanvas.renderAll();
     saveCanvasState();
   }
-
   function saveCanvasState() {
     if (readOnly || !fabricCanvas) return;
     undoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
@@ -833,7 +770,6 @@
       }, 2000);
     }
   }
-
   async function saveCanvas() {
     try {
       const canvasData = fabricCanvas.toJSON ? fabricCanvas.toJSON() : {};
@@ -867,7 +803,6 @@
       console.error('Failed to save canvas:', err);
     }
   }
-
   async function saveToRedisCache(canvasPayload: any) {
     try {
       const resp = await fetch('/api/v1/redis/cache', {
@@ -884,7 +819,6 @@
       console.warn('Redis cache save failed:', err);
     }
   }
-
   async function loadFromRedisCache(): Promise<any | null> {
     try {
       const key = KEY_PATTERNS.DOCUMENT_CACHE(caseId);
@@ -899,7 +833,6 @@
     }
     return null;
   }
-
   function setupAutoSave() {
     fabricCanvas.on?.('object:modified', () => { // Fixed: optional chaining
       saveCanvasState();
@@ -915,7 +848,6 @@
     });
     console.log('Auto-save enabled');
   }
-
   async function publishCanvasChange(action: string) { // Fixed: added colon
     if (!pubSubController || !collaborative) return;
     try {
@@ -929,7 +861,6 @@
       console.error('Failed to publish canvas change:', err);
     }
   }
-
   async function loadCanvasFromRedis(canvasData: any) {
     try {
       fabricCanvas.loadFromJSON &&
@@ -941,7 +872,6 @@
       console.error('Failed to load canvas from Redis:', err);
     }
   }
-
   function applyObjectChange(data: any) {
     try {
       const obj = fabricCanvas.getObjects ? fabricCanvas.getObjects().find((o: any) => o.id === data.objectId) : null;
@@ -953,7 +883,6 @@
       console.error('Failed to apply object change:', err);
     }
   }
-
   function handleAISuggestion(data: any) {
     if (data.type === 'layout_suggestion') {
       aiSuggestions.push(data);
@@ -962,7 +891,6 @@
       highlightSuggestedConnection(data.suggestion);
     }
   }
-
   async function highlightSuggestedConnection(suggestion: any) { // Fixed: added colon
     const fabric = await getFabric();
     const fromNode = evidenceNodes.get(suggestion.fromId);
@@ -980,7 +908,6 @@
       fabricCanvas.remove && fabricCanvas.remove(highlight);
     }, 5000);
   }
-
   async function loadCanvasFromJSON(jsonData: string) {
     try {
       fabricCanvas.loadFromJSON &&
@@ -996,21 +923,18 @@
       console.error('Failed to load canvas from JSon', err);
     }
   }
-
   function undo() {
     if (!undoStack.length) return;
     redoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
     const prev = undoStack.pop();
     if (prev) loadCanvasFromJSON(JSON.stringify(prev)); // Fixed: stringify JSON
   }
-
   function redo() {
     if (!redoStack.length) return;
     undoStack.push(fabricCanvas.toJSON ? fabricCanvas.toJSON() : {});
     const next = redoStack.pop();
     if (next) loadCanvasFromJSON(JSON.stringify(next)); // Fixed: stringify JSON
   }
-
   function exportCanvas(format: 'json' | 'png' | 'svg' = 'png') {
     if (!fabricCanvas) return;
     if (format === 'json') {
@@ -1024,7 +948,6 @@
       downloadFile(svgData, `canvas-${caseId}.svg`, 'image/svg+xml');
     }
   }
-
   async function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false) {
     if (isDataURL) {
       const res = await fetch(data);
@@ -1045,7 +968,6 @@
       URL.revokeObjectURL(url);
     }
   }
-
   function clearCanvas() {
     fabricCanvas.clear && fabricCanvas.clear();
     evidenceNodes.clear();
@@ -1053,7 +975,6 @@
     annotations.clear();
     saveCanvasState();
   }
-
   async function zoomFit() {
     const fabric = await getFabric();
     fabricCanvas.setViewportTransform && fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
@@ -1075,7 +996,6 @@
         )
       );
   }
-
   // Lightweight stubs for missing features to keep component error-free
   function startConnection(target: any) {
     console.log('startConnection', target);
@@ -1096,7 +1016,6 @@
     console.log('paste');
   }
 </script>
-
 <div class="canvas-workspace" class:sidebar-open={sidebarOpen}>
   <!-- Toolbar -->
   <div class="toolbar">
@@ -1168,12 +1087,11 @@
           {isGeneratingLayout ? '⏳' : '🤖'} AI Layout
         </button>
         <button class="ai-btn" onclick={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
-      </div>
-    {/if}
+      {/if}
     {#if collaborative}
       <div class="collab-group">
         <div class="collaborators">
-          {#each Array.from(collaborators.values()) as collaborator}
+          {#each Array.isArray(Array.from(collaborators.values())) ? Array.from(collaborators.values()) : [] as collaborator}
             <div class="collaborator-avatar" style="background-color: {collaborator.color}">
               {collaborator.name[0]}
             </div>
@@ -1182,8 +1100,7 @@
         <span class="save-status">
           Last saved: {lastSaveTime.toLocaleTimeString()}
         </span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Sidebar -->
   {#if sidebarOpen}
@@ -1193,7 +1110,7 @@
         <button class="close-btn" onclick={() => (sidebarOpen = false)}>×</button>
       </div>
       <div class="evidence-list">
-        {#each evidenceData as evidence}
+        {#each Array.isArray(evidenceData) ? evidenceData : [] as evidence}
           <div
             class="evidence-item {evidenceNodes.has(evidence.id) ? 'on-canvas' : ''}"
             draggable="true"
@@ -1210,14 +1127,13 @@
       {#if showAISuggestions && aiSuggestions.length > 0}
         <div class="ai-suggestions">
           <h4>AI Suggestions</h4>
-          {#each aiSuggestions as suggestion}
+          {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
             <div class="suggestion-item">
               <div class="suggestion-text">{suggestion.text}</div>
               <button class="apply-btn" onclick={() => suggestion.action()}> Apply </button>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else}
     <Button variant="ghost" size="sm" onclick={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
@@ -1264,19 +1180,17 @@
                 <Input type="number" bind:value={propertiesPanel.position.x} placeholder="X" />
                 <Input type="number" bind:value={propertiesPanel.position.y} placeholder="Y" />
               </div>
-            </div>
-          {/if}
+            {/if}
         </CardContent>
       </Card>
-    </div>
-  {/if}
+    {/if}
   <!-- Context Menu -->
   {#if contextMenu}
     <div
       class="fixed z-50 bg-background border border-border rounded-md shadow-lg p-1"
       style="left: {contextMenu.x}px; top: {contextMenu.y}px;"
     >
-      {#each contextMenu.actions as action}
+      {#each Array.isArray(contextMenu.actions) ? contextMenu.actions : [] as action}
         <Button
           variant="ghost"
           size="sm"
@@ -1289,10 +1203,8 @@
           {action.label}
         </Button>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .canvas-workspace {
     display: flex;
@@ -1585,5 +1497,3 @@
     margin-left: 300px;
   }
 </style>
-
-

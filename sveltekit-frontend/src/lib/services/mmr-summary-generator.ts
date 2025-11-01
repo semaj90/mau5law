@@ -24,8 +24,8 @@ export interface SummaryResult {
   sourceDocuments?: number;
   averageRelevance?: number;
   averageDiversity?: number;
-  mmrConfig?: unknown;
-  sources?: unknown[];
+  mmrConfig?: any;
+  sources?: any[];
   confidence?: number;
   }
 }

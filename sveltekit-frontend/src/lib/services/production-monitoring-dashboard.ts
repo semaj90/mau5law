@@ -523,12 +523,12 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasGetMetrics(grpcAIOrchestrator)) {
           // await into an unknown and validate before assigning to typed variable
-          const raw: unknown = await grpcAIOrchestrator.getMetrics();
+          const raw: any = await grpcAIOrchestrator.getMetrics();
           if (raw && typeof raw === 'object') {
             const o = raw as Record<string, unknown>;
             const validated: OrchestratorMetrics = {};
             // Helper: accept numbers or numeric strings and coerce safely
-            const toNumber = (v: unknown): number | undefined => {
+            const toNumber = (v: any): number | undefined => {
               if (typeof v === 'number' && !Number.isNaN(v)) return v;
               if (typeof v === 'string' && v.trim() !== '') {
                 const n = Number(v);
@@ -582,7 +582,7 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasHealthCheck(legalDocumentStream)) {
           // await into unknown and validate fields before assigning to typed variable
-          const rawStream: unknown = await legalDocumentStream.healthCheck();
+          const rawStream: any = await legalDocumentStream.healthCheck();
           if (rawStream && typeof rawStream === 'object') {
             const s = rawStream as Record<string, unknown>;
             const validated: StreamHealth = {};
@@ -621,7 +621,7 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasHealthCheck(enterpriseVectorSearch)) {
           // Await raw unknown and validate shape before assigning to typed variable
-          const rawVec: unknown = await enterpriseVectorSearch.healthCheck();
+          const rawVec: any = await enterpriseVectorSearch.healthCheck();
           if (rawVec && typeof rawVec === 'object') {
             const v = rawVec as Record<string, unknown>;
             const validated: VectorHealth = {};
@@ -629,7 +629,7 @@ export class ProductionMonitoringDashboard {
             // Validate performance sub-object conservatively
             if (v.performance && typeof v.performance === 'object') {
               const p = v.performance as Record<string, unknown>;
-              const perf: { avgQueryTime?: number; [k: string]: unknown } = {};
+              const perf: { avgQueryTime?: number; [k: string]: any } = {};
               if (typeof p.avgQueryTime === 'number') {
                 perf.avgQueryTime = p.avgQueryTime;
               } else if (typeof p.avgQueryTime === 'string' && p.avgQueryTime.trim() !== '' && !Number.isNaN(Number(p.avgQueryTime))) {
@@ -829,7 +829,7 @@ export class ProductionMonitoringDashboard {
       averageLatency: number;
       activeConnections: number;
       errorRate: number;
-      [k: string]: unknown;
+      [k: string]: any;
     } = {
       documentsProcessed: 0,
       throughputPerSecond: 0,
@@ -842,7 +842,7 @@ export class ProductionMonitoringDashboard {
         const result = await legalDocumentStream.getStatistics();
         if (result && typeof result === 'object') {
           const r = result as Record<string, unknown>;
-          const toNumber = (v: unknown): number | undefined => {
+          const toNumber = (v: any): number | undefined => {
             if (typeof v === 'number' && !Number.isNaN(v)) return v;
             if (typeof v === 'string' && v.trim() !== '') {
               const n = Number(v);
@@ -1181,7 +1181,7 @@ export class ProductionMonitoringDashboard {
     return Array.from(new Set(recommendations));
   }
 
-  private convertToCSV(data: unknown): string {
+  private convertToCSV(data: any): string {
     // Minimal CSV exporter for tests/debugging. Exports timestamp + top-level fields if present.
     const rows: string[] = ['timestamp,field,value'];
     const ts = new Date().toISOString();
@@ -1197,7 +1197,7 @@ export class ProductionMonitoringDashboard {
     return rows.join('\n');
   }
 
-  private generatePDFReport(data: unknown): Buffer {
+  private generatePDFReport(data: any): Buffer {
     // Placeholder: return a Buffer with a simple textual representation.
     // Real implementations should use a PDF library (PDFKit, puppeteer, etc.)
     let payloadString: string;
@@ -1267,7 +1267,7 @@ export class ProductionMonitoringDashboard {
   }
 
   // Add helper to safely detect getMetrics presence
-  private hasGetMetrics(obj: unknown): obj is { getMetrics: (...args: unknown[]) => Promise<unknown> | unknown } {
+  private hasGetMetrics(obj: any): obj is { getMetrics: (...args: any[]) => Promise<unknown> | unknown } {
     return (
       typeof obj === 'object' &&
       obj !== null &&
@@ -1277,7 +1277,7 @@ export class ProductionMonitoringDashboard {
   }
 
   // Add helper to safely detect healthCheck presence on services
-  private hasHealthCheck(obj: unknown): obj is { healthCheck: (...args: unknown[]) => Promise<unknown> | unknown } {
+  private hasHealthCheck(obj: any): obj is { healthCheck: (...args: any[]) => Promise<unknown> | unknown } {
     return (
       typeof obj === 'object' &&
       obj !== null &&
@@ -1287,7 +1287,7 @@ export class ProductionMonitoringDashboard {
   }
 
   // Add helper to safely detect getStatistics presence on legalDocumentStream
-  private hasGetStatistics(obj: unknown): obj is { getStatistics: (...args: unknown[]) => Promise<unknown> | unknown } {
+  private hasGetStatistics(obj: any): obj is { getStatistics: (...args: any[]) => Promise<unknown> | unknown } {
     return (
       typeof obj === 'object' &&
       obj !== null &&
@@ -1302,20 +1302,20 @@ interface OrchestratorMetrics {
   averageLatency?: number;
   totalOperations?: number;
   binaryProtocolSavings?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 interface StreamHealth {
   healthy?: boolean;
   activeConnections?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 interface VectorHealth {
   healthy?: boolean;
   performance?: {
     avgQueryTime?: number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // Add small typed shapes for exports to avoid `any`

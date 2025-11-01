@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   import { browser } from '$app/environment';
   import { slide } from 'svelte/transition';
@@ -58,7 +58,6 @@
     return `${(ms / 1000).toFixed(1)}s`;
   }
 </script>
-
 <div class="chat-message {message.role}" role="article" aria-label="{message.role} message">
   <div class="message-header">
     <div class="message-role">
@@ -172,10 +171,8 @@
                 </div>
               </div>
             {/each}
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     {#if showMetadata && message.metadata}
       <div class="metadata-section">
         <button
@@ -220,15 +217,11 @@
               <div class="metadata-item">
                 <span class="label">Source:</span>
                 <span class="value cache">Cached</span>
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    {/if}
+              {/if}
+          {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .chat-message {
@@ -445,5 +438,3 @@
     }
   }
 </style>
-
-

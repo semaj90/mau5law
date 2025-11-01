@@ -24,10 +24,10 @@ type ConnectableRedisClient = RedisClientType & {
   connect?: () => Promise<void>;
 };
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (!err) return String(err);
   if (err instanceof Error) return err.message;
-  if (typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+  if (typeof err === 'object' && 'message' in err && typeof (err as { message: any }).message === 'string') {
     return (err as { message: string }).message;
   }
   return String(err);

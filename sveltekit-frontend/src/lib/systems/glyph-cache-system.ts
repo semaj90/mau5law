@@ -86,7 +86,7 @@ export class GlyphCacheSystem {
     }
     this.renderContext = context;
     // Configure for pixel-perfect rendering
-    this.renderContext.imageSmoothingEnabled = false;
+    this.renderContext.imageSmoothingEnabled = $state(false);
     this.renderContext.textAlign = 'center';
     this.renderContext.textBaseline = 'middle';
     console.log('🎨 Glyph rendering system initialized');

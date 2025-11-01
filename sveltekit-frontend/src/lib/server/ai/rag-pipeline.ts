@@ -3,7 +3,6 @@ import { eq, sql as drizzleSql, and, gte } from 'drizzle-orm';
 // Use non-any types to satisfy lint/TS rules while still allowing a runtime fallback.
 type TablePlaceholder = Record<string, unknown>;
 type SchemaFallback = { [table: string]: TablePlaceholder };
-
 let schema: SchemaFallback;
 try {
   // Cast from unknown to our safe shape (avoids introducing `any`)
@@ -56,7 +55,6 @@ const sql = postgres({
 });
 // --- Create Drizzle DB instance to use consistently as `db` ---
 const db = drizzle(sql);
-
 // Initialize Redis for caching
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
@@ -76,7 +74,6 @@ type OllamaEmbeddingsOptions = {
   model: string;
   requestOptions?: Record<string, any>;
 };
-
 class OllamaEmbeddingsClient {
   baseUrl: string;
   model: string;
@@ -97,13 +94,11 @@ class OllamaEmbeddingsClient {
         ...(this.requestOptions || {}),
       },
     };
-
     // Ensure numeric thread option uses Ollama expected key (num_thread)
     if (this.requestOptions?.numThread != null) {
       payload.options.num_thread = this.requestOptions.numThread;
       delete payload.options.numThread;
     }
-
     const res = await fetch(getOllamaEndpoint('embeddings', this.baseUrl), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -122,7 +117,6 @@ class OllamaEmbeddingsClient {
     return [];
   }
 }
-
 const embeddings = new OllamaEmbeddingsClient({
   baseUrl: OLLAMA_BASE_URL,
   model: EMBEDDING_MODEL,
@@ -163,7 +157,7 @@ const textSplitter = new RecursiveCharacterTextSplitter({
   keepSeparator: true,
 });
 export class LegalRAGPipeline {
-  private initialized = false;
+  private initialized = $state(false);
   async initialize() {
     if (this.initialized) return;
     // Test database connection
@@ -204,17 +198,14 @@ export class LegalRAGPipeline {
           createdBy: userId,
         })
         .returning();
-
       // 2. Generate document-level embedding
       const docEmbedding = await this.generateEmbedding(`${title}\n${content.substring(0, 2000)}`);
       await db
         .update(schema.legalDocuments)
         .set({ embedding: JSON.stringify(docEmbedding) })
         .where(eq(schema.legalDocuments.id, document.id));
-
       // 3. Split into chunks for detailed retrieval
       const chunks = await this.smartLegalChunking(content);
-
       // 4. Process chunks in batches
       const BATCH_SIZE = 10;
       for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
@@ -239,7 +230,6 @@ export class LegalRAGPipeline {
         );
         await db.insert(schema.documentChunks).values(chunkRecords);
       }
-
       // 5. Auto-generate tags using AI
       const tags = await this.generateAutoTags(content, documentType);
       for (const tag of tags) {
@@ -252,7 +242,6 @@ export class LegalRAGPipeline {
           model: LLM_MODEL,
         });
       }
-
       const processingTime = Date.now() - startTime;
       console.log(`[RAG] Document ingestion completed in ${processingTime}ms`);
       return {
@@ -293,7 +282,6 @@ export class LegalRAGPipeline {
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
         LIMIT ${limit * 2}
       `;
-
       const keywordResults = await sql`
         SELECT
           dc.id,
@@ -309,7 +297,6 @@ export class LegalRAGPipeline {
         ORDER BY text_rank DESC
         LIMIT ${limit}
       `;
-
       // --- typed result merging (replaces previous any usage) ---
       type VectorRow = {
         id: string | number;
@@ -334,9 +321,7 @@ export class LegalRAGPipeline {
         text_rank?: number;
         score: number;
       };
-
       const combinedResults = new Map<string, CombinedRow>();
-
       (vectorResults as VectorRow[]).forEach(r => {
         const id = String(r.id);
         const sim = typeof r.similarity === 'number' ? r.similarity : 0;
@@ -349,7 +334,6 @@ export class LegalRAGPipeline {
           score: sim * 0.7,
         });
       });
-
       (keywordResults as KeywordRow[]).forEach(r => {
         const id = String(r.id);
         const textRank = typeof r.text_rank === 'number' ? r.text_rank : 0;
@@ -368,12 +352,10 @@ export class LegalRAGPipeline {
           });
         }
       });
-
       // Sort by combined score and convert to Documents
       const sortedResults = Array.from(combinedResults.values())
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
-
       return sortedResults.map(
         (r): LangChainDocument => ({
           pageContent: r.content,
@@ -386,7 +368,7 @@ export class LegalRAGPipeline {
           },
         })
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('[RAG] Search error:', err);
       throw err;
@@ -416,9 +398,7 @@ export class LegalRAGPipeline {
           confidence: 0,
         };
       }
-
       const context = relevantDocs.map((doc, idx) => `[Source ${idx + 1}]:\n${doc.pageContent}`).join('\n\n---\n\n');
-
       // --- Cleaned prompt (removed stray characters and ensured valid template) ---
       const promptTemplate = PromptTemplate.fromTemplate(`
 You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
@@ -434,14 +414,11 @@ Instructions:
 5. If the context doesn't fully answer the question, clearly state what information is missing
 Answer:
       `);
-
       // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
       const promptText = await promptTemplate.format({ context, question });
       const llmResult = await (llm as any).call(promptText);
       const answer = typeof llmResult === 'string' ? llmResult : llmResult?.text || '';
-
       const analysis = await this.analyzeAnswer(answer, relevantDocs);
-
       const queryEmbedding = await this.generateEmbedding(question);
       await db.insert(schema.userAiQueries).values({
         userId,
@@ -459,7 +436,6 @@ Answer:
           keyPoints: analysis.keyPoints,
         },
       });
-
       return {
         answer,
         sources: relevantDocs.map(d => ({
@@ -531,14 +507,12 @@ Provide specific clause references where applicable.
       FROM evidence
       WHERE id = ANY(${evidenceIds})
     `;
-
     // Build formatted evidence blocks for the prompt
     const formattedEvidence = evidenceRecords.map(
       (e: any, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):
 ${e.description ?? ''}
 ${e.summary ?? ''}`
     );
-
     const correlationPrompt = PromptTemplate.fromTemplate(`
 As a legal analyst, examine the relationships between these pieces of evidence:
 ${formattedEvidence.join('\n\n')}
@@ -592,7 +566,6 @@ Analysis:
       /(?:^|\n)\d+\.\s+[A-Z][^\n]+/g,
       /(?:^|\n)\([a-z]\)\s+[^\n]+/g,
     ];
-
     let structuredChunks: string[] = [];
     for (const pattern of sectionPatterns) {
       const matches = content.match(pattern);
@@ -606,12 +579,10 @@ Analysis:
         if (structuredChunks.length > 0) break;
       }
     }
-
     if (structuredChunks.length === 0) {
       const docs = await textSplitter.createDocuments([content]);
       structuredChunks = docs.map(d => d.pageContent);
     }
-
     for (const chunk of structuredChunks) {
       if (chunk.length > 2000) {
         const subDocs = await textSplitter.createDocuments([chunk]);
@@ -654,14 +625,12 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     }
     const avgScore = sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / (sources.length || 1);
     const confidence = Math.min(0.95, avgScore);
-
     // Extract simple key points from the answer: first 3 non-empty lines after trimming common bullets
     const keyPoints = (answer || '')
       .split(/\r?\n/)
       .map(line => line.replace(/^[\d.•-\s]+/, '').trim())
       .filter(Boolean)
       .slice(0, 3);
-
     return {
       confidence,
       keyPoints,
@@ -676,7 +645,6 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       legalIssues: [] as string[],
       recommendations: [] as string[],
     };
-
     const lines = (analysis || '').split(/\r?\n/);
     let currentSection = '';
     for (const line of lines) {

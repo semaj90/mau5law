@@ -83,8 +83,8 @@ class RabbitMQService implements IRabbitMQService {
   private connection: Connection | null = null;
   private channel: Channel | null = null;
   private config: RabbitMQConfig;
-  private isConnected = false;
-  private isInitializing = false;
+  private isConnected = $state(false);
+  private isInitializing = $state(false);
 
   private constructor() {
     // Avoid importing SvelteKit server-only env modules at top-level; read from process.env at runtime.
@@ -122,17 +122,17 @@ class RabbitMQService implements IRabbitMQService {
         // connection handlers
         this.connection.on('error', (err: any) => {
           console.error('RabbitMQ connection error:', err);
-          this.isConnected = false;
+          this.isConnected = $state(false);
         });
         this.connection.on('close', () => {
           console.log('RabbitMQ connection closed');
-          this.isConnected = false;
+          this.isConnected = $state(false);
         });
 
         await this.setupInfrastructure();
 
         this.isConnected = true;
-        this.isInitializing = false;
+        this.isInitializing = $state(false);
         console.log('✅ RabbitMQ connected and configured');
         return;
       } catch (err) {
@@ -140,7 +140,7 @@ class RabbitMQService implements IRabbitMQService {
         if (attempt < maxRetries) {
           await new Promise(r => setTimeout(r, retryDelay));
         } else {
-          this.isInitializing = false;
+          this.isInitializing = $state(false);
           throw new Error('Could not connect to RabbitMQ after multiple attempts');
         }
       }
@@ -303,7 +303,7 @@ class RabbitMQService implements IRabbitMQService {
       }
       this.connection = null;
     }
-    this.isConnected = false;
+    this.isConnected = $state(false);
     console.log('RabbitMQ connection closed');
   }
 

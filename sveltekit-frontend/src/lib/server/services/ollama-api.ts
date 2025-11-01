@@ -3,10 +3,8 @@ export function getOllamaEndpoint() {
   // prefer explicit env var; fallback to local default
   return (process.env.OLLAMA_API_URL || 'http://localhost:11434').replace(/\/+$/, '');
 }
-
 const OLLAMA_URL = getOllamaEndpoint();
 const DEFAULT_EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
-
 export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED_MODEL): Promise<number[] | null> {
   try {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
@@ -27,7 +25,6 @@ export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED
     return null;
   }
 }
-
 export async function generateTextFromOllama(prompt: string, model = process.env.OLLAMA_DEFAULT_MODEL || 'gemma3-legal:latest') {
   try {
     const res = await fetch(`${OLLAMA_URL}/api/generate`, {
@@ -43,5 +40,4 @@ export async function generateTextFromOllama(prompt: string, model = process.env
     return null;
   }
 }
-
 export default { getEmbeddingFromOllama, generateTextFromOllama };

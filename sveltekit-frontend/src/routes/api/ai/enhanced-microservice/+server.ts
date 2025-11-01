@@ -49,26 +49,26 @@ const config: GoMicroserviceConfig = {
 // --- ADDED: Top-level type and helper so class methods can use them before later handlers ---
 type MicroserviceResult = {
   processing_time?: number;
-  chunks?: unknown[];
-  legal_entities?: unknown[];
+  chunks?: any[];
+  legal_entities?: any[];
   risk_assessment?: {
     overall_score?: number;
-    risk_factors?: unknown[];
+    risk_factors?: any[];
     confidence?: number;
   };
   keywords?: string[];
   total_found?: number;
   rag_context?: {
-    cross_references?: unknown[];
+    cross_references?: any[];
     contextual_summary?: string;
-    related_documents?: unknown[];
+    related_documents?: any[];
   };
-  results?: unknown[];
+  results?: any[];
   similarity?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
@@ -80,7 +80,7 @@ function getErrorMessage(err: unknown): string {
 // ----------------- ADDED HELPERS -----------------
 // Provide safe, minimal implementations so the handler can compile and run.
 // Place these near other top-level helpers.
-function calculateConfidenceScore(results: unknown[]): number {
+function calculateConfidenceScore(results: any[]): number {
   if (!Array.isArray(results) || results.length === 0) return 0;
   let sum = 0;
   let count = 0;
@@ -130,8 +130,8 @@ function getCudaEnabledFromHealth(health: Record<string, unknown> | undefined): 
   return false;
 }
 
-function extractCrossReferences(relatedSearches: MicroserviceResult[] | undefined): unknown[] {
-  const refs: unknown[] = [];
+function extractCrossReferences(relatedSearches: MicroserviceResult[] | undefined): any[] {
+  const refs: any[] = [];
   if (!Array.isArray(relatedSearches)) return refs;
   for (const r of relatedSearches) {
     // Prefer strongly typed path on MicroserviceResult; fallback to indexed access
@@ -183,7 +183,7 @@ class GoMicroserviceClient {
   private async makeRequest<T = Record<string, unknown>>(
     endpoint: string,
     method: string = 'GET',
-    body?: unknown
+    body?: any
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     for (let attempt = 1; attempt <= this.retries; attempt++) {
@@ -206,7 +206,7 @@ class GoMicroserviceClient {
         // cast result to T
         const parsed = (await response.json()) as T;
         return parsed;
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = getErrorMessage(error);
         console.warn(`Attempt ${attempt} failed for ${endpoint}:`, message);
         if (attempt === this.retries) {
@@ -265,7 +265,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       },
       { status: 400 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     // normalized error handling using helper
     const message = getErrorMessage(error);
     console.error('Health check failed:', message);
@@ -518,7 +518,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = getErrorMessage(error);
     console.error(`API action failed (${action}):`, message);
     return json(

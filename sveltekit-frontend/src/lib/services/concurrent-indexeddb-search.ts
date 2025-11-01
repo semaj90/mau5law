@@ -51,7 +51,7 @@ export class ConcurrentIndexedDBSearch {
   private fuse: InstanceType<typeof Fuse> | null = null;
   private workers: Worker[] = [];
   private workerPool: number = 4;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private documents: SearchableDocument[] = [];
 
   constructor() {
@@ -73,7 +73,7 @@ export class ConcurrentIndexedDBSearch {
       }
       this.isInitialized = true;
       console.log('✅ Concurrent IndexedDB Search initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize IndexedDB search:', error instanceof Error ? error : String(error));
       throw error;
     }
@@ -132,7 +132,7 @@ export class ConcurrentIndexedDBSearch {
         shouldSort: true,
       };
       this.fuse = new (Fuse as any)(this.documents, fuseOptions);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn(
         'Fuse initialization failed, falling back to non-fuzzy search',
         err instanceof Error ? err : String(err)
@@ -253,7 +253,7 @@ export class ConcurrentIndexedDBSearch {
       console.log(`🎯 Search completed in ${(endTime - startTime).toFixed(2)}ms`);
       console.log(`📊 Found ${finalResults.length} results for query: "${request.query}"`);
       return finalResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Search error:', error instanceof Error ? error : String(error));
       return [];
     }
@@ -423,7 +423,7 @@ export class ConcurrentIndexedDBSearch {
       }
       const result = await response.json();
       return (result?.embedding as number[]) || [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Embedding generation failed:', error instanceof Error ? error : String(error));
       return [];
     }
@@ -554,7 +554,7 @@ export class ConcurrentIndexedDBSearch {
       this.db.close();
       this.db = null;
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🛑 Concurrent IndexedDB Search destroyed');
   }
 }

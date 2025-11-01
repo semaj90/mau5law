@@ -10,7 +10,6 @@
  */
 import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types.js';
 import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants-minimal.js';
-
 interface DeviceCapabilities {
   memory: number; // GB,
   cores: number;
@@ -21,7 +20,6 @@ interface DeviceCapabilities {
   webgl: boolean;
   webgpu: boolean;
 }
-
 export class GamingEvolutionManager {
   private static instance: GamingEvolutionManager;
   private capabilities: DeviceCapabilities | null = null;
@@ -31,7 +29,6 @@ export class GamingEvolutionManager {
   private frameMetrics: number[] = [];
   private listeners: Set<(state: GamingThemeState) => void> = new Set();
   private boundHandleDeviceChange: () => void;
-
   private constructor(config: Partial<ProgressiveGamingConfig> = {}) {
     // sensible defaults; cast because config shape may be larger in project
     this.config = {
@@ -58,7 +55,6 @@ export class GamingEvolutionManager {
       bitsUICompatibility: true,
       ...config,
     } as unknown as ProgressiveGamingConfig;
-
     // initialize currentState with safe defaults
     // only accept configured default eras that are known; avoid comparing against unrelated literals
     const allowedEras = ['8bit', '16bit', 'n64'] as const;
@@ -66,7 +62,6 @@ export class GamingEvolutionManager {
       typeof this.config.defaultEra === 'string' && allowedEras.includes(this.config.defaultEra as any)
         ? (this.config.defaultEra as GamingEra)
         : '8bit';
-
     this.currentState = {
       era: initialEra,
       currentEra: initialEra,
@@ -83,18 +78,15 @@ export class GamingEvolutionManager {
       particleEffects: true,
       retroShaders: true,
     } as GamingThemeState;
-
     this.boundHandleDeviceChange = this.handleDeviceChange;
     this.initialize();
   }
-
   public static getInstance(config?: Partial<ProgressiveGamingConfig>): GamingEvolutionManager {
     if (!GamingEvolutionManager.instance) {
       GamingEvolutionManager.instance = new GamingEvolutionManager(config);
     }
     return GamingEvolutionManager.instance;
   }
-
   private async initialize(): Promise<void> {
     if (typeof window === 'undefined') return;
     await this.detectDeviceCapabilities();
@@ -107,10 +99,8 @@ export class GamingEvolutionManager {
         /* ignore */
       });
     }
-
     // stable listener reference so we can remove it in dispose()
     window.addEventListener('resize', this.boundHandleDeviceChange);
-
     // memory pressure monitoring if available
     try {
       // performance.memory is non-standard; guard access
@@ -122,16 +112,13 @@ export class GamingEvolutionManager {
       // no memory monitoring available
     }
   }
-
   private async detectDeviceCapabilities(): Promise<void> {
     if (typeof window === 'undefined') return;
-
     type NavigatorEx = Navigator & {
       deviceMemory?: number;
       connection?: { effectiveType?: string };
       gpu?: any;
     };
-
     const nav = navigator as NavigatorEx;
     const capabilities: DeviceCapabilities = {
       memory: typeof nav.deviceMemory === 'number' ? nav.deviceMemory : 4,
@@ -146,22 +133,18 @@ export class GamingEvolutionManager {
       webgl: this.hasWebGL(),
       webgpu: await this.hasWebGPU(),
     };
-
     this.capabilities = capabilities;
     // lightweight logging for diagnostics
     console.log('🎮 Detected device capabilities:', capabilities);
   }
-
   private async detectGPUCapability(): Promise<DeviceCapabilities['gpu']> {
     try {
       const canvas = document.createElement('canvas');
       const gl = (canvas.getContext('webgl') ||
         canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
       if (!gl) return 'basic';
-
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
       if (!debugInfo) return 'integrated';
-
       const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) as unknown;
       if (typeof renderer === 'string') {
         const r = renderer.toLowerCase();
@@ -175,7 +158,6 @@ export class GamingEvolutionManager {
       return 'unknown';
     }
   }
-
   private detectConnectionSpeed(): DeviceCapabilities['connection'] {
     type NavigatorEx = Navigator & { connection?: { effectiveType?: string } };
     const nav = navigator as NavigatorEx;
@@ -190,7 +172,6 @@ export class GamingEvolutionManager {
     }
     return 'unknown';
   }
-
   private hasWebGL(): boolean {
     try {
       const canvas = document.createElement('canvas');
@@ -200,7 +181,6 @@ export class GamingEvolutionManager {
       return false;
     }
   }
-
   private async hasWebGPU(): Promise<boolean> {
     type NavigatorEx = Navigator & { gpu?: any };
     try {
@@ -212,13 +192,11 @@ export class GamingEvolutionManager {
       return false;
     }
   }
-
   private setupPerformanceMonitoring(): void {
     if (typeof window === 'undefined' || !this.config.enableAutoEvolution) return;
     try {
       // guard for envs without PerformanceObserver
       if (typeof PerformanceObserver === 'undefined') return;
-
       this.performanceObserver = new PerformanceObserver((list: PerformanceObserverEntryList) => {
         const entries = list.getEntries() as PerformanceEntry[];
         entries.forEach(entry => {
@@ -236,7 +214,6 @@ export class GamingEvolutionManager {
       console.warn('Performance monitoring not supported:', error);
     }
   }
-
   private monitorMemoryPressure(): void {
     const checkMemory = () => {
       try {
@@ -262,7 +239,6 @@ export class GamingEvolutionManager {
     // store interval id? not required here, but could be added for dispose
     setInterval(checkMemory, 5000);
   }
-
   private evaluatePerformance(): void {
     if (this.frameMetrics.length < 10) return;
     const sum = this.frameMetrics.reduce((a, b) => a + b, 0);
@@ -272,14 +248,12 @@ export class GamingEvolutionManager {
       this.updatePerformanceLevel(performanceLevel);
     }
   }
-
   private getPerformanceLevel(frameTime: number): GamingThemeState['performanceLevel'] {
     const threshold = this.config.performanceThreshold ?? 16.67;
     if (frameTime > threshold * 2) return 'low';
     if (frameTime > threshold) return 'medium';
     return 'high';
   }
-
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
     this.currentState = {
       ...this.currentState,
@@ -299,7 +273,6 @@ export class GamingEvolutionManager {
     }
     this.notifyListeners();
   }
-
   private determineOptimalEra(): GamingEra {
     if (!this.capabilities) return '8bit';
     const { memory, cores, gpu, webgl, webgpu } = this.capabilities;
@@ -314,7 +287,6 @@ export class GamingEvolutionManager {
     // NES: Universal fallback
     return '8bit';
   }
-
   public async setEra(era: GamingEra): Promise<void> {
     if (era === this.currentState.currentEra) return;
     this.currentState = {
@@ -332,7 +304,6 @@ export class GamingEvolutionManager {
     this.notifyListeners();
     console.log(`🎮 Gaming era switched to: ${era}`);
   }
-
   public async upgradeEra(): Promise<void> {
     if (!this.currentState.availableEras || !this.currentState.currentEra) return;
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
@@ -341,7 +312,6 @@ export class GamingEvolutionManager {
       if (nextEra) await this.setEra(nextEra);
     }
   }
-
   public async downgradeEra(): Promise<void> {
     if (!this.currentState.availableEras || !this.currentState.currentEra) return;
     const currentIndex = this.currentState.availableEras.indexOf(this.currentState.currentEra);
@@ -350,7 +320,6 @@ export class GamingEvolutionManager {
       if (prevEra) await this.setEra(prevEra);
     }
   }
-
   // keep as method bound at construction for stable add/remove
   private handleDeviceChange = (): void => {
     // Re-detect capabilities on device change
@@ -371,7 +340,6 @@ export class GamingEvolutionManager {
         });
     }, 100);
   };
-
   public subscribe(callback: (state: GamingThemeState) => void): () => void {
     this.listeners.add(callback);
     // Immediately call with current state
@@ -384,7 +352,6 @@ export class GamingEvolutionManager {
       this.listeners.delete(callback);
     };
   }
-
   private notifyListeners(): void {
     this.listeners.forEach(callback => {
       try {
@@ -394,19 +361,15 @@ export class GamingEvolutionManager {
       }
     });
   }
-
   public getCurrentState(): GamingThemeState {
     return { ...this.currentState };
   }
-
   public getCapabilities(): DeviceCapabilities | null {
     return this.capabilities ? { ...this.capabilities } : null;
   }
-
   public getConfig(): ProgressiveGamingConfig {
     return { ...this.config };
   }
-
   public updateConfig(updates: Partial<ProgressiveGamingConfig>): void {
     this.config = { ...this.config, ...updates } as ProgressiveGamingConfig;
     if (updates.enableAutoEvolution !== undefined) {
@@ -418,7 +381,6 @@ export class GamingEvolutionManager {
       }
     }
   }
-
   public dispose(): void {
     if (this.performanceObserver) {
       this.performanceObserver.disconnect();

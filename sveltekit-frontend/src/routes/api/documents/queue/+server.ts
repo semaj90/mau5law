@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 500 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ [queue] API POST error:', error);
     return json(
       {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async () => {
       connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ [queue] Health check error:', error);
     return json(
       {

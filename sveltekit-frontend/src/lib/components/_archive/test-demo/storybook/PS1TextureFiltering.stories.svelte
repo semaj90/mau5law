@@ -144,7 +144,7 @@ https://svelte.dev/e/expected_token -->
     mipmapLevel = 0;
     anisotropicSamples = 1;
     textureScale = 0.5;
-    enableAntialiasing = false;
+    enableAntialiasing = $state(false);
     subsampleRate = 1;
     dithering = true;
     texelAccuracy = 0.6;
@@ -157,7 +157,7 @@ https://svelte.dev/e/expected_token -->
     textureScale = 2;
     enableAntialiasing = true;
     subsampleRate = 2;
-    dithering = false;
+    dithering = $state(false);
     texelAccuracy = 1.0;
     updateFilteringProperties();
   }

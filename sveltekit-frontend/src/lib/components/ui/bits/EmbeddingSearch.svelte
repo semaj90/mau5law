@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from './Button.svelte';
-  import Input from './Input.svelte';
-  import Card from './Card.svelte';
+  import { Button } from './Button.svelte';
+  import { Input } from './Input.svelte';
+  import { Card } from './Card.svelte';
   import { z } from "zod";
   import { Search, Database, Zap, AlertCircle, CheckCircle, Target } from 'lucide-svelte';
   // Search validation schema
@@ -120,7 +120,7 @@
     } catch (err: any) {
       error = err.message || 'Search error occurred';
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // Handle result selection
@@ -132,7 +132,6 @@
   let hasResults = $derived(results.length > 0);
   let similarityThresholdLabel = $derived(`${Math.round(threshold * 100)}% similarity`);
 </script>
-
 <div class="search-container">
   <Card title="Enhanced Semantic Search" nesStyle={true} {variant}>
     {#snippet children()}
@@ -208,8 +207,7 @@
                 disabled={isSearching}
               />
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if error}
           <div class="error-display">
             <div class="nes-container is-rounded">
@@ -218,8 +216,7 @@
                 {error}
               </p>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {/snippet}
   </Card>
@@ -232,7 +229,7 @@
           </p>
         </div>
         <div class="search-results">
-          {#each results as result}
+          {#each Array.isArray(results) ? results : [] as result}
             <div class="result-item" onclick={() => selectResult(result)}>
               <div class="result-header">
                 <div class="similarity-score">
@@ -257,8 +254,7 @@
                   {#if result.metadata.length}
                     <span class="nes-badge">{result.metadata.length} chars</span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
               <div class="result-footer">
                 <span class="nes-text is-disabled">
                   Created: {new Date(result.createdAt).toLocaleDateString()}
@@ -271,7 +267,6 @@
     </Card>
   {/if}
 </div>
-
 <style>
   .search-container {
     max-width: 1000px;
@@ -409,5 +404,3 @@
     }
   }
 </style>
-
-

@@ -8,17 +8,17 @@ import type { UserRole } from './roles.js';
 
 // Minimal redis client & pipeline interfaces used by this module
 type RedisPipeline = {
-  set(key: string, value: string): unknown;
-  expire(key: string, seconds: number): unknown;
-  sAdd?(key: string, member: string): unknown;
-  sRem?(key: string, member: string): unknown;
-  del?(key: string): unknown;
+  set(key: string, value: string): any;
+  expire(key: string, seconds: number): any;
+  sAdd?(key: string, member: string): any;
+  sRem?(key: string, member: string): any;
+  del?(key: string): any;
   exec(): Promise<unknown>;
 };
 
 interface RedisClientInterface {
   connect?: () => Promise<void>;
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
   multi: () => RedisPipeline;
   get: (key: string) => Promise<string | null>;
   set: (key: string, value: string) => Promise<unknown>;
@@ -27,7 +27,7 @@ interface RedisClientInterface {
   sMembers: (key: string) => Promise<string[]>;
   sRem: (key: string, member: string) => Promise<unknown>;
   del: (key: string) => Promise<unknown>;
-  scan: (cursor: string, ...args: unknown[]) => Promise<[string, string[]]>;
+  scan: (cursor: string, ...args: any[]) => Promise<[string, string[]]>;
   multiExec?: () => Promise<unknown>;
 }
 
@@ -67,7 +67,7 @@ export class SessionManager {
   private redisClient: RedisClientInterface | null = null;
   private config: SessionConfig;
   private cleanupTimer: NodeJS.Timeout | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   private constructor(config: Partial<SessionConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -98,7 +98,7 @@ export class SessionManager {
       }
       // Setup error handling
       if (this.redisClient && typeof this.redisClient.on === 'function') {
-        this.redisClient.on('error', (err: unknown) => {
+        this.redisClient.on('error', (err: any) => {
           if (err instanceof Error) {
             console.error('Redis session store error:', err.message);
           } else {
@@ -113,7 +113,7 @@ export class SessionManager {
       this.startCleanupTimer();
       this.isInitialized = true;
       console.log('Session manager initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize session manager:', error);
       throw error;
     }
@@ -199,7 +199,7 @@ export class SessionManager {
         return null;
       }
       return sessionData;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error getting session:', error instanceof Error ? error.message : error);
       return null;
     }
@@ -239,7 +239,7 @@ export class SessionManager {
       pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000));
       await pipeline.exec();
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error updating session activity:', error instanceof Error ? error.message : error);
       return false;
     }
@@ -268,7 +268,7 @@ export class SessionManager {
       await pipeline.exec();
       console.log(`Session destroyed: ${sessionId}`);
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error destroying session:', error instanceof Error ? error.message : error);
       return false;
     }
@@ -305,7 +305,7 @@ export class SessionManager {
         console.log(`Destroyed ${destroyedCount} sessions for user ${userId}`);
       }
       return destroyedCount;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error destroying user sessions:', error instanceof Error ? error.message : error);
       return 0;
     }
@@ -334,7 +334,7 @@ export class SessionManager {
         }
       }
       return sessions;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error getting user sessions:', error instanceof Error ? error.message : error);
       return [];
     }
@@ -398,7 +398,7 @@ export class SessionManager {
         }
         console.log(`Enforced session limit for user ${userId}, removed ${sessionsToRemove} session(s)`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error enforcing session limits:', error instanceof Error ? error.message : error);
     }
   }
@@ -462,7 +462,7 @@ export class SessionManager {
         currentCursor = result[0];
         hasMore = currentCursor !== '0';
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Error cleaning up expired sessions:', error instanceof Error ? error.message : error);
     }
   }

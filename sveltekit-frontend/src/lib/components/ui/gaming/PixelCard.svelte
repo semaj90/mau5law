@@ -228,7 +228,7 @@ ${scanlinePosition}%;
   }
   function handleMouseLeave() {
     if (interactive) {
-      isHovered = false;
+      isHovered = $state(false);
     }
   }
   onMount(() => {
@@ -253,26 +253,22 @@ ${scanlinePosition}%;
       <div class="pixel-card__status-indicator pixel-card__status-indicator--{analysisStatus}">
         <div class="status-dot"></div>
         <span class="status-text">{analysisStatus.toUpperCase()}</span>
-      </div>
-    {/if}
+      {/if}
     {#if priority}
       <div class="pixel-card__priority">
         <span class="priority-emoji">{priorityEmojis[priority]}</span>
         <span class="priority-text">{priority.toUpperCase()}</span>
-      </div>
-    {/if}
+      {/if}
     {#if classification}
       <div class="pixel-card__classification">
         <span class="classification-badge">{classificationBadges[classification]}</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Header section -->
   {#if title || iconEmoji || evidenceId}
     <div class="pixel-card__header">
       {#if iconEmoji}
-        <div class="pixel-card__icon">{iconEmoji}</div>
-      {/if}
+        <div class="pixel-card__icon">{iconEmoji}{/if}
       <div class="pixel-card__header-text">
         {#if title}
           <h3 class="pixel-card__title">{title}</h3>
@@ -281,11 +277,9 @@ ${scanlinePosition}%;
           <p class="pixel-card__subtitle">{subtitle}</p>
         {/if}
         {#if evidenceId}
-          <div class="pixel-card__evidence-id">ID: {evidenceId}</div>
-        {/if}
+          <div class="pixel-card__evidence-id">ID: {evidenceId}{/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Image section -->
   {#if imageUrl}
     <div class="pixel-card__image-container">
@@ -296,8 +290,7 @@ ${scanlinePosition}%;
         loading="lazy"
       />
       <div class="pixel-card__image-overlay"></div>
-    </div>
-  {/if}
+    {/if}
   <!-- Content section -->
   <div class="pixel-card__content">
     {#if children}
@@ -314,8 +307,7 @@ ${scanlinePosition}%;
       <div class="pixel-card__case-ref">
         <span class="case-ref-label">CASE:</span>
         <span class="case-ref-value">{caseReference}</span>
-      </div>
-    {/if}
+      {/if}
     {#if confidenceScore !== undefined}
       <div class="pixel-card__confidence">
         <span class="confidence-label">CONF:</span>
@@ -323,30 +315,25 @@ ${scanlinePosition}%;
           <div class="confidence-fill" style="width: {confidenceScore * 100}%"></div>
         </div>
         <span class="confidence-value">{Math.round(confidenceScore * 100)}%</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Pixel effects -->
   {#if animated}
     <!-- Scanlines for arcade variant -->
     {#if variant === 'arcade'}
-      <div class="pixel-card__scanlines"></div>
-    {/if}
+      <div class="pixel-card__scanlines">{/if}
     <!-- CRT effect for classic variant -->
     {#if variant === 'classic'}
-      <div class="pixel-card__crt-effect"></div>
-    {/if}
+      <div class="pixel-card__crt-effect">{/if}
     <!-- Pixel grid overlay -->
-    <div class="pixel-card__pixel-overlay"></div>
-  {/if}
+    <div class="pixel-card__pixel-overlay">{/if}
   <!-- Glow effect -->
   {#if glowing}
-    <div class="pixel-card__glow"></div>
-  {/if}
+    <div class="pixel-card__glow">{/if}
 </div>
 <style>
   .pixel-card {
-    position relative;
+    position: relative;
     background: var(--pixel-primary);
     color: var(--pixel-text);
     font-family: 'Courier New', monospace;
@@ -501,7 +488,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Layout sections */ {}
   .pixel-card__status-bar {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -562,7 +549,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     margin-top: calc(var(--pixel-size) / 2);
   }
   .pixel-card__image-container {
-    position relative;
+    position: relative;
     margin: 0 calc(var(--pixel-size) * 2);
   }
   .pixel-card__image {
@@ -572,7 +559,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     border: calc(var(--pixel-size) / 2) solid var(--pixel-secondary);
   }
   .pixel-card__image-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -630,11 +617,11 @@ transparent 52% {}
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #FF0000, #FFFF00, #00FF00);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
 /* Pixel effects */ {}
   .pixel-card__scanlines {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -649,7 +636,7 @@ transparent calc(var(--scanline-position) * 1% + 4px) {}
     z-index: 5,
   }
   .pixel-card__crt-effect {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -667,7 +654,7 @@ rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4) {}
     z-index: 5,
   }
   .pixel-card__pixel-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -691,7 +678,7 @@ rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
     z-index: 1,
   }
   .pixel-card__glow {
-    position absolute;
+    position: absolute;
     top: calc(-1 * var(--pixel-size));
     left: calc(-1 * var(--pixel-size));
     right: calc(-1 * var(--pixel-size));
@@ -733,4 +720,3 @@ rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
     }
   }
 </style>
-

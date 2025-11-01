@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
   import { Dialog as DialogPrimitive } from "bits-ui";
   // Removed melt dependency - using bits-ui Dialog primitives only
-  import ModernButton from "./ModernButton.svelte";
+  import { ModernButton } from "./ModernButton.svelte";
   interface Props {
     open?: boolean;
     title: string;
@@ -35,7 +35,7 @@
   });
   // Handle close events
   function handleClose() {
-    open = false;
+    open = $state(false);
     onClose?.();
   }
   // Dynamic classes for size
@@ -50,7 +50,6 @@
     return `dialog-content ${sizes[size]}`;
   });
 </script>
-
 <DialogPrimitive.Root bind:open>
   {#if trigger}
     <DialogPrimitive.Trigger>
@@ -87,7 +86,7 @@
       </header>
       <!-- Body content -->
       <div class="dialog-body">
-        {@render children?.()}
+        <slot />
       </div>
       <!-- Footer if provided -->
       {#if footer}
@@ -98,10 +97,9 @@
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
-
 <style>
   .dialog-overlay {
-    position fixed;
+    position: fixed;
 d;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
@@ -110,7 +108,7 @@ d;
     animation: overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-content {
-    position fixed;
+    position: fixed;
 d;
     top: 50%;
     left: 50%;
@@ -216,4 +214,3 @@ d;
     max-height: none;
   }
 </style>
-

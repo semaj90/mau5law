@@ -2,7 +2,6 @@
 <script lang="ts">
   // Removed invalid runes import and problematic lucide-svelte named imports
   import { cn } from '$lib/utils';
-
   // --- CHANGED: Add minimal TS interfaces to avoid: "undefined" property access errors ---
   interface CriminalRecord {
     id?: string;
@@ -13,7 +12,6 @@
     disposition?: keyof typeof dispositionConfig;
     sentence?: string;
   }
-
   interface CriminalProfile {
     id?: string;
     personalInfo?: {
@@ -46,17 +44,15 @@
     criminalHistory?: CriminalRecord[];
     notes?: string;
   }
-
   // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
   export let profile: CriminalProfile | undefined = undefined;
   export let viewMode: 'full' | 'summary' | 'identification' = 'full';
-  export let showSensitiveInfo = false;
+  export let showSensitiveInfo = $state(false);
   export let interactive = true;
   export let onViewFullRecord: ((recordId: string) => void) | undefined;
   export let onUpdateProfile: ((profile: CriminalProfile) => void) | undefined;
   export let onViewMugshot: ((mugshotUrl: string) => void) | undefined;
   export let className: string = '';
-
   // Configs - consistent property names
   const riskConfig = {
     low: { label: 'Low Risk', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
@@ -64,7 +60,6 @@
     high: { label: 'High Risk', className: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
     extreme: { label: 'Extreme Risk', className: 'bg-red-500/20 text-red-400 border-red-500/30' }
   };
-
   const statusConfig = {
     at_large: { label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: '⚠️' },
     incarcerated: { label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: '🔒' },
@@ -73,7 +68,6 @@
     deceased: { label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: '⚰️' },
     cleared: { label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: '✅' }
   };
-
   const dispositionConfig = {
     convicted: { label: 'Convicted', className: 'bg-red-500/20 text-red-400' },
     acquitted: { label: 'Acquitted', className: 'bg-green-500/20 text-green-400' },
@@ -81,12 +75,10 @@
     pending: { label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400' },
     sealed: { label: 'Sealed', className: 'bg-gray-500/20 text-gray-400' }
   };
-
   // helpers
   function toDate(d: string | Date): Date {
     return d instanceof Date ? d : new Date(d);
   }
-
   function computeAge(dob: string | Date): number {
     const b = toDate(dob);
     const today = new Date();
@@ -95,47 +87,38 @@
     if (m < 0 || (m === 0 && today.getDate() < b.getDate())) a--;
     return a;
   }
-
   // Replace $derived runes with reactive statements
   let age: number | undefined;
   $: age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined;
-
   let activeWarrants: any[] = [];
   $: activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active');
-
   let recentRecords: CriminalRecord[] = [];
   $: recentRecords =
     (profile?.criminalHistory ?? [])
       .slice()
       .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime())
       .slice(0, 5);
-
   let firstMugshot: string | undefined;
   $: firstMugshot =
     profile?.identification?.mugshots && profile.identification.mugshots.length > 0
       ? profile.identification.mugshots[0]
       : undefined;
-
   // Replace icons with emoji/icon fallbacks to avoid lucide-svelte export issues
   let statusInfo: { label: string; className: string; icon?: string } = statusConfig.cleared;
   $: statusInfo = statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared;
-
   function formatDate(date: string | Date): string {
     return toDate(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
-
   function maskSSN(ssn?: string): string {
     if (!ssn) return '';
     if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
     return ssn;
   }
-
   function getFullName(): string {
     const { firstName = '', lastName = '' } = profile?.personalInfo ?? {};
     return `${firstName} ${lastName}`.trim();
   }
 </script>
-
 <div
   class={cn(
     'criminal-profile bg-yorha-bg-secondary border border-yorha-border rounded-lg overflow-hidden',
@@ -163,10 +146,8 @@
           <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center justify-center">
             <!-- user emoji fallback -->
             <span class="text-2xl">👤</span>
-          </div>
-        {/if}
+          {/if}
       </div>
-
       <!-- Profile Info -->
       <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between mb-2">
@@ -174,7 +155,6 @@
             <h2 class="text-xl font-bold text-yorha-text-primary font-mono">{getFullName()}</h2>
             <div class="text-sm text-yorha-text-secondary font-mono">ID: {profile?.id} • Age: {age}</div>
           </div>
-
           <!-- Current Status (computed reactively in script) -->
           <div class="flex items-center gap-2">
             <span class={cn('px-3 py-1 text-xs font-mono rounded border', statusInfo.className)}>
@@ -183,7 +163,6 @@
             </span>
           </div>
         </div>
-
         <!-- Aliases -->
         {#if profile.personalInfo.aliases?.length}
           <div class="mb-2">
@@ -191,9 +170,7 @@
             <span class="text-sm text-yorha-text-primary font-mono ml-2">
               {profile.personalInfo.aliases.join(', ')}
             </span>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Risk Assessment -->
         <div class="flex items-center gap-4 text-xs font-mono">
           <div class="flex items-center gap-2">
@@ -213,7 +190,6 @@
         </div>
       </div>
     </div>
-
     <!-- Active Warrants Alert -->
     {#if activeWarrants.length > 0}
       <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded">
@@ -222,15 +198,13 @@
           <span class="text-sm">⚠️</span>
           {activeWarrants.length} Active Warrant{activeWarrants.length !== 1 ? 's' : ''}
         </div>
-        {#each activeWarrants as warrant}
+        {#each Array.isArray(activeWarrants) ? activeWarrants : [] as warrant}
           <div class="text-xs text-red-300 font-mono">
             {warrant.type} - {warrant.jurisdiction} ({formatDate(warrant.issueDate)})
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Profile Content -->
   <div class="p-4 space-y-4">
     <!-- Personal Information -->
@@ -246,8 +220,7 @@
             <div>
               <span class="text-yorha-text-secondary">Place of Birth:</span>
               <div class="text-yorha-text-primary">{profile.personalInfo.placeOfBirth}</div>
-            </div>
-          {/if}
+            {/if}
           <div>
             <span class="text-yorha-text-secondary">Gender:</span>
             <div class="text-yorha-text-primary capitalize">{profile.personalInfo.gender}</div>
@@ -256,34 +229,29 @@
             <div>
               <span class="text-yorha-text-secondary">Height:</span>
               <div class="text-yorha-text-primary">{profile.personalInfo.height}</div>
-            </div>
-          {/if}
+            {/if}
           {#if profile.personalInfo.weight}
             <div>
               <span class="text-yorha-text-secondary">Weight:</span>
               <div class="text-yorha-text-primary">{profile.personalInfo.weight}</div>
-            </div>
-          {/if}
+            {/if}
           {#if profile.personalInfo.eyeColor}
             <div>
               <span class="text-yorha-text-secondary">Eye Color:</span>
               <div class="text-yorha-text-primary">{profile.personalInfo.eyeColor}</div>
-            </div>
-          {/if}
+            {/if}
           {#if profile.personalInfo.hairColor}
             <div>
               <span class="text-yorha-text-secondary">Hair Color:</span>
               <div class="text-yorha-text-primary">{profile.personalInfo.hairColor}</div>
-            </div>
-          {/if}
+            {/if}
         </div>
-
         <!-- Distinguishing Marks -->
         {#if profile.personalInfo.distinguishingMarks?.length}
           <div class="mt-3">
             <span class="text-xs text-yorha-text-secondary font-mono">Distinguishing Marks:</span>
             <div class="flex flex-wrap gap-2 mt-1">
-              {#each profile.personalInfo.distinguishingMarks as mark}
+              {#each Array.isArray(profile.personalInfo.distinguishingMarks) ? profile.personalInfo.distinguishingMarks : [] as mark}
                 <span
                   class="px-2 py-1 text-xs font-mono bg-yorha-bg-tertiary text-yorha-text-primary rounded border border-yorha-border"
                 >
@@ -291,11 +259,8 @@
                 </span>
               {/each}
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
-
+          {/if}
+      {/if}
     <!-- Identification -->
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
@@ -305,22 +270,18 @@
             <div>
               <span class="text-yorha-text-secondary">SSN:</span>
               <div class="text-yorha-text-primary">{maskSSN(profile.identification.ssn)}</div>
-            </div>
-          {/if}
+            {/if}
           {#if profile.identification.driverLicense}
             <div>
               <span class="text-yorha-text-secondary">Driver's License:</span>
               <div class="text-yorha-text-primary">{profile.identification.driverLicense}</div>
-            </div>
-          {/if}
+            {/if}
           {#if profile.identification.passport}
             <div>
               <span class="text-yorha-text-secondary">Passport:</span>
               <div class="text-yorha-text-primary">{profile.identification.passport}</div>
-            </div>
-          {/if}
+            {/if}
         </div>
-
         <!-- Biometric Data -->
         {#if profile.identification.biometrics}
           <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
@@ -333,25 +294,19 @@
                     ? 's'
                     : ''}
                 </span>
-              </div>
-            {/if}
+              {/if}
             {#if profile.identification.biometrics.dnaProfile}
               <div class="flex items-center gap-2 text-yorha-text-primary">
                 <span class="text-yorha-text-secondary">🧬</span>
                 DNA profile on file
-              </div>
-            {/if}
+              {/if}
             {#if profile.identification.biometrics.facialRecognition}
               <div class="flex items-center gap-2 text-yorha-text-primary">
                 <span class="text-yorha-text-secondary">📸</span>
                 Facial recognition data
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    {/if}
-
+              {/if}
+          {/if}
+      {/if}
     <!-- Criminal History -->
     {#if viewMode === 'full' || viewMode === 'summary'}
       <div>
@@ -362,7 +317,7 @@
           <p class="text-sm text-yorha-text-secondary font-mono">No criminal records found</p>
         {:else}
           <div class="space-y-3">
-            {#each recentRecords as record}
+            {#each Array.isArray(recentRecords) ? recentRecords : [] as record}
               <div class="bg-yorha-bg-tertiary border border-yorha-border rounded p-3">
                 <div class="flex items-start justify-between mb-2">
                   <div>
@@ -406,13 +361,9 @@
                 <span class="text-xs font-mono text-yorha-text-secondary">
                   Showing {recentRecords.length} of {profile.criminalHistory.length} records
                 </span>
-              </div>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    {/if}
-
+              {/if}
+          {/if}
+      {/if}
     <!-- Additional Notes -->
     {#if profile.notes && viewMode === 'full'}
       <div>
@@ -422,10 +373,8 @@
             {profile.notes}
           </p>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Footer Actions -->
   {#if interactive && onUpdateProfile}
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
@@ -438,10 +387,8 @@
           Update Profile
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .criminal-profile {
     transition: all 0.2s ease;
@@ -449,10 +396,8 @@
 </style>
           </p>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Footer Actions -->
   {#if interactive && onUpdateProfile}
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
@@ -465,13 +410,10 @@
           Update Profile
         </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .criminal-profile {
     transition: all 0.2s ease;
   }
 </style>
-

@@ -5,14 +5,12 @@ export type SearchResult = {
   documentType: string;
   score?: number;
 };
-
 export type AdvancedSearchRequest = {
   query?: string;
   filters?: Record<string, string | number | boolean>;
   embedding?: number[];
   limit?: number;
 };
-
 async function handleJsonResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const text = await res.text().catch(() => '');
@@ -20,7 +18,6 @@ async function handleJsonResponse<T>(res: Response): Promise<T> {
   }
   return res.json() as Promise<T>;
 }
-
 export async function search(
   query: string,
   limit = 10,
@@ -31,7 +28,6 @@ export async function search(
   const res = await fetch(url, { method: 'GET', signal });
   return handleJsonResponse<{ results: SearchResult[]; count: number }>(res);
 }
-
 export async function advancedSearch(
   payload: AdvancedSearchRequest,
   signal?: AbortSignal
@@ -44,7 +40,6 @@ export async function advancedSearch(
   });
   return handleJsonResponse<{ results: SearchResult[]; count: number }>(res);
 }
-
 // Example usage hint (not executed):
 // import { search, advancedSearch } from '$lib/api/search-client';
 // const { results } = await search('contract breach', 10);

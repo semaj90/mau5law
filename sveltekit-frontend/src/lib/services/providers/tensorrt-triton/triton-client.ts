@@ -13,7 +13,7 @@ export interface TritonConfig {
 export class TritonInferenceClient implements AIProvider {
   public modelName: string;
   private httpUrl: string;
-  private isHealthy = false;
+  private isHealthy = $state(false);
 
   constructor(config: TritonConfig) {
     this.httpUrl = config.httpUrl;
@@ -30,7 +30,7 @@ export class TritonInferenceClient implements AIProvider {
       this.isHealthy = res.ok;
       return res.ok;
     } catch {
-      this.isHealthy = false;
+      this.isHealthy = $state(false);
       return false;
     }
   }

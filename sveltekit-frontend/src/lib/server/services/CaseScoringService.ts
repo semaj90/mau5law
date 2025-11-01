@@ -8,26 +8,22 @@ import { caseScores } from '../db/schema.js';
 import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
 import { ollamaService } from '$lib/server/ai/ollama-adapter';
 import { cognitiveCache } from '$lib/server/ai/cache';
-
 // Simple logger implementation
 // Tighten logger arg typing
 const logger = {
-  info: (msg: string, ...args: unknown[]) => console.log(`[INFO] ${msg}`, ...args),
-  error: (msg: string, ...args: unknown[]) => console.error(`[ERROR] ${msg}`, ...args),
-  warn: (msg: string, ...args: unknown[]) => console.warn(`[WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: unknown[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+  info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
+  error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
+  warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args),
 };
-
 // Minimal interface for the Ollama-like service used here
 // Removed OllamaServiceType and const ollama = ...
 const ollama = ollamaService; // Use the imported ollamaService directly
-
 export class CaseScoringService {
   // replaced inline initializers with explicit declarations and a constructor
   private readonly DEFAULT_TEMPERATURE: number;
   private readonly SCORING_MODEL: string;
   private readonly CRITERIA_WEIGHTS: Record<string, number>;
-
   constructor() {
     this.DEFAULT_TEMPERATURE = 0.7;
     this.SCORING_MODEL = 'gemma3-legal';
@@ -40,7 +36,6 @@ export class CaseScoringService {
       resource_requirements: 0.1,
     };
   }
-
   /**
    * Score a case using AI analysis
    */
@@ -53,13 +48,11 @@ export class CaseScoringService {
         logger.info('Returning cached score for case', { caseId: request.caseId });
         return cached;
       }
-
       this.validateRequest(request);
       const aiAnalysis = await this.generateAIAnalysis(request);
       const componentScores = await this.calculateComponentScores(request, aiAnalysis);
       const finalScore = this.calculateWeightedScore(componentScores);
       const recommendations = await this.generateRecommendations(request, componentScores, finalScore);
-
       const scoringResult: CaseScoringResult = {
         caseId: request.caseId,
         score: finalScore,
@@ -71,30 +64,26 @@ export class CaseScoringService {
         model: this.SCORING_MODEL,
         version: '1.0',
       };
-
       await this.saveScoring(scoringResult, this.DEFAULT_TEMPERATURE);
       await cognitiveCache.set(cacheKey, scoringResult, { ttl: 3600 }); // Cache for 1 hour
-
       logger.info('Case scored successfully', {
         caseId: request.caseId,
         score: finalScore,
         elapsedMs: Date.now() - startTime,
       });
       return scoringResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // safe logging for unknown
       logger.error('Failed to score case', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }
-
   /**
    * Generate AI analysis of the case
    */
   private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
     const caseData = request.metadata || {};
     const evidenceCount = Array.isArray(caseData.evidence) ? caseData.evidence.length : 0;
-
     // clearer handling to avoid nested ternary parser issues
     let defendants = 'N/A';
     if (Array.isArray(caseData.defendants)) {
@@ -102,12 +91,10 @@ export class CaseScoringService {
     } else if (caseData.defendants != null) {
       defendants = String(caseData.defendants);
     }
-
     const criteriaProvided =
       request.scoring_criteria != null
         ? request.scoring_criteria
         : (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria || {};
-
     const prompt = `Analyze this legal case for prosecution viability:
 Case Title: ${caseData.title || 'N/A'}
 Description: ${caseData.description || 'N/A'}
@@ -116,7 +103,6 @@ Defendants: ${defendants}
 Jurisdiction: ${caseData.jurisdiction || 'N/A'}
 Scoring Criteria Provided:
 ${JSON.stringify(criteriaProvided, null, 2)}
-
 Provide a comprehensive analysis covering:
 1. Strength of evidence and its admissibility
 2. Reliability and credibility of witnesses
@@ -127,9 +113,8 @@ Provide a comprehensive analysis covering:
 7. Potential challenges and weaknesses
 8. Strategic recommendations
 Be objective, thorough, and consider both strengths and weaknesses.`;
-
     // Call typed Ollama service with backward-compatible checks (no optional-call operator)
-    let analysisRaw: unknown = '';
+    let analysisRaw: any = '';
     if (typeof ollama.generateCompletion === 'function') {
       const temperature =
         request.temperature !== undefined && request.temperature !== null
@@ -140,10 +125,8 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
         max_tokens: 1000,
       });
     }
-
     return String(analysisRaw || '');
   }
-
   /**
    * Calculate component scores based on criteria
    */
@@ -151,7 +134,6 @@ Be objective, thorough, and consider both strengths and weaknesses.`;
     // simplified nullish coalescing for clarity
     const provided =
       request.scoring_criteria ?? (request as unknown as { criteria?: Partial<ScoringCriteria> }).criteria ?? {};
-
     const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:
 Analysis: ${aiAnalysis}
 Rate the following on a scale of 0 to 1:
@@ -161,20 +143,16 @@ Rate the following on a scale of 0 to 1:
 4. Public Interest (considering societal impact and deterrence)
 5. Case Complexity (inverse - lower score for more complex)
 6. Resource Requirements (inverse - lower score for more resources needed)
-
 Respond in JSON format with keys: evidence_strength, witness_reliability, legal_precedent, public_interest, case_complexity, resource_requirements`;
-
     try {
-      let aiScoresRaw: unknown = '{}';
+      let aiScoresRaw: any = '{}';
       if (typeof ollama.generateCompletion === 'function') {
         aiScoresRaw = await ollama.generateCompletion(this.SCORING_MODEL, aiScorePrompt, {
           temperature: 0.3,
           max_tokens: 200,
         });
       }
-
       const aiScores = this.parseAIScores(String(aiScoresRaw || '{}'));
-
       // Merge provided (explicit) values with AI-derived ones and defaults
       return {
         evidence_strength:
@@ -214,7 +192,7 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
               ? aiScores.resource_requirements
               : 0.5,
       } as ScoringCriteria;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn(
         'Failed to get AI scores, using provided/defaults',
         error instanceof Error ? error.message : String(error)
@@ -229,7 +207,6 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
       } as ScoringCriteria;
     }
   }
-
   /**
    * Calculate weighted final score
    */
@@ -251,7 +228,6 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     const normalizedScore = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
     return Math.round(Math.max(0, Math.min(100, normalizedScore)));
   }
-
   /**
    * Generate actionable recommendations
    */
@@ -261,7 +237,6 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     finalScore: number
   ): Promise<string[]> {
     const recommendations: string[] = [];
-
     if (finalScore >= 80) {
       recommendations.push('Strong case - recommend proceeding with prosecution');
     } else if (finalScore >= 60) {
@@ -271,7 +246,6 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     } else {
       recommendations.push('Weak case - recommend further investigation or declining prosecution');
     }
-
     // use safe local variables to avoid unexpected property access errors
     const evidence = scores.evidence_strength ?? 0;
     const witness = scores.witness_reliability ?? 0;
@@ -279,7 +253,6 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     const pubInterest = scores.public_interest ?? 0;
     const complexity = scores.case_complexity ?? 0;
     const resources = scores.resource_requirements ?? 0;
-
     if (evidence < 0.6) recommendations.push('Strengthen evidence collection and chain of custody');
     if (witness < 0.6) recommendations.push('Assess witness credibility and consider additional witnesses');
     if (precedent < 0.6) recommendations.push('Research additional supporting case law and precedents');
@@ -287,37 +260,31 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     if (complexity > 0.7) recommendations.push('Case complexity is manageable - allocate appropriate resources');
     if (resources > 0.7)
       recommendations.push('Resource requirements are reasonable - proceed with standard allocation');
-
     const caseData = request.metadata || {};
     const strategyPrompt = `Based on a case score of ${finalScore}/100 and the following analysis:
 ${caseData.description || 'No description provided'}
 Provide 2-3 specific strategic recommendations for the prosecution team.`;
-
     try {
-      let aiRecommendationsRaw: unknown = null;
+      let aiRecommendationsRaw: any = null;
       if (typeof ollama.generateCompletion === 'function') {
         aiRecommendationsRaw = await ollama.generateCompletion(this.SCORING_MODEL, strategyPrompt, {
           temperature: 0.5,
           max_tokens: 200,
         });
       }
-
       if (aiRecommendationsRaw) {
         const parsed = String(aiRecommendationsRaw)
           .split(/\r?\n/)
           .map(l => l.trim())
           .filter(l => l.length > 5)
           .slice(0, 3);
-
         recommendations.push(...parsed);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('Failed to generate AI recommendations', error instanceof Error ? error.message : String(error));
     }
-
     return recommendations;
   }
-
   /**
    * Calculate confidence level of the scoring
    */
@@ -329,7 +296,6 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     const confidence = Math.max(0.5, 1 - variance * 2);
     return Math.round(confidence * 100) / 100;
   }
-
   /**
    * Parse AI-generated scores from text
    */
@@ -345,12 +311,11 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
         }
         return scores;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.warn('Failed to parse AI scores', error instanceof Error ? error.message : String(error));
     }
     return {};
   }
-
   /**
    * Validate scoring request
    */
@@ -358,7 +323,6 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     if (!request || !request.caseId) {
       throw new Error('Case ID is required');
     }
-
     // avoid complex inline expressions that caused parser/lint issues
     let desc: string | undefined;
     if (request.metadata && typeof (request.metadata as { description?: string }).description === 'string') {
@@ -366,12 +330,10 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     } else if (typeof (request as { description?: string }).description === 'string') {
       desc = (request as { description?: string }).description;
     }
-
     if (!desc) {
       throw new Error('Case description is required');
     }
   }
-
   /**
    * Save scoring result to database
    */
@@ -379,7 +341,6 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     try {
       const partial = result as Partial<CaseScoringResult>;
       const computedRisk = this.determineRiskLevel(result.score, { low: 40, medium: 60, high: 80 });
-
       const scoringDate = result.scoringDate ?? new Date();
       const updatedAtIso = new Date().toISOString();
       const insertRow: InferInsertModel<typeof caseScores> = {
@@ -393,14 +354,12 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
         calculatedAt: scoringDate.toISOString(),
         updatedAt: updatedAtIso,
       };
-
       await db.insert(caseScores).values(insertRow);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to save case scoring', error instanceof Error ? error.message : String(error));
       // do not throw - return silently
     }
   }
-
   /**
    * Get historical scores for a case
    */
@@ -411,7 +370,7 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
         .from(caseScores)
         .where(eq(caseScores.caseId, caseId))
         .orderBy(caseScores.calculatedAt);
-      return rows.map((row: unknown) => {
+      return rows.map((row: any) => {
         const r = row as Record<string, unknown>;
         return {
           caseId: String(r.caseId),
@@ -432,12 +391,11 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
           processing_time: r.processing_time || 0,
         } as CaseScoringResult;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to get case score history', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }
-
   /**
    * Determine risk level based on score and thresholds
    */
@@ -450,6 +408,5 @@ Provide 2-3 specific strategic recommendations for the prosecution team.`;
     return 'LOW';
   }
 }
-
 // Export singleton instance
 export const caseScoringService = new CaseScoringService();

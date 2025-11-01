@@ -38,16 +38,13 @@
  * await qdrant.upsertVector('id', embedding, { metadata: {} });
  * ```
  */
-
 // Primary Pipeline
 export { LegalAIPipeline, getLegalAIPipeline } from './pipeline';
-
 // Individual Services
 export { OllamaService, getOllamaService } from './ollama';
 export { RedisCacheService, getRedisCache } from './redis';
 export { QdrantVectorService, getQdrantService } from './qdrant';
 export { MinIOStorageService, getMinIOStorage } from './minio';
-
 // Type re-exports for convenience
 export type {
   IOllamaEmbeddingService,

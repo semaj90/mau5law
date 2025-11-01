@@ -24,9 +24,9 @@ type RagService = {
 	) => Promise<{
 		response: string;
 		confidence?: number;
-		sources?: unknown[];
-		mlClassification?: unknown;
-		graphRelationships?: unknown;
+		sources?: any[];
+		mlClassification?: any;
+		graphRelationships?: any;
 		queryId?: string;
 	}>;
 };
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
-        const sendEvent = (payload: unknown) =>
+        const sendEvent = (payload: any) =>
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
 
         // Initial handshake
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
             processingTime,
             timestamp: new Date().toISOString(),
           });
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('❌ Enhanced RAG Stream Error:', err);
           sendEvent({
             type: 'error',
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Enhanced RAG Stream Setup Error:', error);
     return new Response(
       JSON.stringify({

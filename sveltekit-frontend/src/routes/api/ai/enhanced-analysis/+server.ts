@@ -49,7 +49,7 @@ interface EnhancedAnalysisResponse {
     analysisType: string;
     processingTime: number;
     performanceGain?: number;
-    data: unknown;
+    data: any;
   };
   metrics: {
     protocol: string;
@@ -79,7 +79,7 @@ interface OrchestratorMetrics {
  * Small helpers to normalize different orchestrator response shapes.
  * Many implementations return { data, serviceChain, performanceGain } or the raw data.
  */
-const safeGetData = (res: unknown): unknown => {
+const safeGetData = (res: any): any => {
   if (!res) return null;
   if (typeof res === 'object' && res !== null) {
     const r = res as Record<string, unknown>;
@@ -88,7 +88,7 @@ const safeGetData = (res: unknown): unknown => {
   return res;
 };
 
-const safeGetServiceChain = (res: unknown): string[] => {
+const safeGetServiceChain = (res: any): string[] => {
   if (!res) return [];
   if (typeof res === 'object' && res !== null) {
     const r = res as Record<string, unknown>;
@@ -98,7 +98,7 @@ const safeGetServiceChain = (res: unknown): string[] => {
   return [];
 };
 
-const safeGetPerformanceGain = (res: unknown): number => {
+const safeGetPerformanceGain = (res: any): number => {
   if (!res) return 0;
   if (typeof res === 'object' && res !== null) {
     const r = res as Record<string, unknown>;
@@ -108,7 +108,7 @@ const safeGetPerformanceGain = (res: unknown): number => {
   return 0;
 };
 
-const asRecord = (v: unknown): Record<string, unknown> =>
+const asRecord = (v: any): Record<string, unknown> =>
   typeof v === 'object' && v !== null ? (v as Record<string, unknown>) : {};
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    let analysisResults: unknown = null;
+    let analysisResults: any = null;
     let serviceChain: string[] = [];
     let performanceGain = 0;
 
@@ -319,12 +319,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const healthStatus =
       typeof orchestratorObj.healthCheck === 'function'
         ? await (
-            orchestratorObj.healthCheck as (..._args: unknown[]) => Promise<{ healthy: boolean; services: string[] }>
+            orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean; services: string[] }>
           )()
         : { healthy: false, services: [] };
     const orchestratorMetrics =
       typeof orchestratorObj.getMetrics === 'function'
-        ? await Promise.resolve((orchestratorObj.getMetrics as (..._args: unknown[]) => unknown)())
+        ? await Promise.resolve((orchestratorObj.getMetrics as (..._args: any[]) => unknown)())
         : { compressionRatio: 0, binaryProtocolSavings: 0, totalOperations: 0, averageLatency: 0, successRate: 0 };
 
     const response: EnhancedAnalysisResponse = {

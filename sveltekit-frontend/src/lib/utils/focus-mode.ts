@@ -30,7 +30,7 @@ export const defaultFocusSettings: FocusSettings = {
 export const focusMode = writable(false);
 export const focusSettings = writable(defaultFocusSettings);
 export class FocusManager {
-  private isActive = false;
+  private isActive = $state(false);
   private originalStyles: Map<Element, string> = new Map();
   private settings: FocusSettings;
   private observer: MutationObserver | null = null;
@@ -62,7 +62,7 @@ export class FocusManager {
    */
   deactivate(): void {
     if (!this.isActive) return;
-    this.isActive = false;
+    this.isActive = $state(false);
     focusMode.set(false);
     // Restore original styles
     this.restoreOriginalStyles();

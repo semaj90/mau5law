@@ -67,7 +67,7 @@ export class Gemma3Client {
         signal: AbortSignal.timeout(10000),
       });
       return response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Health check failed:', errorToString(error));
       return false;
     }
@@ -76,7 +76,7 @@ export class Gemma3Client {
    * Get server information
    */
   // safer return type for server info
-  async getServerInfo(): Promise<{ backend?: string; version?: string; [k: string]: unknown }> {
+  async getServerInfo(): Promise<{ backend?: string; version?: string; [k: string]: any }> {
     const response = await fetch(`${this.baseUrl}/health`, {
       method: 'GET',
       signal: AbortSignal.timeout(10000),
@@ -86,12 +86,12 @@ export class Gemma3Client {
     }
     // typed as unknown -> cast to structured object
     const json = await response.json();
-    return json as { backend?: string; version?: string; [k: string]: unknown };
+    return json as { backend?: string; version?: string; [k: string]: any };
   }
   /**
    * List available models
    */
-  async listModels(): Promise<{ models: Array<{ id: string; name?: string; [k: string]: unknown }> }> {
+  async listModels(): Promise<{ models: Array<{ id: string; name?: string; [k: string]: any }> }> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
       method: 'GET',
       signal: AbortSignal.timeout(10000),
@@ -100,7 +100,7 @@ export class Gemma3Client {
       throw new Error(`List models request failed: ${response.status}`);
     }
     const json = await response.json();
-    return json as { models: Array<{ id: string; name?: string; [k: string]: unknown }> };
+    return json as { models: Array<{ id: string; name?: string; [k: string]: any }> };
   }
   /**
    * Create a chat completion
@@ -266,7 +266,7 @@ export class Gemma3Client {
 }
 
 // Add a specific ServerInfo type to avoid `any`
-type ServerInfo = { backend?: string; version?: string; [k: string]: unknown };
+type ServerInfo = { backend?: string; version?: string; [k: string]: any };
 
 // Use centralized Ollama endpoint helper
 import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
@@ -274,7 +274,7 @@ import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 /**
  * Safe error -> string extractor
  */
-function errorToString(err: unknown): string {
+function errorToString(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -304,7 +304,7 @@ export async function detectAvailableServer(): Promise<{ url: string; backend?: 
           backend: info && info.backend ? String(info.backend) : server.name,
         };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.debug(`Server ${server.url} not available:`, errorToString(error));
     }
   }
@@ -341,7 +341,7 @@ export function createGemma3Store() {
         }
         serverInfo = null;
         return false;
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Health check failed:', errorToString(error));
         serverInfo = null;
         return false;

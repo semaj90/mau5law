@@ -2,17 +2,14 @@
  * Gaming Audio Effects
  * Retro gaming sound effects for UI components
  */
-
 export class RetroAudioEngine {
   private audioContext: AudioContext | null = null;
-
   private getContext(): AudioContext {
     if (!this.audioContext) {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
     return this.audioContext;
   }
-
   /**
    * SNES-style button click sound (16-bit enhanced)
    */
@@ -24,10 +21,8 @@ export class RetroAudioEngine {
     } = {}
   ): Promise<void> {
     const { volume = 0.3, duration = 0.15, harmonics = true } = options;
-
     try {
       const ctx = this.getContext();
-
       // Main tone
       const mainOsc = ctx.createOscillator();
       const mainGain = ctx.createGain();
@@ -38,7 +33,6 @@ export class RetroAudioEngine {
       mainOsc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + duration);
       mainGain.gain.setValueAtTime(volume, ctx.currentTime);
       mainGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-
       if (harmonics) {
         // Harmony (5th)
         const harmonyOsc = ctx.createOscillator();
@@ -50,18 +44,15 @@ export class RetroAudioEngine {
         harmonyOsc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.1);
         harmonyGain.gain.setValueAtTime(volume * 0.5, ctx.currentTime);
         harmonyGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration * 0.8);
-
         harmonyOsc.start();
         harmonyOsc.stop(ctx.currentTime + duration);
       }
-
       mainOsc.start();
       mainOsc.stop(ctx.currentTime + duration + 0.05);
     } catch (error) {
       console.warn('Could not play SNES button sound:', error);
     }
   }
-
   /**
    * NES-style 8-bit button click
    */
@@ -72,12 +63,10 @@ export class RetroAudioEngine {
     } = {}
   ): Promise<void> {
     const { volume = 0.2, pitch = 440 } = options;
-
     try {
       const ctx = this.getContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.type = 'square';
@@ -85,14 +74,12 @@ export class RetroAudioEngine {
       osc.frequency.exponentialRampToValueAtTime(pitch * 0.7, ctx.currentTime + 0.08);
       gain.gain.setValueAtTime(volume, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-
       osc.start();
       osc.stop(ctx.currentTime + 0.12);
     } catch (error) {
       console.warn('Could not play NES button sound:', error);
     }
   }
-
   /**
    * Menu navigation sound
    */
@@ -101,21 +88,18 @@ export class RetroAudioEngine {
       const ctx = this.getContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(300, ctx.currentTime);
       gain.gain.setValueAtTime(0.15, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-
       osc.start();
       osc.stop(ctx.currentTime + 0.06);
     } catch (error) {
       console.warn('Could not play menu nav sound:', error);
     }
   }
-
   /**
    * Error/invalid action sound
    */
@@ -124,7 +108,6 @@ export class RetroAudioEngine {
       const ctx = this.getContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.type = 'sawtooth';
@@ -132,21 +115,18 @@ export class RetroAudioEngine {
       osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.2);
       gain.gain.setValueAtTime(0.2, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-
       osc.start();
       osc.stop(ctx.currentTime + 0.22);
     } catch (error) {
       console.warn('Could not play error sound:', error);
     }
   }
-
   /**
    * Success/confirmation sound
    */
   async playSuccessSound(): Promise<void> {
     try {
       const ctx = this.getContext();
-
       // Two-tone success chime
       const osc1 = ctx.createOscillator();
       const gain1 = ctx.createGain();
@@ -156,7 +136,6 @@ export class RetroAudioEngine {
       osc1.frequency.setValueAtTime(523, ctx.currentTime); // C5
       gain1.gain.setValueAtTime(0.2, ctx.currentTime);
       gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.connect(gain2);
@@ -165,7 +144,6 @@ export class RetroAudioEngine {
       osc2.frequency.setValueAtTime(659, ctx.currentTime + 0.08); // E5
       gain2.gain.setValueAtTime(0.2, ctx.currentTime + 0.08);
       gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-
       osc1.start();
       osc1.stop(ctx.currentTime + 0.16);
       osc2.start(ctx.currentTime + 0.08);
@@ -175,6 +153,5 @@ export class RetroAudioEngine {
     }
   }
 }
-
 // Singleton instance
 export const retroAudio = new RetroAudioEngine();

@@ -6,7 +6,7 @@ import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
 import { publishToQueue } from '$lib/server/rabbitmq.js';
 // Removed problematic `import type ...` which caused parser errors in the build.
 // Added a local MessageHandler type so we don't rely on a type-only import.
-type MessageHandler = (message: unknown, originalMessage?: unknown) => Promise<void> | void;
+type MessageHandler = (message: any, originalMessage?: any) => Promise<void> | void;
 
 const QUEUE_NAMES = {
   DOCUMENT_PROCESSING: 'document.processing',
@@ -40,18 +40,18 @@ type RabbitMQServiceLike = {
   closeConnection?: () => Promise<void> | void;
   consume?: (
     queue: string,
-    cb: (message: unknown, originalMessage?: unknown) => Promise<void> | void
+    cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   subscribe?: (
     queue: string,
-    cb: (message: unknown, originalMessage?: unknown) => Promise<void> | void
+    cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
   createConsumer?: (
     queue: string,
-    cb: (message: unknown, originalMessage?: unknown) => Promise<void> | void
+    cb: (message: any, originalMessage?: any) => Promise<void> | void
   ) => Promise<void> | void;
-  on?: (event: string, cb: (...args: unknown[]) => void) => void;
-  publish?: (exchange: string, routingKey: string, payload: unknown) => Promise<unknown> | unknown;
+  on?: (event: string, cb: (...args: any[]) => void) => void;
+  publish?: (exchange: string, routingKey: string, payload: any) => Promise<unknown> | unknown;
   healthCheck?: () => Promise<unknown>;
 };
 
@@ -59,7 +59,7 @@ export class RabbitMQServiceWorker {
   private static instance: RabbitMQServiceWorker;
   private config: Required<ServiceWorkerConfig>;
   private handlers = new Map<string, MessageHandler>();
-  private isRunning = false;
+  private isRunning = $state(false);
   private processingStats = {
     messagesProcessed: 0,
     errors: 0,
@@ -125,7 +125,7 @@ export class RabbitMQServiceWorker {
       }
       this.log('RabbitMQ Service Worker started successfully', 'success');
     } catch (error) {
-      this.isRunning = false;
+      this.isRunning = $state(false);
       const msg = error instanceof Error ? error.message : String(error);
       this.log(`Failed to start worker: ${msg}`, 'error');
       throw error;
@@ -134,7 +134,7 @@ export class RabbitMQServiceWorker {
 
   async stop(): Promise<void> {
     if (!this.isRunning) return;
-    this.isRunning = false;
+    this.isRunning = $state(false);
 
     // Feature-detect on a typed service shape (avoid `any`)
     const svc = rabbitmqService as unknown as RabbitMQServiceLike;
@@ -159,7 +159,7 @@ export class RabbitMQServiceWorker {
 
   private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
     // Create a typed callback to avoid implicit any issues
-    const callback = async (message: unknown, originalMessage?: unknown) => {
+    const callback = async (message: any, originalMessage?: any) => {
       const startTime = Date.now();
       try {
         this.log(`Processing message from ${queueName}: ${JSON.stringify(message).slice(0, 200)}`);
@@ -200,14 +200,14 @@ export class RabbitMQServiceWorker {
 
   private setupDefaultHandlers(): void {
     // Helper guards to avoid inline type-assertion + optional-chaining pitfalls
-    const safeString = (v: unknown): string => (v == null ? '' : typeof v === 'string' ? v : String(v));
-    const firstN = (v: unknown, n = 200): string => {
+    const safeString = (v: any): string => (v == null ? '' : typeof v === 'string' ? v : String(v));
+    const firstN = (v: any, n = 200): string => {
       if (typeof v === 'string') return v.slice(0, n);
       return '';
     };
 
     // Typed field accessors to replace: 'as any' usage
-    const getField = (m: Record<string, unknown> | undefined, key: string): unknown =>
+    const getField = (m: Record<string, unknown> | undefined, key: string): any =>
       m && typeof m === 'object' ? (m as Record<string, unknown>)[key] : undefined;
     const getString = (m: Record<string, unknown> | undefined, key: string): string | undefined => {
       const v = getField(m, key);
@@ -236,7 +236,7 @@ export class RabbitMQServiceWorker {
     };
 
     // Document processing handler
-    this.registerHandler(QUEUE_NAMES.DOCUMENT_PROCESSING, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.DOCUMENT_PROCESSING, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Processing document: ${safeString(getField(msg, 'documentId'))}`);
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -248,7 +248,7 @@ export class RabbitMQServiceWorker {
     });
 
     // File upload handler
-    this.registerHandler(QUEUE_NAMES.FILE_UPLOAD, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.FILE_UPLOAD, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Processing file upload: ${safeString(getField(msg, 'fileName'))}`);
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -267,7 +267,7 @@ export class RabbitMQServiceWorker {
     });
 
     // Vector embedding handler
-    this.registerHandler(QUEUE_NAMES.VECTOR_EMBEDDING, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.VECTOR_EMBEDDING, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Generating embeddings for: ${safeString(getField(msg, 'documentId'))}`);
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -279,7 +279,7 @@ export class RabbitMQServiceWorker {
     });
 
     // Evidence analysis handler
-    this.registerHandler(QUEUE_NAMES.EVIDENCE_ANALYSIS, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.EVIDENCE_ANALYSIS, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Analyzing evidence: ${safeString(getField(msg, 'evidenceId'))}`);
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -296,7 +296,7 @@ export class RabbitMQServiceWorker {
     });
 
     // RAG processing handler
-    this.registerHandler(QUEUE_NAMES.RAG_PROCESSING, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.RAG_PROCESSING, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       const q = firstN(getField(msg, 'query'), 200);
       this.log(`RAG processing query: ${q}`);
@@ -304,21 +304,21 @@ export class RabbitMQServiceWorker {
     });
 
     // Email notifications handler
-    this.registerHandler(QUEUE_NAMES.EMAIL_NOTIFICATIONS, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.EMAIL_NOTIFICATIONS, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Sending notification: ${safeString(getField(msg, 'type'))}`);
       await new Promise(resolve => setTimeout(resolve, 800));
     });
 
     // Search indexing handler
-    this.registerHandler(QUEUE_NAMES.SEARCH_INDEXING, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.SEARCH_INDEXING, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Indexing for search: ${safeString(getField(msg, 'documentId'))}`);
       await new Promise(resolve => setTimeout(resolve, 1200));
     });
 
     // Case updates handler
-    this.registerHandler(QUEUE_NAMES.CASE_UPDATES, async (message: unknown) => {
+    this.registerHandler(QUEUE_NAMES.CASE_UPDATES, async (message: any) => {
       const msg = typeof message === 'object' && message !== null ? (message as Record<string, unknown>) : {};
       this.log(`Processing case update: ${safeString(getField(msg, 'caseId'))}`);
       await new Promise(resolve => setTimeout(resolve, 600));
@@ -346,7 +346,7 @@ export class RabbitMQServiceWorker {
   }> {
     // Call healthCheck() if present, then normalize result safely to RabbitMQHealth
     const svc = rabbitmqService as unknown as RabbitMQServiceLike;
-    let raw: unknown = undefined;
+    let raw: any = undefined;
     if (typeof svc.healthCheck === 'function') {
       try {
         raw = await svc.healthCheck();

@@ -13,7 +13,7 @@
     } catch (error) {
       console.error('Error loading recommendations:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   });
 </script>
@@ -27,7 +27,7 @@
     </div>
   {:else if recommendations.length > 0}
     <div class="grid gap-4">
-      {#each recommendations as rec}
+      {#each Array.isArray(recommendations) ? recommendations : [] as rec}
         <div class="p-4 border rounded-lg hover:shadow-lg transition-shadow">
           <h3 class="font-semibold text-lg">{rec.title}</h3>
           <p class="text-gray-600 mt-2">{rec.description}</p>

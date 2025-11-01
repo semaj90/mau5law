@@ -23,7 +23,7 @@
     caseId?: string;
     filters?: { [key: string]: any }
     // Event handlers
-    onSelect?: (item: unknown, type: string) => void;
+    onSelect?: (item: any, type: string) => void;
     onSearchChange?: (query: string) => void;
   }
   let { open = $bindable(false),
@@ -80,16 +80,16 @@
         userId;
       }
       // removed unused response assignment
-      if ((response as { success?: unknown; data?: unknown }).success && (response as { success?: unknown; data?: unknown }).data) {
-        searchResults = (response as { success?: unknown; data?: unknown }).data.results || { cases: [], evidence: [], documents: [], people: [] }
-        totalResults = (response as { success?: unknown; data?: unknown }).data.totalResults || 0;
+      if ((response as { success?: any; data?: any }).success && (response as { success?: any; data?: any }).data) {
+        searchResults = (response as { success?: any; data?: any }).data.results || { cases: [], evidence: [], documents: [], people: [] }
+        totalResults = (response as { success?: any; data?: any }).data.totalResults || 0;
       }
     } catch (error) {
       console.error('Command search failed:', error);
       searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   function handleQueryChange(newQuery: string) {
@@ -109,10 +109,10 @@
       totalResults = 0;
     }
   }
-  function handleSelect(item: unknown, type: string) {
+  function handleSelect(item: any, type: string) {
     onSelect?.(item, type);
     ondispatch?.({ item, type });
-    open = false;
+    open = $state(false);
   }
   function handleOpenChange(newOpen: boolean) {
     open = newOpe;
@@ -124,29 +124,29 @@
       totalResults = 0;
     }
   }
-  function formatResultText(item: unknown, type: string): string {
+  function formatResultText(item: any, type: string): string {
     switch (type) {
       case 'cases':
-        return `${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).title} #${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).caseNumber || (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).id?.slice(-6)} - ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).status}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} #${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).caseNumber || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).id?.slice(-6)} - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).status}`;
       case 'evidence':
-        return `${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).title} (${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).evidenceType}) - case ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).caseId?.slice(-6)}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} (${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).evidenceType}) - case ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).caseId?.slice(-6)}`;
       case 'documents':
-        return `${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).title} - ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).documentType}`;
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title} - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).documentType}`;
       case 'people':
-        return `${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).name} (${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).role}) - ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).email}`;
-      default: return (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).title || (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).name || 'Unknown';
+        return `${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).name} (${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).role}) - ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).email}`;
+      default: return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).title || (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).name || 'Unknown';
     }
   }
-  function formatResultDescription(item: unknown, type: string): string {
+  function formatResultDescription(item: any, type: string): string {
     switch (type) {
       case 'cases':
-        return (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).description || `Priority: ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).priority} | Created: ${new Date((item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).createdAt).toLocaleDateString()}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).description || `Priority: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).priority} | Created: ${new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).createdAt).toLocaleDateString()}`;
       case 'evidence':
-        return (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).description || `Collected: ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).collectedAt ? new Date((item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).collectedAt).toLocaleDateString() : 'Unknown'}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).description || `Collected: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).collectedAt ? new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).collectedAt).toLocaleDateString() : 'Unknown'}`;
       case 'documents':
-        return (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).metadata?.summary || `Created: ${new Date((item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).createdAt).toLocaleDateString()}`;
+        return (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).metadata?.summary || `Created: ${new Date((item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).createdAt).toLocaleDateString()}`;
       case 'people':
-        return `Department: ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).department || 'Unknown'} | Role: ${(item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).role}`;
+        return `Department: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).department || 'Unknown'} | Role: ${(item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).role}`;
       default: return '';
     }
   }
@@ -194,7 +194,7 @@
         No results found for: "{query}"
       </Command.Empty>
     {:else}
-      {#each searchTypes as type}
+      {#each Array.isArray(searchTypes) ? searchTypes : [] as type}
         {#if searchResults[type]?.length > 0}
           <Command.Group class="modular-command-group">
             <Command.GroupHeading class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2">
@@ -202,7 +202,7 @@
               <SvelteComponent class="h-3 w-3" />
               {labelMap[type]} ({searchResults[type].length})
             </Command.GroupHeading>
-            {#each searchResults[type] as item}
+            {#each Array.isArray(searchResults[type]) ? searchResults[type] : [] as item}
               <Command.Item
                 value={formatResultText(item, type)}
                 onSelect={() => handleSelect(item, type)}
@@ -214,7 +214,7 @@
                   <div class="flex flex-col gap-1 min-w-0 flex-1">
                     <div class="font-medium text-sm truncate">
                       {formatResultText(item, type)}
-                      {#if (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).similarity !== undefined}
+                      {#if (item as { title?: any; caseNumber?: any; id?: any; status?: any; evidenceType?: any; caseId?: any; documentType?: any; name?: any; role?: any; email?: any; description?: any; priority?: any; createdAt?: any; collectedAt?: any; metadata?: any; department?: any; similarity?: any }).similarity !== undefined}
                         <span class="text-xs nes-text is-disabled ml-2">
                           ({Math.round.similarity * 100)}% match)
                         </span>
@@ -233,8 +233,7 @@
       {#if totalResults > searchLimit}
         <div class="px-2 py-2 text-xs nes-text is-disabled text-center font-mono border-t">
           Showing {searchLimit} of {totalResults} results
-        </div>
-      {/if}
+        {/if}
   </Command.List>
 </Command.Root>
 <style>

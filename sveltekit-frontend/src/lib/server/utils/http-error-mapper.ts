@@ -1,6 +1,6 @@
 import { ServiceError } from './service-error';
 
-export function mapErrorToHttp(err: unknown) {
+export function mapErrorToHttp(err: any) {
   if (err instanceof ServiceError) {
     switch (err.code) {
       case 'INVALID_INPUT':

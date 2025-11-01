@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       session: newSession,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from 'any' to: 'unknown'
     console.error('Error creating chat session:', error);
     return json(
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const sessions = await db.select().from(chatSessions).orderBy(desc(chatSessions.updatedAt)).limit(50);
       return json({ sessions });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from 'any' to: 'unknown'
     console.error('Error fetching chat sessions:', error);
     return json(

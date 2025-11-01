@@ -84,12 +84,11 @@
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       currentAnalysisStep.set('');
     }
   }
 </script>
-
 <div class="ai-analysis-form p-6 bg-white rounded-lg shadow-lg">
   <h3 class="text-xl font-bold mb-4">AI Legal Analysis</h3>
   <div class="mb-6">
@@ -111,8 +110,7 @@
         ></div>
       </div>
       <p class="text-sm text-gray-600">{$currentAnalysisStep}</p>
-    </div>
-  {/if}
+    {/if}
   {#if $analysisResults}
     <div class="analysis-results mt-6" transition:fade>
       <h4 class="text-lg font-semibold mb-4">Analysis Results</h4>
@@ -133,7 +131,7 @@
       <div class="mt-6">
         <h5 class="font-medium mb-2">Key Facts</h5>
         <ul class="list-disc list-inside space-y-1">
-          {#each $analysisResults.key_facts as fact}
+          {#each Array.isArray($analysisResults.key_facts) ? $analysisResults.key_facts : [] as fact}
             <li class="text-gray-700">{fact}</li>
           {/each}
         </ul>
@@ -141,15 +139,13 @@
       <div class="mt-6">
         <h5 class="font-medium mb-2">Recommendations</h5>
         <ul class="list-disc list-inside space-y-1">
-          {#each $analysisResults.recommendations as recommendation}
+          {#each Array.isArray($analysisResults.recommendations) ? $analysisResults.recommendations : [] as recommendation}
             <li class="text-gray-700">{recommendation}</li>
           {/each}
         </ul>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .ai-analysis-form {
     max-width: 800px;
@@ -166,4 +162,3 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 </style>
-

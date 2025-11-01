@@ -24,7 +24,7 @@ interface Law {
   title: string;
   code: string;
   description: string;
-  [key: string]: unknown; // Allow other properties from basic search results
+  [key: string]: any; // Allow other properties from basic search results
 }
 
 // Define an interface for an AI-enhanced legal document
@@ -80,7 +80,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       enhanced: true,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('AI legal search error:', error);
     return json(
@@ -186,7 +186,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
       concepts: aiAnalysis.concepts || extractLegalConcepts(query),
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('AI enhancement error:', error);
     // Return basic enhancement on AI failure

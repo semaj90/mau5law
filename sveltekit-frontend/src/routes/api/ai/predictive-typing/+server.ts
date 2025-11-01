@@ -44,13 +44,13 @@ interface Glyph {
   semantic_summary?: string;
   contextual_weight?: number;
   // lightweight bag for unknown glyph fields
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface AnalyticsPerformance {
   cache_hit_rate?: number;
   overall_confidence?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface AnalyticsResult {
@@ -61,7 +61,7 @@ interface AnalyticsResult {
   analytics_performance?: AnalyticsPerformance;
   prediction_confidence?: { overall_confidence?: number };
   // allow other engine-specific fields
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 // Update request types to avoid `any`
@@ -70,7 +70,7 @@ interface PredictiveTypingRequest {
   typing_event: 'TYPE' | 'DELETE' | 'CLEAR' | 'SUBMIT' | 'SELECT';
   session_id: string;
   query_history?: string[];
-  interaction_patterns?: unknown[]; // kept generic
+  interaction_patterns?: any[]; // kept generic
   options?: {
     max_suggestions?: number;
     enable_glyph_compression?: boolean;
@@ -84,7 +84,7 @@ interface PredictiveTypingRequest {
     user_intent?: string;
     practice_area?: string;
     jurisdiction?: string;
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
 
@@ -153,7 +153,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         });
         glyphContext = (glyphResult?.glyph_context as Glyph[]) || [];
         glyphRetrievalTime = Date.now() - glyphStart;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         warnings.push(`Glyph retrieval failed: ${msg}`);
       }
@@ -175,7 +175,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           real_time_learning: options.enable_real_time_learning !== false,
         });
         analyticsProcessingTime = Date.now() - analyticsStart;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         warnings.push(`Analytics processing failed: ${msg}`);
       }
@@ -198,7 +198,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           min_confidence: options.confidence_threshold || 0.3,
           include_contextual: true,
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         warnings.push(`Query completions failed: ${msg}`);
       }
@@ -280,7 +280,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     };
     console.log(`✅ Predictive typing complete: ${totalTime}ms, ${topSuggestions.length} suggestions`);
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('Predictive typing API error:', msg);
     const errorResponse: PredictiveTypingResponse = {

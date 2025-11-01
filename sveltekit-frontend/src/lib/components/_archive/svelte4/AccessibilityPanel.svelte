@@ -7,7 +7,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import { notifications  } from '$lib/stores/unified";
   import {
     AlertTriangle,
@@ -174,7 +174,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         message: "Failed to complete accessibility audit",
       });
     } finally {
-      isAuditing = false;
+      isAuditing = $state(false);
     }
   }
   async function checkHeadingStructure() {
@@ -571,7 +571,7 @@ exportAuditResults(}
             </div>
             <!-- Audit Results -->
             <div class="mx-auto px-4 max-w-7xl">
-              {#each auditResults as issue}
+              {#each Array.isArray(auditResults) ? auditResults : [] as issue}
                 {@const IconComponent = getSeverityIcon(issue.severity)}
                 <div class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">

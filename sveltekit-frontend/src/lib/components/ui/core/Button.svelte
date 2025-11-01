@@ -66,7 +66,7 @@
     analyticsCategory?: string;
     analyticsAction?: string;
     analyticsLabel?: string;
-    xstateContext?: unknown;
+    xstateContext?: any;
     uiJsonConfig?: UIJsonSSRConfig;
     searchKeywords?: string[];
     cacheKey?: string;
@@ -176,7 +176,6 @@
     }
   });
 </script>
-
 {#if href}
   <a
     {href}
@@ -210,7 +209,7 @@
       </svg>
       {loadingText}
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
     {#if srOnlyText}
       <span class="sr-only">{srOnlyText}</span>
@@ -247,7 +246,7 @@
       </svg>
       {loadingText}
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
     {#if srOnlyText}
       <span class="sr-only">{srOnlyText}</span>
@@ -258,5 +257,4 @@
 {#if loading}
   <div id={loadingAnnouncementId} class="sr-only" aria-live="polite">
     {loadingText}
-  </div>
-{/if}
+  {/if}

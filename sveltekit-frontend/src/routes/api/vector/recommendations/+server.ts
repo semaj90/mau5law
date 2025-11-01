@@ -37,7 +37,7 @@ type RagSource = {
   documentId?: string;
   content: string;
   score: number;
-  [key: string]: unknown; // allow any extra fields without using `any`
+  [key: string]: any; // allow any extra fields without using `any`
 };
 
 type RagResult = {
@@ -47,7 +47,7 @@ type RagResult = {
     processingTimeMs?: number;
     gpuUtilized?: boolean;
     embeddingModel?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 };
 
@@ -60,7 +60,7 @@ type RagQueryRequest = {
   maxResults?: number;
   scoreThreshold?: number;
   // allow extensibility
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // New: typed wrapper for the external bridge function to avoid `any` casts
@@ -79,7 +79,7 @@ type Recommendation = {
   priority?: string;
   reasoning?: string;
   metadata?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add a typed shape for the RL optimizer to avoid `any`
@@ -87,16 +87,16 @@ type RLCacheOptimizer = {
   generateCacheOptimizationRecommendations?: (state: CacheState) => Promise<unknown>;
   optimizeCache?: (state: CacheState) => Promise<unknown>;
   getRecommendations?: (state: CacheState) => Promise<unknown>;
-  recommendations?: unknown[];
+  recommendations?: any[];
   // allow other optional properties for forward-compatibility
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-  let gpuUtilized = false;
-  let rlOptimizationApplied = false;
+  let gpuUtilized = $state(false);
+  let rlOptimizationApplied = $state(false);
   try {
     const body = await request.json();
     const enhancedRequest = {
@@ -120,14 +120,14 @@ export const POST: RequestHandler = async ({ request }) => {
       `🎯 Generating enhanced GPU-accelerated recommendations for context: "${enhancedRequest.context.substring(0, 100)}..."`
     );
     // === 1. Reinforcement Learning Cache Optimization ===
-    let rlOptimization: unknown = null;
+    let rlOptimization: any = null;
     let cacheOptimizationActions: string[] = [];
     if (enhancedRequest.enableRLOptimization) {
       try {
         const cacheState = await getCurrentCacheState();
         // Safely invoke the RL optimizer — check available methods at runtime to avoid
         // TypeScript errors and handle missing APIs gracefully.
-        let rlRecommendations: unknown = null;
+        let rlRecommendations: any = null;
         try {
           // Use a typed view of the imported optimizer instead of `any`.
           const rlOptimizer = reinforcementLearningCacheOptimizer as unknown as RLCacheOptimizer;
@@ -413,12 +413,12 @@ export const POST: RequestHandler = async ({ request }) => {
       recommendations,
       metadata: enhancedMetadata,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Enhanced Recommendations API error:', err);
     const errorMessage = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     let statusCode = 500;
     if (typeof err === 'object' && err !== null && 'status' in err) {
-      const possible = (err as { status?: unknown }).status;
+      const possible = (err as { status?: any }).status;
       if (typeof possible === 'number') statusCode = possible;
       else if (typeof possible === 'string') {
         const parsed = Number(possible);
@@ -531,7 +531,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Use the same enhanced logic as POST endpoint
     const startTime = Date.now();
     let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-    let gpuUtilized = false;
+    let gpuUtilized = $state(false);
     // Try cache first
     let recommendations: Recommendation[] = [];
     if (enhancedRequest.enableCaching) {
@@ -632,7 +632,7 @@ export const GET: RequestHandler = async ({ url }) => {
         },
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Enhanced Recommendations GET error:', err);
     // Preserve useful error text; safe conversion from unknown
     throw error(500, err instanceof Error ? err.message : String(err ?? 'Enhanced recommendations failed'));
@@ -660,7 +660,7 @@ async function getCurrentCacheState(): Promise<CacheState> {
       vectorDimensionality: 384 / 4096,
       tagDensity: 0.6 + Math.random() * 0.3,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     if (error instanceof Error) {
       console.warn('Failed to get cache state, using defaults:', error.message, error);
     } else {
@@ -849,8 +849,8 @@ function calculateDiversityScore(recommendations: Recommendation[]): number {
 
 // Add module-scoped helper (moved from inside POST)
 /* new helper moved to module level to avoid block-level function declaration issues */
-function normalizeRLRecommendations(input: unknown): { recs: string[]; expectedImprovement: number | null } {
-  const mapItemToString = (item: unknown): string => {
+function normalizeRLRecommendations(input: any): { recs: string[]; expectedImprovement: number | null } {
+  const mapItemToString = (item: any): string => {
     if (item == null) return '';
     if (typeof item === 'string') return item;
     if (typeof item === 'number' || typeof item === 'boolean') return String(item);
@@ -873,7 +873,7 @@ function normalizeRLRecommendations(input: unknown): { recs: string[]; expectedI
 
   if (input == null) return { recs: [], expectedImprovement: null };
 
-  let maybeRecs: unknown[] = [];
+  let maybeRecs: any[] = [];
   let expected: number | null = null;
 
   if (Array.isArray(input)) {

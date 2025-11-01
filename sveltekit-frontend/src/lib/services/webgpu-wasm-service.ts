@@ -8,15 +8,15 @@ type DeviceLike = {
   createShaderModule: (init: { label?: string; code: string }) => GPUShaderModule | unknown;
   createComputePipeline: (desc: GPUComputePipelineDescriptor | Record<string, unknown>) => GPUComputePipeline | unknown;
   // allow other fields but avoid `any`
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type AdapterLike = {
   requestDevice?: (opts?: GPUDeviceDescriptor | Record<string, unknown>) => Promise<DeviceLike>;
   requestAdapterInfo?: () => Promise<unknown>;
   name?: string;
-  limits?: unknown;
-  [k: string]: unknown;
+  limits?: any;
+  [k: string]: any;
 };
 
 // Minimal shape for navigator.gpu to avoid `any` casts
@@ -31,8 +31,8 @@ export interface WebGPUCapabilities {
   webglSupported: boolean;
   wasmSupported: boolean;
   deviceType: 'webgpu' | 'webgl' | 'wasm' | 'none';
-  adapterInfo?: unknown;
-  limits?: unknown;
+  adapterInfo?: any;
+  limits?: any;
 }
 
 export interface ModelConfig {
@@ -296,7 +296,7 @@ export class WebGPUWASMService {
       });
       console.log(`✅ Model loaded successfully: ${modelConfig.name}`);
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : String(error ?? 'Unknown error');
       modelLoadingProgress.set({
         isLoading: false,

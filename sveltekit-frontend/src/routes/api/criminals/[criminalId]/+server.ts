@@ -23,7 +23,7 @@ type CriminalPayload = Partial<{
   hairColor: string | null;
   distinguishingMarks: string | null;
   photoUrl: string | null;
-  fingerprints: unknown;
+  fingerprints: any;
   threatLevel: number | string | null;
   status: string;
   notes: string | null;
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'Criminal record not found' }, { status: 404 });
     }
     return json(criminalResult[0]);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error fetching criminal record:', error);
     return json({ error: 'Failed to fetch criminal record' }, { status: 500 });
@@ -123,7 +123,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(criminals.id, criminalId))
       .returning();
     return json(updatedCriminal);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error updating criminal record:', error);
     return json({ error: 'Failed to update criminal record' }, { status: 500 });
@@ -150,7 +150,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the criminal record (cascade will handle related records)
     const [deletedCriminal] = await db.delete(criminals).where(eq(criminals.id, criminalId)).returning();
     return json({ success: true, deletedCriminal });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error deleting criminal record:', error);
     return json({ error: 'Failed to delete criminal record' }, { status: 500 });
@@ -213,7 +213,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(criminals.id, criminalId))
       .returning();
     return json(updatedCriminal);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error patching criminal record:', error);
     return json({ error: 'Failed to update criminal record' }, { status: 500 });

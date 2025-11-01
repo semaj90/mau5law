@@ -37,7 +37,7 @@ const hmmSomEngine = {
 type MockDoc = { id?: string; type?: string; [k: string]: any };
 type BatchJob = { jobId: string; documentId: string; config: Record<string, unknown>; variation?: number };
 
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
   try {
     return JSON.stringify(error);
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ QLoRA samples API error:', error);
     return json(
       {
@@ -314,7 +314,7 @@ export const POST: RequestHandler = async ({ request }) => {
           baseConfig,
           variations = 3,
         } = params as {
-          documents?: unknown;
+          documents?: any;
           baseConfig?: Record<string, unknown>;
           variations?: number;
         };
@@ -364,7 +364,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ QLoRA samples POST API error:', error);
     return json(
       {

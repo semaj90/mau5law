@@ -88,7 +88,7 @@ export interface AITask {
     context?: Record<string, unknown>;
   };
   output?: {
-    result: unknown;
+    result: any;
     confidence?: number;
     processingTime?: number;
   };
@@ -231,7 +231,7 @@ export interface ComponentEventHandlers {
   onInput?: (_event: Event) => void;
   onFocus?: (_event: FocusEvent) => void;
   onBlur?: (_event: FocusEvent) => void;
-  onChange?: (_value: unknown) => void;
+  onChange?: (_value: any) => void;
 }
 // Snippet with Parameters
 export type ParameterizedSnippet<TParams extends readonly unknown[]> = Snippet<TParams>;

@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } else {
             console.warn(`Failed to generate embedding with ${modelName}: ${embeddingResponse.statusText}`);
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed: 'any' to: 'unknown'
           console.warn(`Error generating embedding with ${modelName}:`, error);
         }
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       savedMessages: savedMessages.length,
       sessionId,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error saving chat messages:', error);
     return json(

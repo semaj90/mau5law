@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import Button from '$lib/components/ui/bitsbutton.svelte';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import Select from '$lib/components/ui/MeltSelect.svelte';
+  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import { Select } from '$lib/components/ui/MeltSelect.svelte';
   // TODO: Replace with bits-ui equivalents when available
   // import {
   //   Badge,
@@ -482,7 +482,7 @@ showAnalytics.update((s) => !s)}
       <div class="search-history">
         <p class="history-label">Recent searches:</p>
         <div class="history-tags">
-          {#each $searchHistory.slice(0, 5) as historyItem}
+          {#each Array.isArray($searchHistory.slice(0, 5)) ? $searchHistory.slice(0, 5) : [] as historyItem}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
@@ -497,8 +497,7 @@ showAnalytics.update((s) => !s)}
               {historyItem}
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Advanced Filters -->
   {#if $showFilters && enableFilters}
@@ -516,7 +515,7 @@ Reset
           <div class="filter-group">
             <label class="filter-label">Document Types</label>
             <div class="checkbox-group">
-              {#each documentTypes as type}
+              {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
                 <Checkbox
                   bind:checked={
                     $searchFilters.documentTypes.includes(type.value
@@ -542,7 +541,7 @@ Reset
           <div class="filter-group">
             <label class="filter-label">Jurisdictions</label>
             <div class="checkbox-group">
-              {#each jurisdictions as jurisdiction}
+              {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                 <Checkbox
                   bind:checked={
                     $searchFilters.jurisdictions.includes(jurisdiction.value
@@ -590,7 +589,7 @@ Reset
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {#each sortOptions as option}
+                {#each Array.isArray(sortOptions) ? sortOptions : [] as option}
                   <SelectItem value={option.value}>{option.label}</SelectItem>
                 {/each}
               </SelectContent>
@@ -600,8 +599,7 @@ Reset
         <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Search Results -->
   {#if $hasResults}
     <div class="search-results">
@@ -626,8 +624,7 @@ Apply Filters
                 </Badge>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Results List -->
       <div class="results-list">
@@ -683,8 +680,7 @@ Apply Filters
                   {#each (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).metadata.tags as tag}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
               <!-- Result Actions -->
               <div class="result-actions">
                 <Button class="bits-btn" variant="ghost" size="sm">
@@ -714,8 +710,7 @@ Apply Filters
         <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
 Reset Filters
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Analytics Panel -->
   {#if $showAnalytics && enableAnalytics}
     <Dialog.Root bind:open={$showAnalytics}>
@@ -854,8 +849,7 @@ Reset Filters
                   No query data available yet. Perform some searches to see
                   analytics.
                 </p>
-              </div>
-            {/if}
+              {/if}
           </TabsContent>
         </Tabs>
       </Dialog.Content>
@@ -890,14 +884,14 @@ Reset Filters
     font-size: 1rem;
   }
   .search-icon {
-    position absolute;
+    position: absolute;
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     color: var(--muted-foreground);
   }
   .loading-icon {
-    position absolute;
+    position: absolute;
     right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -1229,4 +1223,3 @@ Reset Filters
     color: var(--muted-foreground);
   }
 </style>
-

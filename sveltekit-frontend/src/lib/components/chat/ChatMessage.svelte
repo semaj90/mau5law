@@ -22,7 +22,6 @@
       : ''
   );
 </script>
-
 <div class="chat-message" class:user={isUser} class:assistant={isAssistant} data-role={message.role}>
   <div class="message-wrapper">
     {#if showAvatar}
@@ -32,8 +31,7 @@
         {:else}
           <User class="avatar-icon" size={20} />
         {/if}
-      </div>
-    {/if}
+      {/if}
     <div class="message-content">
       <div class="message-header">
         <span class="sender-name">
@@ -63,12 +61,10 @@
               {Math.round(message.metadata.executionTime)}ms
             </span>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>
-
 <style>
   .chat-message {
     display: flex;
@@ -217,5 +213,3 @@
     }
   }
 </style>
-
-

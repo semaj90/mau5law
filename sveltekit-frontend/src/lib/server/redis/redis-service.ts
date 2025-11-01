@@ -1,7 +1,6 @@
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Use our compatibility shim that wraps ioredis under a node-redis-like surface
 import createClient from '$lib/shims/redis-shim';
-
 // Lightweight shape covering methods we use from the shim/ioredis surface
 type RedisClientLike = {
   // connection & lifecycle
@@ -9,10 +8,8 @@ type RedisClientLike = {
   disconnect?: () => Promise<void> | void;
   on?: (event: string, cb: (...args: any[]) => void) => void;
   duplicate?: () => RedisClientLike;
-
   // pub/sub
   publish?: (channel: string, message: string) => Promise<number> | void;
-
   // cache commands (various shim/name permutations)
   setEx?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
   setex?: (key: string, ttl: number, value: string) => Promise<'OK' | null> | void;
@@ -20,27 +17,22 @@ type RedisClientLike = {
   get?: (key: string) => Promise<string | null> | void;
   del?: (key: string) => Promise<number> | void;
 };
-
 export interface RedisConfig {
   url: string;
   maxRetriesPerRequest?: number;
 }
-
 class RedisService {
   // Use tolerant types for client instances from the shim
   private client: RedisClientLike | null = null;
   private publisher: RedisClientLike | null = null;
   private subscriber: RedisClientLike | null = null;
-  private isConnected = false;
-
+  private isConnected = $state(false);
   // singleton control
   private static instance: RedisService | null = null;
-
   private constructor() {
     // Start async initialization but do not await here
     void this.initializeClients();
   }
-
   // existing public factory kept for compatibility
   public static getInstance(): RedisService {
     if (!RedisService.instance) {
@@ -48,7 +40,6 @@ class RedisService {
     }
     return RedisService.instance;
   }
-
   // keep original exported helper name for compatibility
   // ...existing code...
   private async initializeClients() {
@@ -57,11 +48,9 @@ class RedisService {
       url,
       maxRetriesPerRequest: 3,
     };
-
     try {
       // create primary client
       this.client = redis as unknown as RedisClientLike;
-
       // duplicate if supported (ioredis) otherwise create new clients
       if (this.client && typeof this.client.duplicate === 'function') {
         this.publisher = this.client.duplicate();
@@ -70,32 +59,27 @@ class RedisService {
         this.publisher = redis as unknown as RedisClientLike;
         this.subscriber = redis as unknown as RedisClientLike;
       }
-
       // attach error handlers before connecting
       this.client?.on?.('error', err => this.handleError('client', err));
       this.publisher?.on?.('error', err => this.handleError('publisher', err));
       this.subscriber?.on?.('error', err => this.handleError('subscriber', err));
-
       // connect (some shims/ioredis auto-connect; connect() may be no-op)
       await Promise.all([
         this.client?.connect ? this.client.connect() : Promise.resolve(),
         this.publisher?.connect ? this.publisher.connect() : Promise.resolve(),
         this.subscriber?.connect ? this.subscriber.connect() : Promise.resolve(),
       ]);
-
       this.isConnected = true;
       console.log('✅ Redis clients connected successfully');
     } catch (error: any) {
       console.error('❌ Redis connection failed:', error);
-      this.isConnected = false;
+      this.isConnected = $state(false);
     }
   }
-
-  private handleError(clientName: string, error: unknown) {
+  private handleError(clientName: string, error: any) {
     console.error(`[RedisService] ${clientName} error:`, error);
-    this.isConnected = false;
+    this.isConnected = $state(false);
   }
-
   // Evidence Updates
   public async publishEvidenceCreated(evidenceId: string, evidenceData: any, userId?: string) {
     await this.publish('evidence_update', {
@@ -198,7 +182,7 @@ class RedisService {
     });
   }
   // User Activity
-  public async publishUserActivity(userId: string, activity: string, metadata?: unknown) {
+  public async publishUserActivity(userId: string, activity: string, metadata?: any) {
     await this.publish('user_activity', {
       type: 'USER_ACTIVITY',
       userId,
@@ -222,7 +206,6 @@ class RedisService {
       console.error(`[RedisService] Failed to publish to ${channel}:`, error);
     }
   }
-
   // Cache operations with robust method detection
   public async setCache(key: string, value: any, ttlSeconds: number = 300) {
     if (!this.isConnected || !this.client) return;
@@ -243,7 +226,6 @@ class RedisService {
       console.error(`[RedisService] Cache set error for key: "${key}":`, error);
     }
   }
-
   public async getCache(key: string) {
     if (!this.isConnected || !this.client) return null;
     try {
@@ -254,7 +236,6 @@ class RedisService {
       return null;
     }
   }
-
   public async deleteCache(key: string) {
     if (!this.isConnected || !this.client) return;
     try {
@@ -265,7 +246,6 @@ class RedisService {
       console.error(`[RedisService] Cache delete error for key: "${key}":`, error);
     }
   }
-
   // trackEvent - corrected variable usage
   public async trackEvent(event: string, data: any, userId?: string) {
     await this.publish('analytics', {
@@ -275,7 +255,6 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-
   // diagnostics
   public isConnectedToRedis(): boolean {
     return this.isConnected;
@@ -289,7 +268,6 @@ class RedisService {
       status: this.isConnected ? 'connected' : 'disconnected',
     };
   }
-
   public async disconnect() {
     try {
       await Promise.all([
@@ -300,20 +278,17 @@ class RedisService {
     } catch (err) {
       console.warn('[RedisService] Error during disconnect:', err);
     } finally {
-      this.isConnected = false;
+      this.isConnected = $state(false);
       console.log('[RedisService] Redis clients disconnected.');
     }
   }
 }
-
 // --- EXPORT STYLE CHANGE ---
 // Create and export a single shared instance of the service to ensure a single connection pool.
 export const redisService: RedisService = RedisService.getInstance();
-
 // Backward-compatible getter used by existing callers
 export function getRedisService(): RedisService {
   return redisService;
 }
-
 // Default export kept to minimize breaking changes (was previously the class / factory)
 export default redisService;

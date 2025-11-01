@@ -4,10 +4,10 @@
  */
 // SIMD JSON Interface
 interface SIMDJSONModule {
-  parse(json: string): unknown;
+  parse(json: string): any;
   isValid(json: string): boolean;
   minify(json: string): string;
-  stringify(obj: unknown): string;
+  stringify(obj: any): string;
   getLastErrorMessage(): string;
 }
 // Cache Configuration
@@ -34,10 +34,10 @@ interface ParseMetrics {
 }
 class SIMDJSONCache {
   private simdModule: SIMDJSONModule | null = null;
-  private simdLoaded = false;
+  private simdLoaded = $state(false);
   private config: CacheConfig;
   private metrics: ParseMetrics;
-  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
@@ -230,7 +230,7 @@ class SIMDJSONCache {
     if (this.config.enableMetrics) this.metrics.cacheMisses++;
     return null;
   }
-  private async setCache(_key: string, data: unknown, ttl: number = this.config.defaultTTL): Promise<void> {
+  private async setCache(_key: string, data: any, ttl: number = this.config.defaultTTL): Promise<void> {
     try {
       const serialized = JSON.stringify(data);
       const compressed = await this.compressData(serialized);
@@ -285,8 +285,8 @@ class SIMDJSONCache {
         return cached;
       }
     }
-    let result: unknown;
-    let usedSIMD = false;
+    let result: any;
+    let usedSIMD = $state(false);
     try {
       if (this.simdLoaded && this.simdModule) {
         // Use SIMD JSON parser
@@ -321,7 +321,7 @@ class SIMDJSONCache {
       throw new Error(`JSON parsing failed: ${error}`);
     }
   }
-  public async stringify(obj: unknown, useCache: boolean = true): Promise<string> {
+  public async stringify(obj: any, useCache: boolean = true): Promise<string> {
     const startTime = performance.now();
     const objString = JSON.stringify(obj); // Quick serialization for cache key
     const cacheKey = useCache ? this.generateCacheKey(objString, 'stringify') : '';
@@ -334,7 +334,7 @@ class SIMDJSONCache {
       }
     }
     let result: string;
-    let usedSIMD = false;
+    let usedSIMD = $state(false);
     try {
       if (this.simdLoaded && this.simdModule) {
         result = this.simdModule.stringify(obj);
@@ -461,7 +461,7 @@ export async function fastParse(jsonString: string, useCache = true): Promise<un
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.parse(jsonString, useCache);
 }
-export async function fastStringify(obj: unknown, useCache = true): Promise<string> {
+export async function fastStringify(obj: any, useCache = true): Promise<string> {
   const cache = getSIMDJSONCache() || createSIMDJSONCache();
   return cache.stringify(obj, useCache);
 }

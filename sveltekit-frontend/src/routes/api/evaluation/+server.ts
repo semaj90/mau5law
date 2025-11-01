@@ -32,7 +32,7 @@ interface TestResultPayload {
 interface RLFeaturesPayload {
   query?: string
   context?: Record<string, unknown>
-  agentChain?: unknown
+  agentChain?: any
   responseTime?: number
   userRating?: number
 }
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
         )
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
     console.error("Evaluation API error:", message)
     return json(
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
     console.error('Evaluation record error:', message);
     return json(

@@ -115,7 +115,6 @@ https://svelte.dev/e/js_parse_error -->
     oninput?.(event);
   }
 </script>
-
 <div class="input-wrapper w-full">
   <!-- Label -->
   {#if label}
@@ -132,8 +131,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if icon}
       <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
         <div class="{icon} w-4 h-4"></div>
-      </div>
-    {/if}
+      {/if}
     <!-- Input Element -->
     <input
       {type}
@@ -154,8 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if suffix}
       <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
         {suffix}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Helper Text / Error Message -->
   {#if (state === 'error' && errorMessage) || helperText}
@@ -168,7 +165,6 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   {/if}
 </div>
-
 <style>
   /* YoRHa-specific input styling */
   .yorha-input {
@@ -191,7 +187,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Required field indicator */
   label.required {
-    position relative;
+    position: relative;
   }
 </style>
-

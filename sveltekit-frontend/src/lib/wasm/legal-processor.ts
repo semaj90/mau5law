@@ -59,7 +59,7 @@ interface DocumentStructure {
 // WebAssembly Legal Processor Class
 export class WasmLegalProcessor {
   private wasmModule: WasmModule | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private initPromise: Promise<void> | null = null;
   constructor() {
     this.initPromise = this.initialize();

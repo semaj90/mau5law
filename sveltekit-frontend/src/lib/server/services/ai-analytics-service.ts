@@ -7,40 +7,34 @@ type RabbitMQIntegration = {
   publishEvent?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
   enqueue?: (topic: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
 };
-
 type ExtendedConfig = typeof CONFIG & { LOKI_INGEST_URL?: string };
-
 type SystemLoad = {
   gpu: number;
   cpu: number;
   memory: number;
   rabbitmqDepth: number;
 };
-
 type AnalyticsEvent = {
   timestamp: string;
   type: string;
   caseId?: string;
   payload?: Record<string, unknown>;
 };
-
 export class AIAnalyticsService {
   async recordUserMetrics(userId: string, data: Record<string, unknown>): Promise<void> {
     try {
       await redis.hSet(`user:analytics:${userId}`, { ...data, timestamp: Date.now() });
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('Failed to write user analytics to redis', e);
     }
   }
-
   async recordAIInferenceMetrics(taskId: string, metrics: Record<string, number | string>): Promise<void> {
     try {
       await redis.hSet(`ai:analytics:${taskId}`, { ...metrics, timestamp: Date.now() });
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('Failed to write ai analytics to redis', e);
     }
   }
-
   async getSystemLoad(): Promise<SystemLoad> {
     try {
       const gpu = Number((await redis.get('gpu:load')) ?? 0);
@@ -51,12 +45,11 @@ export class AIAnalyticsService {
         memory: process.memoryUsage().heapUsed / 1024 / 1024,
         rabbitmqDepth,
       };
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('Failed to read system load', e);
       return { gpu: 0, cpu: 0, memory: 0, rabbitmqDepth: 0 };
     }
   }
-
   /**
    * Publish a lightweight analytics event to Redis stream (or list fallback) and RabbitMQ.
    */
@@ -70,10 +63,9 @@ export class AIAnalyticsService {
       } else if (typeof redisStream.lPush === 'function') {
         await redisStream.lPush('ai:analytics:events', JSON.stringify(evt)).catch(() => {});
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('AIAnalyticsService.publishEvent failed (redis)', e);
     }
-
     try {
       // RabbitMQXStateIntegration may expose different methods depending on environment.
       const rabbit = RabbitMQXStateIntegration as unknown as RabbitMQIntegration;
@@ -84,10 +76,9 @@ export class AIAnalyticsService {
       } else {
         // No-op fallback: integration not available in this environment
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('AIAnalyticsService.publishEvent failed (rabbitmq)', e);
     }
-
     // Optional: push to Loki if configured
     try {
       const lokiUrl = (CONFIG as ExtendedConfig).LOKI_INGEST_URL;
@@ -102,17 +93,15 @@ export class AIAnalyticsService {
       // non-fatal
     }
   }
-
   async getSignalsForCase(caseId: string): Promise<{ hotness: number; confidenceDrift: number }> {
     try {
       const raw = await redis.get(`ai:analytics:case:${caseId}:signals`);
       if (raw) return JSON.parse(raw) as { hotness: number; confidenceDrift: number };
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('getSignalsForCase failed', e);
     }
     return { hotness: 0, confidenceDrift: 0 };
   }
-
   async getHistoricalAnalytics(caseId: string, metricType: string): Promise<Array<Record<string, unknown>>> {
     // Placeholder: connect to a dedicated analytics store in production (Loki/ClickHouse)
     console.debug(`Retrieving historical analytics for case ${caseId} metric ${metricType}`);
@@ -122,7 +111,5 @@ export class AIAnalyticsService {
     return [];
   }
 }
-
 export const aiAnalyticsService = new AIAnalyticsService();
-
 export default aiAnalyticsService;

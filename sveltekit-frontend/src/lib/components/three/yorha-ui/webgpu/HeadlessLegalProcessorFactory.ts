@@ -128,7 +128,7 @@ export interface ProcessingTask {
 export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
   private device: GPUDevice | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private processingQueue: Array<ProcessingTask> = [];
   private constructor() {}
   static getInstance(): HeadlessLegalProcessorFactory {
@@ -533,7 +533,7 @@ Format your response as structured JSON.`;
     }
     yorhaMipmapShaders.dispose();
     lodCacheEngine.clearCache();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.device = null;
   }
 }

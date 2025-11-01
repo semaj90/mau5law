@@ -3,11 +3,9 @@
  * Tables: test_rag_documents, test_rag_embeddings
  * Purpose: Isolated RAG pipeline testing with pgvector + Qdrant + langextract + Ollama
  */
-
 import { pgTable, uuid, text, timestamp, jsonb, real, integer } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 import { relations } from 'drizzle-orm';
-
 /**
  * Test RAG Documents Table
  * Stores document content, metadata, and legal analysis
@@ -42,7 +40,6 @@ export const testRagDocuments = pgTable('test_rag_documents', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
-
 /**
  * Test RAG Embeddings Table
  * Stores vector embeddings with pgvector for semantic search
@@ -61,7 +58,6 @@ export const testRagEmbeddings = pgTable('test_rag_embeddings', {
   }>(),
   createdAt: timestamp('created_at').defaultNow(),
 });
-
 /**
  * Test RAG Search Sessions Table
  * Stores search queries and results for analytics
@@ -88,29 +84,24 @@ export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
   }>(),
   createdAt: timestamp('created_at').defaultNow(),
 });
-
 /**
  * Relations
  */
 export const testRagDocumentsRelations = relations(testRagDocuments, ({ many }) => ({
   embeddings: many(testRagEmbeddings),
 }));
-
 export const testRagEmbeddingsRelations = relations(testRagEmbeddings, ({ one }) => ({
   document: one(testRagDocuments, {
     fields: [testRagEmbeddings.documentId],
     references: [testRagDocuments.id],
   }),
 }));
-
 /**
  * Type exports for TypeScript inference
  */
 export type TestRagDocument = typeof testRagDocuments.$inferSelect;
 export type NewTestRagDocument = typeof testRagDocuments.$inferInsert;
-
 export type TestRagEmbedding = typeof testRagEmbeddings.$inferSelect;
 export type NewTestRagEmbedding = typeof testRagEmbeddings.$inferInsert;
-
 export type TestRagSearchSession = typeof testRagSearchSessions.$inferSelect;
 export type NewTestRagSearchSession = typeof testRagSearchSessions.$inferInsert;

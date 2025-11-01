@@ -28,7 +28,7 @@
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
   export let contract: ContractAnalysis | undefined;
@@ -36,7 +36,7 @@
   export let onExport: ((format: 'pdf' | 'docx' | 'json') => void) | undefined;
 
   // local component state (no Svelte store misuse)
-  let isAnalyzing = false;
+  let isAnalyzing = $state(false);
   let selectedClause: string | null = null;
   let searchTerm = '';
 
@@ -123,7 +123,7 @@
     } catch (err) {
       console.error('Contract analysis failed:', err);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
 
@@ -211,7 +211,7 @@
         <div class="risk-overview">
           <h3>Risk Analysis Overview</h3>
           <div class="risk-bars">
-            {#each ['low', 'medium', 'high', 'critical'] as riskLevel}
+            {#each Array.isArray(['low', 'medium', 'high', 'critical']) ? ['low', 'medium', 'high', 'critical'] : [] as riskLevel}
               {@const count = contractData.clauses.filter(c => c.riskLevel === riskLevel).length}
               <div class="risk-bar">
                 <span class="risk-label">{riskLevel.toUpperCase()}</span>
@@ -278,12 +278,11 @@
                     <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
                       <h4>🔍 AI Recommendations:</h4>
                       <ul>
-                        {#each clause.recommendations as recommendation}
+                        {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}
                           <li>{recommendation}</li>
                         {/each}
                       </ul>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
 
                 {#if selectedClause === clause.id}
@@ -291,8 +290,7 @@
                     <Button size="sm">✏️ Edit</Button>
                     <Button size="sm" variant="outline">💬 Comment</Button>
                     <Button size="sm" variant="outline">🔍 Deep Analysis</Button>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
           </div>
@@ -404,7 +402,7 @@
   .risk-bar { display: flex; align-items: center; gap: 1rem; }
   .risk-label { min-width: 80px; font-size: 0.75rem; font-weight: bold; }
   .risk-track { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-  .risk-fill { height: 100%; transition: width 300ms ease; border-radius: 4px; }
+  .risk-fill { height: 100%; transition: width: 300ms ease; border-radius: 4px; }
   .risk-count { min-width: 30px; text-align: center; font-weight: bold; }
 
   .clauses-section h3 { margin: 0 0 1.5rem 0; color: var(--enhanced-bits-foreground); }
@@ -440,7 +438,7 @@
   .confidence-display { display: flex; align-items: center; gap: 1rem; }
   .confidence-label { font-size: 0.875rem; color: var(--enhanced-bits-muted-foreground); }
   .confidence-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-  .confidence-fill { height: 100%; transition: width 300ms ease; border-radius: 3px; }
+  .confidence-fill { height: 100%; transition: width: 300ms ease; border-radius: 3px; }
   .confidence-value { font-size: 0.875rem; font-weight: bold; color: var(--enhanced-bits-evidence); }
 
   .recommendations {

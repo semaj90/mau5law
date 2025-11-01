@@ -26,7 +26,7 @@
     responsive?: boolean;
     class?: string;
   }
-  export const resizable: boolean = false;
+  export const resizable: boolean = $state(false);
   const gapClasses = {
     none: 'gap-0',
     sm: 'gap-2',
@@ -41,7 +41,6 @@
       : `grid-cols-${columns}`
   );
 </script>
-
 <div class={cn('grid w-full', gridClass, gapClasses[gap])} style:min-height={minHeight} style:max-height={maxHeight}>
   {#if children}
     {@render children()}

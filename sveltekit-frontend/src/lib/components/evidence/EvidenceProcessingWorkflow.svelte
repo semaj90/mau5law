@@ -50,7 +50,7 @@
     evidenceId?: string;
     autoStart?: boolean;
     neuralSpriteEnabled?: boolean;
-    onCompleted?: ((result: unknown) => void) | undefined;
+    onCompleted?: ((result: any) => void) | undefined;
     onError?: ((error: string) => void) | undefined;
     sessionId?: string | null;
     endpoint?: string;
@@ -70,7 +70,7 @@
   const actor = createActor(evidenceProcessingMachine);
   // Prepare initial snapshot with safe context access (actor may not have started yet)
   const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
-  const initialSnapshot: unknown = rawSnapshot || {,
+  const initialSnapshot: any = rawSnapshot || {,
     context: ,
     value: 'idle',
     matches: (_: string) => false;
@@ -102,7 +102,7 @@
     exchange: 'evidence.processing',
     routingKey: evidenceId;
   }
-  let rabbitClient: unknown = null;
+  let rabbitClient: any = null;
   let rabbitSubscription unknown = null;
   async function connectRabbitMQ() {
     if (!useRabbitMQ || typeof window === 'undefined') return;
@@ -116,7 +116,7 @@
         debug: () => });
       rabbitClient.onConnect = () => {
         const destination = `/exchange/${rabbitConfig.exchange}/${rabbitConfig.routingKey}`;
-        rabbitSubscription = rabbitClient.subscribe(destination, (msg: unknown) => {
+        rabbitSubscription = rabbitClient.subscribe(destination, (msg: any) => {
           try {
             const data = JSON.parse(msg.body);
             if (data.currentState && data.context) {
@@ -143,13 +143,13 @@
       rabbitClient.onWebSocketClose = () => {
         if (!eventSource) {
           console.warn('RabbitMQ closed, falling back to SSE');
-          useRabbitMQ = false;
+          useRabbitMQ = $state(false);
         }
       }
       rabbitClient.activate();
     } catch (e) {
       console.warn('RabbitMQ unavailable, using SSE only:', e);
-      useRabbitMQ = false;
+      useRabbitMQ = $state(false);
     }
   }
   function disconnectRabbitMQ() {
@@ -165,7 +165,7 @@
     window.addEventListener('beforeunload', disconnectRabbitMQ);
   }
   // UI state
-  let dragOver = false;
+  let dragOver = $state(false);
   let selectedFile: File | null = null;
   let neuralSpriteConfig = {
     enable_compression neuralSpriteEnabled
@@ -177,11 +177,11 @@
   // Derived replacements
   let progress = 0;
   let currentStepName: string = 'idle';
-  let isProcessing = false;
-  let canCancel = false;
-  let hasError = false;
-  let isCompleted = false;
-  let isCancelled = false;
+  let isProcessing = $state(false);
+  let canCancel = $state(false);
+  let hasError = $state(false);
+  let isCompleted = $state(false);
+  let isCancelled = $state(false);
   function recomputeDerived() {
     try {
       progress = getProcessingProgress(currentState.context) || 0;
@@ -207,7 +207,7 @@
   $effect(() => {
     actor.start();
     // Subscribe to state changes
-    const subscription = actor.subscribe((state: unknown) => {
+    const subscription = actor.subscribe((state: any) => {
       currentState = state as EvidenceActorStat;
       recomputeDerived();
       if (typeof currentState.matches === 'function' && currentState.matches('completed')) {
@@ -244,7 +244,7 @@
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const files = event.dataTransfer?.file;
     if (files && files.length > 0) {
       selectedFile = files[0];
@@ -256,7 +256,7 @@
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
   }
   // Streaming connection management
   async function startProcessing() {
@@ -315,7 +315,7 @@
       actor.send({ type: 'ANALYSIS_ERROR', error: message });
     }
   }
-  function updateClientFromServer(serverData: unknown) {
+  function updateClientFromServer(serverData: any) {
     const { currentState: serverState, context: serverContext } = serverData;
     // Sync client state with server state
     if (serverState !== currentState.value) {
@@ -366,7 +366,6 @@
     if (url) window.open(url, '_blank');
   }
 </script>
-
 <div class="w-full max-w-4xl mx-auto nes-container">
   <div class="yorha-panel-header">
     <h3 class="nes-text is-primary flex items-center gap-2">
@@ -405,8 +404,7 @@
             <span class="text-sm">Select a file</span>
           </label>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Selected File Display -->
     {#if selectedFile}
       <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -422,8 +420,7 @@
         {#if !isProcessing && !isCompleted}
           <button type="button" class="bits-btn" onclick={resetWorkflow}> Change File </button>
         {/if}
-      </div>
-    {/if}
+      {/if}
     <!-- Neural Sprite Configuration -->
     {#if selectedFile && !isProcessing && !isCompleted}
       <div class="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-blue-50">
@@ -477,18 +474,15 @@
               />
               <label for="ui-layout-compression" class="text-sm"> UI Layout Compression Demo </label>
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
         <button type="button" onclick={startProcessing} class="px-8 py-3 bits-btn">
           🚀 Start Processing Workflow
         </button>
-      </div>
-    {/if}
+      {/if}
     <!-- Processing Progress -->
     {#if isProcessing}
       <div class="space-y-4">
@@ -501,7 +495,7 @@
         </div>
         <!-- Current Step Display -->
         <div class="space-y-2">
-          {#each currentState.context.streamingUpdates || [] as update}
+          {#each Array.isArray(currentState.context.streamingUpdates || []) ? currentState.context.streamingUpdates || [] : [] as update}
             <div class="flex items-center justify-between text-sm">
               <div class="flex items-center gap-2">
                 {#if update.status === 'completed'}
@@ -527,10 +521,8 @@
         {#if canCancel}
           <div class="flex justify-center">
             <button type="button" class="bits-btn" onclick={cancelProcessing}> Cancel Processing </button>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Error State -->
     {#if hasError}
       <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -539,7 +531,7 @@
           <h3 class="font-medium text-red-800">Processing Error</h3>
         </div>
         <div class="space-y-1">
-          {#each currentState.context.errors || [] as error}
+          {#each Array.isArray(currentState.context.errors || []) ? currentState.context.errors || [] : [] as error}
             <p class="text-sm text-red-700">{error}</p>
           {/each}
         </div>
@@ -547,8 +539,7 @@
           <button type="button" class="bits-btn" onclick={retryProcessing}> Retry </button>
           <button type="button" class="bits-btn" onclick={resetWorkflow}> Reset </button>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Completion State -->
     {#if isCompleted}
       <div class="p-6 bg-green-50 border border-green-200 rounded-lg">
@@ -573,16 +564,13 @@
               {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
                   Neural Sprite Compression {currentState.context.portableArtifact.compressionRatio}:1 ratio
-                </div>
-              {/if}
-            </div>
-          {/if}
+                {/if}
+            {/if}
           <div class="flex justify-center">
             <button type="button" class="bits-btn" onclick={resetWorkflow}> Process Another Evidence </button>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Cancelled State -->
     {#if isCancelled}
       <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
@@ -594,8 +582,7 @@
             <button type="button" class="bits-btn" onclick={resetWorkflow}> Start New Workflow </button>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 ;

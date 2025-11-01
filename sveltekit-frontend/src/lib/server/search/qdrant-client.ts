@@ -1,6 +1,5 @@
 const QDRANT_URL = process.env.QDRANT_URL ?? 'http://localhost:6333';
 const COLLECTION = process.env.QDRANT_COLLECTION ?? 'citations';
-
 /**
  * Minimal vector search against Qdrant HTTP API.
  * Provide embedding (array of numbers) and receive top-K point ids with scores.

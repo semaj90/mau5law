@@ -14,26 +14,21 @@ type PoolLike = {
   // Optional lifecycle helpers
   end?: () => Promise<void> | void;
   close?: () => Promise<void> | void;
-
   // Connection acquisition for code that expects to call connect()
   connect?: () => Promise<{
-    query?: (text: string | { text: string; values?: unknown[] }, params?: unknown[]) => Promise<{ rows?: unknown[] }>;
+    query?: (text: string | { text: string; values?: any[] }, params?: any[]) => Promise<{ rows?: any[] }>;
     release?: () => void;
   }>;
-
   // Optional bookkeeping / diagnostics commonly present on pool shims
   totalCount?: number;
   idleCount?: number;
   waitingCount?: number;
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
 };
-
 // derive the concrete type used by postgres-js at runtime
 type PostgresJsClient = ReturnType<typeof postgres>;
-
 let _db: PostgresJsDatabase<typeof schema> | null = null;
 let _pool: PoolLike | null = null;
-
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build
   if (building) {
@@ -58,7 +53,6 @@ function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
     );
   }
   _db = drizzle(pgClient as unknown as PostgresJsClient, { schema });
-
   // Skip migrations in testing environment
   if (nodeEnv !== 'testing') {
     try {
@@ -108,7 +102,7 @@ initializeQdrantCollection().catch(err => {
 });
 // Database metadata
 export const isPostgreSQL = true;
-export const isSQLite = false;
+export const isSQLite = $state(false);
 // Export a getter to provide the live pool value instead of a snapshot
 export function getPool() {
   // prefer the live _pool, fall back to the imported shim if present

@@ -91,22 +91,22 @@ declare module 'fabric' {
   export namespace fabric {
     export class Canvas {
       constructor(element: HTMLCanvasElement | string, options?: Record<string, unknown>);
-      add(object: unknown): Canvas;
-      remove(object: unknown): Canvas;
-      getObjects(): unknown[];
+      add(object: any): Canvas;
+      remove(object: any): Canvas;
+      getObjects(): any[];
       clear(): Canvas;
       renderAll(): Canvas;
-      toJSON(): unknown;
-      loadFromJSON(json: unknown, callback?: () => void): void;
+      toJSON(): any;
+      loadFromJSON(json: any, callback?: () => void): void;
       getElement(): HTMLCanvasElement;
       getContext(): CanvasRenderingContext2D;
     }
     export class Object {
       constructor(options?: Record<string, unknown>);
       // return `this` instead of the `Object` type to avoid using global `Object`
-      set(_key: string, value: unknown): this;
-      get(_key: string): unknown;
-      toJSON(): unknown;
+      set(_key: string, value: any): this;
+      get(_key: string): any;
+      toJSON(): any;
     }
     export class Circle extends Object {
       constructor(options?: Record<string, unknown>);
@@ -146,10 +146,10 @@ declare module 'path' {
 
 // Form schemas module - unknown instead of any
 declare module '$lib/schemas/forms' {
-  export const DocumentUploadSchema: unknown;
-  export const CaseCreationSchema: unknown;
-  export const SearchQuerySchema: unknown;
-  export const AIAnalysisSchema: unknown;
+  export const DocumentUploadSchema: any;
+  export const CaseCreationSchema: any;
+  export const SearchQuerySchema: any;
+  export const AIAnalysisSchema: any;
 }
 
 // Database schema types

@@ -4,16 +4,16 @@
   import { writable } from 'svelte/store';
   import { fade, fly } from 'svelte/transition';
   import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
-  import EvidenceAnalysisVisualization from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { EvidenceAnalysisVisualization } from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   let analyzer: AIEvidenceAnalyzer;
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);
   let currentAnalysis = writable<EvidenceAnalysis | null>(null);
   let isAnalyzing = $state(false);
   let uploadedFile: File | null = null;
-  let dropZoneActive = false;
+  let dropZoneActive = $state(false);
   // Sample evidence types for demo
   const evidenceTypes = [
     { value: 'document', label: '📄 Document', icon: '📄' },
@@ -125,7 +125,7 @@
   }
   async function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    dropZoneActive = false;
+    dropZoneActive = $state(false);
     if (event.dataTransfer?.files && event.dataTransfer.files[0]) {
       uploadedFile = event.dataTransfer.files[0];
       await processUploadedFile(uploadedFile);
@@ -173,7 +173,7 @@
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dropZoneActive = false;
+    dropZoneActive = $state(false);
   }
   function getEvidenceIcon(type: EvidenceItem['type']) {
     return evidenceTypes.find(t => t.value === type)?.icon || '📁';
@@ -189,7 +189,6 @@
     linkElement.click();
   }
 </script>
-
 <div class="evidence-dashboard">
   <header class="dashboard-header">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">AI-Powered Evidence Analysis</h1>
@@ -224,7 +223,7 @@
         </div>
         <!-- Evidence List -->
         <div class="evidence-list">
-          {#each $evidenceItems as evidence}
+          {#each Array.isArray($evidenceItems) ? $evidenceItems : [] as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
               onclick={() => analyzeEvidence(evidence)}
@@ -242,8 +241,7 @@
               {#if $selectedEvidence?.id === evidence.id && $isAnalyzing}
                 <div class="analyzing-indicator">
                   <div class="spinner"></div>
-                </div>
-              {/if}
+                {/if}
             </button>
           {/each}
         </div>
@@ -279,12 +277,10 @@
           </svg>
           <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Select Evidence to Analyze</h2>
           <p class="text-gray-500 dark:text-gray-400">Choose an evidence item from the list or upload a new file</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>
-
 <style>
   .evidence-dashboard {
     /* @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6; */

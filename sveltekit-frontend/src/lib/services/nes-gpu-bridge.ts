@@ -114,7 +114,7 @@ export class NESStyleGPUBridge {
           console.error('🚨 GPU Worker error:', e.data.error);
         }
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ GPU Worker initialization failed:', error);
     }
   }
@@ -200,7 +200,7 @@ export class NESStyleGPUBridge {
       const conversionTime = performance.now() - startTime;
       console.log(`🎮 Canvas→Tensor conversion: ${conversionTime.toFixed(2)}ms`);
       return tensor;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('🚨 Canvas state conversion failed:', error);
       throw new Error(`Canvas conversion failed: ${(error as Error).message}`);
     }
@@ -227,7 +227,7 @@ export class NESStyleGPUBridge {
       } else {
         throw new Error('GPU worker not available');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('🚨 GPU processing failed:', error);
       // Fallback to CPU processing with NES optimization
       return this.processFallbackWithNESOptimization(state);

@@ -6,34 +6,30 @@
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { browser } from '$app/environment';
 import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
-
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
 type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
 type Word = { text: string; bbox: BBox; confidence: number };
 type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
 type LoggerMessage = Record<string, unknown>;
-
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
   recognize: (image: RecognizeInput, lang?: string, opts?: Record<string, unknown>) => Promise<RecognizeResult>;
-  createWorker?: (...args: unknown[]) => unknown;
+  createWorker?: (...args: any[]) => unknown;
   setLogging?: (enabled: boolean) => void;
   // Optional static/module-level properties present on some tesseract.js builds
-  createScheduler?: unknown;
-  detect?: unknown;
-  OEM?: unknown;
-  PSM?: unknown;
-  imageType?: unknown;
+  createScheduler?: any;
+  detect?: any;
+  OEM?: any;
+  PSM?: any;
+  imageType?: any;
 } & Record<string, unknown>;
-
 declare global {
   interface Window {
     // use the stricter TesseractLike type instead of `any`
     Tesseract?: TesseractLike;
   }
 }
-
 export interface OCRResult {
   text: string;
   confidence: number;
@@ -60,18 +56,16 @@ export interface ProcessingResult {
   processingTime: number;
   cacheHit: boolean;
 }
-
 // New interfaces for API responses and options
 export interface EmbeddingAPIResponse {
   embedding: number[]; // API returns array of numbers, convert to Float32Array
   fromCache?: boolean;
   model?: string;
   type?: string;
-  result?: unknown;
+  result?: any;
   error?: string;
   tensor_id?: string;
 }
-
 export interface OCRProcessOptions {
   language?: string;
   oem?: number;
@@ -82,22 +76,19 @@ export interface OCRProcessOptions {
   tessjs_create_hocr?: boolean;
   tessjs_create_tsv?: boolean;
 }
-
 export interface BatchProcessingItem {
   image: ImageData | HTMLCanvasElement | File;
   priority: number;
   options: OCRProcessOptions;
 }
-
 export class OCRTensorProcessor {
   // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
   private worker?: Worker | ServiceWorker;
   private serviceWorkerRegistration?: ServiceWorkerRegistration;
-  private ocrInitialized = false;
+  private ocrInitialized = $state(false);
   private webgpuDevice?: GPUDevice;
   private currentLODLevel: 'high' | 'medium' | 'low' = 'medium';
   private memoryPressure = 0;
-
   async initialize(): Promise<void> {
     if (!browser) return;
     // Initialize LOD optimization based on gaming memory architecture
@@ -569,7 +560,6 @@ export class OCRTensorProcessor {
         reject(new Error('Web Worker / Service Worker not available'));
         return;
       }
-
       const handleMessage = (ev: MessageEvent) => {
         const payload = ev?.data ?? {};
         if (payload.type === 'ocr-result') {
@@ -580,7 +570,6 @@ export class OCRTensorProcessor {
           reject(new Error(String(payload.error || 'unknown')));
         }
       };
-
       const cleanup = () => {
         // remove listeners for both possible listener types
         try {
@@ -597,7 +586,6 @@ export class OCRTensorProcessor {
           console.debug('[OCRTensorProcessor.cleanup] failed to remove serviceWorker listener', err);
         }
       };
-
       // Attach listener depending on type
       if (this.worker && 'postMessage' in (this.worker as Worker) && 'terminate' in (this.worker as Worker)) {
         // Dedicated worker path
@@ -631,7 +619,6 @@ export class OCRTensorProcessor {
           reject(err);
         }
       }
-
       // Timeout after 30 seconds
       const timer = setTimeout(() => {
         cleanup();

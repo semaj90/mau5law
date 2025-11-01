@@ -26,7 +26,7 @@ interface UploadResult {
 }
 
 // Helper: safe type guard for OCR entity objects
-function isEntityObject(x: unknown): x is { type?: unknown } {
+function isEntityObject(x: any): x is { type?: any } {
   return typeof x === 'object' && x !== null && 'type' in x;
 }
 
@@ -80,7 +80,7 @@ async function extractTextFromFile(
         entities: first.entities || undefined,
         embedding: first.embedding || undefined,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('GPU OCR service error:', error);
       // Fallback: Return placeholder
       return {
@@ -146,7 +146,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
         const regexTags = generateTags(extractedText);
         let ocrTags: string[] = [];
         try {
-          const ents = ocrResult.entities as unknown as { entities?: unknown };
+          const ents = ocrResult.entities as unknown as { entities?: any };
           if (Array.isArray(ents?.entities)) {
             ocrTags = (ents.entities as unknown[])
               .map(e => (isEntityObject(e) && typeof e.type === 'string' ? e.type : undefined))
@@ -167,7 +167,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             result.embeddingGenerated = true;
           } catch (embErr) {
             console.warn('GPU embedding generation failed, continuing without embedding:', embErr);
-            result.embeddingGenerated = false;
+            result.embeddingGenerated = $state(false);
           }
         } else {
           result.embeddingGenerated = true;
@@ -232,13 +232,13 @@ const handler: RequestHandler = async ({ request, fetch }) => {
             result.qdrantStored = true;
           } catch (qdrantErr) {
             console.warn('Qdrant storage failed:', qdrantErr);
-            result.qdrantStored = false;
+            result.qdrantStored = $state(false);
           }
         }
 
         result.success = true;
-      } catch (fileErr: unknown) {
-        result.success = false;
+      } catch (fileErr: any) {
+        result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
         console.error(`Failed to process file ${file.name}:`, fileErr);
       }
@@ -255,7 +255,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       failureCount: files.length - successCount,
       results,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document upload error:', error);
     return json(
       { error: 'Upload failed', details: error instanceof Error ? error.message : String(error) },
@@ -276,12 +276,12 @@ export const POST = withValidationAndRate(handler, null, {
 export const GET: RequestHandler = async () => {
   try {
     // probe Qdrant by performing a lightweight search for an empty vector (should not error)
-    let qdrantHealthy = false;
+    let qdrantHealthy = $state(false);
     try {
       const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
       qdrantHealthy = Array.isArray(probe);
     } catch (err) {
-      qdrantHealthy = false;
+      qdrantHealthy = $state(false);
     }
     const dbConnected = !!db;
 
@@ -295,7 +295,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       { error: 'Health check failed', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }

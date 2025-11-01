@@ -16,7 +16,7 @@ import { randomUUID, createHash } from 'crypto';
 
 // Remove local any-typed alias and add a small type-guard helper instead
 // const dbAny = db as unknown as any
-function isHttpError(e: unknown): e is { status: number } {
+function isHttpError(e: any): e is { status: number } {
   return (
     typeof e === 'object' && e !== null && 'status' in e && typeof (e as Record<string, unknown>).status === 'number'
   );
@@ -74,7 +74,7 @@ async function resolveSchemaTable<T = unknown>(...candidates: string[]): Promise
 }
 
 // add runtime column-resolvers to tolerate schema naming differences
-function resolveTableColumn(table: unknown, ...candidates: string[]): unknown {
+function resolveTableColumn(table: any, ...candidates: string[]): any {
   // safe, runtime lookup avoiding direct compile-time property access that may not exist
   const t = table as Record<string, unknown>;
   for (const name of candidates) {
@@ -254,7 +254,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         role: user.role,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (isHttpError(err)) {
       // Re-throw SvelteKit errors
       throw err;
@@ -422,7 +422,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       { status: 201 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (isHttpError(err)) {
       // Re-throw SvelteKit errors
       throw err;
@@ -608,7 +608,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         changedFields,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (isHttpError(err)) {
       throw err;
     }
@@ -777,7 +777,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         },
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     if (isHttpError(err)) {
       throw err;
     }
@@ -786,7 +786,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
   }
 };
 // add helper to safely derive a user display name without assuming properties that may not exist
-function getUserDisplayName(user: unknown): string {
+function getUserDisplayName(user: any): string {
   if (typeof user === 'object' && user !== null && ('firstName' in user || 'lastName' in user || 'email' in user)) {
     const u = user as { firstName?: string; lastName?: string; email?: string };
     const fullName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();

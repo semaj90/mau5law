@@ -14,7 +14,6 @@
   import { SNES_COLOR_PALETTE } from '../constants/gaming-constants.js';
   import type { Snippet } from 'svelte';
   import { retroAudio, generateGradient, getSizeStyles, getMode7Transform, SNES_PALETTE } from '../effects';
-
   interface Props extends GamingComponentProps {
     // Button specific props
     type?: 'button' | 'submit' | 'reset';
@@ -33,7 +32,6 @@
     children?: Snippet;
     class?: string;
   }
-
   let {
     era = '16bit',
     variant = 'primary',
@@ -60,12 +58,10 @@
     onHover = undefined,
     onFocus = undefined,
   }: Props = $props();
-
   // State
   let isPressed = $state(false);
   let isHovered = $state(false);
   let buttonElement = $state<HTMLButtonElement | null>(null);
-
   const handleClick = async () => {
     if (disabled || loading) return;
     isPressed = true;
@@ -73,29 +69,25 @@
       await retroAudio.playSNESButtonClick({ volume: 0.3, harmonics: true });
     }
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 120);
     // call only if a function was provided to avoid TS: "not callable" error
     if (typeof onClick === 'function') onClick();
   };
-
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     // call only if a function was provided
     if (typeof onHover === 'function') onHover();
   };
-
   const handleUnhover = () => {
-    isHovered = false;
+    isHovered = $state(false);
   };
-
   const handleFocus = () => {
     if (disabled) return;
     // call only if a function was provided
     if (typeof onFocus === 'function') onFocus();
   };
-
   // Derived state using modular utilities
   const sizeStyles = $derived(getSizeStyles(size as any));
   const variantGradient = $derived(
@@ -107,7 +99,6 @@
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
-
 <BitsButton
   bind:el={buttonElement}
   {type}
@@ -134,7 +125,6 @@
     {/if}
   {/if}
 </BitsButton>
-
 <style>
   :global(.snes-16bit-button) {
     font-family: 'Orbitron', 'Arial', sans-serif;
@@ -170,13 +160,12 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
-
   :global(.snes-16bit-button.layer-effects::before) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -185,12 +174,10 @@
     pointer-events: none;
     opacity: 0.6;
   }
-
   :global(.snes-16bit-button.plasma) {
     animation: plasmaShift 3s ease-in-out infinite alternate;
     background-size: 200% 200%;
   }
-
   @keyframes plasmaShift {
     0% {
       background-position 0% 0%;
@@ -202,11 +189,9 @@
       background-position 0% 0%;
     }
   }
-
   :global(.snes-16bit-button.mode7) {
     transform-style: preserve-3d;
   }
-
   :global(.snes-16bit-buttonnot(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
     box-shadow:
@@ -216,14 +201,12 @@
       0 4px 8px rgba(0, 0, 0, 0.2);
     filter: brightness(1.1) saturate(1.1);
   }
-
   :global(.snes-16bit-buttonnot(:disabled):active) {
     box-shadow:
       0 1px 0px rgba(0, 0, 0, 0.3),
       inset 0 1px 0px rgba(255, 255, 255, 0.3),
       inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-
   :global(.snes-16bit-buttondisabled) {
     background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c);
     color: #bcbcbc;
@@ -234,18 +217,15 @@
       0 1px 0px rgba(0, 0, 0, 0.2),
       inset 0 1px 0px rgba(255, 255, 255, 0.1);
   }
-
   :global(.snes-16bit-buttonfocus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-
   .loading-spinner {
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
-
   .enhanced-spinner {
     width: 16px;
     height: 16px;
@@ -257,7 +237,6 @@
     border-radius: 50%;
     animation: enhancedSpin 0.8s ease-in-out infinite;
   }
-
   @keyframes enhancedSpin {
     0% {
       transform: rotate(0deg);
@@ -272,7 +251,6 @@
       border-radius: 50%;
     }
   }
-
   @media (max-width: 480px) {
     :global(.snes-16bit-button) {
       min-height: 44px;
@@ -286,7 +264,6 @@
       transform: none !important;
     }
   }
-
   @media (prefers-reduced-motion reduce) {
     :global(.snes-16bit-button) {
       animation: none;
@@ -300,7 +277,6 @@
       border: 2px solid currentColor;
     }
   }
-
   @media (prefers-contrast: high) {
     :global(.snes-16bit-button) {
       border-width: 2px;
@@ -308,7 +284,6 @@
       text-shadow: none;
     }
   }
-
   @media (prefers-color-scheme: dark) {
     :global(.snes-16bit-button) {
       box-shadow:
@@ -318,4 +293,3 @@
     }
   }
 </style>
-

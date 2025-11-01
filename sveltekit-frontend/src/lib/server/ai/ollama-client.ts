@@ -1,19 +1,15 @@
 // Lightweight Ollama HTTP client for local models
 // Defaults target to http://localhost:11434
-
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
-
 export interface ChatCompletionOptions {
   model?: string;
   stream?: boolean;
   temperature?: number;
 }
-
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-
 export async function createEmbedding(prompt: string, model = 'embeddinggemma:latest'): Promise<number[]> {
   try {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
@@ -30,7 +26,6 @@ export async function createEmbedding(prompt: string, model = 'embeddinggemma:la
     return Array(384).fill(0);
   }
 }
-
 export async function chat(messages: ChatMessage[], opts: ChatCompletionOptions = {}) {
   const model = opts.model || 'gemma3-legal:latest';
   try {
@@ -46,4 +41,3 @@ export async function chat(messages: ChatMessage[], opts: ChatCompletionOptions 
     throw err;
   }
 }
-

@@ -78,7 +78,7 @@ export class QLoRAWasmLoader {
   private loadedModels = new Map<string, number>();
   private loadedAdapters = new Map<string, number>();
   private modelConfigs = new Map<number, QLoRAModelConfig>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private initializationPromise: Promise<boolean> | null = null;
   // Default configuration for legal domain
   private defaultConfig: Partial<QLoRAModelConfig> = {
@@ -129,7 +129,7 @@ export class QLoRAWasmLoader {
       return true;
     } catch (error) {
       console.error('❌ Failed to initialize QLoRA WASM loader:', error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       return false;
     }
   }

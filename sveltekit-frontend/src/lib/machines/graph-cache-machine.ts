@@ -2,12 +2,11 @@
 // Implements the recommended runtime flow with idle signals and telemetry
 import { createMachine, assign } from 'xstate';
 import type { ActorRefFrom } from 'xstate';
-
 // Types for the graph cache system
 export interface GraphCacheContext {
   query: string | null;
   params: Record<string, unknown>;
-  result: unknown;
+  result: any;
   source: 'indexeddb_cache' | 'wasm' | 'neo4j' | 'graph_service' | 'snapshot_fallback';
   isStale: boolean;
   isAuthoritative: boolean;
@@ -30,15 +29,14 @@ export interface GraphCacheContext {
   retryCount: number;
   maxRetries: number;
 }
-
 export type GraphCacheEvent =
   | { type: 'QUERY'; query: string; params?: Record<string, unknown> }
-  | { type: 'CACHE_HIT'; result: unknown; source: GraphCacheContext['source']; latency: number }
+  | { type: 'CACHE_HIT'; result: any; source: GraphCacheContext['source']; latency: number }
   | { type: 'CACHE_MISS'; queryHash: string }
-  | { type: 'WASM_RESULT'; result: unknown; latency: number }
-  | { type: 'AUTHORITATIVE_RESULT'; result: unknown; source: GraphCacheContext['source']; latency: number }
+  | { type: 'WASM_RESULT'; result: any; latency: number }
+  | { type: 'AUTHORITATIVE_RESULT'; result: any; source: GraphCacheContext['source']; latency: number }
   | { type: 'BACKGROUND_REFRESH'; queryHash: string }
-  | { type: 'REFRESH_COMPLETE'; result: unknown }
+  | { type: 'REFRESH_COMPLETE'; result: any }
   | { type: 'REFRESH_FAILED'; error: string }
   | { type: 'ENABLE_BACKGROUND_REFRESH' }
   | { type: 'DISABLE_BACKGROUND_REFRESH' }
@@ -49,7 +47,6 @@ export type GraphCacheEvent =
   | { type: 'INVALIDATE_CACHE'; key?: string }
   | { type: 'IDLE_CALLBACK' }
   | { type: 'RETRY' };
-
 // XState machine for graph cache orchestration
 export const graphCacheMachine = createMachine(
   {
@@ -404,7 +401,7 @@ export const graphCacheMachine = createMachine(
       scheduleIdleCallback: () => {
         const ric = (
           globalThis as unknown as {
-            requestIdleCallback?: (cb: (deadline: unknown) => void, options?: { timeout?: number }) => number;
+            requestIdleCallback?: (cb: (deadline: any) => void, options?: { timeout?: number }) => number;
           }
         ).requestIdleCallback;
         if (typeof ric !== 'undefined') {
@@ -476,15 +473,13 @@ export type GraphCacheActor = ActorRefFrom<GraphCacheMachine>;
 export function createGraphCacheService() {
   return graphCacheMachine;
 }
-
 // Add typed shapes for messages coming from the worker
 type WorkerQueryResultData = {
   cache_hit?: boolean;
-  result?: unknown;
+  result?: any;
   source?: GraphCacheContext['source'];
   latency?: number;
 };
-
 type WorkerToMainMessage =
   | { type: 'worker_ready' }
   | { type: 'worker_error'; error: string }
@@ -493,4 +488,4 @@ type WorkerToMainMessage =
   | { type: 'refresh_complete'; data?: WorkerQueryResultData }
   | { type: 'log'; message: string; level?: 'info' | 'warn' | 'error' }
   // allow safe unknown extension points from worker
-  | { type: string; [k: string]: unknown };
+  | { type: string; [k: string]: any };

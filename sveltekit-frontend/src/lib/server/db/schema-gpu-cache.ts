@@ -6,7 +6,6 @@
  */
 import { pgTable, serial, text, jsonb, timestamp, boolean, integer, real, uuid } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle';
-
 // ============================================================================
 // CORE SHADER CACHE TABLES
 // ============================================================================
@@ -43,7 +42,6 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   minioPath: text('minio_path'), // Optional path for large shader assets
   assetBundle: jsonb('asset_bundle').$type<Record<string, unknown> | null>(),
 });
-
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
   id: serial('id').primaryKey(),
   // User and session context
@@ -68,7 +66,6 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   reinforcement_data: jsonb('reinforcement_data').$type<Record<string, unknown> | null>(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
-
 export const shaderPreloadRules = pgTable('shader_preload_rules', {
   // ML model weights and thresholds
   // Specify the ML model or algorithm this vector is intended for (e.g., 'XGBoost', 'Transformer', etc.)
@@ -93,7 +90,6 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   lastUpdated: timestamp('last_updated', { withTimezone: true }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
-
 export const shaderDependencies = pgTable('shader_dependencies', {
   id: serial('id').primaryKey(),
   // Dependency relationship
@@ -116,17 +112,14 @@ export const shaderDependencies = pgTable('shader_dependencies', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
-
 // Define valid status values as a union type
 export type ShaderCompilationStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
-
 /**
  * Validate ShaderCompilationStatus at runtime before insert/update.
  */
 export function isValidShaderCompilationStatus(status: string): status is ShaderCompilationStatus {
   return ['pending', 'processing', 'completed', 'failed', 'cancelled'].includes(status);
 }
-
 export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(),
   // Queue identification
@@ -154,7 +147,6 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   nextRetryAt: timestamp('next_retry_at', { withTimezone: true }),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
-
 /**
  * shaderRecommendationsView is a regular table (not a database view or materialized view).
  * This is the single, correct declaration.

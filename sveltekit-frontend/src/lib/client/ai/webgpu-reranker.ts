@@ -1,9 +1,6 @@
 export type RerankOptions = { model?: string; headers?: Record<string, string> };
-
 type RerankSuggestion = Record<string, unknown>;
-
 type WorkerMessage = { data?: RerankSuggestion[]; error?: string };
-
 const FALLBACK_WORKER_SOURCE = `
 self.onmessage = (event) => {
   const payload = event?.data ?? {};
@@ -11,7 +8,6 @@ self.onmessage = (event) => {
   self.postMessage({ data: suggestions, error: 'worker-module-unavailable' });
 };
 `;
-
 export async function webgpuRerank(query: string, suggestions: RerankSuggestion[], options?: RerankOptions): Promise<RerankSuggestion[]> {
   return new Promise<RerankSuggestion[]>((resolve) => {
     let worker: Worker | null = null;
@@ -26,7 +22,6 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         );
         worker = new Worker(blobUrl, { type: 'classic' });
       }
-
       worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
         const { data, error } = event.data ?? {};
         if (error) {
@@ -39,15 +34,12 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         }
         worker?.terminate();
       };
-
       worker.onerror = (err) => {
         console.warn('WebGPU rerank worker error:', err.message || err);
         worker?.terminate();
         resolve(suggestions);
       };
-
       worker.postMessage({ query, suggestions, options });
-
       setTimeout(() => {
         if (!worker) return;
         try {

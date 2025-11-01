@@ -152,7 +152,7 @@ export class TelemetryEventBus {
    */
   async measurePerformance<T>(operation: string, fn: () => Promise<T>, component: string = 'unknown'): Promise<T> {
     const start = performance.now();
-    let success = false;
+    let success = $state(false);
     let error: Error | undefined;
     try {
       const result = await fn();

@@ -83,7 +83,7 @@ class MockSIMDGPUParserIntegration {
 }
 class MockCognitiveCache {
   // mark unused params with _ and avoid `any`
-  async storeJsonbDocument(_key: string, _doc: unknown, _metadata?: unknown): Promise<void> {
+  async storeJsonbDocument(_key: string, _doc: any, _metadata?: any): Promise<void> {
     console.log(`📦 Mock cache store: ${_key}`);
   }
   getCacheStats() {
@@ -248,7 +248,7 @@ export interface SIMDPGVectorStats {
 }
 export class UnifiedLegalSIMDPGVector {
   private simdParser: MockSIMDGPUParserIntegration;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private readonly defaultConfig: ParsingConfig = {
     enableSpellCheck: true,
     enableEntityExtraction: true,
@@ -321,7 +321,7 @@ export class UnifiedLegalSIMDPGVector {
       if (!db) {
         try {
           // try to load real DB + drizzle helpers
-          const dbModule: unknown = await import('$lib/server/db');
+          const dbModule: any = await import('$lib/server/db');
           const drizzleModule: DrizzleModuleShape = (await import('drizzle-orm')) as DrizzleModuleShape;
 
           // Normalize db - check possible shapes: direct export, .db or .default
@@ -338,7 +338,7 @@ export class UnifiedLegalSIMDPGVector {
             sql = drizzleModule.sql;
           } else {
             // fallback lightweight sql tag
-            sql = (strings: TemplateStringsArray, ...values: unknown[]) => ({
+            sql = (strings: TemplateStringsArray, ...values: any[]) => ({
               toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
               strings,
               values,
@@ -348,11 +348,11 @@ export class UnifiedLegalSIMDPGVector {
           console.warn('⚠️ Database module not available, using mock implementation');
           const globalCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
           db = {
-            execute: async (_query: string | { toString(): string }, _params?: unknown[]) => ({
+            execute: async (_query: string | { toString(): string }, _params?: any[]) => ({
               rows: [{ id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }],
             }),
           };
-          sql = (strings: TemplateStringsArray, ...values: unknown[]) => ({
+          sql = (strings: TemplateStringsArray, ...values: any[]) => ({
             toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
             strings,
             values,
@@ -362,7 +362,7 @@ export class UnifiedLegalSIMDPGVector {
 
       // -- Ensure non-undefined for TypeScript analysis before using them --
       if (!sql) {
-        sql = (strings: TemplateStringsArray, ...values: unknown[]) => ({
+        sql = (strings: TemplateStringsArray, ...values: any[]) => ({
           toString: () => strings.map((s, i) => s + (i < values.length ? '?' : '')).join(''),
           strings,
           values,
@@ -371,7 +371,7 @@ export class UnifiedLegalSIMDPGVector {
       if (!db) {
         const globalCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
         db = {
-          execute: async (_query: string | { toString(): string }, _params?: unknown[]) => ({
+          execute: async (_query: string | { toString(): string }, _params?: any[]) => ({
             rows: [{ id: globalCrypto.crypto?.randomUUID?.() ?? `mock-${Date.now()}` }],
           }),
         };
@@ -588,7 +588,7 @@ export class UnifiedLegalSIMDPGVector {
     legalTerms.forEach(add);
 
     const map = new Map<string, number[]>();
-    let ok = false;
+    let ok = $state(false);
 
     if (allInputs.length) {
       try {
@@ -872,20 +872,20 @@ export class UnifiedLegalSIMDPGVector {
 // Replace loose any usage with concrete lightweight types
 type DBExecuteResult = { rows?: Record<string, unknown>[] };
 type DBClient = {
-  execute: (query: string | { toString(): string }, params?: unknown[]) => Promise<DBExecuteResult>;
+  execute: (query: string | { toString(): string }, params?: any[]) => Promise<DBExecuteResult>;
 };
 type SQLTag = (
   strings: TemplateStringsArray,
-  ...values: unknown[]
+  ...values: any[]
 ) => {
   toString(): string;
   strings: TemplateStringsArray;
-  values: unknown[];
+  values: any[];
 };
 type DrizzleModuleShape = { sql?: SQLTag };
 
-const isDBClient = (x: unknown): x is DBClient => !!x && typeof (x as DBClient).execute === 'function';
-const isSQLTag = (x: unknown): x is SQLTag => typeof x === 'function';
+const isDBClient = (x: any): x is DBClient => !!x && typeof (x as DBClient).execute === 'function';
+const isSQLTag = (x: any): x is SQLTag => typeof x === 'function';
 
 // Add a concrete row shape to avoid `any` in runtime row handling
 type DBRow = Partial<LegalDocumentVector> & Record<string, unknown>;

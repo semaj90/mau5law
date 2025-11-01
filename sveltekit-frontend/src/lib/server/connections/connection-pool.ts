@@ -14,21 +14,17 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  *
  * Date: 2025-10-17
  */
-
 import { Redis } from 'ioredis';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import neo4j, { Driver } from 'neo4j-driver';
 import amqp, { Connection, Channel } from 'amqplib';
 import { VECTOR_CONFIG } from '../config/vector-config';
-
 // ============================================================================
 // Redis Connection Pool
 // ============================================================================
-
 let redisInstance: Redis | null = null;
 let redisConnectionAttempts = 0;
 const MAX_REDIS_ATTEMPTS = 3;
-
 /**
  * Get or create Redis connection (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -37,17 +33,13 @@ export async function ensureRedisInstance(): Promise<Redis> {
 	if (redisInstance && redisInstance.status === 'ready') {
 		return redisInstance;
 	}
-
 	if (redisConnectionAttempts >= MAX_REDIS_ATTEMPTS) {
 		throw new Error('Redis: Max connection attempts reached');
 	}
-
 	try {
 		redisConnectionAttempts++;
-
 		const redisUrl = process.env.REDIS_URL || VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL;
 		const redisPassword = process.env.REDIS_PASSWORD;
-
 		const redisConfig: any = {
 			retryStrategy: (times: number) => {
 				if (times > 3) return null; // Stop retrying
@@ -55,24 +47,19 @@ export async function ensureRedisInstance(): Promise<Redis> {
 			},
 			maxRetriesPerRequest: 3,
 		};
-
 		// Only add password if explicitly set
 		if (redisPassword) {
 			redisConfig.password = redisPassword;
 		}
-
 		// Add remaining config options
 		redisConfig.enableReadyCheck = true;
-		redisConfig.lazyConnect = false;
-
+		redisConfig.lazyConnect = $state(false);
 		redisInstance = redis;
-
 		// Wait for ready state
 		await new Promise<void>((resolve, reject) => {
 			redisInstance!.once('ready', () => resolve());
 			redisInstance!.once('error', (err) => reject(err));
 		});
-
 		console.log('✅ Redis connection established');
 		redisConnectionAttempts = 0;
 		return redisInstance;
@@ -82,7 +69,6 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		throw error;
 	}
 }
-
 /**
  * Close Redis connection (for cleanup)
  */
@@ -93,13 +79,10 @@ export async function closeRedis(): Promise<void> {
 		console.log('Redis connection closed');
 	}
 }
-
 // ============================================================================
 // Qdrant Connection Pool
 // ============================================================================
-
 let qdrantInstance: QdrantClient | null = null;
-
 /**
  * Get or create Qdrant client (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -108,20 +91,16 @@ export function ensureQdrantInstance(): QdrantClient {
 	if (qdrantInstance) {
 		return qdrantInstance;
 	}
-
 	const url = process.env.QDRANT_URL || VECTOR_CONFIG.DOCKER_SERVICES.QDRANT_URL;
 	const apiKey = process.env.QDRANT_API_KEY;
-
 	qdrantInstance = new QdrantClient({
 		url,
 		apiKey,
 		timeout: 10000 // 10 second timeout
 	});
-
 	console.log('✅ Qdrant client initialized');
 	return qdrantInstance;
 }
-
 /**
  * Test Qdrant connection health
  */
@@ -135,13 +114,10 @@ export async function healthCheckQdrant(): Promise<boolean> {
 		return false;
 	}
 }
-
 // ============================================================================
 // Neo4j Connection Pool
 // ============================================================================
-
 let neo4jDriverInstance: Driver | null = null;
-
 /**
  * Get or create Neo4j driver (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -150,11 +126,9 @@ export function ensureNeo4jDriver(): Driver {
 	if (neo4jDriverInstance) {
 		return neo4jDriverInstance;
 	}
-
 	const uri = process.env.NEO4J_URI || 'bolt://localhost:7687';
 	const user = process.env.NEO4J_USER || 'neo4j';
 	const password = process.env.NEO4J_PASSWORD || 'password';
-
 	neo4jDriverInstance = neo4j.driver(
 		uri,
 		neo4j.auth.basic(user, password),
@@ -164,11 +138,9 @@ export function ensureNeo4jDriver(): Driver {
 			maxTransactionRetryTime: 15000
 		}
 	);
-
 	console.log('✅ Neo4j driver initialized');
 	return neo4jDriverInstance;
 }
-
 /**
  * Close Neo4j driver (for cleanup)
  */
@@ -179,7 +151,6 @@ export async function closeNeo4j(): Promise<void> {
 		console.log('Neo4j driver closed');
 	}
 }
-
 /**
  * Test Neo4j connection health
  */
@@ -195,16 +166,13 @@ export async function healthCheckNeo4j(): Promise<boolean> {
 		return false;
 	}
 }
-
 // ============================================================================
 // RabbitMQ Connection Pool
 // ============================================================================
-
 let rabbitConnectionInstance: Connection | null = null;
 let rabbitChannelInstance: Channel | null = null;
 let rabbitConnectionAttempts = 0;
 const MAX_RABBIT_ATTEMPTS = 3;
-
 /**
  * Get or create RabbitMQ connection (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -213,34 +181,27 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 	if (rabbitConnectionInstance && rabbitConnectionInstance.connection) {
 		return rabbitConnectionInstance;
 	}
-
 	if (rabbitConnectionAttempts >= MAX_RABBIT_ATTEMPTS) {
 		throw new Error('RabbitMQ: Max connection attempts reached');
 	}
-
 	try {
 		rabbitConnectionAttempts++;
-
 		const url = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
-
 		rabbitConnectionInstance = await amqp.connect(url, {
 			heartbeat: 60,
 			timeout: 10000
 		});
-
 		// Handle connection errors
 		rabbitConnectionInstance.on('error', (err) => {
 			console.error('RabbitMQ connection error:', err);
 			rabbitConnectionInstance = null;
 			rabbitChannelInstance = null;
 		});
-
 		rabbitConnectionInstance.on('close', () => {
 			console.warn('RabbitMQ connection closed');
 			rabbitConnectionInstance = null;
 			rabbitChannelInstance = null;
 		});
-
 		console.log('✅ RabbitMQ connection established');
 		rabbitConnectionAttempts = 0;
 		return rabbitConnectionInstance;
@@ -250,7 +211,6 @@ export async function ensureRabbitConnection(): Promise<Connection> {
 		throw error;
 	}
 }
-
 /**
  * Get or create RabbitMQ channel (singleton)
  * Thread-safe for concurrent QUIC requests
@@ -259,25 +219,20 @@ export async function ensureRabbitChannel(): Promise<Channel> {
 	if (rabbitChannelInstance) {
 		return rabbitChannelInstance;
 	}
-
 	const connection = await ensureRabbitConnection();
 	rabbitChannelInstance = await connection.createChannel();
-
 	// Handle channel errors
 	rabbitChannelInstance.on('error', (err) => {
 		console.error('RabbitMQ channel error:', err);
 		rabbitChannelInstance = null;
 	});
-
 	rabbitChannelInstance.on('close', () => {
 		console.warn('RabbitMQ channel closed');
 		rabbitChannelInstance = null;
 	});
-
 	console.log('✅ RabbitMQ channel created');
 	return rabbitChannelInstance;
 }
-
 /**
  * Close RabbitMQ connection (for cleanup)
  */
@@ -286,14 +241,12 @@ export async function closeRabbitMQ(): Promise<void> {
 		await rabbitChannelInstance.close();
 		rabbitChannelInstance = null;
 	}
-
 	if (rabbitConnectionInstance) {
 		await rabbitConnectionInstance.close();
 		rabbitConnectionInstance = null;
 		console.log('RabbitMQ connection closed');
 	}
 }
-
 /**
  * Test RabbitMQ connection health
  */
@@ -306,11 +259,9 @@ export async function healthCheckRabbitMQ(): Promise<boolean> {
 		return false;
 	}
 }
-
 // ============================================================================
 // Global Health Check
 // ============================================================================
-
 /**
  * Check health of all connections
  * Useful for QUIC health endpoints
@@ -327,7 +278,6 @@ export async function healthCheckAll(): Promise<{
 		healthCheckNeo4j(),
 		healthCheckRabbitMQ()
 	]);
-
 	return {
 		redis: redis.status === 'fulfilled' && redis.value,
 		qdrant: qdrant.status === 'fulfilled' && qdrant.value,
@@ -335,44 +285,36 @@ export async function healthCheckAll(): Promise<{
 		rabbitmq: rabbitmq.status === 'fulfilled' && rabbitmq.value
 	};
 }
-
 // ============================================================================
 // Graceful Shutdown
 // ============================================================================
-
 /**
  * Close all connections gracefully
  * Call on server shutdown
  */
 export async function closeAllConnections(): Promise<void> {
 	console.log('Closing all connections...');
-
 	await Promise.allSettled([
 		closeRedis(),
 		closeNeo4j(),
 		closeRabbitMQ()
 	]);
-
 	console.log('All connections closed');
 }
-
 // Handle process termination
 if (typeof process !== 'undefined') {
 	process.on('SIGINT', async () => {
 		await closeAllConnections();
 		process.exit(0);
 	});
-
 	process.on('SIGTERM', async () => {
 		await closeAllConnections();
 		process.exit(0);
 	});
 }
-
 // ============================================================================
 // Exports (only factory functions, no instances)
 // ============================================================================
-
 export type {
 	Redis,
 	QdrantClient,

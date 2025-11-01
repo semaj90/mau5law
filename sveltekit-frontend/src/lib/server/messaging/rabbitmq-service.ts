@@ -3,7 +3,6 @@
 import * as amqp from 'amqplib';
 import type { Channel } from 'amqplib';
 import { logger } from '../ai/logger.js';
-
 // Define specific event types for RabbitMQService
 interface RabbitMQServiceEvents {
   // Index signature to satisfy `Record<string, any[]>` constraint on CustomEventEmitter
@@ -11,36 +10,30 @@ interface RabbitMQServiceEvents {
   connected: [];
   messagePublished: [{ documentId: string; routingKey: string }];
 }
-
 // A simple, type-safe event emitter implementation
 // This replaces Node.js's EventEmitter to avoid direct dependency on: 'events' module
 // and provides explicit type safety for RabbitMQService's events.
 class CustomEventEmitter<Events extends Record<string, any[]>> {
   private listeners: { [K in keyof Events]?: ((...args: Events[K]) => void)[] } = {};
-
   on<K extends keyof Events>(eventName: K, listener: (...args: Events[K]) => void): void {
     if (!this.listeners[eventName]) {
       this.listeners[eventName] = [];
     }
     this.listeners[eventName]?.push(listener);
   }
-
   off<K extends keyof Events>(eventName: K, listener: (...args: Events[K]) => void): void {
     if (!this.listeners[eventName]) return;
     this.listeners[eventName] = this.listeners[eventName]?.filter(l => l !== listener);
   }
-
   emit<K extends keyof Events>(eventName: K, ...args: Events[K]): void {
     this.listeners[eventName]?.forEach(listener => listener(...args));
   }
 }
-
 // Define a more specific type for metadata
 export interface LegalDocumentMetadata extends Record<string, unknown> {
   embeddingRequested?: boolean;
   forceAnalysis?: boolean;
 }
-
 export interface LegalDocumentMessage {
   id: string;
   /**
@@ -59,11 +52,11 @@ export interface LegalDocumentMessage {
 export interface ProcessingResult {
   success: boolean;
   documentId: string;
-  result?: unknown;
+  result?: any;
   error?: string;
   processingTime: number;
 }
-export type MessageHandler = (message: unknown, originalMessage?: unknown) => Promise<unknown> | unknown;
+export type MessageHandler = (message: any, originalMessage?: any) => Promise<unknown> | unknown;
 interface QueueStats {
   queue: string;
   messageCount: number;
@@ -81,7 +74,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   private connection: Awaited<ReturnType<typeof amqp.connect>> | null = null;
   private channel: Channel | null = null;
   private readonly url: string;
-  private isConnected = false;
+  private isConnected = $state(false);
   // Queue configurations for legal document processing
   private queues = {
     documentIngestion: 'legal.document.ingestion',
@@ -111,14 +104,12 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     super();
     this.url = url;
   }
-
   /**
    * Alias for initialize() - for compatibility
    */
   async connect(): Promise<void> {
     return this.initialize();
   }
-
   async initialize(): Promise<void> {
     try {
       logger.info('[RabbitMQ] Connecting to RabbitMQ server...');
@@ -160,7 +151,6 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       'x-dead-letter-exchange': this.exchanges.dlx,
       // 24 hours in milliseconds — match existing deployments that use this TTL: 'x-message-ttl': 24 * 60 * 60 * 1000,
     };
-
     for (const [key, queueName] of Object.entries(this.queues)) {
       // Keys that are DLX entries in the map are named with: 'dlx' prefix in this implementation
       const isDlxQueue = key.startsWith('dlx') || queueName.includes('.dlx.');
@@ -178,7 +168,6 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   }
   private async setupBindings(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available');
-
     const bindings = [
       { queue: this.queues.documentIngestion, routingKey: 'document.ingest', exchange: this.exchanges.legal },
       { queue: this.queues.documentAnalysis, routingKey: 'document.analyze', exchange: this.exchanges.legal },
@@ -188,7 +177,6 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
       { queue: this.queues.citationExtraction, routingKey: 'citation.extract', exchange: this.exchanges.legal },
       // wildcard urgent routing on the topic exchange
       { queue: this.queues.urgentProcessing, routingKey: 'urgent.*', exchange: this.exchanges.legal },
-
       // New embedding / indexing / AI bindings (use topic exchange for flexible routing)
       { queue: this.queues.documentEmbedding, routingKey: 'document.embedding', exchange: this.exchanges.legalTopic },
       { queue: this.queues.caseEmbedding, routingKey: 'case.embedding', exchange: this.exchanges.legalTopic },
@@ -199,17 +187,14 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
         routingKey: 'document.analysis.ai',
         exchange: this.exchanges.legalTopic,
       },
-
       // Results / notifications
       { queue: this.queues.processingResults, routingKey: 'processing.results', exchange: this.exchanges.legal },
       { queue: this.queues.notifications, routingKey: 'notifications.#', exchange: this.exchanges.legalTopic },
     ];
-
     // Bind application queues to their exchanges
     for (const binding of bindings) {
       await this.channel.bindQueue(binding.queue, binding.exchange, binding.routingKey);
     }
-
     // Ensure DLX queues are bound to the DLX exchange so dead-lettered messages land there
     // explicit DLX bindings (if DLX queues exist in the map)
     if (this.queues.dlxDocumentIngestion) {
@@ -218,7 +203,6 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
     if (this.queues.dlxDocumentAnalysis) {
       await this.channel.bindQueue(this.queues.dlxDocumentAnalysis, this.exchanges.dlx, 'dlx.document.analyze');
     }
-
     logger.info('[RabbitMQ] Queue bindings configured successfully');
   }
   async publishDocumentForAnalysis(_document: LegalDocumentMessage): Promise<boolean> {
@@ -244,13 +228,11 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   private getRoutingKey(_document: LegalDocumentMessage): string {
     // urgent priority override
     if (_document.priority === 'urgent') return 'urgent.processing';
-
     // explicit embedding request via metadata should route to embedding pipeline
     if (_document.metadata.embeddingRequested) {
       // Access directly without: 'as any'
       return 'document.embedding';
     }
-
     // fall back to type-based routing
     switch (_document.documentType) {
       case 'contract':
@@ -317,7 +299,7 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   async publish(
     exchange: string,
     routingKey: string,
-    message: unknown,
+    message: any,
     options: Record<string, unknown> = {}
   ): Promise<boolean> {
     if (!this.isConnected || !this.channel) {

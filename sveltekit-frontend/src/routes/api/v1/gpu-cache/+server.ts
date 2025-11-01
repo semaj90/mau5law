@@ -21,7 +21,7 @@ type ShaderData = {
 
 type StoreRequest = {
   key?: string;
-  data?: unknown;
+  data?: any;
   options?: {
     // allow either raw number[][] or already-constructed Float32Array[]
     vertexBuffers?: Array<number[] | Float32Array>;
@@ -31,7 +31,7 @@ type StoreRequest = {
     isAnimation?: boolean;
     animationType?: string;
     duration?: number;
-    [k: string]: unknown;
+    [k: string]: any;
   } | null;
   shaderData?: ShaderData | null;
   workflowType?: string | null;
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Auto-detect request encoding format
     const contentType = request.headers.get('content-type') || '';
     // parse into unknown then cast to typed StoreRequest
-    let bodyRaw: unknown;
+    let bodyRaw: any;
     if (contentType.includes('application/cbor')) {
       const buffer = await request.arrayBuffer();
       const { decoded } = await binaryEncoder.decode(buffer, 'cbor');
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
       encodingFormat?: string;
       compressionRatio?: number;
       metadata?: Record<string, unknown> | null;
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     // Add typed variable declaration so references below compile
@@ -113,18 +113,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Typed shape for shader cache implementations (avoid `any`)
     type ShaderCacheAPI = {
-      storeShader?: (payload: unknown) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
-      store?: (payload: unknown) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
-      saveShader?: (payload: unknown) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
-      putShader?: (payload: unknown) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
+      storeShader?: (payload: any) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
+      store?: (payload: any) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
+      saveShader?: (payload: any) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
+      putShader?: (payload: any) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null;
       optimizeForLegalWorkflow?: (workflowType: string) => Promise<unknown>;
       analyzeWorkflowForPreload?: (workflowType: string) => Promise<unknown>;
       getShader?: (key?: string) => Promise<unknown>;
-      multiDimensionalSearch?: (query?: unknown) => Promise<unknown>;
+      multiDimensionalSearch?: (query?: any) => Promise<unknown>;
       clearCache?: (key?: string) => Promise<void>;
-      analyzeAndPreload?: (context?: unknown) => Promise<void>;
+      analyzeAndPreload?: (context?: any) => Promise<void>;
       getMetrics?: () => unknown;
-      [k: string]: unknown;
+      [k: string]: any;
     };
 
     // Binary shader cache integration
@@ -152,13 +152,13 @@ export const POST: RequestHandler = async ({ request }) => {
           { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: 'store' },
         ];
 
-        let invoked = false;
+        let invoked = $state(false);
         for (const c of candidates) {
           const fn = c.obj?.[c.name];
           if (typeof fn === 'function') {
             try {
               const maybeRes = (
-                fn as (p: unknown) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null
+                fn as (p: any) => Promise<ShaderCacheResult | null> | ShaderCacheResult | null
               ).call(c.obj, payload);
               // normalize sync/async
               shaderCacheResult = await Promise.resolve(maybeRes as ShaderCacheResult | null);
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Get workflow optimization
         if (workflowType) {
           // Safe runtime invocation: the method may not exist on this implementation.
-          let workflowOpt: unknown = null;
+          let workflowOpt: any = null;
           // Define minimal typed shapes for optional runtime methods (avoid `any`)
           type BinaryShaderCacheOptimizer = {
             optimizeForLegalWorkflow?: (workflowType: string) => Promise<unknown>;
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
           if (typeof maybeOptimize === 'function') {
             try {
               workflowOpt = await maybeOptimize.call(binaryGPUShaderCache, workflowType);
-            } catch (err: unknown) {
+            } catch (err: any) {
               console.warn('optimizeForLegalWorkflow failed on binaryGPUShaderCache:', err);
               workflowOpt = null;
             }
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
             if (typeof fallback === 'function') {
               try {
                 workflowOpt = await fallback.call(gpuShaderCacheOrchestrator, workflowType);
-              } catch (err: unknown) {
+              } catch (err: any) {
                 console.warn('Fallback analyzeWorkflowForPreload failed:', err);
                 workflowOpt = null;
               }
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
             workflowOptimization: workflowOpt,
           };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.warn('Binary shader cache failed:', message);
       }
@@ -239,16 +239,16 @@ export const POST: RequestHandler = async ({ request }) => {
         const safeInvoke = async (
           obj: NESCacheOrchestratorLike,
           methodNames: Array<keyof NESCacheOrchestratorLike>,
-          payload: unknown
+          payload: any
         ): Promise<boolean> => {
           for (const methodName of methodNames) {
             const fn = obj[methodName];
             if (typeof fn === 'function') {
               try {
                 // Call with proper receiver and normalize sync/async
-                await Promise.resolve((fn as (p: unknown) => Promise<void> | void).call(obj, payload));
+                await Promise.resolve((fn as (p: any) => Promise<void> | void).call(obj, payload));
                 return true;
-              } catch (innerErr: unknown) {
+              } catch (innerErr: any) {
                 console.warn(`NES cache candidate ${String(methodName)} failed:`, innerErr);
               }
             }
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request }) => {
           cached: true,
           memoryStats: orchestrator.getMemoryStats ? orchestrator.getMemoryStats() : undefined,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         nesIntegration = {
           cached: false,
           error: error instanceof Error ? error.message : String(error),
@@ -318,7 +318,7 @@ export const POST: RequestHandler = async ({ request }) => {
           performance: webgpuResult.performance,
           results: webgpuResult.results?.length || 0,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Normalize unknown error into a message string (consistent with other handlers)
         const message = error instanceof Error ? error.message : String(error);
         webgpuIntegration = {
@@ -362,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
       });
     }
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Enhanced GPU Cache store error:', message);
     return json(
@@ -403,7 +403,7 @@ export const GET: RequestHandler = async ({ url }) => {
       cacheHit: true,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache retrieve error:', message);
     return json(
@@ -434,7 +434,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       analysis: response,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache image analysis error:', message);
     return json(
@@ -492,7 +492,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
             break;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error(`Database sync error for ${db}:`, message);
         // Map known database names to syncResults properties explicitly
@@ -515,7 +515,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
       synchronization: syncResults,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache sync error:', message);
     return json(
@@ -575,7 +575,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         const results = Array.isArray(rawResults) ? (rawResults as unknown[]) : [];
         return json({
           success: true,
-          shaders: results.map((s: unknown) => {
+          shaders: results.map((s: any) => {
             const shader = s as ShaderEntry;
             return {
               key: shader.key,
@@ -611,7 +611,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }
       default: return json({ error: 'Invalid action. Use: get, search, preload, clear' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Shader cache operation error:', message);
     return json(
@@ -745,7 +745,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       metrics: response,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache metrics error:', message);
     return json(
@@ -776,7 +776,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
       count: history.length,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('User history error:', message);
     return json(
@@ -804,7 +804,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     switch (operation) {
       case 'store':
-        results = await handleBulkStore(entries as Array<{ key?: string; data?: unknown; options?: CacheEntryLike }>);
+        results = await handleBulkStore(entries as Array<{ key?: string; data?: any; options?: CacheEntryLike }>);
         break;
       case 'retrieve':
         results = await handleBulkRetrieve(entries as string[]);
@@ -817,7 +817,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       results,
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Bulk operation error:', message);
     return json(
@@ -902,7 +902,7 @@ async function simulateGetUserHistory(
   return history;
 }
 // Add serializer to convert ArrayBuffer / TypedArray / nested objects to JSON-safe shapes
-function serializeCacheEntry(value: unknown, _seen = new WeakSet<object>()): unknown {
+function serializeCacheEntry(value: any, _seen = new WeakSet<object>()): any {
   // Primitives
   if (value === null || value === undefined) return value;
   const t = typeof value;
@@ -949,17 +949,17 @@ function serializeCacheEntry(value: unknown, _seen = new WeakSet<object>()): unk
 // Insert new types and helper implementations used by the PUT handler
 type CacheEntryLike = {
   key?: string;
-  data?: unknown;
+  data?: any;
   options?: Record<string, unknown> | undefined;
 };
 
 type BulkStoreResult = {
-  stored: Array<{ key: string; result: unknown }>;
+  stored: Array<{ key: string; result: any }>;
   failed: Array<{ key?: string; error: string }>;
 };
 
 type BulkRetrieveResult = {
-  retrieved: Array<{ key: string; entry: unknown | null }>;
+  retrieved: Array<{ key: string; entry: any | null }>;
   failed: Array<{ key: string; error: string }>;
 };
 
@@ -968,7 +968,7 @@ type BulkRetrieveResult = {
  * Returns lists of successes and failures in a typed shape.
  */
 async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStoreResult> {
-  const stored: Array<{ key: string; result: unknown }> = [];
+  const stored: Array<{ key: string; result: any }> = [];
   const failed: Array<{ key?: string; error: string }> = [];
 
   for (const e of entries) {
@@ -980,7 +980,7 @@ async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStor
       // Use the orchestrator's store method (assumed available)
       const res = await gpuCacheOrchestrator.store(e.key, e.data, e.options || {});
       stored.push({ key: e.key, result: res });
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       failed.push({ key: e?.key, error: message });
     }
@@ -994,7 +994,7 @@ async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStor
  * Returns retrieved entries and failures.
  */
 async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
-  const retrieved: Array<{ key: string; entry: unknown | null }> = [];
+  const retrieved: Array<{ key: string; entry: any | null }> = [];
   const failed: Array<{ key: string; error: string }> = [];
 
   for (const key of keys) {
@@ -1005,7 +1005,7 @@ async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
       }
       const entry = await gpuCacheOrchestrator.retrieve(key);
       retrieved.push({ key, entry: entry ?? null });
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       failed.push({ key, error: message });
     }
@@ -1020,7 +1020,7 @@ type ShaderEntry = {
   sourceCode: string;
   compiledBinary?: ArrayBuffer | ArrayBufferView | number[] | null;
   metadata?: {
-    [k: string]: unknown;
+    [k: string]: any;
     embedding?: ArrayBuffer | ArrayBufferView | number[] | string | undefined;
   } | null;
   dependencies?: string[];
@@ -1031,7 +1031,7 @@ type ShaderEntry = {
  * Convert various binary/typed-array representations (ArrayBuffer, TypedArray, number[], or JSON string) into a number[].
  * Returns an empty array for null/undefined inputs. Defensive and avoids any casts.
  */
-function toNumberArray(input: unknown): number[] {
+function toNumberArray(input: any): number[] {
   if (input == null) return [];
   // plain number
   if (typeof input === 'number') return [input];
@@ -1062,7 +1062,7 @@ function toNumberArray(input: unknown): number[] {
 type DataWithProps = {
   props?: Record<string, unknown>;
   styles?: Record<string, unknown>;
-  animations?: unknown[];
+  animations?: any[];
   embedding?: number[] | Float32Array | ArrayBuffer | undefined;
 };
 
@@ -1073,14 +1073,14 @@ type NESCacheOrchestratorLike = {
     name: string;
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
-    animations?: unknown[];
+    animations?: any[];
     webgpuShaders?: Array<string | undefined>;
   }) => Promise<void> | void;
   cacheComponent?: (payload: {
     name: string;
     props?: Record<string, unknown>;
     styles?: Record<string, unknown>;
-    animations?: unknown[];
+    animations?: any[];
     webgpuShaders?: Array<string | undefined>;
   }) => Promise<void> | void;
   cacheGPUAnimation?: (payload: {

@@ -1,5 +1,5 @@
 export interface SystemMetrics {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export async function getSystemMetrics(): Promise<SystemMetrics> {

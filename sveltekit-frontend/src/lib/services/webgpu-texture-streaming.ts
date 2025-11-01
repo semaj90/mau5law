@@ -6,8 +6,8 @@
 // Mock GPU Cache Orchestrator for development
 const gpuCacheOrchestrator = {
   async initialize() { console.log('GPU Cache Mock: initialized'), },
-  async store(_key: string, _data: unknown, _options?: unknown) { console.log('GPU Cache Mock: stored', key), },
-  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return null as unknown as { data: unknown } | null, }
+  async store(_key: string, _data: any, _options?: any) { console.log('GPU Cache Mock: stored', key), },
+  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return null as unknown as { data: any } | null, }
 }
 // === WebGPU Texture Configuration ===
 export interface TextureStreamConfig {
@@ -62,7 +62,7 @@ export class WebGPUTextureStreamingService {
   private adapter: GPUAdapter | null = null;
   private texturePool: Map<string, StreamingTextureEntry> = new Map();
   private streamingQueue: Map<string, Promise<StreamingTextureEntry>> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Performance metrics
   private metrics = {
     texturesStreamed: 0,
@@ -118,7 +118,7 @@ export class WebGPUTextureStreamingService {
       console.log('✅ WebGPU texture streaming initialized');
       // Initialize GPU cache integration
       await this.initializeGPUCacheIntegration();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize WebGPU:', error);
       throw error;
     }
@@ -226,7 +226,7 @@ export class WebGPUTextureStreamingService {
       this.metrics.streamingLatency.push(performance.now() - startTime);
       console.log(`🎨 Texture created: ${id} (${textureSize} bytes, ${entry.cacheRegion})`);
       return entry;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to create texture ${id}:`, error);
       throw error;
     }
@@ -317,7 +317,7 @@ export class WebGPUTextureStreamingService {
       });
       const streamTime = performance.now() - startTime;
       console.log(`📤 Texture streamed: ${textureId} (${streamTime.toFixed(2)}ms)`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to stream texture data for ${textureId}:`, error);
       throw error;
     }
@@ -452,7 +452,7 @@ export class WebGPUTextureStreamingService {
     // Clear pools
     this.texturePool.clear();
     this.streamingQueue.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('✅ WebGPU texture streaming shutdown completed');
   }
 }

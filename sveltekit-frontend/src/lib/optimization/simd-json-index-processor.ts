@@ -30,7 +30,6 @@ export interface CopilotIndexEntry {
   // changed from Array<any> to explicit SemanticChunk[]
   semanticChunks: SemanticChunk[];
 }
-
 // New explicit cluster type instead of Array<any>
 export interface CopilotCluster {
   id: string;
@@ -38,7 +37,6 @@ export interface CopilotCluster {
   memberIds: string[];
   relevantTerms: string[];
 }
-
 export interface CopilotIndex {
   version: string;
   indexType: 'enhanced_legal_ai' | 'context7_mcp' | 'hybrid';
@@ -61,7 +59,6 @@ export interface VectorEmbeddingConfig {
   chunkSize: number;
   overlap: number;
 }
-
 // New: explicit raw index / entry and SOM cluster types (fix 'any' usages)
 export interface RawIndexEntry {
   id?: string;
@@ -72,25 +69,23 @@ export interface RawIndexEntry {
   mcp_metadata?: {
     source?: 'enhanced_local_index' | 'context7_mcp' | 'basic_index';
     priority?: 'high' | 'medium' | 'low';
-    [k: string]: unknown;
+    [k: string]: any;
   };
   relevance_score?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
-
 export interface RawIndex {
   version?: string;
   entries?: RawIndexEntry[];
-  [k: string]: unknown;
+  [k: string]: any;
 }
-
 export interface SomCluster {
   id: string;
   centroid?: number[] | Float32Array;
   documents?: string[]; // member ids
   metadata?: {
     dominant_legal_type?: string;
-    [k: string]: unknown;
+    [k: string]: any;
   };
 }
 export class SIMDJSONIndexProcessor {
@@ -142,7 +137,7 @@ export class SIMDJSONIndexProcessor {
       // Integrate with Enhanced RAG store
       await this.integrateWithRAGStore(processedIndex);
       return processedIndex;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('SIMD Index processing failed:', msg);
       throw new Error(`Index processing failed: ${msg}`);
@@ -178,7 +173,7 @@ export class SIMDJSONIndexProcessor {
       this.embeddingCache.set(cacheKey, embeddingArray);
       this.performanceMetrics.embeddingTime += performance.now() - startTime;
       return embeddingArray;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Embedding generation failed:', msg);
       // Return zero vector as fallback
@@ -294,7 +289,7 @@ export class SIMDJSONIndexProcessor {
           const textDecoder = new TextDecoder('utf-8');
           const jsonString = textDecoder.decode(buffer);
           return JSON.parse(jsonString);
-        } catch (error: unknown) {
+        } catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new Error(`SIMD JSON parse failed: ${msg}`);
         }
@@ -302,7 +297,7 @@ export class SIMDJSONIndexProcessor {
       parseString: async (jsonString: string) => {
         try {
           return JSON.parse(jsonString);
-        } catch (error: unknown) {
+        } catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
           throw new Error(`SIMD JSON string parse failed: ${msg}`);
         }
@@ -317,7 +312,7 @@ export class SIMDJSONIndexProcessor {
           try {
             const parsed = JSON.parse(jsonString);
             yield parsed;
-          } catch (error: unknown) {
+          } catch (error: any) {
             const msg = error instanceof Error ? error.message : String(error);
             // Handle partial JSON in streaming
             console.warn('Partial JSON chunk skipped:', msg);
@@ -433,7 +428,7 @@ export class SIMDJSONIndexProcessor {
         memberIds: cluster.documents || [],
         relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : [],
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Cluster generation failed:', msg);
       return [];
@@ -508,7 +503,7 @@ export class SIMDJSONIndexProcessor {
       }
       const { embedding } = await response.json();
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('PGVector embedding failed, using fallback:', msg);
       return this.generateFallbackEmbedding(content);
@@ -532,7 +527,7 @@ export class SIMDJSONIndexProcessor {
       }
       const { embedding } = await response.json();
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Qdrant embedding failed, using fallback:', msg);
       return this.generateFallbackEmbedding(content);
@@ -542,11 +537,11 @@ export class SIMDJSONIndexProcessor {
     // Try PGVector first, fallback to Qdrant, then local
     try {
       return await this.generatePGVectorEmbedding(content);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // attempt qdrant
       try {
         return await this.generateQdrantEmbedding(content);
-      } catch (error2: unknown) {
+      } catch (error2: any) {
         return this.generateFallbackEmbedding(content);
       }
     }
@@ -649,7 +644,6 @@ export class SIMDJSONIndexProcessor {
     this.embeddingCache.clear();
   }
 }
-
 // Add a local semantic chunk type to avoid `any` (already present in file) - ensure it's above usages
 type SemanticChunk = {
   id: string | undefined;
@@ -658,7 +652,6 @@ type SemanticChunk = {
   startOffset: number;
   endOffset: number;
 };
-
 // Export singleton instance
 export const simdIndexProcessor = new SIMDJSONIndexProcessor({
   model: 'nomic-embed-text',

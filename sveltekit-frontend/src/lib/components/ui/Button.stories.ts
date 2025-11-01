@@ -44,13 +44,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
-    children: 'Button'
+     'Button'
   }
 }
 export const Legal: Story = {
   args: {
     variant: 'legal',
-    children: 'Legal Action'
+     'Legal Action'
   },
   parameters: {
     docs: {
@@ -63,7 +63,7 @@ export const Legal: Story = {
 export const Evidence: Story = {
   args: {
     variant: 'evidence',
-    children: 'Add Evidence'
+     'Add Evidence'
   },
   parameters: {
     docs: {
@@ -76,7 +76,7 @@ export const Evidence: Story = {
 export const case Story = {
   args: {
     variant: 'case',
-    children: 'Create Case'
+     'Create Case'
   },
   parameters: {
     docs: {
@@ -89,7 +89,7 @@ export const case Story = {
 export const Destructive: Story = {
   args: {
     variant: 'destructive',
-    children: 'Delete'
+     'Delete'
   },
   parameters: {
     docs: {
@@ -102,7 +102,7 @@ export const Destructive: Story = {
 export const Outline: Story = {
   args: {
     variant: 'outline',
-    children: 'Cancel'
+     'Cancel'
   },
   parameters: {
     docs: {
@@ -115,25 +115,25 @@ export const Outline: Story = {
 export const Small: Story = {
   args: {
     size: 'sm',
-    children: 'Small Button'
+     'Small Button'
   }
 }
 export const Large: Story = {
   args: {
     size: 'lg',
-    children: 'Large Button'
+     'Large Button'
   }
 }
 export const Disabled: Story = {
   args: {
     disabled: true,
-    children: 'Disabled Button'
+     'Disabled Button'
   }
 }
 export const Loading: Story = {
   args: {
     loading: true,
-    children: 'Loading...',
+     'Loading...',
   },
   parameters: {
     docs: {

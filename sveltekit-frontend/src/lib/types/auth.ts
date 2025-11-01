@@ -20,11 +20,11 @@ export interface SessionValidationResult {
 // Type guards for safe type checking
 
 // Small helper to narrow unknown -> record so we can access properties safely
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-export function isSessionUser(user: unknown): user is SessionUser {
+export function isSessionUser(user: any): user is SessionUser {
   if (!isRecord(user)) return false;
   return (
     typeof user.id === 'string' &&
@@ -37,12 +37,12 @@ export function isSessionUser(user: unknown): user is SessionUser {
 }
 
 export function hasValidSession(
-  locals: { user?: unknown } & { [key: string]: unknown }
+  locals: { user?: any } & { [key: string]: any }
 ): locals is { user: SessionUser } {
   return !!locals.user && isSessionUser(locals.user);
 }
 
-export function validateUserSession(locals: { user?: unknown } & { [key: string]: unknown }): SessionUser {
+export function validateUserSession(locals: { user?: any } & { [key: string]: any }): SessionUser {
   if (!locals.user || !isSessionUser(locals.user)) {
     throw new Error('Authentication required');
   }

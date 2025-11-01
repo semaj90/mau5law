@@ -57,7 +57,7 @@ export class QLoRAReinforcementTrainer {
   private config: QLoRAConfig;
   private trainingData: Map<string, TrainingExample> = new Map();
   private metrics: TrainingMetrics;
-  private isTraining = false;
+  private isTraining = $state(false);
   private trainingQueue: TrainingExample[] = [];
   private modelVersions: Map<string, string> = new Map(); // version -> checkpoint path
   constructor(config?: Partial<QLoRAConfig>) {
@@ -184,7 +184,7 @@ export class QLoRAReinforcementTrainer {
     } catch (error) {
       console.error('❌ QLoRA training failed:', error);
     } finally {
-      this.isTraining = false;
+      this.isTraining = $state(false);
     }
   }
   /**

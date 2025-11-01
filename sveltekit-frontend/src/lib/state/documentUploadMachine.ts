@@ -26,7 +26,7 @@ export interface DocumentUploadContext {
   documentId?: string;
   evidenceId?: string;
   // Child machine state
-  evidenceProcessingState?: unknown;
+  evidenceProcessingState?: any;
   // Timestamps and metrics
   uploadStartTime: number;
   uploadEndTime?: number;

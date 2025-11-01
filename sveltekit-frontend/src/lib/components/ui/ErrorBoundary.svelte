@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
   interface Props {
     fallback?: string;
@@ -11,7 +11,7 @@
   let { fallback = '', showDetails = false, onError = null }: Props = $props();
   let error: Error | null = null;
   let errorInfo: string = '';
-  let isRetrying = false;
+  let isRetrying = $state(false);
   // Error details for debugging
   let errorDetails = $derived(
     error
@@ -41,7 +41,7 @@
     error = null;
     errorInfo = '';
     setTimeout(() => {
-      isRetrying = false;
+      isRetrying = $state(false);
       // Reload the page if in browser
       if (typeof window !== 'undefined') {
         window.location.reload();
@@ -80,7 +80,6 @@
     }
   });
 </script>
-
 {#if error}
   <div
     class="error-boundary min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 flex items-center justify-center p-4"
@@ -107,8 +106,7 @@
           {#if fallback}
             <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
               <p class="text-blue-800 dark:text-blue-200">{fallback}</p>
-            </div>
-          {/if}
+            {/if}
           <!-- Error Summary -->
           <div class="mb-6">
             <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">Error Details</h3>
@@ -172,9 +170,8 @@
   </div>
 {:else}
   <!-- Normal content -->
-  {@render children?.()}
+  <slot />
 {/if}
-
 <style>
   .error-boundary {
 font-family: {}

@@ -12,7 +12,7 @@ import os from 'os'; // Import the: 'os' module
 type QdrantCollectionInfo = {
   name: string;
   // allow other fields from the Qdrant response without strict typing here
-  [key: string]: unknown;
+  [key: string]: any;
 };
 // (If you later need stricter typing, expand this interface to match qdrant.getCollections()/getCollection shapes)
 
@@ -103,7 +103,7 @@ class QdrantAPIError extends Error {
   constructor(
     message: string,
     public statusCode: number = 500,
-    public details?: unknown
+    public details?: any
   ) {
     super(message);
     this.name = 'QdrantAPIError';
@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           },
         },
       });
-    } catch (syncError: unknown) {
+    } catch (syncError: any) {
       // Pass a real Error instance to the logger
       logger.error('Qdrant sync operation failed:', normalizeError(syncError));
       throw new QdrantAPIError(
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         dev ? (syncError instanceof Error ? syncError.message : 'Unknown error') : undefined
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     logger.error('Qdrant sync error:', normalizeError(error));
     if (error instanceof QdrantAPIError) {
@@ -372,7 +372,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         try {
           collections = await qdrant.getCollections();
           collectionInfo = await qdrant.getCollection(collection);
-        } catch (err: unknown) {
+        } catch (err: any) {
           // Changed: 'any' to: 'unknown'
           logger.error('Failed to get Qdrant collections/info:', err instanceof Error ? err : new Error(String(err)));
           throw new QdrantAPIError(
@@ -421,7 +421,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         });
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Qdrant GET error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
       return json(
@@ -532,7 +532,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
         },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
@@ -656,7 +656,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));
     if (error instanceof QdrantAPIError) {
@@ -681,7 +681,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
   }
 };
 // Utility to convert unknown to Error so logger.error receives an Error instance
-function normalizeError(err: unknown): Error {
+function normalizeError(err: any): Error {
   // Prefer existing Error instances
   if (err instanceof Error) return err;
   // If it's a string, wrap it

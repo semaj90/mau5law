@@ -98,7 +98,7 @@ export class OptimizedQdrantService {
   private searchCache = new Map<string, { results: VectorSearchResult[]; timestamp: number; stats: SearchStats }>();
   private batchQueue: Array<QdrantPoint> = [];
   private memoryUsage = 0;
-  private processingBatch = false;
+  private processingBatch = $state(false);
   constructor(config: QdrantConfig = {}) {
     this.config = {
       url: config.url || import.meta.env.QDRANT_URL || 'http://localhost:6333',
@@ -183,7 +183,7 @@ export class OptimizedQdrantService {
         });
         console.log(`✅ Created optimized Qdrant collection: ${this.config.collectionName}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Failed to ensure Qdrant collection:', error);
       throw error;
@@ -263,7 +263,7 @@ export class OptimizedQdrantService {
         this.memoryUsage += stats.memoryUsage;
       }
       return { results, stats };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Qdrant search error:', error);
       if (error instanceof Error) {
@@ -324,7 +324,7 @@ export class OptimizedQdrantService {
       const duration = Date.now() - startTime;
       console.log(`✅ PostgreSQL sync completed: ${synced} synced, ${errors} errors in ${duration}ms`);
       return { synced, errors, duration };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ PostgreSQL sync failed:', error);
       throw error;
@@ -356,7 +356,7 @@ export class OptimizedQdrantService {
     };
     try {
       return await this.client.search(this.config.collectionName, searchParams);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.warn('⚠️ Cluster search failed, falling back to standard search');
       return [];
@@ -565,7 +565,7 @@ export class OptimizedQdrantService {
         points,
       });
       return { success: vectors.length, errors: 0 };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Batch upsert error:', error);
       return { success: 0, errors: vectors.length };
@@ -581,7 +581,7 @@ export class OptimizedQdrantService {
       const result = await this.upsertBatch(batch);
       return result;
     } finally {
-      this.processingBatch = false;
+      this.processingBatch = $state(false);
     }
   }
   private generateCacheKey(
@@ -638,7 +638,7 @@ export class OptimizedQdrantService {
         cacheHits: this.searchCache.size,
         lastSync: new Date().toISOString(),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       return {
         status: 'unhealthy',

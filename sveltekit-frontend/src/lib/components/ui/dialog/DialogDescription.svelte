@@ -6,7 +6,6 @@
   }
   let { description = '', children }: Props = $props();
 </script>
-
 <p class="space-y-4">
-  {@render children?.()}
+  <slot />
 </p>

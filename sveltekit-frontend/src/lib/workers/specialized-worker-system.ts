@@ -26,7 +26,7 @@ type AmqpConsumeMessageLike = {
 let amqp: { connect: (url: string) => Promise<AmqpConnectionLike> } | null = null;
 
 // Helper to safely extract message from unknown errors
-function getErrorMessage(e: unknown): string {
+function getErrorMessage(e: any): string {
   /* safe error-to-string helper */
   if (e instanceof Error) return e.message;
   try {
@@ -72,7 +72,7 @@ export interface SpecializedJob {
 export interface WorkerResult {
   jobId: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   processingTime: number;
   workerInfo: {
@@ -138,7 +138,7 @@ export class JobOrchestrator extends EventEmitter {
       await this.setupResultListener();
       console.log('🏗️ Job Orchestrator initialized with RabbitMQ');
       this.emit('initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize Job Orchestrator:', getErrorMessage(error));
       throw error;
     }
@@ -227,7 +227,7 @@ export class JobOrchestrator extends EventEmitter {
           console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : 'FAILED'}`);
           this.emit('jobCompleted', result);
           this.channel?.ack(msg);
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.error('Error processing job result:', getErrorMessage(error));
           this.channel?.nack(msg, false, false);
         }
@@ -265,7 +265,7 @@ export abstract class SpecializedWorker extends EventEmitter {
   protected workerType: string;
   protected capabilities: string[] = [];
   protected version: string = '1.0.0';
-  protected isProcessing: boolean = false;
+  protected isProcessing: boolean = $state(false);
   protected connection: AmqpConnectionLike | null = null;
   protected channel: AmqpChannelLike | null = null;
   protected rabbitmqUrl: string;
@@ -294,7 +294,7 @@ export abstract class SpecializedWorker extends EventEmitter {
       this.channel = await this.connection.createChannel();
       console.log(`🐝 Worker ${this.workerId} (${this.workerType}) initialized`);
       this.emit('initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to initialize worker ${this.workerId}:`, getErrorMessage(error));
       throw error;
     }
@@ -332,7 +332,7 @@ export abstract class SpecializedWorker extends EventEmitter {
           this.channel?.ack(msg);
           console.log(`✅ Worker ${this.workerId} completed job ${job.id} in ${processingTime}ms`);
           this.emit('jobCompleted', { jobId: job.id, processingTime });
-        } catch (error: unknown) {
+        } catch (error: any) {
           const processingTime = Date.now() - startTime;
           let jobId = 'unknown';
           try {
@@ -357,7 +357,7 @@ export abstract class SpecializedWorker extends EventEmitter {
           console.error(`❌ Worker ${this.workerId} failed to process job:`, errorResult.error);
           this.emit('jobFailed', { error: errorResult.error, processingTime });
         } finally {
-          this.isProcessing = false;
+          this.isProcessing = $state(false);
         }
       }
     });

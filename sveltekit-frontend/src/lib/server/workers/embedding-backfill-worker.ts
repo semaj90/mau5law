@@ -23,7 +23,7 @@ interface BackfillResult {
   failed: number;
   errors: Array<any>
 export class EmbeddingBackfillWorker {
-  private isRunning = false;
+  private isRunning = $state(false);
   private batchSize = 10;
   private retryCount = 3;
   constructor(private options: {
@@ -86,7 +86,7 @@ export class EmbeddingBackfillWorker {
       console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
       return result;
     } finally {
-      this.isRunning = false;
+      this.isRunning = $state(false);
     }
   }
   /**

@@ -14,7 +14,7 @@ export interface AITask {
   priority: 'low' | 'medium' | 'high' | 'critical';
   provider?: LLMProvider;
   // changed: avoid `any` -> use `unknown` to force explicit narrowing before use
-  payload: unknown;
+  payload: any;
   metadata?: {
     userId?: string;
     sessionId?: string;
@@ -25,7 +25,7 @@ export interface AITask {
 export interface AITaskResult {
   taskId: string;
   success: boolean;
-  result?: unknown;
+  result?: any;
   error?: string;
   duration: number;
   metrics?: {
@@ -80,14 +80,14 @@ export class AIServiceWorkerManager {
   });
 
   private maxWorkers = typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   // callbacks for task completion
   private completionCallbacks: Map<string, Array<(r: AITaskResult) => void>> = new Map();
 
   constructor() {
     // initialize, but don't block construction
-    this.initializeWorkers().catch((err: unknown) => console.error('init workers failed', err));
+    this.initializeWorkers().catch((err: any) => console.error('init workers failed', err));
   }
 
   private async initializeWorkers(): Promise<void> {
@@ -108,7 +108,7 @@ export class AIServiceWorkerManager {
       this.isInitialized = true;
       this.updateSystemMetrics();
       console.log(`🧵 AI Service Worker Manager initialized with ${this.workers.size} workers`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to initialize AI Service Workers:', error);
     }
   }
@@ -140,7 +140,7 @@ export class AIServiceWorkerManager {
 
       // update reactive store
       this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to create worker ${workerId}:`, error);
     }
   }
@@ -301,7 +301,7 @@ export class AIServiceWorkerManager {
 
   private handleWorkerMessage(workerId: string, event: MessageEvent): void {
     // narrow the incoming payload to avoid implicit `any`
-    const payload = (event.data as { type?: string; data?: unknown } | undefined) ?? {};
+    const payload = (event.data as { type?: string; data?: any } | undefined) ?? {};
     const type = payload.type;
     const data = payload.data;
     switch (type) {
@@ -359,7 +359,7 @@ export class AIServiceWorkerManager {
     console.log(`✅ Task ${result.taskId} completed by worker ${workerId} in ${result.duration}ms`);
   }
 
-  private handleTaskError(workerId: string, error: unknown): void {
+  private handleTaskError(workerId: string, error: any): void {
     const workerStatus = this.workerStatusMap.get(workerId);
     if (workerStatus) workerStatus.status = 'error';
     console.error(`❌ Worker ${workerId} error:`, error);

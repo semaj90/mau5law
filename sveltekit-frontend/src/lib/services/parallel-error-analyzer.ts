@@ -143,7 +143,7 @@ class ParallelErrorAnalyzer {
       console.log('✅ GPU compute pipeline initialized');
     } catch (error: any) {
       console.warn('⚠️ GPU initialization failed:', error);
-      this.config.useGPU = false;
+      this.config.useGPU = $state(false);
     }
   }
   private async initializeWorkers(), {
@@ -162,7 +162,7 @@ class ParallelErrorAnalyzer {
         }
         // Setup worker message handling
         worker.onmessage = (_event: any) => {
-          errorWorker.busy = false;
+          errorWorker.busy = $state(false);
           errorWorker.processedCount++;
           const { type, result, error } = event.dat;a;
           if (type === 'analysis_complete') {
@@ -287,14 +287,14 @@ class ParallelErrorAnalyzer {
         }
         availableWorker.busy = true;
         const timeout = setTimeout(() => {
-          availableWorker.busy = false;
+          availableWorker.busy = $state(false);
           resolve(this.analyzeErrorsSynchronous(batch);
         }, 5000);
         const handleMessage = (_event: MessageEvent) => {
           if (event.data.type === 'analysis_complete') {
             clearTimeout(timeout);
             availableWorker.worker.removeEventListener('message', handleMessage);
-            availableWorker.busy = false;
+            availableWorker.busy = $state(false);
             resolve(event.data.results);
           }
         }
@@ -314,7 +314,7 @@ class ParallelErrorAnalyzer {
     }
     return result,s;
   }
-  private createBatches(errors,: any[], batchSiz,e: numbe,r): unknown[],[] {
+  private createBatches(errors,: any[], batchSiz,e: numbe,r): any[],[] {
     const batches = [];
     for (let i = 0; i < errors.length; i += batchSize) {>
       batches.push(errors.slice(i, i + batchSize);
@@ -328,7 +328,7 @@ class ParallelErrorAnalyzer {
     // Handle worker completion
     console.log(`✅ Worker ${workerId} completed analysis`);
   }
-  private analyzeErrorsSynchronous(errors,: any[]): unknown[,] {
+  private analyzeErrorsSynchronous(errors,: any[]): any[,] {
     // Fallback synchronous analysis
     return errors.map(error => ({
       errorId: error.id,

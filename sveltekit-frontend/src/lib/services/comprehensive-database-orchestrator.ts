@@ -9,14 +9,14 @@ import { EventEmitter } from 'events';
 
 // Replace loose any for DB with a minimal Drizzle-like shape
 type DrizzleDB = {
-  select?: (...args: unknown[]) => Promise<Record<string, unknown>[]>;
-  insert?: (table: unknown) => {
-    values: (v: unknown) => { returning: () => Promise<Record<string, unknown>[]> };
+  select?: (...args: any[]) => Promise<Record<string, unknown>[]>;
+  insert?: (table: any) => {
+    values: (v: any) => { returning: () => Promise<Record<string, unknown>[]> };
   };
 };
 
 let db: DrizzleDB | null = null;
-let schema: { [key: string]: unknown } = {};
+let schema: { [key: string]: any } = {};
 
 // Replace top-level await/import with an async IIFE to avoid parser/TS build errors
 (async function initDb() {
@@ -47,32 +47,32 @@ export interface DatabaseOrchestratorConfig {
 
 export interface DatabaseOrchestratorResponse {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   timestamp: string;
 }
 
-type Condition = { id: string; [key: string]: unknown };
+type Condition = { id: string; [key: string]: any };
 type QueryOptions = { where?: Record<string, unknown>; limit?: number };
 
 // Add a concrete QueryBuilderLike shape (avoid `Function` type)
 type QueryBuilderLike = {
-  from?: (table: unknown) => unknown | Promise<unknown> | QueryBuilderLike;
+  from?: (table: any) => unknown | Promise<unknown> | QueryBuilderLike;
   limit?: (n: number) => unknown | Promise<unknown> | QueryBuilderLike;
 };
 
 class StubOrchestrator extends EventEmitter {
   private config: DatabaseOrchestratorConfig;
-  private running = false;
+  private running = $state(false);
   private _conditions: Map<string, Condition> = new Map();
-  private queue: unknown[] = [];
+  private queue: any[] = [];
   private inMemoryTables: Map<string, Record<string, unknown>[]> = new Map();
 
   private get persistenceMode() {
     return db ? 'postgres' : 'in-memory';
   }
 
-  private resolveTable(table?: string): unknown | null {
+  private resolveTable(table?: string): any | null {
     if (!table) return null;
     if (!schema) return null;
     if (schema[table]) return schema[table];
@@ -99,7 +99,7 @@ class StubOrchestrator extends EventEmitter {
     return true;
   }
   async stop() {
-    this.running = false;
+    this.running = $state(false);
     return true;
   }
   getStatus() {
@@ -133,7 +133,7 @@ class StubOrchestrator extends EventEmitter {
         try {
           const inserted = await db.insert(tbl).values(stamped).returning();
           return { ...(inserted?.[0] ?? {}), _table: table, persisted: true };
-        } catch (err: unknown) {
+        } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn(`[orchestrator] DB insert failed for table ${table}:`, msg);
         }
@@ -153,17 +153,17 @@ class StubOrchestrator extends EventEmitter {
       if (tbl && typeof db.select === 'function') {
         try {
           // Local helpers to reason about different return shapes without using broad `any`
-          const isPromise = (v: unknown): v is Promise<unknown> =>
-            !!v && typeof (v as { then?: unknown }).then === 'function';
+          const isPromise = (v: any): v is Promise<unknown> =>
+            !!v && typeof (v as { then?: any }).then === 'function';
 
-          const isQueryBuilderLike = (v: unknown): v is QueryBuilderLike =>
+          const isQueryBuilderLike = (v: any): v is QueryBuilderLike =>
             !!v && (typeof (v as Record<string, unknown>).from === 'function' || typeof (v as Record<string, unknown>).limit === 'function');
 
           const selectFn = db.select as unknown;
 
           // Strategy A: try calling db.select(table) -> may return Promise<rows> or a query-builder
           try {
-            const attempt = (selectFn as (t: unknown) => unknown)(tbl);
+            const attempt = (selectFn as (t: any) => unknown)(tbl);
             if (isPromise(attempt)) {
               const rows = (await attempt) as Record<string, unknown>[];
               return query.limit ? rows.slice(0, query.limit) : rows;
@@ -210,11 +210,11 @@ class StubOrchestrator extends EventEmitter {
               })
             );
             return filtered.slice(0, query.limit || filtered.length);
-          } catch (err: unknown) {
+          } catch (err: any) {
             const msg = err instanceof Error ? err.message : String(err);
             console.warn(`[orchestrator] DB query failed for table ${table}:`, msg);
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
           console.warn(`[orchestrator] DB access pattern failed for table ${table}:`, msg);
         }
@@ -234,7 +234,7 @@ class StubOrchestrator extends EventEmitter {
     return rows.slice(0, query.limit || rows.length);
   }
 
-  async executeQuery(query: string, params?: unknown): Promise<DatabaseOrchestratorResponse> {
+  async executeQuery(query: string, params?: any): Promise<DatabaseOrchestratorResponse> {
     return { success: true, data: { query, params }, timestamp: new Date().toISOString() };
   }
   async performHealthCheck(): Promise<DatabaseOrchestratorResponse> {
@@ -249,7 +249,7 @@ class StubOrchestrator extends EventEmitter {
       timestamp: new Date().toISOString(),
     };
   }
-  async syncData(type: string, data: unknown): Promise<DatabaseOrchestratorResponse> {
+  async syncData(type: string, data: any): Promise<DatabaseOrchestratorResponse> {
     return { success: true, data: { type, data }, timestamp: new Date().toISOString() };
   }
   async getMetrics(): Promise<DatabaseOrchestratorResponse> {
@@ -265,7 +265,7 @@ export const orchestrator = new StubOrchestrator();
 export const databaseOrchestrator = orchestrator; // alias
 
 // Helper functions
-export function synthesizeEvidence(data: unknown): Promise<Record<string, unknown>> {
+export function synthesizeEvidence(data: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ synthesized: true, data } as Record<string, unknown>);
 }
 export function performLegalResearch(query: string): Promise<Record<string, unknown>> {
@@ -289,7 +289,7 @@ export function runFullIntegrationTest(): Promise<Record<string, unknown>> {
 }
 
 // text splitter
-export function splitIntoSentences(text: string, _options?: unknown): string[] {
+export function splitIntoSentences(text: string, _options?: any): string[] {
   if (!text) return [];
   return text
     .split(/[.!?]+/)
@@ -298,7 +298,7 @@ export function splitIntoSentences(text: string, _options?: unknown): string[] {
 }
 
 // Add lightweight DocumentLike shape and helper types/guards
-type AnyFunction = (...args: unknown[]) => Promise<unknown> | unknown;
+type AnyFunction = (...args: any[]) => Promise<unknown> | unknown;
 
 export interface DocumentLike {
   id?: string;
@@ -306,7 +306,7 @@ export interface DocumentLike {
   name?: string;
   content?: string;
   text?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 function getExport<T = unknown>(mod: Record<string, unknown> | unknown, key: string): T | undefined {
@@ -314,7 +314,7 @@ function getExport<T = unknown>(mod: Record<string, unknown> | unknown, key: str
   return (mod as Record<string, unknown>)[key] as T | undefined;
 }
 
-function isSummaryLike(x: unknown): x is { summary: string } {
+function isSummaryLike(x: any): x is { summary: string } {
   return typeof x === 'object' && x !== null && 'summary' in (x as Record<string, unknown>) && typeof (x as Record<string, unknown>).summary === 'string';
 }
 
@@ -332,13 +332,13 @@ export type SynthesizedInput = {
   originalQuery: string;
   enhancedPrompt: string;
   legalContext: {
-    entities: unknown[];
-    concepts: unknown[];
-    citations: unknown[];
+    entities: any[];
+    concepts: any[];
+    citations: any[];
     keyTerms: string[];
     complexity: number;
     domain: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   intent: {
     primary?: string;
@@ -347,28 +347,28 @@ export type SynthesizedInput = {
     category?: string;
     urgency?: string;
     scope?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  embedding?: unknown[];
-  metadata?: { [key: string]: unknown };
+  embedding?: any[];
+  metadata?: { [key: string]: any };
   recommendations?: string[];
   contextualPrompts?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type LegalAnalysis = {
-  entities?: unknown[];
-  concepts?: unknown[];
-  sentiment?: unknown;
-  complexity?: unknown;
-  keyPhrases?: unknown[];
+  entities?: any[];
+  concepts?: any[];
+  sentiment?: any;
+  complexity?: any;
+  keyPhrases?: any[];
   summary?: { abstractive?: string; extractive?: string[]; keyPoints?: string[] };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type RAGOutput = Record<string, unknown> & {
-  metadata?: { documentsProcessed?: number; [key: string]: unknown };
-  [key: string]: unknown;
+  metadata?: { documentsProcessed?: number; [key: string]: any };
+  [key: string]: any;
 };
 
 export type RerankingConfig = Partial<Record<string, unknown>> | undefined;
@@ -376,15 +376,15 @@ export type RerankingConfig = Partial<Record<string, unknown>> | undefined;
 // Advanced Patch Streaming Integration
 export async function createPatchStream(
   target: string,
-  initialData: unknown,
-  options?: { config?: unknown; [key: string]: unknown }
-): Promise<{ stream: ReadableStream<unknown>; writer: unknown | null }> {
+  initialData: any,
+  options?: { config?: any; [key: string]: any }
+): Promise<{ stream: ReadableStream<unknown>; writer: any | null }> {
   // Define a minimal runtime-friendly shape for external streamer constructors/instances.
-  type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: unknown }>;
+  type StreamReturn = Promise<{ stream: ReadableStream<unknown>; writer?: any }>;
   type AdvancedPatchStreamerLike = {
-    new (config?: unknown): {
-      createPatchStream?: (target: string, initialData?: unknown, options?: { [key: string]: unknown }) => StreamReturn;
-      getStream?: (target: string, initialData?: unknown) => StreamReturn;
+    new (config?: any): {
+      createPatchStream?: (target: string, initialData?: any, options?: { [key: string]: any }) => StreamReturn;
+      getStream?: (target: string, initialData?: any) => StreamReturn;
       stream?: ReadableStream<unknown>;
     };
   };
@@ -398,20 +398,20 @@ export async function createPatchStream(
       if (typeof streamerInstance.createPatchStream === 'function') {
         return (await streamerInstance.createPatchStream(target, initialData, options)) as {
           stream: ReadableStream<unknown>;
-          writer: unknown | null;
+          writer: any | null;
         };
       }
       if (typeof streamerInstance.getStream === 'function') {
         return (await streamerInstance.getStream(target, initialData)) as {
           stream: ReadableStream<unknown>;
-          writer: unknown | null;
+          writer: any | null;
         };
       }
       if (streamerInstance.stream) {
         return { stream: streamerInstance.stream, writer: null };
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] Patch streaming unavailable, using fallback:', String(err));
   }
 
@@ -434,9 +434,9 @@ export async function createPatchStream(
 
 // MMR-based summary generation integration
 export async function generateMMRSummary(
-  documents: unknown[],
+  documents: any[],
   query: string,
-  config?: unknown
+  config?: any
 ): Promise<MMRSummaryResult | unknown> {
   try {
     const mod = await import('./mmr-summary-generator');
@@ -444,14 +444,14 @@ export async function generateMMRSummary(
     if (typeof gen === 'function') {
       return await gen(documents, query, config);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] MMR summary generator unavailable, using fallback:', String(err));
   }
   // Fallback: extract first two sentences from top 3 docs
   const docs = Array.isArray(documents) ? documents : [];
   const fallbackSummary = docs
     .slice(0, 3)
-    .map((doc: unknown) => {
+    .map((doc: any) => {
       const d = doc as DocumentLike;
       const sentences = splitIntoSentences((d?.content as string) || (d?.text as string) || '');
       return sentences.slice(0, 2).join(' ');
@@ -467,7 +467,7 @@ export async function generateMMRSummary(
       sentenceCount: 3,
       sourceDocuments: docs.length,
     },
-    sources: docs.map((d: unknown) => {
+    sources: docs.map((d: any) => {
       const doc = d as DocumentLike;
       return (doc?.title as string) || (doc?.id as string) || '';
     }),
@@ -485,8 +485,8 @@ export async function startOrchestrator(config?: DatabaseOrchestratorConfig): Pr
 // RAG Pipeline Integration (clean, TS-safe)
 export async function processRAGPipeline(
   query: string,
-  documents: unknown[],
-  config?: { maxDocuments?: number; [key: string]: unknown }
+  documents: any[],
+  config?: { maxDocuments?: number; [key: string]: any }
 ): Promise<Record<string, unknown>> {
   // Try to delegate to an external integrator if available
   try {
@@ -496,14 +496,14 @@ export async function processRAGPipeline(
       const res = await proc(query, documents, config);
       return (res as Record<string, unknown>) || { query, documents };
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] RAG pipeline unavailable, using fallback:', String(err));
   }
 
   // Fallback path: simple, safe processing
   const docsArray = Array.isArray(documents) ? documents : [];
   const maxDocs =
-    config && typeof (config as { maxDocuments?: unknown }).maxDocuments === 'number'
+    config && typeof (config as { maxDocuments?: any }).maxDocuments === 'number'
       ? (config as { maxDocuments?: number }).maxDocuments!
       : 10;
   const filtered = docsArray.slice(0, maxDocs) as DocumentLike[];
@@ -546,7 +546,7 @@ export async function synthesizeAIInput(
     userRole?: string;
     caseId?: string;
     documentIds?: string[];
-    sessionContext?: unknown;
+    sessionContext?: any;
   }
 ): Promise<SynthesizedInput> {
   try {
@@ -577,7 +577,7 @@ export async function synthesizeAIInput(
         if (result && typeof result === 'object') return result as SynthesizedInput;
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] AI input synthesizer unavailable, using fallback:', String(err));
   }
 
@@ -631,11 +631,11 @@ export async function analyzeLegalText(
     const analysisFn = (mod?.legalBERT?.analyzeLegalText) as unknown;
     if (typeof analysisFn === 'function') {
       // Some implementations accept only text; check arity before calling with options
-      const fn = analysisFn as (...args: unknown[]) => Promise<unknown> | unknown;
+      const fn = analysisFn as (...args: any[]) => Promise<unknown> | unknown;
       const result = fn.length === 1 ? await fn(text) : await fn(text, options);
       if (result && typeof result === 'object') return result as LegalAnalysis;
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] LegalBERT middleware unavailable, using fallback:', String(err));
   }
   // Fallback analysis (typed)
@@ -685,7 +685,7 @@ export async function processAIAssistantQuery(
     userRole?: string;
     caseId?: string;
     documentIds?: string[];
-    sessionContext?: unknown;
+    sessionContext?: any;
     enableLegalBERT?: boolean;
     enableRAG?: boolean;
     maxDocuments?: number;
@@ -759,7 +759,7 @@ export async function processAIAssistantQuery(
       },
     };
     return result;
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[orchestrator] AI assistant pipeline failed:', String(err));
     return {
       synthesizedInput: {
@@ -777,20 +777,20 @@ export async function processAIAssistantQuery(
 }
 
 // Cross-Encoder Reranking Integration (single implementation)
-export async function rerankSearchResults(query: string, results: unknown[], config?: RerankingConfig): Promise<unknown[]> {
+export async function rerankSearchResults(query: string, results: any[], config?: RerankingConfig): Promise<unknown[]> {
   try {
     const mod = await import('./cross-encoder-reranker');
     const RerankerCtor = (mod?.CrossEncoderReranker) as unknown;
     if (typeof RerankerCtor === 'function') {
       const reranker = new (RerankerCtor as any)();
       // Cast config to the expected shape at the boundary
-      return await (reranker.rerankResults as (q: string, r: unknown[], c?: RerankingConfig) => Promise<unknown[]>)(
+      return await (reranker.rerankResults as (q: string, r: any[], c?: RerankingConfig) => Promise<unknown[]>)(
         query,
         results,
         config
       );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('[orchestrator] Cross-encoder reranking unavailable, using fallback:', String(err));
   }
   // Fallback: basic TF-IDF-like scoring
@@ -808,19 +808,19 @@ export async function rerankSearchResults(query: string, results: unknown[], con
     .sort((a, b) => (b.score || 0) - (a.score || 0));
 }
 
-export async function analyzeEvidence(evidence: unknown): Promise<Record<string, unknown>> {
+export async function analyzeEvidence(evidence: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ analyzed: true, evidence });
 }
-export async function processDocuments(documents: unknown[]): Promise<Record<string, unknown>> {
+export async function processDocuments(documents: any[]): Promise<Record<string, unknown>> {
   return Promise.resolve({ processed: true, count: documents.length });
 }
-export async function searchVector(query: string, options?: unknown): Promise<Record<string, unknown>> {
+export async function searchVector(query: string, options?: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ query, results: [], options });
 }
-export async function indexDocuments(documents: unknown[]): Promise<Record<string, unknown>> {
+export async function indexDocuments(documents: any[]): Promise<Record<string, unknown>> {
   return Promise.resolve({ indexed: true, count: documents.length });
 }
-export async function getRecommendations(context: unknown): Promise<Record<string, unknown>> {
+export async function getRecommendations(context: any): Promise<Record<string, unknown>> {
   return Promise.resolve({ recommendations: [], context });
 }
 export async function validateIntegrity(): Promise<Record<string, unknown>> {

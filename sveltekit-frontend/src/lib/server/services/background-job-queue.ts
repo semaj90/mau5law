@@ -8,7 +8,6 @@ import { evidence, cases, reports, personsOfInterest, userEmbeddings } from '$li
 import { eq } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 import { CONFIG } from '$lib/config/env.server';
-
 // Job queue schemas
 export const JobSchema = z.object({
   id: z.string(),
@@ -25,10 +24,8 @@ export const JobSchema = z.object({
   metadata: z.record(z.unknown()).optional(),
 });
 export type Job = z.infer<typeof JobSchema>;
-
 /* Type additions to reduce `any` usage */
 type JsonMap = Record<string, unknown>;
-
 type EvidenceRow = {
   id: string;
   title?: string;
@@ -40,7 +37,6 @@ type EvidenceRow = {
   updatedAt?: Date;
   caseId?: string;
 };
-
 type CaseRow = {
   id: string;
   title?: string;
@@ -49,7 +45,6 @@ type CaseRow = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
 type ReportRow = {
   id: string;
   title?: string;
@@ -60,7 +55,6 @@ type ReportRow = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
 type PersonRow = {
   id: string;
   name?: string;
@@ -69,7 +63,6 @@ type PersonRow = {
   createdAt?: Date;
   updatedAt?: Date;
 };
-
 type AnalysisResult = {
   summary: string;
   confidence: number;
@@ -77,7 +70,6 @@ type AnalysisResult = {
   entities: string[];
   timestamp: string;
 };
-
 type CaseSynthesisResult = {
   summary: string;
   timeline: Array<{ event: string; timestamp?: Date | string; significance: string }>;
@@ -85,46 +77,39 @@ type CaseSynthesisResult = {
   recommendations: string[];
   riskAssessment: { overall: string; factors: string[] };
 };
-
 type ReportContent = {
   content: string;
   metadata: JsonMap;
 };
-
 export interface ProcessingResult {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   metadata?: Record<string, unknown>;
 }
-
 /**
  * Background Job Queue Manager
  */
 export class LegalAIJobQueue {
   private static instance: LegalAIJobQueue;
-  private isProcessing = false;
+  private isProcessing = $state(false);
   private processingInterval: ReturnType<typeof setInterval> | null = null;
   // In-memory job store & queue (simple placeholder for Redis/DB-backed queue)
   private jobStore: Map<string, Job> = new Map();
   private jobQueue: Job[] = [];
   // Prevent concurrent processing of the same job
-  private processingLock = false;
-
+  private processingLock = $state(false);
   private constructor() {}
-
   static getInstance(): LegalAIJobQueue {
     if (!LegalAIJobQueue.instance) {
       LegalAIJobQueue.instance = new LegalAIJobQueue();
     }
     return LegalAIJobQueue.instance;
   }
-
   // Public wrapper to start processing from outside the class (uses private startProcessing)
   public start(): void {
     this.startProcessing();
   }
-
   /**
    * Add job to queue
    */
@@ -148,7 +133,6 @@ export class LegalAIJobQueue {
     }
     return jobId;
   }
-
   /**
    * Start background processing
    */
@@ -164,7 +148,6 @@ export class LegalAIJobQueue {
       }
     }, 5000); // Process every 5 seconds
   }
-
   /**
    * Stop background processing
    */
@@ -173,10 +156,9 @@ export class LegalAIJobQueue {
       clearInterval(this.processingInterval);
       this.processingInterval = null;
     }
-    this.isProcessing = false;
+    this.isProcessing = $state(false);
     console.log('[JobQueue] Stopped background job processing');
   }
-
   /**
    * Process next job in queue
    */
@@ -216,10 +198,9 @@ export class LegalAIJobQueue {
     } catch (error) {
       console.error('[JobQueue] Error processing job:', error);
     } finally {
-      this.processingLock = false;
+      this.processingLock = $state(false);
     }
   }
-
   /**
    * Process Evidence Analysis Job
    */
@@ -267,7 +248,6 @@ export class LegalAIJobQueue {
       return { success: false, error: error instanceof Error ? error.message : 'Analysis failed' };
     }
   }
-
   /**
    * Process Case Synthesis Job
    */
@@ -304,7 +284,6 @@ export class LegalAIJobQueue {
       return { success: false, error: error instanceof Error ? error.message : 'Synthesis failed' };
     }
   }
-
   /**
    * Process Report Generation Job
    */
@@ -342,7 +321,6 @@ export class LegalAIJobQueue {
       return { success: false, error: error instanceof Error ? error.message : 'Report generation failed' };
     }
   }
-
   /**
    * Process Vector Embedding Job
    */
@@ -357,16 +335,13 @@ export class LegalAIJobQueue {
       }
       const entityType = rawEntityType;
       const entityId = rawEntityId;
-
       // Get entity text content for embedding
       const textContent = await this.getEntityTextContent(entityType, entityId, job.userId);
       if (!textContent) {
         return { success: false, error: 'No text content found for embedding' };
       }
-
       // Generate vector embedding using Ollama (simulated)
       const embedding = await this.generateVectorEmbedding(textContent);
-
       // Store embedding in database - simplified insert to avoid schema-specific onConflict issues
       try {
         await db.insert(userEmbeddings).values({
@@ -396,7 +371,6 @@ export class LegalAIJobQueue {
       return { success: false, error: error instanceof Error ? error.message : 'Embedding generation failed' };
     }
   }
-
   /**
    * Vector embedding generator using Ollama's nomic-embed-text model.
    * Replace the fetch URL and payload as needed for your Ollama deployment.
@@ -442,7 +416,6 @@ export class LegalAIJobQueue {
       return embedding.map(v => v / norm);
     }
   }
-
   /**
    * AI Analysis Implementation
    * typed input/output instead of `any`
@@ -464,7 +437,6 @@ export class LegalAIJobQueue {
       timestamp: new Date().toISOString(),
     };
   }
-
   /**
    * Case Synthesis Implementation
    */
@@ -492,7 +464,6 @@ export class LegalAIJobQueue {
       },
     };
   }
-
   /**
    * Report Generation Implementation
    */
@@ -525,7 +496,6 @@ ${reportData.description || 'Case analysis and findings'}
       },
     };
   }
-
   /**
    * Get entity text content used for embeddings (evidence, case, report, person)
    * rename userId -> _userId to avoid unused param lint
@@ -568,7 +538,6 @@ ${reportData.description || 'Case analysis and findings'}
       return null;
     }
   }
-
   /**
    * Job storage and management methods
    */
@@ -578,7 +547,6 @@ ${reportData.description || 'Case analysis and findings'}
     this.enqueueJob(job);
     console.log(`[JobQueue] Stored job ${job.id}`);
   }
-
   /**
    * Enqueue a job and keep the queue sorted by priority and scheduledAt.
    * Prevents duplicates in the queue.
@@ -609,7 +577,6 @@ ${reportData.description || 'Case analysis and findings'}
       return (a.scheduledAt?.getTime() || 0) - (b.scheduledAt?.getTime() || 0);
     });
   }
-
   private async getNextJob(): Promise<Job | null> {
     const now = Date.now();
     // Find first pending job that is scheduled to run now or earlier
@@ -628,9 +595,8 @@ ${reportData.description || 'Case analysis and findings'}
     }
     return null;
   }
-
   // Changed the `data` param type from `any` to `unknown` to avoid unexpected `any`.
-  private async updateJobStatus(jobId: string, status: Job['status'], data?: unknown): Promise<void> {
+  private async updateJobStatus(jobId: string, status: Job['status'], data?: any): Promise<void> {
     const job = this.jobStore.get(jobId);
     if (!job) {
       console.warn(`[JobQueue] updateJobStatus: job ${jobId} not found`);
@@ -657,7 +623,6 @@ ${reportData.description || 'Case analysis and findings'}
     }
     console.log(`[JobQueue] Updated job ${jobId} status to ${status}`);
   }
-
   private async handleJobFailure(job: Job, error: string): Promise<void> {
     const jobInStore = this.jobStore.get(job.id);
     if (!jobInStore) {
@@ -722,7 +687,6 @@ ${reportData.description || 'Case analysis and findings'}
     );
   }
 }
-
 /**
  * Job Queue Helper Functions
  */

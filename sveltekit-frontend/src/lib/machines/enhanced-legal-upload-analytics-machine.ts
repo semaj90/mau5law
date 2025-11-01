@@ -179,9 +179,8 @@ export const LegalContextSchema = z.object({
   clientId: z.string().optional(),
   matterNumber: z.string().optional(),
 });
-
 // --- small response types to avoid `any` ---
-type AnalyzeBehaviorResponse = { analytics: UserAnalytics; insights: unknown; score: number };
+type AnalyzeBehaviorResponse = { analytics: UserAnalytics; insights: any; score: number };
 type GeneratePromptsResponse = { prompts: ContextualPrompt[] };
 type AnalyzeDocResult = {
   documentId: string;
@@ -193,13 +192,12 @@ type AnalyzeDocResult = {
   evidenceType?: string;
   hash?: string;
 };
-
 // Enhanced Production Services (replaced fromPromise with plain async functions)
 export async function analyzeUserBehaviorService({
   input,
 }: {
   input: { userAnalytics: UserAnalytics; context: UploadContext };
-}): Promise<{ updatedAnalytics: UserAnalytics; insights: unknown; behaviorScore: number }> {
+}): Promise<{ updatedAnalytics: UserAnalytics; insights: any; behaviorScore: number }> {
   try {
     // Production API call to user behavior analysis service
     const response = await fetch('/api/ai/ollama/analyze-behavior', {
@@ -243,7 +241,6 @@ export async function analyzeUserBehaviorService({
     };
   }
 }
-
 export async function generateContextualPromptsService({
   input,
 }: {
@@ -312,7 +309,6 @@ export async function generateContextualPromptsService({
     return legalPrompts;
   }
 }
-
 export async function performAIAnalysisService({
   input,
 }: {
@@ -401,7 +397,6 @@ export async function performAIAnalysisService({
     }));
   }
 }
-
 export async function saveToDatabaseService({
   input,
 }: {

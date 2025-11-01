@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   // State
   let searchQuery = $state('');
   let viewMode = $state<'grid' | 'list' >('grid');
@@ -146,7 +146,7 @@ Clear Filters
     </div>
   {:else if viewMode === 'grid'}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each filteredPersons as person}
+      {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-start justify-between mb-4">
             <div class="flex items-center gap-3">
@@ -187,7 +187,7 @@ Clear Filters
   {:else}
     <!-- List view -->
     <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      {#each filteredPersons as person}
+      {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
         <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">

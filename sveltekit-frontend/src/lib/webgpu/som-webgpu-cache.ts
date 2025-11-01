@@ -73,7 +73,7 @@ export class WebGPUSOMCache {
   private cacheCollection: Collection<any>;
   // Redis integration
   private redisClient: any = null;
-  private redisConnected = false;
+  private redisConnected = $state(false);
   private redisConfig = {
     host: 'localhost',
     port: 6379,
@@ -328,7 +328,7 @@ export class WebGPUSOMCache {
       });
       console.log('🚀 WebGPU initialized for SOM semantic caching');
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('WebGPU initialization failed:', error);
       return false;
     }
@@ -539,7 +539,7 @@ export class WebGPUSOMCache {
         throw new Error(`SOM analyzer failed: ${response.status}`);
       }
       return (await response.json()) as IntelligentTodo[];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Go SOM analyzer unavailable, using mock data');
       return this.generateMockTodos(errors);
     }
@@ -750,7 +750,7 @@ export class WebGPUSOMCache {
         throw new Error(`SOM analyzer failed: ${response.status}`);
       }
       return (await response.json()) as IntelligentTodo[];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Go SOM analyzer unavailable, using mock data');
       return this.generateMockTodos(errors);
     }
@@ -961,7 +961,7 @@ export class WebGPUSOMCache {
         throw new Error(`SOM analyzer failed: ${response.status}`);
       }
       return (await response.json()) as IntelligentTodo[];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Go SOM analyzer unavailable, using mock data');
       return this.generateMockTodos(errors);
     }
@@ -1172,7 +1172,7 @@ export class WebGPUSOMCache {
         throw new Error(`SOM analyzer failed: ${response.status}`);
       }
       return (await response.json()) as IntelligentTodo[];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Go SOM analyzer unavailable, using mock data');
       return this.generateMockTodos(errors);
     }
@@ -1778,8 +1778,8 @@ export class WebGPUSOMCache {
   private searchLegalDocumentsCPU(
     query: Float32Array,
     docs: Float32Array[],
-    metadata: unknown[]
-  ): Array<{ similarity: number; index: number; metadata: unknown }> {
+    metadata: any[]
+  ): Array<{ similarity: number; index: number; metadata: any }> {
     return docs
       .map((doc, index) => {
         let dotProduct = 0;
@@ -1816,7 +1816,7 @@ export class WebGPUSOMCache {
       clearInterval(this.syncTimer);
       this.syncTimer = null;
     }
-    this.redisConnected = false;
+    this.redisConnected = $state(false);
     this.redisClient = null;
   }
 }

@@ -4,7 +4,6 @@
 import { EventEmitter } from 'events';
 import type { EnhancedOptimizationSuite, EnhancedPerformanceMetrics } from './index.js';
 import { createEnhancedOptimizationSuite } from './index.js';
-
 export interface Context7MCPRequest {
   tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';
   component?: string;
@@ -23,7 +22,7 @@ export interface Context7MCPRequest {
 }
 export interface Context7MCPResponse {
   success: boolean;
-  data?: unknown; // replaced `any` with `unknown`
+  data?: any; // replaced `any` with `unknown`
   error?: string;
   optimization_recommendations?: OptimizationRecommendation[];
   performance_impact?: {
@@ -41,13 +40,11 @@ export interface OptimizationRecommendation {
   expected_benefit: string;
   code_example?: string;
 }
-
 export class Context7MCPOptimizationIntegrator extends EventEmitter {
   private optimizationSuite: EnhancedOptimizationSuite;
   private context7_endpoint = 'http://localhost:40000/mcp';
   private optimization_cache = new Map<string, Context7MCPResponse>();
   private performance_baseline: EnhancedPerformanceMetrics | null = null;
-
   constructor(suite?: EnhancedOptimizationSuite) {
     super();
     // Build a narrow default config and use a targeted cast to the actual parameter type
@@ -58,7 +55,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       // use a string literal that matches the expected union
       cache_strategy: 'balanced' as const,
     };
-
     this.optimizationSuite =
       suite ||
       // cast via Parameters<> to align with createEnhancedOptimizationSuite's expected param type
@@ -68,7 +64,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     // start async initialization (do not await in constructor)
     void this.initializeIntegration();
   }
-
   private async initializeIntegration(): Promise<void> {
     try {
       // Initialize optimization suite if available
@@ -86,7 +81,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       this.emit('integration_error', errMsg);
     }
   }
-
   // === Public Tool Methods ===
   async analyzeStackWithOptimization(
     component: string,
@@ -109,7 +103,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     }
     return response;
   }
-
   async generateBestPracticesWithResourceAwareness(
     area: 'performance' | 'security' | 'ui-ux' | 'memory' | 'docker'
   ): Promise<Context7MCPResponse> {
@@ -129,7 +122,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     }
     return response;
   }
-
   async suggestIntegrationWithOptimization(feature: string, requirements?: string): Promise<Context7MCPResponse> {
     const optimization_context = await this.getOptimizationContext();
     const request: Context7MCPRequest = {
@@ -138,7 +130,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       requirements: requirements || 'optimized for legal-ai performance and memory',
       optimization_context,
     };
-
     const response = await this.executeContext7Request(request);
     if (response.success) {
       response.optimization_recommendations = await this.generateIntegrationOptimizations(
@@ -149,15 +140,13 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     }
     return response;
   }
-
   // === Optimization Recommendation Generators ===
   private async generateOptimizationRecommendations(
     component: string,
-    _analysisData: unknown,
+    _analysisData: any,
     context: NonNullable<Context7MCPRequest['optimization_context']>
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
-
     if (context.memory_usage > 4000) {
       recommendations.push({
         category: 'memory',
@@ -209,7 +198,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     }
     return recommendations;
   }
-
   private async generateResourceSpecificRecommendations(
     area: string,
     context: NonNullable<Context7MCPRequest['optimization_context']>
@@ -267,7 +255,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     }
     return recommendations;
   }
-
   private async generateIntegrationOptimizations(
     feature: string,
     _context: NonNullable<Context7MCPRequest['optimization_context']>
@@ -288,7 +275,6 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
       },
     ];
   }
-
   private async generateLibraryOptimizationTips(
     library: string,
     _topic: string | undefined,
@@ -345,7 +331,6 @@ const db = drizzle(pool, {
         expected_benefit: 'Improve UI responsiveness by 30-50%',
       },
     };
-
     const recommendation =
       libraryOptimizations[library] ||
       ({
@@ -360,10 +345,8 @@ const db = drizzle(pool, {
         ],
         expected_benefit: 'Optimized library usage',
       } as OptimizationRecommendation);
-
     return [recommendation];
   }
-
   private async estimatePerformanceImpact(
     area: string,
     context: NonNullable<Context7MCPRequest['optimization_context']>
@@ -385,7 +368,6 @@ const db = drizzle(pool, {
         implementation_effort: 'medium',
       },
     };
-
     return (
       impactEstimates[area] || {
         expected_improvement: 0.2,
@@ -394,12 +376,10 @@ const db = drizzle(pool, {
       }
     );
   }
-
   // Utility
   private generateCacheKey(request: Context7MCPRequest): string {
     return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || ''}`;
   }
-
   async runComprehensiveOptimizationAnalysis(): Promise<{
     current_metrics: EnhancedPerformanceMetrics;
     recommendations: OptimizationRecommendation[];
@@ -430,25 +410,20 @@ const db = drizzle(pool, {
     ];
     return { current_metrics, recommendations: all_recommendations, estimated_improvements, implementation_plan };
   }
-
   getOptimizationSuite(): EnhancedOptimizationSuite {
     return this.optimizationSuite;
   }
-
   clearCache(): void {
     this.optimization_cache.clear();
   }
-
   // Add helper to gather/derive optimization context used across requests
   private async getOptimizationContext(): Promise<NonNullable<Context7MCPRequest['optimization_context']>> {
     // Simplified and explicit extraction: read camelCase first, then snake_case, then default.
     const baseline = this.performance_baseline ?? ({} as Partial<EnhancedPerformanceMetrics> & Record<string, unknown>);
-
     const readNumber = (camelKey: string, snakeKey: string, def: number): number => {
       const maybeCamel = (baseline as Record<string, unknown>)[camelKey];
       const maybeSnake = (baseline as Record<string, unknown>)[snakeKey];
-
-      const parse = (v: unknown): number | null => {
+      const parse = (v: any): number | null => {
         if (typeof v === 'number' && Number.isFinite(v)) return v;
         if (typeof v === 'string') {
           const n = Number(v);
@@ -456,19 +431,16 @@ const db = drizzle(pool, {
         }
         return null;
       };
-
       const fromCamel = parse(maybeCamel);
       if (fromCamel !== null) return fromCamel;
       const fromSnake = parse(maybeSnake);
       if (fromSnake !== null) return fromSnake;
       return def;
     };
-
     const memory_usage = readNumber('memoryUsageMB', 'memory_usage_mb', 2048);
     const cpu_usage = readNumber('cpuUsagePercent', 'cpu_usage_percent', 10);
     const cache_efficiency = readNumber('cacheHitRate', 'cache_efficiency', 75);
     const docker_containers = Math.max(0, Math.floor(readNumber('dockerContainers', 'docker_containers', 1)));
-
     return {
       memory_usage,
       cpu_usage,
@@ -476,9 +448,7 @@ const db = drizzle(pool, {
       docker_containers,
     };
   }
-
   // --- New / fixed private helpers ---
-
   // Collect current metrics with safe guards (no `any` usage)
   private async collectCurrentMetrics(): Promise<EnhancedPerformanceMetrics> {
     // Narrow the optimizationSuite shape to optional small interface
@@ -492,7 +462,6 @@ const db = drizzle(pool, {
           docker?: { listContainers?: () => Promise<unknown[]> | unknown[] };
         }
       | undefined;
-
     const memoryUsageMB = await Promise.resolve(suite?.system?.getMemoryUsageMB?.() ?? 2048);
     const cpuUsagePercent = await Promise.resolve(suite?.system?.getCpuUsagePercent?.() ?? 10);
     const cacheHitRate = await Promise.resolve(suite?.cache?.getHitRate?.() ?? 75);
@@ -500,7 +469,6 @@ const db = drizzle(pool, {
     const dockerContainers = Array.isArray(dockerContainersCandidate)
       ? dockerContainersCandidate.length
       : Number(dockerContainersCandidate) || 1;
-
     // Construct result matching EnhancedPerformanceMetrics shape used elsewhere
     // Return a minimal metrics object and cast via `unknown` to satisfy
     // strict structural compatibility with EnhancedPerformanceMetrics.
@@ -511,14 +479,12 @@ const db = drizzle(pool, {
       dockerContainers: dockerContainers,
     } as unknown as EnhancedPerformanceMetrics;
   }
-
   // Execute request to Context7 MCP endpoint with caching and safe error handling
   private async executeContext7Request(request: Context7MCPRequest): Promise<Context7MCPResponse> {
     const cacheKey = this.generateCacheKey(request);
     if (this.optimization_cache.has(cacheKey)) {
       return this.optimization_cache.get(cacheKey)!;
     }
-
     try {
       const res = await fetch(this.context7_endpoint, {
         method: 'POST',
@@ -539,16 +505,13 @@ const db = drizzle(pool, {
     }
   }
 }
-
 // Factory helpers (preserve original API)
 export function createContext7MCPIntegration(suite?: EnhancedOptimizationSuite): Context7MCPOptimizationIntegrator {
   return new Context7MCPOptimizationIntegrator(suite);
 }
-
 // Add a safe QuickAction type (avoid `any`)
-type QuickAction = (...args: unknown[]) => void | Promise<unknown> | undefined;
+type QuickAction = (...args: any[]) => void | Promise<unknown> | undefined;
 type QuickActionsMap = Record<string, QuickAction>;
-
 export async function createOptimizedDevelopmentEnvironment(): Promise<{
   integrator: Context7MCPOptimizationIntegrator;
   recommendations: OptimizationRecommendation[];
@@ -573,6 +536,5 @@ export async function createOptimizedDevelopmentEnvironment(): Promise<{
     quickActions,
   };
 }
-
 // Default instance
 export default createContext7MCPIntegration();

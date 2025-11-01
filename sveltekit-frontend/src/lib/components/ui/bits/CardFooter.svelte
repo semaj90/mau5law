@@ -9,11 +9,9 @@
     childre;
   }: CardFooterProps = $props();
 </script>
-
 <div class={cn('shadcn-card-footer', className)}>
-  {@render children?.()}
+  <slot />
 </div>
-
 <style>
   :global(.shadcn-card-footer) {
     padding: 0 1.5rem 1.5rem;

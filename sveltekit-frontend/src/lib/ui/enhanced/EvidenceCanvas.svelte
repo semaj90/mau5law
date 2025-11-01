@@ -31,7 +31,7 @@
   let fabric: any = null; // fabric.js is often used as a global or UMD module
   let fileInput: HTMLInputElement | null = null;
 
-  let analyzing = false;
+  let analyzing = $state(false);
   let error: string | null = null;
 
   // Define types for API responses and data structures
@@ -54,8 +54,8 @@
   };
 
   // Drag & upload state
-  let dragOver = false;
-  let uploading = false;
+  let dragOver = $state(false);
+  let uploading = $state(false);
   let uploadProgress = 0;
 
   interface AnchorPoint {
@@ -75,17 +75,17 @@
   }
 
   interface DetectiveAnalysisResult {
-    ocrResults: { text: string; confidence: number; boundingBoxes: unknown[]; handwritingDetected: boolean };
+    ocrResults: { text: string; confidence: number; boundingBoxes: any[]; handwritingDetected: boolean };
     embeddings: Embeddings; // Changed from unknown[] to Embeddings
     analysis: {
-      detectedPatterns: unknown[];
+      detectedPatterns: any[];
       legalRelevance: 'high' | 'medium' | 'low';
-      conflictIndicators: unknown[];
-      contextualClues: unknown[];
-      suggestedActions: unknown[];
+      conflictIndicators: any[];
+      contextualClues: any[];
+      suggestedActions: any[];
       confidence?: number;
     };
-    conflicts: unknown[];
+    conflicts: any[];
     processingTime: number;
   }
 
@@ -169,7 +169,7 @@
 
   // Lifecycle: init fabric
   onMount(() => {
-    let cancelled = false;
+    let cancelled = $state(false);
     (async () => {
       const fabricModule = await import('fabric');
       fabric = (fabricModule as any).fabric;
@@ -271,13 +271,13 @@
             status: 'success'
           };
           unsubscribe?.();
-          analyzing = false;
+          analyzing = $state(false);
         }
         const failedResult = snapshot?.context?.results?.find?.((r: any) => r.taskId === analysisTaskId && !r.success);
         if (failedResult) {
           error = failedResult.error ?? 'Analysis failed';
           unsubscribe?.();
-          analyzing = false;
+          analyzing = $state(false);
         }
       }) ?? (() => { /* noop */ });
 
@@ -285,16 +285,16 @@
       const timeout = setTimeout(() => {
         if (analyzing) {
           error = 'Analysis timed out';
-          analyzing = false;
+          analyzing = $state(false);
           unsubscribe?.();
         }
       }, 30000);
 
       // clean up timeout when done
       if (!analyzing) clearTimeout(timeout);
-    } catch (e: unknown) {
+    } catch (e: any) {
       error = e instanceof Error ? e.message : String(e);
-      analyzing = false;
+      analyzing = $state(false);
     }
   }
 
@@ -316,13 +316,13 @@
     const x = event.clientX;
     const y = event.clientY;
     if (x < rect.left || x > rect.right || y < rect.top || y < rect.bottom) { // Corrected y < rect.bottom
-      dragOver = false;
+      dragOver = $state(false);
     }
   }
 
   function handleCanvasDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     if (uploading) return;
     const droppedFiles = Array.from(event.dataTransfer?.files ?? []);
     if (!canvasEl) return;
@@ -380,7 +380,7 @@
   interface CudaPreprocessingResult {
     success: boolean;
     processedFile?: File; // Changed from Blob to File
-    metadata?: unknown;
+    metadata?: any;
     error?: string;
   }
 
@@ -416,7 +416,7 @@
         uploadProgress = (i / uploadFiles.length) * 100;
         // CUDA preprocessing if enabled
         let preprocessedData: File = uploadFile.file; // Explicitly type as File
-        let cudaProcessed = false;
+        let cudaProcessed = $state(false);
         if (enableCUDAAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success && cudaResult.processedFile) { // Check for processedFile existence
@@ -478,7 +478,7 @@
       const errorMsg = error instanceof Error ? error.message : 'Upload failed';
       console.error('🎮 Upload error:', errorMsg);
     } finally {
-      uploading = false;
+      uploading = $state(false);
       uploadProgress = 0;
     }
   }
@@ -505,7 +505,7 @@
       if (!response.ok) {
         throw new Error(`CUDA preprocessing failed: ${response.statusText}`);
       }
-      const result: { success: boolean; processedFile?: Blob; metadata?: unknown; error?: string } = await response.json(); // Temporarily type as Blob for API response
+      const result: { success: boolean; processedFile?: Blob; metadata?: any; error?: string } = await response.json(); // Temporarily type as Blob for API response
       // Ensure processedFile is always a File object if it exists and is a Blob
       const processedFileAsFile = result.processedFile instanceof Blob
         ? new File([result.processedFile], file.name, { type: file.type })
@@ -802,16 +802,16 @@
       progress?: number;
       type?: string;
       results?: {
-        detectedEntities?: unknown;
-        relationshipMap?: unknown;
-        patternDetection?: unknown;
+        detectedEntities?: any;
+        relationshipMap?: any;
+        patternDetection?: any;
       };
     };
     error?: { message: string };
   }
 
   // Enhanced evidence processing using unified legal orchestration service
-  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: unknown[]): Promise<UnifiedProcessingResponse | null> { // Typed return
+  async function processEvidenceWithUnifiedService(canvasId: string, evidenceItems: any[]): Promise<UnifiedProcessingResponse | null> { // Typed return
     try {
       console.log(`🚀 Starting unified evidence processing for canvas: ${canvasId}`);
       // Use the unified legal orchestration service for comprehensive processing
@@ -897,7 +897,7 @@
   }
 
   // Add processing results to canvas
-  function addProcessingResultsToCanvas(results: { detectedEntities?: unknown; relationshipMap?: unknown; patternDetection?: unknown }) { // Typed results
+  function addProcessingResultsToCanvas(results: { detectedEntities?: any; relationshipMap?: any; patternDetection?: any }) { // Typed results
     if (!fabricCanvas) return;
     // Add visual representations of processing results
     if (results.detectedEntities) {
@@ -911,17 +911,17 @@
     }
   }
 
-  function addEntitiesToCanvas(entities: unknown) {
+  function addEntitiesToCanvas(entities: any) {
     console.log('Adding entities to canvas:', entities);
     // Implement logic to add entities to fabricCanvas
   }
 
-  function addRelationshipLinesToCanvas(relationshipMap: unknown) {
+  function addRelationshipLinesToCanvas(relationshipMap: any) {
     console.log('Adding relationship lines to canvas:', relationshipMap);
     // Implement logic to add relationship lines to fabricCanvas
   }
 
-  function highlightPatterns(patternDetection: unknown) {
+  function highlightPatterns(patternDetection: any) {
     console.log('Highlighting patterns on canvas:', patternDetection);
     // Implement logic to highlight patterns on fabricCanvas
   }

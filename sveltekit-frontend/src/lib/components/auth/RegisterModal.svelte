@@ -2,25 +2,21 @@
   // removed bits-ui Dialog import (module types didn't export Dialog.*). Using a local modal markup below.
   // cast helper type to satisfy sveltekit-superforms zod adapter typing
   import type { ZodTypeAny } from 'zod';
-
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import { X } from 'lucide-svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import X from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
   import { registerSchema } from '$lib/schemas/auth';
-
   interface Props {
     onsuccess?: () => void;
     open?: boolean;
   }
-
   let { onsuccess, open = $bindable() }: Props = $props();
   const generateId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
   const emailId = generateId('register-email');
   const passwordId = generateId('register-password');
   const confirmPasswordId = generateId('register-confirm-password');
   const termsId = generateId('register-terms'); // new unique id for checkbox
-
   const { form, errors, enhance, submitting, message } = superForm(
     {
       email: '',
@@ -34,16 +30,14 @@
       onUpdate({ form: f }) {
         if (f.valid) {
           onsuccess?.();
-          open = false;
+          open = $state(false);
         }
       }
     }
   );
-
   function closeModal() {
-    open = false;
+    open = $state(false);
   }
-
   function handleOverlayKeydown(e: KeyboardEvent) {
     // Allow Enter / Space to activate the overlay (close) and Escape to close as well
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
@@ -55,7 +49,6 @@
     }
   }
 </script>
-
 {#if open}
   <!-- Overlay: click or keyboard to close -->
   <button
@@ -65,7 +58,6 @@
     onkeydown={handleOverlayKeydown}
     aria-label="Close dialog"
   ></button>
-
   <!-- Modal content -->
   <div
     class="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-slate-200 bg-white p-6 shadow-lg"
@@ -85,13 +77,10 @@
         <X class="w-5 h-5" />
       </button>
     </div>
-
     {#if $message}
       <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
         {$message}
-      </div>
-    {/if}
-
+      {/if}
     <form class="space-y-4" method="POST" action="/api/auth/register" use:enhance>
       <div>
         <label for={emailId} class="block text-sm font-medium text-slate-700 mb-1">Email</label>
@@ -107,7 +96,6 @@
           <p class="text-red-600 text-xs mt-1">{$errors.email}</p>
         {/if}
       </div>
-
       <div>
         <label for={passwordId} class="block text-sm font-medium text-slate-700 mb-1">Password</label>
         <input
@@ -122,7 +110,6 @@
           <p class="text-red-600 text-xs mt-1">{$errors.password}</p>
         {/if}
       </div>
-
       <div>
         <label for={confirmPasswordId} class="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
         <input
@@ -137,7 +124,6 @@
           <p class="text-red-600 text-xs mt-1">{$errors.confirmPassword}</p>
         {/if}
       </div>
-
       <div class="flex items-start gap-2">
         <input
           type="checkbox"
@@ -154,7 +140,6 @@
       {#if $errors.termsAccepted}
         <p class="text-red-600 text-xs mt-1">{$errors.termsAccepted}</p>
       {/if}
-
       <div class="flex gap-3 justify-end pt-4">
         <Button
           type="button"
@@ -177,5 +162,4 @@
         </Button>
       </div>
     </form>
-  </div>
-{/if}
+  {/if}

@@ -15,7 +15,7 @@
     config = as Partial<ProgressiveEnhancementConfig>,
     // Event handlers
     onsubmit = undefined as ((data: FormData) => void) | undefined,
-    onsuccess = undefined as ((result: unknown) => void) | undefined,
+    onsuccess = undefined as ((result: any) => void) | undefined,
     onerror = undefined as ((error: string) => void) | undefined,
     // Form styling
     class: className = '',
@@ -41,7 +41,7 @@
     terms: progressiveForm.generateFieldId('terms', formId);
   }
   // Validation functions
-  function validateField(fieldName: string, value: unknown): string | null {
+  function validateField(fieldName: string, value: any): string | null {
     switch (fieldName) {
       case 'email':
         return progressiveForm.validateRequired(value, 'Email') ||
@@ -66,7 +66,7 @@
     }
   }
   // Handle field changes with validation
-  function handleFieldChange(fieldName: string, value: unknown) {
+  function handleFieldChange(fieldName: string, value: any) {
     // Update form data
     formState.data[fieldName] = valu;
     formState.isDirty = true;
@@ -90,7 +90,7 @@
       const error = validateField(fieldName, formState.data[fieldName]);
       if (error) {
         formState.errors[fieldName] = error;
-        isValid = false;
+        isValid = $state(false);
       } else {
         delete formState.errors[fieldName];
       }
@@ -118,8 +118,8 @@
       onsubmit(formData);
     }
     return async ({ result, update }) => {
-      isSubmitting = false;
-      if ((result as { type?: unknown; data?: unknown }).type === 'success') {
+      isSubmitting = $state(false);
+      if ((result as { type?: any; data?: any }).type === 'success') {
         submitMessage = 'Form submitted successfully!';
         submitMessageType = 'success';
         // Reset form on success if configured
@@ -127,19 +127,19 @@
           formState = progressiveForm.createFormState();
         }
         if (onsuccess) {
-          onsuccess((result as { type?: unknown; data?: unknown }).data);
+          onsuccess((result as { type?: any; data?: any }).data);
         }
-      } else if ((result as { type?: unknown; data?: unknown }).type === 'failure') {
-        submitMessage = (result as { type?: unknown; data?: unknown }).data?.message || 'Form submission failed. Please try again.';
+      } else if ((result as { type?: any; data?: any }).type === 'failure') {
+        submitMessage = (result as { type?: any; data?: any }).data?.message || 'Form submission failed. Please try again.';
         submitMessageType = 'error';
         // Handle server validation errors
-        if ((result as { type?: unknown; data?: unknown }).data?.errors) {
+        if ((result as { type?: any; data?: any }).data?.errors) {
           formState.errors = { ...formState.errors, ...result.data.errors }
         }
         if (onerror) {
           onerror(submitMessage);
         }
-      } else if ((result as { type?: unknown; data?: unknown }).type === 'error') {
+      } else if ((result as { type?: any; data?: any }).type === 'error') {
         submitMessage = 'An unexpected error occurred. Please try again.';
         submitMessageType = 'error';
         if (onerror) {
@@ -185,7 +185,6 @@
     }
   }
 </script>
-
 <!-- Progressive Enhancement Form -->
 <form
   id={formId}
@@ -204,8 +203,7 @@
       {#if description}
         <p id="{formId}-description">{description}</p>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Live region for announcements -->
   <div id="{formId}-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <!-- Form errors summary -->
@@ -219,8 +217,7 @@
           </li>
         {/each}
       </ul>
-    </div>
-  {/if}
+    {/if}
   <!-- Personal Information Fieldset -->
   <fieldset class="form-section">
     <legend>Personal Information</legend>
@@ -240,8 +237,7 @@
         {#if hasError('firstName')}
           <div id={progressiveForm.generateErrorId(fieldIds.firstName)} class="field-error" role="alert">
             {getError('firstName')}
-          </div>
-        {/if}
+          {/if}
       </div>
       <div class="form-group">
         <label for={fieldIds.lastName} class="form-label required"> Last Name </label>
@@ -258,8 +254,7 @@
         {#if hasError('lastName')}
           <div id={progressiveForm.generateErrorId(fieldIds.lastName)} class="field-error" role="alert">
             {getError('lastName')}
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </fieldset>
@@ -282,8 +277,7 @@
       {#if hasError('email')}
         <div id={progressiveForm.generateErrorId(fieldIds.email)} class="field-error" role="alert">
           {getError('email')}
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="form-group">
       <label for={fieldIds.password} class="form-label required"> Password </label>
@@ -303,8 +297,7 @@
       {#if hasError('password')}
         <div id={progressiveForm.generateErrorId(fieldIds.password)} class="field-error" role="alert">
           {getError('password')}
-        </div>
-      {/if}
+        {/if}
     </div>
     <div class="form-group">
       <label for={fieldIds.confirmPassword} class="form-label required"> Confirm Password </label>
@@ -323,8 +316,7 @@
       {#if hasError('confirmPassword')}
         <div id={progressiveForm.generateErrorId(fieldIds.confirmPassword)} class="field-error" role="alert">
           {getError('confirmPassword')}
-        </div>
-      {/if}
+        {/if}
     </div>
   </fieldset>
   <!-- Terms and Conditions -->
@@ -349,8 +341,7 @@
       {#if hasError('terms')}
         <div id={progressiveForm.generateErrorId(fieldIds.terms)} class="field-error" role="alert">
           {getError('terms')}
-        </div>
-      {/if}
+        {/if}
     </div>
   </fieldset>
   <!-- Form actions -->
@@ -390,8 +381,7 @@
       aria-live="polite"
     >
       {submitMessage}
-    </div>
-  {/if}
+    {/if}
   <!-- Development info -->
   {#if process.env.NODE_ENV === 'development'}
     <details class="dev-info">
@@ -405,7 +395,6 @@
     </details>
   {/if}
 </form>
-
 <style>
   .progressive-form {
     max-width: 600px;
@@ -428,7 +417,7 @@
     color: #6b7280;
   }
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -680,4 +669,3 @@
     }
   }
 </style>
-

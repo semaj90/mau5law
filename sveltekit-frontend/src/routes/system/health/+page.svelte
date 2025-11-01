@@ -10,7 +10,7 @@
 		lastCheck?: number;
 		errorCount?: number;
 		uptime?: number;
-		[key: string]: unknown;
+		[key: string]: any;
 	};
 	interface ServiceHealth {
 		name: string;
@@ -18,7 +18,7 @@
 		status: 'online' | 'offline' | 'degraded';
 		responseTime?: number;
 		lastCheck: number;
-		details?: unknown;
+		details?: any;
 	}
 	interface HealthData {
 		timestamp: number;
@@ -48,7 +48,7 @@
 	let autoRefresh = true;
 	let refreshRate = 5000; // ms
 	let selectedTier: 'all' | string = 'all';
-	let showOnlyIssues = false;
+	let showOnlyIssues = $state(false);
 	// Real-time snapshot holder for coordinator data (populated during fetch)
 	let systemStatusSnapshot: any = {
 		services: new Map<string, any>(),
@@ -84,7 +84,7 @@
 			loading.set(false);
 		}
 	}
-	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
+	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
 		const now = Date.now();
 		// Use coordinator data if available, fallback to legacy
 		if ((coordinator as any)?.success && (coordinator as any).data) {
@@ -443,7 +443,7 @@
 				<span>🏗️</span> All Services
 			</h2>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				{#each displayServicesArray as service}
+				{#each Array.isArray(displayServicesArray) ? displayServicesArray : [] as service}
 					<div class={`p-4 rounded-lg border-2 ${getStatusColor(service.status)}`}>
 						<div class="flex items-center justify-between mb-2">
 							<h3 class="font-semibold capitalize">{service.name.replace('-', ' ')}</h3>
@@ -478,7 +478,7 @@
 				</h2>
 				<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
 					<ul class="space-y-2">
-						{#each $healthData.recommendations as recommendation}
+						{#each Array.isArray($healthData.recommendations) ? $healthData.recommendations : [] as recommendation}
 							<li class="flex items-start gap-2">
 								<span class="text-blue-600 mt-0.5">•</span>
 								<code class="text-sm bg-blue-100 px-2 py-1 rounded">{recommendation}</code>
@@ -496,7 +496,7 @@
 					<div>
 						<h4 class="font-medium text-red-600 mb-1">Critical Services Down:</h4>
 						<ul class="space-y-1">
-							{#each $healthData.summary.critical_services as service}
+							{#each Array.isArray($healthData.summary.critical_services) ? $healthData.summary.critical_services : [] as service}
 								<li class="text-red-700">• {service}</li>
 							{/each}
 						</ul>
@@ -506,7 +506,7 @@
 					<div>
 						<h4 class="font-medium text-yellow-600 mb-1">Degraded Services:</h4>
 						<ul class="space-y-1">
-							{#each $healthData.summary.degraded_services as service}
+							{#each Array.isArray($healthData.summary.degraded_services) ? $healthData.summary.degraded_services : [] as service}
 								<li class="text-yellow-700">• {service}</li>
 							{/each}
 						</ul>
@@ -516,7 +516,7 @@
 					<div>
 						<h4 class="font-medium text-gray-600 mb-1">Offline Services:</h4>
 						<ul class="space-y-1">
-							{#each $healthData.summary.offline_services as service}
+							{#each Array.isArray($healthData.summary.offline_services) ? $healthData.summary.offline_services : [] as service}
 								<li class="text-gray-700">• {service}</li>
 							{/each}
 						</ul>

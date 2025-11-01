@@ -47,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
     // Event handlers
     onShaderCompiled?: (cache: CompiledShaderCache) => void;
     onShaderError?: (error: string) => void;
-    onPerformanceUpdate?: (metrics: unknown) => void;
+    onPerformanceUpdate?: (metrics: any) => void;
     onQualityChanged?: (newConfig: AntiAliasingConfig) => void;
   }
   let {
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeShaderCache(): Promise<void> {
     try {
       isCompiling = true;
-      hasError = false;
+      hasError = $state(false);
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
@@ -286,14 +286,14 @@ https://svelte.dev/e/js_parse_error -->
         precompileAAVariants();
       }
       isInitialized = true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       hasError = true;
       const msg = (error as Error)?.message ?? 'Failed to initialize shader cache';
       errorMessage = msg;
       console.error('Shader cache initialization error:', error);
       onShaderError?.(msg);
     } finally {
-      isCompiling = false;
+      isCompiling = $state(false);
     }
   }
   /**
@@ -318,7 +318,7 @@ https://svelte.dev/e/js_parse_error -->
       // Notify shader compiled
       onShaderCompiled?.(shaderCache);
       console.log(`⚡ YoRHa ${aaConfig!.type.toUpperCase()} shader compiled and cached in ${compilationTime.toFixed(2)}ms`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Failed to compile and cache shader: ${String((error as Error).message || error)}`);
     }
   }
@@ -351,7 +351,7 @@ https://svelte.dev/e/js_parse_error -->
         useCount: 1
       } as CompiledShaderCache;
       currentAAType = aaConfig!.type;
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Failed to compile shader: ${String((error as Error).message || error)}`);
     }
   }
@@ -475,11 +475,11 @@ https://svelte.dev/e/js_parse_error -->
       // Force recompile
       await compileAndCacheShader();
       console.log(`🔥 Shader hot reloaded (${shaderHotReloadCount} times)`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Hot reload failed:', error);
       onShaderError?.(error.message);
     } finally {
-      isCompiling = false;
+      isCompiling = $state(false);
     }
   }
   /**
@@ -635,17 +635,14 @@ https://svelte.dev/e/js_parse_error -->
           <div class="metric-row">
             <span class="metric-label">Pixel/sec</span>
             <span class="metric-value">{performanceMetrics.pixelThroughput.toFixed(1)}MP</span>
-          </div>
-        {/if}
+          {/if}
         {#if adaptiveQuality && qualityAdjustmentCount > 0}
           <div class="metric-row">
             <span class="metric-label">Adaptive</span>
             <span class="metric-value adaptive">{qualityAdjustmentCount}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Compilation Status -->
   {#if isCompiling}
     <div class="compilation-overlay">
@@ -658,8 +655,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="compilation-text">COMPILING SHADER</div>
         <div class="compilation-details">{currentAAType.toUpperCase()} - {currentAAQuality.toUpperCase()}</div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Error State -->
   {#if hasError}
     <div class="error-overlay">
@@ -672,8 +668,7 @@ https://svelte.dev/e/js_parse_error -->
           <button class="hotreload-button" onclick={hotReloadShader}> HOT RELOAD </button>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Debug Panel -->
   {#if enableDebugMode && shaderCache}
     <div class="debug-panel">
@@ -687,21 +682,17 @@ https://svelte.dev/e/js_parse_error -->
         <div><strong>Use Count:</strong> {shaderCache.useCount}</div>
         <div><strong>Last Compiled:</strong> {new Date(shaderCache.lastCompiled).toLocaleTimeString()}</div>
         {#if enableHotReload}
-          <div><strong>Hot Reloads:</strong> {shaderHotReloadCount}</div>
-        {/if}
+          <div><strong>Hot Reloads:</strong> {shaderHotReloadCount}{/if}
         {#if aaConfigHistory.length > 0}
-          <div><strong>Quality Changes:</strong> {aaConfigHistory.length}</div>
-        {/if}
+          <div><strong>Quality Changes:</strong> {aaConfigHistory.length}{/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
       <button class="hotreload-trigger" onclick={hotReloadShader}> 🔥 HOT RELOAD </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>
-    </div>
-  {/if}
+    {/if}
 </div>
 
 <style>

@@ -27,7 +27,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 /* POST /api/v1/nats - Publish message or perform NATS operations */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const bodyRaw: unknown = await request.json();
+    const bodyRaw: any = await request.json();
     const body = (bodyRaw as Record<string, unknown>) || {};
     const nats = getNATSService();
     switch (body.action as string) {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('NATS API Error:', error);
     return json(
       {
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async () => {
 
     // Local compatibility shape for optional methods
     type Metrics = Record<string, unknown>;
-    type SystemStatus = { connection_status?: string; [k: string]: unknown };
+    type SystemStatus = { connection_status?: string; [k: string]: any };
 
     const compat = nats as unknown as {
       getMetrics?: () => Promise<Metrics>;
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async () => {
         real_time_streaming: true,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         service: 'Enhanced NATS Messaging',
@@ -139,7 +139,7 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<st
   }
 
   const compat = nats as unknown as {
-    publish?: (subject: string, data: unknown, options?: Record<string, unknown>) => Promise<void>;
+    publish?: (subject: string, data: any, options?: Record<string, unknown>) => Promise<void>;
   };
 
   const options = (body.options as Record<string, unknown> | undefined) ?? undefined;
@@ -164,7 +164,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
   }
 
   const compat = nats as unknown as {
-    publishBatch?: (messages: unknown[]) => Promise<void>;
+    publishBatch?: (messages: any[]) => Promise<void>;
   };
 
   if (compat.publishBatch) {
@@ -172,7 +172,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
   } else {
     // fallback: publish sequentially if only single publish exists
     const singleCompat = nats as unknown as {
-      publish?: (subject: string, data: unknown, options?: Record<string, unknown>) => Promise<void>;
+      publish?: (subject: string, data: any, options?: Record<string, unknown>) => Promise<void>;
     };
     for (const msg of messages) {
       if (!msg || typeof msg !== 'object') continue;
@@ -199,7 +199,7 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<st
   const timeout = typeof body.timeout_ms === 'number' ? (body.timeout_ms as number) : 5000;
 
   const compat = nats as unknown as {
-    request?: (subject: string, data: unknown, timeoutMs?: number) => Promise<unknown>;
+    request?: (subject: string, data: any, timeoutMs?: number) => Promise<unknown>;
   };
 
   const response = compat.request ? await compat.request(body.subject as string, body.data as unknown, timeout) : null;
@@ -258,7 +258,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Reco
   }
 
   const compat = nats as unknown as {
-    createStream?: (config: unknown) => Promise<void>;
+    createStream?: (config: any) => Promise<void>;
   };
   if (compat.createStream) {
     await compat.createStream(cfg);
@@ -281,7 +281,7 @@ async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: Re
   }
 
   const compat = nats as unknown as {
-    createConsumer?: (streamName: string, config: unknown) => Promise<void>;
+    createConsumer?: (streamName: string, config: any) => Promise<void>;
   };
   if (compat.createConsumer) {
     await compat.createConsumer(streamName, consumerCfg);

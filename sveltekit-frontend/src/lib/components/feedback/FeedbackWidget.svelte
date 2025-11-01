@@ -72,8 +72,8 @@
         ondispatch?.({ rating, feedback, interactionId });
         // Auto-hide after 2 seconds
         setTimeout(() => {
-          show = false;
-          isSubmitted = false;
+          show = $state(false);
+          isSubmitted = $state(false);
           rating = 0;
           feedback = '';
         }, 2000);
@@ -84,14 +84,14 @@
       console.error('❌ Failed to submit feedback:', error);
       ondispatch?.({ error });
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
   function close() {
-    show = false;
+    show = $state(false);
     rating = 0;
     feedback = '';
-    isSubmitted = false;
+    isSubmitted = $state(false);
   }
   // Rating type labels
   const ratingTypeLabels = {
@@ -102,7 +102,6 @@
     performance: 'Performance',
   }
 </script>
-
 {#if show}
   <!-- Updated to Svelte 5 event syntax: use onclick/onkeydown instead of onclick etc. -->
   <div
@@ -131,7 +130,7 @@
           <div class="rating-section">
             <p class="rating-label">How would you rate this interaction?</p>
             <div class="star-rating">
-              {#each [1, 2, 3, 4, 5] as star}
+              {#each Array.isArray([1, 2, 3, 4, 5]) ? [1, 2, 3, 4, 5] : [] as star}
                 <button
                   class="star {rating >= star ? 'active' : ''}"
                   onclick={() => setRating(star)}
@@ -162,23 +161,19 @@
                   Submit Feedback
                 {/if}
               </button>
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
         <div class="feedback-success">
           <div class="success-icon">✓</div>
           <h3 class="success-title">Thank you!</h3>
           <p class="success-message">Your feedback helps us improve.</p>
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .feedback-overlay {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -343,5 +338,3 @@ d;
     }
   }
 </style>
-
-

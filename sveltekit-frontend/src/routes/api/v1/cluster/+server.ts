@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleMetrics();
       default: return await handleClusterOverview();
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Cluster API Error:', err);
     throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         throw error(400, 'Invalid cluster action');
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Cluster Action Error:', err);
     throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
@@ -198,7 +198,7 @@ async function handleServiceScaling(serviceName: string, instances: number): Pro
     timestamp: new Date().toISOString(),
   });
 }
-async function handleServiceDeployment(serviceConfig: unknown): Promise<Response> {
+async function handleServiceDeployment(serviceConfig: any): Promise<Response> {
   return json({
     success: true,
     message: 'Service deployment initiated',

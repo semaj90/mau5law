@@ -55,10 +55,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Convert buffer/ArrayBuffer-like to BodyInit (Blob/Uint8Array/string)
     // Safely access the raw buffer (unknown shape)
-    const rawBuffer = (fileData as { buffer?: unknown }).buffer;
+    const rawBuffer = (fileData as { buffer?: any }).buffer;
 
     // Helper: convert unknown raw into BodyInit safely
-    const toBodyInit = (raw: unknown): BodyInit => {
+    const toBodyInit = (raw: any): BodyInit => {
       if (raw == null) {
         return new Uint8Array();
       }

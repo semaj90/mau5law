@@ -19,11 +19,11 @@ type ReportMetadata = {
   summary?: string;
   confidentialityLevel?: string;
   jurisdiction?: string;
-  sections?: unknown[];
+  sections?: any[];
   aiSummary?: string | null;
   aiTags?: string[];
   templateId?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Define the structure of the GET response
@@ -59,9 +59,9 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
     let query;
     try {
       query = db.select().from(aiReports);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
-      useAiReports = false;
+      useAiReports = $state(false);
       console.warn('aiReports table not found, using reports table');
       query = db.select().from(reports);
     }
@@ -132,7 +132,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
             ...report,
             canvasState: canvasState[0] || null,
           };
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Changed: 'any' to: 'unknown'
           console.warn('Error fetching canvas state:', error);
           return {
@@ -156,7 +156,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
       // TODO: Add service worker for predictive prefetching and caching
       // TODO: Add advanced analytics and event streaming
     } satisfies GetReportsResponse); // Use: 'satisfies' to ensure type compatibility
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error fetching reports:', error);
     return json({ error: 'Failed to fetch reports' }, { status: 500 });
@@ -204,7 +204,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
     };
     const [newReport] = await db.insert(reports).values(reportData).returning();
     return json(newReport satisfies Report, { status: 201 }); // Use: 'satisfies' for type checking
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error creating report:', error);
     return json({ error: 'Failed to create report' }, { status: 500 });
@@ -237,11 +237,11 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
     if (data.content) {
       const textContent = data.content.replace(/<[^>]*>/g, '').trim();
       // Stream through content to count words efficiently
-      let inWord = false;
+      let inWord = $state(false);
       for (let i = 0; i < textContent.length; i++) {
         const char = textContent[i];
         if (/\s/.test(char)) {
-          inWord = false;
+          inWord = $state(false);
         } else if (!inWord) {
           wordCount++;
           inWord = true;
@@ -267,7 +267,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
     }
     const [updatedReport] = await db.update(reports).set(updateDataObj).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error updating report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });
@@ -294,7 +294,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
     return json({ success: true, deletedReport: deletedReport satisfies Report }); // Use: 'satisfies' for type checking
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error deleting report:', error);
     return json({ error: 'Failed to delete report' }, { status: 500 });
@@ -349,7 +349,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
     }
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport satisfies Report); // Use: 'satisfies' for type checking
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('Error patching report:', error);
     return json({ error: 'Failed to update report' }, { status: 500 });

@@ -4,12 +4,12 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    content?: unknown;
-    placeholder?: unknown;
-    editable?: unknown;
-    showToolbar?: unknown;
-    autoSave?: unknown;
-    autoSaveDelay?: unknown;
+    content?: any;
+    placeholder?: any;
+    editable?: any;
+    showToolbar?: any;
+    autoSave?: any;
+    autoSaveDelay?: any;
   }
   let {
     content = "",
@@ -180,7 +180,6 @@ https://svelte.dev/e/js_parse_error -->
     editor?.commands.clearContent();
   }
 </script>
-
 {#if showToolbar && editable}
   <div class="space-y-4">
     <!-- Heading Dropdown -->
@@ -217,10 +216,8 @@ https://svelte.dev/e/js_parse_error -->
       <Save class="space-y-4" />
       Save
     </button>
-  </div>
-{/if}
+  {/if}
 <div bind:this={element} class="space-y-4"></div>
-
 <style>
   /* @unocss-include */
   :global(.ProseMirror) {
@@ -272,4 +269,3 @@ https://svelte.dev/e/js_parse_error -->
     font-style: italic;
   }
 </style>
-

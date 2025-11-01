@@ -78,9 +78,9 @@ export interface ProcessingPerformance {
  */
 export class Context7FlashAttentionIntegration {
   private flashAttention: FlashAttention2RTX3060Service;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private processingQueue: ProcessingTask[] = [];
-  private activeProcessing = false;
+  private activeProcessing = $state(false);
   // Reactive stores
   public integrationStatus = writable({
     initialized: false,
@@ -468,9 +468,9 @@ export class Context7FlashAttentionIntegration {
    */
   public async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Context7 FlashAttention Integration...');
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.processingQueue = [];
-    this.activeProcessing = false;
+    this.activeProcessing = $state(false);
     this.integrationStatus.set({
       initialized: false,
       context7Active: false,

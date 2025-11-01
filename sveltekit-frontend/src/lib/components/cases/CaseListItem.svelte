@@ -11,7 +11,7 @@
     isActive = false,
     disabled = false
   : any } = $props();
-  import { Badge } from "$lib/components/ui/index";
+  import { Badge } from '$lib/components/ui/index.svelte'";
   import type { Case as CaseType } from '$lib/types';
   import { formatDistanceToNow } from "date-fns";
   import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";
@@ -65,12 +65,10 @@
     addSuffix: true
   });
 </script>
-
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 import type {Case} from '$lib/types';
-
 <div
   class="space-y-4"
   class:active={isActive}
@@ -112,22 +110,19 @@ import type {Case} from '$lib/types';
           <div class="space-y-4">
             <UserIcon class="space-y-4" />
             {caseData.defendantName}
-          </div>
-        {/if}
+          {/if}
         {#if caseData.evidenceCount > 0}
           <div class="space-y-4">
             <FileText class="space-y-4" />
             {caseData.evidenceCount} evidence
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Court Date if available -->
       {#if caseData.courtDate}
         <div class="space-y-4">
           <Calendar class="space-y-4" />
           Court: {new Date(caseData.courtDate).toLocaleDateString()}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Quick Actions -->
     <div class="space-y-4">

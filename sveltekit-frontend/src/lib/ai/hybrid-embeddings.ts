@@ -14,57 +14,46 @@
  *   const embedder = new HybridEmbeddings();
  *   const vector = await embedder.embed('text'); // Auto-selects best option
  */
-
 import { BrowserEmbeddings } from './browser-embeddings';
 import type { EmbeddingOptions } from './browser-embeddings';
-
 export type EmbeddingStrategy = 'ollama' | 'browser' | 'auto';
-
 export interface HybridEmbeddingOptions extends EmbeddingOptions {
   strategy?: EmbeddingStrategy;
   privacyMode?: boolean; // Force browser-only
   timeoutMs?: number; // Server timeout before fallback
 }
-
 export interface EmbeddingResult {
   embedding: number[];
   strategy: 'ollama' | 'browser';
   duration: number;
   model: string;
 }
-
 export class HybridEmbeddings {
   private browserEmbedder: BrowserEmbeddings;
   private ollamaBaseUrl: string;
   private ollamaAvailable: boolean | null = null;
-
   constructor(
     ollamaBaseUrl: string = '/api/embeddings/ollama' // SvelteKit API proxy
   ) {
     this.browserEmbedder = new BrowserEmbeddings();
     this.ollamaBaseUrl = ollamaBaseUrl;
   }
-
   /**
    * Initialize both embedding engines
    */
   async initialize(): Promise<void> {
     console.log('🚀 [HybridML] Initializing hybrid embeddings...');
-
     // Check Ollama availability
     this.ollamaAvailable = await this.checkOllamaAvailability();
-
     // Preload browser model in background
     this.browserEmbedder.initialize().catch(err => {
       console.warn('⚠️ [HybridML] Browser ML initialization failed:', err);
     });
-
     console.log('✅ [HybridML] Initialization complete', {
       ollama: this.ollamaAvailable ? '✅' : '❌',
       browser: '✅'
     });
   }
-
   /**
    * Generate embeddings using best available strategy
    */
@@ -77,15 +66,12 @@ export class HybridEmbeddings {
       privacyMode = false,
       timeoutMs = 5000
     } = options;
-
     const startTime = performance.now();
-
     // Force browser if privacy mode enabled
     if (privacyMode) {
       console.log('🔒 [HybridML] Privacy mode - using browser ML');
       return this.embedBrowser(text, options);
     }
-
     // Try Ollama first if available (unless strategy is: 'browser')
     if (strategy === 'auto' || strategy === 'ollama') {
       try {
@@ -95,21 +81,18 @@ export class HybridEmbeddings {
         return embedding;
       } catch (error) {
         console.warn('⚠️ [HybridML] Ollama failed, falling back to browser:', error);
-
         // If strategy was explicitly: 'ollama', throw error
         if (strategy === 'ollama') {
           throw new Error(`Ollama embedding failed: ${error}`);
         }
       }
     }
-
     // Fallback to browser ML
     const embedding = await this.embedBrowser(text, options);
     const duration = performance.now() - startTime;
     console.log(`⚡ [HybridML] Browser embedding complete (${duration.toFixed(2)}ms)`);
     return embedding;
   }
-
   /**
    * Get detailed embedding result with metadata
    */
@@ -119,7 +102,6 @@ export class HybridEmbeddings {
   ): Promise<EmbeddingResult> {
     const startTime = performance.now();
     const { strategy = 'auto', privacyMode = false } = options;
-
     // Try Ollama first
     if (!privacyMode && (strategy === 'auto' || strategy === 'ollama')) {
       try {
@@ -134,7 +116,6 @@ export class HybridEmbeddings {
         if (strategy === 'ollama') throw error;
       }
     }
-
     // Fallback to browser
     const embedding = await this.embedBrowser(text, options);
     return {
@@ -144,7 +125,6 @@ export class HybridEmbeddings {
       model: 'Xenova/all-MiniLM-L6-v2'
     };
   }
-
   /**
    * Embed using Ollama via API proxy
    */
@@ -154,7 +134,6 @@ export class HybridEmbeddings {
   ): Promise<number[] | number[][]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
     try {
       const response = await fetch(this.ollamaBaseUrl, {
         method: 'POST',
@@ -162,13 +141,10 @@ export class HybridEmbeddings {
         body: JSON.stringify({ text }),
         signal: controller.signal
       });
-
       clearTimeout(timeout);
-
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
       }
-
       const data = await response.json();
       return data.embedding;
     } catch (error) {
@@ -176,7 +152,6 @@ export class HybridEmbeddings {
       throw error;
     }
   }
-
   /**
    * Embed using browser Transformer.js
    */
@@ -186,7 +161,6 @@ export class HybridEmbeddings {
   ): Promise<number[] | number[][]> {
     return this.browserEmbedder.embed(text, options);
   }
-
   /**
    * Check if Ollama server is available
    */
@@ -201,7 +175,6 @@ export class HybridEmbeddings {
       return false;
     }
   }
-
   /**
    * Compute semantic similarity between texts
    */
@@ -214,10 +187,8 @@ export class HybridEmbeddings {
       this.embed(text1, options),
       this.embed(text2, options)
     ]);
-
     return this.cosineSimilarity(emb1 as number[], emb2 as number[]);
   }
-
   /**
    * Find most similar documents to query
    */
@@ -230,17 +201,14 @@ export class HybridEmbeddings {
     const queryEmbedding = await this.embed(query, options) as number[];
     const docTexts = documents.map(d => d.text);
     const docEmbeddings = await this.embed(docTexts, options) as number[][];
-
     const results = documents.map((doc, idx) => ({
       ...doc,
       score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
     }));
-
     return results
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
   }
-
   /**
    * Cosine similarity helper
    */
@@ -248,20 +216,16 @@ export class HybridEmbeddings {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same dimensions');
     }
-
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-
     for (let i = 0; i < a.length; i++) {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
-
   /**
    * Get current strategy status
    */
@@ -272,14 +236,12 @@ export class HybridEmbeddings {
   }> {
     const ollamaAvailable = await this.checkOllamaAvailability();
     const browserAvailable = this.browserEmbedder !== null;
-
     return {
       ollama: ollamaAvailable,
       browser: browserAvailable,
       recommended: ollamaAvailable ? 'ollama' : 'browser'
     };
   }
-
   /**
    * Cleanup resources
    */
@@ -287,12 +249,10 @@ export class HybridEmbeddings {
     this.browserEmbedder?.dispose();
   }
 }
-
 /**
  * Singleton instance for global use
  */
 export const hybridEmbeddings = new HybridEmbeddings();
-
 /**
  * USAGE EXAMPLES:
  *

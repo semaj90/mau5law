@@ -26,7 +26,7 @@ export interface SynthesisOptions {
   cacheEnabled?: boolean;
   autoEncode?: boolean;
   trainOnFeedback?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Stub mocks for development/testing:
 // --- Phase 10: Context7 Semantic Search, Logging, Agent Integration Types ---
@@ -84,9 +84,8 @@ export interface Context7SearchResult {
   sourceType: 'code' | 'documentation' | 'legal_doc' | 'evidence';
   filePath?: string;
   lineNumber?: number;
-  context: { [key: string]: unknown };
+  context: { [key: string]: any };
 }
-
 interface SemanticSearchResult {
   content?: string;
   text?: string;
@@ -97,7 +96,6 @@ interface SemanticSearchResult {
   line?: number;
   metadata?: Record<string, unknown>;
 }
-
 // Real Context7 semantic search implementation
 export async function performContext7Search(options: Context7SearchOptions): Promise<Context7SearchResult[]> {
   try {
@@ -117,7 +115,7 @@ export async function performContext7Search(options: Context7SearchOptions): Pro
         ...result.metadata,
       },
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Context7 semantic search failed:', error);
     return [
       {
@@ -167,7 +165,7 @@ export class Context7AgentOrchestrator {
         agentTriggered: true,
       });
       return completedTrigger;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const failedTrigger = {
         ...trigger,
         status: 'done' as const,
@@ -223,7 +221,7 @@ ${orchestratorResult.selfPrompt}`;
       } else {
         return `Auto-Fix Complete: No issues found. Codebase follows best practices.`;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Fallback to orchestrator only
       const options: OrchestrationOptions = {
         useMemory: true,
@@ -255,7 +253,7 @@ ${orchestratorResult.selfPrompt}`;
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
           recommendations: ['Auto-fix module not available - manual review recommended'],
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Error in auto-fix simulation:', error);
         result = {
           summary: {
@@ -283,7 +281,7 @@ Recommendations:
 ${result.recommendations.join('\n')}
 Config Improvements:
 ${result.configImprovements?.join('\n') || 'None'}`;
-    } catch (error: unknown) {
+    } catch (error: any) {
       return `Auto-Fix Failed for ${todoId}: ${error}`;
     }
   }
@@ -385,7 +383,7 @@ export class Context7SemanticAuditor {
           });
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.push({
         step: `semantic_audit_${component}`,
         status: 'error',
@@ -420,7 +418,7 @@ export class Context7SemanticAuditor {
           // 30% chance of finding issues
           issues.push(`${area} best practices need review for ${component}`);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         issues.push(`Failed to check ${area} best practices: ${error}`);
       }
     }
@@ -450,7 +448,7 @@ export class Context7SemanticAuditor {
           agentTriggered: false,
         };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         step: `semantic_integration_${component}`,
         status: 'error',

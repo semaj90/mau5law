@@ -44,7 +44,7 @@ interface SpeechRecognition {
 export interface ModelDescriptor {
   name: string;
   capabilities?: string[];
-  [k: string]: unknown;
+  [k: string]: any;
 }
 // Chunk / document shapes used across tests
 export interface DocChunk {
@@ -55,19 +55,19 @@ export interface DocChunk {
     document_type?: string;
     jurisdiction?: string;
     date?: string | number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  [k: string]: unknown;
+  [k: string]: any;
 }
 // Generic message/export interfaces used in tests
 export interface ExportMessage {
   role?: string;
   content?: string;
-  sources?: unknown[];
-  [k: string]: unknown;
+  sources?: any[];
+  [k: string]: any;
 }
 declare module '*/tests/*' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 // Import meta/env shims for Vite / SvelteKit
@@ -97,26 +97,26 @@ export interface Element {
 // Simple helper to type Playwright click chains seen in tests
 export interface ClickHandle extends Promise<void> {
   first?: () => Promise<void>;
-  catch?: (cb: (...args: unknown[]) => unknown) => unknown;
+  catch?: (cb: (...args: any[]) => unknown) => unknown;
 }
 // Allow importing JSON and wasm modules as unknown to reduce transient type errors during checks
 declare module '*.json' {
-  const value: unknown;
+  const value: any;
   export default value;
 }
 declare module '*.wasm' {
-  const value: unknown;
+  const value: any;
   export default value;
 }
 // Generic module fallback for dynamic imports or untyped packages
 declare module '*' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 // WebSocket & Worker shims used in client-side code/tests
 declare class WebSocket {
   constructor(url: string, protocols?: string | string[]);
-  send(data: unknown): void;
+  send(data: any): void;
   close(code?: number, reason?: string): void;
   onopen?: (ev?: Event) => void;
   onmessage?: (ev?: MessageEvent) => void;
@@ -125,7 +125,7 @@ declare class WebSocket {
 }
 declare class Worker {
   constructor(scriptURL: string, options?: Record<string, unknown>);
-  postMessage(msg: unknown): void;
+  postMessage(msg: any): void;
   terminate(): void;
   onmessage?: (ev: MessageEvent) => void;
 }
@@ -144,49 +144,49 @@ declare namespace NodeJS {
 declare const global: NodeJS.Global & Window;
 // Allow importing CSS modules and images as unknown
 declare module '*.css' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 declare module '*.svg' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 declare module '*.png' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 declare module '*.jpg' {
-  const _: unknown;
+  const _: any;
   export default _;
 }
 // -- Runtime/global shims added to reduce TS2339 and missing-global errors --
 declare global {
   // Storage helpers (MinIO/S3 wrapper)
-  function putObject(bucket: string, key: string, data: unknown, opts?: Record<string, unknown>): Promise<unknown>;
+  function putObject(bucket: string, key: string, data: any, opts?: Record<string, unknown>): Promise<unknown>;
   function getObject(bucket: string, key: string): Promise<Uint8Array | Buffer | null>;
   function deleteObject(bucket: string, key: string): Promise<void>;
   // Minimal Ollama/service surface for model capability discovery and analysis
   const ollamaService: {
     analyzeDocument?: (text: string, mode?: string) => Promise<unknown>;
     embeddings?: (text: string) => Promise<number[]>;
-    chat?: (input: unknown) => Promise<unknown>;
+    chat?: (input: any) => Promise<unknown>;
     tags?: () => Promise<unknown[]>;
     health?: () => Promise<unknown>;
-    [k: string]: unknown;
+    [k: string]: any;
   };
   // Vector operations shim used by many modules
   interface EnhancedVectorOperations {
-    generateEmbedding: (input: unknown) => Promise<number[]>;
+    generateEmbedding: (input: any) => Promise<number[]>;
     deleteEmbedding?: (id: string) => Promise<void>;
-    upsert?: (doc: unknown) => Promise<unknown>;
+    upsert?: (doc: any) => Promise<unknown>;
     search?: (query: string | unknown, opts?: Record<string, unknown>) => Promise<unknown>;
-    batchUpsert?: (docs: unknown[]) => Promise<unknown>;
+    batchUpsert?: (docs: any[]) => Promise<unknown>;
   }
   const vectorOps: EnhancedVectorOperations;
   // Nomic embedding function shim used in some services
   const nomicEmbedText: (text: string) => Promise<number[]>;
   // Qdrant and other vector DB clients - minimal
-  const qdrantClient: unknown;
-  const pgVectorClient: unknown;
+  const qdrantClient: any;
+  const pgVectorClient: any;
 }
 // Export nothing to keep this file a module for TS

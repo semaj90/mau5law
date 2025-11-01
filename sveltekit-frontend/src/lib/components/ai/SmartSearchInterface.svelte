@@ -3,14 +3,14 @@
   	import { onMount } from 'svelte';
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
-  	import Button from '$lib/components/ui/enhanced-bits';
-  	import Input from '$lib/components/ui/Input.svelte';
+  	import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  	import { Input } from '$lib/components/ui/Input.svelte';
   	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   	// State management with Svelte 5
   	let query = $state('');
   	let isSearching = $state(false);
@@ -82,7 +82,7 @@
   				generationMethod: 'error',
   			}
   		} finally {
-  			isSearching = false;
+  			isSearching = $state(false);
   		}
   	}
   	function updateStats() {
@@ -153,8 +153,7 @@
 					<div class="text-gray-600">Memory</div>
 				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
 	<!-- Search Configuration -->
 	<div class="p-4 nes-container">
 		<div class="flex flex-wrap gap-4 items-center">
@@ -200,7 +199,7 @@
 		<div class="p-4 nes-container">
 			<h3 class="font-medium mb-2">Recent Searches</h3>
 			<div class="flex flex-wrap gap-2">
-				{#each searchHistory as item}
+				{#each Array.isArray(searchHistory) ? searchHistory : [] as item}
 					<button
 						onclick={() => selectHistoryItem(item)}
 						class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -208,8 +207,7 @@
 						{item}
 				{/each}
 			</div>
-		</div>
-	{/if}
+		{/if}
 	<!-- Results -->
 	{#if results}
 		<div class="p-6 nes-container">
@@ -236,7 +234,7 @@
 				<div class="border-t pt-4">
 					<h3 class="font-medium mb-3">Sources ({results.sources.length})</h3>
 					<div class="space-y-3">
-						{#each results.sources as source}
+						{#each Array.isArray(results.sources) ? results.sources : [] as source}
 							<div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
 								<div class="flex items-center justify-between mb-2">
 									<span class="text-sm font-medium text-blue-600 dark:text-blue-400">
@@ -257,10 +255,8 @@
 							</div>
 						{/each}
 					</div>
-				</div>
-			{/if}
-		</div>
-	{/if}
+				{/if}
+		{/if}
 </div>
 <style>
 	/* Custom scrollbar for better UX */

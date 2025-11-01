@@ -60,7 +60,7 @@ export const actions: Actions = {
     }
 
     // Move helper to function body root (not inside try/if blocks)
-    function getEtag(res: unknown): string {
+    function getEtag(res: any): string {
       if (typeof res === 'string') return res;
       if (res && typeof res === 'object') {
         const r = res as Record<string, unknown>;
@@ -85,7 +85,7 @@ export const actions: Actions = {
 
       // create a Buffer from the uploaded blob/file
       const buffer = Buffer.from(await file.arrayBuffer());
-      const uploadRes: unknown = await minio.putObject(bucket, objectName, buffer);
+      const uploadRes: any = await minio.putObject(bucket, objectName, buffer);
 
       const tagsArray: string[] =
         typeof tags === 'string'
@@ -105,7 +105,7 @@ export const actions: Actions = {
       const etag = getEtag(uploadRes);
 
       return { form, result: { message: `File uploaded successfully (${etag})` } };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       // keep returning a shape the client expects; use 500 status if desired
       return { form, result: { error: `Upload failed: ${msg}` } };

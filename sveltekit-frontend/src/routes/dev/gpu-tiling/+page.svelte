@@ -6,9 +6,9 @@ https://svelte.dev/e/js_parse_error -->
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true;
   let gpuTile = true;
-  let result: unknown = null;
-  let ocrBusy = false;
-  let runBusy = false;
+  let result: any = null;
+  let ocrBusy = $state(false);
+  let runBusy = $state(false);
   let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as any).gpu;
   async function run() {
     runBusy = true;
@@ -16,10 +16,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const r = await embedText(text, { simdParse, gpuTile });
       result = r;
-    } catch (e: unknown) {
+    } catch (e: any) {
       result = { error: e?.message || String(e) };
     } finally {
-      runBusy = false;
+      runBusy = $state(false);
     }
   }
   async function onImageSelected(e: Event) {
@@ -34,10 +34,10 @@ https://svelte.dev/e/js_parse_error -->
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
       text = data?.text || '';
-    } catch (e: unknown) {
+    } catch (e: any) {
       alert(e?.message || String(e));
     } finally {
-      ocrBusy = false;
+      ocrBusy = $state(false);
     }
   }
 </script>

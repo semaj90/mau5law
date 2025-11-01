@@ -8,7 +8,6 @@
     onSubmit?: (payload: { email: string; password: string }) => void;
     form?: any;
   }
-
   // Svelte 5 runes - props via $props()
   let {
     open = $bindable(false),
@@ -17,27 +16,22 @@
     onSubmit = () => {},
     form = null
   }: Props = $props();
-
   // component state
   let email = $state('');
   let password = $state('');
   let error = $state<string | null>(null);
   let submitting = $state(false);
-
   function close() {
-    open = false;
+    open = $state(false);
     onClose?.();
   }
-
   async function submit(e?: Event) {
     e?.preventDefault();
     error = null;
-
     if (!email || !password) {
       error = 'Please provide email and password.';
       return;
     }
-
     try {
       submitting = true;
       // call parent callback (if provided)
@@ -49,21 +43,17 @@
     } catch (err) {
       error = err instanceof Error ? err.message : 'Submission failed';
     } finally {
-      submitting = false;
+      submitting = $state(false);
     }
   }
 </script>
-
 {#if open}
   <div class="fixed inset-0 z-50 grid place-items-center" role="dialog" aria-modal="true" aria-label={title}>
   <div class="fixed inset-0 bg-black/50" onclick={close}></div>
     <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6 text-neutral-100" onsubmit={submit}>
       <div class="mb-3 text-lg font-semibold">{title}</div>
-
       {#if error}
-        <div class="mb-3 text-sm text-red-400">{error}</div>
-      {/if}
-
+        <div class="mb-3 text-sm text-red-400">{error}{/if}
       <div class="space-y-3">
         <label class="block text-sm">Email
           <input
@@ -75,7 +65,6 @@
             autofocus
           />
         </label>
-
         <label class="block text-sm">Password
           <input
             type="password"
@@ -86,7 +75,6 @@
           />
         </label>
       </div>
-
       <div class="mt-4 flex justify-end gap-2">
         <button type="button" class="rounded bg-neutral-700 px-3 py-1" onclick={close}>Cancel</button>
         <button type="submit" class="rounded bg-emerald-600 px-3 py-1" disabled={submitting}>
@@ -94,9 +82,7 @@
         </button>
       </div>
     </form>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* Minimal modal styles; keep project-wide theming elsewhere */
   :global(body) {

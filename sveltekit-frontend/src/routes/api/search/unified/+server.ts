@@ -29,7 +29,7 @@ const unifiedSearchSchema = z.object({
  * Reusable handler for the unified search flow.
  * Accepts validated search params and returns a Response via json(...)
  */
-async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSchema>, _locals: unknown) {
+async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSchema>, _locals: any) {
   const { query, categories, enableVectorSearch, maxResults, similarityThreshold } = searchParams;
   let results: SearchResult[] = [];
   const startTime = Date.now();
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     const body = await request.json();
     const searchParams = unifiedSearchSchema.parse(body);
     return await handleUnifiedSearch(searchParams, _locals);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Unified search API error:', error);
     if (error instanceof z.ZodError) {
       return json(
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     };
     const searchParams = unifiedSearchSchema.parse(body);
     return await handleUnifiedSearch(searchParams, _locals);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Unified search GET API error:', error);
     if (error instanceof z.ZodError) {
       return json(

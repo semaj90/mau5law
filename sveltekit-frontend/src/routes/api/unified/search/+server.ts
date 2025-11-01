@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 import { legalAI } from '$lib/server/unified/legal-ai-service';
 
 // Helper to safely extract an error message from unknown
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Prefer Error instances
   if (err instanceof Error) return err.message;
   // Strings are fine
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Use the safe extractor to avoid `any`
     const message = getErrorMessage(error);
     console.error('Unified search error:', message);

@@ -177,7 +177,7 @@ export interface AnalysisResult {
   metadata?: {
     modelUsed?: string;
     timestamp?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface UserQuery {

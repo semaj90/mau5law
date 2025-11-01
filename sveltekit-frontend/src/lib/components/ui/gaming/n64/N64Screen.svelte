@@ -18,7 +18,7 @@
   style="width: {width} height: {height}"
 >
   <div class="screen-content" tabindex="0">
-	{@render children?.()}
+	<slot />
   </div>
 </div>
 <style>

@@ -8,7 +8,6 @@
 import { HybridGemmaBitmapEngine } from './hybrid-gemma-bitmap-engine.js';
 import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap-engine.js';
 import { createRedisInstance } from '$lib/server/redis.js';
-
 // --- new: small adapter type covering the methods we use from Redis clients ---
 type RedisSetReturn = 'OK' | null;
 interface RedisLike {
@@ -20,9 +19,8 @@ interface RedisLike {
   lTrim?(key: string, start: number, stop: number): Promise<RedisSetReturn>;
   ltrim?(key: string, start: number, stop: number): Promise<RedisSetReturn>;
   // fall back generic index signature for other minor calls (if needed)
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // --- MOVED: AssetData must be top-level (cannot declare interface inside a class) ---
 interface AssetData {
   assetType: string;
@@ -30,9 +28,8 @@ interface AssetData {
   generatedAt: string;
   workflowStage: string;
   // additional fields allowed
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // Legal workflow stage definitions
 export interface LegalWorkflowStage {
   stage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review' | 'filing';
@@ -66,7 +63,6 @@ export class LegalWorkflowOrchestrator {
   private redis: RedisLike;
   private workflowProfiles: Map<string, LegalWorkflowStage> = new Map();
   private documentProfiles: Map<string, LegalDocumentProfile> = new Map();
-
   constructor(hybridEngine?: HybridGemmaBitmapEngine, redis?: RedisLike) {
     this.hybridEngine = hybridEngine || new HybridGemmaBitmapEngine();
     // coerce the factory return to RedisLike (small, local adapter type)

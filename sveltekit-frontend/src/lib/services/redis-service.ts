@@ -11,7 +11,7 @@ class RedisService {
   private client: any = null;
   private publisher: any = null;
   private subscriber: any = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   private realTimeServer: any = null;
   constructor() {
     // Remove circular dependency - will be set externally if needed
@@ -42,15 +42,15 @@ class RedisService {
       console.log('✅ Redis clients connected successfully');
     } catch (error: any) {
       console.error('❌ Redis connection failed:', error);
-      this.isConnected = false;
+      this.isConnected = $state(false);
     }
   }
   private handleError(error: Error) {
     console.error('Redis error:', error);
-    this.isConnected = false;
+    this.isConnected = $state(false);
   }
   // Evidence Updates
-  public async publishEvidenceCreated(evidenceId: string, evidenceData: unknown, userId?: string) {
+  public async publishEvidenceCreated(evidenceId: string, evidenceData: any, userId?: string) {
     await this.publish('evidence_update', {
       type: 'EVIDENCE_CREATED',
       evidenceId,
@@ -59,7 +59,7 @@ class RedisService {
       timestamp: new Date().toISOString()
     });
   }
-  public async publishEvidenceUpdated(evidenceId: string, changes: unknown, userId?: string) {
+  public async publishEvidenceUpdated(evidenceId: string, changes: any, userId?: string) {
     await this.publish('evidence_update', {
       type: 'EVIDENCE_UPDATED',
       evidenceId,
@@ -77,7 +77,7 @@ class RedisService {
     });
   }
   // Case Updates
-  public async publishCaseUpdated(caseId: string, changes: unknown, userId?: string) {
+  public async publishCaseUpdated(caseId: string, changes: any, userId?: string) {
     await this.publish('case_update', {
       type: 'CASE_UPDATED',
       caseId,
@@ -107,7 +107,7 @@ class RedisService {
       timestamp: new Date().toISOString()
     });
   }
-  public async publishCanvasNodeAdded(caseId: string, nodeData: unknown, userId?: string) {
+  public async publishCanvasNodeAdded(caseId: string, nodeData: any, userId?: string) {
     await this.publish('canvas_update', {
       type: 'CANVAS_NODE_ADDED',
       caseId,
@@ -116,7 +116,7 @@ class RedisService {
       timestamp: new Date().toISOString()
     });
   }
-  public async publishCanvasStateChanged(caseId: string, state: unknown, userId?: string) {
+  public async publishCanvasStateChanged(caseId: string, state: any, userId?: string) {
     await this.publish('canvas_update', {
       type: 'CANVAS_STATE_CHANGED',
       caseId,
@@ -126,7 +126,7 @@ class RedisService {
     });
   }
   // POI Updates
-  public async publishPOIUpdated(poiId: string, changes: unknown, userId?: string) {
+  public async publishPOIUpdated(poiId: string, changes: any, userId?: string) {
     await this.publish('poi_update', {
       type: 'POI_UPDATED',
       poiId,
@@ -136,7 +136,7 @@ class RedisService {
     });
   }
   // Report Updates
-  public async publishReportUpdated(reportId: string, changes: unknown, userId?: string) {
+  public async publishReportUpdated(reportId: string, changes: any, userId?: string) {
     await this.publish('report_update', {
       type: 'REPORT_UPDATED',
       reportId,
@@ -146,7 +146,7 @@ class RedisService {
     });
   }
   // User Activity
-  public async publishUserActivity(userId: string, activity: string, metadata?: unknown) {
+  public async publishUserActivity(userId: string, activity: string, metadata?: any) {
     await this.publish('user_activity', {
       type: 'USER_ACTIVITY',
       userId,
@@ -156,7 +156,7 @@ class RedisService {
     });
   }
   // Generic publish method
-  private async publish(channel: string, data: unknown) {
+  private async publish(channel: string, data: any) {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping publish');
       return;
@@ -169,7 +169,7 @@ class RedisService {
     }
   }
   // Cache operations
-  public async setCache(_key: string, value: unknown, ttlSeconds: number = 300) {
+  public async setCache(_key: string, value: any, ttlSeconds: number = 300) {
     if (!this.isConnected) return;
     try {
       const serialized = JSON.stringify(value);
@@ -207,7 +207,7 @@ class RedisService {
     });
   }
   // Analytics and metrics
-  public async trackEvent(_event: string, data: unknown, userId?: string) {
+  public async trackEvent(_event: string, data: any, userId?: string) {
     await this.publish('analytics', {
       event,
       data,
@@ -234,7 +234,7 @@ class RedisService {
     } catch (e) {
       // ignore
     }
-    this.isConnected = false;
+    this.isConnected = $state(false);
   }
 }
 // Singleton instance

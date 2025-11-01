@@ -63,7 +63,7 @@
       searchTimeout = setTimeout(() => performSearch(), 300);
     } else {
       results = [];
-      showResults = false;
+      showResults = $state(false);
     }
   });
   // Load recent searches from localStorage and optimize component
@@ -106,20 +106,20 @@
           includeMetadata: searchOptions.includeMetadata;
         })
       });
-      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`Search failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      const searchData = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+      const searchData = await (response as { ok?: any; statusText?: any; json?: any }).json();
       if (searchData.success) {
         // Transform API results to component format
         results = searchData.results.map.id,
-          title: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).title,
-          type: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type,
-          content: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).content,
-          score: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).score || (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).similarity || 0,
+          title: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title,
+          type: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type,
+          content: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).content,
+          score: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).score || (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).similarity || 0,
           metadata: {
             ...result.metadata,
-            date: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).createdAt ? new Date((result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).createdAt).toISOString.split('T')[0] : new Date().toISOString.split('T')[0]
+            date: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).createdAt ? new Date((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).createdAt).toISOString.split('T')[0] : new Date().toISOString.split('T')[0]
           }
         }));
         // Generate AI suggestions if enabled and not provided by API
@@ -154,7 +154,7 @@
         results = [];
       }
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   async function searchForLegalEntities(query: string): Promise<SearchResult[]> {
@@ -198,13 +198,13 @@
   }
   function transformServiceResults(serviceResults: ServiceSearchResult[]): SearchResult[] {
     return serviceResults.map.id,
-      title: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).title,
-      type: mapCategoryToType((result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).category),
-      content: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).description,
-      score: 1 - (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).score, // Convert score to similarity
+      title: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title,
+      type: mapCategoryToType((result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).category),
+      content: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).description,
+      score: 1 - (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).score, // Convert score to similarity
       metadata: {
         date: new Date().toISOString.split('T')[0],
-        tags: (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).tags,
+        tags: (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).tags,
         ...result.metadata
       }
     }));
@@ -239,13 +239,13 @@
     if (onselect) {
       onselect(new CustomEvent('select', { detail: { result } }));
     }
-    showResults = false;
+    showResults = $state(false);
     searchInput = '';
   }
   function clearSearch() {
     searchInput = '';
     results = [];
-    showResults = false;
+    showResults = $state(false);
     if (onclear) {
       onclear(new CustomEvent('clear'));
     }
@@ -302,7 +302,7 @@
         onfocus={() => showResults = true}
         onkeydown={(e) => {
           if (e.key === 'Escape') {
-            showResults = false;
+            showResults = $state(false);
             searchInput = '';
           }
         }}
@@ -336,7 +336,7 @@
     {#if showFilters}
       <div class="border-t border-current/20 p-3">
         <div class="flex flex-wrap gap-2">
-          {#each searchCategories as category}
+          {#each Array.isArray(searchCategories) ? searchCategories : [] as category}
             <button
               class="category-chip flex items-center gap-1 px-3 py-1 rounded-full text-sm transition-all duration-200"
               class:selected={selectedCategories.includes(category.id)}
@@ -362,8 +362,7 @@
             </button>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Search Results / Suggestions -->
   {#if showResults}
@@ -373,7 +372,7 @@
         <div class="p-4">
           <h3 class="font-medium mb-2 text-sm uppercase tracking-wide opacity-70">Recent Searches</h3>
           <div class="space-y-1">
-            {#each recentSearches.slice(0, 5) as recent}
+            {#each Array.isArray(recentSearches.slice(0, 5)) ? recentSearches.slice(0, 5) : [] as recent}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
                 onclick={() => { searchInput = recent; performSearch(), }}
@@ -385,14 +384,13 @@
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Trending Searches -->
       {#if !searchInput && trendingSearches.length > 0}
         <div class="p-4 border-t border-current/20">
           <h3 class="font-medium mb-2 text-sm uppercase tracking-wide opacity-70">Trending</h3>
           <div class="flex flex-wrap gap-2">
-            {#each trendingSearches as trending}
+            {#each Array.isArray(trendingSearches) ? trendingSearches : [] as trending}
               <button
                 class="px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm"
                 onclick={() => selectTrendingSearch(trending)}
@@ -401,43 +399,42 @@
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Search Results -->
       {#if results.length > 0}
         <div class="p-2">
           <div class="text-xs uppercase tracking-wide opacity-70 p-2">
             {results.length} Result{results.length !== 1 ? 's' : ''}
           </div>
-          {#each results as result}
+          {#each Array.isArray(results) ? results : [] as result}
             <button
               class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg border-b border-current/10 last:border-b-0 transition-colors"
-              data-result-type={(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type}
+              data-result-type={(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}
               onclick={() => selectResult(result)}
             >
               <div class="flex items-start gap-3">
                 <!-- Result Type Icon -->
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold mt-1" data-result-type={(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type}>
-                  {#if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type === 'case'}📁
-                  {:else if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type === 'criminal'}👤
-                  {:else if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type === 'evidence'}🔍
-                  {:else if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type === 'precedent'}⚖️
-                  {:else if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type === 'statute'}📖
+                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold mt-1" data-result-type={(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}>
+                  {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'case'}📁
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'criminal'}👤
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'evidence'}🔍
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'precedent'}⚖️
+                  {:else if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type === 'statute'}📖
                   {:else}📄
                   {/if}
                 </div>
                 <!-- Result Content -->
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-medium truncate">{(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).title}</h4>
-                  <p class="text-sm opacity-70 line-clamp-2 mt-1">{(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).content}</p>
+                  <h4 class="font-medium truncate">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).title}</h4>
+                  <p class="text-sm opacity-70 line-clamp-2 mt-1">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).content}</p>
                   <!-- Result Metadata -->
                   <div class="flex items-center gap-2 mt-2 text-xs opacity-50">
-                    <span class="bg-current/20 px-2 py-1 rounded">{(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type}</span>
-                    {#if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).metadata.date}
-                      <span>{(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).metadata.date}</span>
+                    <span class="bg-current/20 px-2 py-1 rounded">{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).type}</span>
+                    {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.date}
+                      <span>{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.date}</span>
                     {/if}
-                    {#if (result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).metadata.jurisdiction}
-                      <span>{(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).metadata.jurisdiction}</span>
+                    {#if (result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.jurisdiction}
+                      <span>{(result as { id?: any; title?: any; type?: any; content?: any; score?: any; similarity?: any; metadata?: any; createdAt?: any; category?: any; description?: any; tags?: any }).metadata.jurisdiction}</span>
                     {/if}
                     <span class="ml-auto">{Math.round.score * 100)}% match</span>
                   </div>
@@ -445,14 +442,13 @@
               </div>
             </button>
           {/each}
-        </div>
-      {/if}
+        {/if}
       <!-- AI Suggestions -->
       {#if suggestions.length > 0}
         <div class="border-t border-current/20 p-4">
           <h3 class="font-medium mb-2 text-sm uppercase tracking-wide opacity-70">Suggested Searches</h3>
           <div class="space-y-1">
-            {#each suggestions as suggestion}
+            {#each Array.isArray(suggestions) ? suggestions : [] as suggestion}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
                 onclick={() => selectSuggestion(suggestion)}
@@ -465,8 +461,7 @@
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- No Results -->
       {#if searchInput && !isSearching && results.length === 0}
         <div class="p-6 text-center">
@@ -475,10 +470,8 @@
           </svg>
           <p class="opacity-70">No results found for: "{searchInput}"</p>
           <p class="text-sm opacity-50 mt-1">Try adjusting your search or filters</p>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
 <style>
   /* NES.css Legal AI Search Bar Integration */

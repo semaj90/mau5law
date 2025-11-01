@@ -4,7 +4,7 @@ import { cases } from '$lib/db/schema';
 import type { RequestHandler } from './$types';
 
 // Helper to derive user id from locals (keeps behavior for tests)
-function getUserId(locals: unknown): string | undefined {
+function getUserId(locals: any): string | undefined {
   if (typeof locals !== 'object' || locals === null) return undefined;
   const l = locals as Record<string, unknown>;
 
@@ -21,7 +21,7 @@ function getUserId(locals: unknown): string | undefined {
 }
 
 // Helper to validate UUIDs (v4-ish, simple check)
-function isValidUuid(id: unknown): id is string {
+function isValidUuid(id: any): id is string {
   if (typeof id !== 'string') return false;
   // simple UUID v4 format check (allows other UUID versions too)
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);

@@ -3,10 +3,9 @@
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import SSRWebGPULoader_ from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
+  import { SSRWebGPULoader_ } from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
   const SSRWebGPULoader = SSRWebGPULoader_ as any;
   import { fade, scale, slide } from 'svelte/transition';
-
   // Svelte 5 props
   let {
     documentId,
@@ -138,7 +137,7 @@
     } catch (error) {
       console.error('Texture streaming failed:', error);
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
       loadTime = performance.now() - startTime;
     }
   }
@@ -171,7 +170,7 @@
       // Debounce scroll end
       if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
-        userInteracting = false;
+        userInteracting = $state(false);
         scrollSpeed = 0;
         // Re-evaluate LOD after scrolling stops
         if (autoStream && targetLOD() !== currentLOD) {
@@ -204,7 +203,7 @@
       if (autoStream && targetLOD() !== currentLOD) {
         streamSpecificLOD(targetLOD());
       }
-      userInteracting = false;
+      userInteracting = $state(false);
     }, 100);
   }
   // Convert ArrayBuffer texture to displayable format
@@ -249,7 +248,6 @@
     return canvas.toDataURL();
   }
 </script>
-
 <!-- Use slot binding to receive hasWebGPU from SSRWebGPULoader -->
 <SSRWebGPULoader requireWebGPU={false} let:hasWebGPU>
   <div class="nes-texture-streamer">
@@ -306,8 +304,7 @@
             </div>
             <p>Streaming NES texture chunks... {streamingProgress.toFixed(0)}%</p>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if currentTexture}
         <div class="texture-display" transition:scale>
           <img src={getTextureDisplayData()} alt="Streamed texture LOD {currentLOD}" class="texture-image" />
@@ -322,8 +319,7 @@
           <div class="nes-icon">🎮</div>
           <p>No texture loaded</p>
           <button onclick={() => startStreaming()}>Load Texture</button>
-        </div>
-      {/if}
+        {/if}
     </div>
     {#if debugMode}
       <!-- Debug panel -->
@@ -361,11 +357,9 @@
             <p>Importance: {documentImportance}</p>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </SSRWebGPULoader>
-
 <style>
   .nes-texture-streamer {
     background: #0f0f0f;
@@ -496,7 +490,7 @@
   .loading-progress {
     height: 100%;
     background: #22c55e;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .texture-display {
     position: relative;
@@ -586,7 +580,7 @@
   .memory-usage {
     height: 100%;
     background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   /* NES-style scrollbar */
   .texture-viewer::-webkit-scrollbar {
@@ -617,6 +611,3 @@
     }
   }
 </style>
-
-
-

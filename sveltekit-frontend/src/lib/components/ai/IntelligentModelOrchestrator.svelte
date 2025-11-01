@@ -15,7 +15,7 @@
     type SelfPromptingSuggestion
   } from '$lib/ai/intelligent-model-orchestrator';
   // Component state
-  let mounted = false;
+  let mounted = $state(false);
   let queryInput = $state('');
   let isProcessing = $state(false);
   let results = writable<any>(null);
@@ -120,7 +120,7 @@
       console.error('Query processing failed:', error);
       results.set({ error: error.message });
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function acceptSuggestion(suggestion SelfPromptingSuggestion) {
@@ -174,7 +174,6 @@
     }
   }
 </script>
-
 <div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50 p-6">
   <!-- Header -->
   <div class="mb-8">
@@ -232,15 +231,13 @@
             <div class="md:col-span-2">
               <div class="text-sm text-gray-600">Preload Recommendations:</div>
               <div class="flex gap-2 mt-1">
-                {#each $results.shouldPreload || [] as model}
+                {#each Array.isArray($results.shouldPreload || []) ? $results.shouldPreload || [] : [] as model}
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">{model}</span>
                 {/each}
               </div>
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
   <!-- System Status Dashboard -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -267,7 +264,7 @@
           <div>
             <div class="text-gray-600">Capabilities</div>
             <div class="flex flex-wrap gap-1 mt-1">
-              {#each $modelStatusDisplay.current.capabilities as capability}
+              {#each Array.isArray($modelStatusDisplay.current.capabilities) ? $modelStatusDisplay.current.capabilities : [] as capability}
                 <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
                   {capability}
                 </span>
@@ -284,8 +281,7 @@
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">No model currently active</div>
-      {/if}
+        <div class="text-gray-500">No model currently active{/if}
     </div>
     <!-- Memory Optimization Status -->
     <div class="bg-white rounded-lg shadow p-6">
@@ -329,8 +325,7 @@
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">Memory data not available</div>
-      {/if}
+        <div class="text-gray-500">Memory data not available{/if}
     </div>
     <!-- Performance Metrics -->
     <div class="bg-white rounded-lg shadow p-6">
@@ -371,8 +366,7 @@
           </div>
         </div>
       {:else}
-        <div class="text-gray-500">Loading performance data...</div>
-      {/if}
+        <div class="text-gray-500">Loading performance data...{/if}
     </div>
   </div>
   <!-- Self-Prompting Suggestions -->
@@ -380,7 +374,7 @@
     <h3 class="text-lg font-semibold text-gray-800 mb-4">💡 Self-Prompting Suggestions</h3>
     {#if $suggestionDisplay && $suggestionDisplay.length > 0}
       <div class="space-y-4">
-        {#each $suggestionDisplay as suggestion}
+        {#each Array.isArray($suggestionDisplay) ? $suggestionDisplay : [] as suggestion}
           <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
             <div class="flex items-start justify-between">
               <div class="flex-1">
@@ -432,8 +426,7 @@
       <div class="text-center py-8 text-gray-500">
         <div class="text-4xl mb-2">🤔</div>
         <p>No suggestions available. Try asking a question to see intelligent suggestions!</p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Model Performance Details -->
   {#if $performanceMetrics && $performanceMetrics.length > 0}
@@ -452,7 +445,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            {#each $performanceMetrics as metric}
+            {#each Array.isArray($performanceMetrics) ? $performanceMetrics : [] as metric}
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-2 font-medium">{metric.modelId}</td>
                 <td class="px-4 py-2 text-center">{formatLatency(metric.averageLatency)}</td>
@@ -477,10 +470,8 @@
           </tbody>
         </table>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .intelligent-orchestrator-dashboard {
     font-family:
@@ -519,4 +510,3 @@
     background: #a8a8a8;
   }
 </style>
-

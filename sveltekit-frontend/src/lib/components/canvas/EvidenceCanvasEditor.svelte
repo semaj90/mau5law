@@ -20,11 +20,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import Card from '$lib/components/ui/card/Card.svelte';
-  import CardContent from '$lib/components/ui/card/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import { Card } from '$lib/components/ui/card/Card.svelte';
+  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
+  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.
@@ -354,7 +354,7 @@
       console.error('Failed to load canvas state:', err);
       error = 'Failed to load canvas state';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -389,7 +389,7 @@
       if (response.ok) {
         const savedState = await response.json();
         lastSaved = new Date();
-        isDirty = false;
+        isDirty = $state(false);
 
         send({ type: 'SAVE_SUCCESS', state: savedState });
 
@@ -411,7 +411,7 @@
       send({ type: 'SAVE_ERROR', error: err });
       showToast('Failed to save canvas', 'error');
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -452,7 +452,7 @@
     } catch (err) {
       console.error('Auto-tagging failed:', err);
     } finally {
-      isAutoTagging = false;
+      isAutoTagging = $state(false);
     }
   }
 
@@ -466,7 +466,7 @@
 
     canvas?.renderAll();
     isDirty = true;
-    showTaggingDialog = false;
+    showTaggingDialog = $state(false);
   }
 
   // Loki.js caching
@@ -812,17 +812,17 @@
   // Add small backdrop/modal keyboard helpers to satisfy Svelte accessibility rules
   function handleBackdropKeydownForEvidence(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showEvidenceDialog = false;
+      showEvidenceDialog = $state(false);
     }
   }
   function handleBackdropKeydownForTagging(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showTaggingDialog = false;
+      showTaggingDialog = $state(false);
     }
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showShareDialog = false;
+      showShareDialog = $state(false);
     }
   }
   // helper to stop keyboard propagation from inside the modal (used on inner .modal)
@@ -1032,15 +1032,13 @@
     {#if error}
       <div class="error-message">
         L {error}
-      </div>
-    {/if}
+      {/if}
 
     {#if isLoading}
       <div class="loading-overlay">
         <div class="spinner"></div>
         <p>Loading canvas...</p>
-      </div>
-    {/if}
+      {/if}
 
     <canvas bind:this={canvasElement}></canvas>
   </div>
@@ -1050,7 +1048,7 @@
     <div class="evidence-panel">
       <h3>Evidence Library ({evidence.length})</h3>
       <div class="evidence-grid">
-        {#each evidence as item}
+        {#each Array.isArray(evidence) ? evidence : [] as item}
           <!-- Card is a component; use onclick instead of on:click -->
           <Card class="evidence-item" onclick={() => addEvidence(item)}>
             <CardHeader>
@@ -1060,17 +1058,15 @@
               <div class="evidence-type">{item.evidenceType}</div>
               {#if item.aiTags && item.aiTags.length > 0}
                 <div class="tags">
-                  {#each item.aiTags.slice(0, 3) as tag}
+                  {#each Array.isArray(item.aiTags.slice(0, 3)) ? item.aiTags.slice(0, 3) : [] as tag}
                     <span class="tag">{tag}</span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </CardContent>
           </Card>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 
 <!-- Replace Dialog.* usage with simple conditional modals (evidence / tagging / share) -->
@@ -1092,13 +1088,13 @@
       </header>
 
       <div class="evidence-list">
-        {#each evidence as item}
+        {#each Array.isArray(evidence) ? evidence : [] as item}
           <Button
             variant="outline"
             class="w-full justify-start mb-2"
             onclick={() => {
               addEvidence(item);
-              showEvidenceDialog = false;
+              showEvidenceDialog = $state(false);
             }}
           >
             {item.title}
@@ -1110,8 +1106,7 @@
         <Button variant="secondary" onclick={() => (showEvidenceDialog = false)}>Close</Button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 {#if showTaggingDialog}
   <div
@@ -1132,19 +1127,17 @@
         <div class="loading">Generating tags...</div>
       {:else}
         <div class="tags-list">
-          {#each suggestedTags as tag}
+          {#each Array.isArray(suggestedTags) ? suggestedTags : [] as tag}
             <span class="tag suggested">{tag}</span>
           {/each}
         </div>
 
         <div class="dialog-actions">
           <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
-          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = false; }}>Apply Tags</Button>
-        </div>
-      {/if}
+          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = $state(false); }}>Apply Tags</Button>
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}
 
 {#if enableCollaboration && showShareDialog}
   <div
@@ -1181,11 +1174,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import Card from '$lib/components/ui/card/Card.svelte';
-  import CardContent from '$lib/components/ui/card/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import { Card } from '$lib/components/ui/card/Card.svelte';
+  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
+  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.
@@ -1515,7 +1508,7 @@
       console.error('Failed to load canvas state:', err);
       error = 'Failed to load canvas state';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -1550,7 +1543,7 @@
       if (response.ok) {
         const savedState = await response.json();
         lastSaved = new Date();
-        isDirty = false;
+        isDirty = $state(false);
 
         send({ type: 'SAVE_SUCCESS', state: savedState });
 
@@ -1572,7 +1565,7 @@
       send({ type: 'SAVE_ERROR', error: err });
       showToast('Failed to save canvas', 'error');
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -1613,7 +1606,7 @@
     } catch (err) {
       console.error('Auto-tagging failed:', err);
     } finally {
-      isAutoTagging = false;
+      isAutoTagging = $state(false);
     }
   }
 
@@ -1627,7 +1620,7 @@
 
     canvas?.renderAll();
     isDirty = true;
-    showTaggingDialog = false;
+    showTaggingDialog = $state(false);
   }
 
   // Loki.js caching
@@ -1973,17 +1966,17 @@
   // Add small backdrop/modal keyboard helpers to satisfy Svelte accessibility rules
   function handleBackdropKeydownForEvidence(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showEvidenceDialog = false;
+      showEvidenceDialog = $state(false);
     }
   }
   function handleBackdropKeydownForTagging(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showTaggingDialog = false;
+      showTaggingDialog = $state(false);
     }
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showShareDialog = false;
+      showShareDialog = $state(false);
     }
   }
   // helper to stop keyboard propagation from inside the modal (used on inner .modal)
@@ -2193,15 +2186,13 @@
     {#if error}
       <div class="error-message">
         L {error}
-      </div>
-    {/if}
+      {/if}
 
     {#if isLoading}
       <div class="loading-overlay">
         <div class="spinner"></div>
         <p>Loading canvas...</p>
-      </div>
-    {/if}
+      {/if}
 
     <canvas bind:this={canvasElement}></canvas>
   </div>
@@ -2211,7 +2202,7 @@
     <div class="evidence-panel">
       <h3>Evidence Library ({evidence.length})</h3>
       <div class="evidence-grid">
-        {#each evidence as item}
+        {#each Array.isArray(evidence) ? evidence : [] as item}
           <!-- Card is a component; use onclick instead of on:click -->
           <Card class="evidence-item" onclick={() => addEvidence(item)}>
             <CardHeader>
@@ -2221,17 +2212,15 @@
               <div class="evidence-type">{item.evidenceType}</div>
               {#if item.aiTags && item.aiTags.length > 0}
                 <div class="tags">
-                  {#each item.aiTags.slice(0, 3) as tag}
+                  {#each Array.isArray(item.aiTags.slice(0, 3)) ? item.aiTags.slice(0, 3) : [] as tag}
                     <span class="tag">{tag}</span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </CardContent>
           </Card>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 
 <!-- Replace Dialog.* usage with simple conditional modals (evidence / tagging / share) -->
@@ -2253,13 +2242,13 @@
       </header>
 
       <div class="evidence-list">
-        {#each evidence as item}
+        {#each Array.isArray(evidence) ? evidence : [] as item}
           <Button
             variant="outline"
             class="w-full justify-start mb-2"
             onclick={() => {
               addEvidence(item);
-              showEvidenceDialog = false;
+              showEvidenceDialog = $state(false);
             }}
           >
             {item.title}
@@ -2271,8 +2260,7 @@
         <Button variant="secondary" onclick={() => (showEvidenceDialog = false)}>Close</Button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 {#if showTaggingDialog}
   <div
@@ -2293,19 +2281,17 @@
         <div class="loading">Generating tags...</div>
       {:else}
         <div class="tags-list">
-          {#each suggestedTags as tag}
+          {#each Array.isArray(suggestedTags) ? suggestedTags : [] as tag}
             <span class="tag suggested">{tag}</span>
           {/each}
         </div>
 
         <div class="dialog-actions">
           <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
-          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = false; }}>Apply Tags</Button>
-        </div>
-      {/if}
+          <Button onclick={() => { applyTags(suggestedTags); showTaggingDialog = $state(false); }}>Apply Tags</Button>
+        {/if}
     </div>
-  </div>
-{/if}
+  {/if}
 
 {#if enableCollaboration && showShareDialog}
   <div

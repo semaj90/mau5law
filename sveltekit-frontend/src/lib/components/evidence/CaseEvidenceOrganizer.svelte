@@ -14,7 +14,6 @@
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
   import { getMcpEndpoint, getOllamaEndpoint } from '$lib/utils/api'; // <-- added getOllamaEndpoint import
-
   // Define interfaces for better type safety
   interface CustodyEntry {
     officer_id?: string;
@@ -23,7 +22,6 @@
     action: string;
     [key: string]: any; // Allow other properties
   }
-
   interface EvidenceItem {
     id: string;
     title: string;
@@ -44,7 +42,6 @@
     embedding?: number[]; // <-- optional embedding added
     [key: string]: any; // Allow other evidence properties
   }
-
   // Props
   interface Props {
     caseId: string;
@@ -60,10 +57,8 @@
     enableCollaboration = true,
     showMetrics = true
   }: Props = $props();
-
   // Event dispatcher
   const ondispatch = createEventDispatcher(); // Initialize event dispatcher
-
   // State
   let evidenceList = $state<EvidenceItem[]>(initialEvidence); // Use EvidenceItem interface
   let isLoading = $state(false);
@@ -76,17 +71,14 @@
     priority: 'all',
     status: 'all',
   });
-
   // AI-powered organization state
   let aiClusters = $state<any[]>([]);
   let isGeneratingClusters = $state(false);
   let clusteringProgress = $state(0);
-
   // Collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
   let collaborativeUsers = $state<any[]>([]);
   let isConnectedToCollaboration = $state(false);
-
   // Organization metrics
   let organizationMetrics = $state({
     totalEvidence: 0,
@@ -97,7 +89,6 @@
     chainOfCustodyComplete: 0,
     aiAnalyzed: 0,
   });
-
   // Reactive derived values
   const filteredEvidence = $derived(() => {
     return evidenceList.filter(evidence => {
@@ -126,7 +117,6 @@
       return true;
     });
   });
-
   const organizationModes = [
     { value: 'category', label: 'By Category', icon: '🗂️' }, // Fixed missing colon
     { value: 'timeline', label: 'Timeline', icon: '📅' },
@@ -134,7 +124,6 @@
     { value: 'ai_clusters', label: 'AI Clusters', icon: '🧠' },
     { value: 'chain_custody', label: 'Chain of Custody', icon: '🔗' }
   ];
-
   /**
    * Initialize component
    */
@@ -149,7 +138,6 @@
       await reorganizeEvidence();
     })();
   });
-
   /**
    * Cleanup
    */
@@ -158,7 +146,6 @@
       wsManager.disconnect();
     }
   });
-
   /**
    * Load evidence for the case
    */
@@ -177,10 +164,9 @@
     } catch (error) {
       console.error('Failed to load case evidence:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   /**
    * Initialize WebSocket collaboration
    */
@@ -209,7 +195,6 @@
       console.warn('Collaboration initialization failed:', error);
     }
   }
-
   /**
    * Reorganize evidence based on current mode
    */
@@ -252,10 +237,9 @@
     } catch (error) {
       console.error('Failed to reorganize evidence:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   /**
    * Organize evidence by category
    */
@@ -279,7 +263,6 @@
       categories: Object.values(categories).sort((a, b) => b.priority - a.priority), // Fixed Object.values
     };
   }
-
   /**
    * Organize evidence by timeline
    */
@@ -291,7 +274,6 @@
         const dateB = new Date(b.collected_at || b.uploaded_at || 0);
         return dateB.getTime() - dateA.getTime();
       });
-
     // Group by time periods
     const periods: { [key: string]: any } = {}; // Explicitly type periods
     timeline.forEach(evidence => {
@@ -313,14 +295,12 @@
       if (date < periods[periodKey].startDate) periods[periodKey].startDate = date; // Fixed typo
       if (date > periods[periodKey].endDate) periods[periodKey].endDate = date; // Fixed typo
     });
-
     organizationStructure = {
       type: 'timeline',
       periods: Object.values(periods).sort((a, b) => b.startDate.getTime() - a.startDate.getTime()), // Fixed Object.values
       uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at),
     };
   }
-
   /**
    * Organize evidence by priority
    */
@@ -351,7 +331,6 @@
       priorities: Object.values(priorities).filter(p => p.count > 0), // Fixed Object.values
     };
   }
-
   /**
    * Organize evidence using AI clustering with Gemma embeddings
    */
@@ -385,11 +364,10 @@
       // Fallback to category organization
       await organizeByCategory();
     } finally {
-      isGeneratingClusters = false;
+      isGeneratingClusters = $state(false);
       clusteringProgress = 0;
     }
   }
-
   /**
    * Organize evidence by chain of custody
    */
@@ -424,7 +402,6 @@
       chains: Object.values(custodyChains).sort((a, b) => b.completeness - a.completeness), // Fixed Object.values
     };
   }
-
   /**
    * Get embeddings for evidence using MCP server (fallback to Ollama)
    */
@@ -439,9 +416,7 @@
           });
           continue;
         }
-
         let embedding: number[] | undefined;
-
         // MCP analyze endpoint (preferred)
         try {
           const response = await fetch(`${getMcpEndpoint()}/mcp/evidence-analyze`, {
@@ -463,7 +438,6 @@
         } catch (mcpErr) {
           console.warn('MCP analyze error, will attempt Ollama fallback:', mcpErr);
         }
-
         // Ollama fallback for embeddings (uses EMBEDDING_MODEL)
         if (!embedding) {
           try {
@@ -486,7 +460,6 @@
             console.warn(`Ollama embedding request failed for ${evidence.id}:`, ollamaErr);
           }
         }
-
         if (embedding && Array.isArray(embedding)) {
           evidenceWithEmbeddings.push({
             ...evidence,
@@ -502,7 +475,6 @@
     }
     return evidenceWithEmbeddings;
   }
-
   /**
    * Generate AI clusters using MCP server
    */
@@ -538,7 +510,6 @@
     // Fallback: Simple similarity clustering
     return performSimpleClustering(evidenceWithEmbeddings);
   }
-
   /**
    * Organize clusters with metadata
    */
@@ -554,7 +525,6 @@
       color: getClusterColor(index), // Fixed missing comma
     }));
   }
-
   /**
    * Calculate category priority
    */
@@ -571,7 +541,6 @@
     };
     return priorities[category] || 3;
   }
-
   /**
    * Calculate evidence priority based on metadata
    */
@@ -586,7 +555,6 @@
     if (evidence.evidenceType === 'testimony') return 'medium';
     return 'low';
   }
-
   /**
    * Validate chain of custody
    */
@@ -604,7 +572,6 @@
     if (hasAllFields) return 'incomplete';
     return 'invalid';
   }
-
   /**
    * Update organization metrics
    */
@@ -621,7 +588,6 @@
       aiAnalyzed: evidenceList.filter(item => item.metadata?.aiAnalysis).length, // Corrected logic
     };
   }
-
   /**
    * Handle organization mode change
    */
@@ -629,7 +595,6 @@
     organizationMode = newMode;
     await reorganizeEvidence();
   }
-
   /**
    * Select evidence
    * @param evidence The evidence item to select or deselect.
@@ -643,7 +608,6 @@
     }
     ondispatch('selectEvidence', { evidence, context }); // Dispatch structured event
   }
-
   /**
    * Fallback simple clustering + keywords + colors (clean single definitions)
    */
@@ -662,7 +626,6 @@
       warning,
     }];
   }
-
   function extractClusterKeywords(evidence: EvidenceItem[]): string[] {
     const stopwords = new Set([
       'the','and','for','with','that','this','from','were','have','has','had','but','not','are','was',
@@ -680,12 +643,10 @@
       .slice(0, 5)
       .map(([word]) => word);
   }
-
   function getClusterColor(index: number): string {
     const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
     return colors[index % colors.length];
   }
-
   // Model and endpoint wiring (client / component level). Prefer env-set Docker service names.
   // Use VITE_ prefixed env vars for client-safe values (SvelteKit/Vite).
   const EMBEDDING_MODEL = import.meta.env.VITE_EMBEDDING_MODEL || 'embeddinggemma:latest';
@@ -693,7 +654,6 @@
   // getOllamaEndpoint comes from $lib/utils/api and should return
   // process.env/Docker-aware endpoint or a safe localhost fallback at the edge.
 </script>
-
 <!-- Case Evidence Organizer UI -->
 <div class="case-evidence-organizer">
   <!-- Header with controls -->
@@ -711,7 +671,7 @@
     </div>
     <!-- Organization mode selector -->
     <div class="mode-selector">
-      {#each organizationModes as mode}
+      {#each Array.isArray(organizationModes) ? organizationModes : [] as mode}
         <button
           type="button"
           class="mode-button"
@@ -745,8 +705,7 @@
           <span class="metric-value">{organizationMetrics.chainOfCustodyComplete}</span>
           <span class="metric-label">Chain Complete</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Search and filters -->
     <div class="filters-panel">
       <div class="search-box">
@@ -785,24 +744,22 @@
           <p>Progress: {clusteringProgress}%</p>
         {:else}
           <h3>Reorganizing Evidence...</h3>
-          <div class="spinner"></div>
-        {/if}
+          <div class="spinner">{/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Organization display -->
   <main class="organization-display">
     {#if organizationStructure?.type === 'category'}
       <!-- Category organization -->
       <div class="category-organization">
-        {#each organizationStructure.categories as category}
+        {#each Array.isArray(organizationStructure.categories) ? organizationStructure.categories : [] as category}
           <div class="category-group">
             <div class="category-header">
               <h3>{category.name}</h3>
               <span class="category-count">{category.count} items</span>
             </div>
             <div class="evidence-grid">
-              {#each category.evidence as evidence}
+              {#each Array.isArray(category.evidence) ? category.evidence : [] as evidence}
                 <button
                   type="button"
                   class="evidence-nier-bits-card"
@@ -835,14 +792,14 @@
     {:else if organizationStructure?.type === 'timeline'}
       <!-- Timeline organization -->
       <div class="timeline-organization">
-        {#each organizationStructure.periods as period}
+        {#each Array.isArray(organizationStructure.periods) ? organizationStructure.periods : [] as period}
           <div class="timeline-period">
             <div class="period-header">
               <h3>{period.label}</h3>
               <span class="period-count">{period.count} items</span>
             </div>
             <div class="timeline-items">
-              {#each period.evidence as evidence}
+              {#each Array.isArray(period.evidence) ? period.evidence : [] as evidence}
                 <button
                   type="button"
                   class="timeline-item"
@@ -869,7 +826,7 @@
     {:else if organizationStructure?.type === 'ai_clusters'}
       <!-- Clusters organization -->
       <div class="clusters-organization">
-        {#each organizationStructure.clusters as cluster}
+        {#each Array.isArray(organizationStructure.clusters) ? organizationStructure.clusters : [] as cluster}
           <div class="cluster-group" style="border-left-color: {cluster.color}">
             <div class="cluster-header">
               <h3>{cluster.name}</h3>
@@ -880,25 +837,19 @@
                 </span>
               </div>
             </div>
-
             {#if cluster.warning}
               <div class="cluster-warning" style="color: #ef4444; font-weight: 500; margin-bottom: 0.5rem;">
                 {cluster.warning}
-              </div>
-            {/if}
-
+              {/if}
             <p class="cluster-description">{cluster.description}</p>
-
             {#if cluster.keywords?.length > 0}
               <div class="cluster-keywords">
-                {#each cluster.keywords as keyword}
+                {#each Array.isArray(cluster.keywords) ? cluster.keywords : [] as keyword}
                   <span class="keyword-tag">{keyword}</span>
                 {/each}
-              </div>
-            {/if}
-
+              {/if}
             <div class="cluster-evidence">
-              {#each cluster.evidence as evidence}
+              {#each Array.isArray(cluster.evidence) ? cluster.evidence : [] as evidence}
                 <button
                   type="button"
                   class="evidence-nier-bits-card compact"
@@ -916,7 +867,7 @@
     {:else if organizationStructure?.type === 'chain_custody'}
       <!-- Chain of Custody organization -->
       <div class="custody-organization">
-        {#each organizationStructure.chains as chain}
+        {#each Array.isArray(organizationStructure.chains) ? organizationStructure.chains : [] as chain}
           <div class="custody-chain">
             <div class="chain-header">
               <h3>{chain.officer}</h3>
@@ -928,7 +879,7 @@
               </div>
             </div>
             <div class="chain-evidence">
-              {#each chain.evidence as evidence}
+              {#each Array.isArray(chain.evidence) ? chain.evidence : [] as evidence}
                 <button
                   type="button"
                   class="evidence-nier-bits-card custody"
@@ -942,7 +893,7 @@
                     </span>
                   </div>
                   <div class="custody-timeline">
-                    {#each evidence.chain_of_custody || [] as entry}
+                    {#each Array.isArray(evidence.chain_of_custody || []) ? evidence.chain_of_custody || [] : [] as entry}
                       <div class="custody-entry">
                         <span class="custody-action">{entry.action}</span>
                         <span class="custody-time">
@@ -956,14 +907,11 @@
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
     {#if !organizationStructure && !isLoading}
-      <div class="text-center text-gray-500 p-8">No organization structure available. Select a mode to begin.</div>
-    {/if}
+      <div class="text-center text-gray-500 p-8">No organization structure available. Select a mode to begin.{/if}
   </main>
 </div>
-
 <style>
   /* @unocss-include */
   .case-evidence-organizer {
@@ -1110,7 +1058,7 @@
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .spinner {
     width: 2rem;
@@ -1433,5 +1381,3 @@
     font-weight: 500;
   }
 </style>
-
-

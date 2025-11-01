@@ -1,18 +1,15 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  export let onclose: ((event?: unknown) => void) | undefined;
-
+  export let onclose: ((event?: any) => void) | undefined;
   import { aiService } from '$lib/services/aiService';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import { Button } from '$lib/components/ui/button';
-
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte'';
   // use icon components from the icons subpath (lucide-svelte exports individual files)
-  import Copy from 'lucide-svelte/icons/copy.svelte';
+  import { Copy } from 'lucide-svelte/icons/copy.svelte';
   import X from 'lucide-svelte/icons/x.svelte';
-  import AlertCircle from 'lucide-svelte/icons/alert-circle.svelte';
-  import Check from 'lucide-svelte/icons/check.svelte';
-
+  import { AlertCircle } from 'lucide-svelte/icons/alert-circle.svelte';
+  import { Check } from 'lucide-svelte/icons/check.svelte';
   // relax strict typing for our local UI components (prevents TS errors about unknown props/events)
   declare module: '$lib/components/ui/dialog' {
     export const Root: any;
@@ -23,16 +20,12 @@ https://svelte.dev/e/js_parse_error -->
   declare module: '$lib/components/ui/button' {
     export const Button: any;
   }
-
   // Destructure expected stores / helpers from aiService (adjust if aiService exports differently)
   // removed unused `model`
   const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as any;
-
-  let copied = false;
-
+  let copied = $state(false);
   // reactive derived open state
   $: isOpen = $isLoading || $summary != null || $error != null;
-
   async function copyToClipboard() {
     if ($summary) {
       try {
@@ -44,21 +37,18 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-
   function closeModal() {
     // call reset if provided, otherwise fallback to aiService.reset()
     if (typeof reset === 'function') reset();
     onclose?.();
   }
 </script>
-
 <Dialog.Root open={isOpen} on:close={closeModal}>
   <Dialog.Content class="max-w-5xl">
     <div class="dialog-header">
       <Dialog.Title>AI Summary</Dialog.Title>
       <Dialog.Description>AI-generated summary of your content</Dialog.Description>
     </div>
-
     <div class="space-y-4">
       {#if $isLoading}
         <!-- Loading State -->
@@ -94,23 +84,18 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           </div>
-
           <div class="prose">
             {@html $summary}
           </div>
-
           {#if $lastSummarizedContent}
             <div>
               <strong>Source:</strong>
               {$lastSummarizedContent}
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
-        <div>No summary available.</div>
-      {/if}
+        <div>No summary available.{/if}
     </div>
-
     <div class="dialog-footer mt-4 flex justify-end">
       <Button class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close summary modal">
         <X />
@@ -119,7 +104,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </Dialog.Content>
 </Dialog.Root>
-
 <style>
   /* @unocss-include */
   .prose {

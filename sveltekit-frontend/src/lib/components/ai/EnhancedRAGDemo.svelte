@@ -11,88 +11,66 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
   import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';
-
   // Modern Svelte 5 reactive state using runes
   let sampleLegalText = $state(`
 MEMORANDUM OF UNDERSTANDING
-
 This Memorandum of Understanding ("MOU") is entered into on January 15, 2024, between TechCorp Inc., a Delaware corporation ("Company"), and John Smith, Esq., individually ("Consultant").
-
 WHEREAS, Company desires to engage Consultant to provide legal advisory services regarding intellectual property matters and contract negotiation;
-
 WHEREAS, Consultant agrees to provide such services pursuant to the terms and conditions set forth herein;
-
 NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
-
 1. SERVICES. Consultant shall provide legal advisory services to Company, including but not limited to:
    a) Review and analysis of intellectual property portfolios
    b) Contract negotiation and drafting
    c) Legal research and compliance advisory
-
 2. COMPENSATION. Company shall pay Consultant $350 per hour for services rendered, payable within 30 days of receipt of invoice.
-
 3. CONFIDENTIALITY. Consultant acknowledges that during the course of engagement, Consultant may have access to confidential and proprietary information of Company.
-
 4. LIABILITY. Company's total liability under this MOU shall not exceed $50,000 in aggregate.
-
 5. BREACH. In the event of breach by either party, the non-breaching party may terminate this MOU upon written notice.
-
 This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
-
 IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
   `);
-
   let queryText = $state('What are the liability limitations in this contract?');
   let isAnalyzing = $state(false);
   let analysisResult = $state<SemanticAnalysisResult | null>(null);
   let ragResponse = $state<RAGResponse | null>(null);
   let activeTab = $state<'analyze' | 'query'>('analyze');
-
   // Advanced search filters with modern TypeScript
   let useSemanticExpansion = $state(true);
   let confidenceThreshold = $state(0.7);
   let selectedEntityTypes = $state<string[]>(['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY']);
-
   // GPU acceleration status
   let webgpuStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
   let cudaStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
-
   // Performance metrics
   let processingTime = $state(0);
   let gpuAcceleration = $state(false);
-
   // Subscribe to stores using modern reactive patterns
   $effect(() => {
     const unsubscribeAnalyzing = isAnalyzingStore.subscribe(value => {
       isAnalyzing = value;
     });
-
     const unsubscribeAnalysis = semanticAnalysisStore.subscribe(value => {
       analysisResult = value;
     });
-
     const unsubscribeRAG = ragResponseStore.subscribe(value => {
       ragResponse = value;
     });
-
     return () => {
       unsubscribeAnalyzing();
       unsubscribeAnalysis();
       unsubscribeRAG();
     };
   });
-
   // Initialize GPU acceleration on mount
   onMount(async () => {
     // Initialize WebGPU
     try {
       const webgpuInitialized = await webgpuRAGEngine.initialize();
       webgpuStatus = webgpuInitialized ? 'available' : 'unavailable';
-
       if (webgpuInitialized) {
         console.log('🚀 WebGPU RAG acceleration enabled');
       }
@@ -100,12 +78,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       console.warn('WebGPU initialization failed:', error);
       webgpuStatus = 'unavailable';
     }
-
     // Initialize CUDA fallback
     try {
       const cudaInitialized = await cudaRAG.initialize();
       cudaStatus = cudaInitialized ? 'available' : 'unavailable';
-
       if (cudaInitialized) {
         console.log('🔧 CUDA WASM fallback enabled');
       }
@@ -113,53 +89,40 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       console.warn('CUDA WASM initialization failed:', error);
       cudaStatus = 'unavailable';
     }
-
     gpuAcceleration = webgpuStatus === 'available' || cudaStatus === 'available';
   });
-
   // Enhanced analysis function with GPU acceleration
   async function performAnalysis() {
     if (!sampleLegalText.trim()) return;
-
     const startTime = performance.now();
     isAnalyzing = true;
-
     try {
       // Update the store
       isAnalyzingStore.set(true);
-
       // Generate a document ID
       const documentId = `demo_doc_${Date.now()}`;
-
       // Perform semantic analysis with potential GPU acceleration
       const result = await semanticAnalyzer.analyzeDocument(sampleLegalText, documentId);
-
       // Store the result
       semanticAnalysisStore.set(result);
       analysisResult = result;
-
       processingTime = performance.now() - startTime;
-
       console.log(`✅ Analysis completed in ${processingTime.toFixed(2)}ms`);
       console.log(`Found ${result.entities.length} entities and ${result.concepts.length} concepts`);
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       isAnalyzingStore.set(false);
     }
   }
-
   // Enhanced RAG query with GPU-accelerated similarity search
   async function performRAGQuery() {
     if (!queryText.trim()) return;
-
     const startTime = performance.now();
     isAnalyzing = true;
-
     try {
       isAnalyzingStore.set(true);
-
       // Build query with modern TypeScript patterns
       const ragQuery: RAGQuery = {
         query: queryText,
@@ -173,13 +136,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           includeRelated: true,
         },
       };
-
       // Store the query
       ragQueryStore.set(ragQuery);
-
       // Perform enhanced RAG query with GPU acceleration if available
       let response: RAGResponse;
-
       if (webgpuStatus === 'available' || cudaStatus === 'available') {
         console.log('🚀 Using GPU-accelerated RAG query');
         response = await semanticAnalyzer.enhancedQuery(ragQuery);
@@ -187,44 +147,36 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
         console.log('💻 Using CPU fallback for RAG query');
         response = await semanticAnalyzer.enhancedQuery(ragQuery);
       }
-
       // Store the response
       ragResponseStore.set(response);
       ragResponse = response;
-
       processingTime = performance.now() - startTime;
-
       console.log(`✅ RAG query completed in ${processingTime.toFixed(2)}ms`);
       console.log(`Found ${response.results.length} relevant results`);
     } catch (error) {
       console.error('RAG query failed:', error);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       isAnalyzingStore.set(false);
     }
   }
-
   // Computed properties using derived state
   let entitySummary = $derived(() => {
     if (!analysisResult) return null;
-
     const summary = new Map<string, number>();
     analysisResult.entities.forEach(entity => {
       summary.set(entity.type, (summary.get(entity.type) || 0) + 1);
     });
-
     return Array.from(summary.entries())
       .sort(([, a], [, b]) => b - a)
       .map(([type, count]) => ({ type, count }));
   });
-
   let performanceColor = $derived(() => {
     if (processingTime === 0) return 'text-gray-500';
     if (processingTime < 500) return 'text-green-600';
     if (processingTime < 1000) return 'text-yellow-600';
     return 'text-red-600';
   });
-
   // GPU acceleration indicator
   let accelerationBadge = $derived(() => {
     if (webgpuStatus === 'available') return { text: 'WebGPU', color: 'bg-green-500' };
@@ -232,7 +184,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     return { text: 'CPU', color: 'bg-gray-500' };
   });
 </script>
-
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <!-- Header with GPU status -->
   <div class="flex items-center justify-between">
@@ -240,7 +191,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       <h1 class="text-3xl font-bold text-gray-900">Enhanced RAG Demo</h1>
       <p class="text-gray-600 mt-2">WebGPU/CUDA-accelerated legal document analysis with Svelte 5</p>
     </div>
-
     <div class="flex items-center space-x-2">
       <span class="text-sm text-gray-500">Acceleration</span>
       <span class="px-2 py-1 rounded text-xs text-white {accelerationBadge.color}">
@@ -253,7 +203,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       {/if}
     </div>
   </div>
-
   <!-- Tab Navigation -->
   <div class="flex border-b border-gray-200">
     <button
@@ -273,7 +222,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       RAG Query
     </button>
   </div>
-
   <!-- Analysis Tab -->
   {#if activeTab === 'analyze'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -288,7 +236,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
             class="w-full h-64 p-3 border border-gray-300 rounded-md resize-none"
             placeholder="Paste your legal document here..."
           ></textarea>
-
           <div class="mt-4">
             <Button onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
               {#if isAnalyzing}
@@ -313,7 +260,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           </div>
         </CardContent>
       </Card>
-
       <!-- Results Section -->
       <Card>
         <CardHeader>
@@ -342,7 +288,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                   <div>Sentiment Score: <span class="font-mono">{analysisResult.sentimentScore.toFixed(2)}</span></div>
                 </div>
               </div>
-
               <!-- Entity Summary -->
               {#if entitySummary && entitySummary.length > 0}
                 <div>
@@ -355,15 +300,13 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
-
+                {/if}
               <!-- Legal Concepts -->
               {#if analysisResult.concepts.length > 0}
                 <div>
                   <h4 class="text-sm font-medium text-gray-700 mb-2">Legal Concepts</h4>
                   <div class="space-y-1">
-                    {#each analysisResult.concepts.slice(0, 5) as concept}
+                    {#each Array.isArray(analysisResult.concepts.slice(0, 5)) ? analysisResult.concepts.slice(0, 5) : [] as concept}
                       <div class="text-sm bg-green-50 p-2 rounded">
                         <div class="font-medium text-green-800">{concept.concept}</div>
                         <div class="text-green-600 text-xs">
@@ -372,8 +315,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/if}
+                {/if}
             </div>
           {:else}
             <div class="text-center text-gray-500 py-8">
@@ -386,13 +328,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 />
               </svg>
               <p class="mt-2">No analysis results yet. Click: "Analyze Document" to get started.</p>
-            </div>
-          {/if}
+            {/if}
         </CardContent>
       </Card>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Query Tab -->
   {#if activeTab === 'query'}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -411,29 +350,25 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 placeholder="Ask a question about the legal document..."
               ></textarea>
             </div>
-
             <!-- Advanced Filters -->
             <div class="space-y-3">
               <h4 class="text-sm font-medium text-gray-700">Advanced Filters</h4>
-
               <div class="flex items-center space-x-2">
                 <input type="checkbox" bind:checked={useSemanticExpansion} id="semantic-expansion" class="rounded" />
                 <label for="semantic-expansion" class="text-sm text-gray-600">
                   Enable semantic concept expansion
                 </label>
               </div>
-
               <div>
                 <label class="block text-sm text-gray-600 mb-1">
                   Confidence Threshold: {confidenceThreshold}
                 </label>
                 <input type="range" bind:value={confidenceThreshold} min="0.1" max="1.0" step="0.1" class="w-full" />
               </div>
-
               <div>
                 <label class="block text-sm text-gray-600 mb-2">Entity Types</label>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                  {#each ['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY', 'DATE', 'CASE_REF'] as entityType}
+                  {#each Array.isArray(['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY', 'DATE', 'CASE_REF']) ? ['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY', 'DATE', 'CASE_REF'] : [] as entityType}
                     <label class="flex items-center space-x-1">
                       <input type="checkbox" bind:group={selectedEntityTypes} value={entityType} class="rounded" />
                       <span>{entityType.replace('_', ' ')}</span>
@@ -442,7 +377,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 </div>
               </div>
             </div>
-
             <Button onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
@@ -466,7 +400,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           </div>
         </CardContent>
       </Card>
-
       <!-- Query Results Section -->
       <Card>
         <CardHeader>
@@ -485,7 +418,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                   {/if}
                 </div>
               </div>
-
               <!-- Results -->
               {#if ragResponse.results.length > 0}
                 <div class="space-y-2">
@@ -506,8 +438,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               {:else}
                 <div class="text-center text-gray-500 py-4">
                   <p>No relevant results found for this query.</p>
-                </div>
-              {/if}
+                {/if}
             </div>
           {:else}
             <div class="text-center text-gray-500 py-8">
@@ -520,13 +451,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
                 />
               </svg>
               <p class="mt-2">No query results yet. Execute a RAG query to see results here.</p>
-            </div>
-          {/if}
+            {/if}
         </CardContent>
       </Card>
-    </div>
-  {/if}
-
+    {/if}
   <!-- GPU Acceleration Status Footer -->
   <Card>
     <CardContent class="pt-4">
@@ -558,24 +486,20 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     </CardContent>
   </Card>
 </div>
-
 <style>
   /* Modern styling optimized for the new architecture */
   .grid {
     container-type: inline-size;
   }
-
   @container (max-width: 768px) {
     .grid-cols-1.lg\\:grid-cols-2 {
       grid-template-columns: 1fr;
     }
   }
-
   /* WebGPU acceleration indicators */
   .animate-spin {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -584,7 +508,6 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       transform: rotate(360deg);
     }
   }
-
   /* Performance indicators */
   .text-green-600 {
     color: rgb(34, 197, 94);
@@ -599,4 +522,3 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     color: rgb(37, 99, 235);
   }
 </style>
-

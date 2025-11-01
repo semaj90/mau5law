@@ -47,7 +47,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
       suggestions: response.suggestions,
       actions: response.actions,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed type from any to unknown
     console.error('AI suggestion error:', error);
     return json({ error: error instanceof Error ? error.message : 'An unknown error occurred' }, { status: 500 }); // Safely access error message
@@ -56,7 +56,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, _locals }) => {
 async function generateAIResponse(
   prompt: string,
   vibe: string = 'professional',
-  context?: unknown
+  context?: any
 ): Promise<AIResponse> {
   // Changed return type
   try {
@@ -76,14 +76,14 @@ async function generateAIResponse(
     // Parse and structure the response
     const structuredResponse = parseAIResponse(aiResponse.response, prompt); // Access aiResponse.response
     return structuredResponse;
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed type from any to unknown
     console.error('Ollama integration error:', error);
     // Fallback to mock response if Ollama fails
     return generateMockResponse(prompt, vibe, context);
   }
 }
-function createSystemPrompt(vibe: string, context?: unknown): string {
+function createSystemPrompt(vibe: string, context?: any): string {
   const basePrompt = `You are an AI assistant for legal case management. You help prosecutors and legal professionals analyze cases, organize evidence, and provide insights.`;
   const vibeInstructions = {
     professional: 'Respond in a formal, structured manner with clear legal terminology.',
@@ -197,7 +197,7 @@ function extractActions(response: string, prompt: string): Action[] {
 async function generateMockResponse(
   prompt: string,
   vibe: string = 'professional',
-  _context?: unknown
+  _context?: any
 ): Promise<AIResponse> {
   // Changed type from any to AIResponse, renamed context to _context
   // Simulate AI processing delay

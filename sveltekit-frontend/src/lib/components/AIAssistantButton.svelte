@@ -1,7 +1,7 @@
 <!-- Production AI Assistant Component - bits-ui Implementation -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/bitsbutton.svelte';
+  import { Button } from '$lib/components/ui/bitsbutton.svelte';
   import { Loader2, Brain, Zap, AlertTriangle } from 'lucide-svelte';
   interface Props {
     query?: string;
@@ -73,7 +73,7 @@
         detail: { source: 'gemma3', error: error.message }
       }));
     }
-    isProcessing = false;
+    isProcessing = $state(false);
     currentTest = null;
   }
   const testSynthesis = async () => {
@@ -116,7 +116,7 @@
         detail: { source: 'synthesis', error: error.message }
       }));
     }
-    isProcessing = false;
+    isProcessing = $state(false);
     currentTest = null;
   }
   const testRAG = async () => {
@@ -155,7 +155,7 @@
         detail: { source: 'rag', error: error.message }
       }));
     }
-    isProcessing = false;
+    isProcessing = $state(false);
     currentTest = null;
   }
   const getStatusColor = (status) => {
@@ -166,7 +166,6 @@
     }
   }
 </script>
-
 <div class="space-y-4">
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
@@ -222,7 +221,7 @@
   <!-- API Logs -->
   {#if apiLogs.length > 0}
     <div class="bg-black text-green-400 p-3 rounded-lg max-h-32 overflow-y-auto font-mono text-xs">
-      {#each apiLogs.slice(0, 5) as log}
+      {#each Array.isArray(apiLogs.slice(0, 5)) ? apiLogs.slice(0, 5) : [] as log}
         <div class="mb-1">
           <span class="opacity-60">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
           <span class="ml-2 {log.error ? 'text-red-400' : 'text-green-400'}">
@@ -233,7 +232,5 @@
           {/if}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
 </div>
-

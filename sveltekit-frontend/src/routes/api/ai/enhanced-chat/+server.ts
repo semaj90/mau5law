@@ -29,7 +29,7 @@ export interface EnhancedChatRequest {
     userRole?: string;
     caseId?: string;
     documentIds?: string[];
-    sessionContext?: unknown;
+    sessionContext?: any;
     enableLegalBERT?: boolean;
     enableRAG?: boolean;
     maxDocuments?: number;
@@ -45,9 +45,9 @@ export interface EnhancedChatRequest {
 }
 export interface EnhancedChatResponse {
   response: string;
-  synthesizedInput?: unknown;
-  legalAnalysis?: unknown;
-  ragResults?: unknown;
+  synthesizedInput?: any;
+  legalAnalysis?: any;
+  ragResults?: any;
   confidence: number;
   processingTime: number;
   metadata: {
@@ -58,7 +58,7 @@ export interface EnhancedChatResponse {
     cacheHits?: string[];
   };
   recommendations?: string[];
-  contextualPrompts?: unknown[];
+  contextualPrompts?: any[];
 }
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -115,7 +115,7 @@ async function generateAIResponse(query: string, _context: any): Promise<string>
     }
     const data = await response.json();
     return data.response || 'No response generated';
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Ollama connection failed, using fallback response:', error instanceof Error ? error.message : error);
     return `I understand you're asking about: "${query}". I'm currently experiencing connectivity issues with the AI service. Please try again later or contact support for assistance.`;
   }
@@ -130,7 +130,7 @@ const originalGETHandler: RequestHandler = async () => {
       features: ['basic-generation', 'ollama-integration'],
     };
     return json(status);
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 };

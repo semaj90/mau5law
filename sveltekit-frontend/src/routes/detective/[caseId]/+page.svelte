@@ -22,7 +22,7 @@
   let error = $state<string | null>(null);
   let analytics = $state<any>( );
   // Event handlers
-  let connectionMapGenerated = false;
+  let connectionMapGenerated = $state(false);
   let lastContextualPrompts: string[] = [];
   /**
    * Initialize the page
@@ -30,12 +30,12 @@
   $effect(() => {
     if (!caseId) {
       error = 'Case ID is required';
-      isLoading = false;
+      isLoading = $state(false);
       return;
     }
     loadCaseData();
     loadCaseEvidence();
-    isLoading = false;
+    isLoading = $state(false);
   });
   /**
    * Load case information
@@ -43,9 +43,9 @@
   async function loadCaseData() {
     try {
       // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        caseData = (data as { data?: unknown }).data;
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        caseData = (data as { data?: any }).data;
       } else {
         throw new Error('Failed to load case data');
       }
@@ -60,9 +60,9 @@
   async function loadCaseEvidence() {
     try {
       // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const data = await (response as { ok?: unknown; json?: unknown }).json();
-        evidenceList = (data as { data?: unknown }).data.evidence || [];
+      if ((response as { ok?: any; json?: any }).ok) {
+        const data = await (response as { ok?: any; json?: any }).json();
+        evidenceList = (data as { data?: any }).data.evidence || [];
       } else {
         throw new Error('Failed to load evidence');
       }
@@ -126,7 +126,7 @@
     isLoading = true;
     await loadCaseData();
     await loadCaseEvidence();
-    isLoading = false;
+    isLoading = $state(false);
   }
 </script>
 <svelte:head>
@@ -136,7 +136,7 @@
 {#if isLoading}
   <div class="loading-container">
     <div class="loading-spinner"></div>
-    <p>Loading case (data as { data?: unknown })...</p>
+    <p>Loading case (data as { data?: any })...</p>
   </div>
 {:else if error}
   <div class="error-container">
@@ -219,7 +219,7 @@
               <div class="recent-prompts">
                 <h5>Recent Prompts</h5>
                 <ul>
-                  {#each analytics.userBehavior.lastPrompts.slice(0, 3) as prompt}
+                  {#each Array.isArray(analytics.userBehavior.lastPrompts.slice(0, 3)) ? analytics.userBehavior.lastPrompts.slice(0, 3) : [] as prompt}
                     <li>{prompt}</li>
                   {/each}
                 </ul>

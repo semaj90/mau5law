@@ -49,7 +49,7 @@ export class ReinforcementLearningCache {
     this.misses++;
     return null;
   }
-  async set(key: string, value: unknown): Promise<boolean> {
+  async set(key: string, value: any): Promise<boolean> {
     this.store.set(key, value);
     return true;
   }
@@ -131,7 +131,7 @@ export class ReinforcementLearningCache {
    * AI-driven 3D asset search with semantic understanding
    * Uses transformer-like embeddings for context understanding
    */
-  async searchPredictive3DAssets(query: string, context: unknown): Promise<AssetSearchPattern[]> {
+  async searchPredictive3DAssets(query: string, context: any): Promise<AssetSearchPattern[]> {
     // Generate semantic embedding for query (transformer-like processing)
     const queryVector = await this.generateQueryEmbedding(query);
     // Search cached patterns first (instant results)
@@ -283,7 +283,7 @@ export class ReinforcementLearningCache {
     }
     return results.sort((a, b) => b.usageFrequency - a.usageFrequency);
   }
-  private predictAssetNeeds(query: string, context: unknown, queryVector: number[]): AssetSearchPattern[] {
+  private predictAssetNeeds(query: string, context: any, queryVector: number[]): AssetSearchPattern[] {
     const predictions: AssetSearchPattern[] = [];
     // Normalize context to a string for simple matching without using: 'any'
     const ctxStr = typeof context === 'string' ? context : JSON.stringify(context || {});
@@ -352,7 +352,7 @@ export class ReinforcementLearningCache {
     };
     return priorityMap[componentType] || 5;
   }
-  private calculateUsageProbability(componentType: string, context: unknown): number {
+  private calculateUsageProbability(componentType: string, context: any): number {
     const baseProb = 0.5;
     const ctxStr = typeof context === 'string' ? context : JSON.stringify(context || {});
     const contextBonus = ctxStr.includes(componentType) ? 0.3 : 0;

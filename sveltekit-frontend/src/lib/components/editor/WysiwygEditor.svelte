@@ -222,7 +222,7 @@
       console.error('AI request failed:', error);
       aiResults = 'Failed to connect to AI service.';
     } finally {
-      isProcessingAI = false;
+      isProcessingAI = $state(false);
     }
   }
 
@@ -317,8 +317,7 @@
     data-placeholder={placeholder}
   >
     {#if !content}
-      <div class="editor-placeholder" aria-hidden="true">{placeholder}</div>
-    {/if}
+      <div class="editor-placeholder" aria-hidden="true">{placeholder}{/if}
   </div>
 </div>
 
@@ -333,8 +332,7 @@
           <div class="selected-text">
             <strong>Selected text:</strong>
             <p>"{selectedText}"</p>
-          </div>
-        {/if}
+          {/if}
         <div class="space-y-4">
           <label for="ai-query">What would you like help with?</label>
           <textarea
@@ -356,14 +354,12 @@
               <strong>AI Response:</strong>
               <div class="ai-response">{aiResults}</div>
               <button onclick={insertAIContent} class="btn btn-secondary btn-sm"> Insert into Document </button>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <button class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700" onclick={() => aiOpen.set(false)}>×</button>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <!-- Citation Helper Modal (replaces Dialog.Root usage) -->
 {#if $citeOpen}
@@ -384,7 +380,7 @@
           {#if citationResults.length > 0}
             <div class="citation-results">
               <h4>Found Citations:</h4>
-              {#each citationResults as citation}
+              {#each Array.isArray(citationResults) ? citationResults : [] as citation}
                 <div class="citation-item">
                   <div class="citation-title">{citation.title}</div>
                   <div class="citation-text">{citation.citation}</div>
@@ -394,14 +390,12 @@
                   <button onclick={() => insertCitation(citation)} class="btn btn-secondary btn-sm"> Insert Citation </button>
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <button class="absolute right-4 top-4 cursor-pointer border-none bg-transparent text-2xl leading-none text-gray-500 hover:text-gray-700" onclick={() => citeOpen.set(false)}>×</button>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   /* @unocss-include */

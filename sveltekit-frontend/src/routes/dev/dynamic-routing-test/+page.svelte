@@ -12,7 +12,7 @@ https://svelte.dev/e/attribute_duplicate -->
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
   // State management
   const testResults = writable<string[]>([]);
@@ -134,7 +134,7 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error: any) {
       testResults.update(results => [...results, `❌ Test suite failed: ${error?.message ?? String(error)}`]);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function navigateToRoute(route: string) {
@@ -152,7 +152,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   // keep helper and use it in Debug panel (to avoid: "declared but never read")
-  function formatJson(obj: unknown): string {
+  function formatJson(obj: any): string {
     return JSON.stringify(obj, null, 2);
   }
 </script>
@@ -195,7 +195,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
       {#if $testResults.length > 0}
         <div class="bg-yorha-bg-secondary p-4 rounded font-mono text-sm space-y-2 max-h-64 overflow-y-auto">
-          {#each $testResults as result}
+          {#each Array.isArray($testResults) ? $testResults : [] as result}
             <div class="text-yorha-text-primary">{result}</div>
           {/each}
         </div>
@@ -285,7 +285,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Route Categories</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each categoryList as category}
+        {#each Array.isArray(categoryList) ? categoryList : [] as category}
           {@const categoryRoutes = getRoutesByCategory(category as Category)}
           {#if categoryRoutes.length > 0}
             <div class="border border-yorha-text-muted p-4 rounded">
@@ -293,7 +293,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 {category} ({categoryRoutes.length})
               </h3>
               <div class="space-y-1 max-h-32 overflow-y-auto">
-                {#each categoryRoutes.slice(0, 5) as route}
+                {#each Array.isArray(categoryRoutes.slice(0, 5)) ? categoryRoutes.slice(0, 5) : [] as route}
                   <button
                     class="block w-full text-left text-sm text-yorha-text-secondary hover:text-yorha-accent hover:bg-yorha-bg-secondary p-1 rounded transition-colors"
                     onclick={() => navigateToRoute(route.route)}
@@ -320,7 +320,7 @@ https://svelte.dev/e/attribute_duplicate -->
           View All Routes Configuration
         </summary>
         <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
-          {#each allRoutes as route}
+          {#each Array.isArray(allRoutes) ? allRoutes : [] as route}
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
               <div class="flex justify-between items-center">
                 <span class="font-mono text-yorha-accent">{route.id}</span>

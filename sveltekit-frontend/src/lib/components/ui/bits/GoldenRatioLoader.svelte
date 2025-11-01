@@ -106,7 +106,6 @@
   		return point;
   	});
 </script>
-
 <div
   class="golden-loader-container relative overflow-hidden transition-all duration-1200 ease-out"
   style:width="{$containerWidth}%"
@@ -204,10 +203,8 @@
         <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
         <p class="text-sm font-medium text-red-800">Processing failed. Please try again.</p>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .golden-loader-container {
     transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -248,4 +245,3 @@
     background: rgba(251, 191, 36, 0.7);
   }
 </style>
-

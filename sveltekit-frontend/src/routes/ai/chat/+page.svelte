@@ -151,7 +151,7 @@
         postgres: healthData?.services?.postgres === 'connected',
         neo4j: healthData?.services?.neo4j === 'active',
       };
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('Health check error:', e);
       // Show fallback notice
       const notice = document.createElement('div');
@@ -248,7 +248,7 @@
 
               if (!dataLines) continue;
               if (dataLines === '[DONE]') {
-                isStreaming = false;
+                isStreaming = $state(false);
                 break;
               }
 
@@ -269,14 +269,14 @@
                   case 'complete':
                     aiMessage.content = eventData.fullResponse ?? aiMessage.content;
                     messages = [...messages];
-                    isStreaming = false;
+                    isStreaming = $state(false);
                     break;
                   case 'error':
                     error = eventData.error ?? 'Unknown error';
-                    isStreaming = false;
+                    isStreaming = $state(false);
                     break;
                   case 'close':
-                    isStreaming = false;
+                    isStreaming = $state(false);
                     break;
                 }
               } catch (parseError) {
@@ -298,7 +298,7 @@
           } catch {}
         }
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('Send message error:', e);
       // Show fallback notice
       const notice = document.createElement('div');
@@ -325,7 +325,7 @@
       messages = [...messages, mockAiMessage];
       error = '';
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
     }
   }
 
@@ -422,7 +422,7 @@
       error = 'Failed to analyze persons of interest';
       console.error('POI analysis error:', e);
     } finally {
-      timelineLoading = false;
+      timelineLoading = $state(false);
     }
   }
 
@@ -443,7 +443,7 @@
     } catch (e) {
       console.error('Failed to generate user activity timeline:', e);
     } finally {
-      activityLoading = false;
+      activityLoading = $state(false);
     }
   }
 
@@ -454,7 +454,7 @@
 
   function closePOIDetails(): void {
     selectedPOI = null;
-    showPOIDialog = false;
+    showPOIDialog = $state(false);
   }
 
   $effect(() => {
@@ -595,7 +595,7 @@
                 <p class="text-sm">Ask me anything about legal topics, contracts, or case law.</p>
               </div>
             {:else}
-              {#each messages as message}
+              {#each Array.isArray(messages) ? messages : [] as message}
                 <div class={cn('flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
                   <div
                     class={cn(
@@ -682,7 +682,7 @@
               </Button>
             </CardHeader>
             <CardContent class="space-y-4">
-              {#each poiTimelineData as poi}
+              {#each Array.isArray(poiTimelineData) ? poiTimelineData : [] as poi}
                 <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                   <div class="flex justify-between items-start mb-3">
                     <div>
@@ -705,7 +705,7 @@
 
                   {#if poi.activities && poi.activities.length > 0}
                     <div class="space-y-2">
-                      {#each poi.activities.slice(0, 3) as activity}
+                      {#each Array.isArray(poi.activities.slice(0, 3)) ? poi.activities.slice(0, 3) : [] as activity}
                         <div class="flex items-start gap-3 text-sm">
                           <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
@@ -730,7 +730,7 @@
                     <div class="mt-3 pt-3 border-t border-gray-100">
                       <h4 class="font-medium mb-2">Evidence Sources</h4>
                       <div class="flex flex-wrap gap-1">
-                        {#each poi.evidenceSources.slice(0, 3) as source}
+                        {#each Array.isArray(poi.evidenceSources.slice(0, 3)) ? poi.evidenceSources.slice(0, 3) : [] as source}
                           <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
                             {source.type || 'Document'}
                           </span>
@@ -766,7 +766,7 @@
               </CardTitle>
             </CardHeader>
             <CardContent class="space-y-3">
-              {#each userActivityTimeline.slice(0, 10) as activity}
+              {#each Array.isArray(userActivityTimeline.slice(0, 10)) ? userActivityTimeline.slice(0, 10) : [] as activity}
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <div class="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
                   <div class="flex-1">
@@ -1022,7 +1022,7 @@
             Activity Timeline
           </h3>
           <div class="space-y-3 max-h-64 overflow-y-auto border-l-2 border-purple-200 pl-4">
-            {#each selectedPOI.activities || [] as activity}
+            {#each Array.isArray(selectedPOI.activities || []) ? selectedPOI.activities || [] : [] as activity}
               <div class="relative">
                 <div class="absolute -left-[21px] top-1.5 w-2 h-2 bg-purple-500 rounded-full"></div>
                 <div class="font-medium">{activity.description || activity.type}</div>
@@ -1051,7 +1051,7 @@
             Evidence Sources
           </h3>
           <div class="space-y-2 max-h-64 overflow-y-auto">
-            {#each selectedPOI.evidenceSources || [] as source}
+            {#each Array.isArray(selectedPOI.evidenceSources || []) ? selectedPOI.evidenceSources || [] : [] as source}
               <div class="p-3 border border-gray-200 rounded-lg">
                 <div class="flex items-center justify-between mb-2">
                   <span class="font-medium">{source.title || source.name || 'Document'}</span>
@@ -1090,7 +1090,7 @@
               Relationships
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {#each selectedPOI.relationships as relationship}
+              {#each Array.isArray(selectedPOI.relationships) ? selectedPOI.relationships : [] as relationship}
                 <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <div class="font-medium">{relationship.target}</div>
                   <div class="text-sm text-green-700">{relationship.type}</div>

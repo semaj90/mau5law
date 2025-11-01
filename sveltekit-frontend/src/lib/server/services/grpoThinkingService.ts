@@ -81,11 +81,11 @@ const grpoCacheMaxSize = 2000;
 const grpoCacheTimeout = 1000 * 60 * 45; // 45 minutes
 // Specialized logger for GRPO operations
 const grpoLogger = {
-  info: (message: string, metadata?: unknown) =>
+  info: (message: string, metadata?: any) =>
     console.log(`[${new Date().toISOString()}] GRPO-INFO: ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  warn: (message: string, metadata?: unknown) =>
+  warn: (message: string, metadata?: any) =>
     console.warn(`[${new Date().toISOString()}] GRPO-WARN: ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  error: (message: string, error?: Error, metadata?: unknown) =>
+  error: (message: string, error?: Error, metadata?: any) =>
     console.error(
       `[${new Date().toISOString()}] GRPO-ERROR: ${message}`,
       error?.message || '',
@@ -144,7 +144,7 @@ export async function generateGrpoEmbedding(thinkingChain: string, useCache: boo
         grpoLogger.info('GRPO embedding cached', { cacheKey, embeddingLength: embedding.length });
       }
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       grpoLogger.error('GRPO embedding generation failed', error instanceof Error ? error : undefined, {
         thinkingChain: thinkingChain.slice(0, 100),
       });
@@ -225,7 +225,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
       messageId: response.messageId,
       embeddingLength: embedding.length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     grpoLogger.error('Failed to store GRPO thinking response', error instanceof Error ? error : undefined, {
       messageId: response.messageId,
     });
@@ -346,7 +346,7 @@ export async function searchGrpoThinkingResponses(
       topScore: recommendations[0]?.combinedScore || 0,
     });
     return recommendations;
-  } catch (error: unknown) {
+  } catch (error: any) {
     grpoLogger.error('GRPO thinking search failed', error instanceof Error ? error : undefined, {
       query: query.slice(0, 50),
     });
@@ -397,7 +397,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
       processingTime,
       workerId: job.workerId,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     job.status = 'failed';
     grpoLogger.error('GRPO batch processing failed', error instanceof Error ? error : undefined, {
       jobId: job.jobId,
@@ -500,7 +500,7 @@ export async function getTrendingGrpoPatterns(
       timeWindow,
     });
     return patterns;
-  } catch (error: unknown) {
+  } catch (error: any) {
     grpoLogger.error('GRPO trend analysis failed', error instanceof Error ? error : undefined, { timeWindow });
     return [];
   }
@@ -558,7 +558,7 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
       ON grpo_thinking_responses (created_at DESC, confidence_level DESC, thinking_type)`
     );
     grpoLogger.info('GRPO thinking responses table initialized successfully');
-  } catch (error: unknown) {
+  } catch (error: any) {
     grpoLogger.error('Failed to initialize GRPO thinking responses table', error instanceof Error ? error : undefined);
     throw error;
   }

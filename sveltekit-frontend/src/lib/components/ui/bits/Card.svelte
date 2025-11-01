@@ -45,7 +45,6 @@
     return classes.join(' ');
   });
 </script>
-
 <div class={cardClasses}>
   {#if header}
     {@render header()}
@@ -62,10 +61,8 @@
   {#if footer}
     <div class="card-footer">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .enhanced-card {
     border: 2px solid #333;

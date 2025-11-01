@@ -59,7 +59,7 @@
       error = 'Network error occurred';
       console.error('Prediction loading error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function getProbabilityColor(probability: number): string {
@@ -87,7 +87,6 @@
     }
   });
 </script>
-
 <div
   class="prediction-display {consoleTheme}"
   style:background={currentTheme.bgColor}
@@ -175,8 +174,7 @@
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Similar Cases -->
       {#if prediction.similarCases.length > 0}
         <div class="similar-cases-section" transitionscale={{ delay: 400 }}>
@@ -201,17 +199,15 @@
                   <div class="key-lessons">
                     <strong>Key Lessons:</strong>
                     <ul>
-                      {#each similarCase.keyLessons as lesson}
+                      {#each Array.isArray(similarCase.keyLessons) ? similarCase.keyLessons : [] as lesson}
                         <li>{lesson}</li>
                       {/each}
                     </ul>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Gaming Elements -->
       <div class="gaming-elements" transitionfade={{ delay: 600 }}>
         <div class="achievement-display">
@@ -233,17 +229,15 @@
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
       <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}> Analyze Case </button>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .prediction-display {
     border: 3px solid;
     border-radius: 8px;
     padding: 1.5rem;
     min-height: 400px;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .prediction-display.n64 {
@@ -338,7 +332,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position relative;
+    position: relative;
   }
   .probability-text {
     text-align: center;
@@ -375,7 +369,7 @@
   }
   .meter-fill {
     height: 100%;
-    transition: width 1s ease-in-out;
+    transition: width: 1s ease-in-out;
     border-radius: 6px;
   }
   .confidence-label {
@@ -556,5 +550,3 @@
     }
   }
 </style>
-
-

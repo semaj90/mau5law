@@ -1,32 +1,26 @@
 import { Buffer } from 'node:buffer';
 import { Embeddings } from '@langchain/core/embeddings';
-
 export interface TensorRtEmbeddingsConfig {
   endpoint?: string;
   model?: string;
 }
-
 export class TensorRtEmbeddings extends Embeddings {
   private readonly endpoint: string;
   private readonly model: string;
-
   constructor(cfg: TensorRtEmbeddingsConfig = {}) {
     super();
     this.endpoint = cfg.endpoint ?? process.env.TRITON_HTTP_URL ?? 'http://localhost:8000';
     this.model = cfg.model ?? process.env.TRITON_MODEL_NAME ?? 'embeddinggemma';
   }
-
   async embedDocuments(documents: string[]): Promise<number[][]> {
     if (!documents.length) return [];
     const batches = await Promise.all(documents.map((text) => this.infer(text)));
     return batches;
   }
-
   async embedQuery(document: string): Promise<number[]> {
     const [vector] = await this.embedDocuments([document]);
     return vector ?? [];
   }
-
   private async infer(text: string): Promise<number[]> {
     const url = `${this.endpoint.replace(/\/$/, '')}/v2/models/${this.model}/infer`;
     const payload = {
@@ -46,18 +40,15 @@ export class TensorRtEmbeddings extends Embeddings {
         },
       ],
     };
-
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-
     if (!response.ok) {
       const message = await response.text();
       throw new Error(`TensorRT inference failed: ${response.status} ${message}`);
     }
-
     const result = (await response.json()) as {
       outputs: Array<{ name: string; data?: number[]; shape: number[] }>;
     };

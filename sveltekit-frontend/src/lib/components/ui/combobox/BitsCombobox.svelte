@@ -139,7 +139,6 @@
   // Generate unique ID for accessibility
   const inputId = `combobox-${Math.random().toString(36).substr(2, 9)}`;
 </script>
-
 <div class="legal-combobox-container w-full space-y-2">
   <!-- Label -->
   {#if label}
@@ -183,21 +182,19 @@
               <span>Create "{inputValue}"</span>
             </div>
           </ComboboxItem>
-          <div class="border-b border-yorha-border my-1"></div>
-        {/if}
+          <div class="border-b border-yorha-border my-1">{/if}
         <!-- Options -->
         {#if groupedOptions.length === 0}
           <div class="py-6 text-center text-sm text-yorha-text-secondary font-mono">
             {emptyMessage}
           </div>
         {:else}
-          {#each groupedOptions as group}
+          {#each Array.isArray(groupedOptions) ? groupedOptions : [] as group}
             {#if group.category}
               <div class="px-2 py-1.5 text-xs font-medium text-yorha-text-secondary uppercase font-mono">
                 {group.category}
-              </div>
-            {/if}
-            {#each group.options as option}
+              {/if}
+            {#each Array.isArray(group.options) ? group.options : [] as option}
               <ComboboxItem
                 value={option.value}
                 disabled={option.disabled}
@@ -228,7 +225,7 @@
   <!-- Selected items display for multiple selection -->
   {#if multiple && Array.isArray(value) && value.length > 0}
     <div class="flex flex-wrap gap-2 mt-2">
-      {#each selectedOptions as option}
+      {#each Array.isArray(selectedOptions) ? selectedOptions : [] as option}
         <div
           class="inline-flex items-center gap-1 bg-yorha-primary/10 text-yorha-primary text-xs font-mono px-2 py-1 rounded border border-yorha-primary/20"
         >
@@ -242,8 +239,7 @@
           </button>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Description -->
   {#if description}
     <p class="text-xs text-yorha-text-secondary font-mono">
@@ -257,7 +253,6 @@
     </p>
   {/if}
 </div>
-
 <style>
   :global(.legal-combobox-container input) {
     transition: all 0.2s ease;
@@ -266,4 +261,3 @@
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
 </style>
-

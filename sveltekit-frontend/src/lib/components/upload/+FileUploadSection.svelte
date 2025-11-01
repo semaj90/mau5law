@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import SelectBits from '$lib/components/ui/select/SelectBits.svelte';
-  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
+  import { SelectBits } from '$lib/components/ui/select/SelectBits.svelte';
+  import { Checkbox } from '$lib/components/ui/checkbox/Checkbox.svelte';
   let selectedCase: string = $state('');
   let selectedPoi: string = $state('');
   let file: File | null = null;
@@ -38,8 +38,8 @@
         selectedCase = '';
         selectedPoi = '';
         file = null;
-        summarize = false;
-        tag = false;
+        summarize = $state(false);
+        tag = $state(false);
       } else {
         const errorData = await response.json();
         alert(`Upload failed: ${errorData.message || response.statusText}`);
@@ -61,7 +61,6 @@
     { value: 'poi3', label: 'Criminal X' },
   ];
 </script>
-
 <div class="nier-bits-card">
   <div class="nier-bits-yorha-panel-header">
     <h3>Automatic File Upload</h3>
@@ -94,7 +93,6 @@
     <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
   </div>
 </div>
-
 <style>
   /* Use the actual classes present in the markup to avoid Svelte: "unused selector" errors */
   .nier-bits-card {
@@ -103,30 +101,25 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
-
   .nier-bits-yorha-panel-header {
     border-bottom: 1px solid #eee; /* fixed invalid hex */
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
-
   .nier-bits-yorha-panel-header h3 {
     margin: 0;
     font-size: 1.25rem;
     color: #333;
   }
-
   .nier-bits-card-body {
     padding-top: 0.5rem; /* keep spacing, avoid empty ruleset */
     display: block; /* ensure predictable layout */
   }
-
   .form-label {
     font-weight: bold;
     margin-bottom: 0.5rem;
     display: block;
   }
-
   .form-control {
     width: 100%;
     padding: 0.75rem;
@@ -134,7 +127,6 @@
     border-radius: 4px;
     font-size: 1rem;
   }
-
   /* Match the actual button classes used in the markup */
   .btn.nes-btn.is-primary,
   .nes-btn.is-primary {

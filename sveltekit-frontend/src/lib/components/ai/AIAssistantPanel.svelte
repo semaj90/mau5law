@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   // Use existing lowercase: 'card' folder to avoid casing conflicts on disk
-  import Card from '$lib/components/ui/card/Card.svelte';
-  import CardContent from '$lib/components/ui/card/CardContent.svelte';
-  import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
-  import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
-  import AIChatMessage from '$lib/components/ai/AIChatMessage.svelte';
-  import AISearchBar from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
+  import { Card } from '$lib/components/ui/card/Card.svelte';
+  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
+  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
+  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
+  import { AIChatMessage } from '$lib/components/ai/AIChatMessage.svelte';
+  import { AISearchBar } from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
   import { aiAssistant  } from '$lib/stores/unified';
   import { acceleratedLegalAssistant } from '$lib/ai/accelerated-legal-assistant';
   import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
@@ -91,7 +91,7 @@
     } catch (error) {
       console.error('Failed to send message:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Quick action handlers using unified store
@@ -110,7 +110,7 @@
     } catch (error) {
       console.error('Failed to analyze evidence:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function suggestNextSteps() {
@@ -129,7 +129,7 @@
     } catch (error) {
       console.error('Failed to get suggestions:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function handleKeydown(_event: KeyboardEvent) {
@@ -149,11 +149,9 @@
   function setContext(context: typeof currentContext) {
     currentContext = context;
   }
-
   // provide a runtime-safe reference to the imported component to avoid constructor-type errors
   const AISearchBarComponent: any = AISearchBar as unknown as any;
 </script>
-
 <div class="ai-assistant-panel" class:hidden={!isVisible}>
   <Card class="h-full flex flex-col">
     <CardHeader class="pb-3">
@@ -238,7 +236,7 @@
             <p class="text-xs mt-1">Ask about evidence, get insights, or request analysis</p>
           </div>
         {:else}
-          {#each messages as message}
+          {#each Array.isArray(messages) ? messages : [] as message}
             <AIChatMessage
               message={{
                 role: message.role,
@@ -254,7 +252,7 @@
               <div class="evidence-refs mt-2 ml-4">
                 <span class="text-xs text-muted-foreground">Evidence References:</span>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  {#each message.evidenceIds as evidenceId}
+                  {#each Array.isArray(message.evidenceIds) ? message.evidenceIds : [] as evidenceId}
                     <button
                       type="button"
                       class="evidence-ref-btn text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors"
@@ -265,8 +263,7 @@
                     </button>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           {/each}
         {/if}
       </div>
@@ -340,19 +337,16 @@
               </div>
               {#if lastAccelerationResults.recommendations.length > 0}
                 <div class="recommendation-list">
-                  {#each lastAccelerationResults.recommendations.slice(0, 2) as rec}
+                  {#each Array.isArray(lastAccelerationResults.recommendations.slice(0, 2)) ? lastAccelerationResults.recommendations.slice(0, 2) : [] as rec}
                     <div class="recommendation-item">
                       <div class="rec-type">{rec.type}</div>
                       <div class="rec-description">{rec.description}</div>
                       <div class="rec-confidence">{(rec.confidence * 100).toFixed(1)}% confidence</div>
                     </div>
                   {/each}
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
-      {/if}
+                {/if}
+            {/if}
+        {/if}
       <!-- Insights Panel -->
       {#if showInsights && insights.length > 0}
         <div class="insights-panel">
@@ -362,7 +356,7 @@
           </button>
           {#if showInsights}
             <div class="insights-content">
-              {#each insights.slice(0, 3) as insight}
+              {#each Array.isArray(insights.slice(0, 3)) ? insights.slice(0, 3) : [] as insight}
                 <button class="insight-item" onclick={() => handleInsightClick(insight)}>
                   <div class="insight-type">{insight.type}</div>
                   <div class="insight-description">{insight.description}</div>
@@ -371,14 +365,11 @@
                   </div>
                 </button>
               {/each}
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </CardContent>
   </Card>
 </div>
-
 <style>
   .ai-assistant-panel {
     /* @apply w-full h-full; */
@@ -548,7 +539,6 @@
     /* @apply hidden; */
     display: none !important;
   }
-
   @keyframes pulse {
     0% {
       opacity: 1;
@@ -561,5 +551,3 @@
     }
   }
 </style>
-
-

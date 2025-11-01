@@ -3,9 +3,7 @@
  * Stripped down working version for production startup
  * Full feature version to be restored after Phase 3 stabilization
  */
-
 import { createMachine, assign, fromPromise } from 'xstate';
-
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean };
@@ -13,17 +11,15 @@ export interface AIAssistantContext {
   model?: string;
   isProcessing?: boolean;
   error?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export type AIAssistantEvent =
   | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean }
   | { type: 'SET_MODEL'; model: string }
   | { type: 'CHECK_SERVICE_HEALTH' }
   | { type: 'ANALYZE_WITH_CONTEXT7'; query: string }
   | { type: 'CLEAR_CONVERSATION' }
-  | { type: 'done.invoke.checkHealth'; output: unknown };
-
+  | { type: 'done.invoke.checkHealth'; output: any };
 // Use generics so XState knows the context and event types
 export const aiAssistantMachine = createMachine({
   id: 'aiAssistant',
@@ -115,4 +111,3 @@ export const aiAssistantMachine = createMachine({
     },
   },
 });
-

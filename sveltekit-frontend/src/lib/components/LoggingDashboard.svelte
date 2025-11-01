@@ -20,17 +20,14 @@
     $logEntries.filter((entry: LogEntry) => {
       const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
       const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
-
       // Defensive: normalize search query and entry fields to avoid calling toLowerCase on undefined
       const sq = (searchQuery ?? '').toString().trim().toLowerCase();
       if (!sq) {
         return matchesLevel && matchesCategory;
       }
-
       const msg = (entry.message ?? '').toString().toLowerCase();
       const cat = (entry.category ?? '').toString().toLowerCase();
       const svc = (entry.service ?? '').toString().toLowerCase();
-
       const matchesSearch = msg.includes(sq) || cat.includes(sq) || svc.includes(sq);
       return matchesLevel && matchesCategory && matchesSearch;
     })
@@ -106,7 +103,7 @@
       fractionalSecondDigits: 3,
     });
   }
-  function formatData(data: unknown): string {
+  function formatData(data: any): string {
     if (!data) return '';
     try {
       return JSON.stringify(data, null, 2);
@@ -139,7 +136,6 @@
     showDetails = true;
   }
 </script>
-
 {#if visible}
   <div class="logging-dashboard bg-gray-900 text-white rounded-lg border border-gray-700" style="height: {height}">
     <!-- Header -->
@@ -155,7 +151,6 @@
           <button class="bits-btn px-3 py-1 text-sm" onclick={clearLogs}>🗑️ Clear</button>
         </div>
       </div>
-
       <!-- Stats Bar -->
       <div class="grid grid-cols-6 gap-4 mb-4" aria-live="polite">
         <div class="text-center">
@@ -183,7 +178,6 @@
           <div class="text-green-300 font-mono">{stats.avgLogsPerMinute}/min</div>
         </div>
       </div>
-
       <!-- Filters -->
       <div class="flex gap-4">
         <input
@@ -202,7 +196,7 @@
         </select>
         <select bind:value={selectedCategory} class="px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white">
           <option value="all">All Categories</option>
-          {#each categories as category}
+          {#each Array.isArray(categories) ? categories : [] as category}
             <option value={category}>{category}</option>
           {/each}
         </select>
@@ -212,7 +206,6 @@
         </label>
       </div>
     </div>
-
     <!-- Log Entries -->
     <div class="flex-1 overflow-y-auto p-2" bind:this={logContainer}>
       {#if filteredEntries.length === 0}
@@ -263,13 +256,11 @@
                   {#if entry.data}
                     <div class="text-xs text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       📎 Has additional data
-                    </div>
-                  {/if}
+                    {/if}
                   {#if entry.error}
                     <div class="text-xs text-red-400 mt-1">
                       🐛 {entry.error.message}
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
                 <!-- Actions -->
                 <div class="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -287,10 +278,8 @@
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
-
     <!-- Details Modal -->
     {#if showDetails && selectedEntry}
       <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -305,14 +294,12 @@
               <!-- modal close using native button -->
               <button class="bits-btn px-2 py-1" onclick={() => (showDetails = false)}>✕</button>
             </div>
-
             <div role="group" aria-label="Timestamp">
               <div class="text-sm text-gray-400">Timestamp</div>
               <div class="font-mono text-white">
                 {new Date(selectedEntry.timestamp).toISOString()}
               </div>
             </div>
-
             <div role="group" aria-label="Level" class="mt-3">
               <div class="text-sm text-gray-400">Level</div>
               <div>
@@ -324,7 +311,6 @@
                 </span>
               </div>
             </div>
-
             <div role="group" aria-label="Category" class="mt-3">
               <div class="text-sm text-gray-400">Category</div>
               <div class="text-white flex items-center gap-2">
@@ -332,40 +318,30 @@
                 {selectedEntry.category}
               </div>
             </div>
-
             <div role="group" aria-label="Entry ID" class="mt-3">
               <div class="text-sm text-gray-400">Entry ID</div>
               <div class="font-mono text-white text-sm">{selectedEntry.id}</div>
             </div>
-
             {#if selectedEntry.service}
               <div role="group" aria-label="Service" class="mt-3">
                 <div class="text-sm text-gray-400">Service</div>
                 <div class="text-white">{selectedEntry.service}</div>
-              </div>
-            {/if}
-
+              {/if}
             {#if selectedEntry.userId}
               <div role="group" aria-label="User ID" class="mt-3">
                 <div class="text-sm text-gray-400">User ID</div>
                 <div class="font-mono text-white text-sm">{selectedEntry.userId}</div>
-              </div>
-            {/if}
-
+              {/if}
             {#if selectedEntry.sessionId}
               <div role="group" aria-label="Session ID" class="mt-3">
                 <div class="text-sm text-gray-400">Session ID</div>
                 <div class="font-mono text-white text-sm">{selectedEntry.sessionId}</div>
-              </div>
-            {/if}
-
+              {/if}
             {#if selectedEntry.requestId}
               <div role="group" aria-label="Request ID" class="mt-3">
                 <div class="text-sm text-gray-400">Request ID</div>
                 <div class="font-mono text-white text-sm">{selectedEntry.requestId}</div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Message -->
             <div class="mt-4">
               <div class="text-sm text-gray-400">Message</div>
@@ -373,7 +349,6 @@
                 <code class="text-white whitespace-pre-wrap">{selectedEntry.message}</code>
               </div>
             </div>
-
             <!-- Data -->
             {#if selectedEntry.data}
               <div class="mt-4">
@@ -381,9 +356,7 @@
                 <div class="bg-gray-800 p-3 rounded border border-gray-600 overflow-x-auto">
                   <pre class="text-green-300 text-sm"><code>{formatData(selectedEntry.data)}</code></pre>
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Error -->
             {#if selectedEntry.error}
               <div class="mt-4">
@@ -395,9 +368,7 @@
                       ></pre>
                   {/if}
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Meta -->
             {#if selectedEntry.meta}
               <div class="mt-4">
@@ -405,22 +376,18 @@
                 <div class="bg-gray-800 p-3 rounded border border-gray-600 overflow-x-auto">
                   <pre class="text-blue-300 text-sm"><code>{formatData(selectedEntry.meta)}</code></pre>
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Tags -->
             {#if selectedEntry.tags && selectedEntry.tags.length > 0}
               <div class="mt-4">
                 <div class="text-sm text-gray-400">Tags</div>
                 <div class="flex flex-wrap gap-2 mt-2">
-                  {#each selectedEntry.tags as tag}
+                  {#each Array.isArray(selectedEntry.tags) ? selectedEntry.tags : [] as tag}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span
                     >
                   {/each}
                 </div>
-              </div>
-            {/if}
-
+              {/if}
             <!-- Actions -->
             <div class="flex gap-2 mt-6">
               <button
@@ -432,11 +399,8 @@
             </div>
           </div>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   .logging-dashboard {
     display: flex;
@@ -469,4 +433,3 @@
     background: #6b7280;
   }
 </style>
-

@@ -36,7 +36,7 @@ declare global {
       // RabbitMQ channel (optional)
       rabbitmqChannel?: any | null;
       // Add other locals properties as needed
-      [key: string]: unknown; // This index signature helps satisfy generic type checks
+      [key: string]: any; // This index signature helps satisfy generic type checks
     }
     // interface PageData {}
     // interface Error {}

@@ -3,9 +3,8 @@ import { EventEmitter } from 'events';
 // Real-time streaming service for AI synthesis with progressive updates
 import { logger } from './logger.js';
 import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
-
 // Helper to safely format unknown errors
-const getErrorMessage = (err: unknown): string => {
+const getErrorMessage = (err: any): string => {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -13,16 +12,13 @@ const getErrorMessage = (err: unknown): string => {
     return String(err);
   }
 };
-
 // --- Added/adjusted types to avoid `any` ---
 type PlainObject = Record<string, unknown>;
-
 export type StreamInput = {
   query: string;
   context?: PlainObject;
   options?: PlainObject;
 };
-
 export type Source = {
   id: string;
   title: string;
@@ -30,15 +26,12 @@ export type Source = {
   relevanceScore: number;
   type: string;
 };
-
 type StageProgress = { progress: number; complete: boolean; error?: string };
-
 type ProgressTracking = {
   stages: Record<string, StageProgress>;
   sources: Source[];
   totalProgress: number;
 };
-
 type ProcessingState = {
   startTime: number;
   status: 'processing' | 'complete' | 'error';
@@ -48,15 +41,13 @@ type ProcessingState = {
   duration?: number;
   error?: string;
 };
-
 type SynthesizerResult = {
   metadata?: { confidence?: number; qualityScore?: number };
   retrievedContext?: { sources?: Source[] };
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 // Runtime type guard for synthesizer output
-function isSynthesizerResult(obj: unknown): obj is SynthesizerResult {
+function isSynthesizerResult(obj: any): obj is SynthesizerResult {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   if (o.metadata && typeof o.metadata === 'object') return true;
@@ -64,10 +55,9 @@ function isSynthesizerResult(obj: unknown): obj is SynthesizerResult {
   // If neither metadata nor retrievedContext present, still allow if object-shaped (lenient)
   return true;
 }
-
 export interface StreamEvent {
   type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';
-  data: unknown;
+  data: any;
 }
 export interface StreamSubscriber {
   callback: (_event: StreamEvent) => void;
@@ -75,31 +65,27 @@ export interface StreamSubscriber {
 }
 export interface StreamingOptions {
   input: StreamInput;
-  onProgress?: (stage: string, progress: number, data?: unknown) => void;
-  onStage?: (stage: string, data: unknown) => void;
+  onProgress?: (stage: string, progress: number, data?: any) => void;
+  onStage?: (stage: string, data: any) => void;
   onSource?: (source: Source) => void;
   onComplete?: (result: SynthesizerResult) => void;
   onError?: (error: Error) => void;
 }
-
 class StreamingService extends EventEmitter {
   private streams: Map<string, StreamSubscriber[]> = new Map();
   private activeProcessing: Map<string, ProcessingState> = new Map();
   private streamBuffer: Map<string, StreamEvent[]> = new Map();
   private progressTracking: Map<string, ProgressTracking> = new Map();
-
   constructor() {
     super();
     this.initialize();
   }
-
   private initialize(): void {
     logger.info('[StreamingService] Initializing streaming service...');
     // Cleanup inactive streams periodically
     setInterval(() => this.cleanupInactiveStreams(), 60000); // Every minute
     logger.info('[StreamingService] Streaming service initialized');
   }
-
   /**
    * Subscribe to a stream
    */
@@ -137,7 +123,6 @@ class StreamingService extends EventEmitter {
       logger.debug(`[StreamingService] Subscriber removed from stream ${streamId}`);
     };
   }
-
   /**
    * Synthesize with progressive streaming updates
    */
@@ -164,7 +149,6 @@ class StreamingService extends EventEmitter {
         sources: [],
         totalProgress: 0,
       });
-
       // Stage 1: Query Analysis (0-20%)
       await this.processStage(
         streamId,
@@ -179,7 +163,6 @@ class StreamingService extends EventEmitter {
         0,
         20
       );
-
       // Stage 2: Multi-Strategy Retrieval (20-50%)
       const sources = await this.processStage(
         streamId,
@@ -205,7 +188,6 @@ class StreamingService extends EventEmitter {
         20,
         50
       );
-
       // Stage 3: Ranking and Processing (50-70%)
       const rankedSources = await this.processStage(
         streamId,
@@ -224,7 +206,6 @@ class StreamingService extends EventEmitter {
         50,
         70
       );
-
       // Stage 4: Prompt Construction (70-85%)
       await this.processStage(
         streamId,
@@ -243,7 +224,6 @@ class StreamingService extends EventEmitter {
         70,
         85
       );
-
       // Stage 5: Quality Assessment (85-100%)
       const finalResult = await this.processStage<unknown>(
         streamId,
@@ -292,7 +272,6 @@ class StreamingService extends EventEmitter {
         85,
         100
       );
-
       // Mark processing as complete
       const processing = this.activeProcessing.get(streamId);
       if (processing) {
@@ -301,7 +280,6 @@ class StreamingService extends EventEmitter {
         processing.endTime = Date.now();
         processing.duration = processing.endTime - processing.startTime;
       }
-
       // Call completion callback only if result validates as SynthesizerResult,
       // otherwise provide a safe fallback object.
       if (isSynthesizerResult(finalResult)) {
@@ -315,7 +293,7 @@ class StreamingService extends EventEmitter {
       }
       logger.info(`[StreamingService] Completed progressive synthesis for stream ${streamId}`);
       return finalResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[StreamingService] Progressive synthesis failed for stream ${streamId}: ${getErrorMessage(error)}`);
       // Mark processing as failed
       const processing = this.activeProcessing.get(streamId);
@@ -334,7 +312,6 @@ class StreamingService extends EventEmitter {
       }, 60000); // Keep for 1 minute for late subscribers
     }
   }
-
   /**
    * Send event to stream subscribers
    */
@@ -344,7 +321,7 @@ class StreamingService extends EventEmitter {
       for (const subscriber of subscribers) {
         try {
           subscriber.callback(event);
-        } catch (error: unknown) {
+        } catch (error: any) {
           logger.error(`[StreamingService] Failed to send event to subscriber: ${getErrorMessage(error)}`);
         }
       }
@@ -361,7 +338,6 @@ class StreamingService extends EventEmitter {
       }
     }
   }
-
   /**
    * Process a stage with progress tracking
    */
@@ -395,7 +371,7 @@ class StreamingService extends EventEmitter {
         processing.progress = endProgress;
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[StreamingService] Stage ${stageName} failed: ${getErrorMessage(error)}`);
       if (tracking) {
         tracking.stages[stageName].error = getErrorMessage(error);
@@ -403,7 +379,6 @@ class StreamingService extends EventEmitter {
       throw error;
     }
   }
-
   /**
    * Simulate query analysis with progress
    */
@@ -411,7 +386,7 @@ class StreamingService extends EventEmitter {
     original: string;
     enhanced: string;
     intent: string;
-    entities: unknown[];
+    entities: any[];
     complexity: number;
   }> {
     // Simulate processing time
@@ -424,7 +399,6 @@ class StreamingService extends EventEmitter {
       complexity: 0.7,
     };
   }
-
   /**
    * Stream retrieval with source-by-source updates
    */
@@ -451,7 +425,6 @@ class StreamingService extends EventEmitter {
     }
     return sources;
   }
-
   /**
    * Stream ranking with progress updates
    */
@@ -464,7 +437,6 @@ class StreamingService extends EventEmitter {
     // Sort by relevance
     return sources.sort((a, b) => b.relevanceScore - a.relevanceScore);
   }
-
   /**
    * Construct prompt with progress updates
    */
@@ -491,11 +463,10 @@ class StreamingService extends EventEmitter {
     }
     return prompt;
   }
-
   /**
    * Get stream status
    */
-  getStreamStatus(streamId: string): unknown {
+  getStreamStatus(streamId: string): any {
     const processing = this.activeProcessing.get(streamId);
     const tracking = this.progressTracking.get(streamId);
     const subscribers = this.streams.get(streamId);
@@ -511,12 +482,11 @@ class StreamingService extends EventEmitter {
       duration: processing?.duration,
     };
   }
-
   /**
    * Get all active streams
    */
-  getActiveStreams(): unknown[] {
-    const streams: unknown[] = [];
+  getActiveStreams(): any[] {
+    const streams: any[] = [];
     for (const [streamId, processing] of Array.from(this.activeProcessing.entries())) {
       streams.push({
         streamId,
@@ -529,7 +499,6 @@ class StreamingService extends EventEmitter {
     }
     return streams;
   }
-
   /**
    * Clean up inactive streams
    */
@@ -554,14 +523,12 @@ class StreamingService extends EventEmitter {
       }
     }
   }
-
   /**
    * Utility delay function
    */
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
   /**
    * Shutdown streaming service
    */
@@ -576,7 +543,7 @@ class StreamingService extends EventEmitter {
       for (const subscriber of subscribers) {
         try {
           subscriber.callback(event);
-        } catch (error: unknown) {
+        } catch (error: any) {
           // Ignore errors during shutdown but log them
           logger.debug(`[StreamingService] Error notifying subscriber during shutdown: ${getErrorMessage(error)}`);
         }
@@ -590,17 +557,14 @@ class StreamingService extends EventEmitter {
     logger.info('[StreamingService] Streaming service shutdown complete');
   }
 }
-
 // Export singleton instance
 export const streamingService = new StreamingService();
-
 // Support for Ollama local LLM integration
 export class OllamaStreamingAdapter {
   private ollamaUrl: string;
   constructor(ollamaUrl: string = 'http://localhost:11434') {
     this.ollamaUrl = ollamaUrl;
   }
-
   /**
    * Stream from Ollama with progressive updates
    */
@@ -629,7 +593,7 @@ export class OllamaStreamingAdapter {
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      let done = false;
+      let done = $state(false);
       while (!done) {
         const { done: d, value } = await reader.read();
         done = d;
@@ -650,19 +614,18 @@ export class OllamaStreamingAdapter {
             if (data.done) {
               onComplete(fullResponse);
             }
-          } catch (e: unknown) {
+          } catch (e: any) {
             // Ignore parse errors for partial chunks
           }
         }
       }
       // Ensure onComplete called if not signalled by stream
       onComplete(fullResponse);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error(`[OllamaStreamingAdapter] Streaming failed: ${getErrorMessage(error)}`);
       throw error instanceof Error ? error : new Error(getErrorMessage(error));
     }
   }
-
   /**
    * Check if Ollama is available
    */
@@ -670,14 +633,12 @@ export class OllamaStreamingAdapter {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/status`);
       return response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.debug(`[OllamaStreamingAdapter] Availability check failed: ${getErrorMessage(error)}`);
       return false;
     }
   }
 }
-
 // Export Ollama adapter
 export const ollamaAdapter = new OllamaStreamingAdapter();
-
 // Types are already exported as interfaces above

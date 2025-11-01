@@ -90,7 +90,7 @@ type CacheStats = {
 
 // Add a small local interface describing the memory manager methods we rely on
 type MemoryManagerInterface = {
-  store: (key: string, value: unknown, priority: Priority, ttlSeconds: number) => Promise<void>;
+  store: (key: string, value: any, priority: Priority, ttlSeconds: number) => Promise<void>;
   retrieve: (key: string) => Promise<unknown | null>;
   delete?: (key: string) => Promise<void>;
 };
@@ -116,7 +116,7 @@ interface CacheMetadata {
   documentIds?: string[];
   practiceArea?: string;
   jurisdiction?: string;
-  [key: string]: unknown; // Allow other arbitrary properties
+  [key: string]: any; // Allow other arbitrary properties
 }
 
 interface InvalidationContext {
@@ -421,7 +421,7 @@ export class UnifiedLegalCacheOrchestrator {
   }
 
   // Helpers
-  private generateQueryHash(query: string, modelId: string, options: unknown): string {
+  private generateQueryHash(query: string, modelId: string, options: any): string {
     const hashInput = JSON.stringify({ query, modelId, options });
     return createHash('sha256').update(hashInput).digest('hex').substring(0, 16);
   }
@@ -616,7 +616,7 @@ export class UnifiedLegalCacheOrchestrator {
   }
 
   // Small helpers to avoid `any` and to safely extract typed fields from unknowns
-  private asRecord(u: unknown): Record<string, unknown> | null {
+  private asRecord(u: any): Record<string, unknown> | null {
     return u && typeof u === 'object' && !Array.isArray(u) ? (u as Record<string, unknown>) : null;
   }
 

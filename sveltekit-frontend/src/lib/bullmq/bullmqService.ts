@@ -52,7 +52,7 @@ export interface CacheInvalidationJob {
 // Job results
 export interface JobResult {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   processingTime: number;
   metadata?: { [key: string]: any };

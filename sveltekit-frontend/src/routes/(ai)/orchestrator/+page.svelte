@@ -4,9 +4,9 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Textarea } from '$lib/components/ui/textarea.svelte'';
   import {
     Cpu,
     Brain,
@@ -43,7 +43,7 @@ Showcases the service worker-based AI orchestration system
   // Local demo state (avoid runtime $state magic here for compile stability)
   let selectedModel: LLMModel | undefined;
   let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
-  let isProcessing = false;
+  let isProcessing = $state(false);
   let demoResults: DemoResult[] = [];
 
   // Demo scenarios
@@ -123,7 +123,7 @@ Showcases the service worker-based AI orchestration system
     } catch (error) {
       console.error('Demo scenario failed:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -156,7 +156,7 @@ Showcases the service worker-based AI orchestration system
         demoResults = [{ task, error: (error as Error).message ?? String(error) }];
       }
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
 
@@ -236,14 +236,14 @@ Showcases the service worker-based AI orchestration system
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {#each demoScenarios as scenario}
+          {#each Array.isArray(demoScenarios) ? demoScenarios : [] as scenario}
             <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <h3 class="font-semibold mb-2">{scenario.name}</h3>
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 {scenario.description}
               </p>
               <div class="space-y-2 mb-4">
-                {#each scenario.tasks as task}
+                {#each Array.isArray(scenario.tasks) ? scenario.tasks : [] as task}
                   {@const SvelteComponent = getProviderIcon(task.provider)}
                   <div class="flex items-center gap-2 text-xs">
                     <SvelteComponent
@@ -346,7 +346,7 @@ runDemoScenario(scenario)}
             </div>
           {:else}
             <div class="space-y-3 max-h-96 overflow-y-auto">
-              {#each demoResults as result}
+              {#each Array.isArray(demoResults) ? demoResults : [] as result}
                 {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
                 <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
                   <div class="flex items-start justify-between mb-2">

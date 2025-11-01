@@ -133,14 +133,12 @@
           <div class="flex items-center gap-1 text-orange-400">
             <span class="w-4 h-4">🔓</span>
             <span class="text-xs font-mono">UNSEALED</span>
-          </div>
-        {/if}
+          {/if}
         {#if evidence?.compromised}
           <div class="flex items-center gap-1 text-red-400">
             <span class="w-4 h-4">⚠️</span>
             <span class="text-xs font-mono">COMPROMISED</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Current Status Grid -->
@@ -174,8 +172,7 @@
         <p class="text-red-300">
           {evidence?.compromisedReason || 'Reason not specified'}
         </p>
-      </div>
-    {/if}
+      {/if}
     <!-- Transfer Action -->
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
@@ -185,8 +182,7 @@
         >
           Transfer Custody
         </button>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Chain of Custody History -->
   <div class="bg-yorha-bg-secondary border border-yorha-border rounded-lg p-4">
@@ -304,8 +300,7 @@
                     <div class="mt-3 p-2 bg-yorha-bg-primary rounded text-xs font-mono">
                       <span class="text-yorha-text-secondary">Notes:</span>
                       <div class="text-yorha-text-primary mt-1">{transfer.notes}</div>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
                </div>
             </button>
@@ -320,10 +315,8 @@
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}
             </button>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
 </div>
 

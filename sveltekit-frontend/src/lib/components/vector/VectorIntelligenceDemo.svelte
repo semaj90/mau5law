@@ -14,7 +14,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type {
     VectorSearchResult,
@@ -145,7 +145,7 @@ await loadSystemHealth();
       console.error('Search failed:', error);
       processingStage = `Search failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function generateRecommendations() {
@@ -178,7 +178,7 @@ await loadSystemHealth();
       console.error('Recommendation generation failed:', error);
       processingStage = `Failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function performSemanticAnalysis() {
@@ -194,7 +194,7 @@ await loadSystemHealth();
       console.error('Semantic analysis failed:', error);
       processingStage = `Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function loadDemoQuery(query: string) {
@@ -310,7 +310,7 @@ await loadSystemHealth();
             <Search class="h-4 w-4" />
             Semantic Search
           </h3>
-          {#each demoSearchQueries as example}
+          {#each Array.isArray(demoSearchQueries) ? demoSearchQueries : [] as example}
             <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
@@ -324,7 +324,7 @@ await loadSystemHealth();
             <Lightbulb class="h-4 w-4" />
             AI Recommendations
           </h3>
-          {#each demoRecommendationContexts as example}
+          {#each Array.isArray(demoRecommendationContexts) ? demoRecommendationContexts : [] as example}
             <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
@@ -338,7 +338,7 @@ await loadSystemHealth();
             <FileText class="h-4 w-4" />
             Document Analysis
           </h3>
-          {#each demoAnalysisContent as example}
+          {#each Array.isArray(demoAnalysisContent) ? demoAnalysisContent : [] as example}
             <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
@@ -401,8 +401,7 @@ activeTab = 'health'}
           <span class="nes-text is-disabled">{processingStage}</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Tab Content -->
   {#if activeTab === 'search'}
     <!-- Semantic Search Tab -->
@@ -435,8 +434,7 @@ activeTab = 'health'}
                   <option value="general">General</option>
                 </select>
               </div>
-            </div>
-          {/if}
+            {/if}
           <div class="flex items-center gap-2">
             <Button
               onclick={performSearch}
@@ -478,42 +476,40 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
           <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
             <div class="space-y-4">
-              {#each searchResults as result}
+              {#each Array.isArray(searchResults) ? searchResults : [] as result}
                 <div class="vector-result-item">
                   <div class="flex items-start justify-between mb-2">
-                    <h3 class="font-semibold text-sm">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).id}</h3>
+                    <h3 class="font-semibold text-sm">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id}</h3>
                     <div class="flex items-center gap-2">
-                      <Badge class={getConfidenceColor((result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity)}>
+                      <Badge class={getConfidenceColor((result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity)}>
                         {Math.round.similarity * 100)}%
                       </Badge>
-                      <Badge class="bits-badge-outline text-xs">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</Badge>
+                      <Badge class="bits-badge-outline text-xs">{(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</Badge>
                     </div>
                   </div>
                   <p class="text-sm nes-text is-disabled mb-3">
-                    {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).content.substring(0, 200)}...
+                    {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).content.substring(0, 200)}...
                   </p>
-                  {#if (result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).highlights?.length > 0}
+                  {#if (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights?.length > 0}
                     <div class="space-y-1">
                       <p class="text-xs font-medium">Highlights:</p>
-                      {#each (result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).highlights as highlight}
+                      {#each (result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).highlights as highlight}
                         <p class="text-xs bg-muted p-2 rounded">
                           <span class="vector-highlight">{highlight}</span>
                         </p>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                   <div class="vector-metadata-grid mt-3">
-                    <span>Relevance: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).relevanceScore.toFixed(2)}</span>
-                    <span>Similarity: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity.toFixed(3)}</span>
-                    <span>Source: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</span>
-                    <span>ID: {(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).id.substring(0, 8)}...</span>
+                    <span>Relevance: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).relevanceScore.toFixed(2)}</span>
+                    <span>Similarity: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).similarity.toFixed(3)}</span>
+                    <span>Source: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).source}</span>
+                    <span>ID: {(result as { id?: any; similarity?: any; source?: any; content?: any; highlights?: any; relevanceScore?: any }).id.substring(0, 8)}...</span>
                   </div>
                 </div>
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if activeTab === 'recommendations'}
     <!-- AI Recommendations Tab -->
@@ -601,7 +597,7 @@ showAdvancedOptions = !showAdvancedOptions}
           </div>
           <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
             <div class="recommendation-container">
-              {#each recommendations as rec}
+              {#each Array.isArray(recommendations) ? recommendations : [] as rec}
                 {@const SvelteComponent = getRecommendationIcon(rec.type)}
                 <div class={getRecommendationColor(rec.type)}>
                   <div class="recommendation-header">
@@ -623,16 +619,14 @@ showAdvancedOptions = !showAdvancedOptions}
                       {#if rec.actionItems.immediate?.length > 0}
                         <div>
                           <p class="text-xs font-medium mb-1">Immediate Actions:</p>
-                          {#each rec.actionItems.immediate as action}
+                          {#each Array.isArray(rec.actionItems.immediate) ? rec.actionItems.immediate : [] as action}
                             <div class="flex items-center gap-2 text-xs">
                               <CheckCircle class="h-3 w-3 text-red-500" />
                               {action}
                             </div>
                           {/each}
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
+                        {/if}
+                    {/if}
                   <div class="recommendation-actions">
                     <span>Impact: {rec.estimatedImpact?.successProbability || 'N/A'}%</span>
                     <span>Time: {rec.estimatedImpact?.timeToComplete || 'N/A'}min</span>
@@ -642,8 +636,7 @@ showAdvancedOptions = !showAdvancedOptions}
               {/each}
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if activeTab === 'analysis'}
     <!-- Semantic Analysis Tab -->
@@ -693,7 +686,7 @@ showAdvancedOptions = !showAdvancedOptions}
             <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.entities?.length > 0}
                 <div class="semantic-entity-container">
-                  {#each semanticAnalysis.entities as entity}
+                  {#each Array.isArray(semanticAnalysis.entities) ? semanticAnalysis.entities : [] as entity}
                     {@const SvelteComponent_1 = getEntityIcon(entity.type)}
                     <div class={getEntityColor(entity.type)}>
                       <SvelteComponent_1 class="h-3 w-3 mr-1" />
@@ -718,7 +711,7 @@ showAdvancedOptions = !showAdvancedOptions}
             <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.themes?.length > 0}
                 <div class="space-y-3">
-                  {#each semanticAnalysis.themes as theme}
+                  {#each Array.isArray(semanticAnalysis.themes) ? semanticAnalysis.themes : [] as theme}
                     <div class="theme-item">
                       <div>
                         <p class="theme-title">{theme.topic}</p>
@@ -749,7 +742,7 @@ showAdvancedOptions = !showAdvancedOptions}
             <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
               {#if semanticAnalysis.relationships?.length > 0}
                 <div class="relationship-container">
-                  {#each semanticAnalysis.relationships as rel}
+                  {#each Array.isArray(semanticAnalysis.relationships) ? semanticAnalysis.relationships : [] as rel}
                     <div class="relationship-item">
                       <span class="relationship-from">{rel.from}</span>
                       <span class="relationship-type">{rel.type}</span>
@@ -821,8 +814,7 @@ showAdvancedOptions = !showAdvancedOptions}
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if activeTab === 'health'}
     <!-- System Health Tab -->
@@ -928,12 +920,10 @@ showAdvancedOptions = !showAdvancedOptions}
           {:else}
             <div class="text-center py-8">
               <p class="nes-text is-disabled">Loading system health information...</p>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */

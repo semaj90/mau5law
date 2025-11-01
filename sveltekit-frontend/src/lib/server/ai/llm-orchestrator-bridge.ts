@@ -63,9 +63,9 @@ type UntypedOrchestratorResult = {
     cacheHitRate?: number;
     memoryUsed?: number;
     qualityScore?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export interface LLMBridgeRequest {
@@ -102,7 +102,7 @@ interface RoutingDecision {
   reasoning?: string;
   confidence?: number;
   // allow extra routing metadata
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // ADDED: Define the expected result type from the enhanced orchestrator (avoid `any`)
@@ -636,7 +636,7 @@ export class LLMOrchestratorBridge {
       const health = await enhancedOrchestrator.health();
       logger.info('[LLM Bridge] Server orchestrator health:', health.status);
       return health.status === 'healthy';
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       logger.warn('[LLM Bridge] Server orchestrator not available:', message);
       return false;
@@ -647,7 +647,7 @@ export class LLMOrchestratorBridge {
       const status = await unifiedClientLLMOrchestrator.getStatus();
       logger.info('[LLM Bridge] Client orchestrator models loaded:', status.modelsLoaded);
       return status.modelsLoaded > 0;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       logger.warn('[LLM Bridge] Client orchestrator not available:', message);
       return false;

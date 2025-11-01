@@ -2,21 +2,18 @@ import { db, pool } from './drizzle';
 import { users, cases, evidence } from './schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
-
 // Sample embeddings (normally produced by an AI model)
 const sampleEmbeddings = {
   financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
   legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
   criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3),
 };
-
 async function seed() {
   console.log('[seed] Starting database seed...');
   try {
     console.log('[seed] Creating or refreshing demo users...');
     const passwordHash = await bcrypt.hash('password123', 12);
     const demoPasswordHash = await bcrypt.hash('demo123', 12);
-
     const seedUsers = [
       {
         email: 'demo@legal-ai.local',
@@ -55,7 +52,6 @@ async function seed() {
         isActive: true,
       },
     ];
-
     const insertedUsers: typeof seedUsers = [];
     for (const user of seedUsers) {
       try {
@@ -86,7 +82,6 @@ async function seed() {
       }
     }
     console.log(`[seed] Users ready: ${insertedUsers.length}`);
-
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
       [
@@ -100,14 +95,11 @@ async function seed() {
         '  Admin       admin@legal.ai / password123',
       ].join('\n')
     );
-
     // Skip case/evidence bootstrap for now (schema still in flux)
     return;
-
     // -----------------------------------------------------------------------
     // Future bootstrap data (kept for reference)
     // -----------------------------------------------------------------------
-
     console.log('[seed] Creating sample cases...');
     const insertedCases = await db
       .insert(cases)
@@ -127,7 +119,6 @@ async function seed() {
         },
       ])
       .returning();
-
     console.log('[seed] Creating sample evidence...');
     await db.insert(evidence).values([
       {
@@ -150,7 +141,6 @@ async function seed() {
     console.log('[seed] Connection pool closed.');
   }
 }
-
 seed()
   .then(() => {
     console.log('[seed] completed');
@@ -160,5 +150,4 @@ seed()
     console.error('[seed] failed:', error);
     process.exit(1);
   });
-
 export { seed };

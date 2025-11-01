@@ -1,9 +1,9 @@
 <script lang="ts">
   // $props is a built-in rune in Svelte 5, no import needed
   interface Props {
-    overlay: unknown;
-    content: unknown;
-    openState: unknown;
+    overlay: any;
+    content: any;
+    openState: any;
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   }
   let {
@@ -12,7 +12,7 @@
     openState,
     size = 'md',
     children
-  }: Props & { children?: unknown } = $props();
+  }: Props & { children?: any } = $props();
   import { fade, fly } from 'svelte/transition';
   const sizeClasses = {
     sm: 'max-w-sm',
@@ -38,5 +38,4 @@
     {#if children}
       {@render children()}
     {/if}
-  </div>
-{/if}
+  {/if}

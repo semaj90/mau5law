@@ -17,7 +17,7 @@ export interface Relationship {
   source: string;
   target: string;
   type: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export type BoardPosition = {
@@ -31,7 +31,7 @@ export interface ProcessingOptions {
   notify?: boolean;
   saveIntermediateResults?: boolean;
   overrideExisting?: boolean;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 // Minimal Ollama/embedding service stubs to avoid runtime/type errors.
 // Replace these with your real implementations.
@@ -48,7 +48,7 @@ export interface AIAnalysis {
   timestamp: Date;
   processingTime: number;
   gpuAccelerated: boolean;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 export interface EvidenceData {
   id?: string;
@@ -66,13 +66,13 @@ export interface EvidenceData {
   mimeType?: string;
   hash?: string;
   boardPosition?: BoardPosition;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 const ollamaService = {
-  async generateCompletion(_options: unknown) {
+  async generateCompletion(_options: any) {
     return { response: JSON.stringify({ confidence: 0.8, entities: [], summary: 'stub', keywords: [] }) };
   },
-  async generateEmbedding(_options: unknown) {
+  async generateEmbedding(_options: any) {
     return { embedding: [] as number[] };
   },
 };
@@ -126,7 +126,7 @@ class EvidenceAIService {
           } else {
             console.warn('Enhanced RAG service returned non-OK status:', resp.status);
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.warn('Enhanced RAG service request failed, falling back:', err);
         }
       }
@@ -151,7 +151,7 @@ class EvidenceAIService {
               classification: 'evidence_analysis',
             };
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.warn('Fallback completion failed:', err);
           analysisResult = {
             summary: `${context.title}${context.description ? ' — ' + context.description : ''}`.slice(0, 2000),
@@ -178,7 +178,7 @@ class EvidenceAIService {
         processingTime,
         gpuAccelerated: Boolean(options.useGPUAcceleration),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Evidence AI analysis failed:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       return {
@@ -202,7 +202,7 @@ class EvidenceAIService {
     try {
       const resp = await ollamaService.generateEmbedding({ model: 'all-mpnet-base-v2', input: text });
       return Array.isArray(resp?.embedding) ? (resp.embedding as number[]) : [];
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('generateEmbedding failed:', err);
       return [];
     }
@@ -218,7 +218,7 @@ class EvidenceAIService {
       // return an empty array by default or integrate a repository-based search if available.
       // Implementers should replace this with a proper pgvector search using raw SQL or a repository client.
       return [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Semantic search failed:', error);
       return [];
     }
@@ -271,7 +271,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       filters: { caseId, evidenceType, analyzed, search },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence fetch error:', error);
     return json(
       {
@@ -414,7 +414,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 201 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error creating evidence:', error);
     return json(
       {
@@ -489,7 +489,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             analysis: analysisResult,
             status: 'completed',
           });
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('Analysis action failed:', err);
           return json(
             {
@@ -518,7 +518,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             success: true,
             evidence: updatedEvidence,
           });
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('Update action failed:', err);
           return json(
             {
@@ -537,7 +537,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence processing error:', error);
     return json(
       {
@@ -590,7 +590,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       evidence,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence update error:', error);
     return json(
       {
@@ -631,7 +631,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Evidence deleted successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence deletion error:', error);
     return json(
       {

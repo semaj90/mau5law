@@ -12,7 +12,7 @@ export interface ChatMessage {
   type?: 'user' | 'assistant' | 'system' | 'error' | 'command';
   metadata?: {
     confidence?: number;
-    sources?: unknown[];
+    sources?: any[];
     processing_time?: number;
     model?: string;
     tokens_used?: number;
@@ -201,7 +201,7 @@ class AIChatStore {
   }
 
   // Enhanced RAG Integration
-  async sendToRAG(message: string, context?: unknown): Promise<any> {
+  async sendToRAG(message: string, context?: any): Promise<any> {
     this.state.isLoading = true;
     this.state.lastError = null;
 
@@ -229,14 +229,14 @@ class AIChatStore {
       const result = await response.json();
 
       this.state.connectionStatus = 'connected';
-      this.state.isLoading = false;
+      this.state.isLoading = $state(false);
 
       return result;
     } catch (error: any) {
       console.error('RAG service error:', error);
 
       this.state.connectionStatus = 'disconnected';
-      this.state.isLoading = false;
+      this.state.isLoading = $state(false);
       this.state.lastError = error instanceof Error ? error.message : 'Unknown error';
 
       throw error;
@@ -396,7 +396,7 @@ export const updateMessage = (messageId: string, updates: Partial<ChatMessage>) 
   aiChatStore.updateMessage(messageId, updates);
 export const deleteMessage = (messageId: string) => aiChatStore.deleteMessage(messageId);
 export const clearCurrentSession = () => aiChatStore.clearCurrentSession();
-export const sendToRAG = (message: string, context?: unknown) => aiChatStore.sendToRAG(message, context);
+export const sendToRAG = (message: string, context?: any) => aiChatStore.sendToRAG(message, context);
 export const checkRAGConnection = () => aiChatStore.checkRAGConnection();
 export const exportSession = (sessionId: string, format?: 'json' | 'markdown' | 'txt') =>
   aiChatStore.exportSession(sessionId, format);

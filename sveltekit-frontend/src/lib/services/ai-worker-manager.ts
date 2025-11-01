@@ -14,7 +14,7 @@ export interface WorkerConfiguration {
 export interface AIResponse {
   tokensUsed?: number;
   // Allow additional response fields but avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ProcessingMetrics {
@@ -44,7 +44,7 @@ interface ActiveTask {
   startTime: number;
   resolve: (result: TaskResult) => void;
   // Use unknown for rejection reasons to avoid `any`
-  reject: (reason?: unknown) => void;
+  reject: (reason?: any) => void;
 }
 
 export interface WorkerPool {
@@ -57,7 +57,7 @@ export interface WorkerPool {
 export interface WorkerMessage {
   type: string;
   // Incoming worker payloads are unknown; cast at use sites to concrete types
-  payload: unknown;
+  payload: any;
   taskId: string;
 }
 
@@ -66,7 +66,7 @@ export class AIWorkerManager {
   private workerPool: WorkerPool;
   private activeTasks: Map<string, ActiveTask>;
   private metrics: Map<string, ProcessingMetrics>;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   public onTaskComplete?: (taskId: string, response: AIResponse) => void;
   public onTaskError?: (taskId: string, error: Error) => void;
@@ -183,7 +183,7 @@ export class AIWorkerManager {
     this.workerPool.currentLoad = [];
     this.activeTasks.clear();
     this.metrics.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     if (this.config.enableLogging) {
       console.log('AI Worker Manager shutdown completed');
     }

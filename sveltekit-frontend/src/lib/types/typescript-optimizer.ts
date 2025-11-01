@@ -28,7 +28,7 @@ export interface TypeScriptFixResult {
   fixed_code: string;
   explanation: string;
   confidence: number;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 // Request Types
 export interface AutoSolveRequest {
@@ -56,7 +56,7 @@ export interface BenchmarkRequest {
   strategy: 'speed' | 'quality' | 'comparison';
   iterations?: number;
   endpoints?: string[];
-  parameters?: { [key: string]: unknown };
+  parameters?: { [key: string]: any };
 }
 // Response Types
 export interface AutoSolveResponse {
@@ -66,7 +66,7 @@ export interface AutoSolveResponse {
   fixes: TypeScriptFix[];
   processing_time: number;
   strategy: string;
-  metadata: { [key: string]: unknown };
+  metadata: { [key: string]: any };
 }
 export interface OptimizedFixResponse {
   success: boolean;
@@ -74,7 +74,7 @@ export interface OptimizedFixResponse {
   successful_count: number;
   results: TypeScriptFixResult[];
   processing_stats: ProcessingStats;
-  optimization_meta: { [key: string]: unknown };
+  optimization_meta: { [key: string]: any };
 }
 export interface ProcessingStats {
   total_time: number; // milliseconds,
@@ -133,15 +133,15 @@ export interface PerformanceComparison {
   fastest_endpoint: string;
   most_accurate: string;
   best_overall: string;
-  performance_summary: { [key: string]: unknown };
+  performance_summary: { [key: string]: any };
   resource_efficiency: Record<string, number>;
   scaling_analysis?: ScalingAnalysis;
 }
 export interface ScalingAnalysis {
   linear_scaling: boolean;
   optimal_batch_size: number;
-  performance_by_batch_size: unknown[];
-  resource_scaling: unknown[];
+  performance_by_batch_size: any[];
+  resource_scaling: any[];
 }
 // Service Status Types
 export interface OptimizerStatus {
@@ -151,10 +151,10 @@ export interface OptimizerStatus {
   timestamp: string;
   go_service: {
     available: boolean;
-    health: unknown;
+    health: any;
     url: string;
   };
-  performance: unknown;
+  performance: any;
   capabilities: OptimizerCapabilities;
   endpoints: Record<string, string>;
 }
@@ -260,7 +260,7 @@ export interface ProcessingSession {
 export interface WebSocketEvent {
   type: 'progress' | 'completed' | 'error' | 'status';
   session_id: string;
-  data: unknown;
+  data: any;
   timestamp: string;
 }
 export interface ProgressEvent extends WebSocketEvent {
@@ -310,5 +310,5 @@ export interface APIResponse<T = unknown> {
   error?: string;
   details?: string;
   timestamp: string;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }

@@ -2,17 +2,17 @@
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Loader2, Search, Brain, Zap, Database } from 'lucide-svelte';
   import { context7Service, type VectorIntelligence } from '$lib/services/context7Service';
   // Reactive state from Context7 service
@@ -135,7 +135,7 @@ await context7Service.initialize();
       <div class="space-y-2">
         <label class="text-sm font-medium">Filters:</label>
         <div class="flex flex-wrap gap-2">
-          {#each availableFilters as filter}
+          {#each Array.isArray(availableFilters) ? availableFilters : [] as filter}
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
@@ -150,7 +150,7 @@ await context7Service.initialize();
       <div class="space-y-2">
         <label class="text-sm font-medium">Sample Queries:</label>
         <div class="flex flex-wrap gap-2">
-          {#each sampleQueries as query}
+          {#each Array.isArray(sampleQueries) ? sampleQueries : [] as query}
             <Button
               variant="ghost"
               size="sm"
@@ -248,7 +248,7 @@ useSampleQuery(query)}
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2">
-              {#each searchResults.suggestions as suggestion}
+              {#each Array.isArray(searchResults.suggestions) ? searchResults.suggestions : [] as suggestion}
                 <div class="p-3 bg-blue-50 rounded-lg text-sm">
                   {suggestion}
                 </div>
@@ -270,7 +270,7 @@ Clear
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2">
-              {#each searchHistory as query}
+              {#each Array.isArray(searchHistory) ? searchHistory : [] as query}
                 <button
                   class="w-full text-left p-2 text-sm rounded hover:bg-gray-100 transition-colors"
                   onclick={() => useHistoryQuery(query)}

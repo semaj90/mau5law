@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
             break;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const errMsg = formatError(error);
         if (db in syncResults) {
           // narrow the type to avoid TS errors
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({ success: true, synchronization: syncResults, timestamp: Date.now() });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         error: 'Failed to synchronize databases',
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // Add helper to safely extract error messages
-function formatError(error: unknown): string {
+function formatError(error: any): string {
   if (typeof error === 'string') return error;
   if (error instanceof Error) return error.message;
   try {

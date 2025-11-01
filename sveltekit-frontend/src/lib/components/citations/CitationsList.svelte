@@ -16,7 +16,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   import { onMount } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
-  import CitationEditor from './CitationEditor.svelte';
+  import { CitationEditor } from './CitationEditor.svelte';
   // Props
   // Event dispatcher
   // State
@@ -74,7 +74,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     } catch (error) {
       console.error('Citation loading error:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Apply client-side sorting
@@ -109,7 +109,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       );
     }
     applyClientSideSort();
-    showEditor = false;
+    showEditor = $state(false);
     selectedCitation = null;
     // ondispatch removed;
   }
@@ -118,7 +118,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     const citationId = e(vent as CustomEvent).detail;
     citations.update.id !== citationId));
     applyClientSideSort();
-    showEditor = false;
+    showEditor = $state(false);
     selectedCitation = null;
     // ondispatch removed;
   }
@@ -136,7 +136,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   // Close editor
   function closeEditor() {
-    showEditor = false;
+    showEditor = $state(false);
     selectedCitation = null;
   }
   // Select citation
@@ -203,8 +203,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         oncancel={closeEditor}
       />
     </div>
-  </div>
-{/if}
+  {/if}
 <div class="citations-list space-y-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -243,7 +242,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           onchange={handleFilterChange}
           class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {#each citationTypes as type}
+          {#each Array.isArray(citationTypes) ? citationTypes : [] as type}
             <option value={type.value}>{type.label}</option>
           {/each}
         </select>
@@ -308,7 +307,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   {:else}
     <!-- Citations List -->
     <div class="space-y-4">
-      {#each $filteredCitations as citation}
+      {#each Array.isArray($filteredCitations) ? $filteredCitations : [] as citation}
         <div
           class="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
           role="button" tabindex="0"
@@ -364,13 +363,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               <!-- Tags -->
               {#if citation.tags && citation.tags.length > 0}
                 <div class="flex flex-wrap gap-1 mb-2">
-                  {#each citation.tags as tag}
+                  {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                       {tag}
                     </span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
               <!-- Links -->
               {#if citation.url || citation.doi}
                 <div class="flex space-x-4 text-xs">
@@ -396,8 +394,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                       DOI: {citation.doi} ↗
                     </a>
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- Actions -->
             {#if !readonly}
@@ -411,8 +408,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Metadata -->
           <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
@@ -449,8 +445,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
               Add First Citation
             </button>
           {/if}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Pagination -->
     {#if totalPages > 1}
@@ -489,8 +484,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             Next
           </button>
         </div>
-      </div>
-    {/if}
+      {/if}
 </div>
 <style>
   .line-clamp-2 {

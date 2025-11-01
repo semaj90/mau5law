@@ -78,7 +78,7 @@ export class GenerativeUICacheIndex {
   private embeddings: Map<string, number[]> = new Map();
   private searchIndex: Map<string, string[]> = new Map(); // keyword -> component IDs
   private webgpuDevice: GPUDevice | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   constructor(
     hmmPredictor?: typeof BitmapHMMSOMPredictor,
@@ -626,7 +626,7 @@ export class GenerativeUICacheIndex {
     return JSON.stringify(representations).length * 2; // Rough estimate in bytes
   }
 
-  private calculatePredictionScore(componentId: string, prediction: unknown): number {
+  private calculatePredictionScore(componentId: string, prediction: any): number {
     // Calculate how likely this component is to be needed
     const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
     const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined;

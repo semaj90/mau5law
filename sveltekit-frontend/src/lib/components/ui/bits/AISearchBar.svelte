@@ -2,13 +2,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Input, Button } from './index.js';
-  import { Search } from 'lucide-svelte';
+  import Search from 'lucide-svelte';
   interface Props {
     placeholder?: string;
-    userContext?: unknown;
-    neo4jContext?: unknown;
-    analyticsLog?: (_event: unknown) => void;
-    onResults?: (results: unknown) => void;
+    userContext?: any;
+    neo4jContext?: any;
+    analyticsLog?: (_event: any) => void;
+    onResults?: (results: any) => void;
     onsearch?: (query: string) => void;
   }
   const {
@@ -38,7 +38,7 @@
     } catch (error) {
       analyticsLog({ event: 'ai_search_error', query, error: error.message, timestamp: Date.now() });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function handleKeyDown(e: KeyboardEvent) {

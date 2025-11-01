@@ -82,7 +82,7 @@ export interface RAGDocument {
 }
 
 // Adapter helper: try various publish method names on the integration to avoid tight coupling
-async function publishToRabbitMQ(message: unknown): Promise<any> {
+async function publishToRabbitMQ(message: any): Promise<any> {
   // Accept different possible runtime shapes of rabbitMQIntegration
   const mq = rabbitMQIntegration as any;
   if (typeof mq?.publishMessage === 'function') {
@@ -255,7 +255,7 @@ export const wasmInferenceMachine = createMachine(
           priority: 7,
         }).catch(console.error);
       },
-      publishError: (_context: WASMRAGContext, event: { data: unknown }) => {
+      publishError: (_context: WASMRAGContext, event: { data: any }) => {
         const errMsg = (event.data && (event.data as Error).message) || 'unknown';
         void publishToRabbitMQ({
           type: 'error_recovery',
@@ -274,7 +274,7 @@ export const wasmInferenceMachine = createMachine(
 export class WASMInferenceRAGService {
   private static _wasmModule: WebAssembly.Module | null = null;
   private static _wasmInstance: WebAssembly.Instance | null = null;
-  private static _isInitialized = false;
+  private static _isInitialized = $state(false);
   private static _config: WASMInferenceConfig = {
     modelPath: '/models/gemma3-legal-q4.wasm',
     threads: 8,
@@ -324,7 +324,7 @@ export class WASMInferenceRAGService {
       // No longer returning module/instance, as they are managed internally
     } catch (error: any) {
       console.error('❌ WebAssembly initialization failed:', error);
-      this._isInitialized = false;
+      this._isInitialized = $state(false);
       throw error;
     }
   }
@@ -660,7 +660,7 @@ export class WASMInferenceRAGService {
   static reset(): void {
     this._wasmInstance = null;
     this._wasmModule = null;
-    this._isInitialized = false;
+    this._isInitialized = $state(false);
     console.log('🧹 WebAssembly Inference RAG Service internal state reset');
   }
 

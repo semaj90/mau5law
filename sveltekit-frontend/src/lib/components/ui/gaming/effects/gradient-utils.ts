@@ -2,13 +2,11 @@
  * Gaming Gradient Utilities
  * Generate retro gaming-style gradients
  */
-
 export interface GradientOptions {
   variant: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   direction: 'horizontal' | 'vertical' | 'diagonal' | 'radial';
   colorPalette: RetroColorPalette;
 }
-
 export interface RetroColorPalette {
   primary: string[];
   secondary: string[];
@@ -17,7 +15,6 @@ export interface RetroColorPalette {
   error: string[];
   info: string[];
 }
-
 /**
  * SNES 16-bit color palette
  */
@@ -29,7 +26,6 @@ export const SNES_PALETTE: RetroColorPalette = {
   error: ['#fc5c5c', '#f83800', '#cc2800'],
   info: ['#5cc3ff', '#3c9cfc', '#0050cc'],
 };
-
 /**
  * NES 8-bit color palette
  */
@@ -41,29 +37,24 @@ export const NES_PALETTE: RetroColorPalette = {
   error: ['#f83800', '#cc0000', '#880000'],
   info: ['#00b8fc', '#0078f8', '#0040a8'],
 };
-
 /**
  * Generate CSS gradient string
  */
 export function generateGradient(options: GradientOptions): string {
   const { variant, direction, colorPalette } = options;
   const colors = colorPalette[variant];
-
   const directionMap = {
     horizontal: 'to right',
     vertical: 'to bottom',
     diagonal: 'to bottom right',
     radial: 'circle',
   };
-
   const gradientType =
     direction === 'radial'
       ? `radial-gradient(${directionMap[direction]}, `
       : `linear-gradient(${directionMap[direction]}, `;
-
   return gradientType + colors.join(', ') + ')';
 }
-
 /**
  * Get size-based styling
  */
@@ -72,7 +63,6 @@ export interface SizeStyles {
   fontSize: string;
   minHeight: string;
 }
-
 export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeStyles {
   const sizeMap: Record<string, SizeStyles> = {
     small: { padding: '10px 16px', fontSize: '11px', minHeight: '36px' },
@@ -82,7 +72,6 @@ export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeSt
   };
   return sizeMap[size] || sizeMap.medium;
 }
-
 /**
  * Generate Mode 7 transform (SNES perspective effect)
  */

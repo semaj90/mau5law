@@ -15,24 +15,20 @@
     } catch (e) {
       error = 'Upload failed or cancelled.';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 </script>
-
 <div class="space-y-4">
   <h2>Upload Local LLM Model</h2>
   <button class="space-y-4" onclick={() => handleUpload()} disabled={loading}>
     {loading ? 'Uploading...' : 'Select & Upload Model'}
   </button>
   {#if uploadResult}
-    <div class="space-y-4">{uploadResult}</div>
-  {/if}
+    <div class="space-y-4">{uploadResult}{/if}
   {#if error}
-    <div class="space-y-4">{error}</div>
-  {/if}
+    <div class="space-y-4">{error}{/if}
 </div>
-
 <style>
   /* @unocss-include */
   .llm-upload-container {
@@ -74,4 +70,3 @@
     font-weight: 600;
   }
 </style>
-

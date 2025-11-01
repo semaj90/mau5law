@@ -122,7 +122,6 @@
     console.log('Board saved:', e(vent as CustomEvent).detail);
   }
 </script>
-
 <div class="p-6 space-y-6 bg-gray-50 min-h-screen">
   <div class="text-center mb-8">
     <h1 class="text-3xl font-bold mb-2">Enhanced Bits Legal AI Demo</h1>
@@ -147,7 +146,7 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">📁 Evidence Gallery</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {#each sampleEvidence as evidence}
+      {#each Array.isArray(sampleEvidence) ? sampleEvidence : [] as evidence}
         <div
           class="cursor-pointer transform hover:scale-105 transition-transform"
           onclick={() => handleEvidenceSelect(evidence)}
@@ -183,8 +182,7 @@
       {:else}
         <div class="text-center text-gray-500 py-8">
           <p>Select an evidence item to view AI analysis</p>
-        </div>
-      {/if}
+        {/if}
     </Card>
     <!-- Evidence Board -->
     <Card class="p-4">

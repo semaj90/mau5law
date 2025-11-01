@@ -189,7 +189,7 @@ export class RouteRegistry {
    * Unregister a route
    */
   public unregisterRoute(id: string): boolean {
-    let removed = false;
+    let removed = $state(false);
     this.state.update(state => {
       const newRoutes = new Map(state.routes);
       const newDynamicRoutes = new Map(state.dynamicRoutes);
@@ -427,7 +427,7 @@ export class RouteRegistry {
         routeHistory: state.routeHistory,
       };
       window.localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to save route registry state:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -440,7 +440,7 @@ export class RouteRegistry {
     try {
       const saved = localStorage.getItem(this.options.storageKey);
       if (saved) {
-        let persistedData: unknown;
+        let persistedData: any;
         try {
           persistedData = JSON.parse(saved);
         } catch {
@@ -456,9 +456,9 @@ export class RouteRegistry {
           Array.isArray((persistedData as Record<string, unknown>)['routeHistory'])
         ) {
           const p = persistedData as {
-            favorites?: unknown[];
-            recentRoutes?: unknown[];
-            routeHistory?: unknown[];
+            favorites?: any[];
+            recentRoutes?: any[];
+            routeHistory?: any[];
           };
           this.state.update(state => ({
             ...state,
@@ -470,7 +470,7 @@ export class RouteRegistry {
           console.warn('Route registry state in localStorage is invalid, ignoring.');
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to load route registry state:', error instanceof Error ? error.message : String(error));
     }
   }
@@ -526,7 +526,7 @@ export const routeStatistics = derived(routeRegistry.getState(), state => {
 });
 
 // Add: safe helpers to read optional route properties without using `any`
-function asString(v: unknown): string | undefined {
+function asString(v: any): string | undefined {
   // ...simple type guard for strings...
   return typeof v === 'string' ? v : undefined;
 }

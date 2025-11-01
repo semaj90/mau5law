@@ -36,8 +36,8 @@ interface UploadResult {
     confidenceScore?: number;
     privileged?: boolean;
     evidenceType?: string;
-    citations?: unknown[];
-    riskFactors?: unknown[];
+    citations?: any[];
+    riskFactors?: any[];
   };
 }
 

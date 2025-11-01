@@ -27,16 +27,16 @@ const eq: any = (drizzle as any).eq ?? ((a: any, b: any) => ({ type: 'eq', left:
 type QdrantHitPayload = {
   content?: string;
   aiSummary?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 type QdrantSearchHit = {
   id?: string;
   payload?: QdrantHitPayload;
   score?: number;
 };
-type CaseActivityRow = { title?: string; [k: string]: unknown };
-type EvidenceRow = { fileName?: string; title?: string; [k: string]: unknown };
-type LLMResponse = { source: string; data: unknown; ok: boolean };
+type CaseActivityRow = { title?: string; [k: string]: any };
+type EvidenceRow = { fileName?: string; title?: string; [k: string]: any };
+type LLMResponse = { source: string; data: any; ok: boolean };
 
 // small helper to centralize Ollama endpoint
 function getOllamaEndpoint(): string {
@@ -301,7 +301,7 @@ ws ::= ([ \t\n]*)
     const settledResults = (await Promise.allSettled(promises)) as PromiseSettledResult<LLMResponse>[];
 
     // --- SYNTHESIS & RESPONSE (handle each source with extractTextFromLLM) ---
-    const analysisResults: { [key: string]: unknown } = {};
+    const analysisResults: { [key: string]: any } = {};
 
     settledResults.forEach(result => {
       if (result.status === 'fulfilled') {
@@ -313,7 +313,7 @@ ws ::= ([ \t\n]*)
             source: value.source + (text ? ' (extracted text)' : ' (raw)'),
           };
         } else {
-          const detail = (value.data as { detail?: unknown })?.detail;
+          const detail = (value.data as { detail?: any })?.detail;
           analysisResults[value.source] = { error: typeof detail === 'string' ? detail : 'API Error' };
         }
       } else {
@@ -323,7 +323,7 @@ ws ::= ([ \t\n]*)
     });
 
     return json({ success: true, analysisResults });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error in deep analysis endpoint:', error);
     return json({ error: 'Failed to perform deep analysis' }, { status: 500 });
   }

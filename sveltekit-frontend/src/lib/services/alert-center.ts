@@ -228,7 +228,7 @@ export class AlertCenter {
   private natsService?: NATSMessagingService;
   private sustainedP99Breaches = 0;
   private lastP99Ok = Date.now();
-  private autosolveInFlight = false;
+  private autosolveInFlight = $state(false);
   private lastAutosolveTs = 0;
   private persistenceState: PersistedState | null = null;
   // Constants
@@ -330,7 +330,7 @@ export class AlertCenter {
         this.lastP99Ok = this.persistenceState.lastP99Ok || Date.now();
         console.log('Alert Center: Persistence state loaded successfully');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Alert Center: Failed to load persistence state:', msg);
     }
@@ -448,7 +448,7 @@ export class AlertCenter {
     for (const channel of channels) {
       try {
         await this.sendNotificationToChannel(alert, channel);
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         console.error(`Failed to send notification via ${channel.type}:`, msg);
       }
@@ -767,11 +767,11 @@ export class AlertCenter {
       const duration = this.getNow() - start;
       this.lastAutosolveTs = Date.now();
       console.log(`Auto-remediation triggered for alert ${alert.id}: ${response.status} (${duration.toFixed(2)}ms)`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error(`Auto-remediation failed for alert ${alert.id}:`, msg);
     } finally {
-      this.autosolveInFlight = false;
+      this.autosolveInFlight = $state(false);
     }
   }
   /**
@@ -856,7 +856,7 @@ export class AlertCenter {
   /**
    * Compare baselines
    */
-  public diffBaselines(oldBaseline: BaselineFile, newBaseline: BaselineFile): unknown {
+  public diffBaselines(oldBaseline: BaselineFile, newBaseline: BaselineFile): any {
     // Derive a Stage type from the getStageBaselineSnapshot return type
     type BaselineStages = ReturnType<typeof getStageBaselineSnapshot>;
     type StageSnapshot = BaselineStages extends Array<infer T> ? T & {
@@ -917,7 +917,7 @@ export class AlertCenter {
         savedAt: new Date().toISOString()
       };
       fs.writeFileSync(this.STATE_FILE, JSON.stringify(state, null, 2));
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Alert Center: Failed to persist state:', msg);
     }
@@ -980,7 +980,7 @@ export interface PersistedState {
   sustainedP99Breaches: number;
   lastP99Ok: number;
   lastBaseline?: BaselineFile;
-  budgets?: unknown;
+  budgets?: any;
   savedAt: string;
 }
 
@@ -1029,7 +1029,7 @@ export async function maybeTriggerAutosolve(fetchFn: typeof fetch, rawCodes: str
 /**
  * Legacy get sustained P99 info function
  */
-export function getSustainedP99Info(): unknown {
+export function getSustainedP99Info(): any {
   return getAlertCenter().getSustainedP99Info();
 }
 /**
@@ -1041,6 +1041,6 @@ export function buildBaseline(): BaselineFile {
 /**
  * Legacy diff baselines function
  */
-export function diffBaselines(oldB: BaselineFile, newB: BaselineFile): unknown {
+export function diffBaselines(oldB: BaselineFile, newB: BaselineFile): any {
   return getAlertCenter().diffBaselines(oldB, newB);
 }

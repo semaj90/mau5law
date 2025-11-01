@@ -102,7 +102,7 @@ export class UnifiedLegalSIMDPGVector {
 	private qdrant: QdrantClient;
 	private pgvector: PgVectorClient;
 	private env: ServiceEnvironment;
-	private isInitialized = false;
+	private isInitialized = $state(false);
 
 	private stats = {
 		documentsProcessed: 0,

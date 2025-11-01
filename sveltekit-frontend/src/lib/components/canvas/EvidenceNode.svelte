@@ -8,10 +8,10 @@ https://svelte.dev/e/js_parse_error -->
   interface Props {
     title: string ;
     fileUrl: string ;
-    position?: unknown;
-    size?: unknown;
-    isSelected?: unknown;
-    isDirty?: unknown;
+    position?: any;
+    size?: any;
+    isSelected?: any;
+    isDirty?: any;
   }
   let {
     title = '',
@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     document.addEventListener('click', (e) => {
       if (!nodeElement.contains(e.target as Node)) {
-        isSelected = false;
+        isSelected = $state(false);
   }
     });
   });
@@ -198,7 +198,6 @@ https://svelte.dev/e/js_parse_error -->
     position = { x: newX, y: newY }
   }
 </script>
-
 <!-- Fix: Use <section> for main node container and remove tabindex if not needed -->
 <section
   bind:this={nodeElement}
@@ -274,12 +273,11 @@ https://svelte.dev/e/js_parse_error -->
     ></div>
   </div>
 </section>
-
 <style>
   /* @unocss-include */
   /* Evidence Node Styles */
   .evidence-node {
-    position absolute;
+    position: absolute;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
     background: white;
@@ -333,12 +331,12 @@ https://svelte.dev/e/js_parse_error -->
     height: calc(100% - 60px);
   }
   .evidence-canv.resize-handles {
-    position absolute;
+    position: absolute;
     bottom: 0,
     right: 0;
   }
   .resize-handle {
-    position absolute;
+    position: absolute;
     background: #3b82f6;
     border: 1px solid #2563eb;
   }
@@ -371,5 +369,3 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
   }
 </style>
-
-

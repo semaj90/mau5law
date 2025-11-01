@@ -77,7 +77,7 @@
   async function performSearch(query: string) {
     if (!query.trim()) {
       suggestions = [];
-      showSuggestions = false;
+      showSuggestions = $state(false);
       return;
     }
     isSearching = true;
@@ -101,7 +101,7 @@
       console.error('Search failed:', error);
       suggestions = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   // Handle input changes with debouncing
@@ -116,14 +116,14 @@
   // Handle suggestion selection
   function selectSuggestion(suggestion VectorSearchResult) {
     value = suggestion.content;
-    showSuggestions = false;
+    showSuggestions = $state(false);
     onsearch?.(suggestion.content);
   }
   // Handle clear
   function clearSearch() {
     value = '';
     suggestions = [];
-    showSuggestions = false;
+    showSuggestions = $state(false);
     inputElement?.focus();
     onclear?.();
   }
@@ -135,19 +135,18 @@
   // Close suggestions when clicking outside
   function handleClickOutside(_event: MouseEvent) {
     if (!event.target || !(event.target as Element).closest('.search-container')) {
-      showSuggestions = false;
-      showFilters = false;
+      showSuggestions = $state(false);
+      showFilters = $state(false);
     }
   }
   // Keyboard navigation
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      showSuggestions = false;
-      showFilters = false;
+      showSuggestions = $state(false);
+      showFilters = $state(false);
     }
   }
 </script>
-
 <svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
@@ -206,8 +205,7 @@
           AI Enhanced
         </span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Filters Panel -->
   {#if showFilters && filters.length > 0}
     <div class="absolute top-full left-0 right-0 mt-2 p-3 bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50">
@@ -222,8 +220,7 @@
           </button>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Suggestions Dropdown -->
   {#if showSuggestions && (suggestions.length > 0 || searchHistory.length > 0)}
     <div
@@ -238,7 +235,7 @@
               <span class="text-purple-600">(Vector)</span>
             {/if}
           </div>
-          {#each suggestions as suggestion}
+          {#each Array.isArray(suggestions) ? suggestions : [] as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
               onclick={() => selectSuggestion(suggestion)}
@@ -252,24 +249,21 @@
                   <span class="text-xs bg-gray-200 px-1 rounded">
                     {Math.round(suggestion.score * 100)}% match
                   </span>
-                </div>
-              {/if}
+                {/if}
               {#if suggestion.highlights && suggestion.highlights.length > 0}
                 <div class="text-xs text-yellow-700 mt-1 truncate">
                   ...{suggestion.highlights[0]}...
-                </div>
-              {/if}
+                {/if}
             </button>
           {/each}
-        </div>
-      {/if}
+        {/if}
       {#if searchHistory.length > 0 && !value}
         <div class="border-t p-2">
           <div class="flex items-center gap-2 px-2 py-1 text-xs text-gray-600 font-medium">
             <History class="w-3 h-3" />
             Recent Searches
           </div>
-          {#each searchHistory.slice(0, 3) as historyItem}
+          {#each Array.isArray(searchHistory.slice(0, 3)) ? searchHistory.slice(0, 3) : [] as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
               onclick={() => {
@@ -280,12 +274,9 @@
               <div class="text-sm text-gray-700">{historyItem}</div>
             </button>
           {/each}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   /* Enhanced NES.css input styling */
   .nes-input:focus {
@@ -311,4 +302,3 @@
     transition: all 0.2s ease;
   }
 </style>
-

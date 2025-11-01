@@ -34,7 +34,7 @@ export interface SearchResult {
   id: string;
   content: string;
   score: number;
-  metadata: { [key: string]: unknown };
+  metadata: { [key: string]: any };
 }
 
 export class AIPipeline {
@@ -97,7 +97,7 @@ export class AIPipeline {
         result.classification = await ollamaService.analyzeDocument(content, 'classification');
       }
       result.success = true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Pipeline processing error:', error);
       result.error = error instanceof Error ? error.message : 'Unknown error';
     }

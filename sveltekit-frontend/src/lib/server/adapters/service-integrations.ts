@@ -12,7 +12,6 @@
  *
  * All configurations are loaded from environment variables.
  */
-
 import type {
 	OllamaClient,
 	OllamaConfig,
@@ -34,9 +33,7 @@ import type {
 	ServiceUrls
 } from '$lib/types/external-services';
 import { dev } from '$app/environment';
-
 // ===== Environment Configuration Loader =====
-
 /**
  * Load service configuration from environment variables
  * Compatible with both Docker and native Windows services
@@ -46,9 +43,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 	const databaseUrl =
 		process.env.DATABASE_URL ||
 		'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
-
 	const dbUrl = new URL(databaseUrl.replace('postgres://', 'postgresql://'));
-
 	return {
 		// Database
 		databaseUrl,
@@ -62,7 +57,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			max: 20,
 			idleTimeoutMillis: 30000
 		},
-
 		// Redis
 		redisConfig: {
 			url: process.env.REDIS_URL || 'redis://localhost:6379/0',
@@ -73,7 +67,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			maxRetriesPerRequest: 3,
 			enableReadyCheck: true
 		},
-
 		// Qdrant
 		qdrantConfig: {
 			host: process.env.QDRANT_HOST || 'localhost',
@@ -81,7 +74,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			apiKey: process.env.QDRANT_API_KEY,
 			timeout: 30000
 		},
-
 		// Ollama
 		ollamaConfig: {
 			baseUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
@@ -90,7 +82,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			gpuLayers: parseInt(process.env.OLLAMA_GPU_LAYERS || '30', 10),
 			timeout: 60000
 		},
-
 		// MinIO
 		minioConfig: {
 			endPoint: (process.env.MINIO_ENDPOINT || 'localhost:9000').split(':')[0],
@@ -100,7 +91,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			useSSL: process.env.MINIO_USE_SSL === 'true',
 			region: 'us-east-1'
 		},
-
 		// Neo4j
 		neo4jConfig: {
 			uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
@@ -109,7 +99,6 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			database: process.env.NEO4J_DATABASE || 'neo4j',
 			maxConnectionPoolSize: 50
 		},
-
 		// RabbitMQ
 		rabbitmqConfig: {
 			url: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
@@ -118,14 +107,12 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 			queuePrefix: 'legal-ai',
 			heartbeat: 60
 		},
-
 		// Development
 		nodeEnv: (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development',
 		devBypassAuth: process.env.DEV_BYPASS_AUTH === 'true' || dev,
 		logLevel: (process.env.LOG_LEVEL as: 'error' | 'warn' | 'info' | 'debug') || 'info'
 	};
 }
-
 /**
  * Get all service URLs for health checks and debugging
  */
@@ -135,11 +122,9 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		postgres: `postgresql://${env.postgresConfig.host}:${env.postgresConfig.port}/${env.postgresConfig.database}`,
 		redis: env.redisConfig.url,
 		qdrant: `http://${env.qdrantConfig.host}:${env.qdrantConfig.port}`,
-
 		// AI Services
 		ollama: env.ollamaConfig.baseUrl,
 		ollamaEmbeddings: `${env.ollamaConfig.baseUrl}/api/embeddings`,
-
 		// Storage & Processing
 		minio: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port}`,
 		minioConsole: `${env.minioConfig.useSSL ? 'https' : 'http'}://${env.minioConfig.endPoint}:${env.minioConfig.port + 1}`,
@@ -147,47 +132,37 @@ export function getServiceUrls(env: ServiceEnvironment): ServiceUrls {
 		neo4jBrowser: env.neo4jConfig.uri.replace('bolt://', 'http://').replace(':7687', ':7474'),
 		rabbitmq: env.rabbitmqConfig.url,
 		rabbitmqManagement: env.rabbitmqConfig.url.replace('amqp://', 'http://').replace(':5672', ':15672'),
-
 		// QUIC Microservices
 		quicGateway: process.env.QUIC_GATEWAY_URL,
 		quicVectorService: process.env.QUIC_VECTOR_SERVICE_URL,
 		quicSearchService: process.env.QUIC_SEARCH_SERVICE_URL,
-
 		// GPU Services
 		tensorRTApi: process.env.TENSORRT_API_URL,
 		tensorRTWebSocket: process.env.TENSORRT_WS_URL,
 		cudaService: process.env.CUDA_SERVICE_URL
 	};
 }
-
 // ===== Ollama Adapter =====
-
 export class OllamaAdapter implements OllamaClient {
 	constructor(private config: OllamaConfig) {}
-
 	async embed(text: string, opts?: { model?: string }): Promise<number[]> {
 		const model = opts?.model || this.config.embeddingModel;
 		const url = `${this.config.baseUrl}/api/embeddings`;
-
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ model, prompt: text }),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
-
 		if (!response.ok) {
 			throw new Error(`Ollama embed failed: ${response.statusText}`);
 		}
-
 		const data = await response.json();
 		return data.embedding;
 	}
-
 	async generateText(prompt: string, opts?: { model?: string; maxTokens?: number }): Promise<string> {
 		const model = opts?.model || this.config.chatModel;
 		const url = `${this.config.baseUrl}/api/generate`;
-
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -199,22 +174,18 @@ export class OllamaAdapter implements OllamaClient {
 			}),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
-
 		if (!response.ok) {
 			throw new Error(`Ollama generate failed: ${response.statusText}`);
 		}
-
 		const data = await response.json();
 		return data.response;
 	}
-
 	async chat(
 		messages: Array<{ role: string; content: string }>,
 		opts?: { model?: string; stream?: boolean }
 	): Promise<string | AsyncIterable<string>> {
 		const model = opts?.model || this.config.chatModel;
 		const url = `${this.config.baseUrl}/api/chat`;
-
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -225,25 +196,20 @@ export class OllamaAdapter implements OllamaClient {
 			}),
 			signal: AbortSignal.timeout(this.config.timeout || 60000)
 		});
-
 		if (!response.ok) {
 			throw new Error(`Ollama chat failed: ${response.statusText}`);
 		}
-
 		if (opts?.stream) {
 			// Return async iterable for streaming
 			return (async function* () {
 				const reader = response.body?.getReader();
 				if (!reader) return;
-
 				const decoder = new TextDecoder();
 				while (true) {
 					const { done, value } = await reader.read();
 					if (done) break;
-
 					const chunk = decoder.decode(value);
 					const lines = chunk.split('\n').filter((line) => line.trim());
-
 					for (const line of lines) {
 						try {
 							const json = JSON.parse(line);
@@ -255,23 +221,17 @@ export class OllamaAdapter implements OllamaClient {
 				}
 			})();
 		}
-
 		const data = await response.json();
 		return data.message?.content || '';
 	}
 }
-
 // ===== Redis Adapter (IORedis) =====
-
 export class RedisAdapter implements RedisCacheService {
 	private client: any; // IORedis client
-	private connected = false;
-
+	private connected = $state(false);
 	constructor(private config: RedisConfig) {}
-
 	private async ensureConnected() {
 		if (this.connected) return;
-
 		const Redis = (await import('ioredis')).default;
 		this.client = new Redis(this.config.url, {
 			password: this.config.password,
@@ -279,70 +239,55 @@ export class RedisAdapter implements RedisCacheService {
 			enableReadyCheck: this.config.enableReadyCheck !== false,
 			lazyConnect: false
 		});
-
 		await this.client.connect();
 		this.connected = true;
 	}
-
 	async get(key: string): Promise<string | null> {
 		await this.ensureConnected();
 		return this.client.get(key);
 	}
-
 	async setex(key: string, seconds: number, value: string): Promise<'OK' | null> {
 		await this.ensureConnected();
 		return this.client.setex(key, seconds, value);
 	}
-
 	async hset(key: string, data: Record<string, string>): Promise<number> {
 		await this.ensureConnected();
 		return this.client.hset(key, data);
 	}
-
 	async hget(key: string, field: string): Promise<string | null> {
 		await this.ensureConnected();
 		return this.client.hget(key, field);
 	}
-
 	async hgetall(key: string): Promise<Record<string, string>> {
 		await this.ensureConnected();
 		return this.client.hgetall(key);
 	}
-
 	async del(...keys: string[]): Promise<number> {
 		await this.ensureConnected();
 		return this.client.del(...keys);
 	}
-
 	async exists(key: string): Promise<boolean> {
 		await this.ensureConnected();
 		const result = await this.client.exists(key);
 		return result === 1;
 	}
-
 	async keys(pattern: string): Promise<string[]> {
 		await this.ensureConnected();
 		return this.client.keys(pattern);
 	}
-
 	async disconnect(): Promise<void> {
 		if (this.connected) {
 			await this.client.quit();
-			this.connected = false;
+			this.connected = $state(false);
 		}
 	}
 }
-
 // ===== Qdrant Adapter =====
-
 export class QdrantAdapter implements QdrantClient {
 	private client: any; // @qdrant/js-client-rest
-
 	constructor(private config: QdrantConfig) {}
-
 	private async ensureClient() {
 		if (this.client) return;
-
 		const { QdrantClient: QdrantClientLib } = await import('@qdrant/js-client-rest');
 		this.client = new QdrantClientLib({
 			url: `http://${this.config.host}:${this.config.port}`,
@@ -350,40 +295,33 @@ export class QdrantAdapter implements QdrantClient {
 			timeout: this.config.timeout || 30000
 		});
 	}
-
 	async createCollection(name: string, vectorSize: number): Promise<void> {
 		await this.ensureClient();
 		await this.client.createCollection(name, {
 			vectors: { size: vectorSize, distance: 'Cosine' }
 		});
 	}
-
 	async indexCollection(name: string, vectors: QdrantVectorPayload[]): Promise<void> {
 		await this.ensureClient();
-
 		const points = vectors.map((v) => ({
 			id: v.id,
 			vector: v.vector,
 			payload: v.payload || {}
 		}));
-
 		await this.client.upsert(name, { points });
 	}
-
 	async search<T = Record<string, unknown>>(
 		collection: string,
 		vector: number[],
 		limit?: number
 	): Promise<QdrantSearchResult<T>[]> {
 		await this.ensureClient();
-
 		const results = await this.client.search(collection, {
 			vector,
 			limit: limit || 10,
 			with_payload: true,
 			with_vector: false
 		});
-
 		return results.map((r: any) => ({
 			id: r.id,
 			score: r.score,
@@ -391,28 +329,21 @@ export class QdrantAdapter implements QdrantClient {
 			vector: r.vector
 		}));
 	}
-
 	async upsert(collection: string, points: QdrantVectorPayload[]): Promise<void> {
 		await this.ensureClient();
 		await this.client.upsert(collection, { points });
 	}
-
 	async deleteCollection(name: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.deleteCollection(name);
 	}
 }
-
 // ===== PostgreSQL + pgvector Adapter =====
-
 export class PgVectorAdapter implements PgVectorClient {
 	private pool: any; // pg Pool
-
 	constructor(private config: PostgresConfig) {}
-
 	private async ensurePool() {
 		if (this.pool) return;
-
 		const { Pool } = await import('pg');
 		this.pool = new Pool({
 			host: this.config.host,
@@ -425,16 +356,13 @@ export class PgVectorAdapter implements PgVectorClient {
 			idleTimeoutMillis: this.config.idleTimeoutMillis || 30000
 		});
 	}
-
-	async query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }> {
+	async query<T = unknown>(sql: string, params?: any[]): Promise<{ rows: T[] }> {
 		await this.ensurePool();
 		return this.pool.query(sql, params);
 	}
-
 	async createExtension(): Promise<void> {
 		await this.query('CREATE EXTENSION IF NOT EXISTS vector');
 	}
-
 	async search(
 		collection: string,
 		vector: number[],
@@ -447,14 +375,12 @@ export class PgVectorAdapter implements PgVectorClient {
       ORDER BY embedding <=> $1::vector
       LIMIT $2
     `;
-
 		const result = await this.query<{ id: string; similarity: number; metadata: any }>(sql, [
 			vectorStr,
 			limit || 10
 		]);
 		return result.rows;
 	}
-
 	async insert(
 		collection: string,
 		vectors: Array<{ id: string; vector: number[]; metadata?: Record<string, unknown> }>
@@ -465,12 +391,10 @@ export class PgVectorAdapter implements PgVectorClient {
 					`($${i * 3 + 1}, $${i * 3 + 2}::vector, $${i * 3 + 3}::jsonb)`
 			)
 			.join(',');
-
 		const params: any[] = [];
 		vectors.forEach((v) => {
 			params.push(v.id, `[${v.vector.join(',')}]`, JSON.stringify(v.metadata || {}));
 		});
-
 		const sql = `
       INSERT INTO ${collection} (id, embedding, metadata)
       VALUES ${values}
@@ -478,10 +402,8 @@ export class PgVectorAdapter implements PgVectorClient {
         embedding = EXCLUDED.embedding,
         metadata = EXCLUDED.metadata
     `;
-
 		await this.query(sql, params);
 	}
-
 	async disconnect(): Promise<void> {
 		if (this.pool) {
 			await this.pool.end();
@@ -489,17 +411,12 @@ export class PgVectorAdapter implements PgVectorClient {
 		}
 	}
 }
-
 // ===== MinIO Adapter =====
-
 export class MinIOAdapter implements MinIOClient {
 	private client: any; // MinIO Client
-
 	constructor(private config: MinIOConfig) {}
-
 	private async ensureClient() {
 		if (this.client) return;
-
 		const { Client } = await import('minio');
 		this.client = new Client({
 			endPoint: this.config.endPoint,
@@ -510,17 +427,14 @@ export class MinIOAdapter implements MinIOClient {
 			region: this.config.region
 		});
 	}
-
 	async makeBucket(bucket: string, region?: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.makeBucket(bucket, region || this.config.region || 'us-east-1');
 	}
-
 	async bucketExists(bucket: string): Promise<boolean> {
 		await this.ensureClient();
 		return this.client.bucketExists(bucket);
 	}
-
 	async putObject(
 		bucket: string,
 		key: string,
@@ -531,26 +445,21 @@ export class MinIOAdapter implements MinIOClient {
 		const result = await this.client.putObject(bucket, key, data, undefined, metadata);
 		return { etag: result.etag };
 	}
-
 	async getObject(bucket: string, key: string): Promise<ReadableStream> {
 		await this.ensureClient();
 		return this.client.getObject(bucket, key);
 	}
-
 	async removeObject(bucket: string, key: string): Promise<void> {
 		await this.ensureClient();
 		await this.client.removeObject(bucket, key);
 	}
-
 	async listObjects(
 		bucket: string,
 		prefix?: string
 	): Promise<Array<{ name: string; size: number; etag: string }>> {
 		await this.ensureClient();
-
 		const stream = this.client.listObjects(bucket, prefix, true);
 		const objects: Array<{ name: string; size: number; etag: string }> = [];
-
 		return new Promise((resolve, reject) => {
 			stream.on('data', (obj: any) => {
 				objects.push({ name: obj.name, size: obj.size, etag: obj.etag });
@@ -560,18 +469,13 @@ export class MinIOAdapter implements MinIOClient {
 		});
 	}
 }
-
 // ===== Neo4j Adapter =====
-
 export class Neo4jAdapter implements Neo4jClient {
 	private driver: any; // neo4j-driver Driver
 	private session: any;
-
 	constructor(private config: Neo4jConfig) {}
-
 	private async ensureDriver() {
 		if (this.driver) return;
-
 		const neo4j = await import('neo4j-driver');
 		this.driver = neo4j.default.driver(
 			this.config.uri,
@@ -582,7 +486,6 @@ export class Neo4jAdapter implements Neo4jClient {
 		);
 		this.session = this.driver.session({ database: this.config.database || 'neo4j' });
 	}
-
 	async run<T = unknown>(
 		cypher: string,
 		params?: Record<string, unknown>
@@ -590,12 +493,10 @@ export class Neo4jAdapter implements Neo4jClient {
 		await this.ensureDriver();
 		return this.session.run(cypher, params);
 	}
-
 	async verifyConnectivity(): Promise<void> {
 		await this.ensureDriver();
 		await this.driver.verifyConnectivity();
 	}
-
 	async close(): Promise<void> {
 		if (this.session) {
 			await this.session.close();
@@ -606,34 +507,26 @@ export class Neo4jAdapter implements Neo4jClient {
 		}
 	}
 }
-
 // ===== RabbitMQ Adapter =====
-
 export class RabbitMQAdapter implements RabbitMQClient {
 	private connection: any; // amqplib Connection
 	private channel: any;
-
 	constructor(private config: RabbitMQConfig) {}
-
 	private async ensureChannel() {
 		if (this.channel) return;
-
 		const amqp = await import('amqplib');
 		this.connection = await amqp.connect(this.config.url, {
 			heartbeat: this.config.heartbeat || 60
 		});
 		this.channel = await this.connection.createChannel();
-
 		if (this.config.exchange) {
 			await this.channel.assertExchange(this.config.exchange, 'topic', { durable: true });
 		}
 	}
-
 	async assertQueue(queue: string, options?: Record<string, unknown>): Promise<void> {
 		await this.ensureChannel();
 		await this.channel.assertQueue(queue, options || { durable: true });
 	}
-
 	async assertExchange(
 		exchange: string,
 		type: string,
@@ -642,28 +535,23 @@ export class RabbitMQAdapter implements RabbitMQClient {
 		await this.ensureChannel();
 		await this.channel.assertExchange(exchange, type, options || { durable: true });
 	}
-
-	async publishJob(queue: string, payload: unknown): Promise<void> {
+	async publishJob(queue: string, payload: any): Promise<void> {
 		await this.ensureChannel();
 		const queueName = this.config.queuePrefix ? `${this.config.queuePrefix}.${queue}` : queue;
-
 		await this.channel.assertQueue(queueName, { durable: true });
 		this.channel.sendToQueue(queueName, Buffer.from(JSON.stringify(payload)), {
 			persistent: true
 		});
 	}
-
 	async consumeQueue(
 		queue: string,
-		handler: (message: unknown) => Promise<void>
+		handler: (message: any) => Promise<void>
 	): Promise<void> {
 		await this.ensureChannel();
 		const queueName = this.config.queuePrefix ? `${this.config.queuePrefix}.${queue}` : queue;
-
 		await this.channel.assertQueue(queueName, { durable: true });
 		await this.channel.consume(queueName, async (msg: any) => {
 			if (!msg) return;
-
 			try {
 				const payload = JSON.parse(msg.content.toString());
 				await handler(payload);
@@ -674,7 +562,6 @@ export class RabbitMQAdapter implements RabbitMQClient {
 			}
 		});
 	}
-
 	async close(): Promise<void> {
 		if (this.channel) {
 			await this.channel.close();
@@ -685,9 +572,7 @@ export class RabbitMQAdapter implements RabbitMQClient {
 		}
 	}
 }
-
 // ===== Service Factory =====
-
 let cachedServices: {
 	ollama?: OllamaAdapter;
 	redis?: RedisAdapter;
@@ -697,13 +582,11 @@ let cachedServices: {
 	neo4j?: Neo4jAdapter;
 	rabbitmq?: RabbitMQAdapter;
 } = {};
-
 /**
  * Get or create service adapters (singleton pattern)
  */
 export function getServiceAdapters() {
 	const env = loadServiceEnvironment();
-
 	return {
 		ollama:
 			cachedServices.ollama || (cachedServices.ollama = new OllamaAdapter(env.ollamaConfig)),
@@ -722,42 +605,36 @@ export function getServiceAdapters() {
 		urls: getServiceUrls(env)
 	};
 }
-
 /**
  * Health check all services
  */
 export async function healthCheckServices() {
 	const services = getServiceAdapters();
 	const results: Record<string, boolean> = {};
-
 	try {
 		await services.redis.get('health-check');
 		results.redis = true;
 	} catch {
-		results.redis = false;
+		results.redis = $state(false);
 	}
-
 	try {
 		await services.pgvector.query('SELECT 1');
 		results.postgres = true;
 	} catch {
-		results.postgres = false;
+		results.postgres = $state(false);
 	}
-
 	try {
 		await services.ollama.embed('test', { model: services.env.ollamaConfig.embeddingModel });
 		results.ollama = true;
 	} catch {
-		results.ollama = false;
+		results.ollama = $state(false);
 	}
-
 	try {
 		await services.neo4j.verifyConnectivity?.();
 		results.neo4j = true;
 	} catch {
-		results.neo4j = false;
+		results.neo4j = $state(false);
 	}
-
 	return {
 		healthy: Object.values(results).every((v) => v),
 		services: results,

@@ -48,7 +48,6 @@
     }
   });
 </script>
-
 {#if hasAccess}
   {#if children}
     {@render children()}

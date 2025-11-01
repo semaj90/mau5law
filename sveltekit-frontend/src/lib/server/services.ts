@@ -213,7 +213,7 @@ export async function downloadFile(bucket: string, key: string): Promise<Buffer>
 /**
  * Helper: Publish job to RabbitMQ
  */
-export async function publishJob(queue: string, payload: unknown) {
+export async function publishJob(queue: string, payload: any) {
 	if (!env.rabbitmqConfig.enabled) {
 		console.warn('RabbitMQ is disabled, job will not be processed');
 		return;
@@ -241,7 +241,7 @@ export async function getServicesHealth() {
 		await redis.get('health-check');
 		health.redis = true;
 	} catch {
-		health.redis = false;
+		health.redis = $state(false);
 	}
 
 	// PostgreSQL
@@ -249,7 +249,7 @@ export async function getServicesHealth() {
 		await pgvector.query('SELECT 1');
 		health.postgres = true;
 	} catch {
-		health.postgres = false;
+		health.postgres = $state(false);
 	}
 
 	// Ollama
@@ -257,7 +257,7 @@ export async function getServicesHealth() {
 		await ollama.embed('test', { model: env.ollamaConfig.embeddingModel });
 		health.ollama = true;
 	} catch {
-		health.ollama = false;
+		health.ollama = $state(false);
 	}
 
 	// Qdrant
@@ -265,7 +265,7 @@ export async function getServicesHealth() {
 		await qdrant.search('legal_documents', Array(768).fill(0), 1);
 		health.qdrant = true;
 	} catch {
-		health.qdrant = false;
+		health.qdrant = $state(false);
 	}
 
 	// MinIO
@@ -273,7 +273,7 @@ export async function getServicesHealth() {
 		await minio.bucketExists?.('legal-evidence');
 		health.minio = true;
 	} catch {
-		health.minio = false;
+		health.minio = $state(false);
 	}
 
 	// Neo4j
@@ -281,7 +281,7 @@ export async function getServicesHealth() {
 		await neo4j.verifyConnectivity?.();
 		health.neo4j = true;
 	} catch {
-		health.neo4j = false;
+		health.neo4j = $state(false);
 	}
 
 	// RabbitMQ

@@ -11,7 +11,7 @@ export type LlamaCppOllamaService = any;
 // --- External Service Interfaces ---
 export interface UltraJSONParser {
   parse<T>(json: string): T;
-  stringify(obj: unknown): string;
+  stringify(obj: any): string;
 }
 
 export interface WasmClusteringService {
@@ -193,7 +193,7 @@ export const LEGAL_TRAINING_TEMPLATES = {
  */
 export class UnslothFinetuningService {
   private config: UnslothConfig;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private llamaService?: LlamaCppOllamaService;
   private activeJobs: Map<string, FinetuningJob> = new Map();
   private jobHistory: FinetuningJob[] = [];
@@ -294,7 +294,7 @@ export class UnslothFinetuningService {
         rtx3060Detected,
       }));
       this.isInitialized = true;
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errMsg = err instanceof Error ? err.message : String(err);
       this.serviceStatus.update(() => ({
         initialized: false,
@@ -676,7 +676,7 @@ export class UnslothFinetuningService {
       this.activeJobs.delete(job.id);
       this.jobHistory.push(job);
       this.updateJobQueue();
-    } catch (err: unknown) {
+    } catch (err: any) {
       const errMsg = err instanceof Error ? err.message : String(err);
       job.status = 'failed';
       job.error = errMsg;
@@ -798,7 +798,7 @@ export class UnslothFinetuningService {
       timeRemaining: 'N/A',
       memoryUsage: 0,
     });
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('✅ Unsloth service cleanup complete');
   }
   // --- Helper: safely get a minimal GPU adapter shape without using `any` ---

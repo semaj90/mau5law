@@ -65,7 +65,7 @@ export interface AnalysisResult {
   evidenceId: string;
   analysisType: string;
   status: AnalysisStatus;
-  result?: unknown;
+  result?: any;
   error?: string;
   startedAt: number;
   completedAt?: number;

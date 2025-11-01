@@ -181,7 +181,7 @@
   // Smooth animation: of progress value
   const animateProgress = () => {
     if (animatedValue === progressPercentage) {
-      isAnimating = false;
+      isAnimating = $state(false);
       return;
     }
     isAnimating = true;
@@ -191,7 +191,7 @@
     // Snap to final value if very close
     if (Math.abs(difference) < 0.1) {
       animatedValue = progressPercentag;
-      isAnimating = false;
+      isAnimating = $state(false);
     } else {
       animationFrameId = requestAnimationFrame(animateProgress);
     }
@@ -311,11 +311,9 @@
       {#if showValue || showPercentage}
         <span class="progress-value">{displayValue}</span>
       {/if}
-    </div>
-  {/if}
+    {/if}
   {#if description}
-    <div class="progress-description">{description}</div>
-  {/if}
+    <div class="progress-description">{description}{/if}
   <div
     bind:this={progressElement}
     class="n64-progress {materialType} mesh-{meshComplexity} {getTextureFilteringClasses()}";
@@ -347,37 +345,28 @@
       <div class="progress-bar"
            style="width: {indeterminate ? '100%' : animatedValue + '%'}">
         {#if enableTextureStreaming}
-          <div class="texture-stream" style="--stream-progress: {animatedValue}%"></div>
-        {/if}
+          <div class="texture-stream" style="--stream-progress: {animatedValue}%">{/if}
         {#if enableLighting}
-          <div class="bar-lighting"></div>
-        {/if}
+          <div class="bar-lighting">{/if}
         {#if enableReflections}
-          <div class="bar-reflection"></div>
-        {/if}
+          <div class="bar-reflection">{/if}
         {#if enableProgressGlow}
-          <div class="progress-glow"></div>
-        {/if}
+          <div class="progress-glow">{/if}
         {#if enableWaveEffect}
-          <div class="wave-effect"></div>
-        {/if}
+          <div class="wave-effect">{/if}
         {#if enableParticles && isAnimating}
-          <div class="progress-particles"></div>
-        {/if}
+          <div class="progress-particles">{/if}
       </div>
       {#if enableFog}
-        <div class="track-fog"></div>
-      {/if}
+        <div class="track-fog">{/if}
     </div>
     {#if loading || indeterminate}
       <div class="loading-indicator">
         <div class="n64-spinner"></div>
-      </div>
-    {/if}
+      {/if}
   </div>
   {#if !label && (showValue || showPercentage)}
-    <div class="standalone-value">{displayValue}</div>
-  {/if}
+    <div class="standalone-value">{displayValue}{/if}
 </div>
 <style>
   .n64-progress-container {
@@ -409,7 +398,7 @@
   }
   .n64-progress {
     /* Base N64 progress styling */
-    position relative;
+    position: relative;
     width: 100%;
     height: var(--progress-height);
     overflow: hidden;
@@ -428,7 +417,7 @@
     outline: none;
   }
   .progress-track {
-    position relative;
+    position: relative;
     width: 100%;
     height: 100%;
     background: var(--track-bg);
@@ -441,7 +430,7 @@
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
   .progress-bar {
-    position relative;
+    position: relative;
     height: 100%;
     background: var(--bar-bg);
     border-radius: var(--progress-border-radius);
@@ -470,7 +459,7 @@
   }
   /* Texture streaming effect */
   .texture-stream {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -491,7 +480,7 @@
   }
   /* Bar lighting overlay */
   .bar-lighting {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -508,7 +497,7 @@
   }
   /* Bar reflection */
   .bar-reflection {
-    position absolute;
+    position: absolute;
     top: 10%;
     left: 10%;
     right: 60%;
@@ -525,7 +514,7 @@
   }
   /* Progress glow effect */
   .progress-glow {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -543,7 +532,7 @@
   }
   /* Wave effect */
   .wave-effect {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -569,7 +558,7 @@
   }
   /* Progress particles */
   .progress-particles {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -581,7 +570,7 @@
   .progress-particles:: before
   .progress-particles::after {
     content: '';
-    position absolute;
+    position: absolute;
     width: 2px;
     height: 2px;
     background: rgba(255, 255, 255, 0.8);
@@ -614,7 +603,7 @@
   }
   /* Track fog effect */
   .track-fog {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -630,7 +619,7 @@
   }
   /* Loading indicator */
   .loading-indicator {
-    position absolute;
+    position: absolute;
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
@@ -727,7 +716,7 @@
       transform: none !important;
     }
     .progress-bar {
-      transition: width 150ms ease;
+      transition: width: 150ms ease;
     }
     .texture-stream,
     .wave-effect,
@@ -791,4 +780,3 @@
     }
   }
 </style>
-

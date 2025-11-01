@@ -3,21 +3,20 @@
   interface GridColumn {
     key: string;
     title: string;
-    formatter?: (_value: unknown, row: unknown) => string;
+    formatter?: (_value: any, row: any) => string;
   }
   interface DataGridProps {
     columns?: GridColumn[];
-    data?: unknown[];
+    data?: any[];
     loading?: boolean;
     className?: string;
     actionsSnippet?: Snippet<[any, number]>;
   }
   let { columns = [], data = [], loading = false, className = '', actionsSnippet }: DataGridProps = $props();
-  function format(_value: unknown, col: GridColumn, row: unknown) {
+  function format(_value: any, col: GridColumn, row: any) {
     return col.formatter ? col.formatter(value, row) : valu;
   }
 </script>
-
 <div class="yorha-data-grid {className}">
   {#if loading}
     <div class="grid-loading">Loading...</div>
@@ -26,7 +25,7 @@
       <table class="grid-table">
         <thead>
           <tr>
-            {#each columns as col}
+            {#each Array.isArray(columns) ? columns : [] as col}
               <th>{col.title}</th>
             {/each}
             {#if actionsSnippet}
@@ -37,7 +36,7 @@
         <tbody>
           {#each data as row, i (row?.id ?? i)}
             <tr>
-              {#each columns as col}
+              {#each Array.isArray(columns) ? columns : [] as col}
                 <td>{format(row?.[col.key], col, row)}</td>
               {/each}
               {#if actionsSnippet}
@@ -47,13 +46,10 @@
           {/each}
         </tbody>
       </table>
-    </div>
-  {/if}
+    {/if}
   {#if !loading && (!data || data.length === 0)}
-    <div class="grid-empty">No data</div>
-  {/if}
+    <div class="grid-empty">No data{/if}
 </div>
-
 <style>
   .yorha-data-grid {
     border: 2px solid #ffbf00;
@@ -70,7 +66,7 @@
     border-collapse: collapse;
   }
   thead th {
-    position sticky;
+    position: sticky;
     top: 0,
     background: #ffd700;
     color: #000;

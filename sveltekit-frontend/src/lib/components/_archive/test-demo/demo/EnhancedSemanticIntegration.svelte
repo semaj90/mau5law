@@ -365,7 +365,7 @@ await initializeWebGPU();
         </div>
         {#if $todos.length > 0}
           <div class="todo-preview max-h-48 overflow-y-auto space-y-2">
-            {#each $topPriorityTodos as todo}
+            {#each Array.isArray($topPriorityTodos) ? $topPriorityTodos : [] as todo}
               <div
                 class="todo-item bg-slate-700/50 p-3 rounded border-l-2 border-{todo.priority >= 4
                   ? 'red'
@@ -500,7 +500,7 @@ await initializeWebGPU();
       <h2 class="text-xl font-semibold mb-4 text-yellow-400">📊 Category Statistics</h2>
       {#if $categoryStats.length > 0}
         <div class="category-list space-y-3 max-h-64 overflow-y-auto">
-          {#each $categoryStats as stat}
+          {#each Array.isArray($categoryStats) ? $categoryStats : [] as stat}
             <div class="category-item bg-slate-700/30 p-3 rounded">
               <div class="flex justify-between items-start mb-2">
                 <h4 class="font-medium text-sm">{stat.category}</h4>

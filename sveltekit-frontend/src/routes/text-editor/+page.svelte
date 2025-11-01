@@ -28,7 +28,7 @@ https://svelte.dev/e/expected_token -->
   let editorValue: string = '';
   let documentTitle: string = 'Untitled Document';
   let lastSaved: Date | null = null;
-  let isModified: boolean = false;
+  let isModified: boolean = $state(false);
 
   // initialize a documentStats object and update reactively when editorValue changes
   let documentStats = {
@@ -51,7 +51,7 @@ https://svelte.dev/e/expected_token -->
   function handleSave() {
     console.log('Saving document:', { title: documentTitle, content: editorValue });
     lastSaved = new Date();
-    isModified = false;
+    isModified = $state(false);
   }
   function handleDownload() {
     const blob = new Blob([editorValue], { type: 'text/plain' });

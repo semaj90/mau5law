@@ -8,7 +8,6 @@
  * - Transactions
  * - Joins and relationships
  */
-
 import { db } from './index'; // Your database connection
 import {
   legalDocuments,
@@ -19,29 +18,23 @@ import {
   type LegalMetadata,
 } from './schema-example-legal';
 import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from 'drizzle-orm';
-
 // ==================================================
 // 1. Basic CRUD Operations
 // ==================================================
-
 export async function createLegalDocument(data: NewLegalDocument) {
   const result = await db
     .insert(legalDocuments)
     .values(data)
     .returning();
-
   return result[0];
 }
-
 export async function getLegalDocument(id: string) {
   const result = await db
     .select()
     .from(legalDocuments)
     .where(eq(legalDocuments.id, id));
-
   return result[0];
 }
-
 export async function updateLegalDocument(
   id: string,
   updates: Partial<NewLegalDocument>
@@ -51,20 +44,16 @@ export async function updateLegalDocument(
     .set({ ...updates, updatedAt: new Date() })
     .where(eq(legalDocuments.id, id))
     .returning();
-
   return result[0];
 }
-
 export async function deleteLegalDocument(id: string) {
   await db
     .delete(legalDocuments)
     .where(eq(legalDocuments.id, id));
 }
-
 // ==================================================
 // 2. JSONB Queries (Fast with GIN index)
 // ==================================================
-
 // Find documents by jurisdiction
 export async function findDocumentsByJurisdiction(jurisdiction: string) {
   return db
@@ -74,7 +63,6 @@ export async function findDocumentsByJurisdiction(jurisdiction: string) {
       sql`${legalDocuments.metadata}->>'case'->>'jurisdiction' = ${jurisdiction}`
     );
 }
-
 // Find documents by document type (using JSONB containment)
 export async function findDocumentsByType(documentType: string) {
   return db
@@ -86,7 +74,6 @@ export async function findDocumentsByType(documentType: string) {
       })}`
     );
 }
-
 // Find high-risk documents
 export async function findHighRiskDocuments() {
   return db
@@ -97,7 +84,6 @@ export async function findHighRiskDocuments() {
     )
     .orderBy(desc(legalDocuments.createdAt));
 }
-
 // Find documents with specific parties
 export async function findDocumentsByParty(partyName: string) {
   return db
@@ -107,7 +93,6 @@ export async function findDocumentsByParty(partyName: string) {
       sql`${legalDocuments.metadata}->'case'->'parties' @> ${JSON.stringify([{ name: partyName }])}`
     );
 }
-
 // Complex JSONB query: Find documents by practice area and confidence
 export async function findDocumentsByPracticeAreaAndConfidence(
   practiceArea: string,
@@ -123,11 +108,9 @@ export async function findDocumentsByPracticeAreaAndConfidence(
       )
     );
 }
-
 // ==================================================
 // 3. Vector Similarity Search (pgvector)
 // ==================================================
-
 // Semantic search using cosine similarity
 export async function semanticSearch(
   queryEmbedding: number[],
@@ -148,7 +131,6 @@ export async function semanticSearch(
     LIMIT ${limit}
   `);
 }
-
 // Hybrid search: Combine vector search with metadata filtering
 export async function hybridSearch(
   queryEmbedding: number[],
@@ -169,7 +151,6 @@ export async function hybridSearch(
     LIMIT ${limit}
   `);
 }
-
 // Find similar documents using HNSW index
 export async function findSimilarDocuments(
   documentId: string,
@@ -180,11 +161,9 @@ export async function findSimilarDocuments(
     .select({ embedding: legalDocuments.embedding })
     .from(legalDocuments)
     .where(eq(legalDocuments.id, documentId));
-
   if (!sourceDoc[0]?.embedding) {
     throw new Error('Source document has no embedding');
   }
-
   // Find similar documents
   return db.execute(sql`
     SELECT
@@ -199,11 +178,9 @@ export async function findSimilarDocuments(
     LIMIT ${limit}
   `);
 }
-
 // ==================================================
 // 4. Joins and Relationships
 // ==================================================
-
 // Get documents with case information
 export async function getDocumentsWithCaseInfo(caseId: string) {
   return db
@@ -215,29 +192,24 @@ export async function getDocumentsWithCaseInfo(caseId: string) {
     .leftJoin(legalCases, eq(legalDocuments.caseId, legalCases.id))
     .where(eq(legalDocuments.caseId, caseId));
 }
-
 // Get case with all documents
 export async function getCaseWithDocuments(caseId: string) {
   const caseData = await db
     .select()
     .from(legalCases)
     .where(eq(legalCases.id, caseId));
-
   const documents = await db
     .select()
     .from(legalDocuments)
     .where(eq(legalDocuments.caseId, caseId));
-
   return {
     case caseData[0],
     documents,
   };
 }
-
 // ==================================================
 // 5. Transactions
 // ==================================================
-
 // Upload document and add to processing queue (atomic operation)
 export async function uploadAndQueueDocument(
   documentData: NewLegalDocument,
@@ -249,16 +221,13 @@ export async function uploadAndQueueDocument(
       .insert(legalDocuments)
       .values(documentData)
       .returning();
-
     // Create processing tasks
     const tasks = taskTypes.map(taskType => ({
       documentId: document[0].id,
       taskType,
       priority: 5,
     }));
-
     await tx.insert(aiProcessingQueue).values(tasks);
-
     // Update case document count
     await tx
       .update(legalCases)
@@ -266,15 +235,12 @@ export async function uploadAndQueueDocument(
         documentCount: sql`${legalCases.documentCount} + 1`,
       })
       .where(eq(legalCases.id, documentData.caseId));
-
     return document[0];
   });
 }
-
 // ==================================================
 // 6. Aggregations and Analytics
 // ==================================================
-
 // Get document statistics by case
 export async function getCaseStatistics(caseId: string) {
   return db.execute(sql`
@@ -288,7 +254,6 @@ export async function getCaseStatistics(caseId: string) {
     WHERE case_id = ${caseId}
   `);
 }
-
 // Get processing queue statistics
 export async function getQueueStatistics() {
   return db.execute(sql`
@@ -303,11 +268,9 @@ export async function getQueueStatistics() {
     ORDER BY task_type, status
   `);
 }
-
 // ==================================================
 // 7. Pagination
 // ==================================================
-
 export async function getPaginatedDocuments(
   page: number = 1,
   pageSize: number = 20,
@@ -318,24 +281,19 @@ export async function getPaginatedDocuments(
   }
 ) {
   const offset = (page - 1) * pageSize;
-
   let query = db
     .select()
     .from(legalDocuments)
     .limit(pageSize)
     .offset(offset);
-
   // Apply filters
   const conditions = [];
-
   if (filters?.caseId) {
     conditions.push(eq(legalDocuments.caseId, filters.caseId));
   }
-
   if (filters?.documentType) {
     conditions.push(eq(legalDocuments.documentType, filters.documentType));
   }
-
   if (filters?.searchQuery) {
     conditions.push(
       or(
@@ -344,21 +302,16 @@ export async function getPaginatedDocuments(
       )
     );
   }
-
   if (conditions.length > 0) {
     query = query.where(and(...conditions));
   }
-
   const documents = await query;
-
   // Get total count
   const countResult = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(legalDocuments)
     .where(conditions.length > 0 ? and(...conditions) : undefined);
-
   const totalCount = countResult[0]?.count || 0;
-
   return {
     documents,
     pagination: {
@@ -369,11 +322,9 @@ export async function getPaginatedDocuments(
     },
   };
 }
-
 // ==================================================
 // 8. Batch Operations
 // ==================================================
-
 // Batch insert documents
 export async function batchInsertDocuments(
   documents: NewLegalDocument[]
@@ -383,7 +334,6 @@ export async function batchInsertDocuments(
     .values(documents)
     .returning();
 }
-
 // Batch update document statuses
 export async function batchUpdateAdmissibility(
   documentIds: string[],
@@ -395,11 +345,9 @@ export async function batchUpdateAdmissibility(
     .where(inArray(legalDocuments.id, documentIds))
     .returning();
 }
-
 // ==================================================
 // 9. Cache Management
 // ==================================================
-
 // Get cached search results
 export async function getCachedSearch(queryHash: string) {
   const result = await db
@@ -411,7 +359,6 @@ export async function getCachedSearch(queryHash: string) {
         gt(vectorSearchCache.expiresAt, new Date())
       )
     );
-
   if (result[0]) {
     // Update hit count
     await db
@@ -422,21 +369,17 @@ export async function getCachedSearch(queryHash: string) {
       })
       .where(eq(vectorSearchCache.id, result[0].id));
   }
-
   return result[0];
 }
-
 // Clean expired cache entries
 export async function cleanExpiredCache() {
   return db
     .delete(vectorSearchCache)
     .where(lt(vectorSearchCache.expiresAt, new Date()));
 }
-
 // ==================================================
 // 10. Real-world Example: Complete Document Upload Flow
 // ==================================================
-
 export async function completeDocumentUpload(params: {
   caseId: string;
   userId: string;
@@ -510,7 +453,6 @@ export async function completeDocumentUpload(params: {
         tags: [],
       })
       .returning();
-
     // 2. Queue AI processing tasks
     await tx.insert(aiProcessingQueue).values([
       {
@@ -529,7 +471,6 @@ export async function completeDocumentUpload(params: {
         priority: 5,
       },
     ]);
-
     return document[0];
   });
 }

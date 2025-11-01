@@ -2,19 +2,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Separator from '$lib/components/ui/separator/Separator.svelte';
-  import ScrollArea from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
+  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
   let inputMessage = $state('');
@@ -99,7 +99,7 @@
       }
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function handleKeyPress(_event: KeyboardEvent) {
@@ -128,7 +128,6 @@
     }
   }
 </script>
-
 <div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
@@ -146,7 +145,7 @@
     <!-- Messages Area -->
     <ScrollArea class="flex-1 p-4 border rounded-lg bg-muted/20">
       <div class="space-y-4">
-        {#each messages as message}
+        {#each Array.isArray(messages) ? messages : [] as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
               class="max-w-[70%] p-3 rounded-lg {message.role === 'user'
@@ -173,8 +172,7 @@
                       >Task: {message.taskId.slice(-8)}</span
                     >
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         {/each}
@@ -191,8 +189,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </ScrollArea>
     <Separator />
@@ -229,7 +226,6 @@
     <pre class="mt-2 overflow-auto">{JSON.stringify(lastResponse, null, 2)}</pre>
   </details>
 {/if}
-
 <style>
   .animate-bounce {
     animation: bounce 1s infinite;
@@ -246,4 +242,3 @@
     }
   }
 </style>
-

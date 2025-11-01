@@ -17,9 +17,8 @@
     onOpenChange?: (open: boolean) => void;
     placeholder?: string;
     className?: string;
-    ondispatch?: (item: unknown) => void;
+    ondispatch?: (item: any) => void;
   } = $props();
-
   // Mock data for legal AI platform
   const mockCommands = [
     {
@@ -119,10 +118,9 @@
       ],
     },
   ];
-
-  function handleSelect(item: unknown) {
+  function handleSelect(item: any) {
     ondispatch?.(item);
-    open = false;
+    open = $state(false);
     onOpenChange?.(open);
   }
   function handleOpenChange(newOpen: boolean) {
@@ -130,7 +128,6 @@
     onOpenChange?.(newOpen);
   }
 </script>
-
 <CommandRoot
   bind:open
   openChange={handleOpenChange}
@@ -149,7 +146,7 @@
   </div>
   <CommandList class="max-h-[300px] overflow-y-auto overflow-x-hidden legal-command-list">
     <CommandEmpty class="py-6 text-center text-sm nes-text is-disabled font-mono">No results found.</CommandEmpty>
-    {#each mockCommands as group}
+    {#each Array.isArray(mockCommands) ? mockCommands : [] as group}
       <CommandGroup class="legal-command-group">
         <CommandGroupHeading
           class="px-2 py-1.5 text-xs font-medium nes-text is-disabled font-mono uppercase tracking-wider flex items-center gap-2"
@@ -157,7 +154,7 @@
           <group.icon class="h-3 w-3" />
           {group.group}
         </CommandGroupHeading>
-        {#each group.items as item}
+        {#each Array.isArray(group.items) ? group.items : [] as item}
           <CommandItem
             value={(item as any).title +
               ' ' +
@@ -184,7 +181,6 @@
     {/each}
   </CommandList>
 </CommandRoot>
-
 <style>
   /* Legal AI Command Palette Styling (no Tailwind @apply rules to avoid build errors) */
   :global(.legal-command-palette) {
@@ -215,4 +211,3 @@
     color: var(--yorha-text-accent, #ffffff);
   }
 </style>
-

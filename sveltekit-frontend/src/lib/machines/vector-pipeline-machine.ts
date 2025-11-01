@@ -3,7 +3,6 @@
 import { setup, assign, createActor, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 import { readActorSnapshot, safeStart, safeStop } from '$lib/utils/xstate-compat';
-
 // --- Service Imports for real implementations ---
 import { productionServiceClient } from '$lib/api/production-service-client';
 import { db } from '$lib/server/db';
@@ -13,9 +12,7 @@ import { workflowQueue } from '$lib/server/message-queue';
 import { WebGPUManager } from '$lib/server/compute/web-gpu-manager';
 import { qdrantClient } from '$lib/server/db/qdrant';
 import { sql } from 'drizzle-orm';
-
 // --- Type Definitions ---
-
 export interface VectorPipelineJob {
   jobId: string;
   ownerType: 'evidence' | 'report' | 'case' | 'document';
@@ -24,11 +21,10 @@ export interface VectorPipelineJob {
   status: 'enqueued' | 'processing' | 'succeeded' | 'failed';
   progress: number;
   error?: string;
-  result?: unknown;
+  result?: any;
   createdAt: string;
   estimatedTime?: number;
 }
-
 export interface VectorPipelineContext {
   currentJob: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> | null;
   batch: {
@@ -56,19 +52,17 @@ export interface VectorPipelineContext {
     lastProcessedAt: Date | null;
   };
 }
-
 export type VectorPipelineEvent =
   | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
   | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> }
   | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string }
-  | { type: 'JOB_COMPLETED'; jobId: string; result: unknown }
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any }
   | { type: 'JOB_FAILED'; jobId: string; error: string }
   | { type: 'RETRY_FAILED_JOBS' }
   | { type: 'HEALTH_CHECK' }
   | { type: 'RESET_PIPELINE' }
   | { type: 'ENABLE_WEBGPU' }
   | { type: 'DISABLE_WEBGPU' };
-
 const initialContext: VectorPipelineContext = {
   currentJob: null,
   batch: { jobs: [], totalJobs: 0, completedJobs: 0, failedJobs: 0, progress: 0 },
@@ -78,9 +72,7 @@ const initialContext: VectorPipelineContext = {
   maxRetries: 3,
   metrics: { averageProcessingTime: 0, totalJobsProcessed: 0, throughputPerMinute: 0, lastProcessedAt: null },
 };
-
 // --- Machine Definition ---
-
 export const vectorPipelineMachine = setup({
   types: {
     context: {} as VectorPipelineContext,
@@ -229,7 +221,6 @@ export const vectorPipelineMachine = setup({
               }))
             )
             .returning();
-
           for (const newJob of newJobs) {
             await workflowQueue.add('vector-processing', {
               jobId: newJob.id,
@@ -357,14 +348,11 @@ export const vectorPipelineMachine = setup({
     },
   },
 });
-
 // --- Actor and Store Export ---
-
 export const vectorPipelineActor = createActor(vectorPipelineMachine);
 export const vectorPipelineState = writable(readActorSnapshot(vectorPipelineActor));
 vectorPipelineActor.subscribe(snapshot => vectorPipelineState.set(snapshot));
 safeStart(vectorPipelineActor);
-
 export const vectorPipelineActions = {
   submitJob: (job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>) =>
     vectorPipelineActor.send({ type: 'SUBMIT_JOB', job }),
@@ -377,5 +365,4 @@ export const vectorPipelineActions = {
   reset: () => vectorPipelineActor.send({ type: 'RESET_PIPELINE' }),
   stop: () => safeStop(vectorPipelineActor),
 };
-
 export default vectorPipelineActor;

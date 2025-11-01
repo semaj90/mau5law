@@ -3,10 +3,8 @@ import path from 'path';
 import fs from 'fs';
 import { consume, publish } from './rabbitmq';
 import { runOcrFromFile } from './services/ocr';
-
 const OCR_QUEUE = 'evidence.ocr';
 const EMBED_QUEUE = 'evidence.embed';
-
 async function start() {
   console.log('Starting OCR worker - listening on', OCR_QUEUE);
   await consume(OCR_QUEUE, async job => {
@@ -22,7 +20,6 @@ async function start() {
     await publish(EMBED_QUEUE, { evidenceId, text, sourcePath: fullPath });
   });
 }
-
 start().catch(err => {
   console.error(err);
   process.exit(1);

@@ -4,7 +4,7 @@
  */
 import { writable, derived } from 'svelte/store';
 // Local minimal types to satisfy compile; replace with real imports if available
-type VectorSearchResult = { id: string; content: string; score: number; [k: string]: unknown };
+type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
 
 export type SearchHistoryItem = {
   query: string;
@@ -115,7 +115,7 @@ export const vectorSearchActions = {
           },
         ],
       })); // Fixed closing parenthesis and semicolon
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Vector search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
@@ -174,7 +174,7 @@ export const vectorSearchActions = {
           },
         ],
       })); // Added missing closing curly brace and parenthesis
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('RAG query failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
@@ -208,7 +208,7 @@ export const vectorSearchActions = {
         results: data.results || [],
         isSearching: false,
       })); // Fixed closing parenthesis and semicolon
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Similar cases search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
@@ -251,7 +251,7 @@ export const vectorSearchActions = {
         ...state,
         vectorDbConnected: response.ok && data.status === 'healthy',
       })); // Fixed closing parenthesis and semicolon
-    } catch (error: unknown) {
+    } catch (error: any) {
       vectorSearchStore.update(state => ({
         ...state,
         vectorDbConnected: false,

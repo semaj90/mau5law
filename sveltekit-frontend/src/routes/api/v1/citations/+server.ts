@@ -159,7 +159,7 @@ class CitationsService {
 }
 
 type RequestLocals = {
-  session?: unknown;
+  session?: any;
   user?: {
     id?: string;
     email?: string;
@@ -243,7 +243,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       return error(500, { message: 'Invalid response shape' });
     }
     return json(payload);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error fetching citations:', err);
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid query parameters', details: err.errors }, { status: 400 });
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return error(500, { message: 'Invalid response shape' });
     }
     return json(payload, { status: 201 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error creating citation:', err);
     if (err instanceof z.ZodError) {
       return json({ success: false, message: 'Invalid citation data', details: err.errors }, { status: 400 });

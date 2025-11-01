@@ -156,7 +156,7 @@ function fallbackProcessing(query: string, _options?: RAGServiceProcessQueryOpti
   };
 }
 export const webgpuRAGService = {
-  processQuery: async (query: string, context?: unknown) => {
+  processQuery: async (query: string, context?: any) => {
     console.log('⚡ WebGPU RAG service processing:', query);
     // Handle different context types with type safety
     const contextArray = Array.isArray(context) ? context : context && typeof context === 'object' ? [context] : [];

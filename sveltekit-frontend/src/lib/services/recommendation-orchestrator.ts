@@ -94,27 +94,27 @@ type NESRLAction = {
   generation?: number;
   fitness?: number;
   context?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add a narrow RabbitMQ-like type to avoid `any`
 type RabbitMQLike = {
   // typical Node/EventEmitter style
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
-  addListener?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
+  addListener?: (event: string, handler: (...args: any[]) => void) => void;
   // common subscribe API (some libs)
-  subscribe?: (event: string, handler: (...args: unknown[]) => void) => void;
+  subscribe?: (event: string, handler: (...args: any[]) => void) => void;
   // alternative naming
-  subscribeEvent?: (event: string, handler: (...args: unknown[]) => void) => void;
+  subscribeEvent?: (event: string, handler: (...args: any[]) => void) => void;
   // allow extra optional members but keep them typed
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export class RecommendationOrchestrator {
   // ...existing fields...
   private recommendations: Writable<RecommendationState>;
   private worker: Worker | null = null;
-  private nesRLAgent: unknown = null; // avoid `any`
+  private nesRLAgent: any = null; // avoid `any`
   private detectiveContext: DetectiveContext = {
     evidenceCount: 0,
     pendingTasks: [],
@@ -234,7 +234,7 @@ export class RecommendationOrchestrator {
       return;
     }
 
-    const bind = (event: string, handler: (...args: unknown[]) => void) => {
+    const bind = (event: string, handler: (...args: any[]) => void) => {
       try {
         // Most implementations follow (event, handler)
         binder.call(mq, event, handler);

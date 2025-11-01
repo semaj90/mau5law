@@ -36,7 +36,7 @@ export interface EnhancedSearchOptions {
   ragMode?: 'basic' | 'enhanced' | 'hybrid';
   includeContext?: boolean;
   filters?: {
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface EnhancedSearchResult {
@@ -103,7 +103,7 @@ export interface EnhancedProcessingOptions {
 }
 export interface ProcessingResult {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   processingTime: number;
   cacheHit?: boolean;

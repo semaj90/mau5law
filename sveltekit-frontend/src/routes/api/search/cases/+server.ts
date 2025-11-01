@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
       filters,
       fromCache: false,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Change: 'any' to: 'unknown'
     console.error('Case search error:', error);
     return json(
@@ -101,7 +101,7 @@ async function searchCasesText(query: string, limit: number, filters: CaseFilter
       searchScore: 1.0,
       matchType: 'text',
     }));
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Change: 'any' to: 'unknown'
     console.error('Text search failed:', error);
     return [];

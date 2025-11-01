@@ -116,7 +116,7 @@ const aiService = {
 
       const data = (await response.json()) as { embedding?: number[] };
       return data.embedding || new Array(768).fill(0);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Embedding generation failed:', error);
       // Fallback to zero vector
       return new Array(768).fill(0);
@@ -141,7 +141,7 @@ const enhancedRAGService = {
         sources: results.map(r => ({ content: r.content })),
         metadata: { ragScore: results.length > 0 ? results[0].score : 0.5 },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('RAG query failed:', error);
       return {
         answer: 'AI analysis temporarily unavailable',
@@ -162,7 +162,7 @@ const enhancedRAGService = {
         metadata: doc.metadata,
       });
       console.log('Indexed document:', doc.id);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Document indexing failed:', error);
     }
   },
@@ -214,7 +214,7 @@ async function initRedis(): Promise<void> {
         url: REDIS_URL || 'redis://localhost:6379',
       }) as RedisClientType;
       await redisClient.connect();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Redis connection failed:', error);
       redisClient = null; // Reset on failure
     }
@@ -233,7 +233,7 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
           ...data,
         })
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to publish synthesis update:', error);
     }
   }
@@ -630,7 +630,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error(`❌ [${requestId}] Evidence synthesis error:`, error);
     return json(
       {
@@ -982,7 +982,7 @@ async function addToEnhancedRAG(
     });
 
     console.log(`✅ Added synthesized evidence to RAG with score: ${ragScore}`);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to add to enhanced RAG:', error);
   }
 }
@@ -1011,7 +1011,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to generate synthesis suggestions:', error);
     return json(
       {

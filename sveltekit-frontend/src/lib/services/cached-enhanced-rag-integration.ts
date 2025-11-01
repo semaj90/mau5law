@@ -243,11 +243,11 @@ export class CachedEnhancedRAGIntegration {
     return null;
   }
 
-  private async memorySet(key: string, value: unknown, _priority?: Priority, ttlSeconds?: number): Promise<void> {
+  private async memorySet(key: string, value: any, _priority?: Priority, ttlSeconds?: number): Promise<void> {
     type MemorySetter = {
-      store?: (k: string, v: unknown, priority?: Priority, ttl?: number) => void | Promise<void>;
-      set?: (k: string, v: unknown, ttl?: number) => void | Promise<void>;
-      save?: (k: string, v: unknown, ttl?: number) => void | Promise<void>;
+      store?: (k: string, v: any, priority?: Priority, ttl?: number) => void | Promise<void>;
+      set?: (k: string, v: any, ttl?: number) => void | Promise<void>;
+      save?: (k: string, v: any, ttl?: number) => void | Promise<void>;
     };
 
     const m = this.memoryManager as unknown as MemorySetter;
@@ -277,7 +277,7 @@ export class CachedEnhancedRAGIntegration {
     }
 
     const cacheKey = `semantic:${createHash('sha256').update(query.query).digest('hex').substring(0, 16)}`;
-    let semanticEnhancements = await this.memoryGet<{ expansions?: unknown[] }>(cacheKey);
+    let semanticEnhancements = await this.memoryGet<{ expansions?: any[] }>(cacheKey);
     if (!semanticEnhancements) {
       semanticEnhancements = await this.generateSemanticEnhancements(query);
       await this.memorySet(cacheKey, semanticEnhancements, Priority.MEDIUM, 1800);
@@ -439,7 +439,7 @@ export class CachedEnhancedRAGIntegration {
     }
   }
 
-  private async generateSemanticEnhancements(query: RAGQuery): Promise<{ expansions?: unknown[] }> {
+  private async generateSemanticEnhancements(query: RAGQuery): Promise<{ expansions?: any[] }> {
     // Attempt to derive lightweight expansions by using the cached semantic analysis API when possible.
     try {
       const ctx = (query as unknown as Record<string, unknown>)?.context;

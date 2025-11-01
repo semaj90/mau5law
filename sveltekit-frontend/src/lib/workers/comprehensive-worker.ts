@@ -8,7 +8,7 @@ import { consumeFromQueue } from '$lib/server/rabbitmq';
 import { ingestionService } from '$lib/server/workflows/ingestion-service';
 // Use postgres-js client from db-shim (drizzle adapter expects postgres-js client)
 const db = drizzle(pgClient as any);
-let shuttingDown = false;
+let shuttingDown = $state(false);
 const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 interface ChunkJob {
   jobId: string;
@@ -24,7 +24,7 @@ interface ChunkJob {
   };
 }
 // Helper: safely format unknown errors to strings
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   // Prefer Error.message for Error instances
   if (err instanceof Error) return err.message;
   // Strings are fine
@@ -120,7 +120,7 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     console.error(`❌ Error reporting progress for ${jobId}:`, error);
   }
 }
-async function reportError(jobId: string, chunkIndex: number, error: unknown) {
+async function reportError(jobId: string, chunkIndex: number, error: any) {
   try {
     await cache.set(
       `job:${jobId}:error`,
@@ -168,7 +168,7 @@ async function runRabbitConsumer() {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('❌ Error processing priority job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
@@ -178,7 +178,7 @@ async function runRabbitConsumer() {
       try {
         await processChunkJob(payload as ChunkJob);
         ack();
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.error('❌ Error processing regular job:', formatError(err));
         nack(); // Don't requeue to avoid hot loops
       }
@@ -236,10 +236,10 @@ async function runRedisLoop() {
         const job = JSON.parse(raw) as ChunkJob;
         try {
           await processChunkJob(job);
-        } catch (err: unknown) {
+        } catch (err: any) {
           console.error('❌ Error processing redis job:', formatError(err));
         }
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.error('❌ Worker error (redis loop):', formatError(e));
         await new Promise(r => setTimeout(r, 500));
       }

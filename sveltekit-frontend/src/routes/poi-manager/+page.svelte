@@ -125,7 +125,7 @@
       console.error('Error loading POIs:', error);
       (toast as any).error('Failed to load POIs');
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -143,7 +143,7 @@
 
       if (result.success) {
         (toast as any).success('POI created successfully');
-        showCreateDialog = false;
+        showCreateDialog = $state(false);
         resetForm();
         await loadPois();
       } else {
@@ -153,7 +153,7 @@
       console.error('Error creating POI:', error);
       (toast as any).error('Failed to create POI');
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
 
@@ -173,7 +173,7 @@
 
       if (result.success) {
         (toast as any).success('POI updated successfully');
-        showEditDialog = false;
+        showEditDialog = $state(false);
         selectedPoi = null;
         resetForm();
         await loadPois();
@@ -184,7 +184,7 @@
       console.error('Error updating POI:', error);
       (toast as any).error('Failed to update POI');
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
 
@@ -483,7 +483,7 @@
   {:else if viewMode === 'grid'}
     <!-- Grid View -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each filteredPois as poi}
+      {#each Array.isArray(filteredPois) ? filteredPois : [] as poi}
         <Card class="p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-start justify-between mb-4">
             <div class="flex items-center gap-3">
@@ -535,7 +535,7 @@
   {:else}
     <!-- List View -->
     <Card class="overflow-hidden">
-      {#each filteredPois as poi}
+      {#each Array.isArray(filteredPois) ? filteredPois : [] as poi}
         <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">

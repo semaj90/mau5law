@@ -36,7 +36,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
   private contentContainer: THREE.Group;
   private scrollContainer?: THREE.Group;
   private options: YoRHaPanel3DOptions;
-  private isMinimized = false;
+  private isMinimized = $state(false);
   private scrollOffset = 0;
   constructor(options: YoRHaPanel3DOptions = {}) {
     const style = YoRHaPanel3D.getVariantStyle(options.variant || 'default');
@@ -321,7 +321,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       const currentHeight = this.style.height || 3;
       if (currentHeight > targetHeight) {
         this.setStyle({ height: Math.max(targetHeight, currentHeight - deltaTime * 5) });
-        this.contentContainer.visible = false;
+        this.contentContainer.visible = $state(false);
       } else {
         this.customAnimations.delete('minimize');
       }
@@ -329,7 +329,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
   }
   public restore(): void {
     if (!this.isMinimized) return;
-    this.isMinimized = false;
+    this.isMinimized = $state(false);
     const originalHeight = this.options.height || 3;
     // Animate to restored state
     this.addCustomAnimation('restore', deltaTime => {
@@ -361,7 +361,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         if (
           material instanceof THREE.MeshStandardMaterial ||
           material instanceof THREE.MeshBasicMaterial ||
-          ('opacity' in material && typeof (material as unknown as { opacity?: unknown }).opacity === 'number')
+          ('opacity' in material && typeof (material as unknown as { opacity?: any }).opacity === 'number')
         ) {
           // Cast via unknown to a shaped type (avoids `any`)
           (material as unknown as { opacity: number }).opacity = newOpacity;

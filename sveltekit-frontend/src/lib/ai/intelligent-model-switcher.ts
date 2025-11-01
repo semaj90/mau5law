@@ -6,23 +6,20 @@
 // import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js'; // Temporarily disabled due to syntax errors
 import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
-
 // New: explicit types to avoid `any` and clarify shapes
 type UserIntentPrediction = {
   intentCategory: string;
   domainSpecificity: number;
   complexity: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 interface OptimizationResult {
   confidence: number;
   recommendedModel: string;
   didYouMeanSuggestions: string[];
   userIntentPrediction: UserIntentPrediction;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 interface IntelligentSwitchResult {
   switchExecuted: boolean;
   finalModel: string;
@@ -32,7 +29,6 @@ interface IntelligentSwitchResult {
   didYouMeanSuggestions: string[];
   processingTime: number;
 }
-
 interface PerformanceStats {
   totalSwitches: number;
   successRate: number;
@@ -41,7 +37,6 @@ interface PerformanceStats {
   activeUserProfiles: number;
   learningPhaseDistribution: Record<string, number>;
 }
-
 interface SwitchHistoryEntry {
   userId: string;
   fromModel: string;
@@ -51,7 +46,6 @@ interface SwitchHistoryEntry {
   userSatisfaction: number;
   timestamp: number;
 }
-
 export interface ModelSwitchDecision {
   shouldSwitch: boolean;
   targetModel: string;
@@ -92,7 +86,6 @@ export interface FastUXOptimization {
   didYouMeanCache: Map<string, string[]>; // query -> suggestions
   userIntentShortcuts: Map<string, string>; // shortcut -> full_query
 }
-
 // New: explicit typed entries for satisfaction history and contextual predictions
 type SatisfactionEntry = {
   modelUsed: string;
@@ -100,13 +93,11 @@ type SatisfactionEntry = {
   satisfactionScore: number; // 1-5
   timestamp: number;
 };
-
 type ContextualPrediction = {
   nextLikelyIntent: string;
   probability: number; // 0-1
   suggestedModel: string;
 };
-
 // New: typed shapes to avoid `any`
 type UserContext = {
   userId?: string;
@@ -116,13 +107,11 @@ type UserContext = {
   // allow optional freeform text for context
   text?: string;
 };
-
 interface ModelSwitchResult {
   success: boolean;
   switchTime: number;
   error?: string;
 }
-
 interface UnifiedClientOrchestrator {
   performContextSwitch(
     fromModel: string,
@@ -133,11 +122,10 @@ interface UnifiedClientOrchestrator {
       priority?: string;
       userId?: string;
       sessionId?: string;
-      [key: string]: unknown;
+      [key: string]: any;
     }
   ): Promise<void>;
 }
-
 class IntelligentModelSwitcher {
   private userProfiles = new Map<string, UserLearningProfile>();
   private fastUXOptimizations = new Map<string, FastUXOptimization>();
@@ -196,7 +184,7 @@ class IntelligentModelSwitcher {
         optimizationResult
       );
       // Step 4: Execute switch if beneficial
-      let switchExecuted = false;
+      let switchExecuted = $state(false);
       let finalModel = currentModel;
       if (switchDecision.shouldSwitch) {
         const switchResult = await this.executeModelSwitch(currentModel, switchDecision.targetModel, userContext);
@@ -335,7 +323,7 @@ class IntelligentModelSwitcher {
       this.performanceMonitor.avgSwitchTime = (this.performanceMonitor.avgSwitchTime + switchTime) / 2;
       console.log(`✅ Model switch completed in ${switchTime.toFixed(2)}ms`);
       return { success: true, switchTime };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`❌ Model switch failed: ${fromModel} -> ${toModel}`, message);
       return {
@@ -390,10 +378,10 @@ class IntelligentModelSwitcher {
         const savedProfile = cachedProfile.cacheResults[0].data;
         // --- Normalization: convert plain objects/arrays into expected runtime shapes ---
         // Helper: safely convert different persisted map shapes into [key, value][] entries
-        const convertToEntries = (input: unknown): Array<[string, number]> => {
+        const convertToEntries = (input: any): Array<[string, number]> => {
           if (!input) return [];
           // Safe number parser to avoid `any` casts and NaN surprises
-          const parseNumber = (value: unknown): number => {
+          const parseNumber = (value: any): number => {
             if (typeof value === 'number') return value;
             if (typeof value === 'string') {
               const n = Number(value.trim());
@@ -707,10 +695,8 @@ class IntelligentModelSwitcher {
       profile?.queryPatterns?.commonIntents && profile.queryPatterns.commonIntents.length > 0
         ? profile.queryPatterns.commonIntents
         : ['legal_analysis', 'chat', 'research'];
-
     // Short heuristic: longer queries slightly bias toward legal_analysis (more complex questions)
     const lengthFactor = Math.min(1, (currentQuery?.length ?? 0) / 200);
-
     const scored = intents.map(intent => {
       const pref = profile.preferredModels.get(intent) ?? 0.5;
       // boost legal_analysis by lengthFactor, leave others mostly based on preference
@@ -718,12 +704,9 @@ class IntelligentModelSwitcher {
       const score = Math.min(1, pref + boost);
       return { intent, score };
     });
-
     scored.sort((a, b) => b.score - a.score);
-
     const intentToModel = (intent: string) =>
       intent === 'legal_analysis' ? 'llama-rl' : intent === 'chat' ? 'gemma270m' : 'llama-rl';
-
     // Return top 3 predictions (fill defaults if less than 3)
     return scored.slice(0, 3).map(s => ({
       nextLikelyIntent: s.intent,

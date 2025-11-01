@@ -21,17 +21,16 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
       });
       if (!res.ok) throw new Error('Failed to fetch audit results');
       const data = await res.json();
-      auditResults = (data as { results?: unknown }).results || [];
-    } catch (e: unknown) {
+      auditResults = (data as { results?: any }).results || [];
+    } catch (e: any) {
       error = (e instanceof Error ? e.message : String(e)) || 'Unknown error';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   $effect(fetchAuditResults);
   // TODO: Add actions to trigger agent fixes, mark TODOs as resolved, and live update from backend
 </script>
-
 <div class="space-y-6">
   <h2 class="text-xl font-bold">Pipeline Audit Results</h2>
   {#if loading}
@@ -42,56 +41,55 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     <div>No audit results found.</div>
   {:else}
     <ul class="space-y-2">
-      {#each auditResults as result}
+      {#each Array.isArray(auditResults) ? auditResults : [] as result}
         <li class="border rounded p-3 flex flex-col gap-1">
           <div class="font-semibold">
             {(
               result as {
-                step?: unknown;
-                message?: unknown;
-                suggestedFix?: unknown;
-                status?: unknown;
-                agentTriggered?: unknown;
+                step?: any;
+                message?: any;
+                suggestedFix?: any;
+                status?: any;
+                agentTriggered?: any;
               }
             ).step}
           </div>
           <div class="text-sm">
             {(
               result as {
-                step?: unknown;
-                message?: unknown;
-                suggestedFix?: unknown;
-                status?: unknown;
-                agentTriggered?: unknown;
+                step?: any;
+                message?: any;
+                suggestedFix?: any;
+                status?: any;
+                agentTriggered?: any;
               }
             ).message}
           </div>
-          {#if (result as { step?: unknown; message?: unknown; suggestedFix?: unknown; status?: unknown; agentTriggered?: unknown }).suggestedFix}
+          {#if (result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).suggestedFix}
             <div class="text-amber-700 text-xs">
               Suggested fix: {(
                 result as {
-                  step?: unknown;
-                  message?: unknown;
-                  suggestedFix?: unknown;
-                  status?: unknown;
-                  agentTriggered?: unknown;
+                  step?: any;
+                  message?: any;
+                  suggestedFix?: any;
+                  status?: any;
+                  agentTriggered?: any;
                 }
               ).suggestedFix}
-            </div>
-          {/if}
+            {/if}
           <div class="flex gap-2 mt-1">
             <span class="text-xs px-2 py-1 rounded bg-gray-100"
               >{(
                 result as {
-                  step?: unknown;
-                  message?: unknown;
-                  suggestedFix?: unknown;
-                  status?: unknown;
-                  agentTriggered?: unknown;
+                  step?: any;
+                  message?: any;
+                  suggestedFix?: any;
+                  status?: any;
+                  agentTriggered?: any;
                 }
               ).status}</span
             >
-            {#if (result as { step?: unknown; message?: unknown; suggestedFix?: unknown; status?: unknown; agentTriggered?: unknown }).agentTriggered}
+            {#if (result as { step?: any; message?: any; suggestedFix?: any; status?: any; agentTriggered?: any }).agentTriggered}
               <span class="text-xs px-2 py-1 rounded bg-blue-100">Agent triggered</span>
             {/if}
             <!-- TODO: Add button to trigger agent action for this TODO -->
@@ -101,9 +99,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     </ul>
   {/if}
 </div>
-
 <!-- #context7 #Phase10 #todo: Wire up agent trigger, improve UI, connect to real backend after test -->
-
 <!-- TODO: After initial test, wire up agent action buttons, live updates, and best practice docs. -->
 <style>
   /* Uses Yorha/Phase10/Context7 design system classes */

@@ -15,7 +15,6 @@
       Trigger = null;
     }
   })();
-
   interface Props {
     children?: Snippet;
     class?: string;
@@ -33,15 +32,14 @@
     )
   );
 </script>
-
 {#if Trigger}
   <!-- Use runes-mode dynamic component invocation (components are dynamic by default) -->
   <Trigger class={triggerClasses} {disabled} {asChild}>
-    {@render children?.()}
+    <slot />
   </Trigger>
 {:else}
   <!-- simple fallback while adapter resolves -->
   <button class={triggerClasses} {disabled} aria-haspopup="menu">
-    {@render children?.()}
+    <slot />
   </button>
 {/if}

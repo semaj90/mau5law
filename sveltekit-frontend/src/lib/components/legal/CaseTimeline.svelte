@@ -15,34 +15,29 @@
     metadata?: { [key: string]: any };
   }
 </script>
-
 <script lang="ts">
   // Replace problematic named imports with a default import and destructure.
   // This avoids the TS error when certain named exports are not present in the typings.
   import LucideDefault from 'lucide-svelte';
   // cast to any to satisfy typings and extract icons
   const { Calendar, FileText, Users, Scale, AlertCircle, CheckCircle } = (LucideDefault as any);
-
   import { cn } from '$lib/utils';
-
   // Use explicit Svelte props
   export let caseId: string = '';
   export let caseName: string = '';
   export let events: TimelineEvent[] = [];
   export let showFutureEvents: boolean = true;
-  export let compactMode: boolean = false;
+  export let compactMode: boolean = $state(false);
   export let interactive: boolean = true;
   export let onEventClick: ((e: TimelineEvent) => void) | undefined = undefined;
   export let onAddEvent: (() => void) | undefined = undefined;
   export let className: string = '';
-
   // Sort events by date (reactive)
   $: sortedEvents = (() => {
     const now = new Date();
     const filtered = showFutureEvents ? events : events.filter((ev) => ev.date <= now);
     return [...filtered].sort((a, b) => b.date.getTime() - a.date.getTime());
   })();
-
   // Event type configurations
   const eventConfig = {
     filing: { icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
@@ -53,7 +48,6 @@
     decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
     milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
   } as const;
-
   // Status configurations (use className to match template usage)
   const statusConfig = {
     completed: { label: 'Completed', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
@@ -61,7 +55,6 @@
     overdue: { label: 'Overdue', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
     cancelled: { label: 'Cancelled', className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
   } as const;
-
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -69,24 +62,20 @@
       day: 'numeric'
     });
   }
-
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
   }
-
   function isToday(date: Date): boolean {
     const today = new Date();
     return date.toDateString() === today.toDateString();
   }
-
   function isPast(date: Date): boolean {
     return date < new Date();
   }
 </script>
-
 <div class={cn('case-timeline w-full space-y-4', className)}>
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -110,7 +99,6 @@
       </button>
     {/if}
   </div>
-
   <!-- Timeline -->
   <div class="relative">
     {#if sortedEvents.length === 0}
@@ -156,7 +144,6 @@
             >
               <IconComponent class={cn('w-5 h-5', config.color)} />
             </div>
-
             <!-- Event Content -->
             <div class={cn('flex-1 min-w-0 pb-6', compactMode && 'pb-4')}>
               <div
@@ -185,7 +172,6 @@
                           <span class="ml-1 text-yorha-accent">TODAY</span>
                         {/if}
                       </span>
-
                       {#if event.priority && event.priority !== 'medium'}
                         <span
                           class={cn(
@@ -200,20 +186,17 @@
                       {/if}
                     </div>
                   </div>
-
                   <!-- Status Badge -->
                   <span class={cn('px-2 py-1 text-xs font-mono rounded border', status.className)}>
                     {status.label}
                   </span>
                 </div>
-
                 <!-- Event Description -->
                 {#if event.description && !compactMode}
                   <p class="text-sm text-yorha-text-secondary font-mono mb-3">
                     {event.description}
                   </p>
                 {/if}
-
                 <!-- Event Metadata -->
                 {#if !compactMode && (event.participants?.length || event.documents?.length || event.location)}
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
@@ -221,43 +204,35 @@
                       <div>
                         <span class="text-yorha-text-secondary">Participants:</span>
                         <div class="mt-1 space-y-1">
-                          {#each event.participants as participant}
+                          {#each Array.isArray(event.participants) ? event.participants : [] as participant}
                             <div class="text-yorha-text-primary">{participant}</div>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
-
+                      {/if}
                     {#if event.documents?.length}
                       <div>
                         <span class="text-yorha-text-secondary">Documents:</span>
                         <div class="mt-1 space-y-1">
-                          {#each event.documents as document}
+                          {#each Array.isArray(event.documents) ? event.documents : [] as document}
                             <div class="text-yorha-primary hover:text-yorha-accent cursor-pointer">
                               {document}
                             </div>
                           {/each}
                         </div>
-                      </div>
-                    {/if}
-
+                      {/if}
                     {#if event.location}
                       <div>
                         <span class="text-yorha-text-secondary">Location</span>
                         <div class="mt-1 text-yorha-text-primary">{event.location}</div>
-                      </div>
-                    {/if}
-                  </div>
-                {/if}
+                      {/if}
+                  {/if}
               </div>
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   .case-timeline {
     --timeline-line-color: rgb(var(--yorha-border));

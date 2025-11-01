@@ -82,8 +82,7 @@
   {#if loading}
     <div class="loading-overlay">
       <div class="loading-spinner"></div>
-    </div>
-  {/if}
+    {/if}
   {#if header || title || subtitle || actions}
     <div.Header class="nier-bits-yorha-panel-header nes-container">
       {#if header}
@@ -99,10 +98,8 @@
             {/if}
           </div>
           {#if actions}
-            <div class="nier-bits-card-actions">{@render actions()}</div>
-          {/if}
-        </div>
-      {/if}
+            <div class="nier-bits-card-actions">{@render actions()}{/if}
+        {/if}
     </div.Header>
   {/if}
   {#if children}
@@ -113,12 +110,11 @@
   {/if}
 </div.Root>
 {#if tooltip && $open}
-  <div class="tooltip">{tooltip}</div>
-{/if}
+  <div class="tooltip">{tooltip}{/if}
 <style>
   .modern-card {
     border-radius: 0.75rem;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .modern-card:focus-visible {
@@ -157,7 +153,7 @@
     align-items: center;
   }
   .loading-overlay {
-    position absolute;
+    position: absolute;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     display: flex;

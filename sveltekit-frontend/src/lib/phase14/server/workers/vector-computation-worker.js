@@ -24,7 +24,7 @@ class VectorComputationPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0;
-    this.initialized = false;
+    this.initialized = $state(false);
   }
   async initialize() {
     if (this.initialized) return;
@@ -154,7 +154,7 @@ class VectorComputationPool {
       return;
     }
     // Mark worker as available
-    this.workers[workerIndex].busy = false;
+    this.workers[workerIndex].busy = $state(false);
     // Resolve or reject the job
     if (success) {
       job.resolve(data);
@@ -174,7 +174,7 @@ class VectorComputationPool {
       await workerInfo.worker.terminate();
     }
     this.workers = [];
-    this.initialized = false;
+    this.initialized = $state(false);
   }
   getStats() {
     return {
@@ -195,7 +195,7 @@ class LegalLLMWorkerPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0;
-    this.initialized = false;
+    this.initialized = $state(false);
   }
   async initialize() {
     if (this.initialized) return;
@@ -270,7 +270,7 @@ class LegalLLMWorkerPool {
     const { jobId, success, data, error } = result;
     const job = this.activeJobs.get(jobId);
     if (!job) return;
-    this.workers[workerIndex].busy = false;
+    this.workers[workerIndex].busy = $state(false);
     if (success) {
       job.resolve(data);
     } else {
@@ -287,7 +287,7 @@ class LegalLLMWorkerPool {
       await workerInfo.worker.terminate();
     }
     this.workers = [];
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 /**

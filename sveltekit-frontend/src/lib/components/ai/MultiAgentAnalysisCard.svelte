@@ -13,14 +13,14 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Separator } from '$lib/components/ui/separator/Separator.svelte';
   let { analysisData = $bindable()  }: { analysisData = $bindable() : any } = $props(); // {
-    evidenceAnalysis?: unknown;
-    personsData?: unknown;
-    caseSynthesis?: unknown;
+    evidenceAnalysis?: any;
+    personsData?: any;
+    caseSynthesis?: any;
     caseId?: string;
     timestamp?: string;
   }
@@ -45,7 +45,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   let showDetails = $state(false);
 </script>
-
 <div class="w-full max-w-4xl nes-container">
   <div class="yorha-panel-header">
     <div class="flex items-center justify-between">
@@ -76,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mb-4">
             <h4 class="font-medium mb-2">Key Facts:</h4>
             <ul class="space-y-1">
-              {#each evidence.keyFacts.slice(0, 3) as fact}
+              {#each Array.isArray(evidence.keyFacts.slice(0, 3)) ? evidence.keyFacts.slice(0, 3) : [] as fact}
                 <li class="text-sm text-gray-700 flex items-start gap-2">
                   <span class="text-blue-500 mt-1">•</span>
                   {fact}
@@ -88,20 +87,18 @@ https://svelte.dev/e/js_parse_error -->
                 </li>
               {/if}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if evidence.concerns?.length}
           <div class="mb-4">
             <h4 class="font-medium mb-2 text-red-700">⚠️ Concerns:</h4>
             <ul class="space-y-1">
-              {#each evidence.concerns as concern}
+              {#each Array.isArray(evidence.concerns) ? evidence.concerns : [] as concern}
                 <li class="text-sm text-red-600 bg-red-50 p-2 rounded border-l-2 border-red-300">
                   {concern}
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
       </div>
       <Separator />
     {/if}
@@ -115,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
           >
         </h3>
         <div class="grid gap-3 md:grid-cols-2">
-          {#each persons.slice(0, 4) as person}
+          {#each Array.isArray(persons.slice(0, 4)) ? persons.slice(0, 4) : [] as person}
             <div class="p-3 border rounded-lg bg-gray-50">
               <div class="flex items-center justify-between mb-2">
                 <h4 class="font-medium">{person.name}</h4>
@@ -131,29 +128,26 @@ https://svelte.dev/e/js_parse_error -->
                   {#if pe(rson as CustomEvent).details.occupation}
                     <p>Occupation {pe(rson as CustomEvent).details.occupation}</p>
                   {/if}
-                </div>
-              {/if}
+                {/if}
               {#if person.confidence}
                 <div class="mt-2 flex items-center gap-2">
                   <div class="flex-1 bg-gray-200 rounded-full h-1.5">
                     <div class="bg-blue-500 h-1.5 rounded-full" style="width: {person.confidence * 100}%"></div>
                   </div>
                   <span class="text-xs text-gray-500">{Math.round(person.confidence * 100)}%</span>
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
           {#if persons.length > 4}
             <div class="p-3 border rounded-lg bg-gray-50 flex items-center justify-center text-gray-500">
               +{persons.length - 4} more persons
-            </div>
-          {/if}
+            {/if}
         </div>
         {#if relationships.length > 0}
           <div class="mt-4">
             <h4 class="font-medium mb-2">Key Relationships:</h4>
             <div class="space-y-2">
-              {#each relationships.slice(0, 3) as rel}
+              {#each Array.isArray(relationships.slice(0, 3)) ? relationships.slice(0, 3) : [] as rel}
                 <div class="text-sm bg-blue-50 p-2 rounded border-l-2 border-blue-300">
                   <span class="font-medium">{rel.person1}</span>
                   <span class="text-blue-600 mx-2">{rel.relationship?.replace('_', ' ')}</span>
@@ -164,8 +158,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
       <Separator />
     {/if}
@@ -177,39 +170,35 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mb-4">
             <h4 class="font-medium mb-2">Key Findings:</h4>
             <ul class="space-y-2">
-              {#each synthesis.keyFindings.slice(0, 3) as finding}
+              {#each Array.isArray(synthesis.keyFindings.slice(0, 3)) ? synthesis.keyFindings.slice(0, 3) : [] as finding}
                 <li class="text-sm bg-green-50 p-2 rounded border-l-2 border-green-300">
                   {finding}
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if synthesis.nextSteps?.length}
           <div class="mb-4">
             <h4 class="font-medium mb-2">Next Steps:</h4>
             <ul class="space-y-2">
-              {#each synthesis.nextSteps.slice(0, 3) as step}
+              {#each Array.isArray(synthesis.nextSteps.slice(0, 3)) ? synthesis.nextSteps.slice(0, 3) : [] as step}
                 <li class="text-sm bg-yellow-50 p-2 rounded border-l-2 border-yellow-300 flex items-start gap-2">
                   <span class="text-yellow-600 mt-1">→</span>
                   {step}
                 </li>
               {/each}
             </ul>
-          </div>
-        {/if}
+          {/if}
         {#if synthesis.legalStrategy?.viableCharges?.length}
           <div class="mb-4">
             <h4 class="font-medium mb-2">Viable Charges:</h4>
             <div class="flex flex-wrap gap-2">
-              {#each synthesis.legalStrategy.viableCharges as charge}
+              {#each Array.isArray(synthesis.legalStrategy.viableCharges) ? synthesis.legalStrategy.viableCharges : [] as charge}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{charge}</span>
               {/each}
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
       <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showDetails = !showDetails)}>
@@ -226,11 +215,9 @@ https://svelte.dev/e/js_parse_error -->
         <pre class="text-xs overflow-auto max-h-96 bg-white p-3 rounded border">
 {JSON.stringify(analysisData, null, 2)}
         </pre>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for JSON display */
   pre::-webkit-scrollbar {

@@ -58,7 +58,7 @@ type SearchResponse = {
   error?: string | object;
   code?: string;
   stage?: string;
-  details?: unknown;
+  details?: any;
 };
 
 // Define a structured response type for GET, aligning with AdminStatusResponse
@@ -75,7 +75,7 @@ type SearchStatusResponse = {
     };
     vectorSearch: {
       status: 'healthy' | 'unhealthy' | 'degraded' | 'unknown';
-      details: unknown | null;
+      details: any | null;
       stats: {
         totalDocuments: number;
         indexedDocuments: number;
@@ -101,14 +101,14 @@ type SearchStatusResponse = {
   requestId: string;
   error?: string;
   code?: string;
-  details?: unknown;
+  details?: any;
 };
 
 type SearchError = {
   message: string;
   code: string;
   timestamp: string;
-  details?: unknown;
+  details?: any;
 };
 
 // --- Zod Schemas ---
@@ -147,7 +147,7 @@ type SearchMachineContext = {
   finalResults: VectorResult[];
   options: NonNullable<ActorInputOptions>;
   cachedAt: string | null;
-  error: { message: string; code: string; stage: string; details?: unknown } | null;
+  error: { message: string; code: string; stage: string; details?: any } | null;
 };
 
 // --- Add typed helpers to avoid `any` ---
@@ -190,10 +190,10 @@ type RunPayload = {
 };
 
 // --- XState machine: avoid explicit `any` usage ---
-const searchMachine = (createMachine as unknown as (...args: unknown[]) => unknown)(
+const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
   {
     id: 'search',
-    context: (input: unknown) =>
+    context: (input: any) =>
       ({
         query: (input as RunPayload)?.input?.query || '',
         embedding: (input as RunPayload)?.input?.embedding || [],
@@ -227,7 +227,7 @@ const searchMachine = (createMachine as unknown as (...args: unknown[]) => unkno
           }),
           onDone: [
             {
-              guard: ({ event }: { event: unknown }) => Boolean((event as { output?: FromCacheOutput })?.output),
+              guard: ({ event }: { event: any }) => Boolean((event as { output?: FromCacheOutput })?.output),
               actions: assign({
                 finalResults: (_ctx, evt: { output?: FromCacheOutput }) =>
                   (evt.output?.results ?? []) as VectorResult[],
@@ -245,7 +245,7 @@ const searchMachine = (createMachine as unknown as (...args: unknown[]) => unkno
           onError: {
             target: 'generatingEmbedding',
             actions: assign({
-              error: (_ctx, evt: { error?: unknown }) => {
+              error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -276,7 +276,7 @@ const searchMachine = (createMachine as unknown as (...args: unknown[]) => unkno
           onError: {
             target: 'failure',
             actions: assign({
-              error: (_ctx, evt: { error?: unknown }) => {
+              error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -360,7 +360,7 @@ const searchMachine = (createMachine as unknown as (...args: unknown[]) => unkno
           onError: {
             target: 'failure',
             actions: assign({
-              error: (_ctx, evt: { error?: unknown }) => {
+              error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 return {
                   message: e instanceof Error ? e.message : String(e),
@@ -444,7 +444,7 @@ const searchMachine = (createMachine as unknown as (...args: unknown[]) => unkno
           onError: {
             target: 'cachingResults',
             actions: assign({
-              error: (_ctx, evt: { error?: unknown }) => {
+              error: (_ctx, evt: { error?: any }) => {
                 const e = evt.error;
                 const errorMessage = e instanceof Error ? e.message : String(e);
                 return {
@@ -732,7 +732,7 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
     const vectorStats = await enhancedVectorSearchService.getSearchStats();
 
     // Normalize external vector service statuses into the allowed SearchStatusResponse union
-    const normalizeVectorStatus = (s: unknown): SearchStatusResponse['services']['vectorSearch']['status'] => {
+    const normalizeVectorStatus = (s: any): SearchStatusResponse['services']['vectorSearch']['status'] => {
       const raw = String(s ?? '').toLowerCase();
       if (raw === 'healthy' || raw === 'unhealthy' || raw === 'degraded' || raw === 'unknown') {
         return raw as SearchStatusResponse['services']['vectorSearch']['status'];

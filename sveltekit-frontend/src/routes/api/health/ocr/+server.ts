@@ -46,15 +46,15 @@ function getOCRBase(): string {
   return g.__OCR_BASE__ ?? '/api/ocr'
 }
 
-function safeNumber(value: unknown, fallback = 0): number {
+function safeNumber(value: any, fallback = 0): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback
 }
 
-function isAbortError(err: unknown): boolean {
+function isAbortError(err: any): boolean {
   return typeof err === 'object' && err !== null && (err as any).name === 'AbortError'
 }
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message
   try { return String(err) } catch { return 'Unknown error' }
 }
@@ -106,7 +106,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         responseTime
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const responseTime = Date.now() - startTime
     console.error('❌ OCR health check failed:', getErrorMessage(err));
     if (isAbortError(err)) {
@@ -170,7 +170,7 @@ export const GET: RequestHandler = async () => {
         'X-Response-Time': ocrHealth.responseTime.toString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const checkDuration = Date.now() - startTime;
     console.error('❌ OCR health monitoring system failed:', getErrorMessage(err));
     return json(
@@ -238,7 +238,7 @@ export const POST: RequestHandler = async ({ request }) => {
             { status: response.status }
           );
         }
-      } catch (err: unknown) {
+      } catch (err: any) {
         return json(
           {
             action: 'test-processing',
@@ -283,7 +283,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, { status: httpStatus });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         error: 'Invalid request',
@@ -309,7 +309,7 @@ export const HEAD: RequestHandler = async () => {
         'X-Last-Checked': ocrHealth.lastChecked,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return new Response(null, {
       status: 503,
       headers: {

@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         architecture: process.arch,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cluster status error:', error);
     console.error('Cluster status error:', error);
     return json(

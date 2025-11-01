@@ -144,7 +144,7 @@ export class UnifiedRAGService {
   // Provider health tracking
   private pgvectorHealthy: boolean = true;
   private qdrantHealthy: boolean = true;
-  private mcpHealthy: boolean = false;
+  private mcpHealthy: boolean = $state(false);
 
   // Legal concept mappings for semantic expansion
   private legalConceptMap = new Map<string, string[]>([
@@ -328,7 +328,7 @@ export class UnifiedRAGService {
         return await this.searchPgVector(embedding, limit, threshold);
       } catch (error) {
         console.warn('[UnifiedRAG] pgvector search failed, falling back to Qdrant:', error);
-        this.pgvectorHealthy = false;
+        this.pgvectorHealthy = $state(false);
       }
     }
 
@@ -338,7 +338,7 @@ export class UnifiedRAGService {
         return await this.searchQdrant(embedding, limit, threshold);
       } catch (error) {
         console.error('[UnifiedRAG] Both vector search providers failed:', error);
-        this.qdrantHealthy = false;
+        this.qdrantHealthy = $state(false);
         return [];
       }
     }
@@ -734,7 +734,7 @@ export class UnifiedRAGService {
       this.pgvectorHealthy = true;
     } catch (error) {
       console.warn('[UnifiedRAG] pgvector health check failed:', error);
-      this.pgvectorHealthy = false;
+      this.pgvectorHealthy = $state(false);
     }
   }
 
@@ -744,7 +744,7 @@ export class UnifiedRAGService {
       this.qdrantHealthy = response.ok;
     } catch (error) {
       console.warn('[UnifiedRAG] Qdrant health check failed:', error);
-      this.qdrantHealthy = false;
+      this.qdrantHealthy = $state(false);
     }
   }
 
@@ -754,7 +754,7 @@ export class UnifiedRAGService {
       this.mcpHealthy = response.ok;
     } catch (error) {
       console.warn('[UnifiedRAG] MCP health check failed:', error);
-      this.mcpHealthy = false;
+      this.mcpHealthy = $state(false);
     }
   }
 

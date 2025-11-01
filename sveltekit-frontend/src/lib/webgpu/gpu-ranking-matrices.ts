@@ -51,7 +51,7 @@ export class GPURankingMatrices {
   private bindGroupLayout: GPUBindGroupLayout | null = null;
   private config: GPURankingConfig;
   private matrixCache = new Map<string, RankingMatrix>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor(config: Partial<GPURankingConfig> = {}) {
     this.config = {
       batchSize: 256,
@@ -374,7 +374,7 @@ export class GPURankingMatrices {
   dispose(): void {
     this.rankingTexture?.destroy();
     this.matrixCache.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 // Global instance for singleton usage

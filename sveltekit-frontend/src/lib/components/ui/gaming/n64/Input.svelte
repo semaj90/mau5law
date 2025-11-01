@@ -156,7 +156,7 @@
     dispatch('focus');
   };
   const handleBlur = () => {
-    isFocused = false;
+    isFocused = $state(false);
     playInputSound(440, 0.1);
     dispatch('blur');
   };
@@ -166,7 +166,7 @@
     playInputSound(550, 0.08);
   };
   const handleUnhover = () => {
-    isHovered = false;
+    isHovered = $state(false);
   };
   const handleKeyDown = (event: KeyboardEvent) => {
     // Play different sounds for different key types
@@ -256,7 +256,6 @@
     }
     return classes.join(' ');
   };
-
   // Derived state (single, correct definitions)
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType));
@@ -271,7 +270,6 @@
     hasContent = effectiveValue.length > 0;
   });
 </script>
-
 <div class="n64-input-container {className}">
   <div class="n64-input-wrapper">
     <input
@@ -313,31 +311,27 @@
     <div class="lighting-overlay" aria-hidden="true" style:display={enableLighting ? 'block' : 'none'}></div>
     <div class="reflection-overlay" aria-hidden="true" style:display={enableReflections ? 'block' : 'none'}></div>
     {#if enableInputGlow && isFocused}
-      <div class="input-glow-effect" aria-hidden="true"></div>
-    {/if}
+      <div class="input-glow-effect" aria-hidden="true">{/if}
   </div>
   {#if loading}
     <div class="loading-indicator" aria-hidden="false">
       <div class="n64-spinner" role="status" aria-label="loading"></div>
-    </div>
-  {/if}
+    {/if}
   {#if error || success}
     <div class={`input-message ${hasError ? 'error' : 'success'}`} id={`${id ?? name ?? 'input'}-message`}>
       {error ?? success}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .n64-input-container {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 8px;
     font-family: 'Rajdhani', 'Arial', sans-serif;
   }
   .n64-input-wrapper {
-    position relative;
+    position: relative;
     display: inline-block;
   }
   :global(.n64-input) {
@@ -372,30 +366,27 @@
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     /* Layout */
-    position relative;
+    position: relative;
     z-index: 2,
     overflow: hidden;
     /* Fog effect background */
     background-image:
       var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
-
   /* Placeholder styling */
   :global(.n64-input::placeholder) {
     color: rgba(255, 255, 255, 0.6);
     text-shadow: none;
     font-weight: 400;
   }
-
   /* Autofill styling */
   :global(.n64-input:-webkit-autofill) {
     -webkit-box-shadow: inset 0 0 0 50px var(--material-bg) !important;
     -webkit-text-fill-color: #ffffff !important;
   }
-
   /* Lighting overlay */
   .lighting-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -411,10 +402,9 @@
     z-index: 1;
     border-radius: 4px;
   }
-
   /* Reflection overlay */
   .reflection-overlay {
-    position absolute;
+    position: absolute;
     top: 15%;
     left: 15%;
     right: 70%;
@@ -425,10 +415,9 @@
     z-index: 3,
     opacity: 0.6;
   }
-
   /* Input glow effect */
   .input-glow-effect {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -440,7 +429,6 @@
     opacity: var(--glow-intensity);
     animation: inputGlow 2s ease-in-out infinite;
   }
-
   @keyframes inputGlow {
     0%,
     100% {
@@ -450,12 +438,10 @@
       opacity: calc(var(--glow-intensity) * 1.5);
     }
   }
-
   /* Material type variations */
   :global(.n64-input.pbr) {
     background-blend-mode: overlay, normal;
   }
-
   /* Mesh complexity variations */
   :global(.n64-input.mesh-high) {
     border-radius: 6px;
@@ -470,7 +456,6 @@
     border-radius: 2px;
     transform-style: flat;
   }
-
   /* Disabled state */
   :global(.n64-input:disabled),
   :global(.n64-input[disabled]) {
@@ -484,7 +469,6 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
       0 2px 4px rgba(0, 0, 0, 0.2);
   }
-
   /* Focus styles */
   :global(.n64-input:focus) {
     border-color: #4a90e2;
@@ -493,7 +477,6 @@
       0 0 0 2px rgba(74, 144, 226, 0.3),
       0 0 20px rgba(74, 144, 226, 0.2);
   }
-
   /* Error state */
   :global(.n64-input[aria-invalid='true']) {
     border-color: #dc3545;
@@ -501,16 +484,14 @@
       var(--material-shadow),
       0 0 0 2px rgba(220, 53, 69, 0.3);
   }
-
   /* Loading indicator */
   .loading-indicator {
-    position absolute;
+    position: absolute;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 4,
   }
-
   .n64-spinner {
     width: 16px;
     height: 16px;
@@ -519,13 +500,11 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
-
   /* Input message styling */
   .input-message {
     font-size: 12px;
@@ -540,7 +519,6 @@
   .input-message.success {
     color: #28a745;
   }
-
   /* Enhanced texture filtering */
   :global(.n64-input.texture-ultra) {
     -webkit-font-smoothing: antialiased;
@@ -562,11 +540,10 @@
   :global(.n64-input.anisotropic-16x) {
     filter: contrast(1.08) brightness(1.02);
   }
-
   /* Fog effects (pseudo-element on the input) */
   :global(.n64-input::after) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -577,7 +554,6 @@
     z-index: 0;
     border-radius: 4px;
   }
-
   @media (max-width: 480px) {
     :global(.n64-input) {
       min-height: 44px;
@@ -590,7 +566,6 @@
       display: none;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion reduce) {
     :global(.n64-input) {
@@ -607,7 +582,6 @@
       border-right-color: transparent;
     }
   }
-
   /* High contrast mode */
   @media (prefers-contrast: high) {
     :global(.n64-input) {
@@ -620,7 +594,6 @@
       display: none;
     }
   }
-
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
     :global(.n64-input) {
@@ -634,7 +607,5 @@
       display: none;
     }
   }
-
   /* Reduced motion / high contrast fallbacks already handled above */
 </style>
-

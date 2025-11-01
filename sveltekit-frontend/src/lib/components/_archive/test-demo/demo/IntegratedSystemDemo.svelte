@@ -6,13 +6,13 @@ https://svelte.dev/e/js_parse_error -->
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
   // Handle authentication success
   function handleAuthSuccess(user: any) {
     console.log('Authentication successful in demo:', user);
-    showAuthDialog = false;
+    showAuthDialog = $state(false);
     demoMode = 'session';
   }
 </script>

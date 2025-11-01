@@ -25,7 +25,7 @@ export async function GET({ params }: RequestEvent): Promise<Response> {
       success: true,
       document: document[0],
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed 'any' to 'unknown'
     console.error('Error fetching document:', error);
     return json({ success: false, error: 'Failed to fetch document' }, { status: 500 });
@@ -67,7 +67,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<Response> 
       success: true,
       document: updatedDocument[0],
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed 'any' to 'unknown'
     console.error('Error updating document:', error);
     return json({ success: false, error: 'Failed to update document' }, { status: 500 });
@@ -89,7 +89,7 @@ export async function DELETE({ params }: RequestEvent): Promise<Response> {
       success: true,
       message: 'Document deleted successfully',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed 'any' to 'unknown'
     console.error('Error deleting document:', error);
     return json({ success: false, error: 'Failed to delete document' }, { status: 500 });

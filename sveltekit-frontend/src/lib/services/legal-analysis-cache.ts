@@ -19,7 +19,7 @@ export interface LegalAnalysisCacheEntry {
 class LegalAnalysisCache {
   private db: Loki;
   private collection: Collection<LegalAnalysisCacheEntry> | null = null;
-  private initialized = false;
+  private initialized = $state(false);
 
   constructor() {
     // Initialize LokiJS database in memory

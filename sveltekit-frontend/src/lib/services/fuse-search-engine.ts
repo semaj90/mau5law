@@ -48,7 +48,7 @@ export interface SearchOptions {
 export interface SearchResult {
   item: SearchableItem;
   score?: number;
-  matches?: unknown[];
+  matches?: any[];
   highlights?: string[];
   _fuseIndex?: number;
   _collection: string;
@@ -115,10 +115,10 @@ export class FuseSearchEngine {
   }
 
   // Simple logger - controlled by debug flag (always logs warnings/errors)
-  private logger(level: 'debug' | 'info' | 'warn' | 'error', ...args: unknown[]) {
+  private logger(level: 'debug' | 'info' | 'warn' | 'error', ...args: any[]) {
     if (level === 'debug' && !this.debug) return;
     // eslint-disable-next-line no-console
-    (console[level] as (...args: unknown[]) => void)?.('[FuseSearchEngine]', ...args);
+    (console[level] as (...args: any[]) => void)?.('[FuseSearchEngine]', ...args);
   }
 
   // Initialize search indices for all collections
@@ -224,7 +224,7 @@ export class FuseSearchEngine {
     }
     // call find (Loki wrappers may return array)
     const rawData = lokiCollection.find();
-    return rawData.map((item: unknown) => {
+    return rawData.map((item: any) => {
       const rec = (item as Record<string, unknown> | null) ?? {};
       const id = String(rec['id'] ?? (rec['$loki'] ? String(rec['$loki']) : ''));
       const title = String(rec['title'] ?? rec['name'] ?? `${collection}-${id}`);
@@ -321,7 +321,7 @@ export class FuseSearchEngine {
       // prefer orchestrator helper if present, typed defensively
       if (typeof (orchestrator as unknown as Record<string, unknown>)?.processRequest === 'function') {
         const resp = await (
-          orchestrator as unknown as { processRequest: (arg: unknown) => Promise<unknown> }
+          orchestrator as unknown as { processRequest: (arg: any) => Promise<unknown> }
         ).processRequest({
           type: 'search',
           payload: {
@@ -417,7 +417,7 @@ export class FuseSearchEngine {
       }
     }
   }
-  private inferItemType(collection: string, _item: unknown): SearchableItem['type'] {
+  private inferItemType(collection: string, _item: any): SearchableItem['type'] {
     switch (collection) {
       case 'cases':
         return 'case';
@@ -430,7 +430,7 @@ export class FuseSearchEngine {
       default: return 'document';
     }
   }
-  private extractTags(item: unknown): string[] {
+  private extractTags(item: any): string[] {
     const tags: string[] = [];
     if (!item || typeof item !== 'object') return tags;
     const rec = item as Record<string, unknown>;
@@ -449,7 +449,7 @@ export class FuseSearchEngine {
     this.searchHistory.unshift(query);
     if (this.searchHistory.length > 50) this.searchHistory = this.searchHistory.slice(0, 50);
   }
-  private generateHighlights(matches: unknown[] = []): string[] {
+  private generateHighlights(matches: any[] = []): string[] {
     const highlights: string[] = [];
     for (const match of matches) {
       const m = match as Record<string, unknown>;

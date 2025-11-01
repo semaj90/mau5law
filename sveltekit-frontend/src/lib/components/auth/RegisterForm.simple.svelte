@@ -9,9 +9,9 @@
   // Ensure we import the component constructors (named exports) from enhanced-bits.
   // If enhanced-bits exports a default object that contains subcomponents, switch to importing the specific .svelte files instead.
   // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
-  import Input from '$lib/components/ui/Input.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Label from '$lib/components/ui/label.svelte';
+  import { Input } from '$lib/components/ui/Input.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
+  import { Label } from '$lib/components/ui/label.svelte';
   import { Shield, UserPlus, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-svelte'; // Added icon imports
   import {
     FileText,
@@ -21,7 +21,6 @@
     // FIX: Removed: 'FileDigital' import as it was a typo and the corrected: 'FileDigit' was unused.
   } from 'lucide-svelte';
   import type { ComponentType } from 'svelte'; // Import ComponentType for Svelte 5 component constructors
-
   // Define the expected shape of the data prop for better type safety
   interface RegisterFormData {
     email?: string;
@@ -111,16 +110,13 @@
     if (score < 7) return { score, feedback: 'Good', color: 'text-blue-500' };
     return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
-
   let passwordStrength = $derived(calculatePasswordStrength(formData.password));
-
   // File upload UI state
   interface FileTypeIconData {
     Icon ComponentType; // Type for Svelte component constructor
     color: string;
     bg: string;
   }
-
   interface FileEntry {
     id: string;
     file: File;
@@ -129,13 +125,10 @@
     error?: string;
     iconData: FileTypeIconData; // Add iconData to FileEntry
   }
-
   let fileInputEl: HTMLInputElement | null = null;
   let files = $state([] as FileEntry[]);
-
   // Persistence keys
   const FILES_MANIFEST_KEY = 'registerForm_files_manifest_v1';
-
   // Lightweight manifest type (since File objects are not serializable)
   interface FileManifest {
     id: string;
@@ -144,7 +137,6 @@
     lastModified: number;
     status: 'pending' | 'needs-attach' | 'success' | 'error';
   }
-
   function saveManifest() {
     try {
       const manifest: FileManifest[] = files.map(f => ({
@@ -160,7 +152,6 @@
       console.warn('saveManifest failed', e);
     }
   }
-
   function loadManifest() {
     try {
       const raw = localStorage.getItem(FILES_MANIFEST_KEY);
@@ -182,20 +173,16 @@
       console.warn('loadManifest failed', e);
     }
   }
-
   // Auto-save manifest whenever files changes
   $effect(() => saveManifest());
-
   // On mount, restore manifest
   if (typeof window !== 'undefined') {
     // defer to microtask
     Promise.resolve().then(() => loadManifest());
   }
-
   function triggerFileInput() {
     fileInputEl?.click();
   }
-
   function onFilesSelected(e: Event) {
     const input = e.target as HTMLInputElement;
     if (!input?.files) return;
@@ -214,11 +201,9 @@
     // reset native input so selecting same file again works
     input.value = '';
   }
-
   function removeFile(id: string) {
     files = files.filter(f => f.id !== id);
   }
-
   // Determine a small icon / color for file types
   // Map file extensions to a Lucide icon component and color class
   function fileTypeIcon(name: string): FileTypeIconData {
@@ -238,7 +223,6 @@
       default: return { Icon FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
     }
   }
-
   function uploadFile(entry: FileEntry) {
     entry.status = 'uploading';
     const xhr = new XMLHttpRequest();
@@ -277,14 +261,12 @@
     fd.append('uploadData', JSON.stringify(uploadData));
     xhr.send(fd);
   }
-
   async function uploadAllPending() {
     for (const entry of files.filter(f => f.status === 'pending')) {
       // don't block; start each upload concurrently but small delay to allow UI update
       uploadFile(entry);
     }
   }
-
   async function reattachFile(id: string) {
     // Create a temporary input to let the user pick the file to reattach
     const input = document.createElement('input');
@@ -306,7 +288,6 @@
     input.click();
   }
 </script>
-
 ```svelte
 <div class="w-full max-w-2xl mx-auto">
   <div class="bg-nier-bits-card p-8 rounded-lg border border-border">
@@ -328,8 +309,7 @@
       >
         <AlertCircle class="h-4 w-4" />
         <span>{errorMessage}</span>
-      </div>
-    {/if}
+      {/if}
     <!-- Success Message -->
     {#if successMessage}
       <div
@@ -337,8 +317,7 @@
       >
         <Shield class="h-4 w-4" />
         <span>{successMessage}</span>
-      </div>
-    {/if}
+      {/if}
     <form
       method="POST"
       action="?/register"
@@ -351,7 +330,7 @@
         errorMessage = '';
         successMessage = '';
         return async ({ result }) => {
-          isLoading = false;
+          isLoading = $state(false);
           if ((result as { type?: any; data?: any }).type === 'success') {
             successMessage = 'Registration successful! Redirecting to dashboard...';
             setTimeout(() => {
@@ -427,7 +406,7 @@
             required
             class="mt-1 w-full px-3 py-2 bg-input border border-border rounded text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            {#each roleOptions as option}
+            {#each Array.isArray(roleOptions) ? roleOptions : [] as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
@@ -517,8 +496,7 @@
                 ></div>
               </div>
               <span class={'text-sm ' + passwordStrength.color}>{passwordStrength.feedback}</span>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Confirm Password -->
         <div>
@@ -625,7 +603,6 @@
             </Button>
           </div>
         </div>
-
         <!-- File list -->
         {#if files.length > 0}
           <div class="mt-2 grid gap-2">
@@ -668,9 +645,7 @@
                 </div>
               </div>
             {/each}
-          </div>
-        {/if}
-
+          {/if}
         <!-- Main Submit Button -->
         <Button type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
           {#if isLoading}
@@ -692,12 +667,10 @@
             Sign in here
           </a>
         </p>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 ```
-
 <style>
   .animate-fade-in {
     animation: fadeIn 0.18s ease-out;
@@ -728,4 +701,3 @@
     }
   }
 </style>
-

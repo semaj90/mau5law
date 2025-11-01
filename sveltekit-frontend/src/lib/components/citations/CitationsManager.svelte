@@ -12,8 +12,8 @@ https://svelte.dev/e/attribute_duplicate -->
 	CardContent,
 	Input,
 	Badge
-  } from '$lib/components/ui/enhanced-bits';
-	import Button from '$lib/components/ui/Button.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+	import { Button } from '$lib/components/ui/Button.svelte';
 	import {
 		Search, BookOpen, ExternalLink, Download,
 		Plus, FileText, Calendar, User, Tags,
@@ -136,7 +136,7 @@ await loadCitations();
 		} catch (error) {
 			console.error('❌ Failed to load citations:', error);
 		} finally {
-			isLoading = false;
+			isLoading = $state(false);
 		}
 	}
 	function updateCategoryCounts() {
@@ -204,7 +204,7 @@ await loadCitations();
   		}
   	}
   	function hideAddCitationForm() {
-  		showAddForm = false;
+  		showAddForm = $state(false);
   	}
   	async function saveCitation() {
   		if (!newCitation.title.trim() || !newCitation.authors.trim()) {
@@ -331,8 +331,7 @@ await loadCitations();
 </Button>
 						<div id="add-citation-help" class="sr-only">
 							Create a new legal citation with complete source information
-						</div>
-					{/if}
+						{/if}
 					<Button
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
 						variant="ghost"
@@ -445,7 +444,7 @@ changeSortBy('relevance')}
 				<h3 class="nes-text is-primary text-sm">Categories</h3>
 			</div>
 			<div class="yorha-panel-content space-y-2">
-				{#each citationCategories as category}
+				{#each Array.isArray(citationCategories) ? citationCategories : [] as category}
 					<button
 						class="w-full flex justify-between items-center p-2 rounded text-sm hover: bg-muted transition-colors";
 						class:bg-primary={selectedCategory === category.id}
@@ -478,7 +477,7 @@ changeSortBy('relevance')}
 					</div>
 				</div>
 			{:else}
-				{#each filteredCitations as citation}
+				{#each Array.isArray(filteredCitations) ? filteredCitations : [] as citation}
 					<div class="hover:shadow-md transition-shadow nes-container">
 						<div class="yorha-panel-content py-4">
 							<div class="flex justify-between items-start">
@@ -513,7 +512,7 @@ changeSortBy('relevance')}
 										<p class="text-sm mb-3">{citation.notes}</p>
 									{/if}
 									<div class="flex flex-wrap gap-1">
-										{#each citation.tags as tag}
+										{#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
 											<Badge variant="ghost" class="text-xs">
 												<Tags class="w-2 h-2 mr-1" />
 												{tag}
@@ -658,8 +657,7 @@ Save Citation
 				</div>
 			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
 <!-- Citation Detail Modal -->
 {#if showDetailModal && selectedCitation}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onclick|self={hideDetailModal}>
@@ -684,25 +682,22 @@ Save Citation
 					{#if selectedCitation.pages}
 						<div>
 							<strong>Pages:</strong> {selectedCitation.pages}
-						</div>
-					{/if}
+						{/if}
 				</div>
 				{#if selectedCitation.notes}
 					<div>
 						<strong>Notes:</strong>
 						<p class="mt-1">{selectedCitation.notes}</p>
-					</div>
-				{/if}
+					{/if}
 				{#if selectedCitation.tags.length > 0}
 					<div>
 						<strong>Tags:</strong>
 						<div class="flex flex-wrap gap-1 mt-1">
-							{#each selectedCitation.tags as tag}
+							{#each Array.isArray(selectedCitation.tags) ? selectedCitation.tags : [] as tag}
 								<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
 							{/each}
 						</div>
-					</div>
-				{/if}
+					{/if}
 				<div class="flex justify-between items-center pt-4">
 					<div>
 						<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Relevance: {selectedCitation.relevanceScore}%</span>
@@ -738,8 +733,7 @@ Close
 				</div>
 			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
 <style>
 	/* Custom scrollbar for modal content */
 	.overflow-y-auto {

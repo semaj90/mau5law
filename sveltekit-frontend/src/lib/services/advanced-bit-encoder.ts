@@ -327,7 +327,7 @@ export class AdvancedBitEncoder {
 			originalSize: number;
 			compressedSize: number;
 			encoding: string;
-			structure: unknown;
+			structure: any;
 			checksum: string;
 		}
 	} {
@@ -370,7 +370,7 @@ export class AdvancedBitEncoder {
 		};
 	}
 
-	private analyzeJSONStructure(data: Record<string, unknown> | unknown[]): unknown {
+	private analyzeJSONStructure(data: Record<string, unknown> | unknown[]): any {
 		const analysis = {
 			type: typeof data,
 			size: 0,
@@ -379,7 +379,7 @@ export class AdvancedBitEncoder {
 			repeatedKeys: new Map<string, number>()
 		};
 
-		const analyze = (obj: unknown, depth: number = 0): void => {
+		const analyze = (obj: any, depth: number = 0): void => {
 			analysis.depth = Math.max(analysis.depth, depth);
 
 			if (typeof obj === 'object' && obj !== null) {

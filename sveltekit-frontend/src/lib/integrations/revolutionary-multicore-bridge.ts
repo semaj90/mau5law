@@ -43,10 +43,10 @@ type FlashAttentionOutput = {
 };
 
 type MulticoreResult = {
-  workerResults: unknown[];
+  workerResults: any[];
   processingTime: number;
   resourceUtilization: number;
-  errorAnalysis?: unknown;
+  errorAnalysis?: any;
 };
 
 type AgentResult = unknown;
@@ -75,9 +75,9 @@ export interface RevolutionaryMulticoreRequest {
   };
   // use unknown[] to avoid unexpected any and keep callers flexible
   context?: {
-    documents?: unknown[];
-    caseHistory?: unknown[];
-    legalPrecedents?: unknown[];
+    documents?: any[];
+    caseHistory?: any[];
+    legalPrecedents?: any[];
     jurisdiction?: string;
     practiceArea?: string[];
   };
@@ -90,13 +90,13 @@ export interface RevolutionaryMulticoreResponse {
   legalContext: LegalContextAnalysis;
   // Multicore processing results
   multicoreResults: {
-    workerResults: unknown[];
+    workerResults: any[];
     processingTime: number;
     resourceUtilization: number;
-    errorAnalysis?: unknown;
+    errorAnalysis?: any;
   };
   // Agent orchestration results
-  agentResults?: unknown;
+  agentResults?: any;
   // Unified performance metrics
   performanceMetrics: {
     totalProcessingTime: number;
@@ -113,7 +113,7 @@ export interface RevolutionaryMulticoreResponse {
   nextSteps: string[];
 }
 export class RevolutionaryMulticoreBridge {
-  private initialized = false;
+  private initialized = $state(false);
   private systemMetrics = {
     totalRequests: 0,
     averageProcessingTime: 0,
@@ -273,7 +273,7 @@ export class RevolutionaryMulticoreBridge {
       };
       console.log(`🎮 Revolutionary AI processing: ${(performance.now() - startTime).toFixed(2)}ms`);
       return revolutionaryResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('❌ Revolutionary AI processing failed:', message);
       throw error;
@@ -316,14 +316,14 @@ export class RevolutionaryMulticoreBridge {
     const flashService = flashAttention2Service as unknown as {
       processAttention: (opts: {
         text: string;
-        context: unknown[];
+        context: any[];
         maxSequenceLength: number;
         memoryOptimization: string;
       }) => Promise<AttentionResult>;
       analyzeLegalContext: (opts: {
         query: string;
-        documents: unknown[];
-        caseHistory: unknown[];
+        documents: any[];
+        caseHistory: any[];
         jurisdiction?: string;
       }) => Promise<LegalContextAnalysis>;
     };
@@ -380,7 +380,7 @@ export class RevolutionaryMulticoreBridge {
     const ctxService = getContext7MulticoreService() as unknown as {
       processTask: (
         task: ProcessingTask
-      ) => Promise<{ results?: unknown[]; resourceUtilization?: number; errorAnalysis?: unknown }>;
+      ) => Promise<{ results?: any[]; resourceUtilization?: number; errorAnalysis?: any }>;
     } | null;
 
     if (!ctxService) {
@@ -414,7 +414,7 @@ export class RevolutionaryMulticoreBridge {
         resourceUtilization: result.resourceUtilization ?? 0,
         errorAnalysis: result.errorAnalysis,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('❌ Multicore processing failed:', message);
       return { workerResults: [], processingTime: 0, resourceUtilization: 0, errorAnalysis: { error: message } };
@@ -569,7 +569,7 @@ export class RevolutionaryMulticoreBridge {
         overallEfficiency: 0,
       };
       console.log('✅ Comprehensive system optimization complete');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('❌ System optimization failed:', message);
     }

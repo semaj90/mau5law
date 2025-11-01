@@ -32,7 +32,7 @@ type AuthSession = {
 } | null;
 
 type AuthModule = {
-  validateAuthSession?: (req: unknown) => Promise<AuthSession | null>;
+  validateAuthSession?: (req: any) => Promise<AuthSession | null>;
 };
 
 // Export the handler so it's used by SvelteKit and avoids: "assigned but never used"
@@ -266,7 +266,7 @@ async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
     interface PdfParseResult {
       text?: string;
       // any additional fields returned by pdf-parse are unknown to us
-      [key: string]: unknown;
+      [key: string]: any;
     }
     type PdfParseFn = (data: Buffer) => Promise<PdfParseResult>;
 

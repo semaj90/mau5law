@@ -3,13 +3,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     createGPUClusterManager,
     checkGPUCapabilities,
@@ -134,7 +134,7 @@
       gl.clearColor(0.05, 0.05, 0.1, 1.0);
       console.log('✅ WebGL context initialized');
       if (gpuManager) {
-        gpuMetricsSub = gpuManager.getMetrics.subscribe((metrics: unknown) => {
+        gpuMetricsSub = gpuManager.getMetrics.subscribe((metrics: any) => {
           gpuMetrics = {
             totalContexts: metrics.totalContexts,
             activeContexts: metrics.activeContexts,
@@ -147,7 +147,7 @@
         });
       }
       if (shaderCache) {
-        shaderMetricsSub = shaderCache.getMetrics.subscribe((metrics: unknown) => {
+        shaderMetricsSub = shaderCache.getMetrics.subscribe((metrics: any) => {
           shaderMetrics = {
             totalShaders: metrics.totalShaders,
             cacheHits: metrics.cacheHits,
@@ -161,7 +161,7 @@
       console.log('✅ GPU Demo initialized successfully');
     } catch (error) {
       console.error('❌ GPU Demo initialization failed:', error);
-      isRendering = false;
+      isRendering = $state(false);
     }
   }
   function generateDemoData() {
@@ -214,7 +214,7 @@
     if (!isInitialized || !gl || !shaderCache) return;
     try {
       // Stop any current rendering loop
-      isRendering = false;
+      isRendering = $state(false);
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
       }
@@ -229,7 +229,7 @@
       animationFrame = requestAnimationFrame(renderLoop);
     } catch (error) {
       console.error(`Failed to start ${type} visualization`, error);
-      isRendering = false;
+      isRendering = $state(false);
     }
   }
   function renderLoop() {
@@ -347,7 +347,7 @@
     }
   }
   function stopVisualization() {
-    isRendering = false;
+    isRendering = $state(false);
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
@@ -362,7 +362,7 @@
         data: new Float32Array([1, 2, 3, 4, 5]),
         shaderProgram: 'vector-normalize',
         expectedDuration 10,
-        callback: (result: unknown) => {
+        callback: (result: any) => {
           console.log('GPU workload result:', result);
         },
       }
@@ -469,7 +469,7 @@
         <div class="mt-4">
           <p class="text-sm font-medium mb-2">WebGL Extensions:</p>
           <div class="flex flex-wrap gap-2">
-            {#each gpuCapabilities.extensions.slice(0, 10) as extension}
+            {#each Array.isArray(gpuCapabilities.extensions.slice(0, 10)) ? gpuCapabilities.extensions.slice(0, 10) : [] as extension}
               <span class="px-2 py-1 text-xs bg-slate-700 rounded">{extension}</span>
             {/each}
             {#if gpuCapabilities.extensions.length > 10}
@@ -677,7 +677,7 @@ Execute GPU Workload
           Available Shaders
         </h3>
         <div class="space-y-2">
-          {#each Object.keys(LEGAL_AI_SHADERS) as shaderName}
+          {#each Array.isArray(Object.keys(LEGAL_AI_SHADERS)) ? Object.keys(LEGAL_AI_SHADERS) : [] as shaderName}
             <div class="flex justify-between items-center py-2 px-3 bg-slate-700/50 rounded">
               <span class="font-mono text-sm">{shaderName}</span>
               <span class="text-xs text-gray-400">Legal AI</span>

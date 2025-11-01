@@ -46,7 +46,7 @@ export interface AIAnalysisResponse {
 export interface Source {
   title: string;
   // Add other properties if known, e.g., url, id, etc.
-  [key: string]: unknown; // Allow for other unknown properties if necessary
+  [key: string]: any; // Allow for other unknown properties if necessary
 }
 
 export interface EnhancedRAGResponse {
@@ -113,7 +113,7 @@ export class YoRHaDetectiveService {
           timestamp: new Date().toISOString()
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Enhanced RAG service unavailable or metrics endpoint failed, using simulated metrics', error);
     }
     // Fallback to simulated metrics
@@ -159,7 +159,7 @@ export class YoRHaDetectiveService {
           reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms`
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Enhanced RAG service error:', error);
     }
     // Fallback response
@@ -206,7 +206,7 @@ export class YoRHaDetectiveService {
           error: `Upload failed: ${error}`
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Upload service error:', error);
       return {
         success: false, // Changed: ';' to: ',',
@@ -239,7 +239,7 @@ export class YoRHaDetectiveService {
         const data = await response.json();
         return data.results || [];
       }
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.error('Search service error:', error);
     }
     // Fallback to empty results
@@ -274,7 +274,7 @@ export class YoRHaDetectiveService {
           'Prepare preliminary report for review'
         ]
       }
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.error('Case insights error:', error);
       // Fallback insights
       return {
@@ -315,7 +315,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000),
       });
       results.enhancedRAG = ragResponse.ok; // Fixed syntax
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.warn('Enhanced RAG health check failed');
     }
     try {
@@ -325,7 +325,7 @@ export class YoRHaDetectiveService {
         signal: AbortSignal.timeout(5000),
       });
       results.uploadService = uploadResponse.ok; // Fixed syntax
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.warn('Upload service health check failed');
     }
     try {
@@ -335,9 +335,9 @@ export class YoRHaDetectiveService {
       const dummyEmbedding = new Float32Array(1536).fill(0.1); // Common embedding size
       await lookupSemanticCache(dummyEmbedding); // This will throw if the gRPC server is down
       results.kratosServer = true;
-    } catch (error: unknown) { // Changed: 'any' to: 'unknown'
+    } catch (error: any) { // Changed: 'any' to: 'unknown'
       console.warn('Kratos server (gRPC) health check failed:', error instanceof Error ? error.message : String(error)); // Improved error message
-      results.kratosServer = false;
+      results.kratosServer = $state(false);
     }
     // Determine overall health
     const healthyServices = Object.values(results).filter(item => typeof item === 'boolean' && item).length; // Corrected logic

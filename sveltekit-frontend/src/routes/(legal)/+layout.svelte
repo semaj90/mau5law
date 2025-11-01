@@ -4,7 +4,7 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: { children: any; data: any } = $props();
+  let { children, data }: {  any; data: any } = $props();
 
   // Legal-focused console theme (green on black for legal work)
   const consolePalette: ConsolePaletteName = 'legal';

@@ -42,9 +42,9 @@ export class WebGPUTensorAccelerator {
     totalOperations: 0,
     errorCount: 0,
   };
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private operationQueue: TensorOperation[] = [];
-  private processingQueue = false;
+  private processingQueue = $state(false);
   constructor(config: Partial<WebGPUTensorConfig> = {}) {
     this.config = {
       deviceType: 'auto',
@@ -95,7 +95,7 @@ export class WebGPUTensorAccelerator {
       // Set up error handling with typed event
       this.device.addEventListener('uncapturederror', (event: GPUUncapturedErrorEvent) => {
         this.metrics.errorCount++;
-        const maybeErr = (event as unknown as { error?: unknown }).error;
+        const maybeErr = (event as unknown as { error?: any }).error;
         const message = maybeErr instanceof Error ? maybeErr.message : String(event);
         this.metrics.lastError = message;
         console.error('WebGPU Error:', event);
@@ -107,7 +107,7 @@ export class WebGPUTensorAccelerator {
       // Start metrics collection
       this.startMetricsCollection();
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('💥 WebGPU initialization failed:', msg);
       this.metrics.errorCount++;
@@ -322,7 +322,7 @@ export class WebGPUTensorAccelerator {
       const duration = performance.now() - start;
       this.updateMetrics(duration);
       return cosineSimilarity;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.metrics.errorCount++;
       this.metrics.lastError = msg;
@@ -438,7 +438,7 @@ export class WebGPUTensorAccelerator {
               throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
             },
           } as Record<string, unknown>;
-        } catch (tilingError: unknown) {
+        } catch (tilingError: any) {
           const tmsg = tilingError instanceof Error ? tilingError.message : String(tilingError);
           console.warn('SIMD GPU tiling failed, using standard similarity:', tmsg);
           simdTime = performance.now() - simdStart;
@@ -466,7 +466,7 @@ export class WebGPUTensorAccelerator {
           throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
         },
       } as Record<string, unknown>;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       this.metrics.errorCount++;
       this.metrics.lastError = msg;
@@ -621,7 +621,7 @@ export class WebGPUTensorAccelerator {
     this.bufferPool.forEach(buffer => buffer.destroy());
     this.bufferPool = [];
     this.shaderCache.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 WebGPU Tensor Accelerator cleaned up');
   }
 }

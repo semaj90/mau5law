@@ -1,13 +1,10 @@
 import amqp from 'amqplib';
-
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost';
-
 export async function connectRabbit() {
   const conn = await amqp.connect(RABBITMQ_URL);
   const channel = await conn.createChannel();
   return { conn, channel };
 }
-
 export async function publish(queue: string, msg: any) {
   const { conn, channel } = await connectRabbit();
   try {
@@ -17,7 +14,6 @@ export async function publish(queue: string, msg: any) {
     setTimeout(() => conn.close(), 500);
   }
 }
-
 export async function consume(queue: string, onMessage: (msg: any) => Promise<void>) {
   const { conn, channel } = await connectRabbit();
   await channel.assertQueue(queue, { durable: true });

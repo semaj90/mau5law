@@ -6,7 +6,6 @@ export { default as Title } from './DialogTitle.svelte';
 export { default as Description } from './DialogDescription.svelte';
 export { default as Trigger } from './DialogTrigger.svelte';
 export { default as Close } from './DialogFooter.svelte';
-
 // Also provide a default Dialog object for compatibility imports
 import * as Compound from './DialogRoot.svelte';
 export default Compound;

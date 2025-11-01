@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ success: true, mode: 'stt', transcript });
     }
     return json({ error: 'Unsupported content type' }, { status: 415 });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = typeof err === 'string' ? err : err instanceof Error ? err.message : 'Voice service failed';
     return json({ error: message }, { status: 500 });
   }

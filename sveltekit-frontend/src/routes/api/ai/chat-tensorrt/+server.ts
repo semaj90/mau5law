@@ -97,7 +97,7 @@ export const POST: RequestHandler = async (event) => {
           response_time_ms: totalTime,
         },
       });
-    } catch (bridgeError: unknown) {
+    } catch (bridgeError: any) {
       const detail = bridgeError instanceof Error ? bridgeError.message : String(bridgeError);
       console.error('TensorRT bridge connection failed:', detail);
       return json(
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async (event) => {
         { status: 503 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const detail = error instanceof Error ? error.message : String(error);
     console.error('TensorRT Chat API error:', detail);
     return json(

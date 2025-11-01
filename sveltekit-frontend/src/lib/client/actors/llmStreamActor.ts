@@ -1,7 +1,6 @@
 import { createMachine } from 'xstate';
 import interpret from 'xstate';
 import fromPromise from 'xstate';
-
 export function createLLMStreamActor({
   url = '/api/ai/stream',
   onChunk,
@@ -26,7 +25,7 @@ export function createLLMStreamActor({
             if (!res.body) return;
             const reader = res.body.getReader();
             const decoder = new TextDecoder();
-            let done = false;
+            let done = $state(false);
             while (!done) {
               const { value, done: d } = await reader.read();
               if (value) {
@@ -41,7 +40,6 @@ export function createLLMStreamActor({
       },
     },
   });
-
   const service = interpret(machine).start();
   return service;
 }

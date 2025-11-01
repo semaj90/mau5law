@@ -43,7 +43,7 @@ interface ProcessDocumentResult {
   documentId: string;
   summary: string;
   insights: string[];
-  suggestions?: unknown[];
+  suggestions?: any[];
   processingTimeMs: number;
   modelUsed: string;
   quicUsed: boolean;
@@ -63,7 +63,7 @@ type ModelResult = {
   summary?: string;
   response?: string;
   insights?: string[];
-  suggestions?: unknown[];
+  suggestions?: any[];
   model?: string;
   model_used?: string;
 } | null;
@@ -115,8 +115,8 @@ export class QUICLegalAIIntegration {
       this.currentStatus.gpuAvailable = true; // Placeholder, should come from GPUAIService
       this.currentStatus.message = 'QUIC-Enhanced Legal AI System initialized and ready.';
     } catch (error) {
-      this.currentStatus.quicEnabled = false;
-      this.currentStatus.gpuAvailable = false;
+      this.currentStatus.quicEnabled = $state(false);
+      this.currentStatus.gpuAvailable = $state(false);
       this.currentStatus.message = 'QUIC/GPU services unavailable, falling back to HTTP/CPU.';
       this.currentStatus.status = 'degraded';
       console.warn('QUICLegalAIIntegration initialization warning:', error);

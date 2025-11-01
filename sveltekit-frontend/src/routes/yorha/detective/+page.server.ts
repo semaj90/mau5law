@@ -46,7 +46,7 @@ export const load: PageServerLoad = async () => {
       networkLatency: 23,
     };
     return { user, recentCases, recentEvidence, systemData };
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error loading detective dashboard:', err);
     throw error(500, 'Failed to load dashboard data');
   }

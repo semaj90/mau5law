@@ -29,7 +29,7 @@ class JobTracker {
   private jobs: Collection<JobRecord>;
   private workers: Collection<WorkerStats>;
   private metrics: Collection<any>;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     this.db = new Loki('job-tracker.db', {
       autoload: true,

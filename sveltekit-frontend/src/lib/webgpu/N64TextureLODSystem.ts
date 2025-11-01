@@ -2,7 +2,7 @@
  * 🎮 N64-Style 4KB Texture LOD Swapping System
  * Implements aggressive texture streaming with 4KB pages like Nintendo 64
  */
-import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
+import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
 interface LODLevel {
   level: number;
   width: number;
@@ -32,7 +32,7 @@ export class N64TextureLODSystem {
   private readonly TMEM_SIZE = 4 * 1024; // 4KB Texture Memory
   private currentMemoryUsage = 0;
   private swapBuffer: ArrayBuffer;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     // Allocate swap buffer for texture streaming
     this.swapBuffer = new ArrayBuffer(this.PAGE_SIZE);
@@ -323,7 +323,7 @@ export class N64TextureLODSystem {
     this.activeTextures.clear();
     this.lodSwapQueue = [];
     this.currentMemoryUsage = 0;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 N64 Texture LOD System disposed');
   }
 }

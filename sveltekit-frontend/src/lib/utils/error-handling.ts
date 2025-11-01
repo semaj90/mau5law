@@ -25,7 +25,7 @@ export class ValidationError extends Error {
   constructor(
     message: string,
     public readonly field: string,
-    public readonly value: unknown
+    public readonly value: any
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -75,21 +75,21 @@ export function createErrorBoundary() {
   }
   function clearError() {
     errorMessage = '';
-    hasError = false;
+    hasError = $state(false);
   }
   function withErrorBoundary<T extends (...args: readonly unknown[]) => unknown>(fn: T, context?: string): T {
     const wrapper = (...args: Parameters<T>): ReturnType<T> => {
       try {
         const result = fn(...args);
         // detect Promise-like objects without using `any`
-        if (result && typeof (result as { then?: unknown }).then === 'function') {
-          return (result as Promise<unknown>).catch((error: unknown) => {
+        if (result && typeof (result as { then?: any }).then === 'function') {
+          return (result as Promise<unknown>).catch((error: any) => {
             captureError(error instanceof Error ? error : new Error(String(error)), context);
             throw error;
           }) as ReturnType<T>;
         }
         return result as ReturnType<T>;
-      } catch (error: unknown) {
+      } catch (error: any) {
         captureError(error instanceof Error ? error : new Error(String(error)), context);
         throw error;
       }
@@ -122,7 +122,7 @@ export function validateEmail(email: string): string {
   }
   return email;
 }
-export function validateType<T>(value: unknown, type: string, fieldName: string): T {
+export function validateType<T>(value: any, type: string, fieldName: string): T {
   if (typeof value !== type) {
     throw new ValidationError(`${fieldName} must be of type ${type}`, fieldName, value);
   }
@@ -183,7 +183,7 @@ export async function withLoading<T>(operation: () => Promise<T>, loadingState: 
   try {
     return await operation();
   } finally {
-    loadingState.value = false;
+    loadingState.value = $state(false);
   }
 }
 // Retry mechanism

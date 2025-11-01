@@ -62,12 +62,10 @@
     onremove?.();
   }
 </script>
-
 <span class={badgeClass} {...restProps}>
   <!-- Icon -->
   {#if icon}
-    <div class="{icon} w-3 h-3" aria-hidden="true"></div>
-  {/if}
+    <div class="{icon} w-3 h-3" aria-hidden="true">{/if}
   <!-- Content -->
   {#if children}
     {@render children()}
@@ -84,22 +82,21 @@
     </button>
   {/if}
 </span>
-
 <style>
 /* YoRHa-specific animations */ {}
   .yorha-badge {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .yorha-badge::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-    transition: left 0.5;
+    transition: left: 0.5;
   }
   .yorha-badge:hover::before {
     left: 100%;
@@ -128,4 +125,3 @@
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
   }
 </style>
-

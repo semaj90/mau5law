@@ -22,7 +22,7 @@ interface DLQMessage extends DocumentProcessingJob {
 
 export class DLQMonitor {
   private static instance: DLQMonitor;
-  private isMonitoring = false;
+  private isMonitoring = $state(false);
   private stats = {
     processed: 0,
     retried: 0,
@@ -77,7 +77,7 @@ export class DLQMonitor {
       );
     } catch (error) {
       console.error('❌ Failed to start DLQ monitor:', error);
-      this.isMonitoring = false;
+      this.isMonitoring = $state(false);
       throw error;
     }
   }
@@ -225,7 +225,7 @@ export class DLQMonitor {
    * Stop monitoring
    */
   stopMonitoring() {
-    this.isMonitoring = false;
+    this.isMonitoring = $state(false);
     console.log('🛑 DLQ Monitor stopped');
   }
 

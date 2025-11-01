@@ -1,62 +1,52 @@
 // src/lib/api/utils/rate-limiter.ts
-
 export interface RateLimitOptions<Args extends unknown[] = unknown[]> {
   /**
    * Key resolver to partition rate buckets (e.g. per-endpoint or per-user).
    * Default: single global bucket.
    */
   key?: (...args: Args) => string;
-
   /**
    * Maximum number of tokens (requests) allowed per window.
    * Default: 50
    */
   maxRequests?: number;
-
   /**
    * Window in milliseconds for token refill.
    * Default: 1000 (1s)
    */
   windowMs?: number;
-
   /**
    * Maximum number of concurrently executing tasks allowed.
    * Default: 5
    */
   maxConcurrent?: number;
-
   /**
    * Maximum queued tasks per bucket. When exceeded, wrapper rejects immediately.
    * Default: 200
    */
   maxQueue?: number;
-
   /**
    * Optional hook when a queued call is dropped due to queue overflow.
    */
   onDropped?: (args: Args) => void;
 }
-
 type Pending<Args extends unknown[], T> = {
   args: Args;
   resolve: (_value: T | PromiseLike<T>) => void;
-  reject: (err: unknown) => void;
+  reject: (err: any) => void;
   enqueueAt: number;
 };
-
 class Bucket<Args extends unknown[], T> {
   tokens: number;
   lastRefill: number;
   queue: Pending<Args, T>[];
   concurrentlyRunning: number;
-
   constructor(public opts: Required<RateLimitOptions<Args>>) {
     this.tokens = opts.maxRequests;
     this.lastRefill = Date.now();
     this.queue = [];
     this.concurrentlyRunning = 0;
   }
-
   refill() {
     const now = Date.now();
     const elapsed = now - this.lastRefill;
@@ -67,12 +57,10 @@ class Bucket<Args extends unknown[], T> {
     this.tokens = Math.min(this.opts.maxRequests, this.tokens + add);
     this.lastRefill = now;
   }
-
   canRun() {
     this.refill();
     return Math.floor(this.tokens) >= 1 && this.concurrentlyRunning < this.opts.maxConcurrent;
   }
-
   consumeToken() {
     this.refill();
     if (this.tokens >= 1) {
@@ -82,7 +70,6 @@ class Bucket<Args extends unknown[], T> {
     return false;
   }
 }
-
 /**
  * rateLimit - wrap an async function with rate limiting.
  *
@@ -101,9 +88,7 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     maxQueue: options?.maxQueue ?? 200,
     onDropped: options?.onDropped ?? (() => {}),
   };
-
   const buckets = new Map<string, Bucket<Args, T>>();
-
   function getBucket(_key: string) {
     let b = buckets.get(key);
     if (!b) {
@@ -112,7 +97,6 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     }
     return b;
   }
-
   async function runWithBucket(bucket: Bucket<Args, T>, pending: Pending<Args, T>) {
     // Attempt to run immediately
     if (!bucket.consumeToken()) {
@@ -131,7 +115,6 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
       processQueue(bucket);
     }
   }
-
   function processQueue(bucket: Bucket<Args, T>) {
     // Keep processing while we can run more
     while (true) {
@@ -160,11 +143,9 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
       })();
     }
   }
-
   return function limited(...args: Args): Promise<T> {
     const key = opts.key!(...args);
     const bucket = getBucket(key);
-
     return new Promise<T>((resolve, reject) => {
       // Fast-path: can run immediately
       bucket.refill();
@@ -185,7 +166,6 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
         })();
         return;
       }
-
       // Queue
       if (bucket.queue.length >= bucket.opts.maxQueue) {
         // Drop and notify
@@ -197,7 +177,6 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
         reject(new Error('rateLimit: queue full'));
         return;
       }
-
       const pending: Pending<Args, T> = {
         args,
         resolve,
@@ -212,5 +191,4 @@ export function rateLimit<T, Args extends unknown[] = unknown[]>(
     });
   };
 }
-
 export default rateLimit;

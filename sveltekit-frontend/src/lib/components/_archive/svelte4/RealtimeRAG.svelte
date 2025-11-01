@@ -10,9 +10,9 @@
     documentTypes = $bindable([]),
     onResultSelect = $bindable()
   }: {
-    selectedCaseId?: unknown;
-    documentTypes?: unknown[];
-    onResultSelect?: unknown;
+    selectedCaseId?: any;
+    documentTypes?: any[];
+    onResultSelect?: any;
   } = $props();
   // Initialize real-time RAG store
   const ragStore = createRealtimeRAGStore();
@@ -227,7 +227,7 @@
             Sources ({machineContext.sources.length})
           </h4>
           <div class="space-y-3">
-            {#each machineContext.sources as source}
+            {#each Array.isArray(machineContext.sources) ? machineContext.sources : [] as source}
               <div
                 class="source-nier-bits-card p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors"
                 onclick={() => onResultSelect?.(source)}
@@ -316,7 +316,7 @@
         Processing Queue ({processingJobs.length})
       </h4>
       <div class="space-y-2">
-        {#each processingJobs as job}
+        {#each Array.isArray(processingJobs) ? processingJobs : [] as job}
           <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
             <div class="flex items-center space-x-3">
               <div class="processing-spinner">

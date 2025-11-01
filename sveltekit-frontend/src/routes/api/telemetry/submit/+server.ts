@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json({ success: true });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json({ success: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 };

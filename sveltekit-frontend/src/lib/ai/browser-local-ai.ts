@@ -91,8 +91,8 @@ export class BrowserCapabilities {
 }
 // Local AI Engine using transformers.js pattern
 export class BrowserLocalAI {
-  private initialized = false;
-  private modelLoaded = false;
+  private initialized = $state(false);
+  private modelLoaded = $state(false);
   private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null = null;
   private config: LocalModelConfig;
   // Model instances (would be actual transformers.js instances)
@@ -361,8 +361,8 @@ export class BrowserLocalAI {
     this.clearCache();
     this.textModel = null;
     this.embeddingModel = null;
-    this.initialized = false;
-    this.modelLoaded = false;
+    this.initialized = $state(false);
+    this.modelLoaded = $state(false);
     console.log('🗑️ Browser-local AI destroyed');
   }
 }

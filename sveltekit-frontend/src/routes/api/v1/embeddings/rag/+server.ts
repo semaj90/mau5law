@@ -74,15 +74,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const context: RAGContext = await (async () => {
       const embedStart = performance.now();
       const modelName = ragRequest.options?.model || 'nomic-embed-text:latest';
-      const useGPU = ragRequest.options?.useGPU !== false;
+      const useGPU = ragRequest.options?.useGPU !== $state(false);
       const contextLimit = ragRequest.options?.contextLimit ?? 5;
       const threshold = typeof ragRequest.options?.threshold === 'number' ? ragRequest.options!.threshold! : 0.4;
 
       // Call embedding API per-document (service expects text: string). `useGPU` is not a property on EmbeddingRequest,
       // so we don't pass it here. We still keep `useGPU` variable for metadata only.
-      const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+      const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
-      const extractFirstEmbedding = (resp: unknown): unknown | undefined => {
+      const extractFirstEmbedding = (resp: any): any | undefined => {
         if (!isRecord(resp)) return undefined;
         const maybeEmb = resp['embeddings'];
         if (Array.isArray(maybeEmb) && maybeEmb.length) return maybeEmb[0];
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Request embeddings for each document individually and extract the first embedding from each response
       const docsEmbeddingsRaw = await Promise.all(
         ragRequest.documents.map(async doc => {
-          const res: unknown = await gpuEmbeddingService
+          const res: any = await gpuEmbeddingService
             .generateEmbeddings({ text: doc as string, model: modelName })
             .catch(() => ({}));
           return extractFirstEmbedding(res);
@@ -102,14 +102,14 @@ export const POST: RequestHandler = async ({ request }) => {
       );
 
       // Single query embedding
-      const queryResp: unknown = await gpuEmbeddingService
+      const queryResp: any = await gpuEmbeddingService
         .generateEmbeddings({ text: ragRequest.query, model: modelName })
         .catch(() => ({}));
       const queryEmbeddingsRaw = queryResp ? [extractFirstEmbedding(queryResp)] : [];
 
       const docEmbeddingsRaw = docsEmbeddingsRaw;
 
-      const toFloat = (v: unknown): Float32Array | null => {
+      const toFloat = (v: any): Float32Array | null => {
         if (!v) return null;
         if (v instanceof Float32Array) return v;
         if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as number[]);

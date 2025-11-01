@@ -19,12 +19,10 @@
  * @author Legal AI Platform Team
  * @version 2.0.0
  */
-
 import Redis from 'ioredis';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 import { GemmaEmbeddingService, type EmbeddingRequest, type BatchEmbeddingResponse } from './gemma-embedding-service';
 import { PgVectorIndexingService, type VectorDocument, type VectorSearchResult } from './pgvector-indexing-service';
-
 /**
  * AI Orchestrator Configuration
  */
@@ -41,7 +39,6 @@ export interface AIServiceOrchestratorConfig {
   enableMetrics?: boolean;
   enableAudit?: boolean;
 }
-
 /**
  * Provider Health Status
  */
@@ -53,7 +50,6 @@ export interface ProviderHealth {
   errorCount: number;
   successCount: number;
 }
-
 /**
  * Service Status
  */
@@ -65,7 +61,6 @@ export interface ServiceStatus {
   mcpContext7: ProviderHealth;
   lastUpdate: Date;
 }
-
 /**
  * Embedding Request/Response with routing
  */
@@ -75,7 +70,6 @@ export interface OrchestratedEmbeddingRequest {
   type?: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause';
   priority?: 'high' | 'normal' | 'low';
 }
-
 /**
  * LLM Request with function calling
  */
@@ -88,7 +82,6 @@ export interface OrchestratedLLMRequest {
   functionCalls?: string[];
   priority?: 'high' | 'normal' | 'low';
 }
-
 /**
  * LLM Response
  */
@@ -105,7 +98,6 @@ export interface OrchestratedLLMResponse {
   processingTime: number;
   cached: boolean;
 }
-
 /**
  * RAG Query Request
  */
@@ -118,7 +110,6 @@ export interface OrchestratedRAGQuery {
   includeCitations?: boolean;
   priority?: 'high' | 'normal' | 'low';
 }
-
 /**
  * RAG Response
  */
@@ -136,7 +127,6 @@ export interface OrchestratedRAGResponse {
     excerpt: string;
   }>;
 }
-
 /**
  * AI Service Orchestrator
  * Main class coordinating all AI services
@@ -147,17 +137,15 @@ export class AIServiceOrchestrator {
   private database: PostgresJsDatabase<Record<string, unknown>>;
   private embeddingService: GemmaEmbeddingService;
   private vectorSearchService: PgVectorIndexingService;
-  private mcpContext7Initialized = false;
+  private mcpContext7Initialized = $state(false);
   private serviceStatus: ServiceStatus;
   private readonly CACHE_PREFIX = 'orchestrator:';
   private readonly HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
   private healthCheckTimer?: NodeJS.Timeout;
-
   constructor(config: AIServiceOrchestratorConfig) {
     this.config = config;
     this.redis = config.redis;
     this.database = config.database;
-
     // Initialize embedding service
     this.embeddingService = new GemmaEmbeddingService({
       ollamaBaseUrl: config.ollamaBaseUrl,
@@ -168,7 +156,6 @@ export class AIServiceOrchestrator {
       cacheTtl: config.cacheTtl || 3600,
       batchSize: 32
     });
-
     // Initialize vector search service
     this.vectorSearchService = new PgVectorIndexingService({
       database: config.database,
@@ -177,10 +164,8 @@ export class AIServiceOrchestrator {
       distanceMetric: 'cosine',
       maxResults: 10
     });
-
     // Initialize MCP Context7 multicore integration (lazy initialized)
     // Will be initialized when needed
-
     // Initialize service status
     this.serviceStatus = {
       orchestrator: 'initializing',
@@ -205,7 +190,6 @@ export class AIServiceOrchestrator {
       lastUpdate: new Date()
     };
   }
-
   /**
    * Initialize orchestrator and health checks
    */
@@ -219,7 +203,6 @@ export class AIServiceOrchestrator {
       throw new Error(`Failed to initialize AI Service Orchestrator: ${error}`);
     }
   }
-
   /**
    * Embed text with automatic caching and routing
    */
@@ -230,7 +213,6 @@ export class AIServiceOrchestrator {
     processingTime: number;
   }> {
     const startTime = Date.now();
-
     try {
       const embeddingRequest: EmbeddingRequest = {
         text: request.text,
@@ -238,13 +220,10 @@ export class AIServiceOrchestrator {
         type: (request.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${request.documentId || request.text.substring(0, 50)}`
       };
-
       const response = await this.embeddingService.embed(embeddingRequest);
-
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount++;
       this.serviceStatus.embeddingProvider.responseTime = Date.now() - startTime;
-
       return {
         embedding: response.embedding,
         dimensions: response.dimensions,
@@ -256,13 +235,11 @@ export class AIServiceOrchestrator {
       throw new Error(`Embedding failed: ${error}`);
     }
   }
-
   /**
    * Batch embed multiple texts
    */
   async embedBatch(requests: OrchestratedEmbeddingRequest[]): Promise<BatchEmbeddingResponse> {
     const startTime = Date.now();
-
     try {
       const embeddingRequests: EmbeddingRequest[] = requests.map(req => ({
         text: req.text,
@@ -270,26 +247,21 @@ export class AIServiceOrchestrator {
         type: (req.type || 'text') as: 'legal_context' | 'case_summary' | 'precedent' | 'text' | 'clause',
         cacheKey: `${this.CACHE_PREFIX}embed:${req.documentId || req.text.substring(0, 50)}`
       }));
-
       const response = await this.embeddingService.embedBatch(embeddingRequests);
-
       // Update metrics
       this.serviceStatus.embeddingProvider.successCount += response.embeddings.length;
       this.serviceStatus.embeddingProvider.responseTime = Date.now() - startTime;
-
       return response;
     } catch (error) {
       this.serviceStatus.embeddingProvider.errorCount++;
       throw new Error(`Batch embedding failed: ${error}`);
     }
   }
-
   /**
    * Vector search with pgvector primary + Qdrant fallback
    */
   async vectorSearch(query: string, topK: number = 10, threshold: number = 0.5): Promise<VectorSearchResult[]> {
     const startTime = Date.now();
-
     try {
       // Primary: pgvector search
       const queryEmbedding = await this.embed({ text: query, type: 'legal_context' });
@@ -297,13 +269,11 @@ export class AIServiceOrchestrator {
         limit: topK,
         threshold
       });
-
       // Update metrics
       if (this.serviceStatus.vectorSearchProviders[0]) {
         this.serviceStatus.vectorSearchProviders[0].successCount++;
         this.serviceStatus.vectorSearchProviders[0].responseTime = Date.now() - startTime;
       }
-
       return results;
     } catch (error) {
       // Fallback: Qdrant search (if configured)
@@ -317,13 +287,11 @@ export class AIServiceOrchestrator {
       throw error;
     }
   }
-
   /**
    * RAG query with integrated search and LLM
    */
   async ragQuery(request: OrchestratedRAGQuery): Promise<OrchestratedRAGResponse> {
     const startTime = Date.now();
-
     try {
       // 1. Search for relevant documents
       const sources = await this.vectorSearch(
@@ -331,7 +299,6 @@ export class AIServiceOrchestrator {
         request.topK || 5,
         request.threshold || 0.5
       );
-
       if (sources.length === 0) {
         return {
           answer: 'No relevant documents found for your query.',
@@ -344,7 +311,6 @@ export class AIServiceOrchestrator {
           citations: []
         };
       }
-
       // 3. Call LLM through direct model or MCP Context7 for function calling
       // For now, use a simple LLM call (MCP integration happens at route level)
       // TODO: Integrate with MCP Context7 multicore for function calling support
@@ -353,7 +319,6 @@ export class AIServiceOrchestrator {
         model: 'gemma3-legal',
         provider: 'ollama'
       };
-
       // 4. Build response with citations
       const citations = request.includeCitations
         ? sources.slice(0, 3).map(s => ({
@@ -362,7 +327,6 @@ export class AIServiceOrchestrator {
             excerpt: s.content.substring(0, 200)
           }))
         : undefined;
-
       return {
         answer: llmResponse.content,
         sources,
@@ -377,7 +341,6 @@ export class AIServiceOrchestrator {
       throw new Error(`RAG query failed: ${error}`);
     }
   }
-
   async indexDocument(doc: VectorDocument): Promise<void> {
     try {
       // 1. Generate embedding if not provided
@@ -389,10 +352,8 @@ export class AIServiceOrchestrator {
         });
         doc.embedding = embedding.embedding;
       }
-
       // 2. Store in pgvector
       await this.vectorSearchService.indexDocument(doc);
-
       // 3. Cache in Redis with 24 hour TTL
       const cacheKey = `${this.CACHE_PREFIX}indexed:${doc.id}`;
       await this.redis.set(cacheKey, JSON.stringify(doc), 'EX', 86400);
@@ -400,33 +361,26 @@ export class AIServiceOrchestrator {
       throw new Error(`Document indexing failed: ${error}`);
     }
   }
-
   /**
    * Get current service status
    */
   getStatus(): ServiceStatus {
     return this.serviceStatus;
   }
-
   /**
    * Perform health checks on all providers
    */
   private async performHealthChecks(): Promise<void> {
     // Check TensorRT-LLM (Triton)
     await this.checkTensorRTHealth();
-
     // Check Ollama embedding
     await this.checkOllamaHealth();
-
     // Check pgvector
     await this.checkPgVectorHealth();
-
     // Check MCP Context7
     await this.checkMCPHealth();
-
     this.serviceStatus.lastUpdate = new Date();
   }
-
   /**
    * Check TensorRT-LLM (Triton) health
    */
@@ -435,7 +389,6 @@ export class AIServiceOrchestrator {
     try {
       const response = await fetch(`${this.config.tensorrtTritonUrl}/v2/health/ready`);
       const status = response.ok ? 'healthy' : 'degraded';
-
       this.serviceStatus.llmProviders[0] = {
         provider: 'tensorrt-llm-triton',
         status,
@@ -455,7 +408,6 @@ export class AIServiceOrchestrator {
       };
     }
   }
-
   /**
    * Check Ollama embedding health
    */
@@ -464,7 +416,6 @@ export class AIServiceOrchestrator {
     try {
       const response = await fetch(`${this.config.ollamaBaseUrl}/api/tags`);
       const status = response.ok ? 'healthy' : 'degraded';
-
       this.serviceStatus.embeddingProvider = {
         provider: 'ollama-gemma',
         status,
@@ -484,7 +435,6 @@ export class AIServiceOrchestrator {
       };
     }
   }
-
   /**
    * Check pgvector health
    */
@@ -494,7 +444,6 @@ export class AIServiceOrchestrator {
       // Simple query to check if database is responding
       const result = await this.database.execute('SELECT 1');
       const status = result ? 'healthy' : 'degraded';
-
       this.serviceStatus.vectorSearchProviders[0] = {
         provider: 'pgvector',
         status,
@@ -514,7 +463,6 @@ export class AIServiceOrchestrator {
       };
     }
   }
-
   /**
    * Check MCP Context7 health
    */
@@ -523,7 +471,6 @@ export class AIServiceOrchestrator {
     try {
       const response = await fetch(`http://localhost:${this.config.mcpContext7Port || 3002}/mcp/health`);
       const status = response.ok ? 'healthy' : 'degraded';
-
       this.serviceStatus.mcpContext7 = {
         provider: 'mcp-context7',
         status,
@@ -543,7 +490,6 @@ export class AIServiceOrchestrator {
       };
     }
   }
-
   /**
    * Qdrant fallback search (if configured)
    */
@@ -551,9 +497,7 @@ export class AIServiceOrchestrator {
     if (!this.config.qdrantUrl) {
       throw new Error('Qdrant not configured');
     }
-
     const queryEmbedding = await this.embed({ text: query, type: 'legal_context' });
-
     const response = await fetch(`${this.config.qdrantUrl}/collections/legal_documents/points/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -563,13 +507,11 @@ export class AIServiceOrchestrator {
         score_threshold: threshold
       })
     });
-
     const data = (await response.json()) as { result: Array<{
       id: string;
       score: number;
       payload: { content: string; documentId: string; metadata?: Record<string, unknown> };
     }> };
-
     return data.result.map((item) => ({
       id: item.id,
       content: item.payload.content,
@@ -580,7 +522,6 @@ export class AIServiceOrchestrator {
       metadata: item.payload.metadata
     }));
   }
-
   /**
    * Start health check loop
    */
@@ -591,7 +532,6 @@ export class AIServiceOrchestrator {
       });
     }, this.HEALTH_CHECK_INTERVAL);
   }
-
   /**
    * Cleanup resources
    */
@@ -601,6 +541,5 @@ export class AIServiceOrchestrator {
     }
   }
 }
-
 // Export for use in SvelteKit routes
 export default AIServiceOrchestrator;

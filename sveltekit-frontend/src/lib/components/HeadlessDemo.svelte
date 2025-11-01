@@ -17,10 +17,9 @@
   }
   function selectItem(item: string) {
     selectedItem = item;
-    selectOpen = false;
+    selectOpen = $state(false);
   }
 </script>
-
 <div class="space-y-4">
   <h2 class="text-xl font-semibold">Headless UI Components Demo</h2>
   <!-- Basic Button -->
@@ -39,13 +38,12 @@
         class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg mt-1 z-10"
         transitionfade={{ duration 150 }}
       >
-        {#each items as item}
+        {#each Array.isArray(items) ? items : [] as item}
           <div class="p-2 hover:bg-gray-100 cursor-pointer" role="button" tabindex="0" onclick={() => selectItem(item)}>
             {item}
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Dialog Trigger -->
   <button onclick={toggleDialog} class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
@@ -74,7 +72,6 @@
           <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"> Save Changes </button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 ;

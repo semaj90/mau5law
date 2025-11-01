@@ -1,16 +1,16 @@
 <!-- Updated AI Chat for GPU Ollama -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   let messages = $state([]);
   let input = $state('');
   let isLoading = $state(false);
@@ -40,7 +40,7 @@
     } catch (error) {
       messages.push({ role: 'error', content: 'AI service error - check GPU setup' });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 </script>
@@ -50,14 +50,13 @@
   </div>
   <div class="yorha-panel-content flex-1 flex flex-col space-y-4">
     <div class="flex-1 overflow-y-auto space-y-2 p-2 border rounded">
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <div class="p-2 rounded {message.role === 'user' ? 'bg-blue-100 ml-8' : message.role === 'error' ? 'bg-red-100' : 'bg-gray-100 mr-8'}">
           <strong>{message.role}:</strong> {message.content}
         </div>
       {/each}
       {#if isLoading}
-        <div class="text-center p-2">⚡ GPU AI processing...</div>
-      {/if}
+        <div class="text-center p-2">⚡ GPU AI processing...{/if}
     </div>
     <div class="flex space-x-2">
       <Input bind:value={input} placeholder="Legal question..." keydown={(e) => e.key === 'Enter' && sendMessage()} />

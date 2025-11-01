@@ -1,6 +1,5 @@
 import { aiAssistant, type AIMessage, type CaseAIContext  } from '$lib/stores/unified';
 import { get } from 'svelte/store';
-
 export interface SendToAIOptions {
   caseId: string;
   prompt: string;

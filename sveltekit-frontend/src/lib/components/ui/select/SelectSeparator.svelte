@@ -1,5 +1,4 @@
 <div class="space-y-4"></div>
-
 <style>
   /* @unocss-include */
   .select-separator {

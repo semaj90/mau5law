@@ -19,10 +19,8 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-
 import Redis from 'ioredis';
 import { createHash } from 'crypto';
-
 /**
  * LLM Provider Configuration
  */
@@ -41,7 +39,6 @@ export interface LLMProviderConfig {
     tokensPerMinute: number;
   };
 }
-
 /**
  * Provider Health Status
  */
@@ -55,7 +52,6 @@ export interface ProviderStatus {
   errorCount: number;
   lastError?: string;
 }
-
 /**
  * LLM Request
  */
@@ -70,7 +66,6 @@ export interface LLMRequest {
   stopSequences?: string[];
   priority?: 'high' | 'normal' | 'low';
 }
-
 /**
  * LLM Response
  */
@@ -87,7 +82,6 @@ export interface LLMResponse {
   cached: boolean;
   finishReason?: string;
 }
-
 /**
  * Function Calling Support
  */
@@ -96,16 +90,14 @@ export interface FunctionCall {
   description: string;
   parameters: Record<string, unknown>;
 }
-
 /**
  * Function Calling Response
  */
 export interface FunctionCallingResponse {
   functionName: string;
   arguments: Record<string, unknown>;
-  result?: unknown;
+  result?: any;
 }
-
 /**
  * AI Provider Router
  * Routes requests to optimal provider based on health and configuration
@@ -117,11 +109,9 @@ export class AIProviderRouter {
   private readonly CACHE_PREFIX = 'llm:router:';
   private readonly HEALTH_CHECK_INTERVAL = 30000; // 30 seconds
   private healthCheckTimer?: NodeJS.Timeout;
-
   constructor(redis: Redis) {
     this.redis = redis;
   }
-
   /**
    * Register an LLM provider
    */
@@ -137,7 +127,6 @@ export class AIProviderRouter {
       errorCount: 0
     });
   }
-
   /**
    * Get best available provider
    */
@@ -145,57 +134,47 @@ export class AIProviderRouter {
     const enabled = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => a.priority - b.priority);
-
     for (const provider of enabled) {
       const status = this.providerStatus.get(provider.name);
       if (status && status.status !== 'unavailable') {
         return provider;
       }
     }
-
     return null;
   }
-
   /**
    * Get all providers sorted by priority and health
    */
   getProviders(): { provider: LLMProviderConfig; status: ProviderStatus }[] {
     const result: { provider: LLMProviderConfig; status: ProviderStatus }[] = [];
-
     const sorted = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => {
         const statusA = this.providerStatus.get(a.name);
         const statusB = this.providerStatus.get(b.name);
         if (!statusA || !statusB) return 0;
-
         // Healthy providers first
         const healthOrder = { healthy: 0, degraded: 1, unhealthy: 2, unavailable: 3 };
         const healthDiff = (healthOrder[statusA.status as keyof typeof healthOrder] || 3) -
                           (healthOrder[statusB.status as keyof typeof healthOrder] || 3);
         if (healthDiff !== 0) return healthDiff;
-
         // Then by priority
         return a.priority - b.priority;
       });
-
     for (const provider of sorted) {
       const status = this.providerStatus.get(provider.name);
       if (status) {
         result.push({ provider, status });
       }
     }
-
     return result;
   }
-
   /**
    * Call LLM with automatic fallback
    */
   async callLLM(request: LLMRequest): Promise<LLMResponse> {
     const startTime = Date.now();
     const cacheKey = this.getCacheKey(request);
-
     // Check cache
     const cached = await this.getFromCache(cacheKey);
     if (cached) {
@@ -205,14 +184,11 @@ export class AIProviderRouter {
         processingTime: Date.now() - startTime
       };
     }
-
     // Try providers in priority order
     const providers = Array.from(this.providers.values())
       .filter(p => p.enabled)
       .sort((a, b) => a.priority - b.priority);
-
     let lastError: Error | null = null;
-
     for (const provider of providers) {
       try {
         const response = await this.callProvider(provider, request);
@@ -226,10 +202,8 @@ export class AIProviderRouter {
         // Continue to next provider
       }
     }
-
     throw new Error(`All LLM providers failed. Last error: ${lastError?.message}`);
   }
-
   /**
    * Call specific provider
    */
@@ -247,7 +221,6 @@ export class AIProviderRouter {
         throw new Error(`Unknown provider type: ${provider.type}`);
     }
   }
-
   /**
    * Call TensorRT-LLM via Triton
    */
@@ -273,14 +246,11 @@ export class AIProviderRouter {
       }),
       signal: AbortSignal.timeout(provider.timeout)
     });
-
     if (!response.ok) {
       throw new Error(`TensorRT request failed: ${response.statusText}`);
     }
-
     const data = (await response.json()) as { outputs: Array<{ data: string[] }> };
     const content = data.outputs[0]?.data[0] || '';
-
     return {
       content,
       model: provider.model,
@@ -290,7 +260,6 @@ export class AIProviderRouter {
       cached: false
     };
   }
-
   /**
    * Call vLLM via OpenAI-compatible API
    */
@@ -311,16 +280,13 @@ export class AIProviderRouter {
       }),
       signal: AbortSignal.timeout(provider.timeout)
     });
-
     if (!response.ok) {
       throw new Error(`vLLM request failed: ${response.statusText}`);
     }
-
     const data = (await response.json()) as {
       choices: Array<{ text: string }>;
       usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
-
     return {
       content: data.choices[0]?.text || '',
       model: provider.model,
@@ -334,7 +300,6 @@ export class AIProviderRouter {
       cached: false
     };
   }
-
   /**
    * Call Ollama
    */
@@ -351,17 +316,14 @@ export class AIProviderRouter {
       }),
       signal: AbortSignal.timeout(provider.timeout)
     });
-
     if (!response.ok) {
       throw new Error(`Ollama request failed: ${response.statusText}`);
     }
-
     const data = (await response.json()) as {
       response: string;
       eval_count: number;
       prompt_eval_count: number;
     };
-
     return {
       content: data.response || '',
       model: provider.model,
@@ -375,7 +337,6 @@ export class AIProviderRouter {
       cached: false
     };
   }
-
   /**
    * Call OpenAI
    */
@@ -383,7 +344,6 @@ export class AIProviderRouter {
     if (!provider.apiKey) {
       throw new Error('OpenAI API key not configured');
     }
-
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -408,16 +368,13 @@ export class AIProviderRouter {
       }),
       signal: AbortSignal.timeout(provider.timeout)
     });
-
     if (!response.ok) {
       throw new Error(`OpenAI request failed: ${response.statusText}`);
     }
-
     const data = (await response.json()) as {
       choices: Array<{ message: { content: string } }>;
       usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
     };
-
     return {
       content: data.choices[0]?.message.content || '',
       model: provider.model,
@@ -431,7 +388,6 @@ export class AIProviderRouter {
       cached: false
     };
   }
-
   /**
    * Call LLM with function calling support
    */
@@ -441,21 +397,17 @@ export class AIProviderRouter {
   ): Promise<{ response: LLMResponse; functionCalls: FunctionCallingResponse[] }> {
     // Get response from LLM
     const response = await this.callLLM(request);
-
     // Parse function calls (implementation depends on model support)
     // This is a placeholder for function calling logic
     const functionCalls: FunctionCallingResponse[] = [];
-
     return { response, functionCalls };
   }
-
   /**
    * Get provider status
    */
   getStatus(): ProviderStatus[] {
     return Array.from(this.providerStatus.values());
   }
-
   /**
    * Perform health checks on all providers
    */
@@ -466,10 +418,8 @@ export class AIProviderRouter {
         const response = await fetch(`${provider.baseUrl}/health`, {
           signal: AbortSignal.timeout(5000)
         });
-
         const status = response.ok ? 'healthy' : 'degraded';
         const responseTime = Date.now() - startTime;
-
         const currentStatus = this.providerStatus.get(name);
         if (currentStatus) {
           currentStatus.status = (status === 'healthy' ? 'healthy' : 'degraded') as: 'healthy' | 'degraded' | 'unhealthy' | 'unavailable';
@@ -487,7 +437,6 @@ export class AIProviderRouter {
       }
     }
   }
-
   /**
    * Start health check loop
    */
@@ -498,7 +447,6 @@ export class AIProviderRouter {
       });
     }, this.HEALTH_CHECK_INTERVAL);
   }
-
   /**
    * Stop health check loop
    */
@@ -507,7 +455,6 @@ export class AIProviderRouter {
       clearInterval(this.healthCheckTimer);
     }
   }
-
   /**
    * Generate cache key
    */
@@ -517,7 +464,6 @@ export class AIProviderRouter {
       .digest('hex');
     return `${this.CACHE_PREFIX}${hash}`;
   }
-
   /**
    * Get from cache
    */
@@ -528,32 +474,27 @@ export class AIProviderRouter {
     }
     return null;
   }
-
   /**
    * Cache response
    */
   private async cacheResponse(key: string, response: LLMResponse): Promise<void> {
     await this.redis.set(key, JSON.stringify(response), 'EX', 3600); // 1 hour TTL
   }
-
   /**
    * Update provider status
    */
   private updateProviderStatus(name: string, success: boolean, responseTime: number): void {
     const status = this.providerStatus.get(name);
     if (!status) return;
-
     status.lastCheck = new Date();
     status.responseTime = responseTime;
     status.requestCount++;
-
     if (success) {
       status.successRate = (status.successRate * (status.requestCount - 1) + 1) / status.requestCount;
     } else {
       status.errorCount++;
       status.successRate = (status.successRate * (status.requestCount - 1)) / status.requestCount;
     }
-
     // Update status based on success rate
     if (status.successRate >= 0.9) {
       status.status = 'healthy';
@@ -565,7 +506,6 @@ export class AIProviderRouter {
       status.status = 'unavailable';
     }
   }
-
   /**
    * Cleanup resources
    */
@@ -573,5 +513,4 @@ export class AIProviderRouter {
     this.stopHealthChecks();
   }
 }
-
 export default AIProviderRouter;

@@ -49,7 +49,6 @@
     if (!sessionStorage.getItem('clientId')) {
       sessionStorage.setItem('clientId', generateClientId());
     }
-
     // Try WebTransport first (requires HTTP/3 + TLS)
     if (typeof (window as any).WebTransport !== 'undefined') {
       const wtHost = DEV_WS_URL
@@ -63,10 +62,8 @@
         isWebTransport = true;
         isConnected = true;
         console.log('✅ WebTransport ready', wtUrl);
-
         // Send handshake over WebTransport
         await sendRealtimeMessage({ type: 'handshake', clientId: sessionStorage.getItem('clientId') });
-
         // Read incoming unidirectional streams (safe best-effort)
         (async () => {
           try {
@@ -102,33 +99,30 @@
             console.warn('WebTransport incoming stream loop ended', err);
           }
         })();
-
         // Monitor closed state
         wt.closed
           .then(() => {
             console.log('WebTransport closed');
-            isConnected = false;
-            isWebTransport = false;
+            isConnected = $state(false);
+            isWebTransport = $state(false);
             wt = null;
             // Attempt reconnect
             reconnectTimeout = setTimeout(connectRealtime, 3000);
           })
           .catch((err: any) => {
             console.warn('WebTransport closed with error', err);
-            isConnected = false;
-            isWebTransport = false;
+            isConnected = $state(false);
+            isWebTransport = $state(false);
             wt = null;
             reconnectTimeout = setTimeout(connectRealtime, 3000);
           });
-
         return; // we are connected via WebTransport
       } catch (err) {
         console.warn('WebTransport connection failed, falling back to WebSocket:', err);
         wt = null;
-        isWebTransport = false;
+        isWebTransport = $state(false);
       }
     }
-
     // Fallback to WebSocket (respect DEV overrides)
     const wsHost = DEV_WS_URL ? DEV_WS_URL : DEV_WS_PORT ? `ws://localhost:${DEV_WS_PORT}` : `ws://localhost:${wsPort}`;
     const wsUrl = wsHost;
@@ -155,7 +149,7 @@
       };
       ws.onclose = () => {
         console.log('WebSocket disconnected');
-        isConnected = false;
+        isConnected = $state(false);
         // Attempt reconnection
         reconnectTimeout = setTimeout(() => {
           console.log('Attempting to reconnect...');
@@ -164,12 +158,11 @@
       };
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
-      isConnected = false;
+      isConnected = $state(false);
     }
   }
-
   // Generic send helper: WebTransport -> WebSocket -> HTTP POST
-  async function sendRealtimeMessage(payload: unknown) {
+  async function sendRealtimeMessage(payload: any) {
     const data = JSON.stringify(payload);
     // Prefer WebTransport
     if (isWebTransport && wt) {
@@ -200,7 +193,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: data,
       });
-      return (resp as { ok?: unknown }).ok ? true : false;
+      return (resp as { ok?: any }).ok ? true : false;
     } catch (err) {
       console.error('HTTP realtime fallback failed:', err);
       return false;
@@ -213,7 +206,7 @@
       const response = await fetch(`http://localhost:${PRIMARY_PORT}/api/health`, {
         signal: AbortSignal.timeout(1000),
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
+      if ((response as { ok?: any; json?: any }).ok) {
         return PRIMARY_PORT;
       }
     } catch (error) {
@@ -225,7 +218,7 @@
         const response = await fetch(`http://localhost:${port}/api/health`, {
           signal: AbortSignal.timeout(1000),
         });
-        if ((response as { ok?: unknown; json?: unknown }).ok) {
+        if ((response as { ok?: any; json?: any }).ok) {
           console.log(`Using fallback port ${port}`);
           return port;
         }
@@ -244,7 +237,7 @@
     return id;
   }
   // Handle WebSocket messages
-  function handleWebSocketMessage(data: unknown) {
+  function handleWebSocketMessage(data: any) {
     const payload = data as any;
     switch (payload.type) {
       case 'connected':
@@ -266,7 +259,7 @@
             metadata: payload.metadata as any,
           };
           messages = [...messages, message];
-          isTyping = false;
+          isTyping = $state(false);
           if (voiceEnabled && content) {
             speakText(content as string);
           }
@@ -288,12 +281,12 @@
         break;
       case 'batch_complete':
         handleBatchResults(payload.results as any[]);
-        batchMode = false;
+        batchMode = $state(false);
         break;
       case 'error':
         console.error(payload.error);
         showNotification('Error: ' + payload.error, 'error');
-        isTyping = false;
+        isTyping = $state(false);
         break;
     }
   }
@@ -347,7 +340,7 @@
       console.error('Failed to send message via realtime transport or HTTP fallback:', error);
       showNotification('Failed to send message', 'error');
     } finally {
-      isTyping = false;
+      isTyping = $state(false);
     }
   }
   // Handle document upload
@@ -372,14 +365,14 @@
           {
             id: crypto.randomUUID(),
             role: 'system',
-            content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: unknown; content?: unknown; embeddings?: unknown }).summary || ''}`,
+            content: `Document "${file.name}" uploaded and processed. ${(result as { summary?: any; content?: any; embeddings?: any }).summary || ''}`,
             timestamp: new Date(),
           },
         ];
         // Send to realtime transport for processing (WebTransport -> WebSocket -> HTTP)
         await sendRealtimeMessage({
           type: 'document_upload',
-          content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
+          content: (result as { summary?: any; content?: any; embeddings?: any }).content,
           embeddings: result.embeddings,
         });
       }
@@ -398,7 +391,7 @@
       utterance.rate = 1.0;
       utterance.pitch = 1.0;
       utterance.onend = () => {
-        isSpeaking = false;
+        isSpeaking = $state(false);
       };
       speechSynthesis.speak(utterance);
     } else {
@@ -436,7 +429,7 @@
     connectedUsers = 0;
   }
   // Handle document processing result
-  function handleDocumentResult(data: unknown) {
+  function handleDocumentResult(data: any) {
     const d = data as any;
     messages = [
       ...messages,
@@ -460,7 +453,7 @@
     ];
   }
   // Handle batch results
-  function handleBatchResults(results: unknown[]) {
+  function handleBatchResults(results: any[]) {
     // Convert each result into a readable line (support string, object with summary/content, or fallback JSON)
     const lines = results.map(r => {
       if (typeof r === 'string') return r;
@@ -471,7 +464,6 @@
       return String(r);
     });
     const summary = `Batch processing complete:\n${lines.join('\n')}\n\nBatch size: ${results.length}`;
-
     // Build metadata only from known fields to satisfy GPUChatMessage.metadata shape
     const first = results && results.length > 0 ? (results[0] as any) : null;
     const metadata =
@@ -483,7 +475,6 @@
             ...(typeof first.tokenCount === 'number' ? { tokenCount: first.tokenCount } : {}),
           }
         : undefined;
-
     messages = [
       ...messages,
       {
@@ -496,7 +487,6 @@
       } as unknown as GPUChatMessage,
     ];
   }
-
   // Resume a previous request from Redis Streams (token replay)
   async function resumeLastRequest(requestId?: string) {
     const id = requestId || sessionStorage.getItem('lastRequestId') || sessionStorage.getItem('sessionId');
@@ -625,7 +615,6 @@
     clearInterval(healthCheckInterval);
   });
 </script>
-
 <div class="gpu-chat-container">
   <!-- Header -->
   <header class="chat-header">
@@ -666,15 +655,13 @@
             {#if tensorRTEnabled}
               <span class="tensorrt-badge">TensorRT</span>
             {/if}
-          </div>
-        {/if}
+          {/if}
         <!-- Multi-user indicator -->
         {#if currentRoom}
           <div class="room-status">
             <span>Room: {currentRoom}</span>
             <span class="user-count">👥 {connectedUsers}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Feature toggles -->
@@ -739,8 +726,7 @@
               {#if (message.metadata as any)?.port}
                 <span class="metadata-item">Port: {(message.metadata as any).port}</span>
               {/if}
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
       {#if isTyping}
@@ -750,14 +736,12 @@
             <span></span>
             <span></span>
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if isSpeaking}
         <div class="speaking-indicator">
           <span class="speaker-icon">🔊</span>
           Speaking...
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Batch Items Display -->
@@ -770,19 +754,17 @@
         </div>
       {/each}
       <button onclick={processBatch} class="process-batch-btn"> Process Batch </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Uploaded Files Display -->
   {#if uploadedFiles.length > 0}
     <div class="uploaded-files">
       <h4>Uploaded Documents</h4>
-      {#each uploadedFiles as file}
+      {#each Array.isArray(uploadedFiles) ? uploadedFiles : [] as file}
         <div class="file-item">
           📄 {file.name} ({Math.round(file.size / 1024)}KB)
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Input Area -->
   <div class="input-container">
     <textarea
@@ -803,7 +785,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .gpu-chat-container {
     display: flex;
@@ -1247,4 +1228,3 @@
     background: linear-gradient(135deg, #00ff88 20%, #00ccff 80%);
   }
 </style>
-

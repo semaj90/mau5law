@@ -16,7 +16,7 @@ export interface ChatMessage {
     tokensUsed?: number;
     references?: string[];
     confidence?: number;
-    legalContext?: unknown;
+    legalContext?: any;
     executionTime?: number;
   }
 }
@@ -63,9 +63,9 @@ export interface ChatContext {
   contextInjection: {
     enabled: boolean;
     documents: string[];
-    vectorResults: unknown[];
+    vectorResults: any[];
     precedents?: string[];
-    caseContext?: unknown;
+    caseContext?: any;
   }
 }
 // === HELPERS ===
@@ -258,7 +258,7 @@ export const chatActions = {
           legalContext: data.legalContext
         });
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Error sending message:", error);
       chatStore.update((state) => ({
         ...state,
@@ -294,7 +294,7 @@ export const chatActions = {
     }));
   },
   // Legal-specific context injection
-  injectLegalContext: (documents: string[], precedents?: string[], caseContext?: unknown) => {
+  injectLegalContext: (documents: string[], precedents?: string[], caseContext?: any) => {
     chatStore.update((state) => ({
       ...state,
       contextInjection: {
@@ -343,7 +343,7 @@ export const chatActions = {
       } else {
         chatStore.update((state) => ({ ...state, modelStatus: "error" }));
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       chatStore.update((state) => ({ ...state, modelStatus: "error" }));
     }
   },
@@ -451,7 +451,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
   const decoder = new TextDecoder();
   let assistantMessage = "";
   try {
-    let doneFlag = false;
+    let doneFlag = $state(false);
     while (!doneFlag) {
       const { done, value } = await reader.read();
       doneFlag = !!done;
@@ -479,7 +479,7 @@ async function handleStreamingResponse(response: Response): Promise<void> {
         return { ...state, messages }
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Streaming error:", error);
     chatStore.update((state) => ({
       ...state,
@@ -521,7 +521,7 @@ export const persistenceHelpers = {
       try {
         localStorage.setItem("chat-conversations", JSON.stringify(state.conversations));
         localStorage.setItem("chat-settings", JSON.stringify(state.settings));
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn("Failed to save chat data to localStorage:", error);
       }
     });
@@ -533,9 +533,9 @@ export const persistenceHelpers = {
       const conversationsStr = localStorage.getItem("chat-conversations");
       const settingsStr = localStorage.getItem("chat-settings");
       // Type guards
-      const isRecord = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object";
-      const asDate = (v: unknown): Date => (typeof v === "string" || typeof v === "number") ? new Date(v) : new Date();
-      const coerceMessage = (u: unknown): ChatMessage => {
+      const isRecord = (v: any): v is Record<string, unknown> => v !== null && typeof v === "object";
+      const asDate = (v: any): Date => (typeof v === "string" || typeof v === "number") ? new Date(v) : new Date();
+      const coerceMessage = (u: any): ChatMessage => {
         if (!isRecord(u)) {
           return { id: randomId(), content: "", role: "assistant", timestamp: new Date() }
         }
@@ -550,7 +550,7 @@ export const persistenceHelpers = {
           metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
         } as ChatMessage;
       }
-      const coerceConversation = (u: unknown): Conversation => {
+      const coerceConversation = (u: any): Conversation => {
         if (!isRecord(u)) {
           return {
             id: randomId(),
@@ -597,7 +597,7 @@ export const persistenceHelpers = {
         }
         return { ...state, conversations, settings: newSettings }
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn("Failed to load chat data from localStorage:", error);
     }
   }

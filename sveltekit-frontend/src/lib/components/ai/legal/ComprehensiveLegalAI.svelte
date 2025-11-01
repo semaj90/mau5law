@@ -4,9 +4,9 @@
   import { recommendationStore } from '$lib/machines/recommendation-routing-machine';
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import { Badge } from '$lib/components/ui/badge'; // Changed from default import to named import from directory
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte''; // Changed from default import to named import from directory
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import {
     Brain,
     Database,
@@ -41,22 +41,18 @@
   workerUtilization: 0,
     simdPerformance: 0,
   });
-
   let aiStats = $state({
     modelsActive: 0,
     inferencesPerHour: 0,
     gpuUtilization: 0,
     averageResponseTime: 0,
   });
-
   let contextualPrompt = $state('');
   let contextualResponse = $state<string | null>(null);
   let contextualLoading = $state(false);
   let contextualError = $state<string | null>(null);
-
   // declare interval handle in outer scope so cleanup can synchronously access it
   let statsInterval: ReturnType<typeof setInterval> | undefined;
-
   onMount(() => {
     (async () => {
       // Initialize worker pool
@@ -74,7 +70,6 @@
         compressionEnabled: true,
         enableMetrics: true,
       });
-
       // Dynamically import the upload progress component. Support both default and named exports.
       try {
         const mod = await import('$lib/components/upload/EnhancedUploadProgress.svelte');
@@ -93,7 +88,6 @@
       // Update system stats periodically
       statsInterval = setInterval(updateSystemStats, 2000);
     })();
-
     // synchronous cleanup function (no Promise returned)
     return () => {
       if (statsInterval) clearInterval(statsInterval);
@@ -147,12 +141,12 @@
             performanceMetrics.totalProcessingTime = endTime - startTime;
             // Process results with workers and SIMD
             await processResults(s.context);
-            isProcessing = false;
+            isProcessing = $state(false);
             unsubscribe();
           })();
         } else if (s.matches('error')) {
           console.error('Upload failed:', s.context?.error);
-          isProcessing = false;
+          isProcessing = $state(false);
           unsubscribe();
         }
       });
@@ -164,7 +158,7 @@
       });
     } catch (error) {
       console.error('Processing failed:', error);
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function processResults(context: any) {
@@ -222,7 +216,6 @@
       console.error('Result processing failed:', error);
     }
   }
-
   async function handleContextualChat(promptOverride?: string) {
     const question = (promptOverride ?? contextualPrompt)?.trim();
     if (!question) return;
@@ -243,10 +236,9 @@
     } catch (error) {
       contextualError = error instanceof Error ? error.message : String(error);
     } finally {
-      contextualLoading = false;
+      contextualLoading = $state(false);
     }
   }
-
   function useSummaryForContextualPrompt() {
     const summary = processedResults.aiAnalysis?.summary;
     if (summary) {
@@ -279,16 +271,13 @@
     console.timeEnd('Native JSON Parse');
     updateSystemStats();
   }
-
   // small inline type to satisfy the subscriber shape we rely on
   type UploadStateLike = { matches: (s: string) => boolean; context?: any };
 </script>
-
 <!-- global style frameworks (UnoCSS / NES.css) -->
 <!-- adjust these paths if your project uses different import entry points -->
 <link rel="stylesheet" href="/src/lib/styles/uno.css" />
 <link rel="stylesheet" href="/src/lib/styles/nes.css" />
-
 <div class="space-y-6 p-6">
   <!-- Header -->
   <div class="text-center space-y-2">
@@ -497,8 +486,7 @@
       <EnhancedUploadProgress />
     {:else}
       <!-- Fallback minimal progress UI while component is unavailable -->
-      <div class="p-3 border rounded text-sm">Processing... (progress component loading)</div>
-    {/if}
+      <div class="p-3 border rounded text-sm">Processing... (progress component loading){/if}
   {/if}
   <!-- Results Dashboard -->
   {#if Object.keys(processedResults).length > 0}
@@ -561,21 +549,19 @@
                 <div>
                   <h4 class="font-medium mb-2">Key Points:</h4>
                   <ul class="text-sm space-y-1">
-                    {#each processedResults.aiAnalysis.keyPoints.slice(0, 3) as point}
+                    {#each Array.isArray(processedResults.aiAnalysis.keyPoints.slice(0, 3)) ? processedResults.aiAnalysis.keyPoints.slice(0, 3) : [] as point}
                       <li class="flex items-start gap-2">
                         <span class="text-blue-500 mt-1">•</span>
                         <span>{point}</span>
                       </li>
                     {/each}
                   </ul>
-                </div>
-              {/if}
+                {/if}
             </div>
           </CardContent>
         </Card>
       {/if}
-    </div>
-  {/if}
+    {/if}
   <!-- Recommendations -->
   {#if recommendations.length > 0}
     <Card>
@@ -587,7 +573,7 @@
       </CardHeader>
       <CardContent>
         <div class="space-y-4">
-          {#each recommendations.slice(0, 5) as rec}
+          {#each Array.isArray(recommendations.slice(0, 5)) ? recommendations.slice(0, 5) : [] as rec}
             <div class="border rounded p-3">
               <div class="flex justify-between items-start mb-2">
                 <h4 class="font-medium">{rec.title || rec.type}</h4>
@@ -614,8 +600,7 @@
                   <span class="text-xs text-muted-foreground">
                     Confidence: {(rec.confidence * 100).toFixed(1)}%
                   </span>
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>
@@ -665,13 +650,11 @@
       {#if contextualError}
         <div class="text-sm text-red-500">
           {contextualError}
-        </div>
-      {/if}
+        {/if}
       {#if contextualResponse}
         <div class="p-3 border rounded bg-muted/30 text-sm whitespace-pre-wrap leading-relaxed">
           {contextualResponse}
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
   <!-- Feature Overview -->
@@ -717,7 +700,6 @@
     </CardContent>
   </Card>
 </div>
-
 <style>
   /* Minimal layout glue for the dual progress presentation */
   .enhanced-progress {

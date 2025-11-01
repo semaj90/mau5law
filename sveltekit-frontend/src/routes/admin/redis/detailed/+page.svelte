@@ -474,10 +474,10 @@
         requestCount: Math.floor(Math.random() * 1000),
         errorRate: Math.random() * 2, // 0-2%
       }));
-      isLoading = false;
+      isLoading = $state(false);
     } catch (error) {
       console.error('Failed to load endpoint metrics:', error);
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 </script>
@@ -488,7 +488,7 @@
     <div class="loading">Loading endpoint metrics...</div>
   {:else}
     <div class="metrics-grid">
-      {#each endpointMetrics as endpoint}
+      {#each Array.isArray(endpointMetrics) ? endpointMetrics : [] as endpoint}
         <div class="endpoint-nier-bits-card complexity-{endpoint.complexity}">
           <div class="endpoint-header">
             <h3>{endpoint.name}</h3>

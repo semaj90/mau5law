@@ -30,13 +30,13 @@ interface PerformanceInfo {
   webgpuUtilized?: boolean;
   throughput?: number;
   totalTime?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface EmbeddingsInfo {
   cacheHit?: boolean;
   compressionRatio?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface ExtractionInfo {
@@ -44,14 +44,14 @@ interface ExtractionInfo {
   keyTerms?: string[];
   entities?: RecordObject[];
   risks?: RecordObject[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface WebGPUResult {
   performance?: PerformanceInfo;
   embeddings?: EmbeddingsInfo;
   extraction?: ExtractionInfo;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // GET - System status and capabilities
 export const GET: RequestHandler = async () => {
@@ -182,11 +182,11 @@ async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest)
   const extRaw = (typedResult.extraction ?? {}) as ExtractionInfo;
   // Normalize risks: string[] -> RecordObject[]
   const risks: RecordObject[] = Array.isArray(extRaw.risks)
-    ? extRaw.risks.map((r: unknown) => (typeof r === 'string' ? { risk: r } : (r as RecordObject)))
+    ? extRaw.risks.map((r: any) => (typeof r === 'string' ? { risk: r } : (r as RecordObject)))
     : [];
   // Normalize entities: string[] -> RecordObject[]
   const entities: RecordObject[] = Array.isArray(extRaw.entities)
-    ? extRaw.entities.map((e: unknown) => (typeof e === 'string' ? { entity: e } : (e as RecordObject)))
+    ? extRaw.entities.map((e: any) => (typeof e === 'string' ? { entity: e } : (e as RecordObject)))
     : [];
   const ext: ExtractionInfo = {
     ...extRaw,
@@ -232,14 +232,14 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
 
   // Use unknown[] and narrow to Record<string, unknown> instead of `any[]`
   const rawResults = (await processBatchDocumentsWithWebGPU(request.documents, config)) as unknown[];
-  const results: WebGPUResult[] = rawResults.map((r: unknown): WebGPUResult => {
+  const results: WebGPUResult[] = rawResults.map((r: any): WebGPUResult => {
     const rec = (r as Record<string, unknown>) || {};
     const extraction = (rec['extraction'] ?? {}) as Record<string, unknown>;
 
     // Normalize risks: string[] -> RecordObject[] (wrap strings as { risk: string })
     let normalizedRisks: RecordObject[] = [];
     if (Array.isArray(extraction['risks'])) {
-      normalizedRisks = (extraction['risks'] as unknown[]).map((risk: unknown) =>
+      normalizedRisks = (extraction['risks'] as unknown[]).map((risk: any) =>
         typeof risk === 'string' ? { risk } : (risk as RecordObject)
       );
     }
@@ -247,7 +247,7 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
     // Normalize entities similarly (sometimes returned as string[])
     let normalizedEntities: RecordObject[] = [];
     if (Array.isArray(extraction['entities'])) {
-      normalizedEntities = (extraction['entities'] as unknown[]).map((ent: unknown) =>
+      normalizedEntities = (extraction['entities'] as unknown[]).map((ent: any) =>
         typeof ent === 'string' ? { entity: ent } : (ent as RecordObject)
       );
     }

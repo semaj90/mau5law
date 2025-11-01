@@ -8,8 +8,8 @@ import { json } from '@sveltejs/kit';
 
 // Add: typed shape for the runtime module (constructor-based export)
 type PrecedentDiscoveryModule = {
-  default?: new (...args: unknown[]) => PrecedentDiscovery;
-  PrecedentDiscovery?: new (...args: unknown[]) => PrecedentDiscovery;
+  default?: new (...args: any[]) => PrecedentDiscovery;
+  PrecedentDiscovery?: new (...args: any[]) => PrecedentDiscovery;
 };
 
 // Helper: dynamically import runtime implementation to satisfy verbatimModuleSyntax

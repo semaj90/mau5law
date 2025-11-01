@@ -145,7 +145,7 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: unknown }; // Changed: 'any' to: 'unknown'
+    filters?: { [key: string]: any }; // Changed: 'any' to: 'unknown'
     limit?: number;
   }): Promise<Array<SearchResultItem>> {
     // Changed: 'any' to: 'SearchResultItem'
@@ -210,7 +210,7 @@ export class FlatBufferLegalProcessor {
           const reader = response.body.getReader();
 
           // Avoid: "constant condition" by using a mutable flag
-          let finished = false;
+          let finished = $state(false);
           while (!finished) {
             const { done, value } = await reader.read();
             if (done) {

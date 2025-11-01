@@ -22,7 +22,6 @@
   const buttonType = variant || type;
   const handleClick = onclick || onClick;
 </script>
-
 <button class={`nes-btn is-${buttonType}`} onclick={handleClick} {disabled}>
   {#if children}
     {@render children()}

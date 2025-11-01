@@ -16,12 +16,12 @@
   // Headless components from our enhanced architecture
   import { HeadlessDialog } from '$lib/headless';
   import { OptimisticList, type Item } from '$lib/headless/OptimisticList.svelte';
-  import { DocumentUploader } from '$lib/components/headless/DocumentUploader.svelte';
+  import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte';
   import { LoadingButton } from '$lib/headless';
   import { FormField } from '$lib/headless';
   // Enhanced UI components
-  import * as Card from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   // Icons
@@ -245,7 +245,7 @@
       console.error('Analysis failed:', error);
       optimisticInsights = optimisticInsights.filter(item => item.id) !== optimisticInsight.id);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   function openInsightDetails(insight: ContextualInsight) {
@@ -253,7 +253,7 @@
     isDialogOpen = true;
   }
   function closeInsightDetails() {
-    isDialogOpen = false;
+    isDialogOpen = $state(false);
     selectedInsight = null;
   }
 </script>
@@ -390,15 +390,15 @@
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
-                onclick={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
+                onclick={() => openInsightDetails((item as { id?: any; data?: any; optimistic?: any }).data)}
               >
                 <div class="insight-header">
-                  <div class="insight-type {getInsightTypeColor((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)}">
-                    {@render getInsightTypeIcon((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)({ class: "w-4 h-4" })}
+                  <div class="insight-type {getInsightTypeColor((item as { id?: any; data?: any; optimistic?: any }).data.type)}">
+                    {@render getInsightTypeIcon((item as { id?: any; data?: any; optimistic?: any }).data.type)({ class: "w-4 h-4" })}
                   </div>
                   <div class="insight-meta">
-                    <span class="insight-title">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.title}</span>
-                    <span class="insight-time">{formatRelativeTime((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.timestamp)}</span>
+                    <span class="insight-title">{(item as { id?: any; data?: any; optimistic?: any }).data.title}</span>
+                    <span class="insight-time">{formatRelativeTime((item as { id?: any; data?: any; optimistic?: any }).data.timestamp)}</span>
                   </div>
                   <div class="insight-confidence">
                     <Badge variant="secondary">
@@ -406,9 +406,9 @@
                     </Badge>
                   </div>
                 </div>
-                <p class="insight-description">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.description}</p>
+                <p class="insight-description">{(item as { id?: any; data?: any; optimistic?: any }).data.description}</p>
                 <div class="insight-sources">
-                  {#each (item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.sources.slice(0, 3) as source}
+                  {#each (item as { id?: any; data?: any; optimistic?: any }).data.sources.slice(0, 3) as source}
                     <Badge variant="ghost" class="source-tag">
                       {source}
                     </Badge>
@@ -585,7 +585,7 @@
           <div class="sources-section">
             <h3 class="sources-title">Data Sources</h3>
             <div class="sources-list">
-              {#each selectedInsight.sources as source}
+              {#each Array.isArray(selectedInsight.sources) ? selectedInsight.sources : [] as source}
                 <Badge variant="ghost" class="source-badge">
                   {source}
                 </Badge>

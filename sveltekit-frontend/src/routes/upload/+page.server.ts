@@ -46,7 +46,7 @@ const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
 type RedisLike = {
   lpush: (key: string, value: string) => Promise<number>;
   ltrim: (key: string, start: number, stop: number) => Promise<void>;
-  on?: (event: string, handler: (e: unknown) => void) => void;
+  on?: (event: string, handler: (e: any) => void) => void;
   quit?: () => Promise<void>;
   disconnect?: () => void;
 } | null;
@@ -71,7 +71,7 @@ const getRedisClient = async () => {
     const clientInstance = redis;
     // ioredis may emit: 'error' events like ReplyError NOAUTH which, if unhandled,
     // will crash or propagate. Handle them here and degrade gracefully.
-    clientInstance.on?.('error', (e: unknown) => {
+    clientInstance.on?.('error', (e: any) => {
       try {
         const msg = e instanceof Error ? e.message : String(e);
         if (typeof msg === 'string' && msg.includes('NOAUTH')) {
@@ -95,7 +95,7 @@ const getRedisClient = async () => {
   }
 };
 
-const logError = async (context: string, error: unknown, details?: Record<string, unknown>) => {
+const logError = async (context: string, error: any, details?: Record<string, unknown>) => {
   const payload = {
     timestamp: new Date().toISOString(),
     context,
@@ -281,7 +281,7 @@ export const actions: Actions = {
         uploadResult,
         message: 'Document uploaded successfully!',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       let errMessage = 'An unexpected internal server error occurred during document upload.';
       if (error instanceof Error) {
         errMessage = error.message;

@@ -21,7 +21,7 @@ import { json } from '@sveltejs/kit';
  */
 // Cache for validation reports (in production, use Redis)
 let lastValidationReport: IntegrationValidationReport | null = null;
-let validationInProgress = false;
+let validationInProgress = $state(false);
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const action = url.searchParams.get('action') || 'health';
   const clientIP = getClientAddress();
@@ -82,10 +82,10 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         try {
           const config = getConfig();
           // Initialize validator if available; fall back to quick health-based report
-          let validatorInitialized = false;
+          let validatorInitialized = $state(false);
           try {
             const maybeCreate = (
-              IntegrationValidator as unknown as { createValidator?: (config: unknown) => Promise<unknown> }
+              IntegrationValidator as unknown as { createValidator?: (config: any) => Promise<unknown> }
             ).createValidator;
             if (typeof maybeCreate === 'function') {
               const _validator = await maybeCreate(config);
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             },
           });
         } finally {
-          validationInProgress = false;
+          validationInProgress = $state(false);
         }
       }
       case 'report': {
@@ -239,7 +239,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     productionLogger.error(
       'System validation API error',
       error instanceof Error ? error : new Error(String(error)),
@@ -281,7 +281,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
   try {
     const body = await request.json().catch(() => ({}));
-    const { action, options } = body as { action?: string; options?: unknown };
+    const { action, options } = body as { action?: string; options?: any };
     if (!action) {
       return json(
         {
@@ -309,10 +309,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         try {
           const config = getConfig();
           // Initialize validator if available; fall back to health-based report
-          let validatorInitialized = false;
+          let validatorInitialized = $state(false);
           try {
             const maybeCreate = (
-              IntegrationValidator as unknown as { createValidator?: (config: unknown) => Promise<unknown> }
+              IntegrationValidator as unknown as { createValidator?: (config: any) => Promise<unknown> }
             ).createValidator;
             if (typeof maybeCreate === 'function') {
               const _validator = await maybeCreate(config);
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             },
           });
         } finally {
-          validationInProgress = false;
+          validationInProgress = $state(false);
         }
       }
       case 'clear_cache': {
@@ -387,7 +387,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         try {
           const config = getConfig();
           const maybeCreate = (
-            IntegrationValidator as unknown as { createValidator?: (config: unknown) => Promise<unknown> }
+            IntegrationValidator as unknown as { createValidator?: (config: any) => Promise<unknown> }
           ).createValidator;
           if (typeof maybeCreate === 'function') {
             const _validator = await maybeCreate(config);
@@ -424,7 +424,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     productionLogger.error(
       'System validation POST API error',
       error instanceof Error ? error : new Error(String(error)),
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     );
   } finally {
     // Ensure flag reset on POST path as well
-    validationInProgress = false;
+    validationInProgress = $state(false);
   }
 };
 async function runMemoryBenchmark(): Promise<{ score: number; details: { allocatedMB: number; rating: string } }> {

@@ -14,7 +14,7 @@ type ComponentOptions<TProps> = {
 interface SvelteInstance<TProps> {
   $set(props: Partial<TProps>): void;
   $destroy(): void;
-  $on<K extends string>(event: K, callback: (...args: unknown[]) => unknown): () => void;
+  $on<K extends string>(event: K, callback: (...args: any[]) => unknown): () => void;
 }
 
 type PropsRecord = Record<string, unknown>;
@@ -51,7 +51,7 @@ export function lazy<T extends PropsRecord = PropsRecord>(importFn: () => Promis
             ctor.__component = m.default;
             return m.default;
           })
-          .catch((err: unknown) => {
+          .catch((err: any) => {
             // surface the error but don't throw synchronously in constructor
             // eslint-disable-next-line no-console
             console.error('Lazy component failed to load', err);
@@ -64,7 +64,7 @@ export function lazy<T extends PropsRecord = PropsRecord>(importFn: () => Promis
       const placeholder: SvelteInstance<T> = {
         $set: (_props: Partial<T>) => {},
         $destroy: () => {},
-        $on: <K extends string>(_event: K, _callback: (...args: unknown[]) => unknown) => {
+        $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
           return () => {};
         },
       };
@@ -112,7 +112,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
         const placeholder: SvelteInstance<T> = {
           $set: (_props: Partial<T>) => {},
           $destroy: () => {},
-          $on: <K extends string>(_event: K, _callback: (...args: unknown[]) => unknown) => {
+          $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
             return () => {};
           },
         };
@@ -145,7 +145,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
                       observer.disconnect();
                       return m.default;
                     })
-                    .catch((err: unknown) => {
+                    .catch((err: any) => {
                       // eslint-disable-next-line no-console
                       console.error('Intersection lazy load failed', err);
                       throw err;
@@ -167,20 +167,20 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
                 ctor.__component = m.default;
                 return m.default;
               })
-              .catch((e: unknown) => {
+              .catch((e: any) => {
                 // eslint-disable-next-line no-console
                 console.error('Fallback lazy intersection load failed', e);
                 throw e;
               });
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           // fallback to immediate load on any unexpected observer errors
           ctor.__loadPromise = importFn()
             .then(m => {
               ctor.__component = m.default;
               return m.default;
             })
-            .catch((e: unknown) => {
+            .catch((e: any) => {
               // eslint-disable-next-line no-console
               console.error('Fallback lazy intersection load failed', e);
               throw e;
@@ -192,7 +192,7 @@ export function lazyWithIntersection<T extends PropsRecord = PropsRecord>(
       const placeholder: SvelteInstance<T> = {
         $set: (_props: Partial<T>) => {},
         $destroy: () => {},
-        $on: <K extends string>(_event: K, _callback: (...args: unknown[]) => unknown) => {
+        $on: <K extends string>(_event: K, _callback: (...args: any[]) => unknown) => {
           return () => {};
         },
       };

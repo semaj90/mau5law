@@ -9,7 +9,7 @@ const OLLAMA_URL = process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL as str
 
 const AVAILABLE_MODELS = ['gemma3-legal:latest', 'gemma270:m', 'embeddinggemma:latest'];
 
-function coerceModel(requested?: unknown): string {
+function coerceModel(requested?: any): string {
   if (typeof requested === 'string' && AVAILABLE_MODELS.includes(requested)) {
     return requested;
   }

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { getOllamaGenerateEndpoint } from '$lib/utils/ollama';
   import { browser } from '$app/environment';
-
   interface Props {
     label: string;
     model: string;
@@ -10,21 +9,16 @@
     onActionError?: (error: Error) => void;
     disabled?: boolean;
   }
-
   let { label, model, prompt, onActionComplete, onActionError, disabled = false }: Props = $props();
-
   let isLoading = $state(false);
   let errorMessage = $state<string | null>(null);
-
   async function triggerOllamaAction() {
     if (!browser) {
       console.warn('Ollama action can only be triggered in the browser context.');
       return;
     }
-
     isLoading = true;
     errorMessage = null;
-
     try {
       const ollamaEndpoint = getOllamaGenerateEndpoint();
       const response = await fetch(ollamaEndpoint, {
@@ -38,12 +32,10 @@
           stream: false // For a quick action, we might not want streaming
         })
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
-
       const data = await response.json();
       onActionComplete?.(data);
     } catch (error: any) {
@@ -51,11 +43,10 @@
       errorMessage = error.message || 'An unknown error occurred.';
       onActionError?.(error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 </script>
-
 <button
   class="nes-btn is-primary"
   type="button"
@@ -70,11 +61,9 @@
     {label}
   {/if}
 </button>
-
 {#if errorMessage}
   <p class="nes-text is-error mt-2">{errorMessage}</p>
 {/if}
-
 <style>
   /* @unocss-include */
   /* Add any specific styles for QuickActionButton here if needed */

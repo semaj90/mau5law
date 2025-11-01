@@ -14,7 +14,7 @@ export interface MatrixUINode {
     hover?: string;
     active?: string;
     disabled?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   events?: string[];
   children?: MatrixUINode[];
@@ -90,7 +90,7 @@ export class MatrixUICompiler {
    */
   async compileEnhanced(
     nodes: MatrixUINode[],
-    _xstateContext?: unknown // Renamed to _xstateContext
+    _xstateContext?: any // Renamed to _xstateContext
   ): Promise<{
     compiled: CompiledNode[];
     webgl: EnhancedWebGLBuffer;
@@ -211,7 +211,7 @@ export class MatrixUICompiler {
   }
   private async generateEnhancedCSS(
     nodes: MatrixUINode[],
-    _xstateContext?: unknown // Renamed to _xstateContext
+    _xstateContext?: any // Renamed to _xstateContext
   ): Promise<CSSOutput> {
     const classes: string[] = []; // Changed to const
     const variables: Record<string, string> = {};

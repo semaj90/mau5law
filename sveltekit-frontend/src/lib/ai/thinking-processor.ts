@@ -159,7 +159,7 @@ export class ThinkingProcessor {
   /**
    * Extracts JSON from text content
    */
-  protected static extractJSON(text: string): unknown {
+  protected static extractJSON(text: string): any {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return jsonMatch ? JSON.parse(jsonMatch[0]) : null;

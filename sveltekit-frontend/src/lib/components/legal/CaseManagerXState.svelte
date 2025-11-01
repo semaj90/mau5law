@@ -6,11 +6,9 @@
   import { useMachine } from '@xstate/svelte';
   import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
   import type { LegalCaseContext } from '$lib/state/legal-case-machine.js';
-  import Button from '$lib/components/ui/Button.svelte';
-
+  import { Button } from '$lib/components/ui/Button.svelte';
   // Get caseId from route params
   let caseId = $state(null as string | null);
-
   // Initialize XState machine (rename `state` to `machineState` to avoid $state rune conflict)
   const { state: machineState, send } = useMachine(legalCaseMachine, {
     context: {
@@ -18,7 +16,6 @@
       caseId
     }
   });
-
   // --- create selector stores by passing the machineState store ---
   let isLoading = legalCaseSelectors.isLoading(machineState);
   let hasError = legalCaseSelectors.hasError(machineState);
@@ -31,15 +28,12 @@
   let nextActions = legalCaseSelectors.getNextActions(machineState);
   let canStartAIAnalysis = legalCaseSelectors.canStartAIAnalysis(machineState);
   let stats = legalCaseSelectors.getStats(machineState);
-
   // typed tabs array
   const tabs: LegalCaseContext['activeTab'][] = ['overview', 'evidence', 'analysis', 'search'];
-
   // Form state (avoid generic type args on $state)
   let newCaseTitle = $state('');
   let newCaseDescription = $state('');
   let newCaseNumber = $state('');
-
   // Handle route changes and load case
   $effect(() => {
     const routeCaseId = page.params.caseId;
@@ -48,33 +42,27 @@
       send({ type: 'LOAD_CASE', caseId: routeCaseId });
     }
   });
-
   // Machine event handlers
   function handleCreateCase() {
     if (!newCaseTitle || !newCaseDescription || !newCaseNumber) return;
-
     const caseData = {
       title: newCaseTitle,
       description: newCaseDescription,
       caseNumber: newCaseNumber,
       status: 'active'
     };
-
     send({ type: 'UPDATE_CASE_FORM', data: caseData });
     send({ type: 'CREATE_CASE', caseData });
-
     newCaseTitle = '';
     newCaseDescription = '';
     newCaseNumber = '';
   }
-
   function handleAddEvidence(files: FileList) {
     if (files.length > 0) {
       const fileArray = Array.from(files);
       send({ type: 'ADD_EVIDENCE', files: fileArray });
     }
   }
-
   function handleStartAIAnalysis() {
     send({ type: 'START_AI_ANALYSIS' });
   }
@@ -93,7 +81,6 @@
   function handleDismissError() {
     send({ type: 'DISMISS_ERROR' });
   }
-
   // File upload handler
   let fileInput = $state(null as HTMLInputElement | null);
   function triggerFileUpload() {
@@ -107,7 +94,6 @@
     }
   }
 </script>
-
 <!-- Legal Case Manager Component with XState -->
 <div class="case-manager-xstate p-6 max-w-7xl mx-auto">
   <!-- Error State -->
@@ -122,17 +108,13 @@
           <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>Dismiss</Button>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Loading State -->
   {#if $isLoading}
     <div class="flex items-center justify-center py-12">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
       <span class="ml-3 text-gray-600">Loading...</span>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Case Creation Form (when no case is loaded) -->
   {#if !$currentCase && !$isLoading}
     <div class="mb-6 nes-container">
@@ -172,9 +154,7 @@
           <Button onclick={handleCreateCase} class="w-full bits-btn bits-btn">Create Case</Button>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Case Management Interface (when case is loaded) -->
   {#if $currentCase && !$isLoading}
     <div class="space-y-6">
@@ -202,7 +182,6 @@
             </div>
           </div>
           <p class="text-gray-700 mb-4">{$currentCase.description}</p>
-
           <!-- Stats (read from $stats) -->
           <div class="grid grid-cols-4 gap-4">
             <div class="text-center">
@@ -224,11 +203,10 @@
           </div>
         </div>
       </div>
-
       <!-- Navigation Tabs -->
       <div class="border-b border-gray-200">
         <nav class="flex space-x-8">
-          {#each tabs as tab}
+          {#each Array.isArray(tabs) ? tabs : [] as tab}
             <button
               class={ $activeTab === tab
                 ? 'py-2 px-1 border-b-2 font-medium text-sm border-blue-500 text-blue-600'
@@ -241,7 +219,6 @@
           {/each}
         </nav>
       </div>
-
       <!-- Tab Content -->
       <div class="tab-content">
         <!-- Overview Tab -->
@@ -250,7 +227,7 @@
             <div class="p-6">
               <h3 class="text-lg font-semibold mb-4">Next Actions</h3>
               <ul class="space-y-2">
-                {#each $nextActions as action}
+                {#each Array.isArray($nextActions) ? $nextActions : [] as action}
                   <li class="flex items-center">
                     <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
                     {action}
@@ -258,9 +235,7 @@
                 {/each}
               </ul>
             </div>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Evidence Tab -->
         {#if $activeTab === 'evidence'}
           <div class="space-y-4">
@@ -278,19 +253,18 @@
                 <Button class="bits-btn" onclick={triggerFileUpload}>Choose Files</Button>
               </div>
             </div>
-
             <!-- Evidence List -->
             {#if $evidence.length > 0}
               <div class="nes-container">
                 <div class="p-6">
                   <h3 class="text-lg font-semibold mb-4">Evidence Items</h3>
                   <div class="space-y-3">
-                    {#each evidence as item}
+                    {#each Array.isArray(evidence) ? evidence : [] as item}
                       <div class="border border-gray-200 rounded-lg p-4">
                         <div class="flex justify-between items-start">
                           <div>
-                            <h4 class="font-medium">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).title}</h4>
-                            <p class="text-sm text-gray-500">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).type}</p>
+                            <h4 class="font-medium">{(item as { title?: any; type?: any; aiSummary?: any }).title}</h4>
+                            <p class="text-sm text-gray-500">{(item as { title?: any; type?: any; aiSummary?: any }).type}</p>
                           </div>
                           <div class="flex gap-2">
                             <Button
@@ -311,20 +285,16 @@
                             </Button>
                           </div>
                         </div>
-                        {#if (item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}
+                        {#if (item as { title?: any; type?: any; aiSummary?: any }).aiSummary}
                           <div class="mt-3 p-3 bg-blue-50 rounded-md">
-                            <p class="text-sm">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).aiSummary}</p>
-                          </div>
-                        {/if}
+                            <p class="text-sm">{(item as { title?: any; type?: any; aiSummary?: any }).aiSummary}</p>
+                          {/if}
                       </div>
                     {/each}
                   </div>
                 </div>
-              </div>
-            {/if}
-          </div>
-        {/if}
-
+              {/if}
+          {/if}
         <!-- Analysis Tab -->
         {#if $activeTab === 'analysis'}
           <div class="space-y-4">
@@ -335,19 +305,16 @@
                   <Button class="bits-btn" onclick={handleStartAIAnalysis} disabled={!$canStartAIAnalysis}>Start AI Analysis</Button>
                   <Button class="bits-btn" variant="ghost" onclick={handleFindSimilarCases}>Find Similar Cases</Button>
                 </div>
-
                 {#if $aiSummary}
                   <div class="border border-gray-200 rounded-lg p-4">
                     <h4 class="font-medium mb-2">AI Summary</h4>
                     <p class="text-gray-700">{$aiSummary}</p>
-                  </div>
-                {/if}
-
+                  {/if}
                 {#if $similarCases.length > 0}
                   <div class="mt-6">
                     <h4 class="font-medium mb-3">Similar Cases</h4>
                     <div class="space-y-2">
-                      {#each similarCases as similarCase}
+                      {#each Array.isArray(similarCases) ? similarCases : [] as similarCase}
                         <div class="border border-gray-200 rounded-lg p-3 flex justify-between items-center">
                           <div>
                             <h5 class="font-medium">{similarCase.title}</h5>
@@ -364,13 +331,10 @@
                         </div>
                       {/each}
                     </div>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
-          </div>
-        {/if}
-
+          {/if}
         <!-- Search Tab -->
         {#if $activeTab === 'search'}
           <div class="nes-container">
@@ -385,12 +349,9 @@
                 <Button class="bits-btn">Search</Button>
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Debug Panel (development only) -->
   {#if import.meta.env.DEV}
     <div class="mt-8 bg-gray-50 nes-container">
@@ -404,10 +365,8 @@
           <p>AI Summary: {$aiSummary ? 'Available' : 'None'}</p>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .case-manager-xstate {
     min-height: 100vh;

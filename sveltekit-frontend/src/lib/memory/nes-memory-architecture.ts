@@ -222,7 +222,7 @@ export class NESMemoryArchitecture {
       (this.memoryState as any).vblankActive = true;
       this.performVBlankOperations();
       setTimeout(() => {
-        (this.memoryState as any).vblankActive = false;
+        (this.memoryState as any).vblankActive = $state(false);
       }, 1350); // VBlank period (~1.35ms)
       (this.memoryState as any).currentScanline = ((this.memoryState as any).currentScanline + 1) % 262;
     }, 16.67); // ~60 FPS

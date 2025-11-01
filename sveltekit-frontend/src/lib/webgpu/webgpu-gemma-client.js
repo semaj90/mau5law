@@ -4,10 +4,10 @@
  */
 class WebGPUGemmaClient {
   constructor() {
-    this.modelLoaded = false;
+    this.modelLoaded = $state(false);
     this.modelUrl = '/models/gemma3-270m-q4.wasm'; // Quantized 4-bit version
     this.modelSize = 100 * 1024 * 1024; // ~100MB quantized from 291MB base
-    this.isWebGPUAvailable = false;
+    this.isWebGPUAvailable = $state(false);
     this.device = null;
     this.adapter = null;
   }
@@ -29,7 +29,7 @@ class WebGPUGemmaClient {
       console.log('📊 GPU:', this.adapter.info || 'Unknown');
     } catch (error) {
       console.warn('⚠️  WebGPU failed, falling back to CPU:', error.message);
-      this.isWebGPUAvailable = false;
+      this.isWebGPUAvailable = $state(false);
     }
   }
   async loadModel() {
@@ -196,7 +196,7 @@ class WebGPUGemmaClient {
     if (this.modelLoaded) {
       console.log('🗑️ Unloading Gemma model from memory...');
       this.wasmModule = null;
-      this.modelLoaded = false;
+      this.modelLoaded = $state(false);
       // Trigger garbage collection if available
       if (window.gc) {
         window.gc();

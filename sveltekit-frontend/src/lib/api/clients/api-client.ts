@@ -1,10 +1,9 @@
 // Minimal API client stub to satisfy barrel exports; expand with real logic later.
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-
 export interface RequestOptions {
   headers?: Record<string, string>;
   query?: Record<string, string | number | boolean | undefined>;
-  body?: unknown;
+  body?: any;
   retry?: {
     attempts?: number; // total attempts including the first try
     backoffMs?: number; // base backoff in ms
@@ -12,7 +11,6 @@ export interface RequestOptions {
     timeoutMs?: number; // per-attempt timeout
   };
 }
-
 export async function apiFetch<T = unknown>(
   url: string,
   method: HttpMethod = 'GET',
@@ -32,7 +30,7 @@ export async function apiFetch<T = unknown>(
   const baseBackoff = Math.max(0, retry?.backoffMs ?? 0);
   const maxBackoff = Math.max(baseBackoff, retry?.maxBackoffMs ?? baseBackoff * 8);
   const timeoutMs = retry?.timeoutMs ?? 0;
-  let lastErr: unknown;
+  let lastErr: any;
   for (let i = 0; i < attempts; i++) {
     const controller = timeoutMs > 0 ? new AbortController() : undefined;
     const t = timeoutMs > 0 ? setTimeout(() => controller!.abort(), timeoutMs) : undefined;
@@ -55,7 +53,7 @@ export async function apiFetch<T = unknown>(
         });
       }
       return out;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Augment error with context (safe, non-enumerable)
       if (err && typeof err === 'object') {
         try {

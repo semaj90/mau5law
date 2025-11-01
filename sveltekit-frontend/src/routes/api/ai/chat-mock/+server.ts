@@ -38,7 +38,7 @@ import { services, generateChatResponse, searchSimilarDocuments } from '$lib/ser
  * Safe resolver for Ollama chat model name.
  * Tries several common keys and avoids direct property access that conflicts with the typed OllamaConfig.
  */
-function resolveOllamaChatModel(ollamaConfig: unknown): string | undefined {
+function resolveOllamaChatModel(ollamaConfig: any): string | undefined {
   // defensive: if config missing, return undefined
   if (!ollamaConfig) return undefined;
   const cfg = ollamaConfig as Record<string, unknown>;
@@ -67,7 +67,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
   // Normalize incoming request body with a narrow type so variables are typed and lints pass
   const body = await event.request.json().catch(() => ({}));
   type ChatRequestBody = {
-    message?: unknown;
+    message?: any;
     context?: Record<string, unknown> | null;
     stream?: boolean | null;
     useRAG?: boolean | null;

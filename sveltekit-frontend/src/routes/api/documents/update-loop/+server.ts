@@ -17,7 +17,7 @@ const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
 type BatchResultItem = {
   documentId: string;
   success: boolean;
-  result?: unknown;
+  result?: any;
   error?: string;
 };
 
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   ) / rerankingJobs.length // Added types for sum and job
                 : 0,
             jobs: rerankingJobs.map(
-              (job: { queryId: string; query?: string; improvement?: number; newResults?: unknown[] }) => ({
+              (job: { queryId: string; query?: string; improvement?: number; newResults?: any[] }) => ({
                 // Typed job
                 queryId: job.queryId,
                 query: (job.query || '').substring(0, 100) + '...',
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Changed from any to unknown
     console.error('❌ Document update loop error:', err);
     if (err instanceof Error && 'status' in err) {
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default:
         throw error(400, `Unknown action: ${action}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Changed from any to unknown
     console.error('❌ Update loop status error:', err);
     return json(
@@ -202,7 +202,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
               success: true,
               result,
             });
-          } catch (err: unknown) {
+          } catch (err: any) {
             // Changed from any to unknown
             batchResults.push({
               documentId,
@@ -236,7 +236,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       default:
         throw error(400, `Unknown batch action: ${action}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Changed from any to unknown
     console.error('❌ Batch operation error:', err);
     if (err instanceof Error && 'status' in err) {

@@ -7,17 +7,13 @@
     model?: string | null;
     error?: string | null;
   }
-
   // Proper Svelte 5 props destructuring
   let { isReady = false, isLoading = false, provider = null, model = null, error = null }: Props = $props();
-
   // Correct use of $derived.by for reactive derived values
   let currentStatus = $derived.by(() => (error ? 'error' : isLoading ? 'loading' : isReady ? 'ready' : 'unavailable'));
-
   let statusText = $derived.by(() =>
     ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error', unavailable: 'AI Unavailable' } as Record<string, string>)[currentStatus]
   );
-
   let statusColor = $derived.by(() =>
     ({
       ready: 'var(--status-success, #10b981)',
@@ -26,17 +22,14 @@
       unavailable: 'var(--status-muted, #94a3b8)'
     } as Record<string, string>)[currentStatus]
   );
-
   let providerText = $derived.by(() =>
     provider === 'local' ? 'Local AI' : provider === 'cloud' ? 'Cloud AI' : provider === 'hybrid' ? 'Hybrid AI' : 'No Provider'
   );
-
   let isErrorState = $derived.by(() => currentStatus === 'error');
   let isLoadingState = $derived.by(() => currentStatus === 'loading');
   let isReadyState = $derived.by(() => currentStatus === 'ready');
   let modelText = $derived.by(() => model || 'No Model');
 </script>
-
 <div
   class="ai-status-indicator"
   class:error={isErrorState}
@@ -70,11 +63,9 @@
       </svg>
     {/if}
   </div>
-
   <!-- Status Text -->
   <div class="status-details">
     <div class="status-text" style="color: {statusColor}">{statusText}</div>
-
     {#if isReady && provider && model}
       <div class="provider-info">
         <span class="provider" class:local={provider === 'local'}>{providerText}</span>
@@ -84,10 +75,8 @@
     {:else if error}
       <div class="error-text" title={error}>
         {error.length > 50 ? error.substring(0, 50) + '...' : error}
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Detailed Tooltip -->
   <div class="status-tooltip" aria-hidden="true">
     <div class="tooltip-content">
@@ -103,14 +92,12 @@
         <div class="tooltip-section">
           <strong>Model:</strong>
           <span class="model">{model}</span>
-        </div>
-      {/if}
+        {/if}
       {#if error}
         <div class="tooltip-section error">
           <strong>Error:</strong>
           <small>{error}</small>
-        </div>
-      {/if}
+        {/if}
       <div class="tooltip-section">
         <small>
           {#if currentStatus === 'ready'}
@@ -127,7 +114,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* core */
   .ai-status-indicator {
@@ -144,7 +130,6 @@
   .ai-status-indicator:hover {
     background: var(--bg-hover, rgba(0, 0, 0, 0.03));
   }
-
   .status-icon {
     display: flex;
     align-items: center;
@@ -153,22 +138,18 @@
     width: 20px;
     height: 20px;
   }
-
   .spinner {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-
   .status-details {
     display: flex;
     flex-direction: column;
     gap: 2px;
     min-width: 0;
   }
-
   .status-text {
     font-weight: 600;
     line-height: 1.2;
@@ -176,7 +157,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   .provider-info {
     display: flex;
     align-items: center;
@@ -184,20 +164,16 @@
     font-size: 0.75rem;
     color: var(--text-secondary, #64748b);
   }
-
   .provider {
     font-weight: 500;
   }
-
   .provider.local {
     color: var(--text-success, #059669);
   }
-
   .separator {
     color: var(--text-muted, #94a3b8);
     line-height: 1;
   }
-
   .model {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
     background: var(--bg-muted, #f1f5f9);
@@ -206,7 +182,6 @@
     color: var(--text-primary, #1e293b);
     font-size: 0.75rem;
   }
-
   .error-text {
     font-size: 0.75rem;
     color: var(--status-error, #ef4444);
@@ -216,7 +191,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   .status-tooltip {
     position: absolute;
     bottom: 100%;
@@ -236,14 +210,12 @@
     min-width: 200px;
     pointer-events: none;
   }
-
   .ai-status-indicator:hover .status-tooltip {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
     pointer-events: auto;
   }
-
   .status-tooltip::after {
     content: '';
     position: absolute;
@@ -253,36 +225,30 @@
     border: 6px solid transparent;
     border-top-color: var(--bg-tooltip, #1e293b);
   }
-
   .tooltip-content {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
-
   .tooltip-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
   }
-
   .tooltip-section.error {
     color: var(--status-error, #fca5a5);
   }
-
   .tooltip-section strong {
     color: var(--text-primary-inverse, #f8fafc);
     margin-right: 8px;
   }
-
   .tooltip-section small {
     font-style: italic;
     opacity: 0.9;
     white-space: normal;
     max-width: 180px;
   }
-
   /* Dark mode adjustments */
   @media (prefers-color-scheme: dark) {
     .ai-status-indicator:hover {
@@ -300,7 +266,6 @@
       border-top-color: var(--bg-tooltip, #0f172a);
     }
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .ai-status-indicator { padding: 4px 8px; font-size: 0.8125rem; }
@@ -310,6 +275,3 @@
     .provider-info { gap: 4px; }
   }
 </style>
-
-
-

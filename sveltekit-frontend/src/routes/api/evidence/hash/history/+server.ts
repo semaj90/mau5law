@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error recording hash verification:', error);
     const details = error instanceof Error ? error.message : String(error);
     return json({ error: 'Failed to record verification', details }, { status: 500 });
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const verifications = await filteredQuery.orderBy(desc(hashVerifications.verifiedAt)).limit(limit).offset(offset);
 
     return json(verifications, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching hash verification history:', error);
     const details = error instanceof Error ? error.message : String(error);
     return json({ error: 'Failed to fetch verification history', details }, { status: 500 });

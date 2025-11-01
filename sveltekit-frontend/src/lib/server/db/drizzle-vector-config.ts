@@ -19,7 +19,7 @@ const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
     return `vector(${config?.dimensions || 512})`;
   },
-  toDriver(value: unknown): unknown {
+  toDriver(value: any): any {
     // Accept arrays of numbers or stringified vectors like: "[1,2,3]".
     if (value == null) return null;
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) {
@@ -47,7 +47,7 @@ const vector = customType({
     }
     throw new Error('Invalid vector value: expected number[] or vector string like: "[1,2,...]"');
   },
-  fromDriver(value: unknown): unknown {
+  fromDriver(value: any): any {
     if (value == null) return [];
     if (Array.isArray(value) && value.every(n => typeof n === 'number')) return value;
     const s = String(value).trim();
@@ -73,7 +73,6 @@ const vector = customType({
     return parts;
   },
 });
-
 // Case memories table for context-aware AI memory
 export const caseMemories = pgTable('case_memories', {
   id: serial('id').primaryKey(),
@@ -416,15 +415,13 @@ export type NewUser = typeof users.$inferInsert;
 export type NewCase = typeof cases.$inferInsert;
 export type NewDocument = typeof documents.$inferInsert;
 export type NewEvidence = typeof evidence.$inferInsert;
-
 export interface HealthStatus {
   status: 'healthy' | 'unhealthy';
   timestamp: string;
   connection: 'active' | 'failed';
-  result?: unknown;
+  result?: any;
   error?: string;
 }
-
 // Health check function
 export async function healthCheck(): Promise<HealthStatus> {
   try {
@@ -435,7 +432,7 @@ export async function healthCheck(): Promise<HealthStatus> {
       connection: 'active',
       result: result[0],
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),

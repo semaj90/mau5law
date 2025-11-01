@@ -74,7 +74,7 @@ type QueryResultItem = {
   snippet?: string;
   source?: string;
   metadata?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type DocumentEntitySummary = {
@@ -177,7 +177,7 @@ export interface AIAnalysisCache {
   contentHash: string;
   analysisType: 'summary' | 'entities' | 'risk' | 'classification' | 'similarity';
   input: string;
-  result: unknown; // was any
+  result: any; // was any
   model: string;
   confidence: number;
   processingTime: number;

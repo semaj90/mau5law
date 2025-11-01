@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'connected',
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('AI connection error:', err);
     // If this is a SvelteKit HttpError rethrow it
     if (err && typeof err === 'object' && 'status' in err) {

@@ -86,7 +86,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Track stage completion within a request
    */
-  trackStage(requestId: string, stage: string, duration: number, metadata?: unknown): void {
+  trackStage(requestId: string, stage: string, duration: number, metadata?: any): void {
     const request = this.requestTracking.get(requestId);
     if (request) {
       request.stages.set(stage, {
@@ -175,7 +175,7 @@ class MonitoringService extends EventEmitter {
     const request = this.requestTracking.get(data.requestId);
     if (request) {
       request.endTime = Date.now();
-      request.success = false;
+      request.success = $state(false);
       request.error = data.error;
       this.emit('request:error', request);
     }
@@ -201,7 +201,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Get current statistics
    */
-  getStats(): unknown {
+  getStats(): any {
     const cacheHitRate =
       this.counters.cacheHits / (this.counters.cacheHits + this.counters.cacheMisses) || 0;
     const successRate = this.counters.successfulRequests / this.counters.totalRequests || 0;
@@ -232,7 +232,7 @@ class MonitoringService extends EventEmitter {
   /**
    * Get detailed metrics for analysis
    */
-  getDetailedMetrics(timeRange?: { start: Date; end: Date }): unknown {
+  getDetailedMetrics(timeRange?: { start: Date; end: Date }): any {
     const metrics = {}
     for (const [name, values] of this.metrics) {
       if (values.length > 0) {

@@ -31,7 +31,7 @@ interface OCRResult {
 
 export class OCRIntegrationService {
   private tensorProcessor?: OCRTensorProcessor;
-  private initialized = false;
+  private initialized = $state(false);
   private workerPool: Worker[] = [];
   private activeJobs = new Map<string, { resolve: Function; reject: Function; startTime: number }>();
 

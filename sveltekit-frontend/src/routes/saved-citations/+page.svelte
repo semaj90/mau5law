@@ -1,7 +1,7 @@
 <script module lang="ts">
 // Enable SSR for this page (SvelteKit 2) and control prerender behavior
 export const ssr = true;
-export const prerender = false; // adjust if this page should be prerendered
+export const prerender = $state(false); // adjust if this page should be prerendered
 
 // Minimal typed wrapper for page data — extend as your load() returns more fields
 export interface PageData {
@@ -183,7 +183,7 @@ import '$lib/styles/bits-ui.css';
         tags: '',
         notes: '',
       };
-      showAddDialog = false;
+      showAddDialog = $state(false);
     } catch (error) {
       console.error('Error saving citation', error);
     }
@@ -287,7 +287,7 @@ import '$lib/styles/bits-ui.css';
     <div class="mb-4 p-3 border rounded bg-white/5">
       <h2 class="text-sm font-semibold">📡 Live Report Updates</h2>
       <ul>
-        {#each $liveReports.slice(0,5) as update}
+        {#each Array.isArray($liveReports.slice(0,5)) ? $liveReports.slice(0,5) : [] as update}
           <li class="text-xs">
             <strong>{update.title}</strong>
             <div class="text-muted">{update.updatedAt}</div>
@@ -323,7 +323,7 @@ import '$lib/styles/bits-ui.css';
         class="pl-8 w-full" /> <!-- Add pl-8 for icon padding -->
     </div>
     <select bind:value={selectedCategory} class="p-2 border rounded"> <!-- Clean up select styling -->
-      {#each categories as category}
+      {#each Array.isArray(categories) ? categories : [] as category}
         <option value={category.value}>{category.label}</option>
       {/each}
     </select>
@@ -418,7 +418,7 @@ import '$lib/styles/bits-ui.css';
           {/if}
           {#if citation.tags.length > 0}
             <div class="flex flex-wrap gap-2"> <!-- Use flex-wrap and gap for tags -->
-              {#each citation.tags as tag}
+              {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
                 <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
                   <span class="w-3 h-3 mr-1">{ICON.tag}</span>
                   {tag}
@@ -520,7 +520,7 @@ import '$lib/styles/bits-ui.css';
             <div class="grid gap-2">
               <label for="category" class="text-sm font-medium">Category</label>
               <select id="category" bind:value={newCitation.category} class="p-2 border rounded">
-                {#each categories.slice(1) as category}
+                {#each Array.isArray(categories.slice(1)) ? categories.slice(1) : [] as category}
                   <option value={category.value}>{category.label}</option>
                 {/each}
               </select>
@@ -603,7 +603,7 @@ import '$lib/styles/bits-ui.css';
               <div class="grid gap-2">
                 <label for="edit-category" class="text-sm font-medium">Category</label>
                 <select id="edit-category" bind:value={editingCitation.category} class="p-2 border rounded">
-                  {#each categories.slice(1) as category}
+                  {#each Array.isArray(categories.slice(1)) ? categories.slice(1) : [] as category}
                     <option value={category.value}>{category.label}</option>
                   {/each}
                 </select>

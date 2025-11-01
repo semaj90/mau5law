@@ -1,7 +1,7 @@
 <script lang="ts">
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
-  import { Button } from '$lib/components/ui/core';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Button } from '$lib/components/ui/core.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
 
   interface ChatMessage {
     id: string;
@@ -94,7 +94,7 @@
         messages = messages.slice(0, -1);
       }
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
     }
   }
 
@@ -140,7 +140,7 @@
   <div class="quick-actions">
     <h2>⚡ Quick Legal Queries</h2>
     <div class="quick-buttons">
-      {#each quickQueries as query}
+      {#each Array.isArray(quickQueries) ? quickQueries : [] as query}
         <Button onclick={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
           {query}
         </Button>
@@ -156,7 +156,7 @@
       </CardHeader>
       <CardContent>
         <div class="messages-container">
-          {#each messages as message}
+          {#each Array.isArray(messages) ? messages : [] as message}
             <div class="message {message.role}">
               <div class="message-icon">
                 {message.role === 'user' ? '👤' : '🤖'}

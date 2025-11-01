@@ -8,13 +8,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as unknown;
     const file =
-      typeof body === 'object' && body !== null && 'file' in body ? (body as { file?: unknown }).file : undefined;
+      typeof body === 'object' && body !== null && 'file' in body ? (body as { file?: any }).file : undefined;
     const content =
       typeof body === 'object' && body !== null && 'content' in body
-        ? (body as { content?: unknown }).content
+        ? (body as { content?: any }).content
         : undefined;
     const backup =
-      typeof body === 'object' && body !== null && 'backup' in body ? (body as { backup?: unknown }).backup : undefined;
+      typeof body === 'object' && body !== null && 'backup' in body ? (body as { backup?: any }).backup : undefined;
 
     if (!file || content === undefined || typeof file !== 'string') {
       return json({ error: 'File path and content are required' }, { status: 400 });
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
     console.error('File write error:', details);
     return json({ error: 'Failed to write file', details }, { status: 500 });

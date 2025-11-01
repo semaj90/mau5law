@@ -3,7 +3,7 @@
 
 // Define minimal interfaces for services we call so we avoid `any`.
 interface AutoGenService {
-	executeLegalWorkflow?: (workflow: string, prompt: string, context?: unknown) => Promise<unknown>;
+	executeLegalWorkflow?: (workflow: string, prompt: string, context?: any) => Promise<unknown>;
 }
 interface LegalTeam {
 	analyzeCase?: (opts: { query: string; analysisType?: string; priority?: string }) => Promise<unknown>;
@@ -35,11 +35,11 @@ try {
 // --- Agent Orchestration Types ---
 export interface AgentResult {
   agent: string;
-  result: unknown;
+  result: any;
 }
 export interface MCPContextAnalysis {
   query: string;
-  context: unknown;
+  context: any;
   suggestions: string[];
   confidence: number;
 }
@@ -52,18 +52,18 @@ export interface AutoMCPSuggestion {
 }
 
 // Add small typed shapes so agentResults is not unknown
-export type AgentOutcome = { agent: string; result?: unknown; error?: string };
+export type AgentOutcome = { agent: string; result?: any; error?: string };
 export type OrchestratorResults = Record<string, unknown> & {
   agentResults?: AgentOutcome[];
-  errorLog?: unknown;
-  criticalErrors?: unknown;
-  synthesized?: unknown;
-  bestPractices?: unknown;
+  errorLog?: any;
+  criticalErrors?: any;
+  synthesized?: any;
+  bestPractices?: any;
   selfPrompt?: string;
 };
 
 // --- Agent Registry for Extensible Orchestration ---
-const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promise<AgentResult>> = {
+const agentRegistry: Record<string, (prompt: string, context?: any) => Promise<AgentResult>> = {
   autogen: async (prompt, context) => {
     try {
       // guard the service before invoking to avoid: "possibly undefined" errors
@@ -78,7 +78,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
           result: `AutoGen agent (mock): Analyzed: "${prompt}" - would provide legal research workflow results`,
         };
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       return {
         agent: 'autogen',
@@ -101,7 +101,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
       } else {
         throw new Error(`CrewAI legal team not available for prompt: ${prompt}`);
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       return {
         agent: 'crewai',
@@ -128,7 +128,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
         agent: 'copilot',
         result: data.response ?? `Copilot analysis for: ${prompt}`,
       };
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       return {
         agent: 'copilot',
         result: `Copilot agent (mock): Code analysis for: "${prompt}" - would provide coding suggestions and optimizations`,
@@ -153,7 +153,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
         agent: 'claude',
         result: data.response ?? `Claude legal analysis for: ${prompt}`,
       };
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       return {
         agent: 'claude',
         result: `Claude agent (mock): Legal analysis for: "${prompt}" - would provide detailed legal insights and case analysis`,
@@ -179,7 +179,7 @@ const agentRegistry: Record<string, (prompt: string, context?: unknown) => Promi
         agent: 'rag',
         result: data.result ?? `RAG analysis for: ${prompt}`,
       };
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       return {
         agent: 'rag',
         result: `RAG agent (mock): Enhanced retrieval for: "${prompt}" - would provide context-aware document analysis`,
@@ -227,7 +227,7 @@ export async function copilotOrchestrator(
           const agentResult = await agentRegistry[agent](prompt, options.context);
           // Normalize into AgentOutcome shape
           results.agentResults.push({ agent: agentResult.agent, result: agentResult.result });
-        } catch (err: unknown) {
+        } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
           results.agentResults.push({ agent, error: msg });
         }
@@ -293,7 +293,7 @@ export interface MCPToolRequest {
 }
 export interface MCPResponse {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
 }
 /**
@@ -307,7 +307,7 @@ export interface OrchestrationOptions {
   directoryPath?: string;
   useMultiAgent?: boolean;
   agents?: string[];
-  context?: unknown;
+  context?: any;
   logErrors?: boolean;
   synthesizeOutputs?: boolean;
 }
@@ -597,13 +597,13 @@ export const commonMCPQueries = {
 /**
  * Format MCP response for display
  */
-export function formatMCPResponse(response: unknown): string {
+export function formatMCPResponse(response: any): string {
   if (typeof response === 'string') {
     return response;
   }
 
   if (isRecord(response) && 'content' in response && response.content !== undefined) {
-    const content = (response as { content?: unknown }).content;
+    const content = (response as { content?: any }).content;
     if (Array.isArray(content)) {
       return content.map(formatContentItem).join('\n');
     }
@@ -618,11 +618,11 @@ export function formatMCPResponse(response: unknown): string {
 }
 
 /* Helper type guards and formatters (no `any`) */
-function isRecord(value: unknown): value is Record<string, unknown> {
+function isRecord(value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-function formatContentItem(item: unknown): string {
+function formatContentItem(item: any): string {
   if (typeof item === 'string') return item;
 
   if (isRecord(item)) {
@@ -688,9 +688,9 @@ export async function semanticSearch(query: string): Promise<unknown[]> {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    const data = (await response.json()) as { results?: unknown[] } | undefined;
+    const data = (await response.json()) as { results?: any[] } | undefined;
     return data?.results ?? [];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('semanticSearch error:', msg);
     return [{ error: msg } as unknown];
@@ -706,7 +706,7 @@ export async function mcpMemoryReadGraph(): Promise<unknown[]> {
         value: 'Context7 memory graph integration ready',
       },
     ];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [{ error: msg } as unknown];
   }
@@ -726,7 +726,7 @@ export async function mcpCodebaseAnalyze(prompt: string): Promise<unknown[]> {
         ],
       },
     ];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [{ error: msg } as unknown];
   }
@@ -735,7 +735,7 @@ export async function mcpCodebaseAnalyze(prompt: string): Promise<unknown[]> {
 export async function getChangedFiles(): Promise<string[]> {
   try {
     return ['file1.ts', 'file2.svelte'];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [msg];
   }
@@ -744,14 +744,14 @@ export async function getChangedFiles(): Promise<string[]> {
 export async function mcpReadDirectory(path: string): Promise<string[]> {
   try {
     return [`Read directory: ${path}`];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [msg];
   }
 }
 // Production: Autogen agent orchestration (stub, replace with real API integration if available)
 // const autogenServiceFallback = {
-//   async runAgents(prompt: string, context?: unknown) {
+//   async runAgents(prompt: string, context?: any) {
 //     // TODO: Replace with real Autogen API call
 //     return { agent: "autogen", result: `AutoGen agent result for: ${prompt}` }
 //   }
@@ -768,13 +768,13 @@ export async function mcpReadErrorLog(): Promise<unknown[]> {
   try {
     // simple stubbed error log; replace with real MCP read in production
     return [{ id: 'err-1', message: 'Sample error from MCP', severity: 'low', timestamp: new Date().toISOString() }];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [{ error: msg }];
   }
 }
 
-export async function mcpRankErrors(errorLog: unknown): Promise<unknown[]> {
+export async function mcpRankErrors(errorLog: any): Promise<unknown[]> {
   try {
     // If errorLog is an array, perform a simple severity-based sort
     if (Array.isArray(errorLog)) {
@@ -785,13 +785,13 @@ export async function mcpRankErrors(errorLog: unknown): Promise<unknown[]> {
       return ranked;
     }
     return [errorLog];
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [{ error: msg }];
   }
 }
 
-export function synthesizeLLMOutputs(results: unknown): string {
+export function synthesizeLLMOutputs(results: any): string {
   try {
     const r = results as Record<string, unknown>;
     const parts: string[] = [];
@@ -810,7 +810,7 @@ export function synthesizeLLMOutputs(results: unknown): string {
   }
 }
 
-export async function mcpSuggestBestPractices(results: unknown): Promise<AutoMCPSuggestion[]> {
+export async function mcpSuggestBestPractices(results: any): Promise<AutoMCPSuggestion[]> {
   try {
     const r = results as Record<string, unknown>;
     const suggestions: AutoMCPSuggestion[] = [];
@@ -842,7 +842,7 @@ export async function mcpSuggestBestPractices(results: unknown): Promise<AutoMCP
       });
     }
     return suggestions;
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return [
       {

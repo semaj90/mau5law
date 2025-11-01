@@ -71,7 +71,7 @@ export interface WASMRabbitMQMessage {
   wasmProcessed?: boolean;
   processingResult?: {
     success: boolean;
-    data: unknown;
+    data: any;
     processingTime: number;
   };
 }
@@ -113,7 +113,7 @@ export declare class WASMError extends Error {
   constructor(
     message: string,
     code: 'INSTANTIATION_FAILED' | 'MEMORY_ERROR' | 'PROCESSING_ERROR' | 'INVALID_INPUT',
-    details?: unknown
+    details?: any
   );
 }
 // WASM module loader utility type

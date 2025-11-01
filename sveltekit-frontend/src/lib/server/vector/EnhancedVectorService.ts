@@ -13,7 +13,7 @@ import { db } from '../db.js';
 
 interface DocumentMetadata {
   // Allow arbitrary properties for metadata but avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // New interfaces for better type safety
@@ -34,7 +34,7 @@ interface KeywordSearchResult {
 interface QdrantPayload {
   content: string;
   // Allow arbitrary metadata properties but avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface QdrantVectorSearchResult {
@@ -44,7 +44,7 @@ interface QdrantVectorSearchResult {
   vector?: number[]; // Qdrant may return the vector if requested
   version?: number; // Qdrant may include a version field
   // Use unknown instead of any for score explanation
-  scoreExplanation?: unknown;
+  scoreExplanation?: any;
 } // Corrected closing brace for QdrantVectorSearchResult
 
 // Represents a unified result from both vector and keyword search, including document metadata and content.
@@ -82,7 +82,7 @@ export class EnhancedVectorService {
         // Using createFieldIndex instead or commenting out until verified
         // await this.qdrant.createPayloadIndex(this.collectionName, "type")
         console.log('Payload index creation skipped - method not available in current client');
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.log('Index creation skipped due to API compatibility');
       }
     }
@@ -114,7 +114,7 @@ export class EnhancedVectorService {
       }
       const result = await response.json();
       embedding = result.embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Added type for error
       console.warn(
         `Failed to generate embedding with embeddinggemma:latest, falling back to nomic-embed-text. Error: ${error}`
@@ -231,7 +231,7 @@ export class EnhancedVectorService {
         }
       }
       return { qdrant: true, redis: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       return { qdrant: false, redis: false, error: errorMessage };
     }

@@ -31,7 +31,7 @@ export interface EmbeddingOutput {
 export interface EmbeddingError {
   message: string;
   code: 'OLLAMA_UNAVAILABLE' | 'TIMEOUT' | 'INVALID_INPUT' | 'MODEL_ERROR';
-  details?: unknown;
+  details?: any;
 }
 /**
  * XState v5 actor for generating embeddings with legal context
@@ -73,13 +73,12 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
         timestamp: new Date(),
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Map different error types to structured errors
     if (typeof error === 'object' && error !== null && 'code' in error) {
       // If it's already a structured EmbeddingError, re-throw it
       throw error as EmbeddingError;
     }
-
     if (error instanceof Error) {
       if (error.message?.includes('fetch')) {
         throw {
@@ -103,7 +102,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingIn
     }
     // Fallback for completely unknown error types
     throw {
-      message: `Embedding generation failed: Unknown error type`,
+      message: `Embedding generation failed: any error type`,
       code: 'MODEL_ERROR',
       details: error,
     } as EmbeddingError;
@@ -131,7 +130,7 @@ export const batchEmbeddingActor = fromPromise(
         results.push(...(batchResults.filter(Boolean) as EmbeddingOutput[]));
       }
       return results;
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error) {
         throw {
           message: `Batch embedding failed: ${error.message || 'Unknown error'}`,
@@ -140,7 +139,7 @@ export const batchEmbeddingActor = fromPromise(
         } as EmbeddingError;
       }
       throw {
-        message: `Batch embedding failed: Unknown error type`,
+        message: `Batch embedding failed: any error type`,
         code: 'MODEL_ERROR',
         details: error,
       } as EmbeddingError;

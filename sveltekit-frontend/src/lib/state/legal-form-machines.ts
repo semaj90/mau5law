@@ -110,15 +110,15 @@ export interface UploadedFile {
   id: string;
   filename: string;
   url: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Placeholder for AI processing results
 export interface AIResults {
   summary?: string;
   entities?: { type: string; value: string }[];
   riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
-  comparison?: unknown; // Add comparison property here
-  [key: string]: unknown;
+  comparison?: any; // Add comparison property here
+  [key: string]: any;
 }
 // Placeholder for a created case from the API
 export interface CreatedCase extends z.infer<typeof CaseCreationSchema> {
@@ -133,7 +133,7 @@ export interface SearchResult {
   documentType: string;
   snippet: string;
   score: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // Placeholder for AI analysis results
 export interface AIAnalysisResult {
@@ -141,7 +141,7 @@ export interface AIAnalysisResult {
   entities?: { type: string; value: string }[];
   risk?: { level: string; details: string };
   recommendations?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Define the input type for the processDocument actor
@@ -357,7 +357,7 @@ export const documentUploadMachine = createMachine(
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
-                  return String((err as { message: unknown }).message);
+                  return String((err as { message: any }).message);
                 return String(err ?? 'Processing error');
               },
             }),
@@ -484,7 +484,7 @@ export const documentUploadMachine = createMachine(
           }
 
           // 2) Agentic compare with Qdrant via new endpoint
-          let comparison: unknown = null; // Changed from 'any' to: 'unknown'
+          let comparison: any = null; // Changed from 'any' to: 'unknown'
           try {
             if (input?.options?.compareWithRAG) {
               // Now: 'input.options' is correctly typed
@@ -675,7 +675,7 @@ export const caseCreationMachine = createMachine(
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
-                  return String((err as { message: unknown }).message);
+                  return String((err as { message: any }).message);
                 return 'An unknown error occurred';
               },
             }),
@@ -859,7 +859,7 @@ export const searchMachine = createMachine(
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
-                  return String((err as { message: unknown }).message);
+                  return String((err as { message: any }).message);
                 return String(err ?? 'Search error');
               },
             }),
@@ -1095,7 +1095,7 @@ export const aiAnalysisMachine = createMachine(
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
-                  return String((err as { message: unknown }).message);
+                  return String((err as { message: any }).message);
                 return 'Analysis failed with an unknown error';
               },
             }),

@@ -3,26 +3,21 @@
   // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps
   import { cn } from '$lib/utils.js';
   import type { Snippet } from 'svelte';
-
   // Minimal, permissive props shape used at runtime by the dropdown creator.
   type Props = {
     // arbitrary runtime props that the bits-ui factory may accept
-    [key: string]: unknown;
+    [key: string]: any;
     class?: string;
     // Svelte 5 snippet for rendering children
     children?: Snippet;
   };
-
   let { class: className, children, ...props }: Props = $props();
-
   $effect(() => {
     console.log('Dropdown menu props changed:', props);
   });
-
   let trigger: any = $state(null);
   let menu: any = $state(null);
   let open: any = $state(false);
-
   (async () => {
     const ns = await getBitsNamespace();
     const factory = ns.createDropdownMenu ?? ns.DropdownMenu?.create ?? ns.DropdownMenu ?? null;
@@ -38,7 +33,6 @@
     }
   })();
 </script>
-
 <button use:trigger {...$trigger} class={cn(className)}>
   {#if children}
     {@render children()}
@@ -46,13 +40,11 @@
     Open Menu
   {/if}
 </button>
-
 <div class={cn(className)}>
   {#if $open}
     <div use:menu>
       {#if children}
         {@render children()}
       {/if}
-    </div>
-  {/if}
+    {/if}
 </div>

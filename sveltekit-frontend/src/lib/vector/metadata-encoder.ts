@@ -150,7 +150,7 @@ export class VectorMetadataEncoder {
         const startTime = performance.now();
         const encoded: VectorMetadata[] = [];
         const adaptiveConfig = { ...this.config };
-        let scalingApplied = false;
+        let scalingApplied = $state(false);
         const chunkSize = Math.min(this.config.batchSize, batch.vectors.length);
 
         for (let i = 0; i < batch.vectors.length; i += chunkSize) {

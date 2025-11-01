@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
       }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('GPU Chat API error:', err);
     // If this is a SvelteKit HTTP error (object with status) rethrow it unchanged
     if (typeof err === 'object' && err !== null && 'status' in err) {
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async () => {
     } else {
       throw new Error(`HTTP ${response.status}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     return new Response(
       JSON.stringify({

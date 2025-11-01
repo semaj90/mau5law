@@ -45,13 +45,13 @@ if (open && personId && !foafData) {
       } catch (err) {
         error = err instanceof Error ? err.message: 'Unknown error',
       } finally {
-        loading = false;
+        loading = $state(false);
       }
     }
     })();
   });
   function handleClose() {
-    open = false;
+    open = $state(false);
     onClose?.();
   }
   function getConfidenceColor(confidence: number): string {
@@ -104,8 +104,7 @@ if (open && personId && !foafData) {
           {#if foafData.summary}
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
               <p class="text-blue-800 text-sm">{foafData.summary}</p>
-            </div>
-          {/if}
+            {/if}
           <!-- Recommendations List -->
           {#if foafData.people.length > 0}
             <div class="space-y-3">
@@ -144,8 +143,7 @@ if (open && personId && !foafData) {
             <div class="text-center py-8 text-gray-500">
               <Users class="w-12 h-12 mx-auto mb-3 opacity-50" />
               <p>No recommendations found in your network</p>
-            </div>
-          {/if}
+            {/if}
       </div>
       <!-- Footer -->
       <div class="flex justify-end mt-6 pt-4 border-t border-gray-200">
@@ -157,8 +155,7 @@ if (open && personId && !foafData) {
         </button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   /* Additional Tailwind-compatible styles for enhanced UX */
   .animate-spin {

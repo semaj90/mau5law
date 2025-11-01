@@ -15,7 +15,7 @@ interface RedisConnectionState {
 }
 interface RedisMessage {
   channel: string;
-  data: unknown; // changed from any -> unknown
+  data: any; // changed from any -> unknown
   timestamp: number;
   userId?: string;
 }
@@ -132,7 +132,7 @@ class RedisStateStore {
   setError(error: string | null): void {
     this.state.lastError = error;
     if (error) {
-      this.state.isConnected = false;
+      this.state.isConnected = $state(false);
     }
   }
   setClientCount(count: number): void {
@@ -148,7 +148,7 @@ class RedisStateStore {
     this.state.activeChannels = newChannels;
   }
   // Message handling
-  addMessage(channel: string, data: unknown, userId?: string): void {
+  addMessage(channel: string, data: any, userId?: string): void {
     // data typed as unknown
     const message: RedisMessage = {
       channel,
@@ -215,7 +215,7 @@ export function useRedisState() {
   };
 }
 // Integration helper for existing Redis service
-export function createRedisStateIntegration(_redisService?: unknown) {
+export function createRedisStateIntegration(_redisService?: any) {
   // renamed and typed to avoid unused/any
   return {
     // Call these methods from your existing Redis service
@@ -230,7 +230,7 @@ export function createRedisStateIntegration(_redisService?: unknown) {
       redisStateStore.setError(error.message);
       redisStateStore.incrementConnectionAttempts();
     },
-    onMessage: (channel: string, data: unknown, userId?: string) => {
+    onMessage: (channel: string, data: any, userId?: string) => {
       // data typed as unknown
       // forward raw payload (unknown) to the store; store keeps it as unknown
       redisStateStore.addMessage(channel, data, userId);

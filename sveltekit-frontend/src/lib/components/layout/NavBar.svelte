@@ -4,26 +4,21 @@
   import { page } from '$app/stores';
   import { toastStore } from '$lib/stores/toast';
   import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
-
   interface User {
     name?: string;
     email?: string;
     avatar?: string;
     role?: string;
   }
-
   interface Props {
     user: User | null;
     sidebarOpen?: boolean;
     onToggleSidebar?: () => void;
   }
-
   let { user, sidebarOpen = false, onToggleSidebar }: Props = $props();
-
   // Gaming theme state
   let selectedTheme = $state<ConsolePaletteName>('legal');
   let showThemeDropdown = $state(false);
-
   // Reactive values
   let isAuthenticated = $derived(!!user);
   let currentRoute = $derived($page.url.pathname);
@@ -37,19 +32,16 @@
       return () => clearTimeout(t);
     }
   });
-
   // Theme switching logic
   function switchTheme(theme: ConsolePaletteName) {
     selectedTheme = theme;
     applyConsolePalette(theme);
-    showThemeDropdown = false;
-
+    showThemeDropdown = $state(false);
     // Store in localStorage
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('legal-ai-theme', theme);
     }
   }
-
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
@@ -60,11 +52,9 @@
       }
     }
   });
-
   function handleNavigation(path: string) {
     goto(path);
   }
-
   async function handleLogout() {
     try {
       // Call the logout endpoint to invalidate session
@@ -83,7 +73,6 @@
     }
   }
 </script>
-
 <nav class="navbar">
   <div class="nav-container">
     <!-- Left section Logo + Sidebar Toggle -->
@@ -97,7 +86,6 @@
           </span>
         </button>
       {/if}
-
       <div class="logo">
         <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
           <span class="logo-icon">🎮</span>
@@ -105,7 +93,6 @@
         </button>
       </div>
     </div>
-
     <!-- Center section Main Navigation (if authenticated) -->
     {#if isAuthenticated}
       <div class="nav-center">
@@ -115,9 +102,7 @@
         {#if isAdmin}
           <a href="/admin" class="nav-link admin-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
         {/if}
-      </div>
-    {/if}
-
+      {/if}
     <!-- Right section Theme + User Menu -->
     <div class="nav-right">
       <!-- Gaming Theme Selector -->
@@ -131,7 +116,6 @@
           <span class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
           <span class="dropdown-arrow" class:open={showThemeDropdown}>▼</span>
         </button>
-
         {#if showThemeDropdown}
           <div class="theme-dropdown">
             {#each Object.entries(CONSOLE_PALETTES) as [key, palette]}
@@ -150,10 +134,8 @@
                 {/if}
               </button>
             {/each}
-          </div>
-        {/if}
+          {/if}
       </div>
-
       <!-- User Menu -->
       {#if isAuthenticated && user}
         {#if showSignInBadge}
@@ -196,12 +178,10 @@
         <div class="auth-buttons">
           <button class="login-btn" onclick={() => goto('/login')}> Login </button>
           <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </nav>
-
 <style>
   .navbar {
     position: sticky;
@@ -211,7 +191,6 @@
     border-bottom: 2px solid var(--console-primary, #00aa00);
     backdrop-filter: blur(10px);
   }
-
   .nav-container {
     display: flex;
     align-items: center;
@@ -220,13 +199,11 @@
     max-width: 1400px;
     margin: 0 auto;
   }
-
   .nav-left {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .sidebar-toggle {
     display: flex;
     align-items: center;
@@ -239,11 +216,9 @@
     border-radius: 4px;
     transition: background 0.2s;
   }
-
   .sidebar-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-
   .hamburger {
     display: flex;
     flex-direction: column;
@@ -251,7 +226,6 @@
     height: 16px;
     position: relative;
   }
-
   .hamburger span {
     display: block;
     height: 2px;
@@ -261,19 +235,15 @@
     transition: 0.3s;
     transform-origin: center;
   }
-
   .hamburger.open span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
   }
-
   .hamburger.open span:nth-child(2) {
     opacity: 0;
   }
-
   .hamburger.open span:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -6px);
   }
-
   .logo-btn {
     display: flex;
     align-items: center;
@@ -288,22 +258,18 @@
     border-radius: 6px;
     transition: all 0.2s;
   }
-
   .logo-btn:hover {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .logo-icon {
     font-size: 1.5rem;
   }
-
   .nav-center {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-
   .nav-link {
     display: flex;
     align-items: center;
@@ -315,21 +281,17 @@
     transition: all 0.2s;
     font-weight: 500;
   }
-
   .nav-link:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--console-primary, #00aa00);
   }
-
   .nav-link.active {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .admin-link {
     border: 1px solid var(--console-error, #ff5555);
   }
-
   .nav-right {
     display: flex;
     align-items: center;
@@ -344,11 +306,9 @@
     font-size: 0.75rem;
     font-weight: 600;
   }
-
   .theme-selector {
     position: relative;
   }
-
   .theme-btn {
     display: flex;
     align-items: center;
@@ -362,20 +322,16 @@
     transition: all 0.2s;
     font-size: 0.9rem;
   }
-
   .theme-btn:hover {
     background: rgba(255, 255, 255, 0.2);
   }
-
   .dropdown-arrow {
     font-size: 0.8rem;
     transition: transform 0.2s;
   }
-
   .dropdown-arrow.open {
     transform: rotate(180deg);
   }
-
   .theme-dropdown {
     position: absolute;
     top: 100%;
@@ -388,7 +344,6 @@
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
-
   .theme-option {
     display: flex;
     align-items: center;
@@ -402,44 +357,36 @@
     transition: background 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .theme-option:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-
   .theme-option.active {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .theme-preview {
     width: 20px;
     height: 20px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
-
   .theme-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex: 1;
   }
-
   .theme-title {
     font-weight: 600;
     font-size: 0.95rem;
   }
-
   .theme-era {
     font-size: 0.8rem;
     opacity: 0.7;
   }
-
   .check-mark {
     font-weight: bold;
   }
-
   .user-menu {
     display: flex;
     align-items: center;
@@ -482,7 +429,6 @@
   .profile-item:hover { background: rgba(255, 255, 255, 0.08); }
   .profile-logout { color: #ffb4b4; }
   .profile-separator { height: 1px; background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
-
   .user-btn {
     display: flex;
     align-items: center;
@@ -495,11 +441,9 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
   .user-btn:hover {
     border-color: var(--console-primary, #00aa00);
   }
-
   .logout-btn {
     display: flex;
     align-items: center;
@@ -513,16 +457,13 @@
     transition: all 0.2s;
     font-size: 0.9rem;
   }
-
   .logout-btn:hover {
     background: var(--console-error, #cc4444);
   }
-
   .auth-buttons {
     display: flex;
     gap: 0.5rem;
   }
-
   .login-btn,
   .signup-btn {
     padding: 0.5rem 1rem;
@@ -534,36 +475,28 @@
     transition: all 0.2s;
     font-weight: 500;
   }
-
   .signup-btn {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .login-btn:hover {
     background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
-
   .signup-btn:hover {
     background: transparent;
     color: var(--console-primary, #00aa00);
   }
-
   /* Mobile Responsive */
   @media (max-width: 768px) {
     .nav-center {
       display: none;
     }
-
     .theme-name {
       display: none;
     }
-
     .user-name {
       display: none;
     }
   }
 </style>
-
-

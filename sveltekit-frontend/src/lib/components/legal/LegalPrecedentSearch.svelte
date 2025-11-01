@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
     yearTo: null;
   }
   let precedents: LegalPrecedent[] = [];
-  let loading = false;
+  let loading = $state(false);
   let error = '';
   let totalCount = 0;
   let currentPage = 1;
@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
       error = err instanceof Error ? err.message: 'Search failed';
       console.error('Precedent search error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function clearFilters() {
@@ -105,7 +105,6 @@ https://svelte.dev/e/js_parse_error -->
   let startItem = $derived((currentPage - 1) * itemsPerPage + 1;
   let endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
-
 <div class="space-y-6">
   <div class="bg-white p-6 border border-gray-200 rounded-lg">
     <h2 class="text-xl font-semibold mb-4">Legal Precedent Search</h2>
@@ -133,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Jurisdictions</option>
-            {#each jurisdictions as jurisdiction}
+            {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
               <option value={jurisdiction}>{jurisdiction}</option>
             {/each}
           </select>
@@ -146,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Courts</option>
-            {#each courts as court}
+            {#each Array.isArray(courts) ? courts : [] as court}
               <option value={court}>{court}</option>
             {/each}
           </select>
@@ -206,8 +205,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if error}
         <div class="p-3 bg-red-50 border border-red-200 rounded-md">
           <p class="text-sm text-red-600">{error}</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Search Results -->
@@ -227,18 +225,17 @@ https://svelte.dev/e/js_parse_error -->
           </div>
           {#if searchTerms.length > 0}
             <div class="flex flex-wrap gap-1">
-              {#each searchTerms as term}
+              {#each Array.isArray(searchTerms) ? searchTerms : [] as term}
                 <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                   {term}
                 </span>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <!-- Results List -->
       <div class="divide-y divide-gray-200">
-        {#each precedents as precedent}
+        {#each Array.isArray(precedents) ? precedents : [] as precedent}
           <div class="p-4 hover:bg-gray-50">
             <div class="flex items-start justify-between mb-2">
               <h4 class="text-lg font-medium text-blue-600 hover:text-blue-800">
@@ -264,22 +261,20 @@ https://svelte.dev/e/js_parse_error -->
               <div class="mb-2">
                 <span class="text-xs font-medium text-gray-500">Legal Principles:</span>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  {#each precedent.legalPrinciples as principle}
+                  {#each Array.isArray(precedent.legalPrinciples) ? precedent.legalPrinciples : [] as principle}
                     <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
                       {principle}
                     </span>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
             {#if precedent.linkedCases.length > 0}
               <div>
                 <span class="text-xs font-medium text-gray-500">Related Cases:</span>
                 <span class="text-xs text-gray-600 ml-1">
                   {precedent.linkedCases.length} linked case{precedent.linkedCases.length !== 1 ? 's' : ''}
                 </span>
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       </div>
@@ -309,14 +304,12 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   {:else if !loading && searchFilters.query}
     <div class="bg-white p-8 border border-gray-200 rounded-lg text-center">
       <p class="text-gray-600">No precedents found for your search criteria.</p>
       <p class="text-sm text-gray-500 mt-1">Try adjusting your search terms or filters.</p>
-    </div>
-  {/if}
+    {/if}
 </div>
 ;

@@ -67,8 +67,8 @@ interface OllamaConfig {
 }
 
 type OllamaStatusPayload = {
-  models?: unknown;
-  loadedModels?: unknown;
+  models?: any;
+  loadedModels?: any;
   memory?: {
     total?: number | string;
     used?: number | string;
@@ -86,10 +86,10 @@ type OllamaStatusPayload = {
   latencyMs?: number;
   tokensPerSecond?: number;
   tps?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
-const asNumber = (v: unknown, fallback = 0): number => {
+const asNumber = (v: any, fallback = 0): number => {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   if (typeof v === 'string' && v.trim() !== '') {
     const n = Number(v);
@@ -98,7 +98,7 @@ const asNumber = (v: unknown, fallback = 0): number => {
   return fallback;
 };
 
-const asStringArray = (v: unknown): string[] => {
+const asStringArray = (v: any): string[] => {
   if (Array.isArray(v)) return v.filter(i => typeof i === 'string') as string[];
   return [];
 };
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
       case 'scale': {
-        const { instances, models } = body as { instances?: unknown; models?: string[] };
+        const { instances, models } = body as { instances?: any; models?: string[] };
         const result = await scaleCluster(instances, models);
         return json({
           success: true,
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Ollama Cluster Management error:', error);
     return json(
       {
@@ -304,7 +304,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -429,7 +429,7 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
       try {
         const resp = await productionServiceClientTyped.getInstanceStatus(instanceId);
         if (resp) return normalizeInstanceResponse(resp, cfg);
-      } catch (err: unknown) {
+      } catch (err: any) {
         console.warn(
           `productionServiceClient failed for ${instanceId}:`,
           err instanceof Error ? err.message : String(err)
@@ -449,7 +449,7 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         return normalizeInstanceResponse(data, cfg);
-      } catch (err: unknown) {
+      } catch (err: any) {
         if (attempt === MAX_RETRIES) {
           console.error(
             `Failed to fetch status for ${instanceId} after ${MAX_RETRIES + 1} attempts:`,
@@ -471,14 +471,14 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
       }
     }
     return null;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error(`getInstanceStatus error for ${instanceId}:`, error instanceof Error ? error.message : String(error));
     return null;
   }
 }
 
 // Normalize unknown payloads safely (avoid `any`)
-function normalizeInstanceResponse(payload: unknown, config: OllamaConfig): OllamaInstance {
+function normalizeInstanceResponse(payload: any, config: OllamaConfig): OllamaInstance {
   const p = (payload ?? {}) as Partial<OllamaStatusPayload>;
 
   const models = asStringArray(p.models ?? p.loadedModels ?? []);
@@ -524,7 +524,7 @@ async function rebalanceCluster(strategy: string): Promise<RebalanceResult> {
   ) {
     try {
       return await productionServiceClientTyped.rebalance({ strategy: useStrategy });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('productionServiceClient.rebalance failed:', err instanceof Error ? err.message : String(err));
     }
   }
@@ -558,7 +558,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
   ) {
     try {
       return await productionServiceClientTyped.executeModelOperation(operation);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn(
         'productionServiceClient.executeModelOperation failed:',
         err instanceof Error ? err.message : String(err)
@@ -610,7 +610,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
   };
 }
 
-async function scaleCluster(targetInstances: unknown, models: string[] = []): Promise<ScaleResult> {
+async function scaleCluster(targetInstances: any, models: string[] = []): Promise<ScaleResult> {
   let target = Math.floor(Number(targetInstances) || OLLAMA_CLUSTER.length);
   target = Math.max(1, target);
   if (
@@ -620,7 +620,7 @@ async function scaleCluster(targetInstances: unknown, models: string[] = []): Pr
   ) {
     try {
       return await productionServiceClientTyped.scaleCluster({ targetInstances: target, models });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('productionServiceClient.scaleCluster failed:', err instanceof Error ? err.message : String(err));
     }
   }
@@ -652,7 +652,7 @@ async function triggerFailover(instanceId: string | undefined, reason: string | 
   ) {
     try {
       return await productionServiceClientTyped.failover({ instanceId, reason });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('productionServiceClient.failover failed:', err instanceof Error ? err.message : String(err));
     }
   }

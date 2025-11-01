@@ -20,7 +20,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     title?: string;
     containerType?: 'default' | 'with-title' | 'is-rounded' | 'is-dark' | 'is-centered';
     // Content and styling
-    children?: unknown;
+    children?: any;
     class?: string;
     style?: string;
     // Layout
@@ -119,7 +119,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     className
   ].filter(Boolean).join(' '));
 </script>
-
 <div
   class={containerClasses}
   style="
@@ -139,10 +138,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <p class="title">{title}</p>
   {/if}
   <div class="container-content">
-    {@render children?.()}
+    <slot />
   </div>
 </div>
-
 <style>
   :global(.nes-8bit-container) {
 /* Base container styling */ {}
@@ -160,7 +158,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
 /* Layout */ {}
-    position relative;
+    position: relative;
     display: block;
     box-sizing: border-box;
 /* Optional constraints */ {}
@@ -176,7 +174,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     margin-top: 1rem;
   }
   :global(.nes-8bit-container.with-title .title) {
-    position absolute;
+    position: absolute;
     top: -0.75rem;
     left: 1rem;
     background-color: var(--container-bg);
@@ -237,7 +235,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 /* Container content wrapper */ {}
   .container-content {
-    position relative;
+    position: relative;
     z-index: 0,
   }
 /* Interactive container styles */ {}
@@ -268,7 +266,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Scanlines effect */ {}
   :global($1) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -395,4 +393,3 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     }
   }
 </style>
-

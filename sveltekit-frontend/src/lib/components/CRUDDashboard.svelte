@@ -4,7 +4,6 @@
   import { notifications } from '$lib/stores/unified';
   // Replace named imports (which triggered TS errors) with a namespace import
   import * as Lucide from 'lucide-svelte';
-
   // Create safe local references to icons (handles different export shapes)
   const Activity = (Lucide as any).Activity ?? (Lucide as any).activity ?? (Lucide as any).default ?? null;
   const Camera = (Lucide as any).Camera ?? (Lucide as any).camera ?? (Lucide as any).default ?? null;
@@ -15,7 +14,6 @@
   const RefreshCw = (Lucide as any).RefreshCw ?? (Lucide as any).refreshCw ?? (Lucide as any).default ?? null;
   const Search = (Lucide as any).Search ?? (Lucide as any).search ?? (Lucide as any).default ?? null;
   const TrendingUp = (Lucide as any).TrendingUp ?? (Lucide as any).trendingUp ?? (Lucide as any).default ?? null;
-
   // Data stores for all entities
   let cases: any[] = $state([]);
   let evidence: any[] = $state([]);
@@ -81,7 +79,7 @@
         details: String(error),
       });
     } finally {
-      refreshing = false;
+      refreshing = $state(false);
     }
   }
   // Fetch functions for each entity
@@ -103,7 +101,7 @@
     } catch (error) {
       console.error('Error fetching cases:', error);
     } finally {
-      loading.cases = false;
+      loading.cases = $state(false);
     }
   }
   async function fetchEvidence() {
@@ -124,7 +122,7 @@
     } catch (error) {
       console.error('Error fetching evidence:', error);
     } finally {
-      loading.evidence = false;
+      loading.evidence = $state(false);
     }
   }
   async function fetchReports() {
@@ -145,7 +143,7 @@
     } catch (error) {
       console.error('Error fetching reports:', error);
     } finally {
-      loading.reports = false;
+      loading.reports = $state(false);
     }
   }
   async function fetchCriminals() {
@@ -166,7 +164,7 @@
     } catch (error) {
       console.error('Error fetching criminals:', error);
     } finally {
-      loading.criminals = false;
+      loading.criminals = $state(false);
     }
   }
   async function fetchActivities() {
@@ -187,7 +185,7 @@
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
-      loading.activities = false;
+      loading.activities = $state(false);
     }
   }
   async function fetchUsers() {
@@ -208,7 +206,7 @@
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
-      loading.users = false;
+      loading.users = $state(false);
     }
   }
   // Calculate statistics
@@ -265,7 +263,6 @@
   // --- new: safe notification helper (tries several APIs, falls back to update) ---
   function notifyNotification(payload: Record<string, any>) {
     const anyNotifications = notifications as any;
-
     // try common named APIs
     if (typeof anyNotifications.add === 'function') {
       return anyNotifications.add(payload);
@@ -282,7 +279,6 @@
     if (typeof anyNotifications.create === 'function') {
       return anyNotifications.create(payload);
     }
-
     // fallback: if the store exposes an update function (writable store), mutate safely
     if (typeof anyNotifications.update === 'function') {
       return anyNotifications.update((state: any) => {
@@ -298,13 +294,11 @@
         return { ...(state || {}), items: [newItem] };
       });
     }
-
     // last resort: log so developer sees a hint
     // eslint-disable-next-line no-console
     console.warn('Unable to deliver notification; unknown notifications API', payload);
   }
 </script>
-
 <div class="crud-dashboard container mx-auto px-4">
   <!-- Header -->
   <div class="dashboard-header space-y-4">
@@ -396,7 +390,7 @@
         {:else if cases.length === 0}
           <div class="space-y-4">No cases found</div>
         {:else}
-          {#each cases as case_}
+          {#each Array.isArray(cases) ? cases : [] as case_}
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{case_.title}</span>
@@ -445,7 +439,7 @@
         {:else if evidence.length === 0}
           <div class="space-y-4">No evidence found</div>
         {:else}
-          {#each evidence as item}
+          {#each Array.isArray(evidence) ? evidence : [] as item}
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{item.title}</span>
@@ -501,7 +495,7 @@
         {:else if reports.length === 0}
           <div class="space-y-4">No reports found</div>
         {:else}
-          {#each reports as report}
+          {#each Array.isArray(reports) ? reports : [] as report}
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{report.title}</span>
@@ -550,7 +544,7 @@
         {:else if activities.length === 0}
           <div class="space-y-4">No activities found</div>
         {:else}
-          {#each activities as activity}
+          {#each Array.isArray(activities) ? activities : [] as activity}
             <div class="space-y-4">
               <div class="space-y-4">
                 <span class="space-y-4">{activity.title}</span>
@@ -616,7 +610,6 @@
     </div>
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .crud-dashboard {
@@ -669,4 +662,3 @@
     }
   }
 </style>
-

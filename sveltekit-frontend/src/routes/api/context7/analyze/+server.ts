@@ -26,7 +26,7 @@ interface Context7Analysis {
   timestamp: string;
 }
 
-const formatError = (err: unknown) => {
+const formatError = (err: any) => {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json(context7Analysis, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Context7 analysis error:', formatError(error));
     return json(
       {

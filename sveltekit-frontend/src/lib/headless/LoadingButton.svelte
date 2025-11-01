@@ -45,7 +45,6 @@
     onclick?.(event);
   }
 </script>
-
 <button
   {type}
   class={buttonClasses}
@@ -75,10 +74,9 @@
     </span>
   </div>
 </button>
-
 <style>
   .loading-button {
-    position relative;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;

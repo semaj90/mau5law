@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { Settings, Eye, Type } from 'lucide-svelte';
-  import Button from '$lib/components/ui/bits/button';
+  import { Button } from '$lib/components/ui/bits/button.svelte'';
   // Props (runes style)
   let { isOpen = $bindable(false) } = $props();
   // Local reactive state wrapper of service config
@@ -22,7 +22,7 @@
     accessibilityService.toggleReducedMotion();
     refresh();
   }
-  function updateConfig(_key: keyof typeof config, value: unknown) {
+  function updateConfig(_key: keyof typeof config, value: any) {
     accessibilityService.updateConfig({ [key]: value });
     refresh();
   }
@@ -70,7 +70,7 @@ isOpen = false}
                 Font Size
               </label>
               <div class="grid grid-cols-4 gap-2">
-                {#each ['small', 'normal', 'large', 'extra-large'] as size}
+                {#each Array.isArray(['small', 'normal', 'large', 'extra-large']) ? ['small', 'normal', 'large', 'extra-large'] : [] as size}
                   <button
                     class="px-3 py-2 text-sm border rounded-lg transition-colors
                       {config.fontSize === size
@@ -238,8 +238,7 @@ isOpen = false}
                     </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .accessibility-settings {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

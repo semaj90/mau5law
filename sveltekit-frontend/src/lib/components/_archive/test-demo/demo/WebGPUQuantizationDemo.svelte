@@ -126,7 +126,7 @@ await initializeWebGPU();
       errorMessage = `Demo failed: ${error.message}`;
       console.error('Demo error:', error);
     } finally {
-      demoRunning = false;
+      demoRunning = $state(false);
     }
   }
   async function runBasicDemo() {
@@ -439,7 +439,7 @@ await initializeWebGPU();
     <div class="scenarios-panel mb-6">
       <h3 class="font-semibold text-gray-800 mb-4">🎯 Demo Scenarios</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each demoScenarios as scenario}
+        {#each Array.isArray(demoScenarios) ? demoScenarios : [] as scenario}
           <button
             onclick={() => runDemo(scenario.id)}
             disabled={demoRunning}
@@ -482,7 +482,7 @@ await initializeWebGPU();
       <div class="results-panel p-4 bg-white border border-gray-200 rounded-lg">
         <h3 class="font-semibold text-gray-800 mb-4">📋 Results</h3>
         <div class="space-y-4">
-          {#each results as result}
+          {#each Array.isArray(results) ? results : [] as result}
             <div class="result-item p-3 bg-gray-50 rounded-md">
               <h4 class="font-medium text-gray-800 mb-2">{(result as { step?: any; details?: any }).step}</h4>
               {#if typeof (result as { step?: any; details?: any }).details === 'string'}

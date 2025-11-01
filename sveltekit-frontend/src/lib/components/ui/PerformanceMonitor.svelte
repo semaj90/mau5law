@@ -3,14 +3,12 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
-
 	interface Props {
 		showOverlay?: boolean;
 		autoHide?: boolean;
 		updateInterval?: number;
 	}
 	let { showOverlay = false, autoHide = true, updateInterval = 1000 }: Props = $props();
-
 	interface PerformanceMetrics {
 		fps: number;
 		memoryUsage: number;
@@ -21,7 +19,6 @@
 		responseTime: number;
 		timestamp: number;
 	}
-
 	const metrics = writable<PerformanceMetrics>({
 		fps: 0,
 		memoryUsage: 0,
@@ -32,15 +29,12 @@
 		responseTime: 0,
 		timestamp: Date.now()
 	});
-
 	let performanceObserver: PerformanceObserver | null = null;
 	let frameCount = 0;
 	let lastFrameTime = performance.now();
 	let intervalId: ReturnType<typeof setInterval> | undefined;
-
 	// Svelte 5 reactive state
 	let isVisible = $state(showOverlay);
-
 	// Performance tracking
 	function updateMetrics() {
 		const now = performance.now();
@@ -49,7 +43,6 @@
 		const fps = Math.round(1000 / deltaTime);
 		frameCount++;
 		lastFrameTime = now;
-
 		// Memory usage (if available)
 		let memoryUsage = 0;
 		// guard access to experimental memory API
@@ -60,10 +53,8 @@
 				memoryUsage = Math.round((mem.usedJSHeapSize / mem.totalJSHeapSize) * 100);
 			}
 		}
-
 		// Check WebGPU status
 		const webGPUActive = typeof navigator !== 'undefined' && 'gpu' in navigator;
-
 		// Get performance entries for response time (best-effort)
 		let responseTime = 0;
 		try {
@@ -74,7 +65,6 @@
 		} catch {
 			// ignore; not available in all environments
 		}
-
 		metrics.set({
 			fps: isNaN(fps) ? 60 : Math.min(Math.max(fps, 0), 120),
 			memoryUsage,
@@ -86,7 +76,6 @@
 			timestamp: now
 		});
 	}
-
 	function getActiveOperationsCount(): number {
 		// Count active AI/ML operations (best-effort)
 		if (typeof window !== 'undefined') {
@@ -97,7 +86,6 @@
 		}
 		return 0;
 	}
-
 	function setupPerformanceObserver() {
 		if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
 			try {
@@ -120,26 +108,22 @@
 			}
 		}
 	}
-
 	function toggleVisibility() {
 		isVisible = !isVisible;
 	}
-
 	// Auto-hide after a delay
 	function autoHideTimer() {
 		if (autoHide && isVisible) {
 			setTimeout(() => {
-				isVisible = false;
+				isVisible = $state(false);
 			}, 10000);
 		}
 	}
-
 	// Setup effect: start observer + interval + keyboard listener
 	$effect(() => {
 		setupPerformanceObserver();
 		// Start metrics collection
 		intervalId = setInterval(updateMetrics, updateInterval);
-
 		// Keyboard shortcut to toggle (Ctrl+Shift+P)
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.ctrlKey && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
@@ -148,11 +132,9 @@
 				autoHideTimer();
 			}
 		};
-
 		if (typeof window !== 'undefined') {
 			window.addEventListener('keydown', handleKeyDown);
 		}
-
 		return () => {
 			// teardown when effect re-runs or component destroyed
 			if (typeof window !== 'undefined') {
@@ -164,7 +146,6 @@
 			}
 		};
 	});
-
 	onDestroy(() => {
 		if (intervalId) {
 			clearInterval(intervalId);
@@ -175,7 +156,6 @@
 			performanceObserver = null;
 		}
 	});
-
 	// Color coding for metrics
 	function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
 		switch (type) {
@@ -196,7 +176,6 @@
 		}
 	}
 </script>
-
 {#if isVisible}
   <div class="performance-monitor fixed top-4 right-4 z-[9999] font-mono text-xs">
     <div class="bg-black/80 backdrop-blur-sm text-white rounded-lg p-3 shadow-2xl border border-gray-700 min-w-[200px]">
@@ -278,14 +257,11 @@
               {$metrics.webGPUActive ? 'Active' : 'Inactive'}
             </span>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Help Text -->
       <div class="mt-2 pt-1 border-t border-gray-600 text-[10px] text-gray-400">Press Ctrl+Shift+P to toggle</div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .performance-monitor {
     user-select: none;

@@ -111,7 +111,7 @@ type Evidence = {
   filename?: string;
   type?: string;
   analysisScore?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Advanced Strategy Engine
@@ -453,7 +453,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           },
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Strategy analysis failed:', error);
       if (error instanceof z.ZodError) {
         return json(
@@ -505,7 +505,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           highRelevanceCount: precedents.filter(p => p.relevance > 0.8).length,
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Precedent search failed:', error);
       if (error instanceof z.ZodError) {
         return json(
@@ -567,7 +567,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           },
         },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Risk assessment failed:', error);
       if (error instanceof z.ZodError) {
         return json(

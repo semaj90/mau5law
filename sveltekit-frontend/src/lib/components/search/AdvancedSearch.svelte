@@ -63,14 +63,14 @@ https://svelte.dev/e/js_parse_error -->
     }
     // Tag filter
     if (selectedTags.length > 0) {
-      const itemTags = (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags || [];
+      const itemTags = (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags || [];
       if (!selectedTags.some(tag => itemTags.includes(tag))) {
         return false;
       }
     }
     // Date range filter
     if (dateRange.start || dateRange.end) {
-      const itemDate = new Date((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).createdAt);
+      const itemDate = new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt);
       if (dateRange.start && itemDate < dateRange.start) return false;
       if (dateRange.end && itemDate > dateRange.end) return false;
     }
@@ -149,44 +149,41 @@ https://svelte.dev/e/js_parse_error -->
         class="search-results"
         transitionfly={{ duration 150, y: -10 }}
       >
-        {#each filteredResults as item ((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)}
+        {#each filteredResults as item ((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)}
           <button
-            use:melt={$option({ value: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id, label: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title })}
+            use:melt={$option({ value: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id, label: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title })}
             class="search-result-item"
-            class:highlighted={$isSelected((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)}
+            class:highlighted={$isSelected((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)}
             onclick={() => handleSelect(item)}
           >
             <div class="result-icon">
-              {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'document'}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'document'}
                 <FileType size={16} />
-              {:else if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'image'}
-                <img src={(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).url} alt="" class="result-thumbnail" />
+              {:else if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'image'}
+                <img src={(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).url} alt="" class="result-thumbnail" />
               {:else}
-                <div class="result-type-badge {(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type}">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type[0].toUpperCase()}</div>
-              {/if}
+                <div class="result-type-badge {(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type[0].toUpperCase()}{/if}
             </div>
             <div class="result-content">
               <div class="result-title">
-                {@html highlightMatches((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title, searchValue)}
+                {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title, searchValue)}
               </div>
-              {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description}
                 <div class="result-description">
-                  {@html highlightMatches((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description.slice(0, 100), searchValue)}
-                  {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description.length > 100}...{/if}
-                </div>
-              {/if}
-              {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags && (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.length > 0}
+                  {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.slice(0, 100), searchValue)}
+                  {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.length > 100}...{/if}
+                {/if}
+              {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags && (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.length > 0}
                 <div class="result-tags">
-                  {#each (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.slice(0, 3) as tag}
+                  {#each (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.slice(0, 3) as tag}
                     <span class="result-tag">{tag}</span>
                   {/each}
-                </div>
-              {/if}
+                {/if}
             </div>
             <div class="result-meta">
-              <span class="result-type">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type}</span>
+              <span class="result-type">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}</span>
               <span class="result-date">
-                {new Date((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).createdAt).toLocaleDateString()}
+                {new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt).toLocaleDateString()}
               </span>
             </div>
           </button>
@@ -196,10 +193,8 @@ https://svelte.dev/e/js_parse_error -->
             <Search size={24} />
             <p>No results found</p>
             <small>Try adjusting your search terms or filters</small>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
   <!-- Filters -->
   {#if showFilters}
@@ -211,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
           Type
         </label>
         <div class="filter-options">
-          {#each evidenceTypes as type}
+          {#each Array.isArray(evidenceTypes) ? evidenceTypes : [] as type}
             <button
               class="filter-chip"
               class:active={selectedTypes.includes(type)}
@@ -230,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
             Tags
           </label>
           <div class="filter-options">
-            {#each allTags.slice(0, 10) as tag}
+            {#each Array.isArray(allTags.slice(0, 10)) ? allTags.slice(0, 10) : [] as tag}
               <button
                 class="filter-chip"
                 class:active={selectedTags.includes(tag)}
@@ -240,8 +235,7 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Date range -->
       <div class="filter-group">
         <label class="filter-label">
@@ -264,13 +258,12 @@ https://svelte.dev/e/js_parse_error -->
           />
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Active filters summary -->
   {#if selectedTags.length > 0 || selectedTypes.length > 0 || dateRange.start || dateRange.end}
     <div class="active-filters">
       <span class="active-filters-label">Active filters:</span>
-      {#each selectedTypes as type}
+      {#each Array.isArray(selectedTypes) ? selectedTypes : [] as type}
         <span class="active-filter">
           {type}
           <button onclick={() => toggleType(type)}>
@@ -278,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         </span>
       {/each}
-      {#each selectedTags as tag}
+      {#each Array.isArray(selectedTags) ? selectedTags : [] as tag}
         <span class="active-filter">
           #{tag}
           <button onclick={() => toggleTag(tag)}>
@@ -297,24 +290,23 @@ https://svelte.dev/e/js_parse_error -->
       <button class="clear-all-filters" onclick={() => clearSearch()}>
         Clear all
       </button>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
 .advanced-search {
-  position relative;
+  position: relative;
   width: 100%;
 }
 .search-input-container {
-  position relative;
+  position: relative;
 }
 .search-input-wrapper {
-  position relative;
+  position: relative;
   display: flex;
   align-items: center;
 }
 .search-icon {
-  position absolute;
+  position: absolute;
   left: 0.75rem;
   color: #6b7280;
   z-index: 1,
@@ -334,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 .clear-button {
-  position absolute;
+  position: absolute;
   right: 0.75rem;
   display: flex;
   align-items: center;
@@ -352,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
   color: #374151;
 }
 .search-results {
-  position absolute;
+  position: absolute;
   top: 100%;
   left: 0,
   right: 0;

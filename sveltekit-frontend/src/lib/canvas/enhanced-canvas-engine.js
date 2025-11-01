@@ -2,7 +2,6 @@
  * Enhanced Canvas Engine - utility helpers for canvas interactions and rendering
  * Exported helpers are pure and accept state/refs from the consumer (Svelte component).
  */
-
 export function getMousePosition(event, canvas, pan = { x: 0, y: 0 }, zoom = 1) {
   // event can be MouseEvent or WheelEvent (use clientX/clientY)
   if (!canvas) return { x: 0, y: 0 };
@@ -14,14 +13,12 @@ export function getMousePosition(event, canvas, pan = { x: 0, y: 0 }, zoom = 1) 
   const y = (clientY - rect.top - (pan.y || 0)) / (zoom || 1);
   return { x, y };
 }
-
 export function snapToGridIfEnabled(x, y, gridSize = 20, snapToGrid = false) {
   if (!snapToGrid || !gridSize) return { x, y };
   const snappedX = Math.round(x / gridSize) * gridSize;
   const snappedY = Math.round(y / gridSize) * gridSize;
   return { x: snappedX, y: snappedY };
 }
-
 export function getNodeAtPosition(nodes = [], x = 0, y = 0) {
   if (!nodes || nodes.length === 0) return null;
   // Find topmost node (assuming later nodes are on top)
@@ -33,7 +30,6 @@ export function getNodeAtPosition(nodes = [], x = 0, y = 0) {
   }
   return null;
 }
-
 export function computeSelectionInfo(node) {
   if (!node) return null;
   return {
@@ -43,7 +39,6 @@ export function computeSelectionInfo(node) {
     size: { width: node.width || 0, height: node.height || 0 },
   };
 }
-
 export function clearCanvas(ctx, canvas, backgroundColor = '#000') {
   if (!ctx || !canvas) return;
   ctx.save();
@@ -52,7 +47,6 @@ export function clearCanvas(ctx, canvas, backgroundColor = '#000') {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
 }
-
 /**
  * Basic render routine.
  * - nodes: array of { x,y,width,height, color?, title? }
@@ -69,15 +63,12 @@ export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode
     drawGrid = false,
     nodeStyle = {},
   } = options;
-
   // clear
   clearCanvas(ctx, canvas, backgroundColor);
-
   // apply pan and zoom
   ctx.save();
   ctx.translate(pan.x || 0, pan.y || 0);
   ctx.scale(zoom || 1, zoom || 1);
-
   // optional grid
   if (drawGrid && gridSize > 0) {
     ctx.strokeStyle = 'rgba(255,255,255,0.03)';
@@ -97,7 +88,6 @@ export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode
       ctx.stroke();
     }
   }
-
   // draw nodes
   for (const node of nodes) {
     ctx.save();
@@ -110,7 +100,6 @@ export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode
     ctx.rect(node.x || 0, node.y || 0, node.width || 100, node.height || 60);
     ctx.fill();
     ctx.stroke();
-
     // title
     if (node.title) {
       ctx.fillStyle = nodeStyle.textFill || '#fff';
@@ -119,7 +108,6 @@ export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode
     }
     ctx.restore();
   }
-
   // highlight selection
   if (selectedNode) {
     ctx.save();
@@ -129,6 +117,5 @@ export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode
     ctx.strokeRect(selectedNode.x, selectedNode.y, selectedNode.width, selectedNode.height);
     ctx.restore();
   }
-
   ctx.restore();
 }

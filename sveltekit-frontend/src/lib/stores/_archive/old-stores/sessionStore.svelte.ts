@@ -130,7 +130,7 @@ const createSessionStore = () => {
         return null;
       } catch (error) {
         console.error('Session refresh failed:', error);
-        sessionState.isLoading = false;
+        sessionState.isLoading = $state(false);
         return null;
       }
     },

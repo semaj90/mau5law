@@ -18,7 +18,6 @@
     white: 'text-white',
   }
 </script>
-
 <div class={'loading-spinner ' + (inline ? 'inline-flex' : 'flex') + ' items-center justify-center'}>
   <svg
     class={'animate-spin ' + sizeClasses[size] + ' ' + colorClasses[color]}
@@ -38,10 +37,9 @@
   <!-- Screen reader text -->
   <span class="sr-only">{label}</span>
 </div>
-
 <style>
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,

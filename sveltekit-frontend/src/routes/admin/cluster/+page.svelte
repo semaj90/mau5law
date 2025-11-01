@@ -3,8 +3,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Activity,
     Cpu,
@@ -65,7 +65,7 @@
         lastUpdate = new Date().toLocaleTimeString();
       };
       eventSource.onerror = () => {
-        isConnected = false;
+        isConnected = $state(false);
         console.error('❌ Cluster monitoring connection lost');
       };
       // Fallback polling

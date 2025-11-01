@@ -3,9 +3,7 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * Redis Cache with Hit/Miss Metrics
  * Tracks cache performance for optimization insights
  */
-
 import { createClient, type RedisClientType } from 'redis';
-
 interface CacheMetrics {
   hits: number;
   misses: number;
@@ -17,17 +15,14 @@ interface CacheMetrics {
   averageGetTime: number;
   averageSetTime: number;
 }
-
 interface OperationTiming {
   operation: string;
   duration: number;
   timestamp: number;
 }
-
 export class RedisMetricsCache {
   private client: RedisClientType | null = null;
-  private isConnected = false;
-
+  private isConnected = $state(false);
   // Metrics counters
   private metrics: CacheMetrics = {
     hits: 0,
@@ -40,37 +35,29 @@ export class RedisMetricsCache {
     averageGetTime: 0,
     averageSetTime: 0,
   };
-
   // Performance tracking
   private getTimes: number[] = [];
   private setTimes: number[] = [];
   private readonly MAX_TIMING_SAMPLES = 1000;
-
   // Key pattern tracking for insights
   private keyPatterns: Map<string, { hits: number; misses: number }> = new Map();
-
   constructor(private url: string) {}
-
   /**
    * Connect to Redis
    */
   async connect(): Promise<void> {
     if (this.isConnected) return;
-
     try {
       this.client = redis;
-
       this.client.on('error', (err) => {
         console.error('Redis connection error:', err);
         this.metrics.errors++;
-        this.isConnected = false;
+        this.isConnected = $state(false);
       });
-
       this.client.on('connect', () => {
         console.log('✅ Redis connected with metrics enabled');
         this.isConnected = true;
       });
-
       await this.client.connect();
     } catch (error) {
       console.error('Failed to connect to Redis:', error);
@@ -78,7 +65,6 @@ export class RedisMetricsCache {
       throw error;
     }
   }
-
   /**
    * Get value from cache with metrics tracking
    */
@@ -86,17 +72,13 @@ export class RedisMetricsCache {
     if (!this.client) {
       await this.connect();
     }
-
     const startTime = performance.now();
     this.metrics.totalRequests++;
-
     try {
       const value = await this.client!.get(key);
       const duration = performance.now() - startTime;
-
       // Record timing
       this.recordTiming('get', duration);
-
       // Update metrics
       if (value !== null) {
         this.metrics.hits++;
@@ -105,7 +87,6 @@ export class RedisMetricsCache {
         this.metrics.misses++;
         this.trackKeyPattern(key, false);
       }
-
       this.updateHitRate();
       return value;
     } catch (error) {
@@ -115,7 +96,6 @@ export class RedisMetricsCache {
       return null;
     }
   }
-
   /**
    * Set value in cache with metrics tracking
    */
@@ -123,20 +103,16 @@ export class RedisMetricsCache {
     if (!this.client) {
       await this.connect();
     }
-
     const startTime = performance.now();
     this.metrics.sets++;
-
     try {
       if (ttl) {
         await this.client!.setEx(key, ttl, value);
       } else {
         await this.client!.set(key, value);
       }
-
       const duration = performance.now() - startTime;
       this.recordTiming('set', duration);
-
       return true;
     } catch (error) {
       this.metrics.errors++;
@@ -144,7 +120,6 @@ export class RedisMetricsCache {
       return false;
     }
   }
-
   /**
    * Delete key from cache
    */
@@ -152,7 +127,6 @@ export class RedisMetricsCache {
     if (!this.client) {
       await this.connect();
     }
-
     try {
       this.metrics.deletes++;
       return await this.client!.del(key);
@@ -162,7 +136,6 @@ export class RedisMetricsCache {
       return 0;
     }
   }
-
   /**
    * Get or set pattern (cache-aside)
    */
@@ -173,7 +146,6 @@ export class RedisMetricsCache {
   ): Promise<T> {
     // Try to get from cache first
     const cached = await this.get(key);
-
     if (cached !== null) {
       try {
         return JSON.parse(cached) as T;
@@ -182,13 +154,11 @@ export class RedisMetricsCache {
         await this.del(key);
       }
     }
-
     // Cache miss - fetch fresh data
     const freshData = await fetchFn();
     await this.set(key, JSON.stringify(freshData), ttl);
     return freshData;
   }
-
   /**
    * Multi-tier caching: Redis → Fallback → Source
    */
@@ -207,7 +177,6 @@ export class RedisMetricsCache {
         // Parse failed, continue to fallback
       }
     }
-
     // Try fallback source (e.g., MinIO, PostgreSQL)
     try {
       const fallbackData = await fallbackSource();
@@ -219,29 +188,22 @@ export class RedisMetricsCache {
     } catch (error) {
       console.warn('Fallback source failed:', error);
     }
-
     // Fetch from primary source
     const primaryData = await primarySource();
-
     // Cache primary result
     await this.set(key, JSON.stringify(primaryData), ttl);
-
     return primaryData;
   }
-
   /**
    * Batch get with metrics
    */
   async mGet(keys: string[]): Promise<(string | null)[]> {
     if (!this.client) await this.connect();
-
     const startTime = performance.now();
     this.metrics.totalRequests += keys.length;
-
     try {
       const values = await this.client!.mGet(keys);
       const duration = performance.now() - startTime;
-
       // Track hits/misses
       values.forEach((value, index) => {
         if (value !== null) {
@@ -252,10 +214,8 @@ export class RedisMetricsCache {
           this.trackKeyPattern(keys[index], false);
         }
       });
-
       this.recordTiming('mGet', duration);
       this.updateHitRate();
-
       return values;
     } catch (error) {
       this.metrics.errors++;
@@ -263,7 +223,6 @@ export class RedisMetricsCache {
       return keys.map(() => null);
     }
   }
-
   /**
    * Track performance timing
    */
@@ -282,14 +241,12 @@ export class RedisMetricsCache {
       this.metrics.averageSetTime = this.setTimes.reduce((a, b) => a + b, 0) / this.setTimes.length;
     }
   }
-
   /**
    * Track key patterns for analysis
    */
   private trackKeyPattern(key: string, hit: boolean): void {
     // Extract pattern (e.g., "user:123" -> "user:*")
     const pattern = key.replace(/:[^:]+/g, ':*');
-
     const existing = this.keyPatterns.get(pattern) || { hits: 0, misses: 0 };
     if (hit) {
       existing.hits++;
@@ -298,7 +255,6 @@ export class RedisMetricsCache {
     }
     this.keyPatterns.set(pattern, existing);
   }
-
   /**
    * Update hit rate
    */
@@ -306,14 +262,12 @@ export class RedisMetricsCache {
     const total = this.metrics.hits + this.metrics.misses;
     this.metrics.hitRate = total > 0 ? (this.metrics.hits / total) * 100 : 0;
   }
-
   /**
    * Get current metrics
    */
   getMetrics(): CacheMetrics {
     return { ...this.metrics };
   }
-
   /**
    * Get key pattern statistics
    */
@@ -327,14 +281,12 @@ export class RedisMetricsCache {
       }))
       .sort((a, b) => (b.hits + b.misses) - (a.hits + a.misses)); // Sort by total requests
   }
-
   /**
    * Get performance insights
    */
   getPerformanceInsights() {
     const metrics = this.getMetrics();
     const patterns = this.getKeyPatternStats();
-
     return {
       overall: {
         hitRate: metrics.hitRate.toFixed(2) + '%',
@@ -352,43 +304,35 @@ export class RedisMetricsCache {
       recommendations: this.generateRecommendations(metrics, patterns),
     };
   }
-
   /**
    * Generate optimization recommendations
    */
   private generateRecommendations(metrics: CacheMetrics, patterns: ReturnType<typeof this.getKeyPatternStats>): string[] {
     const recommendations: string[] = [];
-
     // Low hit rate recommendation
     if (metrics.hitRate < 50) {
       recommendations.push(`⚠️  Low cache hit rate (${metrics.hitRate.toFixed(1)}%). Consider increasing TTL or pre-warming cache.`);
     }
-
     // High error rate
     if (metrics.errors / metrics.totalRequests > 0.01) {
       recommendations.push('❌ High error rate detected. Check Redis connection stability.');
     }
-
     // Slow operations
     if (metrics.averageGetTime > 10) {
       recommendations.push(`🐌 Slow GET operations (${metrics.averageGetTime.toFixed(1)}ms avg). Consider connection pooling or Redis cluster.`);
     }
-
     // Pattern-specific recommendations
     patterns.forEach(pattern => {
       if (pattern.hitRate < 30 && (pattern.hits + pattern.misses) > 100) {
         recommendations.push(`📊 Low hit rate for pattern: "${pattern.pattern}" (${pattern.hitRate.toFixed(1)}%). Consider cache warming.`);
       }
     });
-
     // Cache warming suggestion
     if (metrics.misses > metrics.hits * 2) {
       recommendations.push('🔥 High miss rate suggests cache warming could help. Implement pre-fetch for common queries.');
     }
-
     return recommendations;
   }
-
   /**
    * Reset metrics
    */
@@ -408,7 +352,6 @@ export class RedisMetricsCache {
     this.setTimes = [];
     this.keyPatterns.clear();
   }
-
   /**
    * Close connection
    */
@@ -416,15 +359,13 @@ export class RedisMetricsCache {
     if (this.client) {
       await this.client.quit();
       this.client = null;
-      this.isConnected = false;
+      this.isConnected = $state(false);
       console.log('Redis disconnected');
     }
   }
 }
-
 // Export singleton instance
 let redisMetricsCache: RedisMetricsCache | null = null;
-
 export function getRedisMetricsCache(url?: string): RedisMetricsCache {
   if (!redisMetricsCache) {
     const redisUrl = url || process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';

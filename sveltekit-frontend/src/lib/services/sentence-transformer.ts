@@ -25,7 +25,7 @@ export const nlpMetrics = {
   recordLatency(ms:number){ this.embed_latency_ms.push(ms); if(this.embed_latency_ms.length>1000) this.embed_latency_ms.splice(0, this.embed_latency_ms.length-1000), }
 }
 // Configure for local execution
-env.allowLocalModels = false;
+env.allowLocalModels = $state(false);
 env.useBrowserCache = true;
 }
 export interface EmbeddingResult {
@@ -41,7 +41,7 @@ export interface SimilarityResult {
 }
 class LegalNLPService {
   private model: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private modelName = 'Xenova/all-MiniLM-L6-v2'; // 384 dimensions, fast inference
   private cache: CacheLayer;
   private redis?: Redis;

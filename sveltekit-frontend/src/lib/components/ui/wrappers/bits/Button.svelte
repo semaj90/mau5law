@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { getBitsOverrides } from './bits-overrides';
   import type { Snippet } from 'svelte';
-
   interface Props {
     className?: string;
     disabled?: boolean;
@@ -11,7 +10,6 @@
     onclick?: (evt: MouseEvent) => void;
     children?: Snippet;
   }
-
   let {
     className = '',
     disabled = false,
@@ -20,14 +18,11 @@
     onclick = undefined,
     children,
   }: Props = $props();
-
   let Btn: any = $state(null);
   const overrides = getBitsOverrides();
-
   if (overrides && overrides.Button) {
     Btn = overrides.Button;
   }
-
   onMount(async () => {
     if (Btn) return;
     try {
@@ -40,7 +35,6 @@
       console.debug('bits-ui not available at runtime for Button wrapper', err);
     }
   });
-
   function handleClick(e: MouseEvent) {
     if (disabled) {
       e.preventDefault();
@@ -50,7 +44,6 @@
     onclick?.(e);
   }
 </script>
-
 {#if Btn}
   <Btn class={className} {disabled} {type} aria-label={ariaLabel} onclick={handleClick}>
     {#if children}

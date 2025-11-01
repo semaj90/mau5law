@@ -2,7 +2,6 @@ import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { sql } from 'drizzle-orm';
 import {
@@ -15,7 +14,6 @@ import {
   timestamp,
 } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
-
 /**
  * Migration metadata tracked in the database.
  */
@@ -31,7 +29,6 @@ export const migrations = pgTable('schema_migrations', {
   rollbackSql: text('rollback_sql'),
   metadata: jsonb('metadata'),
 });
-
 export interface Migration {
   version: string;
   name: string;
@@ -39,7 +36,6 @@ export interface Migration {
   down?: string;
   metadata?: Record<string, unknown>;
 }
-
 export interface MigrationResult {
   success: boolean;
   version: string;
@@ -47,44 +43,34 @@ export interface MigrationResult {
   applied: boolean;
   error?: string;
 }
-
 interface MigrationStatus {
   appliedMigrations: number;
   pendingMigrations: number;
   lastMigration?: string;
   systemHealthy: boolean;
 }
-
 const DEFAULT_DIR = './src/lib/database/migrations';
-
 const SQL_UP_TOKEN = /^--\s*Up$/im;
 const SQL_DOWN_TOKEN = /^--\s*Down$/im;
-
 function createChecksum(input: string): string {
   return createHash('sha256').update(input).digest('hex');
 }
-
 function parseSqlMigration(filename: string, source: string): Migration {
   const name = filename.replace(/\.(sql|ts|js)$/i, '');
   const upIndex = source.search(SQL_UP_TOKEN);
   const downIndex = source.search(SQL_DOWN_TOKEN);
-
   const version = name.split('_')[0] ?? name;
-
   if (upIndex === -1) {
     throw new Error(`Migration ${filename} is missing an: "-- Up" section.`);
   }
-
   let upSql = '';
   let downSql = '';
-
   if (downIndex === -1) {
     upSql = source.slice(upIndex + source.match(SQL_UP_TOKEN)![0].length).trim();
   } else {
     upSql = source.slice(upIndex + source.match(SQL_UP_TOKEN)![0].length, downIndex).trim();
     downSql = source.slice(downIndex + source.match(SQL_DOWN_TOKEN)![0].length).trim();
   }
-
   return {
     version,
     name,
@@ -92,17 +78,14 @@ function parseSqlMigration(filename: string, source: string): Migration {
     down: downSql || undefined,
   };
 }
-
 function toFileUrl(inputPath: string): URL {
   const resolved = path.isAbsolute(inputPath) ? inputPath : path.resolve(inputPath);
   return pathToFileURL(resolved);
 }
-
 export class DatabaseMigrator {
   private readonly sqlClient: postgres.Sql;
   private readonly db = drizzle;
   private readonly migrationsPath: string;
-
   constructor(
     connectionString: string,
     migrationsPath: string = DEFAULT_DIR,
@@ -111,7 +94,6 @@ export class DatabaseMigrator {
     this.db = drizzle(this.sqlClient);
     this.migrationsPath = migrationsPath;
   }
-
   async initialize(): Promise<void> {
     await this.sqlClient`
       CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -128,19 +110,15 @@ export class DatabaseMigrator {
       );
     `;
   }
-
   async loadMigrations(): Promise<Migration[]> {
     const directory = path.isAbsolute(this.migrationsPath)
       ? this.migrationsPath
       : path.resolve(this.migrationsPath);
-
     const entries = await fs.readdir(directory);
     const sorted = entries
       .filter(entry => /\.(sql|ts|js)$/i.test(entry))
       .sort();
-
     const migrations: Migration[] = [];
-
     for (const filename of sorted) {
       const fullPath = path.join(directory, filename);
       if (filename.endsWith('.sql')) {
@@ -151,33 +129,27 @@ export class DatabaseMigrator {
         const module = await import(moduleUrl);
         const migration: Migration | undefined =
           module.default ?? module.migration ?? undefined;
-
         if (!migration) {
           throw new Error(`Migration module: "${filename}" does not export a migration.`);
         }
         migrations.push(migration);
       }
     }
-
     return migrations;
   }
-
   async getAppliedVersions(): Promise<Record<string, string>> {
     const rows = await this.sqlClient<{
       version: string;
       checksum: string;
     }[]>`SELECT version, checksum FROM schema_migrations WHERE success = TRUE ORDER BY version ASC;`;
-
     return rows.reduce<Record<string, string>>((map, row) => {
       map[row.version] = row.checksum;
       return map;
     }, {});
   }
-
   private logMigration(name: string, message: string): void {
     console.log(`[migration] ${name} — ${message}`);
   }
-
   private async recordMigration(
     migration: Migration,
     durationMs: number,
@@ -185,7 +157,6 @@ export class DatabaseMigrator {
     errorMessage?: string,
   ): Promise<void> {
     const checksum = createChecksum(migration.up);
-
     await this.sqlClient`
       INSERT INTO schema_migrations
         (version, name, checksum, executed_at, execution_time_ms, success, error_message, rollback_sql, metadata)
@@ -202,14 +173,11 @@ export class DatabaseMigrator {
             metadata = EXCLUDED.metadata;
     `;
   }
-
   async migrate(): Promise<MigrationResult[]> {
     await this.initialize();
-
     const migrations = await this.loadMigrations();
     const applied = await this.getAppliedVersions();
     const results: MigrationResult[] = [];
-
     for (const migration of migrations) {
       if (applied[migration.version]) {
         // already applied
@@ -221,18 +189,14 @@ export class DatabaseMigrator {
         });
         continue;
       }
-
       this.logMigration(migration.name, 'applying');
       const start = performance.now();
-
       try {
         await this.sqlClient.begin(async tx => {
           await tx.unsafe(migration.up);
         });
-
         const durationMs = Math.round(performance.now() - start);
         await this.recordMigration(migration, durationMs, true);
-
         results.push({
           success: true,
           version: migration.version,
@@ -242,9 +206,7 @@ export class DatabaseMigrator {
       } catch (error) {
         const durationMs = Math.round(performance.now() - start);
         const message = error instanceof Error ? error.message : String(error);
-
         await this.recordMigration(migration, durationMs, false, message);
-
         results.push({
           success: false,
           version: migration.version,
@@ -252,14 +214,11 @@ export class DatabaseMigrator {
           applied: false,
           error: message,
         });
-
         throw error;
       }
     }
-
     return results;
   }
-
   async rollback(): Promise<MigrationResult | null> {
     const [lastMigration] = await this.sqlClient<{
       version: string;
@@ -272,17 +231,13 @@ export class DatabaseMigrator {
       ORDER BY executed_at DESC
       LIMIT 1;
     `;
-
     if (!lastMigration) {
       return null;
     }
-
     if (!lastMigration.rollback_sql) {
       throw new Error(`Migration ${lastMigration.name} does not define a rollback.`);
     }
-
     const start = performance.now();
-
     await this.sqlClient.begin(async tx => {
       await tx.unsafe(lastMigration.rollback_sql!);
       await tx`
@@ -290,9 +245,7 @@ export class DatabaseMigrator {
         WHERE version = ${lastMigration.version};
       `;
     });
-
     const durationMs = Math.round(performance.now() - start);
-
     return {
       success: true,
       version: lastMigration.version,
@@ -300,33 +253,27 @@ export class DatabaseMigrator {
       applied: false,
     };
   }
-
   async validateIntegrity(): Promise<{ valid: boolean; issues: string[] }> {
     const issues: string[] = [];
     const migrations = await this.loadMigrations();
     const applied = await this.getAppliedVersions();
-
     for (const migration of migrations) {
       const checksum = createChecksum(migration.up);
       const appliedChecksum = applied[migration.version];
-
       if (!appliedChecksum) {
         continue;
       }
-
       if (checksum !== appliedChecksum) {
         issues.push(
           `Checksum mismatch detected for migration ${migration.version} (${migration.name}).`,
         );
       }
     }
-
     return {
       valid: issues.length === 0,
       issues,
     };
   }
-
   async getStatus(): Promise<MigrationStatus> {
     const appliedRows = await this.sqlClient`
       SELECT version, executed_at
@@ -334,13 +281,11 @@ export class DatabaseMigrator {
       WHERE success = TRUE
       ORDER BY executed_at DESC;
     `;
-
     const appliedVersions = new Set(
       appliedRows.map((row: { version: string }) => row.version),
     );
     const migrations = await this.loadMigrations();
     const pendingVersions = migrations.filter(m => !appliedVersions.has(m.version));
-
     return {
       appliedMigrations: appliedRows.length,
       pendingMigrations: pendingVersions.length,
@@ -348,29 +293,23 @@ export class DatabaseMigrator {
       systemHealthy: pendingVersions.length === 0,
     };
   }
-
   async createMigration(name: string, template = '-- Up\n\n-- Down\n'): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
     const slug = name.replace(/\s+/g, '_').toLowerCase();
     const filename = `${timestamp}_${slug}.sql`;
     const fullPath = path.join(this.migrationsPath, filename);
-
     await fs.mkdir(this.migrationsPath, { recursive: true });
     await fs.writeFile(fullPath, template, 'utf8');
-
     return fullPath;
   }
-
   async close(): Promise<void> {
     await this.sqlClient.end({ timeout: 5 });
   }
 }
-
 export async function runMigrationCLI(command: string, args: string[] = []): Promise<void> {
   const connectionString =
     process.env.DATABASE_URL ?? 'postgresql://localhost:5432/legal_ai';
   const migrator = new DatabaseMigrator(connectionString);
-
   try {
     switch (command) {
       case 'migrate':
@@ -418,7 +357,6 @@ export async function runMigrationCLI(command: string, args: string[] = []): Pro
     await migrator.close();
   }
 }
-
 if (typeof process !== 'undefined' && process.argv[1] && import.meta.url) {
   const entry = fileURLToPath(import.meta.url);
   if (entry === process.argv[1]) {

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
   // keep only known-safe lucide icons, avoid problematic exports (Bot/Sparkles/Clock/Tags)
   import { Search, FileText, Users } from 'lucide-svelte';
   import Fuse from 'fuse.js';
   interface Props {
-    selectedNode?: unknown;
+    selectedNode?: any;
     caseId?: string;
-    evidenceList?: unknown[];
+    evidenceList?: any[];
     ondispatch?: (payload: any) => void;
   }
   let {
@@ -103,7 +103,7 @@
       console.error('AI analysis error:', error);
       processingStatus = 'Analysis failed. Please try again.';
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       setTimeout(() => processingStatus = '', 3000);
     }
   }
@@ -132,14 +132,14 @@
       console.error('Insight generation error:', error);
       processingStatus = 'Failed to generate insights.';
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
       setTimeout(() => processingStatus = '', 3000);
     }
   }
-  function selectEvidence(item: unknown) {
-    ondispatch?.({ id: (item as { id?: unknown }).id });
+  function selectEvidence(item: any) {
+    ondispatch?.({ id: (item as { id?: any }).id });
   }
-  function selectConnection(connection: unknown) {
+  function selectConnection(connection: any) {
     ondispatch?.({ connection });
   }
 </script>
@@ -153,8 +153,7 @@
       <div class="flex items-center gap-2 text-sm">
         <div class="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
         <span class="text-blue-600 dark:text-blue-400">{processingStatus}</span>
-      </div>
-    {/if}
+      {/if}
   </div>
 
   <!-- Search Section -->
@@ -188,7 +187,7 @@
             Found {searchResults.length} results
           </p>
           <div class="space-y-2 max-h-60 overflow-y-auto">
-            {#each searchResults as result}
+            {#each Array.isArray(searchResults) ? searchResults : [] as result}
               <button
                 onclick={() => selectEvidence(result)}
                 class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -205,11 +204,10 @@
                     {/if}
                     {#if (result as any).tags && (result as any).tags.length > 0}
                       <div class="flex flex-wrap gap-1 mt-2">
-                        {#each (result as any).tags.slice(0, 3) as tag}
+                        {#each Array.isArray((result as any).tags.slice(0, 3)) ? (result as any).tags.slice(0, 3) : [] as tag}
                           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
                         {/each}
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                   {#if (result as any).score !== undefined}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(((result as any).score ?? 0) * 100)}% match</span>
@@ -218,8 +216,7 @@
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 
@@ -268,29 +265,25 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded">
                   {selectedNodeAny?.aiSummary}
                 </p>
-              </div>
-            {/if}
+              {/if}
             {#if selectedNodeAny?.aiTags?.tags && selectedNodeAny.aiTags.tags.length > 0}
               <div>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">AI Tags:</p>
                 <div class="flex flex-wrap gap-2">
-                  {#each selectedNodeAny.aiTags.tags as tag}
+                  {#each Array.isArray(selectedNodeAny.aiTags.tags) ? selectedNodeAny.aiTags.tags : [] as tag}
                     <!-- removed variant prop to satisfy Badge typing; fallback to simple span if Badge signature differs -->
                     <Badge>{tag}</Badge>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         {:else}
           <div class="text-center py-8 text-gray-500 dark:text-gray-400">
             <div class="text-4xl mx-auto mb-2 opacity-50">🤖</div>
             <p class="text-sm">No AI analysis available yet</p>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 
   <!-- AI Insights -->
   {#if aiInsights.connections.length > 0 || aiInsights.similarEvidence.length > 0 || aiInsights.suggestedActions.length > 0}
@@ -309,7 +302,7 @@
               Connections
             </h4>
             <div class="space-y-2">
-              {#each aiInsights.connections as connection}
+              {#each Array.isArray(aiInsights.connections) ? aiInsights.connections : [] as connection}
                 <button
                   onclick={() => selectConnection(connection)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -323,8 +316,7 @@
                 </button>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if aiInsights.similarEvidence.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -332,7 +324,7 @@
               Similar Evidence
             </h4>
             <div class="space-y-2">
-              {#each aiInsights.similarEvidence as similar}
+              {#each Array.isArray(aiInsights.similarEvidence) ? aiInsights.similarEvidence : [] as similar}
                 <button
                   onclick={() => selectEvidence(similar)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -346,8 +338,7 @@
                 </button>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
         {#if aiInsights.suggestedActions.length > 0}
           <div>
             <h4 class="font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -355,7 +346,7 @@
               Suggested Actions
             </h4>
             <div class="space-y-2">
-              {#each aiInsights.suggestedActions as action}
+              {#each Array.isArray(aiInsights.suggestedActions) ? aiInsights.suggestedActions : [] as action}
                 <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
                   <p class="text-sm font-medium text-blue-900 dark:text-blue-100">
                     {action.title}
@@ -366,11 +357,9 @@
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Empty State -->
   {#if !selectedNode}
@@ -378,8 +367,7 @@
       <FileText class="w-12 h-12 mx-auto mb-4 opacity-50" />
       <p class="text-lg font-medium mb-2">No evidence selected</p>
       <p class="text-sm">Select an evidence item to begin AI analysis</p>
-    </div>
-  {/if}
+    {/if}
 </div>
 
 <style>

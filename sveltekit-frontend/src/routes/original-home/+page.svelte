@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import Typewriter from '$lib/components/Typewriter.svelte';
   import UploadArea from '$lib/components/UploadArea.svelte';
   import { browser } from '$app/environment';
-  let recentCases: unknown[] = $state([]);
+  let recentCases: any[] = $state([]);
   let heroText = $state('Advanced Legal Case Management');
   $effect(() => {
     (async () => {
@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
   });
-  function handleQuickUpload(files: unknown) {
+  function handleQuickUpload(files: any) {
     // Handle quick upload from homepage
     if (files.length > 0) {
       window.location.href = `/upload?files=${files.length}`;
@@ -146,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="space-y-4">
       <h2 class="space-y-4">Recent Cases</h2>
       <div class="space-y-4">
-        {#each recentCases.slice(0, 6) as caseItem}
+        {#each Array.isArray(recentCases.slice(0, 6)) ? recentCases.slice(0, 6) : [] as caseItem}
           <div class="space-y-4">
             <div class="space-y-4">
               <h3 class="space-y-4">{caseItem.title}</h3>

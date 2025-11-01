@@ -3,12 +3,11 @@
   interface Props {
     value?: string;
     onValueChange?: (_value: string) => void;
-    children?: unknown;
+    children?: any;
   }
   let { value = $bindable(), onValueChange, children, ...restProps }: Props = $props();
 </script>
-
 <Select.Root bind:value {onValueChange} {...restProps}>
-  {@render children?.()}
+  <slot />
 </Select.Root>
 ;

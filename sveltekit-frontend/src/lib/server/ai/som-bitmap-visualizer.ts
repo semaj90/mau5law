@@ -1,8 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
-
 export type SOMBitmapPalette = 'viridis' | 'magma' | 'blueprint' | 'legal' | 'grayscale';
-
 export interface SOMBitmapOptions {
   width?: number;
   height?: number;
@@ -12,7 +10,6 @@ export interface SOMBitmapOptions {
   includeSvg?: boolean;
   cellPadding?: number;
 }
-
 export interface SOMBitmapResult {
   width: number;
   height: number;
@@ -28,10 +25,9 @@ export interface SOMBitmapResult {
     mean?: number;
     created_at?: string;
     source_length?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
-
 const paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = {
   grayscale: Array.from({ length: 256 }, (_, i) => [i, i, i]),
   blueprint: Array.from({ length: 256 }, (_, i) => [
@@ -47,11 +43,9 @@ const paletteMap: Record<SOMBitmapPalette, [number, number, number][]> = {
   viridis: [],
   magma: []
 };
-
 // Precompute viridis/magma palettes lazily to keep bundle light until needed.
 function ensureScientificPalettes() {
   if (paletteMap.viridis.length === 256 && paletteMap.magma.length === 256) return;
-
   const viridisData = [
     [68, 1, 84],
     [71, 44, 122],
@@ -74,7 +68,6 @@ function ensureScientificPalettes() {
     [254, 194, 135],
     [252, 253, 191]
   ];
-
   const interpolate = (data: number[][]) => {
     const result: [number, number, number][] = [];
     for (let i = 0; i < 256; i++) {
@@ -93,11 +86,9 @@ function ensureScientificPalettes() {
     }
     return result;
   };
-
   paletteMap.viridis = interpolate(viridisData);
   paletteMap.magma = interpolate(magmaData);
 }
-
 function normalizeValues(values: Float32Array, clamp = true): [Float32Array, number, number, number] {
   let min = Number.POSITIVE_INFINITY;
   let max = Number.NEGATIVE_INFINITY;
@@ -109,12 +100,10 @@ function normalizeValues(values: Float32Array, clamp = true): [Float32Array, num
     sum += value;
   }
   const mean = values.length > 0 ? sum / values.length : 0;
-
   if (min === max) {
     const filled = new Float32Array(values.length).fill(0.5);
     return [filled, min, max, mean];
   }
-
   const range = max - min;
   const normalized = new Float32Array(values.length);
   for (let i = 0; i < values.length; i++) {
@@ -123,7 +112,6 @@ function normalizeValues(values: Float32Array, clamp = true): [Float32Array, num
   }
   return [normalized, min, max, mean];
 }
-
 function toRGBA(values: Float32Array, paletteName: SOMBitmapPalette): Uint8ClampedArray {
   if (paletteName === 'viridis' || paletteName === 'magma') ensureScientificPalettes();
   const palette = paletteMap[paletteName];
@@ -140,7 +128,6 @@ function toRGBA(values: Float32Array, paletteName: SOMBitmapPalette): Uint8Clamp
   }
   return rgba;
 }
-
 function makeSvg(heatmap: Float32Array, width: number, height: number, palette: SOMBitmapPalette, padding: number) {
   if (palette === 'viridis' || palette === 'magma') ensureScientificPalettes();
   const paletteData = paletteMap[palette];
@@ -167,29 +154,22 @@ function makeSvg(heatmap: Float32Array, width: number, height: number, palette: 
     ''
   )}</svg>`;
 }
-
 export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapOptions = {}): SOMBitmapResult {
   const computedWidth = Math.ceil(Math.sqrt(embedding.length));
   const baseWidth = (options.width !== undefined && options.width !== null) ? options.width : computedWidth;
   const width = Math.max(1, baseWidth);
-
   const computedHeight = Math.ceil(embedding.length / width);
   const baseHeight = (options.height !== undefined && options.height !== null) ? options.height : computedHeight;
   const height = Math.max(1, baseHeight);
-
   const palette = (options.palette !== undefined && options.palette !== null) ? options.palette : 'legal';
   const values = new Float32Array(width * height);
-
   for (let i = 0; i < values.length; i++) {
     values[i] = (i < embedding.length) ? embedding[i] : 0;
   }
-
   const [normalized, min, max, mean] =
     options.normalize !== false ? normalizeValues(values, options.clamp !== false) : [values, 0, 1, 0];
-
   const rgba = toRGBA(normalized, palette);
   const checksum = createHash('sha1').update(Buffer.from(rgba)).digest('hex');
-
   const result: SOMBitmapResult = {
     width,
     height,
@@ -205,18 +185,14 @@ export function encodeEmbeddingToBitmap(embedding: number[], options: SOMBitmapO
       source_length: embedding.length
     }
   };
-
   if (options.includeSvg) {
     const pad = (options.cellPadding !== undefined && options.cellPadding !== null) ? options.cellPadding : 0;
     result.svg = makeSvg(normalized, width, height, palette, pad);
   }
-
   return result;
 }
-
 export function bitmapToDataUrl(result: SOMBitmapResult): string {
   const svg = result.svg ?? makeSvg(result.heatmap, result.width, result.height, result.palette ?? 'grayscale', 0);
   const encoded = Buffer.from(svg).toString('base64');
   return `data:image/svg+xml;base64,${encoded}`;
 }
-

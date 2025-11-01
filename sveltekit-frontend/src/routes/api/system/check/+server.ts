@@ -16,7 +16,7 @@ type OllamaStatus = {
 type DatabaseStatus = {
   status: 'connected' | 'error' | 'unknown';
   type: 'PostgreSQL';
-  tablesAccessible?: unknown;
+  tablesAccessible?: any;
   error?: string;
 };
 
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     };
     return json(systemStatus);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('System status check failed:', error);
     return json(
       {
@@ -76,7 +76,7 @@ async function checkOllamaStatus(): Promise<OllamaStatus> {
       version,
       url: OLLAMA_URL,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Ollama connection failed:', error);
     let errorMessage = 'Connection failed';
     if (error instanceof Error) {
@@ -103,11 +103,11 @@ type DBModule = {
 
 type DBHealthResult = {
   status?: string;
-  tablesAccessible?: unknown;
+  tablesAccessible?: any;
   error?: string;
 };
 
-function isDBHealthResult(obj: unknown): obj is DBHealthResult {
+function isDBHealthResult(obj: any): obj is DBHealthResult {
   return (
     typeof obj === 'object' &&
     obj !== null &&
@@ -148,7 +148,7 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
       type: 'PostgreSQL',
       error: 'healthCheck not exported from $lib/server/db/index.js',
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Database health check failed:', error);
     return {
       status: 'error',

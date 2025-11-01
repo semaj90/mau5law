@@ -11,7 +11,7 @@ export interface WebAssemblyClusteringConfig {
 }
 export class WebAssemblyClusteringService {
   private wasmInstance: WebAssembly.Instance | null = null;
-  private isWasmSupported: boolean = false;
+  private isWasmSupported: boolean = $state(false);
   constructor() {
     this.isWasmSupported = this.checkWebAssemblySupport();
   }

@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/button';
-  import { Label } from '$lib/components/ui/label';
-  import { Textarea } from '$lib/components/ui/textarea';
+  import { Button } from '$lib/components/ui/button.svelte'';
+  import { Label } from '$lib/components/ui/label.svelte'';
+  import { Textarea } from '$lib/components/ui/textarea.svelte'';
   // lucide-svelte exports some icons as default; import Loader2 as the default export
   import Loader2 from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -177,7 +177,7 @@
       console.error("Document processing error:", error);
       processResult = { success: false, message: error instanceof Error ? error.message : "Unknown error" };
     } finally {
-      processing = false;
+      processing = $state(false);
     }
     showProcessDialog = true;
   }
@@ -215,7 +215,7 @@
       console.error('Vector search error:', error);
       alert(`Search failed: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
-      searching = false;
+      searching = $state(false);
       showSearchDialog = true;
     }
   }
@@ -303,8 +303,7 @@
                     : "disabled"}
                 </span>
               </span>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </header>
@@ -322,7 +321,7 @@
           <div>
             <Label for="document-type">Document Type</Label>
             <select id="document-type" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedDocumentType}>
-              {#each documentTypes as type}
+              {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
                 <option value={type.value}>{type.label}</option>
               {/each}
             </select>
@@ -330,7 +329,7 @@
           <div>
             <Label for="jurisdiction">Jurisdiction</Label>
             <select id="jurisdiction" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedJurisdiction}>
-              {#each jurisdictions as jurisdiction}
+              {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                 <option value={jurisdiction.value}>{jurisdiction.label}</option>
               {/each}
             </select>
@@ -340,7 +339,7 @@
           <div>
             <Label for="practice-area">Practice Area</Label>
             <select id="practice-area" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedPracticeArea}>
-              {#each practiceAreas as area}
+              {#each Array.isArray(practiceAreas) ? practiceAreas : [] as area}
                 <option value={area.value}>{area.label}</option>
               {/each}
             </select>
@@ -464,50 +463,43 @@
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Summary:</Label>
               <span class="col-span-3 text-sm">{processResult.summary}</span>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.keywords && processResult.keywords.length > 0}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Keywords:</Label>
               <span class="col-span-3">{processResult.keywords.join(', ')}</span>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.legal_entities && processResult.legal_entities.length > 0}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Entities:</Label>
               <div class="col-span-3">
-                {#each processResult.legal_entities as entity}
+                {#each Array.isArray(processResult.legal_entities) ? processResult.legal_entities : [] as entity}
                   <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
                     {entity.name} ({entity.type})
                   </span>
                 {/each}
               </div>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.sentiment !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Sentiment:</Label>
               <span class="col-span-3">{getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})</span>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.confidence !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Confidence:</Label>
               <span class="col-span-3">{(processResult.confidence * 100).toFixed(2)}%</span>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.processing_time}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Time:</Label>
               <span class="col-span-3">{processResult.processing_time}</span>
-            </div>
-          {/if}
+            {/if}
           {#if processResult.cached_result !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Cached:</Label>
               <span class="col-span-3">{processResult.cached_result ? 'Yes' : 'No'}</span>
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
         <p>No results to display.</p>
@@ -517,8 +509,7 @@
         <Button onclick={() => (showProcessDialog = false)}>Close</Button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <!-- Search Results Dialog (replaced DialogRoot/DialogContent with a plain Svelte modal) -->
 {#if showSearchDialog}
@@ -552,7 +543,7 @@
           <p class="text-sm text-muted-foreground">
             Found {searchResults.total} results for: "{searchResults.query}" in {searchResults.took}.
           </p>
-          {#each searchResults.results as result}
+          {#each Array.isArray(searchResults.results) ? searchResults.results : [] as result}
             <div class="bg-white rounded-md shadow-sm overflow-hidden">
               <div class="border-l-4 border-blue-500 p-3">
                 <h4 class="font-semibold">{result.metadata.title || 'Untitled Document'}</h4>
@@ -584,8 +575,7 @@
         <Button onclick={() => (showSearchDialog = false)}>Close</Button>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   /* Consolidated custom styles (single top-level <style> only) */

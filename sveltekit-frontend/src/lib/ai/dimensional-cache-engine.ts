@@ -33,14 +33,12 @@ export interface CacheEntry {
     behaviorPattern: string;
   };
 }
-
 export interface RecommendationResult {
   similar: DimensionalArray[];
   suggestions: string[];
   didYouMean: string[];
   othersSearched: string[];
 }
-
 export class DimensionalCacheEngine {
   private cache = new Map<string, CacheEntry>();
   private rabbitMQQueue: string[] = [];
@@ -240,7 +238,7 @@ export class DimensionalCacheEngine {
         this.processOfflineQueue();
       });
       window.addEventListener('offline', () => {
-        this.isOnline = false;
+        this.isOnline = $state(false);
       });
     }
   }
@@ -254,7 +252,7 @@ export class DimensionalCacheEngine {
       try {
         // Process queued computation
         await this.processQueuedComputation(computation);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Failed to process queued computation:', error);
       }
     }

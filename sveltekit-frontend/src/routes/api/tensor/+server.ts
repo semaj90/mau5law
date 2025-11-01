@@ -143,7 +143,7 @@ interface PutRequestBody {
 }
 
 // Initialize tensor service connection
-let isInitialized = false;
+let isInitialized = $state(false);
 async function ensureInitialized() {
   if (!isInitialized) {
     try {

@@ -1,14 +1,12 @@
 <script lang="ts">
   import debounce from 'lodash-es/debounce';
-
   interface Props {
     placeholder?: string;
     value?: string;
     showAdvancedFilters?: boolean;
     onsearch?: (searchTerm: string) => void;
-    onfilter?: (filters: { type?: string; dateRange?: { from string; to: string } }) => void;
+    onfilter?: (filters: { type?: string; dateRange?: { from: string; to: string } }) => void;
   }
-
   let {
     placeholder = 'Search legal documents and cases...',
     value = $bindable(''),
@@ -16,40 +14,33 @@
     onsearch,
     onfilter
   }: Props = $props();
-
   // Debounced search for better performance
   const debouncedSearch = debounce((searchTerm: string) => onsearch?.(searchTerm), 300);
-
   // Reactive search trigger using $effect
   $effect(() => {
     if (value !== undefined) {
       debouncedSearch(value);
     }
   });
-
   // Filter state using $state
   let selectedType = $state('');
   let dateFrom = $state('');
   let dateTo = $state('');
-
   function handleFilterChange() {
     onfilter?.({
       type: selectedType || undefined,
       dateRange: dateFrom || dateTo ? { from dateFrom, to: dateTo } : undefined
     });
   }
-
   function clearFilters() {
     selectedType = '';
     dateFrom = '';
     dateTo = '';
     handleFilterChange();
   }
-
   // reference to the input element (if needed)
   let searchInput: HTMLInputElement | undefined;
 </script>
-
 <div class="searchbar-container">
   <!-- Main Search Input -->
   <div class="search-input-container">
@@ -65,7 +56,6 @@
       <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
     </svg>
   </div>
-
   <!-- Advanced Filters Toggle -->
   {#if showAdvancedFilters}
     <button
@@ -77,7 +67,6 @@
         <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
       </svg>
     </button>
-
     <!-- advanced filters -->
     <div class="advanced-filters">
       <select bind:value={selectedType} onchange={handleFilterChange}>
@@ -85,19 +74,15 @@
         <option value="case">Case</option>
         <option value="document">Document</option>
       </select>
-
       <label>
         From <input type="date" bind:value={dateFrom} onchange={handleFilterChange} />
       </label>
       <label>
         To <input type="date" bind:value={dateTo} onchange={handleFilterChange} />
       </label>
-
       <button type="button" onclick={clearFilters}>Clear</button>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .searchbar-container {
     display: flex;
@@ -176,7 +161,6 @@
       text-align: center;
     }
   }
-
   /* Additional panel styles if needed by consumers */
   .filters-panel {
     margin-top: 1rem;
@@ -263,4 +247,3 @@
     }
   }
 </style>
-

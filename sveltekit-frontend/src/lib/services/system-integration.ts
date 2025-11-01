@@ -65,7 +65,7 @@ interface SearchDocument {
   // origin/source marker (cache | postgres | context7 etc.)
   source?: 'cache' | 'postgres' | 'context7' | string;
   // allow extra fields without using `any`
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface QueryResult {
@@ -80,7 +80,7 @@ type GPUCacheStats = {
   items?: number;
   size?: number;
   // allow additional runtime-provided fields, but avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add typed interfaces to replace many `any` usages and to safely adapt GPU cache shape
@@ -138,7 +138,7 @@ type GPUCacheInterface = {
 
 // Add a small typed PostgresClient to avoid `any` usage for query params
 interface PostgresClient {
-  query: (sql: string, params?: unknown[]) => Promise<PgQueryResult<Record<string, unknown>>>;
+  query: (sql: string, params?: any[]) => Promise<PgQueryResult<Record<string, unknown>>>;
   connect: () => Promise<boolean>;
   end: () => Promise<boolean>;
 }
@@ -148,13 +148,13 @@ interface MinIOClient {
   bucketExists: (bucket: string) => Promise<boolean>;
   makeBucket: (bucket: string) => Promise<boolean>;
   // avoid `any` by using a generic record or unknown for other shapes
-  putObject: (bucket: string, name: string, data: unknown) => Promise<{ etag?: string } | Record<string, unknown>>;
+  putObject: (bucket: string, name: string, data: any) => Promise<{ etag?: string } | Record<string, unknown>>;
   // broaden possible return shapes from storage clients
   getObject: (bucket: string, name: string) => Promise<Blob | Buffer | ArrayBuffer | Uint8Array | string | unknown>;
   removeObject: (bucket: string, name: string) => Promise<boolean>;
   listObjects: (bucket: string, prefix?: string) => Promise<Array<{ name: string }>>;
   // allow extra methods if implementations vary; use unknown instead of any
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Typed Redis client shape used in this module
@@ -166,7 +166,7 @@ interface RedisClient {
   keys: (pattern: string) => Promise<string[]>;
   flushdb: () => Promise<'OK' | string | null>;
   // allow extra methods if implementations vary; use unknown instead of any
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export class EvidenceSystemIntegration {
@@ -179,7 +179,7 @@ export class EvidenceSystemIntegration {
   private redisClient: RedisClient; // <- typed instead of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
-  private isInitialized: boolean = false;
+  private isInitialized: boolean = $state(false);
 
   // Constructor signature fixed
   constructor(
@@ -239,7 +239,7 @@ export class EvidenceSystemIntegration {
       this.minioClient = {
         bucketExists: async (_bucket: string) => true,
         makeBucket: async (_bucket: string) => true,
-        putObject: async (_bucket: string, _name: string, _data: unknown) => ({ etag: 'mock-etag' }),
+        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: 'mock-etag' }),
         getObject: async (_bucket: string, _name: string) => new Blob(),
         removeObject: async (_bucket: string, _name: string) => true,
         listObjects: async (_bucket: string, _prefix?: string) => [],
@@ -267,7 +267,7 @@ export class EvidenceSystemIntegration {
     try {
       // Simulate PostgreSQL client (mock)
       this.postgresClient = {
-        query: async (_sql: string, _params?: unknown[]) => ({ rows: [], rowCount: 0 }),
+        query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
         connect: async () => true,
         end: async () => true,
       };
@@ -439,7 +439,7 @@ export class EvidenceSystemIntegration {
   /**
    * Store evidence file with full integration
    */
-  async storeEvidence(caseId: string, file: File, metadata: { [key: string]: unknown } = {}): Promise<string> {
+  async storeEvidence(caseId: string, file: File, metadata: { [key: string]: any } = {}): Promise<string> {
     if (!this.isInitialized) {
       throw new Error('System not initialized');
     }
@@ -534,7 +534,7 @@ export class EvidenceSystemIntegration {
     const { limit = 10, threshold = 0.7, includeContext7 = true, useGPUCache = true } = options;
     try {
       const results: QueryResult['documents'] = [];
-      let cacheHit = false;
+      let cacheHit = $state(false);
       // 1. Check Redis cache first
       // Use portable helper to get a base64-safe cache key across environments
       const base64Key = this.toBase64(query);
@@ -654,14 +654,14 @@ export class EvidenceSystemIntegration {
   }
 
   // Helper: normalize varied object types into a BlobPart safely
-  private normalizeToBlobPart(raw: unknown): BlobPart {
+  private normalizeToBlobPart(raw: any): BlobPart {
     // Browser Blob already OK
     if (typeof Blob !== 'undefined' && raw instanceof Blob) {
       return raw;
     }
 
     // Node Buffer -> convert to Uint8Array copy (Buffer is a subclass of Uint8Array in Node)
-    const nodeGlobal = globalThis as unknown as { Buffer?: { isBuffer?: (v: unknown) => boolean } };
+    const nodeGlobal = globalThis as unknown as { Buffer?: { isBuffer?: (v: any) => boolean } };
     if (nodeGlobal?.Buffer && typeof nodeGlobal.Buffer.isBuffer === 'function' && nodeGlobal.Buffer.isBuffer(raw)) {
       // raw (Buffer) is Uint8Array-compatible
       return new Uint8Array(raw as Uint8Array).slice();

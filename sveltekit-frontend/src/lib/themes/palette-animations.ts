@@ -21,7 +21,7 @@ export interface ColorTransition {
 }
 export class PaletteAnimationController {
   private currentPalette: ConsolePaletteName = 'legal';
-  private isAnimating = false;
+  private isAnimating = $state(false);
   private animationFrame?: number;
   private startTime = 0;
   private transitions = new Map<string, ColorTransition>();
@@ -320,7 +320,7 @@ export class PaletteAnimationController {
     }
   }
   private completeAnimation(toPalette: ConsolePaletteName): void {
-    this.isAnimating = false;
+    this.isAnimating = $state(false);
     this.currentPalette = toPalette;
     // Clean up animation effects
     this.cleanupAnimationEffects();
@@ -432,7 +432,7 @@ export class PaletteAnimationController {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = undefined;
     }
-    this.isAnimating = false;
+    this.isAnimating = $state(false);
     this.cleanupAnimationEffects();
   }
 }

@@ -35,10 +35,10 @@ export interface ProcessingPipeline {
   evidenceId: string;
   stages: {
     embedding: { status: string; result?: EmbeddingResult; error?: string }; // Changed type here
-    tagging: { status: string; result?: unknown; error?: string };
-    analysis: { status: string; result?: unknown; error?: string };
-    vectorSearch: { status: string; result?: unknown; error?: string };
-    graphDiscovery: { status: string; result?: unknown; error?: string };
+    tagging: { status: string; result?: any; error?: string };
+    analysis: { status: string; result?: any; error?: string };
+    vectorSearch: { status: string; result?: any; error?: string };
+    graphDiscovery: { status: string; result?: any; error?: string };
   };
   overallStatus: 'pending' | 'processing' | 'complete' | 'error';
   startTime: Date;
@@ -79,7 +79,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const embeddingResult = (await embeddingResponse.json()) as EmbeddingResult; // Added type assertion
       pipeline.stages.embedding.status = 'complete';
       pipeline.stages.embedding.result = embeddingResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       pipeline.stages.embedding.status = 'error';
       pipeline.stages.embedding.error = (error as Error).message;
     }
@@ -101,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         pipeline.stages.tagging.status = 'complete';
         pipeline.stages.tagging.result = taggingResult;
         return taggingResult;
-      } catch (error: unknown) {
+      } catch (error: any) {
         pipeline.stages.tagging.status = 'error';
         pipeline.stages.tagging.error = (error as Error).message;
         return null;
@@ -125,7 +125,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         pipeline.stages.analysis.status = 'complete';
         pipeline.stages.analysis.result = analysisResult;
         return analysisResult;
-      } catch (error: unknown) {
+      } catch (error: any) {
         pipeline.stages.analysis.status = 'error';
         pipeline.stages.analysis.error = (error as Error).message;
         return null;
@@ -154,7 +154,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         vectorMatches = searchResult.matches || [];
         pipeline.stages.vectorSearch.status = 'complete';
         pipeline.stages.vectorSearch.result = { matches: vectorMatches };
-      } catch (error: unknown) {
+      } catch (error: any) {
         pipeline.stages.vectorSearch.status = 'error';
         pipeline.stages.vectorSearch.error = (error as Error).message;
       }
@@ -177,7 +177,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       relationships = graphResult.relationships || [];
       pipeline.stages.graphDiscovery.status = 'complete';
       pipeline.stages.graphDiscovery.result = { relationships };
-    } catch (error: unknown) {
+    } catch (error: any) {
       pipeline.stages.graphDiscovery.status = 'error';
       pipeline.stages.graphDiscovery.error = (error as Error).message;
     }
@@ -206,7 +206,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         successfulStages: Object.values(pipeline.stages).filter(s => s.status === 'complete').length,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence processing failed:', error);
     return json(
       {

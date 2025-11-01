@@ -47,7 +47,7 @@ export interface HybridSearchConfig {
 class FAISSGPUEngine {
   private faissModule: any = null;
   private gpuIndex: any = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private dimension = 768; // Gemma embedding dimension
   constructor() {
     this.initialize();
@@ -103,7 +103,7 @@ class FAISSGPUEngine {
               this.dimension = dimension;
               this.nlist = nlist;
               this.nprobe = 1;
-              this.is_trained = false;
+              this.is_trained = $state(false);
               this.ntotal = 0;
               this.centroids = [];
               this.clusters = new Map();
@@ -338,7 +338,7 @@ export class PgVectorFAISSBridge {
   private faissEngine: FAISSGPUEngine;
   private pgvectorBridge: PgVectorBridge;
   private documentIndex = new Map<number, PgVectorDocument>();
-  private isIndexLoaded = false;
+  private isIndexLoaded = $state(false);
   constructor() {
     this.faissEngine = new FAISSGPUEngine();
     this.pgvectorBridge = new PgVectorBridge();

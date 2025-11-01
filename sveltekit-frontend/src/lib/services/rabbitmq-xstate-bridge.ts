@@ -35,9 +35,9 @@ export interface BridgeConfig {
 
 export class RabbitMQXStateBridge {
   private subscriptions: Map<string, QueueSubscription> = new Map();
-  private isConnected: boolean = false;
+  private isConnected: boolean = $state(false);
   private config: BridgeConfig;
-  private failoverActive: boolean = false;
+  private failoverActive: boolean = $state(false);
 
   constructor(config: BridgeConfig = {}) {
     this.config = {
@@ -131,7 +131,7 @@ export class RabbitMQXStateBridge {
    */
   public async shutdown(): Promise<void> {
     this.subscriptions.clear();
-    this.isConnected = false;
+    this.isConnected = $state(false);
   }
 
   // ═══════════════════════════════════════════════════════════════

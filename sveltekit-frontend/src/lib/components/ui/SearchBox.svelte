@@ -2,7 +2,6 @@
   // onMount was unused — removed
   // Use a namespace import to safely access public env vars without TS named-export errors
   import * as env from '$env/static/public';
-
   interface Props {
     placeholder?: string;
     searchEndpoint?: string;
@@ -20,14 +19,12 @@
   let isLoading = $state(false);
   let isExpanded = $state(false);
   let searchInput: HTMLInputElement | null = null;
-
   // prefer PUBLIC env, fallback to empty so relative paths work in dev/prod
   const API_BASE = (env.PUBLIC_API_BASE ?? "").replace(/\/$/, "");
-
   const performSearch = async () => {
     if (!query?.trim() || query.length < 2) {
       results = [];
-      isExpanded = false;
+      isExpanded = $state(false);
       return;
     }
     isLoading = true;
@@ -50,47 +47,42 @@
       console.error('Search error:', error);
       results = [];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   };
-
   const handleKeydown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       performSearch();
     } else if (event.key === 'Escape') {
       query = "";
       results = [];
-      isExpanded = false;
+      isExpanded = $state(false);
       searchInput?.blur();
     }
   };
-
   const selectResult = (result: any) => {
     query = result.content ? result.content.substring(0, 100) + "..." : (result.title || "");
     results = [];
-    isExpanded = false;
+    isExpanded = $state(false);
     onResults([result]);
   };
-
   const clearSearch = () => {
     query = "";
     results = [];
-    isExpanded = false;
+    isExpanded = $state(false);
     searchInput?.focus();
   };
-
   $effect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Element | null;
       if (!target || !target.closest('.search-container')) {
-        isExpanded = false;
+        isExpanded = $state(false);
       }
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   });
 </script>
-
 <div class={["search-container", className].filter(Boolean).join(' ')}>
   <div class="nes-field search-field">
     <label for="search-input" class="search-label">
@@ -114,8 +106,7 @@
       {#if isLoading}
         <div class="loading-indicator">
           <i class="nes-icon coin"></i>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   {#if isExpanded && (results.length > 0 || isLoading)}
@@ -140,8 +131,7 @@
                 {#if result.content}
                   <div class="result-snippet">
                     {result.content.substring(0, 120)}...
-                  </div>
-                {/if}
+                  {/if}
                 {#if result.metadata}
                   <div class="result-metadata">
                     {#if result.metadata.caseId}
@@ -150,13 +140,11 @@
                     {#if result.metadata.documentType}
                       <span class="type-tag">{result.metadata.documentType}</span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
                 {#if result.similarity}
                   <div class="similarity-score">
                     Relevance: {Math.round(result.similarity * 100)}%
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </button>
           {/each}
@@ -165,12 +153,9 @@
         <div class="no-results">
           <i class="nes-icon is-medium heart"></i>
           <span>No documents found for: "{query}"</span>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
 </div>
-
 <style>
   .search-container {
     position: relative;
@@ -339,4 +324,3 @@
     }
   }
 </style>
-

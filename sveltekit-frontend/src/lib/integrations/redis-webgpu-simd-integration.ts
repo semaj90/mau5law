@@ -38,28 +38,23 @@ interface ProcessingMetrics {
   totalProcessingTime: number;
   cacheEfficiency: number;
 }
-
 // --- New Interfaces for Type Safety ---
 interface LegalDocumentData {
   content: string;
-  [key: string]: unknown; // Allow other properties, but content is required
+  [key: string]: any; // Allow other properties, but content is required
 }
-
 interface EntityResult {
   entity: string;
   confidence: number;
 }
-
 interface SimilarityResult {
   id: string;
   similarity: number;
 }
-
 interface RiskAssessmentResult {
   risk_score: number;
   factors: string[];
 }
-
 interface LegalDocumentAnalysis {
   entities: EntityResult[];
   sentiment: number;
@@ -70,7 +65,6 @@ interface LegalDocumentAnalysis {
   cpu_processed?: boolean;
   processing_time: number;
 }
-
 interface LegalDocumentProcessingResult {
   analysis: LegalDocumentAnalysis;
   processingPath: string[];
@@ -80,7 +74,6 @@ interface LegalDocumentProcessingResult {
     source: 'redis' | 'webgpu' | 'cpu';
   };
 }
-
 interface VectorSimilarityResult {
   similarities: number[];
   processingPath: string[];
@@ -90,7 +83,6 @@ interface VectorSimilarityResult {
     source: 'redis' | 'webgpu' | 'cpu';
   };
 }
-
 interface IntelligentTodosResult {
   todos: IntelligentTodo[];
   processingPath: string[];
@@ -100,7 +92,6 @@ interface IntelligentTodosResult {
     source: 'redis' | 'webgpu_som';
   };
 }
-
 // Batch operation types
 interface LegalDocumentBatchOp {
   type: 'legal_document';
@@ -108,33 +99,27 @@ interface LegalDocumentBatchOp {
   options?: { useCache?: boolean; pipeline?: JobType[]; priority?: number };
   index: number;
 }
-
 interface VectorSimilarityBatchOp {
   type: 'vector_similarity';
   data: { query: number[]; candidates: number[][] };
   options?: { algorithm?: 'cosine' | 'euclidean' | 'dot'; threshold?: number; useCache?: boolean };
   index: number;
 }
-
 interface IntelligentTodosBatchOp {
   type: 'intelligent_todos';
   data: string;
   options?: { useCache?: boolean; webgpuRanking?: boolean };
   index: number;
 }
-
 type BatchOperation = LegalDocumentBatchOp | VectorSimilarityBatchOp | IntelligentTodosBatchOp;
-
 interface WarmVectorSimilarityPayload {
   vectors: number[][];
 }
-
 // --- New Interfaces for Type Safety ---
 interface WarmLegalDocumentCachePayload {
   documentType?: string;
   content: string;
 }
-
 interface WarmSearchResultsPayload {
   queries: Array<string | Record<string, unknown>>;
   // optional metadata for warm-up runs
@@ -142,13 +127,12 @@ interface WarmSearchResultsPayload {
   priority?: number;
 }
 // --- End New Interfaces ---
-
 export class RedisWebGPUSIMDIntegration {
   private webgpuCache: WebGPUSOMCache;
-  private redisClient: unknown = null; // Changed from any to unknown
+  private redisClient: any = null; // Changed from any to unknown
   private config: RedisWebGPUConfig;
   private metrics: ProcessingMetrics;
-  private cache = new Map<string, { value: unknown; expiry: number }>();
+  private cache = new Map<string, { value: any; expiry: number }>();
   constructor(config: Partial<RedisWebGPUConfig> = {}) {
     this.config = {
       enableWebGPU: true,
@@ -695,7 +679,6 @@ export class RedisWebGPUSIMDIntegration {
     // In a real application, this would interact with a Redis client.
     console.log(`[SIMULATED CACHE] SET: ${key} (expires in ${expirySeconds}s)`);
   }
-
   /**
    * Simulates getting a value from Redis cache.
    * @param key The cache key.

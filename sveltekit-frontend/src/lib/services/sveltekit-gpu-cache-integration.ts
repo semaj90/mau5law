@@ -135,8 +135,8 @@ export class SvelteKitGPUCacheIntegration {
   private indexedDB: IDBDatabase | null = null;
   private lokiJS: any = null; // LokiJS instance placeholder
   private prefetchWorker: Worker | null = null;
-  private isInitialized = false;
-  private serverConnected = false;
+  private isInitialized = $state(false);
+  private serverConnected = $state(false);
 
   private memoryCache = new Map<string, ClientCacheEntry>();
   private userHistory = new Map<string, any[]>();
@@ -661,11 +661,11 @@ export class SvelteKitGPUCacheIntegration {
         this.serverConnected = true;
         console.log('📡 Server connection established');
       } else {
-        this.serverConnected = false;
+        this.serverConnected = $state(false);
         console.warn('⚠️ rpcClient.connect not available — operating in offline mode');
       }
     } catch (error: any) {
-      this.serverConnected = false;
+      this.serverConnected = $state(false);
       console.warn('⚠️ Server connection failed, operating in offline mode:', error);
     }
   }
@@ -755,7 +755,7 @@ export class SvelteKitGPUCacheIntegration {
       }
 
       console.log(`🚀 Hydrated ${entries.length} entries from SSR`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Log unknown errors safely
       console.error('SSR hydration error:', error);
     }
@@ -837,7 +837,7 @@ export class SvelteKitGPUCacheIntegration {
     return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 
-  private async compressData(data: unknown): Promise<Uint8Array | unknown> {
+  private async compressData(data: any): Promise<Uint8Array | unknown> {
     // Attempt to gzip-compress the JSON-serializable payload when CompressionStream is available.
     // If not available or serialization fails, return the original value as a safe fallback.
     try {

@@ -12,7 +12,7 @@ type ExpectedAIResponse = {
   contextUsed?: string[];
   confidence?: number;
   suggestions?: string[];
-  gameElements?: unknown[];
+  gameElements?: any[];
 };
 
 export const POST: RequestHandler = async ({ request }) => {

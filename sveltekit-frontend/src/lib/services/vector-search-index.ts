@@ -11,7 +11,7 @@ interface ExpectedMinIOMetadata {
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   caseReferences?: string[];
   citationCount?: number;
-  [key: string]: unknown; // Allow for other properties that might exist in MinIOFile's metadata
+  [key: string]: any; // Allow for other properties that might exist in MinIOFile's metadata
 }
 
 // Extend the imported MinIOFile type to include: 'originalName', 'uploadedAt',
@@ -76,7 +76,7 @@ class VectorSearchIndex {
   private embeddings: Map<string, Float32Array> = new Map();
   private metadata: Map<string, VectorSearchResult['metadata']> = new Map();
   private textChunks: Map<string, VectorSearchResult['chunks']> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private indexedDBName = 'legal-ai-vector-index';
   private indexedDBVersion = 1;
   private db: IDBDatabase | null = null;

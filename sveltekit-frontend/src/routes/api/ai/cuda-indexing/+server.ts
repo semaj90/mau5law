@@ -60,7 +60,7 @@ interface IndexRequestPayload {
 	dimensions?: number
 	max_elements?: number
 	config?: Record<string, unknown>
-	[key: string]: unknown
+	[key: string]: any
 }
 // Health check for CUDA indexing service
 async function checkCudaIndexingHealth(): Promise<boolean> {
@@ -188,7 +188,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         build_successful: result.success,
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const processingTime = Date.now() - startTime;
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('CUDA index build failed:', errMsg);
@@ -278,7 +278,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('CUDA capabilities check failed:', errMsg);
     return json(
@@ -345,7 +345,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         efficiency_score: searchTime < 100 ? 'excellent' : 'good',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -430,7 +430,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
             error: `HTTP ${response.status}`,
           });
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
         results.push({
           operation: operation.operation,
@@ -454,7 +454,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       cuda_batch_processing: true,
       rtx_3060_ti_optimized: true,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
@@ -519,7 +519,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			cpu_accelerated: true,
 			instruction_set: result.instruction_set || 'AVX2/SSE4'
 		})
-	} catch (error: unknown) {
+	} catch (error: any) {
 		const errMsg = error instanceof Error ? error.message : String(error)
 		return json(
       {

@@ -11,7 +11,7 @@ export interface YoRHaAPIConfig {
   enableWebSocket: boolean;
   enableSSE: boolean;
   // Optional callback when any data source pushes new data
-  onData?: (id: string, data: unknown) => void;
+  onData?: (id: string, data: any) => void;
 }
 export interface YoRHaComponentData {
   id: string;
@@ -21,7 +21,7 @@ export interface YoRHaComponentData {
     loading?: boolean;
     value?: string;
     error?: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
@@ -30,10 +30,10 @@ export interface YoRHaComponentInstance {
   id: string;
   type: 'button' | 'panel' | 'input' | 'modal' | 'layout';
   config: Record<string, unknown>; // Changed from any
-  data?: unknown;
+  data?: any;
   metrics?: YoRHaMetrics;
   events?: YoRHaEvent[];
-  state?: unknown;
+  state?: any;
 }
 export interface YoRHaMetrics {
   interactions: number;
@@ -45,7 +45,7 @@ export interface YoRHaMetrics {
 export interface YoRHaEvent {
   type: string;
   timestamp: string;
-  data: unknown; // Changed from any
+  data: any; // Changed from any
   componentId: string;
 }
 export interface YoRHaSystemStatus {
@@ -70,8 +70,8 @@ export interface YoRHaSystemStatus {
   };
 }
 export interface YoRHaGraphData {
-  nodes: Array<{ id: string; label: string; [key: string]: unknown }>;
-  edges: Array<{ source: string; target: string; [key: string]: unknown }>;
+  nodes: Array<{ id: string; label: string; [key: string]: any }>;
+  edges: Array<{ source: string; target: string; [key: string]: any }>;
 }
 export interface YoRHaDataSource {
   id: string;
@@ -80,17 +80,15 @@ export interface YoRHaDataSource {
   endpoint?: string;
   interval?: number;
   intervalMs?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface YoRHaLayout {
   dataSources?: YoRHaDataSource[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // --- Add missing component option types and simple validators ---
 export type YoRHaSize = 'small' | 'medium' | 'large';
 export type YoRHaVariant = 'primary' | 'secondary' | 'default';
-
 export interface YoRHaButton3DOptions {
   text?: string;
   variant?: YoRHaVariant;
@@ -101,7 +99,6 @@ export interface YoRHaButton3DOptions {
   glowEffect?: boolean;
   hoverAnimation?: boolean;
 }
-
 export interface YoRHaPanel3DOptions {
   title?: string;
   variant?: YoRHaVariant | 'default';
@@ -112,7 +109,6 @@ export interface YoRHaPanel3DOptions {
   glitchEffect?: boolean;
   borderGlow?: boolean;
 }
-
 export interface YoRHaInput3DOptions {
   placeholder?: string;
   type?: string;
@@ -123,7 +119,6 @@ export interface YoRHaInput3DOptions {
   scanlineEffect?: boolean;
   terminalMode?: boolean;
 }
-
 export interface YoRHaModal3DOptions {
   title?: string;
   variant?: YoRHaVariant | 'default';
@@ -133,13 +128,12 @@ export interface YoRHaModal3DOptions {
   backdropBlur?: boolean;
   hologramEffect?: boolean;
 }
-
 /**
  * Minimal runtime validators used by factory methods.
  * These are intentionally light-weight (presence + basic type checks).
  */
 export const YoRHaValidators = {
-  validateButtonConfig(config: unknown): config is YoRHaButton3DOptions {
+  validateButtonConfig(config: any): config is YoRHaButton3DOptions {
     if (!config || typeof config !== 'object') return false;
     const c = config as Record<string, unknown>;
     return (
@@ -148,8 +142,7 @@ export const YoRHaValidators = {
       (c.size === undefined || typeof c.size === 'string')
     );
   },
-
-  validatePanelConfig(config: unknown): config is YoRHaPanel3DOptions {
+  validatePanelConfig(config: any): config is YoRHaPanel3DOptions {
     if (!config || typeof config !== 'object') return false;
     const c = config as Record<string, unknown>;
     return (
@@ -158,8 +151,7 @@ export const YoRHaValidators = {
       (c.height === undefined || typeof c.height === 'number')
     );
   },
-
-  validateInputConfig(config: unknown): config is YoRHaInput3DOptions {
+  validateInputConfig(config: any): config is YoRHaInput3DOptions {
     if (!config || typeof config !== 'object') return false;
     const c = config as Record<string, unknown>;
     return (
@@ -168,8 +160,7 @@ export const YoRHaValidators = {
       (c.value === undefined || typeof c.value === 'string')
     );
   },
-
-  validateModalConfig(config: unknown): config is YoRHaModal3DOptions {
+  validateModalConfig(config: any): config is YoRHaModal3DOptions {
     if (!config || typeof config !== 'object') return false;
     const c = config as Record<string, unknown>;
     return (
@@ -181,9 +172,8 @@ export const YoRHaValidators = {
 export interface YoRHaWebSocketMessage {
   type: string;
   componentId?: string;
-  data: unknown;
+  data: any;
 }
-
 export class YoRHaAPIClient {
   private config: YoRHaAPIConfig;
   private websocket?: WebSocket;
@@ -191,7 +181,7 @@ export class YoRHaAPIClient {
   private eventSource?: EventSource;
   private sseAttempts = 0;
   private cache = new Map<string, unknown>();
-  private subscribers = new Map<string, Set<(data: unknown) => void>>(); // changed to unknown
+  private subscribers = new Map<string, Set<(data: any) => void>>(); // changed to unknown
   private layout: YoRHaLayout | null = null;
   private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>>();
   constructor(config: Partial<YoRHaAPIConfig> = {}) {
@@ -248,7 +238,7 @@ export class YoRHaAPIClient {
                 const data = await res.json();
                 this.pushData(ds.name, data);
               }
-            } catch (err: unknown) {
+            } catch (err: any) {
               // Changed any to unknown
               console.warn(`Data source: '${ds.name}' fetch failed`, err);
             }
@@ -279,20 +269,20 @@ export class YoRHaAPIClient {
     this.dataSourceIntervals.clear();
   }
   /** Push data from a source into cache + notify watchers */
-  private pushData(id: string, data: unknown) {
+  private pushData(id: string, data: any) {
     this.cache.set(`ds:${id}`, data);
     this.notifySubscribers(`data:${id}`, data);
     if (this.config.onData) {
       try {
         this.config.onData(id, data);
-      } catch (e: unknown) {
+      } catch (e: any) {
         // Changed any to unknown
         /* swallow */
       }
     }
   }
   /** Retrieve last value for a data source */
-  getDataSourceValue(id: string): unknown {
+  getDataSourceValue(id: string): any {
     return this.cache.get(`ds:${id}`);
   }
   // Component Configuration API
@@ -463,13 +453,13 @@ export class YoRHaAPIClient {
       this.subscribers.set(eventName, new Set());
     }
     // Cast the callback to the type expected by the Set
-    const typedCallback = callback as (data: unknown) => void;
+    const typedCallback = callback as (data: any) => void;
     this.subscribers.get(eventName)!.add(typedCallback);
     return () => {
       this.subscribers.get(eventName)?.delete(typedCallback);
     };
   }
-  private notifySubscribers(eventName: string, data: unknown): void {
+  private notifySubscribers(eventName: string, data: any): void {
     const callbacks = this.subscribers.get(eventName);
     if (callbacks) {
       callbacks.forEach(callback => callback(data));
@@ -485,7 +475,7 @@ export class YoRHaAPIClient {
     const wsUrl = this.config.baseURL.replace(/^https?/, 'wss') + '/ws';
     try {
       this.websocket = new WebSocket(wsUrl);
-    } catch (e: unknown) {
+    } catch (e: any) {
       // Changed any to unknown
       console.warn('WebSocket init failed', e);
       return;
@@ -536,11 +526,9 @@ export class YoRHaAPIClient {
       console.warn('SSE not available in SSR environment; call initServerSentEvents() from client-side code');
       return;
     }
-
     const eventUrl = this.config.baseURL.replace(/^https?/, 'http') + '/events';
     try {
       this.eventSource = new EventSource(eventUrl);
-
       this.eventSource.onmessage = event => {
         try {
           const msg = JSON.parse(event.data);
@@ -549,7 +537,6 @@ export class YoRHaAPIClient {
           console.error('Invalid SSE message', e);
         }
       };
-
       this.eventSource.onerror = error => {
         console.error('SSE error', error);
         this.eventSource?.close();
@@ -566,37 +553,30 @@ export class YoRHaAPIClient {
     this.websocket?.close();
     this.eventSource?.close();
   }
-
   // New helper: centralized typed API call with timeout + retry
   private async apiCall<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
     const makeUrl = (p: string) =>
       p.startsWith('http') ? p : `${this.config.baseURL.replace(/\/$/, '')}${p.startsWith('/') ? '' : '/'}${p}`;
     const maxAttempts = Math.max(1, this.config.retryAttempts ?? 0);
-
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       // create a fresh AbortController per attempt
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
-
       try {
         const headers = new Headers(options.headers || {});
         if (!headers.has('Accept')) headers.set('Accept', 'application/json');
         if (options.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
         if (this.config.apiKey) headers.set('x-api-key', this.config.apiKey);
-
         const res = await fetch(makeUrl(path), {
           ...options,
           headers,
           signal: controller.signal,
         });
-
         clearTimeout(timeoutId);
-
         if (!res.ok) {
           const text = await res.text().catch(() => '');
           throw new Error(`API request failed ${res.status} ${res.statusText}${text ? ' - ' + text : ''}`);
         }
-
         // handle empty response bodies
         const text = await res.text().catch(() => '');
         if (!text) return undefined as unknown as T;
@@ -614,7 +594,6 @@ export class YoRHaAPIClient {
     throw new Error('Unreachable: apiCall exhausted retries');
   }
 }
-
 /**
  * Helper: create a client instance. Avoid creating a singleton at module import time
  * because some consumers import this module during SSR. Create and initialize
@@ -623,4 +602,3 @@ export class YoRHaAPIClient {
 export function createYoRHaClient(config: Partial<YoRHaAPIConfig> = {}) {
   return new YoRHaAPIClient(config);
 }
-

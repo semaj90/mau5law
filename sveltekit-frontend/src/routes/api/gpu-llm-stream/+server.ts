@@ -13,7 +13,7 @@ type StreamConfig = {
   temperature?: number;
   topP?: number;
   // allow other vendor-specific settings but keep them typed as unknown
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add a local type that declares the streaming and cleanup APIs we use

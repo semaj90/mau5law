@@ -173,7 +173,7 @@ export class NintendoMemoryManager {
         bank => !bank.isActive && bank.currentSize + size <= bank.maxSize
       );
       if (availableBank) {
-        activeBank!.isActive = false;
+        activeBank!.isActive = $state(false);
         availableBank.isActive = true;
         return this.storeInBank(availableBank, key, data, priority);
       }

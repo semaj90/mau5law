@@ -32,7 +32,6 @@
     onremove?.({ index });
   }
 </script>
-
 <div class="evidence-files-manager">
   {#if files.length === 0}
     <p>No evidence files added yet.</p>
@@ -57,10 +56,8 @@
         Add files
       </label>
       <div class="hint">You can add up to {maxFiles} files.</div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .evidence-files-manager {
     padding: 0.5rem;
@@ -113,5 +110,3 @@
     margin-top: 0.4rem;
   }
 </style>
-
-

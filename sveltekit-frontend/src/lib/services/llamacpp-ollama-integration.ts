@@ -137,8 +137,8 @@ export class LlamaCppOllamaService {
   private ollamaConfig: OllamaConfig;
   private flashAttentionConfig: FlashAttention2Config;
   public flashAttentionService: FlashAttentionService; // Changed: 'any' to FlashAttentionService
-  private isInitialized = false;
-  // private ollamaProcess?: unknown; // Removed unused property
+  private isInitialized = $state(false);
+  // private ollamaProcess?: any; // Removed unused property
   // Performance tracking
   private requestCount = 0;
   private totalProcessingTime = 0;
@@ -259,7 +259,7 @@ export class LlamaCppOllamaService {
         flashAttentionEnabled: this.flashAttentionConfig.enabled && this.flashAttentionService.derived.isReady,
       }));
       console.log('✅ Llama.cpp + Ollama Integration initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Llama.cpp + Ollama initialization failed:', error);
       this.serviceStatus.update(s => ({
@@ -287,7 +287,7 @@ export class LlamaCppOllamaService {
         console.warn(`⚠️ Model ${this.ollamaConfig?.model || 'unknown'} not found, will attempt to pull`);
         await this.pullModel();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Ollama initialization failed:', error);
       throw error;
@@ -308,7 +308,7 @@ export class LlamaCppOllamaService {
         throw new Error(`Failed to pull model: ${response.statusText}`);
       }
       console.log('✅ Model pulled successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Model pull failed:', error);
       throw error;
@@ -323,7 +323,7 @@ export class LlamaCppOllamaService {
       // The configuration parameters are set on this.llamaConfig and this.ollamaConfig
       // and are used when making requests to Ollama. No direct: 'config' object needs to be sent here.
       console.log('✅ Llama.cpp parameters configured');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Llama.cpp configuration failed:', error);
       throw error;
@@ -354,12 +354,12 @@ export class LlamaCppOllamaService {
         this.serviceStatus.update(s => ({ ...s, flashAttentionEnabled: true }));
       } else {
         console.warn(`⚠️ GPU compute capability ${gpuInfo.computeCapability} < 8.0 - FlashAttention2 disabled`);
-        this.flashAttentionConfig.enabled = false;
+        this.flashAttentionConfig.enabled = $state(false);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.warn('⚠️ FlashAttention2 initialization failed, using standard attention:', error);
-      this.flashAttentionConfig.enabled = false;
+      this.flashAttentionConfig.enabled = $state(false);
     }
   }
   /**
@@ -385,7 +385,7 @@ export class LlamaCppOllamaService {
         memory: 8192,
         name: 'RTX 3060 (Detected)',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.warn('GPU detection failed:', error);
       return {
@@ -429,7 +429,7 @@ export class LlamaCppOllamaService {
         modelLoaded: this.ollamaConfig.model || 'unknown',
       }));
       console.log('✅ Model loaded successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Model loading failed:', error);
       throw error;
@@ -503,7 +503,7 @@ export class LlamaCppOllamaService {
         llamaCppVersion: 'b3600', // Latest version
         ollamaVersion: '0.3.12',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('❌ Generation failed:', error);
       throw error;
@@ -564,7 +564,7 @@ export class LlamaCppOllamaService {
    */
   public async shutdown(): Promise<void> {
     console.log('🛑 Shutting down Llama.cpp + Ollama service...');
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     this.serviceStatus.update(s => ({
       ...s,
       llamaCppReady: false,

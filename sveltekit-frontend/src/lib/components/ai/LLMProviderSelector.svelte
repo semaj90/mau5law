@@ -83,7 +83,6 @@ https://svelte.dev/e/js_parse_error -->
   	]);
   	// Real-time status checking
   let statusCheckInterval = $state<number | null>(null);
-  
   const checkProviderStatus = async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
@@ -223,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
 							</div>
 							<!-- Capabilities -->
 							<div class="flex flex-wrap gap-1 mb-2">
-								{#each provider.capabilities as capability}
+								{#each Array.isArray(provider.capabilities) ? provider.capabilities : [] as capability}
 									<span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{capability}</span>
 								{/each}
 							</div>
@@ -231,17 +230,15 @@ https://svelte.dev/e/js_parse_error -->
 							{#if provider.models.length > 0}
 								<div class="text-xs text-yorha-text-secondary">
 									<div class="font-medium mb-1">Available Models:</div>
-									{#each provider.models.slice(0, 2) as model}
+									{#each Array.isArray(provider.models.slice(0, 2)) ? provider.models.slice(0, 2) : [] as model}
 										<div class="flex justify-between">
 											<span>{model.name}</span>
 											<span class="text-yorha-text-tertiary">{model.size}</span>
 										</div>
 									{/each}
 									{#if provider.models.length > 2}
-										<div class="text-yorha-text-tertiary">+{provider.models.length - 2} more...</div>
-									{/if}
-								</div>
-							{/if}
+										<div class="text-yorha-text-tertiary">+{provider.models.length - 2} more...{/if}
+								{/if}
 							<!-- Performance Metrics (if available and online) -->
 							{#if provider.status === 'online' && provider.models[0]?.performance}
 								<div class="mt-2 pt-2 border-t border-yorha-border text-xs">
@@ -249,14 +246,12 @@ https://svelte.dev/e/js_parse_error -->
 										<div>Response: {provider.models[0].performance.avgResponseTime}ms</div>
 										<div>Speed: {provider.models[0].performance.tokensPerSecond} t/s</div>
 									</div>
-								</div>
-							{/if}
+								{/if}
 						</div>
 					</div>
 				</div>
 			{/each}
-		</div>
-	{/if}
+		{/if}
 </div>
 <style>
 	.llm-provider-selector {

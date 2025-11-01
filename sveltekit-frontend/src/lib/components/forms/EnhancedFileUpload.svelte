@@ -12,17 +12,17 @@ export default ;
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Label from "$lib/components/ui/label/Label.svelte";
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Label } from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
     AlertCircle,
@@ -134,11 +134,11 @@ export default ;
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
     if (disabled) return;
     const files = Array.from(event.dataTransfer?.files || []);
     addFiles(files);
@@ -222,7 +222,7 @@ export default ;
     } catch (err) {
       console.error("Upload failed:", err);
     } finally {
-      isUploading = false;
+      isUploading = $state(false);
       currentUploadFile = "";
     }
   }
@@ -315,8 +315,7 @@ export default ;
               Supports: Images, Videos, Audio, Documents (Max {maxSizeMB}MB each)
             </p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Selected Files Preview -->
     {#if selectedFiles.length > 0}
@@ -345,8 +344,7 @@ export default ;
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     {#if !compact && selectedFiles.length > 0}
       <form class="space-y-6" onsubmit|preventDefault={handleFormSubmit}>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -359,7 +357,7 @@ export default ;
             <Label for="evidenceType">Evidence Type *</Label>
             <select bind:value={formState.evidenceType} disabled={isUploading} id="evidenceType" class="w-full border rounded px-2 py-1">
               <option value="" disabled>Select evidence type</option>
-              {#each evidenceTypes as type}<option value={type.value}>{type.label}</option>{/each}
+              {#each Array.isArray(evidenceTypes) ? evidenceTypes : [] as type}<option value={type.value}>{type.label}</option>{/each}
             </select>
             {#if errors.evidenceType}<p class="text-sm text-destructive">{errors.evidenceType[0]}</p>{/if}
           </div>
@@ -367,7 +365,7 @@ export default ;
             <Label for="confidentialityLevel">Confidentiality Level</Label>
             <select bind:value={formState.confidentialityLevel} disabled={isUploading} id="confidentialityLevel" class="w-full border rounded px-2 py-1">
               <option value="" disabled>Select level</option>
-              {#each confidentialityLevels as level}<option value={level.value}>{level.label}</option>{/each}
+              {#each Array.isArray(confidentialityLevels) ? confidentialityLevels : [] as level}<option value={level.value}>{level.label}</option>{/each}
             </select>
           </div>
           <div class="space-y-2">
@@ -394,7 +392,7 @@ Add
           </div>
           {#if formState.tags.length > 0}
             <div class="flex flex-wrap gap-2 mt-2">
-              {#each formState.tags as tag}
+              {#each Array.isArray(formState.tags) ? formState.tags : [] as tag}
                 <Badge variant="secondary" class="gap-1 inline-flex items-center">
                   <span>{tag}</span>
                   <button type="button" class="ml-2" onclick={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
@@ -402,8 +400,7 @@ Add
 </Button>
                 </Badge>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
         <div class="space-y-3">
           <Label>AI Processing Options</Label>
@@ -461,8 +458,7 @@ oncancel?.()} disabled={isUploading}>Cancel
             {/each}
           </ul>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>
 <style>

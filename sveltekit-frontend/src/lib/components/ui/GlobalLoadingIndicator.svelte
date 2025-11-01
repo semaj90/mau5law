@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { loadingStore } from '$lib/stores/loading-store';
-  import AILoadingIndicator from './AILoadingIndicator.svelte';
+  import { AILoadingIndicator } from './AILoadingIndicator.svelte';
   import { fly, fade } from 'svelte/transition';
   interface Props {
     position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -19,7 +19,6 @@
     'bottom-left': 'bottom-4 left-4',
   });
 </script>
-
 {#if visibleOperations.length > 0}
   <div class="fixed {positionClasses[position]} z-40 space-y-2 max-w-sm w-full pointer-events-none">
     {#each visibleOperations as operation (operation.id)}
@@ -46,11 +45,8 @@
         in:fade={{ duration 200 }}
       >
         +{operations.length - maxVisible} more operations
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   /* Ensure notifications don't interfere with other UI elements */
   .pointer-events-none {

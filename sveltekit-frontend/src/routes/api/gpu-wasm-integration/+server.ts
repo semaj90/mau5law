@@ -18,7 +18,7 @@ import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from 
 // -----------------------------------------------------------------------------
 type ProcessingBody = {
   type: string;
-  data: unknown;
+  data: any;
   priority?: 'low' | 'medium' | 'high';
   metadata?: Record<string, unknown>;
 };
@@ -27,7 +27,7 @@ type AnalysisType = 'legal' | 'semantic' | 'precedent';
 
 type LegalAnalysisBody = {
   text: string;
-  context?: unknown[];
+  context?: any[];
   analysisType?: AnalysisType;
 };
 
@@ -55,25 +55,25 @@ type GPULegalAnalysis = {
   processingTime?: number;
   legalAnalysis?: {
     confidenceMetrics?: { semantic?: number };
-    legalEntities?: unknown[];
-    conceptClusters?: unknown[];
+    legalEntities?: any[];
+    conceptClusters?: any[];
   };
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type WASMLegalAnalysis = {
   processingTime?: number;
   confidence?: number;
-  citations?: unknown[];
+  citations?: any[];
   processedText?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // Insert these type definitions near the other local types (WasmComputeResult, WasmComputeFn, etc.)
 type WasmModulePerformance = {
   memoryUsage?: number;
   compileTimeMs?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type WasmModuleInfo = {
@@ -82,7 +82,7 @@ type WasmModuleInfo = {
   isLoaded?: boolean;
   exports?: Record<string, unknown>;
   performance?: WasmModulePerformance;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type WasmModulesMap = Record<string, WasmModuleInfo>;
@@ -98,7 +98,7 @@ type FlashAttentionStatus = {
   maxSequenceLength?: number;
   batchSize?: number;
   // allow other runtime fields but keep them typed as unknown
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type ErrorProcessorStats = {
@@ -107,7 +107,7 @@ type ErrorProcessorStats = {
   misses?: number;
   lastEvictionAt?: string;
   // allow extension without reverting to `any`
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // -----------------------------------------------------------------------------
@@ -155,7 +155,7 @@ async function initializeServices(): Promise<void> {
       flashAttention2Service.initialize(),
     ]);
     console.log('✅ GPU/WASM integration services initialized');
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Service initialization failed:', getErrorMessage(err));
     throw err;
   }
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(await getPerformanceMetrics());
       default: return json({ error: 'Invalid action parameter' }, { status: 400 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('GPU/WASM Integration API error:', getErrorMessage(err));
     return json(
       {
@@ -209,7 +209,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleIntegrationTest(body as IntegrationTestBody);
       default: return json({ error: 'Invalid action parameter' }, { status: 400 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('GPU/WASM Integration API error:', getErrorMessage(err));
     return json(
       {
@@ -265,7 +265,7 @@ async function getIntegrationStatus(): Promise<IntegrationStatus> {
         integrationScore,
       },
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ Failed to get integration status:', getErrorMessage(err));
     throw err;
   }
@@ -381,7 +381,7 @@ async function getPerformanceMetrics(): Promise<Record<string, unknown>> {
       timestamp: new Date().toISOString(),
       collectedAtPerfNow: nowVal,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Failed to gather performance metrics:', getErrorMessage(err));
     return {
       gpu: {},
@@ -413,14 +413,14 @@ type WasmComputeResult = {
   processingTime?: number;
 };
 
-type WasmComputeFn = (input: unknown, dims?: number) => Promise<WasmComputeResult | null>;
+type WasmComputeFn = (input: any, dims?: number) => Promise<WasmComputeResult | null>;
 
 /**
  * Wrapper that adapts calling code to the wasm bridge computeEmbedding signature.
  * The cast is isolated here so the rest of the code remains properly typed.
  */
 async function safeComputeEmbedding(text: string, dimensions: number) {
-  const bridge: unknown = llvmWasmBridge as unknown;
+  const bridge: any = llvmWasmBridge as unknown;
   const fn = (bridge as { computeEmbedding?: WasmComputeFn }).computeEmbedding;
   if (typeof fn !== 'function') {
     throw new Error('WASM computeEmbedding function is not available');
@@ -433,13 +433,13 @@ async function safeComputeEmbedding(text: string, dimensions: number) {
 }
 
 // ---------- Single canonical helper implementations ----------
-function safeNumber(value: unknown, fallback = 0): number {
+function safeNumber(value: any, fallback = 0): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
 }
-function safeBool(value: unknown, fallback = false): boolean {
+function safeBool(value: any, fallback = false): boolean {
   return typeof value === 'boolean' ? value : fallback;
 }
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err ?? 'unknown error');
 }
 
@@ -533,7 +533,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
     };
 
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -559,7 +559,7 @@ async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response>
       embeddings = await gpuServiceIntegration.generateEmbeddings(texts);
       processingTime = performance.now() - startTime;
       source = 'gpu-service';
-    } catch (gpuError: unknown) {
+    } catch (gpuError: any) {
       console.warn(
         'GPU embedding failed, trying WASM:',
         gpuError instanceof Error ? gpuError.message : String(gpuError)
@@ -582,7 +582,7 @@ async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response>
       source,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -606,7 +606,7 @@ async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Respons
       result,
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -628,7 +628,7 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
     type WASMCompileOptions = {
       exports?: string[];
       memoryRequired?: number;
-      [k: string]: unknown;
+      [k: string]: any;
     };
     const opts = options as WASMCompileOptions;
 
@@ -651,7 +651,7 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,
@@ -667,7 +667,7 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
 type TestResult = {
   success?: boolean;
   details?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 async function handleIntegrationTest(body: IntegrationTestBody): Promise<Response> {
@@ -680,7 +680,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     };
 
     // GPU service check
-    const gpuStatusRaw = await gpuServiceIntegration.getStatus().catch((e: unknown) => {
+    const gpuStatusRaw = await gpuServiceIntegration.getStatus().catch((e: any) => {
       return { initialized: false, available: false, error: getErrorMessage(e) } as Record<string, unknown>;
     });
     const gpuStatusRec = gpuStatusRaw as Record<string, unknown>;
@@ -700,9 +700,9 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
         await maybeGenerateEmbeddings.generateEmbeddings(['integration test']);
         gpuTest.details += '; embeddings=ok';
         gpuTest.success = true;
-      } catch (embedErr: unknown) {
+      } catch (embedErr: any) {
         gpuTest.details += `; embeddings_error=${getErrorMessage(embedErr)}`;
-        gpuTest.success = false;
+        gpuTest.success = $state(false);
       }
     }
     results.tests.gpuService = gpuTest;
@@ -720,7 +720,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
         success: true,
         details: `Processed ${processedLen} characters in ${processedMs}ms`,
       };
-    } catch (wasmErr: unknown) {
+    } catch (wasmErr: any) {
       results.tests.wasmBridge = {
         success: false,
         details: getErrorMessage(wasmErr),
@@ -736,7 +736,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
           flashStatus?.memoryOptimization ?? 'unknown'
         )}`,
       };
-    } catch (flashErr: unknown) {
+    } catch (flashErr: any) {
       results.tests.flashAttention = {
         success: false,
         details: getErrorMessage(flashErr),
@@ -753,7 +753,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     };
 
     return json(results);
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json(
       {
         success: false,

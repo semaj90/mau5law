@@ -10,7 +10,7 @@ export interface ServiceStatus {
   name: string;
   url: string;
   status: 'healthy' | 'unhealthy' | 'unreachable';
-  details?: unknown;
+  details?: any;
 }
 export class ServiceOrchestrator {
   async checkAllHttpServices(): Promise<ServiceStatus[]> {
@@ -46,7 +46,7 @@ export class ServiceOrchestrator {
     return Object.values(ServiceRegistry.nats);
   }
   // Dynamic API call
-  async callApi(endpointKey: keyof typeof ServiceRegistry.endpoints, method: string = 'GET', body?: unknown) {
+  async callApi(endpointKey: keyof typeof ServiceRegistry.endpoints, method: string = 'GET', body?: any) {
     const url = ServiceRegistry.endpoints[endpointKey];
     const options: RequestInit = { method }
     if (body) {

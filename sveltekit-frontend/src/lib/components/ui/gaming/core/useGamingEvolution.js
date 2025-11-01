@@ -13,7 +13,6 @@ export function useGamingEvolution() {
    * @property {string} performanceLevel
    * @property {Array<string>} availableEras
    */
-
   /**
    * @typedef {Object} GamingConfig
    * @property {boolean} enableAutoEvolution
@@ -23,7 +22,6 @@ export function useGamingEvolution() {
    * @property {{ enableGradients?: boolean }} snesSettings
    * @property {{ enableAntiAliasing?: boolean }} n64Settings
    */
-
   const gamingState = /** @type {import('svelte/store').Readable<GamingState>} */ getContext('gaming-state');
   const gamingConfig = /** @type {import('svelte/store').Readable<GamingConfig>} */ getContext('gaming-config');
   const gamingFunctions =

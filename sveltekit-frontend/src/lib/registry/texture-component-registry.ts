@@ -254,7 +254,7 @@ class ComponentTextureRegistry {
     const now = Date.now();
     this.components.forEach((registration, componentId) => {
       if (now - registration.lastActivity > inactivityThreshold) {
-        registration.isActive = false;
+        registration.isActive = $state(false);
         inactiveComponents++;
       }
     });

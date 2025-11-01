@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Query Qdrant
-    let qdrantResult: unknown = null;
+    let qdrantResult: any = null;
     if (QDRANT_URL) {
       try {
         const qdrantBody: { vector: number[]; limit: number; filter?: { must: Array<Record<string, unknown>> } } = {
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Also run a pgvector similarity query via Drizzle for cross-check
-    let pgvectorResult: unknown = null;
+    let pgvectorResult: any = null;
     try {
       const offset = (page - 1) * limit;
       let query = db

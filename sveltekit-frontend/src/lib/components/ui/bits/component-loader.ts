@@ -3,10 +3,8 @@
  * Supports lazy loading and error boundaries
  */
 import type { SvelteComponent } from 'svelte';
-
 // Use `typeof SvelteComponent` for a modern, correct Svelte component constructor type.
 export type ComponentConstructor = typeof SvelteComponent;
-
 export interface ComponentModule {
   default: ComponentConstructor;
 }
@@ -95,17 +93,14 @@ async function tryLoadFromPaths(name: string): Promise<ComponentConstructor | nu
   }
   return null;
 }
-
 // --- External Service Interfaces ---
-
 /**
  * Interface for a high-performance JSON parser, possibly implemented in WebAssembly.
  */
 export interface UltraJSONParser {
   parse<T = unknown>(json: string | Uint8Array): Promise<T>;
-  stringify(obj: unknown): Promise<string>;
+  stringify(obj: any): Promise<string>;
 }
-
 /**
  * Interface for a WebAssembly-based clustering service.
  */
@@ -118,7 +113,6 @@ export interface WasmClusteringService {
    */
   cluster(vectors: number[][], k: number): Promise<number[]>;
 }
-
 /**
  * Interface for bridging with nes.css styled WebGPU components.
  */
@@ -130,9 +124,7 @@ export interface NesGPUBridge {
    */
   renderContainer(element: HTMLCanvasElement, options: { theme: 'dark' | 'light' }): Promise<void>;
 }
-
 // --- Server-Side Integration Helpers (Stubs) ---
-
 /**
  * Helper for generating embeddings using the Ollama API.
  * This would typically be a server-side (+server.ts) or server-only function.
@@ -144,17 +136,15 @@ export async function getOllamaEmbeddings(text: string, model = 'embeddinggemma:
   // Mocked response
   return Array.from({ length: 384 }, () => Math.random() * 2 - 1);
 }
-
 /**
  * Interface for a Redis cache client.
  */
 export interface RedisCacheClient {
   get<T>(key: string): Promise<T | null>;
-  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>;
+  set(key: string, value: any, ttlSeconds?: number): Promise<void>;
   del(key: string): Promise<void>;
   exists(key: string): Promise<boolean>;
 }
-
 /**
  * Helper for caching data with Redis.
  * This is a server-only function.
@@ -164,7 +154,7 @@ export const redisCache: RedisCacheClient = {
     console.log(`[Server Helper Stub] Getting key from Redis: ${key}`);
     return null; // Mocked response
   },
-  async set(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
+  async set(key: string, value: any, ttlSeconds?: number): Promise<void> {
     console.log(`[Server Helper Stub] Setting key in Redis: ${key} with TTL ${ttlSeconds}s`);
   },
   async del(key: string): Promise<void> {
@@ -175,7 +165,6 @@ export const redisCache: RedisCacheClient = {
     return false; // Mocked response
   },
 };
-
 /**
  * Interface for a Qdrant point/document.
  */
@@ -184,7 +173,6 @@ export interface QdrantPoint {
   vector: number[];
   payload: Record<string, unknown>;
 }
-
 /**
  * Helper for indexing documents in Qdrant.
  * This is a server-only function.
@@ -193,7 +181,6 @@ export async function indexInQdrant(document: QdrantPoint): Promise<boolean> {
   console.log(`[Server Helper Stub] Indexing document in Qdrant: ${document.id}`);
   return true; // Mocked response
 }
-
 /**
  * Helper for persisting data with Drizzle ORM to a Postgres JSONB column.
  * This is a server-only function.

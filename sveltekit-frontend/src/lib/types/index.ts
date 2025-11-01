@@ -1,7 +1,7 @@
 // src/lib/types/index.ts
 export interface CanvasState {
   id: string;
-  fabricJSON?: unknown;
+  fabricJSON?: any;
   metadata?: Record<string, unknown>;
 }
 

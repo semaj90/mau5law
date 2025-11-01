@@ -117,7 +117,6 @@
     }
   }
 </script>
-
 <BitsTabs.Root
   bind:value
   onValueChange={handleValueChange}
@@ -184,7 +183,6 @@
     </BitsTabs.Content>
   {/each}
 </BitsTabs.Root>
-
 <style>
 /* Gaming theme animations */ {}
   :global([data-bits-tabs-trigger][data-theme='gaming']) {
@@ -228,11 +226,11 @@ box-shadow: {}
   }
 /* Underline variant animation: */ {}
   :global([data-variant='underline'] [data-bits-tabs-trigger]) {
-    position relative;
+    position: relative;
   }
   :global([data-variant='underline'] [data-bits-tabs-trigger][data-state='active']::after) {
     content: '';
-    position absolute;
+    position: absolute;
     bottom: -2px;
     left: 0,
     right: 0;
@@ -249,4 +247,3 @@ box-shadow: {}
     }
   }
 </style>
-

@@ -40,17 +40,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const embedStart = performance.now();
     // Safe guard to detect a string: 'model' property without using `any`
-    const hasStringModel = (obj: unknown): obj is { model: string } =>
+    const hasStringModel = (obj: any): obj is { model: string } =>
       typeof obj === 'object' && obj !== null && typeof (obj as Record<string, unknown>)['model'] === 'string';
 
     const modelName = hasStringModel(searchRequest) ? searchRequest.model : 'embeddinggemma:latest';
-    const useGPU = searchRequest.useGPU !== false;
+    const useGPU = searchRequest.useGPU !== $state(false);
     const threshold = typeof searchRequest.threshold === 'number' ? searchRequest.threshold : 0.3;
     const topK = typeof searchRequest.topK === 'number' ? searchRequest.topK : 10;
 
-    const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+    const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
-    const extractFirstEmbedding = (resp: unknown): unknown | undefined => {
+    const extractFirstEmbedding = (resp: any): any | undefined => {
       if (!isRecord(resp)) return undefined;
       const maybeEmb = resp['embeddings'];
       if (Array.isArray(maybeEmb) && maybeEmb.length) return maybeEmb[0];
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return undefined;
     };
 
-    const toFloat = (v: unknown): Float32Array | null => {
+    const toFloat = (v: any): Float32Array | null => {
       if (!v) return null;
       if (v instanceof Float32Array) return v;
       if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as number[]);
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Request embeddings for documents in parallel
     const docsEmbeddingsRaw = await Promise.all(
       searchRequest.documents.map(async doc => {
-        const res: unknown = await gpuEmbeddingService
+        const res: any = await gpuEmbeddingService
           .generateEmbeddings({ text: doc as string, model: modelName })
           .catch(() => ({}));
         return extractFirstEmbedding(res);
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
 
     // Query embedding
-    const queryResp: unknown = await gpuEmbeddingService
+    const queryResp: any = await gpuEmbeddingService
       .generateEmbeddings({ text: searchRequest.query, model: modelName })
       .catch(() => ({}));
     const qEmbRaw = extractFirstEmbedding(queryResp);

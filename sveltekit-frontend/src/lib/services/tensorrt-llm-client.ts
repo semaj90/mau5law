@@ -481,7 +481,7 @@ export async function createLegalCompletion(
 }
 
 // add a small runtime type guard
-function isLegalAIResponse(obj: unknown): obj is LegalAIResponse {
+function isLegalAIResponse(obj: any): obj is LegalAIResponse {
   // minimal sanity checks — adjust as needed for your true shape
   if (obj == null || typeof obj !== 'object') return false;
   const r = obj as Record<string, unknown>;

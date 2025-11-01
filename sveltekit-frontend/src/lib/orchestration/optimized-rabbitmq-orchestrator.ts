@@ -418,7 +418,7 @@ export class OptimizedRabbitMQOrchestrator {
   private static instance: OptimizedRabbitMQOrchestrator;
   private orchestratorService: any;
   private jobProcessors = new Map<JobType, JobProcessor>();
-  private enableN64Logging = false;
+  private enableN64Logging = $state(false);
   static getInstance(): OptimizedRabbitMQOrchestrator {
     if (!OptimizedRabbitMQOrchestrator.instance) {
       OptimizedRabbitMQOrchestrator.instance = new OptimizedRabbitMQOrchestrator();

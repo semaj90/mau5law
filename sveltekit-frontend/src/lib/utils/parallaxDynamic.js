@@ -21,9 +21,9 @@ class ParallaxDynamic {
 		this.input = { x: 0, y: 0 };
 		this.gyroscope = { x: 0, y: 0, z: 0 };
 		this.pointer = { x: 0, y: 0, pressed: false };
-		this.isActive = false;
-		this.isGyroscopeAvailable = false;
-		this.isMobile = false;
+		this.isActive = $state(false);
+		this.isGyroscopeAvailable = $state(false);
+		this.isMobile = $state(false);
 		this.webgpuDevice = null;
 		this.transformPipeline = null;
 		this.performance = {
@@ -87,7 +87,7 @@ class ParallaxDynamic {
 			console.log('✅ WebGPU parallax acceleration enabled');
 		} catch (error) {
 			console.warn('WebGPU initialization failed:', error);
-			this.config.enableWebGPU = false;
+			this.config.enableWebGPU = $state(false);
 		}
 	}
 	async createTransformPipeline() {
@@ -199,12 +199,12 @@ class ParallaxDynamic {
 				break;
 			case 'medium':
 				this.config.smoothing = 0.15;
-				this.config.enableWebGPU = false;
+				this.config.enableWebGPU = $state(false);
 				break;
 			case 'low':
 				this.config.smoothing = 0.2;
-				this.config.enableWebGPU = false;
-				this.config.enableAutoRotate = false;
+				this.config.enableWebGPU = $state(false);
+				this.config.enableAutoRotate = $state(false);
 				break;
 		}
 	}
@@ -248,7 +248,7 @@ class ParallaxDynamic {
 		this.pointer.pressed = true;
 	}
 	handleTouchEnd(_event) {
-		this.pointer.pressed = false;
+		this.pointer.pressed = $state(false);
 	}
 	handleGyroscope(event) {
 		if (!this.isGyroscopeAvailable || !this.isMobile) return;
@@ -275,7 +275,7 @@ class ParallaxDynamic {
 		this.pointer.pressed = true;
 	}
 	handlePointerUp(_event) {
-		this.pointer.pressed = false;
+		this.pointer.pressed = $state(false);
 	}
 	handleResize() {
 		// Recalculate boundaries and update layers
@@ -478,7 +478,7 @@ class ParallaxDynamic {
 	}
 	async updateAllLayers() {
 		this.updatePerformanceStats();
-		let success = false;
+		let success = $state(false);
 		if (this.config.enableWebGPU && this.webgpuDevice) {
 			success = await this.updateWebGPUTransforms();
 		}
@@ -504,7 +504,7 @@ class ParallaxDynamic {
 		console.log('▶️ ParallaxDynamic started');
 	}
 	pause() {
-		this.isActive = false;
+		this.isActive = $state(false);
 		if (this.animationId) {
 			cancelAnimationFrame(this.animationId);
 			this.animationId = null;

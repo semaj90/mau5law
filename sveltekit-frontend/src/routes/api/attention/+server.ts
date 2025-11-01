@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = performance.now();
     // Check cache first if enabled
     const cacheKey = `attention:${type}:${Buffer.from(text).toString('base64').slice(0, 32)}`;
-    let cached = false;
+    let cached = $state(false);
     let result: any = null;
     if (useCache) {
       try {

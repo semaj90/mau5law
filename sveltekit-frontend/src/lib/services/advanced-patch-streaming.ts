@@ -133,7 +133,7 @@ export class AdvancedPatchStreamer {
             }) + '\n'
           );
           controller.close();
-        } catch (error: unknown) {
+        } catch (error: any) {
           controller.error(error);
         }
       },
@@ -232,7 +232,7 @@ export class AdvancedPatchStreamer {
             }) + '\n'
           );
           controller.close();
-        } catch (error: unknown) {
+        } catch (error: any) {
           controller.error(error);
         }
       },
@@ -258,14 +258,14 @@ export class AdvancedPatchStreamer {
         // Attempt reconnection
         setTimeout(() => this.setupWebSocketConnection(_contextId), 5000); // Use _contextId
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[PatchStreamer] WebSocket setup failed:', error);
     }
   }
   private async sendInitialData(
     writer: WritableStreamDefaultWriter<string>,
     target: string,
-    data: unknown,
+    data: any,
     _contextId: string // Prefixed with _
   ): Promise<void> {
     const initialEvent: PatchStreamEvent = {
@@ -339,7 +339,7 @@ export class AdvancedPatchStreamer {
       // Clear buffer and update metrics
       context.patchBuffer = [];
       context.lastFlush = Date.now();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`[PatchStreamer] Failed to flush buffer for context ${contextId}:`, error);
     }
   }
@@ -352,7 +352,7 @@ export class AdvancedPatchStreamer {
         // Handle incoming patch application logic here
         console.log(`[PatchStreamer] Received patch for context ${contextId}:`, event);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`[PatchStreamer] Failed to handle incoming patch:`, error);
     }
   }
@@ -374,7 +374,7 @@ export class AdvancedPatchStreamer {
     for (const [target, stream] of context.activeStreams) {
       try {
         await stream.cancel();
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`[PatchStreamer] Failed to close stream for target ${target}:`, error);
       }
     }

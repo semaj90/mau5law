@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: unknown;
+    data?: any;
     children?: Snippet;
   }
 
@@ -32,7 +32,7 @@
     </div>
 
     <nav class="evidence-nav">
-      {#each evidenceRoutes as route}
+      {#each Array.isArray(evidenceRoutes) ? evidenceRoutes : [] as route}
         <a
           href={route.href}
           class="evidence-nav-item"

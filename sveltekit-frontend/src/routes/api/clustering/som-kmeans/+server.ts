@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     return json(result);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     console.error('Clustering analysis error:', msg);
     throw error(500, `Clustering analysis failed: ${msg}`);
@@ -146,7 +146,7 @@ type SOMTopology = {
 };
 
 // --- Normalizer & Feature extraction (single coherent implementations) ---
-function normalizeRagToDocument(ragData: unknown): Document {
+function normalizeRagToDocument(ragData: any): Document {
   if (!ragData || typeof ragData !== 'object') return {};
   const maybe = ragData as RagInput;
   const docCandidateRaw = maybe.ragResults && typeof maybe.ragResults === 'object' ? maybe.ragResults : maybe;
@@ -162,7 +162,7 @@ function normalizeRagToDocument(ragData: unknown): Document {
   };
 }
 
-function extractFeaturesForClustering(ragData: unknown): {
+function extractFeaturesForClustering(ragData: any): {
   vectors: number[][];
   dimensions: number;
   labels: string[];
@@ -428,13 +428,13 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
 }
 
 // Helper: safely extract a human-readable message from unknown errors
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (!err) return 'Unknown error';
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
     // Try to read common message property for plain objects
-    const maybeObj = err as { message?: unknown; toString?: () => string };
+    const maybeObj = err as { message?: any; toString?: () => string };
     if (typeof maybeObj.message === 'string') return maybeObj.message as string;
     // Fall back to JSON.stringify but guard against circular refs
     return JSON.stringify(err);

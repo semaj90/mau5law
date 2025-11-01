@@ -12,7 +12,6 @@
 import { S3Client, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 import { getServiceDiscovery, COMMON_SERVICES } from '$lib/server/helpers/service-discovery';
-
 // Define a type for the S3 client configuration specific to MinIO
 interface MinioS3ClientConfig {
   endpoint: string;
@@ -23,10 +22,8 @@ interface MinioS3ClientConfig {
   };
   forcePathStyle: boolean;
 }
-
 // Cache for discovered Minio endpoint
 let cachedMinioEndpoint: string | null = null;
-
 /**
  * Get MinIO endpoint with dynamic discovery support
  * Priority:
@@ -39,7 +36,6 @@ async function getMinioEndpoint(): Promise<string> {
   if (cachedMinioEndpoint) {
     return cachedMinioEndpoint;
   }
-
   try {
     // Try service discovery first
     const discovery = getServiceDiscovery();
@@ -55,7 +51,6 @@ async function getMinioEndpoint(): Promise<string> {
     return endpoint;
   }
 }
-
 /**
  * Helper function to get the S3Client instance, encapsulating configuration logic.
  * Handles local MinIO endpoints with service discovery support.
@@ -65,7 +60,6 @@ export async function getMinioS3Client(): Promise<S3Client> {
   const region = process.env.MINIO_REGION || "us-east-1";
   const accessKeyId = process.env.MINIO_KEY || "minioadmin";
   const secretAccessKey = process.env.MINIO_SECRET || "minioadmin";
-
   return new S3Client({
     endpoint,
     region,
@@ -73,10 +67,8 @@ export async function getMinioS3Client(): Promise<S3Client> {
     forcePathStyle: true
   });
 }
-
 // Lazy-initialized S3 client (initialized on first use)
 let S3Client_: S3Client | null = null;
-
 /**
  * Get or initialize the S3 client singleton
  */
@@ -86,10 +78,8 @@ async function getS3Client(): Promise<S3Client> {
   }
   return S3Client_;
 }
-
 // Export for backward compatibility (but now async)
 export const S3 = getS3Client();
-
 /**
  * Convert stream to buffer for processing
  */
@@ -125,7 +115,6 @@ export async function fetchMinioObject(url: string) {
     throw new Error(`Failed to fetch ${url}: ${error}`);
   }
 }
-
 export async function uploadMinioObject(bucket: string, key: string, file: File, userId: string) {
 	const buffer = Buffer.from(await file.arrayBuffer());
 	const client = await getS3Client();

@@ -48,7 +48,7 @@ type SearchResult = {
   id?: string
   responseTime?: number
   resultType?: string
-  [key: string]: unknown
+  [key: string]: any
 }
 
 interface LokiRedisCacheAPI {
@@ -73,9 +73,9 @@ interface InstantSearchEngineAPI {
 }
 
 interface RedisServiceAPI {
-  getClient?(): unknown
+  getClient?(): any
   isHealthy?(): boolean
-  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>
+  set(key: string, value: any, ttlSeconds?: number): Promise<void>
   get(key: string): Promise<unknown>
   del(key: string): Promise<void>
   // avoid `any`
@@ -89,7 +89,7 @@ const searchEngine = instantSearchEngine as unknown as InstantSearchEngineAPI
 const redis = redisService as unknown as RedisServiceAPI
 
 // Error helper
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message
   try {
     return String(err)
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
     results: Record<string, unknown>;
     errors: string[];
     performance: Record<string, number>;
-    [k: string]: unknown;
+    [k: string]: any;
   } = {
     timestamp: new Date().toISOString(),
     testType,
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
           throw new Error('Redis not healthy or client unavailable');
         }
         results.performance.redis = Date.now() - redisStartTime;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = getErrorMessage(err);
         results.errors.push(`Redis test failed: ${msg}`);
         results.results.redis = { status: 'error', message: msg };
@@ -258,7 +258,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats: getLokiStatsSafe(),
         };
         results.performance.loki = Date.now() - lokiStartTime;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = getErrorMessage(err);
         results.errors.push(`Loki-Redis test failed: ${msg}`);
         results.results.loki = { status: 'error', message: msg };
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         };
         results.performance.instantSearch = Date.now() - searchStartTime;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = getErrorMessage(err);
         results.errors.push(`Instant Search test failed: ${msg}`);
         results.results.instantSearch = { status: 'error', message: msg };
@@ -352,7 +352,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         };
         results.performance.health = Date.now() - healthStartTime;
-      } catch (err: unknown) {
+      } catch (err: any) {
         const msg = getErrorMessage(err);
         results.errors.push(`Health check failed: ${msg}`);
         results.results.health = { status: 'error', message: msg };
@@ -376,7 +376,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // import { logEvent } from '$lib/server/logging-service.js'
     // await logEvent('instant-search-test-completed', results.summary)
     return json(results);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     if (typeof redis.set === 'function') {
       await redis.set(
@@ -432,7 +432,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json({ success: false, error: 'Unknown action' }, { status: 400 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     if (typeof redis.set === 'function') {
       await redis.set(

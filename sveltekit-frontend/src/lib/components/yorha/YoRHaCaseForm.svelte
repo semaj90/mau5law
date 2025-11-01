@@ -15,7 +15,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
   import { z } from 'zod';
   import type { SuperForm, ValidationErrors } from 'sveltekit-superforms'; // Import SuperForm type
   import { get } from 'svelte/store'; // Import the: 'get' function
-
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -30,49 +29,41 @@ https://svelte.dev/e/rune_missing_parentheses -->
     tags: z.array(z.string()).default([]),
     notes: z.string().optional(),
   });
-
   // Infer the type from the Zod schema
   type CaseCreationSchemaType = z.infer<typeof CaseCreationSchema>;
-
   // Handles saving and loading of case form state to local storage for draft persistence
   // typed optional prop for the onDispatch callback (exported prop)
   /**
    * Optional callback prop for parent components to receive form state updates and events.
    *
    * @param payload - An object containing state and/or context information, e.g.:
-   *   { state: string, context?: unknown }
-   *   or for success: { caseItem: unknown }
+   *   { state: string, context?: any }
+   *   or for success: { caseItem: any }
    *   or for error: { message: string }
    *
    * Usage: <YoRHaCaseForm onDispatch={(payload) => { ... }} />
    */
   // Svelte 5 runes: use $props() instead of `export let`
   const { onDispatch } = $props<{ onDispatch?: (payload: Record<string, unknown>) => void }>();
-
   // --- Move declaration of formIntegration before derived usages to avoid: "used before its declaration" ---
   // Minimal typing for the form integration used by the template
   type Subscriber<T = unknown> = (value: T) => void;
-
   // Redefine FormIntegrationType to use SuperForm directly
   interface FormIntegrationType {
     state: { subscribe: (fn: Subscriber<unknown>) => () => void; get?: () => string };
     context: { subscribe: (fn: Subscriber<unknown>) => () => void; get?: () => unknown };
     form: SuperForm<CaseCreationSchemaType, unknown>; // Use the inferred type here
   }
-
   // allow null initially; template guards with {#if formIntegration}
   let formIntegration FormIntegrationType | null = $state(null);
-
   // Form integration state
   let currentStep = $state(0);
   let totalSteps = $state(3); // Basic Info, Legal Details, Review
   // subscription cleanup function
   let unsubscribe: (() => void) | null = null;
-
   // Derived reactive sources (use formIntegration now that it's declared)
   let formState = $derived(formIntegration ? (formIntegration.state.get?.() ?? 'idle') : 'idle');
   let formContext = $derived(formIntegration ? (formIntegration.context.get?.() ?? {}) : {});
-
   // --- Make local UI flags reactive via $state to avoid non-reactive-update errors ---
   // Derive isSubmitting, isValid, and isValidating directly from SuperForm's stores
   let isSubmitting: boolean = $derived(formIntegration ? get(formIntegration.form.submitting) : false);
@@ -80,25 +71,21 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Removed: let isValidating: boolean = $derived(formIntegration ? Boolean($(formIntegration.form.validating)) : false); // Corrected property name and explicitly typed
   // errors will be accessed directly from $formIntegration.form.errors
   let progress = $state(0);
-
   // Derived variable for unwrapped form data to simplify template access
   // Explicitly cast to CaseCreationSchemaType to resolve property access errors
   let formData: CaseCreationSchemaType = $derived(
     formIntegration ? (get(formIntegration.form.form) as CaseCreationSchemaType) : ({} as CaseCreationSchemaType)
   );
-
   // Derived variable for form errors to resolve JSON.stringify type issues
   let formErrors: ValidationErrors<CaseCreationSchemaType> = $derived(
     formIntegration ? get(formIntegration.form.errors) : {}
   );
-
   // Instantiate persistence helper for draft autosave/load.
   // Use known key from FORM_STORAGE_KEYS if available, otherwise fall back to a safe default.
   // Use the single, exported key that exists on FORM_STORAGE_KEYS.
   // Optional chaining + nullish coalescing keeps this safe at runtime and satisfies TS types.
   const STORAGE_KEY = FORM_STORAGE_KEYS?.CASE_CREATION ?? 'yorha:case:creation';
   const formStatePersistence = new FormStatePersistence(STORAGE_KEY);
-
   // Initialize form integration on mount
   $effect(() => {
     // Load saved form data if available
@@ -126,7 +113,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
       onError: handleFormError,
       onSubmit: handleEnhancedSubmit,
     }); // Removed `as FormIntegrationType`
-
     // Subscribe to state changes for debugging and events
     unsubscribe = formIntegration.state.subscribe((state: string) => {
       onDispatch?.({
@@ -164,7 +150,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   }
   // Success handler
-  function handleFormSuccess(result: unknown) {
+  function handleFormSuccess(result: any) {
     console.log('🎉 Form submission successful:', result);
     onDispatch?.({ caseItem: result });
     // emit typed success event for parent components
@@ -172,12 +158,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
     // Clear saved draft
     formStatePersistence.clear();
     // Navigate to the new case
-    if ((result as { id?: unknown }).id) {
-      goto(`/cases/${(result as { id?: unknown }).id}`);
+    if ((result as { id?: any }).id) {
+      goto(`/cases/${(result as { id?: any }).id}`);
     }
   }
   // Error handler - safely extract message from unknown
-  function handleFormError(error: unknown) {
+  function handleFormError(error: any) {
     console.error('❌ Form submission error:', error);
     const message =
       error && typeof error === 'object' && 'message' in error
@@ -202,12 +188,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
   function getStepProgress() {
     return ((currentStep + 1) / totalSteps) * 100;
   }
-
   // Derive progress from available form state
   $effect(() => {
     progress = getStepProgress();
   });
-
   // --- Removed: duplicate incorrect declaration ---
   // --- Added: minimal typing for the form integration used by the template ---
   // Expose typed events to parents (Svelte 5 $events rune)
@@ -222,7 +206,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
     close: void;
   }>();
 </script>
-
 <!-- Enhanced Multi-Step YoRHa Styled Form -->
 {#if formIntegration}
   <div class="yorha-case-form bg-yorha-dark border border-yorha-accent-warm/30 rounded-lg p-6">
@@ -237,8 +220,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           {#if progress > 0}
             <div class="w-16 h-1 bg-yorha-darker rounded-full mt-1 overflow-hidden">
               <div class="h-full bg-yorha-accent-warm transition-all duration-300" style="width: {progress}%"></div>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
       <!-- Multi-step Progress Indicator -->
@@ -255,8 +237,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
                 {index + 1}
               </div>
               {#if index < totalSteps - 1}
-                <div class="step-line w-12 h-0.5 bg-yorha-accent-warm/30 mx-2"></div>
-              {/if}
+                <div class="step-line w-12 h-0.5 bg-yorha-accent-warm/30 mx-2">{/if}
             </div>
           {/each}
         </div>
@@ -441,7 +422,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none"
             ></textarea>
           </div>
-
           <!-- Lightweight Preview (uses formIntegration.form.get directly; safe because outer {#if formIntegration} guards it) -->
           <div class="mt-4">
             <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
@@ -459,7 +439,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
               </div>
             </div>
           </div>
-
           <!-- Step Navigation for Step 2 -->
           <div class="step-navigation flex justify-end pt-4">
             <button
@@ -517,12 +496,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
                           class="h-full bg-yorha-accent-warm transition-all duration-300"
                           style="width: {progress}%"
                         ></div>
-                      </div>
-                    {/if}
+                      {/if}
                   </div>
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
         <!-- Final Step Navigation -->
@@ -561,8 +538,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               {/if}
             </button>
           </div>
-        </div>
-      {/if}
+        {/if}
     </form>
     <!-- Debug Panel (development only) -->
     {#if process.env.NODE_ENV === 'development'}
@@ -583,8 +559,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <p><strong>Form Context:</strong> {JSON.stringify(formContext ?? {}, null, 2)}</p>
           </div>
         </details>
-      </div>
-    {/if}
+      {/if}
   </div>
 {:else}
   <!-- Loading State -->
@@ -595,9 +570,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       ></div>
       <span class="text-yorha-light">Initializing form...</span>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .yorha-case-form {
     --yorha-primary: #c4b49a;
@@ -610,7 +583,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     --yorha-darker: #1a1a1a;
     font-family: 'JetBrains Mono', monospace;
     backdrop-filter: blur(10px);
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   /* Multi-step progress indicators */
@@ -654,7 +627,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   /* Enhanced form inputs */
   .form-input {
     transition: all 0.2s ease;
-    position relative;
+    position: relative;
   }
   .form-input:focus {
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
@@ -667,7 +640,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .next-btn,
   .prev-btn,
   .submit-btn {
-    position relative;
+    position: relative;
     transition: all 0.2s ease;
     overflow: hidden;
   }
@@ -683,13 +656,13 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .next-btn::before,
   .submit-btn::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5;
+    transition: left: 0.5;
   }
   .next-btn:hover::before,
   .submit-btn:hover::before {
@@ -764,7 +737,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* State indicators */
   .form-state-indicator {
-    animation: slideInRight 0.3s ease-out;
+    animation: slideInRight: 0.3s ease-out;
   }
   @keyframes slideInRight {
     from {
@@ -813,4 +786,3 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   }
 </style>
-

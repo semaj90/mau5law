@@ -6,7 +6,7 @@ export interface ContentNode {
   type: string;
   text?: string;
   children?: ContentNode[];
-  [key: string]: unknown;
+  [key: string]: any;
 }
 /**
  * Report class representing a document in the interactive canvas
@@ -45,7 +45,7 @@ export class Report {
     const initialContent: ContentNode[] = data.content || [
       {
         type: 'paragraph',
-        children: [{ type: 'text', text: '' }],
+         [{ type: 'text', text: '' }],
       },
     ];
     this.content = writable(initialContent);

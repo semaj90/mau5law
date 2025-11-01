@@ -23,9 +23,9 @@ type Analysis = {
   relevance: string;
   legalContext?: string;
   actionable?: boolean;
-  raw?: unknown;
-  response?: unknown;
-  [key: string]: unknown;
+  raw?: any;
+  response?: any;
+  [key: string]: any;
 };
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -58,7 +58,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       return json({ error: 'Remote analyze service failed' }, { status: 502 });
     }
 
-    const result: unknown = await response.json().catch(() => null);
+    const result: any = await response.json().catch(() => null);
 
     // Normalize result into a typed object
     let analysis: Analysis;
@@ -95,7 +95,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
     }
 
     return json(analysis);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // avoid using `any` for error; log safely
     console.error('Element analysis failed:', error instanceof Error ? error.message : String(error));
     return json({ error: 'Analysis unavailable', relevance: 'Analysis unavailable' }, { status: 500 });

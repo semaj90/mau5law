@@ -28,7 +28,7 @@ export interface Evidence {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     format?: string;
-    [key: string]: unknown; // Allows for any other arbitrary metadata properties.
+    [key: string]: any; // Allows for any other arbitrary metadata properties.
   };
 }
 
@@ -86,7 +86,7 @@ export type AIAgentTool = {
 export type AIToolInvocation = {
   tool: string;
   params: Record<string, unknown>;
-  result: unknown;
+  result: any;
   timestamp: number;
 };
 
@@ -217,7 +217,7 @@ export type EvidenceActor = ActorRef<WorkflowEvent, EvidenceSnapshot>;
 export type EvidenceSnapshot = {
   context: WorkflowContext;
   // current state value (string | object) depending on machine shape
-  value: unknown; // Made non-optional to satisfy Snapshot<unknown> constraint
+  value: any; // Made non-optional to satisfy Snapshot<unknown> constraint
   // The status of the actor, required by XState's Snapshot interface
   status: 'active' | 'done' | 'error' | 'stopped';
   // optional last event that produced this snapshot
@@ -226,7 +226,7 @@ export type EvidenceSnapshot = {
   timestamp?: number;
   children?: Record<string, unknown>;
   // Optional output when the actor is done
-  output?: unknown;
+  output?: any;
   // Optional error when the actor has errored
-  error?: unknown;
+  error?: any;
 };

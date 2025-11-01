@@ -4,8 +4,8 @@
   import type { SelectContext } from "./types";
   interface Props {
     class?: string;
-    placeholder?: unknown;
-    children?: unknown;
+    placeholder?: any;
+    children?: any;
   }
   let { children, placeholder,
     class: class_ = ""

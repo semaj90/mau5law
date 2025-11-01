@@ -333,7 +333,7 @@ async function parseVectorSearchRequest(buffer: Uint8Array): Promise<SearchReque
 }
 
 // Replace serializeVectorSearchResponse to emit protobuf binary
-async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBuffer> {
+async function serializeVectorSearchResponse(response: any): Promise<ArrayBuffer> {
   // Define a strict shape for the fields we read from the arbitrary response
   type ResponseMetadata = {
     total_results?: number;
@@ -342,12 +342,12 @@ async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBu
   };
 
   type RespShape = {
-    results?: unknown[];
+    results?: any[];
     metadata?: ResponseMetadata | Record<string, unknown> | unknown;
-    fromCache?: unknown;
-    dataSource?: unknown;
-    avgSimilarity?: unknown;
-    total?: unknown;
+    fromCache?: any;
+    dataSource?: any;
+    avgSimilarity?: any;
+    total?: any;
   };
 
   const resp = response as RespShape;
@@ -355,7 +355,7 @@ async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBu
   // Build proto-shaped object with safe type checks (no `any`)
   const protoResp = {
     results: Array.isArray(resp.results)
-      ? resp.results.map((r: unknown) => {
+      ? resp.results.map((r: any) => {
           const rr = r as Record<string, unknown>;
           const doc = rr.document as Record<string, unknown> | undefined;
           return {
@@ -376,7 +376,7 @@ async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBu
             },
             similarity_score: typeof rr.similarity_score === 'number' ? rr.similarity_score : 0.0,
             snippets: Array.isArray(rr.snippets)
-              ? rr.snippets.map((s: unknown) => {
+              ? rr.snippets.map((s: any) => {
                   const ss = s as Record<string, unknown>;
                   return {
                     text: typeof ss.text === 'string' ? ss.text : '',
@@ -412,7 +412,7 @@ async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBu
         if (
           quality &&
           typeof quality === 'object' &&
-          typeof (quality as { avg_similarity?: unknown }).avg_similarity === 'number'
+          typeof (quality as { avg_similarity?: any }).avg_similarity === 'number'
         ) {
           return (quality as { avg_similarity?: number }).avg_similarity ?? 0.0;
         }
@@ -435,8 +435,8 @@ async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBu
 }
 
 // Replace serializeErrorResponse to use protobuf error message
-async function serializeErrorResponse(error: unknown): Promise<ArrayBuffer> {
-  const maybe = error as { code?: string; message?: string; details?: unknown } | undefined;
+async function serializeErrorResponse(error: any): Promise<ArrayBuffer> {
+  const maybe = error as { code?: string; message?: string; details?: any } | undefined;
   const payload = {
     code: maybe?.code ?? 'UNKNOWN_ERROR',
     message: maybe?.message ?? String(error),
@@ -533,14 +533,14 @@ async function executeVectorSearch(searchParams: SearchRequest & { params?: { li
 }
 
 // Utility functions
-function calculateQueryClarity(query: unknown): number {
+function calculateQueryClarity(query: any): number {
   // Mock implementation - analyze query structure and terminology
   if (!query) return 0.5;
   const complexity = typeof query === 'string' ? query.split(' ').length : 10;
   return Math.min(0.95, 0.3 + complexity * 0.05);
 }
 
-function calculateResultDiversity(results: unknown[]): number {
+function calculateResultDiversity(results: any[]): number {
   // Mock implementation - measure diversity of result types
   if (!Array.isArray(results) || results.length === 0) return 0.0;
   type ResultItem = { document?: { type?: string } };
@@ -554,7 +554,7 @@ function generateQueryId(): string {
   return `query_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-function hashQuery(query: unknown): string {
+function hashQuery(query: any): string {
   // Simple hash implementation for query caching
   const queryString = typeof query === 'string' ? query : JSON.stringify(query);
   let hash = 0;
@@ -566,7 +566,7 @@ function hashQuery(query: unknown): string {
   return Math.abs(hash).toString(16);
 }
 
-function assessQueryComplexity(query: unknown): {
+function assessQueryComplexity(query: any): {
   complexity_score: number;
   complexity_level: string;
   complexity_factors: string[];
@@ -610,7 +610,7 @@ function assessQueryComplexity(query: unknown): {
   };
 }
 
-function generateRecommendations(results: unknown[]): unknown[] {
+function generateRecommendations(results: any[]): any[] {
   if (!Array.isArray(results) || results.length === 0) return [];
 
   return [

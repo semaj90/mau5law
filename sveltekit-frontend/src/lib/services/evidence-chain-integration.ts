@@ -13,7 +13,7 @@ export interface RecursiveEvidenceChainResult {
   evidenceId: string;
   depth: number;
   chainOfCustody: ChainEntry[];
-  children: RecursiveEvidenceChainResult[];
+   RecursiveEvidenceChainResult[];
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   confidence: number;
@@ -158,7 +158,7 @@ export class EvidenceChainIntegrationService {
         evidenceId,
         depth: 0,
         chainOfCustody: (item?.chainOfCustody as ChainEntry[]) ?? [],
-        children: [],
+         [],
         relationships: [],
         legalImplications: [],
         confidence: embedding && embedding.length ? Math.min(1, embedding.length / 1024) : 0,
@@ -679,7 +679,7 @@ export interface EvidenceHierarchyNode {
   relationships: EvidenceRelationship[];
   legalImplications: string[];
   chainOfCustody: ChainEntry[];
-  children: EvidenceHierarchyNode[];
+   EvidenceHierarchyNode[];
   metadata: {
     processingTime: number;
     recursionPath: string[];

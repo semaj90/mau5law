@@ -72,7 +72,7 @@ export class OllamaSuggestionsService {
         num_predict: 1000,
       });
       return this.parseSuggestionsResponse(response, request.reportType, request.maxSuggestions ?? 5);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama suggestion generation failed:', err);
       throw new Error(`Failed to generate AI suggestions: ${err.message}`);
@@ -96,7 +96,7 @@ export class OllamaSuggestionsService {
           yield suggestion;
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama streaming suggestions failed:', err);
       throw err;
@@ -183,7 +183,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       }
       const json = (await response.json()) as OllamaResponse;
       return json;
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof DOMException && error.name === 'AbortError') {
         throw new Error('Ollama request timed out');
@@ -254,7 +254,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       } finally {
         reader.releaseLock();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof DOMException && error.name === 'AbortError') {
         throw new Error('Ollama streaming request timed out');
@@ -272,7 +272,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       // Try to extract a JSON array from the response text
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       const candidate = jsonMatch ? jsonMatch[0] : responseText;
-      const suggestionsData: unknown = JSON.parse(candidate);
+      const suggestionsData: any = JSON.parse(candidate);
 
       if (!Array.isArray(suggestionsData)) {
         throw new Error('Response is not an array of suggestions');
@@ -310,7 +310,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
           },
         } as OllamaSuggestion;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       // fallback to text parsing
       console.warn('Failed to parse structured suggestions, falling back to text parsing:', err.message);
@@ -377,7 +377,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
         signal: AbortSignal.timeout(5000),
       });
       return response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama health check failed:', err);
       return false;
@@ -391,14 +391,14 @@ Provide practical, implementable suggestions that would genuinely improve the le
     try {
       const response = await fetch(`${this.baseUrl}/api/models`, { method: 'GET' });
       if (!response.ok) throw new Error('Failed to fetch models');
-      const data: unknown = await response.json();
+      const data: any = await response.json();
       if (!data || typeof data !== 'object') return [];
       const maybeModels = (data as Record<string, unknown>)['models'];
       if (!Array.isArray(maybeModels)) return [];
       return maybeModels
         .map(m => (m && typeof m === 'object' && typeof (m as any).name === 'string' ? (m as any).name : '')) // minimal safe access
         .filter((n: string) => !!n);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Failed to get available models:', err);
       return [];
@@ -462,7 +462,7 @@ export async function testOllamaIntegration(): Promise<any> {
       availableModels,
       testSuggestion: testSuggestions[0],
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     return {
       success: false,

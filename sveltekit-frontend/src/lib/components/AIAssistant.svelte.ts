@@ -1,16 +1,13 @@
 import { writable } from 'svelte/store';
 import { getOllamaEndpoint } from '$lib/server/clients/ollama';
-
 export class AIAssistant {
   private isLoading = writable(false);
   private response = writable('');
-
   // small helper to centralize endpoint fallback logic
   // renamed to avoid shadowing the imported getOllamaEndpoint
   private resolveOllamaEndpoint(): string {
     return getOllamaEndpoint();
   }
-
   async queryOllama(prompt: string) {
     this.isLoading.set(true);
     try {
@@ -27,7 +24,7 @@ export class AIAssistant {
       const data = await resp.json();
       // defensive: handle unexpected payloads
       this.response.set((data && (data.response ?? data.output)) || JSON.stringify(data) || '');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // narrow unknown safely
       if (error instanceof Error) {
         this.response.set(`Error: ${error.message}`);
@@ -38,7 +35,6 @@ export class AIAssistant {
       this.isLoading.set(false);
     }
   }
-
   getStores() {
     return { isLoading: this.isLoading, response: this.response };
   }

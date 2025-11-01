@@ -25,12 +25,12 @@ declare global {
 
   // LokiDB fixes
   interface LokiIndexedAdapter {
-    memoryCache?: unknown;
-    insert?(data: unknown): unknown;
-    findOne?(query: unknown): unknown;
-    find?(query: unknown): unknown;
-    remove?(query: unknown): unknown;
-    clear?(): unknown;
+    memoryCache?: any;
+    insert?(data: any): any;
+    findOne?(query: any): any;
+    find?(query: any): any;
+    remove?(query: any): any;
+    clear?(): any;
   }
 
   // Canvas state fixes
@@ -39,13 +39,13 @@ declare global {
     reset?(): void;
     restore?(): void;
     save?(): void;
-    fabricJSON?: unknown;
-    metadata?: unknown;
+    fabricJSON?: any;
+    metadata?: any;
   }
   interface InteractiveCanvasState extends CanvasState {
-    nodes?: unknown[];
-    connections?: unknown[];
-    viewport?: unknown;
+    nodes?: any[];
+    connections?: any[];
+    viewport?: any;
   }
 
   // Cache manager fixes
@@ -69,7 +69,7 @@ declare global {
     connected: boolean;
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
-    consume?: (queue: string, handler: (...args: unknown[]) => unknown) => Promise<void>;
+    consume?: (queue: string, handler: (...args: any[]) => unknown) => Promise<void>;
   }
 
   // NATS fixes
@@ -86,7 +86,7 @@ declare global {
   // Redis fixes
   namespace IORedis {
     interface Redis {
-      hset(_key: string, field: string, value: unknown): Promise<number>;
+      hset(_key: string, field: string, value: any): Promise<number>;
     }
   }
 
@@ -98,7 +98,7 @@ declare global {
 
   // WASM fixes
   interface VectorOpsModule {
-    (input: unknown): unknown;
+    (input: any): any;
   }
 
   // UI JSON SSR Configuration fix
@@ -176,7 +176,7 @@ declare module '$lib/server/db/client' {
    * Create or return a pooled DB client instance. Use `unknown` to avoid runtime-specific types here;
    * callers can narrow to the concrete client type (pg, drizzle, etc.).
    */
-  export function createDbClient(): unknown;
+  export function createDbClient(): any;
 }
 
 // Redis cache helper typings (minimal surface used across repo)

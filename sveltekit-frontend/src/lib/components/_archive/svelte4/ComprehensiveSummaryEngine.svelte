@@ -185,7 +185,7 @@ https://svelte.dev/e/props_duplicate -->
     } catch (error) {
       console.error('Summary generation failed:', error);
       errorMessage = (error as Error).message;
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function handleStreamingSummary(request) {
@@ -277,7 +277,7 @@ https://svelte.dev/e/props_duplicate -->
         ).error || 'Unknown error'
       );
     }
-    isProcessing = false;
+    isProcessing = $state(false);
   }
   function handleStreamingChunk(data) {
     switch (
@@ -323,7 +323,7 @@ https://svelte.dev/e/props_duplicate -->
         synthesisResult.set((data as any).result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
-        isProcessing = false;
+        isProcessing = $state(false);
         break;
       case 'error':
         errorMessage = (
@@ -338,7 +338,7 @@ https://svelte.dev/e/props_duplicate -->
             summary?: any;
           }
         ).error;
-        isProcessing = false;
+        isProcessing = $state(false);
         break;
     }
   }
@@ -381,7 +381,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   function handleSummaryCompletion(data) {
     synthesisResult.set((data as any).summary);
-    isProcessing = false;
+    isProcessing = $state(false);
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';
     // Show notification if enabled
@@ -406,7 +406,7 @@ https://svelte.dev/e/props_duplicate -->
           summary?: any;
         }
       ).error || 'Unknown processing error';
-    isProcessing = false;
+    isProcessing = $state(false);
   }
   function updateMetrics(data) {
     metrics = { ...metrics, ...data };
@@ -437,7 +437,7 @@ https://svelte.dev/e/props_duplicate -->
       serviceWorker.postMessage({ type: 'STOP_PROCESSING' });
     }
     send({ type: 'STOP' });
-    isProcessing = false;
+    isProcessing = $state(false);
   }
   function preloadRequiredData() {
     // Preload user activity data from Loki.js
@@ -708,7 +708,7 @@ https://svelte.dev/e/props_duplicate -->
     <div class="streaming-output">
       <h3>Real-time Output</h3>
       <div class="streaming-content">
-        {#each $streamingData as chunk}
+        {#each Array.isArray($streamingData) ? $streamingData : [] as chunk}
           <div class="stream-chunk" class:llm={chunk.type === 'llm'}>
             <div class="chunk-meta">
               <span class="chunk-type">{chunk.type}</span>
@@ -754,7 +754,7 @@ https://svelte.dev/e/props_duplicate -->
           <div class="insights-section">
             <h4>Key Insights</h4>
             <ul class="insights-list">
-              {#each $synthesisResult.keyInsights as insight}
+              {#each Array.isArray($synthesisResult.keyInsights) ? $synthesisResult.keyInsights : [] as insight}
                 <li>{insight}</li>
               {/each}
             </ul>
@@ -765,7 +765,7 @@ https://svelte.dev/e/props_duplicate -->
           <div class="actions-section">
             <h4>Recommended Actions</h4>
             <ul class="actions-list">
-              {#each $synthesisResult.actionItems as action}
+              {#each Array.isArray($synthesisResult.actionItems) ? $synthesisResult.actionItems : [] as action}
                 <li>{action}</li>
               {/each}
             </ul>
@@ -776,7 +776,7 @@ https://svelte.dev/e/props_duplicate -->
           <div class="nextsteps-section">
             <h4>Next Steps</h4>
             <ol class="nextsteps-list">
-              {#each $synthesisResult.nextSteps as step}
+              {#each Array.isArray($synthesisResult.nextSteps) ? $synthesisResult.nextSteps : [] as step}
                 <li>{step}</li>
               {/each}
             </ol>
@@ -786,7 +786,7 @@ https://svelte.dev/e/props_duplicate -->
         <div class="sources-section">
           <h4>Source Attribution</h4>
           <div class="sources-grid">
-            {#each $synthesisResult.sources as source}
+            {#each Array.isArray($synthesisResult.sources) ? $synthesisResult.sources : [] as source}
               <div class="source-item">
                 <div class="source-type">{source.type}</div>
                 <div class="source-contribution">{Math.round(source.contribution * 100)}%</div>

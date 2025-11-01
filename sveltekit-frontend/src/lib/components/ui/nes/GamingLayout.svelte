@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { page } from '$app/state';
-  	import GamingHUD from './GamingHUD.svelte';
-  	import GamingPanel from './GamingPanel.svelte';
-  	import GamingButton from './GamingButton.svelte';
+  	import { GamingHUD } from './GamingHUD.svelte';
+  	import { GamingPanel } from './GamingPanel.svelte';
+  	import { GamingButton } from './GamingButton.svelte';
   	import type { ComponentProps } from 'svelte';
   	interface GamingLayoutProps {
   		showHUD?: boolean;
@@ -23,7 +23,7 @@
   			href: string
   			icon?: string;
   		}[];
-  		children: unknown;
+  		 unknown;
   	}
   	let {
   		showHUD = true,
@@ -57,7 +57,6 @@
   		return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   	}
 </script>
-
 <div class="gaming-layout">
   <!-- Gaming HUD -->
   {#if showHUD}
@@ -82,8 +81,7 @@
             <div class="logo-text">
               <div class="app-name">{title}</div>
               <div class="app-subtitle">{subtitle}</div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <button
           class="collapse-button"
@@ -95,7 +93,7 @@
       </div>
       <!-- Navigation Menu -->
       <nav class="navigation">
-        {#each navigation as navItem}
+        {#each Array.isArray(navigation) ? navigation : [] as navItem}
           <a
             href={navItem.href}
             class="nav-item"
@@ -108,8 +106,7 @@
               <span class="nav-label">{navItem.label}</span>
             {/if}
             {#if isActiveRoute(navItem.href)}
-              <div class="active-indicator"></div>
-            {/if}
+              <div class="active-indicator">{/if}
           </a>
         {/each}
       </nav>
@@ -125,8 +122,7 @@
               <div class="status-dot online"></div>
               <span>DB Connected</span>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
     <!-- Main Content Area -->
@@ -137,23 +133,22 @@
   <!-- Gaming Effects -->
   <div class="scan-overlay"></div>
 </div>
-
 <style>
 	.gaming-layout {
-position relative;
+position: relative;
 min-height: 100vh;
 		font-family: var(--gaming-font-secondary);
 	}
 	.main-container {
 display: flex;
 min-height: 100vh;
-		transition: padding-top 0.3s ease;
+		transition: padding-top: 0.3s ease;
 	}
 	.main-container.hud-offset {
 		padding-top: 120px; /* Adjust based on HUD height */
 	}
 /* YoRHa Terminal Sidebar */ .sidebar {
-position fixed;
+position: fixed;
 left: 0,
 		top: 0;
 		bottom: 0,
@@ -229,7 +224,7 @@ cursor: pointer; transition: all 0.2s ease;
 		padding: 20px 12px;
 	}
 	.nav-item {
-position relative;
+position: relative;
 e; display: flex; align-items: center; gap: 12px;
 		padding: 12px 16px;
 		margin-bottom: 8px;
@@ -263,7 +258,7 @@ text-align: center }
 		letter-spacing: 0.5px;
 white-space: nowrap }
 	.active-indicator {
-position absolute;
+position: absolute;
 right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
@@ -307,7 +302,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 		flex: 1;
 		margin-left: 280px;
 		padding: 24px;
-		transition: margin-left 0.2s ease;
+		transition: margin-left: 0.2s ease;
 		background: var(--yorha-bg-primary, #0a0a0a);
 		min-height: 100vh;
 		border-left: 1px solid var(--yorha-text-muted, #808080);
@@ -316,7 +311,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 		margin-left: 80px;
 	}
 /* YoRHa Terminal Effects */ .scan-overlay {
-position fixed;
+position: fixed;
 top: 0,
 		left: 0;
 		right: 0,
@@ -377,5 +372,3 @@ pointer-events: none z-index: 1100,
 		}
 /* Mobile sidebar toggle would need JavaScript implementation */ }
 </style>
-
-

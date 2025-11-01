@@ -4,8 +4,8 @@
   // Import services conditionally to avoid SSR issues
   import { browser } from '$app/environment';
   // Only import in browser environment
-  let accessibilityService: unknown = null;
-  let enhancedRouteAccessibility: unknown = null;
+  let accessibilityService: any = null;
+  let enhancedRouteAccessibility: any = null;
   if (browser) {
     import('$lib/services/accessibility-service').then(module => {
       accessibilityService = module.accessibilityServic;
@@ -239,7 +239,6 @@
     }
   });
 </script>
-
 <div
   bind:this={containerElement}
   class="bits-ui-accessibility-wrapper"
@@ -252,16 +251,14 @@
   {#if contextualHelp}
     <div id="contextual-help" class="sr-only">
       {contextualHelp}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .bits-ui-accessibility-wrapper {
-    position relative;
+    position: relative;
   }
   .sr-only {
-    position absolute;
+    position: absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -277,7 +274,7 @@
 :global(.accessibility-enhanced-test), {}
   :global(.accessibility-enhanced-legal) {
 /* Enhanced focus and accessibility improvements for all route types */ {}
-    position relative;
+    position: relative;
   }
   :global(.accessibility-focused) {
     outline: 3px solid var(--color-primary, #4a90e2);
@@ -300,4 +297,3 @@
     }
   }
 </style>
-

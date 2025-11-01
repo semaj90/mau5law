@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         // Optionally: keep for future use (e.g. building service URLs)
         // langchain or other services can use recommendationsPort when required
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.log('Using default recommendations port');
     }
     // Generate FOAF recommendations from database
@@ -86,12 +86,12 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         const summaryData = await summaryResponse.json();
         foafData.summary = summaryData.summary;
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.log('LangChain summarization not available, using default summary');
     }
     foafData.processingTimeMs = Date.now() - startTime;
     return json(foafData);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('FOAF API error:', err);
     throw error(500, 'Failed to fetch FOAF recommendations');
   }
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       processingTimeMs: Date.now() - startTime,
     };
     return json(enhancedResponse);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Enhanced FOAF POST error:', err);
     throw error(500, 'Failed to generate enhanced FOAF recommendations');
   }
@@ -309,7 +309,7 @@ async function generateDatabaseFOAFRecommendations(
     }
     // Sort by connection strength and limit results
     return recommendations.sort((a, b) => b.connectionStrength - a.connectionStrength).slice(0, limit);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error generating database FOAF recommendations:', error);
     return [];
   }
@@ -367,11 +367,11 @@ async function enhanceRecommendationsWithEmbeddings(
             rec.metadata = { ...rec.metadata, semanticSimilarity: similarity };
           }
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`Failed to enhance recommendation ${rec.id} with embedding:`, error);
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Failed to enhance recommendations with embeddings:', error);
   }
 }

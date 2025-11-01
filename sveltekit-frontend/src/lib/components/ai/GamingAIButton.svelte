@@ -140,8 +140,7 @@ https://svelte.dev/e/expected_token -->
                         group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         {/each}
-      </div>
-    {/if}
+      {/if}
     <!-- Settings Button -->
     {#if isExpanded}
       <button type="button"
@@ -177,8 +176,7 @@ https://svelte.dev/e/expected_token -->
       {#if isConnected}
         <div class="absolute inset-0 rounded-full border-2 border-green-400/30 {pulseClasses[aiMode]}"></div>
       {:else}
-        <div class="absolute inset-0 rounded-full border-2 border-red-400/50 animate-pulse"></div>
-      {/if}
+        <div class="absolute inset-0 rounded-full border-2 border-red-400/50 animate-pulse">{/if}
       <!-- Main Icon Container -->
       <div class="relative flex items-center justify-center w-12 h-12">
         {#if isExpanded}
@@ -194,14 +192,12 @@ https://svelte.dev/e/expected_token -->
             />
             <!-- AI Activity Indicator -->
             {#if aiMode === 'thinking' || aiMode === 'active'}
-              <div class="absolute -top-1 -right-1 w-3 h-3 bg-current rounded-full {pulseClasses[aiMode]}"></div>
-            {/if}
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-current rounded-full {pulseClasses[aiMode]}">{/if}
             <!-- Power Status Indicator -->
             <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full
                         {isConnected ? 'bg-green-400' : 'bg-red-400'}
                         {isConnected ? 'animate-pulse' : 'animate-ping'}"></div>
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Gaming-style scanline effect -->
       <div class="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
@@ -220,11 +216,9 @@ https://svelte.dev/e/expected_token -->
           <!-- Tooltip arrow -->
           <div class="absolute top-1/2 -translate-y-1/2 left-full w-0 h-0
                       border-l-4 border-l-gray-900/95 border-y-4 border-y-transparent"></div>
-        </div>
-      {/if}
+        {/if}
     </button>
-  </div>
-{/if}
+  {/if}
 <style>
   /* @unocss-include */
   /* Custom gaming-style animations */

@@ -179,7 +179,7 @@ const originalGETHandler: RequestHandler = async () => {
       fallbackModel: FALLBACK_MODEL,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         ok: false,
@@ -259,7 +259,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
     const startTime = Date.now();
-    let fallbackUsed = false;
+    let fallbackUsed = $state(false);
     let modelUsed = model;
     const body = {
       model,
@@ -335,7 +335,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     try {
       result = await executePrimary();
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Log the error for diagnostics instead of creating an unused variable
       console.error('Primary model generate error:', err);
       if (model !== FALLBACK_MODEL) {
@@ -343,7 +343,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           fallbackUsed = true;
           modelUsed = FALLBACK_MODEL;
           const fbBody = { ...body, model: FALLBACK_MODEL };
-          fbBody.stream = false;
+          fbBody.stream = $state(false);
           const fbRes = (await withTimeout(
             fetch(`${OLLAMA_BASE_URL}/api/generate`, {
               method: 'POST',
@@ -355,7 +355,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           )) as Response;
           if (!fbRes.ok) throw new Error(`Fallback Ollama API error: ${fbRes.status}`);
           result = (await fbRes.json()) as OllamaResponse;
-        } catch (fbErr: unknown) {
+        } catch (fbErr: any) {
           // safe fallback summary
           const naive = naiveFallbackSummary(text, bullets);
           const duration = Date.now() - startTime;
@@ -473,7 +473,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         'Use smaller excerpts for more precise summaries',
       ],
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('AI summarization error:', errMsg);
     return json(
@@ -494,7 +494,7 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     if (!key) return json({ success: false, error: 'Cache key required' }, { status: 400 });
     await deleteCache(key);
     return json({ success: true, deleted: key, timestamp: new Date().toISOString() });
-  } catch (err: unknown) {
+  } catch (err: any) {
     return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });
   }
 };

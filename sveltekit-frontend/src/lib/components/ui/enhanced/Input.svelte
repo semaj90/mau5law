@@ -32,7 +32,6 @@ https://svelte.dev/e/js_parse_error -->
   		class
   	].filter(Boolean).join(' '));
 </script>
-
 <div class="space-y-2">
   {#if label}
     <label for={id} class="bits-label">
@@ -43,8 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if icon}
       <div class="absolute left-3 top-1/2 -translate-y-1/2 nes-text is-disabled">
         <div class="i-lucide-{icon} h-4 w-4"></div>
-      </div>
-    {/if}
+      {/if}
     <input
       {id}
       bind:value
@@ -56,8 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if loading}
       <div class="absolute right-3 top-1/2 -translate-y-1/2">
         <div class="i-lucide-loader-2 h-4 w-4 animate-spin nes-text is-disabled"></div>
-      </div>
-    {/if}
+      {/if}
   </div>
   {#if error}
     <p id="{id}-error" class="text-sm text-destructive">
@@ -69,7 +66,6 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   {/if}
 </div>
-
 <style>
   /* Enhanced Input with NieR styling */
   .yorha-input {
@@ -95,4 +91,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

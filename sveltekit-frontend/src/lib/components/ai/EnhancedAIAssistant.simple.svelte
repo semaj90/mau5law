@@ -2,16 +2,14 @@
   // Svelte 5 runes are auto-imported
   import { Brain, Loader2, Quote, Search, Settings, Trash2, Mic, MicOff } from 'lucide-svelte';
   import * as Dialog from 'bits-ui/components/dialog'; // Import Bits UI Dialog components
-
   // Exported props (Svelte 5)
   export let caseId: string | undefined = undefined;
   export let evidenceIds: string[] = [];
   export let placeholder: string = 'Ask AI about this case...';
   export let maxHeight: string = '400px';
   export let showReferences: boolean = true;
-  export let enableVoiceInput: boolean = false;
+  export let enableVoiceInput: boolean = $state(false);
   export let ondispatch: ((citation: string) => void) | undefined;
-
   // State
   let query = $state('');
   let isLoading = $state(false);
@@ -24,45 +22,39 @@
   let maxResults = $state(5);
   let temperature = $state(0.7);
   let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']);
-
   // Voice input support
   let isListening = $state(false);
   let recognition: SpeechRecognition | null = null;
-
   $effect(() => {
     // Initialize speech recognition if available and enabled
     if (enableVoiceInput && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = $state(false);
+      recognition.interimResults = $state(false);
       recognition.lang = 'en-US';
-
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         query = transcript;
-        isListening = false;
+        isListening = $state(false);
       };
       recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        isListening = false;
+        isListening = $state(false);
       };
       recognition.onend = () => {
-        isListening = false;
+        isListening = $state(false);
       };
     }
   });
-
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
-
     isLoading = true;
     const userMessage = { role: 'user', content: query };
     messages = [...messages, userMessage];
     const messageToSend = query;
     query = '';
-
     try {
       // Frontend component sends the selected model name to the SvelteKit backend.
       // The SvelteKit backend (/api/contextual/chat) is responsible for
@@ -84,7 +76,6 @@
           // Add other parameters as needed by your backend
         }),
       });
-
       let data: any = {};
       const contentType = response.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
@@ -93,7 +84,6 @@
         const text = await response.text();
         data = text ? { message: text } : {};
       }
-
       if (response.ok && data?.message) {
         const aiResponse = {
           role: 'assistant',
@@ -116,24 +106,20 @@
         },
       ];
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   function handleReferenceClick(reference: any) {
     selectedCitation = `${reference.title} - ${reference.citation}`;
     showCitationDialog = true;
   }
-
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = false;
+    showCitationDialog = $state(false);
   }
-
   function clearMessages() {
     messages = [];
   }
-
   function toggleVoiceInput() {
     if (!recognition) return;
     if (isListening) {
@@ -144,7 +130,6 @@
     }
   }
 </script>
-
 <div class="ai-assistant-container nes-container is-dark with-title">
   <p class="title">Legal AI Assistant</p>
   <div style="max-height: {maxHeight}; display: flex; flex-direction: column; height: 100%;">
@@ -193,9 +178,8 @@
         </button>
       </div>
     </div>
-
     <div class="messages-container flex-1 overflow-y-auto p-4 space-y-4 nes-container is-dark">
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <div class={message.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
           <div
             class={message.role === 'user'
@@ -211,7 +195,7 @@
               <div class="references mt-2 pt-2 border-t border-current/20">
                 <h4 class="references-title text-sm font-medium mb-1 nes-text is-disabled">References:</h4>
                 <div class="flex flex-wrap gap-2">
-                  {#each message.references as reference}
+                  {#each Array.isArray(message.references) ? message.references : [] as reference}
                     <button
                       type="button"
                       class="reference-item nes-btn is-small"
@@ -224,8 +208,7 @@
                     </button>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       {/each}
@@ -237,10 +220,8 @@
               <span>Analyzing your query...</span>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
-
     <form class="chat-input p-4 nes-container is-dark" onsubmit={handleSubmit}>
       <div class="nes-field is-inline flex-1">
         <input
@@ -261,7 +242,6 @@
       </div>
     </form>
   </div>
-
   <Dialog.Root bind:open={showSettings}>
     <Dialog.Content class="max-w-2xl nes-dialog is-dark">
       <Dialog.Header>
@@ -296,7 +276,7 @@
         <div class="setting-group">
           <label class="nes-text is-disabled">Enabled Sources:</label>
           <div class="flex flex-wrap gap-2">
-            {#each ['cases', 'statutes', 'regulations', 'secondary'] as source}
+            {#each Array.isArray(['cases', 'statutes', 'regulations', 'secondary']) ? ['cases', 'statutes', 'regulations', 'secondary'] : [] as source}
               <label class="nes-checkbox">
                 <input type="checkbox" bind:group={enabledSources} value={source} />
                 <span>{source}</span>
@@ -312,7 +292,6 @@
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
-
   <Dialog.Root bind:open={showCitationDialog}>
     <Dialog.Content class="max-w-2xl nes-dialog is-dark">
       <Dialog.Header>
@@ -322,7 +301,6 @@
         </Dialog.Title>
         <Dialog.Description class="nes-text is-disabled">Details of the cited legal reference.</Dialog.Description>
       </Dialog.Header>
-
       <div class="dialog-body nes-container is-dark">
         <div class="citation-display nes-text">
           <p>{selectedCitation}</p>
@@ -341,7 +319,6 @@
           </button>
         </div>
       </div>
-
       <Dialog.Footer class="nes-container is-dark">
         <button type="button" class="nes-btn is-small" onclick={() => (showCitationDialog = false)} aria-label="Close dialog"
           >Close</button
@@ -350,7 +327,6 @@
     </Dialog.Content>
   </Dialog.Root>
 </div>
-
 <style>
   /* @unocss-include */
   .ai-assistant-container {
@@ -398,7 +374,6 @@
     align-items: center;
     /* NES.css button handles styling */
   }
-
   /* NES.css overrides for Bits-UI Dialogs */
   :global(.nes-dialog) {
     background-color: #212529; /* Dark background for dialog */
@@ -488,5 +463,3 @@
     /* NES.css handles checkbox styling */
   }
 </style>
-
-

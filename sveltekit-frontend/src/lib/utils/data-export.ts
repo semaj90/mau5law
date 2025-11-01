@@ -137,7 +137,7 @@ export async function exportCases(
       errors: [],
       warnings: []
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("Export failed:", message);
     return {
@@ -259,7 +259,7 @@ export async function importCases(
         } else {
           skipped++;
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         errors.push(`Failed to import case "${caseData.title}": ${message}`);
         skipped++;
@@ -287,7 +287,7 @@ export async function importCases(
         failed: skipped
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return {
       success: false,
@@ -300,7 +300,7 @@ export async function importCases(
   }
 }
 // Utility Functions
-function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknown[] {
+function applyCaseFilters(cases: any[], filters: { [key: string]: any }): any[] {
   return cases.filter((c) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
@@ -323,7 +323,7 @@ function applyCaseFilters(cases: any[], filters: { [key: string]: any }): unknow
 function applyEvidenceFilters(
   evidence: any[],
   filters: { [key: string]: any },
-): unknown[] {
+): any[] {
   return evidence.filter((e: any) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
@@ -421,7 +421,7 @@ async function parseImportFile(file: File, format: string): Promise<any> {
       throw new Error("Unsupported import format");
   }
 }
-function parseCSV(csvText: string): unknown[] {
+function parseCSV(csvText: string): any[] {
   const lines = csvText.split('\n');
   const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
   return lines
@@ -502,7 +502,7 @@ async function processCaseImport(
   }
 }
 // Template generators for different export formats
-export function generateCaseExportTemplate(): unknown {
+export function generateCaseExportTemplate(): any {
   return {
     title: "Sample Case Title",
     description: "Detailed case description",
@@ -515,7 +515,7 @@ export function generateCaseExportTemplate(): unknown {
     estimatedCompletion: null
   }
 }
-export function generateEvidenceExportTemplate(): unknown {
+export function generateEvidenceExportTemplate(): any {
   return {
     title: "Sample Evidence Item",
     description: "Evidence description",

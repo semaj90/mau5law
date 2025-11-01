@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: 'detective_analysis_completed',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error in detective analysis:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -170,7 +170,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error getting detective insights:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -197,7 +197,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 type ServiceLocals = {
   user?: { id?: string } | null;
   session?: { userId?: string } | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 function getUserId(locals: ServiceLocals): string {
@@ -395,8 +395,8 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
       connectionType: 'related',
       strength: Number((Math.random() * 0.4 + 0.6).toFixed(3)),
       evidence: [
-        item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type:unknown',
-        item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp:unknown',
+        item?.evidenceType ? `Type:${String(item.evidenceType)}` : 'Type: any',
+        item?.createdAt ? `Timestamp:${String(item.createdAt)}` : 'Timestamp: any',
       ],
     } as Connection;
   });
@@ -456,9 +456,9 @@ type CaseRecord = {
   title?: string;
   metadata?: {
     lastDetectiveAnalysis?: { timestamp?: string };
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type CaseInsights = {
@@ -535,7 +535,7 @@ type EvidenceItem = {
   createdAt?: string; // ISO string or similar
   evidenceType?: string;
   title?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type TimelineEvent = {
@@ -561,13 +561,13 @@ type TimelineAnalysis = {
 // --- NEW: strongly-typed detective analysis result to avoid `any` usage ---
 type DetectiveAnalysis = {
   overallConfidence: number;
-  findings: unknown[];
-  patterns: unknown[];
-  connections: unknown[];
-  anomalies: unknown[];
+  findings: any[];
+  patterns: any[];
+  connections: any[];
+  anomalies: any[];
   timeline: TimelineEvent[];
   recommendations: string[];
   alerts: string[];
   // allow flexible extra fields produced by analysis steps
-  [key: string]: unknown;
+  [key: string]: any;
 };

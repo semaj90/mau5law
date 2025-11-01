@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Progress as ProgressPrimitive } from 'bits-ui';
-
   interface Props {
     value?: number;
     max?: number;
@@ -8,12 +7,9 @@
     class?: string;
     showPercentage?: boolean;
   }
-
   let { value = 0, max = 100, variant = 'default', class: className = '', showPercentage = false }: Props = $props();
-
   // reactive percentage using Svelte 5 runes
   let percentage = $derived(Math.min(Math.max((value / (max || 1)) * 100, 0), 100));
-
   let variantClass = $derived(
     variant === 'success'
       ? 'bg-green-500'
@@ -27,10 +23,8 @@
       ? 'bg-indigo-600'
       : 'bg-gray-600'
   );
-
   let sizeClasses = $derived('h-2'); // keep simple, allow override via class prop
 </script>
-
 <!-- accessible, SSR-friendly progress bar -->
 <div class={['relative w-full', className].filter(Boolean).join(' ')}>
   <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden {sizeClasses}">
@@ -43,18 +37,14 @@
       style="width: {percentage}%"
     >
       {#if variant === 'yorha'}
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-      {/if}
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer">{/if}
     </div>
   </div>
-
   {#if showPercentage}
     <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 text-right nes-text">
       {Math.round(percentage)}%
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   @keyframes shimmer {
     0% { transform: translateX(-100%); }

@@ -19,7 +19,7 @@ interface EvidenceVerificationResult {
   evidence: {
     caseId: string | null;
     id: string;
-    metadata: unknown;
+    metadata: any;
     embedding: number[] | null;
     createdAt: Date;
     updatedAt: Date;
@@ -27,7 +27,7 @@ interface EvidenceVerificationResult {
     title: string;
     evidenceType: string | null;
     relevanceScore: number | null;
-    [key: string]: unknown;
+    [key: string]: any;
   } | null;
   chainValidation: Record<string, unknown> | null;
 }
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
           { status: 404 }
         );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({
@@ -140,7 +140,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
 export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
   const requestId = randomUUID();
   const startTime = performance.now();
-  let requestBody: unknown;
+  let requestBody: any;
   try {
     requestBody = await request.json();
     const path = url.pathname.split('/').pop();
@@ -468,7 +468,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
           { status: 404 }
         );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
@@ -515,7 +515,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
 export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
   const requestId = randomUUID();
   const startTime = performance.now();
-  let requestBody: unknown; // Declare requestBody here
+  let requestBody: any; // Declare requestBody here
   try {
     requestBody = await request.json(); // Assign value here
     const pathParts = url.pathname.split('/');
@@ -632,7 +632,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
         { status: 404 }
       );
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
@@ -706,7 +706,7 @@ export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({

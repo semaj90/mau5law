@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
-
+  import { Button } from '$lib/components/ui/button/Button.svelte';
   interface UploadResult {
     success: boolean;
     message: string;
@@ -15,7 +14,6 @@
     };
     error?: string;
   }
-
   let files = $state<FileList | null>(null);
   let tags = $state('');
   let uploading = $state(false);
@@ -24,34 +22,29 @@
   let messageType = $state<'success' | 'error' | 'info'>('info');
   let uploadResult = $state<UploadResult | null>(null);
   let dragActive = $state(false);
-
   function handleDrag(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
     dragActive = e.type === 'dragenter' || e.type === 'dragover';
   }
-
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    dragActive = false;
+    dragActive = $state(false);
     if (e.dataTransfer?.files) {
       files = e.dataTransfer.files;
     }
   }
-
   async function handleUpload() {
     if (!files || files.length === 0) {
       message = 'Please select a file first';
       messageType = 'error';
       return;
     }
-
     uploading = true;
     uploadProgress = 0;
     uploadResult = null;
     message = '';
-
     try {
       const file = files[0]; // Upload first file only
       const formData = new FormData();
@@ -59,17 +52,14 @@
       if (tags.trim()) {
         formData.append('tags', tags);
       }
-
       const response = await fetch('/api/rag/documents/upload', {
         method: 'POST',
         body: formData
       });
-
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Upload failed');
       }
-
       uploadProgress = 100;
       const data = await response.json();
       uploadResult = data;
@@ -81,24 +71,21 @@
       message = error instanceof Error ? error.message : 'Upload failed';
       messageType = 'error';
     } finally {
-      uploading = false;
+      uploading = $state(false);
     }
   }
-
   function clearFiles() {
     files = null;
     uploadResult = null;
     message = '';
   }
 </script>
-
 <div class="w-full space-y-4 p-6 bg-white rounded-lg border border-gray-200">
   <!-- Header -->
   <div class="flex items-center gap-2 mb-6">
     <Upload class="w-5 h-5 text-blue-600" />
     <h2 class="text-lg font-semibold text-gray-900">Upload Evidence Document</h2>
   </div>
-
   <!-- Messages -->
   {#if message}
     <div
@@ -116,9 +103,7 @@
         <AlertCircle class="w-5 h-5 flex-shrink-0 mt-0.5" />
       {/if}
       <span>{message}</span>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Drop Zone -->
   <div
     ondragenter={handleDrag}
@@ -147,7 +132,6 @@
       Select File
     </Button>
   </div>
-
   <!-- File Preview -->
   {#if files && files.length > 0}
     <div class="space-y-3">
@@ -157,7 +141,6 @@
           {(files[0].size / 1024 / 1024).toFixed(2)} MB
         </p>
       </div>
-
       <!-- Tags Input -->
       <div>
         <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">
@@ -171,9 +154,7 @@
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
         />
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Upload Result -->
   {#if uploadResult && uploadResult.success && uploadResult.document}
     <div class="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -186,9 +167,7 @@
           <p><strong>OCR:</strong> Processed ✓</p>
         {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Progress Bar -->
   {#if uploading}
     <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -196,9 +175,7 @@
         class="bg-blue-600 h-full transition-all duration-300"
         style="width: {uploadProgress}%"
       />
-    </div>
-  {/if}
-
+    {/if}
   <!-- Action Buttons -->
   <div class="flex gap-2 pt-2">
     <Button
@@ -217,7 +194,6 @@
     </Button>
   </div>
 </div>
-
 <style>
   input[type='file'] {
     cursor: pointer;

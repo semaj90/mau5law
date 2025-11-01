@@ -44,7 +44,7 @@ export interface Task {
   dependencies?: string[];
   gpuRequired?: boolean;
   model?: 'gemma3-legal' | 'nomic-embed-text'; // Required model specification
-  errorData?: unknown; // For GPU error processing tasks
+  errorData?: any; // For GPU error processing tasks
 }
 // Worker Status with GPU metrics
 export interface WorkerStatus {
@@ -438,7 +438,7 @@ export class NodeJSOrchestrator {
       let workerConfig = null;
       let tasksProcessed = 0;
       let processingTimes = [];
-      let modelLoaded = false;
+      let modelLoaded = $state(false);
       // Model validation
       function validateModel(requestedModel) {
         const allowedModels = ['gemma3-legal', 'nomic-embed-text'];

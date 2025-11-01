@@ -3,16 +3,13 @@
   import { onMount } from 'svelte';
   import { getBitsOverrides } from './bits-overrides';
   let { children }: { children?: Snippet } = $props();
-
   let DialogContent = $state<any>(null);
   const overrides = getBitsOverrides();
-
   onMount(async () => {
     if (overrides && overrides.Dialog) {
       DialogContent = (overrides.Dialog as any).Content ?? null;
       return;
     }
-
     try {
       const mod = await import('bits-ui');
       const dialog = (mod as any).Dialog ?? (mod as any).default?.Dialog;
@@ -22,14 +19,12 @@
     }
   });
 </script>
-
 {#if DialogContent}
   {@const DC = DialogContent}
   <DC>
-    {@render children?.()}
+    <slot />
   </DC>
 {:else}
   <div class="dialog-content-fallback">
-    {@render children?.()}
-  </div>
-{/if}
+    <slot />
+  {/if}

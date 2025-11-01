@@ -46,16 +46,16 @@ export class OllamaService {
   }
 
   // type-guard helpers
-  private static isNumberArray(val: unknown): val is number[] {
+  private static isNumberArray(val: any): val is number[] {
     return Array.isArray(val) && (val as unknown[]).every((v) => typeof v === 'number');
   }
 
-  private static isObject(val: unknown): val is Record<string, unknown> {
+  private static isObject(val: any): val is Record<string, unknown> {
     return val !== null && typeof val === 'object';
   }
 
   // new helper to check for string properties without using `any`
-  private static hasStringProp(obj: unknown, prop: string): obj is Record<string, unknown> {
+  private static hasStringProp(obj: any, prop: string): obj is Record<string, unknown> {
     return OllamaService.isObject(obj) && typeof (obj as Record<string, unknown>)[prop] === 'string';
   }
 
@@ -95,7 +95,7 @@ export class OllamaService {
       }
 
       // helper to extract embedding from array-of-objects shapes
-      const extractEmbeddingFromArrayField = (field: unknown): number[] | null => {
+      const extractEmbeddingFromArrayField = (field: any): number[] | null => {
         if (Array.isArray(field) && field.length > 0 && OllamaService.isObject(field[0])) {
           const first = field[0] as Record<string, unknown>;
           const emb = first['embedding'] ?? first['vector'] ?? first['embeddings'];
@@ -113,7 +113,7 @@ export class OllamaService {
       const resultsEmbedding = extractEmbeddingFromArrayField(resultsField);
       if (resultsEmbedding) return resultsEmbedding;
 
-      // 4) fallback: unknown format
+      // 4) fallback: any format
       throw new Error(
         `Unknown embedding response format. Payload keys: ${Object.keys(payload).join(', ')}`
       );
@@ -226,7 +226,7 @@ export class OllamaService {
     cacheKey?: string
   ): Promise<string> {
     // Support environments where response.body may be a WHATWG ReadableStream, a Node Readable, or null.
-    const stream: unknown = (response as any).body;
+    const stream: any = (response as any).body;
     if (!stream) return '';
 
     const decoder = new TextDecoder('utf-8');
@@ -240,7 +240,7 @@ export class OllamaService {
       // Prefer WHATWG ReadableStream reader when available
       if (stream && typeof (stream as any).getReader === 'function') {
         reader = (stream as any).getReader();
-        let readerDone = false;
+        let readerDone = $state(false);
         while (!readerDone) {
           const { value, done: d } = await reader.read();
           readerDone = !!d;
@@ -345,7 +345,7 @@ export class OllamaService {
             }
           };
           const onEnd = () => resolve();
-          const onError = (err: unknown) => reject(err);
+          const onError = (err: any) => reject(err);
           s.on('data', onData);
           s.once('end', onEnd);
           s.once('error', onError);
@@ -474,7 +474,7 @@ export class OllamaService {
         llmModel: models.includes(this.llmModel),
         models
       };
-    } catch (_error: unknown) {
+    } catch (_error: any) {
       return {
         status: "unhealthy",
         embedModel: false,
@@ -593,7 +593,7 @@ export class OllamaService {
   /**
    * Estimate Shannon entropy of JSON-like object by token/key frequency
    */
-  static jsonEntropy(obj: unknown) {
+  static jsonEntropy(obj: any) {
     try {
       const serialized = typeof obj === 'string' ? obj : JSON.stringify(obj);
       const freq: Record<string, number> = Object.create(null);
@@ -618,7 +618,7 @@ export class OllamaService {
    * Parse JSON using worker threads (Node) or synchronous fallback.
    * Returns parsed object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
    */
-  async parseJsonWithEntropy(payload: string): Promise<{ parsed: unknown; entropy: number }> {
+  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any; entropy: number }> {
     // If running in Node and worker_threads is available, offload parsing.
     if (isNode) {
       try {
@@ -857,7 +857,7 @@ export class OllamaService {
    * Accepts either a string payload or a Readable stream (Node/WHATWG). Does not require external deps.
    */
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  static async streamingJsonAnalyzer(input: unknown) {
+  static async streamingJsonAnalyzer(input: any) {
     // incremental frequency map for 2-char grams (fast heuristic)
     const freq: Record<string, number> = Object.create(null);
     let total = 0;
@@ -887,7 +887,7 @@ export class OllamaService {
     } else if (input && typeof (input as any).getReader === 'function') {
       // WHATWG ReadableStream
       const reader = (input as any).getReader();
-      let readerDone = false;
+      let readerDone = $state(false);
       while (!readerDone) {
         // eslint-disable-next-line no-await-in-loop
         const { value, done: d } = await reader.read();

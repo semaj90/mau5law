@@ -22,13 +22,13 @@ type OrchestrationApi = Partial<{
   getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
   getOrchestrationPlan: () =>
     | {
-        startupSequence?: unknown[];
-        healthChecks?: unknown[];
+        startupSequence?: any[];
+        healthChecks?: any[];
         protocolRouting?: Record<string, unknown>;
       }
     | Promise<{
-        startupSequence?: unknown[];
-        healthChecks?: unknown[];
+        startupSequence?: any[];
+        healthChecks?: any[];
         protocolRouting?: Record<string, unknown>;
       }>;
   generateStartupScript: () => string | Promise<string>;
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Services query failed:', error);
     return json(
       {
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleUpdateOrchestration(options);
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('POST action failed:', error);
     return json(
       {
@@ -167,7 +167,7 @@ function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, num
   return breakdown;
 }
 
-async function handleStartServices(serviceNames: string[], _options?: unknown): Promise<Response> {
+async function handleStartServices(serviceNames: string[], _options?: any): Promise<Response> {
   const results: Record<string, { success: boolean; message: string }> = {};
   for (const serviceName of serviceNames) {
     const service = productionServiceRegistry.getServiceByName(serviceName);
@@ -184,7 +184,7 @@ async function handleStartServices(serviceNames: string[], _options?: unknown): 
         success: healthy,
         message: healthy ? 'Service is running' : 'Service failed to start',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       results[serviceName] = {
         success: false,
         message: error instanceof Error ? error.message : String(error),
@@ -225,7 +225,7 @@ async function handleRestartTier(tier?: string): Promise<Response> {
       const healthy = await productionServiceRegistry.checkServiceHealth(service.name);
       results[service.name] = healthy;
     } catch {
-      results[service.name] = false;
+      results[service.name] = $state(false);
     }
   }
   return json({

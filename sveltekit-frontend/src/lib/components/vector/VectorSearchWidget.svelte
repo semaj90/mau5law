@@ -7,8 +7,8 @@ Compact searchable component for embedding in other interfaces
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import { Badge } from "$lib/components/ui/badge";
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'";
   import {
     Search,
     Loader2,
@@ -54,7 +54,7 @@ Compact searchable component for embedding in other interfaces
       searchTimeout = setTimeout(performSearch, 300);
     } else {
       searchResults = [];
-      isOpen = false;
+      isOpen = $state(false);
     }
   });
   async function performSearch() {
@@ -74,20 +74,20 @@ Compact searchable component for embedding in other interfaces
       console.error('Vector search failed:', error);
       searchResults = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
   function selectResult(result: VectorSearchResult) {
     onResultSelect(result);
     searchQuery = '';
     searchResults = [];
-    isOpen = false;
+    isOpen = $state(false);
     inputElement?.blur();
   }
   function clearSearch() {
     searchQuery = '';
     searchResults = [];
-    isOpen = false;
+    isOpen = $state(false);
     inputElement?.focus();
   }
   function getEntityIcon(type: string) {
@@ -110,7 +110,7 @@ Compact searchable component for embedding in other interfaces
     function handleClickOutside(_event: MouseEvent) {
       // removed unused target assignment
       if (!target.closest('.vector-search-widget')) {
-        isOpen = false;
+        isOpen = $state(false);
       }
     }
     document.addEventListener('click', handleClickOutside);
@@ -153,7 +153,7 @@ Compact searchable component for embedding in other interfaces
           Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
         </div>
         <div class="space-y-1">
-          {#each searchResults as result}
+          {#each Array.isArray(searchResults) ? searchResults : [] as result}
             {@const SvelteComponent = getEntityIcon(result?.source || 'unknown')}
             <button
               type="button"
@@ -175,18 +175,16 @@ Compact searchable component for embedding in other interfaces
               <p class="text-xs nes-text is-disabled line-clamp-2 mb-2">
                 {(result?.content || '').substring(0, 120)}{(result?.content || '').length > 120 ? '...' : ''}
               </p>
-              {#if (result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights?.length > 0}
+              {#if (result as { highlights?: any; relevanceScore?: any; similarity?: any }).highlights?.length > 0}
                 <div class="text-xs">
-                  <span class="vector-highlight">{(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).highlights[0]}</span>
-                </div>
-              {/if}
+                  <span class="vector-highlight">{(result as { highlights?: any; relevanceScore?: any; similarity?: any }).highlights[0]}</span>
+                {/if}
               {#if !compact}
                 <div class="flex items-center gap-3 mt-2 text-xs nes-text is-disabled">
-                  <span>Relevance: {(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).relevanceScore.toFixed(2)}</span>
+                  <span>Relevance: {(result as { highlights?: any; relevanceScore?: any; similarity?: any }).relevanceScore.toFixed(2)}</span>
                   <span>•</span>
-                  <span>Similarity: {(result as { highlights?: unknown; relevanceScore?: unknown; similarity?: unknown }).similarity.toFixed(3)}</span>
-                </div>
-              {/if}
+                  <span>Similarity: {(result as { highlights?: any; relevanceScore?: any; similarity?: any }).similarity.toFixed(3)}</span>
+                {/if}
             </button>
           {/each}
         </div>
@@ -196,10 +194,8 @@ Compact searchable component for embedding in other interfaces
           <div class="text-xs nes-text is-disabled text-center">
             Showing top {maxResults} results
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- No Results Message -->
   {#if isOpen && searchResults.length === 0 && !isSearching && searchQuery.length >= 2}
     <div class="absolute top-full left-0 right-0 z-50 mt-1 bg-popover border border-border rounded-md shadow-lg">
@@ -208,8 +204,7 @@ Compact searchable component for embedding in other interfaces
         <p class="text-sm nes-text is-disabled">No results found for: "{searchQuery}"</p>
         <p class="text-xs nes-text is-disabled mt-1">Try adjusting your search terms</p>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */

@@ -14,14 +14,12 @@
     checkbox: false,
     radio: '',
   });
-
   // updated: prevent full page reload on submit
   function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     console.log('Form submitted:', formData);
   }
 </script>
-
 <!-- HTML5 Semantic Elements -->
 <article class="nes-container with-title" style="display: {visible ? 'block' : 'none'}">
   <p class="title">NES.css Elements Showcase</p>
@@ -257,7 +255,6 @@ function example() {
     {@render children()}
   {/if}
 </article>
-
 <style>
 /* Component-specific styles */
   article {

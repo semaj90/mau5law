@@ -3,7 +3,6 @@
   import { chatMachine } from '$lib/machines/chatMachine.js';
   let chatContainer: HTMLDivElement | null = null;
   let userInput = $state('');
-
   // Create and start XState service manually so we don't rely on @xstate/svelte types.
   const service = interpret(chatMachine);
   let snapshot: any = service.initialState;
@@ -12,7 +11,6 @@
   });
   service.start();
   const send = (event: any) => service.send(event);
-
   // Actor implementation with explicit types and safer error handling
   // (the machine will call this actor via options; ensure machine expects actor name `streamChatActor`)
   // Provide the actor factory on the machine side or pass it via machine options where used.
@@ -52,7 +50,7 @@
             }
           }
           sendBack({ type: 'STREAM_DONE' });
-        } catch (err: unknown) {
+        } catch (err: any) {
           const e = err as any;
           if (e?.name !== 'AbortError') {
             console.error('Chat stream error:', e);
@@ -66,7 +64,6 @@
       };
     };
   };
-
   // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
   function handleSubmit(event: Event) {
     const submitEvent = event as SubmitEvent;
@@ -75,7 +72,6 @@
     send({ type: 'SUBMIT', message: userInput });
     userInput = '';
   }
-
   // Reactive statement to scroll down when messages change
   $effect(() => {
     if (snapshot?.context?.messages && typeof window !== 'undefined') {
@@ -88,7 +84,6 @@
     }
   });
 </script>
-
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900">
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
     {#each snapshot.context.messages as message, i (i)}
@@ -107,8 +102,7 @@
           <p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
     <form onsubmit={handleSubmit} class="flex items-center space-x-2">
@@ -129,7 +123,6 @@
     </form>
   </div>
 </div>
-
 <style>
   /* Styles from previous Chat.svelte component can be reused here */
   .chat-message {
@@ -187,4 +180,3 @@
     }
   }
 </style>
-

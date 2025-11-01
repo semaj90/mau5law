@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function saveDocument() {
     // dispatch save event hook if provided
-    hasUnsavedChanges = false;
+    hasUnsavedChanges = $state(false);
     lastSaved = new Date();
   }
   // Document statistics
@@ -271,7 +271,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="shortcuts-modal yorha-nier-bits-card" onclick={e => e.stopPropagation()}>
       <h3 class="shortcuts-title gradient-text-primary">Keyboard Shortcuts</h3>
       <div class="shortcuts-grid">
-        {#each shortcuts as shortcut}
+        {#each Array.isArray(shortcuts) ? shortcuts : [] as shortcut}
           <div class="shortcut-item">
             <kbd class="shortcut-key">{shortcut.key}</kbd>
             <span class="shortcut-action">{shortcut.action}</span>

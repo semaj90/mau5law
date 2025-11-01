@@ -1,5 +1,5 @@
 let Sentry: any = null;
-let isEnabled = false;
+let isEnabled = $state(false);
 try {
   const dsn = process.env.SENTRY_DSN;
   if (dsn) {
@@ -14,7 +14,7 @@ try {
   console.warn('[sentry adapter] failed to init', e);
   Sentry = null;
 }
-export function captureException(e: unknown, ctx?: Record<string, unknown>) {
+export function captureException(e: any, ctx?: Record<string, unknown>) {
   if (!Sentry) return;
   try {
     Sentry.captureException(e, { extra: ctx });
@@ -22,5 +22,4 @@ export function captureException(e: unknown, ctx?: Record<string, unknown>) {
     console.warn('[sentry adapter] captureException failed', err);
   }
 }
-
 export { isEnabled };

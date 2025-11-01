@@ -25,7 +25,7 @@ const mockDB: EvidenceItem[] = [
   { id: '550e8400-e29b-41d4-a716-446655440002', filename: 'financial-records-Q4.xlsx' },
 ];
 
-function makeErrorBody(err: unknown) {
+function makeErrorBody(err: any) {
   if (err instanceof z.ZodError) return { message: 'Invalid request', details: err.errors };
   if (err instanceof Error) return { message: err.message };
   return { message: String(err) };

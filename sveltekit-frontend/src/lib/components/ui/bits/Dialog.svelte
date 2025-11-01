@@ -10,16 +10,13 @@
   export const DialogTitle = (_ns as any)?.Title ?? null;
   export const DialogDescription = (_ns as any)?.Description ?? null;
   export const DialogClose = (_ns as any)?.Close ?? null;
-
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
 </script>
-
 <script lang="ts">
   import { getBitsNamespace as getBitsNamespaceClient } from '$lib/utils/bits-ui-adapter';
   import { cn } from '$lib/utils/cn';
   import type { Snippet } from 'svelte';
-
   interface DialogProps {
     /** Whether the dialog is open */
     open?: boolean;
@@ -41,7 +38,6 @@
     contentClass?: string;
     children?: Snippet;
   }
-
   let {
     open = $bindable(false),
     onOpenChange,
@@ -54,7 +50,6 @@
     contentClass = '',
     children,
   }: DialogProps = $props();
-
   const dialogContentClasses = $derived(
     cn(
       'bits-dialog-content',
@@ -66,7 +61,6 @@
       contentClass
     )
   );
-
   const overlayClasses = $derived(
     cn(
       'bits-dialog-overlay',
@@ -77,11 +71,9 @@
       overlayClass
     )
   );
-
   function handleOpenChange(newOpen: boolean) {
     onOpenChange?.(newOpen);
   }
-
   // Replace plain lets with Svelte $state so updates are reactive
   let BitsDialogRoot: any = $state(null);
   let BitsDialogPortal: any = $state(null);
@@ -94,10 +86,8 @@
     BitsDialogOverlay = BitsDialog?.Overlay ?? BitsDialog?.DialogOverlay ?? null;
     BitsDialogContent = BitsDialog?.Content ?? BitsDialog?.DialogContent ?? null;
   })();
-
   // Legacy direct-access consts removed — using adapter-resolved `BitsDialog*` lets above
 </script>
-
 {#if BitsDialogRoot}
   <BitsDialogRoot {open} onopenChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}>
     {#if BitsDialogPortal}
@@ -110,7 +100,6 @@
             data-case-management={caseManagement}
           ></BitsDialogOverlay>
         {/if}
-
         {#if BitsDialogContent}
           <BitsDialogContent
             class={dialogContentClasses}
@@ -137,7 +126,6 @@
           data-case-management={caseManagement}
         ></BitsDialogOverlay>
       {/if}
-
       {#if BitsDialogContent}
         <BitsDialogContent
           class={dialogContentClasses}
@@ -169,9 +157,7 @@
     {#if children}
       {@render children()}
     {/if}
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
   :global(.bits-dialog-overlay) {
@@ -198,15 +184,13 @@
       transform: translate(-50%, -50%) scale(1);
     }
   }
-
   :global(.nier-bits-dialog) {
     background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-primary);
   }
-
   :global(.bits-dialog-accent) {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -218,7 +202,6 @@
       var(--color-nier-accent-warm)
     );
   }
-
   :global([data-evidence-analysis] .bits-dialog-content) {
     background-image:
       linear-gradient(45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%),
@@ -232,32 +215,28 @@
       10px -10px,
       -10px 0px;
   }
-
   :global([data-case-management] .bits-dialog-content) {
     box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-
   :global([data-ssr-dialog-overlay]) {
-    position fixed;
+    position: fixed;
     inset: 0;
     z-index: 50;
     background-color: rgba(0, 0, 0, 0.5);
     contain: layout style;
     will-change: opacity;
   }
-
   @supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
     :global([data-ssr-dialog-overlay]) {
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }
   }
-
   :global([data-ssr-dialog-content]) {
-    position fixed;
+    position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -275,12 +254,10 @@
     padding: 1.5rem;
     outline: none;
   }
-
   :global([data-bits-dialog-content]:focus-visible) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-
   @media (max-width: 640px) {
     :global(.bits-dialog-content),
     :global([data-ssr-dialog-content]) {
@@ -292,4 +269,3 @@
     }
   }
 </style>
-

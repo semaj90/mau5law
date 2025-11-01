@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
       .from(sessions)
       .orderBy(desc(sessions.created_at))
       .limit(5);
-  } catch (e: unknown) {
+  } catch (e: any) {
     // Use unknown for catch block error
     status = status === 'healthy' ? 'degraded' : status;
     const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred';

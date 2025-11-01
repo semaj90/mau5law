@@ -226,7 +226,7 @@ function createSearchStore() {
     /**
      * Apply filters to results
      */
-    filter(filterType: keyof SearchFilters, value: unknown) {
+    filter(filterType: keyof SearchFilters, value: any) {
       update(s => {
         const newFilters = { ...s.filters, [filterType]: value };
         const filtered = this._filterResults(s.results, newFilters);

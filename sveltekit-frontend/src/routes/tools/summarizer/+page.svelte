@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   let summarizerRef: any;
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);

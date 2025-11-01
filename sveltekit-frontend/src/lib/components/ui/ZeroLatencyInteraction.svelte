@@ -11,10 +11,10 @@ https://svelte.dev/e/js_parse_error -->
   export let interactionType: 'hover' | 'click' | 'focus' = 'hover';
   export let patternPrefix: string = 'summary';
   export let fallbackApiEndpoint: string = '/api/legal/summary';
-  export let enableDebugMode: boolean = false;
+  export let enableDebugMode: boolean = $state(false);
 
   // State
-  let isInitialized = false;
+  let isInitialized = $state(false);
   let currentTooltip: HTMLElement | null = null;
   let interactionStats = {
     totalInteractions: 0,
@@ -372,8 +372,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="stat"><span class="label">Average Response:</span><span class="value">{interactionStats.averageResponseTime.toFixed(2)}ms</span></div>
       <div class="stat"><span class="label">Hit Rate:</span><span class="value">{interactionStats.totalInteractions > 0 ? ((interactionStats.cacheHits / interactionStats.totalInteractions) * 100).toFixed(1) : 0}%</span></div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   /* Zero-latency interaction styles */

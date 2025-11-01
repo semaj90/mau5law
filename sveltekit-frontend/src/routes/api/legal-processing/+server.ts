@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   // --- Move helpers here (function body root) ---
-  const normalizeSummaryResult = (val: unknown): { summary: string; keyTerms: string[] } => {
+  const normalizeSummaryResult = (val: any): { summary: string; keyTerms: string[] } => {
     if (!val) return { summary: 'Processing completed', keyTerms: [] };
     if (typeof val === 'string') return { summary: val, keyTerms: [] };
     if (Array.isArray(val)) return { summary: JSON.stringify(val), keyTerms: [] };
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return { summary, keyTerms };
   };
 
-  const normalizeEntities = (val: unknown): LegalEntity[] => {
+  const normalizeEntities = (val: any): LegalEntity[] => {
     if (!val) return [];
     if (Array.isArray(val)) return val as LegalEntity[];
     const asObj = val as Record<string, unknown>;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return [];
   };
 
-  const normalizeContractTerms = (val: unknown): ContractTerm[] => {
+  const normalizeContractTerms = (val: any): ContractTerm[] => {
     if (!val) return [];
     if (Array.isArray(val)) return val as ContractTerm[];
     const asObj = val as Record<string, unknown>;

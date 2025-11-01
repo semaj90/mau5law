@@ -1,6 +1,5 @@
 <script lang="ts">
   import { toastStore } from '$lib/stores/toast';
-
   // helper: build class string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
     return [
@@ -11,13 +10,11 @@
       t?.type === 'info' ? 'is-primary' : ''
     ].filter(Boolean).join(' ');
   }
-
   // helper: choose appropriate aria-live value
   function ariaLiveFor(t: any) {
     return t?.type === 'error' ? 'assertive' : 'polite';
   }
 </script>
-
 <div class="toast-container" role="region" aria-label="Notifications">
   {#each $toastStore as t (t.id)}
     <div
@@ -29,7 +26,6 @@
     </div>
   {/each}
 </div>
-
 <style>
   .toast-container {
     position: fixed;
@@ -43,39 +39,33 @@
     width: 100%;
     pointer-events: none;
   }
-
   .toast-item {
     pointer-events: auto;
-    animation: slideInRight 0.3s ease-out;
+    animation: slideInRight: 0.3s ease-out;
     padding: 16px;
     min-width: 200px;
   }
-
   .toast-item.is-success {
     border-color: #92cc41 !important;
     background: #f8fff8 !important;
     color: #1a1a1a;
   }
-
   .toast-item.is-error {
     border-color: #e76e55 !important;
     background: #fff8f8 !important;
     color: #1a1a1a;
   }
-
   .toast-item.is-primary {
     border-color: #209cee !important;
     background: #f8fcff !important;
     color: #1a1a1a;
   }
-
   .toast-message {
     margin: 0;
     font-size: 14px;
     font-weight: normal;
     word-wrap: break-word;
   }
-
   @keyframes slideInRight {
     from {
       transform: translateX(100%);
@@ -86,7 +76,6 @@
       opacity: 1;
     }
   }
-
   @media (max-width: 768px) {
     .toast-container {
       top: 10px;
@@ -94,12 +83,10 @@
       left: 10px;
       max-width: none;
     }
-
     .toast-item {
       min-width: auto;
       padding: 12px;
     }
-
     .toast-message {
       font-size: 12px;
     }

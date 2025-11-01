@@ -147,7 +147,7 @@
   <div class="services-section">
     <h2>📋 Legal Services</h2>
     <div class="services-grid">
-      {#each legalServices as service}
+      {#each Array.isArray(legalServices) ? legalServices : [] as service}
         <Card class="service-card">
           <CardHeader>
             <CardTitle>
@@ -176,7 +176,7 @@
   <div class="activities-section">
     <h2>📊 Recent Legal Activities</h2>
     <div class="activities-list">
-      {#each recentActivities as activity}
+      {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
         <Card class="activity-card">
           <CardContent>
             <div class="activity-header">

@@ -10,7 +10,6 @@
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store'; // Adjusted path
   import { debounce } from 'lodash-es'; // Ensure lodash-es and @types/lodash-es are installed
   import { getOllamaApiUrl } from '$lib/utils/ollama-helpers'; // Import the new helper
-
   // Props using Svelte 5 $props()
   let {
     value = $bindable(''),
@@ -54,18 +53,15 @@
   let cursorPosition = $state({ x: 0, y: 0 });
   let isProcessing = $state(false);
   let lastProcessedText = $state('');
-
   // Define a type for the AI processing machine's context
   interface AIProcessingSnapshotContext {
     result?: any; // Adjust to a more specific type if known
     error?: string;
     task?: { id: string; [key: string]: any }; // Adjust to a more specific type if known
   }
-
   // Replace actor creation with an Interpreter service
   const aiActor: Interpreter<any> = interpret(aiProcessingMachine);
   aiActor.start();
-
   // Debounced suggestion generation
   const generateSuggestions = debounce(async (text: string, cursorPos: number) => {
     if (text.length < minCharactersForSuggestion || text === lastProcessedText) {
@@ -94,10 +90,9 @@
     } catch (error) {
       console.error('Failed to generate AI suggestions:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }, suggestionDelay);
-
   // Generate AI suggestions using multiple techniques
   async function generateAISuggestions(context: {
     text: string;
@@ -214,24 +209,20 @@
     }
     return suggestions;
   }
-
   // Wait for AI task completion — make subscription safe for timeout
   function waitForAIResult(taskId: string): Promise<any> {
     return new Promise((resolve, reject) => {
       let subscription: ReturnType<typeof aiActor.subscribe> | null = null;
-
       const timeout = setTimeout(() => {
         // safe unsubscribe guard
         try { subscription?.unsubscribe?.(); } catch {}
         reject(new Error(`AI task timeout for task ID: ${taskId}`));
       }, 10000);
-
       subscription = aiActor.subscribe((snapshot: Snapshot<typeof aiProcessingMachine>) => {
         const typedSnapshotContext = (snapshot.context as any) || {};
         const currentTaskResult = typedSnapshotContext?.result;
         const currentTaskError = typedSnapshotContext?.error;
         const currentTaskId = typedSnapshotContext?.task?.id;
-
         if (currentTaskId === taskId) {
           // adapt to expected machine states (assumes 'idle' and: 'error' exist)
           if ((snapshot as any).matches?.('idle') && currentTaskResult) {
@@ -247,7 +238,6 @@
       });
     });
   }
-
   // Update suggestion popup position
   function updateSuggestionPopupPosition() {
     if (!suggestionPopup || !editorElement) return;
@@ -332,7 +322,7 @@
   }
   // Hide suggestions
   function hideSuggestions() {
-    isShowingSuggestions = false;
+    isShowingSuggestions = $state(false);
     currentSuggestions = [];
     selectedSuggestionIndex = -1;
   }
@@ -355,7 +345,6 @@
     generateSuggestions.cancel();
   });
 </script>
-
 <!-- Main Editor Container -->
 <div class={`enhanced-inline-editor ${className}`}>
   <!-- Editor Input Area -->
@@ -383,8 +372,7 @@
       <div class="suggestions-header">
         <span class="suggestions-title">AI Suggestions</span>
         {#if isProcessing}
-          <div class="processing-indicator">●</div>
-        {/if}
+          <div class="processing-indicator">●{/if}
       </div>
       <div class="suggestions-list">
         {#each currentSuggestions as suggestion, index}
@@ -407,10 +395,8 @@
       <div class="suggestions-footer">
         <span class="keyboard-hint">↑↓ Navigate • Enter/Tab Apply • Esc Close</span>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .enhanced-inline-editor {
     position: relative; /* Fixed: missing colon */
@@ -563,5 +549,3 @@
     image-rendering: pixelated;
   }
 </style>
-
-

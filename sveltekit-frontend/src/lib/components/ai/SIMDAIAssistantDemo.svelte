@@ -2,30 +2,26 @@
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   interface Props {
     initialContext?: any;
     enableSIMD?: boolean;
     useWebWorker?: boolean;
   }
-
   // Svelte 5 rune-based props
   let {
     initialContext = {},
     enableSIMD = true,
     useWebWorker = true
   }: Props = $props();
-
   // XState machine (keep simple integration to avoid compile-time issues)
   const { state, send } = useMachine(aiAssistantMachine);
-
   // rune-based state
   let queryInput = $state('');
   let compressionTarget = $state(109);
@@ -34,7 +30,6 @@
   let simdResults = $state(null);
   let liveComponents = $state([]);
   let processingLogs = $state([]);
-
   // Sample queries
   const sampleQueries = [
     'Analyze the key terms in a software license agreement for potential risks.',
@@ -43,18 +38,15 @@
     'Draft a brief summary of employment law compliance requirements.',
     'What are the legal implications of data privacy regulations?'
   ];
-
   // derived values (runes)
   let currentState = $derived(() => state.value);
   let context = $derived(() => state.context ?? {});
   let isProcessing = $derived(() => state.value === 'processing' || (context && context.isProcessing));
   let hasResponse = $derived(() => !!(context && context.response));
-
   async function submitQuery() {
     if (!queryInput?.trim() || isProcessing) return;
     try {
       addLog(`🚀 Processing query with SIMD: "${queryInput.slice(0, 50)}..."`);
-
       // send event to machine
       send({
         type: 'QUERY',
@@ -65,7 +57,6 @@
           useWebWorker: useWorker
         }
       });
-
       // prepare payload using current context safely
       const payload = {
         prompt: queryInput.trim(),
@@ -79,19 +70,15 @@
         session_id: context?.sessionId ?? `simd-session-${Date.now()}`,
         task_type: 'legal-analysis'
       };
-
       const response = await fetch('/api/ai/ollama-simd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-
       if (!response.ok) {
         throw new Error(`API request failed: ${response.statusText}`);
       }
-
       const result = await response.json();
-
       // Send response into state machine
       send({
         type: 'RESPONSE_RECEIVED',
@@ -103,7 +90,6 @@
           simdResults: result?.simd_results
         }
       });
-
       // handle SIMD visualization
       if (result?.simd_results?.enabled) {
         simdResults = result.simd_results;
@@ -111,7 +97,6 @@
         addLog(`✅ SIMD compression ${simdResults.total_compression_ratio.toFixed(1)}:1 ratio`);
         addLog(`🎨 Generated ${simdResults.instant_ui_components?.length ?? 0} UI components`);
       }
-
       addLog(`⚡ Response generated: ${Number(result?.performance_metrics?.tokens_per_second ?? 0).toFixed(1)} tokens/sec`);
       queryInput = '';
     } catch (error: any) {
@@ -123,7 +108,6 @@
       });
     }
   }
-
   async function generateLiveComponents(simdData: any) {
     if (!simdData?.instant_ui_components) return;
     const components = simdData.instant_ui_components.map((comp: any) => ({
@@ -131,12 +115,10 @@
       timestamp: Date.now(),
       animated: qualityTier === 'nes'
     }));
-
     liveComponents = [
       ...components,
       ...liveComponents.slice(0, 10) // Keep last 10
     ];
-
     // Inject CSS safely (client-only)
     components.forEach((comp: any) => {
       if (typeof document !== 'undefined') {
@@ -144,7 +126,6 @@
       }
     });
   }
-
   function injectComponentCSS(css: string, componentId: string) {
     if (typeof document === 'undefined') return;
     const existingStyle = document.getElementById(`style-${componentId}`);
@@ -154,17 +135,14 @@
     style.textContent = css ?? '';
     document.head.appendChild(style);
   }
-
   function addLog(message: string) {
     const timestamp = new Date().toLocaleTimeString();
     processingLogs = [`[${timestamp}] ${message}`, ...processingLogs.slice(0, 19)];
   }
-
   function loadSampleQuery(index: number) {
     if (isProcessing) return;
     queryInput = sampleQueries[index] ?? '';
   }
-
   function clearConversation() {
     send({ type: 'CLEAR_HISTORY' });
     simdResults = null;
@@ -172,13 +150,11 @@
     processingLogs = [];
     addLog('🧹 Conversation cleared');
   }
-
   function toggleSIMD() {
     enableSIMD = !enableSIMD;
     send({ type: 'UPDATE_CONFIG', config: { simdEnabled: enableSIMD } });
     addLog(`🔧 SIMD ${enableSIMD ? 'enabled' : 'disabled'}`);
   }
-
   function getStateColor(s: string) {
     switch (s) {
       case 'idle': return 'bg-green-500';
@@ -188,14 +164,12 @@
       default: return 'bg-gray-500';
     }
   }
-
   function getCompressionColor(ratio: number) {
     if (ratio > 100) return 'text-purple-600 font-bold';
     if (ratio > 50) return 'text-green-600 font-bold';
     if (ratio > 25) return 'text-blue-600 font-semibold';
     return 'text-orange-600';
   }
-
   function getQualityBadgeColor(tier: string) {
     switch (tier) {
       case 'nes': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -204,13 +178,11 @@
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
-
   $effect(() => {
     addLog('🧬 SIMD AI Assistant initialized with XState machine');
     addLog(`💡 SIMD: ${enableSIMD ? 'enabled' : 'disabled'}, WebWorker: ${useWorker ? 'enabled' : 'disabled'}`);
   });
 </script>
-
 <div class="simd-ai-assistant max-w-6xl mx-auto p-6 space-y-6">
   <!-- Enhanced Status Header with SIMD Info -->
   <div class="nes-container">
@@ -272,7 +244,6 @@
       </div>
     </div>
   </div>
-
   <!-- Query Interface -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -291,7 +262,6 @@
             <option value={200}>200:1 (Maximum)</option>
           </select>
         </div>
-
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="quality-tier">Quality Tier</label>
           <select id="quality-tier" bind:value={qualityTier} class="w-full p-2 border rounded-md text-sm">
@@ -300,7 +270,6 @@
             <option value="n64">N64 (64-bit)</option>
           </select>
         </div>
-
         <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
           <div class="space-y-2">
@@ -310,14 +279,12 @@
             </label>
           </div>
         </div>
-
         <div class="flex items-end">
           <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
             {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
           </Button>
         </div>
       </div>
-
       <!-- Query Input -->
       <div class="space-y-2">
         <div class="flex gap-2">
@@ -337,7 +304,6 @@
             {isProcessing ? 'Processing...' : 'Submit'}
           </Button>
         </div>
-
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
@@ -350,7 +316,6 @@
       </div>
     </div>
   </div>
-
   <!-- SIMD Processing Results -->
   {#if simdResults?.enabled}
     <div class="nes-container">
@@ -386,7 +351,6 @@
             <div class="text-sm text-gray-600">Total Time</div>
           </div>
         </div>
-
         <!-- Compressed Tiles Visualization -->
         {#if (simdResults.compressed_tiles?.length ?? 0) > 0}
           <div class="space-y-2">
@@ -407,12 +371,9 @@
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Live Rendered Components -->
   {#if liveComponents.length > 0}
     <div class="nes-container">
@@ -438,9 +399,7 @@
           </div>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- AI Response -->
   {#if hasResponse}
     <div class="nes-container">
@@ -466,14 +425,10 @@
             <div><strong>Speed:</strong> {Number(context.metadata.tokensPerSecond ?? 0).toFixed(1)} tokens/sec</div>
             <div><strong>Duration:</strong> {Number((context.metadata.totalDuration ?? 0) / 1000000).toFixed(0)}ms</div>
             {#if context.metadata.simdResults?.enabled}
-              <div><strong>SIMD Worker:</strong> {context.metadata.simdResults.processing_stats?.web_worker_used ? 'Yes' : 'No'}</div>
-            {/if}
-          </div>
-        {/if}
+              <div><strong>SIMD Worker:</strong> {context.metadata.simdResults.processing_stats?.web_worker_used ? 'Yes' : 'No'}{/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Conversation History -->
   {#if context.conversationHistory && context.conversationHistory.length > 0}
     <div class="nes-container">
@@ -482,7 +437,7 @@
       </div>
       <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96 overflow-y-auto">
-          {#each context.conversationHistory as entry}
+          {#each Array.isArray(context.conversationHistory) ? context.conversationHistory : [] as entry}
             <div class={`flex gap-3 p-3 rounded-lg ${entry.type === 'user' ? 'bg-blue-50' : 'bg-green-50'}`}>
               <div class={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${entry.type === 'user' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
                 {entry.type === 'user' ? 'U' : 'AI'}
@@ -502,9 +457,7 @@
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
     <div class="nes-container">
@@ -514,15 +467,13 @@
       </div>
       <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-48 overflow-y-auto">
-          {#each processingLogs as log}
+          {#each Array.isArray(processingLogs) ? processingLogs : [] as log}
             <div class="mb-1">{log}</div>
           {/each}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .simd-ai-assistant {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -547,7 +498,6 @@
     transform: scale(1.02);
     background-color: rgba(59, 130, 246, 0.1);
   }
-
   /* Use global selectors for scrollbar pseudo-elements so Svelte's scoping doesn't break them */
   :global(.bg-black)::-webkit-scrollbar {
     width: 8px;
@@ -559,7 +509,6 @@
     background: #22c55e;
     border-radius: 4px;
   }
-
   :global(.tile-nes) {
     filter: contrast(1.2) saturate(1.3);
   }

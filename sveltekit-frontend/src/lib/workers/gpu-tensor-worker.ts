@@ -92,9 +92,9 @@ class GPUTensorWorker {
           this.stats.webgpuSupported = Boolean(this.gpuDevice);
         }
       }
-    } catch (_err: unknown) {
+    } catch (_err: any) {
       // ignore; fallback to CPU path
-      this.stats.webgpuSupported = false;
+      this.stats.webgpuSupported = $state(false);
     }
 
     return { webgpuSupported: this.stats.webgpuSupported };
@@ -291,7 +291,7 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
           error: `Unknown message type: ${String(msg.type)}`,
         } as WorkerResponse);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     self.postMessage({ type: 'ERROR', id: msg?.id, error: errorMessage } as WorkerResponse);
   }

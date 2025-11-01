@@ -10,14 +10,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   interface EvidenceFile {
     id: number; // Assuming ID is number, adjust if UUID string
     title: string;
@@ -29,39 +28,33 @@
     case_id?: string;
     hasEmbedding?: boolean;
   }
-
   interface EmbeddingStats {
     total: number;
     withEmbeddings: number;
     withoutEmbeddings: number;
     percentage: number;
   }
-
   interface SearchResult extends EvidenceFile {
     similarity: number;
     similarityDistance: number;
   }
-
   // API Response Interfaces for better type safety
   interface EvidenceFilesResponse {
     success: boolean;
     items: EvidenceFile[];
     error?: string;
   }
-
   interface EmbeddingStatsResponse {
     success: boolean;
     stats: EmbeddingStats;
     error?: string;
   }
-
   interface UploadResponse {
     success: boolean;
     duplicate?: boolean;
     error?: string;
     // Add other properties if the API returns them, e.g., uploadedFile: EvidenceFile;
   }
-
   interface BackfillResponse {
     success: boolean;
     result: {
@@ -71,13 +64,11 @@
     };
     error?: string;
   }
-
   interface SearchResponse {
     success: boolean;
     result: SearchResult[];
     error?: string;
   }
-
   // Props
   interface Props {
     caseId?: string;
@@ -86,7 +77,6 @@
   }
   // Correct Svelte 5 props destructuring
   let { caseId = '', showUpload = true, showSearch = true }: Props = $props();
-
   // State
   let evidenceFiles = $state<EvidenceFile[]>([]);
   let searchResults = $state<SearchResult[]>([]);
@@ -108,16 +98,13 @@
   let showSearchResults = $state(false);
   let uploadProgress = $state<string>('');
   let error = $state<string>('');
-
   // File upload
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
-
   $effect(() => {
     loadEvidenceFiles();
     loadEmbeddingStats();
   });
-
   async function loadEvidenceFiles() {
     loading.files = true;
     try {
@@ -136,10 +123,9 @@
       error = `Failed to load evidence files: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.files = false;
+      loading.files = $state(false);
     }
   }
-
   async function loadEmbeddingStats() {
     loading.stats = true;
     try {
@@ -155,16 +141,14 @@
       error = `Failed to load embedding stats: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error('Failed to load embedding stats:', err);
     } finally {
-      loading.stats = false;
+      loading.stats = $state(false);
     }
   }
-
   async function handleFileUpload(files: FileList) {
     if (!files.length) return;
     loading.upload = true;
     uploadProgress = '';
     error = '';
-
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       uploadProgress = `Uploading ${file.name} (${i + 1}/${files.length})...`;
@@ -174,17 +158,14 @@
         formData.append('title', file.name);
         if (caseId) formData.append('case_id', caseId);
         formData.append('evidence_type', getEvidenceType(file.type));
-
         const response = await fetch('/api/evidence-files', {
           method: 'POST',
           body: formData
         });
         const result: UploadResponse = await response.json(); // Use specific interface
-
         if (!result.success) {
           throw new Error(result.error || 'Upload failed');
         }
-
         if (result.duplicate) {
           uploadProgress = `${file.name} already exists (duplicate detected)`;
         } else {
@@ -195,14 +176,13 @@
         console.error(err);
       }
     }
-    loading.upload = false;
+    loading.upload = $state(false);
     uploadProgress = 'Upload complete!';
     // Reload files and stats
     await Promise.all([loadEvidenceFiles(), loadEmbeddingStats()]);
     // Clear progress after delay
     setTimeout(() => { uploadProgress = ''; }, 3000);
   }
-
   async function triggerEmbeddingBackfill() {
     loading.backfill = true;
     error = '';
@@ -223,10 +203,9 @@
       error = `Embedding backfill failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.backfill = false;
+      loading.backfill = $state(false);
     }
   }
-
   async function performSemanticSearch() {
     if (!searchQuery.trim()) return;
     loading.search = true;
@@ -237,11 +216,9 @@
         limit: '10',
       });
       if (caseId) params.set('case_id', caseId);
-
       // Declare response variable
       const response = await fetch(`/api/evidence-search?${params.toString()}`);
       const result: SearchResponse = await response.json(); // Use specific interface
-
       if (result.success) {
         searchResults = result.result;
         showSearchResults = true;
@@ -252,10 +229,9 @@
       error = `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
       console.error(err);
     } finally {
-      loading.search = false;
+      loading.search = $state(false);
     }
   }
-
   function getEvidenceType(mimeType: string): string {
     if (mimeType.includes('pdf')) return 'DOCUMENT';
     if (mimeType.includes('image')) return 'PHOTO';
@@ -264,7 +240,6 @@
     if (mimeType.includes('text')) return 'DOCUMENT';
     return 'UNKNOWN';
   }
-
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -272,7 +247,6 @@
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -282,7 +256,6 @@
       minute: '2-digit',
     });
   }
-
   // Drag & drop handlers
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
@@ -290,23 +263,21 @@
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
   }
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     if (e.dataTransfer?.files) {
       handleFileUpload(e.dataTransfer.files);
     }
   }
-
 // Auto-generated default export
 export default {};
 </script>
-
 <div class="evidence-manager">
   <!-- Embedding Stats Card -->
   <div class="mb-6 nes-container">
@@ -352,7 +323,6 @@ export default {};
       </div>
     </div>
   </div>
-
   <!-- Upload Section -->
   {#if showUpload}
     <div class="mb-6 nes-container">
@@ -392,12 +362,9 @@ export default {};
         {#if uploadProgress}
           <div class="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
             <p class="text-blue-700">{uploadProgress}</p>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Search Section -->
   {#if showSearch}
     <div class="mb-6 nes-container">
@@ -425,7 +392,7 @@ export default {};
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <Button
-                onclick={() => { showSearchResults = false; searchResults = []; }}
+                onclick={() => { showSearchResults = $state(false); searchResults = []; }}
                 variant="ghost"
                 class="bits-btn text-sm"
               >
@@ -436,7 +403,7 @@ export default {};
               <p class="text-gray-600 italic">No similar evidence found.</p>
             {:else}
               <div class="space-y-3">
-                {#each searchResults as result}
+                {#each Array.isArray(searchResults) ? searchResults : [] as result}
                   <div class="search-result-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
                     <div class="flex justify-between items-start">
                       <div class="flex-1">
@@ -460,14 +427,10 @@ export default {};
                     </div>
                   </div>
                 {/each}
-              </div>
-            {/if}
-          </div>
-        {/if}
+              {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Evidence Files List -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -499,7 +462,7 @@ export default {};
         </div>
       {:else}
         <div class="space-y-3">
-          {#each evidenceFiles as file}
+          {#each Array.isArray(evidenceFiles) ? evidenceFiles : [] as file}
             <div class="evidence-file-item p-4 border rounded-lg hover:bg-gray-50 transition-colors">
               <div class="flex justify-between items-start">
                 <div class="flex-1">
@@ -529,11 +492,9 @@ export default {};
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="mt-6">
@@ -551,12 +512,10 @@ export default {};
           </Button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
-  /* Svelte 5 note: runes ($state, $props, etc.) are used in <script>; CSS here is unchanged */
+  /* Svelte 5 note: runes ($state, $props, etc.) are used in <script lang="ts">; CSS here is unchanged */
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 10px;

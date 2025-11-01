@@ -62,14 +62,14 @@ https://svelte.dev/e/expected_token -->
       }
     } catch (error) {
       renderError = `Rendering failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
-      isRendering = false;
+      isRendering = $state(false);
     }
   }
   function stopRendering() {
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
-    isRendering = false;
+    isRendering = $state(false);
   }
   async function initWebGPU() {
     if (!navigator.gpu) {
@@ -274,8 +274,7 @@ https://svelte.dev/e/expected_token -->
     {#if isRendering && renderMode !== 'canvas2d'}
       <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
         <div class="text-white text-sm">Rendering...</div>
-      </div>
-    {/if}
+      {/if}
     <!-- Error Overlay -->
     {#if renderError}
       <div class="absolute inset-0 bg-red-900 bg-opacity-75 flex items-center justify-center rounded-lg">
@@ -283,8 +282,7 @@ https://svelte.dev/e/expected_token -->
           <div class="font-semibold mb-2">Render Error</div>
           <div>{renderError}</div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Stats Panel -->
   {#if showStats}
@@ -307,11 +305,9 @@ https://svelte.dev/e/expected_token -->
           <div>
             <span class="text-gray-400">Tiles:</span>
             <span class="ml-2 text-yellow-400">{glyphResult.simd_shader_data.tile_map.length}</span>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Controls -->
   <div class="mt-4 flex gap-2">
     <button

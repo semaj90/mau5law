@@ -1,26 +1,21 @@
 // Lightweight embedding utilities with safe fallbacks and strict typing
 import { createHash } from 'crypto';
-
 export interface CacheInterface {
   getCachedEmbedding: (_key: string) => Promise<number[] | null>;
   cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
-
 // Minimal in-memory/cache shim; apps should replace with Redis-backed implementation
 const cache: CacheInterface = {
   getCachedEmbedding: async (_key: string) => null,
   cacheEmbedding: async (_key: string, _embedding: number[], _ttl?: number) => {},
 };
-
 const getCachedEmbedding = cache.getCachedEmbedding;
 const cacheEmbedding = cache.cacheEmbedding;
-
 // Target embedding dimension (defaults to 384)
 const TARGET_DIM: number = (() => {
   const v = Number.parseInt(process.env.EMBEDDING_DIMENSIONS || '384', 10);
   return Number.isFinite(v) && v > 0 ? v : 384;
 })();
-
 function ensureDim(vec: number[] | Float32Array | null | undefined, target: number = TARGET_DIM): number[] {
   if (!vec) return Array(target).fill(0);
   const arr = Array.isArray(vec) ? (vec as number[]) : Array.from(vec as Float32Array);
@@ -28,36 +23,30 @@ function ensureDim(vec: number[] | Float32Array | null | undefined, target: numb
   if (arr.length > target) return arr.slice(0, target);
   return arr.concat(Array(target - arr.length).fill(0));
 }
-
 export type EmbeddingOptions = {
   model?: 'openai' | 'local' | 'nomic';
   cache?: boolean;
   ttl?: number;
   maxTokens?: number;
 };
-
 // Generate a single embedding using preferred providers with graceful fallbacks
 export async function generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[] | null> {
   const { model = 'local', cache = true, ttl = 60 * 60, maxTokens = 8000 } = options;
   if (!text || !text.trim()) return null;
   const truncated = text.length > maxTokens ? text.slice(0, maxTokens) : text;
   const cacheKey = `${model}:${createHash('sha1').update(truncated.slice(0, 200)).digest('hex')}`;
-
   if (cache) {
     const cached = await getCachedEmbedding(cacheKey);
     if (cached) return ensureDim(cached);
   }
-
   try {
     let embedding: number[] | null = null;
-
     if (model === 'openai') {
       embedding = await generateOpenAIEmbedding(truncated).catch(e => {
         console.warn('OpenAI embedding failed, falling back to local models:', e?.message ?? e);
         return null;
       });
     }
-
     // For: 'local' model or as a fallback for: 'openai'
     if (!embedding) {
       // Try Ollama models first: embeddinggemma -> nomic
@@ -65,14 +54,12 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
         console.warn('Ollama embeddinggemma:latest failed, falling back to nomic-embed-text:', e?.message ?? e);
         return null;
       });
-
       if (!embedding) {
         embedding = await generateOllamaEmbedding(truncated, 'nomic-embed-text').catch(e => {
           console.warn('Ollama nomic-embed-text failed, falling back to CPU embedding:', e?.message ?? e);
           return null;
         });
       }
-
       // Fallback to CPU embedding if Ollama fails
       if (!embedding) {
         embedding = await generateCpuEmbedding(truncated).catch(e => {
@@ -81,7 +68,6 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
         });
       }
     }
-
     if (!embedding) return null;
     const normalized = ensureDim(embedding);
     if (cache) await cacheEmbedding(cacheKey, normalized, ttl);
@@ -91,7 +77,6 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
     return null;
   }
 }
-
 // OpenAI single embedding
 async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -112,7 +97,6 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   if (!Array.isArray(emb)) throw new Error('Invalid OpenAI embedding response');
   return emb as number[];
 }
-
 // Ollama single embedding
 async function generateOllamaEmbedding(text: string, model: string): Promise<number[]> {
   const url = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -132,7 +116,6 @@ async function generateOllamaEmbedding(text: string, model: string): Promise<num
   if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embedding)) return data.data[0].embedding as number[];
   throw new Error(`Invalid Ollama embedding response for model ${model}`);
 }
-
 // CPU embedding using xenova transformers (optional)
 async function generateCpuEmbedding(text: string): Promise<number[]> {
   try {
@@ -147,7 +130,6 @@ async function generateCpuEmbedding(text: string): Promise<number[]> {
     throw err;
   }
 }
-
 // Batch helpers
 export async function generateBatchEmbeddings(
   texts: string[],
@@ -165,10 +147,8 @@ export async function generateBatchEmbeddings(
   }
   return out;
 }
-
 export const embeddings = {
   generate: generateEmbedding,
   generateBatch: generateBatchEmbeddings,
 };
-
 export default embeddings;

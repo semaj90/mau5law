@@ -2,7 +2,6 @@
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
-
 export interface VectorSearchRequest {
   query?: {
     embedding?: number[];
@@ -32,14 +31,12 @@ export interface VectorSearchRequest {
     debug_mode?: boolean;
   };
 }
-
 export interface VectorSearchResponse {
   results: SearchResult[];
   metadata: ResponseMetadata;
   analytics: QueryAnalytics;
   recommendations: Recommendation[];
 }
-
 export interface SearchResult {
   id: string;
   document: DocumentMetadata;
@@ -48,7 +45,6 @@ export interface SearchResult {
   snippets: TextSnippet[];
   legal_context: LegalContext;
 }
-
 export interface DocumentMetadata {
   title: string;
   content_preview: string;
@@ -62,20 +58,17 @@ export interface DocumentMetadata {
   page_count: number;
   word_count: number;
 }
-
 export interface TextSnippet {
   text: string;
   highlights: HighlightRange[];
   relevance_score: number;
   page_number: number;
 }
-
 export interface HighlightRange {
   start: number;
   end: number;
   match_type: 'exact' | 'semantic' | 'keyword';
 }
-
 export interface LegalContext {
   precedents: string[];
   citations: Citation[];
@@ -83,14 +76,12 @@ export interface LegalContext {
   practice_area: string;
   legal_weight: number;
 }
-
 export interface Citation {
   citation_text: string;
   source: string;
   url: string;
   relevance: number;
 }
-
 export interface ResponseMetadata {
   processing_time_ms: number;
   total_results: number;
@@ -100,7 +91,6 @@ export interface ResponseMetadata {
   vector_dimensions: number;
   quality: SearchQuality;
 }
-
 export interface SearchQuality {
   avg_similarity: number;
   query_clarity: number;
@@ -108,7 +98,6 @@ export interface SearchQuality {
   exact_matches: number;
   semantic_matches: number;
 }
-
 export interface QueryAnalytics {
   query_id: string;
   query_hash: string;
@@ -116,20 +105,17 @@ export interface QueryAnalytics {
   clusters: SemanticCluster[];
   complexity: QueryComplexity;
 }
-
 export interface SemanticCluster {
   cluster_id: string;
   theme: string;
   weight: number;
   representative_terms: string[];
 }
-
 export interface QueryComplexity {
   complexity_score: number;
   complexity_level: 'simple' | 'moderate' | 'complex';
   complexity_factors: string[];
 }
-
 export interface Recommendation {
   type: string;
   title: string;
@@ -138,7 +124,6 @@ export interface Recommendation {
   confidence: number;
   tags: string[];
 }
-
 export enum DocumentType {
   UNKNOWN = 0,
   CONTRACT = 1,
@@ -150,30 +135,25 @@ export enum DocumentType {
   CASE_LAW = 7,
   REGULATION = 8,
 }
-
 /**
  * High-performance Vector Search Client
  */
 export class VectorSearchClient {
   private readonly baseUrl: string;
   private readonly timeout: number;
-
   constructor(baseUrl = '/api/v1/vector', timeout = 30000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
   }
-
   /**
    * Execute vector search with protocol buffers (high performance)
    */
   async searchProtobuf(request: VectorSearchRequest): Promise<VectorSearchResponse> {
     const startTime = performance.now();
-
     try {
       // Serialize request to protocol buffer binary format
       // In production, use protobufjs for actual binary serialization
       const requestBuffer = await this.serializeRequest(request);
-
       // Make request with protocol buffer content type
       const response = await fetch(`${this.baseUrl}/protobuf`, {
         method: 'POST',
@@ -185,27 +165,22 @@ export class VectorSearchClient {
         body: requestBuffer,
         signal: AbortSignal.timeout(this.timeout),
       });
-
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Vector search failed: ${response.status} ${errorText}`);
       }
-
       // Parse binary protocol buffer response
       const responseBuffer = await response.arrayBuffer();
       const searchResponse = await this.deserializeResponse(new Uint8Array(responseBuffer));
-
       // Add client-side performance metrics
       const clientTime = performance.now() - startTime;
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
-
       return searchResponse;
     } catch (error) {
       console.error('Protocol buffer vector search error:', error);
       throw new Error(`Vector search failed: ${error.message}`);
     }
   }
-
   /**
    * Execute vector search with JSON fallback (development)
    */
@@ -220,19 +195,16 @@ export class VectorSearchClient {
         body: JSON.stringify(request),
         signal: AbortSignal.timeout(this.timeout),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Vector search failed');
       }
-
       return await response.json();
     } catch (error) {
       console.error('JSON vector search error:', error);
       throw error;
     }
   }
-
   /**
    * Smart search method - uses protobuf for production, JSON for development
    */
@@ -245,7 +217,6 @@ export class VectorSearchClient {
       return this.searchJson(request);
     }
   }
-
   /**
    * Batch vector search for multiple queries
    */
@@ -258,7 +229,6 @@ export class VectorSearchClient {
         return_aggregated_analytics: true,
       },
     };
-
     try {
       const response = await fetch(`${this.baseUrl}/batch`, {
         method: 'POST',
@@ -269,11 +239,9 @@ export class VectorSearchClient {
         body: JSON.stringify(batchRequest),
         signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
       });
-
       if (!response.ok) {
         throw new Error(`Batch search failed: ${response.status}`);
       }
-
       const batchResponse = await response.json();
       return batchResponse.responses;
     } catch (error) {
@@ -281,13 +249,11 @@ export class VectorSearchClient {
       throw error;
     }
   }
-
   /**
    * Search with auto-retry and fallback
    */
   async searchWithRetry(request: VectorSearchRequest, maxRetries = 3): Promise<VectorSearchResponse> {
     let lastError: Error;
-
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         // Try protobuf first, fallback to JSON
@@ -311,17 +277,14 @@ export class VectorSearchClient {
       } catch (error) {
         lastError = error as Error;
         console.warn(`Vector search attempt ${attempt} failed:`, error.message);
-
         // Wait before retry (exponential backoff)
         if (attempt < maxRetries) {
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
       }
     }
-
     throw lastError!;
   }
-
   /**
    * Mock serialization - replace with protobufjs in production
    */
@@ -330,7 +293,6 @@ export class VectorSearchClient {
     const jsonString = JSON.stringify(request);
     return new TextEncoder().encode(jsonString).buffer;
   }
-
   /**
    * Mock deserialization - replace with protobufjs in production
    */
@@ -340,25 +302,19 @@ export class VectorSearchClient {
     return JSON.parse(jsonString);
   }
 }
-
 // Singleton instance
 export const vectorSearchClient = new VectorSearchClient();
-
 // Convenience functions
 export const searchVectors = (request: VectorSearchRequest) => vectorSearchClient.search(request);
-
 export const batchSearchVectors = (requests: VectorSearchRequest[]) => vectorSearchClient.batchSearch(requests);
-
 export const searchWithRetry = (request: VectorSearchRequest, maxRetries?: number) =>
   vectorSearchClient.searchWithRetry(request, maxRetries);
-
 // TypeScript type guards
 export function isVectorSearchResponse(obj: any): obj is VectorSearchResponse {
   return (
     obj && typeof obj === 'object' && Array.isArray(obj.results) && obj.metadata && typeof obj.metadata === 'object'
   );
 }
-
 export function isSearchResult(obj: any): obj is SearchResult {
   return (
     obj &&
@@ -369,12 +325,10 @@ export function isSearchResult(obj: any): obj is SearchResult {
     typeof obj.similarity_score === 'number'
   );
 }
-
 // Utility functions
 export function formatSimilarityScore(score: number): string {
   return `${(score * 100).toFixed(1)}%`;
 }
-
 export function getDocumentTypeLabel(type: DocumentType): string {
   const labels: Record<DocumentType, string> = {
     [DocumentType.UNKNOWN]: 'Unknown',
@@ -389,29 +343,21 @@ export function getDocumentTypeLabel(type: DocumentType): string {
   };
   return labels[type] || 'Unknown';
 }
-
 export function highlightText(text: string, highlights: HighlightRange[]): string {
   if (!highlights.length) return text;
-
   let result = text;
   let offset = 0;
-
   // Sort highlights by start position
   const sortedHighlights = [...highlights].sort((a, b) => a.start - b.start);
-
   for (const highlight of sortedHighlights) {
     const start = highlight.start + offset;
     const end = highlight.end + offset;
-
     const before = result.slice(0, start);
     const highlighted = result.slice(start, end);
     const after = result.slice(end);
-
     result = `${before}<mark class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
-
     // Account for added markup in offset
     offset += `<mark class="highlight-${highlight.match_type}"></mark>`.length;
   }
-
   return result;
 }

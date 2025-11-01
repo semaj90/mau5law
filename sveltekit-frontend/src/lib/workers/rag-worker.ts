@@ -63,7 +63,7 @@ export async function processDocument(bucket: string, objectKey: string): Promis
       // Update DB row by source uri (assumes upload created a placeholder row)
       await db.update(documents).set({ content: text, embedding }).where(eq(documents.sourceUri, `minio://${bucket}/${objectKey}`));
 
-      let mirrored = false;
+      let mirrored = $state(false);
       if (process.env.QDRANT_URL && embedding.length > 0) {
         const qdrant = new QdrantClient({ url: process.env.QDRANT_URL });
         await qdrant.upsert({
@@ -88,7 +88,7 @@ export async function processDocument(bucket: string, objectKey: string): Promis
         // ignore termination errors
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('❌ Error processing document:', message);
     throw new Error(`RAG worker failed: ${message}`);

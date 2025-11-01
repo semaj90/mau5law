@@ -36,8 +36,8 @@ type VectorMatch = {
   title?: string;
   score?: number;
   relevanceScore?: number;
-  entities?: unknown[];
-  concepts?: unknown[];
+  entities?: any[];
+  concepts?: any[];
   metadata?: Record<string, unknown>;
   embedding?: number[];
   dimensions?: number | null;
@@ -57,7 +57,7 @@ type EnhancedCachingServiceAdapter = {
     query: string,
     filters?: Record<string, unknown>,
     loader?: (queryEmbedding: number[]) => Promise<VectorMatch[]>
-  ) => Promise<{ cached?: boolean; processingTime?: number; results?: unknown[]; totalFound?: number }>;
+  ) => Promise<{ cached?: boolean; processingTime?: number; results?: any[]; totalFound?: number }>;
   getCachedResponse?: (
     query: string,
     context: string[],
@@ -75,7 +75,7 @@ type EnhancedCachingServiceAdapter = {
 // --- ADD: typed interfaces for external services + small server-side helpers ---
 type $UltraJSONParser = {
   parse: (s: string) => unknown;
-  stringify: (v: unknown) => string;
+  stringify: (v: any) => string;
 };
 
 // Removed unused types: $WasmClusteringService, $NESGPUBridge, $OllamaService
@@ -83,7 +83,7 @@ type $UltraJSONParser = {
 
 type $RedisCacheAdapter = {
   get: (key: string) => Promise<unknown | null>;
-  set: (key: string, value: unknown, ttlSeconds?: number) => Promise<boolean>;
+  set: (key: string, value: any, ttlSeconds?: number) => Promise<boolean>;
   del?: (key: string) => Promise<boolean>;
 };
 
@@ -102,7 +102,7 @@ type $QdrantAdapter = {
 
 type $PostgresJSONStore = {
   upsertDocument: (doc: { id: string; body: Record<string, unknown> }) => Promise<boolean>;
-  queryByField: (field: string, value: unknown) => Promise<Record<string, unknown>[]>;
+  queryByField: (field: string, value: any) => Promise<Record<string, unknown>[]>;
 };
 
 // Minimal runtime helpers (server-side wrappers calling backend API routes)
@@ -170,11 +170,11 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     // or { embeddings: [[...], [...]], model: '...' } for batch, or variations.
     const singleEmbedding =
       Array.isArray((body as Record<string, unknown>)['embedding']) &&
-      ((body as Record<string, unknown>)['embedding'] as unknown[]).every((n: unknown) => typeof n === 'number');
+      ((body as Record<string, unknown>)['embedding'] as unknown[]).every((n: any) => typeof n === 'number');
 
     const batchEmbeddings =
       Array.isArray((body as Record<string, unknown>)['embeddings']) &&
-      ((body as Record<string, unknown>)['embeddings'] as unknown[]).every((e: unknown) => Array.isArray(e));
+      ((body as Record<string, unknown>)['embeddings'] as unknown[]).every((e: any) => Array.isArray(e));
 
     if (singleEmbedding) {
       // map single embedding across single input or if multiple inputs were sent, keep only first
@@ -193,7 +193,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
       []) as unknown[];
     if (Array.isArray(results) && results.length > 0) {
       // try to extract numeric arrays
-      const mapped = results.map((r: unknown) => {
+      const mapped = results.map((r: any) => {
         if (Array.isArray(r)) return { embedding: (r as unknown[]).map(Number), model };
         if (r && typeof r === 'object') {
           const obj = r as Record<string, unknown>;
@@ -250,7 +250,7 @@ export async function ollamaGenerate(prompt: string, model = 'gemma3:legal-lates
     if (nestedResponse && nestedResponse[1]) return nestedResponse[1];
 
     return '';
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('❌ Legal response generation failed (ollamaGenerate):', msg);
     throw error;
@@ -387,7 +387,7 @@ class CachedRAGService {
       cacheStats.totalCacheTime += Number(queryResult?.processingTime || 0);
 
       // Step 2: Get cached response using gemma3:legal-latest
-      const rawResults: unknown[] = Array.isArray(queryResult?.results) ? queryResult.results : [];
+      const rawResults: any[] = Array.isArray(queryResult?.results) ? queryResult.results : [];
       const contextTexts: string[] = rawResults
         .map(r => {
           const rr = r as Record<string, unknown> | null;
@@ -451,7 +451,7 @@ class CachedRAGService {
         response: ragResponse,
         cacheStats,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Enhanced RAG query failed:', error);
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Enhanced RAG query failed: ${msg}`);
@@ -521,7 +521,7 @@ class CachedRAGService {
         processingTime,
         storedInPgVector: !!storedSuccessfully,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Document ingestion failed:', error);
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Document ingestion failed: ${msg}`);
@@ -540,7 +540,7 @@ class CachedRAGService {
         console.log(`📄 Processing document ${i + 1}/${documents.length}: ${doc.id}`);
         const result = await this.ingestDocument(doc.id, doc.content, doc.metadata ?? {});
         results.push(result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
         console.error(`❌ Failed to ingest document ${doc.id}:`, msg);
         results.push({
@@ -591,7 +591,7 @@ class CachedRAGService {
       // normalize to VectorMatch[]
       const matches = (results?.matches ?? results?.results ?? []) as VectorMatch[];
       return Array.isArray(matches) ? matches : [];
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Vector search failed:', msg);
       return [];
@@ -608,7 +608,7 @@ class CachedRAGService {
       // use helper wrapper for Ollama generation
       const responseText = await ollamaGenerate(prompt, 'gemma3:legal-latest');
       return responseText || 'Unable to generate response';
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Legal response generation failed:', msg);
       return `I apologize, but I'm unable to generate a response at this time due to a technical issue: ${msg}`;
@@ -658,7 +658,7 @@ RESPONSE: Provide a comprehensive, accurate response based on the context above.
         body: JSON.stringify({ records }),
       });
       return !!response.ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ pgvector batch storage failed:', msg);
       return false;

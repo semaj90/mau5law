@@ -18,7 +18,6 @@
     class: className = '',
   }: Props = $props();
 </script>
-
 <input
   type="checkbox"
   {id}

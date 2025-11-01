@@ -34,7 +34,7 @@
     height = 600,
     enableDrawing = true,
     showToolbar = true
-  : unknown } = $props();
+  : any } = $props();
   function resize() {
     if (!canvas) return;
     const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -51,7 +51,7 @@
     // YoRHa-style canvas setup
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.imageSmoothingEnabled = false; // Pixel-perfect rendering
+    ctx.imageSmoothingEnabled = $state(false); // Pixel-perfect rendering
     // Set initial drawing properties
     ctx.strokeStyle = color;
     ctx.lineWidth = brushSiz;
@@ -89,7 +89,7 @@
   }
   function stopDrawing() {
     if (!drawing) return;
-    drawing = false;
+    drawing = $state(false);
     ondispatch?.({ tool, color });
   }
   function clearCanvas() {
@@ -143,7 +143,6 @@
     }
   });
 </script>
-
 <!-- Canvas Board Container -->
 <div class="yorha-canvas-board">
   <!-- Header with close button -->
@@ -174,7 +173,7 @@
       <div class="color-section">
         <h3>COLORS</h3>
         <div class="color-palette">
-          {#each yorhaColors as yorhaColor}
+          {#each Array.isArray(yorhaColors) ? yorhaColors : [] as yorhaColor}
             <button
               class="color-btn"
               ;
@@ -199,8 +198,7 @@
         />
         <span class="size-display">{brushSize}px</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Canvas -->
   <div class="canvas-container">
     <canvas
@@ -227,10 +225,9 @@
     </div>
   </div>
 </div>
-
 <style>
   .yorha-canvas-board {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -377,7 +374,7 @@ d;
     text-shadow: 0 0 5px #00ff88;
   }
   .canvas-container {
-    position relative;
+    position: relative;
     flex: 1,
     display: flex;
     justify-content: center;
@@ -395,7 +392,7 @@ d;
     box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
   }
   .canvas-overlay {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.8);
@@ -439,4 +436,3 @@ d;
     animation: yorha-glow 2s ease-in-out infinite;
   }
 </style>
-

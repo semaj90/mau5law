@@ -136,7 +136,7 @@ export async function rateLimitHealthCheck(): Promise<any> {
     try {
       await ensureScriptLoaded(client);
     } catch {
-      scriptLoaded = false;
+      scriptLoaded = $state(false);
     }
     return { redis: pong === 'PONG', latencyMs, scriptLoaded, timestamp: new Date().toISOString() }
   } catch {

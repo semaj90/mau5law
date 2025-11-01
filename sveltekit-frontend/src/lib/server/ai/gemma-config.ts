@@ -2,9 +2,7 @@
  * Gemma Models Configuration - Phase 3
  * Optimized settings for gemma3-legal:latest and embeddinggemma:latest
  */
-
 import { AI_CONFIG } from '$lib/server/config';
-
 // ============================================================================
 // Gemma Function Definitions for Legal AI
 // ============================================================================
@@ -83,7 +81,6 @@ export const LEGAL_FUNCTIONS = [
     }
   }
 ];
-
 // ============================================================================
 // Gemma Model Prompts
 // ============================================================================
@@ -95,20 +92,15 @@ export const GEMMA_PROMPTS = {
 - Contract review and risk assessment
 - Legal research and precedent finding
 - Compliance analysis
-
 You have access to function calling to perform specialized legal tasks. When appropriate, use the provided functions to enhance your responses.
-
 Guidelines:
 - Always cite sources when referencing case law or statutes
 - Provide clear, structured analysis
 - Highlight potential risks and considerations
 - Use legal terminology appropriately
 - Be precise and thorough
-
 Remember: You provide legal information, not legal advice. Users should consult with licensed attorneys for specific legal matters.`,
-
     functionCalling: `When asked to perform legal analysis tasks, structure your response using the available functions:
-
 <function_call>
 {
   "name": "functionName",
@@ -118,15 +110,11 @@ Remember: You provide legal information, not legal advice. Users should consult 
   }
 }
 </function_call>
-
 Available functions: ${LEGAL_FUNCTIONS.map(f => f.name).join(', ')}
-
 After making function calls, provide your analysis based on the results.`
   },
-
   embedding: {
     system: `Generate high-quality 768-dimensional embeddings optimized for legal document similarity search.
-
 Focus on:
 - Legal terminology and concepts
 - Document structure and organization
@@ -134,7 +122,6 @@ Focus on:
 - Citation patterns and precedent relationships`
   }
 };
-
 // ============================================================================
 // Gemma Generation Parameters
 // ============================================================================
@@ -153,14 +140,12 @@ export const GEMMA_PARAMS = {
     mirostat_tau: 5.0,
     mirostat_eta: 0.1
   },
-
   embedding: {
     // Embedding generation (no text generation)
     temperature: 0,
     num_ctx: 2048,
     truncate: true // Truncate long inputs to fit context window
   },
-
   functionCalling: {
     // Optimized for function calling (precise, structured)
     temperature: 0.1, // Very low for structured output
@@ -172,7 +157,6 @@ export const GEMMA_PARAMS = {
     stop: ['</function_call>', '\n\n']
   }
 };
-
 // ============================================================================
 // Gemma Model Validation
 // ============================================================================
@@ -182,19 +166,16 @@ export async function validateGemmaModels(): Promise<{
   errors: string[];
 }> {
   const errors: string[] = [];
-  let legalAvailable = false;
-  let embeddingAvailable = false;
-
+  let legalAvailable = $state(false);
+  let embeddingAvailable = $state(false);
   try {
     const response = await fetch(`${AI_CONFIG.ollama.baseUrl}/api/tags`);
     if (!response.ok) {
       errors.push('Ollama API not reachable');
       return { legal: false, embedding: false, errors };
     }
-
     const data = await response.json();
     const modelNames = data.models?.map((m: any) => m.name) || [];
-
     // Check for legal model
     const legalModel = AI_CONFIG.ollama.models.legal;
     legalAvailable = modelNames.some((name: string) =>
@@ -203,7 +184,6 @@ export async function validateGemmaModels(): Promise<{
     if (!legalAvailable) {
       errors.push(`Legal model: '${legalModel}' not found. Available: ${modelNames.join(', ')}`);
     }
-
     // Check for embedding model
     const embeddingModel = AI_CONFIG.ollama.models.embedding;
     embeddingAvailable = modelNames.some((name: string) =>
@@ -212,14 +192,12 @@ export async function validateGemmaModels(): Promise<{
     if (!embeddingAvailable) {
       errors.push(`Embedding model: '${embeddingModel}' not found. Available: ${modelNames.join(', ')}`);
     }
-
     return { legal: legalAvailable, embedding: embeddingAvailable, errors };
-  } catch (error: unknown) {
+  } catch (error: any) {
     errors.push(`Validation failed: ${(error as Error).message}`);
     return { legal: false, embedding: false, errors };
   }
 }
-
 // ============================================================================
 // Gemma Function Calling Helper
 // ============================================================================
@@ -233,19 +211,13 @@ export function formatGemmaFunctionPrompt(
         `- ${f.name}: ${f.description}\n  Parameters: ${JSON.stringify(f.parameters.properties)}`
     )
     .join('\n\n');
-
   return `${GEMMA_PROMPTS.legal.system}
-
 Available Functions:
 ${functionList}
-
 ${GEMMA_PROMPTS.legal.functionCalling}
-
 User Query: ${userPrompt}
-
 Analysis:`;
 }
-
 // ============================================================================
 // Gemma Response Parser
 // ============================================================================
@@ -256,15 +228,12 @@ export interface ParsedGemmaResponse {
     arguments: Record<string, unknown>;
   }>;
 }
-
 export function parseGemmaResponse(response: string): ParsedGemmaResponse {
   const functionCalls: ParsedGemmaResponse['functionCalls'] = [];
   let text = response;
-
   // Extract function calls
   const functionCallRegex = /<function_call>\s*(\{[^}]+\})\s*<\/function_call>/gs;
   const matches = text.matchAll(functionCallRegex);
-
   for (const match of matches) {
     try {
       const callData = JSON.parse(match[1]);
@@ -278,13 +247,10 @@ export function parseGemmaResponse(response: string): ParsedGemmaResponse {
       console.error('Failed to parse function call:', match[1], error);
     }
   }
-
   // Remove function call tags from text
   text = text.replace(functionCallRegex, '').trim();
-
   return { text, functionCalls };
 }
-
 // ============================================================================
 // Gemma Embedding Helper
 // ============================================================================
@@ -307,14 +273,11 @@ export async function generateGemmaEmbedding(
       }
     })
   });
-
   if (!response.ok) {
     throw new Error(`Embedding generation failed: ${response.statusText}`);
   }
-
   const data = await response.json();
   let embedding = new Float32Array(data.embedding);
-
   // Normalize if requested
   if (options?.normalize !== false) {
     const magnitude = Math.sqrt(
@@ -324,10 +287,8 @@ export async function generateGemmaEmbedding(
       embedding = new Float32Array(embedding.map(val => val / magnitude));
     }
   }
-
   return embedding;
 }
-
 // ============================================================================
 // Export Configuration Summary
 // ============================================================================

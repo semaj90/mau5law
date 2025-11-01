@@ -14,9 +14,9 @@ type SimdParseResult = { parse_time_ns?: number; field_count?: number; size?: nu
 
 interface SimdRedisClient {
   healthCheck?: () => Promise<SimdHealthResult>;
-  benchmark?: (data: unknown, iterations?: number) => Promise<SimdBenchmarkResult>;
-  cacheJSON?: (key: string, data: unknown) => Promise<SimdCacheResult>;
-  parseJSON?: (data: unknown) => Promise<SimdParseResult>;
+  benchmark?: (data: any, iterations?: number) => Promise<SimdBenchmarkResult>;
+  cacheJSON?: (key: string, data: any) => Promise<SimdCacheResult>;
+  parseJSON?: (data: any) => Promise<SimdParseResult>;
   // other methods may exist but are optional for our usage
 }
 
@@ -52,7 +52,7 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
 const fallbackCacheService = (() => {
   const map = new Map<string, unknown>();
   return {
-    set: async (k: string, v: unknown): Promise<boolean> => {
+    set: async (k: string, v: any): Promise<boolean> => {
       map.set(k, v);
       return true;
     },
@@ -60,7 +60,7 @@ const fallbackCacheService = (() => {
       return map.has(k) ? (map.get(k) as unknown) : null;
     },
     // mimic SIMD-specific set - store the same way
-    setSIMD: async (k: string, v: unknown): Promise<boolean> => {
+    setSIMD: async (k: string, v: any): Promise<boolean> => {
       map.set(k, v);
       return true;
     },
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
             health: health ?? null,
             message: health ? 'SIMD service is operational' : 'SIMD service did not return health',
           };
-        } catch (error: unknown) {
+        } catch (error: any) {
           results.results = {
             simd_available: false,
             error: String(error),
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
           try {
             const simdResult = await simdClient.benchmark?.(testData, Math.min(iterations, 100));
             benchmarkResults[size] = simdResult ?? { message: 'no result' };
-          } catch (error: unknown) {
+          } catch (error: any) {
             benchmarkResults[size] = {
               error: String(error),
               message: 'SIMD benchmark failed - service may be unavailable',
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
             await cacheService.getSIMD(`simd:${cacheKey}`);
           }
           simdTime = performance.now() - simdStart;
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('SIMD cache test failed:', String(error));
         }
         const perfResult: CachePerformanceResult = {
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
             fields_parsed: parseResult?.field_count ?? null,
             data_size: parseResult?.size ?? JSON.stringify(testData).length,
           });
-        } catch (error: unknown) {
+        } catch (error: any) {
           operations.push({
             operation: 'error',
             error: String(error),
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return json(results);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('SIMD test API error:', error);
     return json({ error: 'Test execution failed', details: String(error) }, { status: 500 });
   }

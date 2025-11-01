@@ -5,12 +5,10 @@
  * - langextract for NLP entity extraction
  * - Sharp for image optimization
  */
-
 import { createWorker } from 'tesseract.js';
 import pdfParse from 'pdf-parse';
 import sharp from 'sharp';
 import { readFile } from 'fs/promises';
-
 export interface PDFProcessingResult {
   text: string;
   pageCount: number;
@@ -33,13 +31,11 @@ export interface PDFProcessingResult {
   };
   processingTime: number;
 }
-
 export interface OCRResult {
   text: string;
   confidence: number;
   processingTime: number;
 }
-
 /**
  * Extract text from PDF using pdf-parse
  */
@@ -63,14 +59,12 @@ export async function extractPDFText(filePath: string): Promise<{
         });
     },
   });
-
   return {
     text: data.text,
     pages: data.numpages,
     metadata: data.info || {},
   };
 }
-
 /**
  * Perform OCR on image file using Tesseract.js
  * GPU-accelerated via WebGL backend
@@ -84,7 +78,6 @@ export async function performOCR(
 ): Promise<OCRResult> {
   const startTime = Date.now();
   const { lang = 'eng', optimize = true } = options;
-
   // Optimize image with Sharp before OCR
   let imageBuffer: Buffer;
   if (optimize) {
@@ -101,7 +94,6 @@ export async function performOCR(
   } else {
     imageBuffer = await readFile(imagePath);
   }
-
   // Create Tesseract worker
   const worker = await createWorker(lang, 1, {
     logger: m => {
@@ -115,13 +107,10 @@ export async function performOCR(
     legacyCore: false,
     legacyLang: false,
   });
-
   try {
     const result = await worker.recognize(imageBuffer);
-
     const processingTime = Date.now() - startTime;
     console.log(`✅ OCR completed in ${processingTime}ms with ${Math.round(result.data.confidence)}% confidence`);
-
     return {
       text: result.data.text,
       confidence: result.data.confidence / 100, // Normalize to 0-1
@@ -131,7 +120,6 @@ export async function performOCR(
     await worker.terminate();
   }
 }
-
 /**
  * Extract entities from text using langextract Python API
  * Assumes langextract service running at localhost:8099
@@ -153,13 +141,10 @@ export async function extractEntities(text: string): Promise<{
         extract_legal: true,
       }),
     });
-
     if (!response.ok) {
       throw new Error(`langextract API error: ${response.status}`);
     }
-
     const data = await response.json();
-
     return {
       persons: data.entities?.PERSON || [],
       organizations: data.entities?.ORG || [],
@@ -178,7 +163,6 @@ export async function extractEntities(text: string): Promise<{
     };
   }
 }
-
 /**
  * Process PDF with full pipeline:
  * 1. Extract text from PDF
@@ -195,34 +179,27 @@ export async function processPDF(
 ): Promise<PDFProcessingResult> {
   const startTime = Date.now();
   const { performOCR: forceOCR = false, extractNLP = true, lang = 'eng' } = options;
-
   console.log(`📄 Processing PDF: ${filePath}`);
-
   // Step 1: Extract text from PDF
   const pdfData = await extractPDFText(filePath);
   const finalText = pdfData.text;
   let ocrResult: OCRResult | undefined;
-
   // Step 2: If text extraction yielded little content, perform OCR
   const textQuality = pdfData.text.trim().length;
   const shouldOCR = forceOCR || textQuality < 100;
-
   if (shouldOCR) {
     console.log(`🔍 PDF text quality low (${textQuality} chars), performing OCR...`);
     // Note: In production, convert PDF pages to images first with pdf2pic
     // For now, skip OCR on PDFs (would need pdf2pic integration)
     console.warn('⚠️ PDF OCR requires pdf2pic integration (skipping)');
   }
-
   // Step 3: Extract entities with langextract
   let entities;
   if (extractNLP) {
     entities = await extractEntities(finalText);
   }
-
   const processingTime = Date.now() - startTime;
   console.log(`✅ PDF processing completed in ${processingTime}ms`);
-
   return {
     text: finalText,
     pageCount: pdfData.pages,
@@ -237,7 +214,6 @@ export async function processPDF(
     processingTime,
   };
 }
-
 /**
  * Process image file with OCR + NLP
  */
@@ -250,21 +226,16 @@ export async function processImage(
 ): Promise<PDFProcessingResult> {
   const startTime = Date.now();
   const { lang = 'eng', extractNLP = true } = options;
-
   console.log(`🖼️ Processing image: ${filePath}`);
-
   // Perform OCR
   const ocrResult = await performOCR(filePath, { lang, optimize: true });
-
   // Extract entities
   let entities;
   if (extractNLP && ocrResult.text.length > 50) {
     entities = await extractEntities(ocrResult.text);
   }
-
   const processingTime = Date.now() - startTime;
   console.log(`✅ Image processing completed in ${processingTime}ms`);
-
   return {
     text: ocrResult.text,
     pageCount: 1,
@@ -274,7 +245,6 @@ export async function processImage(
     processingTime,
   };
 }
-
 /**
  * Auto-detect file type and process accordingly
  */

@@ -11,12 +11,12 @@ export interface VectorJobContext {
   operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering' | null;
   priority: 'high' | 'medium' | 'low';
   // Job data
-  inputData?: unknown;
+  inputData?: any;
   payload?: Record<string, unknown>;
   vector?: number[];
   // Results
   result?: VectorJobResult;
-  cudaResponse?: unknown;
+  cudaResponse?: any;
   error?: string;
   // Timing
   startTime?: Date;
@@ -37,7 +37,7 @@ export type VectorJobEvent =
       ownerType: VectorJobContext['ownerType'];
       ownerId: string;
       operation: VectorJobContext['operation'];
-      data?: unknown;
+      data?: any;
       priority?: VectorJobContext['priority'];
     }
   | { type: 'JOB_QUEUED'; jobId: string }
@@ -51,7 +51,7 @@ export type VectorJobEvent =
   | { type: 'RESET' };
 
 // helper to normalize thrown errors
-function getErrorMessage(e: unknown): string {
+function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   try {
     return String(e);
@@ -63,7 +63,7 @@ function getErrorMessage(e: unknown): string {
 // Services for external API calls (implemented as async functions)
 const vectorJobServices = {
   // rename `event` -> `_event` to satisfy unused-arg linting (allowed unused args must start with _)
-  submitToAPI: async ({ context, _event }: { context: VectorJobContext; _event: unknown }) => {
+  submitToAPI: async ({ context, _event }: { context: VectorJobContext; _event: any }) => {
     try {
       const jobData = {
         owner_type: context.ownerType,
@@ -87,7 +87,7 @@ const vectorJobServices = {
         throw new Error(`Failed to submit job: ${response.status} ${response.statusText}`);
       }
       return await response.json();
-    } catch (err: unknown) {
+    } catch (err: any) {
       throw new Error(getErrorMessage(err) || 'submitToAPI failed');
     }
   },
@@ -99,7 +99,7 @@ const vectorJobServices = {
         throw new Error(`Failed to check job status: ${response.status} ${response.statusText}`);
       }
       return await response.json();
-    } catch (err: unknown) {
+    } catch (err: any) {
       throw new Error(getErrorMessage(err) || 'checkJobStatus failed');
     }
   },
@@ -125,7 +125,7 @@ const vectorJobServices = {
         throw new Error(`WebGPU processing failed: ${response.status} ${response.statusText}`);
       }
       return await response.json();
-    } catch (err: unknown) {
+    } catch (err: any) {
       throw new Error(getErrorMessage(err) || 'processWithWebGPU failed');
     }
   },
@@ -153,7 +153,7 @@ const vectorJobServices = {
         attempts++;
       }
       throw new Error('Job processing timeout');
-    } catch (err: unknown) {
+    } catch (err: any) {
       throw new Error(getErrorMessage(err) || 'pollJobProgress failed');
     }
   },
@@ -188,7 +188,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
         on: {
           SUBMIT_JOB: {
             target: 'submitting',
-            actions: assign((context, event: unknown) => {
+            actions: assign((context, event: any) => {
               const ev = event as Extract<VectorJobEvent, { type: 'SUBMIT_JOB' }>;
               return {
                 jobId: ev.jobId,
@@ -223,7 +223,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
           onError: {
             target: 'failed',
-            actions: assign((_, ev: { data?: unknown }) => ({
+            actions: assign((_, ev: { data?: any }) => ({
               error: ev.data ? getErrorMessage(ev.data) : 'Failed to submit job',
             })),
           },
@@ -255,14 +255,14 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             {
               target: 'retrying',
               cond: (ctx: VectorJobContext) => ctx.attempts < ctx.maxAttempts,
-              actions: assign((ctx: VectorJobContext, ev: { data?: unknown }) => ({
+              actions: assign((ctx: VectorJobContext, ev: { data?: any }) => ({
                 attempts: ctx.attempts + 1,
                 error: ev.data ? getErrorMessage(ev.data) : 'Processing failed',
               })),
             },
             {
               target: 'failed',
-              actions: assign((_, ev: { data?: unknown }) => ({
+              actions: assign((_, ev: { data?: any }) => ({
                 error: ev.data ? getErrorMessage(ev.data) : 'Job processing failed after max retries',
                 endTime: new Date(),
               })),
@@ -317,7 +317,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
           onError: {
             target: 'failed',
-            actions: assign((_, ev: { data?: unknown }) => ({
+            actions: assign((_, ev: { data?: any }) => ({
               error: `WebGPU fallback failed: ${ev.data ? getErrorMessage(ev.data) : 'unknown'}`,
               endTime: new Date(),
             })),
@@ -416,7 +416,7 @@ export function createVectorJob(
   ownerType: VectorJobContext['ownerType'],
   ownerId: string,
   operation: VectorJobContext['operation'],
-  data?: unknown,
+  data?: any,
   priority: VectorJobContext['priority'] = 'medium'
 ): ReturnType<typeof interpret> {
   const service = interpret(vectorJobMachine);
@@ -440,7 +440,7 @@ export function processBatchVectorJobs(
     ownerType: VectorJobContext['ownerType'];
     ownerId: string;
     operation: VectorJobContext['operation'];
-    data?: unknown;
+    data?: any;
     priority?: VectorJobContext['priority'];
   }>
 ): ReturnType<typeof interpret>[] {

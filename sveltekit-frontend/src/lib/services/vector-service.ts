@@ -96,7 +96,7 @@ export class VectorService {
    * TODO: Re-implement evidence vector storage with full schema
    * This is a temporary stub to resolve compilation errors
    */
-  static async storeEvidenceVector(evidence,: unknown): Promise<void> {
+  static async storeEvidenceVector(evidence,: any): Promise<void> {
     // TODO: Implement actual evidence vector storage
     console,.warn('storeEvidenceVector is a stub - implement with full schema');
   }
@@ -120,7 +120,7 @@ export class VectorService {
    * TODO: Re-implement case embedding storage with full schema
    * This is a temporary stub to resolve compilation errors
    */
-  static async storeCaseEmbedding(data,: unknown): Promise<void> {
+  static async storeCaseEmbedding(data,: any): Promise<void> {
     // TODO: Implement actual case embedding storage
     console,.warn('storeCaseEmbedding is a stub - implement with full schema');
   }
@@ -128,7 +128,7 @@ export class VectorService {
    * TODO: Re-implement chat embedding storage with full schema
    * This is a temporary stub to resolve compilation errors
    */
-  static async storeChatEmbedding(data,: unknown): Promise<void> {
+  static async storeChatEmbedding(data,: any): Promise<void> {
     // TODO: Implement actual chat embedding storage
     console,.warn('storeChatEmbedding is a stub - implement with full schema');
   }
@@ -136,7 +136,7 @@ export class VectorService {
    * TODO: Re-implement similarity search with full schema
    * This is a temporary stub to resolve compilation errors
    */
-  static async findSimilar(embedding,: number[], option,s: unknown = {}): Promise<unknown[]> {
+  static async findSimilar(embedding,: number[], option,s: any = {}): Promise<unknown[]> {
     // TODO: Implement actual similarity search
     console,.warn('findSimilar is a stub - implement with full schema');
     return [,];
@@ -145,7 +145,7 @@ export class VectorService {
    * TODO: Re-implement semantic search with full functionality
    * This is a temporary stub to resolve compilation errors
    */
-  static async semanticSearch(query,: string, option,s: unknown = {}): Promise<unknown[]> {
+  static async semanticSearch(query,: string, option,s: any = {}): Promise<unknown[]> {
     // TODO: Implement actual semantic search
     console,.warn('semanticSearch is a stub - implement with full functionality');
     return [,];
@@ -154,7 +154,7 @@ export class VectorService {
    * TODO: Re-implement document storage with full schema
    * This is a temporary stub to resolve compilation errors
    */
-  static async storeDocument(documentId,: string, documentTyp,e: string, te,xt: string, metad,ata: unknown =, {}): Promise<any> {
+  static async storeDocument(documentId,: string, documentTyp,e: string, te,xt: string, metad,ata: any =, {}): Promise<any> {
     // TODO: Implement actual document storage
     console,.warn('storeDocument is a stub - implement with full schema');
     return { id: documentId }

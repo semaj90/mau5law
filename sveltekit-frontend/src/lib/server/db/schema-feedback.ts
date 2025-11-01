@@ -1,9 +1,7 @@
 import { pgTable, uuid, text, jsonb, timestamp, real, boolean } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-
 // Define the schema for feedback-related tables
 // These tables are assumed to be part of the legal_ai_db as per project overview
-
 export const userRatings = pgTable('user_ratings', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(), // Foreign key to users table (assuming users.id is uuid)
@@ -32,7 +30,6 @@ export const userRatings = pgTable('user_ratings', {
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
-
 export const interactionHistory = pgTable('interaction_history', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(),
@@ -43,7 +40,6 @@ export const interactionHistory = pgTable('interaction_history', {
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
-
 export const trainingData = pgTable('training_data', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(),
@@ -58,7 +54,6 @@ export const trainingData = pgTable('training_data', {
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
-
 export const userBehaviorPatterns = pgTable('user_behavior_patterns', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull().unique(),
@@ -76,7 +71,6 @@ export const userBehaviorPatterns = pgTable('user_behavior_patterns', {
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
-
 export const feedbackMetrics = pgTable('feedback_metrics', {
   id: uuid('id').defaultRandom().primaryKey(),
   metricName: text('metric_name').notNull(),
@@ -86,7 +80,6 @@ export const feedbackMetrics = pgTable('feedback_metrics', {
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
-
 // Export types for New* for consistency with the original file
 export type NewUserRating = typeof userRatings.$inferInsert;
 export type NewInteractionHistory = typeof interactionHistory.$inferInsert;

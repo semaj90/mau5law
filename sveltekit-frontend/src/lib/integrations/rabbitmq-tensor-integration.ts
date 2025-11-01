@@ -31,22 +31,18 @@ export const WASM_QUEUE_ROUTING = {
   'similarity_results': 'legal.similarity.results',
   'tensor_cache': 'legal.tensors.cache_ready',
 } as const;
-
 // Define specific interfaces for tensor processing results
 interface SimilarityResult {
   similarities: number[];
   processingTime?: number;
   acceleration: 'wasm' | 'direct_wasm' | 'javascript';
 }
-
 interface VectorProcessingResult {
   vectors: number[][];
   processingTime?: number;
   acceleration: 'wasm' | 'direct_wasm' | 'javascript';
 }
-
 type TensorProcessingResult = SimilarityResult | VectorProcessingResult;
-
 interface TensorProcessingJob {
   id: string;
   type: JobType;
@@ -75,7 +71,7 @@ interface TensorWorkerMessage {
 export class RabbitMQTensorIntegration {
   private static instance: RabbitMQTensorIntegration;
   private tensorWorker: ServiceWorker | null = null; // Changed type from Worker to ServiceWorker
-  private bridgeInitialized = false;
+  private bridgeInitialized = $state(false);
   private processingJobs = new Map<string, TensorProcessingJob>();
   private constructor() {}
   static getInstance(): RabbitMQTensorIntegration {
@@ -378,7 +374,7 @@ export class RabbitMQTensorIntegration {
       // In production, implement proper job cancellation
     }
     this.tensorWorker = null;
-    this.bridgeInitialized = false;
+    this.bridgeInitialized = $state(false);
     console.log('✅ RabbitMQ-Tensor Integration shutdown complete');
   }
 }

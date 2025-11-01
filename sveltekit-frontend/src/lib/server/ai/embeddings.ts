@@ -6,18 +6,15 @@ import { cases, evidence } from '$lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import { OLLAMA_CONFIG } from '../services/providers/ollama/config.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
-
 export interface EmbeddingOptions {
   model?: string;
   cache?: boolean;
   maxTokens?: number;
 }
-
 // Simple in-memory TTL cache for embeddings (safe fallback for server-side process)
 const _embeddingCache: Map<string, { value: number[]; expiresAt: number }> = new Map();
 // Default TTL: 24 hours
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-
 function makeCacheKey(text: string, model: string) {
   // Lightweight stable key: model + length + a small DJB2 hash of the text
   let hash = 5381;
@@ -27,7 +24,6 @@ function makeCacheKey(text: string, model: string) {
   // Use absolute value to avoid negative keys
   return `${model}:${text.length}:${Math.abs(hash).toString(16)}`;
 }
-
 async function getCachedEmbedding(text: string, model: string): Promise<number[] | null> {
   const key = makeCacheKey(text, model);
   const entry = _embeddingCache.get(key);
@@ -40,7 +36,6 @@ async function getCachedEmbedding(text: string, model: string): Promise<number[]
   // Return a shallow clone to avoid accidental mutation by callers
   return entry.value.slice();
 }
-
 async function cacheEmbedding(text: string, model: string, embedding: number[]): Promise<void> {
   const key = makeCacheKey(text, model);
   // Store a clone to avoid external mutation
@@ -56,7 +51,6 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
     for (const k of keys) _embeddingCache.delete(k);
   }
 }
-
 export async function generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[] | null> {
   const { model = 'embeddinggemma', cache = true, maxTokens = 8000 } = options;
   if (!text || text.trim().length === 0) {
@@ -79,7 +73,7 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
       await cacheEmbedding(truncatedText, model, embedding);
     }
     return embedding;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Embedding generation failed:', error);
     return null;
   }
@@ -102,14 +96,12 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
     }
-    const data: unknown = await response.json();
-
+    const data: any = await response.json();
     // Type guard to check if a value is an array of numbers
-    const isNumberArray = (value: unknown): value is number[] =>
+    const isNumberArray = (value: any): value is number[] =>
       Array.isArray(value) && value.every(item => typeof item === 'number');
-
     // More robustly parse different possible response shapes from Ollama-like services
-    let rawEmbedding: unknown = null;
+    let rawEmbedding: any = null;
     if (data && typeof data === 'object') {
       if ('embedding' in data && isNumberArray(data.embedding)) {
         rawEmbedding = data.embedding;
@@ -125,7 +117,6 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
         rawEmbedding = data[0].embedding;
       }
     }
-
     if (!isNumberArray(rawEmbedding)) {
       throw new Error('Unexpected or invalid embedding format from Ollama');
     }
@@ -134,7 +125,7 @@ async function generateLocalEmbedding(text: string, model: string = 'embeddingge
       return quantizeEmbedding(rawEmbedding, 384);
     }
     return rawEmbedding;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Ollama embedding generation failed:', error);
     // Fallback to mock embedding for development
     return generateMockEmbedding(384); // Fallback to 384D for schema compatibility
@@ -212,7 +203,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     //   })
     //   .where(eq(cases.id, caseId));
     console.log(`Updated embeddings for case ${caseId}`);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error(`Failed to update embeddings for case ${caseId}:`, error);
     throw error;
   }
@@ -258,7 +249,7 @@ export async function updateEvidenceEmbeddings(evidenceId: string): Promise<void
     //   })
     //   .where(eq(evidence.id, evidenceId));
     console.log(`Updated embeddings for evidence ${evidenceId}`);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error(`Failed to update embeddings for evidence ${evidenceId}:`, error);
     throw error;
   }

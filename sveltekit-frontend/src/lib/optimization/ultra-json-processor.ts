@@ -15,19 +15,17 @@ type JSONCharacteristics = {
   complexity: number;
   repetition: number;
 };
-
 type ObjectCharacteristics = {
   isSimple: boolean;
   hasRepeatingPatterns: boolean;
   depth: number;
   size: number;
 };
-
 // WebAssembly interface types
 export interface WasmJSONParser {
   // allow either sync or async implementations
-  parse(input: string): unknown | Promise<unknown>;
-  stringify(obj: unknown): string | Promise<string>;
+  parse(input: string): any | Promise<unknown>;
+  stringify(obj: any): string | Promise<string>;
   // ensure parseStream returns the StreamingParseResult shape (sync or async)
   parseStream(input: Uint8Array): StreamingParseResult | Promise<StreamingParseResult>;
   // return memory usage in MB (consistent with metrics.memoryUsed)
@@ -53,19 +51,17 @@ export interface JSONPerformanceMetrics {
   throughputMBps: number;
 }
 export interface StreamingParseResult {
-  chunks: unknown[];
+  chunks: any[];
   totalSize: number;
   parseTime: number;
   errors: string[];
 }
-
 export class UltraHighPerformanceJSONProcessor extends EventEmitter {
   private wasmModule: WasmJSONParser | null = null;
   private config: JSONOptimizationConfig;
-  private cache: Map<string, { value: unknown; timestamp: number; accessCount: number }> = new Map();
+  private cache: Map<string, { value: any; timestamp: number; accessCount: number }> = new Map();
   private metrics: JSONPerformanceMetrics;
-  private isInitialized = false;
-
+  private isInitialized = $state(false);
   // Neural network for pattern recognition and optimization (stubbed)
   private neuralNetwork = {
     inputSize: 8,
@@ -76,7 +72,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     bias1: null as Float32Array | null,
     bias2: null as Float32Array | null,
   };
-
   // Performance optimization patterns
   private optimizationPatterns = {
     smallObjects: { threshold: 1024, strategy: 'direct' },
@@ -84,7 +79,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     repetitiveData: { threshold: 0.7, strategy: 'compression' },
     complexNested: { threshold: 10, strategy: 'neural' },
   };
-
   constructor(config: Partial<JSONOptimizationConfig> = {}) {
     super();
     this.config = {
@@ -108,7 +102,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     // Fire-and-forget initialization; listeners can wait for: 'initialized'
     void this.initializeAsync();
   }
-
   /**
    * Initialize WebAssembly module and neural network
    */
@@ -120,13 +113,12 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       this.isInitialized = true;
       this.emit('initialized', { success: true });
       // console.info removed for concision in lib code paths
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       this.emit('initialized', { success: false, error: msg });
     }
   }
-
   /**
    * Load and compile WebAssembly module (stubbed JS fallback)
    */
@@ -163,18 +155,16 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     };
     this.metrics.simdAcceleration = this.checkSIMDSupport();
   }
-
   private async optimizeForPlatform(): Promise<void> {
     // Detect environment and prepare worker capabilities. Minimal non-blocking preparation.
     // In a full implementation we'd pre-spawn worker pools depending on env.
     this.metrics.simdAcceleration = this.checkSIMDSupport() && this.config.enableSIMD;
     return;
   }
-
   private checkSIMDSupport(): boolean {
     try {
       // Browser / env check for SIMD/WebAssembly API (narrow types)
-      const g = globalThis as unknown as { WebAssembly?: unknown; SIMD?: unknown };
+      const g = globalThis as unknown as { WebAssembly?: any; SIMD?: any };
       if (typeof g !== 'undefined' && typeof g.WebAssembly !== 'undefined' && typeof g.SIMD !== 'undefined')
         return true;
       // Node experimental: assume false unless explicitly enabled.
@@ -183,7 +173,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return false;
   }
-
   private async initializeNeuralNetwork(): Promise<void> {
     if (!this.config.enableNeuralOptimization) return;
     const { inputSize, hiddenSize, outputSize } = this.neuralNetwork;
@@ -199,9 +188,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       this.neuralNetwork.weights2[i] = (Math.random() - 0.5) * 0.1;
     }
   }
-
   // ---------- Core parsing/analysis utilities ----------
-
   private generateCacheKey(input: string): string {
     let hash = 0;
     for (let i = 0, L = Math.min(input.length, 1000); i < L; i++) {
@@ -211,31 +198,26 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return Math.abs(hash).toString(36);
   }
-
-  private cacheResult(key: string, value: unknown): void {
+  private cacheResult(key: string, value: any): void {
     if (this.cache.size >= this.config.cacheSize) {
       const oldestKey = Array.from(this.cache.keys())[0];
       if (oldestKey) this.cache.delete(oldestKey);
     }
     this.cache.set(key, { value, timestamp: Date.now(), accessCount: 1 });
   }
-
   private clearCache(): void {
     this.cache.clear();
     this.metrics.cacheHitRate = 0;
   }
-
   private updateCacheHitRate(hit: boolean): void {
     const alpha = 0.1;
     this.metrics.cacheHitRate = this.metrics.cacheHitRate * (1 - alpha) + (hit ? 1 : 0) * alpha;
   }
-
   private countNonZero(buf: Uint32Array): number {
     let cnt = 0;
     for (let i = 0; i < buf.length; i++) if (buf[i] > 0) cnt++;
     return cnt;
   }
-
   private calculateEntropyFromBuffer(frequencies: Uint32Array): number {
     let total = 0;
     for (let i = 0; i < frequencies.length; i++) total += frequencies[i];
@@ -249,7 +231,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return entropy;
   }
-
   private analyzeJSONCharacteristics(input: string): JSONCharacteristics {
     const len = input.length;
     let depth = 0;
@@ -301,7 +282,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       repetition,
     };
   }
-
   private detectRepeatingPatterns(text: string): boolean {
     const minLength = 10;
     if (text.length < minLength * 2) return false;
@@ -324,17 +304,16 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return false;
   }
-
-  private extractCompleteJSONObjects(chunk: string): unknown[] {
-    const objects: unknown[] = [];
+  private extractCompleteJSONObjects(chunk: string): any[] {
+    const objects: any[] = [];
     let depth = 0;
     let start = -1;
-    let inString = false;
-    let escape = false;
+    let inString = $state(false);
+    let escape = $state(false);
     for (let i = 0; i < chunk.length; i++) {
       const code = chunk.charCodeAt(i);
       if (escape) {
-        escape = false;
+        escape = $state(false);
         continue;
       }
       if (code === 92) {
@@ -365,17 +344,14 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return objects;
   }
-
   // Wrapper that the wasm facade expects; delegates to the core implementation.
-  private ultraFastParse(input: string): unknown {
+  private ultraFastParse(input: string): any {
     return this.ultraFastParseCore(input);
   }
-
   // Wrapper that the wasm facade expects; delegates to the core implementation.
-  private ultraFastStringify(obj: unknown): string {
+  private ultraFastStringify(obj: any): string {
     return this.ultraFastStringifyCore(obj);
   }
-
   // Streaming parse implementation used by the wasm facade. Decodes bytes and extracts complete JSON objects.
   private streamingParse(data: Uint8Array): StreamingParseResult {
     try {
@@ -383,51 +359,42 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       const s = decoder.decode(data);
       const objs = this.extractCompleteJSONObjects(s);
       return { chunks: objs, totalSize: data.length, parseTime: 0, errors: [] };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       return { chunks: [], totalSize: data.length, parseTime: 0, errors: [msg] };
     }
   }
-
   // ---------- Parsing / Stringify strategies ----------
-
-  private directParse(input: string): unknown {
+  private directParse(input: string): any {
     try {
       return JSON.parse(input);
     } catch (err) {
       throw new Error(`Direct parse failed: ${String(err)}`);
     }
   }
-
-  private streamingParseString(input: string): unknown {
+  private streamingParseString(input: string): any {
     // fallback for streaming-heavy docs: attempt to parse whole string as last resort
     return JSON.parse(input);
   }
-
-  private compressedParse(input: string): unknown {
+  private compressedParse(input: string): any {
     // placeholder: compressed parse would decompress then parse
     return JSON.parse(input);
   }
-
-  private neuralOptimizedParse(input: string, characteristics: JSONCharacteristics): unknown {
+  private neuralOptimizedParse(input: string, characteristics: JSONCharacteristics): any {
     if (characteristics.size > 100_000) return this.streamingParseString(input);
     return this.directParse(input);
   }
-
-  private directStringify(obj: unknown): string {
+  private directStringify(obj: any): string {
     return JSON.stringify(obj);
   }
-
-  private compressedStringify(obj: unknown): string {
+  private compressedStringify(obj: any): string {
     // placeholder for real compression
     return JSON.stringify(obj);
   }
-
-  private neuralOptimizedStringify(obj: unknown, characteristics: ObjectCharacteristics): string {
+  private neuralOptimizedStringify(obj: any, characteristics: ObjectCharacteristics): string {
     if (characteristics.size > 10_000 || characteristics.depth > 5) return this.compressedStringify(obj);
     return this.directStringify(obj);
   }
-
   private selectOptimizationStrategy(
     characteristics: JSONCharacteristics
   ): 'direct' | 'streaming' | 'compression' | 'neural' {
@@ -457,7 +424,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     ];
     return choices[maxIndex] ?? 'direct';
   }
-
   private neuralNetworkPredict(input: Float32Array): number[] {
     if (!this.neuralNetwork.weights1 || !this.neuralNetwork.weights2) return [1, 0, 0, 0];
     const hidden = new Float32Array(this.neuralNetwork.hiddenSize);
@@ -479,10 +445,8 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     const s = output.reduce((a, b) => a + b, 0) || 1;
     return Array.from(output).map(v => v / s);
   }
-
   // ---------- High-level ultra-fast parse & stringify (single canonical methods) ----------
-
-  private ultraFastParseCore(input: string): unknown {
+  private ultraFastParseCore(input: string): any {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const inputSize = input.length;
     const cacheKey = this.generateCacheKey(input);
@@ -494,7 +458,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     const characteristics = this.analyzeJSONCharacteristics(input);
     const optimizationStrategy = this.selectOptimizationStrategy(characteristics);
-    let result: unknown;
+    let result: any;
     switch (optimizationStrategy) {
       case 'direct':
         result = this.directParse(input);
@@ -517,8 +481,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     this.updateCacheHitRate(false);
     return result;
   }
-
-  private ultraFastStringifyCore(obj: unknown): string {
+  private ultraFastStringifyCore(obj: any): string {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const characteristics = this.analyzeObjectCharacteristics(obj);
     let result: string;
@@ -530,8 +493,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     this.metrics.compressionRatio = rawLength / Math.max(result.length, 1);
     return result;
   }
-
-  private analyzeObjectCharacteristics(obj: unknown): ObjectCharacteristics {
+  private analyzeObjectCharacteristics(obj: any): ObjectCharacteristics {
     // lightweight heuristic
     const s = JSON.stringify(obj || {});
     return {
@@ -541,9 +503,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       size: s.length,
     };
   }
-
   // ---------- Public API ----------
-
   /**
    * Parse JSON with optimization
    */
@@ -554,16 +514,14 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     // use wasmModule.parse facade to allow real WASM swap-in later
     return await Promise.resolve((this.wasmModule.parse as (i: string) => unknown | Promise<unknown>)(input));
   }
-
   /**
    * Stringify object with optimization
    */
-  async stringify(obj: unknown): Promise<string> {
+  async stringify(obj: any): Promise<string> {
     await this.ensureInitialized(5000);
     if (!this.wasmModule) throw new Error('JSON processor not available');
-    return String(await Promise.resolve((this.wasmModule.stringify as (o: unknown) => string | Promise<string>)(obj)));
+    return String(await Promise.resolve((this.wasmModule.stringify as (o: any) => string | Promise<string>)(obj)));
   }
-
   /**
    * Parse streaming data
    */
@@ -586,13 +544,12 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         parseTime,
         errors: Array.isArray(result.errors) ? result.errors : [],
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       const parseTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       const msg = err instanceof Error ? err.message : String(err);
       return { chunks: [], totalSize: data.length, parseTime, errors: [msg] };
     }
   }
-
   /**
    * Ensure the processor finished initialization.
    * Resolves if initialized successfully, rejects on timeout or failed init.
@@ -601,7 +558,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     if (this.isInitialized) return Promise.resolve();
     return new Promise((resolve, reject) => {
       let timer: ReturnType<typeof setTimeout> | null = null;
-      const onInit = (_info?: unknown) => {
+      const onInit = (_info?: any) => {
         if (timer) clearTimeout(timer);
         if (this.isInitialized) resolve();
         else reject(new Error('JSON processor initialization failed'));
@@ -613,7 +570,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       }, timeoutMs);
     });
   }
-
   /**
    * Get performance metrics
    */
@@ -627,7 +583,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     }
     return m;
   }
-
   /**
    * Clear cache and optimize
    */
@@ -636,7 +591,6 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     this.optimizeParser();
     this.trainNeuralNetwork();
   }
-
   /**
    * Benchmark against native JSON and RapidJSON (lightweight)
    */
@@ -677,18 +631,14 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
       },
     };
   }
-
   // ---------- Small missing helpers (added safely) ----------
-
   private optimizeParser(): void {
     // placeholder: in real system tune parsers, worker count, memory pools, etc.
     return;
   }
-
   private trainNeuralNetwork(): void {
     // light stub: no-op for now; real implementation would use recent parse statistics
     return;
   }
-
   // ---------- End of file ----------
 }

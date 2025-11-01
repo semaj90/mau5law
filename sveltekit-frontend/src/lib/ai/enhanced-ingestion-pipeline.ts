@@ -10,8 +10,8 @@ import neo4j, { type Driver } from 'neo4j-driver';
 // import { errorHandler } from "$lib/utils/errorHandler"
 // Fallback error handler for when the module is not available
 const errorHandler = {
-  system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data),
-  analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data),
+  system: (message: string, data?: any) => console.error(`[SYSTEM] ${message}`, data),
+  analysis: (message: string, data?: any) => console.error(`[ANALYSIS] ${message}`, data),
 };
 import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library-docs';
 // import { copilotOrchestrator } from "$lib/utils/mcp-helpers"
@@ -141,17 +141,16 @@ interface MultimodalProcessor {
   process: (evidence: MultimodalEvidence) => Promise<DocumentEmbedding>;
   supportedFormats: string[];
 }
-
 export class EnhancedIngestionPipeline {
   private qdrantClient: InstanceType<typeof QdrantClient>;
   private pgPool: Pool;
-  private rabbitConnection: unknown;
+  private rabbitConnection: any;
   private neo4jDriver: Driver;
   private vectorStore?: QdrantVectorStore;
   private pgVectorStore?: PGVectorStore;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private processingQueue: IngestionDocument[] = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
   private stats: IngestionStats = {
     total_processed: 0,
     successful: 0,
@@ -208,7 +207,7 @@ export class EnhancedIngestionPipeline {
       await this.ensureCollection('legal_documents');
       this.isInitialized = true;
       console.log('✅ Enhanced Ingestion Pipeline initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize ingestion pipeline:', error);
       errorHandler.system('Pipeline initialization failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -216,7 +215,6 @@ export class EnhancedIngestionPipeline {
       throw error;
     }
   }
-
   private async ensureCollection(collectionName: string): Promise<void> {
     try {
       const collections = await this.qdrantClient.getCollections();
@@ -230,12 +228,11 @@ export class EnhancedIngestionPipeline {
         });
         console.log(`✅ Created collection: ${collectionName}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to ensure collection ${collectionName}:`, error);
       throw error;
     }
   }
-
   /**
    * Initialize Claude Desktop & Copilot architecture context
    */ private async initializeCopilotIntegration(): Promise<void> {
@@ -251,11 +248,10 @@ export class EnhancedIngestionPipeline {
         enhancement_priority: true,
       };
       console.log('✅ Copilot integration initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Copilot integration failed, continuing without:', error);
     }
   }
-
   /**
    * Initialize multimodal evidence processors
    */ private async initializeMultimodalProcessors(): Promise<void> {
@@ -278,7 +274,6 @@ export class EnhancedIngestionPipeline {
       supportedFormats: ['pdf', 'docx', 'txt', 'rtf'],
     });
   }
-
   /**
    * Process image evidence: OCR, object detection, embedding, and storage
    */
@@ -300,7 +295,6 @@ export class EnhancedIngestionPipeline {
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
   }
-
   /**
    * Process video evidence: scene analysis, timeline segmentation, embedding, and storage
    */
@@ -322,7 +316,6 @@ export class EnhancedIngestionPipeline {
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
   }
-
   /**
    * Process audio evidence: transcription, embedding, and storage
    */
@@ -344,7 +337,6 @@ export class EnhancedIngestionPipeline {
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
   }
-
   /**
    * Process document evidence: text extraction, embedding, and storage
    */
@@ -366,7 +358,6 @@ export class EnhancedIngestionPipeline {
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
   }
-
   /**
    * Process single document through enhanced pipeline
    */
@@ -412,7 +403,7 @@ export class EnhancedIngestionPipeline {
       };
       console.log(`✅ Document processed successfully: ${document.id} (${processingTime}ms)`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to process document ${document.id}:`, error);
       errorHandler.analysis(`Document processing failed: ${document.id}`, {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -421,7 +412,6 @@ export class EnhancedIngestionPipeline {
       throw error;
     }
   }
-
   /**
    * Process multiple documents in batch
    */
@@ -452,7 +442,6 @@ export class EnhancedIngestionPipeline {
     );
     return results;
   }
-
   /**
    * Add documents to processing queue
    */ async queueDocuments(documents: IngestionDocument[]): Promise<void> {
@@ -462,7 +451,6 @@ export class EnhancedIngestionPipeline {
       this.processQueue();
     }
   }
-
   /**
    * Process queued documents automatically
    */ private async processQueue(): Promise<void> {
@@ -475,16 +463,15 @@ export class EnhancedIngestionPipeline {
       const batch = this.processingQueue.splice(0, batchSize);
       try {
         await this.processBatch(batch);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('Batch processing failed:', error);
       }
       // Small delay between batches to prevent overwhelming the system
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    this.isProcessing = false;
+    this.isProcessing = $state(false);
     console.log('✅ Queue processing completed');
   }
-
   /**
    * Enhanced search using Qdrant vector similarity
    */
@@ -525,7 +512,6 @@ export class EnhancedIngestionPipeline {
           });
         }
       }
-
       // Perform search using Qdrant service
       const searchResults = await this.qdrantService.searchSimilarEvidence(query, {
         caseId: filters?.case_id,
@@ -533,22 +519,18 @@ export class EnhancedIngestionPipeline {
         threshold: filters?.confidence_threshold,
         evidenceTypes: filters?.evidence_type ? [filters.evidence_type] : undefined,
       });
-
       const documents = searchResults.map(result => ({
         id: result.id,
         content: result.payload?.content || '',
         metadata: result.payload || {},
         score: result.score,
       }));
-
       const processingTime = Date.now() - startTime;
       console.log(`🔍 Enhanced search completed: ${documents.length} results found (${processingTime}ms)`);
-
       // Cache search results
       await cacheSearchResults(query, JSON.stringify(documents));
-
       return searchResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Enhanced search failed:', error);
       errorHandler.system('Enhanced search failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -556,7 +538,6 @@ export class EnhancedIngestionPipeline {
       throw error;
     }
   }
-
   /**
    * Get information about the main collection
    */
@@ -564,7 +545,7 @@ export class EnhancedIngestionPipeline {
     try {
       const collections = await this.qdrantClient.getCollections();
       return collections.collections.find(c => c.name === 'legal_documents');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to get collection info:', error);
       errorHandler.system('Failed to get collection info', {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -572,7 +553,6 @@ export class EnhancedIngestionPipeline {
       throw error;
     }
   }
-
   /**
    * Assign document to a cluster using SOM RAG
    */
@@ -580,7 +560,6 @@ export class EnhancedIngestionPipeline {
     await this.somRAG.trainSOM([document]);
     return this.somRAG.findBestMatchingUnit(document.embedding);
   }
-
   /**
    * Update ingestion statistics
    */
@@ -597,7 +576,6 @@ export class EnhancedIngestionPipeline {
       this.stats.failed++;
     }
   }
-
   /**
    * Process multimodal evidence using registered processors
    */
@@ -606,10 +584,8 @@ export class EnhancedIngestionPipeline {
     if (!processor) {
       throw new Error(`No processor found for evidence type: ${evidence.type}`);
     }
-
     try {
       const processingResult = await processor.process(evidence);
-
       // Cache anchor points and timeline segments
       if (evidence.metadata.anchor_points) {
         this.anchorPointCache.set(evidence.id, evidence.metadata.anchor_points);
@@ -617,9 +593,8 @@ export class EnhancedIngestionPipeline {
       if (evidence.metadata.timeline_segments) {
         await cache.set(`timeline:${evidence.id}`, evidence.metadata.timeline_segments);
       }
-
       return processingResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to process multimodal evidence ${evidence.id}:`, error);
       errorHandler.analysis(`Multimodal evidence processing failed: ${evidence.id}`, {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -627,14 +602,12 @@ export class EnhancedIngestionPipeline {
       throw error;
     }
   }
-
   /**
    * Get statistics about the ingestion pipeline
    */
   getStats(): IngestionStats {
     return this.stats;
   }
-
   /**
    * Generates a detailed analysis of the evidence using a mock Copilot orchestrator.
    */
@@ -643,20 +616,16 @@ export class EnhancedIngestionPipeline {
     processingResult: DocumentEmbedding
   ): Promise<string> {
     if (!this.copilotContext) return '';
-
     const evidenceContent = this.createEvidenceContent(evidence, processingResult);
     const prompt = `
       Analyze the following evidence for a legal case Case ID: ${evidence.metadata.case_id}
       Evidence Type: ${evidence.type}
       Content: ${evidenceContent.substring(0, 2000)}
-
       Based on the legal context, provide a concise analysis and suggest the next logical step.
     `;
-
     const analysisResult = await copilotOrchestrator(prompt, {});
     return analysisResult.selfPrompt;
   }
-
   /**
    * Creates a content string from various parts of the evidence for analysis.
    */
@@ -669,7 +638,6 @@ export class EnhancedIngestionPipeline {
       Processing Content: ${processingResult.content}
     `;
   }
-
   /**
    * Determine legal category based on evidence analysis
    */ private determineLegalCategory(evidence: MultimodalEvidence): string {
@@ -688,17 +656,14 @@ export class EnhancedIngestionPipeline {
     }
     return 'General';
   }
-
   private async storeInQdrant(docEmbedding: DocumentEmbedding): Promise<void> {
     // Quantize embedding for 4x memory savings
     const quantized = defaultQuantizer.quantize(new Float32Array(docEmbedding.embedding));
     const quantizedBase64 = quantizedToBase64(quantized);
     const metrics = defaultQuantizer.getMetrics();
-
     console.log(
       `📊 Quantization: ${metrics.originalSize}B → ${metrics.quantizedSize}B (${metrics.compressionRatio.toFixed(1)}x compression, ${metrics.memoryReduction} saved)`
     );
-
     await this.qdrantService.upsertPoints('legal_documents', [
       {
         id: docEmbedding.id,
@@ -717,7 +682,6 @@ export class EnhancedIngestionPipeline {
       },
     ]);
   }
-
   /**
    * Extract entities and keywords from document content
    * Simple implementation using text analysis
@@ -732,7 +696,6 @@ export class EnhancedIngestionPipeline {
     const words = content.toLowerCase().split(/\s+/);
     const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for']);
     const keywords = [...new Set(words.filter(w => w.length > 4 && !commonWords.has(w)))].slice(0, 10);
-
     // Simple entity extraction (look for capitalized words)
     const sentences = content.split(/[.!?]+/);
     const entities: string[] = [];
@@ -740,7 +703,6 @@ export class EnhancedIngestionPipeline {
       const capitalizedWords = sentence.match(/\b[A-Z][a-z]+\b/g) || [];
       entities.push(...capitalizedWords);
     }
-
     return {
       entities: [...new Set(entities)].slice(0, 10),
       keywords,
@@ -748,7 +710,6 @@ export class EnhancedIngestionPipeline {
       language: 'en',
     };
   }
-
   /**
    * Generate embedding for text content
    * Uses GemmaEmbeddingService if available, falls back to simple TF-IDF
@@ -758,7 +719,6 @@ export class EnhancedIngestionPipeline {
     // In production, this should call GemmaEmbeddingService
     const words = text.toLowerCase().split(/\s+/);
     const embedding = new Array(384).fill(0);
-
     // Simple hash-based embedding
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
@@ -766,13 +726,11 @@ export class EnhancedIngestionPipeline {
       const idx = hash % 384;
       embedding[idx] += 1 / (i + 1); // TF-IDF approximation
     }
-
     // Normalize
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return embedding.map(val => (magnitude > 0 ? val / magnitude : 0));
   }
 }
-
 // Export factory function
 export function createEnhancedIngestionPipeline(): EnhancedIngestionPipeline {
   return new EnhancedIngestionPipeline();

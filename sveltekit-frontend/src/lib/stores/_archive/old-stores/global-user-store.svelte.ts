@@ -432,7 +432,7 @@ export const globalUserStore = {
   clearUserData() {
     globalUserState.user = null;
     globalUserState.session = null;
-    globalUserState.isAuthenticated = false;
+    globalUserState.isAuthenticated = $state(false);
     globalUserState.profile = null;
     globalUserState.preferences = defaultPreferences;
     globalUserState.chatHistory = [];

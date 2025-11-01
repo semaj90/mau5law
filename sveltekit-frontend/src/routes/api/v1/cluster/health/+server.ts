@@ -11,20 +11,20 @@ import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
 /*
  * Lightweight types to avoid `any` while matching common service shapes
  */
-type HealthCheckResult = { status?: string; ok?: boolean; details?: unknown } | Record<string, unknown>;
+type HealthCheckResult = { status?: string; ok?: boolean; details?: any } | Record<string, unknown>;
 
 type ServiceHealthProvider = {
   healthCheck?: () => Promise<HealthCheckResult> | HealthCheckResult;
   isConnectedToRedis?: () => boolean;
   isConnected?: () => boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 /* helper: safely probe a service's healthCheck if available and normalize shape */
 async function probeServiceHealth(
   service: ServiceHealthProvider | null | undefined,
   fallbackName = 'service'
-): Promise<{ status: string; details: unknown }> {
+): Promise<{ status: string; details: any }> {
   if (!service) return { status: 'unhealthy', details: { error: `${fallbackName} missing` } };
 
   if (typeof service.healthCheck === 'function') {
@@ -33,10 +33,10 @@ async function probeServiceHealth(
 
       // normalize possible shapes from result
       // safe type guards to avoid `any`
-      const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
-      const hasStatusString = (r: unknown): r is { status: string } =>
+      const isObject = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+      const hasStatusString = (r: any): r is { status: string } =>
         isObject(r) && 'status' in r && typeof (r as Record<string, unknown>)['status'] === 'string';
-      const hasOkBoolean = (r: unknown): r is { ok: boolean } =>
+      const hasOkBoolean = (r: any): r is { ok: boolean } =>
         isObject(r) && 'ok' in r && typeof (r as Record<string, unknown>)['ok'] === 'boolean';
 
       const status = hasStatusString(result)
@@ -71,7 +71,7 @@ async function probeServiceHealth(
 }
 
 // small helper to format unknown errors
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   if (err instanceof Error) {
     return err.message;
   }
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }),
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Health check failed:', error);
     return json(
       {
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         error: 'Action failed',
@@ -201,7 +201,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
         });
         results[name] = !!(response && (response.ok || response.status < 500));
       } catch {
-        results[name] = false;
+        results[name] = $state(false);
       } finally {
         clearTimeout(timeout);
       }

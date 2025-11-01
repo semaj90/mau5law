@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
       errorMessage = 'Network error: Could not connect to summarization service.';
       processingSteps.push('❌ Network error');
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Copy summary to clipboard
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="key-terms">
                       <h5>🏷️ Key Legal Terms</h5>
                       <div class="terms-list">
-                        {#each metadata.keyLegalTerms as term}
+                        {#each Array.isArray(metadata.keyLegalTerms) ? metadata.keyLegalTerms : [] as term}
                           <span class="term-tag">{term}</span>
                         {/each}
                       </div>

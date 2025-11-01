@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
       filters: { jurisdiction, category },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Laws search error:', error);
     const message = error instanceof Error ? error.message : String(error);
     return json(
@@ -213,7 +213,7 @@ export async function performVectorSearch(query: string, jurisdiction: string, c
       // assume the remote API returns array of objects compatible with Law
       return Array.isArray(result.results) ? (result.results as Law[]) : [];
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Vector search error:', error instanceof Error ? error.message : String(error));
   }
   return [];

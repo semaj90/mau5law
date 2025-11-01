@@ -10,7 +10,6 @@ import {
   // optimizeForLegalAIProduction, // Removed: unused
 } from './index.js';
 import { createContext7MCPIntegration } from './context7-mcp-integration.js';
-
 // === Inferred Interfaces for EnhancedOptimizationSuite components ===
 interface VSCodeStats {
   cache: { utilization: number };
@@ -21,28 +20,25 @@ interface VSCodeOptimizer {
   executeCommand(command: string): Promise<void>;
   getStats(): Promise<VSCodeStats>;
 }
-
 interface CacheStats {
   cache: { size: number };
   memory: { utilization: number };
 }
 interface RedisSOMCacheOptimizer {
-  set(key: string, value: unknown, options?: { metadata?: Record<string, unknown> }): Promise<void>;
+  set(key: string, value: any, options?: { metadata?: Record<string, unknown> }): Promise<void>;
   get(key: string): Promise<unknown>;
-  analyzeAccessPatterns(): Promise<{ clusters: unknown[]; recommendations: string[] }>;
+  analyzeAccessPatterns(): Promise<{ clusters: any[]; recommendations: string[] }>;
   getStats(): CacheStats;
-
   // Added to match ImportedEnhancedOptimizationSuite expectations:
   initialize(): Promise<void>;
   optimize(): Promise<void>;
   // Optional utility to clear/flush cache
   flushAll?(): Promise<void>;
 }
-
 interface DockerResourceUtilization {
   memory: number;
   cpu: number;
-  containers: unknown[];
+  containers: any[];
   efficiency_score: number;
   total_memory_allocated: number;
   total_memory_used: number;
@@ -53,7 +49,6 @@ interface DockerOptimizer {
   generateOptimizedDockerCompose(): string;
   optimize(): Promise<void>; // Added: Required by ImportedEnhancedOptimizationSuite
 }
-
 interface JsonOptimizerStats {
   parse_time_ms?: number;
   wasm_acceleration?: boolean;
@@ -61,20 +56,17 @@ interface JsonOptimizerStats {
   compressed_size?: number;
   original_size?: number;
 }
-
 interface JsonParseResult {
-  data: { data: unknown[] };
+  data: { data: any[] };
   stats: JsonOptimizerStats;
 }
-
 interface JsonCompressResult {
-  compressed: unknown;
+  compressed: any;
   stats: JsonOptimizerStats;
 }
-
 interface JsonOptimizer {
   parseJSON(jsonString: string): Promise<JsonParseResult>;
-  compressJSON(jsonObject: unknown): Promise<JsonCompressResult>;
+  compressJSON(jsonObject: any): Promise<JsonCompressResult>;
   isWASMInitialized(): boolean;
   optimize(): Promise<void>; // Added to match EnhancedOptimizationSuite requirements
 }
@@ -83,7 +75,7 @@ interface Context7MCPResponse {
   success: boolean;
   optimization_recommendations?: string[];
   performance_impact?: { expected_improvement: number };
-  current_metrics?: unknown;
+  current_metrics?: any;
   recommendations: string[];
   implementation_plan: string[];
 }
@@ -107,7 +99,6 @@ interface LocalEnhancedOptimizationSuite extends ImportedEnhancedOptimizationSui
   docker?: DockerOptimizer;
   json?: JsonOptimizer;
 }
-
 interface PerformanceBenchmarks {
   vs_code_commands: number;
   cache_operations_per_second: number;
@@ -115,14 +106,13 @@ interface PerformanceBenchmarks {
   docker_optimization_time_ms: number;
   memory_usage_mb: number;
 }
-
 // === Test Result Types ===
 export interface TestResult {
   name: string;
   passed: boolean;
   duration_ms: number;
   error?: string;
-  details?: unknown;
+  details?: any;
   performance_impact?: {
     before: number;
     after: number;
@@ -200,7 +190,7 @@ export class OptimizationTestSuite {
           passed: true,
           duration_ms: performance.now() - start,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'VS Code Extension Initialization',
@@ -230,7 +220,7 @@ export class OptimizationTestSuite {
           try {
             await vscode.executeCommand(command); // Used local variable
             successful_commands++;
-          } catch (error: unknown) {
+          } catch (error: any) {
             // Changed type
             // Individual command failures are acceptable
           }
@@ -246,7 +236,7 @@ export class OptimizationTestSuite {
             success_rate: success_rate * 100,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Command Execution Performance',
@@ -275,7 +265,7 @@ export class OptimizationTestSuite {
             commands_registered: stats.commands,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Memory Usage Monitoring',
@@ -333,7 +323,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: { retrieved_value: retrieved },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Basic Cache Operations',
@@ -378,7 +368,7 @@ export class OptimizationTestSuite {
             recommendations_generated: recommendations.length,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Self-Organizing Map Clustering',
@@ -410,7 +400,7 @@ export class OptimizationTestSuite {
             items_cached: after_stats.cache.size,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Memory Pressure Handling',
@@ -480,7 +470,7 @@ export class OptimizationTestSuite {
             memory_allocated_gb: Math.round(stats.total_memory_allocated / (1024 * 1024 * 1024)),
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Container Resource Monitoring',
@@ -523,7 +513,7 @@ export class OptimizationTestSuite {
             efficiency_change: after_stats.efficiency_score - before_stats.efficiency_score,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Optimization Preset Application',
@@ -551,7 +541,7 @@ export class OptimizationTestSuite {
             has_resource_limits: dockerCompose.includes('resources:'),
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'Docker Compose Generation',
@@ -623,7 +613,7 @@ export class OptimizationTestSuite {
             improvement: this.test_data.large_json.length / (stats.parse_time_ms || 1), // Avoid division by zero
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'JSON Parsing Performance',
@@ -656,7 +646,7 @@ export class OptimizationTestSuite {
             wasm_acceleration: stats.wasm_acceleration,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'JSON Compression',
@@ -680,7 +670,7 @@ export class OptimizationTestSuite {
             note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback',
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed type
         tests.push({
           name: 'WebAssembly Initialization',
@@ -745,7 +735,7 @@ export class OptimizationTestSuite {
             context7_success: response.success,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         tests.push({
           name: 'Stack Analysis with Optimization',
           passed: false,
@@ -765,7 +755,6 @@ export class OptimizationTestSuite {
         } else {
           throw new Error('generateBestPractices method is not available on Context7 integrator.');
         }
-
         const has_impact_estimate = response.performance_impact !== undefined;
         tests.push({
           name: 'Best Practices Generation',
@@ -776,7 +765,7 @@ export class OptimizationTestSuite {
             expected_improvement: response.performance_impact?.expected_improvement || 0,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         tests.push({
           name: 'Best Practices Generation',
           passed: false,
@@ -803,7 +792,7 @@ export class OptimizationTestSuite {
             implementation_steps: analysis.implementation_plan.length,
           },
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         tests.push({
           name: 'Comprehensive Analysis',
           passed: false,
@@ -853,7 +842,7 @@ export class OptimizationTestSuite {
           try {
             await vscode.executeCommand(command); // Used local variable
             successful_commands++;
-          } catch (error: unknown) {
+          } catch (error: any) {
             // Changed type
             // Continue with other commands
           }

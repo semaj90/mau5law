@@ -7,7 +7,6 @@ https://svelte.dev/e/js_parse_error -->
   // import entire modules to be robust against named vs default exports
   import * as nesGPUBridgeModule from '$lib/gpu/nes-gpu-memory-bridge';
   import * as chrRomModule from '$lib/services/chr-rom-precomputation-service';
-
   // Normalize exports: prefer named export, then default, then the module itself.
   // This preserves existing usage in the file: nesGPUBridge.storeCHRROMPattern(...), nesGPUBridge.getCHRROMPattern(...)
   const nesGPUBridge: any =
@@ -15,14 +14,12 @@ https://svelte.dev/e/js_parse_error -->
     (nesGPUBridgeModule as any).NESGPUBridge ??
     (nesGPUBridgeModule as any).default ??
     nesGPUBridgeModule;
-
   // The service may be exported as chrRomPrecomputationService, CHRROMPrecomputationService, or default.
   const chrRomPrecomputationService: any =
     (chrRomModule as any).chrRomPrecomputationService ??
     (chrRomModule as any).CHRROMPrecomputationService ??
     (chrRomModule as any).default ??
     chrRomModule;
-
   // Add typed shapes to avoid: 'never' errors in template
   type Prediction = {
     step: number;
@@ -35,21 +32,18 @@ https://svelte.dev/e/js_parse_error -->
     };
     confidence: number;
   };
-
   type AnimationItem = {
     step: number;
     componentId: string;
     animationType: string;
     compressed?: boolean;
   };
-
   type SearchResultItem = {
     step: number;
     query: string;
     results: any[];
     count: number;
   };
-
   type PerformanceSummary = {
     totalPredictions: number;
     totalAnimations: number;
@@ -58,26 +52,22 @@ https://svelte.dev/e/js_parse_error -->
     neuralTopologiesActive: number;
     avgProcessingTime: number;
   };
-
   type PerformanceMetrics = {
     summary?: PerformanceSummary;
     [key: string]: any;
   };
-
   type Asset3DMetrics = {
     predictedComponents: number;
     prerenderedAnimations: number;
     chrRomPatterns: number;
     cacheHitRatio: number;
   };
-
   type NeuralTopologyStatus = {
     transformer: string;
     autoencoder: string;
     cnn: string;
     rnn: string;
   };
-
   // Component props and state (Svelte 5 runes)
   // replace `export let` with $props() destructure and add a typed dispatcher
   let { width = 800, height = 480 } = $props() as { width?: number; height?: number };
@@ -85,7 +75,6 @@ https://svelte.dev/e/js_parse_error -->
   const dispatch = createEventDispatcher<{
     ready: { supported: boolean; device?: GPUDevice | null; error?: string };
   }>();
-
   // Svelte 5 runes state - add explicit types and typed initializers
   let demoStage: string = $state('initializing');
   let predictions: Prediction[] = $state([] as Prediction[]);
@@ -107,14 +96,12 @@ https://svelte.dev/e/js_parse_error -->
     chrRomPatterns: 0,
     cacheHitRatio: 0
   } as Asset3DMetrics);
-
   // WebGPU related
   let canvas: HTMLCanvasElement | null = $state(null as HTMLCanvasElement | null);
   let webgpuSupported: boolean = $state(typeof navigator !== 'undefined' && 'gpu' in navigator);
   let initError: string | null = $state(null as string | null);
   // use undefined to match requestDevice possibly returning undefined
   let device: GPUDevice | undefined = undefined;
-
   $effect(() => {
     (async () => {
       console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
@@ -124,25 +111,20 @@ https://svelte.dev/e/js_parse_error -->
       console.log('✅ Neural Topology Demo ready!');
     })();
   });
-
   async function initializeNeuralTopologies() {
     console.log('🧠 Initializing neural topology systems...');
     neuralTopologyStatus.transformer = 'active';
     console.log('🔤 Transformer: Ollama gemma3-legal model active');
-
     await chrRomPrecomputationService.startPrecomputation();
     neuralTopologyStatus.autoencoder = 'active';
     console.log('🗜️ Autoencoder: CHR-ROM pattern compression active');
-
     const webgpuOk = await checkWebGPUSupport();
     neuralTopologyStatus.cnn = webgpuOk ? 'active' : 'fallback';
     console.log(`👁️ CNN: WebGPU ${webgpuOk ? 'active' : 'fallback to CPU'}`);
-
     const rlStats = reinforcementLearningCache.getLearningState?.() || { cacheSize: 0 };
     neuralTopologyStatus.rnn = 'active';
     console.log(`🔄 RNN: Sequence prediction active (${rlStats.cacheSize} patterns)`);
   }
-
   async function setupDemoEnvironment() {
     const legalAssets = [
       { id: 'contract_3d', type: 'document_stack', complexity: 'medium', context: 'contract' },
@@ -151,7 +133,6 @@ https://svelte.dev/e/js_parse_error -->
       { id: 'scales_3d', type: 'balance', complexity: 'high', context: 'justice' },
       { id: 'text_particles_3d', type: 'particle_system', complexity: 'low', context: 'visualization' }
     ];
-
     for (const asset of legalAssets) {
       const patternId = `demo_${asset.id}`;
       // store pattern metadata in CHR-ROM bridge
@@ -161,37 +142,31 @@ https://svelte.dev/e/js_parse_error -->
     }
     console.log(`📦 Pre-cached ${legalAssets.length} 3D assets in CHR-ROM`);
   }
-
   async function runNeuralTopologyDemo() {
     if (isRunningDemo) return;
     isRunningDemo = true;
     demoStage = 'running';
     currentActionIndex = 0;
     console.log('🎬 Starting Neural Topology 3D Prediction Demo...');
-
     for (let i = 0; i < userActions.length; i++) {
       currentActionIndex = i;
       const action = userActions[i];
       await demonstrateTopologyIntegration(action, i);
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-
     await generatePerformanceSummary();
     demoStage = 'completed';
-    isRunningDemo = false;
+    isRunningDemo = $state(false);
     console.log('🏁 Neural Topology Demo completed!');
   }
-
   async function demonstrateTopologyIntegration(userAction string, step: number) {
     const startTime = performance.now();
     console.log(`\n🎯 Step ${step + 1}: Demonstrating: "${userAction}"`);
-
     // RNN prediction
     const predicted3D = await reinforcementLearningCache.predict3DComponent?.(
       `legal_document_${step}`,
       userAction
     );
-
     if (predicted3D) {
       predictions = [
         ...predictions,
@@ -204,7 +179,6 @@ https://svelte.dev/e/js_parse_error -->
       ];
       asset3DMetrics.predictedComponents++;
     }
-
     // Autoencoder pre-render
     if (userAction.includes('click') || userAction.includes('drag')) {
       await reinforcementLearningCache.preRenderAnimations?.(
@@ -222,7 +196,6 @@ https://svelte.dev/e/js_parse_error -->
       ];
       asset3DMetrics.prerenderedAnimations++;
     }
-
     // Transformer search
     const searchQuery = userAction.replace(/_/g, ' ').toLowerCase();
     const assetSearchResults = await searchPredictive3DAssets(searchQuery, {
@@ -239,22 +212,18 @@ https://svelte.dev/e/js_parse_error -->
         count: assetSearchResults.length
       }
     ];
-
     // CNN processing (simulated)
     const visualPatterns = await processVisualPatterns(predicted3D, userAction);
-
     // CHR-ROM retrieval
     const chrRomPattern = await nesGPUBridge.getCHRROMPattern?.(`demo_component_${step}`);
     if (chrRomPattern) {
       asset3DMetrics.chrRomPatterns++;
       console.log(`📦 CHR-ROM: Retrieved pattern with 0ms latency`);
     }
-
     // metrics update
     const processingTime = performance.now() - startTime;
     const cacheStats = reinforcementLearningCache.getLearningState?.() || { hitRate: 0 };
     asset3DMetrics.cacheHitRatio = Math.round((cacheStats.hitRate ?? 0) * 100);
-
     performanceMetrics = {
       ...performanceMetrics,
       [`step_${step + 1}`]: {
@@ -265,10 +234,8 @@ https://svelte.dev/e/js_parse_error -->
         chrRomHit: !!chrRomPattern
       }
     };
-
     console.log(`⚡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
   }
-
   async function searchPredictive3DAssets(query: string, context: any) {
     try {
       const response = await fetch('/api/brain/3d-assets/search', {
@@ -288,13 +255,11 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.warn('3D Asset search API not available, using mock results');
     }
-
     return [
       { assetId: `mock_${query.replace(/ /g, '_')}`, predictedUsage: 0.8, assetType: '3d_model' },
       { assetId: `${context.documentType}_visualization`, predictedUsage: 0.7, assetType: 'animation' }
     ];
   }
-
   async function processVisualPatterns(predicted3D: any, userAction string) {
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6,
@@ -305,7 +270,6 @@ https://svelte.dev/e/js_parse_error -->
     console.log('👁️ Visual patterns processed:', patterns);
     return patterns;
   }
-
   async function generatePerformanceSummary() {
     const totalPredictions = predictions.length;
     const totalAnimations = animations.length;
@@ -313,12 +277,10 @@ https://svelte.dev/e/js_parse_error -->
     const averageCacheHitRatio = asset3DMetrics.cacheHitRatio;
     const neuralTopologiesActive = Object.values(neuralTopologyStatus).filter(v => v === 'active')
       .length;
-
     const stepTimes = Object.keys(performanceMetrics)
       .filter(k => k.startsWith('step_'))
       .map(k => (performanceMetrics as any)[k].processingTime || 0);
     const avgProcessingTime = stepTimes.length ? stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length : 0;
-
     const summary = {
       totalPredictions,
       totalAnimations,
@@ -327,11 +289,9 @@ https://svelte.dev/e/js_parse_error -->
       neuralTopologiesActive,
       avgProcessingTime
     };
-
     performanceMetrics = { ...performanceMetrics, summary };
     console.log('📊 Final Performance Summary:', summary);
   }
-
   // Reset demo state cleanly (avoid inline complex handler in template)
   function resetDemo() {
     demoStage = 'ready';
@@ -346,9 +306,8 @@ https://svelte.dev/e/js_parse_error -->
       cacheHitRatio: 0
     };
     currentActionIndex = 0;
-    isRunningDemo = false;
+    isRunningDemo = $state(false);
   }
-
   async function checkWebGPUSupport(): Promise<boolean> {
     if (!('gpu' in navigator)) return false;
     try {
@@ -359,11 +318,9 @@ https://svelte.dev/e/js_parse_error -->
       return false;
     }
   }
-
   // WebGPU init and lifecycle
   onMount(async () => {
     if (!webgpuSupported || !canvas) return;
-
     try {
       // @ts-ignore
       const adapter = await (navigator as any).gpu.requestAdapter?.();
@@ -374,17 +331,15 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err: any) {
       console.warn('NeuralTopology3DDemo: WebGPU init failed', err);
       initError = String(err?.message ?? err);
-      webgpuSupported = false;
+      webgpuSupported = $state(false);
       dispatch('ready', { supported: false, error: initError });
     }
   });
-
   onDestroy(() => {
     // clear device reference in a type-safe way
     device = undefined;
   });
 </script>
-
 <div class="neural-topology-demo">
   <div class="demo-header">
     <h2>🧠 Neural Topology 3D Prediction System</h2>
@@ -440,8 +395,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else}
       <div class="demo-initializing">
         <p>⚡ Initializing neural topologies...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Real-time Metrics Dashboard -->
   <div class="metrics-dashboard">
@@ -475,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="result-group">
           <h4>🔄 RNN Predictions ({predictions.length})</h4>
           <div class="prediction-list">
-            {#each predictions as prediction}
+            {#each Array.isArray(predictions) ? predictions : [] as prediction}
               <div class="prediction-item">
                 <strong>Step {prediction.step}:</strong> {prediction.action} →
                 <span class="prediction-details">
@@ -485,14 +439,13 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Pre-rendered Animations -->
       {#if animations.length > 0}
         <div class="result-group">
           <h4>🎬 Autoencoder Pre-rendered Animations ({animations.length})</h4>
           <div class="animation-list">
-            {#each animations as animation}
+            {#each Array.isArray(animations) ? animations : [] as animation}
               <div class="animation-item">
                 <strong>Step {animation.step}:</strong> {animation.componentId}
                 <span class="animation-type">({animation.animationType})</span>
@@ -500,23 +453,20 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Asset Search Results -->
       {#if searchResults.length > 0}
         <div class="result-group">
           <h4>🔍 Transformer Asset Search Results</h4>
           <div class="search-list">
-            {#each searchResults as search}
+            {#each Array.isArray(searchResults) ? searchResults : [] as search}
               <div class="search-item">
                 <strong>Step {search.step}:</strong> "{search.query}" → {search.count} assets found
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Performance Summary -->
   {#if performanceMetrics.summary}
     <div class="performance-summary">
@@ -541,8 +491,7 @@ https://svelte.dev/e/js_parse_error -->
           <strong>Cache Hit Ratio:</strong> {performanceMetrics.summary.averageCacheHitRatio}%
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .neural-topology-demo {
@@ -649,7 +598,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 4px;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .metrics-dashboard {
     display: grid;
@@ -759,9 +708,7 @@ https://svelte.dev/e/js_parse_error -->
   .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }
   .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
   }
-
 </style>
-
 <div class="neural-demo">
   {#if webgpuSupported}
     <canvas bind:this={canvas} width={width} height={height} class="neural-canvas" aria-label="Neural Topology 3D demo canvas" />
@@ -779,9 +726,5 @@ https://svelte.dev/e/js_parse_error -->
           </text>
         </svg>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
-
-

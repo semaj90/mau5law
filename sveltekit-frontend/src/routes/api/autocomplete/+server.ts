@@ -65,7 +65,7 @@ async function getRedis(): Promise<RedisClient> {
 const db = poolShim;
 
 // Add a small helper to safely extract messages from unknown errors
-function formatError(e: unknown): { message: string; details?: string } {
+function formatError(e: any): { message: string; details?: string } {
   // Prefer Error.message when available
   if (e instanceof Error) {
     return { message: e.message, details: e.stack };
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const f = formatError(err);
     console.error('❌ Autocomplete error:', f.message, f.details ?? '');
     if (err instanceof z.ZodError) {
@@ -209,7 +209,7 @@ async function getCachedSuggestions(query: string): Promise<Suggestion[]> {
         const parsedSuggestions = JSON.parse(cached) as Suggestion[];
         suggestions.push(...parsedSuggestions);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const f = formatError(error);
       console.warn(`Cache lookup failed for prefix: "${prefix}":`, f.message, f.details ?? '');
     }
@@ -281,7 +281,7 @@ async function getSemanticSuggestions(query: string, maxResults: number): Promis
       [`%${query}%`, maxResults]
     );
     return (result.rows as Suggestion[]) ?? [];
-  } catch (error: unknown) {
+  } catch (error: any) {
     const f = formatError(error);
     console.warn('Semantic search failed:', f.message, f.details ?? '');
     return [];
@@ -351,7 +351,7 @@ function updateUsageStats(query: string, suggestions: Suggestion[]) {
       for (const suggestion of suggestions.slice(0, 3)) {
         await redis.zincrby('suggestion_popularity', 1, suggestion.suggestion);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const f = formatError(error);
       console.warn('Failed to update usage stats:', f.message, f.details ?? '');
     }
@@ -379,7 +379,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const f = formatError(err);
     console.error('Autocomplete health check failed:', f.message, f.details ?? '');
     throw error(503, 'Autocomplete service unhealthy');

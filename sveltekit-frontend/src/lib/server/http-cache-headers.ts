@@ -175,7 +175,7 @@ export function checkConditionalHeaders(
 ): { isNotModified: boolean; shouldSend304: boolean } {
   const ifNoneMatch = request.headers.get('If-None-Match');
   const ifModifiedSince = request.headers.get('If-Modified-Since');
-  let isNotModified = false;
+  let isNotModified = $state(false);
   // Check ETag
   if (ifNoneMatch && etag) {
     // Handle weak ETags and multiple ETags

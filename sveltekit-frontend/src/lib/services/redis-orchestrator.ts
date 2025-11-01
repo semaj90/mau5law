@@ -1,4 +1,4 @@
-const redisOrchestrator: unknown = {};
+const redisOrchestrator: any = {};
 export default redisOrchestrator;
 import IORedis from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
@@ -6,7 +6,7 @@ import { createHash } from 'crypto'; // Import createHash for hashing
 
 // Defensive Redis client wrapper: try to create a real client, but fall back to a no-op proxy
 let redisClient: IORedis | null = null;
-let redisAvailable = false;
+let redisAvailable = $state(false);
 
 try {
   // createRedisInstance may throw if environment is not configured or Redis is unavailable
@@ -17,8 +17,8 @@ try {
     redisAvailable = true;
     // Attach an error handler so unhandled errors don't crash the process
     // Some ioredis types can be strict; cast to a minimal shape to attach handler safely
-    const rc = redisClient as unknown as { on?: (ev: string, cb: (err: unknown) => void) => void };
-    rc.on?.('error', (err: unknown) => {
+    const rc = redisClient as unknown as { on?: (ev: string, cb: (err: any) => void) => void };
+    rc.on?.('error', (err: any) => {
       console.warn('Redis client error (caught):', err);
     });
   }
@@ -29,9 +29,9 @@ try {
 
 // Basic no-op proxy to avoid runtime calls when redis is not available
 const noopHandler = {
-  get(_target: unknown) {
+  get(_target: any) {
     // Return an async no-op function for any function access
-    return async (..._args: unknown[]) => undefined;
+    return async (..._args: any[]) => undefined;
   },
 };
 
@@ -42,7 +42,7 @@ async function getRedisClient(): Promise<IORedis> {
 }
 
 // Helper to call Redis commands, handling potential type issues or different ioredis versions
-async function callRedis<T>(client: IORedis, command: string, ...args: unknown[]): Promise<T | undefined> {
+async function callRedis<T>(client: IORedis, command: string, ...args: any[]): Promise<T | undefined> {
   try {
     // @ts-expect-error - dynamic command call, ioredis commands are methods on the client instance, args type is dynamic
     const result = await client[command](...args);
@@ -89,7 +89,7 @@ export interface LLMCacheEntry {
   confidence: number;
   model_used: string;
   processing_time: number;
-  sources?: unknown[];
+  sources?: any[];
   timestamp: number;
   cache_key: string;
 }
@@ -118,7 +118,7 @@ export interface ComplexLegalTask {
 
 export interface CompletedTaskResult {
   taskId: string;
-  result: unknown;
+  result: any;
   processingTime: number;
   completed_at: number;
   status: 'completed' | 'failed';
@@ -129,7 +129,7 @@ export interface LLMCacheContext {
   caseId?: string;
   legalCategory?: string;
   practiceArea?: string;
-  [key: string]: unknown; // Allow other arbitrary properties
+  [key: string]: any; // Allow other arbitrary properties
 }
 
 /**
@@ -234,7 +234,7 @@ export class RedisLLMCache {
       confidence: number;
       model_used: string;
       processing_time: number;
-      sources?: unknown[];
+      sources?: any[];
       context?: Record<string, unknown>;
     }
   ): Promise<void> {
@@ -277,7 +277,7 @@ export class RedisLLMCache {
       const client = await getRedisClient();
       const keysRaw = (await callRedis(client, 'keys', `${this.CACHE_PREFIX}*`)) as string[] | undefined;
       const keys = Array.isArray(keysRaw) ? keysRaw : [];
-      let memoryInfo: unknown | null = null;
+      let memoryInfo: any | null = null;
       try {
         // Attempt to get general memory info from Redis
         const info = await callRedis(client, 'info', 'memory');
@@ -409,7 +409,7 @@ export class RedisAgentMemory {
       const client = await getRedisClient();
       const keysRaw = (await callRedis(client, 'keys', `${this.MEMORY_PREFIX}*`)) as string[] | undefined;
       const keys = Array.isArray(keysRaw) ? keysRaw : [];
-      let memoryInfo: unknown | null = null;
+      let memoryInfo: any | null = null;
       try {
         const info = await callRedis(client, 'info', 'memory');
         const match = (info as string)?.match(/used_memory_human:([^\r\n]+)/);
@@ -559,7 +559,7 @@ export class RedisTaskQueue {
    */
   static async completeTask(
     taskId: string,
-    result: unknown,
+    result: any,
     processingTime: number,
     success: boolean = true
   ): Promise<void> {

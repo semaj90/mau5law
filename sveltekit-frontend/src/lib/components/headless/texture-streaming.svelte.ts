@@ -44,7 +44,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
     | HTMLCanvasElement
     | ImageData
     | OffscreenCanvas
-    | { [key: string]: unknown }
+    | { [key: string]: any }
     | unknown;
   let loadedTextures = $state<Map<string, DocumentTexture>>(new Map());
   let streamingProgress = $state<number>(0);
@@ -103,7 +103,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load evidence photo';
       throw err;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       currentDocument = null;
     }
   }
@@ -129,7 +129,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load document scan';
       throw err;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       currentDocument = null;
     }
   }
@@ -152,7 +152,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load case visualization';
       throw err;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       currentDocument = null;
     }
   }
@@ -177,7 +177,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load courtroom display';
       throw err;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       currentDocument = null;
     }
   }
@@ -236,7 +236,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       pipeline = null;
     }
     loadedTextures.clear();
-    isInitialized = false;
+    isInitialized = $state(false);
     canvasElement = null;
   }
   // Derived states using $derived

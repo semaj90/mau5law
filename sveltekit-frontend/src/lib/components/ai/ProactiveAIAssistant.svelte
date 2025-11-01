@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
 				typewriterIndex++;
 			} else {
 				clearInterval(typeInterval);
-				isTyping = false;
+				isTyping = $state(false);
 			}
 		}, 50 + Math.random() * 30); // Vary typing speed for realism
 	}
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				setTimeout(() => {
-					showCreateForm = false;
+					showCreateForm = $state(false);
 				}, 3000);
 			} else {
 				throw new Error('Failed to create case');
@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
 		} catch (error) {
 			startTypewriter('❌ Failed to create case. Please try again.');
 		} finally {
-			isProcessing = false;
+			isProcessing = $state(false);
 		}
 	}
 	// Custom case creation
@@ -166,14 +166,14 @@ https://svelte.dev/e/js_parse_error -->
 				caseDescription = '';
 				priority = 'medium';
 				category = 'criminal';
-				showCreateForm = false;
+				showCreateForm = $state(false);
 			} else {
 				throw new Error('Failed to create case');
 			}
 		} catch (error) {
 			startTypewriter('❌ Failed to create case. Please check your input and try again.');
 		} finally {
-			isProcessing = false;
+			isProcessing = $state(false);
 		}
 	}
 	$effect(() => {
@@ -233,8 +233,7 @@ https://svelte.dev/e/js_parse_error -->
 					>
 						Analyze Evidence
 					</button>
-				</div>
-			{/if}
+				{/if}
 			<!-- Quick Case Creation Panel -->
 			{#if showCreateForm}
 				<div class="case-creation-panel" transitionFly={{ y: 20, duration 400 }}>
@@ -243,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
 					<div class="quick-templates">
 						<h5>Quick Templates</h5>
 						<div class="template-grid">
-							{#each quickCaseTemplates as template}
+							{#each Array.isArray(quickCaseTemplates) ? quickCaseTemplates : [] as template}
 								<button
 									class="template-nier-bits-card"
 									onclick={disabled}
@@ -314,14 +313,12 @@ https://svelte.dev/e/js_parse_error -->
 							</div>
 						</div>
 					</div>
-				</div>
-			{/if}
-		</div>
-	{/if}
+				{/if}
+		{/if}
 </div>
 <style>
 	.ai-assistant-container {
-		position fixed;
+		position: fixed;
 d;
 		bottom: 20px;
 		right: 20px;
@@ -343,7 +340,7 @@ d;
 		margin-bottom: 16px;
 	}
 	.ai-avatar {
-		position relative;
+		position: relative;
 		width: 48px;
 		height: 48px;
 		display: flex;
@@ -360,7 +357,7 @@ d;
 		font-size: 24px;
 	}
 	.status-indicator {
-		position absolute;
+		position: absolute;
 		bottom: 2px;
 		right: 2px;
 		width: 12px;

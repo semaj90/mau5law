@@ -544,13 +544,13 @@ export interface YoRHaComponentProps {
 /**
  * Type guards for runtime type checking
  */
-export const isSystemMetrics = (_value: unknown): value is SystemMetrics => {
+export const isSystemMetrics = (_value: any): value is SystemMetrics => {
   return typeof value === 'object' && value !== null && 'cpu_usage' in value && 'memory_usage' in value;
 };
-export const isLegalQuery = (_value: unknown): value is LegalQuery => {
+export const isLegalQuery = (_value: any): value is LegalQuery => {
   return typeof value === 'object' && value !== null && 'id' in value && 'query_text' in value && 'query_type' in value;
 };
-export const isYoRHaModule = (_value: unknown): value is YoRHaModule => {
+export const isYoRHaModule = (_value: any): value is YoRHaModule => {
   return typeof value === 'object' && value !== null && 'id' in value && 'name' in value && 'status' in value;
 };
 // === Re-exports for Enhanced Compatibility ===

@@ -8,7 +8,6 @@
   import { browser } from '$app/environment';
   import { websocketStore  } from '$lib/stores/unified';
   import * as d3 from 'd3';
-
   interface Props {
     caseId: string;
     evidenceData: any[];
@@ -20,7 +19,6 @@
     showMetrics?: boolean;
     realTimeUpdates?: boolean;
   }
-
   let {
     caseId,
     evidenceData = [],
@@ -32,7 +30,6 @@
     showMetrics = true,
     realTimeUpdates = false
   }: Props = $props();
-
   // Reactive state
   let containerElement: HTMLDivElement;
   let svg: any;
@@ -43,18 +40,15 @@
   let clusterData = $state<any[]>([]);
   let isLoading = $state(true);
   let analysisMode = $state<'relationships' | 'importance' | 'timeline' | 'similarity'>('relationships');
-
   // Network data
   let nodes = $state<any[]>([]);
   let links = $state<any[]>([]);
   let clusters = $state<any[]>([]);
-
   // D3 elements (loose typing to avoid build-time d3 types mismatch)
   let nodeElements: any;
   let linkElements: any;
   let labelElements: any;
   let clusterElements: any;
-
   // small UI helpers to use previously-unused state and wire simple interactions
   function setAnalysisMode(mode: 'relationships' | 'importance' | 'timeline' | 'similarity') {
     analysisMode = mode;
@@ -68,7 +62,6 @@
   function closeNodeDetails() {
     selectedNode = null;
   }
-
   // Lifecycle
   $effect(() => {
     (async () => {
@@ -81,18 +74,16 @@
         if (realTimeUpdates) {
           setupRealTimeUpdates();
         }
-        isLoading = false;
+        isLoading = $state(false);
       } catch (error) {
         console.error('Failed to initialize network analysis:', error);
-        isLoading = false;
+        isLoading = $state(false);
       }
     })();
   });
-
   onDestroy(() => {
     simulation?.stop();
   });
-
   async function initializeNetwork() {
     // Create SVG container - append to the bound container element
     svg = d3.select(containerElement || document.body).append('svg')
@@ -100,20 +91,16 @@
       .attr('height', height)
       .style('background', 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)')
       .style('border-radius', '8px');
-
     // Add zoom behavior
     const zoom = d3.zoom().scaleExtent([0.1, 10])
       .on('zoom', (event: any) => {
         // removed the generic type argument to avoid the: "Untyped function calls may not accept type arguments" TS error
         svg.select('.network-container').attr('transform', event.transform);
       });
-
     svg.call(zoom as any);
-
     // Create container for network elements
     svg.append('g').attr('class', 'network-container');
   }
-
   async function processNetworkData() {
     // Process evidence data into nodes
     nodes = evidenceData.map(evidence => ({
@@ -126,7 +113,6 @@
       y: Math.random() * height,
       evidence: evidence
     }));
-
     // Process relationships into links
     links = relationshipData.map(rel => ({
       source: rel.sourceId,
@@ -135,16 +121,13 @@
       type: rel.type || 'related',
       value: rel.confidence || 0.5
     }));
-
     // Add implicit links based on analysis mode
     addImplicitLinks();
-
     // Detect communities/clusters
     if (showClusters) {
       detectCommunities();
     }
   }
-
   function calculateImportance(evidence: any): number {
     let importance = 1;
     if (!evidence) return importance;
@@ -154,7 +137,6 @@
     if (evidence.tags) importance += (Array.isArray(evidence.tags) ? Math.min(2, evidence.tags.length) : 0);
     return importance;
   }
-
   // Assign a cluster id based on evidence metadata or fallback
   function assignCluster(evidence: any): string {
     if (!evidence) return 'cluster-0';
@@ -163,7 +145,6 @@
     // stable-ish fallback using id
     return `id-${Math.abs(String(evidence.id ?? '').split('').reduce((s: number, ch: string) => s + ch.charCodeAt(0), 0)) % 10}`;
   }
-
   // Add implicit links depending on analysisMode (e.g. connect nodes in same cluster for: 'similarity' mode)
   function addImplicitLinks() {
     if (!nodes || !links) return;
@@ -189,7 +170,6 @@
       }
     }
   }
-
   // Simple community detection: connected components -> cluster ids
   function detectCommunities() {
     if (!nodes || !links) return;
@@ -226,7 +206,6 @@
     }
     clusterData = clusters;
   }
-
   // Recalculate network metrics
   function calculateNetworkMetrics() {
     networkMetrics = {
@@ -236,7 +215,6 @@
       clusters: clusterData?.length ?? 0
     };
   }
-
   // Create a simple D3 force-directed visualization (safe defaults)
   function createVisualization() {
     if (!browser) return;
@@ -244,7 +222,6 @@
     const container = svg.select('.network-container');
     // clear previous rendering
     container.selectAll('*').remove();
-
     // create link and node groups
     linkElements = container.append('g').attr('class', 'links')
       .selectAll('line')
@@ -254,7 +231,6 @@
       .attr('stroke', 'rgba(255,255,255,0.15)')
       .attr('stroke-width', (d: any) => Math.max(1, (d.value ?? 0.5) * 2))
       .attr('class', 'link');
-
     nodeElements = container.append('g').attr('class', 'nodes')
       .selectAll('circle')
       .data(nodes, (d: any) => d.id)
@@ -266,7 +242,6 @@
       .on('click', (event: any, d: any) => { openNodeDetails(d); })
       .on('mouseover', (event: any, d: any) => { hoveredNode = d; })
       .on('mouseout', () => { hoveredNode = null; });
-
     labelElements = container.append('g').attr('class', 'labels')
       .selectAll('text')
       .data(nodes)
@@ -276,7 +251,6 @@
       .attr('font-size', 10)
       .attr('fill', '#ddd')
       .text((d: any) => d.label);
-
     // create or restart simulation
     simulation?.stop();
     simulation = d3.forceSimulation(nodes as any)
@@ -289,18 +263,15 @@
           .attr('y1', (d: any) => (d.source.y))
           .attr('x2', (d: any) => (d.target.x))
           .attr('y2', (d: any) => (d.target.y));
-
         nodeElements
           .attr('cx', (d: any) => d.x = Math.max(6, Math.min(width - 6, d.x)))
           .attr('cy', (d: any) => d.y = Math.max(6, Math.min(height - 6, d.y)));
-
         labelElements
           .attr('x', (d: any) => d.x + 8)
           .attr('y', (d: any) => d.y + 3)
           .style('opacity', (d: any) => (showMetrics ? 1 : 0.8));
       });
   }
-
   // helper to ensure svg exists (used by createVisualization)
   function awaitInitializeSVG() {
     if (svg) return Promise.resolve();
@@ -317,7 +288,6 @@
       tryFind();
     });
   }
-
   // Subscribe to real-time updates via websocketStore if realTimeUpdates true
   function setupRealTimeUpdates() {
     if (!browser || !realTimeUpdates) return;
@@ -343,10 +313,8 @@
     }
   }
 </script>
-
 <!-- Minimal DOM container for D3 to attach the SVG -->
 <div bind:this={containerElement} class="d3-container"></div>
-
 <!-- Add minimal UI that uses the CSS classes and state variables so selectors are considered used -->
 {#if interactive}
   <div class="controls-panel">
@@ -359,19 +327,15 @@
         <option value="similarity" selected={analysisMode === 'similarity'}>Similarity</option>
       </select>
     </div>
-
     <div class="view-controls">
       <label><input type="checkbox" bind:checked={showClusters} /> Show clusters</label>
       <label><input type="checkbox" bind:checked={showMetrics} /> Show metrics</label>
     </div>
-
     <div class="action-controls">
       <button class="btn-control" onclick={() => { calculateNetworkMetrics(); }}>Recalc</button>
       <button class="btn-control" onclick={() => { createVisualization(); }}>Refresh</button>
     </div>
-  </div>
-{/if}
-
+  {/if}
 {#if showMetrics}
   <div class="metrics-panel">
     <h3>Network Metrics</h3>
@@ -381,9 +345,7 @@
       <div class="metric"><span class="metric-label">Nodes</span><span>{networkMetrics.nodeCount ?? nodes.length}</span></div>
       <div class="metric"><span class="metric-label">Links</span><span>{networkMetrics.linkCount ?? links.length}</span></div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 {#if selectedNode}
   <div class="node-details-panel">
     <button class="btn-close" onclick={closeNodeDetails}>✕</button>
@@ -394,26 +356,22 @@
       <div class="connected-nodes">
         <h4>Connected</h4>
         <ul>
-          {#each (links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
-            .map(l => (l.source === selectedNode.id ? l.target : l.source))) as cid}
+          {#each Array.isArray((links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
+            .map(l => (l.source === selectedNode.id ? l.target : l.source)))) ? (links.filter(l => l.source === selectedNode.id || l.target === selectedNode.id)
+            .map(l => (l.source === selectedNode.id ? l.target : l.source))) : [] as cid}
             <li>{cid}</li>
           {/each}
         </ul>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 {#if isLoading}
   <div class="loading-overlay">
     <div class="spinner"></div>
     <div>Loading network…</div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* ...existing code... but corrected CSS syntax where needed ... */
-
   .controls-panel {
     position: absolute;
     top: 10px;

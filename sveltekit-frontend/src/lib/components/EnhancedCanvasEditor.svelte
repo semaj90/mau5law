@@ -10,9 +10,7 @@
   import Loki from "lokijs";
   // fabric can be heavy-typed; use any for now
   import * as fabric from "fabric";
-
   import { get, writable } from "svelte/store";
-
   // Props via Svelte 5 $props() runes
   interface Props {
     caseId: string;
@@ -28,14 +26,12 @@
     height = 800,
     readOnly = false
   }: Props = $props();
-
   // Reactive state (runes)
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   let canvas = $state<any>(null);
   let lokiDb = $state<any | null>(null);
   let canvasCollection = $state<any | null>(null);
   let searchEngine = $state<any | null>(null);
-
   // Canvas state management as a Svelte store (writable)
   const canvasState = writable({
     tool: "select",
@@ -52,7 +48,6 @@
     searchQuery: "",
     layers: [] as any[],
   });
-
   // History management
   let historyStack = $state<string[]>([]);
   let historyIndex = $state<number>(-1);
@@ -60,7 +55,6 @@
   // Auto-save
   let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
   let isDirty = $state(false);
-
   // Tools (use simple text/icon placeholders to avoid icon import issues)
   const tools = [
     { id: "select", icon: "🖱️", label: "Select" },
@@ -77,11 +71,9 @@
     { id: "person", icon: "👤", label: "Person" },
     { id: "location", icon: "📍", label: "Location" },
   ];
-
   // Evidence items and search results (local copies)
   let evidenceItems = $state<any[]>([]);
   let searchResults = $state<any[]>([]);
-
   // Initialize on component mount using $effect so it re-runs only when needed
   $effect(() => {
     initializeLokiDB();
@@ -89,7 +81,6 @@
     initializeSearch();
     setupEventListeners();
     loadCanvasData();
-
     // evidenceStore is a store that holds an object (state) with an: 'evidence' array.
     // Subscribe to the store and read state.evidence instead of trying to access evidenceStore.evidence.
     const unsubscribe = evidenceStore.subscribe((state: any) => {
@@ -97,20 +88,16 @@
       evidenceItems = items;
       updateSearchEngine();
     });
-
     return () => {
       // cleanup subscription
       unsubscribe();
     };
   });
-
   onDestroy(() => {
     // clear auto-save timer
     if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-
     // remove global keyboard listener
     document.removeEventListener('keydown', handleKeyboard);
-
     // remove Fabric event listeners to avoid leaks
     if (canvas && typeof canvas.off === 'function') {
       try {
@@ -128,7 +115,6 @@
         // ignore if some handlers were not attached
       }
     }
-
     // dispose canvas and Loki DB
     if (canvas && typeof canvas.dispose === "function") {
       canvas.dispose();
@@ -137,7 +123,6 @@
       lokiDb.close();
     }
   });
-
   // Initialize Loki DB (lightweight)
   function initializeLokiDB() {
     lokiDb = new Loki(`canvas_${caseId}.db`, {
@@ -153,7 +138,6 @@
       autosaveInterval: 4000,
     });
   }
-
   // Initialize Fabric canvas (loose typing)
   function initializeCanvas() {
     try {
@@ -167,7 +151,6 @@
         preserveObjectStacking: true,
         enableRetinaScaling: true,
       });
-
       // Event listeners
       canvas.on("object:added", handleObjectAdded);
       canvas.on("object:removed", handleObjectRemoved);
@@ -176,14 +159,12 @@
       canvas.on("selection:updated", (options: any) => handleSelectionUpdated(options));
       canvas.on("selection:cleared", () => handleSelectionCleared());
       canvas.on("path:created", handlePathCreated);
-
       updateGrid();
       saveState();
     } catch (err) {
       console.error("Failed to initialize canvas:", err);
     }
   }
-
   function initializeSearch() {
     const options = {
       keys: ["title", "description", "evidenceType", "tags"],
@@ -192,13 +173,11 @@
     };
     searchEngine = new (Fuse as any)(evidenceItems, options);
   }
-
   function updateSearchEngine() {
     if (searchEngine && evidenceItems) {
       (searchEngine as any).setCollection(evidenceItems);
     }
   }
-
   function setupEventListeners() {
     document.addEventListener("keydown", handleKeyboard);
     if (canvas) {
@@ -207,7 +186,6 @@
       canvas.on("mouse:up", handleMouseUp);
     }
   }
-
   function handleKeyboard(e: KeyboardEvent) {
     if (!canvas) return;
     if (e.ctrlKey || e.metaKey) {
@@ -241,7 +219,6 @@
       }
     }
   }
-
   function handleMouseDown(event: any) {
     const state = get(canvasState);
     if (!canvas) return;
@@ -254,10 +231,8 @@
       case "arrow": createArrow(pointer); break;
     }
   }
-
   function handleMouseMove(_event: any) { /* no-op for now */ }
   function handleMouseUp(_event: any) { /* no-op for now */ }
-
   // Shape creation helpers (use any typing to avoid type errors)
   function createRectangle(pointer: any) {
     if (!canvas) return;
@@ -321,7 +296,6 @@
     canvas.add(arrow);
     canvas.setActiveObject(arrow);
   }
-
   function createEvidenceObject(evidence: any): any {
     const rect = new (fabric as any).Rect({
       width: 200, height: 150, fill: "#fef3c7", stroke: "#f59e0b", strokeWidth: 2, rx: 8, ry: 8
@@ -336,7 +310,6 @@
       (evidence?.description ? evidence.description.substring(0, 50) + "..." : ""),
       { fontSize: 10, top: 50, left: 10, width: 180, fill: "#374151" }
     );
-
     let thumbnail: any = null;
     if (evidence?.fileUrl) {
       thumbnail = createThumbnail(evidence);
@@ -350,7 +323,6 @@
     group.set("objectType", "evidence");
     return group;
   }
-
   function createThumbnail(evidence: any): any | null {
     const fileType = evidence?.fileType || evidence?.mimeType || "";
     if (fileType.startsWith("image/")) {
@@ -362,14 +334,12 @@
     }
     return null;
   }
-
   function addTimelineToCanvas() {
     if (!canvas) return;
     const timelineGroup = createTimelineVisualization();
     canvas.add(timelineGroup);
     canvas.setActiveObject(timelineGroup);
   }
-
   function createTimelineVisualization(): any {
     const line = new (fabric as any).Line([0, 0, 400, 0], { stroke: "#374151", strokeWidth: 3 });
     const elements: any[] = [line];
@@ -384,14 +354,12 @@
     timeline.set("objectType", "timeline");
     return timeline;
   }
-
   function addPersonToCanvas() {
     if (!canvas) return;
     const person = createPersonVisualization();
     canvas.add(person);
     canvas.setActiveObject(person);
   }
-
   function createPersonVisualization(): any {
     const circle = new (fabric as any).Circle({ radius: 30, fill: "#dbeafe", stroke: "#3b82f6", strokeWidth: 2 });
     const name = new (fabric as any).Text("Person Name", { fontSize: 12, fontWeight: "bold", top: 40, left: -30, textAlign: "center" });
@@ -400,14 +368,12 @@
     person.set("objectType", "person");
     return person;
   }
-
   function addLocationToCanvas() {
     if (!canvas) return;
     const location = createLocationVisualization();
     canvas.add(location);
     canvas.setActiveObject(location);
   }
-
   function createLocationVisualization(): any {
     const marker = new (fabric as any).Polygon(
       [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 30, y: 15 }, { x: 20, y: 30 }, { x: 0, y: 30 }, { x: 10, y: 15 }],
@@ -418,7 +384,6 @@
     location.set("objectType", "location");
     return location;
   }
-
   // Canvas state management functions
   function handleObjectAdded() {
     isDirty = true;
@@ -437,17 +402,15 @@
     scheduleAutoSave();
     saveState();
   }
-  function handleSelectionCreated(_options: unknown) { updateSelection(); }
-  function handleSelectionUpdated(_options: unknown) { updateSelection(); }
+  function handleSelectionCreated(_options: any) { updateSelection(); }
+  function handleSelectionUpdated(_options: any) { updateSelection(); }
   function handleSelectionCleared() { updateSelection(); }
   function handlePathCreated() { saveState(); }
-
   function updateSelection() {
     if (!canvas) return;
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     canvasState.update((s: any) => ({ ...s, selectedObjects: activeObjects }));
   }
-
   function updateCanvasState() {
     if (!canvas) return;
     canvasState.update((state: any) => ({
@@ -457,7 +420,6 @@
       canRedo: historyIndex < historyStack.length - 1,
     }));
   }
-
   // History management
   function saveState() {
     if (!canvas || !canvas.toJSON) return;
@@ -471,7 +433,6 @@
     }
     updateCanvasState();
   }
-
   async function undo() {
     if (!canvas || historyIndex <= 0) return;
     historyIndex--;
@@ -488,13 +449,11 @@
     canvas.renderAll && canvas.renderAll();
     updateCanvasState();
   }
-
   // Auto-save
   function scheduleAutoSave() {
     if (autoSaveTimeout) clearTimeout(autoSaveTimeout as any);
     autoSaveTimeout = setTimeout(() => saveCanvas(), 3000);
   }
-
   async function saveCanvas() {
     if (!canvas || !canvasCollection || !isDirty) return;
     try {
@@ -515,17 +474,15 @@
       const existing = canvasCollection.findOne ? canvasCollection.findOne({ id: canvasData.id }) : null;
       if (existing && canvasCollection.update) canvasCollection.update({ ...existing, ...canvasData });
       else if (canvasCollection.insert) canvasCollection.insert(canvasData);
-
       await fetch("/api/canvas/save", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(canvasData)
       });
-      isDirty = false;
+      isDirty = $state(false);
       showSaveIndicator();
     } catch (error) {
       console.error("Failed to save canvas:", error);
     }
   }
-
   async function loadCanvasData() {
     if (!canvasCollection) return;
     try {
@@ -544,7 +501,6 @@
       console.error("Failed to load canvas:", error);
     }
   }
-
   function showSaveIndicator() {
     const indicator = document.createElement("div");
     indicator.textContent = "Canvas Saved";
@@ -554,12 +510,11 @@
       if (document.body.contains(indicator)) document.body.removeChild(indicator);
     }, 2000);
   }
-
   // Tools and zoom
   function setTool(toolId: string) {
     canvasState.update((s: any) => ({ ...s, tool: toolId }));
     if (!canvas) return;
-    canvas.isDrawingMode = false;
+    canvas.isDrawingMode = $state(false);
     canvas.selection = toolId === "select";
     switch (toolId) {
       case "pan": canvas.defaultCursor = "grab"; break;
@@ -575,12 +530,10 @@
     canvas.setZoom && canvas.setZoom(zoom / 100);
     canvas.renderAll && canvas.renderAll();
   }
-
   function toggleGrid() {
     canvasState.update((s: any) => ({ ...s, showGrid: !s.showGrid }));
     updateGrid();
   }
-
   function updateGrid() {
     if (!canvas) return;
     const state = get(canvasState);
@@ -594,12 +547,10 @@
       canvas.renderAll && canvas.renderAll();
     }
   }
-
   function createGridPattern(size: number): string {
     const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="${size}" height="${size}" patternUnits="userSpaceOnUse"><path d="M ${size} 0 L 0 0 0 ${size}" fill="none" stroke="#e5e7eb" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)" /></svg>`;
     return `data:image/svg+xml;base64,${btoa(svg)}`;
   }
-
   // Object manipulation
   function deleteSelected() {
     if (!canvas) return;
@@ -610,7 +561,6 @@
       canvas.renderAll && canvas.renderAll();
     }
   }
-
   async function copySelected() {
     if (!canvas) return;
     const activeObject = canvas.getActiveObject && canvas.getActiveObject();
@@ -623,7 +573,6 @@
       });
     }
   }
-
   async function pasteClipboard() {
     if (!canvas) return;
     try {
@@ -649,7 +598,6 @@
       console.warn("Clipboard paste failed:", err);
     }
   }
-
   function selectAll() {
     if (!canvas) return;
     const allObjects = canvas.getObjects ? canvas.getObjects() : [];
@@ -657,7 +605,6 @@
     canvas.setActiveObject(selection);
     canvas.renderAll && canvas.renderAll();
   }
-
   // Export
   function exportCanvas(format: "png" | "svg" | "json") {
     if (!canvas) return;
@@ -683,7 +630,6 @@
     link.download = filename;
     link.click();
   }
-
   // Search
   function searchEvidence(query: string) {
     if (!searchEngine || !query.trim()) {
@@ -693,7 +639,6 @@
     const results = (searchEngine as any).search(query) || [];
     searchResults = results.map((r: any) => r.item || r);
   }
-
   // AI summary
   async function generateAISummary() {
     if (!canvas) return;
@@ -705,7 +650,6 @@
         alert("No evidence items found on canvas to summarize.");
         return;
       }
-
       // Resolve the available summarization method at runtime to avoid TS type errors.
       const svc: any = aiSummarizationService as any;
       const fn =
@@ -714,11 +658,9 @@
         svc.summarizeEvidence ??
         svc.summarize ??
         null;
-
       if (!fn || typeof fn !== "function") {
         throw new Error("AI summarization service does not expose a supported method.");
       }
-
       const summary = await fn.call(svc, evidenceData, caseId);
       const summaryText = new (fabric as any).IText(`AI SUMMARY:\n${summary?.content?.substring(0, 200) || ""}...`, {
         left: 50, top: 50, width: 300, fontSize: 12, fill: "#374151", backgroundColor: "#f0f9ff", padding: 10
@@ -730,17 +672,15 @@
       alert("Failed to generate AI summary. Please try again.");
     }
   }
-
   // Derived/template usage: in template we use $canvasState directly
   // Exported functions for parent access
-  export function addEvidenceToCanvas(evidence: unknown) {
+  export function addEvidenceToCanvas(evidence: any) {
     if (!canvas) return;
     const evidenceObject = createEvidenceObject(evidence as any);
     canvas.add && canvas.add(evidenceObject);
     canvas.setActiveObject && canvas.setActiveObject(evidenceObject);
   }
-
-  export function addElementsToCanvas(elements: unknown[]) {
+  export function addElementsToCanvas(elements: any[]) {
     if (!canvas || !elements) return;
     elements.forEach((element) => {
       const canvasObject = createCanvasObjectFromData(element as any);
@@ -748,7 +688,6 @@
     });
     canvas.renderAll && canvas.renderAll();
   }
-
   function createCanvasObjectFromData(elementData: any): any | null {
     try {
       if (!elementData) return null;
@@ -765,7 +704,6 @@
     }
   }
 </script>
-
 <div class="canvas-editor-container mx-auto px-4 max-w-7xl">
   <!-- Main Toolbar -->
   <div class="toolbar">
@@ -775,12 +713,10 @@
       <button class="toolbar-btn" onclick={() => undo()} disabled={!$canvasState.canUndo} title="Undo">↶</button>
       <button class="toolbar-btn" onclick={() => redo()} disabled={!$canvasState.canRedo} title="Redo">↷</button>
     </div>
-
     <div class="toolbar-separator" aria-hidden="true"></div>
-
     <!-- Tools -->
     <div class="toolbar-group">
-      {#each tools as tool}
+      {#each Array.isArray(tools) ? tools : [] as tool}
         <button
           class="toolbar-btn"
           class:active={$canvasState.tool === tool.id}
@@ -791,7 +727,6 @@
         </button>
       {/each}
     </div>
-
     <!-- Canvas Controls -->
     <div class="toolbar-group">
       <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">➖</button>
@@ -799,19 +734,16 @@
       <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">➕</button>
       <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">▦</button>
     </div>
-
     <!-- Object Actions -->
     <div class="toolbar-group">
       <button class="toolbar-btn" onclick={() => copySelected()} title="Copy">📋</button>
       <button class="toolbar-btn" onclick={() => pasteClipboard()} title="Paste">📥</button>
       <button class="toolbar-btn" onclick={() => deleteSelected()} title="Delete">🗑️</button>
     </div>
-
     <!-- AI Features -->
     <div class="toolbar-group">
       <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">🧠</button>
     </div>
-
     <!-- Export (use dropdown markup so CSS selectors are used) -->
     <div class="toolbar-group dropdown">
       <button class="toolbar-btn" title="Export">⬇️</button>
@@ -821,13 +753,11 @@
         <button onclick={() => exportCanvas('json')}>Export as JSON</button>
       </div>
     </div>
-
     <!-- Canvas Info -->
     <div class="toolbar-group">
       Objects: {$canvasState.objectCount} | Selected: {$canvasState.selectedObjects.length}
     </div>
   </div>
-
   <!-- Content Area -->
   <div class="grid grid-cols-4 gap-4">
     <!-- Evidence Sidebar -->
@@ -845,7 +775,7 @@
         </div>
         <h3>Evidence Items</h3>
         <div>
-          {#each ($canvasState.searchQuery ? searchResults : evidenceItems) as evidence}
+          {#each Array.isArray(($canvasState.searchQuery ? searchResults : evidenceItems)) ? ($canvasState.searchQuery ? searchResults : evidenceItems) : [] as evidence}
             <div
               class="evidence-item"
               onclick={() => addEvidenceToCanvas(evidence)}
@@ -859,7 +789,6 @@
           {/each}
         </div>
       </div>
-
       <div class="mt-4">
         <h3>Quick Add</h3>
         <div class="space-y-2">
@@ -870,16 +799,13 @@
         </div>
       </div>
     </aside>
-
     <!-- Canvas Area -->
     <main class="col-span-3">
       <canvas bind:this={canvasElement} class="canvas-area w-full h-[600px] border"></canvas>
     </main>
   </div>
 </div>
-
 <!-- Props migrated to Svelte 5 $props() pattern -->
-
 <style>
   .canvas-editor-container {
     background: #f9fafb;

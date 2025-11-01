@@ -46,7 +46,6 @@
     }).length,
   };
 </script>
-
 <div class="case-stats container mx-auto px-4">
   <div class="stat-card">
      <div class="stat-value">{stats.total}</div>
@@ -69,7 +68,6 @@
      <div class="stat-label">Recently Updated</div>
    </div>
  </div>
-
  <style>
    /* @unocss-include */
    .case-stats {

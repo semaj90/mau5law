@@ -90,7 +90,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
   private edges: Map<string, GraphEdge[]> = new Map(); // source -> edges
   private adjacencyMatrix: Map<string, Map<string, number>> = new Map();
   private pageRankScores: Map<string, number> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private cudaServiceUrl = 'http://localhost:8095';
   // Caching for performance
   private similarityCache = new Map<string, SimilarityResult[]>();
@@ -401,7 +401,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
       nextScores.set(nodeId, 0);
     }
     let iterations = 0;
-    let convergence = false;
+    let convergence = $state(false);
     while (iterations < this.config.maxIterations && !convergence) {
       // Reset next scores
       for (const nodeId of nodeIds) {

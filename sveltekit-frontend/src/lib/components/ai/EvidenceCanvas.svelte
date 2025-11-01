@@ -41,13 +41,13 @@
   }> = [];
 
   // Canvas options
-  let options = {
+  let options = $state({
     analyze_layout: true,
     extract_entities: true,
     generate_summary: true,
     confidence_level: 0.8,
     context_window: 4096,
-  };
+  });
 
   onMount(async () => {
     // initialize fabric
@@ -60,7 +60,7 @@
         selection: true, // fixed missing colon
         preserveObjectStacking: true,
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       // normalize unknown to Error before logging/using
       const e = err instanceof Error ? err : new Error(String(err));
       console.warn('Fabric failed to load:', e);
@@ -98,7 +98,7 @@
       evidenceList.forEach((item, index) => {
         addEvidenceToCanvas(item, index);
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       const e = err instanceof Error ? err : new Error(String(err));
       console.warn('Could not load case evidence:', e);
     }
@@ -271,7 +271,7 @@
       } else {
         throw new Error(result?.error || 'Analysis failed');
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       const e = err instanceof Error ? err : new Error(String(err));
       error = e.message;
       analysisStatus = 'error';
@@ -324,7 +324,7 @@
         } else {
           evidenceItem.status = 'failed';
         }
-      } catch (err: unknown) {
+      } catch (err: any) {
         const e = err instanceof Error ? err : new Error(String(err));
         console.error('Upload failed:', e);
         evidenceItem.status = 'failed';
@@ -356,7 +356,7 @@
     // Save to localStorage as backup
     try {
       localStorage.setItem(`evidence-canvas-${caseId}`, JSON.stringify(canvasData));
-    } catch (err: unknown) {
+    } catch (err: any) {
       const e = err instanceof Error ? err : new Error(String(err));
       console.warn('Could not save canvas to localStorage:', e);
     }
@@ -436,8 +436,7 @@
         aria-valuenow={Math.round(analysisProgress)}
       ></progress>
       <span class="progress-text" aria-live="polite">{Math.round(analysisProgress)}%</span>
-    </div>
-  {/if}
+    {/if}
   <!-- Analysis Options -->
   <div class="options-grid">
     <label class="nes-text">
@@ -487,8 +486,7 @@
   {#if error}
     <div class="nes-container is-rounded is-error">
       <p><AlertCircle size={16} /> {error}</p>
-    </div>
-  {/if}
+    {/if}
 </div>
 <div class="evidence-canvas-wrapper">
   <canvas bind:this={canvasEl} width="800" height="600"></canvas>
@@ -498,7 +496,7 @@
   <div class="nes-container with-title evidence-list">
     <p class="title">Evidence Items ({evidenceList.length})</p>
     <div class="evidence-grid">
-      {#each evidenceList as item}
+      {#each Array.isArray(evidenceList) ? evidenceList : [] as item}
         <div class={'nes-container is-rounded evidence-item ' + getItemStatus(item)}>
           <div class="evidence-header">
             <span class="evidence-name">{getItemName(item)}</span>
@@ -520,8 +518,7 @@
         </div>
       {/each}
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Comprehensive Analysis Results Panel -->
 {#if analysisResult}
   <div class="nes-container with-title is-centered analysis-results">
@@ -542,41 +539,38 @@
           >
             Risk Level: {analysisResult.riskLevel.toUpperCase()}
           </span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Key Findings -->
     {#if analysisResult.keyFindings && analysisResult.keyFindings.length > 0}
       <div class="nes-container is-rounded findings-card">
         <h4 class="nes-text">Key Findings</h4>
         <div class="findings-list">
-          {#each analysisResult.keyFindings as finding}
+          {#each Array.isArray(analysisResult.keyFindings) ? analysisResult.keyFindings : [] as finding}
             <div class="nes-container is-rounded finding-item">
               <p>• {finding}</p>
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Recommendations -->
     {#if analysisResult.recommendations && analysisResult.recommendations.length > 0}
       <div class="nes-container is-rounded recommendations-card">
         <h4 class="nes-text">AI Recommendations</h4>
         <div class="recommendations-list">
-          {#each analysisResult.recommendations as recommendation}
+          {#each Array.isArray(analysisResult.recommendations) ? analysisResult.recommendations : [] as recommendation}
             <div class="nes-container is-rounded recommendation-item">
               <p>→ {recommendation}</p>
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Similar Cases -->
     {#if analysisResult.similarCases && analysisResult.similarCases.length > 0}
       <div class="nes-container is-rounded similar-cases-card">
         <h4 class="nes-text">Similar Cases Found</h4>
         <div class="similar-cases-list">
-          {#each analysisResult.similarCases as similarCase}
+          {#each Array.isArray(analysisResult.similarCases) ? analysisResult.similarCases : [] as similarCase}
             <div class="nes-container is-rounded case-item">
               <div class="case-header">
                 <span class="case-title">{similarCase.title}</span>
@@ -586,14 +580,13 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Timeline -->
     {#if analysisResult.timeline && analysisResult.timeline.length > 0}
       <div class="nes-container is-rounded timeline-card">
         <h4 class="nes-text">Case Timeline</h4>
         <div class="timeline-list">
-          {#each analysisResult.timeline as event}
+          {#each Array.isArray(analysisResult.timeline) ? analysisResult.timeline : [] as event}
             <div class={'nes-container is-rounded timeline-item ' + event.importance}>
               <div class="timeline-header">
                 <span class="timeline-date">{new Date(event.date).toLocaleDateString()}</span>
@@ -612,8 +605,7 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Compliance Status -->
     {#if analysisResult.complianceStatus}
       <div class="nes-container is-rounded compliance-card">
@@ -630,8 +622,7 @@
             {analysisResult.complianceStatus}
           </span>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Processing Metadata -->
     <div class="nes-container is-rounded metadata-card">
       <h4 class="nes-text">Analysis Metadata</h4>
@@ -640,8 +631,7 @@
           <div class="metadata-item">
             <span class="metadata-label">Processing Time:</span>
             <span class="metadata-value">{analysisResult.processingTime}ms</span>
-          </div>
-        {/if}
+          {/if}
         <div class="metadata-item">
           <span class="metadata-label">Evidence Items:</span>
           <span class="metadata-value">{evidenceList.length}</span>
@@ -652,8 +642,7 @@
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 
 <style>
   /* Main toolbar styling */

@@ -11,7 +11,7 @@
     showExport?: boolean;
     class?: string;
     // allow other arbitrary props passed through
-    [key: string]: unknown;
+    [key: string]: any;
   }
   let {
     analysis,
@@ -46,7 +46,7 @@
     isRefreshing = true;
     // Simulate API call to re-analyze evidence
     await new Promise(resolve => setTimeout(resolve, 2000));
-    isRefreshing = false;
+    isRefreshing = $state(false);
   }
   function exportAnalysis() {
     const exportData = {
@@ -66,7 +66,6 @@
     URL.revokeObjectURL(url);
   }
 </script>
-
 <Card class="nes-container is-rounded bg-white {className}" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header pb-3 mb-4">
@@ -138,8 +137,7 @@
             </button>
           {/if}
         </p>
-      </div>
-    {/if}
+      {/if}
     <!-- Entities -->
     {#if sortedEntities.length > 0}
       <div>
@@ -149,7 +147,7 @@
           <span class="text-xs text-gray-500">({analysis.entities.length} total)</span>
         </div>
         <div class="grid gap-2 {variant === 'compact' ? 'grid-cols-1' : 'grid-cols-2'}">
-          {#each sortedEntities as entity}
+          {#each Array.isArray(sortedEntities) ? sortedEntities : [] as entity}
             <div class="flex items-center justify-between p-2 bg-purple-50 rounded border">
               <div class="flex-1 min-w-0">
                 <div class="font-medium text-sm truncate">{entity.text}</div>
@@ -163,8 +161,7 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Themes -->
     {#if sortedThemes.length > 0 && variant !== 'compact'}
       <div>
@@ -173,7 +170,7 @@
           <span class="font-medium text-sm">Key Themes</span>
         </div>
         <div class="space-y-2">
-          {#each sortedThemes as theme}
+          {#each Array.isArray(sortedThemes) ? sortedThemes : [] as theme}
             <div class="flex items-center gap-3">
               <div class="flex-1">
                 <div class="font-medium text-sm">{theme.topic}</div>
@@ -190,15 +187,13 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Analysis Timestamp -->
     {#if variant === 'detailed'}
       <div class="flex items-center gap-2 text-xs text-gray-500 pt-2 border-t">
         <Clock class="w-3 h-3" />
         <span>Analysis completed: {new Date().toLocaleString()}</span>
-      </div>
-    {/if}
+      {/if}
     <!-- Legal Relevance Score -->
     {#if variant === 'detailed'}
       <div class="bg-blue-50 p-3 rounded-lg">
@@ -223,11 +218,9 @@
         <div class="mt-2 text-xs text-gray-600">
           Based on entity extraction, theme analysis, and legal precedent matching
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
 </Card>
-
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 {
@@ -241,7 +234,7 @@
   }
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition: width 0.8s ease-in-out;
+    transition: width: 0.8s ease-in-out;
   }
   /* Entity card hover effects */
   .bg-purple-50:hover {
@@ -250,4 +243,3 @@
     transition: all 0.2s ease;
   }
 </style>
-

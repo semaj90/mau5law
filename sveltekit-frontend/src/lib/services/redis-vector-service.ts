@@ -8,7 +8,7 @@ import { createRedisInstance } from '$lib/server/redis';
 
 // Minimal shape used from ioredis in this module. Keep small and explicit to avoid depending on exact ioredis types.
 interface RedisLike {
-  on(event: string, cb: (...args: unknown[]) => void): void;
+  on(event: string, cb: (...args: any[]) => void): void;
   ping(): Promise<string>;
   hset(key: string, field: string, value: string): Promise<number> | Promise<void>;
   hget(key: string, field: string): Promise<string | null>;
@@ -24,19 +24,19 @@ import { logger } from '$lib/utils/logger';
 export interface VectorSearchResult {
   id: string;
   score: number;
-  payload: unknown;
+  payload: any;
   vector?: number[];
 }
 export interface DocumentVector {
   id: string;
   vector: number[];
-  payload: unknown;
-  metadata?: unknown;
+  payload: any;
+  metadata?: any;
 }
 export class RedisVectorService {
   // Use a minimal Redis-like interface to avoid coupling to a specific ioredis type version
   private redis: RedisLike | null = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   constructor() {
     // Prefer REDIS_URL; fall back to host/port. Default port aligned with start-full-quic.bat (4005).
     const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
@@ -60,8 +60,8 @@ export class RedisVectorService {
       this.isConnected = true;
       logger.info('Redis Vector Service connected');
     });
-    client.on('error', (error: unknown) => {
-      this.isConnected = false;
+    client.on('error', (error: any) => {
+      this.isConnected = $state(false);
       logger.error('Redis Vector Service error', error);
     });
   }
@@ -73,12 +73,12 @@ export class RedisVectorService {
     try {
       const pong = await this.redis.ping();
       return this.isConnected && (pong === 'PONG' || !!pong);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Redis health check failed', { error });
       return false;
     }
   }
-  async storeVector(id: string, vector: number[], payload: unknown): Promise<void> {
+  async storeVector(id: string, vector: number[], payload: any): Promise<void> {
     if (!this.redis) throw new Error('Redis client not initialized');
     try {
       const vectorData = {
@@ -91,7 +91,7 @@ export class RedisVectorService {
       // Also store in a set for quick lookup
       await this.redis.sadd('vectors:all', id);
       logger.debug(`Stored vector for ID: ${id}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to store vector', { id, error });
       throw error;
     }
@@ -104,14 +104,14 @@ export class RedisVectorService {
     try {
       const data = await this.redis.hget(`vector:${id}`, 'data');
       if (!data) return null;
-      const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: unknown; metadata?: unknown };
+      const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: any; metadata?: any };
       return {
         id: vectorData.id,
         vector: vectorData.vector,
         payload: vectorData.payload,
         metadata: vectorData.metadata,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to get vector', { id, error });
       return null;
     }
@@ -122,7 +122,7 @@ export class RedisVectorService {
       await this.redis.del(`vector:${id}`);
       await this.redis.srem('vectors:all', id);
       logger.debug(`Deleted vector for ID: ${id}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to delete vector', { id, error });
       throw error;
     }
@@ -159,7 +159,7 @@ export class RedisVectorService {
       // Sort by score descending and apply limit
       results.sort((a, b) => b.score - a.score);
       return results.slice(0, options.limit ?? 10);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to search vectors', { error });
       return [];
     }
@@ -172,7 +172,7 @@ export class RedisVectorService {
     try {
       const key = `embedding:${this.hashText(text)}:${model}`;
       await this.redis.setex(key, 3600, JSON.stringify(embedding)); // Cache for 1 hour
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to cache embedding', { error });
     }
   }
@@ -185,7 +185,7 @@ export class RedisVectorService {
       const key = `embedding:${this.hashText(text)}:${model}`;
       const cached = await this.redis.get(key);
       return cached ? (JSON.parse(cached) as number[]) : null;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to get cached embedding', { error });
       return null;
     }
@@ -220,7 +220,7 @@ export class RedisVectorService {
     } catch (e) {
       // ignore
     } finally {
-      this.isConnected = false;
+      this.isConnected = $state(false);
       this.redis = null;
     }
   }

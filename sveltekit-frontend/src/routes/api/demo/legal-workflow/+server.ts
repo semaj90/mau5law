@@ -32,7 +32,7 @@ const caseActivitiesTable = caseActivities as unknown as any;
 const userDocumentsTable = userDocuments as unknown as any;
 
 // Helper to fail fast with a clear message if required schema exports are missing.
-function ensureRequiredTables(...tableNames: Array<{ name: string; table: unknown }>) {
+function ensureRequiredTables(...tableNames: Array<{ name: string; table: any }>) {
   const missing = tableNames.filter(t => !t.table).map(t => t.name);
   if (missing.length > 0) {
     throw new Error(
@@ -47,12 +47,12 @@ function ensureRequiredTables(...tableNames: Array<{ name: string; table: unknow
 interface UserDocumentRow {
   id: string | number;
   source: string;
-  metadata?: unknown;
-  embedding?: unknown;
+  metadata?: any;
+  embedding?: any;
   content?: string;
   createdAt?: string;
   updatedAt?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
@@ -509,7 +509,7 @@ async function chatWithCase(data: ChatWithCasePayload) {
   }
 
   // Build evidence context with relevance scores
-  const evidenceList: EvidenceDoc[] = docs.map((d: unknown) => {
+  const evidenceList: EvidenceDoc[] = docs.map((d: any) => {
     const rec = d as Record<string, unknown>;
 
     let metadataObj: Record<string, unknown> = {};

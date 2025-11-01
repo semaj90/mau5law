@@ -20,7 +20,7 @@ function createClient(_config: { url: string; password: string }): SimpleRedis {
     async connect() { this.isOpen = true; },
     async setEx() {},
     async get() { return null; },
-    async quit() { this.isOpen = false; }
+    async quit() { this.isOpen = $state(false); }
   };
 }
 

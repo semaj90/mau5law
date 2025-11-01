@@ -111,7 +111,7 @@ export class StreamingIngestionPipeline {
         `✅ Document ${metadata.documentId} processed: ${result.totalChunks} chunks, ${result.embeddingsGenerated} embeddings generated, ${result.cacheHits} cache hits`
       );
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       result.errors.push(`Pipeline error: ${message}`);
       result.processingTimeMs = Date.now() - startTime;
@@ -176,7 +176,7 @@ export class StreamingIngestionPipeline {
           model: EMBEDDING_MODELS.PRIMARY,
         };
         builtChunks.push(dbChunk);
-      } catch (err: unknown) {
+      } catch (err: any) {
         const message = err instanceof Error ? err.message : String(err);
         result.errors.push(`Chunk ${idx} error: ${message}`);
       }

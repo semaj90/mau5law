@@ -112,7 +112,7 @@ export interface IRedisCacheService {
   /**
    * Optional: atomic set if not exists (useful for locks)
    */
-  setIfNotExists?(key: string, value: unknown, ttlSeconds?: number): Promise<boolean>;
+  setIfNotExists?(key: string, value: any, ttlSeconds?: number): Promise<boolean>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; usedMemory?: number }>;
 }
@@ -162,7 +162,7 @@ export interface INesGPUBridge {
    * Execute a named GPU shader/task and return the result. Implementations should define payload shapes.
    * Optional timeoutMs may be provided by callers.
    */
-  runShaderTask(taskName: string, payload: unknown, opts?: { timeoutMs?: number }): Promise<unknown>;
+  runShaderTask(taskName: string, payload: any, opts?: { timeoutMs?: number }): Promise<unknown>;
 
   /**
    * Optional helper to query device capabilities / memory

@@ -15,7 +15,7 @@ export interface DetectiveWebSocketMessage {
   userId?: string;
   sessionId?: string;
   timestamp?: string;
-  data?: unknown;
+  data?: any;
 }
 
 export interface CollaborativeUser {

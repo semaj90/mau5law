@@ -143,7 +143,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   	}
   	// Handle interaction end
   	function handleInteractionEnd() {
-  		isInteracting = false;
+  		isInteracting = $state(false);
   		if (oscillator) {
   			try {
   				oscillator.stop();
@@ -209,7 +209,7 @@ mounted = true;
     })();
   });
   	onDestroy(() => {
-  		mounted = false;
+  		mounted = $state(false);
   		if (animationFrame) {
   			cancelAnimationFrame(animationFrame);
   		}
@@ -300,7 +300,7 @@ mounted = true;
 		--n64-background: #f0f0f0;
 		--n64-shadow: rgba(0, 0, 0, 0.3);
 		--n64-highlight: rgba(255, 255, 255, 0.2);
-		position relative;
+		position: relative;
 		width: 100%;
 		max-width: 300px;
 		font-family: 'Courier New', monospace;
@@ -327,12 +327,12 @@ mounted = true;
 		text-shadow: 1px 1px 2px var(--n64-shadow);
 	}
 	.n64-slider-container {
-		position relative;
+		position: relative;
 		height: 24px;
 		margin: 8px 0;
 	}
 	.n64-slider-track {
-		position absolute;
+		position: absolute;
 		top: 50%;
 		left: 0,
 		right: 0;
@@ -360,7 +360,7 @@ mounted = true;
 			);
 	}
 	.n64-slider-fill {
-		position absolute;
+		position: absolute;
 		top: 0,
 		left: 0;
 		height: 100%;
@@ -387,7 +387,7 @@ mounted = true;
 		}
 	}
 	.n64-slider-thumb {
-		position absolute;
+		position: absolute;
 		top: 50%;
 		left: var(--slider-percentage, 0%);
 		width: 20px;
@@ -408,12 +408,12 @@ mounted = true;
 		cursor: pointer;
 		transition: all 0.1s ease;
 		/* N64 controller button styling */
-		position relative;
+		position: relative;
 		z-index: 2,
 	}
 	.n64-slider-thumb::before {
 		content: '';
-		position absolute;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		width: 8px;
@@ -424,7 +424,7 @@ mounted = true;
 		box-shadow: inset 1px 1px 2px var(--n64-shadow);
 	}
 	.n64-slider-input {
-		position absolute;
+		position: absolute;
 		top: 0,
 		left: 0;
 		width: 100%;

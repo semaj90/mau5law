@@ -34,11 +34,11 @@ export interface CaseFileContent {
   id?: string;
   title?: string;
   summary?: string;
-  parties?: unknown[];
-  documents?: unknown[];
-  timeline?: unknown[];
-  legalConcepts?: unknown[];
-  precedents?: unknown[];
+  parties?: any[];
+  documents?: any[];
+  timeline?: any[];
+  legalConcepts?: any[];
+  precedents?: any[];
   jurisdiction?: string;
   practiceArea?: string;
   legalIssues?: Array<{ description: string; analysis?: string } | string>;
@@ -64,13 +64,13 @@ interface WorkerErrorData {
 interface WorkerReinforcementData {
   reward: number;
   action: string;
-  state: unknown;
+  state: any;
 }
 
 interface AnalyticsData {
   duration?: number;
   error?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface QLorATrainingConfig {
@@ -185,11 +185,11 @@ export class QLorATrainingService {
   private trainingHistory: Writable<TrainingJob[]>;
   private userAnalytics: Writable<UserAnalytics | null>;
   private worker: Worker | null = null;
-  private isTraining = false;
+  private isTraining = $state(false);
   private analyticsTimer: number | null = null; // Corrected type to number | null
   // GPU-aware cache integration
   private gpuCache: LegalGPUAwareCache;
-  private gpuCacheInitialized = false;
+  private gpuCacheInitialized = $state(false);
   constructor() {
     // Initialize GPU-aware cache
     this.gpuCache = gpuAwareCache;
@@ -597,7 +597,7 @@ export class QLorATrainingService {
       job.metrics.trainingTime = job.completedAt - (job.startedAt || job.createdAt);
       return job;
     });
-    this.isTraining = false;
+    this.isTraining = $state(false);
     // Generate completion recommendations
     (recommendationOrchestrator as unknown as IRecommendationOrchestrator).addRecommendation({
       id: `training_complete_${Date.now()}`,
@@ -625,7 +625,7 @@ export class QLorATrainingService {
       job.completedAt = Date.now();
       return job;
     });
-    this.isTraining = false;
+    this.isTraining = $state(false);
     // Generate error recommendations
     (recommendationOrchestrator as unknown as IRecommendationOrchestrator).addRecommendation({
       id: `training_error_${Date.now()}`,
@@ -860,7 +860,7 @@ export class QLorATrainingService {
       if (job) job.status = 'queued';
       return job;
     });
-    this.isTraining = false; // Corrected syntax
+    this.isTraining = $state(false); // Corrected syntax
     return true; // Corrected syntax
   }
 }

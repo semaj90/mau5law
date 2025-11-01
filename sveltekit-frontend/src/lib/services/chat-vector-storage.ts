@@ -192,7 +192,7 @@ export class ChatVectorStorage {
       `);
 
       console.log('📊 Chat vector storage tables and index ensured.');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Failed to initialize chat vector storage:', error);
       throw error;
@@ -229,7 +229,7 @@ export class ChatVectorStorage {
       console.log(`💾 Stored chat message in ${processingTime.toFixed(2)}ms`);
       console.log(`📈 Embedding: ${embedding.length}D, Quantized: ${quantizedEmbedding.length} FP32`);
       return message.id;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Chat message storage failed:', error);
       throw error;
@@ -253,7 +253,7 @@ export class ChatVectorStorage {
       }
       console.log('⚠️ Using simulated Gemma embedding');
       return mockEmbedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Gemma embedding generation failed:', error);
       // Return zero embedding as fallback
@@ -429,7 +429,7 @@ export class ChatVectorStorage {
       console.log(`🤖 Intent prediction completed in ${processingTime.toFixed(2)}ms`);
       console.log(`🎯 Predicted intent: ${predictedIntent.intent} (${(predictedIntent.confidence * 100).toFixed(1)}%)`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Intent prediction failed:', error);
       // Return fallback prediction
@@ -721,7 +721,7 @@ export class ChatVectorStorage {
       console.log(`🔍 Chat history search completed in ${searchTime.toFixed(2)}ms`);
       console.log(`📊 Found ${finalResults.length} relevant messages`);
       return finalResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Chat history search failed:', error);
       return [];
@@ -786,7 +786,7 @@ export class ChatVectorStorage {
       // The actual count might be in result.rowCount or similar depending on driver.
       // For simplicity, returning a placeholder 1 for now.
       return 1; // Return number of deleted records (placeholder)
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Typed error
       console.error('❌ Failed to clear old chat data:', error);
       return 0; // Return 0 on error

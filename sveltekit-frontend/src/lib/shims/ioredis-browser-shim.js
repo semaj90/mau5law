@@ -15,8 +15,8 @@ export default class RedisShim {
       useServiceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
       ...config
     };
-    this.connected = false;
-    this.offlineMode = false;
+    this.connected = $state(false);
+    this.offlineMode = $state(false);
     this.stats = {
       operations: 0,
       hits: 0,
@@ -35,7 +35,7 @@ export default class RedisShim {
     try {
       // Check if we're in browser environment
       if (typeof window === 'undefined') {
-        this.offlineMode = false;
+        this.offlineMode = $state(false);
         return;
       }
       // Test localStorage availability
@@ -53,7 +53,7 @@ export default class RedisShim {
       }
     } catch (error) {
       console.warn('🔧 Redis Browser Shim: Offline storage not available:', error);
-      this.offlineMode = false;
+      this.offlineMode = $state(false);
     }
   }
   async connect() {
@@ -61,7 +61,7 @@ export default class RedisShim {
     return Promise.resolve();
   }
   async disconnect() {
-    this.connected = false;
+    this.connected = $state(false);
     return Promise.resolve();
   }
   async ping() {

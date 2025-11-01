@@ -106,9 +106,9 @@ export interface EnhancedRecommendation {
     enhancementApplied?: boolean;
     learningApplied?: boolean;
     feedbackInfluence?: number;
-    [key: string]: unknown; // Allow additional metadata properties
+    [key: string]: any; // Allow additional metadata properties
   };
-  [key: string]: unknown; // Allow additional properties on the root object
+  [key: string]: any; // Allow additional properties on the root object
 }
 
 export interface RecommendationContext {
@@ -164,14 +164,14 @@ export interface Document {
     centralityScore: number;
     enhancementApplied: boolean;
   };
-  [key: string]: unknown; // Allow additional properties on documents
+  [key: string]: any; // Allow additional properties on documents
 }
 
 export interface Relationship {
   sourceId: string;
   targetId: string;
   type: string; // e.g., 'citation', 'precedent', 'related_case'
-  [key: string]: unknown; // Allow additional properties on relationships
+  [key: string]: any; // Allow additional properties on relationships
 }
 
 export interface PredictedAsset {
@@ -179,7 +179,7 @@ export interface PredictedAsset {
   type?: string;
   category?: string;
   confidence?: number;
-  [key: string]: unknown; // Allow additional properties on predicted assets
+  [key: string]: any; // Allow additional properties on predicted assets
 }
 
 export interface PredictionResult {
@@ -209,16 +209,16 @@ export interface RecommendationRaw {
     enhancementApplied?: boolean;
     learningApplied?: boolean;
     feedbackInfluence?: number;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown; // Allow additional properties on raw recommendations
+  [key: string]: any; // Allow additional properties on raw recommendations
 }
 
 // Base interface for worker messages
 export interface WorkerMessage {
   type: string;
   requestId?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface RecommendationsCompleteEventData extends WorkerMessage {
@@ -232,11 +232,11 @@ export interface AssetPredictionCompleteEventData extends WorkerMessage, Predict
 
 export class EnhancedRecommendationIntegration {
   private worker: Worker | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private pendingRequests = new Map<
     string,
     {
-      resolve: (_value: unknown) => void;
+      resolve: (_value: any) => void;
       reject: (error: Error) => void;
       timestamp: number;
     }
@@ -274,7 +274,7 @@ export class EnhancedRecommendationIntegration {
       }
     } catch (error) {
       console.error('Failed to initialize recommendation worker:', error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
 
@@ -372,11 +372,11 @@ export class EnhancedRecommendationIntegration {
   }
 
   // Simple logger - controlled by debug flag (always logs warnings/errors)
-  private logger(level: 'debug' | 'info' | 'warn' | 'error', ...args: unknown[]) {
+  private logger(level: 'debug' | 'info' | 'warn' | 'error', ...args: any[]) {
     // Add a debug flag to the class if not already present, or use a global one
     // For now, just log everything for visibility during development
     // eslint-disable-next-line no-console
-    (console[level] as (...args: unknown[]) => void)?.('[EnhancedRecommendationIntegration]', ...args);
+    (console[level] as (...args: any[]) => void)?.('[EnhancedRecommendationIntegration]', ...args);
   }
 
   private async sendWorkerMessage<T extends WorkerMessage>(type: string, data: Record<string, unknown>): Promise<T> {

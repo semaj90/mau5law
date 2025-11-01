@@ -1,6 +1,5 @@
 import type { Readable } from 'svelte/store';
 import { writable, get } from 'svelte/store';
-
 /**
  * RAG Streaming Client Helper (SSE)
  * ---------------------------------
@@ -38,14 +37,12 @@ import { writable, get } from 'svelte/store';
  *  }
  *  function cancel() { abortCtrl?.abort(); }
  */
-
 interface JsonPatchOp {
 	op: 'add' | 'remove' | 'replace' | 'test';
 	path: string;
-	value?: unknown;
+	value?: any;
 }
 export type PatchPayload = Record<string, unknown> | JsonPatchOp[];
-
 export interface RagStreamOptions {
   query: string;
   contextIds?: string[];
@@ -60,19 +57,16 @@ export interface RagStreamOptions {
   endpoint?: string;
   extra?: Record<string, unknown>;
 }
-
 export interface InternalSSEState {
   currentEvent?: string;
   dataLines: string[];
 }
-
 function finalizeEvent(state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
   if (state.dataLines.length === 0) return;
   emit({ event: state.currentEvent, data: state.dataLines.join('\n') });
   state.currentEvent = undefined;
   state.dataLines = [];
 }
-
 /** Incremental SSE line processor (per complete line without trailing \n) */
 function processSSELine(line: string, state: InternalSSEState, emit: (evt: { event?: string; data: string }) => void) {
   if (line === '' || line === '\r') {
@@ -95,7 +89,6 @@ function processSSELine(line: string, state: InternalSSEState, emit: (evt: { eve
   // Unknown line type: treat as data fallback
   state.dataLines.push(line.trim());
 }
-
 export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?: string } | object> {
   const { onToken, onPatch, onDone, onError, signal, ...base } = opts;
   const localAbort = new AbortController();
@@ -103,9 +96,7 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
     if (signal.aborted) localAbort.abort();
     else signal.addEventListener('abort', () => localAbort.abort(), { once: true });
   }
-
   let traceparent: string | undefined;
-
   try {
     for await (const ev of streamRagGenerator({ ...base, signal: localAbort.signal })) {
       switch (ev.type) {
@@ -135,11 +126,10 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
         default: break;
       }
     }
-
     // generator completed without an explicit: 'done' event: treat as done
     onDone?.();
     return { traceparent };
-  } catch (e: unknown) {
+  } catch (e: any) {
     if (e instanceof Error && e.name === 'AbortError') {
       // silent abort
       return {};
@@ -148,18 +138,15 @@ export async function streamRag(opts: RagStreamOptions): Promise<{ traceparent?:
     return {};
   }
 }
-
 // ---------------------------------------------
 // Async generator + backoff + Svelte store API
 // ---------------------------------------------
-
 export interface RagStreamGeneratorOptions extends RagStreamOptions {
   maxRetries?: number; // default 0 (no reconnect)
   backoffMs?: number; // initial backoff (default 500ms)
   backoffFactor?: number; // exponential factor (default 2)
   retryStatusCodes?: number[]; // default [502,503,504]
 }
-
 export type RagStreamYield =
   | { type: 'token'; token: string }
   | { type: 'done' }
@@ -168,11 +155,9 @@ export type RagStreamYield =
   | { type: 'meta'; traceparent?: string; streamId?: string }
   | { type: 'patch'; patch: PatchPayload }
   | { type: 'summary'; summary: string; source: 'server' | 'local' };
-
 function isRetryableStatus(status: number, retryStatusCodes: number[]) {
   return retryStatusCodes.includes(status);
 }
-
 export async function* streamRagGenerator(
   opts: RagStreamGeneratorOptions
 ): AsyncGenerator<RagStreamYield, void, unknown> {
@@ -191,7 +176,7 @@ export async function* streamRagGenerator(
   }
   let attempt = 0;
   while (true) {
-    let doneEmitted = false;
+    let doneEmitted = $state(false);
     try {
       const body = JSON.stringify({
         query: base.query,
@@ -277,7 +262,7 @@ export async function* streamRagGenerator(
       while (queue.length) yield queue.shift()!;
       if (!doneEmitted) yield { type: 'done' };
       return;
-    } catch (err: unknown) {
+    } catch (err: any) {
       if (outerAbort.signal.aborted) return;
       const errorObj = err instanceof Error ? err : new Error(String(err));
       const canRetry = attempt < maxRetries;
@@ -291,13 +276,11 @@ export async function* streamRagGenerator(
     }
   }
 }
-
 export interface Metrics {
   reconnects: number;
   errors: number;
   startedAt?: number | undefined;
 }
-
 export interface RagStreamStore {
   tokens: Readable<string[]>;
   status: Readable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>;
@@ -317,7 +300,6 @@ export interface RagStreamStore {
   rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index
   undoLast: (count?: number) => void; // undo last N patches
 }
-
 export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
   persistence?: {
     enabled?: boolean;
@@ -337,7 +319,7 @@ export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
   patches?: {
     autoApply?: boolean; // apply patches to derived object
     mode?: 'auto' | 'json-patch' | 'merge'; // auto tries json-patch then merge
-    initialObject?: unknown; // seed object
+    initialObject?: any; // seed object
     keepInverses?: boolean; // maintain inverse operations (JSON Patch only)
     snapshotInterval?: number; // take full snapshot every N patches (default 20)
   };
@@ -347,10 +329,8 @@ export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
     minSentenceLength?: number; // default 20 chars
   };
 }
-
 export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamStore {
   // Clean, fixed implementation replacing the corrupted version.
-
   // Writable stores
   const tokensW = writable<string[]>([]);
   const statusW = writable<'idle' | 'connecting' | 'streaming' | 'reconnecting' | 'done' | 'error' | 'aborted'>('idle');
@@ -362,24 +342,20 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   const patchesW = writable<PatchPayload[]>([]);
   const appliedObjectW = writable<unknown>(initial?.patches?.initialObject ?? {});
   const summaryW = writable<string | undefined>(undefined);
-
   // Runtime state
   let abortCtrl: AbortController | null = null;
-  let running = false;
+  let running = $state(false);
   let persistenceKey: string | undefined;
   let pendingBatch: string[] = [];
   let batchTimer: ReturnType<typeof setTimeout> | null = null;
-
   // Batching & persistence options
   const batchingEnabled = initial?.batching?.enabled ?? false;
   const batchIntervalMs = initial?.batching?.intervalMs ?? 40;
   const maxBatch = initial?.batching?.maxBatchSize ?? 32;
-
   function getStorage(storage?: 'local' | 'session') {
     if (typeof window === 'undefined') return undefined;
     return storage === 'session' ? window.sessionStorage : window.localStorage;
   }
-
   function loadPersisted(query: string) {
     if (!initial?.persistence?.enabled) return [] as string[];
     persistenceKey = initial.persistence?.key || `rag:${query}`;
@@ -398,7 +374,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     }
     return [];
   }
-
   function persist(tokens: string[]) {
     if (!initial?.persistence?.enabled || !persistenceKey) return;
     const store = getStorage(initial.persistence?.storage);
@@ -415,7 +390,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       /* ignore */
     }
   }
-
   function flushBatch() {
     if (!pendingBatch.length) return;
     tokensW.update(existing => {
@@ -430,7 +404,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       batchTimer = null;
     }
   }
-
   function scheduleBatch() {
     if (!batchingEnabled) return;
     if (batchTimer) return;
@@ -442,17 +415,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       : batchIntervalMs;
     batchTimer = setTimeout(() => flushBatch(), interval);
   }
-
   function cancel() {
     abortCtrl?.abort();
-    running = false;
+    running = $state(false);
     statusW.set('aborted');
     flushBatch();
   }
-
   async function start(opts: Omit<RagStreamGeneratorOptions, 'signal'> & { signal?: AbortSignal }): Promise<void> {
     if (running) cancel();
-
     const merged: RagStreamGeneratorOptions = {
       ...initial,
       ...opts,
@@ -467,14 +437,12 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       retryStatusCodes: opts.retryStatusCodes ?? initial?.retryStatusCodes ?? [502, 503, 504],
       signal: undefined, // will wire local signal below
     } as RagStreamGeneratorOptions;
-
     abortCtrl = new AbortController();
     if (opts.signal) {
       if (opts.signal.aborted) abortCtrl.abort();
       else opts.signal.addEventListener('abort', () => abortCtrl?.abort(), { once: true });
     }
     merged.signal = abortCtrl.signal;
-
     // restore persisted tokens if any
     const restored = loadPersisted(merged.query);
     tokensW.set(restored);
@@ -486,7 +454,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     streamIdW.set(undefined);
     traceparentW.set(undefined);
     running = true;
-
     try {
       for await (const ev of streamRagGenerator(merged)) {
         switch (ev.type) {
@@ -517,7 +484,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
                 const prevObj = get(appliedObjectW) ?? initial?.patches?.initialObject ?? {};
                 const mode = initial.patches?.mode ?? 'auto';
                 const newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
-                let changed = false;
+                let changed = $state(false);
                 if ((mode === 'auto' || mode === 'json-patch') && Array.isArray(ev.patch)) {
                   changed = applyJsonPatch(newObj, ev.patch as JsonPatchOp[]);
                 } else if (mode === 'merge' && ev.patch && typeof ev.patch === 'object' && !Array.isArray(ev.patch)) {
@@ -543,31 +510,30 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), errors: (m?.errors ?? 0) + 1 }));
             if (ev.final) {
               statusW.set('error');
-              running = false;
+              running = $state(false);
               return;
             }
             break;
           case 'done':
             statusW.set('done');
             flushBatch();
-            running = false;
+            running = $state(false);
             return;
           default:
             // unknown - ignore
             break;
         }
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       if (!abortCtrl?.signal.aborted) {
         errorW.set(err instanceof Error ? err : new Error(String(err)));
         statusW.set('error');
       }
     } finally {
       flushBatch();
-      running = false;
+      running = $state(false);
     }
   }
-
   async function interrupt(mode: 'graceful' | 'force' = 'graceful') {
     if (!running) return;
     if (mode === 'graceful') {
@@ -589,7 +555,6 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     abortCtrl?.abort();
     statusW.set('aborted');
   }
-
   function clear() {
     tokensW.set([]);
     tokenCountW.set(0);
@@ -598,11 +563,9 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     summaryW.set(undefined);
     persist([]);
   }
-
   function resetMetrics() {
     metricsW.set({ reconnects: 0, errors: 0, startedAt: undefined });
   }
-
   function rebuildApplied(upToIndex?: number) {
     const allPatches = get(patchesW);
     const target = upToIndex != null ? allPatches.slice(0, upToIndex) : allPatches;
@@ -621,14 +584,12 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       // ignore
     }
   }
-
   function undoLast(count = 1) {
     const allPatches = get(patchesW);
     const newPatches = allPatches.slice(0, Math.max(0, allPatches.length - count));
     patchesW.set(newPatches);
     rebuildApplied();
   }
-
   return {
     tokens: tokensW,
     status: statusW,
@@ -649,16 +610,13 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     undoLast,
   };
 }
-
 /** Apply a minimal subset of JSON Patch operations */
 function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): boolean {
   if (!Array.isArray(patch)) return false;
-  let changed = false;
-
+  let changed = $state(false);
   for (const op of patch) {
     if (!op || typeof op.path !== 'string' || typeof op.op !== 'string') continue;
     const pathParts = op.path.split('/').slice(1).map(decodePointerToken);
-
     let parent: Record<string, unknown> | unknown[] = target;
     for (let i = 0; i < pathParts.length - 1; i++) {
       const key = pathParts[i];
@@ -668,7 +626,6 @@ function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): 
       parent = parent[key as keyof typeof parent] as Record<string, unknown> | unknown[];
     }
     const key = pathParts[pathParts.length - 1];
-
     try {
       switch (op.op) {
         case 'add':
@@ -692,15 +649,12 @@ function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): 
       // ignore malformed operations
     }
   }
-
   return changed;
 }
-
 /** Decodes JSON Pointer tokens per RFC 6901 */
 function decodePointerToken(token: string): string {
   return token.replace(/~1/g, '/').replace(/~0/g, '~');
 }
-
 /** Deep merge for nested objects */
 function deepMerge(target: Record<string, unknown>, src: Record<string, unknown>) {
   if (!src || typeof src !== 'object') return;

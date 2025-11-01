@@ -87,7 +87,7 @@ export type CriminalHistory =
       charge?: string;
       disposition?: string;
       jurisdiction?: string;
-      [key: string]: unknown;
+      [key: string]: any;
     }>
   | Record<string, unknown>
   | null;
@@ -134,8 +134,8 @@ export type EntityData = User | Case | Evidence | LegalDocument | Criminal | Per
 /* Error class */
 class CrudApiError extends Error {
   public status?: number;
-  public details?: unknown;
-  constructor(message: string, status?: number, details?: unknown) {
+  public details?: any;
+  constructor(message: string, status?: number, details?: any) {
     super(message);
     this.name = 'CrudApiError';
     this.status = status;
@@ -150,7 +150,7 @@ export class CrudClient {
   private async request<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     params?: URLSearchParams | null,
-    body?: unknown
+    body?: any
   ): Promise<CrudResponse<T>> {
     const url = params ? `${this.baseUrl}?${params.toString()}` : this.baseUrl;
     const options: RequestInit = {
@@ -179,7 +179,7 @@ export class CrudClient {
       }
 
       return dataObj as unknown as CrudResponse<T>;
-    } catch (err: unknown) {
+    } catch (err: any) {
       // ensure we never leak unknown typing; normalize message
       const e = err;
       if (e instanceof CrudApiError) throw e;
@@ -325,7 +325,7 @@ export class CrudClient {
     try {
       const params = new URLSearchParams({ action: 'health' });
       return this.request<unknown>('GET', params);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error ?? 'Health check failed');
       return {
         success: false,

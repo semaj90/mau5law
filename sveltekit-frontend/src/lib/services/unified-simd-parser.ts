@@ -25,7 +25,7 @@ export enum ParseMode {
   WEBGPU_ACCELERATED = 'webgpu_accelerated'
 }
 export interface UnifiedParseResult {
-  data: unknown;
+  data: any;
   backend_used: string;
   parse_time_ms: number;
   memory_bank: string;
@@ -46,7 +46,7 @@ type V1ParserType = {
 };
 
 type UltraParserType = {
-  fastParse: (s: string, opts?: unknown) => Promise<unknown> | unknown;
+  fastParse: (s: string, opts?: any) => Promise<unknown> | unknown;
   getPerformanceMetrics?: () => Record<string, unknown>;
   getCacheHitRate?: () => number;
   clearCache?: () => void;
@@ -56,14 +56,14 @@ type UltraParserType = {
 type LegalDocumentType = {
   entityCount?: number;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add this typed wrapper near the top (after imports)
 type RedisOptimizedShape = Partial<{
   getStats: () => Promise<Record<string, unknown>>;
   getCachedResult: (key: string) => Promise<unknown | null>;
-  cacheResult: (key: string, value: unknown, ttl?: number) => Promise<void>;
+  cacheResult: (key: string, value: any, ttl?: number) => Promise<void>;
   clearCachePattern: (pattern: string) => Promise<void>;
 }>;
 
@@ -105,7 +105,7 @@ export class UnifiedSIMDParser {
       (ultraJSONParser as unknown as UltraParserType) ??
       {
         // rename unused arg to `_opts` to satisfy lint rules
-        fastParse: async (s: string, _opts?: unknown) => JSON.parse(s),
+        fastParse: async (s: string, _opts?: any) => JSON.parse(s),
         getPerformanceMetrics: () => ({}),
         getCacheHitRate: () => 0,
         clearCache: () => {},
@@ -162,7 +162,7 @@ export class UnifiedSIMDParser {
         parse_time_ms: performance.now() - startTime,
       };
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(`Unified SIMD Parse Error: ${msg}`);
     }
@@ -225,14 +225,14 @@ export class UnifiedSIMDParser {
         parse_time_ms: 0, // Will be set by caller
         memory_bank: 'L1_WASM_LEGAL',
         legal_entities: typeof legalDoc.entityCount === 'number' ? legalDoc.entityCount : 0,
-        citations: Array.isArray((legalDoc as unknown as { citations?: unknown }).citations)
+        citations: Array.isArray((legalDoc as unknown as { citations?: any }).citations)
           ? (legalDoc as unknown as { citations: string[] }).citations
           : [],
         confidence: typeof legalDoc.confidence === 'number' ? legalDoc.confidence : undefined,
       };
     } catch (error) {
       // Fallback to V2 parser — handle both sync and async v2.parse safely
-      let data: unknown;
+      let data: any;
       try {
         data = await Promise.resolve(this.v2Parser.parse(jsonString));
       } catch {
@@ -662,7 +662,7 @@ export class UnifiedSIMDParser {
 
   // Add helper to normalize cached objects into a full UnifiedParseResult
   private normalizeCachedResult(
-    cached: unknown,
+    cached: any,
     backendSuffix: string = '_CACHED',
     defaultMemoryBank: string = 'REDIS_CACHE'
   ): UnifiedParseResult {

@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'X-Backend-Used': response.backend,
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     const e = ensureError(err);
     console.error('Chat error:', e);
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Determine numeric HTTP status if present on the thrown object
     let status = 500;
     if (typeof err === 'object' && err !== null) {
-      const maybeStatus = (err as { status?: unknown }).status;
+      const maybeStatus = (err as { status?: any }).status;
       if (typeof maybeStatus === 'number') {
         status = maybeStatus;
       }
@@ -159,12 +159,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Try to extract a public message (e.g. from SvelteKit HttpError body) without using `any`
     let publicMessage: string | undefined;
     if (typeof err === 'object' && err !== null) {
-      const maybeBody = (err as { body?: unknown }).body;
+      const maybeBody = (err as { body?: any }).body;
       if (
         maybeBody &&
         typeof maybeBody === 'object' &&
         'message' in maybeBody &&
-        typeof (maybeBody as { message?: unknown }).message === 'string'
+        typeof (maybeBody as { message?: any }).message === 'string'
       ) {
         publicMessage = (maybeBody as { message: string }).message;
       }
@@ -230,7 +230,7 @@ async function handleStreamingChat(params: {
         const finalChunk = `data: {"finished": true, "usage": ${JSON.stringify(result.usage)}}\n\n`;
         controller.enqueue(encoder.encode(finalChunk));
         controller.close();
-      } catch (err: unknown) {
+      } catch (err: any) {
         // Normalize unknown error and send a JSON-safe SSE error chunk
         const e = ensureError(err);
         const payload = { error: e.message ?? 'Unknown error' };
@@ -382,10 +382,10 @@ async function executeTensorRTChat(
   const trtEndpoint = process.env.TRTLLM_URL || 'http://localhost:8000';
 
   // --- Safe extractors to avoid `any` usage ---
-  function getField<T>(obj: unknown, path: string): T | undefined {
+  function getField<T>(obj: any, path: string): T | undefined {
     if (!obj || typeof obj !== 'object') return undefined;
     const parts = path.split('.');
-    let cur: unknown = obj;
+    let cur: any = obj;
     for (const part of parts) {
       if (!cur || typeof cur !== 'object') return undefined;
       cur = (cur as Record<string, unknown>)[part];
@@ -468,7 +468,7 @@ async function executeTensorRTChat(
       tokens,
       usage,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Bubble up a normalized error for the caller to handle; keep details in logs
     const e = ensureError(err);
     console.error('TensorRT chat error:', e);

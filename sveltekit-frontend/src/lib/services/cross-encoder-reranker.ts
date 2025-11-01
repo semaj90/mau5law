@@ -90,7 +90,7 @@ export class CrossEncoderReranker {
         };
         return rebuilt;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed to unknown
       console.error('[CrossEncoder] Reranking failed:', error instanceof Error ? error.message : String(error));
       if (this.config.fallbackEnabled) {
@@ -130,7 +130,7 @@ export class CrossEncoderReranker {
           },
         };
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed to unknown
       console.warn(
         '[CrossEncoder] Batch processing failed, using lexical fallback',
@@ -159,7 +159,7 @@ export class CrossEncoderReranker {
     try {
       const s = await this.scoreWithOllama(query, batch);
       if (s && s.length === batch.length) return s;
-    } catch (e: unknown) {
+    } catch (e: any) {
       // ignore and fallback
       console.warn('[CrossEncoder] Ollama scoring failed:', e instanceof Error ? e.message : String(e));
     }
@@ -168,7 +168,7 @@ export class CrossEncoderReranker {
     try {
       const s = await this.scoreWithExternalAPI(query, batch);
       if (s && s.length === batch.length) return s;
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.warn('[CrossEncoder] External API scoring failed:', e instanceof Error ? e.message : String(e));
     }
 
@@ -378,7 +378,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
       }))
     );
     return isValid;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[test] Cross-encoder reranking failed:', error instanceof Error ? error.message : String(error));
     return false;
   }

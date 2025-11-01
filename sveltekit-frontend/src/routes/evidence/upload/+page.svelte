@@ -92,12 +92,12 @@
 
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
   }
 
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const files = e.dataTransfer?.files;
     if (files) {
       for (let i = 0; i < files.length; i++) {
@@ -202,7 +202,7 @@
       }
     }
 
-    isUploading = false;
+    isUploading = $state(false);
   }
 
   function handleReset() {

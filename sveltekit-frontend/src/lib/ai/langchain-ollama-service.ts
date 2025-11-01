@@ -5,7 +5,6 @@ import { OllamaEmbeddings } from '@langchain/ollama';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { Document as LangChainDocument } from 'langchain/document';
-
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
@@ -32,7 +31,6 @@ export interface ProcessingResult {
     model: string;
   };
 }
-
 // New: strongly-typed source descriptor used in query results
 export interface QuerySource {
   content: string;
@@ -41,7 +39,6 @@ export interface QuerySource {
   // optional source identifier (e.g. chunkId or documentId)
   id?: string;
 }
-
 export interface QueryResult {
   answer: string;
   sources: QuerySource[]; // no more Array<any>
@@ -70,7 +67,7 @@ export class LangChainOllamaService {
   private embeddings!: OllamaEmbeddings;
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: MemoryVectorStore | null = null;
-  private isInitialized: boolean = false;
+  private isInitialized: boolean = $state(false);
   constructor(config: Partial<LangChainConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.initializeModels();
@@ -149,7 +146,7 @@ export class LangChainOllamaService {
       };
       console.log(`✅ Processed document: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Document processing failed:', error);
       throw new Error(`Document processing failed: ${message}`);
@@ -207,7 +204,7 @@ export class LangChainOllamaService {
       };
       console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length} sources`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Query processing failed:', error);
       throw new Error(`Query processing failed: ${message}`);
@@ -261,14 +258,14 @@ Answer:`;
     return Math.min(avgScore * documentCountFactor * questionLengthFactor, 0.95);
   }
   // Robust normalizer for unknown runtime response shapes (avoids using `any`)
-  private normalizeRawResponse(raw: unknown): string {
+  private normalizeRawResponse(raw: any): string {
     if (raw == null) return '';
     if (typeof raw === 'string') return raw;
     if (typeof raw === 'boolean' || typeof raw === 'number') return String(raw);
     if (typeof raw === 'object') {
       const obj = raw as Record<string, unknown>;
       // Common candidate properties from different runtimes
-      const tryString = (v: unknown): string | undefined => {
+      const tryString = (v: any): string | undefined => {
         if (typeof v === 'string') return v;
         if (typeof v === 'number' || typeof v === 'boolean') return String(v);
         return undefined;
@@ -311,7 +308,7 @@ Answer:`;
       const ok = typeof res === 'boolean' ? res : normalized.length > 0;
       this.isInitialized = Boolean(ok);
       return ok;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Connection test failed:', error);
       return false;
     }
@@ -324,12 +321,10 @@ Answer:`;
       anyStore?.docs?.length ?? // some implementations
       anyStore?.index?.length ?? // fallback
       0;
-
     const memoryVectorsLength =
       anyStore?.memoryVectors?.length ?? // used in original code (if present)
       anyStore?.vectors?.length ?? // possible alternate property
       0;
-
     return {
       config: this.config,
       vectorStoreDocCount,
@@ -341,7 +336,7 @@ Answer:`;
   // Clear vector store and reset
   reset() {
     this.vectorStore = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🔄 LangChain service reset');
   }
 }

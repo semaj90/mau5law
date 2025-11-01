@@ -32,7 +32,7 @@
   let searchQuery: string = '';
   let showDependencies: boolean = true;
   let showHealth: boolean = true;
-  let autoRefresh: boolean = false;
+  let autoRefresh: boolean = $state(false);
 
   const serviceTypeColors: Record<string, string> = {
     frontend: 'bg-red-500',
@@ -320,7 +320,7 @@
               <div>
                 <h3 class="font-semibold text-blue-400 mb-2">Capabilities</h3>
                 <div class="flex flex-wrap gap-2">
-                  {#each selectedService.capabilities as cap}
+                  {#each Array.isArray(selectedService.capabilities) ? selectedService.capabilities : [] as cap}
                     <span class="text-xs bg-gray-700 px-2 py-1 rounded">{cap}</span>
                   {/each}
                 </div>
@@ -332,7 +332,7 @@
               <div>
                 <h3 class="font-semibold text-blue-400 mb-2">Dependencies</h3>
                 <div class="space-y-1 text-sm">
-                  {#each selectedService.dependsOn as dep}
+                  {#each Array.isArray(selectedService.dependsOn) ? selectedService.dependsOn : [] as dep}
                     <p class="text-gray-300">→ {dep}</p>
                   {/each}
                 </div>
@@ -346,7 +346,7 @@
                 <div>
                   <h3 class="font-semibold text-blue-400 mb-2">Used By</h3>
                   <div class="space-y-1 text-sm">
-                    {#each dependents as dep}
+                    {#each Array.isArray(dependents) ? dependents : [] as dep}
                       <p class="text-gray-300">← {dep.id}</p>
                     {/each}
                   </div>

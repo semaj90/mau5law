@@ -75,7 +75,7 @@ https://svelte.dev/e/props_duplicate -->
         ],
       };
       messages = [...messages, aiResponse];
-      isLoading = false;
+      isLoading = $state(false);
     }, 1500);
   }
   function handleReferenceClick(reference: any) {
@@ -84,7 +84,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = false;
+    showCitationDialog = $state(false);
   }
   function clearMessages() {
     messages = [];
@@ -114,7 +114,7 @@ https://svelte.dev/e/props_duplicate -->
     </div>
     <!-- Messages -->
     <div class="messages-container">
-      {#each messages as message}
+      {#each Array.isArray(messages) ? messages : [] as message}
         <div class="message {message.role}">
           <div class="message-content">
             {message.content}
@@ -122,7 +122,7 @@ https://svelte.dev/e/props_duplicate -->
           {#if message.references && showReferences}
             <div class="references">
               <h4 class="references-title">References:</h4>
-              {#each message.references as reference}
+              {#each Array.isArray(message.references) ? message.references : [] as reference}
                 <button class="reference-item" onclick={() => handleReferenceClick(reference)}>
                   <Quote />
                   <span class="reference-title">{reference.title}</span>

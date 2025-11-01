@@ -2,7 +2,7 @@ export interface EmbeddingInsertInput {
   documentId?: string;
   content: string;
   embedding: number[] | string;
-  metadata?: unknown;
+  metadata?: any;
   model?: string;
   createdAt?: Date;
 }
@@ -18,7 +18,7 @@ export function prepareEmbeddingInsert(input: EmbeddingInsertInput) {
 }
 export interface SearchSessionInsertInput {
   query: string;
-  results?: unknown;
+  results?: any;
   searchType?: string;
   queryEmbedding?: number[];
   resultCount?: number;

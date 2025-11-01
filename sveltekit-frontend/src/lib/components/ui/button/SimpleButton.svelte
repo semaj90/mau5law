@@ -16,11 +16,9 @@
     children?: Snippet;
   } = $props();
 </script>
-
 <button class="btn {variant}" {type} {disabled} aria-label={ariaLabel}>
-  {@render children?.()}
+  <slot />
 </button>
-
 <style>
   .btn {
     padding: 0.5rem 1rem;
@@ -33,20 +31,16 @@
     align-items: center;
     justify-content: center;
   }
-
   .primary {
     background-color: #0b72ff;
     color: #fff;
   }
-
   .secondary {
     background-color: #e5e7eb;
     color: #111827;
   }
-
   .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 </style>
-

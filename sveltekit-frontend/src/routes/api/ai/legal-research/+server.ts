@@ -106,7 +106,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       summary: generateResearchSummary(results, topic),
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Legal research API error:', error);
     return json(
       {
@@ -120,7 +120,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 };
 
 // Added: type guard for rerank response shape
-function isRerankedObject(value: unknown): value is { rerankedResults: LegalResearchResult[] } {
+function isRerankedObject(value: any): value is { rerankedResults: LegalResearchResult[] } {
   // safe check without using `any`
   return (
     typeof value === 'object' &&
@@ -140,7 +140,7 @@ async function performLegalResearch(topic: string, options: LegalResearchOptions
     results.push(...caseResults, ...statuteResults, ...regulationResults);
     // Rerank results by relevance
     if (results.length > 0) {
-      const reranked: unknown = await rerankSearchResults(topic, results, {
+      const reranked: any = await rerankSearchResults(topic, results, {
         maxResults: options.maxResults,
       });
       // Some implementations return plain array, others an object with rerankedResults
@@ -150,7 +150,7 @@ async function performLegalResearch(topic: string, options: LegalResearchOptions
       }
       return results;
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Legal research failed, using fallback:', error instanceof Error ? error.message : String(error));
     // Fallback: generate mock results based on topic
     return generateMockResults(topic, options);
@@ -264,7 +264,7 @@ async function generateResearchAnalysis(
  • Monitoring of ongoing legal developments
  ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : ''}
  This research provides a foundation for further legal analysis and case preparation.`;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('AI analysis generation failed:', error instanceof Error ? error.message : String(error));
     return `Research Analysis for ${topic}:
  Based on the ${results.length} sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include:

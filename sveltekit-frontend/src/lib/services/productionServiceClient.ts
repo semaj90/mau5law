@@ -111,7 +111,7 @@ export class ProductionServiceClient {
    */
   async execute<T = unknown>(
     operation: string,
-    data?: unknown,
+    data?: any,
     options?: { timeout?: number; retries?: number; forceTier?: ServiceTier }
   ): Promise<T> {
     const route = this.routing[operation];
@@ -133,7 +133,7 @@ export class ProductionServiceClient {
         default:
           throw new Error(`Unsupported tier: ${tier}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       console.warn(`Operation ${operation} failed on ${tier}, attempting fallback`, errMsg);
       // Try fallback if available
@@ -148,7 +148,7 @@ export class ProductionServiceClient {
   /**
    * Execute HTTP/JSON request
    */
-  private async executeHTTP<T>(endpoint: string, operation: string, data?: unknown, timeout = 30000): Promise<T> {
+  private async executeHTTP<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
@@ -175,7 +175,7 @@ export class ProductionServiceClient {
   /**
    * Execute gRPC request (simulated via HTTP for now)
    */
-  private async executeGRPC<T>(endpoint: string, operation: string, data?: unknown, timeout = 30000): Promise<T> {
+  private async executeGRPC<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
@@ -202,7 +202,7 @@ export class ProductionServiceClient {
   /**
    * Execute QUIC request (simulated via HTTP/3 for now)
    */
-  private async executeQUIC<T>(endpoint: string, operation: string, data?: unknown, timeout = 30000): Promise<T> {
+  private async executeQUIC<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
@@ -230,9 +230,9 @@ export class ProductionServiceClient {
   /**
    * Execute WebSocket request
    */
-  private async executeWebSocket<T>(endpoint: string, operation: string, data?: unknown): Promise<T> {
+  private async executeWebSocket<T>(endpoint: string, operation: string, data?: any): Promise<T> {
     return new Promise((resolve, reject) => {
-      let settled = false;
+      let settled = $state(false);
       const ws = new WebSocket(endpoint);
       const timeout = setTimeout(() => {
         if (!settled) {
@@ -345,19 +345,19 @@ export const productionServiceClient = new ProductionServiceClient();
 
 // Convenience functions for common operations
 export const services = {
-  async queryRAG(query: string, context?: unknown): Promise<unknown> {
+  async queryRAG(query: string, context?: any): Promise<unknown> {
     return productionServiceClient.execute('rag.query', { query, context });
   },
-  async uploadFile(file: File, metadata?: unknown): Promise<unknown> {
+  async uploadFile(file: File, metadata?: any): Promise<unknown> {
     return productionServiceClient.execute('file.upload', { file, metadata });
   },
-  async processLegalDocument(document: unknown): Promise<unknown> {
+  async processLegalDocument(document: any): Promise<unknown> {
     return productionServiceClient.execute('legal.process', { document });
   },
   async summarizeContent(content: string): Promise<unknown> {
     return productionServiceClient.execute('ai.summary', { content });
   },
-  async triggerXStateEvent(eventType: string, data?: unknown): Promise<unknown> {
+  async triggerXStateEvent(eventType: string, data?: any): Promise<unknown> {
     return productionServiceClient.execute('xstate.event', { type: eventType, data });
   },
 };

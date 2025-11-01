@@ -4,14 +4,11 @@
     evidence = null,
     data = null
   }: Props = $props();
-
   import { invalidateAll } from "$app/navigation";
   import { superForm } from "sveltekit-superforms";
-
   // cast server data to any to avoid: 'unknown' access errors
   const serverData = data as any;
   const initialValues = evidence || serverData?.form || {};
-
   const { form, enhance, errors, submitting } = superForm(
     initialValues,
     {
@@ -22,22 +19,17 @@
       }
     }
   );
-
   // helper to update a field in the form store
   function updateField(key: string, value: any) {
     form.update((f: any) => ({ ...(f ?? {}), [key]: value }));
   }
 </script>
-
 <form method="POST" use:enhance class="space-y-4">
   {#if evidence}
     <input type="hidden" name="id" value={$form.id} />
   {/if}
-
   {#if serverData?.form?.message}
-    <div class="space-y-4">{serverData.form.message}</div>
-  {/if}
-
+    <div class="space-y-4">{serverData.form.message}{/if}
   <div>
     <!-- replaced Label component with native label -->
     <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
@@ -54,7 +46,6 @@
       <span class="text-sm text-red-600">{$errors.title}</span>
     {/if}
   </div>
-
   <div>
     <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
     <textarea
@@ -65,7 +56,6 @@
       oninput={(e: Event) => updateField('description', (e.target as HTMLTextAreaElement).value)}
     >{$form?.description ?? ''}</textarea>
   </div>
-
   <div>
     <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
     <select
@@ -83,12 +73,10 @@
       <option value="Audio">Audio</option>
       <option value="Other">Other</option>
     </select>
-
     {#if $errors.type}
       <span class="text-sm text-red-600">{$errors.type}</span>
     {/if}
   </div>
-
   <div>
     <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
     <input
@@ -103,7 +91,6 @@
       <span class="text-sm text-red-600">{$errors.url}</span>
     {/if}
   </div>
-
   <div>
     <label for="tags" class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
     <input
@@ -118,12 +105,10 @@
       <span class="text-sm text-red-600">{$errors.tags}</span>
     {/if}
   </div>
-
   <div class="space-y-4">
     <button class="bits-btn" type="button" onclick={() => { /* Cancel no-op for now */ }}>
       Cancel
     </button>
-
     <button class="bits-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
@@ -133,14 +118,12 @@
     </button>
   </div>
 </form>
-
 <style>
   /* @unocss-include */
   form {
     max-width: 500px;
     margin: 0 auto;
   }
-
   .select-trigger {
     display: inline-flex;
     align-items: center;
@@ -153,11 +136,9 @@
     min-width: 160px;
     transition: box-shadow 0.2s;
   }
-
   .select-trigger:focus {
     outline: none;
     box-shadow: 0 0 0 2px #6366f1;
   }
-
   /* Removed .select-menu rules (unused) to fix Svelte unused CSS warnings */
 </style>

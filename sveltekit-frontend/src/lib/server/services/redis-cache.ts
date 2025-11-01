@@ -41,7 +41,7 @@ export const RedisCacheService: IRedisCacheService = {
     return (res as unknown as string) ?? null;
   },
   // convenience method (serializes objects)
-  async set(key: string, value: unknown, ttl = 3600) {
+  async set(key: string, value: any, ttl = 3600) {
     if (!client) throw new Error('Redis client not initialized');
     const data = JSON.stringify(value);
     await client.set(key, data, 'EX', ttl);

@@ -149,7 +149,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       form,
       cases: userCases,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
@@ -382,7 +382,7 @@ export const actions: Actions = {
         success: true,
         evidence: inserted?.[0] ?? null,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Evidence upload failed:', error);
       return fail(500, {
         form: {

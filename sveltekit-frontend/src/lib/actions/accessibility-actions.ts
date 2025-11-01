@@ -475,7 +475,7 @@ export function liveRegion(
     options: {
       isOpen: boolean;
       onToggle: () => void;
-      onSelect: (_value: unknown) => void;
+      onSelect: (_value: any) => void;
     }
   ) => {
     const listboxId = a11yUtils.generateId('listbox');

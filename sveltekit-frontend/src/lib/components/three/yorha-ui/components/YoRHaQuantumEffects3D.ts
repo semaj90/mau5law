@@ -372,7 +372,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         }
         // Reset firing state
         if (node.firing && this.consciousnessTime - node.lastFired > 0.1) {
-          node.firing = false;
+          node.firing = $state(false);
         }
         // Decay activation
         node.activation *= 0.99;

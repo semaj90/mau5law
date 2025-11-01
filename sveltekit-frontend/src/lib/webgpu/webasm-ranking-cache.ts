@@ -282,7 +282,7 @@ class WebASMRankingCache {
       }
       const channel = new MessageChannel();
       channel.port1.onmessage = (event: MessageEvent) => {
-        const payload = event.data as { type?: string; data?: unknown; error?: string } | undefined;
+        const payload = event.data as { type?: string; data?: any; error?: string } | undefined;
         const type = payload?.type;
         const data = payload?.data;
         const error = payload?.error;
@@ -560,25 +560,25 @@ class WebASMRankingCache {
 export interface ServiceWorkerLike {
   state?: string;
   // Accept Transferable or MessagePort in the transfer array — avoid `any[]`
-  postMessage?(message: unknown, transfer?: ReadonlyArray<Transferable | MessagePort>): void;
+  postMessage?(message: any, transfer?: ReadonlyArray<Transferable | MessagePort>): void;
   addEventListener?(type: string, listener: EventListenerOrEventListenerObject): void;
   removeEventListener?(type: string, listener: EventListenerOrEventListenerObject): void;
   // allow other fields commonly present on ServiceWorker
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface SWRegistrationLike {
   installing?: ServiceWorkerLike | null;
   active?: ServiceWorkerLike | null;
   waiting?: ServiceWorkerLike | null;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface SWContainerLike {
   register(scriptURL: string, options?: { scope?: string }): Promise<SWRegistrationLike>;
   getRegistration?(scope?: string): Promise<SWRegistrationLike | undefined>;
   // keep generic index signature if needed
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Singleton instance with default configuration

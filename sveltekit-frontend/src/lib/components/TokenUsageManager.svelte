@@ -1,7 +1,7 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
 
   // Props (Svelte 5 runes) - use $props() instead of `export let`
   const {
@@ -336,8 +336,7 @@
             Approaching token limit ({Math.round(usagePercentage)}% used)
           {/if}
         </span>
-      </div>
-    {/if}
+      {/if}
     <!-- Token Breakdown -->
     {#if currentSession.messageCount > 0}
       <div class="grid grid-cols-3 gap-4 text-sm" data-testid="token-breakdown">
@@ -359,8 +358,7 @@
           </div>
           <div class="text-gray-500">Total</div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Session Stats -->
     {#if currentSession.messageCount > 0}
       <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
@@ -381,8 +379,7 @@
             {Math.round(currentSession.averageTokensPerMessage)} avg tokens
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Controls -->
     <div class="flex gap-2 flex-wrap">
       <Button
@@ -434,7 +431,7 @@
           <p class="text-gray-500 text-sm">No usage history yet</p>
         {:else}
           <div class="space-y-2">
-            {#each usageHistory.slice(0, 10) as entry}
+            {#each Array.isArray(usageHistory.slice(0, 10)) ? usageHistory.slice(0, 10) : [] as entry}
               <div class="flex justify-between items-start p-2 bg-gray-50 rounded text-sm" data-testid="history-entry">
                 <div class="flex-1">
                   <div class="font-medium truncate">{entry.prompt.slice(0, 50)}...</div>
@@ -448,10 +445,8 @@
                 </div>
               </div>
             {/each}
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Optimization Metrics -->
     {#if showOptimization && currentSession.messageCount > 2}
       <div class="p-3 border rounded-lg" data-testid="optimization-metrics">
@@ -473,10 +468,8 @@
           </div>
         </div>
         {#if autoOptimize}
-          <div class="mt-2 text-xs text-green-600" data-testid="context-compressed">✓ Context optimization enabled</div>
-        {/if}
-      </div>
-    {/if}
+          <div class="mt-2 text-xs text-green-600" data-testid="context-compressed">✓ Context optimization enabled{/if}
+      {/if}
   </div>
 </div>
 

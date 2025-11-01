@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     submission_notes: string;
   }
   let { formData = $bindable() }: { formData: FormData } = $props();
-  let { allFormData = $bindable() }: { allFormData: unknown } = $props();
+  let { allFormData = $bindable() }: { allFormData: any } = $props();
   let isSubmitting = $state(false);
   let submissionProgress = writable(0);
   let currentSubmissionStep = writable('');
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Submission failed:', error);
       alert('Submission failed. Please try again.');
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
   function handlePrevious() {
@@ -195,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Quality Criteria Breakdown -->
       <div class="space-y-3">
-        {#each qualityCriteria as criterion}
+        {#each Array.isArray(qualityCriteria) ? qualityCriteria : [] as criterion}
           {@const score = $sectionScores[criterion.id] || 0}
           <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
             <div class="flex items-center space-x-3">

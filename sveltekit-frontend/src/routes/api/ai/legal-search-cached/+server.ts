@@ -140,7 +140,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     // Get or generate embedding
     let embedding: number[];
-    let embeddingFromCache = false;
+    let embeddingFromCache = $state(false);
     const cachedEmbedding = await getEmbeddingCache(embeddingCacheKey, 'ollama');
     if (cachedEmbedding?.entry) {
       embedding = cachedEmbedding.entry.embedding;
@@ -185,7 +185,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const cacheTTL = getLegalCacheTTL(searchType);
     await redisService.set(cacheKey, response, cacheTTL);
     return cachedJson(response, 'VECTOR_SEARCH');
-  } catch (error: unknown) {
+  } catch (error: any) {
     const totalTime = performance.now() - startTime;
     return json(
       {
@@ -257,7 +257,7 @@ export const GET: RequestHandler = async ({ url }) => {
           message: `Cleared ${allKeys.length} legal search cache entries`,
           timestamp: new Date().toISOString(),
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Change any to unknown
         return json(
           {

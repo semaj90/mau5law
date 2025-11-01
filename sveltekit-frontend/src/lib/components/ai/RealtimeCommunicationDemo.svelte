@@ -13,19 +13,19 @@ https://svelte.dev/e/js_parse_error -->
     type RealtimeMessage,
     type StreamingResponse,
   } from '$lib/services/realtime-communication';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Failed to initialize real-time communication', error);
     } finally {
-      isInitializing = false;
+      isInitializing = $state(false);
     }
   }
   /**
@@ -180,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
    */
   function disconnect() {
     realtimeComm.disconnect();
-    isInitialized = false;
+    isInitialized = $state(false);
     if (metricsInterval) {
       clearInterval(metricsInterval);
     }
@@ -321,8 +321,7 @@ Disconnect
             <strong>Primary Channel:</strong>
             {status.primaryChannel}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   {#if isInitialized}
@@ -449,7 +448,7 @@ Run Performance Test
       </div>
       <div class="yorha-panel-content">
         <div class="message-log max-h-96 overflow-y-auto space-y-2">
-          {#each messageList.slice.reverse() as message}
+          {#each Array.isArray(messageList.slice.reverse()) ? messageList.slice.reverse() : [] as message}
             <div class="message-item p-3 border border-gray-200 rounded-lg">
               <div class="flex items-start justify-between">
                 <div class="flex-1">
@@ -480,8 +479,7 @@ Run Performance Test
           {#if messageList.length === 0}
             <div class="text-center text-gray-500 py-8">
               No messages yet. Send a test message to see it appear here.
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
@@ -511,8 +509,7 @@ Run Performance Test
                 {#if response.chunks.length > 0}
                   <div class="bg-gray-50 p-2 rounded text-xs font-mono max-h-32 overflow-y-auto">
                     {response.chunks.join('')}
-                  </div>
-                {/if}
+                  {/if}
                 {#if response.metadata}
                   <div class="mt-2 text-xs text-gray-500">
                     {#if response.metadata.totalTokens}
@@ -524,14 +521,12 @@ Run Performance Test
                     {#if response.metadata.confidence}
                       Confidence: {(response.metadata.confidence * 100).toFixed(1)}%
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </div>
             {/each}
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
 </div>
 <style>
   .realtime-demo {

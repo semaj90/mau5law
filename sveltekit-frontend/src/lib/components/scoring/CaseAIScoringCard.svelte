@@ -44,7 +44,7 @@
     } catch (e) {
       error = e.messag;
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function getScoreColor(score: number): string {
@@ -63,7 +63,6 @@
     if (autoScore) calculateScore();
   });
 </script>
-
 <div class="case-scoring-nier-bits-card bg-slate-900 border border-slate-700 rounded-lg p-4">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold text-white">Case AI Scoring</h3>
@@ -170,10 +169,8 @@
       >
         Calculate AI Score
       </Button.Root>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .case-scoring-card {
     min-height: 280px;

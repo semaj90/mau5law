@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-
   let {
     className = '',
     variant = 'default' as: 'default' | 'evidence' | 'legal' | 'nes' | 'yorha',
@@ -19,7 +18,6 @@
     loading?: boolean;
     [key: string]: any;
   } = $props();
-
   // Compute the final class string reactively
   let cardClass = $derived(
     cn(
@@ -45,23 +43,19 @@
     )
   );
 </script>
-
 {#if interactive}
   <div {...restProps} class={cardClass} role="button" tabindex="0">
     {#if loading}
       <div
         class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-      ></div>
-    {/if}
-    {@render children?.()}
+      >{/if}
+    <slot />
   </div>
 {:else}
   <div {...restProps} class={cardClass}>
     {#if loading}
       <div
         class="neural-sprite-loading absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-      ></div>
-    {/if}
-    {@render children?.()}
-  </div>
-{/if}
+      >{/if}
+    <slot />
+  {/if}

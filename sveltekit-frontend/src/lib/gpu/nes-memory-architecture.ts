@@ -1,5 +1,4 @@
 import { globalGPUManager } from './global-gpu-manager';
-
 /**
  * MemorySlot interface represents a slot in memory with an id, embedding, timestamp,
  * usage count, and optional metadata.
@@ -11,7 +10,6 @@ export interface MemorySlot {
   usageCount: number;
   metadata?: Record<string, unknown>;
 }
-
 /**
  * NESMemoryRegion interface represents a region of NES memory with a name, size,
  * buffer, and view.
@@ -22,7 +20,6 @@ export interface NESMemoryRegion {
   buffer: SharedArrayBuffer | ArrayBuffer;
   view: Uint8Array;
 }
-
 /**
  * NESMemoryArchitecture — single clean implementation combining
  * slot-based memory and named memory regions (CHR-ROM, VRAM, OAM, PALETTE).
@@ -30,7 +27,6 @@ export interface NESMemoryRegion {
 export class NESMemoryArchitecture {
   private slots: MemorySlot[] = [];
   private regions: Map<string, NESMemoryRegion> = new Map();
-
   /**
    * Constructor for NESMemoryArchitecture.
    * @param capacity - Maximum number of slots.
@@ -43,9 +39,7 @@ export class NESMemoryArchitecture {
     this.defineRegion('OAM', 256);
     this.defineRegion('PALETTE', 32);
   }
-
   // --- Slot API -----------------------------------------------------------
-
   /**
    * Insert a new slot into memory.
    * @param slot - The slot to insert.
@@ -55,7 +49,6 @@ export class NESMemoryArchitecture {
     if (this.slots.length >= this.capacity) this.evictSlots();
     this.slots.push({ ...slot, timestamp: Date.now(), usageCount: 0 });
   }
-
   /**
    * Batch insert multiple slots into memory.
    * @param slots - The slots to insert.
@@ -63,7 +56,6 @@ export class NESMemoryArchitecture {
   public batchInsert(slots: Array<Omit<MemorySlot, 'timestamp' | 'usageCount'>>) {
     for (const s of slots) this.insertSlot(s);
   }
-
   /**
    * Get all slots in memory.
    * @returns An array of all slots.
@@ -71,7 +63,6 @@ export class NESMemoryArchitecture {
   public getAllSlots() {
     return this.slots.slice();
   }
-
   /**
    * Evict slots from memory using a least-recently-used (LRU) strategy.
    * @returns The evicted slots.
@@ -81,9 +72,7 @@ export class NESMemoryArchitecture {
     const removeCount = Math.max(1, Math.floor(this.capacity * 0.05));
     return this.slots.splice(0, removeCount);
   }
-
   // --- Region API ---------------------------------------------------------
-
   /**
    * Create a buffer for a memory region. Falls back to ArrayBuffer if SharedArrayBuffer is not available.
    * @param size - The size of the buffer.
@@ -98,7 +87,6 @@ export class NESMemoryArchitecture {
     }
     return new ArrayBuffer(size);
   }
-
   /**
    * Define a new memory region.
    * @param name - The name of the region.
@@ -109,7 +97,6 @@ export class NESMemoryArchitecture {
     const view = new Uint8Array(buffer);
     this.regions.set(name, { name, size, buffer, view });
   }
-
   /**
    * Write data to a memory region.
    * @param name - The name of the region.
@@ -121,7 +108,6 @@ export class NESMemoryArchitecture {
     if (!r) throw new Error(`Region ${name} not found`);
     r.view.set(data, offset);
   }
-
   /**
    * Read data from a memory region.
    * @param name - The name of the region.
@@ -134,7 +120,6 @@ export class NESMemoryArchitecture {
     if (!r) throw new Error(`Region ${name} not found`);
     return r.view.slice(offset, offset + length);
   }
-
   /**
    * Get statistics about memory regions.
    * @returns An object mapping region names to their sizes.
@@ -144,9 +129,7 @@ export class NESMemoryArchitecture {
     this.regions.forEach((v, k) => (stats[k] = v.size));
     return stats;
   }
-
   // --- Utility ------------------------------------------------------------
-
   /**
    * Clear all slots and reset memory regions to zero.
    */
@@ -154,7 +137,6 @@ export class NESMemoryArchitecture {
     this.slots.length = 0;
     this.regions.forEach(r => r.view.fill(0));
   }
-
   /**
    * GPU-assisted helper (best-effort): quantize CHR-ROM via globalGPUManager
    * @param width - The width for quantization.
@@ -179,8 +161,6 @@ export class NESMemoryArchitecture {
     }
   }
 }
-
 // single default instance for quick usage
 export const nesMemory = new NESMemoryArchitecture();
-
 export default NESMemoryArchitecture;

@@ -12,7 +12,7 @@ export type Pattern = {
   description?: string;
   template?: string;
 }
-let isInitialized = false;
+let isInitialized = $state(false);
 let readyPromise: Promise<void> | null = null;
 let patterns: Pattern[] = [];
 let mockLatency = 50;

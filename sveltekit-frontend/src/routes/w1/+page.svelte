@@ -95,7 +95,7 @@
           typewriterIndex++;
         } else {
           clearInterval(typeInterval);
-          isTyping = false;
+          isTyping = $state(false);
         }
       },
       30 + Math.random() * 20
@@ -125,7 +125,7 @@
     // Start workflow
     workflowAnswers.what = quickInput;
     workflowStep = 1;
-    showQuickInput = false;
+    showQuickInput = $state(false);
     startTypewriter(
       `I understand: "${quickInput}". Let me help you build this case systematically. ${prosecutionWorkflow[1].question}`
     );
@@ -233,7 +233,7 @@
         <div class="dashboard-sections">
           <div class="recent-cases">
             <h3>🔥 Priority Cases</h3>
-            {#each cases.filter(c => c.priority === 'urgent' || c.priority === 'high') as cse}
+            {#each Array.isArray(cases.filter(c => c.priority === 'urgent' || c.priority === 'high')) ? cases.filter(c => c.priority === 'urgent' || c.priority === 'high') : [] as cse}
               <div class="case-preview">
                 <div class="case-header">
                   <h4>{cse.title}</h4>
@@ -270,7 +270,7 @@
       <div class="cases-view" transition:fade={{ duration: 300 }}>
         <h2>📂 Case Management</h2>
         <div class="cases-grid">
-          {#each cases as cse}
+          {#each Array.isArray(cases) ? cases : [] as cse}
             <div class="case-nier-bits-card">
               <div class="case-header">
                 <h3>{cse.title}</h3>
@@ -427,7 +427,7 @@
           <button
             class="nes-btn"
             onclick={() => {
-              showQuickInput = false;
+              showQuickInput = $state(false);
               quickInput = '';
             }}
           >

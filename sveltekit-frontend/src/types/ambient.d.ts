@@ -40,69 +40,69 @@ declare module '$env/dynamic/private' {
 declare module 'fabric';
 // Redis service shape used across the codebase (trimmed to commonly used methods)
 declare interface SimpleRedis {
-  connect: (...args: unknown[]) => Promise<unknown>;
-  disconnect: (...args: unknown[]) => Promise<unknown>;
-  ping: (...args: unknown[]) => Promise<unknown>;
-  quit: (...args: unknown[]) => Promise<unknown>;
-  xAdd: (...args: unknown[]) => Promise<unknown>;
-  xadd: (...args: unknown[]) => Promise<unknown>;
-  keys: (...args: unknown[]) => Promise<string[]>;
-  info: (...args: unknown[]) => Promise<unknown>;
-  status: unknown;
-  dbsize: (...args: unknown[]) => Promise<number>;
-  get: (...args: unknown[]) => Promise<unknown>;
-  set: (...args: unknown[]) => Promise<unknown>;
+  connect: (...args: any[]) => Promise<unknown>;
+  disconnect: (...args: any[]) => Promise<unknown>;
+  ping: (...args: any[]) => Promise<unknown>;
+  quit: (...args: any[]) => Promise<unknown>;
+  xAdd: (...args: any[]) => Promise<unknown>;
+  xadd: (...args: any[]) => Promise<unknown>;
+  keys: (...args: any[]) => Promise<string[]>;
+  info: (...args: any[]) => Promise<unknown>;
+  status: any;
+  dbsize: (...args: any[]) => Promise<number>;
+  get: (...args: any[]) => Promise<unknown>;
+  set: (...args: any[]) => Promise<unknown>;
   /** Set key with expiry (seconds) */
   setex: (_key: string, seconds: number, value: string) => Promise<unknown>;
   /** Push value(s) to list (left) */
-  lpush: (_key: string, ...values: unknown[]) => Promise<number | unknown>;
+  lpush: (_key: string, ...values: any[]) => Promise<number | unknown>;
   /** Range query for list */
   lrange: (_key: string, start: number, stop: number) => Promise<unknown[]>;
-  del: (...args: unknown[]) => Promise<unknown>;
+  del: (...args: any[]) => Promise<unknown>;
   publish: (channel: string, message: string) => Promise<number> | unknown;
-  subscribe: (...args: unknown[]) => Promise<unknown>;
-  psubscribe: (...args: unknown[]) => Promise<unknown>;
-  on: (_event: string, cb: (...args: unknown[]) => void) => void;
-  pipeline: (...args: unknown[]) => {
-    lpush?: (...a: unknown[]) => unknown;
-    ltrim?: (...a: unknown[]) => unknown;
-    expire?: (...a: unknown[]) => unknown;
-    exec?: (...a: unknown[]) => unknown;
+  subscribe: (...args: any[]) => Promise<unknown>;
+  psubscribe: (...args: any[]) => Promise<unknown>;
+  on: (_event: string, cb: (...args: any[]) => void) => void;
+  pipeline: (...args: any[]) => {
+    lpush?: (...a: any[]) => unknown;
+    ltrim?: (...a: any[]) => unknown;
+    expire?: (...a: any[]) => unknown;
+    exec?: (...a: any[]) => unknown;
   };
   /** Redis Streams helpers used by some workers */
   xInfoStream: (stream: string) => Promise<unknown>;
-  xRevRange: (stream: string, start: string, end: string, opts?: unknown) => Promise<unknown>;
+  xRevRange: (stream: string, start: string, end: string, opts?: any) => Promise<unknown>;
   /** Initialize client (custom wrapper) */
-  initialize: (...args: unknown[]) => Promise<unknown> | void;
-  memory?: (...args: unknown[]) => Promise<unknown>;
-  type?: (...args: unknown[]) => Promise<string>;
+  initialize: (...args: any[]) => Promise<unknown> | void;
+  memory?: (...args: any[]) => Promise<unknown>;
+  type?: (...args: any[]) => Promise<string>;
 }
 declare module 'redis' {
-  const Redis: { createClient?: (...args: unknown[]) => SimpleRedis } & unknown;
+  const Redis: { createClient?: (...args: any[]) => SimpleRedis } & unknown;
   export = Redis;
 }
 // Stubs for local server/db modules (export what's referenced in errors)
 declare module '$lib/server/db/client.js' {
   /** Minimal typed exports for common query usage in the codebase */
-  export const query: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>>;
+  export const query: <T = unknown>(sql: string, params?: any[]) => Promise<DBQueryResult<T>>;
   export const ensureEvidenceTable: () => Promise<void> | void;
   const client: DBClient;
   export default client;
 }
 declare module '$lib/server/db/drizzle' {
-  const enhanced_db: unknown;
+  const enhanced_db: any;
   export { enhanced_db };
   export default enhanced_db;
 }
 declare module '$lib/server/db/index' {
-  export const isPostgreSQL: unknown;
-  export const users: unknown;
+  export const isPostgreSQL: any;
+  export const users: any;
   export default {};
 }
 declare module '$lib/server/database' {
-  export const documents: unknown;
-  export const embeddings: unknown;
-  export const searchSessions: unknown;
+  export const documents: any;
+  export const embeddings: any;
+  export const searchSessions: any;
   export default {};
 }
 declare module '$lib/server/redis-service' {
@@ -110,13 +110,13 @@ declare module '$lib/server/redis-service' {
   export default redisService;
 }
 declare module '$lib/services/nomic-embedding-service' {
-  const nomicEmbeddings: unknown;
+  const nomicEmbeddings: any;
   export { nomicEmbeddings };
   export default nomicEmbeddings;
 }
 // Generic catch-all for other internal modules that are still in flux
 declare module '$lib/*' {
-  const whatever: unknown;
+  const whatever: any;
   export default whatever;
 }
 // Common shapes referenced across the codebase
@@ -127,8 +127,8 @@ declare interface RowList<T = unknown[]> {
   data?: T;
   /** Optional count for paginated results */
   count?: number;
-  error?: unknown;
-  [k: string]: unknown;
+  error?: any;
+  [k: string]: any;
 }
 /** Standardized minimal DB query result returned by many adapters */
 declare interface DBQueryResult<T = unknown> {
@@ -136,80 +136,80 @@ declare interface DBQueryResult<T = unknown> {
   rowCount?: number;
   /** Some drivers include the raw command/result */
   command?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 /** Minimal DB client shape used by server code */
 declare interface DBClient {
-  query?: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>>;
-  execute?: (sql: string, params?: unknown[]) => Promise<unknown>;
+  query?: <T = unknown>(sql: string, params?: any[]) => Promise<DBQueryResult<T>>;
+  execute?: (sql: string, params?: any[]) => Promise<unknown>;
   close?: () => Promise<void> | void;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 /** Utility type used by some generic helpers that expect a `context` property */
-declare type WithContext<T = unknown> = T & { context?: unknown; value?: unknown };
+declare type WithContext<T = unknown> = T & { context?: any; value?: any };
 declare interface VectorSearchResult {
   id?: string;
   excerpt?: string;
   created_at?: string;
   createdAt?: string;
   title?: string;
-  content?: unknown;
+  content?: any;
   type?: string;
-  metadata?: { [k: string]: unknown } | unknown;
-  [k: string]: unknown;
+  metadata?: { [k: string]: any } | unknown;
+  [k: string]: any;
 }
 declare interface SearchResult {
   id?: string;
   title?: string;
   type?: string;
-  content?: unknown;
+  content?: any;
   score?: number;
   similarity?: number;
-  metadata?: { [k: string]: unknown } | unknown;
-  highlights?: unknown;
+  metadata?: { [k: string]: any } | unknown;
+  highlights?: any;
   createdAt?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 declare interface EmbeddingResult {
   vector?: number[];
-  payload?: unknown;
+  payload?: any;
   relevance?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 declare interface ProcessingResult {
-  entities?: unknown[];
-  citations?: unknown[];
-  vectorAnalysis?: unknown;
-  [k: string]: unknown;
+  entities?: any[];
+  citations?: any[];
+  vectorAnalysis?: any;
+  [k: string]: any;
 }
 declare interface LegalCitation {
   title?: string;
   location?: string;
   url?: string;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 declare interface BitsUICompatibleData {
-  [k: string]: unknown;
+  [k: string]: any;
 }
 declare interface OrchestrationResult {
-  [k: string]: unknown;
+  [k: string]: any;
 }
 declare interface EnhancedOllamaService {
-  extractLegalEntities?: (...args: unknown[]) => Promise<unknown> | unknown;
-  classifyLegalDocument?: (...args: unknown[]) => Promise<unknown> | unknown;
-  generateEmbeddings?: (...args: unknown[]) => Promise<unknown> | unknown;
-  generateLegalEmbeddings?: (...args: unknown[]) => Promise<unknown> | unknown;
-  generate?: (...args: unknown[]) => Promise<unknown> | unknown;
-  healthCheck?: (...args: unknown[]) => Promise<unknown> | unknown;
-  [k: string]: unknown;
+  extractLegalEntities?: (...args: any[]) => Promise<unknown> | unknown;
+  classifyLegalDocument?: (...args: any[]) => Promise<unknown> | unknown;
+  generateEmbeddings?: (...args: any[]) => Promise<unknown> | unknown;
+  generateLegalEmbeddings?: (...args: any[]) => Promise<unknown> | unknown;
+  generate?: (...args: any[]) => Promise<unknown> | unknown;
+  healthCheck?: (...args: any[]) => Promise<unknown> | unknown;
+  [k: string]: any;
 }
 declare interface LibraryDocsResponse {
   content?: string;
-  metadata?: { library?: string; topic?: unknown; tokenCount?: number } | unknown;
+  metadata?: { library?: string; topic?: any; tokenCount?: number } | unknown;
   snippets?: Array<unknown> | unknown;
   /** Some callers expect an object with `message` or `code` */
   error?: { message?: string; code?: string } | unknown;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 /** Convenience alias for the common RowList-of-records usage */
 declare type RowListOfRecords = RowList<Record<string, unknown>[]>;

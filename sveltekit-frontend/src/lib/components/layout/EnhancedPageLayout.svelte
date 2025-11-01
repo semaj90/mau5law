@@ -5,18 +5,15 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   // use the canonical, case-stable module name
-  // import * as Card from '$lib/components/ui/CardComponent';
-
+  // import * as Card from '$lib/components/ui/CardComponent.svelte'';
   interface Props {
     title: string;
     description?: string;
     showGpuStatus?: boolean;
     showWelcome?: boolean;
-    children: Snippet;
+     Snippet;
   }
-
   let { title, description = '', showGpuStatus = false, showWelcome = false, children }: Props = $props();
-
   let pageLoaded = $state(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
@@ -24,7 +21,6 @@ https://svelte.dev/e/expected_token -->
     memory: '7.0GB/8.0GB',
     temperature: '51°C',
   });
-
   $effect(() => {
     (async () => {
       pageLoaded = true;
@@ -50,14 +46,12 @@ https://svelte.dev/e/expected_token -->
     })();
   });
 </script>
-
 <svelte:head>
   <title>{title} - Legal AI Platform</title>
   {#if description}
     <meta name="description" content={description} />
   {/if}
 </svelte:head>
-
 <div class="enhanced-page-layout">
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
@@ -84,9 +78,7 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
@@ -115,15 +107,12 @@ https://svelte.dev/e/expected_token -->
           </div>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Page Content -->
   <main class="page-content" class:with-overlays={showGpuStatus || showWelcome}>
     {@render children()}
   </main>
 </div>
-
 <style>
   .enhanced-page-layout {
     position: relative;
@@ -188,7 +177,7 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
   }
   .animate-slide-in {
-    animation: slideInRight 0.6s ease-out;
+    animation: slideInRight: 0.6s ease-out;
   }
   @keyframes slideInRight {
     from {
@@ -232,7 +221,6 @@ https://svelte.dev/e/expected_token -->
     color: #00ff41;
     margin: 0;
   }
-
   .card-description {
     margin: 6px 0 0;
     font-size: 12px;
@@ -256,4 +244,3 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </style>
-

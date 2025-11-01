@@ -9,9 +9,9 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 // Add a narrow type for event.locals to avoid `any`
 type LocalsWithDecodedBody = {
-  decodedBody?: unknown;
+  decodedBody?: any;
   // allow other existing locals to remain present without enumerating them
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export type EncodingFormat = 'cbor' | 'msgpack' | 'json';
@@ -84,7 +84,7 @@ export class AdvancedBinaryEncodingService {
     return u8.slice().buffer;
   }
 
-  detectOptimalFormat(data: unknown, context?: LegalWorkflowContext): EncodingFormat {
+  detectOptimalFormat(data: any, context?: LegalWorkflowContext): EncodingFormat {
     const jsonStr = JSON.stringify(data);
     const size = new TextEncoder().encode(jsonStr).length;
     // Context-aware format selection for legal workflows
@@ -116,7 +116,7 @@ export class AdvancedBinaryEncodingService {
    * Advanced encoding with caching and performance optimization
    */
   async encode(
-    data: unknown,
+    data: any,
     format?: EncodingFormat,
     context?: LegalWorkflowContext
   ): Promise<{ encoded: ArrayBuffer | string; format: EncodingFormat; metrics: EncodingMetrics; cacheKey: string }> {
@@ -193,7 +193,7 @@ export class AdvancedBinaryEncodingService {
       }
 
       return { encoded, format: targetFormat, metrics, cacheKey };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       if (this.options.fallback && targetFormat !== 'json') {
         console.warn(`Encoding failed for ${targetFormat}, falling back to JSON:`, err);
@@ -209,9 +209,9 @@ export class AdvancedBinaryEncodingService {
   async decode(
     data: ArrayBuffer | string,
     format: EncodingFormat
-  ): Promise<{ decoded: unknown; metrics: EncodingMetrics }> {
+  ): Promise<{ decoded: any; metrics: EncodingMetrics }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
-    let decoded: unknown;
+    let decoded: any;
     try {
       switch (format) {
         case 'cbor': {
@@ -258,7 +258,7 @@ export class AdvancedBinaryEncodingService {
         this.metrics.set(`decode_${format}_${Date.now()}`, metrics);
       }
       return { decoded, metrics };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       if (this.options.fallback && format !== 'json') {
         console.warn(`Decoding failed for ${format}, attempting JSON fallback:`, err);
@@ -486,7 +486,7 @@ export class AdvancedBinaryEncodingService {
     this.cache.clear();
   }
 
-  private generateCacheKey(data: unknown, format: EncodingFormat): string {
+  private generateCacheKey(data: any, format: EncodingFormat): string {
     const jsonStr = JSON.stringify(data);
     const hash = this.hashString(jsonStr);
     return `${format}_${hash}`;
@@ -521,7 +521,7 @@ export class AdvancedBinaryEncodingService {
     }
   }
 
-  private hasBinaryData(data: unknown): boolean {
+  private hasBinaryData(data: any): boolean {
     return this.traverseObject(data, value => {
       if (value instanceof ArrayBuffer || value instanceof Uint8Array) return true;
       if (typeof value === 'string') {
@@ -531,7 +531,7 @@ export class AdvancedBinaryEncodingService {
     });
   }
 
-  private isStructuredData(data: unknown): boolean {
+  private isStructuredData(data: any): boolean {
     if (typeof data !== 'object' || data === null) return false;
     if (Array.isArray(data)) {
       // ensure items are non-null objects
@@ -543,7 +543,7 @@ export class AdvancedBinaryEncodingService {
     return keys.length > 3 && keys.some(key => typeof obj[key] === 'object' && obj[key] !== null);
   }
 
-  private traverseObject(obj: unknown, condition: (_value: unknown) => boolean): boolean {
+  private traverseObject(obj: any, condition: (_value: any) => boolean): boolean {
     if (condition(obj)) return true;
     if (typeof obj === 'object' && obj !== null) {
       for (const value of Object.values(obj as Record<string, unknown>)) {
@@ -592,11 +592,11 @@ export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
 });
 
 // Helper functions
-export async function encodeCBOR(data: unknown): Promise<ArrayBuffer> {
+export async function encodeCBOR(data: any): Promise<ArrayBuffer> {
   const { encoded } = await binaryEncoder.encode(data, 'cbor');
   return encoded as ArrayBuffer;
 }
-export async function encodeMessagePack(data: unknown): Promise<ArrayBuffer> {
+export async function encodeMessagePack(data: any): Promise<ArrayBuffer> {
   const { encoded } = await binaryEncoder.encode(data, 'msgpack');
   return encoded as ArrayBuffer;
 }
@@ -611,7 +611,7 @@ export async function decodeMessagePack(data: ArrayBuffer): Promise<unknown> {
 
 // Legal workflow-specific helpers
 export async function encodeLegalDocument(
-  data: unknown,
+  data: any,
   context: LegalWorkflowContext
 ): Promise<
   {

@@ -20,7 +20,7 @@ export interface EvidenceAIAnalysis {
   analyzedAt?: string; // ISO date string
   version?: number;
   // Allow additional properties for backward compatibility
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface AnalysisMetrics {
   contentLength?: number;
@@ -171,7 +171,7 @@ export interface Evidence {
   mimeType: string | null;
   hash: string | null;
   tags: string[];
-  chainOfCustody: unknown[];
+  chainOfCustody: any[];
   collectedAt: Date | null;
   collectedBy: string | null;
   location: string | null;
@@ -326,7 +326,7 @@ export interface Citation {
     caseId?: string;
     evidenceId?: string;
     userId?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   metadata?: {
     author?: string;
@@ -447,7 +447,7 @@ export interface NamedEntity {
   confidence: number;
   startIndex?: number;
   endIndex?: number;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 export interface Topic {
   name: string;
@@ -676,9 +676,9 @@ export interface ClusterMetrics {
     port: number;
     timestamp: string;
   };
-  events: unknown[];
-  workers: unknown[];
-  deferredQueue: unknown[];
+  events: any[];
+  workers: any[];
+  deferredQueue: any[];
 } // <-- added missing closing brace
 
 // Performance Metrics Interface
@@ -714,7 +714,7 @@ export interface EnhancedRAGRequest extends VectorSearchRequest {
   maxTokens?: number;
 }
 export interface EnhancedRAGResponse extends APIResponse {
-  results: unknown[];
+  results: any[];
   answer?: string;
   totalResults: number;
   processingTime: number;
@@ -817,7 +817,7 @@ export interface ModuleRequest {
   preserveSession?: boolean;
 }
 export interface ModuleResponse extends APIResponse {
-  modules?: unknown[];
+  modules?: any[];
   activeModule?: string;
   switchTime?: number;
   memoryUsage?: string;
@@ -833,7 +833,7 @@ export interface RecommendationRequest {
   sessionId?: string;
 }
 export interface RecommendationResponse extends APIResponse {
-  recommendations?: unknown[];
+  recommendations?: any[];
   context?: string;
   lastActivity?: string;
   corrected?: string;
@@ -866,7 +866,7 @@ export interface SystemHealthResponse extends APIResponse {
 }
 // Service Discovery with Protocol Information
 export interface ServiceDiscoveryResponse extends APIResponse {
-  services: unknown[];
+  services: any[];
   total: number;
   active: number;
   experimental: number;
@@ -885,7 +885,7 @@ export interface ServiceDiscoveryResponse extends APIResponse {
 // NATS Messaging Integration Types
 export interface NATSMessageRequest {
   subject: string;
-  data: unknown;
+  data: any;
   headers?: Record<string, string>;
   timeout?: number;
   correlationId?: string;
@@ -905,7 +905,7 @@ export interface NATSSubscriptionRequest {
   deliverPolicy?: 'all' | 'last' | 'new';
 }
 export interface NATSSubscriptionResponse extends APIResponse {
-  subscriptions: unknown[];
+  subscriptions: any[];
   connectionStatus: 'connected' | 'disconnected' | 'reconnecting';
 }
 // Request Context for SvelteKit Integration
@@ -940,7 +940,7 @@ export interface ProtocolRouter {
   healthCheck(service: keyof ServiceEndpoints): Promise<HealthCheckResult>;
   getOptimalProtocol(service: keyof ServiceEndpoints): 'http' | 'grpc' | 'quic' | 'websocket';
   getServiceConfig<T extends keyof ServiceEndpoints>(service: T): ServiceEndpoints[T];
-  getAllServices(): unknown[];
+  getAllServices(): any[];
 }
 
 // Utility Type for API Route Handlers with Enhanced Context
@@ -962,7 +962,7 @@ export interface MultiProtocolRequestOptions extends Omit<RequestInit, 'cache' |
 // Dialog and Command types for UI components
 export interface DialogDataProvider {
   endpoint?: string;
-  data?: unknown;
+  data?: any;
   loading?: boolean;
   error?: string | null;
   lastFetch?: number;
@@ -977,10 +977,10 @@ export interface CommandSearchRequest {
 }
 export interface CommandSearchResponse {
   results: {
-    cases: unknown[];
-    evidence: unknown[];
-    documents: unknown[];
-    people: unknown[];
+    cases: any[];
+    evidence: any[];
+    documents: any[];
+    people: any[];
   };
   success?: boolean;
   meta?: Record<string, unknown>;
@@ -1000,7 +1000,7 @@ export interface ErrorResponse {
   success: false;
   error: {
     message: string;
-    details?: unknown; // Can be ZodError details, or a simple string
+    details?: any; // Can be ZodError details, or a simple string
   };
   timestamp: string;
 }

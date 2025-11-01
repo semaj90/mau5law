@@ -12,7 +12,7 @@ import { closeRabbitMQ } from '$lib/server/rabbitmq';
 import { emitCacheEvent } from '$lib/server/cache/cache-events';
 // Use postgres-js client from db-shim for Drizzle
 const db = drizzle(pgClient as any);
-let shuttingDown = false;
+let shuttingDown = $state(false);
 // Wire globalLoki to Redis client if available
 (async () => {
   try {
@@ -91,7 +91,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
-    let inserted = false;
+    let inserted = $state(false);
     await db
       .insert(document_chunks)
       .values({

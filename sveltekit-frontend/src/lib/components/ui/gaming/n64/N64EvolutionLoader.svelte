@@ -471,8 +471,7 @@
         Auto Evolution
       </label>
     </div>
-  </div>
-{/if}
+  {/if}
 <style>
   .n64-evolution-container {
     display: flex;
@@ -509,7 +508,7 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #FFD700, #FF6B35);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .controls {
     display: flex;

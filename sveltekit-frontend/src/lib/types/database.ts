@@ -54,7 +54,7 @@ export interface CaseMetadata {
   caseNumber?: string;
   datesFiled?: string[];
   notes?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
@@ -89,7 +89,7 @@ export interface EvidenceAnalysis {
   keyTerms?: string[];
   sentiment?: number;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface EvidenceMetadata {
@@ -100,7 +100,7 @@ export interface EvidenceMetadata {
   processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
   ocrResult?: string | null;
   vectorSearchScore?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ChainOfCustodyRecord {
@@ -134,7 +134,7 @@ export interface ChatMessageMetadata {
   confidence?: number;
   topics?: string[];
   sentiment?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface AnalysisResult {

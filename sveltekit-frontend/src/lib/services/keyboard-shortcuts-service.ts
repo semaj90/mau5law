@@ -39,7 +39,7 @@ export interface ShortcutCategory {
 class KeyboardShortcutsService {
   private shortcuts = new Map<string, KeyboardShortcut>();
   private activeContext: string[] = ['global'];
-  private isListening = false;
+  private isListening = $state(false);
   private remoteEndpoint: string | null = null;
   // Stores
   public shortcutsStore: Writable<KeyboardShortcut[]> = writable([]);
@@ -221,7 +221,7 @@ class KeyboardShortcutsService {
     this.updateStores();
   }
   public registerShortcut(shortcut: KeyboardShortcut) {
-    shortcut.enabled = shortcut.enabled !== false; // Default to enabled
+    shortcut.enabled = shortcut.enabled !== $state(false); // Default to enabled
     this.shortcuts.set(shortcut.id, shortcut);
     this.updateStores();
   }
@@ -487,7 +487,7 @@ class KeyboardShortcutsService {
   public disableShortcut(id,: string), {
     const shortcut = this.shortcuts.get(id);
     if (shortcut) {
-      shortcut.enabled = false;
+      shortcut.enabled = $state(false);
       this.updateStores();
     }
   }

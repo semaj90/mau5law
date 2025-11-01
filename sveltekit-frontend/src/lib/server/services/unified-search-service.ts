@@ -21,7 +21,7 @@ export interface UnifiedDocument {
     extractedEntities?: string[];
     keyTerms?: string[];
     neo4jNodeId?: string;
-    shaderData?: unknown;
+    shaderData?: any;
   };
   embeddings?: {
     chunks?: Array<unknown>;
@@ -33,7 +33,7 @@ export interface UnifiedDocument {
     semantic_hash?: string;
   };
   cached?: {
-    search_results?: unknown[];
+    search_results?: any[];
     related_documents?: string[];
     recommendations?: Recommendation[]; // changed from any[]
     last_accessed?: string;
@@ -48,7 +48,7 @@ export interface Recommendation {
   confidence: number;
   reasoning?: string;
   // allow extra fields added in future while keeping a strong base type
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Ingest result type: explicit success / failure shapes instead of `any`
@@ -90,7 +90,7 @@ export interface SearchResult {
 // Add a small explicit type for the postgres-js client subset we call
 type PostgresJsClient = {
   // unsafe executes raw SQL and returns rows; keep result typed as array of records
-  unsafe: (query: string, params?: unknown[]) => Promise<Array<Record<string, unknown>>>;
+  unsafe: (query: string, params?: any[]) => Promise<Array<Record<string, unknown>>>;
 };
 
 // Add a typed shape for rows returned from postgres-js so we avoid `any`
@@ -104,12 +104,12 @@ type DbDocumentRow = {
   metadata?: string | Record<string, unknown> | null;
   created_at?: string | null;
   updated_at?: string | null;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 class UnifiedSearchService {
   // removed unused `db` and `pool` to eliminate: "declared but never read" & `any` issues
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // typed pg client reference to avoid any casts
   private pg: PostgresJsClient;
 
@@ -625,27 +625,27 @@ class UnifiedSearchService {
 
     // Strongly-typed view over the parsed metadata (runtime-checked below)
     type ParsedMetaView = {
-      source?: unknown;
-      userId?: unknown;
-      tags?: unknown;
-      category?: unknown;
-      confidenceLevel?: unknown;
-      priority?: unknown;
-      extractedEntities?: unknown;
-      keyTerms?: unknown;
-      neo4jNodeId?: unknown;
-      shaderData?: unknown;
-      semantic_hash?: unknown;
-      [k: string]: unknown;
+      source?: any;
+      userId?: any;
+      tags?: any;
+      category?: any;
+      confidenceLevel?: any;
+      priority?: any;
+      extractedEntities?: any;
+      keyTerms?: any;
+      neo4jNodeId?: any;
+      shaderData?: any;
+      semantic_hash?: any;
+      [k: string]: any;
     };
     const pm = parsedMeta as ParsedMetaView;
 
     // Runtime-safe extraction/coercion helpers (minimal)
-    const safeString = (v: unknown): string | undefined => (typeof v === 'string' ? v : undefined);
-    const safeStringOrDefault = (v: unknown, d: string) => (typeof v === 'string' ? v : d);
-    const safeStringArray = (v: unknown) =>
+    const safeString = (v: any): string | undefined => (typeof v === 'string' ? v : undefined);
+    const safeStringOrDefault = (v: any, d: string) => (typeof v === 'string' ? v : d);
+    const safeStringArray = (v: any) =>
       Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
-    const safeNumberFromUnknown = (v: unknown, d = 0) => {
+    const safeNumberFromUnknown = (v: any, d = 0) => {
       if (typeof v === 'number') return v;
       if (typeof v === 'string' && v.trim() !== '' && !Number.isNaN(Number(v))) return Number(v);
       return d;
@@ -701,7 +701,7 @@ class UnifiedSearchService {
   }
 
   // Normalize arbitrary input into the allowed category union to satisfy TS.
-  private normalizeCategory(value: unknown): 'contract' | 'evidence' | 'brief' | 'citation' | 'other' {
+  private normalizeCategory(value: any): 'contract' | 'evidence' | 'brief' | 'citation' | 'other' {
     const allowed = new Set(['contract', 'evidence', 'brief', 'citation', 'other']);
     if (typeof value === 'string' && allowed.has(value)) {
       return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';

@@ -28,17 +28,17 @@ export interface ServiceResponse<T = unknown> {
 export type RAGContext = Record<string, unknown>;
 export type UploadMetadata = Record<string, unknown>;
 export interface VectorSearchResult {
-  documents: unknown[];
+  documents: any[];
   total?: number;
 }
 export interface GPUProcessResult {
-  result?: unknown;
+  result?: any;
   details?: Record<string, unknown>;
 }
 export type SummarizeOptions = Record<string, unknown>;
 export interface SummarizeResult {
   summary: string;
-  notes?: unknown;
+  notes?: any;
 }
 export type ClusterParams = Record<string, unknown>;
 
@@ -358,7 +358,7 @@ export class CompleteServiceRouter {
       this.healthCache.set(serviceName, { status: isHealthy, timestamp: now });
       service.status = isHealthy ? 'running' : 'stopped';
       return isHealthy;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn(`Health check failed for ${serviceName}:`, error);
       this.healthCache.set(serviceName, { status: false, timestamp: now });
       if (service) service.status = 'stopped';
@@ -458,7 +458,7 @@ export class CompleteServiceRouter {
         service: serviceName,
         protocol: 'HTTP',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -526,7 +526,7 @@ export class CompleteServiceRouter {
   /**
    * GPU processing with multiple CUDA services
    */
-  async processWithGPU(data: unknown, operation: string): Promise<ServiceResponse<GPUProcessResult>> {
+  async processWithGPU(data: any, operation: string): Promise<ServiceResponse<GPUProcessResult>> {
     const payload = { data, operation, timestamp: new Date().toISOString() };
     return this.routeRequest(
       'cuda-ai-service',
@@ -621,7 +621,7 @@ export const serviceRouter = new CompleteServiceRouter();
 export const queryEnhancedRAG = (q: string, c?: RAGContext) => serviceRouter.queryEnhancedRAG(q, c);
 export const uploadFile = (f: File, m?: UploadMetadata) => serviceRouter.uploadFile(f, m);
 export const vectorSearch = (q: string, limit?: number) => serviceRouter.vectorSearch(q, limit);
-export const processWithGPU = (d: unknown, op: string) => serviceRouter.processWithGPU(d, op);
+export const processWithGPU = (d: any, op: string) => serviceRouter.processWithGPU(d, op);
 export const summarizeDocument = (c: string, o?: SummarizeOptions) => serviceRouter.summarizeDocument(c, o);
 export const clusterOperation = (op: string, p?: ClusterParams) => serviceRouter.clusterOperation(op, p);
 export const healthCheckAll = () => serviceRouter.healthCheckAll();

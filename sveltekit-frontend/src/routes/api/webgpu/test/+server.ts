@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.',
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ WebGPU test error:', error);
     return json(
       {
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async () => {
       note: 'This endpoint provides server-side simulation of WebGPU operations. Actual WebGPU testing must be performed in browser context. WASM operations can benefit from CPU SIMD acceleration.',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher, getContext } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-  import Button from './Button.svelte';
+  import { Button } from './Button.svelte';
   import * as Select from './Select.svelte';
-  import Tooltip from './Tooltip.svelte';
+  import { Tooltip } from './Tooltip.svelte';
   interface ToolbarAction {
     id: string;
     label: string;
@@ -185,7 +185,6 @@
     }
   }
 </script>
-
 <svelte:window onkeydown={handleKeydown} />
 <div
   class={`
@@ -252,7 +251,7 @@
                 transition={fly}
                 transitionConfig={{ y: -10, duration: 200 }}
               >
-                {#each action.options || [] as option}
+                {#each Array.isArray(action.options || []) ? action.options || [] : [] as option}
                   <Select.Item
                     value={option.value}
                     class={`
@@ -313,8 +312,7 @@
           ${themeClasses[theme].group}
           bg-current opacity-30
         `}
-        ></div>
-      {/if}
+        >{/if}
     </div>
   {/each}
   <!-- Custom Actions -->
@@ -338,20 +336,17 @@
           {showLabels ? action.label : ''}
         </Button>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Spacer -->
   <div class="flex-1"></div>
   <!-- Right-side Actions -->
   <div class="flex items-center space-x-2">
     {#if theme === 'yorha'}
-      <div class="text-xs text-green-400/50 font-mono">LEGAL_AI_SYSTEM_ACTIVE</div>
-    {/if}
+      <div class="text-xs text-green-400/50 font-mono">LEGAL_AI_SYSTEM_ACTIVE{/if}
     <Button variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('help')}>❓</Button>
     <Button variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('settings')}>⚙️</Button>
   </div>
 </div>
-
 <style>
   /* Ensure toolbar scrolls horizontally on mobile */
   .overflow-x-auto {

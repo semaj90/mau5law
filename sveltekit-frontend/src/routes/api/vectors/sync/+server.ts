@@ -35,7 +35,7 @@ try {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  let body: unknown;
+  let body: any;
   let jobId: string | undefined;
   try {
     body = await request.json();
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .update(vectorJobs)
       .set({ status: 'processing', progress: 50, startedAt: new Date() })
       .where(eq(vectorJobs.jobId, jobId));
-    let result: unknown;
+    let result: any;
     if (event === 'delete') {
       // Handle deletion
       result = await handleVectorDeletion(ownerType as string, ownerId as string);
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .where(eq(vectorJobs.jobId, jobId));
     console.log(`✅ Vector sync completed: ${jobId}`);
     return json({ success: true, jobId, result, message: `Vector ${event} completed successfully` });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Vector sync error:', error);
     // Update job status to failed
     if (jobId) {
@@ -169,7 +169,7 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
   }
 
   // Upsert to Qdrant using service helper or HTTP REST fallback
-  let qdrantResult: unknown;
+  let qdrantResult: any;
   if (typeof qdrantExt.upsertVector === 'function') {
     qdrantResult = await qdrantExt.upsertVector(ownerId, pointVector, payload, collectionName);
   } else {
@@ -259,7 +259,7 @@ export const GET: RequestHandler = async () => {
     const [pgTest] = await db.select().from(vectors).limit(1);
 
     // Check Redis connection (ioredis)
-    let redisOk = false;
+    let redisOk = $state(false);
     try {
       type RedisLike = { ping?: () => Promise<string> };
       const pong = await (redis as unknown as RedisLike | null)?.ping?.();
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       { success: false, error: error instanceof Error ? error.message : 'Health check failed' },
       { status: 500 }

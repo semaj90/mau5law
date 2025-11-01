@@ -21,7 +21,7 @@ interface MinimalRedis {
   quit?: () => Promise<void>;
   get: (key: string) => Promise<string | null>;
   set: (key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
 }
 
 // --- New: Runtime-config interface & defaults ---
@@ -158,7 +158,7 @@ class RedisGPUChatOptimizationService {
 
       // Attach runtime event handlers if the instance exposes `on`
       if (this.redis.on) {
-        this.redis.on('error', (err: unknown) => console.error('Redis Client Error', err));
+        this.redis.on('error', (err: any) => console.error('Redis Client Error', err));
         this.redis.on('connect', () => console.log('📡 Redis client socket connected.'));
         this.redis.on('ready', () => console.log('📡 Redis client ready to accept commands.'));
       }

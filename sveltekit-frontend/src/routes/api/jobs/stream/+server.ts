@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       }, 30000);
       // Handle client disconnect
       request.signal.addEventListener('abort', () => {
-        isAlive = false;
+        isAlive = $state(false);
         clearInterval(updateInterval);
         clearInterval(heartbeatInterval);
         // Clean up subscribers
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       });
       // Return cleanup function
       return () => {
-        isAlive = false;
+        isAlive = $state(false);
         clearInterval(updateInterval);
         clearInterval(heartbeatInterval);
         subscribers.forEach(unsubscribe => unsubscribe());

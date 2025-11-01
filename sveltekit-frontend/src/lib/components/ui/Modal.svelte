@@ -22,7 +22,7 @@
   }: Props & { children?: Snippet; footer?: Snippet } = $props();
   let modalElement = $state<HTMLDivElement>();
   function handleClose() {
-    open = false;
+    open = $state(false);
     onclose?.();
   }
   function handleKeydown(_event: KeyboardEvent) {
@@ -46,7 +46,6 @@
   });
   let sizeClasses = $derived.by(() => ({ sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size]));
 </script>
-
 {#if open}
   <div
     bind:this={modalElement}
@@ -76,22 +75,18 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
-      {/if}
+        {/if}
       <div class="modal-body">
         {#if children}
-          {@render children?.()}
+          <slot />
         {/if}
       </div>
       {#if footer}
         <div class="modal-footer">
           {@render footer?.()}
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
   .modal-backdrop {
@@ -158,4 +153,3 @@
     gap: 0.5rem;
   }
 </style>
-

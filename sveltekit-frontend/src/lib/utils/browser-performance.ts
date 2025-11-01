@@ -78,7 +78,7 @@ export class BrowserPerformanceMonitor {
       this.performanceObserver.observe({
         entryTypes: ['paint', 'layout-shift'],
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any to unknown
       console.warn('Performance monitoring not available:', error);
     }

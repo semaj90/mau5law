@@ -16,7 +16,6 @@
   const hasError = $derived(!!errors && errors.length > 0);
   const ariaDescribed = $derived([describedBy, hasError ? errorId : undefined].filter(Boolean).join(' ') || undefined);
 </script>
-
 <div class={inline ? 'flex flex-col gap-1' : ''}>
   {#if control}
     {#key control}
@@ -32,7 +31,6 @@
 </div>
 <!-- Hint snippet rendering -->
 {@render hint?.({ inputId, fieldName: name })}
-
 <!-- Usage example:
 <FormField
   name="email"
@@ -53,10 +51,9 @@
   {/snippet}
 </FormField>
 -->
-
 <style>
   .control-wrapper {
-    position relative;
+    position: relative;
   }
   .default-input {
     width: 100%;

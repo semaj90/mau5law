@@ -92,7 +92,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Failed to load persisted states:', error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 
@@ -107,7 +107,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to restore state:', error);
       alert('Failed to restore state');
     } finally {
-      restoring = false;
+      restoring = $state(false);
     }
   }
 
@@ -211,7 +211,7 @@ https://svelte.dev/e/expected_token -->
             </button>
           </div>
           <div class="states-container">
-            {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
+            {#each Array.isArray(persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())) ? persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) : [] as state}
               <div
                 class="state-card {selectedState?.id === state.id ? 'selected' : ''}"
                 role="button"

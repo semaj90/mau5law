@@ -11,7 +11,7 @@ Usage:
 <CudaSearch bind:results {onSearchComplete} />
 -->
 <script lang="ts">
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface SearchResult {
@@ -54,7 +54,7 @@ Usage:
 
   // State
   let query = '';
-  let isSearching = false;
+  let isSearching = $state(false);
   let searchTime = 0;
   let cudaCapabilities: CudaCapabilities | null = null;
   let errorMessage = '';
@@ -224,7 +224,7 @@ Usage:
       errorMessage = error instanceof Error ? error.message : 'Search failed';
       results = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
 
@@ -340,8 +340,7 @@ Usage:
       {#if errorMessage}
         <div class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {errorMessage}
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
   <!-- Performance Metrics -->
@@ -356,14 +355,12 @@ Usage:
             <div class="text-center">
               <div class="text-2xl font-bold text-blue-600">{formatMetric(searchTime, 'ms')}</div>
               <div class="text-sm text-gray-600">Search Time</div>
-            </div>
-          {/if}
+            {/if}
           {#if gpuMetrics.utilization > 0}
             <div class="text-center">
               <div class="text-2xl font-bold text-green-600">{formatMetric(gpuMetrics.utilization, '%')}</div>
               <div class="text-sm text-gray-600">GPU Utilization</div>
-            </div>
-          {/if}
+            {/if}
           {#if cudaCapabilities}
             <div class="text-center">
               <div class="text-2xl font-bold text-purple-600">{cudaCapabilities.cuda_cores}</div>
@@ -372,8 +369,7 @@ Usage:
             <div class="text-center">
               <div class="text-2xl font-bold text-orange-600">{cudaCapabilities.vram_gb}GB</div>
               <div class="text-sm text-gray-600">VRAM</div>
-            </div>
-          {/if}
+            {/if}
         </div>
       </CardContent>
     </Card>
@@ -435,8 +431,7 @@ Usage:
                   {#if result.performance.gpu_utilization > 0}
                     <span>GPU: {result.performance.gpu_utilization.toFixed(1)}%</span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
             </div>
           {/each}
         </div>

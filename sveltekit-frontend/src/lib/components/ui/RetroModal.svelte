@@ -4,7 +4,6 @@
 -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-
   interface Props {
     open?: boolean;
     title?: string;
@@ -13,18 +12,14 @@
     children?: Snippet;
     footer?: Snippet;
   }
-
   // incoming props
   let { open = false, title = 'Dialog', onClose, trigger, children, footer }: Props = $props();
-
   // local reactive state to drive the modal
   let isOpen = $state(open);
-
   // keep local state in sync with prop
   $effect(() => {
     isOpen = open;
   });
-
   // call onClose when modal becomes closed
   $effect(() => {
     if (!isOpen && open && onClose) {
@@ -32,23 +27,19 @@
       onClose();
     }
   });
-
   function openModal() {
     isOpen = true;
   }
-
   function closeModal() {
-    isOpen = false;
+    isOpen = $state(false);
     // ensure parent callback is invoked
     onClose?.();
   }
-
   function overlayClick(e: MouseEvent) {
     // close when clicking the overlay (but not when clicking inside modal)
     if (e.target === e.currentTarget) closeModal();
   }
 </script>
-
 <!-- Trigger (wrap in a button to open modal) -->
 {#if trigger}
   <button class="nes-btn is-primary" type="button" onclick={openModal} aria-haspopup="dialog" aria-expanded={isOpen}>
@@ -57,7 +48,6 @@
 {:else}
   <!-- no trigger snippet provided — show nothing (consumer can control open via prop) -->
 {/if}
-
 <!-- Modal -->
 {#if isOpen}
   <div class="retro-modal-overlay fixed inset-0 z-50 flex items-center justify-center" onclick={overlayClick} role="presentation" tabindex="-1">
@@ -72,28 +62,21 @@
         <div class="nes-text is-primary font-bold text-lg">{title}</div>
         <button class="nes-btn is-error" style="padding:4px 8px;" type="button" onclick={closeModal} aria-label="Close">×</button>
       </div>
-
       <div class="modal-content px-4 py-2">
-        {@render children?.()}
+        <slot />
       </div>
-
       {#if footer}
         <div class="modal-footer mt-4 pt-4 border-t-2 border-gray-300 px-4 pb-4">
           {@render footer?.()}
-        </div>
-      {/if}
+        {/if}
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
-
   /* remove invalid selectors that caused compiler errors and keep valid rules */
   :global(.nes-dialog) {
     animation: modalSlideIn 0.3s ease-out;
   }
-
   @keyframes modalSlideIn {
     from {
       opacity: 0;
@@ -104,18 +87,14 @@
       transform: translateY(0);
     }
   }
-
   .retro-modal-overlay {
     background: rgba(0, 0, 0, 0.5);
   }
-
   .modal-content {
     max-height: 400px;
     overflow-y: auto;
   }
-
   .modal-content :global(.nes-field) {
     margin-bottom: 1rem;
   }
 </style>
-

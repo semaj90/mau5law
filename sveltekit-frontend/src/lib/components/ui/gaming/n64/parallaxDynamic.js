@@ -6,7 +6,7 @@
 // Performance tracking
 let frameCount = 0;
 let lastFrameTime = 0;
-let isAnimating = false;
+let isAnimating = $state(false);
 let rafId = null;
 // Configuration
 const DEFAULT_CONFIG = {
@@ -276,7 +276,7 @@ function startAnimationLoop() {
  * Stop the animation loop
  */
 function stopAnimationLoop() {
-  isAnimating = false;
+  isAnimating = $state(false);
   if (rafId) {
     cancelAnimationFrame(rafId);
     rafId = null;

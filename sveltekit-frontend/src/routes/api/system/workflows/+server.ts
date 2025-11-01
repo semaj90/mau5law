@@ -9,7 +9,7 @@ export interface WorkflowTest {
   status: 'passed' | 'failed' | 'skipped';
   duration?: number;
   error?: string;
-  details?: unknown;
+  details?: any;
 }
 export interface WorkflowValidationResponse {
   timestamp: string;
@@ -42,7 +42,7 @@ async function runTest(name: string, description: string, testFn: () => Promise<
       duration: Date.now() - startTime,
       details: result,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       name,
       description,
@@ -309,7 +309,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Cache-Control': 'public, max-age=300', // 5-minute cache
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown workflow validation error';
     productionLogger.error(`Workflow validation failed: ${msg}`);
     const response = {
@@ -375,7 +375,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

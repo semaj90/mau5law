@@ -32,7 +32,7 @@ export interface AILLMOutput {
 export interface BasicVectorResult {
   id: string;
   content?: string;
-  payload?: { content?: string; [k: string]: unknown };
+  payload?: { content?: string; [k: string]: any };
   score?: number;
   relevance?: number;
   source?: string;
@@ -647,7 +647,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // Add a small runtime-normalizer to avoid casting to `any`
-function normalizeLLMResponse(resp: unknown): { content: string; tokens: number } {
+function normalizeLLMResponse(resp: any): { content: string; tokens: number } {
   if (!resp || typeof resp !== 'object') {
     return { content: String(resp ?? ''), tokens: 0 };
   }

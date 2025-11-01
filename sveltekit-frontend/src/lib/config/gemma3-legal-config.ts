@@ -1,5 +1,4 @@
 import { getOllamaEndpoint } from '$lib/server/helpers/ollama';
-
 /**
  * Gemma3 Legal Model Configuration
  * Optimized for RTX 3060 Ti and legal document analysis
@@ -227,7 +226,6 @@ const OLLAMA_BASE = (() => {
   // Fallback to environment variable or an empty string if neither is available.
   return process.env.OLLAMA_URL || '';
 })();
-
 export const API_ENDPOINTS = {
   ollama: {
     base_url: OLLAMA_BASE,

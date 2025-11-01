@@ -31,7 +31,7 @@ interface IORedisError extends Error {
 }
 
 // Type guard to check if an error is an IORedisError
-function isIORedisError(error: unknown): error is IORedisError {
+function isIORedisError(error: any): error is IORedisError {
   return (
     error instanceof Error &&
     ((error as IORedisError).code !== undefined ||
@@ -47,7 +47,7 @@ const REDIS_CONNECT_TIMEOUT = 5000;
 // Utility function to wait for Redis to be ready
 async function waitForRedisReady(redis: Redis, timeoutMs: number): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    let settled = false;
+    let settled = $state(false);
     const timeoutId = setTimeout(() => {
       if (!settled) {
         settled = true;
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Test RedisJSON support (if available)
-    let jsonSupported = false;
+    let jsonSupported = $state(false);
     try {
       // Attempt to use a RedisJSON command, e.g., JSON.SET
       // This requires Redis Stack. If it fails, it means JSON module is not loaded or not Redis Stack.
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } catch (jsonError) {
       // JSON commands not supported or failed, this is expected for vanilla Redis
       console.warn('RedisJSON commands not supported or failed:', (jsonError as Error).message);
-      jsonSupported = false;
+      jsonSupported = $state(false);
     }
 
     // Get Redis server info
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Use unknown for catch clause
     if (redis) {
       // Use the initial: 'redis' variable for cleanup

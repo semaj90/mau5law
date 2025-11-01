@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Select as SelectPrimitive } from 'bits-ui';
-
   // Re-export the Bits UI Select components
   export const Root = SelectPrimitive.Root;
   export const Trigger = SelectPrimitive.Trigger;
@@ -116,7 +115,6 @@
     options.find(option => option.value === value)?.label || placeholder
   );
 </script>
-
 <div class="select-wrapper" class:w-full={fullWidth}>
   <SelectRoot {value} valuechange={handleValueChange} {disabled} type="single">
     <SelectTrigger class={triggerClasses}>
@@ -141,8 +139,7 @@
                 {/each}
               </BitsSelect.Group>
               {#if category !== Object.keys(groupedOptions)[Object.keys(errors).length - 1]}
-                <div class="h-px bg-border my-1"></div>
-              {/if}
+                <div class="h-px bg-border my-1">{/if}
             {:else}
               {#each categoryOptions as option (option.value)}
                 {@render selectItem(option)}
@@ -156,8 +153,7 @@
   {#if error && errorMessage}
     <div class="mt-1 text-xs text-red-600 font-medium">
       {errorMessage}
-    </div>
-  {/if}
+    {/if}
 </div>
 {#snippet selectItem(option SelectOption)}
   <SelectItem
@@ -180,16 +176,14 @@
       {#if option.description}
         <div class="text-xs nes-text is-disabled mt-0.5">
           {option.description}
-        </div>
-      {/if}
+        {/if}
     </div>
   </SelectItem>
 {/snippet}
-
 <style>
 /* @unocss-include */ {}
   .select-wrapper {
-    position relative;
+    position: relative;
   }
 /* Enhanced select animations for legal AI context */ {}
   :global(.bits-select-content) {
@@ -223,11 +217,11 @@ box-shadow: {}
   }
 /* Evidence category specific styling */ {}
   :global([data-evidence-category] .bits-select-item) {
-    position relative;
+    position: relative;
   }
   :global($1) {
     content: '';
-    position absolute;
+    position: absolute;
     left: 0,
     top: 50%;
     transform: translateY(-50%);
@@ -270,4 +264,3 @@ radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), 
     }
   }
 </style>
-

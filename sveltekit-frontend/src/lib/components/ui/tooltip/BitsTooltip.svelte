@@ -11,7 +11,7 @@ https://svelte.dev/e/expected_token -->
     contentClass: string ;
     delayDuration number ;
     sideOffset: number ;
-    children: unknown;
+     unknown;
   }
   let {
     icon,
@@ -36,7 +36,7 @@ https://svelte.dev/e/expected_token -->
     <Tooltip.Content {sideOffset} class={contentClass}>
       <div class="rounded-input border-dark-10 bg-background shadow-popover outline-hidden z-0 flex items-center justify-center border p-3 text-sm font-medium">
         {tooltip}
-        {@render children?.()}
+        <slot />
       </div>
       <Tooltip.Arrow />
     </Tooltip.Content>

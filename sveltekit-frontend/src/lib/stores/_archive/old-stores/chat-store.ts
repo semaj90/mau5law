@@ -270,7 +270,7 @@ export const chatActions = {
     });
   },
   // Error handling
-  addError: (message: string, context?: unknown): void => {
+  addError: (message: string, context?: any): void => {
     const error = {
       timestamp: new Date(),
       error: message,

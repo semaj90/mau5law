@@ -95,10 +95,10 @@ export interface ServiceConfig {
 type GenericResult<T = unknown> = { success: boolean; data?: T; error?: string; statusCode?: number };
 
 interface IWasmGPUOrchestrator {
-  processLegalDocument?: (document: string, options?: unknown) => Promise<GenericResult>;
-  performNeuralInference?: (input: Float32Array, options?: unknown) => Promise<GenericResult>;
+  processLegalDocument?: (document: string, options?: any) => Promise<GenericResult>;
+  performNeuralInference?: (input: Float32Array, options?: any) => Promise<GenericResult>;
   processCanvasState?: (canvas: CanvasState) => Promise<GenericResult>;
-  executeGPUComputation?: (operation: string, data?: unknown, options?: unknown) => Promise<GenericResult>;
+  executeGPUComputation?: (operation: string, data?: any, options?: any) => Promise<GenericResult>;
 }
 
 interface ILlamaService {
@@ -179,7 +179,7 @@ export class UnifiedServiceOrchestrator {
       if (dev) {
         console.log('[Orchestrator] All services initialized successfully');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[Orchestrator] Service initialization failed:', error);
       throw new Error(`Service initialization failed: ${String(error)}`);
     }
@@ -243,7 +243,7 @@ export class UnifiedServiceOrchestrator {
           `[Orchestrator] Health check completed in ${healthCheckTime}ms - Status: ${this.systemHealth.overall}`
         );
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('[Orchestrator] Health check failed:', error);
       this.systemHealth.overall = 'critical';
     }
@@ -389,7 +389,7 @@ export class UnifiedServiceOrchestrator {
     try {
       this.activeTasks.set(task.id, task);
       let result: any = null;
-      let success = false;
+      let success = $state(false);
       // Execute based on task type and available services
       switch (task.type) {
         case 'document':
@@ -441,7 +441,7 @@ export class UnifiedServiceOrchestrator {
           resourceUsage: this.calculateResourceUsage(servicesUsed),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const processingTime = Date.now() - startTime;
       task.error = String(error);
       task.endTime = new Date();
@@ -467,7 +467,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: unknown; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { document, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -479,7 +479,7 @@ export class UnifiedServiceOrchestrator {
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         fallbacksTriggered.push('wasmGPU -> quicGateway');
         if (dev) console.warn('[Orchestrator] WASM GPU failed, falling back to QUIC:', error);
       }
@@ -493,7 +493,7 @@ export class UnifiedServiceOrchestrator {
         if (ok) {
           return { result: (result as GenericResult).data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         fallbacksTriggered.push('quicGateway -> llamaOllama');
         if (dev) console.warn('[Orchestrator] QUIC Gateway failed, falling back to Llama:', error);
       }
@@ -512,7 +512,7 @@ export class UnifiedServiceOrchestrator {
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         if (dev) console.warn('[Orchestrator] All services failed for document task:', error);
       }
     }
@@ -522,7 +522,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: unknown; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { input, options } = task.data;
     // Primary: WASM GPU Orchestrator
     if (this.isServiceHealthy('wasmGPU')) {
@@ -534,7 +534,7 @@ export class UnifiedServiceOrchestrator {
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         fallbacksTriggered.push('wasmGPU -> llamaOllama');
         if (dev) console.warn('[Orchestrator] WASM GPU inference failed, falling back to Llama:', error);
       }
@@ -554,7 +554,7 @@ export class UnifiedServiceOrchestrator {
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         if (dev) console.warn('[Orchestrator] All services failed for inference task:', error);
       }
     }
@@ -564,7 +564,7 @@ export class UnifiedServiceOrchestrator {
     task: ServiceTask,
     servicesUsed: string[],
     fallbacksTriggered: string[]
-  ): Promise<{ result: unknown; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
+  ): Promise<{ result: any; success: boolean; servicesUsed: string[]; fallbacksTriggered: string[] }> {
     const { canvasState, options: $options } = task.data;
     // Primary: NES GPU Bridge
     if (this.isServiceHealthy('nesGPUBridge')) {
@@ -572,7 +572,7 @@ export class UnifiedServiceOrchestrator {
         servicesUsed.push('nesGPUBridge');
         const result = await this.nesGPUBridge.canvasStateToTensor(canvasState);
         return { result, success: true, servicesUsed, fallbacksTriggered };
-      } catch (error: unknown) {
+      } catch (error: any) {
         fallbacksTriggered.push('nesGPUBridge -> wasmGPU');
         if (dev) console.warn('[Orchestrator] NES GPU Bridge failed, falling back to WASM:', error);
       }
@@ -587,7 +587,7 @@ export class UnifiedServiceOrchestrator {
         if (result?.success) {
           return { result: result.data ?? result, success: true, servicesUsed, fallbacksTriggered };
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         if (dev) console.warn('[Orchestrator] All services failed for canvas task:', error);
       }
     }

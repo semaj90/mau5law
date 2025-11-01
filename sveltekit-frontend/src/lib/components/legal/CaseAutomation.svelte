@@ -1,10 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
-  import Dropdown from '$lib/components/ui/Dropdown.svelte';
-  import Checkbox from '$lib/components/ui/Checkbox.svelte';
+  import { Dropdown } from '$lib/components/ui/Dropdown.svelte';
+  import { Checkbox } from '$lib/components/ui/Checkbox.svelte';
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
-
   interface AutomationConfig {
     id: string;
     type: string;
@@ -16,9 +15,7 @@
     processingOptions: string[];
     createdAt: string;
   }
-
   let { ondispatch }: { ondispatch?: (detail: any) => void } = $props();
-
   // Automation configuration
   let selectedAutomationType: string = $state('');
   let selectedSource: string = $state('');
@@ -49,7 +46,7 @@
       { value: 'case_discovery', label: 'Discovery Document Processing' },
       { value: 'contract_analysis', label: 'Contract Analysis Pipeline' }
     ];
-    loadingAutomationTypes = false;
+    loadingAutomationTypes = $state(false);
   }
   // Enhanced source options for legal workflows
   const sourceOptions = [
@@ -126,12 +123,12 @@
       // Reset form
       selectedAutomationType = '';
       selectedSource = '';
-      enableAutoProcessing = false;
+      enableAutoProcessing = $state(false);
       selectedProcessingOptions.clear();
     } catch (error) {
       ondispatch?.(error instanceof Error ? error.message : 'Configuration failed');
     } finally {
-      processing = false;
+      processing = $state(false);
     }
   };
   // Simulate batch document processing with GPU acceleration
@@ -178,7 +175,6 @@
     fetchAutomationTypes();
   });
 </script>
-
 <div class="rounded-xl bg-white shadow-lg border border-gray-200 p-8 max-w-4xl mx-auto">
   <div class="border-b border-gray-200 pb-4 mb-6">
     <h3 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -213,7 +209,7 @@
       <fieldset class="space-y-2">
         <legend class="block font-semibold mb-3 text-gray-700">AI Processing Options</legend>
         <div class="space-y-2 max-h-32 overflow-y-auto" role="group" aria-labelledby="processing-options-legend">
-          {#each processingOptions as option}
+          {#each Array.isArray(processingOptions) ? processingOptions : [] as option}
             <Checkbox
               id="processing_{option.value}"
               label={option.label}
@@ -289,8 +285,7 @@
               ></div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <div class="p-4 bg-gray-50 rounded-lg">
         <h4 class="font-medium text-gray-800 mb-3">Configuration Summary</h4>
         <div class="space-y-2 text-sm">
@@ -325,8 +320,7 @@
             <p>Processing Time: {processingStats.processingTime}ms</p>
             <p>Documents: {processingStats.documentsProcessed} processed successfully</p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <!-- Action Button -->
@@ -346,7 +340,6 @@
     </button>
   </div>
 </div>
-
 <style>
   /* Custom scrollbar for processing options */
   .overflow-y-auto::-webkit-scrollbar {

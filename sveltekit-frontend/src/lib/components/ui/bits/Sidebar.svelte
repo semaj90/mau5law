@@ -2,8 +2,8 @@
   import { createEventDispatcher, getContext } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
-  import Button from './Button.svelte';
-  import Tooltip from './Tooltip.svelte';
+  import { Button } from './Button.svelte';
+  import { Tooltip } from './Tooltip.svelte';
   interface SidebarItem {
     id: string;
     label: string;
@@ -89,7 +89,7 @@
     dispatch('mouseEnter');
   }
   function handleMouseLeave() {
-    isHovering = false;
+    isHovering = $state(false);
     dispatch('mouseLeave');
   }
   // Calculate sidebar position classes
@@ -108,8 +108,7 @@
     class="fixed inset-0 bg-black/50 z-30 lg:hidden"
     onclick={toggleSidebar}
     transitionfade={{ duration 200 }}
-  ></div>
-{/if}
+  >{/if}
 <!-- Sidebar Container -->
 <div
   class={`
@@ -226,8 +225,7 @@
                       : 'bg-red-500'
                     }
                   `}
-                ></div>
-              {/if}
+                >{/if}
               <!-- Tooltip for collapsed state -->
               {#if !isExpanded}
                 <Tooltip content={item.label} side="right" {theme}>
@@ -312,8 +310,7 @@
           </span>
         {/if}
       </button>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* Gaming theme glow animations */

@@ -165,7 +165,7 @@ export interface QualityMetrics {
  */
 export class TensorFlowSynthesizer {
   private config: SynthesizerConfig;
-  private initialized = false;
+  private initialized = $state(false);
   private analysisCache = new Map<string, SynthesizedAnalysis>();
   constructor(config: Partial<SynthesizerConfig> = {}) {
     this.config = {
@@ -189,11 +189,9 @@ export class TensorFlowSynthesizer {
       return false;
     }
     if (this.initialized) return true;
-
     try {
       console.log('[TF Synthesizer] Initializing comprehensive NLP pipeline...');
       const initPromises: Promise<unknown>[] = [];
-
       if (this.config.enableLegalBERT) {
         initPromises.push(legalBERTMiddleware.initialize());
       }
@@ -203,14 +201,11 @@ export class TensorFlowSynthesizer {
       // WebAssembly components (always attempt)
       initPromises.push(webAssemblyAIAdapter.initialize());
       initPromises.push(webAssemblyLangChainBridge.initialize());
-
       const results = await Promise.allSettled(initPromises);
       const successCount = results.filter(r => r.status === 'fulfilled').length;
-
       if (successCount === 0) {
         throw new Error('No components initialized successfully');
       }
-
       console.log(`[TF Synthesizer] Initialized ${successCount}/${initPromises.length} components`);
       this.initialized = true;
       return true;
@@ -232,12 +227,10 @@ export class TensorFlowSynthesizer {
     }
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const pipeline: PipelineStage[] = [];
-
     try {
       console.log('[TF Synthesizer] Starting comprehensive analysis pipeline...');
       let legalBERTResults: LegalBERTAnalysis | undefined;
       let languageExtractionResults: AdvancedExtractionResult | undefined;
-
       // Stage 1: Run analysis
       if (this.config.parallelProcessing) {
         await this.runParallelAnalysis(text, pipeline, results => {
@@ -250,7 +243,6 @@ export class TensorFlowSynthesizer {
           languageExtractionResults = results.languageExtraction;
         });
       }
-
       // Stage 2: Synthesize insights
       const synthesizedInsights = await this.synthesizeInsights(legalBERTResults, languageExtractionResults, text);
       pipeline.push({
@@ -259,7 +251,6 @@ export class TensorFlowSynthesizer {
         success: true,
         output: { insightsGenerated: Object.keys(synthesizedInsights || {}).length },
       });
-
       // Stage 3: Generate enhanced response
       const enhancedResponse = await this.generateEnhancedResponse(
         text,
@@ -274,7 +265,6 @@ export class TensorFlowSynthesizer {
         success: true,
         output: { responseLength: enhancedResponse.primaryResponse.length },
       });
-
       // Stage 4: Calculate quality metrics
       const qualityMetrics = this.calculateQualityMetrics(
         legalBERTResults,
@@ -288,7 +278,6 @@ export class TensorFlowSynthesizer {
         success: true,
         output: qualityMetrics,
       });
-
       const totalProcessingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       const result: SynthesizedAnalysis = {
         legalBERTResults,
@@ -304,11 +293,9 @@ export class TensorFlowSynthesizer {
         },
         qualityMetrics,
       };
-
       if (this.config.cachingStrategy === 'memory') {
         this.analysisCache.set(cacheKey, result);
       }
-
       console.log(`[TF Synthesizer] Analysis completed in ${totalProcessingTime.toFixed(2)}ms`);
       return result;
     } catch (error: any) {
@@ -378,7 +365,6 @@ export class TensorFlowSynthesizer {
   ): Promise<void> {
     const analysisPromises: Promise<unknown>[] = [];
     const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-
     if (this.config.enableLegalBERT) {
       analysisPromises.push(
         legalBERTMiddleware.analyzeLegalText(text).catch(error => {
@@ -395,7 +381,6 @@ export class TensorFlowSynthesizer {
         })
       );
     }
-
     const results = await Promise.allSettled(analysisPromises);
     pipeline.push({
       name: 'parallel-analysis',
@@ -408,11 +393,9 @@ export class TensorFlowSynthesizer {
           : false,
       },
     });
-
     // Extract results
     let resultIndex = 0;
     const analysisResults: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
-
     if (this.config.enableLegalBERT) {
       const res = results[resultIndex++] as PromiseSettledResult<any>;
       if (res.status === 'fulfilled' && res.value != null) {
@@ -425,7 +408,6 @@ export class TensorFlowSynthesizer {
         analysisResults.languageExtraction = res.value;
       }
     }
-
     callback(analysisResults);
   }
   /**
@@ -437,7 +419,6 @@ export class TensorFlowSynthesizer {
     callback: (results: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult }) => void
   ): Promise<void> {
     const resultsObj: { legalBERT?: LegalBERTAnalysis; languageExtraction?: AdvancedExtractionResult } = {};
-
     if (this.config.enableLegalBERT) {
       const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
@@ -457,7 +438,6 @@ export class TensorFlowSynthesizer {
         });
       }
     }
-
     if (this.config.enableLanguageExtraction) {
       const stageStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       try {
@@ -477,7 +457,6 @@ export class TensorFlowSynthesizer {
         });
       }
     }
-
     callback(resultsObj);
   }
   /**
@@ -494,7 +473,6 @@ export class TensorFlowSynthesizer {
     const recommendedActions = this.generateActionRecommendations(riskAssessment, complianceAnalysis);
     const semanticMap = this.buildSemanticMap(languageExtractionResults);
     const crossReferences = this.extractCrossReferences(text, legalBERTResults);
-
     return {
       keyLegalConcepts,
       riskAssessment,
@@ -516,11 +494,9 @@ export class TensorFlowSynthesizer {
   ): Promise<EnhancedResponse> {
     try {
       const enhancedPrompt = this.buildEnhancedPrompt(text, query, insights);
-
       let primaryResponse = '';
       let confidenceLevel = 0;
       const sources: ResponseSource[] = [];
-
       const bridgeStatus = webAssemblyLangChainBridge.getHealthStatus?.() ?? { bridgeInitialized: false };
       if (bridgeStatus.bridgeInitialized) {
         const ragResult = (await webAssemblyLangChainBridge.query(enhancedPrompt, {
@@ -529,7 +505,6 @@ export class TensorFlowSynthesizer {
           thinkingMode: true,
           maxRetrievedDocs: 5,
         } as any)) as HybridRAGResult;
-
         primaryResponse = ragResult?.answer ?? '';
         confidenceLevel = ragResult?.confidence ?? 0;
         sources.push({
@@ -549,9 +524,7 @@ export class TensorFlowSynthesizer {
           relevance: 0.8,
         });
       }
-
       const supportingAnalysis: string[] = [];
-
       if (legalBERTResults) {
         supportingAnalysis.push(`Entity Analysis: Found ${legalBERTResults.entities?.length ?? 0} legal entities.`);
         sources.push({
@@ -561,7 +534,6 @@ export class TensorFlowSynthesizer {
           relevance: 0.7,
         });
       }
-
       if (languageExtractionResults) {
         supportingAnalysis.push(
           `Concept Analysis: Extracted ${languageExtractionResults.extractedConcepts?.length ?? 0} key concepts.`
@@ -573,11 +545,9 @@ export class TensorFlowSynthesizer {
           relevance: 0.6,
         });
       }
-
       const legalReasoning = this.generateLegalReasoning(insights, legalBERTResults);
       const practicalImplications = this.generatePracticalImplications(insights);
       const nextSteps = insights.recommendedActions.slice(0, 5).map(a => a.action);
-
       return {
         primaryResponse,
         supportingAnalysis,
@@ -607,7 +577,6 @@ export class TensorFlowSynthesizer {
     languageExtractionResults?: AdvancedExtractionResult
   ): ConceptCluster[] {
     const clusters: Map<string, ConceptCluster> = new Map();
-
     if (legalBERTResults) {
       (legalBERTResults.entities || []).forEach(entity => {
         if ((entity.confidence ?? 0) >= this.config.confidenceThreshold) {
@@ -623,7 +592,6 @@ export class TensorFlowSynthesizer {
         }
       });
     }
-
     if (languageExtractionResults) {
       (languageExtractionResults.extractedConcepts || []).forEach(concept => {
         const existing = clusters.get(concept.concept);
@@ -643,7 +611,6 @@ export class TensorFlowSynthesizer {
         }
       });
     }
-
     return Array.from(clusters.values())
       .sort((a, b) => b.legalImportance + b.contextualRelevance - (a.legalImportance + a.contextualRelevance))
       .slice(0, 20);
@@ -655,14 +622,12 @@ export class TensorFlowSynthesizer {
   ): RiskProfile {
     const risks: RiskFactor[] = [];
     let overallRiskScore = 0;
-
     if (legalBERTResults) {
       // Use a properly typed mapping and keyof for indexing
       const riskMapping = { LOW: 0.2, MEDIUM: 0.5, HIGH: 0.8, CRITICAL: 1.0 } as const;
       const riskLevelKey = (legalBERTResults.classification?.riskLevel ?? 'LOW') as keyof typeof riskMapping;
       overallRiskScore = Math.max(overallRiskScore, riskMapping[riskLevelKey] ?? 0);
     }
-
     if (languageExtractionResults) {
       const negativeIndicators = (languageExtractionResults.extractedConcepts || []).filter(
         c =>
@@ -682,13 +647,11 @@ export class TensorFlowSynthesizer {
         });
       }
     }
-
     let overallRiskLevel: RiskProfile['overallRiskLevel'] = 'LOW';
     if (overallRiskScore < 0.3) overallRiskLevel = 'LOW';
     else if (overallRiskScore < 0.6) overallRiskLevel = 'MEDIUM';
     else if (overallRiskScore < 0.9) overallRiskLevel = 'HIGH';
     else overallRiskLevel = 'CRITICAL';
-
     return {
       overallRiskLevel,
       specificRisks: risks,
@@ -700,7 +663,6 @@ export class TensorFlowSynthesizer {
   private synthesizeComplianceProfile(legalBERTResults?: LegalBERTAnalysis, text?: string): ComplianceProfile {
     const regulations: RegulationAnalysis[] = [];
     const complianceScore = 0.7;
-
     if (legalBERTResults) {
       const docType = legalBERTResults.classification?.documentType;
       if (docType === 'contract') {
@@ -712,7 +674,6 @@ export class TensorFlowSynthesizer {
         });
       }
     }
-
     return {
       applicableRegulations: regulations,
       complianceScore,
@@ -726,7 +687,6 @@ export class TensorFlowSynthesizer {
     complianceAnalysis: ComplianceProfile
   ): ActionRecommendation[] {
     const actions: ActionRecommendation[] = [];
-
     if (riskAssessment.overallRiskLevel === 'HIGH' || riskAssessment.overallRiskLevel === 'CRITICAL') {
       actions.push({
         category: 'immediate',
@@ -738,7 +698,6 @@ export class TensorFlowSynthesizer {
         dependencies: [],
       });
     }
-
     if (complianceAnalysis.complianceScore < 0.8) {
       actions.push({
         category: 'short-term',
@@ -750,7 +709,6 @@ export class TensorFlowSynthesizer {
         dependencies: [],
       });
     }
-
     return actions.sort((a, b) => b.priority - a.priority);
   }
   private buildSemanticMap(languageExtractionResults?: AdvancedExtractionResult): SemanticMap {
@@ -762,7 +720,6 @@ export class TensorFlowSynthesizer {
         centrality: {},
       };
     }
-
     const conceptNodes: ConceptNode[] = (languageExtractionResults.extractedConcepts || []).map((concept, index) => ({
       id: `concept_${index}`,
       concept: concept.concept,
@@ -770,7 +727,6 @@ export class TensorFlowSynthesizer {
       category: concept.category ?? 'unknown',
       embedding: new Float32Array(768),
     }));
-
     const relationshipEdges: RelationshipEdge[] = (languageExtractionResults.semanticRelationships || []).map(rel => ({
       source: rel.source,
       target: rel.target,
@@ -778,7 +734,6 @@ export class TensorFlowSynthesizer {
       strength: rel.confidence ?? 0,
       bidirectional: rel.relationship === 'synonyms',
     }));
-
     return {
       conceptNodes,
       relationshipEdges,
@@ -883,7 +838,6 @@ export class TensorFlowSynthesizer {
   ): QualityMetrics {
     let analysisDepth = 0;
     let factors = 0;
-
     if (legalBERTResults) {
       analysisDepth += 0.3;
       factors++;
@@ -896,11 +850,9 @@ export class TensorFlowSynthesizer {
       analysisDepth += 0.3;
       factors++;
     }
-
     const completeness = response ? Math.min((response.primaryResponse?.length ?? 0) / 500, 1.0) : 0;
     const coherence = response ? ((response.sources?.length ?? 0) > 0 ? 0.8 : 0.4) : 0;
     const relevance = insights ? Math.min((insights.keyLegalConcepts?.length ?? 0) / 10, 1.0) : 0;
-
     const overallQuality = (analysisDepth + completeness + coherence + relevance) / 4;
     return {
       overallQuality,
@@ -951,7 +903,7 @@ export class TensorFlowSynthesizer {
    */
   dispose(): void {
     this.clearCache();
-    this.initialized = false;
+    this.initialized = $state(false);
     console.log('[TF Synthesizer] Resources disposed');
   }
 }

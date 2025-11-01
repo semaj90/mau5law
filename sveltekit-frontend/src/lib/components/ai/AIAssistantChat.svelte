@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
-  import Switch from '$lib/components/ui/switch/Switch.svelte';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
+  import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
+  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
   import {
     aiAssistantManager,
     isAIActive,
@@ -20,7 +20,6 @@
   } from '$lib/stores/aiAssistant.svelte.js';
   import { unifiedAIService } from '$lib/ai/unified-ai-service.js';
   import type { UnifiedQueryOptions } from '$lib/ai/unified-ai-service.js';
-
   // Component props using Svelte 5 $props()
   interface Props {
     height?: string;
@@ -28,9 +27,7 @@
     enableContext7?: boolean;
     autoFocus?: boolean;
   }
-
   let { height = '600px', showSettings = true, enableContext7 = true, autoFocus = true }: Props = $props();
-
   // Reactive state using Svelte 5 runes
   let currentMessage = $state('');
   let errorMessage = $state('');
@@ -42,7 +39,6 @@
   let availableModels = $state<string[]>(['gemma3-legal', 'nomic-embed-text', 'deeds-web']);
   let useUnifiedService = $state(false);
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
-
   // Derived state for UI using proper store access (use functions instead of $derived)
   let canSend = () => currentMessage.trim().length > 0 && !isProcessing();
   let hasConversation = () => conversationHistory().length > 0;
@@ -56,7 +52,6 @@
       total,
     }
   }
-
   // Component lifecycle
   $effect(() => {
     (async () => {
@@ -64,7 +59,6 @@
       if (autoFocus && messageInput) {
         messageInput.focus();
       }
-
       // Initialize unified AI service
       try {
         await unifiedAIService.initialize();
@@ -73,19 +67,16 @@
         console.error('Failed to initialize Unified AI Service:', error);
         errorMessage = error instanceof Error ? error.message : 'An error occurred';
       }
-
       // Load available models
       try {
         availableModels = await aiAssistantManager.getAvailableModels();
       } catch (error) {
         console.warn('Failed to load available models:', error);
       }
-
       // Check cluster health
       aiAssistantManager.checkClusterHealth();
     })();
   });
-
   // Effect to scroll to bottom when conversation updates
   $effect(() => {
     if (conversationHistory().length > 0 && chatContainer) {
@@ -94,14 +85,11 @@
       }, 100);
     }
   });
-
   // Send message to AI
   async function sendMessage() {
     if (!canSend()) return;
-
     const message = currentMessage.trim();
     currentMessage = '';
-
     try {
       if (useUnifiedService) {
         // Use unified AI service
@@ -112,7 +100,6 @@
           maxResults: 10,
           threshold: 0.7,
         }
-
         // removed unused response assignment
         if (response.success) {
           console.log('📝 Unified AI Response:', response);
@@ -138,13 +125,11 @@
       console.error('Failed to send message:', error);
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
     }
-
     // Focus back to input
     if (messageInput) {
       messageInput.focus();
     }
   }
-
   // Handle keyboard shortcuts
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -152,7 +137,6 @@
       sendMessage();
     }
   }
-
   // Format timestamp
   function formatTime(date: Date): string {
     return new Intl.DateTimeFormat('en-US', {
@@ -160,7 +144,6 @@
       minute: '2-digit',
     }).format(date);
   }
-
   // Get message role color
   function getRoleColor(role: string): string {
     switch (role) {
@@ -173,28 +156,23 @@
       default: return 'bg-gray-100 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
     }
   }
-
   // Clear conversation
   function clearConversation() {
     aiAssistantManager.clearConversation();
   }
-
   // Export conversation
   function exportConversation() {
     aiAssistantManager.exportConversation();
   }
-
   // Stop generation
   function stopGeneration() {
     aiAssistantManager.stopGeneration();
   }
-
   // Retry last message
   function retryLast() {
     aiAssistantManager.retryLast();
   }
 </script>
-
 <div class="w-full h-full flex flex-col bg-white dark:bg-gray-900 border rounded-lg shadow-sm">
   <!-- Header -->
   <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
@@ -204,7 +182,6 @@
         {clusterStatus().healthy ? 'Online' : `${clusterStatus().count}/${clusterStatus().total} Healthy`}
       </Badge>
     </div>
-
     <div class="flex items-center gap-2">
       {#if showSettings}
         <Button variant="ghost" size="sm" onclick={() => (showSettingsDialog = true)} class="bits-btn">
@@ -224,7 +201,6 @@
           </svg>
         </Button>
       {/if}
-
       {#if hasConversation()}
         <Button variant="ghost" size="sm" onclick={() => (showExportDialog = true)} class="bits-btn">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -239,7 +215,6 @@
       {/if}
     </div>
   </div>
-
   <!-- Chat Messages -->
   <div;
     bind:this={chatContainer}
@@ -256,8 +231,7 @@
             <p class="text-xs text-blue-600 dark:text-blue-300">
               Get suggestions powered by the latest documentation and best practices.
             </p>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       {#each conversationHistory() as entry (entry.id)}
@@ -286,29 +260,23 @@
                 {#if entry.metadata.tokenCount}
                   • Tokens: {entry.metadata.tokenCount}
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       {/each}
     {/if}
-
     {#if isProcessing()}
       <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
         <div class="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
         <span class="text-sm">AI is thinking...</span>
-      </div>
-    {/if}
-
+      {/if}
     {#if aiError()}
       <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
         <div class="text-sm text-red-800 dark:text-red-200 font-medium">Error</div>
         <div class="text-sm text-red-600 dark:text-red-300 mt-1">{aiError()}</div>
         <Button variant="ghost" size="sm" class="mt-2 bits-btn" onclick={retryLast}>Retry</Button>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Input Area -->
   <div class="border-t dark:border-gray-700 p-4">
     <!-- Unified AI Service Controls -->
@@ -330,7 +298,6 @@
         </select>
       {/if}
     </div>
-
     {#if enableContext7}
       <div class="flex items-center gap-2 mb-3">
         <Switch bind:checked={useContext7} disabled={isProcessing()} />
@@ -342,9 +309,7 @@
             Confidence: {Math.round((context7Analysis()?.confidence || 0) * 100)}%
           </span>
         {/if}
-      </div>
-    {/if}
-
+      {/if}
     <div class="flex gap-2">
       <Textarea
         bind:this={messageInput}
@@ -365,7 +330,6 @@
             />
           </svg>
         </Button>
-
         {#if isProcessing()}
           <Button class="bits-btn" variant="ghost" size="sm" onclick={stopGeneration}>
             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,18 +337,15 @@
             </svg>
           </Button>
         {/if}
-
         {#if aiUsage().totalQueries > 0}
           <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">
             <div>Tokens: {aiUsage().totalTokens.toLocaleString()}</div>
             <div>Avg: {Math.round(aiUsage().averageResponseTime || 0)}ms</div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
 </div>
-
 <!-- Settings Dialog -->
 {#if showSettingsDialog}
   <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -397,11 +358,9 @@
           <label class="text-sm font-medium">Model: {currentModel()}</label>
           <div class="text-xs text-gray-500">Available: {availableModels.join(', ')}</div>
         </div>
-
         <div class="space-y-2">
           <label class="text-sm font-medium">Temperature: {currentTemperature()}</label>
         </div>
-
         <div class="space-y-2">
           <label class="text-sm font-medium">Cluster Health</label>
           <div class="grid grid-cols-3 gap-2">
@@ -419,7 +378,6 @@
             </div>
           </div>
         </div>
-
         <div class="flex justify-between gap-2 pt-4">
           <Button variant="destructive" onclick={clearConversation} disabled={!hasConversation()} class="bits-btn">
             Clear Chat
@@ -428,9 +386,7 @@
         </div>
       </CardContent>
     </Card>
-  </div>
-{/if}
-
+  {/if}
 <!-- Export Dialog -->
 {#if showExportDialog}
   <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -462,7 +418,7 @@
             class="bits-btn"
             onclick={() => {
               exportConversation();
-              showExportDialog = false;
+              showExportDialog = $state(false);
             }}
           >
             Export JSON
@@ -470,14 +426,11 @@
         </div>
       </CardContent>
     </Card>
-  </div>
-{/if}
-
+  {/if}
 <style>
   :global(.animate-spin) {
     animation: spin 1s linear infinite;
   }
-
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -487,4 +440,3 @@
     }
   }
 </style>
-

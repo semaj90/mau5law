@@ -10,13 +10,13 @@ import { crewAIService } from './crewai-service.js';
 // Safe mock implementation for missing aiWorkerManager methods (used as fallback)
 const aiWorkerManager = {
 	// submitTask returns an id and minimal metadata
-	async submitTask(task: unknown): Promise<{ taskId: string }> {
+	async submitTask(task: any): Promise<{ taskId: string }> {
 		const id = `task_${Date.now()}`;
 		// pretend to schedule
 		return { taskId: id };
 	},
 	// waitForTask waits and returns a trivial result (fallback)
-	async waitForTask(taskInfo: unknown): Promise<Record<string, unknown>> {
+	async waitForTask(taskInfo: any): Promise<Record<string, unknown>> {
 		return { status: 'completed', result: taskInfo ?? {} };
 	}
 };
@@ -152,7 +152,7 @@ export class AutonomousEngineeringSystem {
 			await this.synthesizeAndOptimize(result);
 
 			return result;
-		} catch (error: unknown) {
+		} catch (error: any) {
 			console.error('❌ Autonomous Engineering System failed:', String(error));
 			throw error;
 		}
@@ -250,8 +250,8 @@ export class AutonomousEngineeringSystem {
 			if (diagnosticCrew && crewAIService?.executeCrew) {
 				// Safe runtime invocation: cast to a flexible invoker with a typed result to avoid TS `any`
 				const execFn = crewAIService.executeCrew as unknown as (
-					crew: unknown,
-					input: unknown,
+					crew: any,
+					input: any,
 					opts?: Record<string, unknown>
 				) => Promise<CrewExecutionResult | undefined>;
 				const execution = await execFn(diagnosticCrew, crewInput, { timeout: 180000, priority: 'high' });
@@ -266,7 +266,7 @@ export class AutonomousEngineeringSystem {
 				// Crew not available: produce fallback diagnostics
 				diagnostics.push(...(await this.fallbackDiagnostics(prompt, errorLogs)));
 			}
-		} catch (error: unknown) {
+		} catch (error: any) {
 			console.error('Crew diagnostic failed, using fallback analysis:', String(error));
 			diagnostics.push(...(await this.fallbackDiagnostics(prompt, errorLogs)));
 		}
@@ -285,7 +285,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			if (autoGenService?.createCustomAgent && autoGenService?.startConversation) {
 				// Safe creator that tolerates varying TS signatures by casting to a flexible invoker
-				const createFn = autoGenService.createCustomAgent as unknown as (...args: unknown[]) => Promise<unknown> | unknown;
+				const createFn = autoGenService.createCustomAgent as unknown as (...args: any[]) => Promise<unknown> | unknown;
 
 				// Normalize agent outputs into AutoGenAgent[] with defaults
 				const rawAgents = await Promise.all([
@@ -300,13 +300,13 @@ export class AutonomousEngineeringSystem {
 
 				for (const problem of problems) {
 					// Start a conversation and wait for completion (safe)
-					const conversation = await (autoGenService.startConversation as unknown as (...args: unknown[]) => Promise<unknown>)(
+					const conversation = await (autoGenService.startConversation as unknown as (...args: any[]) => Promise<unknown>)(
 						engineeringAgents,
 						`Analyze and propose solution for: ${problem.title}\n${problem.description}`,
 						{ problemId: problem.id, context }
 					);
 
-					let messages: unknown[] = [];
+					let messages: any[] = [];
 					const convId = safeExtractId(conversation);
 					if (convId) {
 						messages = await this.waitForConversationCompletion(convId);
@@ -320,7 +320,7 @@ export class AutonomousEngineeringSystem {
 					strategies.push(this.generateFallbackStrategy(p));
 				}
 			}
-		} catch (err: unknown) {
+		} catch (err: any) {
 			console.error('Error generating strategies, falling back:', String(err));
 			for (const p of problems) strategies.push(this.generateFallbackStrategy(p));
 		}
@@ -444,7 +444,7 @@ export class AutonomousEngineeringSystem {
 			const submitResult = await aiWorkerManager.submitTask(synthesisTask);
 			const synthesisResult = await aiWorkerManager.waitForTask(submitResult);
 			console.log('✅ Synthesis completed:', synthesisResult);
-		} catch (error: unknown) {
+		} catch (error: any) {
 			// safer logging for unknown error shape
 			if (error instanceof Error) console.error('Synthesis failed:', error.message);
 			else console.error('Synthesis failed:', String(error));
@@ -461,7 +461,7 @@ export class AutonomousEngineeringSystem {
 			});
 			if (response.ok) return (await response.json()) as Record<string, unknown>;
 			return {} as Record<string, unknown>;
-		} catch (error: unknown) {
+		} catch (error: any) {
 			if (error instanceof Error) console.error('Failed to get directory structure:', error.message);
 			else console.error('Failed to get directory structure:', String(error));
 			return {} as Record<string, unknown>;
@@ -480,7 +480,7 @@ export class AutonomousEngineeringSystem {
 				return (data?.logs ?? []) as string[];
 			}
 			return [];
-		} catch (error: unknown) {
+		} catch (error: any) {
 			if (error instanceof Error) console.error('Failed to collect error logs:', error.message);
 			else console.error('Failed to collect error logs:', String(error));
 			return [];
@@ -498,7 +498,7 @@ export class AutonomousEngineeringSystem {
 			const results = response.ok ? (await response.json()) as unknown[] : [];
 			this.semanticSearchCache.set(query, results);
 			return results;
-		} catch (error: unknown) {
+		} catch (error: any) {
 			if (error instanceof Error) console.error('Semantic search failed:', error.message);
 			else console.error('Semantic search failed:', String(error));
 			return [];
@@ -513,7 +513,7 @@ export class AutonomousEngineeringSystem {
 				body: JSON.stringify({ query })
 			});
 			return response.ok ? (await response.json()) as unknown[] : [];
-		} catch (error: unknown) {
+		} catch (error: any) {
 			if (error instanceof Error) console.error('Best practices search failed:', error.message);
 			else console.error('Best practices search failed:', String(error));
 			return [];
@@ -521,7 +521,7 @@ export class AutonomousEngineeringSystem {
 	}
 
 	// Parsing helpers (minimal safe implementations)
-	private parseCrewDiagnostics(_results: unknown): EngineeringProblem[] {
+	private parseCrewDiagnostics(_results: any): EngineeringProblem[] {
 		// Real parser omitted; provide empty array as safe default
 		return [];
 	}
@@ -541,7 +541,7 @@ export class AutonomousEngineeringSystem {
 		];
 	}
 
-	private parseConversationToStrategy(problemId: string, _messages: unknown[]): SolutionStrategy {
+	private parseConversationToStrategy(problemId: string, _messages: any[]): SolutionStrategy {
 		return {
 			problemId,
 			approach: 'planned',
@@ -603,7 +603,7 @@ export class AutonomousEngineeringSystem {
 					if (status === 'completed') return (execution as Record<string, unknown>).results ?? execution;
 					if (status === 'failed') throw new Error('Crew execution failed');
 				}
-			} catch (err: unknown) {
+			} catch (err: any) {
 				if (err instanceof Error) console.error('Error checking crew status:', err.message);
 				else console.error('Error checking crew status:', String(err));
 			}
@@ -625,7 +625,7 @@ export class AutonomousEngineeringSystem {
 					if (status === 'completed') return ((conversation as Record<string, unknown>).messages ?? []) as unknown[];
 					if (status === 'failed') throw new Error('Conversation failed');
 				}
-			} catch (err: unknown) {
+			} catch (err: any) {
 				if (err instanceof Error) console.error('Error checking conversation status:', err.message);
 				else console.error('Error checking conversation status:', String(err));
 			}
@@ -681,15 +681,15 @@ interface AutoGenAgent {
 		model: string;
 		temperature?: number;
 		maxTokens?: number;
-		[key: string]: unknown;
+		[key: string]: any;
 	};
 	humanInputMode?: 'manual' | 'auto';
 	maxConsecutiveAutoReply?: number;
 	// allow extra fields
-	[key: string]: unknown;
+	[key: string]: any;
 }
 
-function normalizeAutoGenAgent(obj: unknown, fallbackName: string): AutoGenAgent {
+function normalizeAutoGenAgent(obj: any, fallbackName: string): AutoGenAgent {
 	const rec = (obj && typeof obj === 'object') ? (obj as Record<string, unknown>) : {};
 	return {
 		name: String(rec.name ?? rec.id ?? fallbackName),
@@ -702,7 +702,7 @@ function normalizeAutoGenAgent(obj: unknown, fallbackName: string): AutoGenAgent
 	};
 }
 
-function safeExtractId(obj: unknown): string | undefined {
+function safeExtractId(obj: any): string | undefined {
 	if (!obj || typeof obj !== 'object') return undefined;
 	const rec = obj as Record<string, unknown>;
 	const id = rec.id ?? rec.taskId ?? rec.conversationId;
@@ -715,6 +715,6 @@ interface CrewExecutionResult {
 	taskId?: string;
 	conversationId?: string;
 	status?: 'pending' | 'running' | 'completed' | 'failed' | string;
-	results?: unknown;
-	[key: string]: unknown;
+	results?: any;
+	[key: string]: any;
 }

@@ -7,7 +7,7 @@
 export interface EnhancedGPUCacheEntry {
   id: string;
   cacheKey: string;
-  data: unknown; // was any
+  data: any; // was any
   metadata: GPUCacheMetadata;
   integrations: IntegrationStatus;
   performance: PerformanceMetrics;
@@ -115,7 +115,7 @@ export interface WebGPUShaderData {
   uniforms?: Record<string, unknown>; // was { [key: string]: any }
   // use a local, safe fallback type for bind group layout to avoid TS errors
   // when @webgpu/types is not installed in the project
-  bindGroupLayout?: unknown; // was any
+  bindGroupLayout?: any; // was any
   workgroupSize?: [number, number, number];
 }
 // === Shader Cache Types ===
@@ -340,7 +340,7 @@ export interface WorkflowOptimizationResult {
   webgpuAcceleration: boolean;
   securityLevel: SecurityLevel;
   configuration: Record<string, unknown>; // was any
-  predictions: unknown; // was any
+  predictions: any; // was any
 }
 // === Event Types ===
 export interface CacheEvent {
@@ -481,7 +481,7 @@ export function createCacheKey(baseKey: string, workflowType?: LegalWorkflowType
   if (format) parts.push(format);
   return parts.join(':');
 }
-export function estimateMemoryFootprint(data: unknown, format: EncodingFormat = 'json'): number {
+export function estimateMemoryFootprint(data: any, format: EncodingFormat = 'json'): number {
   // was data: any
   try {
     const serialized = JSON.stringify(data);

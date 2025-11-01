@@ -4,31 +4,25 @@ import { EventEmitter } from "events";
  * Advanced LOD (Level of Detail) resource management with k-means clustering
  * Optimized for VS Code extension performance and Docker memory efficiency
  */
-
 type ScikitKMeans = {
   fit: (data: ArrayLike<ArrayLike<number>>) => Promise<unknown> | unknown;
   labels?: Iterable<number>;
   clusterCenters?: ArrayLike<ArrayLike<number>>;
 };
-
 export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
   if (!Array.isArray(vectors) || vectors.length === 0) {
     throw new Error("computeKMeansPlusPlus requires a non-empty vector set");
   }
-
   const sanitized = vectors.filter((row) => Array.isArray(row) && row.length > 0);
   if (sanitized.length === 0) {
     throw new Error("computeKMeansPlusPlus received no valid vectors");
   }
-
   const dimensions = sanitized[0].length;
   const homogeneous = sanitized.filter((row) => row.length === dimensions);
   if (homogeneous.length < sanitized.length) {
     throw new Error("computeKMeansPlusPlus requires all vectors to share the same dimensionality");
   }
-
   const desiredClusters = Math.min(Math.max(1, k), homogeneous.length);
-
   let KMeansCtor: new (options: Record<string, unknown>) => ScikitKMeans;
   try {
     const scikitModule = (await import("scikitjs")) as unknown as { KMeans: typeof KMeansCtor };
@@ -36,13 +30,11 @@ export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
   } catch (error) {
     throw new Error(`scikitjs is not installed. Install it with: "npm install scikitjs scikitjs-node". ${String(error)}`);
   }
-
   try {
     await import("scikitjs-node");
   } catch {
     // If the native bindings fail to load (e.g., browser build), scikitjs falls back to a slower backend.
   }
-
   const km = new KMeansCtor({
     nClusters: desiredClusters,
     init: "kmeans++",
@@ -50,24 +42,19 @@ export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
     tol: 1e-4,
     maxIter: 500,
   });
-
   const matrix = homogeneous.map((row) => Float64Array.from(row));
   const result = (await km.fit(matrix)) as Record<string, unknown> | undefined;
   const kmAny = km as unknown as Record<string, unknown>;
-
   const labelsSource =
     (result?.labels as Iterable<number> | undefined) ?? (kmAny.labels as Iterable<number> | undefined) ?? [];
   const centersSource =
     ((result?.clusterCenters as ArrayLike<ArrayLike<number>> | undefined) ??
       (kmAny.clusterCenters as ArrayLike<ArrayLike<number>> | undefined) ??
       []) as ArrayLike<ArrayLike<number>>;
-
   const labels = Array.from(labelsSource);
   const clusterCenters = Array.from(centersSource, (center) => Array.from(center as Iterable<number>));
-
   return { labels, clusterCenters };
 }
-
 export interface MemoryPool {
   id: string;
   size: number;
@@ -140,7 +127,7 @@ export class NeuralMemoryManager extends EventEmitter {
   private usageHistory: Array<UsageEntry> = []; // changed from Array<any>
   private neuralWeights: number[][][] = [];
   private maxMemoryMB: number;
-  private isTraining = false;
+  private isTraining = $state(false);
   private lodLevels: Record<string, LODLevel> = {
     ultra: {
       level: 4,
@@ -347,7 +334,6 @@ export class NeuralMemoryManager extends EventEmitter {
     for (let i = 0; i < k; i++) {
       centroids.push(Array.from({ length: dimensions }, () => Math.random() * (Math.max(...points.flat()) || 1)));
     }
-
     for (let iteration = 0; iteration < 50; iteration++) {
       const clusters: Array<{ centroid: number[]; points: number[][] }> = Array.from({ length: k }, () => ({
         centroid: [],
@@ -376,7 +362,7 @@ export class NeuralMemoryManager extends EventEmitter {
           (_, dim) => pts.reduce((s, p) => s + (p[dim] || 0), 0) / pts.length
         );
         if (this.euclideanDistance(newCentroid, centroids[i]) > 0.001) {
-          converged = false;
+          converged = $state(false);
         }
         centroids[i] = newCentroid;
         clusters[i].centroid = newCentroid;
@@ -422,10 +408,10 @@ export class NeuralMemoryManager extends EventEmitter {
         }
       }
       console.log('✅ Neural network training completed');
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('❌ Neural training error:', err instanceof Error ? err : String(err));
     } finally {
-      this.isTraining = false;
+      this.isTraining = $state(false);
     }
   }
   /**
@@ -649,7 +635,7 @@ export class NeuralMemoryManager extends EventEmitter {
     console.log('🚫 Disabling WebAssembly features');
   }
   private async pauseNeuralTraining(): Promise<void> {
-    this.isTraining = false;
+    this.isTraining = $state(false);
     console.log('⏸️ Pausing neural network training');
   }
   public optimizeMemoryAllocation(): void {
@@ -673,7 +659,7 @@ export class NeuralMemoryManager extends EventEmitter {
         // fire & forget
         void this.predictMemoryUsage();
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn('⚠️ Failed to update predictions:', err instanceof Error ? err : String(err));
     }
   }

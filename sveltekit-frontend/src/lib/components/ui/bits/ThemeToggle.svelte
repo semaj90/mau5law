@@ -2,7 +2,7 @@
   import { writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import { createEventDispatcher } from 'svelte';
-  import Button from './Button.svelte';
+  import { Button } from './Button.svelte';
   import { fade } from 'svelte/transition';
   interface ThemeToggleProps {
     theme?: 'default' | 'gaming' | 'legal';
@@ -138,7 +138,6 @@
       ? 'border-slate-700 text-slate-300 hover:bg-slate-800'
       : 'border-slate-300 text-slate-700 hover:bg-slate-100';
 </script>
-
 {#if variant === 'switch'}
   <div class="flex items-center space-x-3">
     {#if showLabel}
@@ -211,7 +210,6 @@
     </span>
   </button>
 {/if}
-
 <style>
   /* Gaming theme animations */
   button[data-theme='gaming'] {
@@ -248,4 +246,3 @@
     outline-offset: 2px;
   }
 </style>
-

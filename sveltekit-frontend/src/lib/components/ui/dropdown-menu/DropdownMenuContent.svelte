@@ -1,9 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-
   import { cn } from '$lib/utils';
-
   // Use slot instead of a: 'children' prop; avoid exporting: 'class' (reserved) — use className
   export let className = '';
   export let side: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
@@ -14,7 +12,6 @@
   export let collisionBoundary: Element | Element[] | undefined;
   export let collisionPadding: number = 8;
   export let sticky: 'partial' | 'always' = 'partial';
-
   // Compute classes reactively
   $: contentClasses = cn(
     'legal-ai-dropdown-content z-50 min-w-48 overflow-hidden rounded-xl border bg-slate-900/95 backdrop-blur-md shadow-2xl',
@@ -26,7 +23,6 @@
     'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
     className
   );
-
   // Initialize the dynamic component on mount (avoid top-level await)
   let ContentComponent: any = null;
   onMount(async () => {
@@ -39,7 +35,6 @@
     }
   });
 </script>
-
 <!-- Render the imported constructor via svelte:component and use a slot for children -->
 {#if ContentComponent}
   <svelte:component

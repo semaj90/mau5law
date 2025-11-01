@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ok: true, ts: Date.now() })}\n\n`));
 
       // typed event param
-      const onEvent = (evt: unknown) => {
+      const onEvent = (evt: any) => {
         try {
           controller.enqueue(encoder.encode(`event: update\n`));
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(evt)}\n\n`));

@@ -26,17 +26,16 @@
     } catch (e) {
       error = 'Inference failed.';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 </script>
-
 <div class="space-y-4 llm-inference-container">
   <h2>Local LLM Inference (Tauri Desktop)</h2>
   <div class="space-y-4">
     <label for="model">Model:</label>
     <select id="model" class="model-select" bind:value={selectedModel}>
-      {#each models as model}
+      {#each Array.isArray(models) ? models : [] as model}
         <option value={model}>{model}</option>
       {/each}
     </select>
@@ -49,16 +48,13 @@
     {loading ? 'Running...' : 'Run Inference'}
   </button>
   {#if error}
-    <div class="space-y-4 error">{error}</div>
-  {/if}
+    <div class="space-y-4 error">{error}{/if}
   {#if result}
     <div class="space-y-4 result">
       <h3>Result:</h3>
       <pre>{result}</pre>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .llm-inference-container {
@@ -119,4 +115,3 @@
     font-weight: 600;
   }
 </style>
-

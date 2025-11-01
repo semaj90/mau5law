@@ -20,7 +20,7 @@
   } = $props();
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import { cn } from '$lib/utils';
   let showTooltip = $state(false);
   let showConfig = $state(false);
@@ -56,7 +56,6 @@
     onupgrade?.();
   }
 </script>
-
 <div class="thinking-style-control">
   <!-- Main Toggle Button -->
   <div
@@ -155,10 +154,8 @@
                 <span class="feature">• Basic analysis</span>
               </div>
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
   </div>
   <!-- Configuration Panel -->
   {#if showConfig && premium}
@@ -204,8 +201,7 @@
         <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showConfig = false)}>Cancel</Button>
         <Button class="bits-btn" variant="crimson" size="sm">Save Configuration</Button>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Premium Upgrade Banner -->
   {#if !premium}
     <div class="premium-banner" transitislide={{ duration 300 }}>
@@ -217,20 +213,18 @@
         </div>
         <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>Upgrade Now</Button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* @unocss-include */
   .thinking-style-control {
-    position relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
   .toggle-container {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
   }
@@ -262,7 +256,7 @@
     }
   }
   .tooltip {
-    position absolute;
+    position: absolute;
     top: calc(100% + 0.5rem);
     left: 0;
     z-index: 50;
@@ -395,11 +389,11 @@
     opacity: 0.9;
   }
   .nier-border-glow {
-    position relative;
+    position: relative;
   }
   .nier-border-glow::before {
     content: '';
-    position absolute;
+    position: absolute;
     inset: -1px;
     padding: 1px;
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));
@@ -411,4 +405,3 @@
     opacity: 0.6;
   }
 </style>
-

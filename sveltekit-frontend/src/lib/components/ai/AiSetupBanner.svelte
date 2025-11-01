@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already been declared;
 https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
@@ -74,8 +74,7 @@ https: //svelte.dev/e/js_parse_error -->
     <div class="ai-setup-banner" role="status" aria-live="polite">
       <div class="title">AI setup check</div>
       {#if data.message}
-        <div class="msg">{data.message}</div>
-      {/if}
+        <div class="msg">{data.message}{/if}
       <div class="grid">
         <div class="item">
           <span class="label">GPU</span>
@@ -106,8 +105,7 @@ https: //svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 {/if}
 
 <style>

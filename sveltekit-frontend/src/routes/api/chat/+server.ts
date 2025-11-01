@@ -336,7 +336,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           let buffer = '';
 
           // Read loop: consume streamed chunks, split lines, and handle known message shapes
-          let finished = false;
+          let finished = $state(false);
           while (!finished) {
             const { done, value } = await reader.read();
             if (done) {
@@ -649,9 +649,9 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
  * Helper that consumes an iterable or async-iterable and concatenates all chunks into a single string.
  * Used to normalize results from generateChatResponse which may return string | Iterable | AsyncIterable.
  */
-function isAsyncIterable<T>(obj: unknown): obj is AsyncIterable<T> {
+function isAsyncIterable<T>(obj: any): obj is AsyncIterable<T> {
   // avoid: 'any' by checking a structural shape containing Symbol.asyncIterator
-  return !!obj && typeof (obj as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function';
+  return !!obj && typeof (obj as { [Symbol.asyncIterator]?: any })[Symbol.asyncIterator] === 'function';
 }
 
 // { CHANGED CODE }
@@ -678,13 +678,13 @@ function getOllamaEndpoint(ollamaCfg: OllamaConfigShape): string {
   return endpoint;
 }
 
-function getOllamaConfig(svc: unknown): OllamaConfigShape {
+function getOllamaConfig(svc: any): OllamaConfigShape {
   try {
     // defensive runtime extraction
-    const env = svc && (svc as { env?: unknown }).env;
+    const env = svc && (svc as { env?: any }).env;
     // read raw config (could be anything at runtime)
     // Access runtime config defensively without using @ts-expect-error
-    const raw = env && (env as { ollamaConfig?: unknown }).ollamaConfig;
+    const raw = env && (env as { ollamaConfig?: any }).ollamaConfig;
     if (raw && typeof raw === 'object') {
       // narrow to the expected shape
       const cfg = raw as OllamaConfigShape;
@@ -702,8 +702,8 @@ function getOllamaConfig(svc: unknown): OllamaConfigShape {
 }
 
 // Add iterable guard to avoid casting AsyncIterable -> Iterable
-function isIterable<T>(obj: unknown): obj is Iterable<T> {
-  return !!obj && typeof (obj as { [Symbol.iterator]?: unknown })[Symbol.iterator] === 'function';
+function isIterable<T>(obj: any): obj is Iterable<T> {
+  return !!obj && typeof (obj as { [Symbol.iterator]?: any })[Symbol.iterator] === 'function';
 }
 
 async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | Iterable<unknown>): Promise<string> {

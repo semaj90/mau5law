@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
     switch (moduleName) {
       case 'dimensional-arrays':
         initialContext = 'dimensional array processing';
-        useT5 = false;
+        useT5 = $state(false);
         break;
       case 't5-transformer':
         initialContext = 'T5 transformer processing';
@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
         break;
       case 'kernel-attention':
         initialContext = 'kernel attention splicing';
-        useT5 = false;
+        useT5 = $state(false);
         break;
       case 'webgpu-compute':
         initialContext = 'WebGPU compute shaders';
@@ -217,7 +217,6 @@ https://svelte.dev/e/js_parse_error -->
     return String(arr);
   }
 </script>
-
 <div class="modular-ai-container p-6 max-w-6xl mx-auto">
   <div class="header mb-6">
     <h1 class="text-3xl font-bold text-gray-800 mb-2">🧠 Modular AI Experience</h1>
@@ -240,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="module-switcher mb-6 p-4 bg-gray-50 rounded-lg">
       <h3 class="text-lg font-semibold mb-3">🔄 Modular Components</h3>
       <div class="flex flex-wrap gap-2">
-        {#each ['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute'] as module}
+        {#each Array.isArray(['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute']) ? ['dimensional-arrays', 't5-transformer', 'kernel-attention', 'webgpu-compute'] : [] as module}
           <button
             class="px-4 py-2 rounded-lg border transition-colors {currentModule === module
               ? 'bg-blue-600 text-white border-blue-600'
@@ -251,8 +250,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Input Configuration -->
     <div class="config-panel bg-white p-6 rounded-lg shadow">
@@ -302,8 +300,7 @@ https://svelte.dev/e/js_parse_error -->
               placeholder="Enter text for T5 processing..."
             ></textarea>
           </div>
-        </div>
-      {/if}
+        {/if}
       <div class="flex items-center gap-4 mt-6">
         <label class="flex items-center gap-2">
           <input type="checkbox" bind:checked={enableWebGPU} />
@@ -329,8 +326,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if error}
         <div class="error p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
           <p class="text-red-700">❌ Error: {error}</p>
-        </div>
-      {/if}
+        {/if}
       {#if results}
         <div class="space-y-4">
           <div class="result-item">
@@ -349,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="recommendations">
               <h4 class="font-semibold text-gray-700 mb-2">💡 Recommendations</h4>
               <div class="space-y-1">
-                {#each results.recommendations as rec}
+                {#each Array.isArray(results.recommendations) ? results.recommendations : [] as rec}
                   <button
                     class="block w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100
                            rounded border border-blue-200 transition-colors"
@@ -359,10 +355,8 @@ https://svelte.dev/e/js_parse_error -->
                   </button>
                 {/each}
               </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
   </div>
   <!-- Recommendations & History -->
@@ -375,14 +369,13 @@ https://svelte.dev/e/js_parse_error -->
           <button onclick={pickUpWhereLeftOff} class="text-sm text-green-700 hover:text-green-900 underline">
             Pick up where you left off?
           </button>
-        </div>
-      {/if}
+        {/if}
       <!-- Did You Mean -->
       {#if recommendations.didYouMean?.length > 0}
         <div class="recommendation-nier-bits-card bg-yellow-50 p-4 rounded-lg border border-yellow-200">
           <h4 class="font-semibold text-yellow-800 mb-2">🤔 Did You Mean</h4>
           <div class="space-y-1">
-            {#each recommendations.didYouMean.slice(0, 3) as suggestion}
+            {#each Array.isArray(recommendations.didYouMean.slice(0, 3)) ? recommendations.didYouMean.slice(0, 3) : [] as suggestion}
               <button
                 class="block text-sm text-yellow-700 hover:text-yellow-900 underline"
                 onclick={() => applyRecommendation(suggestion)}
@@ -391,32 +384,28 @@ https://svelte.dev/e/js_parse_error -->
               </button>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Others Searched -->
       {#if recommendations.othersSearched?.length > 0}
         <div class="recommendation-nier-bits-card bg-purple-50 p-4 rounded-lg border border-purple-200">
           <h4 class="font-semibold text-purple-800 mb-2">👥 Others Searched</h4>
           <div class="space-y-1">
-            {#each recommendations.othersSearched.slice(0, 3) as search}
+            {#each Array.isArray(recommendations.othersSearched.slice(0, 3)) ? recommendations.othersSearched.slice(0, 3) : [] as search}
               <div class="text-sm text-purple-700">{search}</div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Cutting Edge -->
       {#if recommendations.cuttingEdge?.length > 0}
         <div class="recommendation-nier-bits-card bg-red-50 p-4 rounded-lg border border-red-200">
           <h4 class="font-semibold text-red-800 mb-2">⚡ Cutting Edge</h4>
           <div class="space-y-1">
-            {#each recommendations.cuttingEdge.slice(0, 3) as edge}
+            {#each Array.isArray(recommendations.cuttingEdge.slice(0, 3)) ? recommendations.cuttingEdge.slice(0, 3) : [] as edge}
               <div class="text-sm text-red-700">{edge}</div>
             {/each}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Computation History -->
   {#if computationHistory.length > 0}
     <div class="history-section mt-6 bg-white p-6 rounded-lg shadow">
@@ -434,10 +423,8 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .modular-ai-container {
     font-family: 'Inter', system-ui, sans-serif;
@@ -451,4 +438,3 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 </style>
-

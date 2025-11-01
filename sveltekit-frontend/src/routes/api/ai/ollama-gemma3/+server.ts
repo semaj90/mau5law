@@ -40,7 +40,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     const data = await ollamaRes.json();
     return json({ response: data.response, model: 'gemma3-legal:latest' });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Safely derive a string message from unknown
     const message =
       error instanceof Error

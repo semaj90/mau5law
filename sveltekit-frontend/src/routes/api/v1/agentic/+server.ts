@@ -32,7 +32,7 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       default:
         throw error(400, `Unknown action: ${action}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic API error:', err);
 
@@ -94,7 +94,7 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
           throw error(400, `Unknown action: ${action}`);
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic POST error:', err);
 
@@ -124,7 +124,7 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
 }) as RequestHandler;
 
 // --- new helper to safely extract a message from unknown errors ---
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   // Prioritize Error instances
   if (err instanceof Error) return err.message;
   // Strings
@@ -181,7 +181,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     console.warn('Redis createClient not available on imported module; skipping Redis checks.');
   }
 
-  let redisConnected = false;
+  let redisConnected = $state(false);
   let recentActivity = 0;
   let errorCount = 0;
 
@@ -210,7 +210,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
         errorCount = errorKeys.length;
       } else {
         // No redis client available; skip Redis-dependent checks
-        redisConnected = false;
+        redisConnected = $state(false);
       }
     } catch (redisError) {
       console.warn('Redis connection failed:', redisError);
@@ -361,7 +361,7 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
         reject(error(408, 'Fix suggestion request timed out'));
       }, 30000);
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Fix suggestion failed: ${msg}`);
   }
@@ -436,7 +436,7 @@ async function processScreenshot(
         },
       }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Screenshot processing failed: ${msg}`);
   }
@@ -454,7 +454,7 @@ async function analyzeErrorText(errorText: string, startTime: number): Promise<R
       status: 'processing',
       processingTime: Math.round(processingTime),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Error text analysis failed: ${msg}`);
   }
@@ -491,7 +491,7 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
       fixes: result.rows,
       processingTime: Math.round(processingTime),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Contextual fixes retrieval failed: ${msg}`);
   }
@@ -528,7 +528,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
       success: success,
       processingTime: Math.round(processingTime),
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = getErrorMessage(err);
     throw error(500, `Fix status update failed: ${msg}`);
   }

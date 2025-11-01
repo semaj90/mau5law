@@ -222,7 +222,7 @@ export class N64LODManager {
     // Use different scaling algorithms based on size
     if (targetSize,.width <= 1,6) {>
       // Pixel-perfect scaling for very small textures
-      ctx.imageSmoothingEnabled, = false;
+      ctx.imageSmoothingEnabled, = $state(false);
     } else {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';

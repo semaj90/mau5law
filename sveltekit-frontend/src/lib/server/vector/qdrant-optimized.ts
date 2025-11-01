@@ -318,7 +318,7 @@ class OptimizedQdrantService {
       logger.info('Qdrant search completed', { ...context, processingTime });
 
       return formattedResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Pass an Error as the second argument and the LogContext as the third argument
@@ -419,7 +419,7 @@ class OptimizedQdrantService {
           batches: batches.length,
         })
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       // Ensure the logger receives an Error plus context
       logger.error(
@@ -493,7 +493,7 @@ class OptimizedQdrantService {
     return cached;
   }
 
-  private setSearchCache(queryHash: string, results: unknown[]): void {
+  private setSearchCache(queryHash: string, results: any[]): void {
     const memorySize = this.estimateResultMemory(results);
     const entry: SearchCache = {
       queryHash,
@@ -611,7 +611,7 @@ class OptimizedQdrantService {
   }
 
   // Helper methods
-  private generateQueryHash(collection: string, vector: number[], options?: unknown): string {
+  private generateQueryHash(collection: string, vector: number[], options?: any): string {
     const hashInput = JSON.stringify({ collection, vector: vector.slice(0, 5), options: options ?? null });
     return this.generateHash(hashInput);
   }
@@ -626,7 +626,7 @@ class OptimizedQdrantService {
     return Math.abs(hash).toString(36);
   }
 
-  private estimateResultMemory(results: unknown[]): number {
+  private estimateResultMemory(results: any[]): number {
     try {
       const json = JSON.stringify(results);
       // Prefer Node's Buffer.byteLength when available, otherwise use TextEncoder (browser)
@@ -838,7 +838,7 @@ export const qdrantOptimized = {
   search: (
     collection: string,
     query: string | number[],
-    options: { limit?: number; offset?: number; filter?: unknown; threshold?: number; useCache?: boolean } = {}
+    options: { limit?: number; offset?: number; filter?: any; threshold?: number; useCache?: boolean } = {}
   ) => optimizedQdrant.search(collection, query, options),
   upsertBatch: (
     collection: string,

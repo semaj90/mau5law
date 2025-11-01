@@ -6,11 +6,10 @@
   }
   let { children, asChild = false }: Props = $props();
 </script>
-
 {#if asChild}
-  {@render children?.()}
+  <slot />
 {:else}
   <button type="button" class="drawer-trigger">
-    {@render children?.()}
+    <slot />
   </button>
 {/if}

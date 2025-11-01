@@ -10,7 +10,7 @@ type DocumentRow = {
   content?: string;
   created_at?: string | Date;
   // allow extra fields stored in the row (e.g. json metadata)
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type DocumentMetadata = Record<string, unknown>;
@@ -67,7 +67,7 @@ type LangchainSearchResult = {
   pageContent: string;
   metadata?: { id?: string } & Record<string, unknown>;
   score?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type SemanticSearchResult = {
@@ -78,14 +78,14 @@ type SemanticSearchResult = {
   semantic_score?: number;
   relevance_level?: 'high' | 'medium' | 'low';
   metadata?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Add narrow types for runtime import shapes
 type VectorStore = {
   similaritySearch(query: string, k?: number): Promise<unknown[]>;
   // optional helpers may exist on stores
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type LangChainRagModule = {
@@ -93,7 +93,7 @@ type LangChainRagModule = {
   default?: () => Promise<VectorStore> | VectorStore;
   createVectorStore?: () => Promise<VectorStore> | VectorStore;
   vectorStore?: VectorStore;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // removed static import of getVectorStore because the module may export different shapes
@@ -282,7 +282,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     };
 
     return json(response);
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Normalize unknown error into a safe string message to avoid `any`
     console.error('Enhanced RAG API error:', err);
     const message =

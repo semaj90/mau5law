@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Collect immediate events emitted while we are listening
     const events: EventData[] = [];
-    const eventCollector = (eventData: unknown) => {
+    const eventCollector = (eventData: any) => {
       // Safely coerce unknown event payloads to an object
       const payload =
         typeof eventData === 'object' && eventData !== null

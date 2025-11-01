@@ -636,7 +636,7 @@ export class AIRecommendationEngine {
           console.error('❌ Recommendation Worker error:', error);
           this.interpreter.send({ type: 'ERROR', data: { message: error.message } });
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error('❌ Service Worker registration failed:', error);
       }
     }
@@ -685,7 +685,7 @@ export class AIRecommendationEngine {
       ]);
       console.log('✅ LangChain.js initialized with Ollama gemma3-legal');
       this.interpreter.send({ type: 'INITIALIZED' });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize LangChain.js: ', error);
       this.interpreter.send({ type: 'ERROR', data: { message: error instanceof Error ? error.message : String(error) } });
     }
@@ -757,7 +757,7 @@ export class AIRecommendationEngine {
       }
       // Fallback to existing system if LangChain not available
       return this.getFallbackLegalRecommendations(userContext, query, legalDomain);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Enhanced recommendation generation failed:', error);
       this.interpreter.send({ type: 'ERROR', data: { message: error instanceof Error ? error.message : String(error) } });
       return [];
@@ -789,7 +789,7 @@ export class AIRecommendationEngine {
         ).join(', ')
       });
       return this.parseLangChainRecommendations(response);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ LangChain AI recommendation failed:', error);
       return this.getFallbackLegalRecommendations(userContext, query, legalDomain);
     }
@@ -884,7 +884,7 @@ export class AIRecommendationEngine {
           } : undefined
         })) as FeedbackRecommendation[];
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to parse LangChain recommendations:', error);
     }
     return this.getFallbackLegalRecommendations();
@@ -979,7 +979,7 @@ export class AIRecommendationEngine {
    * Safely read a snapshot from various XState actor/interpreter shapes.
    * Supports: actor.getSnapshot(), actor.state, actor.snapshot, and defensive fallbacks.
    */
-  private readActorSnapshot(actor: Actor<AnyStateMachine> | undefined): unknown {
+  private readActorSnapshot(actor: Actor<AnyStateMachine> | undefined): any {
     if (!actor) return null;
     try {
       // xstate v5 actors/interpreters often expose getSnapshot()

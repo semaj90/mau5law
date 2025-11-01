@@ -7,7 +7,7 @@ AI Document Summarization - Generate summaries of legal documents
 	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule;
 
 	// UI components / icons
-	import EnhancedButton from '$lib/components/ui/enhanced-bits';
+	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte'';
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
 
 	// Fallback summary template
@@ -57,7 +57,7 @@ AI Document Summarization - Generate summaries of legal documents
 		} catch (err) {
 			console.error('Upload failed:', err);
 		} finally {
-			isUploading = false;
+			isUploading = $state(false);
 		}
 	}
 
@@ -87,7 +87,7 @@ AI Document Summarization - Generate summaries of legal documents
 			console.error('Summarization failed:', err);
 			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name);
 		} finally {
-			isSummarizing = false;
+			isSummarizing = $state(false);
 		}
 	}
 
@@ -163,7 +163,7 @@ AI Document Summarization - Generate summaries of legal documents
 						<div class="nes-text is-primary">Summary Options</div>
 					</div>
 					<div class="space-y-4">
-						{#each summaryTypes as type}
+						{#each Array.isArray(summaryTypes) ? summaryTypes : [] as type}
 							<label class="flex items-center gap-3 cursor-pointer">
 								<input type="radio" bind:group={summaryType} value={type.value} class="nes-radio" />
 								<div>

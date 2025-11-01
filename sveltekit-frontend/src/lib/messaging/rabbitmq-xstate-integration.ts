@@ -4,7 +4,6 @@
  */
 import { createMachine, assign, fromPromise } from 'xstate';
 import { browser } from '$app/environment';
-
 // --- ADDED: lightweight type definitions to fix TS errors --- //
 type UserHistoryItem = {
   action?: string;
@@ -12,7 +11,6 @@ type UserHistoryItem = {
   timestamp?: number;
   error?: any;
 };
-
 type WASMRequest = {
   id?: string;
   prompt?: string;
@@ -21,7 +19,7 @@ type WASMRequest = {
   enableRAG?: boolean;
   priority?: 'low' | 'medium' | 'high' | 'critical' | number;
   systemMessage?: string;
-  contextDocuments?: unknown[];
+  contextDocuments?: any[];
   stopSequences?: string[];
   modelPath?: string;
   threads?: number;
@@ -33,7 +31,6 @@ type WASMRequest = {
   correlationId?: string;
   replyTo?: string;
 };
-
 type WASMRuntimeContext = {
   wasmModule: any | null;
   wasmInstance: any | null;
@@ -57,7 +54,6 @@ type WASMRuntimeContext = {
   error: any | null;
 };
 // --- end added types --- //
-
 // RabbitMQ Web STOMP configuration (free tier)
 export interface RabbitMQConfig {
   host: string;
@@ -351,7 +347,7 @@ export const selfPromptingMachine = createMachine(
 export class RabbitMQXStateIntegration {
   private static connection: ConnectionLike = null;
   private static channel: any = null;
-  private static isInitialized = false;
+  private static isInitialized = $state(false);
   // Free RabbitMQ configuration (CloudAMQP free tier)
   private static config: RabbitMQConfig = {
     host: (import.meta.env.RABBITMQ_HOST as string) || 'localhost',
@@ -396,10 +392,8 @@ export class RabbitMQXStateIntegration {
           debug: (str: string) => console.log('RabbitMQ STOMP:', str),
           // onConnect/onStompError/onWebSocketClose will be attached below to keep instantiation portable
         };
-
         // Try various shapes: StompJS.Client, default export class, or top-level factory
         const ClientCandidate = (StompJS as any).Client ?? (StompJS as any).default ?? (StompJS as any);
-
         return await new Promise((resolve, reject) => {
           try {
             let client: any;
@@ -412,7 +406,6 @@ export class RabbitMQXStateIntegration {
               // Fallback: use object as-is (some builds export an already-configured client)
               client = ClientCandidate;
             }
-
             // attach lifecycle handlers in a defensive manner
             const onConnectHandler = () => {
               console.log('✅ Connected to RabbitMQ via WebSocket STOMP');
@@ -423,8 +416,7 @@ export class RabbitMQXStateIntegration {
                 .catch(e => console.error('setupQueues error:', e))
                 .finally(() => resolve({ connection: this.connection, isConnected: true }));
             };
-
-            const onStompErrorHandler = (frame: unknown) => {
+            const onStompErrorHandler = (frame: any) => {
               // Safely narrow the unknown STOMP frame and extract a meaningful message if available
               let frameMessage = 'unknown';
               try {
@@ -442,7 +434,6 @@ export class RabbitMQXStateIntegration {
               console.error('❌ RabbitMQ STOMP error:', frame);
               reject(new Error(`STOMP error: ${frameMessage ?? 'unknown'}`));
             };
-
             const onWebSocketCloseHandler = (evt: CloseEvent | Event) => {
               // CloseEvent provides code/reason; other Event shapes may be used by some clients
               try {
@@ -460,7 +451,6 @@ export class RabbitMQXStateIntegration {
                 console.log('🔌 RabbitMQ WebSocket closed (unable to parse event):', evt);
               }
             };
-
             // Different clients expose different callback fields / lifecycle APIs
             if (typeof client.onConnect === 'function') {
               client.onConnect = onConnectHandler;
@@ -478,11 +468,9 @@ export class RabbitMQXStateIntegration {
               // assign common names
               client.onConnect = client.onConnect ?? onConnectHandler;
             }
-
             // attach error/close handlers where available
             client.onStompError = client.onStompError ?? onStompErrorHandler;
             client.onWebSocketClose = client.onWebSocketClose ?? onWebSocketCloseHandler;
-
             if (typeof client.activate === 'function') {
               client.activate();
             } else if (typeof client.connect === 'function') {
@@ -500,11 +488,9 @@ export class RabbitMQXStateIntegration {
       } else {
         // Server environment - use amqplib
         const amqp = await import('amqplib');
-
         // FIX: include port and ensure vhost is encoded. amqplib expects amqp://user:pass@host:port/vhost
         const encodedVhost = this.config.vhost ? `/${encodeURIComponent(this.config.vhost)}` : '';
         const connectionString = `amqp${this.config.ssl ? 's' : ''}://${encodeURIComponent(this.config.username)}:${encodeURIComponent(this.config.password)}@${this.config.host}:${this.config.port}${encodedVhost}`;
-
         this.connection = await amqp.connect(connectionString);
         this.channel = await this.connection.createChannel();
         await this.setupQueues();
@@ -685,7 +671,7 @@ export class RabbitMQXStateIntegration {
         default:
           throw new Error(`Unknown message type: ${message.type}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error(`❌ Failed to process ${message.type}:`, msg);
       throw new Error(msg);
@@ -704,7 +690,6 @@ export class RabbitMQXStateIntegration {
   ): Promise<{ recommendedActions: Array<Omit<LegalAIMessage, 'id' | 'timestamp'>>; analysis: UserPatterns }> {
     const patterns = this.analyzeUserPatterns(userHistory);
     const recommendations: Omit<LegalAIMessage, 'id' | 'timestamp'>[] = [];
-
     if ((patterns.searchFrequency ?? 0) > 10) {
       recommendations.push({
         type: 'cache_invalidation',
@@ -715,7 +700,6 @@ export class RabbitMQXStateIntegration {
         priority: 7,
       });
     }
-
     if ((context.performanceMetrics.gpuUtilization ?? 0) < 0.3) {
       recommendations.push({
         type: 'gpu_task',
@@ -726,7 +710,6 @@ export class RabbitMQXStateIntegration {
         priority: 6,
       });
     }
-
     if ((context.performanceMetrics.cacheHitRate ?? 0) < 0.7) {
       recommendations.push({
         type: 'cache_invalidation',
@@ -737,7 +720,6 @@ export class RabbitMQXStateIntegration {
         priority: 8,
       });
     }
-
     if ((patterns.wasmInferenceFrequency ?? 0) > 5 && (patterns.averageWasmLatency ?? 0) > 1000) {
       recommendations.push({
         type: 'wasm_model_load',
@@ -750,7 +732,6 @@ export class RabbitMQXStateIntegration {
         priority: 7,
       });
     }
-
     if ((patterns.concurrentWasmRequests ?? 0) > 3) {
       recommendations.push({
         type: 'wasm_batch_inference',
@@ -762,7 +743,6 @@ export class RabbitMQXStateIntegration {
         priority: 6,
       });
     }
-
     if ((patterns.wasmErrors ?? 0) > 2) {
       recommendations.push({
         type: 'wasm_health_check',
@@ -774,7 +754,6 @@ export class RabbitMQXStateIntegration {
         priority: 8,
       });
     }
-
     return {
       recommendedActions: recommendations.map(rec => ({
         ...rec,
@@ -795,14 +774,12 @@ export class RabbitMQXStateIntegration {
     const sessionDuration = this.calculateSessionDuration(recentHistory as any[]);
     const mostUsedFeatures = this.extractMostUsedFeatures(recentHistory as any[]);
     const timePatterns = this.analyzeTimePatterns(recentHistory as any[]);
-
     const wasmInferenceFrequency = recentHistory.filter(item => item?.action === 'wasm_inference').length;
     const averageWasmLatency = this.calculateAverageWasmLatency(recentHistory as any[]);
     const concurrentWasmRequests = this.countConcurrentWasmRequests(recentHistory as any[]);
     const wasmErrors = recentHistory.filter(item => item?.action?.includes?.('wasm') && item?.error).length;
     const wasmModelUsage = this.analyzeWasmModelUsage(recentHistory as any[]);
     const wasmBatchOpportunities = this.identifyWasmBatchOpportunities(recentHistory as any[]);
-
     return {
       searchFrequency: recentHistory.filter(item => item?.action === 'search').length,
       popularSearches,
@@ -1324,24 +1301,20 @@ export class RabbitMQXStateIntegration {
       // ensure internal flags are reset even if errors occurred
       this.channel = null;
       this.connection = null;
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       console.log('🧹 RabbitMQ connections cleaned up');
     }
   }
 } // end class RabbitMQXStateIntegration
-
 // ---------------------------------------------------------------------------
 // ✅ Singleton Export
 // ---------------------------------------------------------------------------
 export const rabbitMQIntegration = new RabbitMQXStateIntegration();
-
 // Optional: expose globally for XState or browser debugging
 if (typeof globalThis !== 'undefined') {
   (globalThis as any).rabbitMQIntegration = rabbitMQIntegration;
 }
-
 // Keep class export (already exported above) and provide default export for convenience
 export default rabbitMQIntegration;
-
 // TODO: 12kb redis top3-k — Explain Top-K with web example (IN-PROGRESS)
 // Add docs/snippets server+browser showing safe RedisBloom Top-K usage for web apps

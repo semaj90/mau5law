@@ -7,7 +7,6 @@ import { QUICTensorStream } from '$lib/cache/proto-serializer'; // For QUIC stre
 import { redis } from '$lib/server/redis'; // For caching
 import { getOllamaEndpoint } from '$lib/utils/ollama-utils'; // Import the new utility function
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // For pgvector upsert
-
 // Augment the InferenceResult interface from '$lib/webasm/llama-cpp-engine'
 // to include the: 'embedding' property, as it's used in this file.
 declare module '$lib/webasm/llama-cpp-engine' {
@@ -15,7 +14,6 @@ declare module '$lib/webasm/llama-cpp-engine' {
     embedding?: number[]; // Add this property
   }
 }
-
 // Define an interface to extend the CONFIG type with missing properties
 interface ExtendedConfig {
   readonly OLLAMA_URL: string;
@@ -50,7 +48,6 @@ interface ExtendedConfig {
   ENABLE_QDRANT_UPSERT?: boolean; // New: Flag to enable Qdrant upsert
   QDRANT_COLLECTION_NAME?: string; // New: Qdrant collection name
 }
-
 // Define interfaces for WebASMLlamaCppEngine
 // interface InferenceRequest {
 //   prompt: string;
@@ -60,18 +57,15 @@ interface ExtendedConfig {
 //   // Add other properties if needed by runInference, based on its actual implementation
 //   // e.g., config: { contextSize: number, threads: number }
 // }
-
 // interface InferenceResult {
 //   embedding?: number[]; // Add this property
 //   // ... other properties that InferenceResult might have
 // }
-
 // Define interface for GPU embedding request payload
 interface GpuEmbeddingRequest {
   text: string;
   model: string;
 }
-
 // Define interface for VectorSearchService upsert payload
 interface DocumentUpsertPayload {
   id: string;
@@ -81,24 +75,20 @@ interface DocumentUpsertPayload {
   content: string;
   embedding: number[];
   timestamp: string;
-  [key: string]: unknown; // Allow additional metadata
+  [key: string]: any; // Allow additional metadata
 }
-
 // Define interface for VectorSearchService to provide type safety
 interface IVectorSearchService {
   upsertDocument(payload: DocumentUpsertPayload): Promise<void>;
   // Add other methods of VectorSearchService here if they are used in this file
   // e.g., searchDocuments(embedding: number[], threshold: number): Promise<any[]>;
 }
-
 // narrow runtime interface for quic tensor stream (move outside class)
 interface QUICTensorStreamRuntime {
   connect: (url: string) => Promise<void>;
-  send?: (data: unknown) => Promise<unknown>;
+  send?: (data: any) => Promise<unknown>;
 }
-
 export type RoutingDecision = 'gpu' | 'quic' | 'cache' | 'cpu';
-
 // Define input features for the neural router
 interface RouterInputFeatures {
   queryLatencyMs: number; // User-analytics: how long the last query took
@@ -115,7 +105,6 @@ interface RouterInputFeatures {
   caseId: string; // Current case ID
   currentVectorCount: number; // New: Total number of vectors in the primary store (e.g., pgvector)
 }
-
 // Define output logits from the neural router
 interface RoutingLogits {
   useGpu: number; // Probability to route to GPU for embeddings
@@ -127,7 +116,6 @@ interface RoutingLogits {
   useQdrantForStorage: number; // New: Probability to store embedding in Qdrant
   usePgVectorForStorage: number; // New: Probability to store embedding in pgvector
 }
-
 // Payload for orchestrating embedding
 interface EmbeddingOrchestrationPayload {
   id: string;
@@ -137,31 +125,27 @@ interface EmbeddingOrchestrationPayload {
   title: string;
   metadata?: Record<string, unknown>; // Changed: 'any' to: 'unknown'
 }
-
 export class AdaptiveIndexOrchestrator {
   private ollamaUrl!: string;
   private qdrantUrl!: string; // New: Qdrant URL
   private webASMLlamaCppEngine!: WebASMLlamaCppEngine;
   // QUICTensorStream typing may not be exported; use the runtime interface when available
   private quicTensorStream?: QUICTensorStreamRuntime;
-
   constructor() {
     this.ollamaUrl = getOllamaEndpoint(); // Use the utility function
     this.qdrantUrl = (CONFIG as ExtendedConfig).QDRANT_URL; // Initialize Qdrant URL
     this.webASMLlamaCppEngine = new WebASMLlamaCppEngine();
     try {
       // instantiate defensively and type-assert to runtime interface
-      const ctor = QUICTensorStream as unknown as { new (): unknown };
+      const ctor = QUICTensorStream as unknown as { new (): any };
       const inst = new ctor();
       this.quicTensorStream = inst as QUICTensorStreamRuntime;
     } catch {
       this.quicTensorStream = undefined;
     }
   }
-
   async decideRouting(context: { caseId: string; fileSize: number; textLength: number }): Promise<RoutingDecision> {
     const metrics = await aiAnalyticsService.getSystemLoad();
-
     const features = {
       fileSize: context.fileSize,
       textLength: context.textLength,
@@ -170,25 +154,22 @@ export class AdaptiveIndexOrchestrator {
       memoryUsage: metrics.memory,
       rabbitDepth: metrics.rabbitmqDepth,
     };
-
     try {
       const route = await predictWithRouter(features);
       if (route.useGPU) return 'gpu';
       if (route.useQUIC) return 'quic';
       if (route.useCache) return 'cache';
       return 'cpu';
-    } catch (e: unknown) {
+    } catch (e: any) {
       // heuristic fallback
       if (features.gpuLoad < 0.5 && features.fileSize > 1024 * 256) return 'gpu';
       if (features.rabbitDepth > 50) return 'cache';
       return 'cpu';
     }
   }
-
   async recordOutcome(taskId: string, success: boolean, latency: number) {
     await aiAnalyticsService.recordAIInferenceMetrics(taskId, { success: success ? 1 : 0, latency });
   }
-
   /**
    * Simulates calling the Neural Router (Gemma 3 + QLoRA adapter via Ollama)
    * to predict optimal routing decisions.
@@ -206,7 +187,6 @@ export class AdaptiveIndexOrchestrator {
       useQdrantForStorage: 0.1, // Default
       usePgVectorForStorage: 0.9, // Default
     };
-
     try {
       // Construct a prompt for Gemma 3 that includes the input features.
       // The Gemma model, with the QLoRA adapter, is expected to output routing logits.
@@ -223,12 +203,10 @@ export class AdaptiveIndexOrchestrator {
       - RAG Confidence: ${features.ragConfidence}
       - Text Length: ${features.textLength}
       - Current Vector Count: ${features.currentVectorCount}
-
       Predict the optimal routing probabilities for:
       [Use GPU, Use CPU, Use QUIC, Use REST, Cache Hit, Reindex, Use Qdrant for Storage, Use PgVector for Storage]
       Output in JSON format: {"useGpu": 0.X, "useCpu": 0.X, "useQuic": 0.X, "useRest": 0.X, "cacheHit": 0.X, "reindex": 0.X, "useQdrantForStorage": 0.X, "usePgVectorForStorage": 0.X}
       `;
-
       const url = `${this.ollamaUrl}/api/generate`;
       const res = await fetch(url, {
         method: 'POST',
@@ -243,10 +221,8 @@ export class AdaptiveIndexOrchestrator {
           stream: false,
         }),
       });
-
       const data = await res.json();
       const responseText = data?.response as string;
-
       // Attempt to parse the JSON output from Gemma
       const jsonMatch = responseText.match(/\{[^}]+\}/);
       if (jsonMatch) {
@@ -260,7 +236,7 @@ export class AdaptiveIndexOrchestrator {
       } else {
         console.warn('Gemma response did not contain parsable JSON for routing logits, using defaults.');
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error('Failed to get routing prediction from Ollama (Gemma3), using default logits:', e);
     } finally {
       await aiAnalyticsService.publishEvent('router.prediction', {
@@ -270,17 +246,14 @@ export class AdaptiveIndexOrchestrator {
         outputLogits: routingLogits, // Ensure outputLogits is included
       });
     }
-
     return routingLogits;
   }
-
   /**
    * Helper function to upsert embedding to Qdrant.
    */
   private async upsertToQdrant(item: EmbeddingOrchestrationPayload, embedding: number[]): Promise<void> {
     const collectionName = (CONFIG as ExtendedConfig).QDRANT_COLLECTION_NAME || 'legal_docs';
     const qdrantUpsertUrl = `${this.qdrantUrl}/collections/${collectionName}/points?wait=true`;
-
     try {
       const response = await fetch(qdrantUpsertUrl, {
         method: 'PUT',
@@ -302,7 +275,6 @@ export class AdaptiveIndexOrchestrator {
           ],
         }),
       });
-
       if (!response.ok) {
         const errorBody = await response.text();
         throw new Error(`Qdrant upsert failed: ${response.status} - ${errorBody}`);
@@ -313,7 +285,6 @@ export class AdaptiveIndexOrchestrator {
       throw e; // Re-throw to indicate failure
     }
   }
-
   /**
    * Orchestrates the embedding process based on neural router predictions.
    * This method decides which service (Ollama, WASM, GPU, etc.) and protocol (REST, QUIC)
@@ -323,7 +294,6 @@ export class AdaptiveIndexOrchestrator {
     const start = performance.now();
     let embedding: number[] | undefined;
     let decisionSource = 'default';
-
     // Simulate collecting dynamic features for the router
     const currentGpuLoad = Math.random() * 100; // Placeholder
     const currentCacheHitRate = (await redis.info('Keyspace'))?.match(/keyspace_hits:(\d+)/)?.[1] ?
@@ -335,7 +305,6 @@ export class AdaptiveIndexOrchestrator {
     const vectorDensity = 0.7; // Placeholder
     const ragConfidence = 0.8; // Placeholder
     const currentVectorCount = Math.floor(Math.random() * 2_000_000); // New: Simulate current vector count for router decision
-
     const routerFeatures: RouterInputFeatures = {
       queryLatencyMs: queryLatency,
       userFeedbackScore: userFeedback,
@@ -351,9 +320,7 @@ export class AdaptiveIndexOrchestrator {
       caseId: item.caseId,
       currentVectorCount: currentVectorCount, // New: Pass to router
     };
-
     const routingDecision = await this.predictRouting(routerFeatures);
-
     // 1. Check for cache hit first if router suggests it
     if (routingDecision.cacheHit > 0.7 && (CONFIG as ExtendedConfig).ENABLE_EMBEDDING_REDIS === true) { // Added config check
       try {
@@ -375,7 +342,6 @@ export class AdaptiveIndexOrchestrator {
         console.debug('Failed to retrieve embedding from Redis cache:', e);
       }
     }
-
     // 2. Orchestrate based on router's GPU/CPU/QUIC/REST decision
     if (routingDecision.useGpu > 0.5 && currentGpuLoad < 90) {
       // Route to GPU orchestrator (e.g., a Go microservice)
@@ -394,7 +360,6 @@ export class AdaptiveIndexOrchestrator {
         console.warn('GPU orchestration failed, falling back to other methods:', e);
       }
     }
-
     if (!embedding && routingDecision.useQuic > 0.5 && (CONFIG as ExtendedConfig).QUIC_ENABLED === true) {
       // Attempt QUIC streaming for embedding if supported and router suggests
       try {
@@ -414,7 +379,6 @@ export class AdaptiveIndexOrchestrator {
         console.warn('QUIC embedding failed, falling back:', e);
       }
     }
-
     if (!embedding && routingDecision.useCpu > 0.5) {
       // Route to WebAssembly for browser-side inference if router suggests
       try {
@@ -434,7 +398,6 @@ export class AdaptiveIndexOrchestrator {
         console.warn('WASM embedding failed, falling back:', e);
       }
     }
-
     // Fallback to Ollama (REST) if no other route was successful or preferred by router
     if (!embedding) {
       try {
@@ -455,11 +418,10 @@ export class AdaptiveIndexOrchestrator {
         } else {
           console.error('Ollama embedding API returned no embedding:', data);
         }
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.error('Ollama embedding call failed:', e);
       }
     }
-
     // If an embedding was successfully generated, store it and cache it
     if (embedding) {
       // Store in pgvector if router suggests or AUTO_STORE_PGVECTOR is true
@@ -480,7 +442,6 @@ export class AdaptiveIndexOrchestrator {
           console.error('Failed to upsert embedding to pgvector:', e);
         }
       }
-
       // Store in Qdrant if router suggests or ENABLE_QDRANT_UPSERT is true
       if (routingDecision.useQdrantForStorage > 0.5 || (CONFIG as ExtendedConfig).ENABLE_QDRANT_UPSERT === true) {
         try {
@@ -489,7 +450,6 @@ export class AdaptiveIndexOrchestrator {
           // Error already logged in upsertToQdrant
         }
       }
-
       // Cache in Redis if configured
       if ((CONFIG as ExtendedConfig).ENABLE_EMBEDDING_REDIS === true) {
         try {
@@ -503,7 +463,6 @@ export class AdaptiveIndexOrchestrator {
       console.error(`Failed to generate embedding for ${item.type}:${item.id} after all attempts.`);
   await aiAnalyticsService.publishEvent('orchestrator.embedding.failed', { caseId: item.caseId, itemId: item.id, itemType: item.type });
     }
-
     // If reindex is suggested, publish an event (non-blocking)
     if (routingDecision.reindex > 0.5) {
       aiAnalyticsService.publishEvent('index.reindex_suggested', {
@@ -511,9 +470,8 @@ export class AdaptiveIndexOrchestrator {
         itemId: item.id,
         itemType: item.type,
         reason: 'Router suggestion',
-      }).catch((err: unknown) => console.error('Failed to publish reindex event:', err));
+      }).catch((err: any) => console.error('Failed to publish reindex event:', err));
     }
-
     await aiAnalyticsService.publishEvent('orchestrator.embedding', {
       caseId: item.caseId,
       itemId: item.id,
@@ -523,9 +481,7 @@ export class AdaptiveIndexOrchestrator {
       embeddingGenerated: !!embedding,
       routerLogits: routingDecision,
     });
-
     return embedding;
   }
 }
-
 export const adaptiveIndexOrchestrator = new AdaptiveIndexOrchestrator();

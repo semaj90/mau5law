@@ -27,7 +27,7 @@ export interface DocumentMipmapCache {
 
 export class CHRROMMipmapIntegration {
   private mipmapCache = new Map<string, DocumentMipmapCache>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -116,7 +116,7 @@ export class CHRROMMipmapIntegration {
           : Date.now()) - startTime;
       console.log(`✅ Generated ${patterns.size} mipmap CHR-ROM patterns in ${totalTime.toFixed(2)}ms`);
       return mipmapCache;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to generate mipmap patterns for ${docId}:`, error);
       throw error;
     }
@@ -164,7 +164,7 @@ export class CHRROMMipmapIntegration {
           compressionRatio: options.compressed ? 0.6 : 1.0,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to convert texture to CHR-ROM pattern:`, error);
       throw error;
     }
@@ -266,7 +266,7 @@ export class CHRROMMipmapIntegration {
         { width, height, depthOrArrayLayers: 1 }
       );
       return texture;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to create texture:', error);
       return null;
     }
@@ -445,7 +445,7 @@ export class CHRROMMipmapIntegration {
       // Generate sample mipmap pattern
       const sampleData = new Uint8Array(64 * 64 * 4).fill(128);
       const mockTexture = await this.createTextureFromImageData(sampleData.buffer, 64, 64);
-      let sampleGenerated = false;
+      let sampleGenerated = $state(false);
       const performanceMetrics = {
         mipmapGenerationTime: 0,
         chrromConversionTime: 0,
@@ -495,7 +495,7 @@ export class CHRROMMipmapIntegration {
           performanceMetrics,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Integration test failed:', error);
       return {
         success: false,
@@ -624,7 +624,7 @@ export class CHRROMMipmapIntegration {
     } else {
       // Full cleanup
       this.mipmapCache.clear();
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
       console.log('🧹 CHR-ROM Mipmap Integration fully disposed');
     }
   }

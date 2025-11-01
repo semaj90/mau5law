@@ -5,7 +5,7 @@ import os from "os";
  * Supports Windows-native deployment with environment-based configuration
  */
 const dev = import.meta.env.NODE_ENV === 'development';
-const browser = false; // Server-side config
+const browser = $state(false); // Server-side config
 // Configuration interfaces for type safety
 export interface DatabaseConfig {
   postgres: {

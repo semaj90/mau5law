@@ -86,13 +86,13 @@ export interface UploadFile {
   status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
   preview?: string;
   extractedText?: string;
-  aiAnalysis?: unknown;
+  aiAnalysis?: any;
   error?: string;
 }
 
 // Define the expected structure of the successful upload API response
 interface UploadApiResponseData {
-  aiAnalysis?: unknown;
+  aiAnalysis?: any;
   extractedText?: string;
   // Add other properties if the API returns them, e.g., the created evidence item
   // item?: Evidence;
@@ -237,7 +237,7 @@ export const evidenceActions = {
         filteredItems: items,
         isLoading: false,
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       evidenceGrid.update(state => ({
         ...state,
@@ -289,7 +289,7 @@ export const evidenceActions = {
         items: state.items.filter(item => item.id !== evidenceId), // Access id directly
         selectedItems: new Set([...state.selectedItems].filter(id => id !== evidenceId)),
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed: 'any' to: 'unknown'
       console.error('Delete evidence error:', error);
       throw error;
@@ -440,7 +440,7 @@ export const uploadActions = {
         ...modalState,
         isProcessing: false,
       }));
-    } catch (error: unknown) {
+    } catch (error: any) {
       uploadModal.update(state => ({
         ...state,
         isProcessing: false,

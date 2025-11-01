@@ -28,7 +28,7 @@ export interface ErrorContext {
   userAgent?: string;
   timestamp: Date;
   requestId?: string;
-  metadata?: { [key: string]: unknown }
+  metadata?: { [key: string]: any }
 }
 
 export interface AppError {
@@ -87,7 +87,7 @@ class ProductionLogger implements Logger {
           timestamp: new Date().toISOString()
         })
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Fallback to console if logging service is down
       console.error(`[ERROR] ${message}`, error, (err as Error).message);
     }
@@ -106,7 +106,7 @@ class ProductionLogger implements Logger {
           timestamp: new Date().toISOString()
         })
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.warn(`[WARN] ${message}`, context, (err as Error).message);
     }
   }
@@ -124,7 +124,7 @@ class ProductionLogger implements Logger {
           timestamp: new Date().toISOString()
         })
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.info(`[INFO] ${message}`, context, (err as Error).message);
     }
   }
@@ -134,7 +134,7 @@ class ProductionLogger implements Logger {
       console.debug(`[DEBUG] ${message}`, context);
     }
   }
-  private serializeError(error: AppError): { [key: string]: unknown } {
+  private serializeError(error: AppError): { [key: string]: any } {
     return {
       id: error.id,
       type: error.type,
@@ -280,7 +280,7 @@ class ErrorHandler {
         },
         body: JSON.stringify(report),
       });
-    } catch (err: unknown) {
+    } catch (err: any) {
       // Combine error messages for a more informative log
       const combinedMessage = `Failed to send error to monitoring service: ${(err as Error).message}. Original error: ${error.message}`;
       await this.logger.error(combinedMessage, error);

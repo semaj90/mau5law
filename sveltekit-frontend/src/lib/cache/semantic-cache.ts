@@ -103,7 +103,7 @@ export class SemanticCache {
 					knownKeys = scanResult ?? []; // Correctly access the keys array
 				}
 			}
-		} catch (err: unknown) {
+		} catch (err: any) {
 			// If listing keys is not supported or fails, bail out to compute path
 			console.warn('Semantic cache: key listing failed or not supported, skipping fallback scan.', err);
 			console.log(`❌ Semantic cache miss for query: "${query}"`);

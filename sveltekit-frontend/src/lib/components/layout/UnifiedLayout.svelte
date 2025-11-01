@@ -2,8 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
-  import NavBar from './NavBar.svelte';
-
+  import { NavBar } from './NavBar.svelte';
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
@@ -11,7 +10,6 @@
     title?: string;
     hideNav?: boolean;
   }
-
   // safer: get props object and destructure (avoids TS/runtime issues)
   const _props = $props() as Partial<Props> | undefined;
   let children = _props?.children;
@@ -19,11 +17,9 @@
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
   let hideNav: boolean = _props?.hideNav ?? false;
-
   let sidebarOpen = $state(false);
   let mounted = $state(false);
   let autoVariant = $state(variant);
-
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
     if (!p || typeof p !== 'string') {
@@ -35,7 +31,6 @@
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
     else autoVariant = variant;
   }
-
   // subscribe if page is a readable store
   if (page && typeof (page as any).subscribe === 'function') {
     (page as any).subscribe(($p: any) => {
@@ -49,26 +44,21 @@
       updateVariantFromPath(p);
     });
   }
-
   // derived booleans (safe guards)
   let isDemoRoute = $derived(() => autoVariant === 'demo');
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
   let isAdminRoute = $derived(() => autoVariant === 'admin');
-
   $effect(() => {
     mounted = true;
   });
 </script>
-
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can toggle it -->
     <NavBar bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
-
   <!-- Skip Navigation Link for Accessibility -->
   <a href="#main-content" class="skip-nav">Skip to main content</a>
-
   <!-- Main Content Area -->
   <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay for Mobile -->
@@ -81,9 +71,7 @@
         role="button"
         tabindex="0"
         onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
-      ></div>
-    {/if}
-
+      >{/if}
     <!-- Main Content -->
     <main
       id="main-content"
@@ -96,9 +84,7 @@
       {#if title}
         <div class="page-header nes-container with-title">
           <p class="title">{title}</p>
-        </div>
-      {/if}
-
+        {/if}
       <div class="content-container">
         {#if mounted && children}
           {@render children()}
@@ -108,8 +94,7 @@
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
-  import NavBar from './NavBar.svelte';
-
+  import { NavBar } from './NavBar.svelte';
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
@@ -117,7 +102,6 @@
     title?: string;
     hideNav?: boolean;
   }
-
   // safer: get props object and destructure (avoids TS/runtime issues)
   const _props = $props() as Partial<Props> | undefined;
   let children = _props?.children;
@@ -125,11 +109,9 @@
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
   let hideNav: boolean = _props?.hideNav ?? false;
-
   let sidebarOpen = $state(false);
   let mounted = $state(false);
   let autoVariant = $state(variant);
-
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
     if (!p || typeof p !== 'string') {
@@ -141,7 +123,6 @@
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
     else autoVariant = variant;
   }
-
   // subscribe if page is a readable store
   if (page && typeof (page as any).subscribe === 'function') {
     (page as any).subscribe(($p: any) => {
@@ -155,26 +136,21 @@
       updateVariantFromPath(p);
     });
   }
-
   // derived booleans (safe guards)
   let isDemoRoute = $derived(() => autoVariant === 'demo');
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
   let isAdminRoute = $derived(() => autoVariant === 'admin');
-
   $effect(() => {
     mounted = true;
   });
 </script>
-
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can toggle it -->
     <NavBar bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
-
   <!-- Skip Navigation Link for Accessibility -->
   <a href="#main-content" class="skip-nav">Skip to main content</a>
-
   <!-- Main Content Area -->
   <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay for Mobile -->
@@ -187,9 +163,7 @@
         role="button"
         tabindex="0"
         onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
-      ></div>
-    {/if}
-
+      >{/if}
     <!-- Main Content -->
     <main
       id="main-content"
@@ -202,9 +176,7 @@
       {#if title}
         <div class="page-header nes-container with-title">
           <p class="title">{title}</p>
-        </div>
-      {/if}
-
+        {/if}
       <div class="content-container">
         {#if mounted && children}
           {@render children()}
@@ -215,12 +187,10 @@
   [data-variant='minimal'] .main-content {
     padding: 1rem;
   }
-
   /* Full Layout */
   [data-variant='full'] .content-container {
     max-width: 1200px;
   }
-
   /* Demo Layout */
   [data-variant='demo'] .main-content {
     background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
@@ -232,7 +202,6 @@
     border: 2px solid var(--n64-primary, #4a90e2);
     backdrop-filter: blur(5px);
   }
-
   /* Admin Layout */
   [data-variant='admin'] .main-content {
     background: linear-gradient(135deg, rgba(46, 26, 26, 0.8), rgba(60, 35, 35, 0.8));
@@ -244,7 +213,6 @@
     border: 2px solid var(--nes-error, #d0021b);
     backdrop-filter: blur(5px);
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .main-content {
@@ -261,7 +229,6 @@
       padding: 1.5rem;
     }
   }
-
   /* Custom scrollbar for content areas */
   .main-content ::-webkit-scrollbar {
     width: 8px;
@@ -279,7 +246,6 @@
     background: var(--n64-secondary, #7ed321);
     box-shadow: 0 0 8px var(--n64-secondary, #7ed321);
   }
-
   /* Print styles */
   @media print {
     .unified-layout {
@@ -295,7 +261,6 @@
       color: black !important;
     }
   }
-
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     .unified-layout {
@@ -307,7 +272,6 @@
       border-width: 3px !important;
     }
   }
-
   /* Reduced motion support */
   @media (prefers-reduced-motion reduce) {
     * {
@@ -316,4 +280,3 @@
     }
   }
 </style>
-

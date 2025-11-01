@@ -19,7 +19,7 @@ https://svelte.dev/e/expected_token -->
 import { onMount, onDestroy } from 'svelte';
 import { simdGPUTilingEngine, calculateOptimalTileSize } from '$lib/evidence/simd-gpu-tiling-engine.js';
 import { ultimateNeuralTopologyOrchestrator } from '$lib/ai/ultimate-neural-topology-orchestrator.js';
-import AdaptiveRenderingEngine from './AdaptiveRenderingEngine.svelte';
+import { AdaptiveRenderingEngine } from './AdaptiveRenderingEngine.svelte';
 import type { QualityTier } from './AdaptiveRenderingEngine.svelte';
 export interface Props {
   // UI Component data
@@ -39,9 +39,9 @@ export interface Props {
   enablePredictiveLoading?: boolean;
   cacheResults?: boolean;
   // Event callbacks
-  onTilingComplete?: (result: unknown) => void;
+  onTilingComplete?: (result: any) => void;
   onShaderGenerated?: (shader: string) => void;
-  onCompressionComplete?: (data: unknown) => void;
+  onCompressionComplete?: (data: any) => void;
 }
 let {
   componentType,
@@ -164,13 +164,13 @@ async function processTiledShaderEmbeds(): Promise<void> {
   } catch (error) {
     console.error('❌ SIMD Tiled Shader Embeds failed:', error);
   } finally {
-    isProcessing = false;
+    isProcessing = $state(false);
   }
 }
 /**
  * Convert various source data types to Float32Array
  */
-async function convertSourceDataToFloat32Array(source: unknown): Promise<Float32Array> {
+async function convertSourceDataToFloat32Array(source: any): Promise<Float32Array> {
   if (source instanceof Float32Array) {
     return sourc;
   }
@@ -260,7 +260,7 @@ async function canvasToFloat32Array(canvas: HTMLCanvasElement): Promise<Float32A
 /**
  * Generate WebGL/WebGPU shaders from tiled data
  */
-async function generateShadersFromTiles(tiles: unknown[]): Promise<void> {
+async function generateShadersFromTiles(tiles: any[]): Promise<void> {
   console.log(`🎨 Generating shaders from ${tiles.length} tiles...`);
   for (const tile of tiles) {
     // Generate unique shader based on tile characteristics
@@ -397,7 +397,7 @@ function generateShaderCode(config: {
 /**
  * Apply CHR-ROM style compression to tiled data
  */
-async function applyCHRROMCompression(tiles: unknown[]): Promise {
+async function applyCHRROMCompression(tiles: any[]): Promise {
   const startTime = performance.now();
   // Calculate original size
   const originalSize = tiles.reduce((total, tile) => total + tile.data.byteLength, 0);
@@ -424,7 +424,7 @@ async function applyCHRROMCompression(tiles: unknown[]): Promise {
 /**
  * Generate CHR-ROM pattern from tile data
  */
-function generateCHRROMPattern(tile: unknown): string {
+function generateCHRROMPattern(tile: any): string {
   const size = 16; // CHR-ROM standard tile size
   const scale = tile.width / siz;
   // Downsample tile data to 16x16
@@ -601,8 +601,7 @@ export function getCHRPatterns(): string[] {
         <div class="processing-overlay">
           <div class="spinner"></div>
           <div class="processing-text">GPU Tiling in Progress...</div>
-        </div>
-      {/if}
+        {/if}
       <!-- Tile Information Overlay -->
       {#if tiledData.length > 0 && !isProcessing}
         <div class="tile-info-overlay">
@@ -619,8 +618,7 @@ export function getCHRPatterns(): string[] {
               </div>
             </div>
           {/each}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Adaptive Rendering Engine Integration -->
     <div class="adaptive-rendering-container">
@@ -688,8 +686,7 @@ export function getCHRPatterns(): string[] {
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- CHR-ROM Patterns (if compressed) -->
   {#if compressionResults && !isProcessing}
     <div class="chr-patterns">
@@ -700,14 +697,13 @@ export function getCHRPatterns(): string[] {
         <span class="compression-ratio">{compressionResults.compressionRatio.toFixed(1)}:1 compression</span>
       </div>
       <div class="pattern-grid">
-        {#each compressionResults.chrPatterns.slice(0, 8) as pattern}
+        {#each Array.isArray(compressionResults.chrPatterns.slice(0, 8)) ? compressionResults.chrPatterns.slice(0, 8) : [] as pattern}
           <div class="pattern-preview">
             {@html pattern}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Control Panel -->
   <div class="control-panel">
     <button
@@ -785,13 +781,13 @@ export function getCHRPatterns(): string[] {
   min-height: 400px;
 }
 .canvas-container {
-  position relative;
+  position: relative;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   overflow: hidden;
 }
 .tiled-canv.processing-overlay {
-  position absolute;
+  position: absolute;
   top: 0,
   left: 0;
   right: 0,
@@ -817,7 +813,7 @@ export function getCHRPatterns(): string[] {
   text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 .tile-info-overlay {
-  position absolute;
+  position: absolute;
   top: 0,
   left: 0;
   right: 0,
@@ -825,7 +821,7 @@ export function getCHRPatterns(): string[] {
   pointer-events: none;
 }
 .tile-info {
-  position absolute;
+  position: absolute;
   transform: translate(-50%, -50%);
 }
 .tile-confidence {

@@ -1,5 +1,4 @@
 export type Entity = { text: string; label: string; start?: number; end?: number };
-
 export async function extractEntities(text: string): Promise<Entity[]> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,7 +11,6 @@ export async function extractEntities(text: string): Promise<Entity[]> {
   } catch (err) {
     // fallback simple regex-based entities (dates, emails)
   }
-
   const entities: Entity[] = [];
   const emailRe = /[\w.-]+@[\w.-]+\.[A-Za-z]{2,6}/g;
   const dateRe = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g;

@@ -60,7 +60,7 @@ https://svelte.dev/e/attribute_duplicate -->
         ],
       }
       messages = [...messages, aiResponse];
-      isLoading = false;
+      isLoading = $state(false);
     }, 1500);
   }
   function handleReferenceClick(reference: any) {
@@ -69,7 +69,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = false;
+    showCitationDialog = $state(false);
   }
   function clearMessages() {
     messages = [];
@@ -100,7 +100,7 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
   <!-- Messages -->
   <div class="flex-1 overflow-y-auto mb-4" style="max-height: {maxHeight}">
-    {#each messages as message}
+    {#each Array.isArray(messages) ? messages : [] as message}
       <div class="mb-4 p-4 border rounded-lg">
         <div class="message-content">
           {message.content}
@@ -108,7 +108,7 @@ https://svelte.dev/e/attribute_duplicate -->
         {#if message.references && showReferences}
           <div class="mt-2 space-y-2">
             <h4>References:</h4>
-            {#each message.references as reference}
+            {#each Array.isArray(message.references) ? message.references : [] as reference}
               <button
                 class="flex items-center gap-2 p-2 text-left hover:bg-gray-50 rounded"
                 onclick={() => handleReferenceClick(reference)}
@@ -218,7 +218,7 @@ https://svelte.dev/e/attribute_duplicate -->
         onclick
         keydown={(e) => {
           if (e.key === "Escape") {
-            showCitationDialog = false;
+            showCitationDialog = $state(false);
           }
         }}
         <div class="flex items-center gap-2 mb-4">

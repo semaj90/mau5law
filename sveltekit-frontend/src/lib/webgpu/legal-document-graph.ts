@@ -660,11 +660,11 @@ export class WebGPULegalDocumentGraph {
     try {
       // Prefer standardized destroy(), then close(), then cancel().
       // Use property presence checks with typed assertions rather than `any`.
-      if ('destroy' in resource && typeof (resource as { destroy?: unknown }).destroy === 'function') {
+      if ('destroy' in resource && typeof (resource as { destroy?: any }).destroy === 'function') {
         (resource as { destroy?: () => void }).destroy();
-      } else if ('close' in resource && typeof (resource as { close?: unknown }).close === 'function') {
+      } else if ('close' in resource && typeof (resource as { close?: any }).close === 'function') {
         (resource as { close?: () => void }).close();
-      } else if ('cancel' in resource && typeof (resource as { cancel?: unknown }).cancel === 'function') {
+      } else if ('cancel' in resource && typeof (resource as { cancel?: any }).cancel === 'function') {
         (resource as { cancel?: () => void }).cancel();
       }
     } catch (err) {

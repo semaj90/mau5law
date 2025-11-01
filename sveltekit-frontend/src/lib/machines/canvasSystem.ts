@@ -22,8 +22,7 @@ type CanvasEvent =
   | { type: 'CLEAR_CANVAS' }
   | { type: 'ERROR'; error: string }
   | { type: 'CLEAR_ERROR' };
-
-function isInteractiveCanvasState(obj: unknown): obj is InteractiveCanvasState {
+function isInteractiveCanvasState(obj: any): obj is InteractiveCanvasState {
   if (typeof obj !== 'object' || obj === null) return false;
   const rec = obj as Record<string, unknown>;
   return (
@@ -33,15 +32,13 @@ function isInteractiveCanvasState(obj: unknown): obj is InteractiveCanvasState {
     rec.viewport !== null
   );
 }
-
-function resolveDoneEventOutput(event: unknown): InteractiveCanvasState | undefined {
+function resolveDoneEventOutput(event: any): InteractiveCanvasState | undefined {
   if (typeof event !== 'object' || event === null) return undefined;
   const rec = event as Record<string, unknown>;
   if ('data' in rec && isInteractiveCanvasState(rec.data)) return rec.data;
   if ('output' in rec && isInteractiveCanvasState(rec.output)) return rec.output;
   return undefined;
 }
-
 export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
   {
     id: 'canvasSystem',
@@ -206,7 +203,7 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
       }),
       saveDone: assign({
         // make the onDone event handling tolerant of xstate versions (event.data or event.output)
-        canvasState: (context, event: unknown) => {
+        canvasState: (context, event: any) => {
           const resolved = resolveDoneEventOutput(event) ?? context.canvasState;
           return resolved;
         },
@@ -228,7 +225,6 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
     },
   }
 );
-
 export const createCanvasActor = () => {
   const service = interpret(canvasSystemMachine);
   service.start();

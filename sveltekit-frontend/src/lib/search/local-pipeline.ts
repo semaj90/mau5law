@@ -30,7 +30,7 @@ export class LocalSearchPipeline {
   private fuse: Fuse<LocalDoc>;
   private docs = new Map<string, LocalDoc>();
   private fallbackCache = new TinyTTLCache<LocalSearchResult[]>(90_000);
-  private ready = false;
+  private ready = $state(false);
   private redis:
     | undefined;
     | {

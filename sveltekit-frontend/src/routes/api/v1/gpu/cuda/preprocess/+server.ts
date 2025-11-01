@@ -101,7 +101,7 @@ async function checkCudaWorkerAvailability(workerPath: string): Promise<CudaWork
       available: true,
       version: version || undefined,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       available: false,
       error: error instanceof Error ? error.message : 'Unknown error',

@@ -8,17 +8,17 @@ export interface Dialog<T = unknown> {
   position?: 'center' | 'top' | 'bottom';
   persistent?: boolean;
   resolve?: (result: T) => void;
-  reject?: (reason?: unknown) => void;
+  reject?: (reason?: any) => void;
 }
 export interface Modal<T = unknown> {
   id: string;
-  component?: unknown;
+  component?: any;
   props?: Record<string, unknown>;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
   type?: 'default' | 'confirm' | 'alert' | 'system';
   persistent?: boolean;
   resolve?: (result: T) => void;
-  reject?: (reason?: unknown) => void;
+  reject?: (reason?: any) => void;
 }
 function createDialogStore() {
   const { subscribe, update } = writable<Dialog<unknown>[]>([]);
@@ -31,13 +31,13 @@ function createDialogStore() {
       const newDialog: Dialog<unknown> = {
         ...(dialog as Dialog<unknown>),
         id,
-        resolve: (r: unknown) => resolve(r as T),
+        resolve: (r: any) => resolve(r as T),
         reject,
       };
       update(dialogs => [...dialogs, newDialog]);
     });
   }
-  function remove(id: string, result?: unknown) {
+  function remove(id: string, result?: any) {
     update(dialogs => {
       const dialog = dialogs.find(d => d.id === id);
       if (dialog?.resolve) {
@@ -46,7 +46,7 @@ function createDialogStore() {
       return dialogs.filter(d => d.id !== id);
     });
   }
-  function reject(id: string, reason?: unknown) {
+  function reject(id: string, reason?: any) {
     update(dialogs => {
       const dialog = dialogs.find(d => d.id === id);
       if (dialog?.reject) {
@@ -172,13 +172,13 @@ function createModalStore() {
       const newModal: Modal<unknown> = {
         ...(modal as Modal<unknown>),
         id,
-        resolve: (r: unknown) => resolve(r as T),
+        resolve: (r: any) => resolve(r as T),
         reject,
       };
       update(modals => [...modals, newModal]);
     });
   }
-  function remove(id: string, result?: unknown) {
+  function remove(id: string, result?: any) {
     update(modals => {
       const modal = modals.find(m => m.id === id);
       if (modal?.resolve) {
@@ -187,7 +187,7 @@ function createModalStore() {
       return modals.filter(m => m.id !== id);
     });
   }
-  function reject(id: string, reason?: unknown) {
+  function reject(id: string, reason?: any) {
     update(modals => {
       const modal = modals.find(m => m.id === id);
       if (modal?.reject) {
@@ -208,7 +208,7 @@ function createModalStore() {
   }
   // Convenience method for opening custom component modals
   function open<T = unknown>(
-    component: unknown,
+    component: any,
     props: Record<string, unknown> = {},
     options: Partial<Modal>
   ): Promise<T> {

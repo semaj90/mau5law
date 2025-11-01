@@ -5,7 +5,7 @@ import sharp from 'sharp';
 import fs from 'fs';
 
 // small helper for safer logging of unknown errors
-const safeErrorToString = (err: unknown): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));
+const safeErrorToString = (err: any): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));
 
 // light typing for pdf2pic module to avoid `any` casts
 type Pdf2PicModule = {
@@ -74,12 +74,12 @@ export class EnhancedOCRProcessor {
   // tesseract worker instance (initialized once)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private worker: any = null;
-  private tesseractReady = false;
-  private initialized = false;
+  private tesseractReady = $state(false);
+  private initialized = $state(false);
 
   constructor() {
     // warm up Tesseract in background (best-effort)
-    this.initializeTesseract().catch((e: unknown) => console.warn('Tesseract warmup failed:', safeErrorToString(e)));
+    this.initializeTesseract().catch((e: any) => console.warn('Tesseract warmup failed:', safeErrorToString(e)));
   }
 
   private async initializeTesseract(): Promise<void> {
@@ -102,16 +102,16 @@ export class EnhancedOCRProcessor {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
       try {
         await this.worker.recognize(tinyPngDataUrl);
-      } catch (e: unknown) {
+      } catch (e: any) {
         // non-fatal warmup failure
         console.warn('Tesseract warmup recognize failed:', safeErrorToString(e));
       }
 
       this.tesseractReady = true;
       console.log('✅ Tesseract initialized successfully');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize Tesseract:', safeErrorToString(error));
-      this.initialized = false;
+      this.initialized = $state(false);
     }
   }
 
@@ -130,7 +130,7 @@ export class EnhancedOCRProcessor {
       }
       result.processing_time = Date.now() - startTime;
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Document processing failed:', safeErrorToString(error));
       throw error;
     }
@@ -208,7 +208,7 @@ export class EnhancedOCRProcessor {
         },
         processing_time: 0, // caller will set actual time
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ PDF processing error:', safeErrorToString(error));
       throw error;
     }
@@ -266,7 +266,7 @@ export class EnhancedOCRProcessor {
         file_size: buffer.length,
         content_type: 'application/pdf',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Could not extract PDF metadata:', error);
       return {
         page_count: 1,
@@ -281,13 +281,13 @@ export class EnhancedOCRProcessor {
       const enhancedPath = imagePath.replace(/\.(\w+)$/, '_enhanced.$1');
       await sharp(imagePath).greyscale().normalize().sharpen().threshold(128).toFile(enhancedPath);
       return enhancedPath;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Image enhancement failed, using original:', error);
       return imagePath;
     }
   }
 
-  private extractTextBlocks(data: unknown): TextBlock[] {
+  private extractTextBlocks(data: any): TextBlock[] {
     const blocks: TextBlock[] = [];
     const srcBlocks = (data && typeof data === 'object' && (data as Record<string, unknown>).blocks) || [];
     if (!Array.isArray(srcBlocks)) return blocks;
@@ -309,7 +309,7 @@ export class EnhancedOCRProcessor {
     return blocks;
   }
 
-  private detectImageRegions(data: unknown): ImageRegion[] {
+  private detectImageRegions(data: any): ImageRegion[] {
     const regions: ImageRegion[] = [];
     const srcBlocks = (data && typeof data === 'object' && (data as Record<string, unknown>).blocks) || [];
     if (!Array.isArray(srcBlocks)) return regions;
@@ -340,7 +340,7 @@ export class EnhancedOCRProcessor {
         if (filePath && fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn(`⚠️ Failed to cleanup temp file ${filePath}:`, safeErrorToString(error));
       }
     });
@@ -356,7 +356,7 @@ export class EnhancedOCRProcessor {
         const result = await this.processDocument(filePath);
         results.push(result);
         console.log(`✅ Completed processing ${path.basename(filePath)} in ${result.processing_time}ms`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error(`❌ Failed to process ${path.basename(filePath)}:`, safeErrorToString(error));
         // Continue with other documents
       }

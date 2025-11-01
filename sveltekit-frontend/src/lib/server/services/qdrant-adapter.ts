@@ -1,5 +1,4 @@
 import { QdrantVectorService } from './qdrant-vector';
-
 // Minimal adapter that normalizes various Qdrant client method names.
 // It uses `any` and runtime checks so callers don't need to know the exact client API.
 export async function upsertVector(
@@ -15,7 +14,7 @@ export async function upsertVector(
     return await client.upsert({
       collection_name: collection,
       points: [{ id, vector, payload }],
-    }).catch((e: unknown) => {
+    }).catch((e: any) => {
       // some SDK variants expect different key names
       throw e;
     });
@@ -34,7 +33,6 @@ export async function upsertVector(
   }
   throw new Error('Qdrant client does not expose an upsert-like method');
 }
-
 export async function searchVector(
   vector: number[],
   limit = 5,

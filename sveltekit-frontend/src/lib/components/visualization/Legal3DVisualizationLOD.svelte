@@ -17,7 +17,7 @@
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import {
     Eye, Layers, RotateCcw, ZoomIn, ZoomOut,
     Users, FileText
@@ -363,7 +363,7 @@ if (!browser) return;
       // Use demo data for development
       await loadDemo3DData();
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   async function generateEntityMeshLODs(): Promise<void> {
@@ -478,8 +478,7 @@ if (!browser) return;
        1, 0, -1,  1, 1, 0, 1,
        1, 0,  1,  1, 1, 0, 1,
       -1, 0,  1,  1, 1, 0, 1,
-      // Top
-       0, 2,  0,  1, 0, 1, 1  // Magenta
+      // Top: 0, 2,  0,  1, 0, 1, 1  // Magenta
     ];
     const indices = [
       // Base
@@ -656,7 +655,7 @@ if (!browser) return;
     lastMousePos = { x: event.clientX, y: event.clientY };
   }
   function handleMouseUp(): void {
-    isDragging = false;
+    isDragging = $state(false);
   }
   function handleWheel(event: WheelEvent): void {
     event.preventDefault();
@@ -741,7 +740,6 @@ if (!browser) return;
     applyLODFiltering();
   }
 </script>
-
 <div class="legal-3d-visualization-lod nes-container with-title">
   <p class="title">🎲 3D Legal Data Visualization</p>
   <!-- 3D Controls -->
@@ -797,8 +795,7 @@ if (!browser) return;
           <div class="nes-progress-bar indeterminate"></div>
         </div>
         <p>Loading 3D scene...</p>
-      </div>
-    {/if}
+      {/if}
     <!-- Controls overlay -->
     <div class="controls-overlay">
       <div class="control-hint">🖱️ Drag to rotate • 🔄 Scroll to zoom • 🎮 N64-style LOD</div>
@@ -826,8 +823,7 @@ if (!browser) return;
       <div class="entity-connections">
         <span>Connections: {selectedEntity.connections.length}</span>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- 3D Scene Statistics -->
   <div class="scene-stats nes-container">
     <h4>📊 3D Scene Statistics</h4>
@@ -859,7 +855,6 @@ if (!browser) return;
     </div>
   </div>
 </div>
-
 <style>
   .legal-3d-visualization-lod {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
@@ -1016,4 +1011,3 @@ if (!browser) return;
     }
   }
 </style>
-

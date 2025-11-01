@@ -3,10 +3,8 @@
 import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import { Socket } from 'net';
-
 // Add explicit types to avoid `any`
 type HealthStatus = 'healthy' | 'unhealthy' | 'error' | 'unknown';
-
 export interface ServiceConfig {
   name: string;
   port: number;
@@ -16,30 +14,26 @@ export interface ServiceConfig {
   // healthCheck returns a Promise<boolean>
   healthCheck: () => Promise<boolean>;
   // allow extra properties used elsewhere
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export interface RouteConfig {
   endpoints: string[];
   description: string;
   dependencies?: string[];
   required?: boolean;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export interface HealthCheckRecord {
   status?: HealthStatus;
   lastCheck?: string;
   error?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 type ServiceCheckResult = ServiceConfig & {
   status: HealthStatus;
   lastCheck: string;
   error?: string;
 };
-
 export class ApiServiceRegistry {
   // replace `any` with explicit types
   routes: Map<string, RouteConfig>;
@@ -376,11 +370,9 @@ export class ApiServiceRegistry {
       missing: [],
       extra: [],
     };
-
     if (!existsSync(apiPath)) {
       return { ...results, error: 'API directory not found' };
     }
-
     // Scan existing API routes
     const scanDir = (dir: string, prefix = '') => {
       try {
@@ -399,7 +391,6 @@ export class ApiServiceRegistry {
       }
     };
     scanDir(apiPath);
-
     // Build a set of registered endpoint paths (normalized)
     const registeredEndpoints = new Set<string>();
     for (const config of this.routes.values()) {
@@ -408,18 +399,15 @@ export class ApiServiceRegistry {
         registeredEndpoints.add(routePath);
       });
     }
-
     // Missing: registered but not present on disk
     results.missing = Array.from(registeredEndpoints).filter(
       endpoint => !results.existing.some(existing => existing === endpoint || existing.startsWith(endpoint))
     );
-
     // Extra: present on disk but not registered
     results.extra = results.existing.filter(
       existing =>
         !Array.from(registeredEndpoints).some(endpoint => endpoint === existing || existing.startsWith(endpoint))
     );
-
     return results;
   }
   generateServiceReport() {

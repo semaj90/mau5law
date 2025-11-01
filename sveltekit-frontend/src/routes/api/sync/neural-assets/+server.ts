@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
               0
             ),
             optimizationLevels: [
-              ...new Set(chrManifests.map((m: { optimizationLevel: unknown }) => m.optimizationLevel)),
+              ...new Set(chrManifests.map((m: { optimizationLevel: any }) => m.optimizationLevel)),
             ].length,
           },
           timestamp: new Date().toISOString(),
@@ -249,7 +249,7 @@ export const GET: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Neural topology assets API error:', error);
     return json(
       {
@@ -411,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Neural topology assets POST API error:', error);
     return json(
       {

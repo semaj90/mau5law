@@ -75,7 +75,7 @@ export class FocusManager {
       if (element) {
         element.focus();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Narrow unknown to a string message safely
       const msg = error instanceof Error ? error.message : String(error);
       console.warn(`Failed to set focus on element: ${selector}`, msg);
@@ -195,7 +195,7 @@ export class KeyboardNavigation {
         if (candidate) index = elements.indexOf(candidate);
       }
       if (index === -1) return;
-      let handled = false;
+      let handled = $state(false);
       const newIndex = this.handleArrowKeys(elements, index, e.key);
       if (newIndex !== index) {
         handled = true;

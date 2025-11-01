@@ -64,7 +64,7 @@ export interface CaseStoreAPI extends Readable<CaseState> {
   analyzeCase(
     caseId: string,
     analysisType: 'evidence' | 'legal' | 'timeline' | 'poi'
-  ): Promise<{ success: boolean; analysis?: unknown; error?: string }>;
+  ): Promise<{ success: boolean; analysis?: any; error?: string }>;
   loadLocalFallback(): void;
   reset: () => void;
 }
@@ -129,7 +129,7 @@ const createCaseStore = (): CaseStoreAPI => {
           isLoading: false,
         }));
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -164,7 +164,7 @@ const createCaseStore = (): CaseStoreAPI => {
         }));
         return { success: false, error: error.message || 'Failed to load case' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -208,7 +208,7 @@ const createCaseStore = (): CaseStoreAPI => {
         }));
         return { success: false, error: error.message || 'Failed to create case' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -249,7 +249,7 @@ const createCaseStore = (): CaseStoreAPI => {
         }));
         return { success: false, error: error.message || 'Failed to update case' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -290,7 +290,7 @@ const createCaseStore = (): CaseStoreAPI => {
         }));
         return { success: false, error: error.message || 'Failed to delete case' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -340,7 +340,7 @@ const createCaseStore = (): CaseStoreAPI => {
         }));
         return { success: false, error: error.message || 'Failed to generate report' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
         ...state,
@@ -424,7 +424,7 @@ const createCaseStore = (): CaseStoreAPI => {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         return { success: false, error: error.message || 'Failed analysis' };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       return { success: false, error: message || 'Network error during analysis' };
     }

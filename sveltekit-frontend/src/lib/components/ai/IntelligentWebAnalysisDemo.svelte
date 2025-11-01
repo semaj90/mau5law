@@ -129,7 +129,7 @@ if (!browser) return;
     } catch (error: any) {
       addLog(`❌ Analysis failed: ${error.message}`);
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
       analysisState.progress = 0;
     }
   }
@@ -310,7 +310,6 @@ if (!browser) return;
       : '0'
   );
 </script>
-
 <div class="intelligent-analysis-demo">
   <div class="demo-header">
     <h2>🧠 Intelligent Web Analysis Pipeline</h2>
@@ -376,8 +375,7 @@ if (!browser) return;
             <div class="progress-fill" style="width: {analysisState.progress}%"></div>
           </div>
           <p class="progress-text">{analysisState.currentStep}</p>
-        </div>
-      {/if}
+        {/if}
       <div class="metrics-grid">
         <div class="metric">
           <span class="metric-label">Elements</span>
@@ -467,20 +465,18 @@ if (!browser) return;
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Live Logs -->
     <div class="panel logs-panel">
       <h3>📜 Processing Logs</h3>
       <div class="logs-container">
-        {#each logs as log}
+        {#each Array.isArray(logs) ? logs : [] as log}
           <div class="log-entry">{log}</div>
         {/each}
       </div>
     </div>
   </div>
 </div>
-
 <style>
   .intelligent-analysis-demo {
     max-width: 1400px;
@@ -616,7 +612,7 @@ if (!browser) return;
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .progress-text {
     font-size: 0.875rem;
@@ -764,5 +760,3 @@ if (!browser) return;
     }
   }
 </style>
-
-

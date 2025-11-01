@@ -7,12 +7,12 @@ import type { RedisClientType } from 'redis';
 type RedisClientOptions = Parameters<NonNullable<typeof createClient>>[0];
 
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes default
-export const memoryCache = new Map<string, { value: unknown; expires: number }>();
+export const memoryCache = new Map<string, { value: any; expires: number }>();
 
 const REDIS_URL = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
 let redisClient: RedisClientType | null = null;
-let redisConnected = false;
+let redisConnected = $state(false);
 
 // Simple configuration for retries and timeouts
 const REDIS_OP_MAX_RETRIES = Number(process.env.REDIS_OP_MAX_RETRIES ?? 3);
@@ -25,7 +25,7 @@ function sleep(ms: number) {
 
 async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
   let attempt = 0;
-  let lastErr: unknown;
+  let lastErr: any;
   while (attempt < REDIS_OP_MAX_RETRIES) {
     try {
       // timeout wrapper
@@ -76,7 +76,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       }
 
       redisClient = createClientFn(redisConfig);
-      redisClient.on('error', (err: unknown) => console.error('Redis client error:', err));
+      redisClient.on('error', (err: any) => console.error('Redis client error:', err));
     }
     if (!redisConnected && redisClient) {
       // Capture the client in a local variable and ensure `connect` is callable.
@@ -99,7 +99,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
   } catch (err) {
     console.error('Failed to connect to Redis, falling back to memory cache:', err);
     redisClient = null;
-    redisConnected = false;
+    redisConnected = $state(false);
     return null;
   }
 }
@@ -108,7 +108,7 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
  * Set a key in Redis (if available) and in the module-scoped memory cache.
  * ttlMs is optional and defaults to MEMORY_CACHE_TTL_MS.
  */
-export async function setCache(key: string, value: unknown, ttlMs?: number): Promise<void> {
+export async function setCache(key: string, value: any, ttlMs?: number): Promise<void> {
   const ttl = typeof ttlMs === 'number' && ttlMs > 0 ? ttlMs : MEMORY_CACHE_TTL_MS;
   // Write to memory cache
   try {
@@ -130,7 +130,7 @@ export async function setCache(key: string, value: unknown, ttlMs?: number): Pro
   }
 }
 
-export function getFromMemoryCache(key: string): { found: boolean; value?: unknown } {
+export function getFromMemoryCache(key: string): { found: boolean; value?: any } {
   const cur = memoryCache.get(key);
   if (!cur) return { found: false };
   if (cur.expires < Date.now()) {

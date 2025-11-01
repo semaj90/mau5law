@@ -22,7 +22,7 @@ export async function fetchWithTimeout(
     });
     clearTimeout(id);
     return response;
-  } catch (error: unknown) {
+  } catch (error: any) {
     clearTimeout(id);
     throw error; // preserve original behavior; error is now typed safely as unknown
   }
@@ -57,7 +57,7 @@ export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 // ===== PERFORMANCE UTILITIES =====
-export function debounce<T extends (...args: unknown[]) => unknown>(
+export function debounce<T extends (...args: any[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -72,18 +72,18 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     }, wait);
   };
 }
-export function throttle<T extends (...args: unknown[]) => unknown>(
+export function throttle<T extends (...args: any[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
-  let inThrottle = false;
+  let inThrottle = $state(false);
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       // use spread operator instead of .apply
       func(...(args as Parameters<T>));
       inThrottle = true;
       window.setTimeout(() => {
-        inThrottle = false;
+        inThrottle = $state(false);
       }, limit);
     }
   };
@@ -152,7 +152,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       textArea.remove();
       return Boolean(result);
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Failed to copy to clipboard:', formatError(error));
     return false;
   }
@@ -187,7 +187,7 @@ export const storage = {
     if (!isBrowser) return;
     try {
       localStorage.setItem(_key, JSON.stringify(value));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to save to localStorage:', formatError(error));
     }
   },
@@ -227,7 +227,7 @@ export type WithElementRef<T, E extends Element = HTMLElement> = T & {
 };
 
 // helper to safely format unknown errors for logging
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);

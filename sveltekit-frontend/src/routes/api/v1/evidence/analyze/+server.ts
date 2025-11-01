@@ -218,7 +218,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         userId: isTestMode ? 'test-user' : getUserId(locals as unknown as LocalsWithUser),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Evidence analysis failed:', error);
     if (error instanceof z.ZodError) {
       return json(

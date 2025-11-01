@@ -40,7 +40,7 @@ type WebReadableLike = {
   };
 };
 type FromWebFn = (stream: WebReadableLike) => Readable;
-function isReadableStream(obj: unknown): obj is WebReadableLike {
+function isReadableStream(obj: any): obj is WebReadableLike {
   return typeof obj === 'object' && obj !== null && typeof (obj as WebReadableLike).getReader === 'function';
 }
 
@@ -50,7 +50,7 @@ function isReadableStream(obj: unknown): obj is WebReadableLike {
  * Converts various stream/body types into a Buffer.
  * Supports Node Readable, Web ReadableStream, Blob, TypedArrays and ArrayBuffer.
  */
-export async function streamToBuffer(body: unknown): Promise<Buffer> {
+export async function streamToBuffer(body: any): Promise<Buffer> {
   if (body == null) return Buffer.alloc(0);
 
   // Node Readable stream
@@ -105,7 +105,7 @@ export async function streamToBuffer(body: unknown): Promise<Buffer> {
 
   // object shapes that sometimes wrap binary data (e.g., { data: Uint8Array })
   if (typeof body === 'object' && body !== null) {
-    const maybe = body as { data?: unknown };
+    const maybe = body as { data?: any };
     if (maybe.data instanceof Uint8Array) return Buffer.from(maybe.data);
     if (maybe.data instanceof ArrayBuffer) return Buffer.from(maybe.data);
   }

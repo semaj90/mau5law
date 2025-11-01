@@ -46,7 +46,7 @@ export class YoRHaMipmapShaders {
   private device: GPUDevice | null = null;
   private mipmapPipelines = new Map<string, GPUComputePipeline>();
   private streamingBuffers = new Map<string, GPUBuffer[]>();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private readonly DEFAULT_CONFIG: MipmapConfig = {
     maxMipLevels: 12,
     filterMode: 'linear',
@@ -499,7 +499,7 @@ export class YoRHaMipmapShaders {
       buffers.forEach(buffer => buffer.destroy());
     });
     this.streamingBuffers.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 YoRHa mipmap shaders disposed');
   }
 }

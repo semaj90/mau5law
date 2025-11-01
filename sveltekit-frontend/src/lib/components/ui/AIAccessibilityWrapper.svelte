@@ -5,7 +5,7 @@
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet;
-    aiResult?: unknown;
+    aiResult?: any;
     operation?: string;
     status?: 'idle' | 'processing' | 'completed' | 'error';
     enableVoiceCommands?: boolean;
@@ -47,7 +47,7 @@
   function toggleVoiceCommands() {
     if (voiceCommandsActive) {
       aiAccessibilityPatterns?.stopVoiceCommands();
-      voiceCommandsActive = false;
+      voiceCommandsActive = $state(false);
     } else {
       aiAccessibilityPatterns?.startVoiceCommands();
       voiceCommandsActive = true;
@@ -93,7 +93,6 @@
     toggleVoiceCommands();
   }
 </script>
-
 <div
   class="ai-accessibility-wrapper"
   role="region"
@@ -118,10 +117,8 @@
       {#if voiceCommandsActive}
         <div class="voice-status" role="status" aria-live="polite">
           Voice commands active. Say: "help" for available commands.
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- AI Status Indicator -->
   <div class="ai-status-indicator {status}" role="status" aria-live="polite" aria-atomic="true">
     {#if status === 'processing'}
@@ -138,8 +135,7 @@
       <div class="error-indicator">
         <span class="icon" aria-hidden="true">❌</span>
         <span class="status-text">{operation} failed</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Main Content Area -->
   <div class="ai-content-area" bind:this={containerElement} role="main" aria-label={`${operation} results`}>
@@ -185,10 +181,9 @@
     </div>
   </details>
 </div>
-
 <style>
   .ai-accessibility-wrapper {
-    position relative;
+    position: relative;
     padding: 1rem;
     border: 1px solid var(--color-border, #333);
     border-radius: 8px;
@@ -338,4 +333,3 @@
     }
   }
 </style>
-

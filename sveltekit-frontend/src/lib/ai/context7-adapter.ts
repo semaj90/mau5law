@@ -2,7 +2,7 @@
 // This file provides performContext7Search, context7AgentOrchestrator, and context7SemanticAuditor
 // as small wrappers that work with the real WASM binding or the mock implementation.
 import context7 from '$lib/integrations/context7-wasm';
-export async function ensureContext7Ready(opts?: unknown) {
+export async function ensureContext7Ready(opts?: any) {
   try {
     const impl = await context7;
     if (impl && typeof impl.initialize === 'function') {
@@ -22,7 +22,7 @@ export async function performContext7Search(_options: {
   includeDocs?: boolean;
 }) {
   const impl = await ensureContext7Ready();
-  if (!impl || typeof (impl as { performSearch?: (...args: unknown[]) => unknown }).performSearch !== 'function') {
+  if (!impl || typeof (impl as { performSearch?: (...args: any[]) => unknown }).performSearch !== 'function') {
     // mock fallback: do a trivial in-memory search stub
     const results = [] as { id: string; content: string; score: number }[];
     for (let i = 0; i < (options.maxResults || 5); i++) {
@@ -30,7 +30,7 @@ export async function performContext7Search(_options: {
     }
     return results;
   }
-  return (impl as { performSearch: (_options: unknown) => unknown }).performSearch(options);
+  return (impl as { performSearch: (_options: any) => unknown }).performSearch(options);
 }
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
 // triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.
@@ -43,11 +43,11 @@ export const context7AgentOrchestrator = {
     }
     return (impl as any).triggerAgent(trigger);
   },
-  logAuditEntry(entry: unknown) {
+  logAuditEntry(entry: any) {
     // best-effort: call real implementation or noop
     (async () => {
       const impl = await ensureContext7Ready();
-      if (impl && typeof (impl as { logAuditEntry?: (...args: unknown[]) => unknown }).logAuditEntry === 'function') {
+      if (impl && typeof (impl as { logAuditEntry?: (...args: any[]) => unknown }).logAuditEntry === 'function') {
         try {
           (impl as unknown).logAuditEntry?.(entry);
         } catch {

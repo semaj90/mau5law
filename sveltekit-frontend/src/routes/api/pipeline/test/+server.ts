@@ -19,7 +19,7 @@ type RedisCompat = any & {
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
 }) as RedisCompat;
-let redisConnected = false;
+let redisConnected = $state(false);
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async () => {
     health.postgresql = !!pgTest;
   } catch (pgError) {
     console.error('PostgreSQL health check failed:', pgError);
-    health.postgresql = false;
+    health.postgresql = $state(false);
   }
 
   // Redis
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
     health.redis = pongOk;
   } catch (redisError) {
     console.error('Redis health check failed:', redisError);
-    health.redis = false;
+    health.redis = $state(false);
   }
 
   // Compute endpoint
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async () => {
     health.compute = computeRes.ok;
   } catch (computeError) {
     console.error('Compute health check failed:', computeError);
-    health.compute = false;
+    health.compute = $state(false);
   }
 
   // Vector sync endpoint
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
     health.vectorSync = syncRes.ok;
   } catch (syncError) {
     console.error('Vector sync health check failed:', syncError);
-    health.vectorSync = false;
+    health.vectorSync = $state(false);
   }
 
   const overallTrue = Object.values(health).filter(v => v === true).length;
@@ -292,7 +292,7 @@ async function testWebGPUFallback(_testData?: Record<string, unknown>): Promise<
       deviceUsed: webgpuResult.device,
       success: !!webgpuResult.success,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return {
       testInput: testText,
@@ -340,7 +340,7 @@ async function testStressLoad(_testData?: Record<string, unknown>): Promise<Reco
           jobId: result?.jobId,
           success: !!result?.jobId,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error ?? 'Unknown error');
         return {
           index: i,

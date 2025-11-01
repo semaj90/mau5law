@@ -112,7 +112,7 @@ export class EnhancedAuthService {
       try {
         // route all lucia session creation through the helper which is robust to signatures
         session = await this.createLuciaSession(existingUser.id);
-      } catch (e: unknown) {
+      } catch (e: any) {
         // swallow session creation failures
         console.warn('lucia create session failed', e);
         session = null;
@@ -127,7 +127,7 @@ export class EnhancedAuthService {
         metadata: { rememberMe: loginData.rememberMe },
       });
       return { success: true, user: existingUser, session };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Login error:', error);
       return { success: false, error: 'An unexpected error occurred' };
     }
@@ -179,13 +179,13 @@ export class EnhancedAuthService {
       let session: Session | null = null;
       try {
         if (newUser) session = await this.createLuciaSession(newUser.id);
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.warn('create session on register failed', e);
         session = null;
       }
 
       return { success: true, user: newUser, session };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Registration error:', error);
       return { success: false, error: 'Registration failed. Please try again.' };
     }
@@ -198,7 +198,7 @@ export class EnhancedAuthService {
       if (typeof invalidate === 'function') {
         try {
           await invalidate(sessionId);
-        } catch (e: unknown) {
+        } catch (e: any) {
           console.warn('lucia.invalidateSession failed', e);
         }
       }
@@ -209,7 +209,7 @@ export class EnhancedAuthService {
         userAgent: request.request.headers.get('user-agent') || '',
         metadata: { sessionId },
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Logout error:', error);
     }
   }
@@ -236,7 +236,7 @@ export class EnhancedAuthService {
         metadata: { token },
       });
       return { success: true, user };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Email verification error:', error);
       return { success: false, error: 'Verification failed' };
     }
@@ -262,7 +262,7 @@ export class EnhancedAuthService {
         metadata: { resetExpires },
       });
       return { success: true };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Password reset request error:', error);
       return { success: false, error: 'Failed to process password reset request' };
     }
@@ -299,13 +299,13 @@ export class EnhancedAuthService {
         metadata: { token },
       });
       return { success: true, user };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Password reset error:', error);
       return { success: false, error: 'Password reset failed' };
     }
   }
 
-  async getSecuritySummary(userId: string): Promise<{ recentActivity: unknown; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
+  async getSecuritySummary(userId: string): Promise<{ recentActivity: any; activeSessionsCount: number; securitySettings: SecuritySettings } | null> {
     try {
       const recentLogs = await db
         .select()
@@ -324,7 +324,7 @@ export class EnhancedAuthService {
         activeSessionsCount,
         securitySettings: this.securitySettings,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Security summary error:', error);
       return null;
     }
@@ -375,7 +375,7 @@ export class EnhancedAuthService {
         metadata: entry.metadata || {},
         createdAt: entry.createdAt || new Date(),
       });
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.warn('Failed to log auth event', e);
     }
   }

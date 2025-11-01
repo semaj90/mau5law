@@ -12,9 +12,7 @@ https://svelte.dev/e/component_invalid_directive -->
     copilotOrchestrator,
     } from '$lib/utils/mcp-helpers';
   import { phase13Integration, getSystemHealth } from '$lib/integrations/phase13-full-integration';
-
   export let ondispatch: (result: any) => void = () => {};
-
    // Svelte 5 reactive state
    let isOpen = $state(false);
    let searchQuery = $state('');
@@ -32,7 +30,6 @@ https://svelte.dev/e/component_invalid_directive -->
    let autoSuggestions = $state<any[]>([]);
    let phase13Status = $state<any>(null);
    let systemHealth = $state<any>(null);
-
   // Load search history from localStorage and initialize Phase 13
   $effect(() => {
     (async () => {
@@ -46,7 +43,6 @@ https://svelte.dev/e/component_invalid_directive -->
       generateAutoSuggestions();
     })();
   });
-
   // AI-powered search with MCP integration
   async function performAISearch() {
     if (!searchQuery.trim()) return;
@@ -57,7 +53,6 @@ https://svelte.dev/e/component_invalid_directive -->
         searchHistory = [searchQuery, ...searchHistory.slice(0, 9)];
         localStorage.setItem('ai-search-history', JSON.stringify(searchHistory));
       }
-
       const response = await fetch('/api/ai/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,12 +66,10 @@ https://svelte.dev/e/component_invalid_directive -->
           confidenceThreshold: aiConfidenceThreshold
         })
       });
-
       const data = await response.json();
       if (data?.success) {
         searchResults = data.results ?? data.result ?? [];
         mcpContext = data.mcpContext ?? null;
-
         // Update memory graph with search interaction
         await updateMemoryWithAIContext({
           userId: 'current-user',
@@ -94,10 +87,9 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('AI search failed:', err);
       searchResults = [];
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
-
   // Get search suggestions as user types
   async function getSuggestions() {
     if (searchQuery.length < 3) {
@@ -116,7 +108,6 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('Failed to get suggestions:', error);
     }
   }
-
   // Generate MCP auto-suggestions
   async function generateAutoSuggestions() {
     try {
@@ -138,7 +129,6 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('Failed to generate auto-suggestions:', error);
     }
   }
-
   // Update memory graph with AI context
   async function updateMemoryWithAIContext(interaction: any) {
     try {
@@ -158,7 +148,6 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('Failed to update memory graph:', error);
     }
   }
-
   // Keyboard shortcuts and event handlers
   function handleKeydown(e: KeyboardEvent) {
     switch (e.key) {
@@ -175,7 +164,6 @@ https://svelte.dev/e/component_invalid_directive -->
         break;
     }
   }
-
   // Reactive search suggestions
   $effect(() => {
     if (searchQuery.length >= 3) {
@@ -183,7 +171,6 @@ https://svelte.dev/e/component_invalid_directive -->
       return () => clearTimeout(debounce);
     }
   });
-
   // Public API
   export function open() {
     isOpen = true;
@@ -194,33 +181,29 @@ https://svelte.dev/e/component_invalid_directive -->
     }, 100);
   }
   export function close() {
-    isOpen = false;
+    isOpen = $state(false);
     searchQuery = '';
     searchResults = [];
     suggestions = [];
-    showAdvanced = false;
+    showAdvanced = $state(false);
   }
-
   // Handle result selection
   function selectResult(result: any) {
     // keep existing integration hook if provided
     ondispatch(result);
     close();
   }
-
   // Handle suggestion selection
   function selectSuggestion(suggestion: string) {
     searchQuery = suggestion;
     suggestions = [];
     performAISearch();
   }
-
   // Handle history selection
   function selectHistory(query: string) {
     searchQuery = query;
     performAISearch();
   }
-
   // Update Phase 13 integration status
   async function updatePhase13Status() {
     try {
@@ -234,7 +217,6 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('Failed to get Phase 13 status:', error);
     }
   }
-
   // Apply MCP auto-suggestion with Phase 13 integration
   async function applyAutoSuggestion(suggestion: any) {
     try {
@@ -298,15 +280,13 @@ https://svelte.dev/e/component_invalid_directive -->
                  <div class="nier-status-badge bg-green-500/20 border border-green-500/50 text-green-400">
                    <Brain class="w-3 h-3" />
                    MCP
-                 </div>
-               {/if}
+                 {/if}
                {#if useSemanticSearch}
                  <div class="nier-status-badge bg-blue-500/20 border border-blue-500/50 text-blue-400">
 -                  <Target class="w-3 h-3" />
 +                  <span class="w-3 h-3" aria-hidden>🎯</span>
                    SEMANTIC
-                 </div>
-               {/if}
+                 {/if}
              </div>
            </div>
          </div>
@@ -328,8 +308,7 @@ https://svelte.dev/e/component_invalid_directive -->
               {#if isSearching}
                 <div class="nier-spinner w-5 h-5 border-2 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin"></div>
               {:else if searchResults.length > 0}
-                <div class="text-green-400 text-sm font-mono">{searchResults.length}</div>
-              {/if}
+                <div class="text-green-400 text-sm font-mono">{searchResults.length}{/if}
             </div>
             <!-- Search Suggestions Dropdown -->
             {#if suggestions.length > 0 && searchQuery.length >= 3}
@@ -337,7 +316,7 @@ https://svelte.dev/e/component_invalid_directive -->
                 class="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 max-h-40 overflow-y-auto z-20"
                 in:fly={{ y: -10, duration: 200 }}
               >
-                {#each suggestions as suggestion}
+                {#each Array.isArray(suggestions) ? suggestions : [] as suggestion}
                   <button type="button"
                     onclick={() => selectSuggestion(suggestion)}
                     class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
@@ -346,8 +325,7 @@ https://svelte.dev/e/component_invalid_directive -->
                     {suggestion}
                   </button>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Search Type Filters -->
           <div class="flex flex-wrap gap-2">
@@ -421,7 +399,7 @@ https://svelte.dev/e/component_invalid_directive -->
                <div class="space-y-2">
                  <label class="text-yellow-400 font-mono text-sm">RECENT SEARCHES</label>
                  <div class="space-y-1 max-h-20 overflow-y-auto">
-                   {#each searchHistory.slice(0, 3) as query}
+                   {#each Array.isArray(searchHistory.slice(0, 3)) ? searchHistory.slice(0, 3) : [] as query}
                      <button type="button"
                        class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
                        onclick={() => selectHistory(query)}
@@ -432,8 +410,7 @@ https://svelte.dev/e/component_invalid_directive -->
                  </div>
                </div>
              </div>
-           </div>
-         {/if}
+           {/if}
           <!-- AI Search Button -->
           <button type="button"
             onclick={performAISearch}
@@ -478,8 +455,7 @@ https://svelte.dev/e/component_invalid_directive -->
                         <div class="nier-confidence-badge flex-shrink-0" data-testid="ai-confidence">
                           <Brain class="w-3 h-3" />
                           {Math.round(((result as any).aiConfidence ?? 0) * 100)}%
-                        </div>
-                      {/if}
+                        {/if}
                     </div>
                     <p class="nier-result-excerpt text-gray-300 text-sm mb-3 line-clamp-2 leading-relaxed">
                       {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).excerpt}
@@ -502,8 +478,7 @@ https://svelte.dev/e/component_invalid_directive -->
 -                          <Sparkles class="w-3 h-3 text-yellow-400" />
 +                          <span class="w-3 h-3 text-yellow-400" aria-hidden>✨</span>
                            <span class="text-yellow-400">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length} highlights</span>
-                         </div>
-                       {/if}
+                         {/if}
                      </div>
                    </div>
                  </div>
@@ -526,12 +501,11 @@ https://svelte.dev/e/component_invalid_directive -->
                <div class="text-left max-w-md mx-auto">
                  <h4 class="text-yellow-400 font-mono text-sm mb-2">🤖 AI SUGGESTIONS:</h4>
                  <ul class="space-y-1">
-                   {#each mcpContext.recommendations.slice(0, 3) as suggestion}
+                   {#each Array.isArray(mcpContext.recommendations.slice(0, 3)) ? mcpContext.recommendations.slice(0, 3) : [] as suggestion}
                      <li class="text-gray-300 text-sm">• {suggestion}</li>
                    {/each}
                  </ul>
-               </div>
-             {/if}
+               {/if}
            </div>
          {:else if !searchQuery}
            <!-- Auto-Suggestions Panel -->
@@ -542,7 +516,7 @@ https://svelte.dev/e/component_invalid_directive -->
                INTELLIGENT SUGGESTIONS
              </h3>
              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-               {#each autoSuggestions as suggestion}
+               {#each Array.isArray(autoSuggestions) ? autoSuggestions : [] as suggestion}
                  <div class="nier-suggestion-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
                       onclick={() => applyAutoSuggestion(suggestion)}>
                    <div class="flex items-start gap-3">
@@ -571,8 +545,7 @@ https://svelte.dev/e/component_invalid_directive -->
                  </div>
                {/each}
              </div>
-           </div>
-         {/if}
+           {/if}
          <!-- Footer -->
          <div class="nier-footer border-t border-yellow-400/30 p-4 flex justify-between items-center text-xs text-gray-500 font-mono bg-gray-900/50">
            <div class="flex items-center gap-4">
@@ -590,8 +563,7 @@ https://svelte.dev/e/component_invalid_directive -->
 -    </Dialog.Content>
 -  </Dialog.Portal>
 -</Dialog.Root>
-+  </div>
-{/if}
++  {/if}
 <style>
   /* NieR Automata Theme Enhancements */
   .nier-container {
@@ -666,7 +638,7 @@ https://svelte.dev/e/component_invalid_directive -->
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+    transition: left: 0.5s;
   }
   .nier-result-item {
     position: relative;

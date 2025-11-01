@@ -2,10 +2,10 @@
 export {};
 declare global {
   interface Window {
-    fs?: unknown;
+    fs?: any;
     performanceMetrics?: Record<string, unknown> | undefined;
-    uxPatternValidator?: unknown;
-    vectorClient?: unknown;
+    uxPatternValidator?: any;
+    vectorClient?: any;
   }
 
   // Use a $-prefixed generic to satisfy the: "allowed unused vars" lint rule

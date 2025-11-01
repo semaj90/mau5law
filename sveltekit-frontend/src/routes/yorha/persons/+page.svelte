@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state and $derived are available in runes mode via types, not runtime imports
-  import { Card } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/enhanced-bits';
+  import Card from '$lib/components/ui/Card.svelte';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
   import * as Lucide from 'lucide-svelte';
@@ -134,16 +134,16 @@
     }
   }
   // Add new person
-  async function addPerson(personData: unknown) {
+  async function addPerson(personData: any) {
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData), // removed stray semicolon here
+        body: JSON.stringify(personData),
       });
       if (response.ok) {
-        const newPerson = await response.json();
-        persons = [...persons, newPerson];
+        const created = await response.json();
+        persons = [...persons, created];
         showNewPersonModal = false;
       }
     } catch (err) {
@@ -160,7 +160,6 @@
     }
     try {
       await addPerson(newPerson);
-      // reset newPerson and close modal
       newPerson = {
         name: '',
         alias: '',
@@ -350,7 +349,7 @@
                 {person.description}
               </div>
               <div class="person-cases">
-                {#each person.cases as caseId}
+                {#each Array.isArray(person.cases) ? person.cases : [] as caseId}
                   <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                     >{caseId}</span
                   >
@@ -935,11 +934,3 @@
     margin-top: 12px;
   }
 </style>
-  .dialog-footer {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 12px;
-  }
-</style>
-

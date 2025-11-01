@@ -8,8 +8,8 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     stage: string;
     stageName: string;
   }
-  let { progress, stage, stageName }: { progress; stage; stageName: unknown } = $props();
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
+  let { progress, stage, stageName }: { progress; stage; stageName: any } = $props();
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
   const workflowStages = [
@@ -84,7 +84,6 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     }
   }
 </script>
-
 <div class="workflow-progress bg-white border border-gray-200 rounded-lg p-6">
   <!-- Overall Progress -->
   <div class="mb-8">
@@ -158,8 +157,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 {#if status === 'current'}
                   <div class="w-16 mx-auto">
                     <Progress value={stageProgress} class="h-1" />
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           {/each}
@@ -183,8 +181,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 ${status === 'completed' ? 'bg-green-400 bottom-0' : status === 'current' ? 'bg-blue-400' : 'bg-gray-200'}
               `}
               style={status === 'current' ? `height: ${stageProgress}%` : ''}
-            ></div>
-          {/if}
+            >{/if}
           <!-- Stage Circle -->
           <div
             class={`
@@ -215,15 +212,13 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             {:else if status === 'completed'}
               <div class="text-xs text-green-600 font-medium">✓ Completed</div>
             {:else}
-              <div class="text-xs text-gray-500">Pending</div>
-            {/if}
+              <div class="text-xs text-gray-500">Pending{/if}
           </div>
         </div>
       {/each}
     </div>
   </div>
 </div>
-
 <style>
   .workflow-progress {
     animation: fadeInUp 0.5s ease-out;
@@ -245,4 +240,3 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     transition-timing-function ease-in-out;
   }
 </style>
-

@@ -7,7 +7,6 @@
  * - Entity-specific embedding optimization
  * - Integration with PostgreSQL and Qdrant
  */
-
 import { createHash } from 'crypto';
 import { db } from '../db';
 import { contextualEmbeddings } from '../db/schema-postgres';
@@ -15,14 +14,11 @@ import { eq, and } from 'drizzle-orm';
 import { qdrantVectorStore } from './qdrant-vector-store';
 import { cognitiveCache } from '../cache';
 import type { LegalEntity } from '$lib/types/sharedTypes';
-
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const EMBEDDING_DIM = 768;
-
 // Cache TTL for embeddings (7 days)
 const CACHE_TTL = 7 * 24 * 60 * 60;
-
 /**
  * Embedding request options
  */
@@ -34,7 +30,6 @@ interface EmbeddingOptions {
   useCache?: boolean;
   storeInQdrant?: boolean;
 }
-
 /**
  * Embedding result
  */
@@ -45,7 +40,6 @@ interface EmbeddingResult {
   cached: boolean;
   processingTime: number;
 }
-
 /**
  * Batch embedding result
  */
@@ -56,28 +50,23 @@ interface BatchEmbeddingResult {
   cachedCount: number;
   totalProcessingTime: number;
 }
-
 /**
  * EmbeddingGemma Service Class
  */
 export class EmbeddingGemmaService {
   private model: string;
-
   constructor(model: string = DEFAULT_MODEL) {
     this.model = model;
   }
-
   /**
    * Generate embedding for single text
    */
   async embed(text: string, options: EmbeddingOptions = {}): Promise<EmbeddingResult> {
     const startTime = Date.now();
     const model = options.model || this.model;
-    const useCache = options.useCache !== false; // Default true
-
+    const useCache = options.useCache !== $state(false); // Default true
     // Generate text hash for caching
     const textHash = this.generateTextHash(text, model);
-
     // Check cache first
     if (useCache) {
       const cached = await this.getCachedEmbedding(textHash, model);
@@ -91,10 +80,8 @@ export class EmbeddingGemmaService {
         };
       }
     }
-
     // Generate embedding via Ollama
     const embedding = await this.generateEmbedding(text, model);
-
     // Store in cache
     if (useCache) {
       await this.cacheEmbedding(
@@ -107,12 +94,10 @@ export class EmbeddingGemmaService {
         options.embeddingType
       );
     }
-
     // Store in Qdrant if requested
     if (options.storeInQdrant && options.sessionId) {
       await this.storeInQdrant(text, embedding, options.sessionId, options.turnId, options.embeddingType);
     }
-
     return {
       embedding,
       dimensions: embedding.length,
@@ -121,18 +106,15 @@ export class EmbeddingGemmaService {
       processingTime: Date.now() - startTime,
     };
   }
-
   /**
    * Generate embeddings for multiple texts (batch)
    */
   async embedBatch(texts: string[], options: EmbeddingOptions = {}): Promise<BatchEmbeddingResult> {
     const startTime = Date.now();
     const model = options.model || this.model;
-    const useCache = options.useCache !== false;
-
+    const useCache = options.useCache !== $state(false);
     const embeddings: number[][] = [];
     let cachedCount = 0;
-
     // Process each text
     for (const text of texts) {
       const result = await this.embed(text, {
@@ -140,11 +122,9 @@ export class EmbeddingGemmaService {
         model,
         useCache,
       });
-
       embeddings.push(result.embedding);
       if (result.cached) cachedCount++;
     }
-
     return {
       embeddings,
       dimensions: embeddings[0]?.length || EMBEDDING_DIM,
@@ -153,7 +133,6 @@ export class EmbeddingGemmaService {
       totalProcessingTime: Date.now() - startTime,
     };
   }
-
   /**
    * Generate entity-optimized embedding
    *
@@ -162,13 +141,11 @@ export class EmbeddingGemmaService {
   async embedEntity(entityValue: string, entityType: string, options: EmbeddingOptions = {}): Promise<EmbeddingResult> {
     // Add entity type as context for better semantic representation
     const contextualText = `[${entityType.toUpperCase()}] ${entityValue}`;
-
     return this.embed(contextualText, {
       ...options,
       embeddingType: 'entity',
     });
   }
-
   /**
    * Generate conversation summary embedding
    */
@@ -188,7 +165,6 @@ export class EmbeddingGemmaService {
       storeInQdrant: true,
     });
   }
-
   /**
    * Calculate similarity between two embeddings
    */
@@ -196,20 +172,16 @@ export class EmbeddingGemmaService {
     if (embedding1.length !== embedding2.length) {
       throw new Error('Embeddings must have same dimensions');
     }
-
     let dotProduct = 0;
     let norm1 = 0;
     let norm2 = 0;
-
     for (let i = 0; i < embedding1.length; i++) {
       dotProduct += embedding1[i] * embedding2[i];
       norm1 += embedding1[i] * embedding1[i];
       norm2 += embedding2[i] * embedding2[i];
     }
-
     return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
   }
-
   /**
    * Find most similar texts from a list
    */
@@ -221,18 +193,15 @@ export class EmbeddingGemmaService {
     // Generate embeddings
     const queryResult = await this.embed(queryText);
     const candidateResults = await this.embedBatch(candidateTexts);
-
     // Calculate similarities
     const similarities = candidateResults.embeddings.map((embedding, index) => ({
       text: candidateTexts[index],
       score: this.cosineSimilarity(queryResult.embedding, embedding),
       index,
     }));
-
     // Sort by score and return top K
     return similarities.sort((a, b) => b.score - a.score).slice(0, topK);
   }
-
   /**
    * Generate embedding via Ollama API
    */
@@ -246,24 +215,19 @@ export class EmbeddingGemmaService {
           prompt: text,
         }),
       });
-
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.statusText}`);
       }
-
       const data = await response.json();
-
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama');
       }
-
       return data.embedding;
     } catch (error) {
       console.error('Failed to generate embedding:', error);
       throw error;
     }
   }
-
   /**
    * Get cached embedding from PostgreSQL
    */
@@ -272,34 +236,27 @@ export class EmbeddingGemmaService {
       // Try Redis cache first
       const redisKey = `embedding:${textHash}:${model}`;
       const cached = await cognitiveCache.getJsonbDocument<number[]>(redisKey);
-
       if (cached) {
         return cached;
       }
-
       // Try PostgreSQL
       const rows = await db
         .select()
         .from(contextualEmbeddings)
         .where(and(eq(contextualEmbeddings.textHash, textHash), eq(contextualEmbeddings.model, model)))
         .limit(1);
-
       if (rows.length > 0) {
         const embedding = JSON.parse(rows[0].embedding);
-
         // Store in Redis for faster access next time
         await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
-
         return embedding;
       }
-
       return null;
     } catch (error) {
       console.error('Error reading cached embedding:', error);
       return null;
     }
   }
-
   /**
    * Cache embedding in PostgreSQL and Redis
    */
@@ -328,7 +285,6 @@ export class EmbeddingGemmaService {
           metadata: {},
         })
         .onConflictDoNothing();
-
       // Store in Redis
       const redisKey = `embedding:${textHash}:${model}`;
       await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
@@ -337,7 +293,6 @@ export class EmbeddingGemmaService {
       // Don't throw - caching failure shouldn't break the flow
     }
   }
-
   /**
    * Store embedding in Qdrant
    */
@@ -389,14 +344,12 @@ export class EmbeddingGemmaService {
       // Don't throw - Qdrant storage failure shouldn't break the flow
     }
   }
-
   /**
    * Generate text hash for caching
    */
   private generateTextHash(text: string, model: string): string {
     return createHash('sha256').update(`${model}:${text}`).digest('hex');
   }
-
   /**
    * Get embedding statistics
    */
@@ -407,18 +360,14 @@ export class EmbeddingGemmaService {
   }> {
     try {
       const allEmbeddings = await db.select().from(contextualEmbeddings);
-
       const byModel: Record<string, number> = {};
       const byType: Record<string, number> = {};
-
       for (const embedding of allEmbeddings) {
         // Count by model
         byModel[embedding.model] = (byModel[embedding.model] || 0) + 1;
-
         // Count by type
         byType[embedding.embeddingType] = (byType[embedding.embeddingType] || 0) + 1;
       }
-
       return {
         totalEmbeddings: allEmbeddings.length,
         byModel,
@@ -434,6 +383,5 @@ export class EmbeddingGemmaService {
     }
   }
 }
-
 // Export singleton instance
 export const embeddingGemma = new EmbeddingGemmaService();

@@ -1,7 +1,7 @@
 // Centralized graceful shutdown registry
 // Components can register async cleanup callbacks.
 const cleaners: Array<() => Promise<any> | any> = [];
-let registered = false;
+let registered = $state(false);
 export function registerCleanup(fn: () => Promise<any> | any) {
   cleaners.push(fn);
   ensureHandlers();

@@ -251,7 +251,7 @@ export function useEvidenceCanvas() {
   }
   function handlePointerUp() {
     const hadDragged = draggedItems.size > 0;
-    isDragging = false;
+    isDragging = $state(false);
     dragStartPos = null;
     draggedItems.clear();
     if (hadDragged) {

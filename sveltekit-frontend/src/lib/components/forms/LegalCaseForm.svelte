@@ -1,14 +1,13 @@
 <script lang="ts">
   // Import local UI components (paths updated during migration)
-  import ButtonBitsRaw from '$lib/components/ui/button/Button.svelte';
-  import CardBitsRaw from '$lib/components/ui/Card.svelte';
-  import InputBitsRaw from '$lib/components/ui/input/InputBits.svelte';
-  import SelectBitsRaw from '$lib/components/ui/select/SelectBits.svelte';
-  import TabsBitsRaw from '$lib/components/ui/tabs/TabsBits.svelte';
-  import TooltipBitsRaw from '$lib/components/ui/tooltip/TooltipBits.svelte';
+  import { ButtonBitsRaw } from '$lib/components/ui/button/Button.svelte';
+  import { CardBitsRaw } from '$lib/components/ui/Card.svelte';
+  import { InputBitsRaw } from '$lib/components/ui/input/InputBits.svelte';
+  import { SelectBitsRaw } from '$lib/components/ui/select/SelectBits.svelte';
+  import { TabsBitsRaw } from '$lib/components/ui/tabs/TabsBits.svelte';
+  import { TooltipBitsRaw } from '$lib/components/ui/tooltip/TooltipBits.svelte';
   import { addToast } from '$lib/components/ui/toast/ToastProvider.svelte'; // Import addToast for notifications
   import { getBackendApiUrl } from '$lib/utils/api-endpoints'; // Import API endpoint utility
-
   // Form state using Svelte 5 runes
   let formData = $state({
     caseTitle: '',
@@ -69,15 +68,12 @@
         },
         body: JSON.stringify(formData),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to create case');
       }
-
       const result = await response.json();
       console.log('Form submitted successfully:', result);
-
       // Reset form on success
       formData = {
         caseTitle: '',
@@ -95,7 +91,6 @@
       };
       formErrors = {}; // Clear errors
       activeTab = 'basic'; // Reset to basic tab
-
       addToast({
         variant: 'success',
         title: 'Case Created',
@@ -111,7 +106,7 @@
         duration: 0, // Don't auto-dismiss errors
       });
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
   // Sample data for select options
@@ -167,7 +162,6 @@
       formData.deadline
     );
   });
-
   let formProgress = $derived(() => {
     const totalFields = 5; // caseTitle, clientName, practiceArea, jurisdiction, deadline
     let completedFields = 0;
@@ -178,7 +172,6 @@
     if (formData.deadline) completedFields++;
     return Math.floor((completedFields / totalFields) * 100);
   });
-
   // Correct constructor typing for Svelte components to satisfy TypeScript
   // Svelte 5 runes handle component typing differently; SvelteComponentTyped is deprecated.
   // Casting to: 'any' bypasses the need for explicit constructor types here.
@@ -188,7 +181,6 @@
   //   Events = Record<string, any>,
   //   Slots = Record<string, any>,
   // > = new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>;
-
   // Cast the raw imports to constructor types (keeps runtime import the same)
   const CardBits = CardBitsRaw as any;
   const InputBits = InputBitsRaw as any;
@@ -197,7 +189,6 @@
   const TooltipBits = TooltipBitsRaw as any;
   const TabsBits = TabsBitsRaw as any;
 </script>
-
 <CardBits variant="interactive" padding="lg">
   <div class="legal-case-form">
     <div class="form-header">
@@ -209,7 +200,6 @@
         <span class="progress-text">{formProgress}% Complete</span>
       </div>
     </div>
-
     <div class="form-tabs">
       <TabsBits tabs={tabItems} bind:value={activeTab} variant="underline" size="md">
         {#if activeTab === 'basic'}
@@ -382,21 +372,17 @@
                 <div class="review-description">
                   <strong>Description:</strong> <!-- Fixed typo -->
                   <p>{formData.description}</p>
-                </div>
-              {/if}
+                {/if}
               <div class="validation-status">
                 {#if isFormValid}
                   <div class="status-valid">✅ Form is complete and ready for submission</div>
                 {:else}
-                  <div class="status-invalid">⚠️ Please complete all required fields before submitting</div>
-                {/if}
+                  <div class="status-invalid">⚠️ Please complete all required fields before submitting{/if}
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </TabsBits>
     </div>
-
     <div class="form-actions">
       <div class="action-buttons">
         <TooltipBits content="Clear all form data">
@@ -440,7 +426,6 @@
     </div>
   </div>
 </CardBits>
-
 <style>
   .legal-case-form {
     max-width: 800px;
@@ -474,7 +459,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #f59e0b, #d97706);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .progress-text {
     font-size: 0.875rem;
@@ -623,5 +608,3 @@
     }
   }
 </style>
-
-

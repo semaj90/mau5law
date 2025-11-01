@@ -51,14 +51,14 @@
   export let enableEmbedding: boolean = true;
   export let enableRAG: boolean = true;
   export let enableAutoTags: boolean = true;
-  export let enableWebGPU: boolean = false;
+  export let enableWebGPU: boolean = $state(false);
   export let classNameVar: string = '';
   export let caseId: string | null = null;
 
   // Local state
   let files: File[] = [];
   let uploadStates: Map<string, any> = new Map();
-  let isDragOver = false;
+  let isDragOver = $state(false);
   let fileInput: HTMLInputElement | undefined;
   let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
   let uploadMachine: any = null;
@@ -154,11 +154,11 @@
     isDragOver = true;
   }
   function handleDragLeave() {
-    isDragOver = false;
+    isDragOver = $state(false);
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     handleFiles(droppedFiles);
   }
@@ -552,11 +552,9 @@
           <div class="flex items-center gap-2 text-green-600">
             <Zap class="w-4 h-4" />
             <span class="text-xs font-medium">WebGPU Accelerated</span>
-          </div>
-        {/if}
+          {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Enhanced Upload Zone -->
   <div
     class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}"
@@ -580,7 +578,7 @@
         Drop files here or click to browse
       </p>
       <div class="flex flex-wrap justify-center gap-2 text-xs">
-        {#each accept.split(',') as fileType}
+        {#each Array.isArray(accept.split(',')) ? accept.split(',') : [] as fileType}
           <span class="px-2 py-1 bg-gray-200 text-gray-600 rounded">{fileType.trim()}</span>
         {/each}
       </div>
@@ -694,8 +692,7 @@
               {#if state.results?.documentId}
                 <span>Document ID: {state.results.documentId.substring(0, 8)}...</span>
               {/if}
-            </div>
-          {/if}
+            {/if}
           <!-- Results Display -->
           {#if state.results}
             <div class="border-t pt-3">
@@ -716,40 +713,34 @@
                     <div>
                       <span class="font-medium text-gray-700">Document ID:</span>
                       <span class="text-gray-600 font-mono">{state.results.documentId}</span>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if state.results.minioPath}
                     <div>
                       <span class="font-medium text-gray-700">Storage Path:</span>
                       <span class="text-gray-600 font-mono">{state.results.minioPath}</span>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if state.results.embeddingId}
                     <div>
                       <span class="font-medium text-gray-700">Embedding ID:</span>
                       <span class="text-gray-600 font-mono">{state.results.embeddingId}</span>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if state.results.vectorId}
                     <div>
                       <span class="font-medium text-gray-700">Vector ID:</span>
                       <span class="text-gray-600 font-mono">{state.results.vectorId}</span>
-                    </div>
-                  {/if}
+                    {/if}
                   {#if state.results.tags && state.results.tags.length > 0}
                     <div class="md:col-span-2">
                       <span class="font-medium text-gray-700">Auto-Generated Tags:</span>
                       <div class="flex flex-wrap gap-1 mt-1">
-                        {#each state.results.tags as tag}
+                        {#each Array.isArray(state.results.tags) ? state.results.tags : [] as tag}
                           <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">{tag}</span>
                         {/each}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Error Display -->
           {#if state.error}
             <div class="border-t pt-3">
@@ -757,12 +748,10 @@
                 <p class="text-sm text-red-700 font-medium mb-1">Processing Error</p>
                 <p class="text-xs text-red-600">{state.error}</p>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Advanced Feature Settings -->
   <div class="bg-white border border-gray-200 rounded-xl p-6">
     <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">

@@ -34,8 +34,8 @@ declare module 'lokijs' {
     autosave?: boolean;
     autosaveInterval?: number;
     autoload?: boolean;
-    autoloadCallback?: (err: unknown) => void;
-    adapter?: unknown;
+    autoloadCallback?: (err: any) => void;
+    adapter?: any;
     serializationMethod?: string;
     destructureDelimiter?: string;
     persistenceMethod?: string;
@@ -55,22 +55,22 @@ declare module 'lokijs' {
     disableFreeze?: boolean;
     ttl?: number;
     ttlInterval?: number;
-    transforms?: unknown;
+    transforms?: any;
   }
   interface Collection<T> {
     insert(doc: T): T;
-    find(query?: unknown): T[];
-    findOne(query?: unknown): T | null;
+    find(query?: any): T[];
+    findOne(query?: any): T | null;
     update(doc: T): T;
     remove(doc: T): void;
-    removeWhere(query: unknown): void;
-    count(query?: unknown): number;
+    removeWhere(query: any): void;
+    count(query?: any): number;
     data: T[];
     chain(): {
-      find(query?: unknown): unknown;
-      where(filter: (obj: T) => boolean): unknown;
-      simplesort(property: string, desc?: boolean): unknown;
-      limit(qty: number): unknown;
+      find(query?: any): any;
+      where(filter: (obj: T) => boolean): any;
+      simplesort(property: string, desc?: boolean): any;
+      limit(qty: number): any;
       data(): T[];
     };
     clear(): void;
@@ -81,8 +81,8 @@ declare module 'lokijs' {
     addCollection<T>(name: string, options?: CollectionOptions): Collection<T>;
     getCollection<T>(name: string): Collection<T> | null;
     removeCollection(name: string): void;
-    saveDatabase(callback?: (err: unknown) => void): void;
-    loadDatabase(options?: unknown, callback?: (err: unknown) => void): void;
+    saveDatabase(callback?: (err: any) => void): void;
+    loadDatabase(options?: any, callback?: (err: any) => void): void;
     close(): void;
     listCollections(): Array<unknown>;
   }

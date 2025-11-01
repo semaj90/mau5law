@@ -1,7 +1,6 @@
 // Advanced Memory Optimizer (clean, self-contained)
 // Focus: safe to import in browser and Node, implements LOD management, conservative pool adjustments,
 // and a simple k-means worker orchestration. This is intentionally minimal and type-safe.
-
 export interface LODLevel {
   id: string;
   detail: 'low' | 'medium' | 'high' | 'ultra';
@@ -10,7 +9,6 @@ export interface LODLevel {
   quality: number;
   compressionRatio: number;
 }
-
 export interface ClusterMetrics {
   id: string;
   centroid: number[];
@@ -20,7 +18,6 @@ export interface ClusterMetrics {
   memoryUsage: number;
   processingTime: number;
 }
-
 export interface MemoryPool {
   id: string;
   type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
@@ -30,7 +27,6 @@ export interface MemoryPool {
   lastAccessed: number;
   priority: number;
 }
-
 export interface CacheLayer {
   name: string;
   type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
@@ -41,25 +37,22 @@ export interface CacheLayer {
   priority: number;
   enabled: boolean;
 }
-
 type Embeddable = {
   id?: string;
   embedding?: number[];
   metadata?: Record<string, unknown>;
 };
-
 // Replace WorkerLike to avoid `any` and be compatible with both browser Workers and Node worker_threads
 type WorkerLike = {
-  postMessage(msg: unknown): void;
+  postMessage(msg: any): void;
   terminate?(): void | Promise<void>;
   // Node-style .on/.off - message payloads are unknown, error callbacks receive Error
-  on?(ev: 'message' | 'error' | string, cb: (payload: unknown | Error) => void): void;
-  off?(ev: 'message' | 'error' | string, cb: (payload: unknown | Error) => void): void;
+  on?(ev: 'message' | 'error' | string, cb: (payload: any | Error) => void): void;
+  off?(ev: 'message' | 'error' | string, cb: (payload: any | Error) => void): void;
   // Browser-style addEventListener/removeEventListener - message uses MessageEvent
   addEventListener?(ev: 'message' | 'error' | string, cb: (ev: MessageEvent) => void): void;
   removeEventListener?(ev: 'message' | 'error' | string, cb: (ev: MessageEvent) => void): void;
 };
-
 export class AdvancedMemoryOptimizer {
   private memoryPools = new Map<string, MemoryPool>();
   private clusters = new Map<string, ClusterMetrics>();
@@ -69,7 +62,6 @@ export class AdvancedMemoryOptimizer {
   private memoryPressure = 0;
   private workerPool = new Map<string, WorkerLike | null>();
   private maxWorkers = 2;
-
   constructor() {
     this.initializeLODLevels();
     this.initializeCacheLayers();
@@ -77,7 +69,6 @@ export class AdvancedMemoryOptimizer {
     this.currentLOD = this.lodLevels[1] ?? this.lodLevels[0];
     this.startMemoryMonitoring();
   }
-
   private initializeLODLevels() {
     this.lodLevels = [
       { id: 'low', detail: 'low', maxMemoryMB: 512, maxObjects: 1000, quality: 0.3, compressionRatio: 0.1 },
@@ -86,7 +77,6 @@ export class AdvancedMemoryOptimizer {
       { id: 'ultra', detail: 'ultra', maxMemoryMB: 4096, maxObjects: 25000, quality: 1.0, compressionRatio: 1.0 },
     ];
   }
-
   private initializeCacheLayers() {
     const layers: CacheLayer[] = [
       { name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
@@ -94,7 +84,6 @@ export class AdvancedMemoryOptimizer {
     ];
     layers.forEach(l => this.cacheLayers.set(l.name, l));
   }
-
   private initializeMemoryPools() {
     const pools: MemoryPool[] = [
       {
@@ -127,7 +116,6 @@ export class AdvancedMemoryOptimizer {
     ];
     pools.forEach(p => this.memoryPools.set(p.id, p));
   }
-
   // Called periodically
   private async adaptiveLODManagement() {
     const currentMemory = await this.getCurrentMemoryUsage();
@@ -140,7 +128,6 @@ export class AdvancedMemoryOptimizer {
     }
     await this.adjustObjectLimits();
   }
-
   // Lower the LOD conservatively
   private async reduceLOD(): Promise<void> {
     const idx = this.lodLevels.findIndex(l => l.id === this.currentLOD.id);
@@ -152,7 +139,6 @@ export class AdvancedMemoryOptimizer {
       }
     }
   }
-
   // Raise the LOD when there's available memory
   private async increaseLOD(): Promise<void> {
     const idx = this.lodLevels.findIndex(l => l.id === this.currentLOD.id);
@@ -163,7 +149,6 @@ export class AdvancedMemoryOptimizer {
       }
     }
   }
-
   // Adjust object limits across pools based on memoryPressure
   private async adjustObjectLimits(): Promise<void> {
     const adj = 1 - Math.min(0.95, Math.max(0, this.memoryPressure));
@@ -172,7 +157,6 @@ export class AdvancedMemoryOptimizer {
       pool.max = Math.max(floor, Math.floor(pool.max * adj));
     }
   }
-
   private startMemoryMonitoring() {
     // Run one immediate check and then periodic
     this.adaptiveLODManagement().catch(() => {});
@@ -180,7 +164,6 @@ export class AdvancedMemoryOptimizer {
       this.adaptiveLODManagement().catch(() => {});
     }, 30_000);
   }
-
   private async getCurrentMemoryUsage(): Promise<number> {
     try {
       if (typeof process !== 'undefined' && (process as any).memoryUsage) {
@@ -190,7 +173,6 @@ export class AdvancedMemoryOptimizer {
     } catch {}
     return 0;
   }
-
   // K-means orchestration: spawn a worker when available, otherwise run in-process
   async performKMeansClustering(data: Embeddable[], k = 5): Promise<ClusterMetrics[]> {
     if (data.length === 0) return [];
@@ -199,7 +181,6 @@ export class AdvancedMemoryOptimizer {
     }
     return this.performKMeansInProcess(data, k);
   }
-
   private enableWorkerThreads() {
     try {
       return typeof process !== 'undefined' && !!(process as any).versions && !!(process as any).versions.node;
@@ -207,7 +188,6 @@ export class AdvancedMemoryOptimizer {
       return false;
     }
   }
-
   private async performKMeansWithWorker(data: Embeddable[], k: number): Promise<ClusterMetrics[]> {
     // Try dynamic worker import - keep fallback to in-process
     try {
@@ -243,7 +223,6 @@ export class AdvancedMemoryOptimizer {
       return this.performKMeansInProcess(data, k);
     }
   }
-
   private async performKMeansInProcess(data: Embeddable[], k: number): Promise<ClusterMetrics[]> {
     const start = Date.now();
     const items = data.filter(d => Array.isArray(d.embedding) && (d.embedding as number[]).length > 0);
@@ -283,7 +262,6 @@ export class AdvancedMemoryOptimizer {
     results.forEach(r => this.clusters.set(r.id, r));
     return results;
   }
-
   private euclideanDistanceSquared(a: number[], b: number[]) {
     let s = 0;
     const n = Math.min(a.length, b.length);
@@ -293,20 +271,16 @@ export class AdvancedMemoryOptimizer {
     }
     return s;
   }
-
   // Public wrappers for external control (API route will call these)
   public async reduceLODPublic(): Promise<void> {
     return this.reduceLOD();
   }
-
   public async increaseLODPublic(): Promise<void> {
     return this.increaseLOD();
   }
-
   public async adjustObjectLimitsPublic(): Promise<void> {
     return this.adjustObjectLimits();
   }
-
   public getStatus(): {
     lod: LODLevel | null;
     memoryPressure: number;

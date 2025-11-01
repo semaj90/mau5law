@@ -277,7 +277,7 @@ class AIAssistantGlobalStore {
       }
       throw error;
     } finally {
-      this.isLoading = false;
+      this.isLoading = $state(false);
     }
   }
 

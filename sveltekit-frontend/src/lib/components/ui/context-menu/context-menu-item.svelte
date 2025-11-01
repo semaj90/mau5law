@@ -1,17 +1,13 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-
   // Expose props correctly for Svelte
-  export let disabled: boolean = false;
+  export let disabled: boolean = $state(false);
   export let onClick: (event?: MouseEvent | unknown) => void = () => {};
-
   interface ContextMenuContext {
     close: () => void;
   }
-
   const ctx = getContext<ContextMenuContext>('context-menu');
   const close = ctx?.close ?? (() => {});
-
   function handleClick(event?: MouseEvent) {
     if (!disabled) {
       onClick?.(event);
@@ -19,7 +15,6 @@
     }
   }
 </script>
-
 <button
   class="context-menu-item"
   class:disabled
@@ -30,7 +25,6 @@
 >
   <slot />
 </button>
-
 <style>
   /* @unocss-include */
   .context-menu-item {
@@ -58,4 +52,3 @@
     cursor: not-allowed;
   }
 </style>
-

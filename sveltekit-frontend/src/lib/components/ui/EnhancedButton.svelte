@@ -3,7 +3,6 @@
   import type { Snippet, ComponentType } from 'svelte';
   import { cn } from '$lib/utils';
   import { buttonVariants, type ButtonVariantProps } from './button-variants';
-
   let {
     variant = 'default' as ButtonVariantProps['variant'],
     size = 'default' as ButtonVariantProps['size'],
@@ -34,10 +33,8 @@
     onclick?: (evt: MouseEvent) => void;
     children?: Snippet;
   } = $props();
-
   let isDisabled = $derived(disabled || loading);
   let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
-
   // dynamic Bits-UI loader using adapter
   let BitsComponent = $state<unknown>(null);
   import { onMount as _onMount } from 'svelte';
@@ -52,7 +49,6 @@
       }
     }
   });
-
   function handleClick(evt: MouseEvent) {
     if (isDisabled) {
       evt.preventDefault();
@@ -62,7 +58,6 @@
     onclick?.(evt);
   }
 </script>
-
 {#if useBits && BitsComponent && !href}
   {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
     {@const Bits = BitsComponent as ComponentType}
@@ -70,7 +65,7 @@
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
-        {@render children?.()}
+        <slot />
       {/if}
     </Bits>
   {:else}
@@ -79,7 +74,7 @@
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
-        {@render children?.()}
+        <slot />
       {/if}
     </button>
   {/if}
@@ -88,7 +83,7 @@
     {#if loading}
       <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
   </a>
 {:else}
@@ -96,11 +91,10 @@
     {#if loading}
       <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
   </button>
 {/if}
-
 <style>
   .loader {
     display: inline-block;
@@ -118,7 +112,7 @@
     }
   }
   :global([data-variant='yorha']) {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
 </style>

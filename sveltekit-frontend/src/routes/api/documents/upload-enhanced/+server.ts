@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 500 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Normalize unknown error to a string message
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('Enhanced document upload error:', errorMessage);

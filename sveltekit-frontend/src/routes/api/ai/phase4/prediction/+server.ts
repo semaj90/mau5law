@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
         integrations: ['vector-search', 'recommendation-engine', 'ollama-ai'],
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Prediction API error:', error);
     return json(
       {

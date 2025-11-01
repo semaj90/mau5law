@@ -5,28 +5,25 @@ import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './com
  */
 import { getContext7MulticoreService } from './context7-multicore.js';
 import { flashAttention2Service, type LegalContextAnalysis } from '$lib/services/flashattention2-rtx3060.js';
-
 // Define MulticoreSystemStatus locally as it's not exported from its module
 interface MulticoreSystemStatus {
   workers: Array<{ id: string; status: string; tasks: number }>; // Minimal definition based on usage
   // Add other properties if known from context7-multicore.js
 }
-
 // Local ProcessingTask shape (matches usage in this module)
 interface ProcessingTask {
   id: string;
   status: 'pending' | 'running' | 'completed' | 'failed' | string;
   result?: {
     recommendations?: string[];
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // Define the expected return type for flashAttention2Service.processLegalText
 interface ExpectedFlashAttentionResult {
   // embeddings can be a typed Float32Array or an unknown structure depending on model
-  embeddings: unknown | Float32Array;
+  embeddings: any | Float32Array;
   attentionWeights: Float32Array;
   contextualEmbeddings?: Float32Array;
   processingTime: number;
@@ -35,7 +32,6 @@ interface ExpectedFlashAttentionResult {
   sequenceLength: number;
   legalAnalysis: LegalContextAnalysis;
 }
-
 // Define the expected interface for flashAttention2Service
 interface IFlashAttention2Service {
   initialize(): Promise<void>;
@@ -45,9 +41,8 @@ interface IFlashAttention2Service {
     analysisType: 'semantic' | 'legal' | 'precedent' | 'error_analysis'
   ): Promise<ExpectedFlashAttentionResult>;
   // status shape varies by runtime implementation; use unknown for now
-  getStatus(): unknown;
+  getStatus(): any;
 }
-
 export interface FlashAttentionMulticoreRequest {
   text: string;
   context?: string[];
@@ -56,17 +51,17 @@ export interface FlashAttentionMulticoreRequest {
     priority?: 'low' | 'medium' | 'high' | 'critical';
     enableGPU?: boolean;
     useAgentOrchestration?: boolean;
-    errorData?: unknown;
+    errorData?: any;
     maxSequenceLength?: number;
     memoryOptimization?: 'speed' | 'memory' | 'balanced';
   };
 }
 export interface FlashAttentionMulticoreResponse {
   // runtime result shape can differ from the imported AttentionResult; keep unknown here
-  attentionResult: unknown;
+  attentionResult: any;
   legalAnalysis: LegalContextAnalysis;
   multicoreRecommendations: string[];
-  agentOrchestrationResult?: unknown;
+  agentOrchestrationResult?: any;
   systemMetrics: {
     totalProcessingTime: number;
     gpuUtilization: number;
@@ -80,7 +75,6 @@ export interface FlashAttentionMulticoreResponse {
   };
   performanceOptimizations: string[];
 }
-
 /**
  * Represents the structured output from the multicore service's error analysis.
  */
@@ -88,9 +82,8 @@ export interface MulticoreErrorAnalysisResult {
   recommendations?: string[];
   // Add other specific properties if they are consistently returned by the multicore service for error analysis.
   // For now, using a string index signature to allow for flexible additional properties.
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 /**
  * Represents a single error prioritized by attention scores and multicore analysis.
  */
@@ -100,7 +93,6 @@ export interface PrioritizedError {
   fix_complexity: 'low' | 'medium' | 'high';
   suggested_fix: string;
 }
-
 export interface ErrorAnalysisWithAttention {
   errorPatterns: MulticoreErrorAnalysisResult;
   attentionWeights: Float32Array;
@@ -113,7 +105,7 @@ export interface ErrorAnalysisWithAttention {
  */
 export class FlashAttentionMulticoreBridge {
   private multicoreService: ReturnType<typeof getContext7MulticoreService>;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private performanceMetrics: Map<string, number> = new Map();
   constructor() {
     this.multicoreService = getContext7MulticoreService({
@@ -159,7 +151,7 @@ export class FlashAttentionMulticoreBridge {
         this.runMulticoreAnalysis(request),
       ]);
       // Step 2: Agent orchestration if requested
-      let agentOrchestrationResult: unknown = null;
+      let agentOrchestrationResult: any = null;
       if (request.options?.useAgentOrchestration) {
         agentOrchestrationResult = await this.runAgentOrchestration(request, attentionResult, multicoreTasks);
       }
@@ -183,7 +175,7 @@ export class FlashAttentionMulticoreBridge {
         systemMetrics,
         performanceOptimizations,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('❌ Enhanced analysis failed:', message);
       throw new Error(`FlashAttention2 + Multicore analysis failed: ${message}`);
@@ -193,7 +185,7 @@ export class FlashAttentionMulticoreBridge {
    * Specialized error analysis using attention mechanisms
    */
   async analyzeErrorsWithAttention(
-    errorData: unknown,
+    errorData: any,
     codeContext: string[] = []
   ): Promise<ErrorAnalysisWithAttention> {
     await this.initialize();
@@ -231,7 +223,7 @@ export class FlashAttentionMulticoreBridge {
   }
   private async processWithFlashAttention(request: FlashAttentionMulticoreRequest): Promise<{
     result: {
-      embeddings: unknown;
+      embeddings: any;
       attentionWeights: Float32Array;
       contextualEmbeddings: Float32Array;
       processingTime: number;
@@ -315,7 +307,7 @@ export class FlashAttentionMulticoreBridge {
   private async generateCombinedRecommendations(
     attentionResult: { result: { processingTime: number }; legalAnalysis: LegalContextAnalysis },
     multicoreTasks: ProcessingTask[],
-    agentResult: unknown
+    agentResult: any
   ): Promise<string[]> {
     const recommendations: string[] = [];
     // FlashAttention2 recommendations
@@ -356,7 +348,7 @@ export class FlashAttentionMulticoreBridge {
     const flashAttentionService = flashAttention2Service as unknown as IFlashAttention2Service; // Apply type assertion
     const status = flashAttentionService.getStatus();
     // safe helper to check gpuEnabled in an unknown status object
-    function getStatusGpuEnabled(s: unknown): boolean {
+    function getStatusGpuEnabled(s: any): boolean {
       try {
         if (s && typeof s === 'object' && 'gpuEnabled' in s) {
           return Boolean((s as Record<string, unknown>)['gpuEnabled']);
@@ -415,7 +407,7 @@ export class FlashAttentionMulticoreBridge {
     return relevantSections.slice(0, 10);
   }
   private prioritizeErrorsWithAttention(
-    errorData: unknown | unknown[],
+    errorData: any | unknown[],
     attentionWeights: Float32Array,
     multicoreResult: ProcessingTask['result'] | undefined
   ): ErrorAnalysisWithAttention['prioritizedErrors'] {
@@ -487,7 +479,7 @@ export async function processWithEnhancedAI(
 }
 // Helper function for error analysis with GPU acceleration
 export async function analyzeErrorsWithGPU(
-  errorData: unknown,
+  errorData: any,
   codeContext: string[] = []
 ): Promise<ErrorAnalysisWithAttention> {
   return await flashAttentionMulticoreBridge.analyzeErrorsWithAttention(errorData, codeContext);

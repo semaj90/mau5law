@@ -5,9 +5,9 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import type { Case, Evidence, User } from '$lib/types/legal-document';
-  import YoRHaDetectiveModal from './YoRHaDetectiveModal.svelte';
-  import YoRHaDetectiveForm from './YoRHaDetectiveForm.svelte';
-  import YoRHaDetectiveNotification from './YoRHaDetectiveNotification.svelte';
+  import { YoRHaDetectiveModal } from './YoRHaDetectiveModal.svelte';
+  import { YoRHaDetectiveForm } from './YoRHaDetectiveForm.svelte';
+  import { YoRHaDetectiveNotification } from './YoRHaDetectiveNotification.svelte';
   // Props
   interface Props {
     currentUser?: User;
@@ -104,11 +104,11 @@
       hour12: false,
     });
   }
-  function handleNavigation(item: unknown) {
-    if ((item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).route) {
-      goto((item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).route);
+  function handleNavigation(item: any) {
+    if ((item as { route?: any; id?: any; icon?: any; label?: any }).route) {
+      goto((item as { route?: any; id?: any; icon?: any; label?: any }).route);
     } else {
-      activeTab = (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id;
+      activeTab = (item as { route?: any; id?: any; icon?: any; label?: any }).id;
     }
   }
   function showNotification(message: string, type: 'success' | 'error' | 'info' = 'info') {
@@ -121,9 +121,9 @@
     showNewCaseModal = true;
   }
   function closeNewCaseModal() {
-    showNewCaseModal = false;
+    showNewCaseModal = $state(false);
   }
-  async function handleNewCaseSubmit(formData: unknown) {
+  async function handleNewCaseSubmit(formData: any) {
     try {
       // Show loading notification
       showNotification('Saving case to database...', 'info');
@@ -133,8 +133,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData);
       });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const newCase = await (response as { ok?: unknown; json?: unknown }).json();
+      if ((response as { ok?: any; json?: any }).ok) {
+        const newCase = await (response as { ok?: any; json?: any }).json();
         // Add to active cases
         activeCases = [newCase, ...activeCases];
         // Update system data
@@ -169,7 +169,6 @@
     }
   }
 </script>
-
 <!-- YoRHa Detective Command Center -->
 <div class="yorha-detective-command-center min-h-screen bg-yorha-sand text-yorha-dark font-mono">
   <!-- Header -->
@@ -217,18 +216,18 @@
     <aside class="yorha-sidebar dashboard-panel">
       <h2 class="sidebar-title">YORHA DETECTIVE</h2>
       <nav class="sidebar-nav">
-        {#each navigationItems as item}
+        {#each Array.isArray(navigationItems) ? navigationItems : [] as item}
           <button
             class="sidebar-link {activeTab ===
-            (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id
+            (item as { route?: any; id?: any; icon?: any; label?: any }).id
               ? 'active'
               : ''}"
             onclick={() => handleNavigation(item)}
           >
             <span class="nav-icon"
-              >{(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).icon}</span
+              >{(item as { route?: any; id?: any; icon?: any; label?: any }).icon}</span
             >
-            {(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).label}
+            {(item as { route?: any; id?: any; icon?: any; label?: any }).label}
           </button>
         {/each}
       </nav>
@@ -274,7 +273,7 @@
       <div class="dashboard-panel cases-section">
         <h2 class="section-title">ACTIVE CASES</h2>
         <div class="cases-list">
-          {#each activeCases as case_}
+          {#each Array.isArray(activeCases) ? activeCases : [] as case_}
             <div class="case-item {getCasePriorityColor(case_.priority)}">
               <div class="case-header">
                 <span class="case-id">{case_.id}</span>
@@ -431,11 +430,10 @@
 {/if}
 <!-- Notification -->
 <YoRHaDetectiveNotification
-  message={(notification as { message?: unknown; type?: unknown; show?: unknown }).message}
-  type={(notification as { message?: unknown; type?: unknown; show?: unknown }).type}
-  show={(notification as { message?: unknown; type?: unknown; show?: unknown }).show}
+  message={(notification as { message?: any; type?: any; show?: any }).message}
+  type={(notification as { message?: any; type?: any; show?: any }).type}
+  show={(notification as { message?: any; type?: any; show?: any }).show}
 />
-
 <style>
   .yorha-detective-command-center {
     --yorha-sand: #EAE8E1;
@@ -448,7 +446,7 @@
     color: var(--yorha-dark);
   }
   .yorha-header {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -515,7 +513,7 @@ d;
     padding: 1.5rem;
   }
   .yorha-sidebar {
-    position sticky;
+    position: sticky;
 y;
     top: 5rem;
     height: fit-content;
@@ -739,7 +737,7 @@ y;
       grid-template-columns: 1fr;
     }
     .yorha-sidebar {
-      position stati;
+      position: stati;
 c;
     }
   }
@@ -857,4 +855,3 @@ c;
     }
   }
 </style>
-

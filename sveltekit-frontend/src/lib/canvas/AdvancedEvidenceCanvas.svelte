@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
@@ -10,7 +10,6 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-
   // --- Type definitions (moved inside script) ---
   interface CanvasOptions {
     width: number;
@@ -47,7 +46,6 @@ https://svelte.dev/e/expected_token -->
     onNodeCreate?: (node: Omit<EvidenceNode, 'id'>) => void;
     onNodeDelete?: (nodeId: string) => void;
   }
-
   // Props / defaults
   let {
     width = 800,
@@ -63,7 +61,6 @@ https://svelte.dev/e/expected_token -->
     onNodeCreate,
     onNodeDelete
   }: CanvasProps = $props();
-
   // Canvas state using Svelte 5 runes
   let canvas: HTMLCanvasElement = $state(undefined as any);
   let ctx: CanvasRenderingContext2D = $state(undefined as any);
@@ -76,7 +73,6 @@ https://svelte.dev/e/expected_token -->
   let pan = $state({ x: 0, y: 0 });
   let isMouseDown = $state(false);
   let lastMousePos = $state({ x: 0, y: 0 });
-
   // Derived canvas options
   let canvasOptions = $derived<CanvasOptions>(() => ({
     width,
@@ -87,7 +83,6 @@ https://svelte.dev/e/expected_token -->
     gridSize,
     snapToGrid
   }));
-
   // Derived viewport state
   let visibleNodes = $derived(() => {
     const viewportBounds = {
@@ -103,7 +98,6 @@ https://svelte.dev/e/expected_token -->
              node.y <= viewportBounds.bottom;
     });
   });
-
   // Derived selection info
   let hasSelection = $derived(() => selectedNode !== null);
   let selectionInfo = $derived(() => {
@@ -116,7 +110,6 @@ https://svelte.dev/e/expected_token -->
       size: { width: selectedNode.width, height: selectedNode.height }
     };
   });
-
   // Canvas initialization effect
   $effect(() => {
     try {
@@ -129,7 +122,6 @@ https://svelte.dev/e/expected_token -->
       // Handle error gracefully
     }
   });
-
   // Re-render when nodes change
   $effect(() => {
     try {
@@ -140,7 +132,6 @@ https://svelte.dev/e/expected_token -->
       console.error('Effect error:', error);
     }
   });
-
   // Update nodes when prop changes
   $effect(() => {
     try {
@@ -150,7 +141,6 @@ https://svelte.dev/e/expected_token -->
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
     }
   });
-
   // Selection change effect
   $effect(() => {
     try {
@@ -160,7 +150,6 @@ https://svelte.dev/e/expected_token -->
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
     }
   });
-
   function initCanvas(): void {
     if (!canvas || !ctx) return;
     // Set canvas CSS size (use style width/height for layout)
@@ -176,13 +165,11 @@ https://svelte.dev/e/expected_token -->
     clear();
     render();
   }
-
   function clear(): void {
     if (!ctx) return;
     ctx.fillStyle = canvasOptions.backgroundColor;
     ctx.fillRect(0, 0, width, height);
   }
-
   function render(): void {
     if (!ctx) return;
     clear();
@@ -204,7 +191,6 @@ https://svelte.dev/e/expected_token -->
     }
     ctx.restore?.();
   }
-
   function drawGrid(): void {
     if (!ctx) return;
     ctx.strokeStyle = '#333333';
@@ -226,7 +212,6 @@ https://svelte.dev/e/expected_token -->
       ctx.stroke();
     }
   }
-
   function drawNode(node: EvidenceNode): void {
     if (!ctx) return;
     // Node background
@@ -248,7 +233,6 @@ https://svelte.dev/e/expected_token -->
     // Node type icon
     drawNodeTypeIcon(node);
   }
-
   function drawNodeTypeIcon(node: EvidenceNode): void {
     if (!ctx) return;
     const iconSize = 16 / zoom;
@@ -261,7 +245,6 @@ https://svelte.dev/e/expected_token -->
     const icon = getNodeTypeIcon(node.type);
     ctx.fillText(icon, iconX + iconSize / 2, iconY + iconSize / 2);
   }
-
   function drawSelectionHighlight(node: EvidenceNode): void {
     if (!ctx) return;
     ctx.strokeStyle = '#00ff00';
@@ -271,7 +254,6 @@ https://svelte.dev/e/expected_token -->
                    node.width + 4 / zoom, node.height + 4 / zoom);
     ctx.setLineDash([]);
   }
-
   function getNodeColor(type: EvidenceNode['type']): string {
     const colors: Record<string, string> = {
       document: '#4a5568',
@@ -282,7 +264,6 @@ https://svelte.dev/e/expected_token -->
     };
     return colors[type] || '#4a5568';
   }
-
   function getNodeTypeIcon(type: EvidenceNode['type']): string {
     const icons: Record<string, string> = {
       document: '📄',
@@ -293,7 +274,6 @@ https://svelte.dev/e/expected_token -->
     };
     return icons[type] || '📄';
   }
-
   function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number,
                     maxWidth: number, lineHeight: number): void {
     const words = text.split(' ');
@@ -313,7 +293,6 @@ https://svelte.dev/e/expected_token -->
     }
     if (line) ctx.fillText(line, x, currentY);
   }
-
   function getMousePosition(event: MouseEvent): { x: number; y: number } {
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
@@ -326,7 +305,6 @@ https://svelte.dev/e/expected_token -->
     const y = (rawY - pan.y) / zoom;
     return { x, y };
   }
-
   function getNodeAtPosition(x: number, y: number): EvidenceNode | null {
     // Check from top to bottom (reverse order for proper layering)
     for (let i = canvasNodes.length - 1; i >= 0; i--) {
@@ -338,7 +316,6 @@ https://svelte.dev/e/expected_token -->
     }
     return null;
   }
-
   function snapToGridIfEnabled(x: number, y: number): { x: number; y: number } {
     if (!snapToGrid || gridSize <= 0) return { x, y };
     return {
@@ -346,7 +323,6 @@ https://svelte.dev/e/expected_token -->
       y: Math.round(y / gridSize) * gridSize
     };
   }
-
   // Event handlers
   function handleMouseDown(event: MouseEvent): void {
     if (!canvas) return;
@@ -363,11 +339,10 @@ https://svelte.dev/e/expected_token -->
       };
     } else {
       selectedNode = null;
-      isDragging = false;
+      isDragging = $state(false);
     }
     render();
   }
-
   function handleMouseMove(event: MouseEvent): void {
     if (!isMouseDown) return;
     const currentMousePos = { x: event.clientX, y: event.clientY };
@@ -397,12 +372,10 @@ https://svelte.dev/e/expected_token -->
     lastMousePos = { x: currentMousePos.x, y: currentMousePos.y };
     render();
   }
-
   function handleMouseUp(): void {
-    isMouseDown = false;
-    isDragging = false;
+    isMouseDown = $state(false);
+    isDragging = $state(false);
   }
-
   function handleWheel(event: WheelEvent): void {
     if (!enableZoom) return;
     event.preventDefault();
@@ -415,7 +388,6 @@ https://svelte.dev/e/expected_token -->
     zoom = newZoom;
     render();
   }
-
   function handleDoubleClick(event: MouseEvent): void {
     const mousePos = getMousePosition(event);
     const clickedNode = getNodeAtPosition(mousePos.x, mousePos.y);
@@ -434,7 +406,6 @@ https://svelte.dev/e/expected_token -->
       addNode(newNode);
     }
   }
-
   function handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Delete' || event.key === 'Backspace') {
       if (selectedNode) {
@@ -448,7 +419,6 @@ https://svelte.dev/e/expected_token -->
       render();
     }
   }
-
   // Public methods
   export function addNode(node: Omit<EvidenceNode, 'id'>): string {
     const id = `node_${Date.now()}_${Math.random().toString(36).substring(2)}`;
@@ -457,7 +427,6 @@ https://svelte.dev/e/expected_token -->
     render();
     return id;
   }
-
   export function removeNode(nodeId: string): boolean {
     const initialLength = canvasNodes.length;
     canvasNodes = canvasNodes.filter(node => node.id !== nodeId);
@@ -467,7 +436,6 @@ https://svelte.dev/e/expected_token -->
     render();
     return canvasNodes.length !== initialLength;
   }
-
   export function updateNode(nodeId: string, updates: Partial<EvidenceNode>): boolean {
     const nodeIndex = canvasNodes.findIndex(node => node.id === nodeId);
     if (nodeIndex === -1) return false;
@@ -482,7 +450,6 @@ https://svelte.dev/e/expected_token -->
     render();
     return true;
   }
-
   export function fitToNodes(): void {
     if (!canvasNodes || canvasNodes.length === 0) {
       resetView();
@@ -505,15 +472,12 @@ https://svelte.dev/e/expected_token -->
     pan.y = height / 2 - centerY * zoom;
     render();
   }
-
   export function resetView(): void {
     zoom = 1.0;
     pan = { x: 0, y: 0 };
     render();
   }
-
 </script>
-
 <!-- Template -->
 <canvas
   bind:this={canvas}
@@ -528,7 +492,6 @@ https://svelte.dev/e/expected_token -->
   onkeydown={handleKeyDown}
   tabindex="0"
 ></canvas>
-
 <!-- Canvas info overlay -->
 {#if hasSelection}
   <div class="canvas-info">
@@ -536,15 +499,13 @@ https://svelte.dev/e/expected_token -->
     <p>Type: {selectionInfo?.type}</p>
     <p>Position {Math.round(selectionInfo?.position.x || 0)}, {Math.round(selectionInfo?.position.y || 0)}</p>
     <p>Size: {selectionInfo?.size.width} × {selectionInfo?.size.height}</p>
-  </div>
-{/if}
+  {/if}
 <div class="canvas-controls">
   <button aria-label="Reset view" onclick={resetView}>Reset View</button>
   <button aria-label="Fit to nodes" onclick={fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>
-
 <style>
   .canvas-info {
     position: absolute;

@@ -85,7 +85,6 @@
       }
     };
   });
-
   // Use onMount to dynamically import components (this resolves modules that don't expose default exports to TS)
   onMount(async () => {
     try {
@@ -114,11 +113,9 @@
       N64TextureFilteringCache = null;
     }
   });
-
   onDestroy(() => {
     cacheActor?.stop();
   });
-
   function progressEra() {
     const eras = ['8bit', '16bit', 'n64', 'yorha'] as const;
     const currentIndex = eras.indexOf(currentEra);
@@ -126,7 +123,6 @@
     currentEra = eras[nextIndex];
   }
 </script>
-
 <div class="era-demo-area">
   {#if currentEra === '8bit'}
     <div class="nes-era-demo">
@@ -134,7 +130,7 @@
       <div class="nes-memory-visualization mt-4">
         <h4 class="text-sm font-mono text-gray-300 mb-2">NES Memory Banks</h4>
         <div class="nes-memory-grid">
-          {#each nesMemoryBanks as bank}
+          {#each Array.isArray(nesMemoryBanks) ? nesMemoryBanks : [] as bank}
             <div class="nes-memory-bank nes-{bank.region.toLowerCase()} nes-status-{bank.status}">
               <div class="memory-bank-label">{bank.region}</div>
               <div class="memory-bank-bar">
@@ -175,10 +171,8 @@
           <button class="yorha-quantum-button"> YoRHa Quantum Interface </button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <!-- Real-time Performance Metrics -->
 {#if enableRealTimeMetrics}
   <div class="performance-metrics-container">
@@ -204,8 +198,7 @@
         <div class="metric-value machine-state-{machineState}">{machineState}</div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- XState Machine Visualization -->
 <div class="xstate-visualization mt-6">
   <h4 class="text-sm font-mono text-gray-300 mb-2">Cache State Machine</h4>
@@ -219,7 +212,6 @@
     <div class="state-node state-error {machineState === 'error' ? 'active' : ''}">Error</div>
   </div>
 </div>
-
 <style>
   /* Component-specific styles that use the global GPU cache CSS */
   .gpu-cache-demo {
@@ -286,7 +278,7 @@
   .memory-bank-fill {
     height: 100%;
     background: var(--gpu-cache-accent-primary);
-    transition: width 0.5s ease;
+    transition: width: 0.5s ease;
   }
   .metrics-grid {
     display: grid;
@@ -320,7 +312,7 @@
   .metric-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gpu-cache-accent-secondary), var(--gpu-cache-accent-primary));
-    transition: width 0.5s ease;
+    transition: width: 0.5s ease;
   }
   .state-machine-diagram {
     display: flex;
@@ -373,14 +365,14 @@
   }
   /* YoRHa quantum interface */
   .yorha-quantum-interface {
-    position relative;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 200px;
   }
   .quantum-effect-container {
-    position relative;
+    position: relative;
     z-index: 2,
   }
   .yorha-quantum-button {
@@ -393,7 +385,7 @@
     border-radius: 8px;
     box-shadow: var(--gpu-glow-secondary);
     transition: all 0.3s ease;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .yorha-quantum-buttonhover {
@@ -401,7 +393,7 @@
     transform: scale(1.05);
   }
   .quantum-particles {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -420,4 +412,3 @@
     }
   }
 </style>
-

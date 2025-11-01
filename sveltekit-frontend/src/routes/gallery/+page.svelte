@@ -127,7 +127,7 @@ Displays all media: evidence, generated images, documents, uploads
 			error = err instanceof Error ? err.message : 'Failed to load gallery';
 			mediaItems = [];
 		} finally {
-			isLoading = false;
+			isLoading = $state(false);
 		}
 	}
 
@@ -344,7 +344,7 @@ Displays all media: evidence, generated images, documents, uploads
 				<div class="nes-select">
 					<select bind:value={selectedCaseId}>
 						<option value="all">All Cases</option>
-						{#each availableCases as case_item}
+						{#each Array.isArray(availableCases) ? availableCases : [] as case_item}
 							<option value={case_item.id}>{case_item.title}</option>
 						{/each}
 					</select>
@@ -450,7 +450,7 @@ Displays all media: evidence, generated images, documents, uploads
 			</div>
 		{:else}
 			<div class="gallery-grid gallery-{viewMode}">
-				{#each filteredItems as item}
+				{#each Array.isArray(filteredItems) ? filteredItems : [] as item}
 					<div class="gallery-item nes-container is-rounded">
 						<div class="item-preview" role="button" tabindex="0"
 								onclick={() => openItem(item)}>
@@ -507,7 +507,7 @@ Displays all media: evidence, generated images, documents, uploads
 
 							{#if item.tags && item.tags.length > 0}
 							<div class="item-tags">
-								{#each item.tags.slice(0, 3) as tag}
+								{#each Array.isArray(item.tags.slice(0, 3)) ? item.tags.slice(0, 3) : [] as tag}
 									<span class="tag-badge">{tag}</span>
 								{/each}
 								{#if item.tags.length > 3}
@@ -559,7 +559,7 @@ Displays all media: evidence, generated images, documents, uploads
 							<div class="nes-select">
 								<select bind:value={selectedCaseId}>
 									<option value="all">No specific case</option>
-									{#each availableCases as case_item}
+									{#each Array.isArray(availableCases) ? availableCases : [] as case_item}
 										<option value={case_item.id}>{case_item.title}</option>
 									{/each}
 								</select>
@@ -639,7 +639,7 @@ Displays all media: evidence, generated images, documents, uploads
 							<div class="info-row">
 								<strong>Tags:</strong>
 								<div class="tags-list">
-									{#each selectedItem.tags as tag}
+									{#each Array.isArray(selectedItem.tags) ? selectedItem.tags : [] as tag}
 										<span class="tag-badge">{tag}</span>
 									{/each}
 								</div>

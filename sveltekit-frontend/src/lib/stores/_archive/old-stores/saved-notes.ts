@@ -39,7 +39,7 @@ class FuseFallback<T> {
 }
 
 // Use a typed global cast instead of: "any"
-const GlobalWithMaybeFuse = globalThis as unknown as { Fuse?: unknown };
+const GlobalWithMaybeFuse = globalThis as unknown as { Fuse?: any };
 
 // A constructor signature for the fallback or real Fuse (no index-signature constraint)
 type FuseConstructor = new <T>(
@@ -74,13 +74,13 @@ export interface SavedNote {
   content: string;
   markdown: string;
   html: string;
-  contentJson: unknown; // avoid any
+  contentJson: any; // avoid any
   noteType: string;
   tags: string[];
   caseId?: string;
   userId: string;
   savedAt: Date;
-  metadata?: unknown;
+  metadata?: any;
 }
 export interface NoteFilters {
   search: string;
@@ -169,7 +169,7 @@ class NotesManager {
     if (browser) {
       try {
         await idbUtils.set(`${this.dbPrefix}${note.id}`, noteWithTimestamp);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('Failed to save note to IndexedDB:', error);
       }
     }
@@ -180,7 +180,7 @@ class NotesManager {
     if (browser) {
       try {
         await idbUtils.del(`${this.dbPrefix}${noteId}`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.warn('Failed to remove note from IndexedDB:', error);
       }
     }
@@ -200,12 +200,12 @@ class NotesManager {
             (maybeNote as SavedNote).savedAt = new Date((maybeNote as SavedNote).savedAt);
             notes.push(maybeNote as SavedNote);
           }
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn('Failed to load note from IndexedDB:', key, error);
         }
       }
       savedNotes.set(notes.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime()));
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to load notes from IndexedDB:', error);
     }
   }
@@ -220,7 +220,7 @@ class NotesManager {
       });
 
       if (response.ok) {
-        const json: unknown = await response.json();
+        const json: any = await response.json();
 
         if (Array.isArray(json)) {
           // Validate and coerce to SavedNote[]
@@ -255,12 +255,12 @@ class NotesManager {
       } else {
         console.warn('Failed to sync notes, server responded with status', response.status);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Failed to sync with server:', error);
     }
   }
   // Utility to check if object is a valid note
-  private isValidNote(obj: unknown): obj is SavedNote {
+  private isValidNote(obj: any): obj is SavedNote {
     if (!obj || typeof obj !== 'object') return false;
     const o = obj as Record<string, unknown>;
     return (

@@ -442,8 +442,7 @@
           <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
           <p>Initializing WebGPU...</p>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <div class="mt-2 text-xs text-gray-400">
     {#if visualizationMode === 'neural-network'}
@@ -465,7 +464,6 @@
           {#if webgpuCapability.getCapabilities()?.fallbackReason}
             <span class="text-gray-500">({webgpuCapability.getCapabilities()?.fallbackReason})</span>
           {/if}
-      </div>
-    {/if}
+      {/if}
   </div>
 </div>;

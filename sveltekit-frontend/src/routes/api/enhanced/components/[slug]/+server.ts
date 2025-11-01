@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types';
 const logger = {
   // Use unknown/Record instead of `any`. Use nullish coalescing when logging.
   info: (message: string, data?: Record<string, unknown>) => console.log(`[ENHANCED-API] ${message}`, data ?? ''),
-  error: (message: string, data?: unknown) => console.error(`[ERROR] ${message}`, data ?? ''),
+  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data ?? ''),
 };
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
   const { slug } = params;
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
         logger.info('Cache hit for enhanced component', { slug, variant, cacheLayer });
         return json(cached);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       logger.error('Cache retrieval failed', { slug, error: msg });
     }
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     });
     logger.info('Generated enhanced component', { slug, variant });
     return json(componentData);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     logger.error('Enhanced component generation failed', { slug, error: msg });
     return json(
@@ -94,7 +94,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
   // Use a simple runtime-typed array to avoid referencing typeof on a runtime import in a type position
 
   // Runtime-safe filters array (avoid block-scoped `type` alias that can confuse some parsers)
-  const filters: unknown[] = [];
+  const filters: any[] = [];
 
   if (caseId) filters.push(eq(evidenceTable.case_id, caseId));
   if (priority) filters.push(eq(evidenceTable.priority, priority));

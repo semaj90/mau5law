@@ -154,7 +154,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { content = 'N/A', evidenceType = 'evidence', metadata = {} } = await request.json();
     let rawScore: number | string = 50;
     try {
-      const svc: unknown = qdrantService as unknown;
+      const svc: any = qdrantService as unknown;
       const scorer = (
         svc as { calculateAISummaryScore?: (c: string, t: string, m: Record<string, unknown>) => Promise<number> }
       ).calculateAISummaryScore;
@@ -182,7 +182,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       confidence: score > 70 ? 0.85 : score > 50 ? 0.75 : 0.65,
       lastUpdated: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const details =
       typeof error === 'object' && error && 'message' in (error as Record<string, unknown>)
         ? String((error as Record<string, unknown>).message)

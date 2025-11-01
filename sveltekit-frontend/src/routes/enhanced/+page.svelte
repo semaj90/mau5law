@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     loading = true;
     controller?.abort();
     controller = new AbortController();
-    const body: unknown = { query, limit, mode };
+    const body: any = { query, limit, mode };
     if (threshold !== null && threshold >= 0) body.threshold = threshold;
     if (model.trim()) body.model = model.trim();
     if (caseId.trim()) body.caseId = caseId.trim();
@@ -67,10 +67,10 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-  async function runStreaming(body: unknown) {
+  async function runStreaming(body: any) {
     streaming = true;
     try {
       const params = new URLSearchParams({
@@ -118,11 +118,11 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
     } finally {
-      streaming = false;
-      loading = false;
+      streaming = $state(false);
+      loading = $state(false);
     }
   }
-  function handleStreamEvent(_event: string, data: unknown) {
+  function handleStreamEvent(_event: string, data: any) {
     if (event === 'meta') {
       responseMeta = { ...(responseMeta || {}), ...data };
     } else if (event === 'result') {
@@ -140,8 +140,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   function abort() {
     controller?.abort();
-    loading = false;
-    streaming = false;
+    loading = $state(false);
+    streaming = $state(false);
   }
   $effect(() => {
     if (autoFocus) {

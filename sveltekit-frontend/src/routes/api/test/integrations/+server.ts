@@ -6,7 +6,7 @@ const timeoutMs = 5000;
 async function runCheck() {
   const bridge = new EnhancedRabbitMQCudaBridge();
   const start = Date.now();
-  let initialized = false;
+  let initialized = $state(false);
   try {
     const initPromise = bridge.initialize();
     const res = await Promise.race([
@@ -14,7 +14,7 @@ async function runCheck() {
       new Promise<boolean>(resolve => setTimeout(() => resolve(false), timeoutMs)),
     ] as const);
     initialized = Boolean(res);
-  } catch (e: unknown) {
+  } catch (e: any) {
     // swallow - we will surface status below
   }
 

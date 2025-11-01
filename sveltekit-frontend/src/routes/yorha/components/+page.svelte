@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
-  import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
   const yorhaAPI: any = (YoRHaClient as any).yorhaAPI ?? (YoRHaClient as any).default ?? YoRHaClient;
 
   // Import types only (keep types import if they exist)
@@ -11,7 +11,7 @@
     YoRHaPanel3DOptions,
     YoRHaInput3DOptions,
     YoRHaModal3DOptions
-  } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
 
   // Use a minimal icon map instead of relying on lucide-svelte package exports
   const IconMap: Record<string, string> = {
@@ -125,7 +125,7 @@
     } catch (error) {
       console.error('Failed to load component configs:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function updatePreview() {
@@ -274,7 +274,7 @@
           COMPONENTS
         </h3>
         <div class="yorha-component-list">
-          {#each componentTypes as component}
+          {#each Array.isArray(componentTypes) ? componentTypes : [] as component}
   <button
     class="yorha-component-btn"
     class:yorha-component-active={selectedComponent === component.id}
@@ -297,7 +297,7 @@
           VIEW MODE
         </h3>
         <div class="yorha-mode-buttons">
-          {#each previewModes as mode}
+          {#each Array.isArray(previewModes) ? previewModes : [] as mode}
             <button
               class="yorha-mode-btn"
               class:yorha-mode-active={previewMode === mode.id}
@@ -526,7 +526,7 @@
       {/if}
       <!-- Component Info -->
       <div class="yorha-component-info-panel">
-        {#each componentTypes as component}
+        {#each Array.isArray(componentTypes) ? componentTypes : [] as component}
           {#if component.id === selectedComponent}
             <div class="yorha-info-content">
               <h4>{component.label}</h4>

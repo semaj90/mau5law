@@ -215,7 +215,7 @@ class VectorIntelligenceService {
       this.state.lastUpdateTime = Date.now();
       this.state.systemHealth = "excellent";
       console.log("✅ Vector Intelligence Service initialized successfully");
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ Failed to initialize Vector Intelligence Service:", error);
       this.state.systemHealth = "poor";
       throw error;
@@ -233,7 +233,7 @@ class VectorIntelligenceService {
       const enhancedResults = await this.enhanceSearchResults(searchResults, options.query);
       console.log(`📊 Found ${enhancedResults.length} semantic matches`);
       return enhancedResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ Semantic search failed:", error);
       return [];
     }
@@ -256,7 +256,7 @@ class VectorIntelligenceService {
       this.recommendationCache.set(cacheKey, rankedRecommendations);
       console.log(`✨ Generated ${rankedRecommendations.length} intelligent recommendations`);
       return rankedRecommendations;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ Recommendation generation failed:", error);
       return [];
     }
@@ -284,13 +284,13 @@ class VectorIntelligenceService {
         }
       }
       return this.createFallbackAnalysis(content);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ Semantic analysis failed:", error);
       return this.createFallbackAnalysis(content);
     }
   }
 
-  async updateVectorIndex(documentId: string, content: string, metadata: { [key: string]: unknown }): Promise<void> {
+  async updateVectorIndex(documentId: string, content: string, metadata: { [key: string]: any }): Promise<void> {
     try {
       console.log(`📝 Updating vector index for document: ${documentId}`);
       const embedding = await this.generateEmbedding(content);
@@ -298,7 +298,7 @@ class VectorIntelligenceService {
       this.state.indexedDocuments += 1;
       this.state.lastUpdateTime = Date.now();
       console.log("✅ Vector index updated successfully");
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("❌ Vector index update failed:", error);
       throw error;
     }
@@ -483,7 +483,7 @@ class VectorIntelligenceService {
     };
   }
 
-  private async generateSemanticRecommendations(_request: RecommendationRequest, _insights: unknown): Promise<IntelligenceRecommendation[]> {
+  private async generateSemanticRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     // Minimal placeholder: return empty list. Replace with domain logic.
     return [];
   }
@@ -595,28 +595,28 @@ class VectorIntelligenceService {
   private async checkIndexHealth(): Promise<boolean> {
     return true;
   }
-  private formatVectorResults(_results: unknown[]): VectorSearchResult[] {
+  private formatVectorResults(_results: any[]): VectorSearchResult[] {
     return [];
   }
   private performFallbackSearch(_options: VectorSearchOptions): VectorSearchResult[] {
     return [];
   }
-  private identifyPatterns(_results: VectorSearchResult[]): unknown {
+  private identifyPatterns(_results: VectorSearchResult[]): any {
     return {};
   }
-  private extractInsights(_results: VectorSearchResult[], _request: RecommendationRequest): unknown {
+  private extractInsights(_results: VectorSearchResult[], _request: RecommendationRequest): any {
     return {};
   }
-  private async generateActionRecommendations(_request: RecommendationRequest, _insights: unknown): Promise<IntelligenceRecommendation[]> {
+  private async generateActionRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
   }
-  private async generateInsightRecommendations(_request: RecommendationRequest, _insights: unknown): Promise<IntelligenceRecommendation[]> {
+  private async generateInsightRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
   }
-  private async generateWarningRecommendations(_request: RecommendationRequest, _insights: unknown): Promise<IntelligenceRecommendation[]> {
+  private async generateWarningRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
   }
-  private async generateOpportunityRecommendations(_request: RecommendationRequest, _insights: unknown): Promise<IntelligenceRecommendation[]> {
+  private async generateOpportunityRecommendations(_request: RecommendationRequest, _insights: any): Promise<IntelligenceRecommendation[]> {
     return [];
   }
   private adjustConfidenceForUser(confidence: number, _userProfile?: RecommendationRequest["userProfile"]): number {

@@ -31,15 +31,15 @@ const qdrantService = {
 
 // Logging
 const logger = {
-  info: (msg: string, data?: unknown) => console.log(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, data || ''),
-  error: (msg: string, error?: unknown) =>
+  info: (msg: string, data?: any) => console.log(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, data || ''),
+  error: (msg: string, error?: any) =>
     console.error(`[VECTOR-TEST] ${new Date().toISOString()} - ${msg}`, error || ''),
 };
 
 interface TestResult {
   success: boolean;
   error?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface Results {
@@ -57,9 +57,9 @@ interface Results {
 }
 
 interface QdrantResult {
-  id: unknown;
+  id: any;
   score?: number;
-  payload?: unknown;
+  payload?: any;
 }
 
 // Add: explicit shim type to avoid using `any`
@@ -71,9 +71,9 @@ type EnhancedRagQueryShim = {
     useSemanticSearch?: boolean;
     useMemoryGraph?: boolean;
     useMultiAgent?: boolean;
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: Date.now() - startTime,
         };
         logger.info(`Vector ranking: ${Array.isArray(rankingResults) ? rankingResults.length : 0} results found`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('Vector ranking test failed', error);
         results.tests.vectorRanking = {
           success: false,
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info(
           `Legal analysis: ${results.tests.legalAnalysis.entities} entities, ${results.tests.legalAnalysis.concepts} concepts`
         );
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('Legal analysis test failed', error);
         results.tests.legalAnalysis = {
           success: false,
@@ -150,8 +150,8 @@ export const POST: RequestHandler = async ({ request }) => {
         const safeRag = rawRag as unknown as {
           response?: string;
           answer?: string;
-          sources?: unknown[];
-          sourceDocuments?: unknown[];
+          sources?: any[];
+          sourceDocuments?: any[];
           confidence?: number;
           reasoning?: string;
         };
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
           reasoning,
         };
         logger.info(`Enhanced RAG: ${sourcesCount} sources, confidence ${confidence}`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('Enhanced RAG test failed', error);
         results.tests.enhancedRAG = {
           success: false,
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info(
           `LangChain RAG: ${results.tests.langchainRAG.sourceDocuments} sources, confidence ${results.tests.langchainRAG.confidence}`
         );
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('LangChain RAG test failed', error);
         results.tests.langchainRAG = {
           success: false,
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
           embeddingDimensions: embeddingResult.dimensions,
         };
         logger.info(`Qdrant search: ${qdrantResults.length} results found`);
-      } catch (error: unknown) {
+      } catch (error: any) {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     logger.info(`Vector search tests completed: ${successCount}/${totalTests} passed`);
     return json(results);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Vector search test failed', error);
     return json(
       {
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async () => {
       },
     };
     return json(health);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Health check failed', error);
     return json(
       {

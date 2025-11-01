@@ -69,7 +69,7 @@ Tests the demo RAG functionality with a working interface
         timestamp: new Date(),
       });
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function handleKeydown(event: KeyboardEvent) {
@@ -85,7 +85,6 @@ Tests the demo RAG functionality with a working interface
     chatHistory = [];
   }
 </script>
-
 <div class="demo-chat nes-container is-dark">
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
@@ -97,7 +96,7 @@ Tests the demo RAG functionality with a working interface
   <div class="sample-queries">
     <p class="nes-text is-disabled">Try these sample queries:</p>
     <div class="query-buttons">
-      {#each sampleQueries as sampleQuery}
+      {#each Array.isArray(sampleQueries) ? sampleQueries : [] as sampleQuery}
         <button class="nes-btn is-normal" onclick={() => useSampleQuery(sampleQuery)}>
           {sampleQuery}
         </button>
@@ -126,7 +125,7 @@ Tests the demo RAG functionality with a working interface
           {#if message.sources && message.sources.length > 0}
             <div class="message-sources">
               <h6 class="nes-text is-success">📚 Sources:</h6>
-              {#each message.sources as source}
+              {#each Array.isArray(message.sources) ? message.sources : [] as source}
                 <div class="source-item">
                   <span class="source-type nes-badge is-{source.type === 'evidence' ? 'primary' : 'warning'}">
                     {source.type}
@@ -141,13 +140,12 @@ Tests the demo RAG functionality with a working interface
                   {/if}
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
           {#if message.reasoning && message.reasoning.length > 0}
             <details class="reasoning-details">
               <summary class="nes-text is-disabled">🧠 AI Reasoning</summary>
               <ul class="reasoning-list">
-                {#each message.reasoning as reason}
+                {#each Array.isArray(message.reasoning) ? message.reasoning : [] as reason}
                   <li class="nes-text is-disabled">{reason}</li>
                 {/each}
               </ul>
@@ -170,16 +168,14 @@ Tests the demo RAG functionality with a working interface
           </div>
           <p class="nes-text is-disabled">Analyzing evidence and generating response...</p>
         </div>
-      </div>
-    {/if}
+      {/if}
     {#if chatHistory.length === 0}
       <div class="empty-chat">
         <p class="nes-text">Welcome to the Demo AI Chat!</p>
         <p class="nes-text is-disabled">
           Ask questions about the case and I'll analyze the evidence to provide insights.
         </p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Chat Input -->
   <div class="chat-input">
@@ -198,7 +194,6 @@ Tests the demo RAG functionality with a working interface
     </button>
   </div>
 </div>
-
 <style>
   .demo-chat {
     display: flex;
@@ -396,4 +391,3 @@ Tests the demo RAG functionality with a working interface
     }
   }
 </style>
-

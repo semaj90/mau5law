@@ -16,7 +16,7 @@ type CitationRecord = {
   title?: string;
   citation?: string;
   metadata?: Record<string, unknown> | null;
-  [extra: string]: unknown;
+  [extra: string]: any;
 };
 
 // New types to fix missing VerificationResult references
@@ -36,7 +36,7 @@ type AccessibilityResult = {
 type VerificationMetadata = {
   verificationLevel: string;
   timestamp: string;
-  [extra: string]: unknown;
+  [extra: string]: any;
 };
 
 type VerificationDetails = {
@@ -44,7 +44,7 @@ type VerificationDetails = {
   accessibility?: AccessibilityResult | null;
   accuracy?: ContentAccuracyResult | null;
   error?: string;
-  [extra: string]: unknown;
+  [extra: string]: any;
 };
 
 type VerificationResult = {
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         action: 'citation_verified',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Citation verification error:', err);
     if (err instanceof z.ZodError) {
       return error(
@@ -463,7 +463,7 @@ type LocalsShape =
     }
   | undefined;
 
-function getUserId(locals: unknown): string {
+function getUserId(locals: any): string {
   const l = locals as LocalsShape;
   if (!l) return 'unknown';
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;

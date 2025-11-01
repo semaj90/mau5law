@@ -25,7 +25,7 @@ const QUEUES: Record<string, string> = {
 /**
  * Normalize unknown errors to a predictable structure.
  */
-function formatError(err: unknown): { message: string; stack?: string } {
+function formatError(err: any): { message: string; stack?: string } {
   // Prefer Error instances, fall back to stringification
   if (err instanceof Error) return { message: err.message, stack: err.stack };
   return { message: String(err) };
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = formatError(error);
     console.error('❌ RabbitMQ Worker API Error:', err.message, err.stack);
     return json(
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         const results = await Promise.all(
-          rawMessages.map(async (msg: unknown) => {
+          rawMessages.map(async (msg: any) => {
             try {
               const m = (msg as BulkPublishItem) ?? {};
               const qName = typeof m.queueName === 'string' ? m.queueName : undefined;
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = formatError(error);
     console.error('❌ RabbitMQ Worker POST Error:', err.message, err.stack);
     return json(
@@ -347,7 +347,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = formatError(error);
     console.error('❌ RabbitMQ Worker PUT Error:', err.message, err.stack);
     return json(
@@ -393,7 +393,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = formatError(error);
     console.error('❌ RabbitMQ Worker DELETE Error:', err.message, err.stack);
     return json(
@@ -411,7 +411,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 /**
  * Get description for a queue name
  */
-function getQueueDescription(queueName: unknown): string {
+function getQueueDescription(queueName: any): string {
   const key = String(queueName); // safely coerce unknown to string
   const descriptions: Record<string, string> = {
     [String(QUEUES.DOCUMENT_PROCESSING)]: 'Processes uploaded legal documents for analysis',

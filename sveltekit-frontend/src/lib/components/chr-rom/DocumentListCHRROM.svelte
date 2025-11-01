@@ -165,7 +165,6 @@ https://svelte.dev/e/js_parse_error -->
     console.log('✅ Pattern refresh completed');
   }
 </script>
-
 <!-- Zero-Latency Document List UI -->
 <div class="chr-rom-document-list">
   <!-- Performance Metrics (optional) -->
@@ -197,11 +196,10 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       <button onclick={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
-    </div>
-  {/if}
+    {/if}
   <!-- Document List with Instant CHR-ROM Patterns -->
   <div class="document-grid">
-    {#each documents as doc}
+    {#each Array.isArray(documents) ? documents : [] as doc}
       <div
         class="document-nier-bits-card"
         style:border-left-color={getCategoryColor(doc.id)}
@@ -249,16 +247,14 @@ https://svelte.dev/e/js_parse_error -->
                 {@html getPatternData(doc.id, 'similarity_graph')}
               </div>
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Performance Debug Info (development only) -->
         {#if showPerformanceMetrics}
           <div class="debug-info">
             <small>
               Patterns: {patternTypes.map(type => (getPattern(doc.id, type) ? '✅' : '❌')).join(' ')}
             </small>
-          </div>
-        {/if}
+          {/if}
       </div>
     {/each}
   </div>
@@ -268,10 +264,8 @@ https://svelte.dev/e/js_parse_error -->
       <div class="zero-icon">📄</div>
       <h3>No Documents Found</h3>
       <p>Upload documents to see CHR-ROM patterns in action</p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .chr-rom-document-list {
     padding: 1rem;
@@ -452,5 +446,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-
-

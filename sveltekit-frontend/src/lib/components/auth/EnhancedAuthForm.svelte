@@ -1,16 +1,16 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Label from '$lib/components/ui/label/Label.svelte';
-  import Alert from '$lib/components/ui/alert/Alert.svelte';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
-  import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Label } from '$lib/components/ui/label/Label.svelte';
+  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import { Checkbox } from '$lib/components/ui/checkbox/Checkbox.svelte';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
   import { scale, fade } from 'svelte/transition';
   import { quartOut } from 'svelte/easing';
@@ -154,7 +154,7 @@
         // Close dialog after delay
         setTimeout(() => {
           resetForm();
-          open = false;
+          open = $state(false);
           onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
         }, mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification ? 3000 : 1500);
       } else {
@@ -165,7 +165,7 @@
       formState.error = 'Network error occurred. Please try again.';
       console.error('Auth error:', err);
     } finally {
-      formState.loading = false;
+      formState.loading = $state(false);
     }
   }
   // Helper functions
@@ -221,7 +221,7 @@
     formData.confirmPassword = '';
     formData.firstName = '';
     formData.lastName = '';
-    formData.acceptTerms = false;
+    formData.acceptTerms = $state(false);
   }
   async function handleGuestLogin() {
     if (!allowGuestMode) return;
@@ -234,12 +234,12 @@
       const result = await (response as { json?: any; ok?: any }).json();
       if ((response as { json?: any; ok?: any }).ok) {
         onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
-        open = false;
+        open = $state(false);
       }
     } catch (error) {
       console.error('Guest login failed:', error);
     } finally {
-      formState.loading = false;
+      formState.loading = $state(false);
     }
   }
   // Effects for enhanced UX
@@ -341,8 +341,7 @@
                 class={!validation.hasName && formData.lastName ? 'border-red-500' : ''}
               />
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Email Field -->
         <div class="space-y-2">
           <Label for="email">Email Address *</Label>
@@ -416,8 +415,7 @@
               <p class="text-xs nes-text is-disabled">
                 Use 8+ characters with uppercase, lowercase, numbers, and symbols
               </p>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Confirm Password (Register Only) -->
         {#if mode === 'register'}
@@ -454,8 +452,7 @@
             {#if !validation.passwordsMatch && formData.confirmPassword}
               <p class="text-xs text-red-500">Passwords do not match</p>
             {/if}
-          </div>
-        {/if}
+          {/if}
         <!-- Terms and Remember Me -->
         <div class="space-y-3">
           {#if mode === 'register'}
@@ -469,8 +466,7 @@
                 I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a>
                 and <a href="/privacy" class="text-primary hover:underline">Privacy Policy</a>
               </Label>
-            </div>
-          {/if}
+            {/if}
           {#if mode === 'login'}
             <div class="flex items-center space-x-2">
               <Checkbox
@@ -480,8 +476,7 @@
               <Label for="remember" class="text-sm leading-none">
                 Remember me for 30 days
               </Label>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Submit Button -->
         <Button
@@ -530,8 +525,7 @@ Continue as Guest
             <p>Admin: admin@prosecutor.com / password</p>
             <p>User: user@prosecutor.com / password</p>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Close Button -->
       <Dialog.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

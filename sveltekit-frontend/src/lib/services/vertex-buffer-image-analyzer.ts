@@ -65,7 +65,7 @@ export class VertexBufferImageAnalyzer {
     shaderModules: new Map(),
     computePipelines: new Map()
   }
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Pre-trained model for image->vertex conversion
   private vertexExtractionModel: any = null;
   // Performance metrics
@@ -384,7 +384,7 @@ export class VertexBufferImageAnalyzer {
       const y = positions[i + 1];
       const z = positions[i + 2];
       // Look for corresponding point on opposite side
-      let foundMatch = false;
+      let foundMatch = $state(false);
       for (let j = 0; j < positions.length; j += 3) {>
         const x2 = positions[j];
         const y2 = positions[j + 1];

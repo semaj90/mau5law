@@ -54,7 +54,7 @@ export class QueueManager {
   private processingJobs = new Map<string, QueueJob>();
   private completedJobs = new Map<string, { job: QueueJob; result: any; completedAt: Date }>();
   private failedJobs = new Map<string, { job: QueueJob; error: Error; failedAt: Date }>();
-  private isRunning = false;
+  private isRunning = $state(false);
   private processingInterval: NodeJS.Timeout | null = null;
   private maxConcurrentJobs = 5;
   constructor() {
@@ -115,7 +115,7 @@ export class QueueManager {
    */
   stop(): void {
     if (!this.isRunning) return;
-    this.isRunning = false;
+    this.isRunning = $state(false);
     if (this.processingInterval) {
       clearInterval(this.processingInterval);
       this.processingInterval = null;

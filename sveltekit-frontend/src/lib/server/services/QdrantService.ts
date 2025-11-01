@@ -5,10 +5,10 @@ import * as crypto from 'crypto';
 
 // Simple logger implementation
 const logger = {
-  info: (msg: string, ...args: unknown[]) => console.log(`[INFO] ${msg}`, ...args),
-  error: (msg: string, ...args: unknown[]) => console.error(`[ERROR] ${msg}`, ...args),
-  warn: (msg: string, ...args: unknown[]) => console.warn(`[WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: unknown[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+  info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
+  error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
+  warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
+  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args),
 };
 
 // Environment fallback (typed)
@@ -72,7 +72,7 @@ export interface CollectionInfo {
   vectors_count?: number;
   status?: string;
   config?: Record<string, unknown>;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 export interface BatchUpsertResult {
@@ -146,7 +146,7 @@ export class QdrantService {
           }
         }
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to initialize collections', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -181,7 +181,7 @@ export class QdrantService {
       });
       logger.info('Document stored in Qdrant', { id: point.id });
       return String(point.id);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to store document', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -220,7 +220,7 @@ export class QdrantService {
         status: 'completed',
         successful: true,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to batch store documents', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -302,7 +302,7 @@ export class QdrantService {
           relevance_score: Number(payload['relevance_score'] ?? res['score']),
         } as VectorSearchResult;
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to search similar documents', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -333,7 +333,7 @@ export class QdrantService {
         case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
         relevance_score: payload['relevance_score'] ? Number(payload['relevance_score']) : undefined,
       } as DocumentVector;
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to get document', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -349,7 +349,7 @@ export class QdrantService {
         wait: true,
       });
       logger.info(`Deleted ${ids.length} documents from ${collection}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to delete documents', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -374,7 +374,7 @@ export class QdrantService {
         wait: true,
       });
       logger.info('Updated document metadata', { id });
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to update metadata', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -395,7 +395,7 @@ export class QdrantService {
         status: info?.['status'],
         optimizersStatus: info?.['optimizer_status'],
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to get collection stats', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -413,7 +413,7 @@ export class QdrantService {
         },
       });
       logger.info(`Optimized collection: ${collection}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to optimize collection', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -427,7 +427,7 @@ export class QdrantService {
       const result = await this.client.createSnapshot(collection);
       logger.info(`Created snapshot for ${collection}`, result);
       return (result?.['name'] as string) ?? String(Date.now());
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to create snapshot', error);
       throw error instanceof Error ? error : new Error(String(error));
     }
@@ -440,7 +440,7 @@ export class QdrantService {
     try {
       const collections = await this.client.getCollections();
       return Array.isArray(collections.collections) && collections.collections.some(c => c.name === name);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to check collection existence', error);
       return false;
     }
@@ -459,7 +459,7 @@ export class QdrantService {
         optimizers_config: config['optimizersConfig'],
         hnsw_config: config['hnswConfig'],
       } as Record<string, unknown>);
-    } catch (error: unknown) {
+    } catch (error: any) {
       logger.error('Failed to create collection', error);
       throw error instanceof Error ? error : new Error(String(error));
     }

@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const stream = new ReadableStream({
 		async start(controller) {
-			const emit = (event: string, payload: unknown) => {
+			const emit = (event: string, payload: any) => {
 				controller.enqueue(`event: ${event}\n`);
 				controller.enqueue(`data: ${JSON.stringify(payload)}\n\n`);
 			};
@@ -107,7 +107,7 @@ type AgentCaseScoringRequest = ExtendedCaseScoringRequest & {
 		requestId?: string;
 		requestedBy?: string;
 		// additional optional agent-specific data
-		[k: string]: unknown;
+		[k: string]: any;
 	};
 };
 

@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleWebAssemblyStatus();
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     console.error('Enhanced Autosolve API error:', error);
     return json(
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleTestWebAssemblyAcceleration(options as Record<string, unknown>); // Cast options
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any
     console.error('Enhanced Autosolve POST error:', error);
     return json(
@@ -390,7 +390,7 @@ async function handleGenerateRecommendations(options: Record<string, unknown>, u
       recommendations: generatedRecs,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error generating recommendations:', error);
     return json(
       {

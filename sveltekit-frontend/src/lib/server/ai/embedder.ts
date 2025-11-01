@@ -233,8 +233,8 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
  * Get embedding service status
  */
 export async function getEmbeddingServiceStatus(): Promise<any> {
-  let localAvailable = false;
-  let nomicAvailable = false;
+  let localAvailable = $state(false);
+  let nomicAvailable = $state(false);
 
   // Local (Ollama) health check
   if (EMBEDDING_CONFIG.useLocal) {
@@ -248,7 +248,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
       clearTimeout(timeout);
       localAvailable = !!resp.ok;
     } catch {
-      localAvailable = false;
+      localAvailable = $state(false);
     }
   }
 

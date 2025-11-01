@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
-  import * as YoRHaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import * as YoRHaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
   import YoRHaCommandInterface from '$lib/components/yorha/YoRHaCommandInterface.svelte';
   import { debounce, withAbort } from '$lib/yorha/constants';
@@ -575,7 +575,7 @@
     <section class="yorha-results">
       <h2 class="yorha-section-title">SEARCH RESULTS ({searchResults.length})</h2>
       <div class="yorha-search-results">
-        {#each searchResults as result}
+        {#each Array.isArray(searchResults) ? searchResults : [] as result}
           <div class="yorha-result-item">
             <div class="yorha-result-header">
               <h4>{result.title}</h4>

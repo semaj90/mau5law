@@ -30,7 +30,7 @@ const langextract: LangExtract = {
     }
 
     // Safely parse JSON into unknown, then narrow to the typed shape
-    let raw: unknown;
+    let raw: any;
     try {
       raw = await response.json();
     } catch {
@@ -59,7 +59,7 @@ export interface LegalExtractionRequest {
   examples?: Array<unknown>;
 }
 export interface LegalExtractionResult {
-  extracted_data: unknown;
+  extracted_data: any;
   confidence: number;
   processing_time: number;
   model_used: string;
@@ -104,9 +104,9 @@ export class LangExtractOllamaService {
         model_id: request?.model || this.defaultModel,
         model_url: this.ollamaUrl,
       });
-      const extracted = ((): unknown => {
-        type ExtractResponse = { extracted_data?: unknown };
-        const isExtractResponse = (x: unknown): x is ExtractResponse => {
+      const extracted = ((): any => {
+        type ExtractResponse = { extracted_data?: any };
+        const isExtractResponse = (x: any): x is ExtractResponse => {
           return typeof x === 'object' && x !== null && 'extracted_data' in x;
         };
         return isExtractResponse(result) && result.extracted_data !== undefined ? result.extracted_data : result;
@@ -289,16 +289,16 @@ export class LangExtractOllamaService {
     return examples[key] || [];
   }
   // Calculate confidence score based on extraction quality
-  private calculateConfidence(result: unknown, request: LegalExtractionRequest): number {
+  private calculateConfidence(result: any, request: LegalExtractionRequest): number {
     if (!result) return 0;
     let confidence = 0.5;
     const asObj = result as Record<string, unknown> | string;
-    const hasEntitiesArray = (x: unknown): x is { entities: unknown[] } => {
+    const hasEntitiesArray = (x: any): x is { entities: any[] } => {
       if (typeof x !== 'object' || x === null) return false;
       const rec = x as Record<string, unknown>;
       return Array.isArray(rec.entities);
     };
-    const hasDatesArray = (x: unknown): x is { dates: unknown[] } => {
+    const hasDatesArray = (x: any): x is { dates: any[] } => {
       if (typeof x !== 'object' || x === null) return false;
       const rec = x as Record<string, unknown>;
       return Array.isArray(rec.dates);
@@ -397,7 +397,7 @@ export const langExtractService = new LangExtractOllamaService();
 
 // Add a typed shape for the Ollama generate response
 type OllamaGenerateResponse = {
-  extracted?: unknown; // some Ollama setups may return 'extracted' or similar keys
-  response?: unknown; // common fallback used earlier
-  [k: string]: unknown;
+  extracted?: any; // some Ollama setups may return 'extracted' or similar keys
+  response?: any; // common fallback used earlier
+  [k: string]: any;
 };

@@ -91,7 +91,7 @@ export async function analyzePropDestructuring(filePath: string): Promise<any> {
     const nodes = duplicateGroups[propName];
     return {
       duplicateVariables: [propName],
-      suggestedInterface: `interface Props {\n  ${propName}?: unknown;\n}`,
+      suggestedInterface: `interface Props {\n  ${propName}?: any;\n}`,
       suggestedDestructuring: `let { ${propName} } = $props();`
     }
   });

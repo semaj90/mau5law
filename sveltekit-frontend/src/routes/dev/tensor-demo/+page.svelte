@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { embedText } from '$lib/ai/tensor-client';
   let input = $state('Contracts and liabilities in commercial agreements.');
-  let result: unknown = $state(null);
+  let result: any = $state(null);
   let error: string | null = $state(null);
   let busy = $state(false);
   async function run() {
@@ -13,7 +13,7 @@
     } catch (e) {
       error = (e as Error).messag;
     } finally {
-      busy = false;
+      busy = $state(false);
     }
   }
   $effect(() => {
@@ -35,7 +35,7 @@
     <div class="grid grid-cols-2 gap-4">
       <div>
         <h3 class="font-semibold mb-2">Embedding</h3>
-        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify(embedding)?.slice?.(0, 16))} … ({(result as { embedding?: unknown; tensorMeta?: unknown }).embedding?.length})</pre>
+        <pre class="text-xs max-h-48 overflow-auto">{JSON.stringify(embedding)?.slice?.(0, 16))} … ({(result as { embedding?: any; tensorMeta?: any }).embedding?.length})</pre>
       </div>
       <div>
         <h3 class="font-semibold mb-2">SIMD Meta</h3>

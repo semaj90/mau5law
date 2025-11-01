@@ -1,22 +1,19 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   interface Props {
     position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
     show?: boolean;
   }
   let { position = 'bottom-right', show = true }: Props = $props();
 </script>
-
 {#if show}
   <div class="ai-button-portal space-y-4" data-position={position}>
     <Button class="bits-btn">AI Assistant</Button>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* @unocss-include */
   .ai-button-portal {
-    position fixed;
+    position: fixed;
     z-index: 1000;
     pointer-events: auto;
   }

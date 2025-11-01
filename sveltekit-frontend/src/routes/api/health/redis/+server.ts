@@ -4,7 +4,7 @@ import { createRedisConnection } from '$lib/server/redis';
 
 export const GET: RequestHandler = async () => {
   // Helper: safely extract a message string from unknown error values
-  function extractMessage(e: unknown): string {
+  function extractMessage(e: any): string {
     if (typeof e === 'string') return e;
     if (typeof e === 'object' && e !== null) {
       const maybe = (e as Record<string, unknown>)['message'];
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
 
   try {
     // Attempt to load Redis client with fallback
-    let isAvailable = false;
+    let isAvailable = $state(false);
 
     // Use a short-lived connection for health checks to avoid errors when the
     // global/shared client has been closed or is in a bad state.
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async () => {
         await client.ping();
         isAvailable = true;
       }
-    } catch (redisError: unknown) {
+    } catch (redisError: any) {
       // Improve diagnostics for common problems like missing auth or aborted clients
       const msg = extractMessage(redisError);
       console.warn('[Redis Health] Redis unavailable:', msg);
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
         );
       }
 
-      isAvailable = false;
+      isAvailable = $state(false);
     } finally {
       // Quit the short-lived client if possible to avoid leaking connections
       try {
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
         { status: 503 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errorMsg = extractMessage(error);
     return json(
       {

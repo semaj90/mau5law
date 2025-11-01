@@ -2,11 +2,11 @@ import { createActor } from 'xstate';
 
 // Minimal shape for machines we can adapt
 type MachineLike = {
-  logic?: unknown;
-  getInitialSnapshot?: (...args: unknown[]) => unknown;
-  getPersistedSnapshot?: (...args: unknown[]) => unknown;
-  restoreSnapshot?: (...args: unknown[]) => unknown;
-  [k: string]: unknown;
+  logic?: any;
+  getInitialSnapshot?: (...args: any[]) => unknown;
+  getPersistedSnapshot?: (...args: any[]) => unknown;
+  restoreSnapshot?: (...args: any[]) => unknown;
+  [k: string]: any;
 };
 
 /**
@@ -23,7 +23,7 @@ export function createCompatibleActor<
   try {
     // First, try normal createActor call
     return createActor(machine as unknown as Parameters<typeof createActor>[0], options as unknown as Opt);
-  } catch (err: unknown) {
+  } catch (err: any) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg && /getInitialSnapshot|logic/.test(msg)) {
       const m = machine as MachineLike;
@@ -32,14 +32,14 @@ export function createCompatibleActor<
           ...m,
           logic: {
             // Use explicit function signature instead of `Function`
-            getInitialSnapshot: (m.getInitialSnapshot as (...args: unknown[]) => unknown).bind(m),
+            getInitialSnapshot: (m.getInitialSnapshot as (...args: any[]) => unknown).bind(m),
             getPersistedSnapshot:
               typeof m.getPersistedSnapshot === 'function'
-                ? (m.getPersistedSnapshot as (...args: unknown[]) => unknown).bind(m)
+                ? (m.getPersistedSnapshot as (...args: any[]) => unknown).bind(m)
                 : undefined,
             restoreSnapshot:
               typeof m.restoreSnapshot === 'function'
-                ? (m.restoreSnapshot as (...args: unknown[]) => unknown).bind(m)
+                ? (m.restoreSnapshot as (...args: any[]) => unknown).bind(m)
                 : undefined,
           },
         };

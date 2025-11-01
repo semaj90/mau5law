@@ -19,7 +19,7 @@ export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobSta
   try {
     await cache.set(`ingest:payload:${jobId}`, job, 60 * 60 * 1000);
     MEMORY_QUEUE.push(jobId);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.warn('Queue enqueue failed, fallback memory only:', err instanceof Error ? err.message : String(err));
     MEMORY_QUEUE.push(jobId);
   }
@@ -52,7 +52,7 @@ export async function processNext(
     await processor(payload, update);
     status.status = 'completed';
     status.completedAt = nowISO();
-  } catch (e: unknown) {
+  } catch (e: any) {
     status.status = 'failed';
     status.error = e instanceof Error ? e.message : String(e);
   }

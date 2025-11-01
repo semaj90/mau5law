@@ -4,7 +4,7 @@ import type { LocalLegalDoc } from './localSearch.js';
 let lokiDb: any = null;
 let lokiCollection: any = null;
 let lastRefresh = 0;
-let refreshing = false;
+let refreshing = $state(false);
 
 export interface HybridInitOptions {
   refreshIntervalMs?: number;
@@ -65,7 +65,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
   } catch (e: any) {
     console.warn('[HybridSearch] refresh failed', e);
   } finally {
-    refreshing = false;
+    refreshing = $state(false);
   }
 }
 export async function reRankWithPgVector(

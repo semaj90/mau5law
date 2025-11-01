@@ -22,7 +22,7 @@ interface CognitiveGetContext {
 interface CognitiveGetOptions {
   enablePredictive?: boolean;
   enablePhysics?: boolean;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface CognitiveGetRequest {
@@ -33,16 +33,16 @@ interface CognitiveGetRequest {
 }
 
 interface CognitiveGetResult {
-  data?: unknown;
+  data?: any;
   source?: string;
   confidence?: number;
   processingTime?: number;
   metadata?: {
     cognitiveScore?: number;
     reinforcementReward?: number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  predictions?: unknown;
+  predictions?: any;
 }
 
 interface CognitiveMetrics {
@@ -52,7 +52,7 @@ interface CognitiveMetrics {
   cognitiveAccuracy?: number;
   cognitiveHits?: number;
   shaderHits?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 
 interface CognitiveCache {
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       return json({ success: false, error: 'Failed to cache data', key }, { status: 500 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('Cognitive cache store error:', error);
     return json(
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
         { status: 404 }
       );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('Cognitive cache retrieve error:', error);
     return json(
@@ -341,7 +341,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
       default: return json({ error: 'Invalid action. Use: analyze, optimize, predict' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('Cognitive cache analysis error:', error);
     return json(
@@ -395,7 +395,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       },
       { status: 200 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('Cognitive cache invalidation error:', error);
     return json(
@@ -466,7 +466,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       };
     }
     return json({ success: true, metrics: response, timestamp: Date.now() }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('Cognitive cache metrics error:', error);
     return json(

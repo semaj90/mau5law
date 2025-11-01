@@ -169,19 +169,19 @@ class AppLogger {
 // Export singleton instance
 export const logger = new AppLogger();
 // Convenience methods
-export const logInfo = (message: string, metadata?: unknown) =>
+export const logInfo = (message: string, metadata?: any) =>
   logger.log("info", message, metadata);
-export const logWarn = (message: string, metadata?: unknown) =>
+export const logWarn = (message: string, metadata?: any) =>
   logger.log("warn", message, metadata);
-export const logError = (message: string, metadata?: unknown) =>
+export const logError = (message: string, metadata?: any) =>
   logger.log("error", message, metadata);
-export const logDebug = (message: string, metadata?: unknown) =>
+export const logDebug = (message: string, metadata?: any) =>
   logger.log("debug", message, metadata);
 // User action logging for audit trail
 export const logUserAction = (
   action: string,
   userId: string,
-  metadata?: unknown
+  metadata?: any
 ) => {
   logger.log("info", `User action: ${action}`, {
     action,

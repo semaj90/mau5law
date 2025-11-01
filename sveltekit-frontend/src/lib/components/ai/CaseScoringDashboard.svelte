@@ -301,13 +301,12 @@
       // Load mock data for demonstration
       setTimeout(() => {
         cases = generateMockCases();
-        isLoading = false;
+        isLoading = $state(false);
       }, 1000); // Simulate API delay
     } else {
       loadCaseScores();
     }
   });
-
   async function loadCaseScores() {
     isLoading = true;
     try {
@@ -338,10 +337,9 @@
       cases = generateMockCases();
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
-
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
     // mark this case as in-progress
     scoringInProgressIds.add(caseId);
@@ -401,7 +399,6 @@
       scoringInProgressIds.delete(caseId);
     }
   }
-
   function getScoreColor(score: number): string {
     if (score >= 85) return 'text-red-600';
     if (score >= 70) return 'text-orange-600';
@@ -452,13 +449,11 @@
     });
     return filtered;
   });
-
   function openScoreDetails(caseItem: CaseScore) {
     selectedCase = caseItem;
     showScoreDetails = true;
   }
 </script>
-
 <svelte:head>
   <title>Case Scoring Dashboard - Legal AI Platform</title>
 </svelte:head>
@@ -565,7 +560,7 @@
             <div class="top-factors">
               <h4>Top Risk Factors:</h4>
               <ul class="factors-list">
-                {#each caseItem.factors.slice(0, 3) as factor}
+                {#each Array.isArray(caseItem.factors.slice(0, 3)) ? caseItem.factors.slice(0, 3) : [] as factor}
                   <li class="factor-item">
                     <span class="factor-category">{factor.category}</span>
                     <span class="factor-impact">Impact: {(factor.impact * 100).toFixed(0)}%</span>
@@ -609,7 +604,7 @@
     tabindex="0"
     onkeydown={e => {
       // close modal on Escape
-      if (e.key === 'Escape') showScoreDetails = false;
+      if (e.key === 'Escape') showScoreDetails = $state(false);
     }}
   >
     <!-- Visually hidden close button for keyboard users (simple, no duplicated handlers) -->
@@ -644,7 +639,7 @@
         <section class="scoring-factors">
           <h3>Scoring Factors</h3>
           <div class="factors-grid">
-            {#each selectedCase.factors as factor}
+            {#each Array.isArray(selectedCase.factors) ? selectedCase.factors : [] as factor}
               <div class="factor-card">
                 <h4>{factor.category}</h4>
                 <div class="factor-metrics">
@@ -663,7 +658,7 @@
         <section class="recommendations">
           <h3>AI Recommendations</h3>
           <ul class="recommendations-list">
-            {#each selectedCase.recommendations as recommendation}
+            {#each Array.isArray(selectedCase.recommendations) ? selectedCase.recommendations : [] as recommendation}
               <li class="recommendation-item">{recommendation}</li>
             {/each}
           </ul>
@@ -688,9 +683,7 @@
         </button>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .case-scoring-dashboard {
     max-width: 1400px;
@@ -1026,7 +1019,7 @@
   .factor-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3s;
+    transition: width: 0.3s;
   }
   .factor-percentage {
     font-size: 0.75rem;
@@ -1097,5 +1090,3 @@
     }
   }
 </style>
-
-

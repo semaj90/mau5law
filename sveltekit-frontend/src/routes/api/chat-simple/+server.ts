@@ -23,7 +23,7 @@ import { generateChatResponse } from '$lib/server/services';
 type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;
 
-function isChatMessageArray(x: unknown): x is ChatMessage[] {
+function isChatMessageArray(x: any): x is ChatMessage[] {
   return (
     Array.isArray(x) &&
     x.every(
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       production: true,
       service: 'ollama-centralized',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('❌ chat-simple error:', error.message);
     return json({ error: error.message }, { status: 500 });

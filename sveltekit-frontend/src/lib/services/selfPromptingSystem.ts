@@ -196,7 +196,7 @@ export class SelfPromptingSystem {
       }
     }
   }
-  private analyzeCurrentContext(): unknown {
+  private analyzeCurrentContext(): any {
     const content = this.userContext.currentContent;
     const words = content.split(/\s+/).length;
     const sentences = content.split(/[.!?]+/).length;
@@ -262,7 +262,7 @@ export class SelfPromptingSystem {
           action: async () => {
             await this.performAutoSave();
             this.userContext.lastSaveTime = new Date();
-            this.userContext.unsavedChanges = false;
+            this.userContext.unsavedChanges = $state(false);
           },
           primary: true
         },
@@ -508,7 +508,7 @@ export class SelfPromptingSystem {
       assignedAgents: agents || ['compliance_specialist', 'risk_analyst', 'legal_editor'],
     });
   }
-  private generateFocusChangeSuggestions(),: unknown {
+  private generateFocusChangeSuggestions(),: any {
     const currentFocus = this.userContext.currentFocus;
     const suggestions = {
       'content_creation': 'legal_review',

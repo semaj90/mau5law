@@ -4,7 +4,6 @@
     children?: import('svelte').Snippet;
   }
   let { children }: Props = $props();
-
   // Resolve ContextMenu Trigger component from bits-ui exports
   const _ns = (BitsUI as any).ContextMenu ?? (BitsUI as any);
   let ContextMenuTrigger: any = $state<any>(null);
@@ -17,9 +16,8 @@
     }
   }
 </script>
-
 {#if ContextMenuTrigger}
   <ContextMenuTrigger>
-    {@render children?.()}
+    <slot />
   </ContextMenuTrigger>
 {/if}

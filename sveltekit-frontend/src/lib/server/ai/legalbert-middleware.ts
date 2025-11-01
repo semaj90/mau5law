@@ -5,7 +5,6 @@ import * as crypto from 'crypto';
 // LegalBERT middleware for specialized legal embeddings and analysis
 import { generateEmbedding } from './embeddings-simple.js';
 import { getOllamaUrl } from '$lib/server/services/docker-env';
-
 export interface LegalEmbeddingResult {
   embedding: number[];
   dimensions: number;
@@ -18,7 +17,6 @@ export interface LegalEmbeddingResult {
     complexity: number;
   };
 }
-
 // New concrete types for analysis results
 export type LegalEntity = {
   text: string;
@@ -28,24 +26,20 @@ export type LegalEntity = {
   endIndex?: number;
   context?: string;
 };
-
 export type LegalConcept = {
   concept: string;
   relevance: number;
   category: string;
 };
-
 export type KeyPhrase = {
   phrase: string;
   importance: number;
   category: string;
 };
-
 export type SubCategory = {
   category: string;
   confidence: number;
 };
-
 export interface LegalBertAnalysisResult {
   entities: LegalEntity[];
   concepts: LegalConcept[];
@@ -66,7 +60,6 @@ export interface LegalBertAnalysisResult {
     keyPoints: string[];
   };
 }
-
 export interface LegalClassificationResult {
   documentType: string;
   confidence: number;
@@ -76,7 +69,6 @@ export interface LegalClassificationResult {
   urgency: 'low' | 'medium' | 'high';
   recommendations: string[];
 }
-
 // New types for model config and similarity result
 type ModelConfig = {
   embedding: string;
@@ -84,25 +76,22 @@ type ModelConfig = {
   baseUrl: string;
   apiKey?: string | undefined;
 };
-
 export type LegalSimilarityResult = {
   similarity: number;
   confidence: number;
   factors: { semantic: number; structural: number; legal_concepts: number };
 };
-
 // Metrics stub (replace with proper metrics service later)
 const metrics = {
   increment: (name: string, value: number = 1) => console.log(`[METRIC] ${name}: +${value}`),
   gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),
   histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`),
 };
-
 async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<T> {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       if (i === retries - 1) throw err;
       await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
@@ -110,7 +99,6 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<
   }
   throw new Error('Max retries exceeded');
 }
-
 // Replace any hardcoded Ollama URL usages with this robust helper.
 // It prefers OLLAMA_URL, then OLLAMA_HOST/OLLAMA_PORT, falls back to localhost.
 // prefer the shared docker-env helper which reads .env.local and process.env
@@ -121,7 +109,6 @@ export function getOllamaEndpoint(): string {
   } catch (e) {
     // fallthrough to process.env fallback
   }
-
   // fallback to process.env variables for compatibility
   if (process.env.OLLAMA_URL && process.env.OLLAMA_URL.trim().length > 0) {
     return process.env.OLLAMA_URL;
@@ -131,7 +118,6 @@ export function getOllamaEndpoint(): string {
   const proto = process.env.OLLAMA_PROTO || 'http';
   return `${proto}://${host}:${port}`;
 }
-
 const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> = {
   local: {
     embedding: 'embeddinggemma:latest',
@@ -152,17 +138,14 @@ const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> 
     baseUrl: 'https://api.openai.com/v1',
   },
 };
-
 export class LegalBERTMiddleware {
   private modelConfig: ModelConfig;
   private cache = new Map<string, LegalEmbeddingResult | LegalBertAnalysisResult | LegalClassificationResult>();
   private requestCount = 0;
-
   constructor(preferredModel: 'local' | 'huggingface' | 'openai' = 'local') {
     this.modelConfig = LEGALBERT_MODELS[preferredModel];
     void this.initializeModel();
   }
-
   private async initializeModel(): Promise<void> {
     try {
       logger.info('[LegalBERT] Initializing middleware...');
@@ -173,13 +156,12 @@ export class LegalBERTMiddleware {
       } else {
         throw new Error('Model test failed');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       logger.error('[LegalBERT] Initialization failed:', err);
       this.modelConfig = LEGALBERT_MODELS.local;
     }
   }
-
   /**
    * Generate legal-domain specialized embeddings
    */ async generateLegalEmbedding(text: string): Promise<LegalEmbeddingResult> {
@@ -223,7 +205,7 @@ export class LegalBERTMiddleware {
       metrics.increment('legalbert_embeddings_generated');
       metrics.histogram('legalbert_embedding_time', result.processingTime);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       logger.error('[LegalBERT] Embedding generation failed:', err);
       metrics.increment('legalbert_embedding_errors');
@@ -243,7 +225,6 @@ export class LegalBERTMiddleware {
       };
     }
   }
-
   /**
    * Comprehensive legal text analysis
    */ async analyzeLegalText(text: string): Promise<LegalBertAnalysisResult> {
@@ -274,13 +255,12 @@ export class LegalBERTMiddleware {
       this.cache.set(`analysis_${textHash}`, result);
       metrics.histogram('legalbert_analysis_time', Date.now() - startTime);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       logger.error('[LegalBERT] Text analysis failed:', err);
       return this.generateFallbackAnalysis(text);
     }
   }
-
   /**
    * Classify legal documents
    */ async classifyLegalDocument(text: string): Promise<LegalClassificationResult> {
@@ -288,13 +268,12 @@ export class LegalBERTMiddleware {
       const classification = await this.performDocumentClassification(text);
       metrics.increment('legalbert_classifications');
       return classification;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       logger.error('[LegalBERT] Document classification failed:', err);
       return this.generateFallbackClassification(text);
     }
   }
-
   /**
    * Legal semantic similarity comparison
    */
@@ -310,7 +289,7 @@ export class LegalBERTMiddleware {
         confidence: Math.min(emb1.confidence, emb2.confidence),
         factors: { semantic, structural, legal_concepts },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       logger.error('[LegalBERT] Similarity calculation failed:', err);
       return {
@@ -320,7 +299,6 @@ export class LegalBERTMiddleware {
       };
     }
   }
-
   // === PRIVATE HELPER METHODS ===
   private async generateLocalEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
@@ -329,7 +307,6 @@ export class LegalBERTMiddleware {
       return embedding;
     });
   }
-
   private async generateHuggingFaceEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
       const response = await fetch(`${this.modelConfig.baseUrl}/${this.modelConfig.embedding}`, {
@@ -344,7 +321,6 @@ export class LegalBERTMiddleware {
         throw new Error(`HuggingFace API error: ${response.statusText}`);
       }
       const json = await response.json();
-
       // Safely handle multiple possible HF response shapes:
       // - raw array of numbers
       // - { embeddings: number[] }
@@ -353,21 +329,17 @@ export class LegalBERTMiddleware {
       if (Array.isArray(json) && json.every(n => typeof n === 'number')) {
         return json as number[];
       }
-
       if (json && typeof json === 'object') {
         // Narrow to a safe indexable type instead of `any`
         const obj = json as Record<string, unknown>;
-
         const embeddings = obj['embeddings'];
         if (Array.isArray(embeddings) && embeddings.every(n => typeof n === 'number')) {
           return embeddings as number[];
         }
-
         const vector = obj['vector'];
         if (Array.isArray(vector) && vector.every(n => typeof n === 'number')) {
           return vector as number[];
         }
-
         const data = obj['data'];
         if (Array.isArray(data) && data.length > 0) {
           const first = data[0] as Record<string, unknown> | undefined;
@@ -377,12 +349,10 @@ export class LegalBERTMiddleware {
           }
         }
       }
-
       // Fallback: no embeddings found
       return [];
     });
   }
-
   private async generateOpenAIEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
       const response = await fetch(`${this.modelConfig.baseUrl}/embeddings`, {
@@ -402,7 +372,6 @@ export class LegalBERTMiddleware {
       return r.data?.[0]?.embedding ?? [];
     });
   }
-
   private preprocessLegalText(text: string): string {
     // Remove excessive whitespace
     let processed = text.replace(/\s+/g, ' ').trim();
@@ -418,7 +387,6 @@ export class LegalBERTMiddleware {
     });
     return processed;
   }
-
   private async extractLegalEntities(text: string): Promise<LegalBertAnalysisResult['entities']> {
     const entities: LegalBertAnalysisResult['entities'] = [];
     // Case citations: 123 F.3d 456, 789 U.S. 123
@@ -470,7 +438,6 @@ export class LegalBERTMiddleware {
     }
     return entities;
   }
-
   private async extractLegalConcepts(text: string): Promise<LegalBertAnalysisResult['concepts']> {
     const concepts: LegalBertAnalysisResult['concepts'] = [];
     const legalConcepts: Record<string, string[]> = {
@@ -500,7 +467,6 @@ export class LegalBERTMiddleware {
     }
     return concepts.sort((a, b) => b.relevance - a.relevance);
   }
-
   private async analyzeLegalSentiment(text: string): Promise<LegalBertAnalysisResult['sentiment']> {
     // Simple rule-based sentiment for legal text
     const positiveWords = ['granted', 'approved', 'affirmed', 'successful', 'favorable', 'upheld'];
@@ -524,7 +490,6 @@ export class LegalBERTMiddleware {
       classification: polarity > 0.1 ? 'positive' : polarity < -0.1 ? 'negative' : 'neutral',
     };
   }
-
   private calculateTextComplexity(text: string): LegalBertAnalysisResult['complexity'] {
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
     const words = text.split(/\s+/).filter((w: string) => w.length > 0);
@@ -555,7 +520,6 @@ export class LegalBERTMiddleware {
     const legalComplexity = Math.min(1, (technicalTerms / Math.max(1, words.length)) * 100);
     return { readabilityScore, legalComplexity, technicalTerms };
   }
-
   private async extractKeyPhrases(text: string): Promise<LegalBertAnalysisResult['keyPhrases']> {
     const phrases: LegalBertAnalysisResult['keyPhrases'] = [];
     // Extract noun phrases and legal terms
@@ -577,7 +541,6 @@ export class LegalBERTMiddleware {
     });
     return phrases.sort((a, b) => b.importance - a.importance).slice(0, 10);
   }
-
   private async generateLegalSummary(text: string): Promise<LegalBertAnalysisResult['summary']> {
     const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
     // Simple extractive summary - take first and most important sentences
@@ -595,7 +558,6 @@ export class LegalBERTMiddleware {
       keyPoints,
     };
   }
-
   private async performDocumentClassification(text: string): Promise<LegalClassificationResult> {
     const textLower = text.toLowerCase();
     // Rule-based classification
@@ -627,18 +589,15 @@ export class LegalBERTMiddleware {
       recommendations: ['Review for accuracy', 'Check citations', 'Verify jurisdiction'],
     };
   }
-
   // === UTILITY METHODS ===
   private hashText(text: string): string {
     return crypto.createHash('sha256').update(text.trim()).digest('hex');
   }
-
   private getContext(text: string, index: number, length: number): string {
     const start = Math.max(0, index - length);
     const end = Math.min(text.length, index + length);
     return text.substring(start, end);
   }
-
   private cosineSimilarity(a: number[], b: number[]): number {
     if (!a || !b || a.length !== b.length || a.length === 0) return 0;
     let dotProduct = 0;
@@ -651,7 +610,6 @@ export class LegalBERTMiddleware {
     }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
-
   private calculateStructuralSimilarity(text1: string, text2: string): number {
     const sentences1 = text1.split(/[.!?]+/).filter(Boolean).length || 1;
     const sentences2 = text2.split(/[.!?]+/).filter(Boolean).length || 1;
@@ -661,7 +619,6 @@ export class LegalBERTMiddleware {
     const wordRatio = Math.min(words1, words2) / Math.max(words1, words2);
     return (sentenceRatio + wordRatio) / 2;
   }
-
   private calculateConceptSimilarity(text1: string, text2: string): number {
     const concepts1 = this.extractBasicConcepts(text1);
     const concepts2 = this.extractBasicConcepts(text2);
@@ -669,7 +626,6 @@ export class LegalBERTMiddleware {
     const union = Array.from(new Set([...concepts1, ...concepts2]));
     return union.length > 0 ? intersection.length / union.length : 0;
   }
-
   private extractBasicConcepts(text: string): string[] {
     const legalTerms = [
       'contract',
@@ -688,7 +644,6 @@ export class LegalBERTMiddleware {
     const textLower = text.toLowerCase();
     return legalTerms.filter(term => textLower.includes(term));
   }
-
   private countLegalTerms(text: string): number {
     const legalTerms = [
       'plaintiff',
@@ -716,7 +671,6 @@ export class LegalBERTMiddleware {
       return count + (matches ? matches.length : 0);
     }, 0);
   }
-
   private calculateLegalComplexity(text: string): number {
     const indicators = [
       /\b(?:whereas|heretofore|aforementioned|notwithstanding|pursuant)\b/gi,
@@ -731,14 +685,12 @@ export class LegalBERTMiddleware {
     });
     return Math.min(complexity, 1.0);
   }
-
   private calculateEmbeddingConfidence(text: string, embedding: number[]): number {
     const textQuality = text.length > 50 && text.length < 10000 ? 0.8 : 0.6;
     const embeddingQuality = embedding && embedding.length > 0 ? 0.9 : 0.3;
     const legalContent = this.countLegalTerms(text) > 0 ? 0.9 : 0.7;
     return (textQuality + embeddingQuality + legalContent) / 3;
   }
-
   private extractJurisdiction(text: string): string {
     const jurisdictions = ['federal', 'state', 'local', 'international'];
     const textLower = text.toLowerCase();
@@ -747,7 +699,6 @@ export class LegalBERTMiddleware {
     }
     return 'unknown';
   }
-
   private extractPracticeArea(text: string): string {
     const practiceAreas: Record<string, string[]> = {
       contract: ['contract', 'agreement', 'breach'],
@@ -762,7 +713,6 @@ export class LegalBERTMiddleware {
     }
     return 'general';
   }
-
   private assessUrgency(text: string): 'low' | 'medium' | 'high' {
     const urgentTerms = ['emergency', 'urgent', 'immediate', 'expedited', 'deadline'];
     const textLower = text.toLowerCase();
@@ -771,7 +721,6 @@ export class LegalBERTMiddleware {
     if (urgentCount >= 1) return 'medium';
     return 'low';
   }
-
   private generateFallbackAnalysis(text: string): LegalBertAnalysisResult {
     return {
       entities: [],
@@ -786,7 +735,6 @@ export class LegalBERTMiddleware {
       },
     };
   }
-
   private generateFallbackClassification(_text: string): LegalClassificationResult {
     return {
       documentType: 'general',
@@ -798,7 +746,6 @@ export class LegalBERTMiddleware {
       recommendations: ['Manual classification required', 'Review document type'],
     };
   }
-
   // === PUBLIC API METHODS ===
   /**
    * Get middleware statistics
@@ -809,14 +756,12 @@ export class LegalBERTMiddleware {
       model: this.modelConfig,
     };
   }
-
   /**
    * Clear cache
    */ clearCache(): void {
     this.cache.clear();
     logger.info('[LegalBERT] Cache cleared');
   }
-
   /**
    * Health check
    */ async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
@@ -831,7 +776,7 @@ export class LegalBERTMiddleware {
           cacheSize: this.cache.size,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       return {
         status: 'unhealthy',
@@ -840,6 +785,5 @@ export class LegalBERTMiddleware {
     }
   }
 }
-
 // Export singleton instance
 export const legalBERT = new LegalBERTMiddleware();

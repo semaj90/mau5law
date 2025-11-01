@@ -15,7 +15,7 @@ export interface VectorOperation {
 
 export interface VectorResult {
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   latency: number;
   protocol: 'quic' | 'grpc' | 'http';
@@ -92,7 +92,7 @@ export interface HealthStatus {
 
 export interface LlamaCppParseResult {
   parsed: string;
-  entities: unknown[];
+  entities: any[];
   summary: string;
   confidence: number;
   gpuUtilization: number;
@@ -142,7 +142,7 @@ export class GRPCQuicVectorProxy {
       // Test protocol availability and select best option
       await this.detectAvailableProtocols();
       console.log('✅ Vector proxy initialized with multi-protocol support');
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('❌ Vector proxy initialization failed:', error);
       throw error;
@@ -200,12 +200,12 @@ export class GRPCQuicVectorProxy {
           this.recordLatency(protocol, latency);
         } else {
           console.log(`⚠️ ${protocol.toUpperCase()}: HTTP ${response.status}`);
-          this.config[protocol].enabled = false;
+          this.config[protocol].enabled = $state(false);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed from any
         console.log(`🔴 ${protocol.toUpperCase()}: Unavailable`);
-        this.config[protocol].enabled = false;
+        this.config[protocol].enabled = $state(false);
       }
     }
   }
@@ -233,7 +233,7 @@ export class GRPCQuicVectorProxy {
           latency,
           protocol,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed from any
         console.warn(`⚠️ ${protocol.toUpperCase()} failed, trying next protocol:`, (error as Error).message);
         continue;
@@ -449,7 +449,7 @@ export class GRPCQuicVectorProxy {
       try {
         const opResult = await this.executeVectorOperation(op);
         results.push(opResult);
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed from any
         results.push({
           success: false,
@@ -543,7 +543,7 @@ export class GRPCQuicVectorProxy {
           latency,
           httpStatus: response.status,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed from any
         health[protocol] = {
           status: 'unreachable',
@@ -645,7 +645,7 @@ export class GRPCQuicVectorProxy {
         confidence: result.confidence || 0.8,
         gpuUtilization: result.gpu_utilization || 0,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed from any
       console.error('❌ llama.cpp GPU parsing failed:', error);
       throw error;

@@ -6,13 +6,12 @@ import type { Pipeline } from '@xenova/transformers';
 import { browser } from '$app/environment';
 // Configure for frontend use
 if (browser) {
-  env.allowRemoteModels = false;
+  env.allowRemoteModels = $state(false);
   env.allowLocalModels = true;
   env.useBrowserCache = true;
 }
-
 // Small utility to safely stringify unknown errors
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: any): string {
   // Prefer Error.message when available
   if (error instanceof Error) return error.message;
   // Strings are fine
@@ -24,10 +23,8 @@ function getErrorMessage(error: unknown): string {
     return String(error);
   }
 }
-
 // Introduce a safer, generic query type for Loki collections
 type LokiQuery<T> = Partial<Record<keyof T, unknown>> | ((obj: T) => boolean) | Record<string, unknown>;
-
 // Add a minimal local typing for Loki collections used in this file.
 // This avoids relying on a non-exported type from the lokijs package while keeping useful method signatures.
 type LokiCollection<T> = {
@@ -36,9 +33,8 @@ type LokiCollection<T> = {
   insert?: (doc: T) => T;
   insertOrUpdate?: (doc: T) => T;
   where?: (fn: (obj: T) => boolean) => T[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 export interface SemanticChunk {
   id: string;
   text: string;
@@ -51,10 +47,8 @@ export interface SemanticChunk {
     semanticGroup: string;
   };
 }
-
 // New helper type for scored results
 type ScoredChunk = SemanticChunk & { score: number };
-
 export interface SIMDTensor {
   data: Float32Array;
   shape: number[];
@@ -113,11 +107,10 @@ class FrontendRAGPipeline {
       // Initialize text generation pipeline (lightweight)
       this.generationPipeline = await pipeline('text-generation', 'Xenova/gpt2', { device: 'cpu', dtype: 'fp16' });
       console.log('✅ Frontend RAG pipelines initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('Pipeline initialization failed, using fallbacks:', getErrorMessage(error));
     }
   }
-
   // SIMD-optimized embedding generation
   async generateEmbedding(text: string): Promise<SIMDTensor> {
     if (!this.embeddingPipeline) {
@@ -126,7 +119,6 @@ class FrontendRAGPipeline {
     try {
       const result = await this.embeddingPipeline(text);
       const parsed = result as unknown as EmbeddingResult;
-
       // Normalize data into an Array<number>
       let numericArray: number[] = [];
       if (Array.isArray(parsed.data)) {
@@ -137,9 +129,7 @@ class FrontendRAGPipeline {
         // Fallback: empty embedding
         numericArray = [];
       }
-
       const embedding = new Float32Array(numericArray);
-
       // Normalize dims into number[]
       let shapeArr: number[] = [];
       if (Array.isArray(parsed.dims)) {
@@ -149,13 +139,12 @@ class FrontendRAGPipeline {
       } else {
         shapeArr = [embedding.length];
       }
-
       return {
         data: this.simdProcessor.optimize(embedding),
         shape: shapeArr,
         simdOps: this.simdProcessor.getOperations(),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Frontend embedding generation failed:', getErrorMessage(error));
       throw new Error(getErrorMessage(error));
     }
@@ -168,24 +157,20 @@ class FrontendRAGPipeline {
   ): Promise<SemanticChunk[]> {
     const queryEmbedding = await this.generateEmbedding(query);
     const contextWeights = this.contextSwitcher.getWeights(context);
-
     // Ensure typed candidate list
     const candidates = (this.semanticCollection?.find({
       // query shape depends on Loki usage; using metadata key for clarity: 'metadata.semanticGroup': { $in: contextWeights.groups },
     }) ?? []) as SemanticChunk[];
-
     // SIMD-accelerated similarity computation with proper typing
     const scoredResults: ScoredChunk[] = candidates.map((chunk: SemanticChunk) => {
       // Safely normalize embedding representation to Float32Array
       const chunkEmbedding =
         chunk.embedding instanceof Float32Array ? chunk.embedding : new Float32Array(chunk.embedding);
-
       const similarity = queryEmbedding.simdOps.cosineDistance(queryEmbedding.data, chunkEmbedding);
       const contextBoost = contextWeights.boost[chunk.metadata.semanticGroup] ?? 1.0;
       const finalScore = similarity * contextBoost * chunk.metadata.relevance;
       return { ...chunk, score: finalScore };
     });
-
     return scoredResults.sort((a: ScoredChunk, b: ScoredChunk) => b.score - a.score).slice(0, limit);
   }
   // Get system statistics
@@ -201,7 +186,6 @@ class FrontendRAGPipeline {
     // Use a typed assertion instead of `any`
     const perf = performance as PerformanceWithMemory;
     const usedHeap = browser ? (perf.memory?.usedJSHeapSize ?? 0) : 0;
-
     return {
       documentsIndexed: this.semanticCollection?.count() || 0,
       memoryUsage: usedHeap,
@@ -298,7 +282,7 @@ class SIMDProcessor {
 // G0llama microservice integration
 class G0llamaService {
   private baseUrl: string;
-  private isAvailable: boolean = false;
+  private isAvailable: boolean = $state(false);
   constructor() {
     this.baseUrl = 'http://localhost:8085'; // g0llama microservice
     this.checkAvailability();
@@ -312,7 +296,7 @@ class G0llamaService {
       // Use the standard Fetch Response type and read .ok directly (no `any`)
       this.isAvailable = (response as Response).ok === true;
     } catch {
-      this.isAvailable = false;
+      this.isAvailable = $state(false);
     }
   }
   async generate(
@@ -344,7 +328,7 @@ class G0llamaService {
         text?: string;
       };
       return data.text ?? '';
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('G0llama generation failed:', getErrorMessage(error));
       throw new Error(getErrorMessage(error));
     }
@@ -352,6 +336,5 @@ class G0llamaService {
 }
 // Add a small local type for the Performance.memory shape we read.
 type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } };
-
 // Export singleton instance
 export const frontendRAG = new FrontendRAGPipeline();

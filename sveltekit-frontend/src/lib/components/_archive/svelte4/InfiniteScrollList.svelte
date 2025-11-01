@@ -15,14 +15,14 @@ https://svelte.dev/e/js_parse_error -->
     Video,
   } from "lucide-svelte";
   interface Props {
-    items?: unknown[];
+    items?: any[];
     itemType?: "evidence" | "notes" | "canvas";
     loadMoreThreshold?: number;
     pageSize?: number;
     isLoading?: boolean;
     selectedIndex?: number;
     onloadMore?: () => void;
-    onitemClick?: (_event: { item: unknown; type: string }) => void;
+    onitemClick?: (_event: { item: any; type: string }) => void;
   }
   let {
     items = $bindable([]),
@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     onitemClick
   }: Props = $props();
   let scrollContainer: HTMLElement = $state(undefined as any);
-  let displayedItems: unknown[] = $state([]);
+  let displayedItems: any[] = $state([]);
   let currentPage = $state(0);
   let hasMore = $state(true);
   // Replace broken reset logic with a proper effect that runs when `items` changes.
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
     currentPage = 0;
     displayedItems = [];
     // Ensure items is treated as an array for type safety
-    const currentItems: unknown[] = items ?? [];
+    const currentItems: any[] = items ?? [];
     hasMore = currentItems.length > 0;
     // load initial page
     loadMore();
@@ -52,13 +52,13 @@ https://svelte.dev/e/js_parse_error -->
     if (isLoading || !hasMore) return;
 
     // Ensure items is treated as an array for type safety
-    const currentItems: unknown[] = items ?? [];
+    const currentItems: any[] = items ?? [];
 
     const startIndex = currentPage * pageSize;
     const endIndex = Math.min(startIndex + pageSize, currentItems.length);
     const newItems = currentItems.slice(startIndex, endIndex);
     if (newItems.length === 0) {
-      hasMore = false;
+      hasMore = $state(false);
       return;
     }
     displayedItems = [...displayedItems, ...newItems];
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
       onloadMore();
     }
   }
-  function handleItemClick(item: unknown) {
+  function handleItemClick(item: any) {
     onitemClick?.({ item, type: itemType });
   }
   function handleScroll() {
@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
             </p>
             {#if (item as any).tags && (item as any).tags.length > 0}
               <div class="item-tags">
-                {#each (item as any).tags.slice(0, 3) as tag}
+                {#each Array.isArray((item as any).tags.slice(0, 3)) ? (item as any).tags.slice(0, 3) : [] as tag}
                   <span class="tag">{tag}</span>
                 {/each}
                 {#if (item as any).tags.length > 3}

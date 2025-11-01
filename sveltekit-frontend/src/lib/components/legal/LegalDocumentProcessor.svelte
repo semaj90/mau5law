@@ -15,7 +15,7 @@
     autoStart = false
   }: {
     document?: Partial<LegalDocument> | undefined;
-    onComplete?: (result: unknown) => void;
+    onComplete?: (result: any) => void;
     onError?: (errors: string[]) => void;
     autoStart?: boolean;
   } = $props();
@@ -86,7 +86,6 @@
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
-
 <div class="legal-document-processor p-6 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
@@ -133,8 +132,7 @@
           {document.content?.length || 0} characters
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Progress Bar -->
   <div class="mb-6">
     <div class="flex justify-between items-center mb-2">
@@ -168,14 +166,12 @@
             {:else}
               <div
                 class="w-4 h-4 rounded-full bg-blue-500 animate-spin border-2 border-blue-500 border-t-transparent"
-              ></div>
-            {/if}
+              >{/if}
             <span class="capitalize">{task.replace(/([A-Z])/g, ' $1').trim()}</span>
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Results (when completed) -->
   {#if isCompleted}
     <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -187,8 +183,7 @@
           <p class="text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-3 rounded">
             {$context.summary}
           </p>
-        </div>
-      {/if}
+        {/if}
       <!-- Risk Assessment -->
       {#if $context.riskScore !== undefined}
         <div class="mb-4">
@@ -213,11 +208,9 @@
             {#if $context.confidenceScore}
               <div class="text-sm">
                 Confidence: {($context.confidenceScore * 100).toFixed(1)}%
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Entities -->
       {#if $context.entities}
         <div class="mb-4">
@@ -248,44 +241,39 @@
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Context7 MCP Recommendations -->
       {#if $context.stackRecommendations && $context.stackRecommendations.length > 0}
         <div class="mb-4">
           <h4 class="font-medium mb-2">Stack Recommendations</h4>
           <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            {#each $context.stackRecommendations as recommendation}
+            {#each Array.isArray($context.stackRecommendations) ? $context.stackRecommendations : [] as recommendation}
               <li class="flex items-start space-x-2">
                 <span class="text-blue-500">•</span>
                 <span>{recommendation}</span>
               </li>
             {/each}
           </ul>
-        </div>
-      {/if}
+        {/if}
       <!-- Document ID -->
       {#if $context.documentId}
         <div class="text-sm text-gray-500">
           Document ID: <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">{$context.documentId}</code>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Errors (when failed) -->
   {#if isFailed && $context.errors.length > 0}
     <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
       <h3 class="font-semibold mb-3 text-red-900 dark:text-red-100">Processing Errors</h3>
       <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
-        {#each $context.errors as error}
+        {#each Array.isArray($context.errors) ? $context.errors : [] as error}
           <li class="flex items-start space-x-2">
             <span class="text-red-500">×</span>
             <span>{error}</span>
           </li>
         {/each}
       </ul>
-    </div>
-  {/if}
+    {/if}
   <!-- Action Buttons -->
   <div class="flex items-center space-x-3">
     {#if !isProcessing && !isCompleted && document}
@@ -336,7 +324,6 @@ Context: {JSON.stringify($context, null, 2)}
     </details>
   {/if}
 </div>
-
 <style>
   .legal-document-processor {
     /* Component-specific styles if needed */

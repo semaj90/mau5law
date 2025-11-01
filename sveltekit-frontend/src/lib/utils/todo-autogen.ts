@@ -81,7 +81,7 @@ class TodoAutogen {
     for (const dir of dirs) {
       try {
         await mkdir(dir, { recursive: true });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Directory exists or creation failed
       }
     }
@@ -89,7 +89,7 @@ class TodoAutogen {
   /**
    * Log LLM misfire for review
    */
-  async logLLMMisfire(data: LLMMisfireData, _context?: unknown): Promise<string> {
+  async logLLMMisfire(data: LLMMisfireData, _context?: any): Promise<string> {
     const id = `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
       id,
@@ -135,7 +135,7 @@ class TodoAutogen {
   /**
    * Log runtime exceptions
    */
-  async logRuntimeError(error: Error, context?: unknown): Promise<string> {
+  async logRuntimeError(error: Error, context?: any): Promise<string> {
     const id = `runtime-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
       id,
@@ -186,7 +186,7 @@ class TodoAutogen {
     try {
       await writeFile(filepath, JSON.stringify(todo, null, 2));
       console.log(`📝 TODO logged: ${filepath}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to save TODO:', error);
     }
   }
@@ -204,7 +204,7 @@ class TodoAutogen {
     try {
       await writeFile(queueFile, JSON.stringify(queueEntry, null, 2));
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`Failed to queue for ${agent}:`, error);
     }
   }
@@ -244,7 +244,7 @@ export async function retryLLMCall<T>(llmCall: () => Promise<T>, model: string, 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await llmCall();
-    } catch (error: unknown) {
+    } catch (error: any) {
       lastError = error as Error;
       console.warn(`🔄 LLM retry ${attempt}/${maxRetries}:`, lastError.message);
       // Log misfire if multiple attempts

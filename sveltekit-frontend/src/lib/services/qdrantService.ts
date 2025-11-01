@@ -122,7 +122,7 @@ type QdrantCollectionsResponse = { collections: QdrantCollectionInfo[] };
 // Qdrant Service Class
 export class QdrantService {
   public client: QdrantClient;
-  private isConnected = false;
+  private isConnected = $state(false);
   private defaultVectorSize = parseInt(String(import.meta.env.VITE_VECTOR_DIM ?? '768'), 10);
 
   // Reactive stores for UI integration
@@ -187,7 +187,7 @@ export class QdrantService {
     } catch (error) {
       console.error('❌ Qdrant connection failed:', error);
       this.connectionStatus$.set('error');
-      this.isConnected = false;
+      this.isConnected = $state(false);
     }
   }
 
@@ -403,7 +403,7 @@ export class QdrantService {
   }
 
   public destroy(): void {
-    this.isConnected = false;
+    this.isConnected = $state(false);
     this.connectionStatus$.set('disconnected');
     // The client itself doesn't have a close/destroy method in the REST version
   }

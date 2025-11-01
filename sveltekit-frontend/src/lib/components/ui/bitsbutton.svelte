@@ -49,7 +49,7 @@
 	type ButtonSize = VariantProps<typeof buttonVariants>['size'];
 	type ButtonType = 'button' | 'submit' | 'reset';
 	interface BitsButtonProps {
-		children?: unknown;
+		children?: any;
 		variant?: ButtonVariant;
 		size?: ButtonSize;
 		disabled?: boolean;
@@ -64,7 +64,7 @@
 		analyticsCategory?: string;
 		analyticsAction?: string;
 		analyticsLabel?: string;
-		xstateContext?: unknown;
+		xstateContext?: any;
 		uiJsonConfig?: UIJsonSSRConfig;
 		searchKeywords?: string[];
 		cacheKey?: string;
@@ -138,7 +138,6 @@
 		dispatch('click', _event);
 	}
 </script>
-
 {#if href}
   <a
     {href}
@@ -168,7 +167,7 @@
       </svg>
       {loadingText}
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
   </a>
 {:else}
@@ -197,7 +196,7 @@
       </svg>
       {loadingText}
     {:else}
-      {@render children?.()}
+      <slot />
     {/if}
   </button>
 {/if}

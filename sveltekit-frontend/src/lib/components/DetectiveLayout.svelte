@@ -7,19 +7,16 @@
   }
   let { title = 'Detective Interface', subtitle = '', children }: Props = $props();
 </script>
-
 <div class="detective-layout" role="region" tabindex="-1" aria-labelledby="detective-title">
   <header class="header">
     <h1 id="detective-title">{title}</h1>
     {#if subtitle}
-      <div class="subtitle">{subtitle}</div>
-    {/if}
+      <div class="subtitle">{subtitle}{/if}
   </header>
   <main>
-    {@render children?.()}
+    <slot />
   </main>
 </div>
-
 <style>
   .detective-layout {
     max-width: 100%;
@@ -47,4 +44,3 @@
     min-height: 200px;
   }
 </style>
-

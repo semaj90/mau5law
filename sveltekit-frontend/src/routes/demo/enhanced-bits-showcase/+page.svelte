@@ -16,7 +16,7 @@
     DraggableModal,
     EvidenceBoard,
     Toolbar,
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   let activeDemo = $state('overview');
   let searchQuery = $state('');
   let showYoRHaModal = $state(false);
@@ -56,7 +56,7 @@
   <div class="demo-navigation">
     <Tabs bind:value={activeDemo} orientation="horizontal" class="demo-tabs">
       <div class="tabs-list">
-        {#each demoSections as section}
+        {#each Array.isArray(demoSections) ? demoSections : [] as section}
           <button
             class="tab-trigger {activeDemo === section.id ? 'active' : ''}"
             onclick={() => (activeDemo = section.id)}

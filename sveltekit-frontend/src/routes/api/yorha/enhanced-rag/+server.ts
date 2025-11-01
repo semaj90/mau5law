@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
       version: '4.0.0',
     };
     return json(yorhaResponse);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('YoRHa Enhanced RAG error:', err);
     return json(
       {
@@ -159,7 +159,7 @@ type AnalysisResult = {
   fullCitation?: string;
   classification?: string;
   // allow extra fields returned from AI/db
-  [key: string]: unknown;
+  [key: string]: any;
 
   // Added: structured yorha_analysis to provide typed access to weights/risk
   yorha_analysis?: {
@@ -168,7 +168,7 @@ type AnalysisResult = {
     riskFactor?: number;
     actionRequired?: string;
     classification?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 };
 
@@ -190,7 +190,7 @@ type DBRecord = {
   description?: string;
   title?: string;
   confidenceScore?: number;
-  [e: string]: unknown;
+  [e: string]: any;
 };
 
 // YoRHa-specific analysis function
@@ -354,7 +354,7 @@ function extractCitations(results: AnalysisResult[]): string[] {
 }
 
 // Helper: convert unknown error into a user-friendly string
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
@@ -365,7 +365,7 @@ function getErrorMessage(err: unknown): string {
 }
 
 // Helper: safely extract numeric fields from unknown objects (supports numbers and numeric strings)
-function extractNumberField(obj: unknown, keys: string[], fallback: number): number {
+function extractNumberField(obj: any, keys: string[], fallback: number): number {
   // handle null/undefined quickly
   if (obj == null) return fallback;
 
@@ -382,7 +382,7 @@ function extractNumberField(obj: unknown, keys: string[], fallback: number): num
   if (typeof obj === 'object' && obj !== null) {
     for (const key of keys) {
       const parts = key.split('.');
-      let cur: unknown = obj;
+      let cur: any = obj;
       for (const part of parts) {
         if (cur == null || typeof cur !== 'object') {
           cur = undefined;

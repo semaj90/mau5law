@@ -7,7 +7,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
-  import FabricEvidenceCanvas from '../canvas/FabricEvidenceCanvas.svelte';
+  import { FabricEvidenceCanvas } from '../canvas/FabricEvidenceCanvas.svelte';
   // Types
   interface EvidenceItem {
     id: string;
@@ -31,7 +31,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         key?: string;
         url?: string;
       };
-      unifiedInsights?: unknown;
+      unifiedInsights?: any;
     };
     position { x: number; y: number };
     previewUrl?: string;
@@ -124,13 +124,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         minioConnected = minioResponse.ok;
       } catch (error) {
         console.warn('MinIO health check failed:', error);
-        minioConnected = false;
+        minioConnected = $state(false);
       }
       console.log('Service status - Ollama:', ollamaConnected ? '✅' : '❌');
       console.log('Service status - MinIO:', minioConnected ? '✅' : '❌');
     } catch (error) {
       console.warn('Service health check failed:', error);
-      ollamaConnected = false;
+      ollamaConnected = $state(false);
     }
   }
   // Load MinIO buckets for selection
@@ -186,7 +186,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   async function getSearchSuggestions(query: string) {
     if (query.length < 2) {
       searchSuggestions = [];
-      showSuggestions = false;
+      showSuggestions = $state(false);
       return;
     }
     try {
@@ -223,7 +223,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Apply search suggestion
   function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.text;
-    showSuggestions = false;
+    showSuggestions = $state(false);
     filterEvidence();
   }
   // Drag and drop handlers
@@ -238,7 +238,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     e.preventDefault();
     dragCounter--;
     if (dragCounter === 0) {
-      dragActive = false;
+      dragActive = $state(false);
     }
   }
   function handleDragOver(e: DragEvent) {
@@ -248,7 +248,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Handle drop position
   async function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     dragCounter = 0;
     const files = Array.from(e.dataTransfer?.files || []);
     if (files.length === 0) return;
@@ -289,7 +289,6 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         formData.append('position', JSON.stringify(newEvidence.position));
         formData.append('bucket', currentBucket);
         formData.append('useMinIO', uploadToMinIO.toString());
-
         if (uploadToMinIO) {
           try {
             const keyCandidate = `${(window as any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
@@ -325,7 +324,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
                 setTimeout(() => {
-                  showToast = false;
+                  showToast = $state(false);
                 }, 4000);
                 await analyzeEvidence(evidenceId, file);
               } else {
@@ -380,7 +379,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         console.error('File upload failed:', file.name, error);
       }
     }
-    isUploading = false;
+    isUploading = $state(false);
     filterEvidence();
   }
   // AI analysis of evidence
@@ -471,21 +470,21 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         });
         const txt = await resp.text();
         if (!resp.ok) {
-          remoteOk = false;
+          remoteOk = $state(false);
           console.warn('Remote delete failed:', txt);
           toastMessage = `Remote delete failed: ${txt}`;
           showToast = true;
           setTimeout(() => {
-            showToast = false;
+            showToast = $state(false);
           }, 4000);
         }
       } catch (err) {
-        remoteOk = false;
+        remoteOk = $state(false);
         console.warn('Remote delete exception', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
         setTimeout(() => {
-          showToast = false;
+          showToast = $state(false);
         }, 4000);
       }
     }
@@ -495,13 +494,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       evidenceItems = evidenceItems.filter(it => it.id !== id);
       selectedEvidence = selectedEvidence.filter(sid => sid !== id);
       pendingDeleteId = null;
-      showDeleteModal = false;
+      showDeleteModal = $state(false);
       filterEvidence();
     }
   }
   function cancelDelete() {
     pendingDeleteId = null;
-    showDeleteModal = false;
+    showDeleteModal = $state(false);
   }
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
@@ -618,7 +617,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       console.error('Advanced analysis error:', error);
       alert('Analysis error occurred. Please check your connection and try again.');
     } finally {
-      isAnalyzing = false;
+      isAnalyzing = $state(false);
     }
   }
   // Update search suggestions based on unified analysis
@@ -672,7 +671,6 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
 </script>
-
 <svelte:head>
   <title>🎮 Evidence Board - NES×YoRHa×N64 Legal AI</title>
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
@@ -777,7 +775,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <!-- AI Suggestions Dropdown -->
           {#if showSuggestions && searchSuggestions.length > 0}
             <div class="nes-container is-dark mt-2 max-h-48 overflow-y-auto">
-              {#each searchSuggestions as suggestion}
+              {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
                 <button
                   type="button"
                   class="w-full text-left p-2 hover:bg-nier-accent hover:text-white transition-colors rounded mb-1"
@@ -790,12 +788,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                     </span>
                   </div>
                   {#if suggestion.reasoning}
-                    <div class="text-xs opacity-75 mt-1">{suggestion.reasoning}</div>
-                  {/if}
+                    <div class="text-xs opacity-75 mt-1">{suggestion.reasoning}{/if}
                 </button>
               {/each}
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Filter Selection -->
         <div>
@@ -825,7 +821,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               {#if buckets.length === 0}
                 <option value="legal-documents">📁 Documents</option>
               {:else}
-                {#each buckets as b}
+                {#each Array.isArray(buckets) ? buckets : [] as b}
                   <option value={b}>{b}</option>
                 {/each}
               {/if}
@@ -883,8 +879,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           {#if selectedEvidence.length > 0}
             <div class="nes-text text-xs text-center">
               {selectedEvidence.length} items selected
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
     </div>
@@ -912,8 +907,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             {#if uploadToMinIO}
               <p class="nes-text text-sm mt-2">📦 Uploading to MinIO bucket: {currentBucket}</p>
             {/if}
-          </div>
-        {/if}
+          {/if}
         {#if filteredEvidence.length === 0 && !dragActive}
           <div class="text-center py-12">
             <!-- Retro Terminal Style Empty State -->
@@ -943,7 +937,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 </div>
                 {#if buckets.length > 0}
                   <div class="mt-4 flex flex-wrap justify-center gap-2">
-                    {#each buckets as b}
+                    {#each Array.isArray(buckets) ? buckets : [] as b}
                       <button
                         type="button"
                         class="nes-btn is-primary text-sm"
@@ -953,24 +947,19 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                         📦 {b}
                       </button>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
                 {#if aiEnabled && ollamaConnected}
                   <div class="nes-container is-success p-4 inline-block">
                     <p class="nes-text text-sm">✨ AI Analysis Ready</p>
                     <p class="nes-text text-xs">gemma3-legal model online</p>
-                  </div>
-                {/if}
+                  {/if}
                 {#if minioConnected}
                   <div class="nes-container is-primary p-4 inline-block mt-2">
                     <p class="nes-text text-sm">📦 MinIO Storage Ready</p>
                     <p class="nes-text text-xs">Bucket: {currentBucket}</p>
-                  </div>
-                {/if}
-              </div>
-            {/if}
-          </div>
-        {/if}
+                  {/if}
+              {/if}
+          {/if}
         <!-- Fabric.js Evidence Canvas -->
         <div class="evidence-canvas-container">
           <FabricEvidenceCanvas
@@ -1054,8 +1043,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       <span class="text-xs px-2 py-1 rounded {getScoreColor(evidence.aiAnalysis.prosecutionScore)}">
                         {(evidence.aiAnalysis.prosecutionScore * 100).toFixed(0)}%
                       </span>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Summary -->
                   <p class="text-xs text-gray-700 leading-relaxed">
                     {evidence.aiAnalysis.summary}
@@ -1065,7 +1053,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                     <div class="space-y-1">
                       <span class="text-xs font-medium text-gray-600">Relevant Laws:</span>
                       <div class="flex flex-wrap gap-1">
-                        {#each evidence.aiAnalysis.relevantLaws.slice(0, 2) as law}
+                        {#each Array.isArray(evidence.aiAnalysis.relevantLaws.slice(0, 2)) ? evidence.aiAnalysis.relevantLaws.slice(0, 2) : [] as law}
                           <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
                             {law}
                           </span>
@@ -1074,18 +1062,16 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                           <span class="text-xs text-gray-500">+{evidence.aiAnalysis.relevantLaws.length - 2} more</span>
                         {/if}
                       </div>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Tags -->
                   {#if evidence.aiAnalysis?.suggestedTags && evidence.aiAnalysis.suggestedTags.length > 0}
                     <div class="flex flex-wrap gap-1">
-                      {#each evidence.aiAnalysis.suggestedTags.slice(0, 3) as tag}
+                      {#each Array.isArray(evidence.aiAnalysis.suggestedTags.slice(0, 3)) ? evidence.aiAnalysis.suggestedTags.slice(0, 3) : [] as tag}
                         <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
                           #{tag}
                         </span>
                       {/each}
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Storage URL -->
                   {#if evidence.aiAnalysis?.storage?.url}
                     <div class="mt-2 text-xs">
@@ -1097,8 +1083,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       >
                         View file in storage
                       </a>
-                    </div>
-                  {/if}
+                    {/if}
                   <!-- Processing Status -->
                   {#if evidence.status === 'processing'}
                     <div class="mt-3 flex items-center gap-2 text-xs text-blue-600">
@@ -1106,10 +1091,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       Analyzing with AI...
                     </div>
                   {:else if evidence.status === 'error'}
-                    <div class="mt-3 text-xs text-red-600">Analysis failed - manual review needed</div>
-                  {/if}
-                </div>
-              {/if}
+                    <div class="mt-3 text-xs text-red-600">Analysis failed - manual review needed{/if}
+                {/if}
             </div>
           {/each}
         </div>
@@ -1124,8 +1107,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               <div class="text-sm text-gray-500">AI analysis in progress...</div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>
@@ -1133,8 +1115,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 {#if showToast}
   <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow-lg z-50">
     {toastMessage}
-  </div>
-{/if}
+  {/if}
 {#if showDeleteModal}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
@@ -1148,9 +1129,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
@@ -1178,12 +1157,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 10px 10px -5px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(59, 130, 246, 0.2);
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .evidence-canvas-container::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -1195,7 +1174,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Glow effect when the container that actually gets class:retro-glow wraps the canvas */
   /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
   :global(.retro-glow) .evidence-canvas-container {
-    position relative;
+    position: relative;
     --accent-a: 59 130 246; /* blue */
     --accent-b: 139 92 246; /* purple */
     --accent-c: 6 182 212; /* cyan */
@@ -1219,7 +1198,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
-    position absolute;
+    position: absolute;
     inset: 0;
     border-radius: 10px;
   }
@@ -1331,4 +1310,3 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
 </style>
-

@@ -9,7 +9,6 @@
     // Dialog may be available as ns.Dialog, ns.Dialog.Root, or ns.default.Dialog
     Dialog = ns.Dialog?.Root ?? ns.Dialog ?? ns.default?.Dialog ?? ns.default ?? ns;
   })();
-
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { onMount } from 'svelte';
@@ -34,7 +33,7 @@
     refreshInterval?: number;
     // Event handlers
     onOpenChange?: (open: boolean) => void;
-    onDataLoad?: (data: unknown) => void;
+    onDataLoad?: (data: any) => void;
     onError?: (error: string) => void;
     // Content slots / render props
     children?: Snippet;
@@ -66,7 +65,7 @@
     error,
   }: Props = $props();
   // Reactive data state
-  let data: unknown = $state(dataProvider?.data || null);
+  let data: any = $state(dataProvider?.data || null);
   let isLoading = $state(dataProvider?.loading || false);
   let errorMessage = $state(dataProvider?.error || null);
   let lastFetch = $state<number | null>(null);
@@ -100,7 +99,6 @@
     try {
       let result: any = null;
       const client = reactiveApiClient as any; // runtime-checked wrapper
-
       switch (entityType) {
         case 'case':
           if (typeof client?.fetchCase === 'function') {
@@ -129,7 +127,7 @@
           break;
       }
       if (result) {
-        data = (result as { data?: unknown }).data || result;
+        data = (result as { data?: any }).data || result;
         lastFetch = Date.now();
         onDataLoad?.(data);
       }
@@ -138,7 +136,7 @@
       errorMessage = error;
       onError?.(error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   // Refresh data
@@ -201,7 +199,6 @@
     };
   });
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Portal>
     <Dialog.Overlay
@@ -281,8 +278,7 @@
               <div class="flex items-center gap-2 nes-text is-disabled">
                 <Loader2 class="h-4 w-4 animate-spin" />
                 <span class="font-mono text-sm">Loading...</span>
-              </div>
-            {/if}
+              {/if}
           </div>
         {:else if errorMessage}
           <div class="flex-1 flex items-center justify-center">
@@ -301,27 +297,23 @@
                 >
                   Try Again
                 </button>
-              </div>
-            {/if}
+              {/if}
           </div>
         {:else}
           <div class="flex-1">
-            {@render children?.()}
+            <slot />
             <!-- changed: call with no args -->
-          </div>
-        {/if}
+          {/if}
       </div>
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 modular-dialog-footer border-t pt-4">
           {@render footer?.()}
           <!-- changed: call with no args -->
-        </div>
-      {/if}
+        {/if}
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
   :global(.modular-dialog) {
     /* Replaced Tailwind @apply with safe CSS using CSS variables */

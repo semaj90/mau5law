@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const file =
       typeof body === 'object' && body !== null && 'file' in body
         ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-          (body as { file?: unknown }).file
+          (body as { file?: any }).file
         : undefined;
 
     if (!file || typeof file !== 'string') {
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       size: content.length,
       lines: content.split('\n').length,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Safe extraction of message from unknown
     const details = error instanceof Error ? error.message : String(error);
     console.error('File read error:', details);

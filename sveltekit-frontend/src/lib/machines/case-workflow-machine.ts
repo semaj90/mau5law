@@ -3,7 +3,6 @@ import type { DoneInvokeEvent, ActorRefFrom } from 'xstate';
 import { caseMemoryEngine } from '../services/case-memory-engine.js';
 import { UnifiedLegalOrchestrator } from '../services/unified-legal-orchestrator.js';
 // import { rabbitmq } from '../server/queue/rabbitmq-manager.js'
-
 // --- Small typed adapter so TS knows: 'handle' exists on the orchestrator instance ---
 type OrchestratorHandleInput = {
   type: string;
@@ -13,37 +12,30 @@ type OrchestratorHandleInput = {
 type OrchestratorWithHandle = {
   handle(input: OrchestratorHandleInput): Promise<Record<string, unknown>>;
 };
-
 const orchestrator = new UnifiedLegalOrchestrator() as unknown as OrchestratorWithHandle;
-
 // --- Type Definitions for Clarity ---
 export type CaseData = Record<string, unknown>;
 export type Metadata = Record<string, unknown>;
 export type MemoryContext = Record<string, unknown>;
-
 export interface Document {
   id: string;
   content: string;
   type: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export interface AnalysisResult {
   id: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 export interface Recommendation {
   id: string;
   status: 'pending' | 'completed' | 'failed';
   type: string;
   timing_suggestion: 'immediate' | 'normal' | 'long_term';
-  [key: string]: unknown;
+  [key: string]: any;
 }
-
 // XState machine for case workflow management with contextual memory
 // Handles: case creation → document upload → analysis → recommendations → action
-
 export interface CaseWorkflowContext {
   case_id?: string;
   user_id: string;
@@ -65,7 +57,6 @@ export interface CaseWorkflowContext {
     ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
   };
 }
-
 // Explicit event union used by the machine
 export type CaseWorkflowEvent =
   | { type: 'CREATE_CASE'; case_data: CaseData }
@@ -79,7 +70,6 @@ export type CaseWorkflowEvent =
   | { type: 'RESET' }
   | { type: 'NEXT_STEP' }
   | { type: 'PREVIOUS_STEP' };
-
 // Use generics so XState infers context/event types (removes implicit any on context/event)
 export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkflowEvent>({
   id: 'caseWorkflow',
@@ -541,7 +531,6 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
       },
     },
   },
-
   // Global transitions
   on: {
     UPDATE_SETTINGS: {
@@ -554,7 +543,6 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
     },
   },
 }); // end of createMachine
-
 // Export machine types for use in components
 export type CaseWorkflowMachine = typeof caseWorkflowMachine;
 export type CaseWorkflowState = ReturnType<CaseWorkflowMachine['transition']>;

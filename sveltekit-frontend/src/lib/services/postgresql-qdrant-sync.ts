@@ -60,7 +60,7 @@ export interface WASMVectorSearchResult {
     retrievedAt: string;
     retrievalMethod: 'wasm_optimized';
     embeddingModel: string;
-    [key: string]: unknown; // Allow other metadata properties
+    [key: string]: any; // Allow other metadata properties
   };
 }
 
@@ -159,7 +159,7 @@ export class PostgreSQLQdrantSyncService {
       } else {
         this.log(`Qdrant collection exists: ${this.config.collectionName}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         throw new Error(`Failed to setup Qdrant collection: ${error.message}`);
@@ -193,7 +193,7 @@ export class PostgreSQLQdrantSyncService {
         `Synced: ${this.stats.syncedToQdrant}, Skipped: ${this.stats.skippedNoEmbedding}, Errors: ${this.stats.errors}`
       );
       return this.stats;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Full rebuild failed: ${error.message}`);
@@ -220,7 +220,7 @@ export class PostgreSQLQdrantSyncService {
       this.stats.durationMs = this.stats.endTime.getTime() - this.stats.startTime.getTime();
       this.log(`Incremental sync completed in ${this.stats.durationMs}ms`);
       return this.stats;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Incremental sync failed: ${error.message}`);
@@ -241,7 +241,7 @@ export class PostgreSQLQdrantSyncService {
         return false;
       }
       return await this.syncSingleEvidence(evidenceItem);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to sync evidence ${evidenceId}: ${error.message}`);
@@ -262,7 +262,7 @@ export class PostgreSQLQdrantSyncService {
         return false;
       }
       return await this.syncSingleDocument(docData);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to sync document ${documentId}: ${error.message}`);
@@ -299,7 +299,7 @@ export class PostgreSQLQdrantSyncService {
         },
       });
       this.log(`Cleared and recreated Qdrant collection: ${this.config.collectionName}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to clear Qdrant collection: ${error.message}`);
@@ -335,7 +335,7 @@ export class PostgreSQLQdrantSyncService {
         .limit(this.config.batchSize)
         .offset(offset);
       if (evidenceItems.length === 0) {
-        hasMore = false;
+        hasMore = $state(false);
         break;
       }
       this.stats.totalEvidenceItems += evidenceItems.length;
@@ -366,7 +366,7 @@ export class PostgreSQLQdrantSyncService {
         .limit(this.config.batchSize)
         .offset(offset);
       if (documents.length === 0) {
-        hasMore = false;
+        hasMore = $state(false);
         break;
       }
       this.stats.totalDocumentEmbeddings += documents.length;
@@ -508,7 +508,7 @@ export class PostgreSQLQdrantSyncService {
       });
       this.stats.syncedToQdrant++;
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       this.stats.errors++;
       if (error instanceof Error) {
@@ -556,7 +556,7 @@ export class PostgreSQLQdrantSyncService {
       });
       this.stats.syncedToQdrant++;
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       this.stats.errors++;
       if (error instanceof Error) {
@@ -589,7 +589,7 @@ export class PostgreSQLQdrantSyncService {
       // Check PostgreSQL
       await db.execute(sql`SELECT 1`);
       health.postgresql = true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`PostgreSQL health check failed: ${error.message}`);
@@ -605,7 +605,7 @@ export class PostgreSQLQdrantSyncService {
       health.collection = collectionsResponse.collections.some(
         (c: CollectionInfo) => c.name === this.config.collectionName
       ); // Changed
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Qdrant health check failed: ${error.message}`);
@@ -697,7 +697,7 @@ export class PostgreSQLQdrantSyncService {
       this.stats.averageRetrievalTime = this.updateAverageRetrievalTime(retrievalTime);
       this.log(`🔍 WASM search completed: ${results.length} results in ${retrievalTime}ms`);
       return results;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ WASM-optimized search failed: ${error.message}`);
@@ -740,7 +740,7 @@ export class PostgreSQLQdrantSyncService {
       const totalTime = Date.now() - startTime;
       this.log(`✅ WASM batch search completed: ${queries.length} queries in ${totalTime}ms`);
       return results;
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ WASM batch search failed: ${error.message}`);
@@ -766,7 +766,7 @@ export class PostgreSQLQdrantSyncService {
       inferenceId: string;
       model: string;
       processingTime: number;
-      ragContext?: unknown; // Changed to unknown
+      ragContext?: any; // Changed to unknown
     };
   }): Promise<void> {
     try {
@@ -796,7 +796,7 @@ export class PostgreSQLQdrantSyncService {
         ],
       });
       this.log(`📝 Stored WASM inference result: ${metadata.inferenceId}`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ Failed to store WASM inference result: ${error.message}`);

@@ -2,13 +2,10 @@
   import { setContext } from 'svelte';
   import { writable } from 'svelte/store';
   import type { Snippet } from 'svelte';
-
   // Destructure props once
   let { onOpenChange, children }: { onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
-
   const isOpen = writable(false);
   const position = writable({ x: 0, y: 0 });
-
   setContext('context-menu', {
     isOpen,
     position,
@@ -23,14 +20,12 @@
     },
   });
 </script>
-
 <div class="context-menu-root space-y-4">
-  {@render children?.()}
+  <slot />
 </div>
-
 <style>
   /* @unocss-include */
   .context-menu-root {
-    position relative;
+    position: relative;
   }
 </style>

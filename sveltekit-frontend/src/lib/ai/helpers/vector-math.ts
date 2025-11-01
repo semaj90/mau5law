@@ -2,7 +2,6 @@
  * Vector Math Helpers for Neural Network Operations
  * Provides efficient mathematical operations for autoencoder and SOM computations
  */
-
 /**
  * Calculates Euclidean distance between two vectors
  */
@@ -10,14 +9,12 @@ export function euclideanDistance(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) {
     throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
   }
-
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
     sum += (a[i] - b[i]) ** 2;
   }
   return Math.sqrt(sum);
 }
-
 /**
  * Calculates cosine similarity between two vectors
  */
@@ -25,24 +22,19 @@ export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) {
     throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
   }
-
   let dotProduct = 0;
   let magnitudeA = 0;
   let magnitudeB = 0;
-
   for (let i = 0; i < a.length; i++) {
     dotProduct += a[i] * b[i];
     magnitudeA += a[i] * a[i];
     magnitudeB += b[i] * b[i];
   }
-
   magnitudeA = Math.sqrt(magnitudeA);
   magnitudeB = Math.sqrt(magnitudeB);
-
   if (magnitudeA === 0 || magnitudeB === 0) return 0;
   return dotProduct / (magnitudeA * magnitudeB);
 }
-
 /**
  * Feed-forward operation for neural network layer
  * Performs matrix multiplication + bias addition
@@ -63,9 +55,7 @@ export function feedForward(
   if (bias.length !== outputSize) {
     throw new Error(`Bias vector size mismatch: expected ${outputSize}, got ${bias.length}`);
   }
-
   const output = new Float32Array(outputSize);
-
   for (let j = 0; j < outputSize; j++) {
     let sum = 0;
     for (let i = 0; i < inputSize; i++) {
@@ -74,24 +64,20 @@ export function feedForward(
     // Apply ReLU activation function
     output[j] = Math.max(0, sum + bias[j]);
   }
-
   return output;
 }
-
 /**
  * Apply sigmoid activation function to a vector
  */
 export function sigmoid(x: Float32Array): Float32Array {
   return x.map(val => 1 / (1 + Math.exp(-val)));
 }
-
 /**
  * Apply tanh activation function to a vector
  */
 export function tanh(x: Float32Array): Float32Array {
   return x.map(val => Math.tanh(val));
 }
-
 /**
  * Normalize a vector to unit length
  */
@@ -100,7 +86,6 @@ export function normalize(vector: Float32Array): Float32Array {
   if (magnitude === 0) return vector;
   return vector.map(v => v / magnitude);
 }
-
 /**
  * Calculate Manhattan distance between two vectors
  */
@@ -108,14 +93,12 @@ export function manhattanDistance(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) {
     throw new Error(`Vector dimensions mismatch: ${a.length} vs ${b.length}`);
   }
-
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
     sum += Math.abs(a[i] - b[i]);
   }
   return sum;
 }
-
 /**
  * Generate random weights for neural network initialization
  */
@@ -127,7 +110,6 @@ export function generateRandomWeights(size: number, scale: number = 0.1): Float3
   }
   return weights;
 }
-
 /**
  * Softmax activation function for classification
  */

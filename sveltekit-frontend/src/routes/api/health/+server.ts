@@ -10,7 +10,7 @@ type HttpCheck = {
 function tcpCheck(host: string, port: number, timeoutMs = 1000): Promise<boolean> {
   return new Promise(resolve => {
     const socket = new net.Socket();
-    let done = false;
+    let done = $state(false);
     const finish = (result: boolean) => {
       if (!done) {
         done = true;

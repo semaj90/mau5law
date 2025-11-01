@@ -69,7 +69,6 @@ type QdrantHit = {
   score?: number;
   payload?: Record<string, unknown>;
 };
-
 type SearchResultEntry = {
   id: string;
   score: number;
@@ -110,7 +109,7 @@ class DatabaseManager {
   private qdrantClient?: QdrantClient;
   private runtimeDb?: ReturnType<typeof drizzle>;
   private adminDb?: ReturnType<typeof drizzle>;
-  private initialized = false;
+  private initialized = $state(false);
   private constructor() {}
   static getInstance(): DatabaseManager {
     if (!DatabaseManager.instance) {
@@ -148,7 +147,7 @@ class DatabaseManager {
           },
         },
         debug: isDev
-          ? (_connection: unknown, query: string, parameters?: unknown[]) => {
+          ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('🐘 PostgreSQL Query:', query);
               if (parameters && (parameters as unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
@@ -169,7 +168,7 @@ class DatabaseManager {
         ssl: false,
         transform: { undefined: null },
         debug: isDev
-          ? (_connection: unknown, query: string, parameters?: unknown[]) => {
+          ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('👑 Admin PostgreSQL Query:', query);
               if (parameters && (parameters as unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
@@ -280,7 +279,6 @@ class DatabaseManager {
         (collectionsRes &&
           (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ||
         (Array.isArray(collectionsRes) ? collectionsRes : []);
-
       const exists = collectionsList.some(c => c.name === collectionName);
       if (!exists) {
         await this.createQdrantCollectionSafe(qdrant, collectionName, {
@@ -319,7 +317,6 @@ class DatabaseManager {
     const results: Array<SearchResultEntry> = [];
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;
-
     // Simple PostgreSQL vector search (best-effort). Uses runtime Drizzle client execute to avoid complex typings here.
     if (usePostgreSQL) {
       const pgStart = Date.now();
@@ -348,7 +345,6 @@ class DatabaseManager {
         console.error('PostgreSQL vector search error:', error);
       }
     }
-
     // Qdrant vector search (best-effort)
     if (useQdrant) {
       const qdrantClient = this.getQdrantClient();
@@ -366,7 +362,6 @@ class DatabaseManager {
             filter: qFilter,
           });
           qdrantTime = Date.now() - qStart;
-
           // Try to fetch matching PostgreSQL records for payload mapping if any
           const qResTyped = qRes as QdrantHit[];
           const ids = qResTyped.map(r => String(r.id));
@@ -405,7 +400,6 @@ class DatabaseManager {
         }
       }
     }
-
     // Deduplicate by id and sort by score desc
     const unique = new Map<string, SearchResultEntry>();
     for (const r of results) {
@@ -417,7 +411,6 @@ class DatabaseManager {
     const finalResults = Array.from(unique.values())
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, limit);
-
     return {
       results: finalResults,
       performance: {
@@ -442,7 +435,6 @@ class DatabaseManager {
       // Basic connectivity
       await runtimeDb.execute(sql`SELECT 1 as ok`);
       health.postgresql = true;
-
       // pgvector extension (best-effort)
       try {
         await runtimeDb.execute(sql`SELECT '[1,2,3]'::vector as v`);
@@ -450,7 +442,6 @@ class DatabaseManager {
       } catch (err) {
         console.warn('pgvector not available:', this.extractErrorMessage(err));
       }
-
       // Qdrant check
       const q = this.getQdrantClient();
       if (q) {
@@ -464,7 +455,6 @@ class DatabaseManager {
         // If Qdrant is not configured, treat as healthy for deployments that don't require it
         health.qdrant = true;
       }
-
       health.overallHealth = Boolean(health.postgresql && health.pgvector && health.qdrant);
     } catch (error) {
       console.error('Health check failed:', this.extractErrorMessage(error));
@@ -496,7 +486,7 @@ class DatabaseManager {
   // =========================
   // Helper: extract error message
   // =========================
-  private extractErrorMessage(err: unknown): string {
+  private extractErrorMessage(err: any): string {
     if (!err) return 'unknown error';
     // string
     if (typeof err === 'string') return err;
@@ -525,7 +515,6 @@ class DatabaseManager {
       return String(err);
     }
   }
-
   // =========================
   // Helpers: Qdrant compatibility wrappers (safe calls across client versions)
   // =========================
@@ -556,7 +545,6 @@ class DatabaseManager {
       throw new Error(this.extractErrorMessage(err));
     }
   }
-
   private async createQdrantCollectionSafe(q: QdrantClient | undefined, name: string, body: any): Promise<any> {
     if (!q) throw new Error('Qdrant client not initialized');
     const anyQ = q as any;

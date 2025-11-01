@@ -8,13 +8,11 @@ export type OllamaEmbedResult = {
   model: string;
   embedding: number[];
 };
-
 type OllamaEmbedResponse = {
   embedding?: number[];
   model?: string;
   error?: string;
 };
-
 export async function tryEmbedOllama(
   text: string,
   opts?: {
@@ -27,10 +25,8 @@ export async function tryEmbedOllama(
   const model = opts?.model ?? 'embeddinggemma:latest';
   const baseUrl = (opts?.baseUrl ?? 'http://127.0.0.1:11434').replace(/\/$/, '');
   const url = `${baseUrl}/api/embeddings`;
-
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), opts?.timeoutMs ?? 2000);
-
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -38,7 +34,6 @@ export async function tryEmbedOllama(
       body: JSON.stringify({ model, prompt: text }),
       signal: opts?.signal ?? controller.signal
     });
-
     if (!res.ok) return null;
     const data = (await res.json()) as OllamaEmbedResponse;
     if (!data.embedding || !Array.isArray(data.embedding)) return null;
@@ -49,8 +44,6 @@ export async function tryEmbedOllama(
     clearTimeout(timeout);
   }
 }
-
 export function embeddingDims(vec: number[] | null | undefined): number | null {
   return Array.isArray(vec) ? vec.length : null;
 }
-

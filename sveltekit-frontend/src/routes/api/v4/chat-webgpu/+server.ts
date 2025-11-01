@@ -67,7 +67,7 @@ function checkGPURateLimit(clientIP: string): boolean {
 }
 
 // Add typed helpers to normalize GPU engine outputs to Float32Array
-function isArrayBufferView(x: unknown): x is ArrayBufferView {
+function isArrayBufferView(x: any): x is ArrayBufferView {
   // ArrayBuffer.isView guards ArrayBufferView types (TypedArray, DataView)
   return typeof x === 'object' && x !== null && ArrayBuffer.isView(x);
 }
@@ -75,7 +75,7 @@ function viewToFloat32(view: ArrayBufferView): Float32Array {
   if (view instanceof Float32Array) return view;
   return new Float32Array(view.buffer, view.byteOffset, view.byteLength / Float32Array.BYTES_PER_ELEMENT);
 }
-function extractFloat32FromResult(input: unknown): Float32Array | undefined {
+function extractFloat32FromResult(input: any): Float32Array | undefined {
   // Direct typed array / view
   if (isArrayBufferView(input)) return viewToFloat32(input);
   // Plain number array
@@ -185,7 +185,7 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
       };
 
       // Helper to extract an ArrayBufferView from the possible return shapes
-      const extractArrayView = (input: unknown): ArrayBufferView | undefined => {
+      const extractArrayView = (input: any): ArrayBufferView | undefined => {
         if (input == null) return undefined;
         if (ArrayBuffer.isView(input)) return input as ArrayBufferView;
         if (typeof input === 'object') {

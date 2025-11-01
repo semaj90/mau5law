@@ -49,14 +49,14 @@ function generateRequestId(): string {
   return `grpo_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`;
 }
 // Initialize GRPO database on startup
-let grpoInitialized = false;
+let grpoInitialized = $state(false);
 async function ensureGrpoInitialized() {
   if (!grpoInitialized) {
     try {
       await initializeGrpoThinkingTable();
       grpoInitialized = true;
-    } catch (error: unknown) {
-      // Changed error: any to error: unknown
+    } catch (error: any) {
+      // Changed error: any to error: any
       if (error instanceof Error) {
         console.warn('GRPO database initialization failed, continuing without DB features:', error.message);
       } else {
@@ -520,7 +520,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               { status: 400 }
             );
           }
-          const useCache = body.useCache !== false;
+          const useCache = body.useCache !== $state(false);
           const embedding =
             body.type === 'grpo_thinking'
               ? await generateGrpoEmbedding(body.text, useCache)

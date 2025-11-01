@@ -28,7 +28,7 @@ interface VectorSearchResult {
   similarity: number;
   metadata: {
     type: keyof SearchResults;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 

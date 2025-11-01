@@ -1,19 +1,17 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   export let onclick: ((...args: any[]) => any) | undefined;
-  export let disabled: boolean = false;
+  export let disabled: boolean = $state(false);
   export let variant: string | undefined;
   export let size: string | undefined;
   export let className: string | undefined;
   const dispatch = createEventDispatcher();
-
   function handleClick(e: MouseEvent) {
     if (disabled) return;
     onclick?.(e);
     dispatch('click', e);
   }
 </script>
-
 <button
   type="button"
   onclick={handleClick}
@@ -22,7 +20,6 @@
   {...$$restProps}>
   <slot />
 </button>
-
 <style>
   /* very small baseline styles; real project likely overrides */
   .bits-btn {
@@ -32,7 +29,6 @@
     background: transparent;
     cursor: pointer;
   }
-
   /* disabled state: cover both attribute and pseudo-class usages */
   .bits-btn[disabled],
   .bits-btn:disabled {
@@ -40,4 +36,3 @@
     cursor: not-allowed;
   }
 </style>
-

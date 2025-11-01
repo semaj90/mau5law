@@ -519,8 +519,8 @@ export class YoRHaButtonAA3D extends YoRHaAntiAliased3D {
       }
     });
     // Hide other content during loading
-    if (this.textMesh) this.textMesh.visible = false;
-    if (this.iconMesh) this.iconMesh.visible = false;
+    if (this.textMesh) this.textMesh.visible = $state(false);
+    if (this.iconMesh) this.iconMesh.visible = $state(false);
   }
   private positionIcon(): void {
     if (!this.iconMesh || !this.options.iconPosition) return;

@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
         structured: structuredOutput,
       };
       return json(response);
-    } catch (serviceError: unknown) {
+    } catch (serviceError: any) {
       // Changed from any to unknown
       console.error('T5 Transformer service error:', serviceError);
       // Fallback to mock processing for development
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         },
       });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any to unknown
     console.error('T5 Transformer API error:', error);
     return json(
@@ -289,7 +289,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       timestamp: Date.now(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed from any to unknown
     return json(
       {

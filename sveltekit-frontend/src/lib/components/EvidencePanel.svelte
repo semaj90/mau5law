@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { Evidence } from "$lib/types";
-
   // add a local view type to include optional UI properties
   interface LocalEvidence extends Evidence {
     id: string; // ensure an id for keyed each block
@@ -9,13 +8,11 @@
     fileType?: string;
     tags?: string[];
   }
-
   // Props definition to satisfy TypeScript
   interface Props {
     caseId: string;
     onEvidenceDrop?: (evidence: LocalEvidence) => void;
   }
-
   let { caseId, onEvidenceDrop = () => {} }: Props = $props();
   // State using Svelte 5 runes
   let evidenceList = $state<LocalEvidence[]>([]);
@@ -55,7 +52,7 @@
     } catch (error) {
       console.error("Upload error:", error);
     } finally {
-      isUploading = false;
+      isUploading = $state(false);
       input.value = "";
     }
   }
@@ -66,7 +63,6 @@
   // $effect must get a synchronous callback — call the async function from inside
   $effect(() => { fetchEvidence(); });
 </script>
-
 <section class="evidence-panel">
   <h2 class="evidence-title">Evidence</h2>
   <div class="evidence-upload">
@@ -97,19 +93,16 @@
         </div>
         <div class="evidence-item-title">{evd.title ?? 'Untitled'}</div>
         {#if evd.description}
-          <div class="evidence-desc">{evd.description}</div>
-        {/if}
+          <div class="evidence-desc">{evd.description}{/if}
       </div>
     {/each}
     {#if evidenceList.length === 0 && !isUploading}
       <div class="empty-state">
         <p>No evidence uploaded yet.</p>
         <p class="empty-hint">Click "Upload Evidence" to add files to this case.</p>
-      </div>
-    {/if}
+      {/if}
   </div>
 </section>
-
 <style>
   /* @unocss-include */
   .evidence-panel {
@@ -220,4 +213,3 @@
     opacity: 0.8;
   }
 </style>
-

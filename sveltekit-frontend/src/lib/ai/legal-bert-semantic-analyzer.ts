@@ -13,7 +13,6 @@
 import { lokiRedisCache } from '../cache/loki-redis-integration.js';
 import { nesMemory } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
-
 // Legal-BERT model configurations
 const LEGAL_BERT_CONFIG = {
   models: {
@@ -49,7 +48,6 @@ const LEGAL_BERT_CONFIG = {
     maxStreamingTokens: 128, // Max tokens for real-time analysis
   },
 } as const;
-
 export interface LegalEntity {
   text: string;
   label: string;
@@ -108,7 +106,7 @@ export interface StreamingUpdate {
 }
 export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private models: Map<string, any> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private processingQueue: Map<string, Promise<SemanticAnalysis>> = new Map();
   private streamingTasks: Map<string, NodeJS.Timeout> = new Map();
   // Performance tracking
@@ -130,7 +128,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     processing: false,
     lastProcessTime: 0,
   };
-
   async initialize(): Promise<void> {
     try {
       console.log('🧠 Initializing Legal-BERT Semantic Analyzer...');
@@ -145,7 +142,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       throw error;
     }
   }
-
   private async loadClassificationModel(): Promise<void> {
     // Mock classification model
     const classificationModel: {
@@ -191,7 +187,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
     this.models.set('classification', classificationModel);
   }
-
   private async loadNERModel(): Promise<void> {
     const nerModel = {
       name: LEGAL_BERT_CONFIG.models.ner.name,
@@ -224,7 +219,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
     this.models.set('ner', nerModel);
   }
-
   private async loadSimilarityModel(): Promise<void> {
     const similarityModel = {
       name: LEGAL_BERT_CONFIG.models.similarity.name,
@@ -262,7 +256,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
     this.models.set('similarity', similarityModel);
   }
-
   async analyzeDocument(
     documentId: string,
     text: string,
@@ -318,7 +311,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       throw error;
     }
   }
-
   private async performAnalysis(
     documentId: string,
     text: string,
@@ -368,7 +360,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
     return analysis as SemanticAnalysis;
   }
-
   private async classifyDocument(text: string, streamingDocumentId?: string): Promise<DocumentClassification> {
     const model = this.models.get('classification');
     const result = await model.classify(text);
@@ -382,7 +373,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     }
     return result;
   }
-
   private async extractEntities(text: string, streamingDocumentId?: string): Promise<LegalEntity[]> {
     const model = this.models.get('ner');
     const entities = await model.extractEntities(text);
@@ -396,12 +386,10 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     }
     return entities;
   }
-
   private async generateEmbeddings(text: string): Promise<Float32Array> {
     const model = this.models.get('similarity');
     return await model.encode(text);
   }
-
   private async assessRisk(
     text: string,
     classification: DocumentClassification,
@@ -462,7 +450,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       },
     };
   }
-
   private getMitigationSuggestion(factor: string): string {
     const mitigations: Record<string, string> = {
       liability_risk: 'Consider adding liability caps and mutual indemnification clauses',
@@ -472,7 +459,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     };
     return mitigations[factor] || 'Consult legal counsel for specific mitigation strategies';
   }
-
   private async extractKeyphrases(text: string): Promise<Array<any>> {
     // Simple keyphrase extraction (in production, use TF-IDF or similar)
     const words = (text.toLowerCase().match(/\b\w{4}\b/g) || []) as string[];
@@ -488,7 +474,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         relevance: freq / Math.max(1, words.length),
       }));
   }
-
   private async analyzeSentiment(text: string): Promise<any> {
     // Mock sentiment analysis
     return {
@@ -496,7 +481,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       objectivity: Math.random(), // 0 (subjective) to 1 (objective)
     };
   }
-
   private async assessComplexity(text: string): Promise<any> {
     // Simple complexity metrics
     const sentences = Math.max(1, text.split(/[.!?]+/).length);
@@ -509,7 +493,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       legalComplexity: Math.min(10, (legalTerms / words) * 1000), // Legal term density
     };
   }
-
   private async extractContractTerms(text: string): Promise<SemanticAnalysis['contractTerms']> {
     const terms: SemanticAnalysis['contractTerms'] = [];
     const termPatterns = [
@@ -547,7 +530,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     }
     return terms.slice(0, 20); // Limit to top 20 terms
   }
-
   private async findPrecedentMatches(
     embeddings: Float32Array,
     classification: DocumentClassification
@@ -570,7 +552,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     ];
     return mockPrecedents.filter(p => p.similarity > Number(LEGAL_BERT_CONFIG.models.similarity.similarityThreshold));
   }
-
   private setupBatchProcessor(): void {
     setInterval(() => {
       if (this.batchProcessor.queue.length > 0 && !this.batchProcessor.processing) {
@@ -579,13 +560,11 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       }
     }, LEGAL_BERT_CONFIG.realtime.batchIntervalMs);
   }
-
   private setupRealTimeProcessor(): void {
     // Real-time processing setup would go here
     // This might involve WebSocket connections or Server-Sent Events
     console.log('🔄 Real-time processing setup complete');
   }
-
   private async processBatch(): Promise<void> {
     if (this.batchProcessor.processing || this.batchProcessor.queue.length === 0) {
       return;
@@ -603,22 +582,19 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     } catch (error: any) {
       console.error('❌ Batch processing failed:', error);
     } finally {
-      this.batchProcessor.processing = false;
+      this.batchProcessor.processing = $state(false);
     }
   }
-
   private async getCachedAnalysis(documentId: string): Promise<SemanticAnalysis | null> {
     try {
       const cached = await lokiRedisCache.getDocument(documentId);
       if (!cached) return null;
-
       // Handle different cache shapes:
       // - cached is an object with .analysis
       // - cached.data.analysis
       // - cached.payload.analysis
       // - cached is a JSON string containing one of the above
-      let candidate: unknown = null;
-
+      let candidate: any = null;
       if (typeof cached === 'string') {
         try {
           const parsed = JSON.parse(cached);
@@ -631,24 +607,21 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       } else {
         candidate = cached;
       }
-
       const asAny = candidate as any;
       const analysis =
         asAny?.analysis ??
         asAny?.data?.analysis ??
         asAny?.payload?.analysis ??
         (typeof asAny === 'object' ? asAny : null);
-
       if (analysis && typeof analysis === 'object') {
         return analysis as SemanticAnalysis;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn(`Cache retrieval failed for ${documentId}:`, message);
     }
     return null;
   }
-
   private async cacheAnalysis(documentId: string, analysis: SemanticAnalysis): Promise<void> {
     try {
       // Map analyzer categories to cache document types accepted by lokiRedisCache
@@ -671,7 +644,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           default: return 'contract';
         }
       })();
-
       // Store in Loki.js + Redis cache
       await lokiRedisCache.storeDocument({
         id: documentId,
@@ -685,12 +657,11 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         // safer metadata typing (avoid `any`)
         metadata: {} as Record<string, unknown>,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn(`Cache storage failed for ${documentId}:`, message);
     }
   }
-
   private calculatePriority(analysis: SemanticAnalysis): number {
     let priority = 128; // Base priority
     // Risk-based priority adjustment
@@ -712,7 +683,6 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     priority += analysis.classification.confidence * 50;
     return Math.min(255, Math.max(0, Math.round(priority)));
   }
-
   private updateStats(update: {
     cacheHit?: boolean;
     processingTime?: number;
@@ -737,11 +707,9 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       this.stats.risksIdentified += update.risksCount;
     }
   }
-
   getStats() {
     return { ...this.stats };
   }
-
   async destroy(): Promise<void> {
     // Clear processing queue
     this.processingQueue.clear();
@@ -752,7 +720,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     this.streamingTasks.clear();
     // Clear models
     this.models.clear();
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧠 Legal-BERT Semantic Analyzer destroyed');
   }
 }

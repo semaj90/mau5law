@@ -51,7 +51,7 @@ type PerformOCR = (buf: ArrayBuffer, opts?: { lang?: string; timeoutMs?: number 
 
 interface AnalyzeResultItem {
   type?: string;
-  results?: unknown;
+  results?: any;
 }
 interface AdvancedEvidenceAnalyzer {
   analyzeEvidence(args: {
@@ -66,13 +66,13 @@ interface EvidenceGraphService {
   updateEvidenceGraph?(
     meta: { id: string; summary: string; caseId?: string | null },
     entities: Array<{ name: string; type?: string | null }>,
-    edges: unknown[]
+    edges: any[]
   ): Promise<void>;
   // some modules may export a callable shape
   (
     meta: { id: string; summary: string; caseId?: string | null },
     entities: Array<{ name: string; type?: string | null }>,
-    edges: unknown[]
+    edges: any[]
   ): Promise<void>;
 }
 
@@ -128,7 +128,7 @@ const NEO4J_CREATE_SIMILARITY_LINKS = (process.env.NEO4J_CREATE_SIMILARITY_LINKS
 class RAGIngestionWorker {
   private simd = new SIMDTextProcessor();
   private cache = new VectorEmbeddingCache();
-  private initialized = false;
+  private initialized = $state(false);
   private services: {
     MinIOService?: MinIOService;
     performOCR?: PerformOCR;
@@ -185,7 +185,7 @@ class RAGIngestionWorker {
   }
 
   // safe entity extraction
-  private extractEntity(item: unknown): { name: string; type?: string | null } {
+  private extractEntity(item: any): { name: string; type?: string | null } {
     if (!item) return { name: 'unknown', type: 'unknown' };
     if (typeof item === 'string') return { name: item, type: 'unknown' };
     if (typeof item === 'object') {
@@ -198,7 +198,7 @@ class RAGIngestionWorker {
   }
 
   // Helper to safely extract an id from an unknown message without using `any`
-  public extractMsgId(m: unknown): string | null {
+  public extractMsgId(m: any): string | null {
     const candidate = m as Partial<IngestionWorkerMessage> | undefined;
     return candidate && typeof candidate.id === 'string' ? candidate.id : null;
   }
@@ -210,7 +210,7 @@ class RAGIngestionWorker {
       const m = await import('$lib/server/minio-service');
       // defensive cast via unknown to avoid unsafe direct cast errors
       this.services.MinIOService = m as unknown as MinIOService;
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('minio import failed', e);
     }
 
@@ -218,24 +218,24 @@ class RAGIngestionWorker {
       const o = await import('$lib/ocr/ocr-client');
       this.services.performOCR =
         (o as unknown as { performOCR?: PerformOCR }).performOCR ?? (o as unknown as PerformOCR);
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('ocr import failed', e);
     }
 
     try {
       const a = await import('$lib/services/advanced-evidence-analyzer');
       this.services.advancedEvidenceAnalyzer = a as unknown as AdvancedEvidenceAnalyzer;
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('advanced analyzer import failed', e);
     }
 
     try {
       const gModule = await import('$lib/server/graph/evidence-graph-service');
       // module shape may vary; accept object with method or callable default export
-      const candidate: unknown = gModule;
+      const candidate: any = gModule;
       // Try evidenceGraphService export first
-      const exportedSvc = (candidate as { evidenceGraphService?: unknown }).evidenceGraphService;
-      const defaultExport = (candidate as { default?: unknown }).default;
+      const exportedSvc = (candidate as { evidenceGraphService?: any }).evidenceGraphService;
+      const defaultExport = (candidate as { default?: any }).default;
       // Accept an object that matches EvidenceGraphService or a callable default export
       if (exportedSvc) {
         this.services.evidenceGraphService = exportedSvc as EvidenceGraphService;
@@ -245,7 +245,7 @@ class RAGIngestionWorker {
         // fallback to the raw module shape
         this.services.evidenceGraphService = candidate as EvidenceGraphService;
       }
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('graph service import failed', e);
     }
 
@@ -302,7 +302,7 @@ class RAGIngestionWorker {
             text = String(o?.text || text);
             this.post({ id, success: true, stage: 'ocr', status: 'completed' });
           }
-        } catch (err: unknown) {
+        } catch (err: any) {
           this.post({ id, success: false, stage: 'ocr', status: 'error', error: String(err) });
         }
       }
@@ -318,7 +318,7 @@ class RAGIngestionWorker {
             textOverride: text,
           });
           this.post({ id, success: true, stage: 'analysis', status: 'completed' });
-        } catch (err: unknown) {
+        } catch (err: any) {
           this.post({ id, success: false, stage: 'analysis', status: 'error', error: String(err) });
         }
       }
@@ -333,7 +333,7 @@ class RAGIngestionWorker {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id, embedding: Array.from(emb) }),
           });
-        } catch (e: unknown) {
+        } catch (e: any) {
           console.warn('vector push failed', e);
         }
       }
@@ -369,13 +369,13 @@ class RAGIngestionWorker {
         try {
           const svc = this.services.evidenceGraphService as EvidenceGraphService;
           // If it's an object exposing updateEvidenceGraph, call it.
-          if (svc && typeof (svc as { updateEvidenceGraph?: unknown }).updateEvidenceGraph === 'function') {
+          if (svc && typeof (svc as { updateEvidenceGraph?: any }).updateEvidenceGraph === 'function') {
             await (
               svc as {
                 updateEvidenceGraph: (
                   meta: { id: string; summary: string; caseId?: string | null },
                   entities: Array<{ name: string; type?: string | null }>,
-                  edges: unknown[]
+                  edges: any[]
                 ) => Promise<void>;
               }
             ).updateEvidenceGraph(
@@ -388,7 +388,7 @@ class RAGIngestionWorker {
             const callable = svc as unknown as (
               meta: { id: string; summary: string; caseId?: string | null },
               entities: Array<{ name: string; type?: string | null }>,
-              edges: unknown[]
+              edges: any[]
             ) => Promise<void>;
             await callable(
               { id, summary: analysis?.summary ?? '', caseId: payload?.options?.caseId ?? null },
@@ -403,7 +403,7 @@ class RAGIngestionWorker {
             status: 'completed',
             payload: this.formatGraphData(id, payload?.options?.caseId, entities),
           });
-        } catch (err: unknown) {
+        } catch (err: any) {
           this.post({ id, success: false, stage: 'graph', status: 'error', error: String(err) });
         }
       } else {
@@ -418,7 +418,7 @@ class RAGIngestionWorker {
 
       this.post({ id, success: true, stage: 'complete', status: 'done' });
       return { success: true };
-    } catch (err: unknown) {
+    } catch (err: any) {
       this.post({ id, success: false, stage: 'error', status: 'error', error: String(err) });
       return { success: false, error: String(err) };
     }
@@ -447,9 +447,9 @@ class RAGIngestionWorker {
 
   private post<T = Record<string, unknown>>(msg: WorkerResponse<T>) {
     try {
-      const gw = self as unknown as { postMessage: (m: unknown) => void };
+      const gw = self as unknown as { postMessage: (m: any) => void };
       gw.postMessage(msg);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.debug('postMessage failed', err);
     }
   }
@@ -478,7 +478,7 @@ class RAGIngestionWorker {
           ? body.embeddings[0]
           : [];
       return new Float32Array(emb || new Array(384).fill(0.1));
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.warn('embed failed', e);
       return new Float32Array(384).fill(0.1);
     }
@@ -498,8 +498,8 @@ class RAGIngestionWorker {
       if (!res.ok) throw new Error(`batch ${res.status}`);
       const b = await res.json();
       const embeds = Array.isArray(b.embeddings) ? b.embeddings : Array.isArray(b.embedding) ? [b.embedding] : [];
-      return embeds.map((e: unknown) => new Float32Array((e as number[]) || []));
-    } catch (e: unknown) {
+      return embeds.map((e: any) => new Float32Array((e as number[]) || []));
+    } catch (e: any) {
       console.warn('batch fail', e);
       return texts.map(() => new Float32Array(384).fill(0.1));
     }
@@ -533,15 +533,15 @@ const ragWorker = new RAGIngestionWorker();
   const m = ev.data as IngestionWorkerMessage;
   try {
     const r = await ragWorker.processMessage(m);
-    const gw = self as unknown as { postMessage: (m: unknown) => void };
+    const gw = self as unknown as { postMessage: (m: any) => void };
     gw.postMessage({ id: ragWorker.extractMsgId(m), success: true, result: r });
-  } catch (e: unknown) {
+  } catch (e: any) {
     const errMsg = e instanceof Error ? e.message : String(e);
     try {
-      const gw = self as unknown as { postMessage: (m: unknown) => void };
+      const gw = self as unknown as { postMessage: (m: any) => void };
       // use the worker instance helper if available
       gw.postMessage({ id: ragWorker.extractMsgId(ev.data), success: false, error: errMsg });
-    } catch (err: unknown) {
+    } catch (err: any) {
       // swallow - nothing else we can do in a worker environment
       console.debug('worker postMessage failed during error handling', err);
     }

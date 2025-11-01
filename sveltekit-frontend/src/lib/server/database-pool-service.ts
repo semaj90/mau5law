@@ -308,7 +308,7 @@ class DatabasePoolService {
         await (pool as any)`SELECT 1`;
         results[key] = true;
       } catch (error) {
-        results[key] = false;
+        results[key] = $state(false);
         console.error(`❌ Health check failed for pool ${key}:`, (error as Error).message);
       }
     }

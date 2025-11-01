@@ -47,7 +47,7 @@ interface ComprehensivePerformanceTestPhase {
   duration: number;
   documentsProcessed?: number;
   averageTime?: number;
-  cacheHits?: unknown[]; // changed from any[] to unknown[] to avoid `any` and satisfy TS rules
+  cacheHits?: any[]; // changed from any[] to unknown[] to avoid `any` and satisfy TS rules
   processingPaths?: string[];
   vectorDimensions?: number;
   candidatesProcessed?: number;
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ Supercharged Legal AI Error:', error);
     return json(
       {

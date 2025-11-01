@@ -5,14 +5,14 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import RecursiveEvidenceNode from './RecursiveEvidenceNode.svelte'; // Self-import
+  import { RecursiveEvidenceNode } from './RecursiveEvidenceNode.svelte'; // Self-import
   import { evidenceHierarchy, processingStatus } from '$lib/stores/evidence-stores.js';
   interface EvidenceNode {
     evidenceId: string;
     depth: number;
-    chainOfCustody: unknown[];
-    children: EvidenceNode[];
-    relationships: unknown[];
+    chainOfCustody: any[];
+     EvidenceNode[];
+    relationships: any[];
     legalImplications: string[];
     confidence: number;
     metadata: {
@@ -66,7 +66,7 @@
   let showRelationshipDetails = $state(false);
   // Add current evidence to visited set (immutable update)
   let updatedVisitedIds = $derived(new Set([...visitedIds, evidence.evidenceId]));
-  function calculateChainIntegrity(chainOfCustody: unknown[]): number {
+  function calculateChainIntegrity(chainOfCustody: any[]): number {
     if (chainOfCustody.length === 0) return 0;
     let completeness = 0;
     const requiredFields = ['officer_id', 'officer_name', 'timestamp', 'action'];
@@ -134,7 +134,6 @@
     showRelationshipDetails = !showRelationshipDetail;
   }
 </script>
-
 <!-- Evidence node container -->
 <div
   class="evidence-node"
@@ -221,16 +220,14 @@
               <button class="detail-toggle" onclick={toggleRelationshipDetails} title="Show relationship details">
                 {getRelationshipTypeIcon('chain_link')}
               </button>
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
       <!-- Legal implications -->
       {#if evidence.legalImplications?.length > 0}
         <div class="legal-implications">
           <h5>Legal Implications:</h5>
           <div class="implications-list">
-            {#each evidence.legalImplications.slice(0, 3) as implication}
+            {#each Array.isArray(evidence.legalImplications.slice(0, 3)) ? evidence.legalImplications.slice(0, 3) : [] as implication}
               <span class="implication-tag" title={implication}>
                 {getLegalImplicationIcon(implication)}
                 {implication.replace(/_/g, ' ').toUpperCase()}
@@ -242,15 +239,13 @@
               </span>
             {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Critical implications highlight -->
       {#if criticalImplications.length > 0}
         <div class="critical-implications">
           <span class="critical-icon">🚨</span>
           <strong>{criticalImplications.length} Critical Issue{criticalImplications.length !== 1 ? 's' : ''}</strong>
-        </div>
-      {/if}
+        {/if}
       <!-- Chain of custody details (expandable) -->
       {#if evidence.chainOfCustody?.length > 0}
         <div class="chain-section">
@@ -260,7 +255,7 @@
           </button>
           {#if showChainDetails}
             <div class="chain-details">
-              {#each evidence.chainOfCustody.slice(0, 3) as entry}
+              {#each Array.isArray(evidence.chainOfCustody.slice(0, 3)) ? evidence.chainOfCustody.slice(0, 3) : [] as entry}
                 <div class="chain-entry">
                   <div class="entry-info">
                     <span class="officer">{entry.officer_name || 'Unknown Officer'}</span>
@@ -276,18 +271,15 @@
                   <button onclick={handleChainAnalysis}>
                     View all {evidence.chainOfCustody.length} entries →
                   </button>
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
-      {/if}
+                {/if}
+            {/if}
+        {/if}
       <!-- Relationship details (expandable) -->
       {#if evidence.relationships?.length > 0 && showRelationshipDetails}
         <div class="relationships-section">
           <h5>Evidence Relationships:</h5>
           <div class="relationships-list">
-            {#each evidence.relationships.slice(0, 3) as relationship}
+            {#each Array.isArray(evidence.relationships.slice(0, 3)) ? evidence.relationships.slice(0, 3) : [] as relationship}
               <div class="relationship-item">
                 <span class="relationship-icon">
                   {getRelationshipTypeIcon(relationship.relationshipType)}
@@ -308,16 +300,14 @@
             {#if evidence.relationships.length > 3}
               <div class="more-relationships">
                 +{evidence.relationships.length - 3} more relationships
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Recursive children rendering -->
     {#if shouldRenderChildren && isExpanded}
       <div class="evidence-children" style="margin-left: {Math.min(depth * 20, 100)}px;">
-        {#each evidence.children as childEvidence}
+        {#each Array.isArray(evidence.children) ? evidence.children : [] as childEvidence}
           <RecursiveEvidenceNode
             evidence={childEvidence}
             depth={depth + 1}
@@ -329,11 +319,9 @@
             {onChainAnalysis}
           />
         {/each}
-      </div>
-    {/if}
+      {/if}
   {/if}
 </div>
-
 <style>
   .evidence-node {
     margin: 8px 0;
@@ -625,11 +613,11 @@
     border-left: 2px solid #e5e7eb;
     margin-top: 16px;
     padding-left: 16px;
-    position relative;
+    position: relative;
   }
-  .evidence-children::before {
+  .evidence-:before {
     content: '';
-    position absolute;
+    position: absolute;
     left: -1px;
     top: 0,
     bottom: 0;
@@ -673,5 +661,3 @@
     border-color: #f59e0b;
   }
 </style>
-
-

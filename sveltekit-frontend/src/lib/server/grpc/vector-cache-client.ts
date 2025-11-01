@@ -2,14 +2,11 @@ import { credentials, ServiceError } from "@grpc/grpc-js";
 import { VectorCacheServiceClient } from "$lib/proto/vector_cache_grpc_pb";
 import { EmbedLookupRequest, EmbedStoreRequest, EmbedLookupResponse, EmbedStoreResponse } from "$lib/proto/vector_cache_pb";
 import { env } from '$env/dynamic/private'; // For GRPC_VECTORCACHE_URL
-
 const GRPC_VECTORCACHE_URL = env.GRPC_VECTORCACHE_URL || "localhost:50051";
-
 const client = new VectorCacheServiceClient(
   GRPC_VECTORCACHE_URL,
   credentials.createInsecure() // Use createSsl() for production with SSL
 );
-
 /**
  * Looks up a semantic cache entry using an embedding via gRPC.
  * @param embedding The Float32Array embedding of the query.
@@ -19,7 +16,6 @@ export async function lookupSemanticCache(embedding: Float32Array): Promise<unkn
   return new Promise((resolve, reject) => {
     const req = new EmbedLookupRequest();
     req.setEmbeddingList(Array.from(embedding));
-
     client.lookup(req, (err: ServiceError | null, res: EmbedLookupResponse) => {
       if (err) {
         console.error("gRPC Lookup error:", err);
@@ -41,7 +37,6 @@ export async function lookupSemanticCache(embedding: Float32Array): Promise<unkn
     });
   });
 }
-
 /**
  * Stores a semantic cache entry using an embedding and a JSON value via gRPC.
  * @param embedding The Float32Array embedding of the query.
@@ -49,13 +44,12 @@ export async function lookupSemanticCache(embedding: Float32Array): Promise<unkn
  * @param ttlSeconds Time-to-live for the cache entry in seconds.
  * @returns The key used for storage if successful, otherwise null.
  */
-export async function storeSemanticCache(embedding: Float32Array, value: unknown, ttlSeconds: number): Promise<string | null> {
+export async function storeSemanticCache(embedding: Float32Array, value: any, ttlSeconds: number): Promise<string | null> {
   return new Promise((resolve, reject) => {
     const req = new EmbedStoreRequest();
     req.setEmbeddingList(Array.from(embedding));
     req.setValueJson(JSON.stringify(value));
     req.setTtlSeconds(ttlSeconds);
-
     client.store(req, (err: ServiceError | null, res: EmbedStoreResponse) => {
       if (err) {
         console.error("gRPC Store error:", err);

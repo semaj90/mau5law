@@ -1,18 +1,14 @@
 import { globalGPUManager } from './global-gpu-manager.js';
-
 export interface VertexChunk {
   id: string;
   buffer: GPUBuffer | WebGLBuffer | Float32Array;
   size: number;
   lastUsed: number;
 }
-
 export class VertexCacheManager {
   private chunks = new Map<string, VertexChunk>();
-
   async createChunk(id: string, data: Float32Array): Promise<VertexChunk> {
     const ctx = globalGPUManager.getHybridGPU();
-
     if (ctx?.type === 'webgpu' && ctx.device) {
       // Try to create a GPU buffer, but fail safely back to CPU/WebGL if something goes wrong.
       try {
@@ -21,9 +17,7 @@ export class VertexCacheManager {
         const usage = (typeof GPUBufferUsage !== 'undefined'
           ? (GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST)
           : ((1 << 0) | (1 << 1))) as number;
-
         let buffer: GPUBuffer;
-
         try {
           // Preferred path: mappedAtCreation for fast upload
           buffer = device.createBuffer({
@@ -31,7 +25,6 @@ export class VertexCacheManager {
             usage,
             mappedAtCreation: true
           } as any);
-
           const mapped = buffer.getMappedRange();
           const target = mapped instanceof ArrayBuffer
             ? new Float32Array(mapped)
@@ -46,7 +39,6 @@ export class VertexCacheManager {
               usage,
               mappedAtCreation: false
             } as any);
-
             // device.queue.writeBuffer is the preferred fallback when available
             const anyDevice = device as any;
             if (anyDevice?.queue && typeof anyDevice.queue.writeBuffer === 'function') {
@@ -66,7 +58,6 @@ export class VertexCacheManager {
             throw fallbackErr;
           }
         }
-
         const chunk: VertexChunk = { id, buffer, size: data.length, lastUsed: Date.now() };
         this.chunks.set(id, chunk);
         return chunk;
@@ -97,13 +88,11 @@ export class VertexCacheManager {
       return chunk;
     }
   }
-
   getChunk(id: string): VertexChunk | undefined {
     const chunk = this.chunks.get(id);
     if (chunk) chunk.lastUsed = Date.now();
     return chunk;
   }
-
   evictOld(thresholdMs = 30_000): void {
     const now = Date.now();
     for (const [id, chunk] of this.chunks.entries()) {
@@ -113,24 +102,21 @@ export class VertexCacheManager {
       }
     }
   }
-
   clear(): void {
     for (const chunk of this.chunks.values()) {
       this._tryDestroyBuffer(chunk.buffer);
     }
     this.chunks.clear();
   }
-
   // internal helper: attempt to free GPU resources for different backends
   private _tryDestroyBuffer(buf: GPUBuffer | WebGLBuffer | Float32Array): void {
     // WebGPU buffer: has destroy()
     try {
-      const maybeGPU = buf as unknown as { destroy?: unknown };
+      const maybeGPU = buf as unknown as { destroy?: any };
       if (maybeGPU && typeof (maybeGPU as any).destroy === 'function') {
         try { (maybeGPU as any).destroy(); return; } catch { /* ignore */ }
       }
     } catch { /* ignore */ }
-
     // WebGL buffer: delete via current GL context if available
     try {
       const ctx = globalGPUManager.getHybridGPU();
@@ -140,11 +126,10 @@ export class VertexCacheManager {
           // Avoid calling isBuffer for typed arrays / primitives: typed arrays have byteLength
           const isTypedArrayLike = typeof (buf as any)?.byteLength === 'number';
           const isProbablyBufferObject = buf !== null && typeof buf === 'object' && !isTypedArrayLike;
-
           if (isProbablyBufferObject) {
             // io-safety: wrap isBuffer/deleteBuffer because cross-context objects may throw
-            let ok = false;
-            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } catch { ok = false; }
+            let ok = $state(false);
+            try { ok = !!gl.isBuffer(buf as WebGLBuffer); } catch { ok = $state(false); }
             if (ok) {
               try { gl.deleteBuffer(buf as WebGLBuffer); return; } catch { /* ignore */ }
             }
@@ -157,9 +142,7 @@ export class VertexCacheManager {
         }
       }
     } catch { /* ignore */ }
-
     // CPU Float32Array: nothing to do, let GC reclaim
   }
 }
-
 export const vertexCacheManager = new VertexCacheManager();

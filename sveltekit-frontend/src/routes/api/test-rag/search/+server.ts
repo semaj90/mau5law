@@ -92,7 +92,7 @@ async function vectorSearch(
       legalAnalysis: r.legalAnalysis,
       rank: index + 1,
     }));
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[Test RAG Search] Vector search failed:', err);
     return [];
   }
@@ -140,7 +140,7 @@ async function textSearch(query: string, limit: number = 10): Promise<SearchResu
       legalAnalysis: r.legalAnalysis,
       rank: index + 1,
     }));
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[Test RAG Search] Text search failed:', err);
     return [];
   }
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[Test RAG Search] Search error:', error);
     return json(
       {
@@ -312,11 +312,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }
 
       // Check qdrant health if available
-      let qdrantHealthy = false;
+      let qdrantHealthy = $state(false);
       try {
         qdrantHealthy = await qdrantService.healthCheck();
       } catch (e) {
-        qdrantHealthy = false;
+        qdrantHealthy = $state(false);
       }
 
       return json({
@@ -338,7 +338,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     return json({ success: true, action });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('[Test RAG Search] GET error:', err);
     return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }

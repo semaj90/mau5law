@@ -134,13 +134,13 @@ export interface GGUFPerformanceMetrics {
 export interface WorkerMessage {
   type: 'LOAD_MODEL' | 'INFERENCE' | 'GET_STATUS' | 'SHUTDOWN' | 'HEALTH_CHECK';
   id?: string;
-  data?: unknown;
+  data?: any;
 }
 export interface WorkerResponse {
   type: 'MODEL_LOADED' | 'INFERENCE_COMPLETE' | 'INFERENCE_ERROR' | 'STATUS' | 'HEALTH_STATUS';
   id?: string;
   success?: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
 }
 // Worker State
@@ -161,8 +161,8 @@ export interface WorkerState {
 export class GGUFRuntimeService extends EventEmitter {
   private config: GGUFRuntimeConfig;
   private modelInfo?: GGUFModelInfo;
-  private isLoaded = false;
-  private isInitializing = false;
+  private isLoaded = $state(false);
+  private isInitializing = $state(false);
   private workers: WorkerState[] = [];
   private requestQueue: Array<any> = [];
   // Performance tracking
@@ -254,7 +254,7 @@ export class GGUFRuntimeService extends EventEmitter {
       // Perform health check
       await this.performHealthCheck();
       this.isLoaded = true;
-      this.isInitializing = false;
+      this.isInitializing = $state(false);
       this.modelStatus.set({
         loaded: true,
         loading: false,
@@ -265,7 +265,7 @@ export class GGUFRuntimeService extends EventEmitter {
       this.emit('initialized', { modelInfo: this.modelInfo });
     } catch (error: any) {
       console.error('❌ GGUF Runtime initialization failed:', error);
-      this.isInitializing = false;
+      this.isInitializing = $state(false);
       this.modelStatus.set({
         loaded: false,
         loading: false,
@@ -294,7 +294,7 @@ export class GGUFRuntimeService extends EventEmitter {
     }
     if (!capabilities.gpu && this.config.useGPU) {
       console.warn('⚠️ GPU support not detected, falling back to CPU mode');
-      this.config.useGPU = false;
+      this.config.useGPU = $state(false);
       this.config.gpuLayers = 0;
     }
   }
@@ -370,7 +370,7 @@ export class GGUFRuntimeService extends EventEmitter {
   private generateWorkerScript(): string {
     return `
       // GGUF Worker for Windows-Native Legal AI Inference
-      let modelLoaded = false;
+      let modelLoaded = $state(false);
       let inferenceEngine = null;
       let workerMetrics = {
         processedRequests: 0,
@@ -617,7 +617,7 @@ export class GGUFRuntimeService extends EventEmitter {
             case 'SHUTDOWN':
               // Cleanup resources
               inferenceEngine = null;
-              modelLoaded = false;
+              modelLoaded = $state(false);
               self.postMessage({ type: 'SHUTDOWN_COMPLETE', id });
               break;
           }
@@ -713,7 +713,7 @@ export class GGUFRuntimeService extends EventEmitter {
       console.log('✅ FlashAttention2 initialized with memory optimization');
     } catch (error: any) {
       console.warn('⚠️ FlashAttention2 initialization failed, using standard attention:', error);
-      this.config.flashAttention = false;
+      this.config.flashAttention = $state(false);
     }
   }
   /**
@@ -1133,8 +1133,8 @@ export class GGUFRuntimeService extends EventEmitter {
       await Promise.all(shutdownPromises);
       // Clear workers array
       this.workers = [];
-      this.isLoaded = false;
-      this.isInitializing = false;
+      this.isLoaded = $state(false);
+      this.isInitializing = $state(false);
       // Reset stores
       this.modelStatus.set({ loaded: false, loading: false });
       this.performanceMetrics.set({

@@ -26,7 +26,7 @@
     (async () => {
       // Simulate loading legal data
       await loadSampleData();
-      isLoading = false;
+      isLoading = $state(false);
     })();
   });
   async function loadSampleData() {

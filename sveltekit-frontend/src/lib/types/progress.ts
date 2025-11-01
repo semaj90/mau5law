@@ -10,17 +10,17 @@ export type ProgressMsg =
       fileId: string;
       step: 'ocr' | 'embedding' | 'rag' | 'analysis' | string;
       stepProgress?: number; // 0-100
-      fragment?: unknown; // partial/streamed result
+      fragment?: any; // partial/streamed result
     }
   | {
       type: 'processing-complete';
       fileId: string;
-      finalResult?: unknown;
+      finalResult?: any;
     }
   | {
       type: 'error';
       fileId: string;
-      error: { message: string; code?: string; meta?: unknown };
+      error: { message: string; code?: string; meta?: any };
     };
 
 export interface EvidenceProcessRequest {
@@ -42,13 +42,13 @@ export interface EvidenceProcessSession {
 export interface OcrResult {
   text: string;
   confidence: number;
-  metadata?: unknown;
+  metadata?: any;
 }
 export interface EmbeddingResult {
   model: string;
   dim: number;
   vector: number[];
-  metadata?: unknown;
+  metadata?: any;
 }
 export interface RagResult {
   summary: string;

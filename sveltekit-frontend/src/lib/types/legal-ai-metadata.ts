@@ -12,7 +12,7 @@ export interface LegalAIClassifications {
   jurisdiction?: string;
   urgency?: string;
   confidentiality?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ProcessingStep {
@@ -20,7 +20,7 @@ export interface ProcessingStep {
   durationMs?: number; // legacy tests use durationMs
   duration_ms?: number; // new extractor uses duration_ms
   success: boolean;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
 }
 
 export interface LegalAIMetadata {
@@ -40,7 +40,7 @@ export interface LegalAIMetadata {
   processingChain: ProcessingStep[];
   semanticHash?: string; // legacy
   embeddings?: { semantic_hash?: string; text_embedding?: number[] };
-  additionalData?: { [key: string]: unknown };
+  additionalData?: { [key: string]: any };
   // Compatibility aliases for PNG extractor expectations
   evidence_id?: string; // mapped from processingId or provided directly
   analysis_results?: {

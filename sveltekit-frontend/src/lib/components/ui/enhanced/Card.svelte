@@ -21,20 +21,18 @@
   		className
   	].filter(Boolean).join(' '));
 </script>
-
 <div class={cardClasses} {...props}>
-  {@render children?.()}
+  <slot />
 </div>
-
 <style>
 /* Enhanced Card with NieR styling */ {}
   .yorha-card {
 /* Base styles from UnoCSS shortcuts */ {}
-    position relative;
+    position: relative;
   }
   .yorha-card::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -53,4 +51,3 @@ transparent 100% {}
     opacity: 0.3;
   }
 </style>
-

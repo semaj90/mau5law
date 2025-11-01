@@ -6,8 +6,8 @@
 export type ParallelRequest = {
   id?: string;
   type?: string;
-  payload?: unknown;
-  userContext?: { userId?: string; sessionId?: string; caseId?: string; [k: string]: unknown };
+  payload?: any;
+  userContext?: { userId?: string; sessionId?: string; caseId?: string; [k: string]: any };
 };
 
 export type OrchestrationError = { service: string; message: string };
@@ -63,7 +63,7 @@ export class ParallelOrchestrationMaster {
       await this.prewarmCacheForRequest(request).catch(() => undefined);
 
       // Simulate parallel tasks with predictable stub results
-      const tasks: Promise<{ service: string; result: unknown }>[] = [
+      const tasks: Promise<{ service: string; result: any }>[] = [
         this.simulateService('contextualMemoryChat', request),
         this.simulateService('multiEmbedding', request),
         this.simulateService('legalRAG', request),
@@ -89,7 +89,7 @@ export class ParallelOrchestrationMaster {
           // Try to extract a service name attached to the thrown object/error
           let serviceFromReason = 'unknown';
           if (typeof reason === 'object' && reason !== null) {
-            const obj = reason as { service?: unknown; message?: unknown };
+            const obj = reason as { service?: any; message?: any };
             if (typeof obj.service === 'string') serviceFromReason = obj.service;
             // prefer explicit message property when available
             if (typeof obj.message === 'string') message = obj.message;
@@ -144,7 +144,7 @@ export class ParallelOrchestrationMaster {
   private async simulateService(
     service: string,
     request: ParallelRequest
-  ): Promise<{ service: string; result: unknown }> {
+  ): Promise<{ service: string; result: any }> {
     // Quick circuit-breaker check
     const cb = this.circuitBreakers.get(service);
     if (cb?.isOpen) {
@@ -182,12 +182,12 @@ export class ParallelOrchestrationMaster {
     this.performanceMetrics.set(service, prev);
   }
 
-  private static stringifyUnknown(reason: unknown): string {
+  private static stringifyUnknown(reason: any): string {
     if (typeof reason === 'string') return reason;
     if (typeof reason === 'number' || typeof reason === 'bigint' || typeof reason === 'boolean') return String(reason);
     if (reason === null || reason === undefined) return String(reason);
     if (typeof reason === 'object') {
-      const obj = reason as { message?: unknown; toString?: unknown };
+      const obj = reason as { message?: any; toString?: any };
       // Prefer explicit message property if available
       if (typeof obj.message === 'string') return obj.message;
       // If an object's toString is a function, try calling it safely

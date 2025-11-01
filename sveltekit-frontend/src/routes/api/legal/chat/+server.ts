@@ -21,7 +21,7 @@ export interface LegalChatRequest {
   userId: string;
   sessionType?: 'case_analysis' | 'legal_research' | 'document_review' | 'precedent_search';
   context?: {
-    caseDetails?: unknown;
+    caseDetails?: any;
     evidenceIds?: string[];
     requestedAnalysis?: string[];
   };
@@ -35,13 +35,13 @@ interface Source {
   summary?: string;
   content?: string;
   relevanceScore?: number;
-  [k: string]: unknown;
+  [k: string]: any;
 }
 interface AnalysisResult {
   analysis: string;
   confidence: number;
   recommendations: string[];
-  [k: string]: unknown;
+  [k: string]: any;
 }
 export interface LegalChatResponse {
   sessionId: string;
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processingTime: ((session as Record<string, unknown>)?.['processingTime'] as number) ?? Date.now() - startTime,
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Legal chat error:', error);
     return json({ error: 'Failed to process legal analysis request' }, { status: 500 });
   }
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .orderBy(desc(legalAnalysisSessions.createdAt))
       .limit(limit);
     return json(sessions);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching legal analysis sessions:', error);
     return json({ error: 'Failed to fetch analysis sessions' }, { status: 500 });
   }
@@ -149,13 +149,13 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
       .where(like(legalPrecedents.summary, `%${prompt}%`))
       .limit(3);
     sources.push(...(precedents as unknown as Source[]).map(prec => ({ ...prec, type: 'precedent' })));
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.warn('Error searching legal sources:', error);
   }
   return sources;
 }
 // Helper function to generate legal analysis using Gemma3
-async function generateLegalAnalysis(prompt: string, sources: Source[], context?: unknown): Promise<AnalysisResult> {
+async function generateLegalAnalysis(prompt: string, sources: Source[], context?: any): Promise<AnalysisResult> {
   try {
     // Construct analysis prompt with legal context
     const legalPrompt = `
@@ -197,7 +197,7 @@ The case appears to have merit based on the documented evidence and applicable l
       ],
     };
     return analysisResult;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error generating legal analysis:', error);
     throw new Error('Failed to generate legal analysis');
   }

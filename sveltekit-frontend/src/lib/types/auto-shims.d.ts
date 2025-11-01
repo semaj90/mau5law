@@ -7,22 +7,22 @@ declare global {
     rows?: T[];
     rowCount?: number;
     // allow arbitrary additional properties (e.g., cursor, meta)
-    [k: string]: unknown;
+    [k: string]: any;
   };
   // Minimal thread-safe Postgres surface used by middleware tests and wiring.
   interface ThreadSafePostgres {
     // Return RowList of records by default; callers can cast for more precision.
-    query: (q: string, ...args: unknown[]) => Promise<RowList<Record<string, unknown>> | unknown>;
-    insertJsonbDocument?: (...args: unknown[]) => Promise<RowList<Record<string, unknown>> | unknown>;
-    deleteJsonbDocuments?: (...args: unknown[]) => Promise<number | unknown>;
+    query: (q: string, ...args: any[]) => Promise<RowList<Record<string, unknown>> | unknown>;
+    insertJsonbDocument?: (...args: any[]) => Promise<RowList<Record<string, unknown>> | unknown>;
+    deleteJsonbDocuments?: (...args: any[]) => Promise<number | unknown>;
     // fallback catch-all
-    [k: string]: unknown;
+    [k: string]: any;
   }
   // GPU coordinator with permissive methods used by orchestrators
   interface GPUThreadCoordinator {
-    processEmbeddingBatch?: (batch: unknown[]) => Promise<unknown>;
+    processEmbeddingBatch?: (batch: any[]) => Promise<unknown>;
     // allow other runtime helpers
-    [k: string]: unknown;
+    [k: string]: any;
   }
 }
 export {};
@@ -39,34 +39,34 @@ interface Performance {
 declare let performance: Performance & typeof globalThis;
 // PNG embed extractor shape (tests call instance methods that may be static in typings)
 declare class PNGEmbedExtractor {
-  embedMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
-  extractMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
-  createPortableArtifact?: (...args: unknown[]) => Promise<unknown> | unknown;
-  validateMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
-  static embedMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
-  static extractMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
-  static createPortableArtifact?: (...args: unknown[]) => Promise<unknown> | unknown;
-  static validateMetadata?: (...args: unknown[]) => Promise<unknown> | unknown;
+  embedMetadata?: (...args: any[]) => Promise<unknown> | unknown;
+  extractMetadata?: (...args: any[]) => Promise<unknown> | unknown;
+  createPortableArtifact?: (...args: any[]) => Promise<unknown> | unknown;
+  validateMetadata?: (...args: any[]) => Promise<unknown> | unknown;
+  static embedMetadata?: (...args: any[]) => Promise<unknown> | unknown;
+  static extractMetadata?: (...args: any[]) => Promise<unknown> | unknown;
+  static createPortableArtifact?: (...args: any[]) => Promise<unknown> | unknown;
+  static validateMetadata?: (...args: any[]) => Promise<unknown> | unknown;
 }
 declare module 'png-embed-extractor' {
-  const PNGEmbedExtractorAny: unknown;
+  const PNGEmbedExtractorAny: any;
   export default PNGEmbedExtractorAny;
 }
 // Broad internal module shims — non-invasive
 declare module '$lib/server/*' {
-  const _default: unknown;
+  const _default: any;
   export default _default;
 }
 declare module '$lib/server/db/*' {
-  const _default: unknown;
+  const _default: any;
   export default _default;
 }
 declare module '$lib/services/*' {
-  const _default: unknown;
+  const _default: any;
   export default _default;
 }
 declare module '$lib/components/*' {
-  const _default: unknown;
+  const _default: any;
   export default _default;
 }
 // Fallback: any unknown module

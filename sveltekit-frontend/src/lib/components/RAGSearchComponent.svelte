@@ -8,32 +8,29 @@
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unified-service-registry';
   import { CardBits } from '$lib/enhanced-bits';
-  import { AlertCircle } from 'lucide-svelte';
+  import AlertCircle from 'lucide-svelte';
   import { ButtonBits, InputBits } from '$lib/enhanced-bits';
-  import { Search } from 'lucide-svelte';
+  import Search from 'lucide-svelte';
   // Some lucide-svelte builds expose individual icon Svelte components as default exports.
   // Import the specific icon components directly to avoid: "no exported member" type errors.
-  import Loader2 from 'lucide-svelte/dist/icons/loader-2.svelte';
-  import CheckCircle from 'lucide-svelte/dist/icons/check-circle.svelte';
-
+  import { Loader2 } from 'lucide-svelte/dist/icons/loader-2.svelte';
+  import { CheckCircle } from 'lucide-svelte/dist/icons/check-circle.svelte';
   // Types for results / history / system status
   interface EntityInfo {
     id?: string;
     name?: string;
     type?: string;
     // allow other fields returned by backend
-    [k: string]: unknown;
+    [k: string]: any;
   }
-
   interface SearchResult {
     similarity?: number;
     entityInfo?: EntityInfo;
     chunk_sequence?: number;
     chunk_text?: string;
     // other optional fields
-    [k: string]: unknown;
+    [k: string]: any;
   }
-
   interface SearchHistoryItem {
     query: string;
     resultCount: number;
@@ -41,14 +38,12 @@
     hasRAGResponse: boolean;
     processingTime: number;
   }
-
   interface SystemStatus {
     healthScore: number;
     services: string[]; // or more complex objects if backend returns objects
     // additional diagnostics
-    [k: string]: unknown;
+    [k: string]: any;
   }
-
   // typed state
   let errorMessage = $state<string | null>(null);
   let searchQuery = $state<string>('');
@@ -57,14 +52,12 @@
   let isSearching = $state<boolean>(false);
   let searchHistory = $state<SearchHistoryItem[]>([]);
   let systemStatus = $state<SystemStatus | null>(null);
-
   // Search configuration
   let searchConfig = $state({
     limit: 5,
     threshold: 0.7,
     includeRAGResponse: true,
   });
-
   $effect(() => {
     (async () => {
       await loadSystemStatus();
@@ -73,7 +66,6 @@
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
   });
-
   async function loadSystemStatus() {
     try {
       systemStatus = await unifiedServiceRegistry.getSystemStatus();
@@ -81,7 +73,6 @@
       console.error('Failed to load system status:', error);
     }
   }
-
   async function performSearch() {
     if (!searchQuery.trim() || isSearching) return;
     isSearching = true;
@@ -124,7 +115,6 @@
             ragResponse = null;
           }
         }
-
         // Add to search history (typed)
         const historyItem: SearchHistoryItem = {
           query: searchQuery,
@@ -134,12 +124,10 @@
           processingTime: (data.processingTime as number) || 0,
         };
         searchHistory.unshift(historyItem);
-
         // Keep only last 5 searches
         if (searchHistory.length > 5) {
           searchHistory = searchHistory.slice(0, 5);
         }
-
         // Cache the query using unified service registry
         if (Array.isArray(data.results) && data.results.length > 0) {
           await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
@@ -151,10 +139,9 @@
       errorMessage = (error as Error).message;
       console.error('Search error:', error);
     } finally {
-      isSearching = false;
+      isSearching = $state(false);
     }
   }
-
   async function ingestDocument() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -191,18 +178,15 @@
     };
     fileInput.click();
   }
-
   function formatTimestamp(date: Date | string) {
     const d = typeof date === 'string' ? new Date(date) : date;
     return d.toLocaleTimeString() + ' ' + d.toLocaleDateString();
   }
-
   function highlightMatch(text: string, query: string) {
     if (!query) return text;
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark class="bg-yellow-300 px-1">$1</mark>');
   }
-
   // Suggestions based on system components
   const searchSuggestions = [
     'evidence analysis',
@@ -212,7 +196,6 @@
     'legal procedures',
   ];
 </script>
-
 <svelte:head>
   <title>RAG Search - Legal AI Platform</title>
 </svelte:head>
@@ -236,8 +219,7 @@
         <span class="text-nier-text-muted">
           ({systemStatus.services.filter(item => item.length)}/{systemStatus.services.length} services)
         </span>
-      </div>
-    {/if}
+      {/if}
   </header>
   <!-- Search Interface -->
   <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
@@ -311,7 +293,7 @@
       <!-- Search Suggestions -->
       <div class="flex flex-wrap gap-2">
         <span class="text-sm text-nier-text-muted">Try:</span>
-        {#each searchSuggestions as suggestion}
+        {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
           <ButtonBits
             onclick={() => {
               searchQuery = suggestion;
@@ -334,8 +316,7 @@
       <div class="text-red-400 font-mono text-sm">
         ❌ {errorMessage}
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- RAG Response -->
   {#if ragResponse}
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
@@ -360,7 +341,7 @@
         Search Results ({searchResults.length})
       </h3>
       <div class="space-y-4">
-        {#each searchResults as result}
+        {#each Array.isArray(searchResults) ? searchResults : [] as result}
           <CardBits
             variant="outlined"
             padding="md"
@@ -402,7 +383,7 @@
     <CardBits variant="elevated" padding="lg" class="bg-nier-bg-secondary border border-nier-border-primary">
       <h3 class="font-bold text-nier-accent-warm mb-4">Recent Searches</h3>
       <div class="space-y-2">
-        {#each searchHistory as historyItem}
+        {#each Array.isArray(searchHistory) ? searchHistory : [] as historyItem}
           <ButtonBits
             onclick={() => {
               searchQuery = historyItem.query;
@@ -429,7 +410,6 @@
     </CardBits>
   {/if}
 </div>
-
 <style>
   /* Enhanced bits-ui styling for legal AI search */
   :global(.legal-ai-search-input) {
@@ -474,4 +454,3 @@
     border-radius: 0.25rem;
   }
 </style>
-

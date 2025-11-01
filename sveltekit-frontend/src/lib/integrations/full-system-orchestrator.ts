@@ -5,9 +5,9 @@ import flashAttention2Service from '../services/flash-attention2-service.js';
 // New explicit types to avoid repeated `any` casts and unexpected-any errors
 type Phase13Health = {
   phase13: { level: number; status: string };
-  services?: unknown;
-  performance?: unknown;
-  recommendations?: unknown[]; // tightened from Array<any> to unknown[]
+  services?: any;
+  performance?: any;
+  recommendations?: any[]; // tightened from Array<any> to unknown[]
 };
 type FlashAttentionStatus = {
   initialized: boolean;
@@ -15,7 +15,7 @@ type FlashAttentionStatus = {
   memoryOptimization?: boolean;
   maxSequenceLength?: number;
   batchSize?: number;
-  memoryPools?: unknown;
+  memoryPools?: any;
 };
 type ErrorCategory = {
   category: string;
@@ -46,13 +46,13 @@ export interface SystemOrchestrationConfig {
 export interface OrchestrationResult {
   success: boolean;
   services: {
-    flashAttention2: (FlashAttentionStatus & { testResult?: unknown }) | null;
+    flashAttention2: (FlashAttentionStatus & { testResult?: any }) | null;
     phase13: {
       integrationLevel: number;
       status: string;
-      services?: unknown;
-      performance?: unknown;
-      recommendations?: unknown;
+      services?: any;
+      performance?: any;
+      recommendations?: any;
     } | null;
     errorAnalysis: ErrorAnalysisResult | null;
     autoRemediation?: AutoRemediationResult | null;
@@ -72,7 +72,7 @@ export interface OrchestrationResult {
  */
 export class FullSystemOrchestrator {
   private config: SystemOrchestrationConfig;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private startTime = 0;
   constructor(config: Partial<SystemOrchestrationConfig> = {}) {
     this.config = {
@@ -140,7 +140,7 @@ export class FullSystemOrchestrator {
       );
       console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ Full System Orchestration failed:', message);
       result.errors.push(`Orchestration failed: ${message}`);
@@ -179,7 +179,7 @@ export class FullSystemOrchestrator {
       } else {
         result.errors.push('FlashAttention2 service failed to initialize');
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ FlashAttention2 initialization failed:', message);
       result.errors.push(`FlashAttention2 error: ${message}`);
@@ -209,8 +209,8 @@ export class FullSystemOrchestrator {
       }
       // Merge Phase 13 recommendations with safety for different shapes
       const phaseRecs = systemHealth?.recommendations || [];
-      result.recommendations.push(...phaseRecs.map((r: unknown) => toSuggestedString(r)));
-    } catch (error: unknown) {
+      result.recommendations.push(...phaseRecs.map((r: any) => toSuggestedString(r)));
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ Phase 13 integration failed:', message);
       result.errors.push(`Phase 13 error: ${message}`);
@@ -294,7 +294,7 @@ export class FullSystemOrchestrator {
       console.log(
         `📊 Analysis found ${mockAnalysisResult.total_estimated_errors} total errors across ${mockAnalysisResult.category_analysis.length} categories`
       );
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ Error analysis failed:', message);
       result.errors.push(`Error analysis error: ${message}`);
@@ -329,7 +329,7 @@ export class FullSystemOrchestrator {
         totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0),
       };
       console.log(`✅ Auto-remediation completed: ${remediationResults.length} categories processed`);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ Auto-remediation failed:', message);
       result.errors.push(`Auto-remediation error: ${message}`);
@@ -378,7 +378,7 @@ export class FullSystemOrchestrator {
           result.details.push('Unknown category - manual review required');
       }
       result.success = result.fixesApplied > 0;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       result.details.push(`Remediation failed: ${message}`);
     }
@@ -430,11 +430,9 @@ export class FullSystemOrchestrator {
    */
   getStatus(): OrchestrationResult {
     const currentTime = performance.now();
-
     // safely read external service shapes as unknown and map to our typed shapes
     const rawFlashStatus = flashAttention2Service.getStatus() as unknown;
     const rawPhase13Status = phase13Integration.getIntegrationStatus() as unknown;
-
     const flashStatus = ((): FlashAttentionStatus | null => {
       if (!rawFlashStatus) return null;
       const obj = rawFlashStatus as Partial<FlashAttentionStatus>;
@@ -447,13 +445,12 @@ export class FullSystemOrchestrator {
         memoryPools: obj.memoryPools,
       };
     })();
-
     const phaseStatus = ((): {
       integrationLevel: number;
       status: string;
-      services?: unknown;
-      performance?: unknown;
-      recommendations?: unknown;
+      services?: any;
+      performance?: any;
+      recommendations?: any;
     } | null => {
       if (!rawPhase13Status) return null;
       const obj = rawPhase13Status as Partial<Phase13Health>;
@@ -466,7 +463,6 @@ export class FullSystemOrchestrator {
         recommendations: obj?.recommendations,
       };
     })();
-
     return {
       success: this.isInitialized,
       services: {
@@ -493,11 +489,11 @@ export class FullSystemOrchestrator {
     try {
       await flashAttention2Service.cleanup();
       console.log('✅ System cleanup completed');
-    } catch (error: unknown) {
+    } catch (error: any) {
       const message = formatError(error);
       console.error('❌ Cleanup error:', message);
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
   }
 }
 // Global orchestrator instance
@@ -522,7 +518,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
       console.warn('⚠️ Full system initialized with warnings/errors', result.errors);
     }
     return result;
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = formatError(error);
     console.error('❌ Initialization failed:', message);
     // Return a safe failed OrchestrationResult
@@ -546,7 +542,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
   }
 }
 // Add small utility helpers to avoid missing symbols and to provide robust behavior across environments.
-function formatError(err: unknown): string {
+function formatError(err: any): string {
   // Safe formatting for unknown error shapes
   if (!err) return 'Unknown error';
   if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : ''}`;
@@ -556,8 +552,7 @@ function formatError(err: unknown): string {
     return String(err);
   }
 }
-
-function toSuggestedString(item: unknown): string {
+function toSuggestedString(item: any): string {
   // Convert various recommendation shapes into a readable string
   if (typeof item === 'string') return item;
   if (typeof item === 'object' && item !== null) {
@@ -575,7 +570,6 @@ function toSuggestedString(item: unknown): string {
     return 'unknown';
   }
 }
-
 function getMemoryUsage(): number {
   // Try Node-style process.memoryUsage(), otherwise use performance.memory if available, otherwise zero.
   try {

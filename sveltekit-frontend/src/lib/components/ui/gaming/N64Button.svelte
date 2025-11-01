@@ -140,7 +140,7 @@
   }
   function handleMouseUp(_event: MouseEvent) {
     if (disabled) return;
-    pressed = false;
+    pressed = $state(false);
     playSound('release');
     dispatch('mouseup', event);
     onmouseup?.(event);
@@ -167,7 +167,6 @@
     return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
   }
 </script>
-
 <button
   class={buttonClasses}
   style={buttonStyle}
@@ -188,8 +187,7 @@
       {#if confidence !== undefined}
         <div class="n64-button__confidence" title="Confidence: {Math.round(confidence * 100)}%">
           {Math.round(confidence * 100)}%
-        </div>
-      {/if}
+        {/if}
       {#if evidenceAction}
         <div class="n64-button__evidence-icon" title="Evidence Action {evidenceAction}">
           {#if evidenceAction === 'analyze'}
@@ -201,19 +199,16 @@
           {:else if evidenceAction === 'submit'}
             ✅
           {/if}
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Priority indicator -->
     {#if priority === 'critical'}
-      <div class="n64-button__priority-pulse"></div>
-    {/if}
+      <div class="n64-button__priority-pulse">{/if}
   </div>
 </button>
-
 <style>
   .n64-button {
-    position relative;
+    position: relative;
     border: none;
     background: none;
     cursor: pointer;
@@ -229,7 +224,7 @@
     outline-offset: 3px;
   }
   .n64-button__surface {
-    position relative;
+    position: relative;
     background: var(--n64-color);
     border: 4px solid #333;
     border-radius: 50%;
@@ -237,7 +232,7 @@
     overflow: hidden;
   }
   .n64-button__content {
-    position relative;
+    position: relative;
     z-index: 2,
     display: flex;
     flex-direction: column;
@@ -345,7 +340,7 @@ box-shadow: {}
     }
   }
   .n64-button__priority-pulse {
-    position absolute;
+    position: absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -380,7 +375,7 @@ box-shadow: {}
   }
 /* Confidence indicator */ {}
   .n64-button__confidence {
-    position absolute;
+    position: absolute;
     top: -8px;
     right: -8px;
     background: rgba(0, 0, 0, 0.8);
@@ -393,7 +388,7 @@ box-shadow: {}
   }
 /* Evidence action icon */ {}
   .n64-button__evidence-icon {
-    position absolute;
+    position: absolute;
     bottom: -8px;
     left: -8px;
     background: rgba(255, 255, 255, 0.9);
@@ -447,4 +442,3 @@ box-shadow: {}
     }
   }
 </style>
-

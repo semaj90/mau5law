@@ -488,7 +488,7 @@ class EnhancedRAGGlyphSystem {
         contextParts.push(`${index + 1}. **${glyph.semantic_summary}**`);
         contextParts.push(
           `   - Compressed: ${Array.from(glyph.compressed_representation)
-            .map((b: unknown) => (b as number).toString(16))
+            .map((b: any) => (b as number).toString(16))
             .join('')}`
         );
         contextParts.push(`   - Weight: ${glyph.contextual_weight.toFixed(2)}`);

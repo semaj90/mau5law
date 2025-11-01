@@ -1,8 +1,8 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Input from '$lib/components/ui/input/Input.svelte';
+  import { Input } from '$lib/components/ui/input/Input.svelte';
   import Loader2 from 'lucide-svelte/icons/loader-2';
   import Bot from 'lucide-svelte/icons/bot';
   import MessageSquare from 'lucide-svelte/icons/message-square';
@@ -15,14 +15,14 @@
   export let onAISearch: ((res: any) => void) | null = null;
   export let onAIChat: ((res: any) => void) | null = null;
   export let onAISummarize: ((res: any) => void) | null = null;
-  export let disabled: boolean = false;
+  export let disabled: boolean = $state(false);
 
   // Local state
   let aiSearchQuery: string = '';
   let errorMessage: string = '';
-  let isAISearching = false;
-  let isAIChatting = false;
-  let isSummarizing = false;
+  let isAISearching = $state(false);
+  let isAIChatting = $state(false);
+  let isSummarizing = $state(false);
   let aiSearchResults: any[] = [];
   let aiChatMessage: string = '';
   let aiChatResponse = '';
@@ -71,7 +71,7 @@
       errorMessage = err instanceof Error ? err.message : String(err);
       await performFallbackSearch();
     } finally {
-      isAISearching = false;
+      isAISearching = $state(false);
     }
   }
 
@@ -123,7 +123,7 @@
       console.error('AI chat error:', err);
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isAIChatting = false;
+      isAIChatting = $state(false);
     }
   }
 
@@ -153,7 +153,7 @@
       console.error('AI summarization error:', err);
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isSummarizing = false;
+      isSummarizing = $state(false);
     }
   }
 
@@ -208,7 +208,7 @@
 
     {#if aiSearchResults.length > 0}
       <div class="space-y-2 max-h-32 overflow-y-auto mt-2">
-        {#each aiSearchResults.slice(0, 3) as result}
+        {#each Array.isArray(aiSearchResults.slice(0, 3)) ? aiSearchResults.slice(0, 3) : [] as result}
           <div class="p-2 bg-muted/50 rounded text-sm">
             <div class="font-medium truncate">{result?.title}</div>
             <div class="text-xs nes-text is-disabled">{result?.jurisdiction}</div>
@@ -217,8 +217,7 @@
         {#if aiSearchResults.length > 3}
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">+{aiSearchResults.length - 3} more results</span>
         {/if}
-      </div>
-    {/if}
+      {/if}
   </div>
 
   <!-- AI Chat -->
@@ -262,8 +261,7 @@
           <div class="prose prose-sm max-w-none">
             <p class="whitespace-pre-wrap">{aiChatResponse}</p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 
@@ -303,8 +301,7 @@
           <div class="prose prose-sm max-w-none">
             <p class="whitespace-pre-wrap">{summaryResult}</p>
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 
@@ -314,8 +311,7 @@
       <button type="button" class="bits-btn text-sm px-2 py-1" onclick={clearResults}>
         Clear All Results
       </button>
-    </div>
-  {/if}
+    {/if}
 
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
@@ -348,6 +344,5 @@
 
   <!-- Optional error display -->
   {#if errorMessage}
-    <div class="text-center text-sm text-red-600 mt-2">{errorMessage}</div>
-  {/if}
+    <div class="text-center text-sm text-red-600 mt-2">{errorMessage}{/if}
 </div>

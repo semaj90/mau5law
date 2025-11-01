@@ -43,7 +43,6 @@
     }
   });
 </script>
-
 {#if isAuthorized === null && showLoading}
   <div class="auth-loading" role="status" aria-label="Loading authentication">
     <div class="loading-spinner"></div>
@@ -56,7 +55,6 @@
 {:else if isAuthorized === false && fallback}
   {@render fallback()}
 {/if}
-
 <style>
   .auth-loading {
     display: flex;
@@ -80,4 +78,3 @@
     }
   }
 </style>
-

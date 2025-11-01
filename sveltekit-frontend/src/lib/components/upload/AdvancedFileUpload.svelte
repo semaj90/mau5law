@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from "$app/environment";
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import { notifications  } from '$lib/stores/unified";
   import { FocusManager } from "$lib/utils/accessibility";
   import {
@@ -112,7 +112,7 @@
   }}
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = $state(false);
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     addFiles(droppedFiles);
   }
@@ -121,14 +121,14 @@
     isDragOver = true;
   }
   function handleDragLeave() {
-    isDragOver = false;
+    isDragOver = $state(false);
   }
   function handlePaste(_event: ClipboardEvent) {
     if (!enablePasteUpload || disabled) return;
     const items = Array.from(event.clipboardData?.items || []);
     const files = items
-      .filter((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).kind === "file")
-      .map((item) => (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).getAsFile())
+      .filter((item) => (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).kind === "file")
+      .map((item) => (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).getAsFile())
       .filter(Boolean) as File[];
     if (files.length > 0) {
       addFiles(files);
@@ -191,7 +191,7 @@
   }
     // Check total size
     const totalSize = [...files, ...validFiles].reduce(
-      (sum, item) => sum + (item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).size,
+      (sum, item) => sum + (item as { kind?: any; getAsFile?: any; size?: any; uploading?: any }).size,
       0
     );
     if (totalSize > maxTotalSize) {
@@ -270,7 +270,7 @@
     for (const fileItem of filesToUpload) {
       await uploadFile(fileItem);
   }
-    isUploading = false;
+    isUploading = $state(false);
     updateTotalProgress();
     ondispatch?.({ files: filesToUpload });
   }
@@ -309,12 +309,12 @@
       method: "POST",
       body: formData
     });
-    if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-      throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
   }
-    const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
-    fileItem.url = (result as { url?: unknown; thumbnailUrl?: unknown }).url;
-    fileItem.thumbnailUrl = (result as { url?: unknown; thumbnailUrl?: unknown }).thumbnailUrl;
+    const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+    fileItem.url = (result as { url?: any; thumbnailUrl?: any }).url;
+    fileItem.thumbnailUrl = (result as { url?: any; thumbnailUrl?: any }).thumbnailUrl;
   }
   async function uploadFileInChunks(fileItem: FileUploadItem) {
     const totalChunks = Math.ceil(fileItem.size / chunkSize);
@@ -334,8 +334,8 @@
         method: "POST",
         body: formData
       });
-      if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
+        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
   }
       fileItem.uploadedChunks = chunkIndex + 1;
       fileItem.progress = (fileItem.uploadedChunks / totalChunks) * 100;
@@ -354,8 +354,8 @@
       throw new Error("Failed to finalize upload");
   }
     const result = await finalizeResponse.json();
-    fileItem.url = (result as { url?: unknown; thumbnailUrl?: unknown }).url;
-    fileItem.thumbnailUrl = (result as { url?: unknown; thumbnailUrl?: unknown }).thumbnailUrl;
+    fileItem.url = (result as { url?: any; thumbnailUrl?: any }).url;
+    fileItem.thumbnailUrl = (result as { url?: any; thumbnailUrl?: any }).thumbnailUrl;
   }
   function updateTotalProgress() {
     if (files.length === 0) {
@@ -457,7 +457,7 @@
   function stopAudioRecording() {
     if (mediaRecorder && isRecording) {
       mediaRecorder.stop();
-      isRecording = false;
+      isRecording = $state(false);
       if (recordingStream) {
         recordingStream.getTracks.forEach((track) => track.stop());
         recordingStream = null;
@@ -615,8 +615,7 @@ uploadFiles()}
             <div class="container mx-auto px-4" style="width: {totalProgress}%"></div>
           </div>
           <span class="container mx-auto px-4">{Math.round(totalProgress)}%</span>
-        </div>
-      {/if}
+        {/if}
       <!-- Individual files -->
       <div class="container mx-auto px-4">
         {#each files as file (file.id)}
@@ -632,8 +631,7 @@ uploadFiles()}
                 <SvelteComponent
                   class="container mx-auto px-4"
                 />
-              </div>
-            {/if}
+              {/if}
             <!-- File info -->
             <div class="container mx-auto px-4">
               <div class="container mx-auto px-4" title={file.name}>
@@ -661,8 +659,7 @@ uploadFiles()}
                   </div>
                   <span class="container mx-auto px-4">{Math.round(file.progress)}%</span
                   >
-                </div>
-              {/if}
+                {/if}
             </div>
             <!-- Actions -->
             <div class="container mx-auto px-4">
@@ -702,8 +699,7 @@ removeFile(file.id)}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   /* @unocss-include */
@@ -783,7 +779,7 @@ removeFile(file.id)}
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
 }
   .progress-text {
     font-size: 0.875rem;

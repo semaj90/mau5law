@@ -1,20 +1,17 @@
 <script lang="ts">
   import { Dialog } from 'bits-ui';
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import { X } from 'lucide-svelte';
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import X from 'lucide-svelte';
   import { goto } from '$app/navigation';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
   import { loginSchema } from '$lib/schemas/auth';
   import { toastStore } from '$lib/stores/toast';
-
   interface Props {
     onlogin?: () => void;
     open?: boolean;
   }
-
   let { onlogin, open = $bindable() }: Props = $props();
-
   const { form, errors, enhance, submitting, message } = superForm(
     { email: '', password: '', rememberMe: false },
     {
@@ -23,7 +20,7 @@
         if (f.valid) {
           toastStore.success('✅ Signed in successfully!');
           onlogin?.();
-          open = false;
+          open = $state(false);
           // Redirect to dashboard after successful login
           setTimeout(() => {
             goto('/dashboard').catch(err => console.error('Navigation error:', err));
@@ -32,12 +29,10 @@
       },
     }
   );
-
   function closeModal() {
-    open = false;
+    open = $state(false);
   }
 </script>
-
 <Dialog.Root bind:open>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/80 z-50" />
@@ -52,13 +47,10 @@
           </button>
         </Dialog.Close>
       </div>
-
       {#if $message}
         <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
           {$message}
-        </div>
-      {/if}
-
+        {/if}
       <form class="space-y-4" method="POST" action="/api/auth/login" use:enhance>
         <div>
           <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
@@ -74,7 +66,6 @@
             <p class="text-red-600 text-xs mt-1">{$errors.email}</p>
           {/if}
         </div>
-
         <div>
           <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
           <input
@@ -89,7 +80,6 @@
             <p class="text-red-600 text-xs mt-1">{$errors.password}</p>
           {/if}
         </div>
-
         <div class="flex items-center justify-between">
           <label class="flex items-center gap-2">
             <input
@@ -102,7 +92,6 @@
           </label>
           <a href="/forgot-password" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
         </div>
-
         <div class="flex gap-3 justify-end pt-4">
           <Button
             type="button"
@@ -125,7 +114,6 @@
           </Button>
         </div>
       </form>
-
       <div class="mt-4 text-center text-sm text-slate-600">
         Don't have an account?{' '}
         <button

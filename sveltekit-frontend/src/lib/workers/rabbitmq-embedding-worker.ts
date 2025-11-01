@@ -24,7 +24,7 @@ export interface BulkEmbeddingJobPayload {
   batch_size?: number;
 }
 class RabbitMQEmbeddingWorker {
-  private isRunning: boolean = false;
+  private isRunning: boolean = $state(false);
   private processedJobs: number = 0;
   private failedJobs: number = 0;
   private startTime: Date | null = null;
@@ -79,7 +79,7 @@ class RabbitMQEmbeddingWorker {
       console.log(`📊 Listening on queues: ${QUEUES.DOCUMENT_EMBEDDING}, ${QUEUES.CASE_EMBEDDING}`);
     } catch (error) {
       console.error('❌ Failed to start RabbitMQ embedding worker:', error);
-      this.isRunning = false;
+      this.isRunning = $state(false);
       throw error;
     }
   }
@@ -92,7 +92,7 @@ class RabbitMQEmbeddingWorker {
       return;
     }
     console.log('🛑 Stopping RabbitMQ embedding worker...');
-    this.isRunning = false;
+    this.isRunning = $state(false);
     try {
       // Unsubscribe from all queues
       await rabbitMQService.unsubscribe(QUEUES.DOCUMENT_EMBEDDING);

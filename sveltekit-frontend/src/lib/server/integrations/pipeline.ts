@@ -5,13 +5,11 @@
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */
-
 import { getOllamaService, OllamaService } from './ollama';
 import { getRedisCache, RedisCacheService } from './redis';
 import { getQdrantService, QdrantVectorService } from './qdrant';
 import { getMinIOStorage, MinIOStorageService } from './minio';
 import type { ChatMessage } from '$lib/types/external-services';
-
 interface PipelineConfig {
   ollama?: { baseUrl?: string; embeddingModel?: string; chatModel?: string };
   redis?: { url?: string; password?: string };
@@ -20,7 +18,6 @@ interface PipelineConfig {
   cacheEnabled?: boolean;
   cacheTTL?: number;
 }
-
 interface DocumentMetadata {
   title?: string;
   type?: 'contract' | 'evidence' | 'brief' | 'citation' | 'case' | 'statute';
@@ -30,7 +27,6 @@ interface DocumentMetadata {
   tags?: string[];
   [key: string]: any;
 }
-
 interface ProcessedDocument {
   id: string;
   content: string;
@@ -38,14 +34,12 @@ interface ProcessedDocument {
   metadata: DocumentMetadata;
   cached: boolean;
 }
-
 interface SearchResult {
   id: string;
   score: number;
   content: string;
   metadata: DocumentMetadata;
 }
-
 interface RAGResponse {
   answer: string;
   sources: SearchResult[];
@@ -54,7 +48,6 @@ interface RAGResponse {
   cacheHit: boolean;
   processingTimeMs: number;
 }
-
 /**
  * Production-ready pipeline orchestrator that combines:
  * - Ollama (embeddings + chat)
@@ -68,7 +61,6 @@ export class LegalAIPipeline {
   private qdrant: QdrantVectorService;
   private minio: MinIOStorageService;
   private config: Required<PipelineConfig>;
-
   constructor(config: PipelineConfig = {}) {
     this.config = {
       ollama: config.ollama || {},
@@ -78,31 +70,25 @@ export class LegalAIPipeline {
       cacheEnabled: config.cacheEnabled ?? true,
       cacheTTL: config.cacheTTL || 3600 // 1 hour default
     };
-
     // Initialize services
     this.ollama = getOllamaService(this.config.ollama);
     this.redis = getRedisCache(this.config.redis);
     this.qdrant = getQdrantService(this.config.qdrant);
     this.minio = getMinIOStorage(this.config.minio);
   }
-
   /**
    * Initialize all services (create collections, buckets, etc.)
    */
   async initialize(): Promise<void> {
     console.log('=� Initializing Legal AI Pipeline...');
-
     // Initialize Qdrant collection
     await this.qdrant.initializeCollection();
-
     // Ensure MinIO buckets exist
     await this.minio.ensureBucket('legal-documents');
     await this.minio.ensureBucket('legal-evidence');
     await this.minio.ensureBucket('legal-attachments');
-
     console.log(' Legal AI Pipeline initialized successfully');
   }
-
   /**
    * Ingest a legal document into the system
    * 1. Store file in MinIO
@@ -117,7 +103,6 @@ export class LegalAIPipeline {
   ): Promise<ProcessedDocument> {
     const startTime = Date.now();
     const documentId = crypto.randomUUID();
-
     try {
       // 1. Store file in MinIO if provided
       if (file) {
@@ -135,12 +120,10 @@ export class LegalAIPipeline {
           }
         );
       }
-
       // 2. Generate embedding
       const cacheKey = `embedding:${this.hashContent(content)}`;
       let embedding: Float32Array;
-      let cached = false;
-
+      let cached = $state(false);
       if (this.config.cacheEnabled) {
         const cachedEmbedding = await this.redis.get<number[]>(cacheKey);
         if (cachedEmbedding) {
@@ -155,14 +138,12 @@ export class LegalAIPipeline {
       } else {
         embedding = await this.ollama.embedText(content);
       }
-
       // 3. Index in Qdrant
       await this.qdrant.upsertVector(documentId, embedding, {
         content,
         ...metadata,
         ingestedAt: new Date().toISOString()
       });
-
       // 4. Cache metadata in Redis
       if (this.config.cacheEnabled) {
         await this.redis.set(
@@ -171,9 +152,7 @@ export class LegalAIPipeline {
           { ttlSeconds: this.config.cacheTTL, tags: ['document'] }
         );
       }
-
       console.log(`=� Document ingested: ${documentId} (${Date.now() - startTime}ms)`);
-
       return {
         id: documentId,
         content,
@@ -186,7 +165,6 @@ export class LegalAIPipeline {
       throw error;
     }
   }
-
   /**
    * Semantic search across legal documents
    */
@@ -196,12 +174,10 @@ export class LegalAIPipeline {
     filter?: Record<string, any>
   ): Promise<SearchResult[]> {
     const startTime = Date.now();
-
     try {
       // 1. Check cache for query embedding
       const cacheKey = `query:${this.hashContent(query)}`;
       let queryEmbedding: Float32Array;
-
       if (this.config.cacheEnabled) {
         const cached = await this.redis.get<number[]>(cacheKey);
         if (cached) {
@@ -215,7 +191,6 @@ export class LegalAIPipeline {
       } else {
         queryEmbedding = await this.ollama.embedText(query);
       }
-
       // 2. Search Qdrant
       const results = await this.qdrant.searchVector<DocumentMetadata>(
         queryEmbedding,
@@ -225,7 +200,6 @@ export class LegalAIPipeline {
           filter
         }
       );
-
       // 3. Transform results
       const searchResults: SearchResult[] = results.map(result => ({
         id: result.id,
@@ -233,16 +207,13 @@ export class LegalAIPipeline {
         content: (result.payload as any)?.content || '',
         metadata: result.payload || {}
       }));
-
       console.log(`= Search completed: ${searchResults.length} results (${Date.now() - startTime}ms)`);
-
       return searchResults;
     } catch (error) {
       console.error('Document search failed:', error);
       throw error;
     }
   }
-
   /**
    * RAG (Retrieval-Augmented Generation) pipeline
    * 1. Search for relevant documents
@@ -261,12 +232,10 @@ export class LegalAIPipeline {
   ): Promise<RAGResponse> {
     const startTime = Date.now();
     const topK = options?.topK || 5;
-
     try {
       // Check cache for complete RAG response
       const cacheKey = `rag:${this.hashContent(query + JSON.stringify(options))}`;
-      let cacheHit = false;
-
+      let cacheHit = $state(false);
       if (this.config.cacheEnabled) {
         const cached = await this.redis.get<RAGResponse>(cacheKey);
         if (cached) {
@@ -274,10 +243,8 @@ export class LegalAIPipeline {
           return { ...cached, cacheHit: true };
         }
       }
-
       // 1. Search for relevant documents
       const sources = await this.searchDocuments(query, topK, options?.filter);
-
       if (sources.length === 0) {
         return {
           answer: 'I could not find any relevant information to answer your question.',
@@ -287,27 +254,22 @@ export class LegalAIPipeline {
           processingTimeMs: Date.now() - startTime
         };
       }
-
       // 2. Build context from sources
       const context = sources
         .map((source, idx) => `[${idx + 1}] ${source.content.slice(0, 500)}`)
         .join('\n\n');
-
       // 3. Generate response with chat
       const systemPrompt = options?.systemPrompt ||
         'You are a legal AI assistant. Answer questions based ONLY on the provided context. ' +
         'Cite sources using [1], [2], etc. If the context does not contain relevant information, say so.';
-
       const messages: ChatMessage[] = [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}` }
       ];
-
       const chatResult = await this.ollama.chat(messages, {
         temperature: options?.temperature,
         maxTokens: options?.maxTokens
       });
-
       const response: RAGResponse = {
         answer: chatResult.response,
         sources,
@@ -316,7 +278,6 @@ export class LegalAIPipeline {
         cacheHit,
         processingTimeMs: Date.now() - startTime
       };
-
       // Cache the response
       if (this.config.cacheEnabled) {
         await this.redis.set(cacheKey, response, {
@@ -324,16 +285,13 @@ export class LegalAIPipeline {
           tags: ['rag']
         });
       }
-
       console.log(`> RAG completed: ${response.processingTimeMs}ms, ${sources.length} sources`);
-
       return response;
     } catch (error) {
       console.error('RAG query failed:', error);
       throw error;
     }
   }
-
   /**
    * Stream RAG response token by token
    */
@@ -348,11 +306,9 @@ export class LegalAIPipeline {
     }
   ): AsyncIterable<{ type: 'sources' | 'token' | 'done'; data: any }> {
     const topK = options?.topK || 5;
-
     // 1. Search for sources
     const sources = await this.searchDocuments(query, topK, options?.filter);
     yield { type: 'sources', data: sources };
-
     if (sources.length === 0) {
       yield {
         type: 'token',
@@ -361,29 +317,23 @@ export class LegalAIPipeline {
       yield { type: 'done', data: { sources: [], processingTimeMs: 0 } };
       return;
     }
-
     // 2. Build context
     const context = sources
       .map((source, idx) => `[${idx + 1}] ${source.content.slice(0, 500)}`)
       .join('\n\n');
-
     const systemPrompt = options?.systemPrompt ||
       'You are a legal AI assistant. Answer questions based ONLY on the provided context. ' +
       'Cite sources using [1], [2], etc.';
-
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}` }
     ];
-
     // 3. Stream tokens
     for await (const token of this.ollama.streamChat(messages, options)) {
       yield { type: 'token', data: token };
     }
-
     yield { type: 'done', data: { sources } };
   }
-
   /**
    * Batch ingest documents (with parallelization)
    */
@@ -392,7 +342,6 @@ export class LegalAIPipeline {
     batchSize: number = 10
   ): Promise<ProcessedDocument[]> {
     const results: ProcessedDocument[] = [];
-
     for (let i = 0; i < documents.length; i += batchSize) {
       const batch = documents.slice(i, i + batchSize);
       const batchResults = await Promise.all(
@@ -400,10 +349,8 @@ export class LegalAIPipeline {
       );
       results.push(...batchResults);
     }
-
     return results;
   }
-
   /**
    * Health check for all services
    */
@@ -422,22 +369,17 @@ export class LegalAIPipeline {
       this.qdrant.health().catch(() => ({ status: 'unavailable' })),
       this.minio.health().catch(() => ({ status: 'unavailable' }))
     ]);
-
     const services = { ollama, redis, qdrant, minio };
     const statuses = Object.values(services).map(s => s.status);
-
     let overall: 'healthy' | 'degraded' | 'unavailable' = 'healthy';
     if (statuses.some(s => s === 'unavailable')) {
       overall = 'unavailable';
     } else if (statuses.some(s => s === 'degraded')) {
       overall = 'degraded';
     }
-
     return { overall, services };
   }
-
   // Helper methods
-
   private hashContent(content: string): string {
     // Simple hash for cache keys (consider using crypto.subtle for production)
     let hash = 0;
@@ -449,15 +391,12 @@ export class LegalAIPipeline {
     return Math.abs(hash).toString(36);
   }
 }
-
 // Singleton instance
 let pipelineInstance: LegalAIPipeline | null = null;
-
 export function getLegalAIPipeline(config?: PipelineConfig): LegalAIPipeline {
   if (!pipelineInstance || config) {
     pipelineInstance = new LegalAIPipeline(config);
   }
   return pipelineInstance;
 }
-
 export { LegalAIPipeline };

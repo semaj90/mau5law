@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ RabbitMQ-Tensor API Error:', message);
     return json(
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ RabbitMQ-Tensor POST Error:', message);
     return json(
@@ -324,7 +324,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ RabbitMQ-Tensor PUT Error:', message);
     return json(
@@ -374,7 +374,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         );
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ RabbitMQ-Tensor DELETE Error:', message);
     return json(

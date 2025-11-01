@@ -16,7 +16,7 @@ const CASE_STATUS_ALIASES: Record<string, CaseStatus> = {
   active: 'open',
 };
 
-function normalizeCaseStatus(value: unknown): CaseStatus | undefined {
+function normalizeCaseStatus(value: any): CaseStatus | undefined {
   if (typeof value !== 'string') return undefined;
   const canonical = value.trim().toLowerCase();
   if (!canonical) return undefined;
@@ -31,7 +31,7 @@ const metaEnv = getMetaEnv();
 
 // Redis client for worker communication (local wrapper over shared client)
 let redisClient: ReturnType<typeof sharedRedis.createClient> | null = null;
-let redisUnavailable = false;
+let redisUnavailable = $state(false);
 
 async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createClient> | null> {
   if (redisUnavailable) return null;
@@ -46,7 +46,7 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       // 'sharedRedis' may not have precise typings for createClient in our environment;
       // treat it as unknown and do a runtime check for createClient to keep TypeScript strictness.
       const redisNs = sharedRedis as unknown;
-      const maybeCreateClient = (redisNs as { createClient?: (...args: unknown[]) => unknown }).createClient;
+      const maybeCreateClient = (redisNs as { createClient?: (...args: any[]) => unknown }).createClient;
       if (typeof maybeCreateClient !== 'function') {
         throw new Error('redis.createClient is not available in this environment');
       }
@@ -62,16 +62,16 @@ async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createCli
       }
 
       // Create client and assert it's the same shape as sharedRedis.createClient at runtime
-      redisClient = (maybeCreateClient as (cfg?: unknown) => ReturnType<typeof sharedRedis.createClient>)(clientConfig);
+      redisClient = (maybeCreateClient as (cfg?: any) => ReturnType<typeof sharedRedis.createClient>)(clientConfig);
 
       // Suppress auth warnings during connection
-      const errorHandler = (err: unknown) => {
+      const errorHandler = (err: any) => {
         let errMsg = '';
         if (
           err &&
           typeof err === 'object' &&
           'message' in err &&
-          typeof (err as { message: unknown }).message === 'string'
+          typeof (err as { message: any }).message === 'string'
         ) {
           errMsg = (err as { message: string }).message;
         } else {
@@ -280,7 +280,7 @@ export const GET: RequestHandler = async event => {
             }
           : null,
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       // First, handle validation errors from Zod
       if (error instanceof z.ZodError) {
         const message = error.errors.map(e => e.message).join('; ');
@@ -350,7 +350,7 @@ export const POST: RequestHandler = async event => {
       console.log(`✅ Case created successfully: ID=${newCase.id}, Number=${newCase.caseNumber}, User=${user.id}`);
 
       // Trigger PostgreSQL-first worker for auto-tagging and processing
-      let workerTriggered = false;
+      let workerTriggered = $state(false);
       try {
         workerTriggered = await triggerWorkerProcessing(newCase.id, {
           priority: validatedCaseData.priority, // No: 'as string' needed, type is correct
@@ -373,11 +373,11 @@ export const POST: RequestHandler = async event => {
         } else {
           console.warn(`⚠️ Worker not triggered (Redis unavailable or enqueue failed) for case ${newCase.id}`);
         }
-      } catch (workerError: unknown) {
+      } catch (workerError: any) {
         // This catch is unlikely to be hit now because triggerWorkerProcessing returns false on internal failure,
         // but keep it defensively to avoid bubbling unexpected exceptions.
         console.warn(`⚠️ Worker trigger threw for case ${newCase.id}:`, workerError);
-        workerTriggered = false;
+        workerTriggered = $state(false);
       }
 
       return {
@@ -388,7 +388,7 @@ export const POST: RequestHandler = async event => {
           timestamp: new Date().toISOString(),
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error && error.message.includes('duplicate')) {
         throw CommonErrors.BadRequest('Case with similar details already exists');
       }
@@ -416,7 +416,7 @@ export const PUT: RequestHandler = async event => {
         case updatedCase,
         message: 'Case updated successfully',
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       if (error instanceof Error && error.message.includes('not found')) {
         throw CommonErrors.NotFound('Case');
       }

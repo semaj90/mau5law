@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ RabbitMQ-CUDA Test API Error:', error);
     return json(
       {
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('❌ RabbitMQ-CUDA POST Error:', error);
     return json(
       {
@@ -290,7 +290,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,
@@ -334,7 +334,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     return json(
       {
         success: false,

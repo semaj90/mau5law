@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
@@ -14,19 +14,15 @@ https://svelte.dev/e/js_parse_error -->
   // Type interfaces for the component
   import { getContext, onMount } from 'svelte';
   import { get, readable } from 'svelte/store';
-
   // Simplified Button import (avoid casting workaround)
-  import Button from '$lib/components/ui/Button.svelte';
-
+  import { Button } from '$lib/components/ui/Button.svelte';
   // Import the whole module namespace to avoid named-export mismatch errors
   import * as unified from '$lib/stores/unified';
   // Resolve exports at runtime (supports named or default re-export shapes)
   const _unified: any = unified ?? {};
-
   // Safe readable/writable fallbacks
   const aiGlobalStore =
     _unified.aiGlobalStore ?? _unified.default?.aiGlobalStore ?? readable({ context: {} });
-
   const aiGlobalActions =
     _unified.aiGlobalActions ?? _unified.default?.aiGlobalActions ?? {
       // safe no-op fallbacks to avoid runtime crashes during dev
@@ -34,10 +30,8 @@ https://svelte.dev/e/js_parse_error -->
         console.warn('aiGlobalActions.summarize not available');
       }
     };
-
   const legalCaseStore =
     _unified.legalCaseStore ?? _unified.default?.legalCaseStore ?? readable({ context: {} });
-
   const legalCaseActions =
     _unified.legalCaseActions ?? _unified.default?.legalCaseActions ?? {
       generateEmbedding: (..._args: any[]) => {
@@ -52,7 +46,6 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     // optional init
   });
-
   // safe getter that guards against undefined / non-store values
   function safeGet<T = any>(store: { subscribe?: any } | undefined): T {
     if (!store || typeof (store as any).subscribe !== 'function') {
@@ -64,7 +57,6 @@ https://svelte.dev/e/js_parse_error -->
       return ({} as unknown) as T;
     }
   }
-
   // Helper typed context accessor functions to avoid unsafe casts in template
   function getAIContext(): AIStoreContext {
     return (safeGet<any>(aiGlobalStore)?.context ?? {}) as AIStoreContext;
@@ -74,14 +66,12 @@ https://svelte.dev/e/js_parse_error -->
   function aiSummary(): string | undefined { return getAIContext().summary; }
   function aiStream(): string | undefined { return getAIContext().stream; }
   function aiSources(): Array<any> { return getAIContext().sources ?? []; }
-
   function getLegalCaseContext(): any {
     return safeGet<any>(legalCaseStore)?.context ?? {};
   }
   function lcGeneratingEmbedding(): boolean { return !!getLegalCaseContext().generatingEmbedding; }
   function lcSearchingRelated(): boolean { return !!getLegalCaseContext().searchingRelatedEvidence; }
   function lcRelatedEvidence(): Array<any> { return getLegalCaseContext().relatedEvidence ?? []; }
-
   // Trigger summary
   function handleSummarize() {
     if (!user?.id) return;
@@ -139,7 +129,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-
 <div class="nier-card p-6 nes-container">
   <div class="nier-header mb-4">
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
@@ -153,7 +142,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         {!user ? 'Sign in to Summarize' : aiLoading() ? 'Summarizing...' : 'Summarize Evidence'}
       </Button>
-
       <Button
         onclick={saveSummary}
         disabled={!aiSummary() || aiLoading()}
@@ -162,7 +150,6 @@ https://svelte.dev/e/js_parse_error -->
       >
         Save Summary
       </Button>
-
       {#if evidenceText}
         <Button
           onclick={handleGenerateEmbedding}
@@ -172,7 +159,6 @@ https://svelte.dev/e/js_parse_error -->
         >
           {lcGeneratingEmbedding() ? 'Generating...' : 'Find Related Evidence'}
         </Button>
-
         <Button
           onclick={handleSearchRelatedEvidence}
           disabled={!user || lcSearchingRelated()}
@@ -200,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else if aiSummary()}
       <div class="nier-summary">
         <pre class="nier-code whitespace-pre-wrap">{aiSummary()}</pre>
-        <!-- Top 3 evidence sources (if available) -->
+        <!-- Top: 3 evidence sources (if available) -->
         {#if aiSources().length > 0}
           <div class="nier-sources mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Top Evidence Used:</h4>
@@ -214,8 +200,7 @@ https://svelte.dev/e/js_parse_error -->
                 </li>
               {/each}
             </ol>
-          </div>
-        {/if}
+          {/if}
         {#if lcRelatedEvidence().length > 0}
           <div class="nier-related-evidence mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Related Evidence Found:</h4>
@@ -235,8 +220,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       <div class="nier-empty">
@@ -260,10 +244,8 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {/if}
+      {/if}
     <!-- Loading states for embedding operations -->
     {#if lcGeneratingEmbedding()}
       <div class="nier-embedding-status mt-4 p-3 bg-blue-50 rounded border border-blue-200">
@@ -271,19 +253,16 @@ https://svelte.dev/e/js_parse_error -->
           <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
           <span class="text-blue-700">Generating embeddings for evidence analysis...</span>
         </div>
-      </div>
-    {/if}
+      {/if}
     {#if lcSearchingRelated()}
       <div class="nier-search-status mt-4 p-3 bg-green-50 rounded border border-green-200">
         <div class="flex items-center gap-2">
           <div class="animate-pulse h-4 w-4 bg-green-600 rounded-full"></div>
           <span class="text-green-700">Searching for related evidence using semantic similarity...</span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </main>
 </div>
-
 <style>
   /* Nier.css inspired styles */
   :global(.nier-card) {

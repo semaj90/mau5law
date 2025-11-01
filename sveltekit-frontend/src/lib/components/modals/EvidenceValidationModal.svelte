@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   interface Props {
     open?: boolean;
-    evidence?: unknown;
-    aiEvent?: unknown;
-    onvalidated?: (event?: unknown) => void;
+    evidence?: any;
+    aiEvent?: any;
+    onvalidated?: (event?: any) => void;
   }
   let {
     open = false,
@@ -17,8 +17,8 @@ https://svelte.dev/e/js_parse_error -->
     aiEvent = null,
     onvalidated
   }: Props = $props();
-  import Button from '$lib/components/ui/enhanced-bits';
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
   import {
     AlertTriangle,
     CheckCircle,
@@ -80,14 +80,14 @@ https://svelte.dev/e/js_parse_error -->
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; error?: unknown }).success) {
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; error?: any }).success) {
         onvalidated?.();
         // Reset form
         validationChoice = null;
         feedback = "";
-        showCorrections = false;
-        open = false;
+        showCorrections = $state(false);
+        open = $state(false);
       } else {
         console.error(error);
         alert("Failed to submit validation. Please try again.");
@@ -98,14 +98,14 @@ https://svelte.dev/e/js_parse_error -->
         "Failed to submit validation. Please check your connection and try again."
       );
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
   function closeModal() {
     validationChoice = null;
     feedback = "";
-    showCorrections = false;
-    open = false;
+    showCorrections = $state(false);
+    open = $state(false);
   }
 </script>
 <Dialog.RootPrimitive.Root bind:open>
@@ -154,13 +154,12 @@ closeModal()}
               <div class="space-y-4">
                 <p class="space-y-4">Summary:</p>
                 <p class="space-y-4">{evidence.aiSummary}</p>
-              </div>
-            {/if}
+              {/if}
             {#if evidence.aiTags && evidence.aiTags.length > 0}
               <div class="space-y-4">
                 <p class="space-y-4">Suggested Tags:</p>
                 <div class="space-y-4">
-                  {#each evidence.aiTags as tag}
+                  {#each Array.isArray(evidence.aiTags) ? evidence.aiTags : [] as tag}
                     <span
                       class="space-y-4"
                     >
@@ -168,8 +167,7 @@ closeModal()}
                     </span>
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
             <div>
               <p class="space-y-4">Evidence Type:</p>
               <p class="space-y-4">{evidence.evidenceType}</p>
@@ -185,8 +183,7 @@ closeModal()}
                     Timestamp: {aiEvent.timestamp}
                   </p>
                 {/if}
-              </div>
-            {/if}
+              {/if}
           </div>
           <!-- Validation Question -->
           <div class="space-y-4">
@@ -227,8 +224,7 @@ handleValidationChoice("reject")}
                   rows={4}
                 ></textarea>
               </div>
-            </div>
-          {/if}
+            {/if}
           <!-- Corrections Section -->
           {#if showCorrections}
             <div
@@ -283,7 +279,7 @@ handleValidationChoice("reject")}
                 <!-- Current tags -->
                 {#if corrections.tags.length > 0}
                   <div class="space-y-4">
-                    {#each corrections.tags as tag}
+                    {#each Array.isArray(corrections.tags) ? corrections.tags : [] as tag}
                       <span
                         class="space-y-4"
                       >
@@ -297,8 +293,7 @@ handleValidationChoice("reject")}
 </Button>
                       </span>
                     {/each}
-                  </div>
-                {/if}
+                  {/if}
                 <!-- Add new tag -->
                 <div class="space-y-4">
                   <input
@@ -320,8 +315,7 @@ addTag()}
 </Button>
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
         <!-- Footer -->
         <div class="space-y-4">
@@ -349,8 +343,7 @@ submitValidation()}
               Submit Validation
             {/if}
 </Button>
-        </div>
-      {/if}
+        {/if}
     </div>
   </DialogPrimitive.Content>
 </DialogPrimitive.Root>;

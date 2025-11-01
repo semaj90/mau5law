@@ -7,7 +7,7 @@ import {
   type VectorSearchResult,
 } from '$lib/server/services/vectorDBService';
 // Initialize database on startup
-let dbInitialized = false;
+let dbInitialized = $state(false);
 async function ensureDbInitialized() {
   if (!dbInitialized) {
     await initializeChatEmbeddingsTable();
@@ -16,7 +16,7 @@ async function ensureDbInitialized() {
 }
 
 // Safe parser: validate unknown input and return VectorSearchResult[]
-function parseSources(input: unknown): VectorSearchResult[] {
+function parseSources(input: any): VectorSearchResult[] {
   if (!Array.isArray(input)) return [];
   return input
     .filter(
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       { status: 400 }
     );
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Enhanced chat GET error:', error);
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
@@ -221,8 +221,8 @@ export const POST: RequestHandler = async ({ request }) => {
             });
             let sources: VectorSearchResult[] = [];
             for await (const chunkRaw of streamGenerator) {
-              const chunk = chunkRaw as { text?: unknown; metadata?: unknown };
-              const meta = chunk.metadata as { type?: string; sources?: unknown; confidence?: unknown } | undefined;
+              const chunk = chunkRaw as { text?: any; metadata?: any };
+              const meta = chunk.metadata as { type?: string; sources?: any; confidence?: any } | undefined;
 
               if (meta?.type === 'sources') {
                 sources = parseSources(meta.sources);
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
-          } catch (error: unknown) {
+          } catch (error: any) {
             console.error('Streaming error:', error);
             const errMsg = error instanceof Error ? error.message : String(error);
             const errorChunk = {
@@ -280,7 +280,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // For non-streaming responses
     let fullResponse = '';
     let sources: VectorSearchResult[] = [];
-    let vectorSearchUsed = false;
+    let vectorSearchUsed = $state(false);
     const streamGenerator = (ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
       {
         message: userMessage,
@@ -295,8 +295,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     );
     for await (const chunkRaw of streamGenerator) {
-      const chunk = chunkRaw as { text?: unknown; metadata?: unknown };
-      const meta = chunk.metadata as { type?: string; sources?: unknown } | undefined;
+      const chunk = chunkRaw as { text?: any; metadata?: any };
+      const meta = chunk.metadata as { type?: string; sources?: any } | undefined;
       if (meta?.type === 'sources') {
         sources = parseSources(meta.sources);
         vectorSearchUsed = sources.length > 0;
@@ -319,7 +319,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Enhanced chat API error:', error);
     return json(
       {

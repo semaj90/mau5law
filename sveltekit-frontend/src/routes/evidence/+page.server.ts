@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       caseId,
       user,
     };
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     console.error('Failed to load evidence:', errorMessage);
     throw error(500, 'Failed to load evidence data');

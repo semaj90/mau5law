@@ -79,7 +79,7 @@ export interface IngestionJob {
   metadata?: Record<string, unknown>;
 }
 // Local helper to safely parse values that may be strings or already-parsed objects
-function parseMaybeString<T = Record<string, unknown>>(val: unknown): T {
+function parseMaybeString<T = Record<string, unknown>>(val: any): T {
   if (typeof val === 'string') {
     try {
       return JSON.parse(val) as T;
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     };
     console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`);
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('❌ POST /api/v1/upload/webhook error:', err);
     return json(
@@ -335,7 +335,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     };
     console.log(`✅ Retrieved ${jobs.length} ingestion jobs`);
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', err);
     return json(

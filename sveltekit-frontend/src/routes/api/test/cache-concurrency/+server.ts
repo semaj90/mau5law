@@ -7,7 +7,7 @@ import { cognitiveCache } from '$lib/services/cognitive-cache-integration'
  */
 export const GET: RequestHandler = async () => {
   // Type-safe presence check for various possible result shapes
-  const hasLength = (item: unknown): boolean => {
+  const hasLength = (item: any): boolean => {
     if (item == null) return false;
     if (Array.isArray(item)) return item.length > 0;
     if (typeof item === 'string') return item.length > 0;
@@ -51,13 +51,13 @@ export const GET: RequestHandler = async () => {
     const storagePromises = testDocuments.map(doc => cognitiveCache.storeJsonbDocument(doc.id, doc.content));
     const storageResults = await Promise.all(storagePromises);
 
-    const successfulStores = storageResults.filter((item: unknown) => hasLength(item)).length;
+    const successfulStores = storageResults.filter((item: any) => hasLength(item)).length;
 
     // Test 2: Concurrent retrieval operations
     console.log('📖 Testing concurrent document retrieval...');
     const retrievalPromises = testDocuments.map(doc => cognitiveCache.retrieveJsonbDocument(doc.id));
     const retrievalResults = await Promise.all(retrievalPromises);
-    const successfulRetrieves = retrievalResults.filter((item: unknown) => hasLength(item)).length;
+    const successfulRetrieves = retrievalResults.filter((item: any) => hasLength(item)).length;
 
     // Test 3: JSONB queries with concurrent access
     console.log('🔍 Testing concurrent JSONB queries...');

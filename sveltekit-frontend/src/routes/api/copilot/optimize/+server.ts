@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => null);
   if (!body) throw kitError(400, 'Invalid JSON body');
 
-  const { action, content } = body as { action?: string; content?: unknown };
+  const { action, content } = body as { action?: string; content?: any };
   if (!action) throw kitError(400, 'Action is required');
 
   switch (action) {

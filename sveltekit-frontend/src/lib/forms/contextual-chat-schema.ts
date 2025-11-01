@@ -3,9 +3,7 @@
  *
  * SvelteKit Superforms schema for contextual chat with validation
  */
-
 import { z } from 'zod';
-
 /**
  * Chat message schema
  */
@@ -21,10 +19,8 @@ export const chatMessageSchema = z.object({
   maxTokens: z.number().min(1).max(4096).default(512).optional(),
   model: z.string().default('gemma3:270m').optional(),
 });
-
 export type ChatMessageInput = z.input<typeof chatMessageSchema>;
 export type ChatMessageOutput = z.output<typeof chatMessageSchema>;
-
 /**
  * Entity extraction request schema
  */
@@ -48,10 +44,8 @@ export const entityExtractionSchema = z.object({
     ])
   ).optional(),
 });
-
 export type EntityExtractionInput = z.input<typeof entityExtractionSchema>;
 export type EntityExtractionOutput = z.output<typeof entityExtractionSchema>;
-
 /**
  * Conversation state query schema
  */
@@ -63,10 +57,8 @@ export const stateQuerySchema = z.object({
   includeEntities: z.boolean().default(true).optional(),
   maxHistoryTurns: z.number().min(1).max(100).default(10).optional(),
 });
-
 export type StateQueryInput = z.input<typeof stateQuerySchema>;
 export type StateQueryOutput = z.output<typeof stateQuerySchema>;
-
 /**
  * Conversation state update schema
  */
@@ -89,10 +81,8 @@ export const stateUpdateSchema = z.object({
   hmmState: z.number().min(0).max(7).optional(),
   confidence: z.number().min(0).max(1).optional(),
 });
-
 export type StateUpdateInput = z.input<typeof stateUpdateSchema>;
 export type StateUpdateOutput = z.output<typeof stateUpdateSchema>;
-
 /**
  * Similarity search schema
  */
@@ -105,10 +95,8 @@ export const similaritySearchSchema = z.object({
   intent: z.string().optional(),
   entityType: z.string().optional(),
 });
-
 export type SimilaritySearchInput = z.input<typeof similaritySearchSchema>;
 export type SimilaritySearchOutput = z.output<typeof similaritySearchSchema>;
-
 /**
  * Batch embedding schema
  */
@@ -120,10 +108,8 @@ export const batchEmbeddingSchema = z.object({
   sessionId: z.string().uuid('Invalid session ID').optional(),
   useCache: z.boolean().default(true).optional(),
 });
-
 export type BatchEmbeddingInput = z.input<typeof batchEmbeddingSchema>;
 export type BatchEmbeddingOutput = z.output<typeof batchEmbeddingSchema>;
-
 /**
  * Session statistics schema
  */
@@ -133,10 +119,8 @@ export const sessionStatsSchema = z.object({
   includeEntityClusters: z.boolean().default(false).optional(),
   includePatternAnalysis: z.boolean().default(false).optional(),
 });
-
 export type SessionStatsInput = z.input<typeof sessionStatsSchema>;
 export type SessionStatsOutput = z.output<typeof sessionStatsSchema>;
-
 /**
  * Conversation clear schema
  */
@@ -146,6 +130,5 @@ export const conversationClearSchema = z.object({
   clearPostgres: z.boolean().default(true).optional(),
   clearRedis: z.boolean().default(true).optional(),
 });
-
 export type ConversationClearInput = z.input<typeof conversationClearSchema>;
 export type ConversationClearOutput = z.output<typeof conversationClearSchema>;

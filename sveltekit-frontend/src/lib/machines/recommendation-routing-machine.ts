@@ -1,7 +1,6 @@
 import { setup, assign, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 import type { Actor, StateFrom } from 'xstate';
-
 // Recommendation Engine Context with RabbitMQ routing
 export interface RecommendationContext {
   sessionId: string;
@@ -92,50 +91,42 @@ type RecommendationRequestPayload = {
   documentId?: string;
   // include any small subset fields that callers may provide
 };
-
 type CacheHitData = {
   cachedData: RecommendationContext['recommendations'];
   hitRate: number;
   keys: string[];
   cacheHit: true;
 };
-
 type ProcessingResult = {
   recommendations: RecommendationContext['recommendations'];
   metrics: { latency: number; throughput: number; errorRate?: number };
 };
-
 // API Response Types
 type RoutingAnalysisResponse = {
   routingKeys: string[];
   recommendedQueue: string;
   recommendedModel: string;
 };
-
 type QueuePublishResponse = {
   messageId: string;
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type CacheCheckResponse = {
   cacheHit: boolean;
   hitRate: number;
   cachedData?: RecommendationContext['recommendations'];
   keys?: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type GenerateRecommendationsResponse = {
   recommendations: RecommendationContext['recommendations'];
   metrics: { latency: number; throughput: number; errorRate?: number };
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 type CacheStoreResponse = {
   newKeys: string[];
-  [key: string]: unknown;
+  [key: string]: any;
 };
-
 // Events for recommendation routing
 type RecommendationEvent =
   | { type: 'START_SESSION'; userId: string; caseId?: string }
@@ -642,7 +633,6 @@ export const recommendationRoutingMachine = setup({
     },
   },
 });
-
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
@@ -668,23 +658,18 @@ function generateCacheKeys(context: RecommendationContext): string[] {
 // Types
 export type RecommendationState = StateFrom<typeof recommendationRoutingMachine>;
 export type RecommendationActor = Actor<typeof recommendationRoutingMachine>;
-
 // Store integration
 import { createActor } from 'xstate';
-
 function createRecommendationStore() {
   const actor = createActor(recommendationRoutingMachine);
-
   const { subscribe } = writable(actor.getSnapshot(), set => {
     const sub = actor.subscribe(snapshot => set(snapshot));
     actor.start();
-
     return () => {
       sub.unsubscribe();
       actor.stop();
     };
   });
-
   return {
     subscribe,
     send: (event: RecommendationEvent) => actor.send(event),
@@ -692,5 +677,4 @@ function createRecommendationStore() {
     stop: () => actor.stop(),
   };
 }
-
 export const recommendationStore = createRecommendationStore();

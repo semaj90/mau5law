@@ -10,14 +10,14 @@ https://svelte.dev/e/js_parse_error -->
     Trash2, Edit2, Bot, Zap, AlertCircle, CheckCircle,
     Clock, BarChart3
   } from 'lucide-svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import Label from '$lib/components/ui/label/Label.svelte';
-  import * as Card from '$lib/components/ui/card';
-  import * as Dialog from '$lib/components/ui/dialog';
-  import * as Select from '$lib/components/ui/select';
+  import * as Card from '$lib/components/ui/card.svelte'';
+  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import * as Select from '$lib/components/ui/select.svelte'';
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { toast } from 'svelte-sonner';
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       documents = mockDocuments;
       filterDocuments();
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
   function filterDocuments() {
@@ -222,11 +222,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const file = event.dataTransfer?.files?.[0] ?? null;
     if (file) {
       uploadFile = file;
@@ -255,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
       if (response.ok) {
         const result = await response.json();
         toast.success('Document uploaded successfully');
-        showUploadDialog = false;
+        showUploadDialog = $state(false);
         resetUploadForm();
         await loadDocuments();
         if (enableAIProcessing) {
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Upload error:', error);
       toast.error('Failed to upload document');
     } finally {
-      uploading = false;
+      uploading = $state(false);
       uploadProgress = 0;
     }
   }
@@ -444,7 +444,7 @@ https://svelte.dev/e/js_parse_error -->
       </div.Root>
     {:else}
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {#each filteredDocuments as document}
+        {#each Array.isArray(filteredDocuments) ? filteredDocuments : [] as document}
           <div.Root class="cursor-pointer transition-colors hover:bg-muted/50" onclick={() => viewDocument(document)}>
             <div.Header>
               <div class="flex items-start justify-between">
@@ -490,7 +490,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
                 {#if document.tags.length > 0}
                   <div class="flex flex-wrap gap-1">
-                    {#each document.tags.slice(0, 3) as tag}
+                    {#each Array.isArray(document.tags.slice(0, 3)) ? document.tags.slice(0, 3) : [] as tag}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
                     {/each}
                     {#if document.tags.length > 3}
@@ -620,7 +620,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     <!-- Upload dialog footer: fixed closing tags and onclick handlers -->
     <Dialog.Footer>
-      <Button class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = false; resetUploadForm(); }}>
+      <Button class="bits-btn" variant="ghost" onclick={() => { showUploadDialog = $state(false); resetUploadForm(); }}>
         Cancel
       </Button>
       <Button class="bits-btn" onclick={uploadDocument} disabled={uploading || !uploadFile || !uploadTitle}>
@@ -662,7 +662,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <strong class="text-sm">Tags:</strong>
             <div class="flex flex-wrap gap-1 mt-1">
-              {#each selectedDocument.tags as tag}
+              {#each Array.isArray(selectedDocument.tags) ? selectedDocument.tags : [] as tag}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{tag}</span>
               {/each}
             </div>
@@ -683,7 +683,7 @@ https://svelte.dev/e/js_parse_error -->
               <div>
                 <strong class="text-sm">Key Points:</strong>
                 <ul class="text-sm nes-text is-disabled mt-1 space-y-1">
-                  {#each selectedDocument.aiAnalysis.keyPoints as point}
+                  {#each Array.isArray(selectedDocument.aiAnalysis.keyPoints) ? selectedDocument.aiAnalysis.keyPoints : [] as point}
                     <li class="flex items-start gap-2">
                       <span class="text-primary mt-1">•</span>
                       {point}
@@ -694,7 +694,7 @@ https://svelte.dev/e/js_parse_error -->
               <div>
                 <strong class="text-sm">Legal Concepts:</strong>
                 <div class="flex flex-wrap gap-1 mt-1">
-                  {#each selectedDocument.aiAnalysis.legalConcepts as concept}
+                  {#each Array.isArray(selectedDocument.aiAnalysis.legalConcepts) ? selectedDocument.aiAnalysis.legalConcepts : [] as concept}
                     <Badge class="text-xs bg-purple-100 text-purple-800">{concept}</Badge>
                   {/each}
                 </div>

@@ -7,7 +7,6 @@
  * - Redis for state persistence and caching
  * - Gemma3 LLM for agentic reasoning
  */
-
 import { hmmStateMachine } from './hmm-state-machine';
 import { getRedisClient, cognitiveCache } from '$lib/server/cache';
 import type {
@@ -17,10 +16,8 @@ import type {
   LegalEntity,
   HMMState
 } from '$lib/types/sharedTypes';
-
 const CONTEXT_TTL_SECONDS = 3600; // 1 hour
 const MAX_HISTORY_LENGTH = 50; // Keep last 50 conversation turns
-
 /**
  * Contextual Understanding Service
  * Manages conversation state, entity extraction, and next-step predictions
@@ -34,17 +31,13 @@ export class ContextualUnderstandingService {
     userId: string
   ): Promise<ContextualState> {
     const cacheKey = `contextual_state:${sessionId}`;
-
     // Try to get from Redis
     const cached = await cognitiveCache.getJsonbDocument<ContextualState>(cacheKey);
-
     if (cached) {
       console.log('✅ Contextual state cache HIT');
       return cached;
     }
-
     console.log('⚠️ Contextual state cache MISS - creating new state');
-
     // Create new contextual state
     const newState: ContextualState = {
       sessionId,
@@ -63,13 +56,10 @@ export class ContextualUnderstandingService {
       confidence: 1.0,
       lastUpdated: Date.now()
     };
-
     // Store in Redis
     await cognitiveCache.storeJsonbDocument(cacheKey, newState, CONTEXT_TTL_SECONDS);
-
     return newState;
   }
-
   /**
    * Update contextual state with new conversation turn
    */
@@ -84,7 +74,6 @@ export class ContextualUnderstandingService {
   ): Promise<ContextualState> {
     // Get current state
     const currentState = await this.getContextualState(sessionId, userId);
-
     // Create new conversation turn
     const newTurn: ConversationTurn = {
       timestamp: Date.now(),
@@ -94,29 +83,24 @@ export class ContextualUnderstandingService {
       entities,
       ...(embedding !== undefined ? { embedding } : {})
     };
-
     // Update conversation history (keep last N turns)
     const updatedHistory = [
       ...currentState.conversationHistory,
       newTurn
     ].slice(-MAX_HISTORY_LENGTH);
-
     // Update HMM state
     const updatedHMMState = hmmStateMachine.updateState(
       currentState.hmmState,
       newTurn
     );
-
     // Predict next steps
     const { predictions } = hmmStateMachine.predictNextState(
       updatedHMMState.currentState,
       updatedHistory
     );
-
     // Merge extracted entities (deduplicate by value)
     const allEntities = [...currentState.extractedEntities, ...entities];
     const uniqueEntities = this.deduplicateEntities(allEntities);
-
     // Create updated state
     const updatedState: ContextualState = {
       ...currentState,
@@ -128,7 +112,6 @@ export class ContextualUnderstandingService {
       confidence: this.calculateConfidence(updatedHistory, updatedHMMState),
       lastUpdated: Date.now()
     };
-
     // Store in Redis
     const cacheKey = `contextual_state:${sessionId}`;
     await cognitiveCache.storeJsonbDocument(
@@ -136,15 +119,12 @@ export class ContextualUnderstandingService {
       updatedState,
       CONTEXT_TTL_SECONDS
     );
-
     console.log(`✅ Updated contextual state for session ${sessionId}`);
     console.log(`   Current state: ${hmmStateMachine.getStateName(updatedHMMState.currentState)}`);
     console.log(`   Confidence: ${updatedState.confidence.toFixed(2)}`);
     console.log(`   Next predictions: ${predictions.map(p => p.action).join(', ')}`);
-
     return updatedState;
   }
-
   /**
    * Get next-step predictions based on current context
    */
@@ -153,29 +133,23 @@ export class ContextualUnderstandingService {
     userId: string
   ): Promise<NextStepPrediction[]> {
     const state = await this.getContextualState(sessionId, userId);
-
     // If we already have predictions, return them
     if (state.nextStepPredictions.length > 0) {
       return state.nextStepPredictions;
     }
-
     // Generate predictions based on HMM state
     const { predictions } = hmmStateMachine.predictNextState(
       state.hmmState.currentState,
       state.conversationHistory
     );
-
     return predictions;
   }
-
   /**
    * Extract legal entities from text (simplified - integrate with LangExtract)
    */
   extractLegalEntities(text: string): LegalEntity[] {
     const entities: LegalEntity[] = [];
-
     // Simple regex-based extraction (replace with actual LangExtract)
-
     // Extract dates
     const dateRegex = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g;
     let match;
@@ -190,7 +164,6 @@ export class ContextualUnderstandingService {
         }
       });
     }
-
     // Extract case numbers (simplified pattern)
     const caseNumRegex = /\b\d{1,2}:\d{2}-cv-\d+\b/gi;
     while ((match = caseNumRegex.exec(text)) !== null) {
@@ -204,7 +177,6 @@ export class ContextualUnderstandingService {
         }
       });
     }
-
     // Extract statute references
     const statuteRegex = /\b\d+\s+U\.S\.C\.\s+§\s*\d+/gi;
     while ((match = statuteRegex.exec(text)) !== null) {
@@ -218,17 +190,14 @@ export class ContextualUnderstandingService {
         }
       });
     }
-
     return entities;
   }
-
   /**
    * Deduplicate entities by value
    */
   private deduplicateEntities(entities: LegalEntity[]): LegalEntity[] {
     const seen = new Set<string>();
     const unique: LegalEntity[] = [];
-
     for (const entity of entities) {
       const key = `${entity.type}:${entity.value.toLowerCase()}`;
       if (!seen.has(key)) {
@@ -236,10 +205,8 @@ export class ContextualUnderstandingService {
         unique.push(entity);
       }
     }
-
     return unique;
   }
-
   /**
    * Calculate confidence score based on conversation history and HMM state
    */
@@ -248,21 +215,16 @@ export class ContextualUnderstandingService {
     hmmState: HMMState
   ): number {
     if (history.length === 0) return 1.0;
-
     // Base confidence on:
     // 1. Number of conversation turns (more turns = higher confidence)
     // 2. HMM transition probability
     // 3. Pattern consistency
-
     const turnFactor = Math.min(history.length / 10, 1.0); // Max at 10 turns
     const transitionFactor = hmmState.transitionProb;
     const patternFactor = hmmState.pattern.length > 0 ? 0.8 : 0.5;
-
     const confidence = (turnFactor * 0.4) + (transitionFactor * 0.4) + (patternFactor * 0.2);
-
     return Math.min(Math.max(confidence, 0.1), 1.0); // Clamp between 0.1 and 1.0
   }
-
   /**
    * Get conversation summary for context injection
    */
@@ -272,29 +234,22 @@ export class ContextualUnderstandingService {
     maxTurns: number = 5
   ): Promise<string> {
     const state = await this.getContextualState(sessionId, userId);
-
     const recentTurns = state.conversationHistory.slice(-maxTurns);
-
     const summary = recentTurns.map((turn, idx) =>
       `Turn ${idx + 1}:\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse}`
     ).join('\n\n');
-
     return summary;
   }
-
   /**
    * Clear contextual state for a session
    */
   async clearContextualState(sessionId: string): Promise<void> {
     const redis = await getRedisClient();
     if (!redis) return;
-
     const cacheKey = `contextual_state:${sessionId}`;
     await redis.del(cacheKey);
-
     console.log(`✅ Cleared contextual state for session ${sessionId}`);
   }
-
   /**
    * Get statistics for analytics
    */
@@ -306,7 +261,6 @@ export class ContextualUnderstandingService {
     patternFrequency: number;
   }> {
     const state = await this.getContextualState(sessionId, userId);
-
     const averageConfidence = state.conversationHistory.length > 0
       ? state.conversationHistory.reduce((sum, turn) => {
           // Approximate confidence based on entity count
@@ -314,11 +268,9 @@ export class ContextualUnderstandingService {
           return sum + Math.min(entityCount / 10, 1.0);
         }, 0) / state.conversationHistory.length
       : state.confidence;
-
     // Detect common patterns
     const patterns = hmmStateMachine.detectPatterns(state.hmmState.stateHistory);
     const topPatternFreq = patterns[0]?.frequency || 0;
-
     return {
       totalTurns: state.conversationHistory.length,
       uniqueEntities: state.extractedEntities.length,
@@ -328,6 +280,5 @@ export class ContextualUnderstandingService {
     };
   }
 }
-
 // Export singleton instance
 export const contextualUnderstanding = new ContextualUnderstandingService();

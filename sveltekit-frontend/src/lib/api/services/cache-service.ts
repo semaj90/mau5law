@@ -11,9 +11,9 @@ interface CacheOptions {
  * Uses gzip compression for embeddings and large payloads
  */
 export class CacheService {
-  private memoryCache = new Map<string, { value: unknown; expires: number }>();
+  private memoryCache = new Map<string, { value: any; expires: number }>();
   private redisClient: Redis | null = null;
-  private useRedis = false;
+  private useRedis = $state(false);
   constructor() {
     this.initializeRedis();
   }
@@ -33,7 +33,7 @@ export class CacheService {
       console.log('✅ Redis cache service connected');
     } catch (error) {
       console.warn('⚠️ Redis unavailable, using memory cache:', (error as Error).message);
-      this.useRedis = false;
+      this.useRedis = $state(false);
     }
   }
   /*
@@ -62,7 +62,7 @@ export class CacheService {
       }
       // Memory cache fallback
       return this.getFromMemory(key);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache get error:", msg);
       return null;
@@ -91,7 +91,7 @@ export class CacheService {
         // Memory cache fallback
         this.setInMemory(key, value, ttlMs);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache set error:", msg);
       // Always fallback to memory on Redis errors
@@ -107,7 +107,7 @@ export class CacheService {
         await this.redisClient.del(key);
       }
       this.memoryCache.delete(key);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache delete error:", msg);
     }
@@ -121,7 +121,7 @@ export class CacheService {
         await this.redisClient.flushdb();
       }
       this.memoryCache.clear();
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache clear error:", msg);
     }
@@ -189,12 +189,12 @@ export async function setCachedEmbedding(text: string, embedding: number[], mode
   });
 }
 // Search results cache functions
-export async function getCachedSearchResults(query: string, type: string, filters?: unknown): Promise<unknown[] | null> {
+export async function getCachedSearchResults(query: string, type: string, filters?: any): Promise<unknown[] | null> {
   const filtersHash = filters ? Buffer.from(JSON.stringify(filters)).toString('base64').slice(0, 16) : 'none';
   const key = `search:${type}:${Buffer.from(query).toString('base64')}:${filtersHash}`;
   return await cacheService.get<unknown[]>(key);
 }
-export async function cacheSearchResults(query: string, type: string, results: unknown[], filters?: unknown): Promise<void> {
+export async function cacheSearchResults(query: string, type: string, results: any[], filters?: any): Promise<void> {
   const filtersHash = filters ? Buffer.from(JSON.stringify(filters)).toString('base64').slice(0, 16) : 'none';
   const key = `search:${type}:${Buffer.from(query).toString('base64')}:${filtersHash}`;
   await cacheService.set(key, results, {

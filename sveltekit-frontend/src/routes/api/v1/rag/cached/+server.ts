@@ -17,14 +17,14 @@ type IngestResultItem = {
   embeddingsGenerated: number;
   embeddingsCached: number;
   processingTime: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // New: typed shape for the cached RAG service to avoid `any` casts
 type CachedRAGServiceLike = {
-  ingestDocuments?: (docs: unknown[]) => Promise<IngestResultItem[]>;
-  ingest?: (docs: unknown[]) => Promise<IngestResultItem[]>;
-  processDocuments?: (docs: unknown[]) => Promise<IngestResultItem[]>;
+  ingestDocuments?: (docs: any[]) => Promise<IngestResultItem[]>;
+  ingest?: (docs: any[]) => Promise<IngestResultItem[]>;
+  processDocuments?: (docs: any[]) => Promise<IngestResultItem[]>;
   warmupCacheWithLegalQueries?: () => Promise<void>;
   // ...other methods may exist but are not required here...
 };
@@ -33,11 +33,11 @@ type CachedRAGServiceLike = {
 type EnhancedCachingServiceLike = {
   getCacheMetrics?: () => unknown | Promise<unknown>;
   getMetrics?: () => unknown | Promise<unknown>;
-  metrics?: unknown;
+  metrics?: any;
   // other methods/properties may exist
 };
 
-function getErrorMessage(err: unknown): string {
+function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
@@ -55,7 +55,7 @@ type EnhancedRagModuleLike = {
   enhancedRAGQuery?: (q: RAGQuery) => Promise<unknown>;
   default?: (q: RAGQuery) => Promise<unknown>;
   // allow other unknown exports without using `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Cast imported module to the typed view (use unknown -> typed to avoid `any`)
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleCacheWarmup();
       default: return json({ error: 'Invalid action. Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cached RAG API error:', error);
     return json(
       {
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * Handle RAG query with caching
  */
-async function handleRAGQuery(queryData: unknown, _options: unknown) {
+async function handleRAGQuery(queryData: any, _options: any) {
   try {
     // If the runtime-resolved function isn't available, return a clear error response.
     if (typeof enhancedRAGQueryWithCache !== 'function') {
@@ -130,7 +130,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
     }
 
     // Narrowed shape for incoming query payload
-    const qd = queryData as { query: unknown; context?: unknown; filters?: unknown; semantic?: unknown };
+    const qd = queryData as { query: any; context?: any; filters?: any; semantic?: any };
 
     // Coerce/validate query string
     const queryStr = String(qd.query ?? '').trim();
@@ -144,14 +144,14 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
     type RAGFilters = {
       confidenceThreshold?: number;
       legalCategories?: string[];
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     type RAGSemanticOptions = {
       useEmbeddings?: boolean;
       expandConcepts?: boolean;
       includeRelated?: boolean;
-      [key: string]: unknown;
+      [key: string]: any;
     };
 
     // Validate/normalize context -> RAGQuery likely expects string | undefined
@@ -188,7 +188,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
       data: result,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('RAG query failed:', error);
     return json(
       {
@@ -202,9 +202,9 @@ async function handleRAGQuery(queryData: unknown, _options: unknown) {
 /**
  * Handle document ingestion with caching
  *
- * documents: unknown[] (validated at runtime)
+ * documents: any[] (validated at runtime)
  */
-async function handleDocumentIngestion(documents: unknown, _options: unknown) {
+async function handleDocumentIngestion(documents: any, _options: any) {
   try {
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return json({ error: 'Documents array is required' }, { status: 400 });
@@ -241,7 +241,7 @@ async function handleDocumentIngestion(documents: unknown, _options: unknown) {
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Document ingestion failed:', error);
     return json(
       {
@@ -255,11 +255,11 @@ async function handleDocumentIngestion(documents: unknown, _options: unknown) {
 /**
  * Handle cache testing
  */
-async function handleCacheTest(_options: unknown) {
+async function handleCacheTest(_options: any) {
   try {
     // safe runtime extraction of `type` from unknown options (avoid `any`)
     const opts = typeof _options === 'object' && _options !== null ? (_options as Record<string, unknown>) : {};
-    const rawType = (opts as { type?: unknown }).type;
+    const rawType = (opts as { type?: any }).type;
     const testType: string = typeof rawType === 'string' ? rawType : 'full';
 
     let results;
@@ -274,7 +274,7 @@ async function handleCacheTest(_options: unknown) {
       data: results,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cache testing failed:', error);
     return json(
       {
@@ -308,7 +308,7 @@ async function handleCacheMetrics() {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cache metrics failed:', error);
     return json(
       {
@@ -333,7 +333,7 @@ async function handleCacheWarmup() {
         timestamp: new Date().toISOString(),
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cache warmup failed:', error);
     return json(
       {
@@ -374,7 +374,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
       default: return json({ error: 'Invalid action for GET request' }, { status: 400 });
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Cached RAG API GET error:', error);
     return json(
       {

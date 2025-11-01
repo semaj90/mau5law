@@ -28,7 +28,7 @@
     children,
     docKey,
     docCategory,
-    showDocumentation = false;
+    showDocumentation = $state(false);
   }: Props = $props();
   let tooltipClasses = $derived(cn(
     "legal-ai-tooltip z-50 px-3 py-2 text-sm font-medium text-slate-900 bg-amber-400 rounded-lg shadow-lg shadow-amber-500/25 max-w-xs",
@@ -51,7 +51,7 @@
       console.warn('Failed to fetch documentation', error);
       documentationContent = content; // Fallback to original content
     } finally {
-      isLoadingDocs = false;
+      isLoadingDocs = $state(false);
     }
   }
   // Auto-fetch documentation when docKey changes
@@ -64,7 +64,6 @@
     showDocumentation && documentationContent ? documentationContent : content
   );
 </script>
-
 <TooltipPrimitive.Root {delayDuration}>
   <TooltipPrimitive.Trigger class="legal-ai-tooltip-trigger">
     {#if children}
@@ -95,8 +94,7 @@
         {#if docCategory && docKey}
           <div class="mt-2 pt-2 border-t border-amber-500/20">
             <span class="text-xs text-amber-300">Press Ctrl+K for full docs</span>
-          </div>
-        {/if}
+          {/if}
       </div>
     {:else}
       {displayContent}

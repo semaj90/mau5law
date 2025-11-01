@@ -113,7 +113,7 @@
       uploadError = err.message || 'Unknown error';
       toast.error(`❌ Upload failed: ${uploadError}`);
     } finally {
-      isUploading = false;
+      isUploading = $state(false);
     }
   }
 
@@ -131,7 +131,7 @@
     uploadError = null;
     compareResult = null;
     compareError = null;
-    comparing = false;
+    comparing = $state(false);
     uploadProgress = 0;
     formData = {
       title: '',
@@ -162,7 +162,7 @@
       compareError = e?.message || String(e);
       toast.error(`Comparison error: ${compareError}`);
     } finally {
-      comparing = false;
+      comparing = $state(false);
     }
   }
 </script>
@@ -326,7 +326,7 @@
             </div>
             {#if uploadResult.tags && uploadResult.tags.length > 0}
               <div class="tags">
-                {#each uploadResult.tags as tag}
+                {#each Array.isArray(uploadResult.tags) ? uploadResult.tags : [] as tag}
                   <span class="tag">{tag}</span>
                 {/each}
               </div>
@@ -350,7 +350,7 @@
           {#if compareResult}
             <div class="comparison-panel">
               <h4>Similar Items (Qdrant)</h4>
-              {#each compareResult.similar as s}
+              {#each Array.isArray(compareResult.similar) ? compareResult.similar : [] as s}
                 <div class="similar-item">
                   <div><strong>{s.id}</strong> • {s.score?.toFixed?.(3) ?? s.score}</div>
                   {#if s.tags?.length}<div class="tags">{s.tags.join(', ')}</div>{/if}

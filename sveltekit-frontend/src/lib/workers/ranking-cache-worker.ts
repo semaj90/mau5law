@@ -19,7 +19,7 @@ interface WorkerGlobalScopeWithWasm extends WorkerGlobalScope {
 }
 
 let wasm: WasmExports | null = null;
-let wasmReady = false;
+let wasmReady = $state(false);
 // Attempt to detect pre-injected WASM module (e.g., from wasm-pack bundle attaching to self.RankingWasm)
 declare const self: WorkerGlobalScopeWithWasm; // Type: 'self' as WorkerGlobalScopeWithWasm
 if (typeof self !== 'undefined' && self.RankingWasm) {
@@ -46,7 +46,7 @@ self.onmessage = async (ev: MessageEvent) => {
               wasmReady = true;
             } catch (e) {
               console.error('Failed to load WASM from URL:', e);
-              wasmReady = false; // fallback JS
+              wasmReady = $state(false); // fallback JS
             }
           } else {
             // Optional dynamic import stub (future Rust/wasm-pack bundle)
@@ -128,7 +128,7 @@ self.onmessage = async (ev: MessageEvent) => {
         break;
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for caught errors
     const errorMessage = err instanceof Error ? err.message : String(err);
     self.postMessage({ type: 'error', error: errorMessage });

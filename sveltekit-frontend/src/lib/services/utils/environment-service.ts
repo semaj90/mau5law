@@ -72,7 +72,7 @@ class LLMHealthChecker {
         const data = await response.json().catch(() => null);
         // data.models expected to be array of { name?, model? }
         const modelName = endpoint.model ?? 'unknown';
-        let hasModel = false;
+        let hasModel = $state(false);
         if (Array.isArray(data?.models)) {
           hasModel = data.models.some((m: any) => {
             const n = typeof m?.name === 'string' ? m.name : typeof m?.model === 'string' ? m.model : '';
@@ -86,7 +86,7 @@ class LLMHealthChecker {
           lastCheck: Date.now(),
         };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Network/timeout/errors -> mark unhealthy
       // console.warn intentionally minimal per guidelines
       const errMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error);

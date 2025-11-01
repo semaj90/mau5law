@@ -58,15 +58,15 @@ export interface StreamingOptions {
 // add lightweight typed shape for chatModel to avoid `any`
 type ChatModelLike = {
   model?: string;
-  invoke?: (...args: unknown[]) => Promise<unknown> | unknown;
-  stream?: (...args: unknown[]) => AsyncIterable<unknown> | unknown;
+  invoke?: (...args: any[]) => Promise<unknown> | unknown;
+  stream?: (...args: any[]) => AsyncIterable<unknown> | unknown;
 };
 
 // safe error formatting helper
-const safeErrorToString = (err: unknown): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));
+const safeErrorToString = (err: any): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));
 
 // helper to get model name without `any` casts
-function getModelNameFrom(obj: unknown): string {
+function getModelNameFrom(obj: any): string {
   if (obj && typeof obj === 'object' && 'model' in obj) {
     const m = (obj as ChatModelLike).model;
     if (typeof m === 'string') return m;
@@ -83,7 +83,7 @@ class OllamaCudaService {
   private cudaConfig: CudaConfig;
   private models: Map<string, OllamaModelConfig> = new Map();
   private metrics: Map<string, ModelMetrics> = new Map();
-  private initialized = false;
+  private initialized = $state(false);
 
   private constructor() {
     const env = this.getRuntimeEnv();
@@ -171,7 +171,7 @@ class OllamaCudaService {
   // Changed: dynamic import with HTTP fallback to avoid build-time dependency on @langchain/ollama
   private async initializeOllama(): Promise<void> {
     try {
-      let sdk: unknown = null;
+      let sdk: any = null;
       try {
         sdk = await import('@langchain/ollama');
       } catch {
@@ -264,7 +264,7 @@ class OllamaCudaService {
               `${this.baseUrl}/v1/chat/completions`,
               `${this.baseUrl}/completions`,
             ];
-            let lastError: unknown = null;
+            let lastError: any = null;
             for (const url of urlCandidates) {
               try {
                 const resp = await fetch(url, {
@@ -276,7 +276,7 @@ class OllamaCudaService {
                   lastError = new Error(`HTTP ${resp.status}`);
                   continue;
                 }
-                const data: unknown = await resp.json();
+                const data: any = await resp.json();
 
                 // robust extraction of common shapes
                 const asObj = data as Record<string, unknown>;
@@ -334,10 +334,10 @@ class OllamaCudaService {
                   body: JSON.stringify({ model: this.model, input: texts }),
                 });
                 if (!resp.ok) continue;
-                const data: unknown = await resp.json();
+                const data: any = await resp.json();
                 const obj = data as Record<string, unknown>;
                 if (Array.isArray(obj?.data)) {
-                  return (obj.data as unknown[]).map((d: unknown) => {
+                  return (obj.data as unknown[]).map((d: any) => {
                     const rec = d as Record<string, unknown>;
                     return ((rec.embedding as number[]) ?? (rec.vector as number[]) ?? []) as number[];
                   });
@@ -358,9 +358,9 @@ class OllamaCudaService {
 
       this.initialized = true;
       console.log('✅ Ollama CUDA service initialized successfully (dynamic)');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Failed to initialize Ollama CUDA service:', safeErrorToString(error));
-      this.initialized = false;
+      this.initialized = $state(false);
     }
   }
 
@@ -370,7 +370,7 @@ class OllamaCudaService {
       if (this.ollama && typeof (this.ollama as Record<string, unknown>).listModels === 'function') {
         const listed = await (this.ollama as { listModels: () => Promise<unknown> }).listModels();
         if (Array.isArray(listed)) {
-          return (listed as unknown[]).map((m: unknown) => {
+          return (listed as unknown[]).map((m: any) => {
             if (typeof m === 'string') return m;
             const mo = m as Record<string, unknown>;
             if (typeof mo?.name === 'string') return mo.name;
@@ -382,9 +382,9 @@ class OllamaCudaService {
       // Fallback to HTTP endpoint
       const resp = await fetch(`${this.baseUrl}/models`);
       if (!resp.ok) return [];
-      const data: unknown = await resp.json();
+      const data: any = await resp.json();
       if (Array.isArray(data)) {
-        return (data as unknown[]).map((m: unknown) =>
+        return (data as unknown[]).map((m: any) =>
           typeof m === 'string'
             ? m
             : typeof (m as Record<string, unknown>)?.name === 'string'
@@ -394,7 +394,7 @@ class OllamaCudaService {
       }
       const dataObj = data as Record<string, unknown>;
       if (Array.isArray(dataObj?.models)) {
-        return (dataObj.models as unknown[]).map((m: unknown) =>
+        return (dataObj.models as unknown[]).map((m: any) =>
           typeof m === 'string'
             ? m
             : typeof (m as Record<string, unknown>)?.name === 'string'
@@ -464,7 +464,7 @@ class OllamaCudaService {
       });
       console.log(`✅ Model ${modelName} loaded in ${loadTime}ms`);
       return true;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error(`❌ Failed to load model ${modelName}:`, safeErrorToString(error));
       return false;
     }
@@ -517,7 +517,7 @@ class OllamaCudaService {
         : response && typeof response === 'object' && 'content' in (response as any)
           ? String((response as any).content)
           : '';
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Chat completion failed:', safeErrorToString(error));
       throw error;
     }
@@ -554,7 +554,7 @@ class OllamaCudaService {
       this.updateMetrics(modelName, inferenceTime, fullResponse.length);
       options.streaming.onEnd?.();
       return fullResponse;
-    } catch (error: unknown) {
+    } catch (error: any) {
       options.streaming.onError?.(error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
@@ -568,7 +568,7 @@ class OllamaCudaService {
       const embeddings = await this.embeddings.embedDocuments(texts);
       console.log(`✅ Generated embeddings for ${texts.length} documents`);
       return embeddings;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to generate embeddings:', safeErrorToString(error));
       throw error;
     }
@@ -581,7 +581,7 @@ class OllamaCudaService {
     try {
       const embedding = await this.embeddings.embedQuery(text);
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to generate embedding:', safeErrorToString(error));
       throw error;
     }
@@ -609,7 +609,7 @@ class OllamaCudaService {
         },
         ...(gpuInfo ? { gpu: gpuInfo } : {}),
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to get system health:', safeErrorToString(error));
       return {
         status: 'unhealthy',
@@ -709,9 +709,9 @@ class OllamaCudaService {
     try {
       this.metrics.clear();
       this.models.clear();
-      this.initialized = false;
+      this.initialized = $state(false);
       console.log('✅ Ollama CUDA service cleaned up');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Failed to cleanup Ollama service:', safeErrorToString(error));
     }
   }

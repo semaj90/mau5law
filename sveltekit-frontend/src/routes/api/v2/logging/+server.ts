@@ -81,7 +81,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
         body: JSON.stringify(entry),
       });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Normalize unknown error for safe logging
     const errMsg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
     console.error('Failed to forward log to external service:', errMsg);
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       });
     }
     throw error(400, 'Invalid log format. Expected single entry or batch.');
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Normalize unknown error for safe logging
     const errMsg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
     console.error('Logging endpoint error:', errMsg);

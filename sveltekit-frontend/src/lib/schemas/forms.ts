@@ -1,5 +1,4 @@
 import { z } from 'zod';
-
 // Case creation form schema
 export const caseFormSchema = z.object({
   caseNumber: z
@@ -33,7 +32,6 @@ export const caseFormSchema = z.object({
   isConfidential: z.boolean().default(false),
   notifyAssignee: z.boolean().default(true),
 });
-
 // Evidence upload form schema
 export const evidenceFormSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title too long'),
@@ -56,7 +54,6 @@ export const evidenceFormSchema = z.object({
   ),
   location: z.string().min(1, 'Collection location is required').max(200, 'Location too long'),
 });
-
 // User authentication schema
 export const authFormSchema = z.object({
   email: z.string().email('Please enter a valid email address').min(1, 'Email is required'),
@@ -67,7 +64,6 @@ export const authFormSchema = z.object({
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
   rememberMe: z.boolean().default(false),
 });
-
 // Registration schema
 export const registerFormSchema = z
   .object({
@@ -98,7 +94,6 @@ export const registerFormSchema = z
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
-
 // Search form schema
 export const searchFormSchema = z.object({
   query: z.string().max(200).optional(),
@@ -110,7 +105,6 @@ export const searchFormSchema = z.object({
   sortBy: z.enum(['relevance', 'date', 'priority', 'status']).default('relevance'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
-
 export type CaseForm = z.infer<typeof caseFormSchema>;
 export type EvidenceForm = z.infer<typeof evidenceFormSchema>;
 export type AuthForm = z.infer<typeof authFormSchema>;

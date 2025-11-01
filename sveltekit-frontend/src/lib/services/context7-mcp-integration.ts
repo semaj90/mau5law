@@ -34,7 +34,7 @@ export interface AIRecommendation {
   type?: string;
   category?: 'speed' | 'safety' | 'a11y' | string;
   confidence?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface MCPEnhancedRecommendation {
@@ -47,9 +47,9 @@ export interface MCPEnhancedRecommendation {
 
 export interface RecommendationContext {
   component?: string;
-  userBehavior?: unknown;
-  performanceMetrics?: unknown;
-  legalContext?: unknown;
+  userBehavior?: any;
+  performanceMetrics?: any;
+  legalContext?: any;
 }
 // Mock services to resolve import issues
 const aiRecommendationEngine = {
@@ -178,7 +178,7 @@ await advancedCache.set(cacheKey, encryptedData, {
       // Set connection status
       this.mcpConnectionStatus.set('connected');
       console.log('✅ Context7 MCP Integration initialized');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Context7 MCP Integration failed:', error);
       this.mcpConnectionStatus.set('error');
     }
@@ -228,7 +228,7 @@ await advancedCache.set(cacheKey, encryptedData, {
       }
       recordStageLatency('enhanced-recommendations', Date.now() - startTime);
       return enhancedRecommendations;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Enhanced recommendations failed:', error);
       return [];
     }

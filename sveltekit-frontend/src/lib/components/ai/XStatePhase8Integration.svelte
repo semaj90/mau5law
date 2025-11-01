@@ -20,20 +20,16 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   import { MatrixUICompiler, type MatrixUINode } from '$lib/ui/matrix-compiler';
   import { LegalAIReranker, enhancedSearch, type UserContext } from '$lib/ai/custom-reranker';
   import { PredictivePrefetcher } from '$lib/workers/predictive-prefetch';
-
   // use $props() in runes mode instead of export let
   let { className = '' } = $props() as { className?: string };
-
   // Use the machine but cast to any to avoid strict shape assumptions in this component
   const machine: any = useMachine(legalFormMachine) as any;
   // rename the destructured stores to avoid colliding with the $state/$context runes
   const { state: machineState, send, context: machineContext } = machine;
-
   // Phase 8 system components
   let matrixCompiler: MatrixUICompiler;
   let reranker: LegalAIReranker;
   let prefetcher: PredictivePrefetcher;
-
   // Simplified reactive UI state (avoid complex $derived expressions that had mismatched parens)
   // remove generic args from the rune calls and use TS assertions instead
   let currentStateDescription = $state('') as string;
@@ -41,19 +37,16 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   let progressPercentage = $state(0) as number;
   let possibleActions = $state([]) as string[];
   let aiConfidence = $state(0) as number;
-
   // Form data
   let fileInput: HTMLInputElement;
   let caseTitle = $state('') as string;
   let caseDescription = $state('') as string;
   let selectedPriority = $state('medium') as: 'low' | 'medium' | 'high' | 'critical';
   let selectedEvidenceType = $state('digital') as: 'digital' | 'physical' | 'testimony' | 'forensic';
-
   // AI-aware UI state
   let aiRecommendations = $state([]) as any[];
   let showAIPanel = $state(false) as boolean;
   let matrixUINodes = $state([]) as MatrixUINode[];
-
   // initialize async resources with onMount to avoid returning a Promise from reactive effects
   onMount(async () => {
     // Initialize Phase 8 components
@@ -66,7 +59,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Set up AI-aware prefetching
     await setupPredictivePrefetching();
   });
-
   function updateMatrixUINodes(): void {
     const currentState = ((get(machineState) as any)?.value as string) || 'unknown';
     const ctx = (get(machineContext) as any) || {};
@@ -106,7 +98,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       },
     ];
   }
-
   function getStateCardClass(state: string): string {
     const classes = {
       evidenceUpload: 'border-blue-400 bg-blue-900/20',
@@ -118,7 +109,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     };
     return classes[state as keyof typeof classes] || 'border-gray-400 bg-gray-900/20';
   }
-
   async function setupPredictivePrefetching(): Promise<void> {
     const userContext: UserContext = {
       intent: 'create',
@@ -128,7 +118,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       userRole: 'prosecutor',
       workflowState: 'draft',
     };
-
     // Provide required fields expected by predictIntent with sensible defaults
     const ctx = (get(machineContext) as any) || {};
     const intentPrediction = await prefetcher.predictIntent({
@@ -145,7 +134,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       await prefetcher.executePrefetch(intentPrediction);
     }
   }
-
   function getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
     if (hour < 12) return 'morning';
@@ -153,7 +141,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     if (hour < 21) return 'evening';
     return 'night';
   }
-
   // Event handlers with AI awareness
   function handleFileUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -167,7 +154,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       files.map(f => f.name)
     );
   }
-
   function handleCaseDetailsUpdate(): void {
     send({
       type: 'UPDATE_CASE_DETAILS',
@@ -179,7 +165,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Trigger AI reranking for case suggestions
     performAIReranking('case_update', [caseTitle, caseDescription]);
   }
-
   async function performAIReranking(action string, ctx: string[]): Promise<void> {
     try {
       const appContext = (get(machineContext) as Partial<LegalFormContext>) || {};
@@ -202,28 +187,23 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       console.warn('AI reranking failed:', error);
     }
   }
-
   async function handleNextStep(): Promise<void> {
     send({ type: 'NEXT' });
     updateMatrixUINodes();
     await setupPredictivePrefetching();
   }
-
   function handleBackStep(): void {
     send({ type: 'BACK' });
     updateMatrixUINodes();
   }
-
   function handleSubmit(): void {
     send({ type: 'SUBMIT' });
     updateMatrixUINodes();
   }
-
   function requestAIHelp(): void {
     send({ type: 'REQUEST_AI_HELP' });
     showAIPanel = true;
   }
-
   function applyAIRecommendation(recommendation string): void {
     send({ type: 'APPLY_AI_RECOMMENDATION', recommendation });
     // Apply the recommendation based on its content
@@ -233,7 +213,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     }
     updateMatrixUINodes();
   }
-
   // Reactive effect to sync UI with machine context/state
   $effect(() => {
     updateMatrixUINodes();
@@ -242,7 +221,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     caseDescription = $machineContext.caseDescription ?? caseDescription;
     selectedPriority = $machineContext.priority ?? selectedPriority;
     selectedEvidenceType = $machineContext.evidenceType ?? selectedEvidenceType;
-
     // Update derived UI values
     currentStateDescription = getStateDescription($machineContext ?? {});
     aiSuggestions = (getAISuggestions($machineContext ?? {}, $machineState.value) as any) || [];
@@ -252,7 +230,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     aiRecommendations = $machineContext.aiRecommendations ?? aiRecommendations;
   });
 </script>
-
 <div class={'xstate-phase8-integration ' + className}>
   <!-- Progress Header -->
   <div class="progress-header yorha-panel p-6 mb-6">
@@ -269,7 +246,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       <span class="text-gray-300">Step {$machineContext.currentStep} of {$machineContext.totalSteps}</span>
     </div>
   </div>
-
   <!-- Multi-Step Form with Accordion -->
   <div class="form-content grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Form -->
@@ -290,7 +266,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               </span>
             </button>
           </h3>
-
           <div data-accordion-content class="accordion-content p-4 border-l-4 border-blue-400">
             <div class="space-y-4">
               <div class="file-upload-zone border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
@@ -307,7 +282,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                 </button>
                 <p class="text-gray-400 text-sm mt-2">Supported: PDF, Images, Documents</p>
               </div>
-
               <div class="evidence-type-selector">
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-evidence-type-">
                   Evidence Type
@@ -324,7 +298,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <option value="forensic">Forensic Analysis</option>
                 </select>
               </div>
-
               {#if $machineState.matches('evidenceUpload')}
                 <div class="mt-2">
                   <button
@@ -334,12 +307,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   >
                     Next: Case Details
                   </button>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
-
         <!-- Step 2: Case Details -->
         <div data-accordion-item data-accordion-value="step-2" class="accordion-item">
           <h3 data-accordion-header class="accordion-header">
@@ -355,7 +326,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               </span>
             </button>
           </h3>
-
           <div data-accordion-content class="accordion-content p-4 border-l-4 border-yellow-400">
             <div class="space-y-4">
               <div>
@@ -372,7 +342,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <p class="text-red-400 text-sm mt-1">{$machineContext.validationErrors.caseTitle}</p>
                 {/if}
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-description-">
                   Case Description
@@ -389,7 +358,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <p class="text-red-400 text-sm mt-1">{$machineContext.validationErrors.caseDescription}</p>
                 {/if}
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-priority-level-">
                   Priority Level
@@ -406,7 +374,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   <option value="critical">Critical Priority</option>
                 </select>
               </div>
-
               {#if $machineState.matches('caseDetails')}
                 <div class="flex gap-3">
                   <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
@@ -417,8 +384,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   >
                     Next: Review
                   </button>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
@@ -432,7 +398,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         <div class="ai-suggestions mb-4">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Suggestions</h4>
           <div class="space-y-2">
-            {#each aiSuggestions as suggestion}
+            {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
               <div class="suggestion-item text-sm text-blue-400 bg-blue-900/20 p-2 rounded">
                 {suggestion}
               </div>
@@ -444,7 +410,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
           <div class="ai-recommendations mb-4">
             <h4 class="text-sm font-medium text-gray-300 mb-2">Recommendations</h4>
             <div class="space-y-2">
-              {#each aiRecommendations as rec}
+              {#each Array.isArray(aiRecommendations) ? aiRecommendations : [] as rec}
                 <div class="recommendation-item bg-yellow-900/20 p-3 rounded">
                   <div class="flex justify-between items-start mb-2">
                     <span class="text-yellow-400 text-sm font-medium">{rec.nextAction}</span>
@@ -460,13 +426,12 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                 </div>
               {/each}
             </div>
-          </div>
-        {/if}
+          {/if}
         <!-- Possible Actions -->
         <div class="possible-actions">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Available Actions</h4>
           <div class="flex flex-wrap gap-1">
-            {#each possibleActions as action}
+            {#each Array.isArray(possibleActions) ? possibleActions : [] as action}
               <span class="action-tag text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
                 {action}
               </span>
@@ -477,7 +442,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     </div>
   </div>
 </div>
-
 <style>
   /* Converted Tailwind @apply rules to plain CSS to avoid unknown at-rule errors */
   .xstate-phase8-integration {
@@ -499,7 +463,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     font-weight: 700;
   }
   .progress-fill {
-    transition: width 0.5s ease-in-out;
+    transition: width: 0.5s ease-in-out;
   }
   .loading-spinner {
     width: 2rem;
@@ -540,4 +504,3 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     font-family: 'Courier New', monospace;
   }
 </style>
-

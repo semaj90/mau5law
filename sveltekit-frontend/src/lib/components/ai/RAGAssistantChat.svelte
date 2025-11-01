@@ -136,7 +136,7 @@
       // small randomized delay to simulate typing
       await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 20));
     }
-    isTyping = false;
+    isTyping = $state(false);
     scrollToBottom();
   }
   // RAG ingestion simulation
@@ -173,10 +173,9 @@
         ];
       }
     }
-    isIngesting = false;
+    isIngesting = $state(false);
     addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system');
   }
-
   // Start prosecution workflow
   async function startWorkflow() {
     workflowActive = true;
@@ -245,8 +244,8 @@
       await typeMessage('❌ Failed to create case. Please try again or contact support.');
       console.error('Case creation error', error);
     } finally {
-      isProcessing = false;
-      workflowActive = false;
+      isProcessing = $state(false);
+      workflowActive = $state(false);
       currentStep = 0;
     }
   }
@@ -310,7 +309,6 @@
     })();
   });
 </script>
-
 <div class="rag-assistant-chat">
   <div class="chat-header">
     <div class="assistant-avatar" class:pulsing={isTyping}>
@@ -344,8 +342,7 @@
       <div class="progress-bar">
         <div class="progress-fill" style="width: {ingestionProgress}%"></div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- RAG Context -->
   {#if ragContext.length > 0}
     <div class="rag-context" transitionscale={{ duration 300 }}>
@@ -357,8 +354,7 @@
           <div class="context-relevance">{Math.round(context.relevance * 100)}% relevant</div>
         </div>
       {/each}
-    </div>
-  {/if}
+    {/if}
   <!-- Chat Messages -->
   <div class="chat-container" bind:this={chatContainer}>
     {#each messages as message (message.id)}
@@ -378,8 +374,7 @@
           <span></span>
           <span></span>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Workflow Interface -->
   {#if workflowActive && currentStep < workflowSteps.length}
@@ -408,8 +403,7 @@
         </button>
         <div class="workflow-hint">Press Ctrl+Enter to quick submit</div>
       </div>
-    </div>
-  {/if}
+    {/if}
   <!-- Chat Input -->
   {#if !workflowActive}
     <div class="chat-input-container">
@@ -435,10 +429,8 @@
         <button class="quick-btn" onclick={startWorkflow}> 📋 Start Case Workflow </button>
         <button class="quick-btn" onclick={handleChatMessage}> 🔍 Analyze Evidence </button>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   :global(body) {
     font-family:
@@ -483,7 +475,7 @@
     height: 56px;
     border-radius: 10px;
     background: linear-gradient(135deg, #f6f9ff, #eef7ff);
-    position relative;
+    position: relative;
     flex-shrink: 0,
     transition: transform 200ms ease;
   }
@@ -505,7 +497,7 @@
     font-size: 22px;
   }
   .status-dot {
-    position absolute;
+    position: absolute;
     right: -2px;
     bottom: -2px;
     width: 12px;
@@ -555,7 +547,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #60a5fa, #7c3aed);
-    transition: width 280ms ease;
+    transition: width: 280ms ease;
   }
   /* RAG context */
   .rag-context {
@@ -614,7 +606,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(2, 6, 23, 0.04);
     display: inline-block;
-    position relative;
+    position: relative;
     word-break: break-word;
   }
   .message-user {
@@ -806,5 +798,3 @@
     }
   }
 </style>
-
-

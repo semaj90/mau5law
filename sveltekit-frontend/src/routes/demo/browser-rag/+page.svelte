@@ -67,7 +67,7 @@
       error = `Initialization failed: ${err}`;
       console.error('RAG Init Error:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   });
 
@@ -95,7 +95,7 @@
       error = `Query failed: ${err}`;
       console.error('Query Error:', err);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -126,7 +126,7 @@
       error = `Streaming failed: ${err}`;
       console.error('Streaming Error:', err);
     } finally {
-      isStreaming = false;
+      isStreaming = $state(false);
     }
   }
 

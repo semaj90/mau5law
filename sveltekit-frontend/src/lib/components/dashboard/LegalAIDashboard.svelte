@@ -88,7 +88,7 @@
       error = err instanceof Error ? err.message : 'Failed to load dashboard data';
       toast.error('Failed to load dashboard', { description error });
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   };
   // Load system health status
@@ -188,7 +188,6 @@
     };
   });
 </script>
-
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
   <header class="bg-white shadow-sm border-b border-gray-200">
@@ -257,7 +256,7 @@
   <nav class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex space-x-8">
-        {#each tabs as tab}
+        {#each Array.isArray(tabs) ? tabs : [] as tab}
           <button
             onclick={() => (selectedTab = tab.id)}
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
@@ -394,7 +393,7 @@
                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Cases</h3>
                 <div class="flow-root">
                   <ul class="-my-5 divide-y divide-gray-200">
-                    {#each cases.slice(0, 5) as caseItem}
+                    {#each Array.isArray(cases.slice(0, 5)) ? cases.slice(0, 5) : [] as caseItem}
                       <li class="py-4">
                         <div class="flex items-center space-x-4">
                           <div class="flex-1 min-w-0">
@@ -432,7 +431,7 @@
                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Evidence</h3>
                 <div class="flow-root">
                   <ul class="-my-5 divide-y divide-gray-200">
-                    {#each evidence.slice(0, 5) as item}
+                    {#each Array.isArray(evidence.slice(0, 5)) ? evidence.slice(0, 5) : [] as item}
                       <li class="py-4">
                         <div class="flex items-center space-x-4">
                           <div class="flex-shrink-0">
@@ -507,7 +506,7 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  {#each cases as caseItem}
+                  {#each Array.isArray(cases) ? cases : [] as caseItem}
                     <tr>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div>
@@ -552,7 +551,7 @@
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Evidence Items</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {#each evidence as item}
+              {#each Array.isArray(evidence) ? evidence : [] as item}
                 <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                   <div class="flex items-start space-x-3">
                     <div class="flex-shrink-0">
@@ -591,8 +590,7 @@
                           >
                             ⏳ Pending Analysis
                           </span>
-                        </div>
-                      {/if}
+                        {/if}
                     </div>
                   </div>
                 </div>
@@ -681,12 +679,10 @@
               This section is under development. Content for {selectedTab} will be available soon.
             </p>
           </div>
-        </div>
-      {/if}
+        {/if}
     {/if}
   </main>
 </div>
-
 <style>
   .animate-spin {
     animation: spin 1s linear infinite;
@@ -700,4 +696,3 @@
     }
   }
 </style>
-

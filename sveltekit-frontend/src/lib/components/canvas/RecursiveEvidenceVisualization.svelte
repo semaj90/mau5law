@@ -498,11 +498,11 @@
       opt.e.preventDefault();
     });
     // Optional panning support (middle mouse)
-    let isPanning = false;
+    let isPanning = $state(false);
     fabricCanvas.on('mouse:down', (opt: any) => {
       if (opt?.e?.which === 2) {
         isPanning = true;
-        fabricCanvas.selection = false;
+        fabricCanvas.selection = $state(false);
       }
     });
     fabricCanvas.on('mouse:move', (opt: any) => {
@@ -513,7 +513,7 @@
       }
     });
     fabricCanvas.on('mouse:up', () => {
-      isPanning = false;
+      isPanning = $state(false);
       fabricCanvas.selection = enableInteraction;
     });
   }
@@ -642,8 +642,7 @@
         <span>Nodes: {visualizationMetrics.nodesRendered}</span>
         <span>Connections: {visualizationMetrics.connectionsDrawn}</span>
         <span>Render: {Math.round(visualizationMetrics.renderTime)}ms</span>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Processing status (use the ensured store) -->
   {#if $processingStatusStore === 'processing'}
@@ -656,10 +655,8 @@
           <p>Processed {$recursionMetricsStore.totalNodesProcessed} evidence items</p>
         {/if}
       </div>
-    </div>
-  {/if}
-    </div>
-  {/if}
+    {/if}
+    {/if}
   {#if $processingStatusStore === 'processing'}
     <div class="processing-overlay">
       <div class="processing-content">
@@ -670,8 +667,7 @@
           <p>Processed {$recursionMetricsStore.totalNodesProcessed} evidence items</p>
         {/if}
       </div>
-    </div>
-  {/if}
+    {/if}
     <div class="hierarchy-summary">
       <h4>Evidence Hierarchy Analysis Complete</h4>
       <div class="summary-stats">
@@ -705,8 +701,7 @@
             <span class="value">{new Date($recursionMetricsStore.analysisTimestamp).toLocaleString()}</span>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   <style>
     .visualization-controls {
       display: flex;
@@ -756,7 +751,7 @@
       margin-left: auto;
     }
   .processing-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -786,7 +781,7 @@
   }
   .canvas-container {
     flex: 1,
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .evidence-hierarchy-canv.evidence-hierarchy-canvas:active {
@@ -823,4 +818,3 @@
     font-weight: 600;
   }
 </style>
-

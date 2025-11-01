@@ -350,7 +350,7 @@
               <div>
                 <label class="block text-sm font-medium mb-2" for="ttl">TTL</label>
                 <select id="ttl" bind:value={selectedTTL} class="w-full p-2 border rounded">
-                  {#each ttlOptions as option}
+                  {#each Array.isArray(ttlOptions) ? ttlOptions : [] as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
                 </select>
@@ -358,7 +358,7 @@
               <div>
                 <label class="block text-sm font-medium mb-2" for="priority">Priority</label>
                 <select id="priority" bind:value={selectedPriority} class="w-full p-2 border rounded">
-                  {#each priorityOptions as option}
+                  {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
                     <option value={option.value}>{option.label}</option>
                   {/each}
                 </select>
@@ -483,7 +483,7 @@ testResults.set([])}
           </div>
           <div class="yorha-panel-content">
             <div class="space-y-2 max-h-80 overflow-y-auto">
-              {#each $testResults as result}
+              {#each Array.isArray($testResults) ? $testResults : [] as result}
                 <div class="flex items-start gap-2 p-2 rounded border-l-4
                            {(result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'success' ? 'border-green-500 bg-green-50' :
                             (result as { success?: any; summary?: any; type?: any; timestamp?: any; message?: any }).type === 'error' ? 'border-red-500 bg-red-50' :
@@ -500,8 +500,7 @@ testResults.set([])}
               {#if $testResults.length === 0}
                 <div class="text-center nes-text is-disabled py-8">
                   No test results yet. Try some cache operations!
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
@@ -565,7 +564,7 @@ testResults.set([])}
               </div>
             </div>
             <!-- Layer Statistics -->
-            {#each $cacheStats.layers.layers as layer}
+            {#each Array.isArray($cacheStats.layers.layers) ? $cacheStats.layers.layers : [] as layer}
               <div class="nes-container">
                 <div class="yorha-panel-header pb-2">
                   <h3 class="nes-text is-primary text-sm capitalize">{layer.layer} Layer</h3>
@@ -599,8 +598,7 @@ testResults.set([])}
               Loading cache statistics...
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </TabsContent>
     <!-- Health Monitor Tab -->
     <TabsContent value="health" class="space-y-4">
@@ -649,7 +647,7 @@ testResults.set([])}
             <div class="yorha-panel-content">
               {#if $healthStatus.layers?.issues && $healthStatus.layers.issues.length > 0}
                 <div class="space-y-2">
-                  {#each $healthStatus.layers.issues as issue}
+                  {#each Array.isArray($healthStatus.layers.issues) ? $healthStatus.layers.issues : [] as issue}
                     <div class="p-2 bg-red-50 border border-red-200 rounded text-sm">
                       ⚠ {issue}
                     </div>
@@ -659,8 +657,7 @@ testResults.set([])}
                 <div class="text-center text-green-600 py-4">
                   <CheckCircle class="mx-auto mb-2" size={32} />
                   All systems operating normally
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
@@ -672,8 +669,7 @@ testResults.set([])}
               Loading health status...
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
     </TabsContent>
     <!-- Performance Tests Tab -->
     <TabsContent value="testing" class="space-y-4">
@@ -790,8 +786,7 @@ testResults.set([])}
               <div class="text-center py-4">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                 <p class="text-sm nes-text is-disabled mt-2">Running tests...</p>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ export interface User {
 
 export interface AuthSession {
   id: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ApiResponse {
@@ -158,12 +158,12 @@ class EnhancedAuthStore {
         this._error = result.error || 'Login failed';
         return { success: false, error: this._error };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       this._error = 'Network error. Please try again.';
       console.error('Login error:', error);
       return { success: false, error: this._error };
     } finally {
-      this._state.isLoading = false;
+      this._state.isLoading = $state(false);
     }
   }
   async register(data: RegisterData): Promise<{ success: boolean; requiresVerification?: boolean; error?: string }> {
@@ -197,12 +197,12 @@ class EnhancedAuthStore {
         this._error = result.error || 'Registration failed';
         return { success: false, error: this._error };
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       this._error = 'Network error. Please try again.';
       console.error('Registration error:', error);
       return { success: false, error: this._error };
     } finally {
-      this._state.isLoading = false;
+      this._state.isLoading = $state(false);
     }
   }
   async logout(): Promise<void> {
@@ -219,7 +219,7 @@ class EnhancedAuthStore {
           }),
         });
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Logout error:', error);
     } finally {
       this.clearAuthState();
@@ -242,7 +242,7 @@ class EnhancedAuthStore {
         this._state.lastActivity = new Date();
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Email verification error:', error);
       return { success: false, error: 'Verification failed' };
     }
@@ -257,7 +257,7 @@ class EnhancedAuthStore {
         body: JSON.stringify({ email }),
       });
       return await response.json();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Password reset request error:', error);
       return { success: false, error: 'Request failed' };
     }
@@ -277,7 +277,7 @@ class EnhancedAuthStore {
         this.clearAuthState();
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Password reset error:', error);
       return { success: false, error: 'Reset failed' };
     }
@@ -299,7 +299,7 @@ class EnhancedAuthStore {
         this._state.user = { ...this._state.user!, ...result.user };
       }
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Profile update error:', error);
       return { success: false, error: 'Update failed' };
     }
@@ -317,7 +317,7 @@ class EnhancedAuthStore {
         body: JSON.stringify({ currentPassword, newPassword }),
       });
       return await response.json();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Password change error:', error);
       return { success: false, error: 'Password change failed' };
     }
@@ -341,7 +341,7 @@ class EnhancedAuthStore {
       }
       this.clearAuthState();
       return false;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Session refresh error:', error);
       this.clearAuthState();
       return false;
@@ -365,7 +365,7 @@ class EnhancedAuthStore {
       if (response.ok) {
         return await response.json();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Security summary error:', error);
     }
     return null;
@@ -397,11 +397,11 @@ class EnhancedAuthStore {
       if (!isValid) {
         this.clearAuthState();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Auth initialization error:', error);
       this.clearAuthState();
     } finally {
-      this._state.isLoading = false;
+      this._state.isLoading = $state(false);
     }
   }
   private setupActivityTracking(): void {
@@ -440,9 +440,9 @@ class EnhancedAuthStore {
   private clearAuthState(): void {
     this._state.user = null;
     this._state.session = null;
-    this._state.isAuthenticated = false;
+    this._state.isAuthenticated = $state(false);
     this._state.lastActivity = null;
-    this._state.isLoading = false;
+    this._state.isLoading = $state(false);
     // Clear stored data
     localStorage.removeItem('auth:rememberMe');
     // Clear timeouts

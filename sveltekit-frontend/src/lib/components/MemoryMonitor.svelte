@@ -1,9 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   interface Props {
-    showDetails?: unknown;
+    showDetails?: any;
   }
-
   // Types for memory data (prevent `never` and implicit any errors)
   interface MemoryPool {
     id: string;
@@ -22,14 +21,11 @@
     clusters: any[]; // adjust if a concrete cluster shape is known
     cacheLayers: CacheLayer[];
   }
-
   let {
     showDetails = false
   }: Props = $props();
-
   import { onMount, onDestroy } from 'svelte';
   import { memoryMonitoring } from '$lib/services/memory-monitoring.service';
-
   // typed reactive state
   let memoryData = $state<MemoryData>({
     currentLOD: { name: 'medium', level: 2 },
@@ -40,23 +36,19 @@
   });
   let updateCount = $state(0);
   let isOptimizing = $state(false);
-
   // resilient subscription adapter using onMount/onDestroy
   let _unsubscribe: (() => void) | null = null;
   let _callback: ((data: MemoryData) => void) | null = null;
-
   onMount(() => {
     // start if available
     if (typeof memoryMonitoring.start === 'function') {
       try { memoryMonitoring.start(10000); } catch (e) { /* ignore start errors */ }
     }
-
     // common callback updates typed memoryData
     _callback = (data: MemoryData) => {
       memoryData = data;
       updateCount++;
     };
-
     // Prefer modern `subscribe` that returns an unsubscribe.
     if (typeof (memoryMonitoring as any).subscribe === 'function') {
       const unsub = (memoryMonitoring as any).subscribe(_callback);
@@ -76,7 +68,6 @@
       // no subscription API found; nothing to do
     }
   });
-
   onDestroy(() => {
     // attempt to unsubscribe
     try {
@@ -84,7 +75,6 @@
     } catch (e) {
       /* ignore unsubscribe errors */
     }
-
     // stop or dispose if available
     if (typeof (memoryMonitoring as any).stop === 'function') {
       try { (memoryMonitoring as any).stop(); } catch (e) { /* ignore */ }
@@ -92,7 +82,6 @@
       try { (memoryMonitoring as any).dispose(); } catch (e) { /* ignore */ }
     }
   });
-
   async function triggerOptimization() {
     isOptimizing = true;
     try {
@@ -102,8 +91,7 @@
         (memoryMonitoring as any).optimize ??
         (memoryMonitoring as any).triggerOptimize ??
         (memoryMonitoring as any).opt;
-
-      let success = false;
+      let success = $state(false);
       if (typeof fn === 'function') {
         const res = await fn.call(memoryMonitoring);
         // normalize boolean-like success
@@ -111,24 +99,21 @@
       } else {
         console.warn('No optimization method available on memoryMonitoring');
       }
-
       if (success) {
         console.log('✅ Optimization triggered successfully');
       }
     } catch (error) {
       console.error('❌ Optimization failed:', error);
     } finally {
-      isOptimizing = false;
+      isOptimizing = $state(false);
     }
   }
-
   function getMemoryPressureColor(pressure: number): string {
     if (pressure > 0.9) return 'text-red-600';
     if (pressure > 0.7) return 'text-yellow-600';
     return 'text-green-600';
   }
 </script>
-
 <div class="memory-monitor bg-white border rounded-lg p-4 shadow-sm">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold">Memory Monitor</h3>
@@ -143,7 +128,6 @@
       </button>
     </div>
   </div>
-
   <!-- Key Metrics -->
   <div class="grid grid-cols-3 gap-4 mb-4">
     <div class="metric">
@@ -161,13 +145,12 @@
       <div class="text-lg font-bold">{memoryData.clusters.length}</div>
     </div>
   </div>
-
   <!-- Memory Pools -->
   {#if showDetails && memoryData.pools.length > 0}
     <div class="pools mb-4">
       <h4 class="font-semibold mb-2">Memory Pools</h4>
       <div class="space-y-2">
-        {#each memoryData.pools as pool}
+        {#each Array.isArray(memoryData.pools) ? memoryData.pools : [] as pool}
           <div class="pool-item flex justify-between items-center text-sm">
             <span class="font-medium">{pool.id}</span>
             <div class="flex items-center gap-2">
@@ -179,28 +162,23 @@
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Cache Layers -->
   {#if showDetails && memoryData.cacheLayers.length > 0}
     <div class="cache-layers">
       <h4 class="font-semibold mb-2">Cache Layers</h4>
       <div class="grid grid-cols-2 gap-2 text-xs">
-        {#each memoryData.cacheLayers as layer}
+        {#each Array.isArray(memoryData.cacheLayers) ? memoryData.cacheLayers : [] as layer}
           <div class="layer-item p-2 bg-gray-50 rounded">
             <div class="font-medium">{layer.name}</div>
             <div class="text-gray-600">Hit Rate: {(layer.hitRate * 100).toFixed(1)}%</div>
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .usage-fill {
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
 </style>
-

@@ -36,7 +36,6 @@ https://svelte.dev/e/js_parse_error -->
     showValidation?: boolean;
     showPasswordToggle?: boolean;
   }
-
   let {
     name,
     label,
@@ -227,7 +226,6 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </button>
       {/if}
-
       <!-- Validation Icons -->
       {#if showValidation}
         <div class="container mx-auto px-4">
@@ -236,11 +234,9 @@ https://svelte.dev/e/js_parse_error -->
           {:else if showSuccessState}
             <CheckCircle class="container mx-auto px-4" />
           {/if}
-        </div>
-      {/if}
+        {/if}
     {/if}
   </div>
-
   <!-- Help Text and Validation Messages -->
   <div class="container mx-auto px-4">
     <span class="container mx-auto px-4" id={`${name}-help`}>
@@ -273,11 +269,10 @@ https://svelte.dev/e/js_parse_error -->
       </span>
     {/if}
   </div>
-
   <!-- All Error Messages (for screen readers) -->
   {#if showValidation && errors.length > 1}
     <ul class="container mx-auto px-4" role="alert">
-      {#each errors.slice(1) as error}
+      {#each Array.isArray(errors.slice(1)) ? errors.slice(1) : [] as error}
         <li class="container mx-auto px-4">
           <AlertCircle class="container mx-auto px-4" />
           {error}
@@ -285,11 +280,10 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
     </ul>
   {/if}
-
   <!-- All Warning Messages -->
   {#if showValidation && warnings.length > 0 && !hasErrors}
     <ul class="container mx-auto px-4">
-      {#each warnings as warning}
+      {#each Array.isArray(warnings) ? warnings : [] as warning}
         <li class="container mx-auto px-4">
           <Info class="container mx-auto px-4" />
           {warning}
@@ -322,4 +316,3 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #10b981;
   }
 </style>
-

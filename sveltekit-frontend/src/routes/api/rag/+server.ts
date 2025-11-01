@@ -20,16 +20,16 @@ const RAG_TIMEOUT = 30000;
 
 // New interfaces for RAG Backend responses
 interface RagSearchResult {
-  results?: unknown[]; // Consider defining a more specific type for search results if possible
+  results?: any[]; // Consider defining a more specific type for search results if possible
   metadata?: Record<string, unknown>;
   total?: number;
-  analysis?: unknown;
-  summary?: unknown;
+  analysis?: any;
+  summary?: any;
   message?: string;
 }
 
 interface RagAnalysisResult {
-  analysis?: unknown; // Consider defining a more specific type for analysis if possible
+  analysis?: any; // Consider defining a more specific type for analysis if possible
   metadata?: Record<string, unknown>;
   message?: string;
 }
@@ -52,7 +52,7 @@ interface RagDetailedHealthMetrics {
       system?: {
         details?: Record<string, unknown>;
       };
-      [key: string]: unknown;
+      [key: string]: any;
     };
   };
   responseTime?: number;
@@ -65,7 +65,7 @@ interface RagStatsResult {
 interface RagCacheResult {
   message?: string;
   pattern?: string;
-  result?: unknown; // For refresh operation
+  result?: any; // For refresh operation
   stats?: Record<string, unknown>; // For cache stats operation
 }
 
@@ -106,7 +106,7 @@ async function forwardToRAGBackend<T>(endpoint: string, options: RequestInit = {
       resultKeys: Object.keys(result as object), // Cast to object for Object.keys
     });
     return result;
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleQueueSummarize(request);
       default: return json({ error: 'Invalid action' }, { status: 400 });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('Enhanced RAG API Error:', err);
     let errorMessage = 'Unknown error';
@@ -177,7 +177,7 @@ async function handleQueueSummarize(request: Request): Promise<Response> {
     }
     const result = await summarizeWithQueue(content, documentId);
     return json({ success: true, data: result });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('queue-summarize error:', err);
     let errorMessage = 'Unknown error';
@@ -244,7 +244,7 @@ async function handleSearch(request: Request): Promise<Response> {
         total: result.total || result.results?.length || 0, // Use typed result
         source: 'rag-backend',
       });
-    } catch (backendError: unknown) {
+    } catch (backendError: any) {
       // Use unknown for catch block
       let backendErrorMessage = 'Unknown backend error';
       if (backendError instanceof Error) {
@@ -286,7 +286,7 @@ async function handleSearch(request: Request): Promise<Response> {
         warning: 'Used local search due to backend unavailability',
       });
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('All search methods failed:', err);
     let errorMessage = 'Unknown error';
@@ -322,7 +322,7 @@ async function handleAnalyze(request: Request): Promise<Response> {
       analysis: result.analysis, // Use typed result
       metadata: result.metadata, // Use typed result
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('Analysis error:', err);
     let errorMessage = 'Unknown error';
@@ -358,7 +358,7 @@ async function handleSummarize(request: Request): Promise<Response> {
       summary: result.summary, // Use typed result
       metadata: result.metadata, // Use typed result
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('Summarization error:', err);
     let errorMessage = 'Unknown error';
@@ -411,7 +411,7 @@ async function handleStatus(): Promise<Response> {
       timestamp: new Date().toISOString(),
       responseTime: metrics?.responseTime || null,
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('Status check error:', err);
     let errorMessage = 'Unknown error';
@@ -482,7 +482,7 @@ export const GET: RequestHandler = async ({ url }) => {
             total: searchResult.total,
             source: 'rag-backend',
           });
-        } catch (backendError: unknown) {
+        } catch (backendError: any) {
           // Use unknown for catch block
           let backendErrorMessage = 'Unknown backend error';
           if (backendError instanceof Error) {
@@ -514,7 +514,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default:
         throw error(400, `Invalid action: ${action || 'none'}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error(`GET /${action} error:`, err);
     // Check if err is an instance of HttpError from SvelteKit or has a status property
@@ -552,7 +552,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
       default:
         throw error(400, `Invalid operation: ${operation}`);
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('PATCH operation error:', err);
     // Check if err is an instance of HttpError from SvelteKit or has a status property
@@ -583,7 +583,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       message: result.message || 'Cache cleared successfully', // Use typed result
       pattern: pattern || 'all',
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Use unknown for catch block
     console.error('Cache clear error:', err);
     // Check if err is an instance of HttpError from SvelteKit or has a status property

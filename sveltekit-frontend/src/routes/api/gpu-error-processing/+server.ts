@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request: _request, url: _url }) => 
     );
 
     return json(result);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('❌ GPU error processing failed:', err);
     const message = err instanceof Error ? err.message : String(err);
     return json(

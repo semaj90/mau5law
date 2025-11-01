@@ -14,11 +14,9 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-
 import fetch from 'node-fetch';
 import type { GemmaEmbeddingService } from './gemma-embedding-service';
 import type { PgVectorIndexingService } from './pgvector-indexing-service';
-
 /**
  * MCP Context7 Configuration
  */
@@ -29,7 +27,6 @@ export interface MCPContext7Config {
   retryAttempts: number;
   fallbackToLocal: boolean;
 }
-
 /**
  * Function Call Request
  */
@@ -45,19 +42,17 @@ export interface FunctionCallRequest {
   temperature?: number;
   maxTokens?: number;
 }
-
 /**
  * Function Call Response
  */
 export interface FunctionCallResponse {
   functionName: string;
-  result: unknown;
+  result: any;
   processingTime: number;
   model: string;
   success: boolean;
   error?: string;
 }
-
 /**
  * Parallel Embedding Request
  */
@@ -67,7 +62,6 @@ export interface ParallelEmbeddingRequest {
   parallelism?: number;
   cacheKeys?: string[];
 }
-
 /**
  * Parallel Embedding Response
  */
@@ -78,7 +72,6 @@ export interface ParallelEmbeddingResponse {
   cacheHitCount: number;
   successRate: number;
 }
-
 /**
  * Task Distribution Result
  */
@@ -87,10 +80,9 @@ export interface TaskDistributionResult {
   workerIds: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
-  results?: unknown[];
+  results?: any[];
   error?: string;
 }
-
 /**
  * MCP Context7 Embedding Integration Service
  */
@@ -98,9 +90,8 @@ export class MCPContext7EmbeddingIntegration {
   private config: MCPContext7Config;
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
-  private isAvailable = false;
+  private isAvailable = $state(false);
   private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
-
   constructor(
     config: MCPContext7Config,
     embeddingService?: GemmaEmbeddingService,
@@ -111,7 +102,6 @@ export class MCPContext7EmbeddingIntegration {
     this.vectorService = vectorService;
     this.initializeWorkerPool();
   }
-
   /**
    * Initialize worker pool
    */
@@ -123,7 +113,6 @@ export class MCPContext7EmbeddingIntegration {
       });
     }
   }
-
   /**
    * Check MCP Context7 server availability
    */
@@ -132,7 +121,6 @@ export class MCPContext7EmbeddingIntegration {
       const response = await fetch(`${this.config.baseUrl}/health`, {
         timeout: this.config.timeout
       });
-
       if (response.ok) {
         this.isAvailable = true;
         console.log('✅ MCP Context7 multicore server is available');
@@ -141,11 +129,9 @@ export class MCPContext7EmbeddingIntegration {
     } catch (error) {
       console.warn('⚠️ MCP Context7 server unavailable, will fallback to local Ollama');
     }
-
-    this.isAvailable = false;
+    this.isAvailable = $state(false);
     return false;
   }
-
   /**
    * Generate embeddings in parallel using MCP workers
    */
@@ -153,28 +139,23 @@ export class MCPContext7EmbeddingIntegration {
     request: ParallelEmbeddingRequest
   ): Promise<ParallelEmbeddingResponse> {
     const startTime = Date.now();
-
     if (!this.isAvailable || !this.config.fallbackToLocal) {
       return this.localParallelEmbedding(request);
     }
-
     try {
       const parallelism = Math.min(
         request.parallelism || this.config.workers,
         request.texts.length
       );
-
       // Distribute texts across workers
       const chunks = this.chunkArray(request.texts, parallelism);
       let cacheHitCount = 0;
-
       const results = await Promise.all(
         chunks.map(async (chunk, index) => {
           const workerId = `worker-${index % this.config.workers}`;
           return this.processEmbeddingChunk(chunk, workerId, request.embeddingType);
         })
       );
-
       // Flatten results
       const embeddings: number[][] = [];
       for (const result of results) {
@@ -183,7 +164,6 @@ export class MCPContext7EmbeddingIntegration {
           cacheHitCount += result.cacheHitCount;
         }
       }
-
       return {
         embeddings,
         processingTime: Date.now() - startTime,
@@ -196,7 +176,6 @@ export class MCPContext7EmbeddingIntegration {
       return this.localParallelEmbedding(request);
     }
   }
-
   /**
    * Process embedding chunk via MCP worker
    */
@@ -221,22 +200,18 @@ export class MCPContext7EmbeddingIntegration {
         }),
         timeout: this.config.timeout
       });
-
       if (!response.ok) {
         throw new Error(`Worker error: ${response.statusText}`);
       }
-
       const data = (await response.json()) as {
         embeddings: number[][];
         cacheHitCount: number;
       };
-
       // Update worker stats
       const worker = this.workerPool.get(workerId);
       if (worker) {
         worker.tasksCompleted += 1;
       }
-
       return {
         embeddings: data.embeddings,
         cacheHitCount: data.cacheHitCount,
@@ -251,17 +226,14 @@ export class MCPContext7EmbeddingIntegration {
       };
     }
   }
-
   /**
    * Call function on MCP gemma3 model
    */
   async callFunction(request: FunctionCallRequest): Promise<FunctionCallResponse> {
     const startTime = Date.now();
-
     if (!this.isAvailable) {
       return this.localFunctionCall(request);
     }
-
     try {
       const response = await fetch(`${this.config.baseUrl}/function-call`, {
         method: 'POST',
@@ -272,16 +244,13 @@ export class MCPContext7EmbeddingIntegration {
         }),
         timeout: this.config.timeout
       });
-
       if (!response.ok) {
         throw new Error(`Function call error: ${response.statusText}`);
       }
-
       const data = (await response.json()) as {
-        result: unknown;
+        result: any;
         model: string;
       };
-
       return {
         functionName: request.functionName,
         result: data.result,
@@ -292,7 +261,6 @@ export class MCPContext7EmbeddingIntegration {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn('MCP function call failed:', message);
-
       return {
         functionName: request.functionName,
         result: null,
@@ -303,7 +271,6 @@ export class MCPContext7EmbeddingIntegration {
       };
     }
   }
-
   /**
    * Batch function calling for multiple inputs
    */
@@ -320,7 +287,6 @@ export class MCPContext7EmbeddingIntegration {
           return this.callFunction(req);
         })
       );
-
       return results;
     } catch (error) {
       console.error('Batch function call failed:', error);
@@ -334,7 +300,6 @@ export class MCPContext7EmbeddingIntegration {
       }));
     }
   }
-
   /**
    * Local fallback: parallel embedding without MCP
    */
@@ -342,19 +307,15 @@ export class MCPContext7EmbeddingIntegration {
     request: ParallelEmbeddingRequest
   ): Promise<ParallelEmbeddingResponse> {
     // const $startTime = Date.now(); // Performance timing for future optimization
-
     if (!this.embeddingService) {
       throw new Error('Embedding service not available');
     }
-
     const embeddingRequests = request.texts.map((text, idx) => ({
       text,
       type: request.embeddingType,
       cacheKey: request.cacheKeys?.[idx],
     }));
-
     const response = await this.embeddingService.embedBatch(embeddingRequests);
-
     return {
       embeddings: response.embeddings.map(e => e.embedding),
       processingTime: response.totalProcessingTime,
@@ -363,7 +324,6 @@ export class MCPContext7EmbeddingIntegration {
       successRate: 1.0,
     };
   }
-
   /**
    * Local fallback: function call using direct Ollama
    */
@@ -372,7 +332,6 @@ export class MCPContext7EmbeddingIntegration {
   ): Promise<FunctionCallResponse> {
     // Placeholder for local function call implementation
     // Would typically call Ollama directly with prompt engineering
-
     return {
       functionName: request.functionName,
       result: null,
@@ -382,7 +341,6 @@ export class MCPContext7EmbeddingIntegration {
       error: 'Local function calling not yet implemented'
     };
   }
-
   /**
    * Get worker pool statistics
    */
@@ -394,12 +352,10 @@ export class MCPContext7EmbeddingIntegration {
   } {
     let busyCount = 0;
     let totalTasks = 0;
-
     for (const worker of this.workerPool.values()) {
       if (worker.busy) busyCount += 1;
       totalTasks += worker.tasksCompleted;
     }
-
     return {
       totalWorkers: this.workerPool.size,
       busyWorkers: busyCount,
@@ -408,7 +364,6 @@ export class MCPContext7EmbeddingIntegration {
         this.workerPool.size > 0 ? totalTasks / this.workerPool.size : 0
     };
   }
-
   /**
    * Utility: chunk array for distribution
    */
@@ -420,7 +375,6 @@ export class MCPContext7EmbeddingIntegration {
     return chunks;
   }
 }
-
 /**
  * Factory function to create MCP Context7 Embedding Integration
  */
@@ -434,13 +388,10 @@ export async function createMCPContext7EmbeddingIntegration(
     embeddingService,
     vectorService
   );
-
   // Check availability on creation
   await integration.checkAvailability();
-
   return integration;
 }
-
 /**
  * Default MCP Context7 Configuration
  */

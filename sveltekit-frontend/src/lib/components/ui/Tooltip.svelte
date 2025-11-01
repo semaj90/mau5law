@@ -18,19 +18,16 @@
   }
   function handleMouseLeave() {
     if (timeoutId) clearTimeout(timeoutId);
-    showTooltip = false;
+    showTooltip = $state(false);
   }
 </script>
-
 <div class="tooltip-wrapper" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
-  {@render children?.()}
+  <slot />
   {#if showTooltip && content}
     <div class={"tooltip tooltip-" + placement} role="tooltip">
       {content}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
 /* @unocss-include */
 .tooltip-wrapper {

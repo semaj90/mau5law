@@ -27,7 +27,7 @@ export interface TaskMessage {
 export interface TaskResult {
   taskId: string;
   status: "SUCCESS" | "FAILURE" | "TIMEOUT" | "RETRY";
-  result?: unknown;
+  result?: any;
   error?: string;
   processingTime: number;
   nodeId: string;

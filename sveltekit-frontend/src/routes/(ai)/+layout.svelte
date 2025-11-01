@@ -76,7 +76,7 @@
 
     <!-- AI Navigation -->
     <nav class="ai-nav">
-      {#each aiRoutes as route}
+      {#each Array.isArray(aiRoutes) ? aiRoutes : [] as route}
         <a
           href={route.href}
           class="ai-nav-item"

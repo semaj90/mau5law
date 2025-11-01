@@ -114,7 +114,6 @@
     }
   });
 </script>
-
 {#if isLoading || status !== 'loading'}
   <div class="ai-loading-component {variant} {sizeClasses[size]}">
     {#if variant === 'overlay'}
@@ -134,8 +133,7 @@
                     {#if operation === 'ai' || operation === 'gpu'}
                       <div
                         class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
-                      ></div>
-                    {/if}
+                      >{/if}
                   </div>
                 {:else}
                   {@const StatusIcon = getStatusIcon(status)}
@@ -173,8 +171,7 @@
                         style="width: {$progressTween}%"
                       ></div>
                     </div>
-                  </div>
-                {/if}
+                  {/if}
                 <!-- Time Information -->
                 {#if isLoading && (showEstimate || elapsedTime > 0)}
                   <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -189,8 +186,7 @@
                         ETA: {formatTime(estimatedTime - elapsedTime)}
                       </span>
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
                 <!-- Operation Details -->
                 {#if operation && status === 'loading'}
                   <div class="mt-2">
@@ -206,8 +202,7 @@
                     >
                       {operation.toUpperCase()} Processing
                     </span>
-                  </div>
-                {/if}
+                  {/if}
               </div>
             </div>
           </div>
@@ -229,8 +224,7 @@
                   {#if operation === 'ai' || operation === 'gpu'}
                     <div
                       class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
-                    ></div>
-                  {/if}
+                    >{/if}
                 </div>
               {:else}
                 {@const StatusIcon = getStatusIcon(status)}
@@ -268,8 +262,7 @@
                       style="width: {$progressTween}%"
                     ></div>
                   </div>
-                </div>
-              {/if}
+                {/if}
               <!-- Time Information -->
               {#if isLoading && (showEstimate || elapsedTime > 0)}
                 <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -284,8 +277,7 @@
                       ETA: {formatTime(estimatedTime - elapsedTime)}
                     </span>
                   {/if}
-                </div>
-              {/if}
+                {/if}
               <!-- Operation Details -->
               {#if operation && status === 'loading'}
                 <div class="mt-2">
@@ -301,8 +293,7 @@
                   >
                     {operation.toUpperCase()} Processing
                   </span>
-                </div>
-              {/if}
+                {/if}
             </div>
           </div>
         </div>
@@ -320,8 +311,7 @@
                 {#if operation === 'ai' || operation === 'gpu'}
                   <div
                     class="absolute -inset-1 rounded-full border-2 border-current opacity-20 animate-spin border-r-transparent"
-                  ></div>
-                {/if}
+                  >{/if}
               </div>
             {:else}
               {@const StatusIcon = getStatusIcon(status)}
@@ -359,8 +349,7 @@
                     style="width: {$progressTween}%"
                   ></div>
                 </div>
-              </div>
-            {/if}
+              {/if}
             <!-- Time Information -->
             {#if isLoading && (showEstimate || elapsedTime > 0)}
               <div class="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
@@ -375,8 +364,7 @@
                     ETA: {formatTime(estimatedTime - elapsedTime)}
                   </span>
                 {/if}
-              </div>
-            {/if}
+              {/if}
             <!-- Operation Details -->
             {#if operation && status === 'loading'}
               <div class="mt-2">
@@ -392,15 +380,11 @@
                 >
                   {operation.toUpperCase()} Processing
                 </span>
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
-
+      {/if}
+  {/if}
 <style>
   .ai-loading-component.inline {
     /* @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm; */
@@ -420,11 +404,11 @@
     }
   }
   .loading-shimmer {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   .loading-shimmer::after {
-    position absolute;
+    position: absolute;
     top: 0,
     right: 0;
     bottom: 0,

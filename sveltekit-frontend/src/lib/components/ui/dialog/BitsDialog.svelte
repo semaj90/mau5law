@@ -1,7 +1,7 @@
 <!-- Modern Bits-UI Dialog Component for Legal AI App -->
 <script lang="ts">
   import * as Dialog from './index';
-  import { X } from 'lucide-svelte';
+  import X from 'lucide-svelte';
   import { cn } from '$lib/utils';
   interface Props {
     open?: boolean;
@@ -11,9 +11,9 @@
     showClose?: boolean;
     onOpenChange?: (open: boolean) => void;
     class?: string;
-    children?: unknown;
-    trigger?: unknown;
-    footer?: unknown;
+    children?: any;
+    trigger?: any;
+    footer?: any;
   }
   let { open = $bindable(false),
     title = '',
@@ -38,7 +38,6 @@
     onOpenChange?.(newOpen);
   }
 </script>
-
 <Dialog.Root bind:open onOpenChange={handleOpenChange}>
   <!-- Trigger (optional) -->
   {#if trigger}
@@ -73,8 +72,7 @@
               {description}
             </Dialog.Description>
           {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- Close Button -->
       {#if showClose}
         <Dialog.Close
@@ -86,18 +84,16 @@
       {/if}
       <!-- Main Content -->
       <div class="legal-dialog-content">
-        {@render children?.()}
+        <slot />
       </div>
       <!-- Footer -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 legal-dialog-footer">
           {@render footer()}
-        </div>
-      {/if}
+        {/if}
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
-
 <style>
 /* Legal AI App Specific Styling */ {}
   :global(.legal-dialog) {

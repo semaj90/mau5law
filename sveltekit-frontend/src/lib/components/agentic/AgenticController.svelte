@@ -1,7 +1,6 @@
 <!-- Agentic Controller Interface - OCR → Embeddings → RAG -->
 <script lang="ts">
   import { onMount } from 'svelte';
-
   interface AgenticStatus {
     status: string;
     system: {
@@ -15,7 +14,6 @@
       lastActivity: string;
     };
   }
-
   interface ErrorEmbedding {
     id: number;
     text: string;
@@ -24,31 +22,26 @@
     resolved: boolean;
     createdAt: string;
   }
-
   interface FixSuggestion {
     suggestion: string;
     successRate: number;
     similarError: string;
     relevance: number;
   }
-
   // State
   let status: AgenticStatus | null = null;
   let recentErrors: ErrorEmbedding[] = [];
   let fixSuggestions: FixSuggestion[] = [];
-  let loading = false;
+  let loading = $state(false);
   let error = '';
-
   // Form states
   let errorQuery = '';
   let selectedFile: File | null = null;
-  let dragActive = false;
-
+  let dragActive = $state(false);
   // Fetch system status
   async function fetchStatus() {
     loading = true;
     error = '';
-
     try {
       const response = await fetch('/api/v1/agentic?action=status');
       if (!response.ok) {
@@ -59,10 +52,9 @@
       error = `Failed to fetch status: ${err.message}`;
       console.error('Status fetch error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   // Fetch recent errors
   async function fetchRecentErrors() {
     try {
@@ -77,14 +69,11 @@
       console.error('Errors fetch error:', err);
     }
   }
-
   // Query for fix suggestions
   async function queryFixSuggestions() {
     if (!errorQuery.trim()) return;
-
     loading = true;
     fixSuggestions = [];
-
     try {
       const response = await fetch(`/api/v1/agentic?action=fix-suggestions&query=${encodeURIComponent(errorQuery)}`);
       if (!response.ok) {
@@ -96,51 +85,41 @@
       error = `Fix query failed: ${err.message}`;
       console.error('Fix query error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   // Upload screenshot
   async function uploadScreenshot() {
     if (!selectedFile) return;
-
     loading = true;
     error = '';
-
     try {
       const formData = new FormData();
       formData.append('screenshot', selectedFile);
-
       const response = await fetch('/api/v1/agentic', {
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error(`Upload failed: ${response.status}`);
       }
-
       const result = await response.json();
       console.log('Screenshot uploaded:', result);
-
       // Reset form
       selectedFile = null;
-
       // Refresh errors list after a short delay
       setTimeout(fetchRecentErrors, 2000);
     } catch (err: any) {
       error = `Upload failed: ${err.message}`;
       console.error('Upload error:', err);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   // File drop handling
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
-
+    dragActive = $state(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files[0];
@@ -151,30 +130,25 @@
       }
     }
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragActive = true;
   }
-
   function handleDragLeave() {
-    dragActive = false;
+    dragActive = $state(false);
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       selectedFile = target.files[0];
     }
   }
-
   // Initialize
   onMount(() => {
     fetchStatus();
     fetchRecentErrors();
   });
 </script>
-
 <div class="agentic-controller">
   <!-- Header -->
   <div class="agentic-header">
@@ -182,20 +156,16 @@
       🤖 Agentic Controller
       <span class="agentic-subtitle">OCR → Embeddings → RAG</span>
     </h2>
-
     <button class="refresh-btn" onclick={fetchStatus} disabled={loading}>
       {loading ? '🔄' : '↻'} Refresh
     </button>
   </div>
-
   <!-- Error Display -->
   {#if error}
     <div class="error-alert">
       ❌ {error}
       <button onclick={() => (error = '')}>×</button>
-    </div>
-  {/if}
-
+    {/if}
   <!-- System Status -->
   {#if status}
     <div class="status-card">
@@ -222,13 +192,10 @@
           <span class="status-value">{status.activity.pendingErrors} items</span>
         </div>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Screenshot Upload -->
   <div class="upload-section">
     <h3>📸 Error Screenshot Analysis</h3>
-
     <div
       class="drop-zone"
       class:drag-active={dragActive}
@@ -250,28 +217,23 @@
             browse files
             <input type="file" accept="image/*" onchange={handleFileSelect} />
           </label>
-        </div>
-      {/if}
+        {/if}
     </div>
-
     {#if selectedFile}
       <button class="upload-btn" onclick={uploadScreenshot} disabled={loading}>
         {loading ? '🔄 Processing...' : '🚀 Analyze Screenshot'}
       </button>
     {/if}
   </div>
-
   <!-- Error Query -->
   <div class="query-section">
     <h3>🔍 Error Query & Fix Suggestions</h3>
-
     <div class="query-input-group">
       <input type="text" bind:value={errorQuery} placeholder="Paste error message here..." class="query-input" />
       <button class="query-btn" onclick={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
         {loading ? '🔄' : '🔍'} Find Fixes
       </button>
     </div>
-
     {#if fixSuggestions.length > 0}
       <div class="fix-suggestions">
         <h4>💡 Suggested Fixes</h4>
@@ -290,17 +252,14 @@
             </div>
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Recent Errors -->
   {#if recentErrors.length > 0}
     <div class="errors-section">
       <h3>📋 Recent Errors</h3>
-
       <div class="errors-list">
-        {#each recentErrors as errorItem}
+        {#each Array.isArray(recentErrors) ? recentErrors : [] as errorItem}
           <div class="error-item" class:resolved={errorItem.resolved}>
             <div class="error-header">
               <span class="error-id">#{errorItem.id}</span>
@@ -318,15 +277,12 @@
             {#if errorItem.screenshotPath}
               <div class="error-screenshot">
                 📷 Screenshot: {errorItem.screenshotPath.split('/').pop()}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .agentic-controller {
     max-width: 1200px;
@@ -336,7 +292,6 @@
     color: var(--nier-text-primary, #f0f0f0);
     font-family: 'JetBrains Mono', monospace;
   }
-
   .agentic-header {
     display: flex;
     justify-content: space-between;
@@ -345,19 +300,16 @@
     padding-bottom: 1rem;
     border-bottom: 2px solid var(--nier-accent-cool, #00ccff);
   }
-
   .agentic-title {
     margin: 0;
     color: var(--nier-accent-cool, #00ccff);
     font-size: 1.8rem;
   }
-
   .agentic-subtitle {
     font-size: 0.9rem;
     color: var(--nier-text-muted, #999);
     margin-left: 1rem;
   }
-
   .refresh-btn {
     padding: 0.5rem 1rem;
     background: var(--nier-bg-secondary, #1a1a1a);
@@ -367,18 +319,15 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-
   .refresh-btn:hover:not(:disabled) {
     background: var(--nier-accent-cool, #00ccff);
     color: var(--nier-bg-primary, #0a0a0a);
     box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
   }
-
   .refresh-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .error-alert {
     background: rgba(255, 0, 0, 0.1);
     border: 1px solid #ff4444;
@@ -390,7 +339,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
   .error-alert button {
     background: none;
     border: none;
@@ -398,7 +346,6 @@
     font-size: 1.2rem;
     cursor: pointer;
   }
-
   .status-card {
     background: var(--nier-bg-secondary, #1a1a1a);
     border: 1px solid var(--nier-border-primary, #333);
@@ -406,18 +353,15 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .status-card h3 {
     margin: 0 0 1rem 0;
     color: var(--nier-accent-warm, #d4af37);
   }
-
   .status-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
-
   .status-item {
     display: flex;
     justify-content: space-between;
@@ -425,19 +369,15 @@
     background: var(--nier-bg-tertiary, #2a2a2a);
     border-radius: 0.25rem;
   }
-
   .status-label {
     font-weight: bold;
   }
-
   .status-value {
     color: var(--nier-text-muted, #999);
   }
-
   .status-value.connected {
     color: var(--nier-accent-cool, #00ccff);
   }
-
   .upload-section,
   .query-section,
   .errors-section {
@@ -447,14 +387,12 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
-
   .upload-section h3,
   .query-section h3,
   .errors-section h3 {
     margin: 0 0 1rem 0;
     color: var(--nier-accent-warm, #d4af37);
   }
-
   .drop-zone {
     border: 2px dashed var(--nier-border-muted, #555);
     border-radius: 0.5rem;
@@ -464,16 +402,13 @@
     transition: all 0.3s ease;
     margin-bottom: 1rem;
   }
-
   .drop-zone.drag-active {
     border-color: var(--nier-accent-cool, #00ccff);
     background: rgba(0, 204, 255, 0.1);
   }
-
   .drop-zone:hover {
     border-color: var(--nier-accent-cool, #00ccff);
   }
-
   .file-selected {
     display: flex;
     align-items: center;
@@ -481,7 +416,6 @@
     gap: 1rem;
     color: var(--nier-accent-cool, #00ccff);
   }
-
   .file-selected button {
     background: none;
     border: none;
@@ -489,17 +423,14 @@
     font-size: 1.2rem;
     cursor: pointer;
   }
-
   .file-input-label {
     color: var(--nier-accent-cool, #00ccff);
     cursor: pointer;
     text-decoration: underline;
   }
-
   .file-input-label input {
     display: none;
   }
-
   .upload-btn,
   .query-btn {
     padding: 0.75rem 1.5rem;
@@ -511,25 +442,21 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-
   .upload-btn:hover:not(:disabled),
   .query-btn:hover:not(:disabled) {
     background: var(--nier-accent-warm, #d4af37);
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
   }
-
   .upload-btn:disabled,
   .query-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .query-input-group {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .query-input {
     flex: 1;
     padding: 0.75rem;
@@ -539,22 +466,18 @@
     border-radius: 0.5rem;
     font-family: inherit;
   }
-
   .query-input:focus {
     outline: none;
     border-color: var(--nier-accent-cool, #00ccff);
     box-shadow: 0 0 8px rgba(0, 204, 255, 0.3);
   }
-
   .fix-suggestions {
     margin-top: 1rem;
   }
-
   .fix-suggestions h4 {
     margin: 0 0 1rem 0;
     color: var(--nier-accent-cool, #00ccff);
   }
-
   .fix-card {
     background: var(--nier-bg-tertiary, #2a2a2a);
     border: 1px solid var(--nier-border-muted, #444);
@@ -562,34 +485,28 @@
     padding: 1rem;
     margin-bottom: 1rem;
   }
-
   .fix-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
   }
-
   .fix-relevance,
   .fix-success {
     color: var(--nier-accent-warm, #d4af37);
   }
-
   .fix-content {
     margin-bottom: 0.5rem;
     line-height: 1.6;
   }
-
   .fix-similar {
     font-size: 0.9rem;
     color: var(--nier-text-muted, #999);
   }
-
   .errors-list {
     max-height: 400px;
     overflow-y: auto;
   }
-
   .error-item {
     background: var(--nier-bg-tertiary, #2a2a2a);
     border: 1px solid var(--nier-border-muted, #444);
@@ -597,86 +514,68 @@
     padding: 1rem;
     margin-bottom: 1rem;
   }
-
   .error-item.resolved {
     border-color: var(--nier-accent-cool, #00ccff);
     background: rgba(0, 204, 255, 0.05);
   }
-
   .error-header {
     display: flex;
     gap: 1rem;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
   }
-
   .error-id {
     color: var(--nier-accent-cool, #00ccff);
     font-weight: bold;
   }
-
   .error-confidence,
   .error-date {
     color: var(--nier-text-muted, #999);
   }
-
   .error-status {
     color: var(--nier-accent-warm, #d4af37);
   }
-
   .error-text {
     margin-bottom: 0.5rem;
     line-height: 1.5;
   }
-
   .error-screenshot {
     font-size: 0.9rem;
     color: var(--nier-text-muted, #999);
   }
-
   /* Custom scrollbar */
   .errors-list::-webkit-scrollbar {
     width: 8px;
   }
-
   .errors-list::-webkit-scrollbar-track {
     background: var(--nier-bg-primary, #0a0a0a);
   }
-
   .errors-list::-webkit-scrollbar-thumb {
     background: var(--nier-accent-cool, #00ccff);
     border-radius: 4px;
   }
-
   .errors-list::-webkit-scrollbar-thumb:hover {
     background: var(--nier-accent-warm, #d4af37);
   }
-
   /* Responsive */
   @media (max-width: 768px) {
     .agentic-controller {
       padding: 1rem;
     }
-
     .agentic-header {
       flex-direction: column;
       gap: 1rem;
       align-items: stretch;
     }
-
     .status-grid {
       grid-template-columns: 1fr;
     }
-
     .query-input-group {
       flex-direction: column;
     }
-
     .error-header {
       flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
-
-

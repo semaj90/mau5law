@@ -10,7 +10,7 @@ export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
     void (async () => {
       try {
         const mod = await import('$lib/services/system-monitor-client');
-  type ClientStartReturn = { push?: (entry: LatencyEntry) => void; stop?: () => void; service?: unknown };
+  type ClientStartReturn = { push?: (entry: LatencyEntry) => void; stop?: () => void; service?: any };
         type ClientModuleShape = {
           startSystemMonitorClient?: (opts?: { batchSize?: number; intervalMs?: number; url?: string }) => ClientStartReturn;
         };

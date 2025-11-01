@@ -97,7 +97,7 @@
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = $state(false);
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       $form.file = files[0];
@@ -109,7 +109,7 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = false;
+    dragOver = $state(false);
   }
   function generatePreview(file: File) {
     if (file.type.startsWith('image/')) {
@@ -185,7 +185,6 @@
     { value: 'urgent', label: 'Urgent' }
   ];
 </script>
-
 <div class="minio-upload-container">
   <form method="POST" action="?/upload" use:enhance={handleSubmit} enctype="multipart/form-data">
     <!-- Case ID Input -->
@@ -203,8 +202,7 @@
         class:error={$errors.caseId}
       />
       {#if $errors.caseId}
-        <div class="error-message">{$errors.caseId}</div>
-      {/if}
+        <div class="error-message">{$errors.caseId}{/if}
     </div>
     <!-- File Upload Area -->
     <div class="form-group">
@@ -235,8 +233,7 @@
             {#if previewUrl}
               <img src={previewUrl} alt="Preview" class="image-preview" />
             {:else}
-              <div class="file-icon">📄</div>
-            {/if}
+              <div class="file-icon">📄{/if}
             <div class="file-info">
               <div class="file-name">{$form.file.name}</div>
               <div class="file-size">{formatFileSize($form.file.size)}</div>
@@ -250,12 +247,10 @@
               <div>Drop your document here or click to browse</div>
               <div class="upload-hint">PDF, Word, Text, or Image files up to 100MB</div>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
       {#if $errors.file}
-        <div class="error-message">{$errors.file}</div>
-      {/if}
+        <div class="error-message">{$errors.file}{/if}
     </div>
     <!-- Document Type -->
     <div class="form-group">
@@ -268,7 +263,7 @@
         disabled={disabled || $submitting}
         class="form-select"
       >
-        {#each documentTypes as option}
+        {#each Array.isArray(documentTypes) ? documentTypes : [] as option}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
@@ -297,7 +292,7 @@
         disabled={disabled || $submitting}
         class="form-select"
       >
-        {#each priorityOptions as option}
+        {#each Array.isArray(priorityOptions) ? priorityOptions : [] as option}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
@@ -343,8 +338,7 @@
             Upload failed ❌
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Submit Button -->
     <div class="form-actions">
       <button type="submit" disabled={disabled || $submitting || !$form.file || !$form.caseId} class="submit-button">
@@ -359,11 +353,9 @@
     {#if $message}
       <div class="form-message" class:error={uploadStatus === 'error'}>
         {$message}
-      </div>
-    {/if}
+      {/if}
   </form>
 </div>
-
 <style>
   .minio-upload-container {
     max-width: 600px;
@@ -505,7 +497,7 @@
   .progress-fill {
     height: 100%;
     background: var(--accent-primary);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .progress-text {
     margin-top: 0.5rem;
@@ -553,4 +545,3 @@
     border-color: var(--error-color);
   }
 </style>
-

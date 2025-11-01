@@ -307,7 +307,7 @@ function filterEvidenceHierarchy(hierarchy: any, filter: any): any {
     .filter((child: any) => child !== null) || [],;
   return {
     ...hierarchy,
-    children: filteredChildren
+     filteredChildren
   };
 }
 function calculateHierarchyStatistics(hierarchy: any): any {

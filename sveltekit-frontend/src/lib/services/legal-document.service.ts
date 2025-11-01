@@ -139,7 +139,7 @@ export class LegalAuditService {
     entityType: string;
     entityId: string;
     userId: string;
-    details?: unknown);
+    details?: any);
   }) {
     const auditEntry = {
       ...action,

@@ -3,7 +3,6 @@ import { pgTable, index, text, uuid, timestamp, jsonb, integer } from 'drizzle-o
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
-
 // Document embeddings for semantic search
 export const documentEmbeddings = pgTable(
   'document_embeddings',
@@ -29,7 +28,6 @@ export const documentEmbeddings = pgTable(
     createdAtIdx: index('idx_created_at').on(table.createdAt),
   })
 );
-
 // Search queries and their embeddings for caching
 export const searchQueries = pgTable(
   'search_queries',
@@ -50,7 +48,6 @@ export const searchQueries = pgTable(
     createdAtIdx: index('idx_search_created').on(table.createdAt),
   })
 );
-
 // AI model configurations
 export const aiModels = pgTable(
   'ai_models',
@@ -72,16 +69,13 @@ export const aiModels = pgTable(
     providerTypeIdx: index('idx_provider_type').on(table.provider, table.modelType),
   })
 );
-
 // relations callback doesn't need to destructure unused helpers; use empty callback to avoid unused var warnings
 export const documentEmbeddingsRelations = relations(documentEmbeddings, () => ({
   // Relations to main tables can be added here based on documentId and documentType
 }));
-
 export const searchQueriesRelations = relations(searchQueries, () => ({
   // User relation can be added here
 }));
-
 // Export types
 export type DocumentEmbedding = typeof documentEmbeddings.$inferSelect;
 export type NewDocumentEmbedding = typeof documentEmbeddings.$inferInsert;

@@ -256,8 +256,7 @@ await initializeQuantumVisualization();
       <div class="loading-overlay">
         <div class="loading-spinner"></div>
         <p>Initializing Quantum Reality...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <div class="metrics-panel">
     <div class="metrics-grid">
@@ -387,7 +386,7 @@ await initializeQuantumVisualization();
     color: #00ff41;
   }
   .visualization-content {
-    position relative;
+    position: relative;
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -397,7 +396,7 @@ await initializeQuantumVisualization();
     border-radius: 4px;
   }
   .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -460,7 +459,7 @@ await initializeQuantumVisualization();
   }
   .metric-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
     border-radius: 4px;
   }
   .metric-fill.quantum { background: linear-gradient(90deg, #00bfff, #1e90ff), }
@@ -500,4 +499,3 @@ await initializeQuantumVisualization();
     }
   }
 </style>
-

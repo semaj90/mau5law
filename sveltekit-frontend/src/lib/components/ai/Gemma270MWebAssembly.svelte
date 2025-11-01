@@ -5,9 +5,8 @@
 -->
 <script lang="ts">
 	// Removed unused onMount import and switched Alert to a default import (compiler suggested)
-	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-	import Alert from '$lib/components/ui/enhanced-bits'; // use default import as compiler suggested
-
+	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
+	import { Alert } from '$lib/components/ui/enhanced-bits.svelte''; // use default import as compiler suggested
 	// Svelte 5 runes for reactive state
 	let wasmModule: any = $state(null);
 	let isLoaded = $state(false);
@@ -18,7 +17,6 @@
 	let wasmSupported = $state(true);
 	let webglSupported = $state(true);
 	let sharedMemorySupported = $state(true);
-
 	// WebAssembly configuration (fixed missing punctuation and property names)
 	const wasmConfig = {
 		modelSize: '270M',
@@ -30,7 +28,6 @@
 		enableWebGL: true,
 		enableSharedMemory: true
 	};
-
 	// Performance metrics (fixed property names / values)
 	let performanceMetrics = $state({
 		loadTime: 0,
@@ -40,11 +37,9 @@
 		webglAcceleration: false,
 		lastUpdated: null as string | null
 	});
-
 	// WebGL context for GPU acceleration
 	let webglContext: WebGLRenderingContext | null = $state(null);
 	// removed unused gpuBuffers to avoid linter noise
-
 	$effect(() => {
 		(async () => {
 			await initializeWebAssembly();
@@ -52,14 +47,13 @@
 			initializeWebGL();
 		})();
 	});
-
 	async function initializeWebAssembly(): Promise<void> {
 		try {
-			isLoaded = false;
+			isLoaded = $state(false);
 			const startTime = performance.now();
 			// Check for WebAssembly support
 			if (!(window as any).WebAssembly) {
-				wasmSupported = false;
+				wasmSupported = $state(false);
 				errorMessage = 'WebAssembly not supported in this browser';
 				return;
 			}
@@ -76,7 +70,6 @@
 			console.error('WebAssembly initialization error:', error);
 		}
 	}
-
 	async function loadGemma270MWASM(): Promise<any> {
 		// Simulate loading the Gemma3 270M WebAssembly module
 		return new Promise((resolve) => {
@@ -101,7 +94,6 @@
 			}, 1500);
 		});
 	}
-
 	function checkBrowserCapabilities() {
 		// Check SharedArrayBuffer support
 		sharedMemorySupported = typeof (SharedArrayBuffer as any) !== 'undefined';
@@ -115,7 +107,6 @@
 			hardwareConcurrency: navigator.hardwareConcurrency
 		});
 	}
-
 	function initializeWebGL() {
 		if (!webglSupported) return;
 		try {
@@ -127,10 +118,9 @@
 			}
 		} catch (err) {
 			console.warn('WebGL initialization failed:', err);
-			performanceMetrics.webglAcceleration = false;
+			performanceMetrics.webglAcceleration = $state(false);
 		}
 	}
-
 	// Client-side AI operations (added parameter typings)
 	async function processText(text: string, operation: 'inference' | 'embedding' | 'summarize' | 'extract' = 'inference') {
 		if (!isLoaded || !wasmModule) {
@@ -172,11 +162,10 @@
 			console.error('Client-side processing error:', error);
 			return null;
 		} finally {
-			isProcessing = false;
+			isProcessing = $state(false);
 			processingProgress = 100;
 		}
 	}
-
 	async function performClientInference(text: string) {
 		// Simulate progress updates
 		for (let i = 0; i <= 100; i += 10) {
@@ -198,7 +187,6 @@
 			processingLocation: 'client-side'
 		};
 	}
-
 	async function generateClientEmbedding(text: string) {
 		const result = await wasmModule.embedding({
 			text: text,
@@ -212,7 +200,6 @@
 			processingLocation: 'client-side'
 		};
 	}
-
 	async function summarizeClientSide(text: string) {
 		const result = await wasmModule.summarize({
 			text: text,
@@ -227,7 +214,6 @@
 			processingLocation: 'client-side'
 		};
 	}
-
 	async function extractClientSide(text: string) {
 		const result = await wasmModule.extract({
 			text: text,
@@ -244,13 +230,11 @@
 			processingLocation: 'client-side'
 		};
 	}
-
 	function calculateTokensPerSecond(text: string, inferenceTime: number): number {
 		const estimatedTokens = (text?.split(/\s+/).length ?? 0) * 1.3; // Rough token estimation
 		if (inferenceTime <= 0) return 0;
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2));
 	}
-
 	// Simulated WASM module functions (typed params)
 	async function simulateInference(params: any) {
 		await new Promise((resolve) => setTimeout(resolve, 200));
@@ -282,7 +266,6 @@
 			relationships: []
 		};
 	}
-
 	function simulateMemoryAllocate(_size: number) {
 		return `memory_block_${Date.now()}`;
 	}
@@ -292,7 +275,6 @@
 	function simulateMemoryUsage() {
 		return Math.floor(Math.random() * 100) + 50; // 50-150 MB
 	}
-
 	function simulateGPUInit() {
 		return performanceMetrics.webglAcceleration;
 	}
@@ -302,11 +284,9 @@
 	function simulateGPUCompute(_buffer: any) {
 		return { result: 'gpu_computation_result' };
 	}
-
 	// Export functions for external use
 	export { processText, performanceMetrics, isLoaded, wasmSupported };
 </script>
-
 <div class="container mx-auto p-6 max-w-4xl">
 	<Card>
 		<CardHeader>
@@ -499,51 +479,40 @@
 		</CardContent>
 	</Card>
 </div>
-
 <style>
 	.gemma-270m-wasm {
 		max-width: 800px;
 	}
-
 	.metric {
 		transition: transform 0.2s ease;
 	}
-
 	.metric:hover {
 		transform: translateY(-2px);
 	}
-
 	.action-btn {
 		transition: all 0.2s ease;
 	}
-
 	.action-btn:hover {
 		transform: translateY(-1px);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
-
 	.action-btn:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 		transform: none;
 	}
-
 	pre {
 		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 	}
-
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}
-
 	@keyframes spin {
 		from {
 			transform: rotate(0deg);
 		}
-
 		to {
 			transform: rotate(360deg);
 		}
 	}
 </style>
-

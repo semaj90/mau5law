@@ -18,7 +18,7 @@ type MinimalNatsSubscription<T = { data: Uint8Array; reply?: string }> = AsyncIt
   close?: () => void;
   // support async-iterable early termination if available
   // Replace `any` with `unknown` to avoid the: "Unexpected any" diagnostics
-  return?: (value?: unknown) => Promise<IteratorResult<T>>;
+  return?: (value?: any) => Promise<IteratorResult<T>>;
 };
 type MinimalNatsConnection = {
   subscribe: (subject: string) => MinimalNatsSubscription;
@@ -101,18 +101,16 @@ export interface ServiceMetrics {
   activeConnections: number;
   suggestionsGenerated: number;
 }
-
 export interface HealthStatus {
   initialized: boolean;
   quicEnabled: boolean;
   metrics: ServiceMetrics;
 }
-
 export class NatsQuicSearchService {
   private nats: MinimalNatsConnection | null = null;
   // lightweight JSON codec using TextEncoder/TextDecoder to avoid depending on JSONCodec type
   private codec = {
-    encode: (obj: unknown) => {
+    encode: (obj: any) => {
       const str = JSON.stringify(obj);
       return new TextEncoder().encode(str);
     },
@@ -122,7 +120,7 @@ export class NatsQuicSearchService {
       return JSON.parse(str);
     },
   };
-  private isInitialized = false;
+  private isInitialized = $state(false);
   private searchQueue: Map<string, (response: SearchResponse) => void> = new Map();
   private suggestionCache: Map<string, SearchSuggestion[]> = new Map();
   // Performance metrics
@@ -196,7 +194,7 @@ export class NatsQuicSearchService {
       console.log('✅ NATS+QUIC Search Service initialized');
     } catch (error) {
       console.error('❌ Failed to initialize NATS+QUIC Search Service:', error);
-      this.isInitialized = false;
+      this.isInitialized = $state(false);
     }
   }
   /**
@@ -527,11 +525,9 @@ export class NatsQuicSearchService {
     // - Produces up to `limit` results
     // - Computes a stable: "score" from the embedding sum so results are repeatable
     if (!Array.isArray(embedding) || embedding.length === 0) return [];
-
     const sum = embedding.reduce((s, v) => s + (typeof v === 'number' ? v : 0), 0);
     const base = Math.tanh(sum / Math.max(1, embedding.length)); // normalized base in [-1,1]
     const normalizedBase = Math.abs(base); // [0,1]
-
     const results: SearchResult[] = [];
     for (let i = 0; i < Math.max(0, Math.min(limit, 50)); i++) {
       const id = createHash('sha256')
@@ -556,10 +552,8 @@ export class NatsQuicSearchService {
   ): Promise<SearchResult[]> {
     // Minimal deterministic text search fallback:
     if (!query || typeof query !== 'string') return [];
-
     const cleaned = query.trim();
     const base = Math.min(1, cleaned.length / 200); // longer queries get higher base score up to 1
-
     const results: SearchResult[] = [];
     for (let i = 0; i < Math.max(0, Math.min(limit, 50)); i++) {
       const id = createHash('sha256').update(`txt:${cleaned}:${i}`).digest('hex').slice(0, 12);
@@ -626,9 +620,7 @@ export class NatsQuicSearchService {
     this.metrics.cacheHitRate = (currentHits + (hit ? 1 : 0)) / total;
   }
 }
-
 // Singleton instance (typed)
 export const natsQuicSearchService = new NatsQuicSearchService();
-
 // Default export (single)
 export default natsQuicSearchService;

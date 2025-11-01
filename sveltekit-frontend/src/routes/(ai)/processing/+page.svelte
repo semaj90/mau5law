@@ -200,7 +200,7 @@
         await (nesGPUBridge as any).storeCHRROMPattern?.(`job_${job.id}`, {});
       }
       processingQueue = [...processingQueue, job];
-      showJobDialog = false;
+      showJobDialog = $state(false);
       // Reset form
       newJobForm = {
         documentId: '',
@@ -213,7 +213,7 @@
       console.error('Failed to submit job:', error);
       newJobForm.errors = { general: ['Failed to submit processing job'] };
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function cancelJob(jobId: string) {
@@ -421,7 +421,7 @@
         </h3>
       </div>
       <div class="p-6">
-        {#each activeJobs as job}
+        {#each Array.isArray(activeJobs) ? activeJobs : [] as job}
           <div class="p-3 border border-yellow-200 bg-yellow-50 rounded-lg mb-3">
             <div class="flex items-center justify-between mb-2">
               <span class="font-medium text-sm">{job.documentId}</span>
@@ -462,7 +462,7 @@
         </h3>
       </div>
       <div class="p-6 max-h-96 overflow-y-auto">
-        {#each completedJobs as job}
+        {#each Array.isArray(completedJobs) ? completedJobs : [] as job}
           <div class="p-3 border border-green-200 bg-green-50 rounded-lg mb-3">
             <div class="flex items-center justify-between mb-2">
               <span class="font-medium text-sm">{job.documentId}</span>

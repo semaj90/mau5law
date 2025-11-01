@@ -164,7 +164,7 @@ export class GoTensorHTTPClient {
         },
         timestamp: new Date(),
       };
-    } catch (err: unknown) {
+    } catch (err: any) {
       return {
         id: request.id,
         success: false,

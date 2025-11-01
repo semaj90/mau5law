@@ -1,6 +1,6 @@
 <script lang="ts">
   import { get } from 'svelte/store';
-  import EnhancedBits from '$lib/components/ui/enhanced-bits';
+  import { EnhancedBits } from '$lib/components/ui/enhanced-bits.svelte'';
   const { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator } =
     (EnhancedBits as any) || {};
   import {
@@ -20,7 +20,6 @@
   } from 'lucide-svelte';
   import { slide } from 'svelte/transition';
   import { editorState, report, reportActions, reportUI  } from '$lib/stores/unified';
-
   // Actions
   const handleSave = () => {
     reportActions.save();
@@ -48,7 +47,6 @@
     reportActions.updateSettings({ layout: nextLayout });
   };
 </script>
-
 <div class="report-toolbar container mx-auto px-4">
   <!-- Main Menu Bar -->
   <div class="menu-bar">
@@ -85,7 +83,6 @@
         </DropdownItem>
       </DropdownContent>
     </DropdownRoot>
-
     <!-- Edit Menu -->
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
@@ -121,7 +118,6 @@
         </DropdownItem>
       </DropdownContent>
     </DropdownRoot>
-
     <!-- View Menu -->
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">View</button></DropdownTrigger>
@@ -143,7 +139,6 @@
       </DropdownContent>
     </DropdownRoot>
   </div>
-
   <!-- Quick Actions -->
   <div class="quick-actions">
     <button
@@ -166,7 +161,6 @@
       <Eye size={16} />
     </button>
   </div>
-
   <!-- Status Info -->
   <div class="status-info">
     <span class="word-count">
@@ -181,7 +175,6 @@
     {/if}
   </div>
 </div>
-
 <style>
   /* @unocss-include */
   .report-toolbar {
@@ -192,7 +185,7 @@
     border-bottom: 1px solid #e2e8f0;
     padding: 0.5rem 1rem;
     min-height: 3rem;
-    position sticky;
+    position: sticky;
     top: 0;
     z-index: 40,
   }
@@ -215,7 +208,7 @@
     background: #f3f4f6;
   }
   .dropdown-menu {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 0;
     min-width: 12rem;
@@ -304,5 +297,3 @@
     color: #10b981;
   }
 </style>
-
-

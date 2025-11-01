@@ -1,14 +1,11 @@
 import { redis } from '$lib/server/redis';
 import { logger } from './logger.js';
-
 const CLUSTER_MODEL_KEY = 'foaf:cluster:model';
-
 export interface ClusterCentroid {
   id: string;
   vector: number[];
   metadata?: Record<string, unknown>;
 }
-
 export interface ClusterModelSnapshot {
   version: string;
   created_at: string;
@@ -18,7 +15,6 @@ export interface ClusterModelSnapshot {
   centroids: ClusterCentroid[];
   metadata?: Record<string, unknown>;
 }
-
 export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | null> {
   try {
     const payload = await redis.get(CLUSTER_MODEL_KEY);
@@ -31,19 +27,16 @@ export async function getClusterModelSnapshot(): Promise<ClusterModelSnapshot | 
     return null;
   }
 }
-
 export async function storeClusterModelSnapshot(snapshot: ClusterModelSnapshot, ttlSeconds?: number) {
   await redis.set(CLUSTER_MODEL_KEY, JSON.stringify(snapshot));
   if (typeof ttlSeconds === 'number' && ttlSeconds > 0) {
     await redis.expire(CLUSTER_MODEL_KEY, ttlSeconds);
   }
 }
-
 export async function getClusterCentroids(): Promise<number[][]> {
   const raw = await redis.get('foaf:kmeans:centroids');
   return raw ? (JSON.parse(raw) as number[][]) : [];
 }
-
 export function selectNearestCentroid(snapshot: ClusterModelSnapshot, vector: number[]): ClusterCentroid | null {
   if (!Array.isArray(vector) || vector.length === 0) return null;
   let chosen: ClusterCentroid | null = null;
@@ -58,10 +51,8 @@ export function selectNearestCentroid(snapshot: ClusterModelSnapshot, vector: nu
   }
   return chosen;
 }
-
 // --- ADDED: small runtime-safe adapters to avoid TS errors when client typings differ ---
 const _r = redis as unknown as Record<string, unknown>;
-
 async function redisHSet(key: string, obj: Record<string, unknown> | Record<string, string> | string) {
 	// prefer modern camelCase, fallback to lowercase or hmset; final fallback stores JSON string
 	// use any calls to avoid strict typing issues across redis clients
@@ -74,7 +65,6 @@ async function redisHSet(key: string, obj: Record<string, unknown> | Record<stri
 	if (typeof anyR.set === 'function') return await anyR.set(key, JSON.stringify(obj));
 	return null;
 }
-
 async function redisSAdd(key: string, member: string) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const anyR = _r as any;
@@ -95,7 +85,6 @@ async function redisSAdd(key: string, member: string) {
 	}
 	return null;
 }
-
 async function redisSMembers(key: string): Promise<string[] | null> {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const anyR = _r as any;
@@ -114,7 +103,6 @@ async function redisSMembers(key: string): Promise<string[] | null> {
 	return null;
 }
 // --- end adapters ---
-
 export async function addClusterMember(clusterId: string, personId: string, metadata: Record<string, unknown> = {}) {
   const personKey = `foaf:person:${personId}`;
   const clusterKey = `foaf:cluster:${clusterId}:members`;
@@ -126,11 +114,9 @@ export async function addClusterMember(clusterId: string, personId: string, meta
   });
   await redisSAdd(clusterKey, personId);
 }
-
 export async function assignCluster(personId: string, clusterId: string) {
   await addClusterMember(clusterId, personId);
 }
-
 export async function getClusterMembers(clusterId: string, options: { exclude?: string } = {}): Promise<string[]> {
   // use sMembers and assert the result is string[] for proper typing
   const raw = await redisSMembers(`foaf:cluster:${clusterId}:members`);
@@ -139,7 +125,6 @@ export async function getClusterMembers(clusterId: string, options: { exclude?: 
   if (!options.exclude) return members;
   return members.filter((member: string) => member !== options.exclude);
 }
-
 export function euclidean(a: number[], b: number[]): number {
   const length = Math.min(a.length, b.length);
   if (length === 0) return Number.POSITIVE_INFINITY;

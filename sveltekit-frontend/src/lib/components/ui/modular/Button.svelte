@@ -74,12 +74,10 @@
 >
   <!-- Loading spinner (aria-hidden so SR users just hear: "busy") -->
   {#if loading}
-    <div class="i-lucide-loader-2 w-4 h-4 animate-spin" aria-hidden="true"></div>
-  {/if}
+    <div class="i-lucide-loader-2 w-4 h-4 animate-spin" aria-hidden="true">{/if}
   <!-- Icon (aria-hidden, since aria-label or text covers meaning) -->
   {#if icon && !loading}
-    <div class="{icon} w-4 h-4" aria-hidden="true"></div>
-  {/if}
+    <div class="{icon} w-4 h-4" aria-hidden="true">{/if}
   <!-- Content (snippet or text) -->
   {#if children}
     {@render children()}

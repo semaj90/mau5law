@@ -74,18 +74,18 @@ export interface OCRTask {
   options: ProcessingOptions;
   pageIndex: number;
   resolve: (value: { text: string; confidence: number }) => void;
-  reject: (reason?: unknown) => void;
+  reject: (reason?: any) => void;
 }
 
 export class EnhancedOCRProcessor extends EventEmitter {
   private workers: OCRWorkerConfig[] = [];
   private maxConcurrentWorkers: number;
   private tempDir: string;
-  private initialized = false;
+  private initialized = $state(false);
   // Use the new OCRTask interface for the processingQueue
   private processingQueue: OCRTask[] = [];
   private legalKeywords: Set<string>;
-  private queueRunning = false; // To prevent multiple queue runners
+  private queueRunning = $state(false); // To prevent multiple queue runners
 
   constructor(maxWorkers = 2, tempDir = path.join(process.cwd(), 'tmp', 'ocr')) {
     super();
@@ -120,7 +120,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       'breach',
       'negligence',
     ]);
-    this.initializeWorkers().catch((err: unknown) => this.emit('error', err));
+    this.initializeWorkers().catch((err: any) => this.emit('error', err));
   }
 
   private async initializeWorkers(): Promise<void> {
@@ -145,7 +145,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       this.initialized = true;
       this.emit('initialized', `${this.workers.length} OCR workers ready`);
       this.runQueue(); // Start processing the queue
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.emit('error', `Failed to initialize OCR workers: ${String(error)}`);
       throw error;
     }
@@ -178,13 +178,13 @@ export class EnhancedOCRProcessor extends EventEmitter {
       try {
         const result = await this.processImagePageNow(task.imagePath, task.options, task.pageIndex);
         task.resolve(result);
-      } catch (error: unknown) {
+      } catch (error: any) {
         task.reject(error);
       } finally {
         workerCfg.status = 'idle';
       }
     }
-    this.queueRunning = false;
+    this.queueRunning = $state(false);
   }
 
   async processFile(filePath: string, options: ProcessingOptions = {}): Promise<OCRResult> {
@@ -229,7 +229,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
 
       this.emit('processing:complete', result);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       this.emit('processing:error', { filename, error: String(error) });
       throw error;
     }
@@ -265,7 +265,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
             confidenceBySection.push(res.confidence || 0);
             totalConfidence += res.confidence || 0;
             this.emit('page:processed', { page: i + 1, total: pageImages.length, confidence: res.confidence || 0 });
-          } catch (err: unknown) {
+          } catch (err: any) {
             // Explicitly type err
             this.emit('page:error', { page: i + 1, error: String(err) });
             resultsText.push('');
@@ -299,7 +299,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         },
       };
       return ocrResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Enhanced PDF processing failed: ${String(error)}`);
     }
   }
@@ -337,7 +337,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           extractedNumbers: [],
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Enhanced image processing failed: ${String(error)}`);
     }
   }
@@ -388,7 +388,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       const confidence = typeof data?.confidence === 'number' ? data.confidence : 0;
       workerCfg.processedPages++;
       return { text, confidence };
-    } catch (error: unknown) {
+    } catch (error: any) {
       workerCfg.errors++;
       workerCfg.status = 'error';
       if (workerCfg.errors > 5) {
@@ -397,7 +397,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           if (workerCfg.worker.terminate) {
             await workerCfg.worker.terminate();
           }
-        } catch (e: unknown) {
+        } catch (e: any) {
           /* ignore */
         }
         try {
@@ -408,7 +408,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           workerCfg.worker = newWorkerInstance;
           workerCfg.status = 'idle';
           workerCfg.errors = 0;
-        } catch (resetError: unknown) {
+        } catch (resetError: any) {
           this.emit('worker:reset:failed', { workerId: workerCfg.id, error: String(resetError) });
         }
       }
@@ -431,7 +431,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         .jpeg({ quality: options.outputQuality ?? 98, mozjpeg: true })
         .toFile(enhancedPath);
       return enhancedPath;
-    } catch (error: unknown) {
+    } catch (error: any) {
       throw new Error(`Legal image enhancement failed: ${String(error)}`);
     }
   }
@@ -507,7 +507,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
       imagePaths.map(async p => {
         try {
           await fs.unlink(p);
-        } catch (error: unknown) {
+        } catch (error: any) {
           console.warn(`Failed to delete temporary image ${p}: ${String(error)}`);
         }
       })

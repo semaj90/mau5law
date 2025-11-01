@@ -13,28 +13,25 @@ and AI-powered verification features.
   export let caseId: string;
   export let userId: string;
   export let originalHash: string;
-  export let onWorkflowComplete: ((result: unknown) => void) | undefined;
+  export let onWorkflowComplete: ((result: any) => void) | undefined;
   export let onWorkflowError: ((error: string) => void) | undefined;
-
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
-  import CustodyTimeline from './CustodyTimeline.svelte';
-  import IntegrityVerification from './IntegrityVerification.svelte';
-  import CollaborationPanel from './CollaborationPanel.svelte';
-  import WorkflowProgress from './WorkflowProgress.svelte';
+  import { CustodyTimeline } from './CustodyTimeline.svelte';
+  import { IntegrityVerification } from './IntegrityVerification.svelte';
+  import { CollaborationPanel } from './CollaborationPanel.svelte';
+  import { WorkflowProgress } from './WorkflowProgress.svelte';
   // Use named imports for UI kit components
-  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert';
+  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte'';
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
-  import { toast } from '$lib/components/ui/toast';
-
+  import { toast } from '$lib/components/ui/toast.svelte'';
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());
   let isWorkflowActive = $state(false);
-
   // Reactive state derived from machine (use arrow selectors)
   let progress = $derived(() => currentState.context?.progress);
   let stage = $derived(() => currentState.context?.workflowStage ?? 'idle');
@@ -44,20 +41,16 @@ and AI-powered verification features.
   let requiresApproval = $derived(() => currentState.context?.requiresApproval);
   let error = $derived(() => currentState.context?.error);
   let warnings = $derived(() => currentState.context?.warnings ?? []);
-
   // UI state
   let isCollaborationExpanded = $state(false);
   let showIntegrityDetails = $state(false);
   let transferReason = $state('');
   let showTransferDialog = $state(false);
-
   // WebSocket for real-time updates
   let wsConnection: WebSocket | null = null;
-
   $effect(() => {
     // Start the state machine actor
     custodyActor.start();
-
     // Subscribe to state changes
     const sub = custodyActor.subscribe((state) => {
       currentState = state;
@@ -71,17 +64,14 @@ and AI-powered verification features.
         onWorkflowError?.(state.context?.error || 'Unknown error');
       }
     });
-
     // Set up WebSocket connection for real-time collaboration
     setupWebSocketConnection();
-
     return () => {
       sub.unsubscribe?.();
       custodyActor.stop();
       closeWebSocketConnection();
     };
   });
-
   function startWorkflow() {
     custodyActor.send({
       type: 'START_CUSTODY_WORKFLOW',
@@ -91,28 +81,23 @@ and AI-powered verification features.
       originalHash,
     } as EvidenceCustodyEvent);
   }
-
   function retryWorkflow() {
     custodyActor.send({ type: 'RETRY' } as EvidenceCustodyEvent);
   }
-
   function cancelWorkflow() {
     if (confirm('Are you sure you want to cancel the custody workflow? This action cannot be undone.')) {
       custodyActor.send({ type: 'CANCEL_WORKFLOW' } as EvidenceCustodyEvent);
     }
   }
-
   function approveWorkflow() {
     custodyActor.send({ type: 'APPROVE_CUSTODY' } as EvidenceCustodyEvent);
   }
-
   function rejectWorkflow() {
     const reason = prompt('Please provide a reason for rejection');
     if (reason) {
       custodyActor.send({ type: 'REJECT_CUSTODY', reason } as EvidenceCustodyEvent);
     }
   }
-
   function startCustodyTransfer() {
     if (transferReason.trim()) {
       custodyActor.send({
@@ -120,11 +105,10 @@ and AI-powered verification features.
         newCustodian: userId,
         reason: transferReason,
       } as EvidenceCustodyEvent);
-      showTransferDialog = false;
+      showTransferDialog = $state(false);
       transferReason = '';
     }
   }
-
   function joinCollaboration() {
     custodyActor.send({
       type: 'JOIN_COLLABORATION',
@@ -133,14 +117,12 @@ and AI-powered verification features.
     } as EvidenceCustodyEvent);
     isCollaborationExpanded = true;
   }
-
   function leaveCollaboration() {
     custodyActor.send({
       type: 'LEAVE_COLLABORATION',
       userId,
     } as EvidenceCustodyEvent);
   }
-
   function setupWebSocketConnection() {
     try {
       // derive URL from env/host in future; local dev fallback for now
@@ -175,14 +157,12 @@ and AI-powered verification features.
       console.error('Failed to establish WebSocket connection', error);
     }
   }
-
   function closeWebSocketConnection() {
     if (wsConnection) {
       wsConnection.close();
       wsConnection = null;
     }
   }
-
   function handleCollaborationUpdate(data: any) {
     // Handle different types of collaboration updates
     switch (data.action) {
@@ -198,7 +178,6 @@ and AI-powered verification features.
       default: break;
     }
   }
-
   function getStatusIcon(status: string) {
     switch (status) {
       case 'verified':
@@ -211,7 +190,6 @@ and AI-powered verification features.
       default: return Clock;
     }
   }
-
   function getStatusColor(status: string) {
     switch (status) {
       case 'verified':
@@ -225,7 +203,6 @@ and AI-powered verification features.
       default: return 'text-gray-600';
     }
   }
-
   function getStageDisplayName(stageStr: string) {
     return String(stageStr || '')
       .split(' ')
@@ -283,7 +260,7 @@ and AI-powered verification features.
       <AlertTitle>Warnings</AlertTitle>
       <AlertDescription>
         <ul class="list-disc list-inside mt-2">
-          {#each warnings as warning}
+          {#each Array.isArray(warnings) ? warnings : [] as warning}
             <li>{warning}</li>
           {/each}
         </ul>
@@ -312,8 +289,7 @@ and AI-powered verification features.
               Start Custody Workflow
             </Button>
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Integrity Verification -->
       {#if currentState.context.verificationResults || currentState.value === 'integrityVerification'}
         <div class="nes-container">
@@ -342,8 +318,7 @@ showIntegrityDetails = !showIntegrityDetails}
               showDetails={showIntegrityDetails}
             />
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Custody Timeline -->
       {#if custodyEvents.length > 0}
         <div class="nes-container">
@@ -359,8 +334,7 @@ showIntegrityDetails = !showIntegrityDetails}
               currentStage={stage}
             />
           </div>
-        </div>
-      {/if}
+        {/if}
       <!-- Workflow Actions -->
       {#if isWorkflowActive}
         <div class="nes-container">
@@ -376,8 +350,7 @@ showIntegrityDetails = !showIntegrityDetails}
                 <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
                   Reject Custody
                 </Button>
-              </div>
-            {/if}
+              {/if}
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
                 <Button class="bits-btn" onclick={() =>
@@ -393,8 +366,7 @@ showTransferDialog = true} variant="ghost">
                     Leave Collaboration
                   </Button>
                 {/if}
-              </div>
-            {/if}
+              {/if}
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
                 <Button class="bits-btn" onclick={retryWorkflow}>
@@ -403,11 +375,9 @@ showTransferDialog = true} variant="ghost">
                 <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
                   Cancel Workflow
                 </Button>
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Right Column - Collaboration Panel -->
     <div class="space-y-6">
@@ -461,8 +431,7 @@ showTransferDialog = false}
           </Button>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 <style>
   .evidence-custody-flow {

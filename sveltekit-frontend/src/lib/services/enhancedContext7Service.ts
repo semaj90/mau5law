@@ -63,7 +63,7 @@ export class EnhancedContext7Service {
         jurisdiction,
       });
       return this.parseLegalAnalysis(response);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal document analysis failed:', msg);
       throw new Error(`Legal document analysis failed: ${msg}`);
@@ -85,7 +85,7 @@ export class EnhancedContext7Service {
         framework,
       });
       return this.parseComplianceReport(response, framework);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 compliance report generation failed:', msg);
       throw new Error(`Compliance report generation failed: ${msg}`);
@@ -107,7 +107,7 @@ export class EnhancedContext7Service {
         caseType,
       });
       return this.parseLegalPrecedents(response);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal precedent suggestion failed:', msg);
       throw new Error(`Legal precedent suggestion failed: ${msg}`);
@@ -127,7 +127,7 @@ export class EnhancedContext7Service {
         entityTypes,
       });
       return this.parseLegalEntities(response);
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal entity extraction failed:', msg);
       throw new Error(`Legal entity extraction failed: ${msg}`);
@@ -141,7 +141,7 @@ export class EnhancedContext7Service {
     try {
       const response = await this.callMCPTool('analyze-stack', { component, context });
       return (response && ((response as Record<string, unknown>).text ?? response)) as string;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 stack analysis failed:', msg);
       throw new Error(`Stack analysis failed: ${msg}`);
@@ -155,7 +155,7 @@ export class EnhancedContext7Service {
     try {
       const response = await this.callMCPTool('generate-best-practices', { area });
       return (response && ((response as Record<string, unknown>).text ?? response)) as string;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 best practices generation failed:', msg);
       throw new Error(`Best practices generation failed: ${msg}`);
@@ -169,7 +169,7 @@ export class EnhancedContext7Service {
     try {
       const response = await this.callMCPTool('suggest-integration', { feature, requirements });
       return (response && ((response as Record<string, unknown>).text ?? response)) as string;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 integration suggestion failed:', msg);
       throw new Error(`Integration suggestion failed: ${msg}`);
@@ -200,7 +200,7 @@ export class EnhancedContext7Service {
         precedentMatches,
       };
       return orchestrationResult;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Legal orchestration failed:', msg);
       throw new Error(`Legal orchestration failed: ${msg}`);
@@ -243,7 +243,7 @@ export class EnhancedContext7Service {
         return await res.json();
       }
       return await res.text();
-    } catch (err: unknown) {
+    } catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error:`, message);
       // forward typed args to simulation helper(s)
@@ -265,7 +265,7 @@ export class EnhancedContext7Service {
   /**
    * Parse legal analysis response from MCP server
    */
-  private parseLegalAnalysis(response: unknown): LegalAnalysisResult {
+  private parseLegalAnalysis(response: any): LegalAnalysisResult {
     const text =
       typeof response === 'string'
         ? response
@@ -309,7 +309,7 @@ export class EnhancedContext7Service {
   /**
    * Parse compliance report response
    */
-  private parseComplianceReport(response: unknown, framework: string): ComplianceReport {
+  private parseComplianceReport(response: any, framework: string): ComplianceReport {
     const text =
       typeof response === 'string'
         ? response
@@ -331,7 +331,7 @@ export class EnhancedContext7Service {
   /**
    * Parse legal precedents response
    */
-  private parseLegalPrecedents(response: unknown): LegalPrecedent[] {
+  private parseLegalPrecedents(response: any): LegalPrecedent[] {
     const text =
       typeof response === 'string'
         ? response
@@ -362,7 +362,7 @@ export class EnhancedContext7Service {
   /**
    * Parse legal entities response
    */
-  private parseLegalEntities(response: unknown): LegalEntities {
+  private parseLegalEntities(response: any): LegalEntities {
     const text =
       typeof response === 'string'
         ? response
@@ -438,7 +438,7 @@ export class EnhancedContext7Service {
   /**
    * Simulation methods for development (remove/replace in production)
    */
-  private simulateLegalDocumentAnalysis(args: Record<string, unknown>): unknown {
+  private simulateLegalDocumentAnalysis(args: Record<string, unknown>): any {
     const content = String(args?.content ?? '');
     const hasLiability = content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
@@ -462,7 +462,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
     };
   }
 
-  private simulateComplianceReport(args: Record<string, unknown>): unknown {
+  private simulateComplianceReport(args: Record<string, unknown>): any {
     const evidence = Array.isArray(args?.evidence) ? (args.evidence as unknown[]) : [];
     const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]) : [];
     const score = Math.min(100, evidence.length * 10 + 50);
@@ -475,7 +475,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
     };
   }
 
-  private simulateLegalPrecedents(_: Record<string, unknown>): unknown {
+  private simulateLegalPrecedents(_: Record<string, unknown>): any {
     return {
       text: `# Legal Precedent Analysis
 ### Sample v. Case (2023)
@@ -485,7 +485,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
     };
   }
 
-  private simulateLegalEntities(_: Record<string, unknown>): unknown {
+  private simulateLegalEntities(_: Record<string, unknown>): any {
     return {
       text: `# Legal Entity Extraction
 ### Parties (2)
@@ -501,7 +501,7 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
   }
 
   // add small helper for safe coercion if needed elsewhere
-  private toSafeString(value: unknown, fallback = ''): string {
+  private toSafeString(value: any, fallback = ''): string {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return String(value);
     return fallback;

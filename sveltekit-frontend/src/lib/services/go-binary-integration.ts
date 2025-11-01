@@ -23,7 +23,7 @@ export interface GoBinaryRequest {
   service: 'enhanced-rag' | 'upload' | 'kratos' | 'go-llama';
   method: 'POST' | 'GET' | 'PUT' | 'DELETE';
   endpoint: string;
-  data?: unknown;
+  data?: any;
   binary?: boolean;
   encoding?: 'json' | 'protobuf' | 'msgpack';
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -34,7 +34,7 @@ export interface GoBinaryRequest {
 export interface GoBinaryResponse {
   id: string;
   success: boolean;
-  data?: unknown;
+  data?: any;
   error?: string;
   processingTime: number;
   encoding: string;
@@ -69,7 +69,7 @@ export class GoBinaryIntegrationService {
   private requestMap: Map<string, GoBinaryRequest> = new Map();
   private responseCache: Map<string, GoBinaryResponse> = new Map();
   private connectionPool: Map<string, any> = new Map();
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Reactive stores
   public serviceStatus = writable({
     enhancedRAG: false,
@@ -257,7 +257,7 @@ export class GoBinaryIntegrationService {
    */
   public async callKratosService(
     method: string,
-    data: unknown, // Changed: 'any' to: 'unknown'
+    data: any, // Changed: 'any' to: 'unknown'
     options: {
       useProtobuf?: boolean;
       timeout?: number;
@@ -492,7 +492,7 @@ export class GoBinaryIntegrationService {
         });
         (status as any)[service.key] = response.ok;
       } catch (error: any) {
-        (status as any)[service.key] = false;
+        (status as any)[service.key] = $state(false);
       }
     }
     // Simulate Redis and CUDA checks
@@ -614,7 +614,7 @@ export class GoBinaryIntegrationService {
     this.requestMap.clear();
     this.responseCache.clear();
     this.connectionPool.clear();
-    this.isInitialized = false; // Corrected syntax
+    this.isInitialized = $state(false); // Corrected syntax
     console.log('🧹 Go Binary Integration Service cleaned up'); // Corrected syntax
   }
 }

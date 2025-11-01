@@ -10,7 +10,6 @@
 import { pgTable, text, timestamp, integer, boolean, jsonb, uuid, index, uniqueIndex } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
-
 // Case Management Tables
 export const cases = pgTable(
   'cases',
@@ -77,7 +76,6 @@ export const cases = pgTable(
     assignedToIdx: index('cases_assigned_to_idx').on(table.assignedTo),
   })
 );
-
 // Evidence Management Tables
 export const evidence = pgTable(
   'evidence',
@@ -170,7 +168,6 @@ export const evidence = pgTable(
     return idxs;
   }
 );
-
 // Case Timeline and Events
 export const caseTimeline = pgTable(
   'case_timeline',
@@ -222,7 +219,6 @@ export const caseTimeline = pgTable(
     importanceIdx: index('timeline_importance_idx').on(table.importance),
   })
 );
-
 // Citations and References
 export const citations = pgTable(
   'citations',
@@ -291,7 +287,6 @@ export const citations = pgTable(
     publicationDateIdx: index('citations_pub_date_idx').on(table.publicationDate),
   })
 );
-
 // Case Notes and Detective Analysis
 export const caseNotes = pgTable(
   'case_notes',
@@ -367,7 +362,6 @@ export const caseNotes = pgTable(
     dateCreatedIdx: index('notes_date_created_idx').on(table.dateCreated),
   })
 );
-
 // Define relationships between tables
 export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
@@ -375,7 +369,6 @@ export const casesRelations = relations(cases, ({ many }) => ({
   citations: many(citations),
   notes: many(caseNotes),
 }));
-
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
@@ -383,7 +376,6 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   }),
   timelineEvents: many(caseTimeline),
 }));
-
 export const timelineRelations = relations(caseTimeline, ({ one }) => ({
   case: one(cases, {
     fields: [caseTimeline.caseId],
@@ -394,21 +386,18 @@ export const timelineRelations = relations(caseTimeline, ({ one }) => ({
     references: [evidence.id],
   }),
 }));
-
 export const citationsRelations = relations(citations, ({ one }) => ({
   case: one(cases, {
     fields: [citations.caseId],
     references: [cases.id],
   }),
 }));
-
 export const notesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
     fields: [caseNotes.caseId],
     references: [cases.id],
   }),
 }));
-
 // Export all types for use in application
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;

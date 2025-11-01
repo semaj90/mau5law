@@ -6,7 +6,7 @@ interface JobItem {
   id: string;
   status: string;
   // Add other properties of a job item as needed
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // Define an interface for the jobStore to provide type safety

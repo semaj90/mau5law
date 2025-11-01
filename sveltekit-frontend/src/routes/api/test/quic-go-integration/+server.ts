@@ -202,7 +202,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
   interface TestResultEntry {
     test: string;
     status: 'PASS' | 'FAIL' | 'ERROR' | 'PARTIAL';
-    details?: unknown;
+    details?: any;
     responseTime?: number;
     protocol?: string;
     error?: string | null;
@@ -235,14 +235,14 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         protocol: ragResponse.protocol,
         error: ragResponse.error || null,
       };
-      if (!ragResponse.success) overallSuccess = false;
-    } catch (ragError: unknown) {
+      if (!ragResponse.success) overallSuccess = $state(false);
+    } catch (ragError: any) {
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: 'ERROR',
         error: ragError instanceof Error ? ragError.message : 'Unknown error',
       };
-      overallSuccess = false;
+      overallSuccess = $state(false);
     }
     // Test 3: Vector Service via Enhanced RAG
     console.log('Testing Vector service...');
@@ -262,14 +262,14 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         protocol: vectorResponse.protocol,
         error: vectorResponse.error || null,
       };
-      if (!vectorResponse.success) overallSuccess = false;
-    } catch (vectorError: unknown) {
+      if (!vectorResponse.success) overallSuccess = $state(false);
+    } catch (vectorError: any) {
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: 'ERROR',
         error: vectorError instanceof Error ? vectorError.message : 'Unknown error',
       };
-      overallSuccess = false;
+      overallSuccess = $state(false);
     }
     // Test 4: Upload Service
     console.log('Testing Upload service...');
@@ -283,14 +283,14 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         protocol: healthResponse.protocol,
         error: healthResponse.error || null,
       };
-      if (!healthResponse.success) overallSuccess = false;
-    } catch (uploadError: unknown) {
+      if (!healthResponse.success) overallSuccess = $state(false);
+    } catch (uploadError: any) {
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: 'ERROR',
         error: uploadError instanceof Error ? uploadError.message : 'Unknown error',
       };
-      overallSuccess = false;
+      overallSuccess = $state(false);
     }
     // Test 5: QUIC Endpoints Integration Test
     console.log('Testing QUIC endpoints...');
@@ -312,14 +312,14 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         httpStatus: ragProxyResponse.status,
         statusText: ragProxyResponse.statusText,
       };
-      if (!ragProxyResult) overallSuccess = false;
-    } catch (quicError: unknown) {
+      if (!ragProxyResult) overallSuccess = $state(false);
+    } catch (quicError: any) {
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: 'ERROR',
         error: quicError instanceof Error ? quicError.message : 'Unknown error',
       };
-      overallSuccess = false;
+      overallSuccess = $state(false);
     }
     // Summary
     const summary = {
@@ -345,12 +345,12 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         '✅ Automatic service discovery and health checks',
       ],
     });
-  } catch (unknownErr: unknown) {
+  } catch (unknownErr: any) {
     console.error('Integration test failed:', unknownErr);
     return json({
       success: false,
       message: 'QUIC-Go Integration Test Failed',
-      error: unknownErr instanceof Error ? unknownErr.message : 'Unknown error',
+      error: anyErr instanceof Error ? unknownErr.message : 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }
@@ -413,13 +413,13 @@ export const POST: RequestHandler = async ({ request }) => {
       result: testResult,
       timestamp: new Date().toISOString(),
     })
-  } catch (unknownErr: unknown) {
+  } catch (unknownErr: any) {
     console.error('Custom integration test failed:', unknownErr)
     error(
       500,
       ensureError({
         message: 'Custom integration test failed',
-        error: unknownErr instanceof Error ? unknownErr.message : 'Unknown error',
+        error: anyErr instanceof Error ? unknownErr.message : 'Unknown error',
       })
     );
   }

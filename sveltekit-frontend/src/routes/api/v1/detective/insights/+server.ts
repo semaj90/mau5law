@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         action: 'insights_generated',
       },
     });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error getting detective insights:', err);
     if (err instanceof z.ZodError) {
       throw error(
@@ -89,7 +89,7 @@ type RequestLocals = {
   user?: { id?: string | number } | null;
   userId?: string | number | null;
   // allow other runtime props preserved from SvelteKit or middleware
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // Helper: resolve user id from locals (throws 401 if not present)
@@ -106,13 +106,13 @@ type EvidenceItem = {
   id?: string;
   title?: string;
   // allow other fields but prefer unknown to avoid `any`
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type EvidenceListResponse = {
   data?: EvidenceItem[];
   // service may return other metadata
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type InsightType = 'summary' | 'patterns' | 'risks' | 'recommendations' | 'all';
@@ -120,13 +120,13 @@ type DepthType = 'quick' | 'detailed' | 'comprehensive';
 
 type InsightsResult = {
   overallConfidence: number;
-  summary: unknown | null;
-  patterns: unknown[];
-  risks: unknown | null;
-  recommendations: unknown[];
+  summary: any | null;
+  patterns: any[];
+  risks: any | null;
+  recommendations: any[];
   keyFindings: string[];
-  timeline: unknown | null;
-  connections: unknown | null;
+  timeline: any | null;
+  connections: any | null;
   error?: string;
   details?: string;
 };
@@ -134,7 +134,7 @@ type InsightsResult = {
  * Generate comprehensive detective insights
  */
 async function generateDetectiveInsights(
-  caseData: unknown,
+  caseData: any,
   evidence: EvidenceItem[],
   insightType: InsightType,
   depth: DepthType,
@@ -178,7 +178,7 @@ async function generateDetectiveInsights(
       insights.connections = await generateConnectionInsights(evidence);
     }
     return insights;
-  } catch (e: unknown) {
+  } catch (e: any) {
     console.error('Insight generation error:', e);
     const details = e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
     return {
@@ -192,7 +192,7 @@ async function generateDetectiveInsights(
  * Generate summary insights
  */
 // changed: caseData was unused -> rename to _caseData
-async function generateSummaryInsights(_caseData: unknown, evidence: EvidenceItem[]): Promise<unknown> {
+async function generateSummaryInsights(_caseData: any, evidence: EvidenceItem[]): Promise<unknown> {
   return {
     caseStrength: evidence.length > 5 ? 'strong' : evidence.length > 2 ? 'moderate' : 'weak',
     evidenceQuality: 'good', // Would analyze actual evidence quality
@@ -235,7 +235,7 @@ async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unkno
  * Generate risk assessment insights
  */
 // changed: both caseData and evidence unused -> prefix with underscore
-async function generateRiskInsights(_caseData: unknown, _evidence: EvidenceItem[]): Promise<unknown> {
+async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): Promise<unknown> {
   return {
     caseRisk: {
       level: 'medium',
@@ -264,7 +264,7 @@ async function generateRiskInsights(_caseData: unknown, _evidence: EvidenceItem[
  */
 // changed: caseData and evidence unused -> prefix with underscore
 async function generateRecommendationInsights(
-  _caseData: unknown,
+  _caseData: any,
   _evidence: EvidenceItem[],
   depth: DepthType
 ): Promise<unknown[]> {
@@ -320,7 +320,7 @@ async function generateRecommendationInsights(
  * Generate key findings
  */
 // changed: caseData unused -> prefix with underscore
-async function generateKeyFindings(_caseData: unknown, _evidence: EvidenceItem[]): Promise<string[]> {
+async function generateKeyFindings(_caseData: any, _evidence: EvidenceItem[]): Promise<string[]> {
   return [
     'Strong digital evidence trail established',
     'Timeline consistency across multiple evidence sources',

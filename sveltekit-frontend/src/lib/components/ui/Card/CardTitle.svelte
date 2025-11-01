@@ -7,7 +7,6 @@
   }
   let { class: className = '', children }: Props = $props();
 </script>
-
 <h3 class={cn('text-2xl font-semibold leading-none tracking-tight', className)}>
-  {@render children?.()}
+  <slot />
 </h3>

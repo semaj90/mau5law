@@ -39,20 +39,20 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
     const ollamaOk = ollamaRes.status === 'fulfilled' && (ollamaRes.value as Response).ok;
     const qdrantOk = qdrantRes.status === 'fulfilled' && (qdrantRes.value as Response).ok;
     // Best-effort DB check (HTTP probe may not be available for Postgres; treat failures as offline)
-    let dbOk = false;
+    let dbOk = $state(false);
     try {
       const dbResp = await fetch('http://localhost:5432/', { signal: timeoutSignal(timeout) });
       dbOk = dbResp.ok;
     } catch {
-      dbOk = false;
+      dbOk = $state(false);
     }
     // Optional Redis HTTP probe (usually Redis doesn't expose HTTP; keep conservative)
-    let redisOk = false;
+    let redisOk = $state(false);
     try {
       const redisResp = await fetch('http://localhost:6379/', { signal: timeoutSignal(timeout) });
       redisOk = redisResp.ok;
     } catch {
-      redisOk = false;
+      redisOk = $state(false);
     }
     return {
       services: {
@@ -64,7 +64,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       timestamp: new Date().toISOString(),
       phase: 'Phase 13 - Simplified Health Check',
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Health check error:', error);
     return {
       services: {
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Phase 13 Integration API error:', error);
     return json(
       {
@@ -268,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Phase 13 Integration POST error:', error);
     return json(
       {
@@ -305,7 +305,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         updatedSettings: { services, features, performance },
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Phase 13 Integration PUT error:', error);
     return json(
       {
@@ -340,7 +340,7 @@ export const DELETE: RequestHandler = async () => {
         message: 'Integration reset to default mock configuration',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Phase 13 Integration DELETE error:', error);
     return json(
       {

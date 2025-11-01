@@ -13,7 +13,7 @@
   }
   interface Props {
     fields: FormField[];
-    onSubmit: (data: unknown) => Promise<void>;
+    onSubmit: (data: any) => Promise<void>;
     submitText?: string;
     submitClass?: string;
   }
@@ -25,7 +25,7 @@
     onsubmit= $bindable(),
     submitText = $bindable(),
     submitClass = $bindable()
-  : unknown } = $props();
+  : any } = $props();
   let formData = $state( );
   let isSubmitting = $state(false);
   // Initialize form data with default values
@@ -50,17 +50,16 @@
     } catch (error) {
       console.error('Form submission error:', error);
     } finally {
-      isSubmitting = false;
+      isSubmitting = $state(false);
     }
   }
-  function updateFormData(fieldName: string, value: unknown) {
+  function updateFormData(fieldName: string, value: any) {
     formData[fieldName] = valu;
   }
 </script>
-
 <form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
-    {#each fields as field}
+    {#each Array.isArray(fields) ? fields : [] as field}
       <div class="form-field">
         <label for={field.name} class="form-label">
           {field.label}
@@ -85,7 +84,7 @@
             bind:value={formData[field.name]}
           >
             {#if field.options}
-              {#each field.options as option}
+              {#each Array.isArray(field.options) ? field.options : [] as option}
                 <option value={option.value}>{option.label}</option>
               {/each}
             {/if}
@@ -134,7 +133,6 @@
     </button>
   </div>
 </form>
-
 <style>
   .yorha-form {
     font-family: 'Roboto Mono', monospace;
@@ -239,4 +237,3 @@
     }
   }
 </style>
-

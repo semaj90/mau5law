@@ -27,9 +27,7 @@
     Wand2,
   } from "lucide-svelte";
   import { fly } from "svelte/transition";
-
   let open = $state(false);
-
   // Track selected item
   let selectedItem = $state<string | null>(null);
   // Report types configuration
@@ -93,7 +91,7 @@
     if (reportShortcut && !disabled && !isGenerating) {
       event.preventDefault();
       onReportGenerate(reportShortcut.id);
-      open = false;
+      open = $state(false);
       return;
     }
     // AI tool shortcuts
@@ -102,12 +100,12 @@
         case "s":
           event.preventDefault();
           onSummarize();
-          open = false;
+          open = $state(false);
           break;
         case "a":
           event.preventDefault();
           onAnalyze();
-          open = false;
+          open = $state(false);
           break;
       }
     }
@@ -134,7 +132,6 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 </script>
-
 <DropdownMenu.Root bind:open>
   <!-- Trigger Button -->
   <DropdownMenu.Trigger
@@ -146,8 +143,7 @@
     <Sparkles size={16} class="ai-trigger__icon" />
     <ChevronDown size={12} class="ai-trigger__chevron {open ? 'ai-trigger__chevron--rotated' : ''}" />
     {#if isGenerating}
-      <div class="ai-trigger__spinner" aria-hidden="true"></div>
-    {/if}
+      <div class="ai-trigger__spinner" aria-hidden="true">{/if}
   </DropdownMenu.Trigger>
   <!-- Dropdown Menu -->
   <DropdownMenu.Portal forceMount>
@@ -159,7 +155,7 @@
             <FileText size={14} />
             Generate Report
           </DropdownMenu.Label>
-          {#each reportTypes as reportType}
+          {#each Array.isArray(reportTypes) ? reportTypes : [] as reportType}
             <DropdownMenu.Item
               class="ai-menu__item"
               class:ai-menu__item--selected={selectedItem === reportType.id}
@@ -186,7 +182,7 @@
             <Brain size={14} />
             AI Analysis
           </DropdownMenu.Label>
-          {#each aiTools as tool}
+          {#each Array.isArray(aiTools) ? aiTools : [] as tool}
             <DropdownMenu.Item
               class="ai-menu__item"
               class:ai-menu__item--selected={selectedItem === tool.id}
@@ -217,7 +213,6 @@
     {/if}
   </DropdownMenu.Portal>
 </DropdownMenu.Root>
-
 <style>
   /* @unocss-include */
   /* Trigger Button */
@@ -496,7 +491,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Brain, ChevronDown, FileText, Keyboard, Sparkles, Wand2 } from 'lucide-svelte';
-
   // Svelte 5 runes are available
   interface Props {
     disabled?: boolean;
@@ -506,7 +500,6 @@
     onSummarize?: () => void;
     onAnalyze?: () => void;
   }
-
   let {
     disabled = false,
     hasContent = false,
@@ -515,10 +508,8 @@
     onSummarize,
     onAnalyze,
   }: Props = $props();
-
   // HTML5-driven dropdown (no Melt UI). Accessible and keyboard aware.
   let open = $state(false);
-
   type ReportCfg = {
     id: string;
     name: string;
@@ -526,7 +517,6 @@
     shortcut?: string;
     description?: string;
   };
-
   const reportTypes: ReportCfg[] = [
     {
       id: 'case-summary',
@@ -557,7 +547,6 @@
       description: 'Investigation documentation and findings',
     },
   ];
-
   const aiTools = [
     {
       id: 'summarize' as const,
@@ -576,56 +565,49 @@
       requiresContent: true,
     },
   ];
-
   function triggerReport(id: string) {
     if (disabled || isGenerating) return;
     onReportGenerate?.(id);
-    open = false;
+    open = $state(false);
   }
-
   function triggerTool(id: 'summarize' | 'analyze', requiresContent = true) {
     if (disabled || isGenerating) return;
     if (requiresContent && !hasContent) return;
     if (id === 'summarize') onSummarize?.();
     if (id === 'analyze') onAnalyze?.();
-    open = false;
+    open = $state(false);
   }
-
   function handleGlobalKey(e: KeyboardEvent) {
     if (!(e.ctrlKey && e.shiftKey)) return;
     const k = e.key.toLowerCase();
-
     // Tools
     if (!disabled && !isGenerating && hasContent) {
       if (k === 's') {
         e.preventDefault();
         onSummarize?.();
-        open = false;
+        open = $state(false);
         return;
       }
       if (k === 'a') {
         e.preventDefault();
         onAnalyze?.();
-        open = false;
+        open = $state(false);
         return;
       }
     }
-
     // Reports (match last letter of shortcut)
     const match = reportTypes.find((r) => r.shortcut?.toLowerCase().endsWith(k));
     if (match && !disabled && !isGenerating) {
       e.preventDefault();
       onReportGenerate?.(match.id);
-      open = false;
+      open = $state(false);
     }
   }
-
   onMount(() => {
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
   });
 </script>
-
 <details class="ai-dropdown" bind:open={open}>
   <summary
     class="ai-trigger"
@@ -642,7 +624,6 @@
     </span>
     <ChevronDown class="chevron" />
   </summary>
-
   <div id="ai-menu" role="menu" class="ai-menu" aria-labelledby="ai-summary">
     <div class="ai-menu__section">
       <div class="ai-menu__header">Generate Reports</div>
@@ -658,8 +639,7 @@
           <div class="ai-menu__body">
             <div class="ai-menu__item-name">{r.name}</div>
             {#if r.description}
-              <div class="ai-menu__item-description">{r.description}</div>
-            {/if}
+              <div class="ai-menu__item-description">{r.description}{/if}
           </div>
           {#if r.shortcut}
             <kbd class="ai-menu__shortcut">{r.shortcut}</kbd>
@@ -667,9 +647,7 @@
         </button>
       {/each}
     </div>
-
     <div class="ai-menu__separator" aria-hidden="true"></div>
-
     <div class="ai-menu__section">
       <div class="ai-menu__header">AI Tools</div>
       {#each aiTools as t (t.id)}
@@ -684,8 +662,7 @@
           <div class="ai-menu__body">
             <div class="ai-menu__item-name">{t.name}</div>
             {#if t.description}
-              <div class="ai-menu__item-description">{t.description}</div>
-            {/if}
+              <div class="ai-menu__item-description">{t.description}{/if}
           </div>
           {#if t.shortcut}
             <kbd class="ai-menu__shortcut">{t.shortcut}</kbd>
@@ -693,20 +670,17 @@
         </button>
       {/each}
     </div>
-
     <div class="ai-menu__footer">
       <Keyboard class="icon" />
       <span class="ai-menu__footer-text">Use Ctrl+Shift+(C/E/L/I/S/A) for quick actions</span>
     </div>
   </div>
 </details>
-
 <style>
   .ai-dropdown {
     position: relative;
     display: inline-block;
   }
-
   .ai-trigger {
     display: flex;
     align-items: center;
@@ -723,34 +697,28 @@
     list-style: none;
     user-select: none;
   }
-
   .ai-trigger[aria-disabled='true'] {
     opacity: 0.6;
     cursor: not-allowed;
   }
-
   .ai-trigger:hover {
     border-color: #9ca3af;
     color: #111827;
   }
-
   .ai-trigger__content {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
   }
-
   .chevron {
     width: 1rem;
     height: 1rem;
     opacity: 0.7;
   }
-
   .icon {
     width: 1rem;
     height: 1rem;
   }
-
   .ai-menu {
     position: absolute;
     top: calc(100% + 0.5rem);
@@ -764,11 +732,9 @@
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
     padding: 0.5rem;
   }
-
   .ai-menu__section {
     padding: 0.25rem 0.25rem;
   }
-
   .ai-menu__header {
     font-size: 0.75rem;
     color: #6b7280;
@@ -776,7 +742,6 @@
     border-bottom: 1px solid #f3f4f6;
     margin-bottom: 0.25rem;
   }
-
   .ai-menu__item {
     display: flex;
     align-items: center;
@@ -790,21 +755,17 @@
     color: #111827;
     transition: background-color 100ms ease;
   }
-
   .ai-menu__item:hover {
     background-color: #f9fafb;
   }
-
   .ai-menu__item:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .ai-menu__body {
     flex: 1 1 auto;
     min-width: 0;
   }
-
   .ai-menu__item-name {
     font-size: 0.875rem;
     font-weight: 500;
@@ -813,7 +774,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   .ai-menu__item-description {
     font-size: 0.75rem;
     color: #6b7280;
@@ -822,7 +782,6 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
   .ai-menu__shortcut {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
@@ -834,13 +793,11 @@
     flex-shrink: 0;
     margin-left: 0.5rem;
   }
-
   .ai-menu__separator {
     height: 1px;
     background-color: #e5e7eb;
     margin: 0.5rem 0;
   }
-
   .ai-menu__footer {
     display: flex;
     align-items: center;
@@ -849,11 +806,9 @@
     font-size: 0.75rem;
     color: #6b7280;
   }
-
   .ai-menu__footer .icon {
     opacity: 0.7;
   }
-
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
     .ai-trigger {
@@ -882,4 +837,3 @@
     }
   }
 </style>
-

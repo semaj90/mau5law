@@ -2,7 +2,6 @@
   // Re-export bits-ui components for compound component usage
   export { Root, List, Trigger, Content } from 'bits-ui/tabs';
 </script>
-
 <script lang="ts">
   import {
     Root as TabsRoot,
@@ -74,7 +73,6 @@
     onValueChange?.(newValue);
   }
 </script>
-
 <TabsRoot bind:value onValueChange={handleValueChange} class={cn('legal-ai-tabs w-full', className)}>
   {#if children}
     <!-- Compound component mode -->
@@ -82,7 +80,7 @@
   {:else}
     <!-- Array-based mode -->
     <TabsList class={cn('legal-ai-tabs-list flex', variantClasses[variant].list)}>
-      {#each tabs as tab}
+      {#each Array.isArray(tabs) ? tabs : [] as tab}
         <TabsTrigger
           value={tab.value}
           disabled={tab.disabled}
@@ -97,20 +95,18 @@
         </TabsTrigger>
       {/each}
     </TabsList>
-    {#each tabs as tab}
+    {#each Array.isArray(tabs) ? tabs : [] as tab}
       <TabsContent value={tab.value} class="legal-ai-tabs-content mt-6 focus:outline-none">
         {#if tab.content}
           {@render tab.content()}
         {:else}
           <div class="text-slate-300">
             Content for {tab.label} tab
-          </div>
-        {/if}
+          {/if}
       </TabsContent>
     {/each}
   {/if}
 </TabsRoot>
-
 <style>
   :global(.legal-ai-tabs) {
     font-family: var(--legal-ai-font-family-sans);
@@ -137,4 +133,3 @@
     }
   }
 </style>
-

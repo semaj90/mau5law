@@ -14,12 +14,12 @@ import { sql } from 'drizzle-orm/sql';
 
 // --- Added types & guards ---
 type MinioUploadResult = { objectName: string; size: number; url: string };
-function isMinioUploadResult(x: unknown): x is MinioUploadResult {
+function isMinioUploadResult(x: any): x is MinioUploadResult {
   return !!x && typeof x === 'object' && 'objectName' in x && 'size' in x && 'url' in x;
 }
 
 // ADDED: generic async function type used for flexible client adapter casts
-type AsyncFn<T = unknown> = (...args: unknown[]) => Promise<T>;
+type AsyncFn<T = unknown> = (...args: any[]) => Promise<T>;
 
 type QdrantHit = { id: string; score?: number; payload?: Record<string, unknown> };
 type SearchHit = QdrantHit & { type: 'evidence' | 'document' | 'unknown'; source: string };
@@ -84,7 +84,7 @@ export class UnifiedLegalAIService {
       }
 
       // Step 2: Store file in MinIO (fixed ternary)
-      const minioResult: unknown =
+      const minioResult: any =
         upload.documentType === 'evidence'
           ? await minioStorage.uploadEvidence(upload.file, upload.fileName, {
               contentType: upload.contentType,
@@ -223,7 +223,7 @@ export class UnifiedLegalAIService {
       });
       // normalize
       if (Array.isArray(raw)) return raw as QdrantHit[];
-      const maybe = raw as unknown as { result?: unknown[]; data?: unknown[] };
+      const maybe = raw as unknown as { result?: any[]; data?: any[] };
       if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
       if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
       return [];
@@ -240,7 +240,7 @@ export class UnifiedLegalAIService {
           with_payload: true,
         });
         if (Array.isArray(raw)) return raw as QdrantHit[];
-        const maybe = raw as unknown as { result?: unknown[]; data?: unknown[] };
+        const maybe = raw as unknown as { result?: any[]; data?: any[] };
         if (Array.isArray(maybe.result)) return maybe.result as QdrantHit[];
         if (Array.isArray(maybe.data)) return maybe.data as QdrantHit[];
         return [];

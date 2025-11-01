@@ -1,18 +1,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Card } from 'bits-ui';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/Button.svelte';
   import type { Snippet } from 'svelte';
   interface Props {
-    fallback?: unknown;
-    onError?: (error: Error, errorInfo?: unknown) => void;
+    fallback?: any;
+    onError?: (error: Error, errorInfo?: any) => void;
   }
   // Use a single $props() destructure (runes mode disallows multiple calls)
   let {
     fallback,
     onError,
     children,
-  }: { fallback?: unknown; onError?: (error: Error, errorInfo?: unknown) => void; children?: Snippet } =
+  }: { fallback?: any; onError?: (error: Error, errorInfo?: any) => void; children?: Snippet } =
     $props() as any;
   // Create snippet-typed aliases for rendering
   const fallbackSnippet: Snippet | undefined = fallback as unknown as Snippet | undefined;
@@ -21,7 +21,7 @@
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
   // Error logging
-  function logError(err: Error, context?: unknown) {
+  function logError(err: Error, context?: any) {
     const errorData = {
       id: errorId,
       message: err.message,
@@ -44,7 +44,6 @@
           ? (event as any).message
           : String((event as any).error?.message ?? event?.toString() ?? 'Unknown Error');
       const err = new Error(msg);
-
       // Safely read filename/line/col if available (different browsers expose different names)
       const filename = (event as any).filename ?? (event as any).fileName ?? '';
       const lineno = (event as any).lineno ?? (event as any).lineNumber ?? 0;
@@ -52,7 +51,6 @@
       if (filename || lineno || colno) {
         err.stack = `${filename}:${lineno}:${colno}`;
       }
-
       hasError = true;
       error = err;
       errorId = `ERR_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
@@ -73,7 +71,7 @@
   }
   // Reset error state
   function resetError() {
-    hasError = false;
+    hasError = $state(false);
     error = null;
     errorId = '';
   }
@@ -91,7 +89,6 @@
     };
   });
 </script>
-
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
@@ -181,7 +178,6 @@
 {:else}
   {@render childrenSnippet?.()}
 {/if}
-
 <style>
   /* Ensure error boundary styles don't interfere with global styles */
   details summary::-webkit-details-marker {
@@ -196,4 +192,3 @@
     transform: rotate(90deg);
   }
 </style>
-

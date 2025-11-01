@@ -61,7 +61,7 @@ type ProgressUpdate = {
 type BatchResultItem = {
   evidenceId: string;
   analysisId: string;
-  results: unknown;
+  results: any;
   success: boolean;
 };
 
@@ -75,7 +75,7 @@ type AnalyzerOutput = {
   analysisTypes?: string[] | string;
   overallConfidence?: number;
   totalTime?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -453,7 +453,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest) {
     timestamp: new Date().toISOString(),
   });
 }
-async function storeAnalysisResult(evidenceId: string, results: unknown, analysisId: string) {
+async function storeAnalysisResult(evidenceId: string, results: any, analysisId: string) {
   try {
     // Safely treat results as AnalyzerOutput when extracting expected fields
     const res = (results as AnalyzerOutput) || {};

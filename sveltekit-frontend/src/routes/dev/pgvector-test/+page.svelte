@@ -9,28 +9,28 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits';
+  } from '$lib/components/ui/enhanced-bits.svelte'';
   import Label from '$lib/components/ui/label/Label.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Test results state
   let connectionStatus = 'untested';
-  let connectionDetails: unknown = null;
-  let dbStats: unknown = null;
-  let searchResults: unknown[] = [];
+  let connectionDetails: any = null;
+  let dbStats: any = null;
+  let searchResults: any[] = [];
   let testQuery = 'contract liability and indemnification terms';
-  let isLoading = false;
+  let isLoading = $state(false);
   let lastError = '';
   // Performance metrics
   let performanceMetrics = {
@@ -47,18 +47,18 @@ https://svelte.dev/e/expected_token -->
     lastError = '';
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown }).json();
-      connectionStatus = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success ? 'connected' : 'failed';
-      connectionDetails = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).detail;
-      performanceMetrics.connectionTest = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTim;
-      if (!(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).details.error || 'Connection test failed';
+      const result = await (response as { json?: any }).json();
+      connectionStatus = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success ? 'connected' : 'failed';
+      connectionDetails = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).detail;
+      performanceMetrics.connectionTest = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTim;
+      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).details.error || 'Connection test failed';
       }
     } catch (error) {
       connectionStatus = 'failed';
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -69,16 +69,16 @@ https://svelte.dev/e/expected_token -->
     lastError = '';
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        dbStats = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).stat;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        dbStats = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).stat;
       } else {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to get database statistics';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to get database statistics';
       }
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -89,16 +89,16 @@ https://svelte.dev/e/expected_token -->
     lastError = '';
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown }).json();
-      if (!(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to seed database';
+      const result = await (response as { json?: any }).json();
+      if (!(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to seed database';
       }
       // Refresh stats after seeding
       await getDatabaseStats();
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -109,16 +109,16 @@ https://svelte.dev/e/expected_token -->
     lastError = '';
     try {
       // removed unused response assignment
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        performanceMetrics.indexCreation = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTim;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        performanceMetrics.indexCreation = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTim;
       } else {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Failed to create index';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Failed to create index';
       }
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -139,17 +139,17 @@ https://svelte.dev/e/expected_token -->
           documentType: undefined // Search all type;
         })
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        searchResults = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).results || [];
-        performanceMetrics.vectorSearch = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTim;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        searchResults = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).results || [];
+        performanceMetrics.vectorSearch = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTim;
       } else {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Vector search failed';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Vector search failed';
       }
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -179,21 +179,21 @@ https://svelte.dev/e/expected_token -->
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sampleDoc);
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).success) {
-        performanceMetrics.documentInsert = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).responseTim;
+      const result = await (response as { json?: any }).json();
+      if ((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).success) {
+        performanceMetrics.documentInsert = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).responseTim;
         // Refresh stats and search to see new document
         await getDatabaseStats();
         if (testQuery.includes('test') || testQuery.includes('sample')) {
           await performVectorSearch();
         }
       } else {
-        lastError = (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).error || 'Document insertion failed';
+        lastError = (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).error || 'Document insertion failed';
       }
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   /**
@@ -364,19 +364,19 @@ createIndex(100, 'cosine')} disabled={isLoading}>
                     <div class="flex justify-between items-start gap-4">
                       <div class="flex-1 space-y-2">
                         <div class="flex items-center gap-2">
-                          <h4 class="font-medium">{(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).title || (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).document_id}</h4>
-                          <Badge>{(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).document_type}</Badge>
+                          <h4 class="font-medium">{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).title || (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_id}</h4>
+                          <Badge>{(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).document_type}</Badge>
                           <span class="text-sm nes-text is-disabled">
-                            Distance: {formatDistance((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).distance)}
+                            Distance: {formatDistance((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).distance)}
                           </span>
                         </div>
-                        {#if (result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).content}
+                        {#if (result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content}
                           <p class="text-sm nes-text is-disabled line-clamp-2">
-                            {(result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).content.substring(0, 200)}...
+                            {(result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).content.substring(0, 200)}...
                           </p>
                         {/if}
                         <div class="text-xs nes-text is-disabled">
-                          Created: {new Date((result as { success?: unknown; details?: unknown; responseTime?: unknown; stats?: unknown; error?: unknown; results?: unknown; title?: unknown; document_id?: unknown; document_type?: unknown; distance?: unknown; content?: unknown; created_at?: unknown }).created_at).toLocaleDateString()}
+                          Created: {new Date((result as { success?: any; details?: any; responseTime?: any; stats?: any; error?: any; results?: any; title?: any; document_id?: any; document_type?: any; distance?: any; content?: any; created_at?: any }).created_at).toLocaleDateString()}
                         </div>
                       </div>
                     </div>

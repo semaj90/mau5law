@@ -100,7 +100,7 @@ type MonitorLike = Partial<{
   metrics: Record<string, unknown>;
   processLegalDocument: (buf: ArrayBuffer) => Promise<DocumentProcessingResult | null | undefined>;
   triggerBenchmark: () => Promise<Record<string, unknown> | null | undefined>;
-  [key: string]: unknown;
+  [key: string]: any;
 }>;
 
 const monitor = rtxSystemMonitor as unknown as MonitorLike;
@@ -155,11 +155,11 @@ type DocumentProcessingResult = {
 } | null;
 
 // Helper: try multiple candidate method names on rtxSystemMonitor safely
-function callMonitorMethod(candidates: string[], ...args: unknown[]): unknown | undefined {
+function callMonitorMethod(candidates: string[], ...args: any[]): any | undefined {
   for (const name of candidates) {
     const maybe = (monitor as Record<string, unknown>)[name];
     if (typeof maybe === 'function') {
-      const fn = maybe as (...fnArgs: unknown[]) => unknown;
+      const fn = maybe as (...fnArgs: any[]) => unknown;
       try {
         return fn.apply(monitor, args);
       } catch (err) {

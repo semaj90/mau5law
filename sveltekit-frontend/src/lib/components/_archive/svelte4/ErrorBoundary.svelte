@@ -3,7 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import Button from '$lib/components/ui/enhanced-bits';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
   import {
     errorHandler,
     type UserFriendlyError,
@@ -27,7 +27,7 @@ https://svelte.dev/e/attribute_duplicate -->
    }: { showInline = false, // Show as inline alert vs modal
     autoHide = true, // Auto-hide non-critical errors
     maxWidth = "max-w-lg" // Maximum width class
-  : unknown } = $props();
+  : any } = $props();
   let currentError = $state<UserFriendlyError | null >(null);
   let showDetails = $state(false);
   let retryInProgress = $state(false);
@@ -48,8 +48,8 @@ https://svelte.dev/e/attribute_duplicate -->
   function clearError() {
     errorHandler.clear();
     currentError = null;
-    showDetails = false;
-    retryInProgress = false;
+    showDetails = $state(false);
+    retryInProgress = $state(false);
   }
   async function retryAction() {
     if (!currentError?.canRetry) return;
@@ -68,7 +68,7 @@ https://svelte.dev/e/attribute_duplicate -->
       // If retry fails, show a new error
       errorHandler.handle(error, { context: "retry_failed" });
     } finally {
-      retryInProgress = false;
+      retryInProgress = $state(false);
     }
   }
   function copyErrorDetails() {

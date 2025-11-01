@@ -256,7 +256,7 @@ function getClientIP(request: Request): string {
   }
   return 'unknown';
 }
-function getUserId(locals?: unknown): string | undefined {
+function getUserId(locals?: any): string | undefined {
   // Safe cast to Record to avoid `any`
   const l = locals as Record<string, unknown> | undefined;
   if (!l) return undefined;

@@ -22,7 +22,7 @@ type GPUBackendType = 'webgpu' | 'webgl2' | 'webgl1' | 'cpu';
 
 interface ShaderResources {
   // flexible bag of resources per backend (buffers, modules, compiled shaders, metadata, ...)
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface HybridGPUContext {
@@ -278,7 +278,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       });
       if (!success) {
         console.warn('⚠️ GPU Context Provider initialization failed, using CPU fallback');
-        this.useGPUAcceleration = false;
+        this.useGPUAcceleration = $state(false);
         this.activeBackend = 'cpu';
         return;
       }
@@ -296,7 +296,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       }
     } catch (error) {
       console.warn('⚠️ GPU acceleration failed for NESYoRHa3D, using CPU fallback:', error);
-      this.useGPUAcceleration = false;
+      this.useGPUAcceleration = $state(false);
       this.activeBackend = 'cpu';
     }
   }
@@ -382,7 +382,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         return this.processPixelsCPU(pixelData, effect);
       }
 
-      const out: unknown = results.outputPixels;
+      const out: any = results.outputPixels;
 
       // 1) Already a Float32Array
       if (out instanceof Float32Array) {
@@ -419,7 +419,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         typeof out === 'object' &&
         out !== null &&
         'length' in out &&
-        typeof (out as { length: unknown }).length === 'number'
+        typeof (out as { length: any }).length === 'number'
       ) {
         const arrayLike = out as ArrayLike<number>;
         return new Float32Array(Array.from(arrayLike));

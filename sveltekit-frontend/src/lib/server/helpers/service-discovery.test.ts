@@ -11,17 +11,14 @@
  * tsx --test src/lib/server/helpers/service-discovery.test.ts
  * ```
  */
-
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getServiceDiscovery,
   ServiceDiscovery,
   COMMON_SERVICES
 } from './service-discovery';
-
 describe('ServiceDiscovery', () => {
   let discovery: ServiceDiscovery;
-
   beforeEach(() => {
     discovery = new ServiceDiscovery();
     discovery.clearCache();
@@ -29,11 +26,9 @@ describe('ServiceDiscovery', () => {
     process.env.DEV_DOCKER_DISCOVERY = 'false';
     process.env.NODE_ENV = 'development';
   });
-
   afterEach(() => {
     discovery.clearCache();
   });
-
   describe('Fallback Resolution', () => {
     it('should return fallback URL when no env var and discovery disabled', async () => {
       const result = await discovery.getServiceUrl('minio', {
@@ -42,28 +37,22 @@ describe('ServiceDiscovery', () => {
         containerName: 'minio',
         port: 9000
       });
-
       expect(result.url).toBe('http://localhost:9000');
       expect(result.source).toBe('fallback');
     });
-
     it('should prioritize environment variable over fallback', async () => {
       process.env.TEST_MINIO_URL = 'http://custom:9000';
-
       const result = await discovery.getServiceUrl('minio', {
         envVar: 'TEST_MINIO_URL',
         fallback: 'http://localhost:9000',
         containerName: 'minio',
         port: 9000
       });
-
       expect(result.url).toBe('http://custom:9000');
       expect(result.source).toBe('env');
-
       delete process.env.TEST_MINIO_URL;
     });
   });
-
   describe('Caching', () => {
     it('should cache discovery results', async () => {
       const first = await discovery.getServiceUrl('test-service', {
@@ -72,10 +61,8 @@ describe('ServiceDiscovery', () => {
         containerName: 'test',
         port: 8000
       });
-
       const cacheStats = discovery.getCacheStats();
       expect(cacheStats.size).toBe(1);
-
       // Second call should use cache
       const second = await discovery.getServiceUrl('test-service', {
         envVar: 'TEST_URL',
@@ -83,10 +70,8 @@ describe('ServiceDiscovery', () => {
         containerName: 'test',
         port: 8000
       });
-
       expect(second.url).toBe(first.url);
     });
-
     it('should allow clearing cache', async () => {
       await discovery.getServiceUrl('test-service', {
         envVar: 'TEST_URL',
@@ -94,17 +79,13 @@ describe('ServiceDiscovery', () => {
         containerName: 'test',
         port: 8000
       });
-
       let stats = discovery.getCacheStats();
       expect(stats.size).toBe(1);
-
       discovery.clearCache();
-
       stats = discovery.getCacheStats();
       expect(stats.size).toBe(0);
     });
   });
-
   describe('Batch Discovery', () => {
     it('should discover multiple services in parallel', async () => {
       const services = {
@@ -121,24 +102,19 @@ describe('ServiceDiscovery', () => {
           port: 11434
         }
       };
-
       const results = await discovery.getMultipleServices(services);
-
       expect(Object.keys(results)).toHaveLength(2);
       expect(results.minio.url).toBe('http://localhost:9000');
       expect(results.ollama.url).toBe('http://localhost:11434');
     });
   });
-
   describe('Singleton Pattern', () => {
     it('should return same instance from getServiceDiscovery()', () => {
       const instance1 = getServiceDiscovery();
       const instance2 = getServiceDiscovery();
-
       expect(instance1).toBe(instance2);
     });
   });
-
   describe('Common Services', () => {
     it('should have Minio configured', () => {
       const config = COMMON_SERVICES.minio;
@@ -146,14 +122,12 @@ describe('ServiceDiscovery', () => {
       expect(config.port).toBe(9000);
       expect(config.containerName).toBe('legal-ai-minio');
     });
-
     it('should have Ollama configured', () => {
       const config = COMMON_SERVICES.ollama;
       expect(config.envVar).toBe('OLLAMA_URL');
       expect(config.port).toBe(11434);
       expect(config.containerName).toBe('ollama');
     });
-
     it('should have all 8 services configured', () => {
       const services = Object.keys(COMMON_SERVICES);
       expect(services.length).toBeGreaterThanOrEqual(8);
@@ -166,41 +140,33 @@ describe('ServiceDiscovery', () => {
       expect(services).toContain('rabbitmq');
     });
   });
-
   describe('Environment Filtering', () => {
     it('should ignore discovery in production', async () => {
       process.env.NODE_ENV = 'production';
       process.env.DEV_DOCKER_DISCOVERY = 'true';
-
       const result = await discovery.getServiceUrl('minio', {
         envVar: 'MINIO_ENDPOINT',
         fallback: 'http://localhost:9000',
         containerName: 'minio',
         port: 9000
       });
-
       // Should use fallback, not attempt Docker discovery
       expect(result.url).toBe('http://localhost:9000');
       expect(result.source).toBe('fallback');
-
       process.env.NODE_ENV = 'development';
     });
-
     it('should require feature flag for discovery', async () => {
       process.env.DEV_DOCKER_DISCOVERY = 'false';
-
       const result = await discovery.getServiceUrl('minio', {
         envVar: 'MINIO_ENDPOINT',
         fallback: 'http://localhost:9000',
         containerName: 'minio',
         port: 9000
       });
-
       // Should use fallback, not attempt Docker discovery
       expect(result.source).toBe('fallback');
     });
   });
-
   describe('URL Format Validation', () => {
     it('should handle http:// URLs', async () => {
       const result = await discovery.getServiceUrl('test', {
@@ -209,10 +175,8 @@ describe('ServiceDiscovery', () => {
         containerName: 'test',
         port: 9000
       });
-
       expect(result.url).toMatch(/^https?:\/\//);
     });
-
     it('should handle custom schemes (redis://, postgresql://)', async () => {
       const result = await discovery.getServiceUrl('redis', {
         envVar: 'REDIS_URL',
@@ -220,20 +184,16 @@ describe('ServiceDiscovery', () => {
         containerName: 'redis',
         port: 6379
       });
-
       expect(result.url).toBe('redis://localhost:6379');
     });
   });
 });
-
 describe('ServiceDiscovery Integration Tests', () => {
   let discovery: ServiceDiscovery;
-
   beforeEach(() => {
     discovery = new ServiceDiscovery();
     discovery.clearCache();
   });
-
   it('should discover services with correct fallback chain', async () => {
     // This test validates the fallback chain works correctly
     const result = await discovery.getServiceUrl('test-service', {
@@ -242,12 +202,10 @@ describe('ServiceDiscovery Integration Tests', () => {
       containerName: 'test-container-xyz',
       port: 8000
     });
-
     // Should get fallback since env var doesn't exist and discovery is disabled
     expect(result.url).toBe('http://test-fallback:8000');
     expect(result.source).toBe('fallback');
   });
-
   it('should batch discover multiple services', async () => {
     const services = {
       service1: {
@@ -269,18 +227,14 @@ describe('ServiceDiscovery Integration Tests', () => {
         port: 8003
       }
     };
-
     const results = await discovery.getMultipleServices(services);
-
     expect(Object.keys(results)).toHaveLength(3);
     expect(results.service1.url).toBe('http://localhost:8001');
     expect(results.service2.url).toBe('http://localhost:8002');
     expect(results.service3.url).toBe('http://localhost:8003');
   });
-
   it('should respect env var override in batch discovery', async () => {
     process.env.BATCH_TEST_SVC1 = 'http://override:9999';
-
     const services = {
       service1: {
         envVar: 'BATCH_TEST_SVC1',
@@ -295,14 +249,11 @@ describe('ServiceDiscovery Integration Tests', () => {
         port: 8002
       }
     };
-
     const results = await discovery.getMultipleServices(services);
-
     expect(results.service1.url).toBe('http://override:9999');
     expect(results.service1.source).toBe('env');
     expect(results.service2.url).toBe('http://localhost:8002');
     expect(results.service2.source).toBe('fallback');
-
     delete process.env.BATCH_TEST_SVC1;
   });
 });

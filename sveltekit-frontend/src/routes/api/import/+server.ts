@@ -33,7 +33,7 @@ type EvidenceImport = {
   title?: string;
   created_at?: string;
   tags?: string[];
-  chain_of_custody?: unknown[];
+  chain_of_custody?: any[];
   lab_analysis?: Record<string, unknown>;
   ai_analysis?: Record<string, unknown>;
   ai_tags?: string[];
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'No file provided' }, { status: 400 });
     }
     const fileContent = await file.text();
-    let data: unknown;
+    let data: any;
     // Parse file based on type
     try {
       switch (file.type) {
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       results,
       message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Import error:', error);
     return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 });
   }
@@ -195,7 +195,7 @@ async function importCases(
         await db.insert(cases).values(newCase);
         results.imported++;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.errors.push(`Error importing case ${error instanceof Error ? error.message : String(error)}`);
       results.skipped++;
     }
@@ -268,7 +268,7 @@ async function importEvidence(
         await db.insert(evidence).values(newEvidence);
         results.imported++;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.errors.push(`Error importing evidence: ${error instanceof Error ? error.message : String(error)}`);
       results.skipped++;
     }
@@ -330,7 +330,7 @@ async function importParticipants(
         await db.insert(criminals).values(newParticipant);
         results.imported++;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       results.errors.push(`Error importing participant: ${error instanceof Error ? error.message : String(error)}`);
       results.skipped++;
     }
@@ -355,9 +355,9 @@ function parseCSV(csvContent: string): Record<string, string>[] {
   return data;
 }
 
-function parseXML(xmlContent: string): unknown {
+function parseXML(xmlContent: string): any {
   // xmlToJson moved to the top of the function and typed to avoid `any`
-  function xmlToJson(node: Element | ChildNode): unknown {
+  function xmlToJson(node: Element | ChildNode): any {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const el = node as Element;
       const obj: Record<string, unknown> = {};
@@ -402,7 +402,7 @@ function parseXML(xmlContent: string): unknown {
 
     const root = xmlDoc.documentElement;
     return xmlToJson(root);
-  } catch (error: unknown) {
+  } catch (error: any) {
     throw new Error('Invalid XML format');
   }
 }

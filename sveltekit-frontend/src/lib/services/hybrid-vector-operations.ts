@@ -66,7 +66,7 @@ type QdrantCollectionInfo = {
     };
   };
   // allow other unknown fields
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 // ===== QDRANT CLIENT =====
@@ -159,7 +159,7 @@ export class HybridVectorService {
   }
 
   // Add: safe extraction helpers to avoid `any` and casting issues
-  private safeString(field: unknown, fallback = ''): string {
+  private safeString(field: any, fallback = ''): string {
     if (field == null) return fallback;
     if (typeof field === 'string') return field;
     if (typeof field === 'number' || typeof field === 'boolean') return String(field);
@@ -170,11 +170,11 @@ export class HybridVectorService {
     }
   }
 
-  private safeOptionalString(field: unknown): string | undefined {
+  private safeOptionalString(field: any): string | undefined {
     return field == null ? undefined : this.safeString(field);
   }
 
-  private safeNumber(field: unknown, fallback = 0): number {
+  private safeNumber(field: any, fallback = 0): number {
     if (field == null) return fallback;
     if (typeof field === 'number') return field;
     if (typeof field === 'string') {
@@ -305,7 +305,7 @@ export class HybridVectorService {
     return Array.from(seen.values());
   }
 
-  private parseArrayField(field: unknown): string[] {
+  private parseArrayField(field: any): string[] {
     if (Array.isArray(field)) return field.map(String);
     if (typeof field === 'string') {
       try {
@@ -361,7 +361,7 @@ export class HybridVectorService {
     }
   }
 
-  private parseEmbedding(embedding: unknown): number[] {
+  private parseEmbedding(embedding: any): number[] {
 		if (embedding == null) return [];
 		if (Array.isArray(embedding)) return embedding.map(e => Number(e)).filter(n => !Number.isNaN(n));
 
@@ -384,7 +384,7 @@ export class HybridVectorService {
 
 			// fallback: collect numeric values from object, flatten any nested arrays safely
 			const values = Object.values(obj);
-			const flatten = (arr: unknown[]): unknown[] =>
+			const flatten = (arr: any[]): any[] =>
 				arr.reduce<unknown[]>((acc, v) => {
 					if (Array.isArray(v)) acc.push(...v as unknown[]);
 					else acc.push(v);
@@ -404,7 +404,7 @@ export class HybridVectorService {
       await (dbClient.execute ? dbClient.execute(sql`SELECT 1`) : (dbClient.query ? dbClient.query(sql`SELECT 1`) : Promise.resolve([])));
       health.pgvector = true;
     } catch {
-      health.pgvector = false;
+      health.pgvector = $state(false);
     }
 
     try {
@@ -414,7 +414,7 @@ export class HybridVectorService {
         (health.collections as Record<string, unknown>)[this.defaultCollection] = await this.qdrantClient.collectionInfo(this.defaultCollection);
       }
     } catch {
-      health.qdrant = false;
+      health.qdrant = $state(false);
     }
 
     health.hybrid = Boolean(health.pgvector) || Boolean(health.qdrant);

@@ -12,7 +12,7 @@
   import { zod } from 'sveltekit-superforms/adapters';
   import { createActor } from 'xstate';
   // Removed legacy UI library component imports (Card, Form, Alert, Select, etc.)
-  import Checkbox from '$lib/components/ui/checkbox/Checkbox.svelte';
+  import { Checkbox } from '$lib/components/ui/checkbox/Checkbox.svelte';
   import { Eye, EyeOff, Shield, Loader2, AlertCircle, Zap, UserPlus, Badge, Building, Scale } from 'lucide-svelte';
   import { authMachine } from '$lib/machines/auth-machine';
   // Replaced legacy GPU orchestrator with new security orchestrator client
@@ -154,7 +154,7 @@
       });
     },
     onResult: ({ result }) => {
-      isLoading = false;
+      isLoading = $state(false);
       if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
         const data = (result as { type?: any; data?: any; error?: any }).data as any;
         if (data?.requiresVerification) {
@@ -229,7 +229,6 @@
     return { score, feedback: 'Excellent', color: 'text-green-500' };
   }
 </script>
-
 <div class="w-full max-w-2xl mx-auto nes-legal-register-form nier-bits-card-shell">
   <header class="text-center nier-bits-yorha-panel-header">
     <div class="flex items-center justify-center mb-4">
@@ -261,8 +260,7 @@
             Credential verification failed. Please check your information.
           {/if}
         </div>
-      </div>
-    {/if}
+      {/if}
     <!-- Error Message -->
     {#if errorMessage}
       <div class="mb-4 alert alert-error" role="alert">
@@ -271,8 +269,7 @@
           <strong>Error</strong>
         </div>
         <p class="mt-1 text-sm">{errorMessage}</p>
-      </div>
-    {/if}
+      {/if}
     <!-- Success Message -->
     {#if successMessage}
       <div class="mb-4 alert alert-success" role="status" aria-live="polite">
@@ -281,8 +278,7 @@
           <strong>Success</strong>
         </div>
         <p class="mt-1 text-sm">{successMessage}</p>
-      </div>
-    {/if}
+      {/if}
     <!-- NES Retro Guidance Panel -->
     <div class="nes-retro-panel mb-6">
       <div class="panel-header">
@@ -335,7 +331,7 @@
         padding: 6px 10px;
         background: #111;
         color: #fff;
-        position relative;
+        position: relative;
         border-bottom: 3px solid #000;
       }
       :global(.nes-retro-panel .panel-header .title) {
@@ -431,7 +427,7 @@
           <label for="role" class="label">Professional Role</label>
           <select id="role" name="role" bind:value={$form.role} disabled={isLoading} class="input">
             <option value="" disabled selected>Select role</option>
-            {#each roleOptions as option}
+            {#each Array.isArray(roleOptions) ? roleOptions : [] as option}
               <option value={option.value}>{option.label}</option>
             {/each}
           </select>
@@ -517,8 +513,7 @@
                 ></div>
               </div>
               <span class="text-sm {passwordStrength.color}">{passwordStrength.feedback}</span>
-            </div>
-          {/if}
+            {/if}
           {#if getErr('password')}<p class="error-text">{getErr('password')}</p>{/if}
         </div>
         <div class="field">
@@ -618,11 +613,9 @@
             Sign in here
           </a>
         </p>
-      </div>
-    {/if}
+      {/if}
   </section>
 </div>
-
 <style>
   /* NES.css Legal Registration Form Styling */
   :global(.nes-legal-register-form) {
@@ -731,7 +724,6 @@
     border-color: #dc2626;
     background: linear-gradient(45deg, #fef2f2, #fee2e2);
   }
-
   /* NES retro panel fixes */
   :global(.nes-retro-panel .panel-body) {
     padding: 10px 14px 14px;
@@ -745,4 +737,3 @@
     text-overflow: ellipsis;
   }
 </style>
-

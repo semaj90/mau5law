@@ -4,18 +4,15 @@ import { ThinkingProcessor, type ThinkingAnalysis, type AnalysisOptions } from '
 import { db } from '$lib/db/connection';
 import { aiResponses, grpoFeedback } from '$lib/db/enhanced-ai-schema';
 import { sql } from 'drizzle-orm';
-
 // Type definitions for Ollama API responses
 interface OllamaGenerateResponse {
   response: string;
   // Add other expected properties if available
 }
-
 interface OllamaEmbeddingResponse {
   embedding: number[];
   // Add other expected properties if available
 }
-
 // Type definition for feedback data rows
 interface FeedbackDataRow {
   user_rating: number;
@@ -25,7 +22,6 @@ interface FeedbackDataRow {
   completeness: number;
   relevance: number;
 }
-
 // Type definition for recommendation rows
 interface RecommendationRow {
   id: string;
@@ -35,20 +31,17 @@ interface RecommendationRow {
   distance: number;
   user_preference_score?: number;
 }
-
 // Type definition for trending topic rows
 interface TrendingTopicRow {
   topic: string;
   count: string;
   avg_rating: string;
 }
-
 interface MappedTrendingTopic {
   topic: string;
   count: number;
   avgRating: number;
 }
-
 // Enhanced analysis with GRPO context
 export interface GRPOAnalysis extends ThinkingAnalysis {
   grpoId?: string;

@@ -4,7 +4,6 @@ import { legalSimilarityWebGPU, prepareLegalEmbeddingsForWebGPU } from '../webgp
 import { simdVectorProcessor } from '../simd/vector-simd.js';
 import { nesMemory } from '../memory/nes-memory-architecture.js';
 import type { LegalSimilarityResult } from '../webgpu/legal-similarity-compute.js';
-
 export interface AcceleratedAnalysisRequest {
   query: string;
   queryEmbedding?: Float32Array;
@@ -60,9 +59,9 @@ export interface AcceleratedAnalysisResult {
   };
 }
 export class AcceleratedLegalAssistant {
-  private isInitialized = false;
-  private webgpuAvailable = false;
-  private simdAvailable = false;
+  private isInitialized = $state(false);
+  private webgpuAvailable = $state(false);
+  private simdAvailable = $state(false);
   constructor() {}
   async initialize(): Promise<boolean> {
     try {
@@ -321,7 +320,7 @@ export class AcceleratedLegalAssistant {
     if (this.webgpuAvailable) {
       await legalSimilarityWebGPU.destroy();
     }
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🎮 Accelerated Legal Assistant destroyed');
   }
 }

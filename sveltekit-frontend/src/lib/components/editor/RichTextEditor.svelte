@@ -7,9 +7,9 @@
   import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
   import { browser } from '$app/environment';
   interface Props {
-    height?: unknown;
-    disabled?: unknown;
-    placeholder?: unknown;
+    height?: any;
+    disabled?: any;
+    placeholder?: any;
   }
   let {
     height = 500,
@@ -17,7 +17,7 @@
     placeholder = 'Begin writing your report...'
   }: Props = $props();
   // Enhanced state management for AI-powered features
-  let editorInstance: unknown;
+  let editorInstance: any;
   let isInitialized = $state(false);
   let isProcessingSummary = $state(false);
   let currentSummary = $state<string>('');
@@ -118,7 +118,7 @@
       reportActions.save();
     },
     // Content change handler
-    setup: (editor: unknown) => {
+    setup: (editor: any) => {
       editorInstance = editor;
       editor.on('init', () => {
         isInitialized = true;
@@ -221,7 +221,7 @@
         if (cached.summary) {
           // Cache hit - instant response!
           currentSummary = cached.summary;
-          isProcessingSummary = false;
+          isProcessingSummary = $state(false);
           return;
         }
       }
@@ -244,7 +244,7 @@
       }
     } catch (error) {
       console.error('AI processing failed:', error);
-      isProcessingSummary = false;
+      isProcessingSummary = $state(false);
     }
   }
   /**
@@ -256,24 +256,24 @@
       if (!jobId) return;
       try {
         // removed unused response assignment
-        if ((response as { ok?: unknown; json?: unknown }).ok) {
-          const result = await (response as { ok?: unknown; json?: unknown }).json();
-          if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'completed') {
-            currentSummary = (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary;
+        if ((response as { ok?: any; json?: any }).ok) {
+          const result = await (response as { ok?: any; json?: any }).json();
+          if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'completed') {
+            currentSummary = (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary;
             // Store vector embedding in PostgreSQL/pg_vector
-            if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding) {
-              await storeVectorEmbedding((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).embedding, lastProcessedText);
+            if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding) {
+              await storeVectorEmbedding((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).embedding, lastProcessedText);
             }
             // Cache result in Redis for future requests
-            await cacheResult((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).textHash, (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).summary);
+            await cacheResult((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).textHash, (result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).summary);
             // Cleanup
-            isProcessingSummary = false;
+            isProcessingSummary = $state(false);
             jobId = null;
             clearInterval(pollingInterval!);
             pollingInterval = null;
-          } else if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'failed') {
+          } else if ((result as { status?: any; summary?: any; embedding?: any; textHash?: any; error?: any }).status === 'failed') {
             console.error(error);
-            isProcessingSummary = false;
+            isProcessingSummary = $state(false);
             jobId = null;
             clearInterval(pollingInterval!);
             pollingInterval = null;
@@ -335,7 +335,7 @@
       editorInstance.insertContent(content);
     }
   }
-  function insertEvidence(evidence: unknown) {
+  function insertEvidence(evidence: any) {
     const evidenceHtml = `
       <div class="space-y-4" data-evidence-id="${evidence.id}">
         <div class="space-y-4">
@@ -365,7 +365,6 @@
     }
   });
 </script>
-
 <!-- AI-Powered Editor with Status UI -->
 <div class="space-y-4">
   <!-- Status Header - Shows AI processing status -->
@@ -403,8 +402,7 @@
         <div class="flex items-center gap-2">
           <div class="w-2 h-2 bg-green-500 rounded-full"></div>
           <span class="text-sm text-green-600 font-medium">Summary Ready</span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Document Stats -->
     <div class="flex items-center gap-4 text-sm text-gray-600">
@@ -484,8 +482,7 @@
               <p>• 500ms debounce delay</p>
               <p>• Powered by Legal-BERT + nomic-embed</p>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
   </div>
@@ -503,13 +500,11 @@
     </div>
   </div>
 </div>
-
 <!-- Removed forced error test block after pipeline validation -->
-
 <style>
   /* @unocss-include */
   .tinymce-container {
-    position relative;
+    position: relative;
     width: 100%;
   }
   :global(.tox) {
@@ -567,4 +562,3 @@
     --tox-collection-toolbar-button-hover-background: #4b5563;
   }
 </style>
-

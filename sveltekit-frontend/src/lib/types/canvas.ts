@@ -80,5 +80,5 @@ export interface InteractiveCanvasState {
   animation?: string;
   frame?: number;
   fabricJSON?: string;
-  metadata?: { [key: string]: unknown }; // Changed from any to unknown
+  metadata?: { [key: string]: any }; // Changed from any to unknown
 }

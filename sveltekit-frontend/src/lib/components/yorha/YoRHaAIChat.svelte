@@ -6,22 +6,18 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { aiChatStore  } from '$lib/stores/unified';
-
   // Stores / state
   const messages = writable<any[]>([]);
   let messageInput = '';
   let chatContainer: HTMLDivElement | null = null;
-  let isConnected = false;
-  let isTyping = false;
-  let isLoading = false;
-
+  let isConnected = $state(false);
+  let isTyping = $state(false);
+  let isLoading = $state(false);
   const RAG_SERVICE_URL = 'http://localhost:8093';
-
   function pushMessage(msg: any) {
     messages.update(m => [...m, msg]);
     aiChatStore.addMessage?.(msg);
   }
-
   onMount(async () => {
     try {
       const response = await fetch(`${RAG_SERVICE_URL}/health`);
@@ -42,7 +38,7 @@ How can I assist with your legal AI operations?`,
         },
       ]);
     } catch (error) {
-      isConnected = false;
+      isConnected = $state(false);
       messages.set([
         {
           id: 'error',
@@ -58,21 +54,17 @@ Offline Mode Available — Basic chat functionality only.`,
         },
       ]);
     }
-
     // Load chat history (if any)
     const savedChats = await aiChatStore.loadChatHistory?.();
     if (Array.isArray(savedChats) && savedChats.length > 0) {
       messages.update(m => [...m, ...savedChats]);
     }
-
     // scroll initial
     scrollToBottom();
   });
-
   async function sendMessage() {
     const trimmed = messageInput.trim();
     if (!trimmed) return;
-
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
@@ -80,21 +72,18 @@ Offline Mode Available — Basic chat functionality only.`,
       timestamp: new Date(),
       type: 'user',
     };
-
     pushMessage(userMessage);
     messageInput = '';
     isLoading = true;
     isTyping = true;
-
     // Handle commands locally
     if (trimmed.startsWith('/')) {
       await handleCommand(trimmed);
-      isLoading = false;
-      isTyping = false;
+      isLoading = $state(false);
+      isTyping = $state(false);
       scrollToBottom();
       return;
     }
-
     try {
       const resp = await fetch(`${RAG_SERVICE_URL}/api/chat`, {
         method: 'POST',
@@ -108,10 +97,8 @@ Offline Mode Available — Basic chat functionality only.`,
           max_tokens: 1000,
         }),
       });
-
       if (!resp.ok) throw new Error(`RAG service error: ${resp.status} ${resp.statusText}`);
       const result = await resp.json();
-
       const assistantMessage = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -120,7 +107,6 @@ Offline Mode Available — Basic chat functionality only.`,
         type: 'assistant',
         metadata: result?.metadata ?? {},
       };
-
       pushMessage(assistantMessage);
     } catch (err: any) {
       const errorMessage = {
@@ -132,19 +118,16 @@ Offline Mode Available — Basic chat functionality only.`,
       };
       pushMessage(errorMessage);
     } finally {
-      isLoading = false;
-      isTyping = false;
+      isLoading = $state(false);
+      isTyping = $state(false);
       scrollToBottom();
     }
   }
-
   async function handleCommand(command: string) {
     const parts = command.slice(1).split(' ');
     const cmd = parts.shift()?.toLowerCase() || '';
     const arg = parts.join(' ');
-
     let responseText = '';
-
     switch (cmd) {
       case 'help':
         responseText = `🆘 YoRHa AI Commands
@@ -191,7 +174,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
       default:
         responseText = `❓ Unknown command: ${cmd}\nType /help for available commands.`;
     }
-
     const commandResponse = {
       id: Date.now().toString(),
       role: 'assistant',
@@ -201,7 +183,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     };
     pushMessage(commandResponse);
   }
-
   function formatRAGResponse(result: any): string {
     if (typeof result === 'string') return result;
     let out = '🤖 YoRHa AI Response\n\n';
@@ -221,7 +202,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     }
     return out;
   }
-
   function scrollToBottom() {
     setTimeout(() => {
       if (chatContainer) {
@@ -229,14 +209,12 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
       }
     }, 50);
   }
-
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   }
-
   function getMessageTypeClass(type: string | undefined): string {
     switch (type) {
       case 'user':
@@ -253,7 +231,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     }
   }
 </script>
-
 <!-- AI Chat Interface -->
 <div class="h-full flex flex-col bg-yorha-darker text-yorha-light">
   <!-- Chat Messages -->
@@ -278,7 +255,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
         </div>
       </div>
     {/each}
-
     {#if isTyping}
       <div class="flex justify-start">
         <div class="bg-yorha-accent-warm/20 border border-yorha-accent-warm rounded-lg p-4 max-w-xs">
@@ -291,10 +267,8 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
             </div>
           </div>
         </div>
-      </div>
-    {/if}
+      {/if}
   </div>
-
   <!-- Connection Status -->
   <div class="border-t border-yorha-accent-warm/30 p-2">
     <div class="flex items-center justify-between text-xs">
@@ -308,7 +282,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
       </div>
     </div>
   </div>
-
   <!-- Message Input -->
   <div class="border-t border-yorha-accent-warm/30 p-4">
     <div class="flex gap-2">
@@ -333,7 +306,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     </div>
   </div>
 </div>
-
 <style>
   /* simplified scrollbar styling */
   :global(.simple-scrollbar) {
@@ -341,7 +313,6 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }
-
   /* WebKit-based browsers */
   :global(.simple-scrollbar::-webkit-scrollbar) {
     width: 8px;
@@ -356,6 +327,5 @@ Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
-
   /* keep existing theme classes intact; minimal overrides */
 </style>

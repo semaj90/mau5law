@@ -14,7 +14,6 @@ import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
 import { legalBERT } from './legalbert-middleware.js';
 import { monitoringService } from './monitoring-service.js';
-
 // ===== DATABASE SCHEMA (Drizzle ORM TypeScript Safe) =====
 export const legalDocuments = pgTable('legal_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -45,7 +44,6 @@ export const synthesisCache = pgTable('synthesis_cache', {
   lastAccessed: timestamp('last_accessed').defaultNow(),
   createdAt: timestamp('created_at').defaultNow(),
 });
-
 // ===== DYNAMIC PORT CONFIGURATION =====
 // previously relied on `portManager` / `getServicePort` which may not exist.
 // Implement a safe, best-effort initializer and a fallback that reads env vars.
@@ -69,7 +67,6 @@ async function initializeDynamicPorts(): Promise<Map<string, number>> {
   logger.info('[Orchestrator] dynamic ports not used, falling back to env/fallbacks');
   return new Map();
 }
-
 // Prefer environment overrides for per-service ports, fallback to provided default.
 function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
   // map service name like: "enhanced-rag" -> ENV key ENHANCED_RAG_PORT
@@ -81,7 +78,6 @@ function getServicePortWithFallback(serviceName: string, fallbackPort: number): 
   }
   return fallbackPort;
 }
-
 // ===== SERVICE CONFIGURATION =====
 const services = {
   neo4j: {
@@ -118,7 +114,6 @@ const services = {
     keyPrefix: 'legal-ai:',
   },
 };
-
 // ===== DATABASE CONNECTION =====
 const pgConnection = postgres({
   host: services.postgres.host,
@@ -133,7 +128,6 @@ const pgConnection = postgres({
 export const db = drizzle(pgConnection as any, {
   schema: { legalDocuments, autoSolveResults, synthesisCache },
 });
-
 // ===== REDIS CONNECTION =====
 let redis: Redis | null = null;
 try {
@@ -152,7 +146,6 @@ try {
   logger.warn('Redis initialization failed, continuing without Redis:', e);
   redis = null;
 }
-
 // --- runtime-safe fetch helper (works in Node without global fetch) ---
 async function getFetch(): Promise<typeof fetch> {
   if (typeof fetch !== 'undefined') return fetch;
@@ -171,7 +164,6 @@ async function getFetch(): Promise<typeof fetch> {
     throw new Error('Fetch API is not available');
   }
 }
-
 // ===== UTILITY FUNCTIONS =====
 function generateCacheKey(query: string): string {
   return createHash('sha256').update(query).digest('hex');
@@ -218,7 +210,6 @@ function applyMMR(documents: any[], lambda = 0.7, maxSelected = 10): any[] {
   }
   return selected;
 }
-
 // Add small typed shapes used by the prompt builder
 type LegalBertEntity = { text?: string };
 type LegalBertConcept = { concept?: string };
@@ -240,22 +231,19 @@ type EnhancedPromptInput = {
   query?: string;
   legalBertAnalysis?: LegalBertAnalysis | null;
   rankedResults?: RankedSource[] | null;
-  context7Docs?: unknown;
-  goLlamaResponse?: unknown;
+  context7Docs?: any;
+  goLlamaResponse?: any;
 };
-
 // ===== ORCHESTRATOR CLASS (simplified, robust pipeline) =====
 export class EnhancedAISynthesisOrchestrator {
   private neo4jStore: InstanceType<typeof Neo4jVectorStore> | null = null;
   private pgVectorStore: InstanceType<typeof PGVectorStore> | null = null;
   private ollama!: ChatOllama;
   private embeddings!: OllamaEmbeddings;
-  private initialized = false;
-
+  private initialized = $state(false);
   constructor() {
     // initialization deferred to be async-safe
   }
-
   async initialize(): Promise<void> {
     if (this.initialized) return;
     logger.info('[Orchestrator] Initializing...');
@@ -272,7 +260,6 @@ export class EnhancedAISynthesisOrchestrator {
         baseUrl: services.ollama.baseUrl,
         model: services.ollama.models.embedding,
       } as any);
-
       // Try to initialize vector stores (best-effort)
       try {
         // instantiate Neo4jVectorStore defensively (constructor signatures vary across versions)
@@ -286,7 +273,6 @@ export class EnhancedAISynthesisOrchestrator {
         this.neo4jStore = null;
         logger.warn('[Orchestrator] Neo4j init failed:', e);
       }
-
       try {
         const pgConfig: PoolConfig = {
           host: services.postgres.host,
@@ -311,7 +297,6 @@ export class EnhancedAISynthesisOrchestrator {
         this.pgVectorStore = null;
         logger.warn('[Orchestrator] PGVector init failed:', e);
       }
-
       // Ensure index exists - best effort
       try {
         await pgConnection`
@@ -322,7 +307,6 @@ export class EnhancedAISynthesisOrchestrator {
       } catch (e) {
         logger.debug('[Orchestrator] ensure index failed', e);
       }
-
       this.initialized = true;
       logger.info('[Orchestrator] Initialized');
     } catch (err) {
@@ -330,7 +314,6 @@ export class EnhancedAISynthesisOrchestrator {
       throw err;
     }
   }
-
   // --- Small helper wrappers around external pieces ---
   private async checkCache(query: string): Promise<{ hit: boolean; data?: any; source?: 'redis' | 'db' }> {
     const key = generateCacheKey(query);
@@ -390,7 +373,6 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return { hit: false };
   }
-
   private async analyzeWithLegalBERT(query: string) {
     try {
       return await legalBERT.analyzeLegalText(query);
@@ -399,7 +381,6 @@ export class EnhancedAISynthesisOrchestrator {
       return { entities: [], concepts: [], complexity: { legalComplexity: 0.5 } };
     }
   }
-
   private async generateNomicEmbeddings(query: string) {
     try {
       return await this.embeddings.embedQuery(query);
@@ -408,7 +389,6 @@ export class EnhancedAISynthesisOrchestrator {
       return null;
     }
   }
-
   private async searchNeo4j(query: string, limit = 10) {
     if (!this.neo4jStore) return [];
     try {
@@ -418,7 +398,6 @@ export class EnhancedAISynthesisOrchestrator {
       return [];
     }
   }
-
   private async searchPGVector(query: string, limit = 10) {
     if (!this.pgVectorStore) return [];
     try {
@@ -429,7 +408,6 @@ export class EnhancedAISynthesisOrchestrator {
       return [];
     }
   }
-
   private async runEnhancedRAGPipeline(input: { query: string; embeddings?: any }) {
     try {
       const fetchImpl = await getFetch();
@@ -450,7 +428,6 @@ export class EnhancedAISynthesisOrchestrator {
       return { documents: [] };
     }
   }
-
   private async runGoLlamaPipeline(input: { query: string; legalBertAnalysis?: any }) {
     try {
       const fetchImpl = await getFetch();
@@ -475,7 +452,6 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return null;
   }
-
   private async rankWithCrossEncoder(context: any) {
     const all = [
       ...(context.neo4jResults || []),
@@ -499,7 +475,6 @@ export class EnhancedAISynthesisOrchestrator {
     const sorted = ranked.sort((a, b) => (b.crossEncoderScore || 0) - (a.crossEncoderScore || 0));
     return applyMMR(sorted, 0.7);
   }
-
   private async enhanceWithContext7(context: any) {
     try {
       const fetchImpl = await getFetch();
@@ -519,7 +494,6 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return null;
   }
-
   private async generateWithGemma3Legal(input: any) {
     const prompt = buildEnhancedPrompt(input);
     // Try GPU orchestrator
@@ -561,7 +535,6 @@ export class EnhancedAISynthesisOrchestrator {
     }
     throw new Error('Generation failed');
   }
-
   private async performFinalSynthesis(input: any) {
     return aiAssistantSynthesizer.synthesizeInput({
       query: input.query,
@@ -580,7 +553,6 @@ export class EnhancedAISynthesisOrchestrator {
       },
     });
   }
-
   private async cacheResult(query: string, finalSynthesis: any, perfStart: number) {
     const key = generateCacheKey(query);
     const metadata = {
@@ -621,7 +593,6 @@ export class EnhancedAISynthesisOrchestrator {
       }
     }
   }
-
   // ===== PUBLIC API =====
   async process(query: string, options?: Record<string, any>): Promise<any> {
     await this.initialize();
@@ -704,7 +675,6 @@ export class EnhancedAISynthesisOrchestrator {
     }
     return finalSynthesis;
   }
-
   async health(): Promise<any> {
     await this.initialize().catch(() => {});
     return {
@@ -721,7 +691,6 @@ export class EnhancedAISynthesisOrchestrator {
       },
     };
   }
-
   private async checkPostgres(): Promise<boolean> {
     try {
       await pgConnection`SELECT 1`;
@@ -758,17 +727,15 @@ export class EnhancedAISynthesisOrchestrator {
     }
   }
 }
-
 // Helper prompt builder left mostly unchanged but cleaned
 function buildEnhancedPrompt(input: EnhancedPromptInput): string {
   // defensive generic helpers (avoid any)
-  const safeArray = <T>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
-  const safeJoin = <T>(arr: unknown, mapFn?: (x: T) => string) =>
+  const safeArray = <T>(v: any): T[] => (Array.isArray(v) ? (v as T[]) : []);
+  const safeJoin = <T>(arr: any, mapFn?: (x: T) => string) =>
     safeArray<T>(arr)
       .map(mapFn ?? ((x: T) => String(x)))
       .filter(Boolean)
       .join(', ');
-
   let prompt = `You are an expert legal AI assistant using gemma3-legal:latest with access to comprehensive legal knowledge.
 QUERY: ${String(input?.query ?? '')}
 `;
@@ -777,7 +744,6 @@ QUERY: ${String(input?.query ?? '')}
     const conceptsStr = safeJoin<LegalBertConcept>(input.legalBertAnalysis.concepts, c => c?.concept ?? '');
     const complexity = input.legalBertAnalysis?.complexity?.legalComplexity ?? 0;
     const jurisdiction = input.legalBertAnalysis?.jurisdiction ?? 'General';
-
     prompt += `LEGAL ANALYSIS:
 - Identified Entities: ${entitiesStr}
 - Legal Concepts: ${conceptsStr}
@@ -817,7 +783,6 @@ INSTRUCTIONS:
 RESPONSE:`;
   return prompt;
 }
-
 // Export singleton instance
 export const orchestrator = new EnhancedAISynthesisOrchestrator();
 export default orchestrator;

@@ -83,9 +83,9 @@ export interface HybridCacheQuery {
 }
 
 class EnhancedCachingRevolutionaryBridge {
-  private initialized = false;
+  private initialized = $state(false);
   private adaptiveMode = true; // Automatically choose best cache strategy
-  private revolutionaryAvailable = false;
+  private revolutionaryAvailable = $state(false);
   private performanceMetrics = {
     enhancedCacheHits: 0,
     revolutionaryCacheHits: 0,
@@ -106,7 +106,7 @@ class EnhancedCachingRevolutionaryBridge {
         await revolutionaryAI.healthCheck(); // Assuming healthCheck exists and initializes if needed
         this.revolutionaryAvailable = true;
       } catch (err) {
-        this.revolutionaryAvailable = false;
+        this.revolutionaryAvailable = $state(false);
         console.warn('⚠️ Revolutionary AI initialization failed (will continue with enhanced caching):', err);
       }
       // Consider the bridge initialized if at least the enhanced caching service is present or revolutionary succeeded.

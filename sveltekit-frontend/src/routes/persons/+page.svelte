@@ -408,7 +408,7 @@
     <!-- Cards View -->
     {#if viewMode === 'cards'}
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {#each filteredPersons as person}
+        {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
           <div class="yorha-3d-panel person-nier-bits-card hover:scale-105 transition-transform">
             <div class="p-6">
               <!-- Person Header -->
@@ -471,7 +471,7 @@
               <!-- Tags -->
               {#if person.tags.length > 0}
                 <div class="flex flex-wrap gap-1 mb-4">
-                  {#each person.tags.slice(0, 3) as tag}
+                  {#each Array.isArray(person.tags.slice(0, 3)) ? person.tags.slice(0, 3) : [] as tag}
                     <span class="px-2 py-1 bg-yellow-600/20 text-yellow-400 text-xs rounded uppercase">
                       {tag}
                     </span>
@@ -502,7 +502,7 @@
       <!-- List View -->
       <div class="yorha-3d-panel">
         <div class="divide-y divide-yellow-600/20">
-          {#each filteredPersons as person}
+          {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
             <div class="p-6 hover:bg-gray-800/50 transition-colors">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4 flex-1">

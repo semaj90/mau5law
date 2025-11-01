@@ -15,33 +15,27 @@ https://svelte.dev/e/js_parse_error -->
     type KeyboardShortcut,
   } from '$lib/services/keyboard-shortcuts-service';
   // removed typed Button component to avoid constructor/type mismatches
-  import Switch from '$lib/components/ui/switch/Switch.svelte';
-
+  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
   // Safe wrappers for optional remote methods (silences TS if methods aren't present)
   function connectRemote() {
     (keyboardShortcutsService as any).connectRemote?.();
   }
-
   function disconnectRemote() {
     (keyboardShortcutsService as any).disconnectRemote?.();
   }
-
   function clearRemoteHistory() {
     remoteCommands.set([]);
   }
-
   // Use Svelte 5 runes $props() to obtain component props
   const { visible = false, context = ['global'] } = $props() as {
     visible?: boolean;
     context?: string[];
   };
-
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let showRemoteOnly = $state(false);
   let helpModalVisible = $state(false);
   let remoteStatusVisible = $state(false);
-
   // Fixed derived logic and typo'ed variables; guard against undefined stores
   let filteredShortcutIds = $derived(() => {
     const list = $shortcuts || [];
@@ -58,15 +52,12 @@ https://svelte.dev/e/js_parse_error -->
       })
       .map(s => s.id);
   });
-
   function getShortcutById(id: string) {
     return ($shortcuts || []).find((s: KeyboardShortcut) => s.id === id);
   }
-
   $effect(() => {
     // Set context for shortcuts service
     setKeyboardContext(context);
-
     // Listen for custom events
     const handleToggleHelp = () => {
       helpModalVisible = !helpModalVisible;
@@ -81,16 +72,13 @@ https://svelte.dev/e/js_parse_error -->
       document.removeEventListener('show-remote-status', handleShowRemoteStatus);
     };
   });
-
   function setShortcutEnabled(id: string, enabled: boolean) {
     const svc = keyboardShortcutsService as any;
-
     // Preferred explicit API
     if (typeof svc.setShortcutEnabled === 'function') {
       svc.setShortcutEnabled(id, enabled);
       return;
     }
-
     // Older/alternate APIs
     if (enabled && typeof svc.enableShortcut === 'function') {
       svc.enableShortcut(id);
@@ -100,16 +88,13 @@ https://svelte.dev/e/js_parse_error -->
       svc.disableShortcut(id);
       return;
     }
-
     // Fallback: update local shortcuts store so UI reflects change
     // (Assume `shortcuts` is a writable store; cast to any to avoid TS errors)
     (shortcuts as any)?.update?.((list: any[] = []) => list.map(s => (s.id === id ? { ...s, enabled } : s)));
   }
-
   function toggleShortcut(shortcut: KeyboardShortcut) {
     setShortcutEnabled(shortcut.id, !shortcut.enabled);
   }
-
   function executeShortcut(shortcut: KeyboardShortcut) {
     keyboardShortcutsService.executeRemoteCommand({
       id: crypto.randomUUID(),
@@ -119,7 +104,6 @@ https://svelte.dev/e/js_parse_error -->
       timestamp: Date.now(),
     });
   }
-
   function getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
       navigation: '🧭',
@@ -131,7 +115,6 @@ https://svelte.dev/e/js_parse_error -->
     };
     return icons[category] || '📌';
   }
-
   function getSourceIcon(source: string): string {
     const icons: Record<string, string> = {
       keyboard: '⌨️',
@@ -142,7 +125,6 @@ https://svelte.dev/e/js_parse_error -->
     return icons[source] || '❓';
   }
 </script>
-
 <!-- Help Modal -->
 {#if helpModalVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -165,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
             class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-md text-white"
           >
             <option value="all">All Categories</option>
-            {#each $shortcutCategories as category}
+            {#each Array.isArray($shortcutCategories) ? $shortcutCategories : [] as category}
               <option value={category.id}>{category.name}</option>
             {/each}
           </select>
@@ -174,10 +156,9 @@ https://svelte.dev/e/js_parse_error -->
             <span class="text-sm">Remote Only</span>
           </label>
         </div>
-
         <!-- Shortcuts list -->
         <div class="overflow-y-auto max-h-96">
-          {#each $shortcutCategories as category}
+          {#each Array.isArray($shortcutCategories) ? $shortcutCategories : [] as category}
             {#if selectedCategory === 'all' || selectedCategory === category.id}
               <div class="mb-6">
                 <h3 class="text-lg font-semibold text-yellow-400 mb-3 flex items-center gap-2">
@@ -185,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
                   {category.name}
                 </h3>
                 <div class="space-y-2">
-                  {#each category.shortcuts as entry}
+                  {#each Array.isArray(category.shortcuts) ? category.shortcuts : [] as entry}
                     {@const shortcut = typeof entry === 'string' ? getShortcutById(entry) : entry}
                     {#if shortcut && filteredShortcutIds.includes(shortcut.id)}
                       <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg border border-gray-700">
@@ -205,15 +186,12 @@ https://svelte.dev/e/js_parse_error -->
                             Test
                           </button>
                         </div>
-                      </div>
-                    {/if}
+                      {/if}
                   {/each}
                 </div>
-              </div>
-            {/if}
+              {/if}
           {/each}
         </div>
-
         <!-- Remote connection status -->
         {#if $isRemoteConnected}
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
@@ -230,12 +208,10 @@ https://svelte.dev/e/js_parse_error -->
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
               <button type="button" class="bits-btn sm ghost" onclick={connectRemote}> Connect </button>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Remote Status Modal -->
 {#if remoteStatusVisible}
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -260,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class="text-lg font-semibold text-yellow-400 mb-3">Recent Commands</h3>
           {#if $remoteCommands.length > 0}
             <div class="space-y-2 overflow-y-auto max-h-64">
-              {#each $remoteCommands as command}
+              {#each Array.isArray($remoteCommands) ? $remoteCommands : [] as command}
                 <div class="flex items-center justify-between p-2 bg-gray-800 rounded border border-gray-700">
                   <div class="flex items-center gap-3">
                     <span>{getSourceIcon(command.source)}</span>
@@ -276,8 +252,7 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </div>
           {:else}
-            <div class="text-gray-400 text-center py-4">No recent commands</div>
-          {/if}
+            <div class="text-gray-400 text-center py-4">No recent commands{/if}
         </div>
         <!-- Controls -->
         <div class="flex gap-2">
@@ -290,8 +265,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
 <!-- Floating shortcut indicator (when visible prop is true) -->
 {#if visible}
   <div class="fixed bottom-4 right-4 z-40">
@@ -302,13 +276,10 @@ https://svelte.dev/e/js_parse_error -->
           >Press <kbd class="bg-gray-800 px-1 rounded">Shift</kbd> + <kbd class="bg-gray-800 px-1 rounded">H</kbd> for shortcuts</span
         >
         {#if $isRemoteConnected}
-          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-        {/if}
+          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse">{/if}
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* Replaced empty/comment-only ruleset to avoid: "Do not use empty rulesets" error.
      Explicit properties mirror the original @apply intent (inline-block, padding,

@@ -6,11 +6,11 @@ import type { RequestHandler } from './$types.js';
 
 type JsonObject = Record<string, unknown>;
 
-const safeString = (v: unknown): string => (typeof v === 'string' ? v : '');
-const safeBoolean = (v: unknown): boolean | undefined => (typeof v === 'boolean' ? v : undefined);
-const safeStringArray = (v: unknown): string[] | undefined =>
+const safeString = (v: any): string => (typeof v === 'string' ? v : '');
+const safeBoolean = (v: any): boolean | undefined => (typeof v === 'boolean' ? v : undefined);
+const safeStringArray = (v: any): string[] | undefined =>
   Array.isArray(v) ? (v.filter(x => typeof x === 'string') as string[]) : undefined;
-const errorMessage = (err: unknown): string => (err instanceof Error ? err.message : String(err));
+const errorMessage = (err: any): string => (err instanceof Error ? err.message : String(err));
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'Report not found' }, { status: 404 });
     }
     return json(reportResult[0]);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error fetching report:', errorMessage(err));
     return json({ error: 'Failed to fetch report' }, { status: 500 });
   }
@@ -90,7 +90,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error updating report:', errorMessage(err));
     return json({ error: 'Failed to update report' }, { status: 500 });
   }
@@ -116,7 +116,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db.delete(reports).where(eq(reports.id, reportId)).returning();
     return json({ success: true, deletedReport });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error deleting report:', errorMessage(err));
     return json({ error: 'Failed to delete report' }, { status: 500 });
   }
@@ -185,7 +185,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 
     const [updatedReport] = await db.update(reports).set(updateData).where(eq(reports.id, reportId)).returning();
     return json(updatedReport);
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('Error patching report:', errorMessage(err));
     return json({ error: 'Failed to update report' }, { status: 500 });
   }

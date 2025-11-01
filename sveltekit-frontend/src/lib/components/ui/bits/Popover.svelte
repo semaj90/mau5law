@@ -70,7 +70,6 @@
     dispatch('openChange', { open: newOpen });
   }
 </script>
-
 <BitsPopover.Root bind:open onOpenChange={handleOpenChange} {closeOnOutsideClick} {closeOnEscape} {...props}>
   <BitsPopover.Trigger asChild>
     {@render trigger?.()}
@@ -111,7 +110,6 @@
     </BitsPopover.Content>
   </BitsPopover.Portal>
 </BitsPopover.Root>
-
 <style>
 /* Gaming theme effects */ {}
   :global([data-bits-popover-content][data-theme='gaming']) {
@@ -151,4 +149,3 @@ box-shadow: {}
     }
   }
 </style>
-

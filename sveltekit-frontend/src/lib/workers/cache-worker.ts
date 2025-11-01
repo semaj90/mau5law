@@ -26,7 +26,7 @@ type InputData = Uint8Array | Float32Array | string | Record<string, unknown> | 
 
 class CacheWorker {
   private config: WorkerConfig | null = null;
-  private simdSupport: boolean = false;
+  private simdSupport: boolean = $state(false);
   constructor() {
     this.detectSIMDSupport();
     // bind handler that expects MessageEvent<CacheWorkerMessage>
@@ -45,13 +45,13 @@ class CacheWorker {
           ])
         );
     } catch (error) {
-      this.simdSupport = false;
+      this.simdSupport = $state(false);
     }
   }
   private async handleMessage(event: MessageEvent<CacheWorkerMessage>): Promise<void> {
     const { type, id, data, config, operations } = event.data;
     try {
-      let result: unknown;
+      let result: any;
       switch (type) {
         case 'init':
           this.config = config!;
@@ -246,7 +246,7 @@ class CacheWorker {
   /**
    * JSON replacer for optimized serialization
    */
-  private jsonReplacer(_key: string, value: unknown): unknown {
+  private jsonReplacer(_key: string, value: any): any {
     // Handle special types that JSON can't serialize natively
     if (value instanceof Float32Array) {
       return {
@@ -273,7 +273,7 @@ class CacheWorker {
   /**
    * JSON reviver for optimized deserialization
    */
-  private jsonReviver(_key: string, value: unknown): unknown {
+  private jsonReviver(_key: string, value: any): any {
     if (value && typeof value === 'object') {
       const v = value as Record<string, unknown>;
       if (v.__type === 'Float32Array' && Array.isArray(v.__data)) {

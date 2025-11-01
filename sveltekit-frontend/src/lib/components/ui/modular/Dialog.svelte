@@ -116,20 +116,17 @@ https://svelte.dev/e/js_parse_error -->
                 {description}
               </DialogPrimitive.Description>
             {/if}
-        </div>
-      {/if}
+        {/if}
       <!-- Main Content -->
       {#if children}
         <div class="dialog-body">
           {@render children()}
-        </div>
-      {/if}
+        {/if}
       <!-- Footer Section -->
       {#if footer}
         <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 border-t pt-4">
           {@render footer()}
-        </div>
-      {/if}
+        {/if}
       <!-- Close Button -->
       <DialogPrimitive.Close class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:nes-text is-disabled">
         <div class="i-lucide-x w-4 h-4" />

@@ -17,7 +17,7 @@
   let memoryPressure = 0.2;
   let documentComplexity = 0.7;
   let enableGPU = true;
-  let memoryStats: unknown = {}
+  let memoryStats: any = {}
   let processingTime = 0;
   // Demo documents (legal AI context)
   const demoDocuments = [
@@ -113,7 +113,7 @@
           <label for="doc-select" class="nes-text">Document:</label>
           <div class="nes-select">
             <select id="doc-select" bind:value={selectedDocument}>
-              {#each demoDocuments as doc}
+              {#each Array.isArray(demoDocuments) ? demoDocuments : [] as doc}
                 <option value={doc.id}>{doc.title}</option>
               {/each}
             </select>

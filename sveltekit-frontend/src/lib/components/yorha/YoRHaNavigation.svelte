@@ -78,7 +78,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 </script>
-
 <!-- Navigation Container -->
 <div class="yorha-3d-panel nes-legal-container h-full flex flex-col">
   <!-- Search Bar (when not collapsed) -->
@@ -95,16 +94,14 @@ https://svelte.dev/e/js_parse_error -->
       {#if searchQuery}
         <div class="nes-legal-priority-low mt-2 text-xs">
           Found {filteredRoutes.length} operation{filteredRoutes.length !== 1 ? 's' : ''}
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Navigation Content -->
   <div class="nes-nav-content neural-sprite-active flex-1 overflow-y-auto custom-scrollbar">
     {#if searchQuery}
       <!-- Search Results -->
       <div class="search-results p-2">
-        {#each filteredRoutes as route}
+        {#each Array.isArray(filteredRoutes) ? filteredRoutes : [] as route}
           <button
             class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
               ? 'nes-legal-priority-high neural-sprite-active'
@@ -153,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Section Routes -->
             {#if expandedSections.has(sectionId) || collapsed}
               <div class="section-routes ml-2 mt-1">
-                {#each sectionRoutes as route}
+                {#each Array.isArray(sectionRoutes) ? sectionRoutes : [] as route}
                   <button
                     class="nav-item w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(
                       route.route
@@ -174,23 +171,19 @@ https://svelte.dev/e/js_parse_error -->
                               {route.route}
                             </span>
                           {/if}
-                        </div>
-                      {/if}
+                        {/if}
                     </div>
                     <!-- Active indicator -->
                     {#if isRouteActive(route.route)}
                       <div class="absolute right-2 top-1/2 transform -translate-y-1/2">
                         <div class="w-2 h-2 bg-yorha-accent-warm rounded-full animate-pulse"></div>
-                      </div>
-                    {/if}
+                      {/if}
                   </button>
                 {/each}
-              </div>
-            {/if}
+              {/if}
           </div>
         {/each}
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Footer Info (when not collapsed) -->
   {#if !collapsed}
@@ -211,10 +204,8 @@ https://svelte.dev/e/js_parse_error -->
           <span class="text-green-400">OPERATIONAL</span>
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .yorha-navigation {
     --yorha-primary: #c4b49a;
@@ -227,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
     --yorha-darker: #b8ad98;
   }
   .nav-item {
-    position relative;
+    position: relative;
     cursor: pointer;
     font-family: 'JetBrains Mono', monospace;
   }
@@ -264,7 +255,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Glow effect for active items */
   .nav-.active::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -292,4 +283,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

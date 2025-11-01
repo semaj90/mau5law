@@ -11,7 +11,7 @@
     open?: boolean;
     title?: string;
     description?: string;
-    analyticsLog?: (_event: unknown) => void;
+    analyticsLog?: (_event: any) => void;
     onClose?: () => void;
     children?: any; // Svelte 5 render-prop for parent content
   }
@@ -27,7 +27,6 @@
   $effect(() => {
     if (open) analyticsLog({ event: 'dialog_opened', title, timestamp: Date.now() });
   });
-
   function handleClose() {
     // prefer the provided onClose callback, then log
     try {
@@ -36,7 +35,6 @@
       analyticsLog({ event: 'dialog_closed', title, timestamp: Date.now() });
     }
   }
-
   function handleOverlayKeydown(e: KeyboardEvent) {
     const k = e.key;
     if (k === 'Enter' || k === ' ' || k === 'Escape') {
@@ -45,7 +43,6 @@
     }
   }
 </script>
-
 {#if open}
   <!-- overlay is now an interactive button with keyboard handler and label -->
   <button
@@ -55,7 +52,6 @@
     onkeydown={handleOverlayKeydown}
     aria-label="Close dialog"
   ></button>
-
   <div class="modal-content" role="dialog" aria-modal="true" aria-label={title || 'dialog'}>
     {#if title}
       <h2 class="modal-title">{title}</h2>
@@ -72,13 +68,11 @@
       {/if}
     </div>
     <button type="button" class="modal-close" onclick={handleClose} aria-label="Close dialog">×</button>
-  </div>
-{/if}
-
+  {/if}
 <style>
   /* Replace @apply rules with explicit CSS to avoid unknown at-rule errors */
   .modal-overlay {
-    position fixed;
+    position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 40,
@@ -86,9 +80,8 @@
     padding: 0,
     margin: 0;
   }
-
   .modal-content {
-    position fixed;
+    position: fixed;
     left: 50%;
     top: 50%;
     z-index: 50,
@@ -102,21 +95,18 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
     box-sizing: border-box;
   }
-
   .modal-title {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--nier-accent, #9f7aea);
     margin-bottom: 0.5rem;
   }
-
   .modal-description {
     color: var(--nier-text-muted, rgba(255, 255, 255, 0.7));
     margin-bottom: 1rem;
   }
-
   .modal-close {
-    position absolute;
+    position: absolute;
     top: 1rem;
     right: 1rem;
     width: 2rem;
@@ -134,12 +124,10 @@
     font-size: 1rem;
     line-height: 1;
   }
-
   .modal-close:hover {
     background-color: var(--nier-surface-lighter, #222);
     color: var(--nier-white, #fff);
   }
-
   /* optional: ensure focus outline for keyboard users */
   .modal-overlay:focus,
   .modal-close:focus {
@@ -147,4 +135,3 @@
     outline-offset: 2px;
   }
 </style>
-

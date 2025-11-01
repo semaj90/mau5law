@@ -78,7 +78,7 @@ export class LangChainOllamaIntegration {
   private vectorStore: MemoryVectorStore | null = null;
   private qaChain: RetrievalQAChain | null = null;
   private textSplitter: RecursiveCharacterTextSplitter;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor(config: Partial<LangChainConfig> = {}) {
     this.config = {
       ollamaBaseUrl: 'http://localhost:11434',
@@ -139,7 +139,7 @@ export class LangChainOllamaIntegration {
       await this.testGoMicroserviceIntegration();
       this.isInitialized = true;
       console.log('✅ LangChain integration initialized with GPU acceleration');
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ LangChain initialization failed:', error);
       if (error instanceof Error) {
         throw error;
@@ -166,7 +166,7 @@ export class LangChainOllamaIntegration {
         } else {
           console.log(`  ⚠️ ${service.name}: HTTP ${response.status}`);
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.log(`  🔴 ${service.name}: Not available`);
       }
     }
@@ -239,7 +239,7 @@ export class LangChainOllamaIntegration {
       };
       console.log(`✅ Document processing complete (${processingTime.toFixed(2)}ms)`);
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Document processing failed:', error);
       if (error instanceof Error) {
         throw error;
@@ -272,7 +272,7 @@ export class LangChainOllamaIntegration {
         gpuUtilization: result.gpu_utilization || 0,
         entities: result.entities || [],
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ GPU parsing via Go microservice failed, using local fallback:', error);
       return {
         confidence: 0.7,
@@ -299,7 +299,7 @@ export class LangChainOllamaIntegration {
       const chain = summaryPrompt.pipe(this.chatModel).pipe(new StringOutputParser());
       const result = await chain.invoke({ content: content.slice(0, 4000) }); // Limit for context
       return result || 'Summary generation failed';
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Summary generation failed:', error);
       return 'Summary could not be generated due to processing error.';
     }
@@ -359,7 +359,7 @@ export class LangChainOllamaIntegration {
       });
       console.log(`📊 Semantic search complete: ${searchResults.length} results`);
       return searchResults;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Semantic search failed:', error);
       return [];
     }
@@ -381,7 +381,7 @@ export class LangChainOllamaIntegration {
       }
       // Option 2: Local LangChain RAG fallback
       return await this.localLangChainRAG(question, context);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ RAG query failed:', error);
       if (error instanceof Error) {
         throw error;
@@ -422,7 +422,7 @@ export class LangChainOllamaIntegration {
           confidence: result.confidence || 0.8,
         },
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.warn('⚠️ Go microservice RAG failed:', error);
       return { success: false, data: null };
     }
@@ -460,7 +460,7 @@ export class LangChainOllamaIntegration {
         sources: (result as GoApiResponse).sourceDocuments || [],
         confidence: 0.75, // Local processing confidence
       };
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Local LangChain RAG failed:', error);
       if (error instanceof Error) {
         throw error;
@@ -481,7 +481,7 @@ export class LangChainOllamaIntegration {
       const embedding = await this.embeddingModel.embedQuery(text);
       console.log(`✅ Embedding generated (${embedding.length} dimensions)`);
       return embedding;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Embedding generation failed:', error);
       if (error instanceof Error) {
         throw error;
@@ -599,7 +599,7 @@ export class LangChainOllamaIntegration {
     this.embeddingModel = null;
     this.vectorStore = null;
     this.qaChain = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🧹 LangChain integration cleaned up');
   }
 }

@@ -9,7 +9,7 @@ import { writable, get } from 'svelte/store';
 // --- Typed interfaces for external services (requested) ---
 export type UltraJSONParser = {
   parse: (s: string) => unknown;
-  stringify: (v: unknown) => string;
+  stringify: (v: any) => string;
 };
 
 export type WasmClusteringService = {
@@ -77,7 +77,7 @@ export const redisAdapter = {
       return null;
     }
   },
-  async set(key: string, value: unknown, ttlSeconds?: number) {
+  async set(key: string, value: any, ttlSeconds?: number) {
     try {
       const r = await fetch('/api/redis/set', {
         method: 'POST',
@@ -134,7 +134,7 @@ export const pgJsonStore = {
       return false;
     }
   },
-  async queryByField(field: string, value: unknown) {
+  async queryByField(field: string, value: any) {
     try {
       const r = await fetch('/api/postgres/json/query', {
         method: 'POST',
@@ -166,7 +166,7 @@ export interface CHRROMPattern {
     userContext: string;
     documentContext: string[];
     actionTrigger: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 
@@ -177,7 +177,7 @@ export interface GeneratedPattern {
   metadata?: Record<string, unknown>;
   originalType?: string;
   taskId?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 // New: Prediction shape used by behavior analysis
@@ -199,7 +199,7 @@ export interface UserActivityPattern {
     timeOnPage?: number;
     scrollPosition?: number;
     lastInteraction?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   predictedActions: Prediction[];
 }
@@ -220,7 +220,7 @@ export class CHRROMPrecomputationService {
   private _userActivityHistory = new Map<string, UserActivityPattern[]>(); // renamed to indicate intentionally unused
   private backgroundWorker: Worker | null = null;
   private precomputationQueue: Array<{ pattern: string; priority: number }> = [];
-  private isProcessing = false;
+  private isProcessing = $state(false);
 
   public cacheStatus = writable({
     totalPatterns: 0,
@@ -259,7 +259,7 @@ export class CHRROMPrecomputationService {
     if (this.config.enableBackgroundProcessing) {
       await this.initializeBackgroundWorker().catch((err) => {
         console.warn('Background worker init failed:', err);
-        this.config.enableBackgroundProcessing = false;
+        this.config.enableBackgroundProcessing = $state(false);
       });
     }
     this.startUserActivityMonitoring();
@@ -476,7 +476,7 @@ export class CHRROMPrecomputationService {
     } catch (error) {
       console.warn(`Failed to generate pattern ${task.pattern}:`, error);
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = $state(false);
       this.updateCacheStatus();
     }
   }
@@ -574,7 +574,7 @@ export class CHRROMPrecomputationService {
   /**
    * Compress pattern data for efficient storage
    */
-  private compressPatternData(data: unknown): Uint8Array {
+  private compressPatternData(data: any): Uint8Array {
     try {
       return new TextEncoder().encode(JSON.stringify(data ?? {}));
     } catch (err) {
@@ -590,7 +590,7 @@ export class CHRROMPrecomputationService {
     this.patternCache.set(pattern.id, pattern);
     try {
       const mod = await import('../gpu/nes-gpu-memory-bridge.js').catch(() => null) as unknown;
-      const isBridgeModule = (m: unknown): m is { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge } =>
+      const isBridgeModule = (m: any): m is { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge } =>
         typeof m === 'object' && m !== null && (('nesGPUBridge' in (m as object)) || ('default' in (m as object)));
       if (isBridgeModule(mod)) {
         const bridgeCandidate = (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).nesGPUBridge ?? (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).default ?? null;
@@ -653,7 +653,7 @@ export class CHRROMPrecomputationService {
     this.updateCacheStatus();
   }
 
-  private updateBackgroundTaskStatus(_data: unknown): void { /* noop placeholder - intentionally minimal */ }
+  private updateBackgroundTaskStatus(_data: any): void { /* noop placeholder - intentionally minimal */ }
 
   /**
    * Extract data attributes from HTML element

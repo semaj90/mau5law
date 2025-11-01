@@ -77,28 +77,23 @@ https://svelte.dev/e/js_parse_error -->
     )
   );
 </script>
-
 <div class={cardClass} {...restProps}>
   <!-- Card Header -->
   {#if header}
     <div class="border-b border-gray-200 pb-4 mb-4 dark:border-gray-700">
       {@render header()}
-    </div>
-  {/if}
+    {/if}
   <!-- Card Content -->
   {#if children}
     <div class="nier-bits-yorha-panel-content">
       {@render children()}
-    </div>
-  {/if}
+    {/if}
   <!-- Card Footer -->
   {#if footer}
     <div class="border-t border-gray-200 pt-4 mt-4 dark:border-gray-700">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
 /* YoRHa-specific animations */ {}
   .yorha-glow {

@@ -129,7 +129,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals: _locals })
       localProcessing: useLocalModels,
     };
     return json(response);
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed any to unknown
     console.error('[LawPDF API] Processing failed:', error);
     const message = error instanceof Error ? error.message : String(error);
@@ -207,7 +207,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           processingTime: 'In progress',
           webSocketUrl: `${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}`,
         });
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Changed any to unknown
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error);
         results.push({
@@ -226,7 +226,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
       successfulFiles: successCount,
       failedFiles: files.length - successCount,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed any to unknown
     console.error('[LawPDF] File upload handling failed:', error);
     return json(
@@ -284,7 +284,7 @@ async function processWithLocalModels(
         const embeddingData = await embeddingResponse.json();
         embedding = embeddingData.embedding || embeddingData.embeddings;
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Changed any to unknown
       console.warn('[LawPDF] Embedding generation failed:', error);
     }
@@ -305,7 +305,7 @@ async function processWithLocalModels(
         confidence: parsedAnalysis.confidence,
       },
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed any to unknown
     console.error('[LawPDF] Local processing failed:', error);
     // Fallback to basic processing
@@ -446,7 +446,7 @@ function parseGemmaLegalResponse(response: string): {
         )
         .slice(0, 5);
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed any to unknown
     console.warn('[LawPDF] Failed to parse gemma3-legal response:', error);
     sections.summary = response.substring(0, 500) + '...';

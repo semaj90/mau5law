@@ -17,19 +17,16 @@
     } satisfies SelectContext);
   const { open } = context;
 </script>
-
 {#if $open}
   <div class="space-y-4" role="listbox">
     {#if children}
       {@render children()}
     {/if}
-  </div>
-{/if}
-
+  {/if}
 <style>
 /* @unocss-include */ {}
   .select-content {
-    position absolute;
+    position: absolute;
     top: 100%;
     left: 0,
     right: 0;

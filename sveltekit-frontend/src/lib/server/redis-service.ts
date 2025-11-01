@@ -1,4 +1,4 @@
-export const redisService: unknown = {};
+export const redisService: any = {};
 /**
  * Production Redis Service for Legal AI Platform
  * Handles connection pooling, reconnection, and distributed caching
@@ -32,7 +32,7 @@ interface AugmentedIORedisClient extends IORedisClass {
   // Explicitly add the: 'on' method to ensure it's recognized by TypeScript
   on(event: 'reconnecting', listener: (delay: number) => void): this; // Specific overload for: 'reconnecting'
   on(event: 'error', listener: (error: Error) => void): this; // Specific overload for: 'error'
-  on(event: string | symbol, listener: (...args: unknown[]) => void): this; // General overload
+  on(event: string | symbol, listener: (...args: any[]) => void): this; // General overload
 }
 
 interface RedisConfig {
@@ -68,18 +68,18 @@ interface CachedEmbedding {
 
 interface CachedSearch {
   query: string;
-  results: unknown[];
+  results: any[];
   cached_at: string;
   result_count: number;
 }
 
 class RedisService {
   private pool: RedisConnectionPool | null = null;
-  private isConnected = false;
+  private isConnected = $state(false);
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 10;
   private reconnectDelay = 1000;
-  private initialized = false;
+  private initialized = $state(false);
   private config: RedisConfig = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -142,7 +142,7 @@ class RedisService {
       return true;
     } catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
-      this.isConnected = false;
+      this.isConnected = $state(false);
       return false;
     }
   }
@@ -161,7 +161,7 @@ class RedisService {
     });
     redis.on('error', (error: Error) => {
       console.error(`❌ [RedisService] ${name} error:`, error);
-      this.isConnected = false;
+      this.isConnected = $state(false);
       // Trigger reconnection logic if not already connected and not max attempts
       if (!this.isConnected && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.handleReconnection();
@@ -169,7 +169,7 @@ class RedisService {
     });
     redis.on('close', () => {
       console.log(`🔌 [RedisService] ${name} disconnected`);
-      this.isConnected = false;
+      this.isConnected = $state(false);
     });
     redis.on('reconnecting', (delay: number) => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
@@ -296,7 +296,7 @@ class RedisService {
   /**
    * Cache operations with intelligent TTL for legal AI workloads
    */
-  async set(key: string, value: unknown, ttlSeconds?: number): Promise<boolean> {
+  async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
     try {
@@ -466,7 +466,7 @@ class RedisService {
     const key = `legal:embedding:${documentId}`;
     return await this.get<CachedEmbedding>(key);
   }
-  async cacheSearchResults(query: string, results: unknown[], ttl: number = 1800): Promise<boolean> {
+  async cacheSearchResults(query: string, results: any[], ttl: number = 1800): Promise<boolean> {
     const queryHash = Buffer.from(query).toString('base64url');
     const key = `legal:search:${queryHash}`;
     const data = {

@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   // Button component removed here to avoid Svelte 5 constructor/instance typing issues in this file.
-  import * as Card from '$lib/components/ui/card';
+  import * as Card from '$lib/components/ui/card.svelte'';
   import {
     Upload,
     Move,
@@ -115,7 +115,7 @@
     })();
 
     return () => {
-      mounted = false;
+      mounted = $state(false);
     };
   });
 
@@ -225,7 +225,7 @@
     } catch (error) {
       console.error('Failed to load canvas data:', error);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
 
@@ -377,7 +377,7 @@
       console.error('Failed to upload evidence:', error);
       uploadProgress.delete(progressKey);
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
       setTimeout(() => uploadProgress.delete(progressKey), 2000);
     }
   }
@@ -424,7 +424,7 @@
     }
     selectedObject = null;
     updateCanvasObjects();
-    showDeleteConfirmModal = false; // Close modal after deletion
+    showDeleteConfirmModal = $state(false); // Close modal after deletion
   }
 
   function zoomIn() {
@@ -553,8 +553,7 @@
                   </div>
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
         {/if}
       </div>
     </div>
@@ -590,12 +589,10 @@
             <div class="col-span-2">
               <span class="font-medium">Evidence ID:</span>
               <p class="text-gray-600 font-mono text-xs">{selectedObject.evidenceId}</p>
-            </div>
-          {/if}
+            {/if}
         </div>
       </div>
-    </div>
-  {/if}
+    {/if}
 </div>
 
 <style>

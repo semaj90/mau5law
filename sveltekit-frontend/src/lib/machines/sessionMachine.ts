@@ -34,34 +34,27 @@ type SessionEvent =
   | { type: 'EXTEND_SESSION' }
   | { type: 'ELEVATE_SECURITY'; reason: string }
   | { type: 'HEALTH_CHECK' };
-
 // Define expected return types for services
 interface AuthenticationResult {
   expiresAt: string;
   permissions: string[];
   valid: boolean;
 }
-
 interface RefreshSessionResult {
   expiresAt: string;
 }
-
 interface ExtendSessionResult {
   expiresAt: string;
 }
-
 interface ElevateSecurityLevelResult {
   newLevel: 'elevated';
 }
-
 interface PerformSecurityCheckResult {
   warningCount: number;
 }
-
 interface PerformHealthCheckResult {
   healthy: boolean;
 }
-
 export const sessionMachine = createMachine({
   id: 'sessionManager',
   initial: 'unauthenticated',
@@ -340,7 +333,6 @@ export const sessionMachine = createMachine({
     },
   },
 });
-
 // Action implementations
 export const sessionActions = {
   clearSessionData: () => {
@@ -429,7 +421,6 @@ function authenticateAssign({
     },
   };
 }
-
 // Helper function to get user permissions based on role
 function getUserPermissions(role: string): string[] {
   const permissions = {

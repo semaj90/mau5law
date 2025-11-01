@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const offset = (page - 1) * limit;
     const rows = await db.select().from(table).limit(limit).offset(offset);
     return json({ success: true, data: rows, metadata: { total: rows.length, page, limit } });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('CRUD GET error:', err);
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
   }
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       // Fallback: basic text search using Drizzle
       const q = (search?.query || '').trim();
       if (!q) return json({ success: true, data: [] });
-      const clauses: unknown[] = [];
+      const clauses: any[] = [];
       const tableRecord = asRecord(table);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ('title' in tableRecord && tableRecord['title'] !== undefined) {
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Default: list
     const rows = await db.select().from(table).limit(50);
     return json({ success: true, data: rows });
-  } catch (err: unknown) {
+  } catch (err: any) {
     console.error('CRUD POST error:', err);
     return error(500, ensureError({ message: 'Internal server error', details: String(err) }));
   }

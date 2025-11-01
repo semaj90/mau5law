@@ -218,7 +218,7 @@ export class ReactiveStorageManager {
       this.error = error instanceof Error ? error.message : 'Upload failed';
       return false;
     } finally {
-      this.loading = false;
+      this.loading = $state(false);
     }
   }
   /**
@@ -241,7 +241,7 @@ export class ReactiveStorageManager {
       this.error = error instanceof Error ? error.message : 'Delete failed';
       return false;
     } finally {
-      this.loading = false;
+      this.loading = $state(false);
     }
   }
   /**

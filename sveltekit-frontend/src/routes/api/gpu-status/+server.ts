@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
       source: "go",
       data
     })
-  } catch (err: unknown) {
+  } catch (err: any) {
     // Fallback: try Go health endpoint for minimal GPU availability signal
     try {
       const health = await fetchWithTimeout("/api/health") as Record<string, unknown>;

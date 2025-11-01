@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { X } from 'lucide-svelte';
-  // import Button from '$lib/components/ui/button/Button.svelte';
-  import PoiImageUpload from './PoiImageUpload.svelte';
-
+  import X from 'lucide-svelte';
+  // import { Button } from '$lib/components/ui/button/Button.svelte';
+  import { PoiImageUpload } from './PoiImageUpload.svelte';
   interface Props {
     open?: boolean;
   }
-
   let { open = $bindable(false) }: Props = $props();
-
   let formData = $state({
     name: '',
     alias: '',
@@ -16,36 +13,29 @@
     address: '',
     status: 'Person of Interest',
   });
-
   let tempPoiId = $state('');
   let createdPoiName = $state(''); // To hold name after form reset
   let loading = $state(false);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
-
   async function handleSubmit() {
     try {
       loading = true;
       message = '';
-
       const response = await fetch('/api/poi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Failed to create POI' }));
         throw new Error(errorData.message || 'An unknown error occurred.');
       }
-
       const createdPoi = await response.json();
       tempPoiId = createdPoi.id;
       createdPoiName = formData.name; // Persist name for image upload component
-
       message = 'POI created successfully. Now upload a photo if desired.';
       messageType = 'success';
-
       // Reset form
       formData = {
         name: '',
@@ -58,15 +48,13 @@
       message = error instanceof Error ? error.message : 'Failed to create POI';
       messageType = 'error';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   function closeModal() {
-    open = false;
+    open = $state(false);
   }
 </script>
-
 <!-- Modal Trigger Button -->
 <slot name="trigger">
   <button
@@ -76,7 +64,6 @@
     + Add Person
   </button>
 </slot>
-
 <!-- Modal Overlay & Content -->
 {#if open}
   <div class="fixed inset-0 z-40 bg-black/50" onclick={() => (open = false)} />
@@ -91,15 +78,12 @@
         <X class="w-5 h-5 text-gray-500" />
       </button>
     </div>
-
     {#if message}
       <div
         class="mb-6 p-4 rounded-lg text-sm {messageType === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}"
       >
         {message}
-      </div>
-    {/if}
-
+      {/if}
     <!-- Form -->
     <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-6">
       <!-- Name -->
@@ -113,7 +97,6 @@
           placeholder="John Smith"
         />
       </div>
-
       <!-- Alias -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Alias / Nickname</label>
@@ -124,7 +107,6 @@
           placeholder="JS, Johnny, etc."
         />
       </div>
-
       <!-- Date of Birth -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
@@ -134,7 +116,6 @@
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
-
       <!-- Address -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
@@ -145,7 +126,6 @@
           placeholder="123 Main St, City, State ZIP"
         />
       </div>
-
       <!-- Status -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -160,7 +140,6 @@
           <option value="Other">Other</option>
         </select>
       </div>
-
       <!-- Image Upload (shows after POI is created) -->
       {#if tempPoiId}
         <div class="border-t pt-6">
@@ -168,9 +147,7 @@
             poiId={tempPoiId}
             poiName={createdPoiName}
           />
-        </div>
-      {/if}
-
+        {/if}
       <!-- Action Buttons -->
       <div class="flex gap-4 pt-6 border-t">
         <button
@@ -190,5 +167,4 @@
         </button>
       </div>
     </form>
-  </div>
-{/if}
+  {/if}

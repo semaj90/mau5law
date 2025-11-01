@@ -19,7 +19,6 @@
     children,
   }: Props = $props();
 </script>
-
 {#if open}
   <dialog class="nes-dialog is-rounded" open>
     <form method="dialog">

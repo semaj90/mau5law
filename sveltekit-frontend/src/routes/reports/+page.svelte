@@ -68,7 +68,7 @@
       console.error('Error loading reports:', err);
       error = 'Error loading reports';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   });
 
@@ -198,7 +198,7 @@
                 </div>
                 {#if report.tags && report.tags.length > 0}
                   <div class="space-y-4">
-                    {#each report.tags as tag}
+                    {#each Array.isArray(report.tags) ? report.tags : [] as tag}
                       <span class="space-y-4">{tag}</span>
                     {/each}
                   </div>

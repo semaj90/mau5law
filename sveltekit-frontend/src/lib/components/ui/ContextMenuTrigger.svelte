@@ -11,7 +11,6 @@
   const { elements } = contextMenu;
   const { trigger } = element;
 </script>
-
 <div>
-  {@render children?.()}
+  <slot />
 </div>

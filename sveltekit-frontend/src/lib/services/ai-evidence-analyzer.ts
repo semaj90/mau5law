@@ -1,14 +1,14 @@
 import { env } from '$env/dynamic/private';
 
 // Local small type guards used by parser helpers
-function isRecord(v: unknown): v is Record<string, unknown> {
+function isRecord(v: any): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
 
 /* ===== UPDATED: Typed interfaces for external services (injectable adapters) ===== */
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): Promise<T>; // Changed to Promise
-  stringify(input: unknown): Promise<string>; // Changed to Promise
+  stringify(input: any): Promise<string>; // Changed to Promise
 }
 
 export interface WasmClusteringService {
@@ -73,7 +73,7 @@ export interface Finding {
   description: string;
   confidence: number;
   relevance: number;
-  supportingData?: unknown[];
+  supportingData?: any[];
 }
 
 export interface Correlation {
@@ -107,7 +107,7 @@ export interface TimelineEvent {
   keyEntities: Entity[];
   sentiment: SentimentAnalysis;
   timeline: TimelineEvent[];
-  [key: string]: unknown; // Add index signature to allow arbitrary properties
+  [key: string]: any; // Add index signature to allow arbitrary properties
 }
 
 export interface EvidenceAnalysis {
@@ -124,7 +124,7 @@ export interface EvidenceAnalysis {
   keyEntities: Entity[];
   sentiment: SentimentAnalysis;
   timeline: TimelineEvent[];
-  [key: string]: unknown; // Add index signature to allow arbitrary properties
+  [key: string]: any; // Add index signature to allow arbitrary properties
 }
 
 /* ===== AIEvidenceAnalyzer implementation ===== */
@@ -304,9 +304,9 @@ export class AIEvidenceAnalyzer {
 
   private async analyzeCorrelation(
     evidence1: EvidenceItem,
-    evidence2: EvidenceItem | { id?: string;[k: string]: unknown }
+    evidence2: EvidenceItem | { id?: string;[k: string]: any }
   ): Promise<Correlation> {
-    const e2 = evidence2 as { id?: unknown };
+    const e2 = evidence2 as { id?: any };
     const evidence2Id = typeof e2.id === 'string' ? e2.id : String(Math.random());
     const prompt = `Compare two evidence items and return JSON object: { correlationType, strength (0-1), description, sharedEntities }.\n\nEvidence1: ${JSON.stringify(evidence1)}\nEvidence2: ${JSON.stringify(evidence2)}`;
     const raw = await this.callOllamaGenerate(prompt);
@@ -408,10 +408,10 @@ Return either a JSON array of strings or a plain newline-separated list.`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, inputs: texts }),
       });
-      const data: unknown = await resp.json();
+      const data: any = await resp.json();
 
-      const isNumberArray = (v: unknown): v is number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
-      const isArrayOfNumberArrays = (v: unknown): v is number[][] =>
+      const isNumberArray = (v: any): v is number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
+      const isArrayOfNumberArrays = (v: any): v is number[][] =>
         Array.isArray(v) && v.every(item => Array.isArray(item) && item.every(elem => typeof elem === 'number'));
 
       if (isArrayOfNumberArrays(data)) return data.map(arr => new Float32Array(arr));
@@ -451,7 +451,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
       try {
         await this.qdrantAdapter.upsert(collection, id, vector, payload);
         return;
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.debug('[ai-evidence] qdrantAdapter.upsert failed, falling back to HTTP:', e);
       }
     }
@@ -463,7 +463,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ points: [{ id, vector: Array.from(vector), payload }] }),
       });
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.debug('[ai-evidence] qdrant HTTP upsert failed:', e);
     }
   }
@@ -491,7 +491,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
     if (this.redisCacheAdapter) {
       try {
         return await this.redisCacheAdapter.get(key);
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.debug('[ai-evidence] redisCacheAdapter.get failed:', e);
         return null;
       }
@@ -503,7 +503,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;
     if (this.redisCacheAdapter) {
       try {
         await this.redisCacheAdapter.setex(key, ttl, value);
-      } catch (e: unknown) {
+      } catch (e: any) {
         console.debug('[ai-evidence] redisCacheAdapter.setex failed:', e);
       }
     }

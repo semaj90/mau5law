@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       clientAddress: getClientAddress(),
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ SSR Chat error:', error);
     return json(
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Access-Control-Allow-Headers': 'Content-Type',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     // Corrected: Moved catch block to follow try
     console.error('❌ Chat streaming error:', error);
@@ -134,7 +134,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       qloraRetrained: Math.abs(feedback) > 0.8,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ Feedback update error:', error);
     return json(
@@ -196,7 +196,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ Session analytics error:', error);
     return json(
@@ -233,7 +233,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       message: 'Session deleted successfully',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     // Changed: 'any' to: 'unknown'
     console.error('❌ Session deletion error:', error);
     return json(

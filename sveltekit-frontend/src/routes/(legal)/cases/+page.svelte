@@ -26,7 +26,7 @@
   // Development mode indicator
   let devBypassActive = $state(data.devBypassActive || false);
 
-  function formatLabel(value: unknown): string {
+  function formatLabel(value: any): string {
     if (typeof value !== 'string') {
       return value ? String(value) : '';
     }
@@ -39,7 +39,7 @@
       .join(' ');
   }
 
-  function formatDate(value: unknown): string {
+  function formatDate(value: any): string {
     if (!value) return '';
     try {
       const date = value instanceof Date ? value : new Date(value as string);
@@ -50,7 +50,7 @@
     }
   }
 
-  function makeModifierClass(prefix: string, value: unknown): string {
+  function makeModifierClass(prefix: string, value: any): string {
     if (typeof value !== 'string') {
       return `${prefix}-unknown`;
     }
@@ -104,7 +104,7 @@
       console.error('Failed to load cases:', err);
       error = err instanceof Error ? err.message : 'Error loading cases';
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
 

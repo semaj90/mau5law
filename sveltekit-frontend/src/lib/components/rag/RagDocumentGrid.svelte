@@ -1,9 +1,8 @@
 <script lang="ts">
   import { Upload, Search, Filter, Grid, List } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import DocumentCard from './DocumentCard.svelte';
-  import DocumentModal from './DocumentModal.svelte';
-
+  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import { DocumentCard } from './DocumentCard.svelte';
+  import { DocumentModal } from './DocumentModal.svelte';
   // Changed: make embeddingModel required (string) to match other components' expectations
   interface Document {
     id: string;
@@ -23,7 +22,6 @@
       confidence?: number;
     };
   }
-
   let documents = $state<Document[]>([]);
   let loading = $state(true);
   let searchQuery = $state('');
@@ -32,7 +30,6 @@
   let showModal = $state(false);
   let message = $state('');
   let messageType = $state<'success' | 'error'>('success');
-
   // Computed property for filtered documents
   let filteredDocuments = $derived.by(() => {
     if (!searchQuery.trim()) return documents;
@@ -44,7 +41,6 @@
         doc.embeddingModel.toLowerCase().includes(query)
     );
   });
-
   // Keep $state types but ensure documents are normalized when loaded
   async function loadDocuments() {
     try {
@@ -67,21 +63,18 @@
       messageType = 'error';
       console.error(error);
     } finally {
-      loading = false;
+      loading = $state(false);
     }
   }
-
   function handleViewDocument(doc: Document) {
     selectedDocument = doc;
     showModal = true;
   }
-
   async function handleDeleteDocument(docId: string) {
     try {
       const response = await fetch(`/api/rag/documents/${docId}`, {
         method: 'DELETE',
       });
-
       if (response.ok) {
         documents = documents.filter((d) => d.id !== docId);
         message = 'Document deleted successfully';
@@ -94,33 +87,27 @@
       messageType = 'error';
     }
   }
-
   function handleClearSearch() {
     searchQuery = '';
   }
-
   // Load documents on component mount
   $effect(() => {
     loadDocuments();
   });
 </script>
-
 <div class="w-full space-y-6">
   <!-- Header -->
   <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-8 text-white">
     <h1 class="text-3xl font-bold mb-2">Documents</h1>
     <p class="text-blue-100">Manage your uploaded documents and embeddings</p>
   </div>
-
   <!-- Messages -->
   {#if message}
     <div
       class="p-4 rounded-lg text-sm {messageType === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}"
     >
       {message}
-    </div>
-  {/if}
-
+    {/if}
   <!-- Controls -->
   <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
     <!-- Search -->
@@ -143,7 +130,6 @@
         {/if}
       </div>
     </div>
-
     <!-- View Toggle -->
     <div class="flex gap-2">
       <Button
@@ -160,7 +146,6 @@
       </Button>
     </div>
   </div>
-
   <!-- Documents Grid/List -->
   {#if loading}
     <div class="flex items-center justify-center py-12">
@@ -225,17 +210,13 @@
           </div>
         </div>
       {/each}
-    </div>
-  {/if}
-
+    {/if}
   <!-- Document Count -->
   {#if filteredDocuments.length > 0}
     <div class="text-center text-sm text-gray-600">
       Showing {filteredDocuments.length} of {documents.length} documents
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <!-- Document Modal -->
 {#if selectedDocument}
   <DocumentModal document={selectedDocument} open={showModal} />

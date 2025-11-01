@@ -100,7 +100,7 @@ export interface AITask {
   prompt: string;
   timestamp: number;
   priority: 'low' | 'medium' | 'high';
-  [key: string]: unknown; // Changed from any
+  [key: string]: any; // Changed from any
 }
 export interface WorkerStatus {
   status: 'idle' | 'processing' | 'error';
@@ -117,7 +117,7 @@ export interface WorkerStatus {
 export interface WorkerMessage {
   taskId?: string;
   type: WorkerMessageType;
-  data?: unknown;
+  data?: any;
   payload?: AITask | APIResponse<unknown> | WorkerStatus;
 }
 // Copilot & RAG

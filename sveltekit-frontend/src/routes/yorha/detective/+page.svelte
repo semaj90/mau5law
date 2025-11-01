@@ -107,7 +107,7 @@
   export let data: DetectiveData = {} as DetectiveData;
 
   let selectedSection: SectionId = 'command-center';
-  let showNewCaseModal = false;
+  let showNewCaseModal = $state(false);
   let statusMessage: string | null = null;
 
   let newCaseData = {
@@ -153,7 +153,7 @@
 
       const payload = await response.json();
       statusMessage = `Case "${payload?.title ?? newCaseData.title}" created.`;
-      showNewCaseModal = false;
+      showNewCaseModal = $state(false);
       newCaseData = { title: '', description: '', priority: 'medium' };
       if (browser) {
         await goto(window.location.pathname, { invalidateAll: true });
@@ -164,7 +164,7 @@
   }
 
   function cancelNewCase() {
-    showNewCaseModal = false;
+    showNewCaseModal = $state(false);
     newCaseData = { title: '', description: '', priority: 'medium' };
   }
 
@@ -251,7 +251,7 @@
     </section>
 
     <section class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {#each sections as section}
+      {#each Array.isArray(sections) ? sections : [] as section}
         <button
           class={`text-left rounded-lg border px-4 py-5 transition-colors ${
             selectedSection === section.id
@@ -293,7 +293,7 @@
               <p class="mt-3 text-sm text-slate-400">No recent cases found. Create one to get started.</p>
             {:else}
               <ul class="mt-4 space-y-3 text-sm">
-                {#each recentCases as caseItem}
+                {#each Array.isArray(recentCases) ? recentCases : [] as caseItem}
                   <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
                     <div class="flex items-center justify-between">
                       <div>
@@ -329,7 +329,7 @@
               <p class="mt-3 text-sm text-slate-400">No embeddings or AI summaries are available yet.</p>
             {:else}
               <ul class="mt-4 space-y-3 text-sm">
-                {#each evidenceInsights as insight}
+                {#each Array.isArray(evidenceInsights) ? evidenceInsights : [] as insight}
                   <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
                     <p class="font-medium text-slate-100">{insight.label}</p>
                     <p class="text-xs text-slate-400">{insight.summary}</p>

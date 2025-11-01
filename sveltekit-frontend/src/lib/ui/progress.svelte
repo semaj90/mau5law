@@ -4,10 +4,9 @@
    * @param value - The current progress value.
    * @param max - The maximum value for the progress bar.
    */
-  export let value: number;
-  export let max: number = 100;
+  let { value, max = 100 } = $props();
 
-  $: percentage = (value / max) * 100;
+  const percentage = $derived((value / max) * 100);
 </script>
 
 <div

@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import Badge from '$lib/components/ui/badge/Badge.svelte'; // Added Badge import
   import { AlertCircle, UploadCloud, Search, Brain, CheckCircle, AlertTriangle } from 'lucide-svelte';
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Document processing failed:', error);
       addLog(`❌ Processing failed: ${error.message}`);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function executeRAGQuery() {
@@ -170,10 +170,10 @@ https://svelte.dev/e/js_parse_error -->
             addLog('⚠️ GPU acceleration not available - using CPU fallback');
           }
         } else {
-          systemMetrics.gpuAcceleration = false;
+          systemMetrics.gpuAcceleration = $state(false);
         }
       } catch (gpuError) {
-        systemMetrics.gpuAcceleration = false;
+        systemMetrics.gpuAcceleration = $state(false);
         addLog('⚠️ GPU service not responding - using CPU processing');
       }
       addLog(
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="border-t pt-4">
               <h4 class="font-semibold text-gray-800 mb-3">Query Results</h4>
               <div class="space-y-3 max-h-64 overflow-y-auto">
-                {#each ragResults as result}
+                {#each Array.isArray(ragResults) ? ragResults : [] as result}
                   <div class="p-3 bg-gray-50 rounded-md">
                     <div class="flex justify-between items-start mb-2">
                       <span class="text-sm font-medium text-gray-800">
@@ -496,7 +496,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {#each processedDocuments as doc}
+            {#each Array.isArray(processedDocuments) ? processedDocuments : [] as doc}
               <div class="p-4 border border-gray-200 rounded-lg">
                 <h4 class="font-semibold text-gray-800 mb-2">{doc.filename ?? 'Untitled Document'}</h4>
                 <div class="space-y-1 text-sm">
@@ -558,7 +558,7 @@ https://svelte.dev/e/js_parse_error -->
           {#if realTimeLogs.length === 0}
             <div class="text-gray-500">No logs yet...</div>
           {:else}
-            {#each realTimeLogs as log}
+            {#each Array.isArray(realTimeLogs) ? realTimeLogs : [] as log}
               <div class="mb-1">{log}</div>
             {/each}
           {/if}

@@ -91,7 +91,7 @@ export class ThreadSafePostgres {
           clearTimeout(timeout);
 
           const release = () => {
-            lock.acquired = false;
+            lock.acquired = $state(false);
             const next = lock.waitingQueries.shift();
             if (next) {
               next();
@@ -178,7 +178,7 @@ export class ThreadSafePostgres {
     jsonbQuery: {
       path?: string;
       operator?: '@>' | '@?' | '@@' | '->' | '->>';
-      value?: unknown;
+      value?: any;
       conditions?: Record<string, unknown>;
     },
     options: {
@@ -204,10 +204,10 @@ export class ThreadSafePostgres {
         }
 
         // Treat cached as unknown and use type guards
-        const cachedVal: unknown = cached;
+        const cachedVal: any = cached;
 
         if (typeof cachedVal === 'object' && cachedVal !== null) {
-          const obj = cachedVal as { content?: unknown; metadata?: Record<string, unknown> };
+          const obj = cachedVal as { content?: any; metadata?: Record<string, unknown> };
 
           const content = obj.content ?? obj;
 
@@ -236,7 +236,7 @@ export class ThreadSafePostgres {
 
       try {
         let query = `SELECT * FROM ${table}`;
-        const params: unknown[] = [];
+        const params: any[] = [];
         const conditions: string[] = [];
 
         // Helper to push a parameter and return its 1-based index
@@ -336,7 +336,7 @@ export class ThreadSafePostgres {
         }
 
         const result = await client.query(query, params as unknown[]);
-        const results = ((result as { rows?: unknown[] }).rows || []) as T[];
+        const results = ((result as { rows?: any[] }).rows || []) as T[];
 
         // Cache results for future queries
         if (options.cacheResults) {
@@ -388,12 +388,12 @@ export class ThreadSafePostgres {
       }
 
       // normalize possible shapes: { content, metadata } or plain stored value with metadata
-      const cacheObj: unknown = cacheDoc;
-      let content: unknown;
+      const cacheObj: any = cacheDoc;
+      let content: any;
       let meta: Record<string, unknown> | undefined = undefined;
 
       if (typeof cacheObj === 'object' && cacheObj !== null) {
-        const obj = cacheObj as { content?: unknown; metadata?: unknown };
+        const obj = cacheObj as { content?: any; metadata?: any };
         content = obj.content ?? obj;
 
         if (obj.metadata && typeof obj.metadata === 'object') {
@@ -451,7 +451,7 @@ export class ThreadSafePostgres {
       activeTxs.set(queryId, client);
 
       try {
-        const params: unknown[] = [JSON.stringify(embedding), threshold, limit];
+        const params: any[] = [JSON.stringify(embedding), threshold, limit];
         let query = `
           SELECT
             id,
@@ -477,7 +477,7 @@ export class ThreadSafePostgres {
         query += ` ORDER BY embedding <=> $1::vector LIMIT $3`;
 
         const result = await client.query(query, params as unknown[]);
-        return ((result as { rows?: unknown[] }).rows || []) as Array<Record<string, unknown>>;
+        return ((result as { rows?: any[] }).rows || []) as Array<Record<string, unknown>>;
       } finally {
         client.release();
         activeTxs.delete(queryId);
@@ -498,7 +498,7 @@ export class ThreadSafePostgres {
       type: 'insert' | 'update' | 'delete';
       table: string;
       id: string;
-      data?: unknown;
+      data?: any;
     }>,
     options: {
       atomic?: boolean;
@@ -519,7 +519,7 @@ export class ThreadSafePostgres {
 
         for (const op of operations) {
           let query = '';
-          const params: unknown[] = [];
+          const params: any[] = [];
 
           switch (op.type) {
             case 'insert':
@@ -600,7 +600,7 @@ export class ThreadSafePostgres {
       } finally {
         client.release();
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       // Keep the return shape precise and include an optional message for debugging
       return {
         connected: false,
@@ -665,7 +665,7 @@ export async function safeJsonbQuery<T = unknown>(
   jsonbQuery: {
     path?: string;
     operator?: '@>' | '@?' | '@@' | '->' | '->>';
-    value?: unknown;
+    value?: any;
     conditions?: Record<string, unknown>;
   },
   options?: {

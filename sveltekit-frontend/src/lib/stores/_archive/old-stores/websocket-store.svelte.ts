@@ -68,20 +68,20 @@ async function connect(userId?: string): Promise<void> {
     // Connection event handlers
     wsClient.on('connected', () => {
       websocketStore.connected = true;
-      websocketStore.connecting = false;
+      websocketStore.connecting = $state(false);
       websocketStore.error = null;
       console.log('🔗 WebSocket connected to Legal AI Platform');
     });
 
     wsClient.on('disconnected', () => {
-      websocketStore.connected = false;
-      websocketStore.connecting = false;
+      websocketStore.connected = $state(false);
+      websocketStore.connecting = $state(false);
       console.log('🔌 WebSocket disconnected');
     });
 
     wsClient.on('error', (error: any) => {
       websocketStore.error = error.message || 'WebSocket error';
-      websocketStore.connecting = false;
+      websocketStore.connecting = $state(false);
       console.error('❌ WebSocket error:', error);
     });
 
@@ -97,7 +97,7 @@ async function connect(userId?: string): Promise<void> {
     // Connect to WebSocket server
     await wsClient.connect();
   } catch (error) {
-    websocketStore.connecting = false;
+    websocketStore.connecting = $state(false);
     websocketStore.error = error instanceof Error ? error.message : 'Connection failed';
     console.error('Failed to connect to WebSocket:', error);
   }
@@ -111,8 +111,8 @@ function disconnect(): void {
     wsClient.disconnect();
     wsClient = null;
   }
-  websocketStore.connected = false;
-  websocketStore.connecting = false;
+  websocketStore.connected = $state(false);
+  websocketStore.connecting = $state(false);
   websocketStore.activeEditors.clear();
   websocketStore.evidenceBeingEdited.clear();
 }

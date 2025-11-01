@@ -1,6 +1,5 @@
 <script lang="ts">
   // Svelte 5 - createEventDispatcher removed
-
   interface YoRHaHarvardButtonProps {
     variant?: 'primary' | 'secondary' | 'gaming' | 'terminal' | 'badge' | 'grey' | 'crimson-grey';
     size?: 'sm' | 'md' | 'lg';
@@ -11,7 +10,6 @@
     children?: any;
     onclick?: () => void;
   }
-
   let {
     variant = 'primary',
     size = 'md',
@@ -23,18 +21,14 @@
     onclick,
     ...restProps
   }: YoRHaHarvardButtonProps = $props();
-
   // Svelte 5 - no longer need dispatcher
-
   let isPressed = $state(false);
   let isHovered = $state(false);
-
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base',
   };
-
   const variantClasses = {
     primary: 'yorha-harvard-btn-primary',
     secondary: 'yorha-harvard-btn-secondary',
@@ -44,27 +38,22 @@
     grey: 'yorha-harvard-grey enhanced-btn-grey',
     'crimson-grey': 'enhanced-btn-crimson-grey',
   };
-
   function handleClick() {
     if (disabled || loading) return;
-
     // Visual press effect
     isPressed = true;
     setTimeout(() => {
-      isPressed = false;
+      isPressed = $state(false);
     }, 150);
-
     // Svelte 5 - use onclick prop directly
     onclick?.();
   }
-
   function handleKeydown(event: KeyboardEvent) {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
       handleClick();
     }
   }
-
   let buttonClasses = $derived(
     [
       'yorha-harvard-btn',
@@ -80,7 +69,6 @@
       .join(' ')
   );
 </script>
-
 <button
   class={buttonClasses}
   {disabled}
@@ -93,14 +81,11 @@
   {#if loading}
     <span class="loading-spinner" aria-hidden="true"></span>
   {/if}
-
   {#if variant === 'gaming'}
     <span class="gaming-border-accent"></span>
   {/if}
-
-  {@render children?.()}
+  <slot />
 </button>
-
 <style>
   .yorha-harvard-btn {
     font-family: var(--font-mono);
@@ -112,41 +97,35 @@
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    position relative;
+    position: relative;
     overflow: hidden;
     outline: none;
   }
-
   .yorha-harvard-btn:focus-visible {
     outline: 2px solid var(--enhanced-accent);
     outline-offset: 2px;
   }
-
   .yorha-harvard-btn-primary {
     background: linear-gradient(135deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     color: var(--enhanced-bg-primary);
     border-color: var(--enhanced-accent);
     font-weight: 700;
   }
-
   .yorha-harvard-btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(196, 30, 58, 0.4);
     filter: brightness(1.1);
   }
-
   .yorha-harvard-btn-secondary {
     background: var(--enhanced-bg-secondary);
     color: var(--enhanced-text-primary);
     border-color: var(--enhanced-border);
   }
-
   .yorha-harvard-btn-secondary:hover {
     border-color: var(--enhanced-accent);
     color: var(--enhanced-accent);
     background: var(--enhanced-bg-tertiary);
   }
-
   .yorha-gaming-btn {
     font-family: var(--font-pixel);
     background: var(--enhanced-bg-secondary);
@@ -155,24 +134,21 @@
     image-rendering: pixelated;
     font-size: 0.8em;
   }
-
   .yorha-gaming-btn:hover {
     background: var(--enhanced-bg-tertiary);
     color: var(--enhanced-accent-secondary);
     box-shadow: 0 0 20px rgba(196, 30, 58, 0.5);
   }
-
   .yorha-terminal-btn {
     background: #000;
     color: var(--yorha-matrix-green);
     border: 2px solid var(--enhanced-accent);
     font-family: var(--font-mono);
-    position relative;
+    position: relative;
   }
-
   .yorha-terminal-btn:before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -186,12 +162,10 @@
     );
     pointer-events: none;
   }
-
   .yorha-terminal-btn:hover {
     color: var(--enhanced-accent-secondary);
     text-shadow: 0 0 10px currentColor;
   }
-
   .harvard-gaming-badge {
     background: linear-gradient(135deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     color: var(--enhanced-bg-primary);
@@ -201,13 +175,12 @@
     border: 2px solid var(--enhanced-accent-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
-    position relative;
+    position: relative;
     overflow: hidden;
   }
-
   .harvard-gaming-badge:before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: -100%;
     width: 100%;
@@ -215,9 +188,8 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     animation: badge-shine 2s infinite;
   }
-
   .gaming-border-accent {
-    position absolute;
+    position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -227,27 +199,22 @@
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-
   .yorha-gaming-btn:hover .gaming-border-accent {
     opacity: 0.3;
   }
-
   .pressed {
     transform: scale(0.95);
   }
-
   .disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
-
   .loading {
     color: transparent;
   }
-
   .loading-spinner {
-    position absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -258,22 +225,18 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-
   .pixelated {
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
-
   .harvard-glow {
     box-shadow: 0 0 20px rgba(196, 30, 58, 0.4);
   }
-
   .harvard-glow:hover {
     box-shadow: 0 0 30px rgba(196, 30, 58, 0.6);
   }
-
   @keyframes spin {
     0% {
       transform: translate(-50%, -50%) rotate(0deg);
@@ -282,7 +245,6 @@
       transform: translate(-50%, -50%) rotate(360deg);
     }
   }
-
   @keyframes badge-shine {
     0% {
       left: -100%;
@@ -292,4 +254,3 @@
     }
   }
 </style>
-

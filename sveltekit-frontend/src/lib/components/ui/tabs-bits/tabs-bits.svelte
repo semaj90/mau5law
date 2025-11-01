@@ -14,7 +14,6 @@
     ...restProps;
   } = $props();
 </script>
-
 <TabsPrimitive.Root
   bind:value
   {onValueChange}

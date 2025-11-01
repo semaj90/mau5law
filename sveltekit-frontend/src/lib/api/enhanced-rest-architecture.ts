@@ -41,11 +41,11 @@ export interface DocumentCluster {
   label?: string;
   // Additional properties for search results
   similarity?: number;
-  metadata?: { [key: string]: unknown };
+  metadata?: { [key: string]: any };
   // Additional properties for various search contexts
   documentId?: string;
   embedding?: number[];
-  result?: unknown;
+  result?: any;
 }
 export interface ClusterResult {
   clusters: DocumentCluster[];

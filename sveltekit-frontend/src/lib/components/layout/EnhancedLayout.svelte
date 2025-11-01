@@ -3,10 +3,8 @@
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
-
-  // children is rendered via {@render children?.()} so use a callable type
+  // children is rendered via <slot /> so use a callable type
   type Snippet = () => any;
-
   // Define User interface to match +page.server.ts
   interface User {
     id: string;
@@ -14,7 +12,6 @@
     name?: string;
     role: string;
   }
-
   interface Props {
     children?: Snippet;
     title?: string;
@@ -38,7 +35,6 @@
   let sidebarOpen = $state(false);
   let mounted = $state(false);
   let currentPath = $derived($page.url.pathname);
-
   // Auto-detect optimal layout based on route
   let layoutVariant = $derived(() => {
     const p = currentPath ?? '/';
@@ -48,7 +44,6 @@
     if (p.startsWith('/auth')) return 'minimal';
     return variant;
   });
-
   // Define a type alias for navigation items
   type NavItem = {
     href: string;
@@ -56,7 +51,6 @@
     icon: string;
     active?: boolean;
   };
-
   // Navigation items based on layout variant
   let navigationItems = $derived<NavItem[]>(() => {
     const baseItems: NavItem[] = [
@@ -84,16 +78,13 @@
       default: return baseItems;
     }
   });
-
   function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
   }
-
   $effect(() => {
     mounted = true;
   });
 </script>
-
 <div class="enhanced-layout" data-variant={layoutVariant} class:full-width={fullWidth}>
   {#if !hideHeader && showNavigation}
     <header class="layout-header">
@@ -123,7 +114,6 @@
       </div>
     </header>
   {/if}
-
   <div class="layout-body">
     {#if showSidebar}
       <aside class="layout-sidebar" class:open={sidebarOpen}>
@@ -139,27 +129,22 @@
         </div>
       </aside>
     {/if}
-
     <main class="layout-main" class:with-sidebar={showSidebar}>
       <div class="main-content">
         {#if mounted}
-          {@render children?.()}
+          <slot />
         {:else}
           <div class="loading-container">
             <div class="nes-container">
               <p class="nes-text">Loading...</p>
             </div>
-          </div>
-        {/if}
+          {/if}
       </div>
     </main>
   </div>
-
   {#if layoutVariant === 'yorha'}
-    <div class="yorha-scan-lines"></div>
-  {/if}
+    <div class="yorha-scan-lines">{/if}
 </div>
-
 <style>
   .enhanced-layout {
     min-height: 100vh;
@@ -291,7 +276,7 @@
   .layout-main {
     flex: 1;
     padding: 2rem;
-    transition: margin-left 0.3s ease;
+    transition: margin-left: 0.3s ease;
   }
   .main-content {
     max-width: 1200px;
@@ -350,5 +335,3 @@
     }
   }
 </style>
-
-

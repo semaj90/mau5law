@@ -18,13 +18,13 @@ type GPUTextureMatrix = {
   // minimal shape used by this file; expand if bridge provides extra fields
   texture?: { destroy?: () => void } | undefined;
   gpuBuffer?: { destroy?: () => void } | undefined;
-  [key: string]: unknown;
+  [key: string]: any;
 };
 // --- end GPUTextureMatrix ---
 
 // --- CHANGED: typed Nes GPU bridge that uses local GPUTextureMatrix ---
 type NesGPUBridge = {
-  createFlatBufferFromDocument?: (doc: unknown) => Promise<ArrayBuffer>;
+  createFlatBufferFromDocument?: (doc: any) => Promise<ArrayBuffer>;
   createRankingTexture?: (
     key: string,
     floatData: Float32Array,
@@ -46,7 +46,7 @@ class MultiLayerCache implements IMultiLayerCache {
   async initialize(): Promise<void> {
     return;
   }
-  async set(collection: string, key: string, value: unknown, _ttlSeconds?: number): Promise<void> {
+  async set(collection: string, key: string, value: any, _ttlSeconds?: number): Promise<void> {
     this.store.set(`${collection}:${key}`, value);
   }
   async get(collection: string, key: string): Promise<unknown> {
@@ -65,7 +65,7 @@ type NumericArray = number[] | Float32Array;
 interface ProcessingMetrics {
   processingTime?: number;
   qualityScore?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface GraphNode {
@@ -77,16 +77,16 @@ export interface GraphNode {
     label?: string;
     position?: { x: number; y: number };
     features?: number[];
-    [key: string]: unknown;
+    [key: string]: any;
   };
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface GraphEdge {
   source: string;
   target: string;
   type?: string;
-  metadata?: { [key: string]: unknown };
-  [key: string]: unknown;
+  metadata?: { [key: string]: any };
+  [key: string]: any;
 }
 export interface GraphData {
   nodes?: GraphNode[];
@@ -95,21 +95,21 @@ export interface GraphData {
     density?: number;
     averageDegree?: number;
     legalDomain?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
   signature?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface DocumentMetadata {
   imageData?: string;
   originalSize?: number;
   vectorEmbedding?: NumericArray;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface ParsedDocument {
   metadata?: DocumentMetadata;
   lastAccessed?: number;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 // ----------------- end added types -----------------
 
@@ -964,7 +964,7 @@ export class MultiDimensionalImageCache {
 // Lightweight interface for the subset of MultiLayerCache methods used here
 interface IMultiLayerCache {
   initialize?: () => Promise<void>;
-  set?: (collection: string, key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
+  set?: (collection: string, key: string, value: any, ttlSeconds?: number) => Promise<void>;
   get?: (collection: string, key: string) => Promise<unknown>;
   cleanup?: () => Promise<void>;
 }
@@ -1006,7 +1006,7 @@ interface CacheMetrics {
 }
 
 // Small helper to safely destroy GPU resources without using `any`
-function safeDestroyTexture(obj: unknown): void {
+function safeDestroyTexture(obj: any): void {
   // the GPU texture matrix may have nested: "texture" or: "gpuBuffer" objects with destroy methods
   const t = obj as
     | {
@@ -1032,7 +1032,7 @@ function safeDestroyTexture(obj: unknown): void {
 }
 
 // ----------------- ADDED: small helpers to avoid `any` and provide defaults -----------------
-function isPosition(obj: unknown): obj is { x: number; y: number } {
+function isPosition(obj: any): obj is { x: number; y: number } {
   if (obj === null || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
   return typeof o['x'] === 'number' && typeof o['y'] === 'number';
@@ -1068,7 +1068,7 @@ function mapEdgeToAE(e: GraphEdge, idx: number): AEGraphEdge {
 // ----------------- end added helpers -----------------
 
 // ----------------- ADDED: metadata sanitizer to satisfy AE metadata type -----------------
-function sanitizeMetadata(m?: { [key: string]: unknown } | undefined): { [key: string]: string | number | boolean | undefined } {
+function sanitizeMetadata(m?: { [key: string]: any } | undefined): { [key: string]: string | number | boolean | undefined } {
   const out: { [key: string]: string | number | boolean | undefined } = {};
   if (!m || typeof m !== 'object') return out;
   for (const [k, v] of Object.entries(m as Record<string, unknown>)) {

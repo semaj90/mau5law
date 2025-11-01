@@ -71,7 +71,6 @@ https://svelte.dev/e/js_parse_error -->
     onsubmit?.(event);
   }
 </script>
-
 <form
   class={formClass}
   {method}
@@ -87,22 +86,18 @@ https://svelte.dev/e/js_parse_error -->
   {#if header}
     <div class="form-header">
       {@render header()}
-    </div>
-  {/if}
+    {/if}
   <!-- Form Content -->
   {#if children}
     <div class="form-body">
       {@render children()}
-    </div>
-  {/if}
+    {/if}
   <!-- Form Footer -->
   {#if footer}
     <div class="form-footer">
       {@render footer()}
-    </div>
-  {/if}
+    {/if}
 </form>
-
 <style>
 /* YoRHa-specific styling */ {}
 :global(.yorha-form input), {}
@@ -131,4 +126,3 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(239, 68, 68);
   }
 </style>
-

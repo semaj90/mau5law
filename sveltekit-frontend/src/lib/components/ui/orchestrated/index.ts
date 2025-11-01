@@ -3,9 +3,9 @@
  * Integrates N64 headless UI with Enhanced-Bits Legal AI components
  * Connected to XState orchestration system for state management
  */
-import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
-import HeadlessSelectField from '$lib/headless/HeadlessSelectField.svelte';
-import LoadingButton from '$lib/headless/LoadingButton.svelte';
+import { HeadlessDialog } from '$lib/headless/HeadlessDialog.svelte';
+import { HeadlessSelectField } from '$lib/headless/HeadlessSelectField.svelte';
+import { LoadingButton } from '$lib/headless/LoadingButton.svelte';
 // Enhanced-Bits Legal AI components
 import {
   Button,
@@ -13,7 +13,7 @@ import {
   Dialog as EnhancedDialog,
   Select as EnhancedSelect,
   Input
-} from '$lib/components/ui/enhanced-bits';
+} from '$lib/components/ui/enhanced-bits.svelte'';
 // Legal AI specific components
 export interface LegalEvidenceItem {
   id: string;

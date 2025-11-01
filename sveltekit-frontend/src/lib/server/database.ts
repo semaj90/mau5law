@@ -90,7 +90,7 @@ export async function initializeDatabase(): Promise<boolean> {
 
     console.log('[Database] Database initialized successfully');
     return true;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[Database] Initialization failed:', error);
     return false;
   }
@@ -102,7 +102,7 @@ export async function testDatabaseConnection(): Promise<boolean> {
     const { sql: dbSql } = await import('./db/drizzle');
     const result = await dbSql`SELECT 1 as test`;
     return Array.isArray(result) && result.length > 0;
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('[Database] Connection test failed:', error);
     return false;
   }

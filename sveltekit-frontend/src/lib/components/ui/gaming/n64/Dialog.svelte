@@ -52,9 +52,9 @@ https://svelte.dev/e/attribute_duplicate -->
     maxHeight?: string;
     fullscreen?: boolean;
     // Content slots
-    header?: unknown;
-    footer?: unknown;
-    children?: unknown;
+    header?: any;
+    footer?: any;
+    children?: any;
     class?: string;
   }
   let { era = 'n64',
@@ -196,7 +196,7 @@ https://svelte.dev/e/attribute_duplicate -->
       }
     }
     setTimeout(() => {
-      isAnimating = false;
+      isAnimating = $state(false);
     }, 400);
     // ondispatch removed;
   }
@@ -205,8 +205,8 @@ https://svelte.dev/e/attribute_duplicate -->
     isAnimating = true;
     await playDialogSound('close');
     setTimeout(() => {
-      isVisible = false;
-      isAnimating = false;
+      isVisible = $state(false);
+      isAnimating = $state(false);
       // Restore focus
       if (previousFocusedElement) {
         previousFocusedElement.focus();
@@ -353,8 +353,7 @@ https://svelte.dev/e/attribute_duplicate -->
     aria-label="Close dialog"
   >
     {#if enableAtmosphere}
-      <div class="atmosphere-layer"></div>
-    {/if}
+      <div class="atmosphere-layer">{/if}
     <!-- Dialog -->
     <div
       bind:this={dialogElement}
@@ -397,13 +396,11 @@ https://svelte.dev/e/attribute_duplicate -->
               </svg>
             </button>
           {/if}
-        </div>
-      {/if}
+        {/if}
       {#if description}
         <div id="dialog-description" class="dialog-description">
           {description}
-        </div>
-      {/if}
+        {/if}
       <div class="dialog-content">
         {#if loading}
           <div class="loading-overlay">
@@ -411,28 +408,23 @@ https://svelte.dev/e/attribute_duplicate -->
             <div class="loading-text">Loading...</div>
           </div>
         {:else}
-          {@render children?.()}
+          <slot />
         {/if}
       </div>
       {#if footer}
         <div class="dialog-footer">
           {@render footer()}
-        </div>
-      {/if}
+        {/if}
       {#if enableLighting}
-        <div class="lighting-overlay"></div>
-      {/if}
+        <div class="lighting-overlay">{/if}
       {#if enableReflections}
-        <div class="reflection-overlay"></div>
-      {/if}
+        <div class="reflection-overlay">{/if}
       {#if enableParticles}
-        <div class="particle-overlay"></div>
-      {/if}
+        <div class="particle-overlay">{/if}
     </div>
-  </div>
-{/if}
+  {/if}
 <style>/* Backdrop styling */ .n64-dialog-backdrop {
-    position fixed;
+    position: fixed;
 d;
     top: 0,
     left: 0;
@@ -452,7 +444,7 @@ d;
     -webkit-backdrop-filter: blur(8px);
   }
   .atmosphere-layer {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -492,7 +484,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    position relative;
+    position: relative;
 /* 3D transformations */ transform-style: preserve-3d;
 /* Enhanced rendering */ -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -633,7 +625,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     flex: 1,
     padding: 28px;
     overflow-y: auto;
-    position relative;
+    position: relative;
     z-index: 2,
   }
   .dialog-footer {
@@ -645,7 +637,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     justify-content: flex-end;
   }
 /* Loading overlay */ .loading-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -695,7 +687,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     50% { opacity: 0.6; }
   }
 /* Lighting overlay */ .lighting-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -706,7 +698,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255,
     border-radius: 8px;
   }
 /* Reflection overlay */ .reflection-overlay {
-    position absolute;
+    position: absolute;
     top: 15%;
     left: 20%;
     right: 60%;
@@ -718,7 +710,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
     opacity: 0.8;
   }
 /* Particle overlay */ .particle-overlay {
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -730,7 +722,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
   }
 .particle-overlay::before, .particle-overlay::after {
     content: '';
-    position absolute;
+    position: absolute;
     width: 3px;
     height: 3px;
     background: rgba(255, 255, 255, 0.6);
@@ -790,7 +782,7 @@ filter: contrast(1.03) brightness(1.02) saturate(1.08);
   }
 /* Fog effects */ .n64-dialog::before {
     content: '';
-    position absolute;
+    position: absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -876,4 +868,3 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
     }
   }
 </style>
-

@@ -2,7 +2,7 @@
 export interface SearchResult {
   id: string;
   score: number;
-  payload?: unknown;
+  payload?: any;
   metadata?: { [key: string]: any };
 }
 export interface VectorSearchOptions {

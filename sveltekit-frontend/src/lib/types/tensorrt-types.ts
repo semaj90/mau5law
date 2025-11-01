@@ -27,7 +27,7 @@ export interface LegalAIResponse {
     requestId?: string;
     quicUsed?: boolean;
     error?: string;
-    [key: string]: unknown;
+    [key: string]: any;
   };
 }
 export interface StreamingResponse {
@@ -246,7 +246,7 @@ export interface TensorRTError {
 // WebSocket types for real-time streaming
 export interface WebSocketMessage {
   type: 'request' | 'response' | 'error' | 'metrics' | 'heartbeat';
-  payload: unknown;
+  payload: any;
   request_id?: string;
   timestamp: number;
 }

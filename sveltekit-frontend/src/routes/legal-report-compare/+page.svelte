@@ -15,7 +15,7 @@
   import { toast } from 'svelte-sonner';
   import { FileText, Upload, Search, Users, Scale, FileSearch, Sparkles, CheckCircle2, AlertTriangle } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
 
   // ============================================================================
   // Svelte 5 State Management
@@ -260,7 +260,7 @@
       analysisError = err.message || 'Unknown error';
       toastError(`❌ Analysis failed: ${analysisError}`);
     } finally {
-      isUploading = false;
+      isUploading = $state(false);
     }
   }
 
@@ -535,7 +535,7 @@
 
         <!-- Analysis Tabs -->
         <div class="flex gap-2 flex-wrap">
-          {#each ['who', 'what', 'why', 'how', 'evidence', 'comparison'] as tab}
+          {#each Array.isArray(['who', 'what', 'why', 'how', 'evidence', 'comparison']) ? ['who', 'what', 'why', 'how', 'evidence', 'comparison'] : [] as tab}
             <button
               onclick={() => (activeTab = tab as typeof activeTab)}
               class={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab
@@ -573,7 +573,7 @@
               <h3 class="text-xl font-bold text-white mb-4">👥 Persons of Interest</h3>
 
               <div class="space-y-4">
-                {#each analysisResult.analysis.who.personsOfInterest as poi}
+                {#each Array.isArray(analysisResult.analysis.who.personsOfInterest) ? analysisResult.analysis.who.personsOfInterest : [] as poi}
                   <div class="bg-slate-700/50 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
                       <h4 class="text-lg font-semibold text-blue-400">{poi.name}</h4>
@@ -610,7 +610,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Charges/Claims</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.what.chargesOrClaims as charge}
+                      {#each Array.isArray(analysisResult.analysis.what.chargesOrClaims) ? analysisResult.analysis.what.chargesOrClaims : [] as charge}
                         <li>{charge}</li>
                       {/each}
                     </ul>
@@ -621,7 +621,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Legal Issues</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.what.legalIssues as issue}
+                      {#each Array.isArray(analysisResult.analysis.what.legalIssues) ? analysisResult.analysis.what.legalIssues : [] as issue}
                         <li>{issue}</li>
                       {/each}
                     </ul>
@@ -632,7 +632,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Key Facts</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.what.keyFacts as fact}
+                      {#each Array.isArray(analysisResult.analysis.what.keyFacts) ? analysisResult.analysis.what.keyFacts : [] as fact}
                         <li>{fact}</li>
                       {/each}
                     </ul>
@@ -656,7 +656,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Legal Basis</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.why.legalBasis as basis}
+                      {#each Array.isArray(analysisResult.analysis.why.legalBasis) ? analysisResult.analysis.why.legalBasis : [] as basis}
                         <li>{basis}</li>
                       {/each}
                     </ul>
@@ -667,7 +667,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Precedents</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.why.precedents as precedent}
+                      {#each Array.isArray(analysisResult.analysis.why.precedents) ? analysisResult.analysis.why.precedents : [] as precedent}
                         <li>{precedent}</li>
                       {/each}
                     </ul>
@@ -691,7 +691,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Evidence Chain</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.how.evidenceChain as item}
+                      {#each Array.isArray(analysisResult.analysis.how.evidenceChain) ? analysisResult.analysis.how.evidenceChain : [] as item}
                         <li>{item}</li>
                       {/each}
                     </ul>
@@ -702,7 +702,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Legal Arguments</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.how.legalArguments as argument}
+                      {#each Array.isArray(analysisResult.analysis.how.legalArguments) ? analysisResult.analysis.how.legalArguments : [] as argument}
                         <li>{argument}</li>
                       {/each}
                     </ul>
@@ -719,7 +719,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Physical Evidence</h4>
                     <div class="space-y-2">
-                      {#each analysisResult.analysis.evidence.physicalEvidence as evidence}
+                      {#each Array.isArray(analysisResult.analysis.evidence.physicalEvidence) ? analysisResult.analysis.evidence.physicalEvidence : [] as evidence}
                         <div class="bg-slate-700/50 rounded-lg p-3">
                           <div class="flex items-center justify-between mb-1">
                             <span class="text-white font-medium">{evidence.description}</span>
@@ -740,7 +740,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Documentary Evidence</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.evidence.documentaryEvidence as doc}
+                      {#each Array.isArray(analysisResult.analysis.evidence.documentaryEvidence) ? analysisResult.analysis.evidence.documentaryEvidence : [] as doc}
                         <li>{doc}</li>
                       {/each}
                     </ul>
@@ -751,7 +751,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Testimonial Evidence</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.evidence.testimonialEvidence as testimony}
+                      {#each Array.isArray(analysisResult.analysis.evidence.testimonialEvidence) ? analysisResult.analysis.evidence.testimonialEvidence : [] as testimony}
                         <li>{testimony}</li>
                       {/each}
                     </ul>
@@ -762,7 +762,7 @@
                   <div>
                     <h4 class="text-sm font-semibold text-slate-400 mb-2">Expert Opinions</h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-300">
-                      {#each analysisResult.analysis.evidence.expertOpinions as opinion}
+                      {#each Array.isArray(analysisResult.analysis.evidence.expertOpinions) ? analysisResult.analysis.evidence.expertOpinions : [] as opinion}
                         <li>{opinion}</li>
                       {/each}
                     </ul>
@@ -783,7 +783,7 @@
                         Similar Cases (embeddinggemma + Qdrant tags)
                       </h4>
                       <div class="space-y-3">
-                        {#each analysisResult.comparison.similarCases as similarCase}
+                        {#each Array.isArray(analysisResult.comparison.similarCases) ? analysisResult.comparison.similarCases : [] as similarCase}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center justify-between mb-2">
                               <h5 class="text-lg font-semibold text-blue-400">{similarCase.title}</h5>
@@ -796,7 +796,7 @@
                               <div class="mb-2">
                                 <span class="text-sm text-slate-400">Matched factors:</span>
                                 <div class="flex flex-wrap gap-1 mt-1">
-                                  {#each similarCase.matchedFactors as factor}
+                                  {#each Array.isArray(similarCase.matchedFactors) ? similarCase.matchedFactors : [] as factor}
                                     <span class="px-2 py-1 rounded text-xs bg-purple-500/20 text-purple-400">
                                       {factor}
                                     </span>
@@ -829,7 +829,7 @@
                         AI Recommendations (gemma3-legal:latest)
                       </h4>
                       <div class="space-y-3">
-                        {#each analysisResult.comparison.recommendations as rec}
+                        {#each Array.isArray(analysisResult.comparison.recommendations) ? analysisResult.comparison.recommendations : [] as rec}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center gap-2 mb-2">
                               <svelte:component this={getPriorityIcon(rec.priority)} class={`w-5 h-5 ${getPriorityColor(rec.priority)}`} />

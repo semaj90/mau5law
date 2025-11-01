@@ -33,5 +33,5 @@
 </style>
 
 <div class={"theme-provider " + theme}>
-  {@render children?.()}
+  <slot />
 </div>

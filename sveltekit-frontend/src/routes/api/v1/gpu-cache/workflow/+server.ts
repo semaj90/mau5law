@@ -15,7 +15,7 @@ type WebGPUResult = {
   performance?: Record<string, unknown>;
 };
 
-function isWebGPUResult(obj: unknown): obj is WebGPUResult {
+function isWebGPUResult(obj: any): obj is WebGPUResult {
   return typeof obj === 'object' && obj !== null && ('processed' in obj || 'performance' in obj);
 }
 
@@ -107,14 +107,14 @@ type BaseOptimization = {
   recommendedEncodingFormat?: EncodingFormat;
   estimatedPerformanceGain?: number;
   // allow optional extra metadata
-  [key: string]: unknown;
+  [key: string]: any;
 };
 
 type BinaryOptimizationProvider = {
   optimizeForLegalWorkflow?: (
     workflowType: LegalWorkflowType
   ) => Promise<BaseOptimization | null> | BaseOptimization | null;
-  retrieveShader?: (key: string) => Promise<{ sourceCode?: string; [k: string]: unknown } | null>;
+  retrieveShader?: (key: string) => Promise<{ sourceCode?: string; [k: string]: any } | null>;
 };
 
 // Add typed detail shapes for the apply-results to avoid `any[]`
@@ -128,7 +128,7 @@ type EncodingDetail = {
 };
 
 type NesDetail = {
-  memoryStatsSnapshot?: unknown;
+  memoryStatsSnapshot?: any;
   region?: string;
   optimized?: boolean;
   allocationMB?: string;
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       { status: 200 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error('Workflow optimization error:', errorMsg);
     return json(
@@ -268,7 +268,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
       { status: 200 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error('Workflow profiles error:', errorMsg);
     return json(
@@ -310,8 +310,8 @@ export const PUT: RequestHandler = async ({ request }) => {
       try {
         // Re-encode with optimal format - call retrieveShader via a typed accessor and narrow the result
         const retrieve = (binaryGPUShaderCache as unknown as BinaryOptimizationProvider).retrieveShader;
-        const shaderRaw: unknown = retrieve ? await retrieve(cacheKey) : null;
-        const shader = shaderRaw as { sourceCode?: string; [k: string]: unknown } | null;
+        const shaderRaw: any = retrieve ? await retrieve(cacheKey) : null;
+        const shader = shaderRaw as { sourceCode?: string; [k: string]: any } | null;
 
         // Narrow and use only the properties we actually need; avoid testing a value typed as void
         if (shader) {
@@ -328,7 +328,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             sizeAfter: metricsObj.encodedSize ?? 0,
           });
         }
-      } catch (err: unknown) {
+      } catch (err: any) {
         // normalize error
         const errorMsg = err instanceof Error ? err.message : String(err);
         results.encoding.failed++;
@@ -358,7 +358,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             });
           }
         }
-      } catch (err: unknown) {
+      } catch (err: any) {
         const errorMsg = err instanceof Error ? err.message : String(err);
         results.nesCache.failed++;
         results.nesCache.details.push({
@@ -387,7 +387,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           optimized: Boolean(webgpuResult.processed),
           performance: webgpuResult.performance ?? {},
         });
-      } catch (err: unknown) {
+      } catch (err: any) {
         const errorMsg = err instanceof Error ? err.message : String(err);
         results.webgpu.failed++;
         results.webgpu.details.push({
@@ -419,7 +419,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       },
       { status: 200 }
     );
-  } catch (err: unknown) {
+  } catch (err: any) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error('Workflow application error:', errorMsg);
     return json(

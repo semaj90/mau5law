@@ -6,11 +6,9 @@ https://svelte.dev/e/js_parse_error -->
   import type { Props } from '$lib/types/global';
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, ChevronUp, MoreHorizontal, Search, Filter } from 'lucide-svelte';
-
   interface DataGridProps extends Props {
     onSelectionChange?: (_event: { selectedRows: Array<string | number> }) => void;
   }
-
   let {
     columns,
     data = [],
@@ -24,17 +22,14 @@ https://svelte.dev/e/js_parse_error -->
     children,
     onSelectionChange,
   }: DataGridProps = $props();
-
   // Fixed $state generics and initializers
   let selectedRows = $state<Set<string | number>>(new Set());
   let sortConfig = $state<{ column: string; direction: 'asc' | 'desc' } | null>(null);
   let searchQuery = $state('');
   let columnFilters = $state<Map<string, string>>(new Map());
-
   // filteredData: search across stringified row and apply column filters
   let filteredData = $derived(() => {
     let filtered: any[] = Array.isArray(data) ? data : [];
-
     const q = searchQuery?.trim().toLowerCase();
     if (q) {
       filtered = filtered.filter(item =>
@@ -43,7 +38,6 @@ https://svelte.dev/e/js_parse_error -->
           .includes(q)
       );
     }
-
     // Apply column filters (exact/substring match on the column value)
     for (const [column, filter] of columnFilters) {
       const f = filter?.trim();
@@ -54,10 +48,8 @@ https://svelte.dev/e/js_parse_error -->
         });
       }
     }
-
     return filtered;
   });
-
   // sortedData: return array and sort if needed
   let sortedData = $derived(() => {
     const base = Array.isArray(filteredData) ? filteredData : [];
@@ -70,7 +62,6 @@ https://svelte.dev/e/js_parse_error -->
       return sortConfig.direction === 'desc' ? -result : result;
     });
   });
-
   function handleSort(column: string) {
     if (!sortable) return;
     if (sortConfig?.column === column) {
@@ -82,7 +73,6 @@ https://svelte.dev/e/js_parse_error -->
       sortConfig = { column, direction: 'asc' };
     }
   }
-
   function handleRowSelect(rowId: string | number) {
     if (!selectable) return;
     if (multiSelect) {
@@ -98,7 +88,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
-
   function handleSelectAll() {
     if (!multiSelect) return;
     const rows = Array.isArray(sortedData) ? sortedData : [];
@@ -109,7 +98,6 @@ https://svelte.dev/e/js_parse_error -->
     }
     onSelectionChange?.({ selectedRows: Array.from(selectedRows) });
   }
-
   function handleColumnFilter(column: string, value: string) {
     if (value?.trim()) {
       columnFilters.set(column, value);
@@ -120,7 +108,6 @@ https://svelte.dev/e/js_parse_error -->
     columnFilters = new Map(columnFilters);
   }
 </script>
-
 <div class={cn('modern-data-grid', className)}>
   <!-- Header with search and filters -->
   {#if filterable}
@@ -135,9 +122,7 @@ https://svelte.dev/e/js_parse_error -->
           Filters
         </button>
       </div>
-    </div>
-  {/if}
-
+    {/if}
   <!-- Data table -->
   <div class="table-container">
     <table class="data-table">
@@ -154,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
               />
             </th>
           {/if}
-          {#each columns as column}
+          {#each Array.isArray(columns) ? columns : [] as column}
             <th class="header-cell">
               <button
                 class="header-button"
@@ -174,8 +159,7 @@ https://svelte.dev/e/js_parse_error -->
                     {:else}
                       <ChevronDown class="h-4 w-4 text-gray-400" />
                     {/if}
-                  </div>
-                {/if}
+                  {/if}
               </button>
             </th>
           {/each}
@@ -223,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
                   />
                 </td>
               {/if}
-              {#each columns as column}
+              {#each Array.isArray(columns) ? columns : [] as column}
                 <td class="data-cell">
                   <div class="cell-content">
                     {#if column.formatter}
@@ -247,13 +231,12 @@ https://svelte.dev/e/js_parse_error -->
     </table>
   </div>
 </div>
-
 <style>
   .modern-data-grid {
     background-color: white;
     border: 1px solid rgb(229 231 235);
     border-radius: 12px;
-    position relative;
+    position: relative;
     overflow: hidden;
     font-family:
       'Inter',
@@ -273,12 +256,12 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgb(249 250 251);
   }
   .search-container {
-    position relative;
+    position: relative;
     flex: 1;
     max-width: 24rem;
   }
   .search-icon {
-    position absolute;
+    position: absolute;
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -332,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .table-header {
     background-color: rgb(249 250 251);
-    position sticky;
+    position: sticky;
     top: 0;
     z-index: 10,
   }
@@ -480,4 +463,3 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
-

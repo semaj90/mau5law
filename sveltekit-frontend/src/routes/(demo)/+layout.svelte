@@ -4,7 +4,7 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: unknown;
+    data?: any;
     children?: Snippet;
   }
 
@@ -38,7 +38,7 @@
 
     <!-- Demo Navigation -->
     <nav class="demo-nav">
-      {#each demoRoutes as route}
+      {#each Array.isArray(demoRoutes) ? demoRoutes : [] as route}
         <a
           href={`/demo/${route.slug}`}
           class="demo-nav-item"

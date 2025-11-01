@@ -44,7 +44,7 @@ export interface ImageAnalysisResult {
 
 export class TensorAccelerator {
   private device: GPUDevice | null = null;
-  private initialized: boolean = false;
+  private initialized: boolean = $state(false);
   private computePipelines: Map<string, GPUComputePipeline> = new Map();
   private config: GPUTensorConfig;
   constructor() {
@@ -501,7 +501,7 @@ export class TensorAccelerator {
       this.device = null;
     }
     this.computePipelines.clear();
-    this.initialized = false;
+    this.initialized = $state(false);
   }
 }
 // Singleton instance

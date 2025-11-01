@@ -101,7 +101,7 @@
       overallStatus = 'failed';
     } finally {
       totalDuration = Date.now() - startTime;
-      isRunning = false;
+      isRunning = $state(false);
     }
   }
   // Run individual validation suite
@@ -398,7 +398,6 @@
   let totalWarnings = $derived(validationSuites.reduce((sum, suite) => sum + suite.warnings, 0));
   let overallSuccessRate = $derived(totalTests > 0 ? Math.round((totalPassed / totalTests) * 100) : 0);
 </script>
-
 <div class="space-y-6 p-6 bg-slate-800 text-white rounded-xl">
   <!-- Header -->
   <div class="flex items-center justify-between">
@@ -408,8 +407,7 @@
         <div class="flex items-center gap-2 px-3 py-1 rounded-lg border {getStatusBg(overallStatus)}">
           <span class="text-lg">{getStatusIcon(overallStatus)}</span>
           <span class="font-medium capitalize {getStatusColor(overallStatus)}">{overallStatus}</span>
-        </div>
-      {/if}
+        {/if}
     </div>
     <button
       class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
@@ -472,13 +470,11 @@
       {#if totalDuration > 0}
         <div class="text-xs text-slate-400 mt-2">
           Total execution time: {Math.round((totalDuration / 1000) * 10) / 10}s
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Validation Suites -->
   <div class="space-y-6">
-    {#each validationSuites as suite}
+    {#each Array.isArray(validationSuites) ? validationSuites : [] as suite}
       <div class="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
         <!-- Suite Header -->
         <div class="flex items-center justify-between mb-4">
@@ -493,8 +489,7 @@
             {#if suite.totalDuration > 0}
               <div class="text-xs text-slate-500">
                 {Math.round((suite.totalDuration / 1000) * 10) / 10}s
-              </div>
-            {/if}
+              {/if}
           </div>
         </div>
         <!-- Suite Progress -->
@@ -504,11 +499,10 @@
               class="bg-blue-400 h-2 rounded-full transition-all duration-300"
               style="width: {((suite.passed + suite.failed + suite.warnings) / suite.tests.length) * 100}%"
             ></div>
-          </div>
-        {/if}
+          {/if}
         <!-- Tests -->
         <div class="space-y-3">
-          {#each suite.tests as test}
+          {#each Array.isArray(suite.tests) ? suite.tests : [] as test}
             <div class="flex items-start gap-3 p-3 bg-slate-600/50 rounded-lg border {getStatusBg(test.status)}">
               <div class="text-xl">
                 {#if test.status === 'running'}
@@ -576,10 +570,8 @@
       <p class="text-slate-300">
         Some critical tests failed. Review the results above and fix issues before proceeding to production.
       </p>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   /* Smooth animations for progress bars */
   .transition-all {

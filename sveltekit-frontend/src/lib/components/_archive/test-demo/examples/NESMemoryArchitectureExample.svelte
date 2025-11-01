@@ -23,12 +23,12 @@
   import { LegalCacheWarmer, WARMING_STRATEGIES, type UserProfile, type CaseContext } from '$lib/services/cache-warmer';
   // Demo data
   let cacheWarmer: LegalCacheWarmer;
-  let isInitialized = false;
-  let registryStats: unknown = {}
-  let warmingStats: unknown = {}
-  let memoryBankData: unknown = {}
-  let isWarming = false;
-  let lastWarmingResult: unknown = null;
+  let isInitialized = $state(false);
+  let registryStats: any = {}
+  let warmingStats: any = {}
+  let memoryBankData: any = {}
+  let isWarming = $state(false);
+  let lastWarmingResult: any = null;
   // Sample legal documents for demo
   const sampleDocuments: LegalDocument[] = [
     {
@@ -172,7 +172,7 @@
     } catch (error) {
       console.error('❌ Cache warming failed:', error);
     } finally {
-      isWarming = false;
+      isWarming = $state(false);
     }
   }
   function getMemoryBankColor(bank: string): string {
@@ -203,31 +203,31 @@
         </div>
         <divContent>
           <div class="priority-grid">
-            {#each documentPriorities as item}
-              <div class="priority-nier-bits-card" style:border-color={getPriorityColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority)}>
+            {#each Array.isArray(documentPriorities) ? documentPriorities : [] as item}
+              <div class="priority-nier-bits-card" style:border-color={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
                 <div class="document-header">
-                  <h4>{(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.type}</h4>
-                  <span class="priority-score" style:background={getPriorityColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority)}>
-                    {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority}
+                  <h4>{(item as { priority?: any; document?: any; memoryBank?: any }).document.type}</h4>
+                  <span class="priority-score" style:background={getPriorityColor((item as { priority?: any; document?: any; memoryBank?: any }).priority)}>
+                    {(item as { priority?: any; document?: any; memoryBank?: any }).priority}
                   </span>
                 </div>
                 <div class="document-details">
-                  <p><strong>Category:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.category}</p>
-                  <p><strong>Urgency:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.urgency}</p>
+                  <p><strong>Category:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.category}</p>
+                  <p><strong>Urgency:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.urgency}</p>
                   <p><strong>Memory Bank:</strong>
-                    <span style:color={getMemoryBankColor((item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).memoryBank)}>
-                      {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).memoryBank}
+                    <span style:color={getMemoryBankColor((item as { priority?: any; document?: any; memoryBank?: any }).memoryBank)}>
+                      {(item as { priority?: any; document?: any; memoryBank?: any }).memoryBank}
                     </span>
                   </p>
-                  <p><strong>Active Review:</strong> {(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.activeReview ? '✅' : '❌'}</p>
+                  <p><strong>Active Review:</strong> {(item as { priority?: any; document?: any; memoryBank?: any }).document.activeReview ? '✅' : '❌'}</p>
                 </div>
                 <!-- Texture preview -->
                 <div class="texture-preview">
                   <SSRWebGPULoader
-                    assetId={(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).document.id}
+                    assetId={(item as { priority?: any; document?: any; memoryBank?: any }).document.id}
                     width={48}
                     height={48}
-                    viewportDistance={(item as { priority?: unknown; document?: unknown; memoryBank?: unknown }).priority > 150 ? 20 : 60}
+                    viewportDistance={(item as { priority?: any; document?: any; memoryBank?: any }).priority > 150 ? 20 : 60}
                     enableGPU={true}
                   />
                 </div>
@@ -245,7 +245,7 @@
         </div>
         <divContent>
           <div class="memory-banks">
-            {#each memoryBankData as bankData}
+            {#each Array.isArray(memoryBankData) ? memoryBankData : [] as bankData}
               <div class="memory-bank">
                 <div class="bank-header">
                   <h4 style:color={getMemoryBankColor(bankData.bank)}>
@@ -353,7 +353,7 @@
               {#if lastWarmingResult.warnings.length > 0}
                 <div class="warnings">
                   <h5>⚠️ Warnings:</h5>
-                  {#each lastWarmingResult.warnings as warning}
+                  {#each Array.isArray(lastWarmingResult.warnings) ? lastWarmingResult.warnings : [] as warning}
                     <p class="warning">{warning}</p>
                   {/each}
                 </div>

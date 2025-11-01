@@ -3,7 +3,7 @@ import { json, error } from '@sveltejs/kit'
 import { simdBodyParser } from '$lib/server/simd-body-parser'
 type LoadTestBody = {
   endpoint: string; // e.g. "/api/v1/rag",
-  payload: unknown;
+  payload: any;
   iterations?: number;
 };
 export const POST: RequestHandler = async ({ request, fetch, url }) => {

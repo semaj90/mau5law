@@ -1,21 +1,17 @@
 import neo4j from 'neo4j-driver'
-
 const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687'
 const NEO4J_USER = process.env.NEO4J_USER ?? 'neo4j'
 const NEO4J_PASS = process.env.NEO4J_PASS ?? 'neo4j'
 const NEO4J_INIT_ON_START = (process.env.NEO4J_INIT_ON_START ?? 'false') === 'true'
 const CREATE_SIMILARITY = (process.env.NEO4J_CREATE_SIMILARITY_LINKS ?? 'false') === 'true'
 const SIMILARITY_THRESHOLD = Number(process.env.NEO4J_SIMILARITY_THRESHOLD ?? 0.85)
-
 let driver: neo4j.Driver | null = null
-
 function getDriver() {
   if (!driver) {
     driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER, NEO4J_PASS))
   }
   return driver
 }
-
 async function ensureSchema() {
   if (!NEO4J_INIT_ON_START) return
   const d = getDriver()
@@ -29,8 +25,7 @@ async function ensureSchema() {
     await s.close()
   }
 }
-
-export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from string; to: string; relation: string }> = []) {
+export async function evidenceGraphService(meta: { id: string; summary: string; caseId?: string | null }, entities: Array<{ name: string; type?: string | null }>, edges: Array<{ from: string; to: string; relation: string }> = []) {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -41,7 +36,6 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
       'MERGE (e:Evidence {id:$id}) SET e.summary=$summary, e.updatedAt=timestamp() RETURN e',
       { id: evidenceId, summary: meta.summary }
     )
-
     // Upsert case node and relation
     if (meta.caseId) {
       await tx.run(
@@ -53,19 +47,16 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
         { id: evidenceId, caseId: meta.caseId }
       )
     }
-
     // Upsert entities and mention edges
     for (const ent of entities) {
       const nid = `entity:${ent.name}`
       await tx.run('MERGE (n:Entity {id:$id}) SET n.name=$name, n.type=$type RETURN n', { id: nid, name: ent.name, type: ent.type ?? 'unknown' })
       await tx.run('MATCH (e:Evidence {id:$id}), (n:Entity {id:$nid}) MERGE (e)-[:MENTIONS]->(n)', { id: evidenceId, nid })
     }
-
     // Additional explicit edges passed in
     for (const ed of edges) {
       await tx.run('MERGE (a {id:$from}) MERGE (b {id:$to}) MERGE (a)-[r:'+String(ed.relation)+' ]->(b)', { from ed.from, to: ed.to })
     }
-
     await tx.commit()
   } catch (err) {
     try { await tx.rollback() } catch (_) { /* ignore */ }
@@ -74,7 +65,6 @@ export async function evidenceGraphService(meta: { id: string; summary: string; 
     await s.close()
   }
 }
-
 // Optional helper to create similarity links given neighbors (id, score)
 export async function createSimilarityLinks(evidenceId: string, neighbors: Array<{ key: string; similarity: number }>) {
   if (!CREATE_SIMILARITY) return
@@ -98,20 +88,16 @@ export async function createSimilarityLinks(evidenceId: string, neighbors: Array
     await s.close()
   }
 }
-
 // Initialize schema if requested
 ensureSchema().catch((e) => console.debug('neo4j schema init failed', e))
-
 export default { evidenceGraphService, createSimilarityLinks }
 import neo4j, { Driver } from 'neo4j-driver';
-
 interface EvidenceGraphConfig {
   url: string;
   user: string;
   password: string;
   initSchema: boolean;
 }
-
 interface EvidenceGraphUpsertInput {
   evidenceId: string;
   title?: string | null;
@@ -123,11 +109,9 @@ interface EvidenceGraphUpsertInput {
   relatedEvidence?: Array<{ evidenceId: string }>;
   similarEvidence?: Array<{ evidenceId: string; score: number }>;
 }
-
 class EvidenceGraphService {
   private static driver: Driver | null = null;
-  private static isSchemaInitialized = false;
-
+  private static isSchemaInitialized = $state(false);
   private static resolveConfig(): EvidenceGraphConfig | null {
     const url = process.env.GRAPH_DB_URL ?? process.env.NEO4J_URL;
     const user = process.env.GRAPH_DB_USER ?? process.env.NEO4J_USER;
@@ -136,16 +120,13 @@ class EvidenceGraphService {
     const initSchema = (process.env.NEO4J_INIT_ON_START ?? 'false').toLowerCase() === 'true';
     return { url, user, password, initSchema };
   }
-
   private static async ensureDriver(): Promise<Driver | null> {
     if (this.driver) return this.driver;
     const config = this.resolveConfig();
     if (!config) return null;
-
     this.driver = neo4j.driver(config.url, neo4j.auth.basic(config.user, config.password), {
       disableLosslessIntegers: true,
     });
-
     if (config.initSchema && !this.isSchemaInitialized) {
       try {
         await this.initializeSchema();
@@ -154,10 +135,8 @@ class EvidenceGraphService {
         console.warn('[Neo4j] Failed to initialise schema:', error);
       }
     }
-
     return this.driver;
   }
-
   private static async initializeSchema(): Promise<void> {
     const driver = this.driver;
     if (!driver) return;
@@ -175,11 +154,9 @@ class EvidenceGraphService {
       await session.close();
     }
   }
-
   static async upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promise<number> {
     const driver = await this.ensureDriver();
     if (!driver) return 0;
-
     const {
       evidenceId,
       title,
@@ -191,11 +168,9 @@ class EvidenceGraphService {
       relatedEvidence = [],
       similarEvidence = [],
     } = data;
-
     const session = driver.session();
     try {
       let relationshipsCreated = 0;
-
       await session.writeTransaction(async tx => {
         await tx.run(
           `
@@ -207,7 +182,6 @@ class EvidenceGraphService {
         `,
           { evidenceId, title, summary, riskLevel }
         );
-
         if (caseId) {
           const result = await tx.run(
             `
@@ -222,7 +196,6 @@ class EvidenceGraphService {
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
         }
-
         if (entities.length) {
           const result = await tx.run(
             `
@@ -236,7 +209,6 @@ class EvidenceGraphService {
             { evidenceId, entities }
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
-
           if (entities.length > 1) {
             const resultCo = await tx.run(
               `
@@ -254,7 +226,6 @@ class EvidenceGraphService {
             relationshipsCreated += resultCo.summary.counters.updates().relationshipsCreated ?? 0;
           }
         }
-
         if (relatedEvidence.length) {
           const result = await tx.run(
             `
@@ -268,7 +239,6 @@ class EvidenceGraphService {
           );
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
         }
-
         if (similarEvidence.length) {
           const result = await tx.run(
             `
@@ -284,7 +254,6 @@ class EvidenceGraphService {
           relationshipsCreated += result.summary.counters.updates().relationshipsCreated ?? 0;
         }
       });
-
       return relationshipsCreated;
     } catch (error) {
       console.warn('[Neo4j] Upsert failed:', error);
@@ -293,7 +262,6 @@ class EvidenceGraphService {
       await session.close();
     }
   }
-
   private static buildEntityPairs(entities: Array<{ name: string; type?: string | null }>) {
     const pairs: Array<{ a: { name: string; type: string | null }; b: { name: string; type: string | null } }> =
       [];
@@ -311,7 +279,6 @@ class EvidenceGraphService {
     return pairs;
   }
 }
-
 export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promise<number> {
   return EvidenceGraphService.upsertEvidenceGraph(data);
 }

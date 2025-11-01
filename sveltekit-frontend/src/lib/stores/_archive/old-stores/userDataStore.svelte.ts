@@ -160,7 +160,7 @@ const createUserDataStore = () => {
         await syncWithServer(userId);
       } catch (error) {
         console.error('Failed to initialize user data:', error);
-        userDataState.isLoading = false;
+        userDataState.isLoading = $state(false);
       }
     },
     // Sync specific data types
@@ -371,7 +371,7 @@ const createUserDataStore = () => {
       saveToCache();
     } catch (error) {
       console.error('Failed to sync with server:', error);
-      userDataState.isLoading = false;
+      userDataState.isLoading = $state(false);
     }
   }
   function saveToCache() {

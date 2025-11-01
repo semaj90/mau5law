@@ -5,7 +5,7 @@
   interface Props {
     value: string;
     onValueChange?: (_value: string) => void;
-    children: unknown;
+     unknown;
   }
   let { value, onValueChange, children }: Props = $props();
   const activeTab = writable(value);
@@ -22,7 +22,6 @@
     activeTab.set(value);
   });
 </script>
-
 <div class="w-full">
   {@render children()}
 </div>

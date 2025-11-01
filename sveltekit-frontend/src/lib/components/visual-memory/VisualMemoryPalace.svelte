@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import NeuralSpriteAutoencoder from '$lib/ai/neural-sprite-autoencoder';
-  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders';
+  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
   import { calculateDocumentPriority } from '$lib/config/legal-priorities';
   import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
   interface MemoryGlyph {
@@ -59,7 +59,6 @@
       priority: 220,
       estimatedUsage: 256 * 1024 // 256KB
     });
-
     // Initialize default rooms
     rooms = [
       {
@@ -162,7 +161,7 @@
         rooms = [...rooms];
       }
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   function reconstructGlyphImage(latent: number[]): ImageData {
@@ -282,7 +281,6 @@
     selectedRoom = room;
   }
 </script>
-
 <div class="visual-memory-palace">
   <!-- Room selector -->
   <div class="room-selector">
@@ -326,7 +324,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .visual-memory-palace {
     display: grid;

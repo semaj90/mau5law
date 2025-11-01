@@ -6,11 +6,11 @@ https://svelte.dev/e/props_duplicate -->
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
   import { onDestroy, onMount } from 'svelte';
-  let { report = $bindable()  }: { report = $bindable() : unknown } = $props(); // Report | null = null
-  let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string
-  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () =>
-  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : unknown } = $props(); // true
-  let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false
+  let { report = $bindable()  }: { report = $bindable() : any } = $props(); // Report | null = null
+  let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string
+  let { onSave = $bindable()  }: { onSave = $bindable() : any } = $props(); // (report: Report) => Promise<void> = async () =>
+  let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : any } = $props(); // true
+  let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false
   let editorElement: HTMLDivElement;
   let citationSidebar: HTMLDivElement;
   let isDirty = $state(false);
@@ -237,7 +237,7 @@ https://svelte.dev/e/props_duplicate -->
       if (response.ok) {
         const savedReport = await response.json();
         report = savedReport;
-        isDirty = false;
+        isDirty = $state(false);
         lastSaved = new Date());
         await onSave(savedReport);
       } else {
@@ -247,7 +247,7 @@ https://svelte.dev/e/props_duplicate -->
       console.error("Save failed:", error);
       // Show error message to user
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
   }}
   let aiSuggestionTimer = $state<NodeJS.Timeout | null >(null);
   function debounceAiSuggestions() {
@@ -280,7 +280,7 @@ https://svelte.dev/e/props_duplicate -->
     } catch (error) {
       console.error("Failed to generate AI suggestions:", error);
     } finally {
-      isGeneratingAi = false;
+      isGeneratingAi = $state(false);
   }}
   function insertAiSuggestion(suggestion: string) {
     if (readOnly) return;
@@ -408,7 +408,7 @@ https://svelte.dev/e/props_duplicate -->
         <input type="text" placeholder="Search citations..." />
       </div>
       <div class="container mx-auto px-4">
-        {#each availableCitations as citation}
+        {#each Array.isArray(availableCitations) ? availableCitations : [] as citation}
           <div class="container mx-auto px-4">
             <div class="container mx-auto px-4">{citation.text}</div>
             <div class="container mx-auto px-4">{citation.source}</div>
@@ -436,7 +436,7 @@ https://svelte.dev/e/props_duplicate -->
         {#if isGeneratingAi}
           <div class="container mx-auto px-4">Generating suggestions...</div>
         {:else if aiSuggestions.length > 0}
-          {#each aiSuggestions as suggestion}
+          {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
             <div class="container mx-auto px-4">
               <p>{suggestion}</p>
               <button
@@ -457,7 +457,7 @@ https://svelte.dev/e/props_duplicate -->
   {#if selectedCitations.length > 0}
     <div class="container mx-auto px-4">
       <h4>Citations in this report:</h4>
-      {#each selectedCitations as citation}
+      {#each Array.isArray(selectedCitations) ? selectedCitations : [] as citation}
         <div class="container mx-auto px-4">
           <span class="container mx-auto px-4">[{citation.source}]</span>
           <button

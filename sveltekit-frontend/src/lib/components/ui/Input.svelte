@@ -68,7 +68,7 @@
     onfocus?.(event);
   }
   function handleBlur(_event: FocusEvent) {
-    isFocused = false;
+    isFocused = $state(false);
     onblur?.(event);
   }
   function handleClear() {
@@ -131,7 +131,6 @@
     ].join(' ')
   );
 </script>
-
 <div class={containerClasses}>
   <!-- Label -->
   {#if label}
@@ -145,8 +144,7 @@
     {#if icon && iconPosition === 'left'}
       <div class={iconClasses}>
         <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
-      </div>
-    {/if}
+      {/if}
     <!-- Input -->
     {#if type === 'password'}
       <input
@@ -222,8 +220,7 @@
     {:else if icon && iconPosition === 'right'}
       <div class={iconClasses}>
         <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
-      </div>
-    {/if}
+      {/if}
     <!-- Clear Button -->
     {#if showClearButton}
       <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear input">

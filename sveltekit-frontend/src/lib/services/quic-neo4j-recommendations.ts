@@ -83,7 +83,7 @@ export class QuicNeo4jRecommendationEngine {
 	private tensorClient: QuicTensorClient;
 	private readonly QUIC_SERVER = 'https://localhost:4433';
 	private readonly HTTP2_FALLBACK = 'http://localhost:8444';
-	private isConnected: boolean = false;
+	private isConnected: boolean = $state(false);
 	private connectionRetries: number = 0;
 	private maxRetries: number = 3;
 	constructor() {
@@ -105,7 +105,7 @@ export class QuicNeo4jRecommendationEngine {
 			console.log('✅ QUIC Neo4j Engine connected successfully');
 		} catch (error) {
 			console.warn('⚠️ QUIC connection failed, will use fallback:', error);
-			this.isConnected = false;
+			this.isConnected = $state(false);
 			this.connectionRetries++;
 		}
 	}

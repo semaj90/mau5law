@@ -28,26 +28,26 @@ interface DetectiveSystemStatus {
 type EvidenceState = {
   evidence?: Evidence[];
   isLoading?: boolean;
-  error?: unknown;
+  error?: any;
   // allow extra fields without breaking
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 type GrpcMetrics = {
   grpcAvailable: boolean;
   comparison: {
     improvement: number;
-    [k: string]: unknown;
+    [k: string]: any;
   };
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 // New: explicit shape for runtime gRPC helper to avoid `any`
 type CaseScoringUpdate = {
   caseId?: string;
   eventType?: string;
-  data?: unknown;
-  [k: string]: unknown;
+  data?: any;
+  [k: string]: any;
 };
 
 type CaseScoringServiceGrpcShape = {
@@ -57,11 +57,11 @@ type CaseScoringServiceGrpcShape = {
     onUpdate: (update: CaseScoringUpdate) => void
   ) => Promise<() => void> | (() => void);
   scoreCase?: (req: CaseScoringRequest) => Promise<CaseScoringResult>;
-  [k: string]: unknown;
+  [k: string]: any;
 };
 
 export class ComprehensiveIntegration {
-  private initialized = false;
+  private initialized = $state(false);
   private systemStatus: DetectiveSystemStatus = {
     grpc: {
       connected: false,
@@ -130,7 +130,7 @@ export class ComprehensiveIntegration {
       }
     } catch (error) {
       console.warn('gRPC initialization failed, using JSON fallback:', error);
-      this.systemStatus.grpc.connected = false;
+      this.systemStatus.grpc.connected = $state(false);
     }
   }
   /**
@@ -284,7 +284,7 @@ export class ComprehensiveIntegration {
         protocol: (result as CaseScoringResult).performanceMetrics?.protocol ?? 'JSON',
       });
       return result;
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('❌ Case scoring failed:', error);
       throw error;
     }
@@ -307,7 +307,7 @@ export class ComprehensiveIntegration {
   destroy(): void {
     this.streamingCleanup.forEach(cleanup => cleanup());
     this.streamingCleanup = [];
-    this.initialized = false;
+    this.initialized = $state(false);
     console.log('🧹 Comprehensive Integration destroyed');
   }
 
@@ -318,7 +318,7 @@ export class ComprehensiveIntegration {
   }
 
   // new: safely convert unknown to Record<string, unknown> (avoid direct Case -> Record cast)
-  private toRecord(obj: unknown): Record<string, unknown> {
+  private toRecord(obj: any): Record<string, unknown> {
     if (obj && typeof obj === 'object') return obj as Record<string, unknown>;
     return { value: obj };
   }

@@ -3,7 +3,6 @@
   import { fade, fly } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
   import { advancedCache } from '$lib/services/advanced_cache_manager';
-
   // Types
   interface UserActivity {
     timestamp: number;
@@ -12,13 +11,11 @@
     duration?: number;
     position?: number;
   }
-
   interface ThinkingState {
     phase: 'analyzing' | 'processing' | 'generating' | 'complete';
     progress: number;
     currentThought?: string;
   }
-
   // Props interface
   interface Props {
     text?: string;
@@ -31,7 +28,6 @@
     autoStart?: boolean;
     showControls?: boolean;
   }
-
   let {
     text = '',
     speed = 50,
@@ -43,7 +39,6 @@
     autoStart = true,
     showControls = false,
   }: Props = $props();
-
   // State
   let displayedText = $state('');
   let currentIndex = $state(0);
@@ -54,12 +49,10 @@
     phase: 'analyzing',
     progress: 0,
   });
-
   // Activity replay state
   let isReplayingActivity = $state(false);
   let activityIndex = $state(0);
   let replaySpeed = $state(1.0);
-
   // Thinking phrases for different phases
   const thinkingPhrases = {
     analyzing: [
@@ -81,13 +74,11 @@
       'Finalizing response...',
     ],
   };
-
   // Intervals and timeouts
   let typingInterval: ReturnType<typeof setTimeout> | null = null;
   let cursorInterval: ReturnType<typeof setInterval> | null = null;
   let thinkingInterval: ReturnType<typeof setInterval> | null = null;
   let activityTimeout: ReturnType<typeof setTimeout> | null = null;
-
   onMount(() => {
     if (autoStart) {
       startTypewriter();
@@ -96,18 +87,15 @@
     // Load cached user activity if available
     loadCachedActivity();
   });
-
   onDestroy(() => {
     clearAllIntervals();
   });
-
   // Main typewriter function
   async function startTypewriter() {
     if (isTyping) return;
     isTyping = true;
     currentIndex = 0;
     displayedText = '';
-
     // Check cache first
     if (cacheKey) {
       const cached = await advancedCache.get<string>(`typewriter_${cacheKey}`);
@@ -117,20 +105,16 @@
         return;
       }
     }
-
     // Show thinking animation: while LLM loads
     if (enableThinking) {
       await showThinkingAnimation();
     }
-
     // Replay user activity if available
     if (userActivity.length > 0) {
       await replayUserActivity();
     }
-
     // Type the actual response
     await typeText(text, speed);
-
     // Cache the response
     if (cacheKey && text) {
       await advancedCache.set(`typewriter_${cacheKey}`, text, {
@@ -140,30 +124,25 @@
       });
     }
   }
-
   async function typeText(textToType: string, typingSpeed: number): Promise<void> {
     return new Promise(resolve => {
       let index = 0;
       displayedText = '';
-
       const type = () => {
         if (index < textToType.length && !isPaused) {
           // Simulate natural typing variations
           const char = textToType[index];
           const baseSpeed = typingSpeed;
           let currentSpeed = baseSpeed;
-
           // Vary speed based on character type
           if (char === ' ') currentSpeed = baseSpeed * 0.5; // Faster for spaces
           if (char === '.' || char === '!' || char === '?') currentSpeed = baseSpeed * 2; // Slower for punctuation
           if (char.match(/[A-Z]/)) currentSpeed = baseSpeed * 1.2; // Slightly slower for capitals
-
           displayedText += char;
           index++;
-
           typingInterval = setTimeout(type, currentSpeed + Math.random() * 20 - 10);
         } else {
-          isTyping = false;
+          isTyping = $state(false);
           thinkingState.phase = 'complete';
           resolve();
         }
@@ -171,24 +150,19 @@
       type();
     });
   }
-
   async function showThinkingAnimation(): Promise<void> {
     return new Promise(resolve => {
       thinkingState.phase = 'analyzing';
       thinkingState.progress = 0;
       let phaseIndex = 0;
       const phases: (keyof typeof thinkingPhrases)[] = ['analyzing', 'processing', 'generating'];
-
       const updateThinking = () => {
         const currentPhase = phases[phaseIndex];
         thinkingState.phase = currentPhase;
-
         // Random thought from current phase
         const thoughts = thinkingPhrases[currentPhase];
         thinkingState.currentThought = thoughts[Math.floor(Math.random() * thoughts.length)];
-
         thinkingState.progress += 10 + Math.random() * 15;
-
         if (thinkingState.progress >= 100) {
           resolve();
         } else if (thinkingState.progress > 33 && phaseIndex < 1) {
@@ -197,13 +171,10 @@
           phaseIndex = 2;
         }
       };
-
       // Simulate thinking time (2-4 seconds)
       const thinkingDuration = 2000 + Math.random() * 2000;
       const updateInterval = thinkingDuration / 10;
-
       thinkingInterval = setInterval(updateThinking, updateInterval);
-
       // Ensure completion
       setTimeout(() => {
         if (thinkingInterval) clearInterval(thinkingInterval);
@@ -213,24 +184,19 @@
       }, thinkingDuration);
     });
   }
-
   async function replayUserActivity(): Promise<void> {
     if (!userActivity.length) return;
-
     isReplayingActivity = true;
     activityIndex = 0;
-
     return new Promise(resolve => {
       const replayNext = () => {
         if (activityIndex >= userActivity.length) {
-          isReplayingActivity = false;
+          isReplayingActivity = $state(false);
           resolve();
           return;
         }
-
         const activity = userActivity[activityIndex];
         const scaledDuration = (activity.duration || 500) / replaySpeed;
-
         switch (activity.action) {
           case 'typing':
             if (activity.content) {
@@ -254,50 +220,41 @@
             // Visual indication of text selection
             break;
         }
-
         activityIndex++;
         activityTimeout = setTimeout(replayNext, scaledDuration);
       };
       replayNext();
     });
   }
-
   function startCursorBlink() {
     cursorInterval = setInterval(() => {
       cursorVisible = !cursorVisible;
     }, 530); // Natural cursor blink rate
   }
-
   function pause() {
     isPaused = true;
   }
-
   function resume() {
-    isPaused = false;
+    isPaused = $state(false);
   }
-
   function stop() {
     clearAllIntervals();
-    isTyping = false;
-    isPaused = false;
-    isReplayingActivity = false;
+    isTyping = $state(false);
+    isPaused = $state(false);
+    isReplayingActivity = $state(false);
   }
-
   function restart() {
     stop();
     currentIndex = 0;
     displayedText = '';
     startTypewriter();
   }
-
   function setSpeed(newSpeed: number) {
     speed = Math.max(10, Math.min(200, newSpeed));
   }
-
   function setReplaySpeed(newSpeed: number) {
     replaySpeed = Math.max(0.1, Math.min(5.0, newSpeed));
   }
-
   async function loadCachedActivity() {
     if (cacheKey) {
       const cached = await advancedCache.get<UserActivity[]>(`activity_${cacheKey}`);
@@ -306,7 +263,6 @@
       }
     }
   }
-
   async function cacheCurrentActivity() {
     if (cacheKey && userActivity.length > 0) {
       await advancedCache.set(`activity_${cacheKey}`, userActivity, {
@@ -316,25 +272,21 @@
       });
     }
   }
-
   function clearAllIntervals() {
     if (typingInterval) clearTimeout(typingInterval);
     if (cursorInterval) clearInterval(cursorInterval);
     if (thinkingInterval) clearInterval(thinkingInterval);
     if (activityTimeout) clearTimeout(activityTimeout);
   }
-
   // Reactive statement
   $effect(() => {
     if (text && autoStart) {
       restart();
     }
   });
-
   // Export component functions for external use
   export { pause, resume, stop, restart, setSpeed, setReplaySpeed };
 </script>
-
 <!-- Thinking Animation (shown while LLM loads) -->
 {#if enableThinking && thinkingState.phase !== 'complete' && isTyping && !displayedText}
   <div class="thinking-container" in:fade={{ duration 300 }} out:fade={{ duration 200 }}>
@@ -351,9 +303,7 @@
         <div class="progress-bar" style="width: {thinkingState.progress}%"></div>
       </div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <!-- User Activity Replay Indicator -->
 {#if isReplayingActivity}
   <div class="activity-replay-indicator" in:fly={{ y: -20, duration 300, easing: quintOut }}>
@@ -362,9 +312,7 @@
     <div class="replay-progress">
       <div class="progress-bar" style="width: {(activityIndex / userActivity.length) * 100}%"></div>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <!-- Main Typewriter Content -->
 <div class="typewriter-container">
   <span class="typewriter-text">
@@ -376,7 +324,6 @@
     </span>
   {/if}
 </div>
-
 <!-- Advanced Controls (for development/debugging) -->
 {#if showControls}
   <div class="typewriter-controls" in:fade={{ delay: 500 }}>
@@ -403,39 +350,31 @@
         <span>{replaySpeed}x</span>
       </label>
     </div>
-  </div>
-{/if}
-
+  {/if}
 <style>
   .typewriter-container {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     line-height: 1.6;
-    position relative;
+    position: relative;
   }
-
   .typewriter-text {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
-
   .typewriter-cursor {
     color: #00ff00;
     font-weight: bold;
     transition: opacity 0.1s;
   }
-
   .typewriter-cursor.visible {
     opacity: 1;
   }
-
   .typewriter-cursor.hidden {
     opacity: 0;
   }
-
   .typewriter-cursor.blinking {
     animation: blink 1.06s infinite;
   }
-
   @keyframes blink {
     0%,
     50% {
@@ -446,7 +385,6 @@
       opacity: 0;
     }
   }
-
   /* Thinking Animation Styles */
   .thinking-container {
     padding: 1rem;
@@ -455,19 +393,16 @@
     border-radius: 0.5rem;
     margin-bottom: 1rem;
   }
-
   .thinking-indicator {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
   }
-
   .thinking-dots {
     display: flex;
     gap: 0.25rem;
   }
-
   .dot {
     width: 0.5rem;
     height: 0.5rem;
@@ -475,14 +410,12 @@
     border-radius: 50%;
     display: inline-block;
   }
-
   .thinking-text {
     font-size: 0.875rem;
     color: #00ff00;
     text-align: center;
     font-style: italic;
   }
-
   .thinking-progress {
     width: 100%;
     height: 0.25rem;
@@ -490,13 +423,11 @@
     border-radius: 0.125rem;
     overflow: hidden;
   }
-
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #00ff00, #00ff88);
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
-
   /* Activity Replay Styles */
   .activity-replay-indicator {
     display: flex;
@@ -509,17 +440,14 @@
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
   }
-
   .replay-icon {
     color: #ffa500;
     font-size: 1rem;
   }
-
   .replay-text {
     color: #ffa500;
     flex: 1,
   }
-
   .replay-progress {
     width: 4rem;
     height: 0.25rem;
@@ -527,7 +455,6 @@
     border-radius: 0.125rem;
     overflow: hidden;
   }
-
   /* Development Controls */
   .typewriter-controls {
     margin-top: 1rem;
@@ -536,7 +463,6 @@
     border-radius: 0.5rem;
     font-size: 0.875rem;
   }
-
   .typewriter-controls button {
     margin-right: 0.5rem;
     padding: 0.25rem 0.5rem;
@@ -546,57 +472,46 @@
     border-radius: 0.25rem;
     cursor: pointer;
   }
-
   .typewriter-controls buttonhover:not(:disabled) {
     background: rgba(0, 255, 0, 0.1);
   }
-
   .typewriter-controls buttondisabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-
   .speed-controls {
     margin-top: 0.5rem;
     display: flex;
     gap: 1rem;
   }
-
   .speed-controls label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     color: #00ff00;
   }
-
   .speed-controls input[type='range'] {
     width: 6rem;
   }
-
   .speed-controls span {
     min-width: 3rem;
     text-align: right;
     font-family: monospace;
   }
-
   /* Responsive Design */
   @media (max-width: 768px) {
     .typewriter-container {
       font-size: 0.875rem;
     }
-
     .thinking-container {
       padding: 0.75rem;
     }
-
     .typewriter-controls {
       font-size: 0.75rem;
     }
-
     .speed-controls {
       flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
-

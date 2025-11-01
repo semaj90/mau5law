@@ -5,21 +5,19 @@
   import interpret from 'xstate';
   import { readable } from 'svelte/store';
   // Import lucide icons as individual Svelte components (path-based default exports)
-  import Brain from 'lucide-svelte/icons/brain.svelte';
-  import FileText from 'lucide-svelte/icons/file-text.svelte';
-  import Pause from 'lucide-svelte/icons/pause.svelte';
-  import Play from 'lucide-svelte/icons/play.svelte';
-  import Settings from 'lucide-svelte/icons/settings.svelte';
-  import SkipBack from 'lucide-svelte/icons/skip-back.svelte';
-  import SkipForward from 'lucide-svelte/icons/skip-forward.svelte';
-  import Square from 'lucide-svelte/icons/square.svelte';
-  import Zap from 'lucide-svelte/icons/zap.svelte';
+  import { Brain } from 'lucide-svelte/icons/brain.svelte';
+  import { FileText } from 'lucide-svelte/icons/file-text.svelte';
+  import { Pause } from 'lucide-svelte/icons/pause.svelte';
+  import { Play } from 'lucide-svelte/icons/play.svelte';
+  import { Settings } from 'lucide-svelte/icons/settings.svelte';
+  import { SkipBack } from 'lucide-svelte/icons/skip-back.svelte';
+  import { SkipForward } from 'lucide-svelte/icons/skip-forward.svelte';
+  import { Square } from 'lucide-svelte/icons/square.svelte';
+  import { Zap } from 'lucide-svelte/icons/zap.svelte';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
-
   // Component props
   export type DocumentType = 'evidence' | 'report' | 'contract' | 'case_law' | 'general';
-
   let {
     documentId = undefined,
     caseId = undefined,
@@ -33,7 +31,6 @@
     documentType?: DocumentType | undefined;
     compact?: boolean;
   } = $props();
-
   // Minimal local useMachine replacement:
   // start the machine interpreter and expose a Svelte readable store `state` and a `send` function.
   const _service = interpret(aiSummaryMachine).start();
@@ -44,8 +41,7 @@
       _service.stop();
     };
   });
-  const send = (event: unknown) => _service.send(event);
-
+  const send = (event: any) => _service.send(event);
   // Reactive state helpers using Svelte 5 $derived
   let isLoading = $derived(() =>
     $state.matches('loading') ||
@@ -53,24 +49,20 @@
     $state.matches('analyzing') ||
     $state.matches('synthesizing')
   );
-
   let isReady = $derived(() => $state.matches('ready'));
   let isReading = $derived(() => $state.matches('ready.reading'));
   let isPlaying = $derived(() => $state.context?.isPlaying ?? false);
   let progress = $derived(() => $state.context?.progress ?? 0);
   let error = $derived(() => $state.context?.error ?? null);
   let currentSection = $derived(() => $state.context?.sections?.[$state.context?.currentSection ?? 0] ?? null);
-
   // Voice synthesis
   let speechSynthesis: SpeechSynthesis | null = null;
   let currentUtterance: SpeechSynthesisUtterance | null = null;
-
   onMount(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       // @ts-ignore - DOM global
       speechSynthesis = window.speechSynthesis as SpeechSynthesis;
     }
-
     // Auto-load if content provided
     if (initialContent && documentType) {
       send({ type: 'GENERATE_SUMMARY', content: initialContent, documentType });
@@ -81,7 +73,6 @@
       // send({ type: 'LOAD_DOCUMENT', documentId: documentId ?? undefined, caseId: caseId ?? undefined });
     }
   });
-
   function toggleReading() {
     if (isPlaying) {
       send({ type: 'PAUSE_READING' });
@@ -95,35 +86,30 @@
       }
     }
   }
-
   function stopReading() {
     send({ type: 'STOP_READING' });
     if (speechSynthesis) {
       speechSynthesis.cancel();
     }
   }
-
   function nextSection() {
     send({ type: 'NEXT_SECTION' });
     if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context?.sections?.[$state.context?.currentSection ?? 0]), 100);
     }
   }
-
   function previousSection() {
     send({ type: 'PREVIOUS_SECTION' });
     if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context?.sections?.[$state.context?.currentSection ?? 0]), 100);
     }
   }
-
   function jumpToSection(index: number) {
     send({ type: 'JUMP_TO_SECTION', sectionIndex: index });
     if ($state.context?.voiceEnabled && isPlaying) {
       setTimeout(() => speakSection($state.context.sections[index]), 100);
     }
   }
-
   function speakSection(section: SummarySection) {
     if (!speechSynthesis || !$state.context?.voiceEnabled || !section) return;
     speechSynthesis.cancel();
@@ -140,22 +126,18 @@
     };
     speechSynthesis.speak(currentUtterance);
   }
-
   function analyzeDocument() {
     send({ type: 'ANALYZE_DOCUMENT' });
   }
-
   function synthesizeInsights() {
     send({ type: 'SYNTHESIZE_INSIGHTS' });
   }
-
   function toggleVoice() {
     send({
       type: 'UPDATE_PREFERENCES',
       preferences: { voiceEnabled: !($state.context?.voiceEnabled ?? false) },
     });
   }
-
   function getImportanceColor(importance: string) {
     switch (importance) {
       case 'critical':
@@ -169,14 +151,12 @@
       default: return 'text-gray-600 border-gray-200 bg-gray-50';
     }
   }
-
   function getAnalysisScoreColor(score: number) {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.7) return 'text-yellow-600 bg-yellow-100';
     return 'text-red-600 bg-red-100';
   }
 </script>
-
 <div class="ai-summary-reader" class:compact={compact}>
   <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
     <!-- Header -->
@@ -211,11 +191,9 @@
         {#if ($state.context?.confidence ?? 0) > 0}
           <div class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
             {Math.round(($state.context?.confidence ?? 0) * 100)}% confidence
-          </div>
-        {/if}
+          {/if}
       </div>
     </div>
-
     <!-- Content -->
     <div class="p-4">
       {#if isLoading}
@@ -258,9 +236,7 @@
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" in:fly={{ y: 20, duration: 300 }}>
               <h4 class="font-medium text-blue-900 mb-2">Executive Summary</h4>
               <p class="text-blue-800">{$state.context.summary}</p>
-            </div>
-          {/if}
-
+            {/if}
           <!-- Key Insights -->
           {#if ($state.context?.keyInsights ?? []).length > 0}
             <div
@@ -269,16 +245,14 @@
             >
               <h4 class="font-medium text-green-900 mb-3">Key Insights</h4>
               <ul class="space-y-2">
-                {#each $state.context.keyInsights as insight}
+                {#each Array.isArray($state.context.keyInsights) ? $state.context.keyInsights : [] as insight}
                   <li class="flex items-start gap-2">
                     <Zap class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                     <span class="text-green-800">{insight}</span>
                   </li>
                 {/each}
               </ul>
-            </div>
-          {/if}
-
+            {/if}
           <!-- Reading Controls -->
           <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
             <div class="flex items-center gap-3">
@@ -326,14 +300,11 @@
               {/if}
             </div>
           </div>
-
           <!-- Progress Bar -->
           {#if isReading}
             <div class="bg-gray-200 rounded-full h-2" in:fade>
               <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
-            </div>
-          {/if}
-
+            {/if}
           <!-- Section Navigation -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {#each $state.context?.sections ?? [] as section, index}
@@ -362,7 +333,6 @@
               </button>
             {/each}
           </div>
-
           <!-- Current Section Content -->
           {#if currentSection}
             <div class="bg-white border border-gray-200 rounded-lg p-6" in:fly={{ y: 20, duration: 300 }}>
@@ -379,13 +349,12 @@
                   {currentSection.content}
                 </p>
               </div>
-
               <!-- Entities -->
               {#if (currentSection.entities ?? []).length > 0}
                 <div class="mt-6 pt-4 border-t border-gray-200">
                   <h5 class="text-sm font-medium text-gray-900 mb-3">Key Entities</h5>
                   <div class="flex flex-wrap gap-2">
-                    {#each currentSection.entities as entity}
+                    {#each Array.isArray(currentSection.entities) ? currentSection.entities : [] as entity}
                       <span
                         class="px-2 py-1 text-xs rounded-md"
                         class:bg-blue-100={entity.type === 'legal_term'}
@@ -404,11 +373,8 @@
                       </span>
                     {/each}
                   </div>
-                </div>
-              {/if}
-            </div>
-          {/if}
-
+                {/if}
+            {/if}
           <!-- Analysis Actions -->
           <div class="flex flex-wrap gap-3">
             <button
@@ -428,12 +394,11 @@
               Synthesize Insights
             </button>
           </div>
-
           <!-- Analysis Results -->
           {#if ($state.context?.analysisResults ?? []).length > 0}
             <div class="space-y-4" in:fly={{ y: 20, duration: 300 }}>
               <h4 class="text-lg font-semibold text-gray-900">Analysis Results</h4>
-              {#each $state.context.analysisResults as result}
+              {#each Array.isArray($state.context.analysisResults) ? $state.context.analysisResults : [] as result}
                 <div class="border border-gray-200 rounded-lg p-4">
                   <div class="flex items-center justify-between mb-2">
                     <h5 class="font-medium text-gray-900 capitalize">
@@ -451,17 +416,14 @@
                     <div>
                       <h6 class="text-sm font-medium text-gray-900 mb-1">Recommendations:</h6>
                       <ul class="text-sm text-gray-600 list-disc list-inside space-y-1">
-                        {#each (result as any).recommendations as recommendation}
+                        {#each Array.isArray((result as any).recommendations) ? (result as any).recommendations : [] as recommendation}
                           <li>{recommendation}</li>
                         {/each}
                       </ul>
-                    </div>
-                  {/if}
+                    {/if}
                 </div>
               {/each}
-            </div>
-          {/if}
-
+            {/if}
           <!-- Synthesis Results -->
           {#if $state.context?.synthesisData}
             <div class="space-y-6" in:fly={{ y: 20, duration: 300 }}>
@@ -471,7 +433,7 @@
                   <div class="bg-blue-50 border border-blue-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-blue-900 mb-3">Main Themes</h5>
                     <ul class="space-y-2">
-                      {#each $state.context.synthesisData.mainThemes as theme}
+                      {#each Array.isArray($state.context.synthesisData.mainThemes) ? $state.context.synthesisData.mainThemes : [] as theme}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-blue-800">{theme}</span>
@@ -482,7 +444,7 @@
                   <div class="bg-green-50 border border-green-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-green-900 mb-3">Supporting Evidence</h5>
                     <ul class="space-y-2">
-                      {#each $state.context.synthesisData.supportingEvidence as evidence}
+                      {#each Array.isArray($state.context.synthesisData.supportingEvidence) ? $state.context.synthesisData.supportingEvidence : [] as evidence}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-green-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-green-800">{evidence}</span>
@@ -499,30 +461,28 @@
                         <div>
                           <h6 class="text-sm font-medium text-yellow-800">Information Gaps:</h6>
                           <ul class="mt-1 space-y-1">
-                            {#each $state.context.synthesisData.gaps as gap}
+                            {#each Array.isArray($state.context.synthesisData.gaps) ? $state.context.synthesisData.gaps : [] as gap}
                               <li class="text-sm text-yellow-700">• {gap}</li>
                             {/each}
                           </ul>
-                        </div>
-                      {/if}
+                        {/if}
                       {#if ($state.context.synthesisData.contradictions ?? []).length > 0}
                         <div>
                           <h6 class="text-sm font-medium text-yellow-800">Contradictions:</h6>
                           <ul class="mt-1 space-y-1">
-                            {#each $state.context.synthesisData.contradictions as contradiction}
+                            {#each Array.isArray($state.context.synthesisData.contradictions) ? $state.context.synthesisData.contradictions : [] as contradiction}
                               <li class="text-sm text-yellow-700">
                                 • {contradiction}
                               </li>
                             {/each}
                           </ul>
-                        </div>
-                      {/if}
+                        {/if}
                     </div>
                   </div>
                   <div class="bg-purple-50 border border-purple-200 rounded-lg p-4" in:fade>
                     <h5 class="font-medium text-purple-900 mb-3">Legal Implications</h5>
                     <ul class="space-y-2">
-                      {#each $state.context.synthesisData.legalImplications as implication}
+                      {#each Array.isArray($state.context.synthesisData.legalImplications) ? $state.context.synthesisData.legalImplications : [] as implication}
                         <li class="flex items-start gap-2">
                           <div class="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                           <span class="text-purple-800">{implication}</span>
@@ -547,8 +507,7 @@
                   {/each}
                 </div>
               </div>
-            </div>
-          {/if}
+            {/if}
         </div>
       {:else}
         <div class="text-center py-12">
@@ -557,12 +516,10 @@
           </div>
           <h4 class="text-lg font-medium text-gray-900 mb-2">No Document Loaded</h4>
           <p class="text-gray-600 mb-4">Load a document or provide content to generate an AI summary.</p>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
 </div>
-
 <style>
   .ai-summary-reader {
     width: 100%;

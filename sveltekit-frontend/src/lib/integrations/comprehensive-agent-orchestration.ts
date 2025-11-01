@@ -7,22 +7,22 @@ import { getContext7MulticoreService, type RecommendationRequest, type Processin
 // Agent interfaces (defined locally to avoid import issues)
 export interface ClaudeAgentRequest {
   prompt: string;
-  context?: unknown;
-  options?: unknown;
+  context?: any;
+  options?: any;
 }
 export interface CrewAIAgentRequest {
   prompt: string;
-  context?: unknown;
-  options?: unknown;
+  context?: any;
+  options?: any;
 }
 export interface AutoGenAgentRequest {
   prompt: string;
-  context?: unknown;
-  options?: unknown;
+  context?: any;
+  options?: any;
 }
 export interface ComprehensiveAgentRequest {
   prompt: string;
-  context?: unknown;
+  context?: any;
   options?: {
     agents?: ('claude' | 'crewai' | 'autogen')[];
     priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -70,30 +70,30 @@ export interface ComprehensiveAgentResponse {
 interface WorkerStatus {
   id?: string;
   status: 'healthy' | 'unhealthy' | string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 interface SystemStatus {
   workers: WorkerStatus[];
   metrics?: Record<string, unknown>;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface TaskWaitResult {
   status: 'pending' | 'completed' | 'failed';
-  result?: unknown;
+  result?: any;
 }
 
 export interface MulticoreAnalysis {
   recommendations: string[];
-  errorPatterns?: unknown;
+  errorPatterns?: any;
   performanceMetrics?: Record<string, unknown>;
   tasksCompleted?: number;
 }
 
 // New: explicit result type for error analysis (replace `any`)
 export interface ErrorAnalysisResult {
-  analysis: unknown | null;
+  analysis: any | null;
   recommendations: string[];
   fixSuggestions: string[];
   taskId?: string;
@@ -111,7 +111,7 @@ interface Context7MulticoreService {
 export class ComprehensiveAgentOrchestrator {
   // narrow to the local interface so TS knows which members exist
   private multicoreService: Context7MulticoreService;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   constructor() {
     // cast the external factory result to our expected interface (structural typing)
     this.multicoreService = getContext7MulticoreService({
@@ -244,7 +244,7 @@ export class ComprehensiveAgentOrchestrator {
     const results = await Promise.allSettled(tasks.map(task => this.multicoreService.waitForTask(task.id, 30000)));
     // Process results
     const recommendations: string[] = [];
-    let errorPatterns: unknown = undefined;
+    let errorPatterns: any = undefined;
     const performanceMetrics = this.multicoreService.getSystemStatus().metrics;
     results.forEach((result, index) => {
       if (result.status === 'fulfilled' && (result.value as TaskWaitResult).status === 'completed') {
@@ -343,7 +343,7 @@ export class ComprehensiveAgentOrchestrator {
       default: return 'legal_research';
     }
   }
-  private calculateErrorReduction(errorPatterns: unknown): number {
+  private calculateErrorReduction(errorPatterns: any): number {
     if (!errorPatterns) return 0;
     return Math.min(95, Math.max(10, Math.random() * 60 + 20));
   }
@@ -364,7 +364,7 @@ export class ComprehensiveAgentOrchestrator {
     };
   }
   // Method to handle error analysis specifically
-  async analyzeErrors(errorData: unknown): Promise<ErrorAnalysisResult> {
+  async analyzeErrors(errorData: any): Promise<ErrorAnalysisResult> {
     if (!this.isInitialized) await this.initialize();
     console.log('🔍 Running comprehensive error analysis...');
     // Use Context7 multicore for error analysis
@@ -482,7 +482,7 @@ export async function executeAgents(
 }
 // Helper function for error-focused analysis
 export async function analyzeAndFixErrors(
-  errorData: unknown
+  errorData: any
 ): Promise<{ orchestrationResult: ComprehensiveAgentResponse; errorAnalysis: ErrorAnalysisResult }> {
   const snippet =
     typeof errorData === 'string'

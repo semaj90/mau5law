@@ -22,7 +22,7 @@ export interface YoRHaTableColumn {
 }
 export interface YoRHaTableRow {
   id: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 export interface YoRHaGridColumn {
   key: string;

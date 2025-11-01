@@ -350,7 +350,7 @@ export function createProgressiveForm<T extends Record<string, unknown> = Record
   return {
     config: finalConfig,
     // Form validation helpers
-    validateRequired: (value: unknown, fieldName: string): string | null => {
+    validateRequired: (value: any, fieldName: string): string | null => {
       if (value === null || value === undefined) return `${fieldName} is required`;
       if (typeof value === 'string' && !value.trim()) return `${fieldName} is required`;
       return null;
@@ -405,7 +405,7 @@ export function enhanceFormProgressively(
   form: HTMLFormElement,
   options: {
     onSubmit?: (formData: FormData) => Promise<unknown>;
-    onSuccess?: (result: unknown) => void;
+    onSuccess?: (result: any) => void;
     onError?: (error: Error) => void;
     preserveFormOnSuccess?: boolean;
   } = {}
@@ -435,7 +435,7 @@ export function enhanceFormProgressively(
         }
       } finally {
         if (submitButton) {
-          submitButton.disabled = false;
+          submitButton.disabled = $state(false);
           submitButton.removeAttribute('aria-busy');
         }
       }

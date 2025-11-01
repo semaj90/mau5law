@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ error: 'Activity not found' }, { status: 404 });
     }
     return json(activityResult[0]);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error fetching activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to fetch activity' }, { status: 500 });
   }
@@ -52,7 +52,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       metadata?: Record<string, unknown> | null;
     };
 
-    const rawBody: unknown = await request.json();
+    const rawBody: any = await request.json();
 
     // Basic runtime validation / casting
     const data = rawBody && typeof rawBody === 'object' && !Array.isArray(rawBody) ? (rawBody as ActivityPayload) : {};
@@ -83,10 +83,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     };
 
     // Helpers
-    const toNullableString = (v: unknown): string | null => (typeof v === 'string' ? v : v === null ? null : String(v));
-    const toNullableNumber = (v: unknown): number | null =>
+    const toNullableString = (v: any): string | null => (typeof v === 'string' ? v : v === null ? null : String(v));
+    const toNullableNumber = (v: any): number | null =>
       v === null ? null : typeof v === 'number' ? v : isNaN(Number(v)) ? null : Number(v);
-    const toNullableDate = (v: unknown): Date | null => {
+    const toNullableDate = (v: any): Date | null => {
       if (v === null) return null;
       if (typeof v === 'string' || typeof v === 'number') {
         const d = new Date(v);
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
       return null;
     };
-    const toStringArrayOrNull = (v: unknown): string[] | null => {
+    const toStringArrayOrNull = (v: any): string[] | null => {
       if (v === null) return null;
       if (Array.isArray(v)) return v.map(String);
       return null;
@@ -152,7 +152,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .returning();
 
     return json(updatedActivity);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error updating activity:', error);
     return json({ error: 'Failed to update activity' }, { status: 500 });
   }
@@ -177,7 +177,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the activity
     const [deletedActivity] = await db.delete(caseActivities).where(eq(caseActivities.id, activityId)).returning();
     return json({ success: true, deletedActivity });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error deleting activity:', error instanceof Error ? error : String(error));
     return json({ error: 'Failed to delete activity' }, { status: 500 });
   }
@@ -247,7 +247,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(caseActivities.id, activityId))
       .returning();
     return json(updatedActivity);
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error patching activity:', error);
     return json({ error: 'Failed to update activity' }, { status: 500 });
   }

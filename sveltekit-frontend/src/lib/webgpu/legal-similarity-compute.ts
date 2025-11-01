@@ -39,7 +39,7 @@ export class LegalSimilarityWebGPU {
   private adapter: GPUAdapter | null = null;
   private computePipeline: GPUComputePipeline | null = null;
   private bindGroupLayout: GPUBindGroupLayout | null = null;
-  private isInitialized = false;
+  private isInitialized = $state(false);
   // Shader modules
   private cosineSimilarityShader: GPUShaderModule | null = null;
   private topKShader: GPUShaderModule | null = null;
@@ -600,7 +600,7 @@ export class LegalSimilarityWebGPU {
     this.bindGroupLayout = null;
     this.device = null;
     this.adapter = null;
-    this.isInitialized = false;
+    this.isInitialized = $state(false);
     console.log('🎮 Legal Similarity WebGPU destroyed');
   }
 }

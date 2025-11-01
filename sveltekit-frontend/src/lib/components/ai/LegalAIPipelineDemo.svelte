@@ -36,7 +36,7 @@ https://svelte.dev/e/expected_token -->
     }
   }, null, 2);
   let processingResult: any = null;
-  let isProcessing = false;
+  let isProcessing = $state(false);
   let processingLog: string[] = [];
   let processingTime = 0;
   let lastProcessedDoc = '';
@@ -49,7 +49,7 @@ https://svelte.dev/e/expected_token -->
     { id: 'doc-5', content: 'Precedent from District Court 17 C.F.R. § 240.10b-5' }
   ];
   let bulkResults: any[] = [];
-  let isBulkProcessing = false;
+  let isBulkProcessing = $state(false);
   // Performance monitoring
   let performanceChart: { time: number; throughput: number }[] = [];
   $effect(() => {
@@ -92,7 +92,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Processing failed: ${error}`);
       console.error('Processing error:', error);
     } finally {
-      isProcessing = false;
+      isProcessing = $state(false);
     }
   }
   async function processBulkDocuments() {
@@ -142,7 +142,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Bulk processing failed: ${error}`);
       console.error('Bulk processing error:', error);
     } finally {
-      isBulkProcessing = false;
+      isBulkProcessing = $state(false);
     }
   }
   function clearLogs() {
@@ -169,8 +169,7 @@ https://svelte.dev/e/expected_token -->
       {#if $legalAIPipeline.status.progress > 0 && $legalAIPipeline.status.progress < 100}
         <div class="progress-bar">
           <div class="progress-fill" style="width: {$legalAIPipeline.status.progress}%"></div>
-        </div>
-      {/if}
+        {/if}
     </div>
   </div>
   <div class="demo-content">
@@ -298,28 +297,25 @@ https://svelte.dev/e/expected_token -->
           {#if processingResult.metadata.entities?.length > 0}
             <div class="entities-list">
               <h5>🏛️ Extracted Entities</h5>
-              {#each processingResult.metadata.entities as entity}
+              {#each Array.isArray(processingResult.metadata.entities) ? processingResult.metadata.entities : [] as entity}
                 <div class="entity-item">
                   <span class="entity-type">{entity.type}</span>
                   <span class="entity-text">{entity.text}</span>
                   <span class="entity-confidence">{(entity.confidence * 100).toFixed(1)}%</span>
                 </div>
               {/each}
-            </div>
-          {/if}
+            {/if}
           {#if processingResult.metadata.citations?.length > 0}
             <div class="citations-list">
               <h5>📚 Found Citations</h5>
-              {#each processingResult.metadata.citations as citation}
+              {#each Array.isArray(processingResult.metadata.citations) ? processingResult.metadata.citations : [] as citation}
                 <div class="citation-item">
                   <span class="citation-text">{citation.citation}</span>
                   <span class="citation-court">{citation.court}</span>
                 </div>
               {/each}
-            </div>
-          {/if}
-        </div>
-      {/if}
+            {/if}
+        {/if}
     </div>
     <!-- Bulk Document Processing -->
     <div class="panel bulk-panel">
@@ -372,8 +368,7 @@ https://svelte.dev/e/expected_token -->
               </div>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
     </div>
     <!-- Processing Log -->
     <div class="panel log-panel">
@@ -382,12 +377,11 @@ https://svelte.dev/e/expected_token -->
         <button onclick={clearLogs} class="btn btn-small">🧹 Clear</button>
       </div>
       <div class="log-container">
-        {#each processingLog as logEntry}
+        {#each Array.isArray(processingLog) ? processingLog : [] as logEntry}
           <div class="log-entry">{logEntry}</div>
         {/each}
         {#if processingLog.length === 0}
-          <div class="log-entry log-empty">No log entries yet...</div>
-        {/if}
+          <div class="log-entry log-empty">No log entries yet...{/if}
       </div>
     </div>
   </div>
@@ -435,7 +429,7 @@ https://svelte.dev/e/expected_token -->
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
   .demo-content {
     display: grid;
@@ -652,4 +646,3 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </style>
-

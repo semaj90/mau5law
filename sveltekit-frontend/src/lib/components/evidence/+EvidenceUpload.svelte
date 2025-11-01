@@ -4,31 +4,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <script lang="ts">
   import type { Evidence } from '$lib/data/types';
   import { createEventDispatcher } from 'svelte';
-
   // optional callback prop (keeps compatibility with existing callers)
   export let ondispatch: ((payload: any) => void) | undefined = undefined;
   const dispatch = createEventDispatcher();
-
-  let dragActive = false;
+  let dragActive = $state(false);
   let files: FileList | null = null;
   let uploadProgress = 0;
-
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = false;
+    dragActive = $state(false);
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
+    dragActive = $state(false);
     if (e.dataTransfer?.files) {
       files = e.dataTransfer.files;
       handleUpload();
     }
   }
-
   // handle input change from the hidden file input
   let fileInput: HTMLInputElement | null = null;
   function handleInputChange(e: Event) {
@@ -36,7 +32,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     files = target?.files ?? null;
     handleUpload();
   }
-
   async function handleUpload() {
     if (!files?.length) return;
     const formData = new FormData();
@@ -58,7 +53,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
   }
 </script>
-
 <div
   class="upload-zone"
   class:active={dragActive}
@@ -97,10 +91,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   {#if uploadProgress > 0}
     <div class="progress-bar">
       <div class="progress" style="width: {uploadProgress}%"></div>
-    </div>
-  {/if}
+    {/if}
 </div>
-
 <style>
   .upload-zone {
     border: 2px dashed #ccc;
@@ -133,7 +125,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .progress {
     height: 4px;
     background-color: #007bff;
-    transition: width 0.3s ease;
+    transition: width: 0.3s ease;
   }
 </style>
-

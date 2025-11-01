@@ -17,7 +17,7 @@
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   interface TimelineEvent {
     id: string;
     timestamp: Date;
@@ -227,7 +227,7 @@ if (!browser) return;
       // Use demo data for development
       await loadDemoTimelineData();
     } finally {
-      isLoading = false;
+      isLoading = $state(false);
     }
   }
   function calculateEventImportance(): void {
@@ -453,7 +453,7 @@ if (!browser) return;
     events.forEach((ev) => {
       const x = ((ev.timestamp.getTime() - timeRange.start.getTime()) / timeSpanMs) * width;
       const eventWidth = Math.max(20, (ev.duration || 30) * width / (timeSpanMs / (60 * 1000)));
-      let placed = false;
+      let placed = $state(false);
       for (let r = 0; r < rows.length; r++) {
         const row = rows[r];
         const overlaps = row.some(other => {
@@ -600,7 +600,7 @@ if (!browser) return;
     const spacing = indicatorSize + 2;
     (evidence || []).slice().forEach((item, index) => {
       const indicatorX = x + (index * spacing) - ((evidence.length - 1) * spacing) / 2;
-      ctx.fillStyle = getEvidenceColor((item as { type?: unknown }).type as string);
+      ctx.fillStyle = getEvidenceColor((item as { type?: any }).type as string);
       ctx.fillRect(indicatorX - indicatorSize/2, y - indicatorSize/2, indicatorSize, indicatorSize);
     });
     // Show count if more evidence exists
@@ -830,7 +830,7 @@ if (!browser) return;
     <div class="filter-section">
       <label class="nes-label">Event Types:</label>
       <div class="event-type-filters">
-        {#each Object.keys(eventTypeFilters) as eventType}
+        {#each Array.isArray(Object.keys(eventTypeFilters)) ? Object.keys(eventTypeFilters) : [] as eventType}
           <label class="nes-checkbox">
             <input
               type="checkbox"
@@ -876,8 +876,7 @@ if (!browser) return;
           <div class="nes-progress-bar indeterminate"></div>
         </div>
         <p>Loading timeline...</p>
-      </div>
-    {/if}
+      {/if}
   </div>
   <!-- Event Details Panel -->
   {#if selectedEvent}
@@ -899,17 +898,16 @@ if (!browser) return;
         <div class="participants">
           <h5>Participants:</h5>
           <div class="participant-list">
-            {#each selectedEvent.participants as participant}
+            {#each Array.isArray(selectedEvent.participants) ? selectedEvent.participants : [] as participant}
               <Badge variant="secondary">{participant}</Badge>
             {/each}
           </div>
-        </div>
-      {/if}
+        {/if}
       {#if selectedEvent.evidence.length > 0}
         <div class="evidence-list">
           <h5>Evidence ({selectedEvent.evidence.length}):</h5>
           <div class="evidence-items">
-            {#each selectedEvent.evidence.slice(0, 3) as evidence}
+            {#each Array.isArray(selectedEvent.evidence.slice(0, 3)) ? selectedEvent.evidence.slice(0, 3) : [] as evidence}
               <div class="evidence-item">
                 <Badge variant="ghost" class="evidence-type">
                   {evidence.type}
@@ -920,13 +918,10 @@ if (!browser) return;
             {#if selectedEvent.evidence.length > 3}
               <div class="more-evidence">
                 +{selectedEvent.evidence.length - 3} more items
-              </div>
-            {/if}
+              {/if}
           </div>
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+    {/if}
   <!-- Timeline Statistics -->
   <div class="timeline-stats nes-container">
     <h4>📊 Timeline Statistics</h4>

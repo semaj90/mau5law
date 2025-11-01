@@ -12,14 +12,14 @@ Features:
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 import { onMount } from 'svelte';
-import Button from './Button.svelte';
-import Card from './Card.svelte';
-import CardContent from './CardContent.svelte';
-import CardHeader from './CardHeader.svelte';
-import CardTitle from './CardTitle.svelte';
-import Input from './Input.svelte';
-import Alert from './Alert.svelte';
-import AlertDescription from './AlertDescription.svelte';
+import { Button } from './Button.svelte';
+import { Card } from './Card.svelte';
+import { CardContent } from './CardContent.svelte';
+import { CardHeader } from './CardHeader.svelte';
+import { CardTitle } from './CardTitle.svelte';
+import { Input } from './Input.svelte';
+import { Alert } from './Alert.svelte';
+import { AlertDescription } from './AlertDescription.svelte';
 interface ServiceStatus {
 	cuda_service_8097: boolean;
 	legal_extraction_8098: boolean;
@@ -53,12 +53,10 @@ interface Props {
 	enableRealTimeUpdates?: boolean;
 	showPerformanceMetrics?: boolean;
 	onsearch?: (data: { query: string; results: RAGResult[]; performance: PerformanceMetrics | null; timestamp: number }) => void;
-
 	// allow common HTML/global attributes forwarded to component usage
 	class?: string;
 	id?: string;
 	style?: string;
-
 	// optional: permit other forwarded attributes (uncomment if you want permissive forwarding)
 	// [key: string]: any;
 }
@@ -189,7 +187,7 @@ async function performFullStackSearch() {
 		// Try client-side fallback if available
 		await tryClientSideFallback();
 	} finally {
-		isSearching = false;
+		isSearching = $state(false);
 	}
 }
 // Client-side WebAssembly fallback
@@ -253,7 +251,6 @@ $effect(() => {
 	}
 });
 </script>
-
 <div class="full-stack-legal-ai max-w-6xl mx-auto p-6 space-y-6">
   <!-- Header with Service Status -->
   <Card class="yorha-card">
@@ -279,8 +276,7 @@ $effect(() => {
             <span class={getServiceStatusColor(serviceStatus.gpu_memory_manager_8107)}>
               {getServiceStatusIcon(serviceStatus.gpu_memory_manager_8107)} GPU-Mgr
             </span>
-          </div>
-        {/if}
+          {/if}
       </CardTitle>
     </CardHeader>
   </Card>
@@ -330,8 +326,7 @@ $effect(() => {
             {:else}
               <div class="px-3 py-1 bg-orange-900 border border-orange-600 rounded text-sm text-orange-200">
                 ⚡ Client Fallback
-              </div>
-            {/if}
+              {/if}
           </div>
           <Button type="submit" disabled={isSearching || !query.trim()} class="yorha-btn yorha-btn-primary px-6">
             {#if isSearching}
@@ -350,8 +345,7 @@ $effect(() => {
               {errorMessage}
             </AlertDescription>
           </Alert>
-        </div>
-      {/if}
+        {/if}
     </CardContent>
   </Card>
   <!-- Performance Metrics -->
@@ -386,9 +380,7 @@ $effect(() => {
                 {formatTime(performance.rl_ranking_ms)}
               </div>
               <div class="text-sm text-yorha-text-muted">RL Ranking</div>
-            </div>
-          {/if}
-
+            {/if}
           {#if gpuMetrics.vram_usage > 0}
             <div class="text-center">
               <div class="text-2xl font-bold text-orange-400 font-mono">
@@ -401,8 +393,7 @@ $effect(() => {
                 {gpuMetrics.gpu_utilization}%
               </div>
               <div class="text-sm text-yorha-text-muted">GPU Load</div>
-            </div>
-          {/if}
+            {/if}
         </div>
       </CardContent>
     </Card>
@@ -416,8 +407,7 @@ $effect(() => {
           {#if performance}
             <div class="text-sm font-normal opacity-70">
               {formatTime(performance.total_time_ms)} • {performance.gpu_acceleration_used ? 'GPU' : 'CPU'}
-            </div>
-          {/if}
+            {/if}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -485,13 +475,11 @@ $effect(() => {
     </Card>
   {/if}
 </div>
-
 <style>
   .full-stack-legal-ai {
     /* Additional component-specific styles */
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
   }
-
   /* Replaced invalid :global($1) selectors with standard scrollbar pseudo-elements */
   .full-stack-legal-ai ::-webkit-scrollbar {
     width: 6px;
@@ -507,7 +495,6 @@ $effect(() => {
   .full-stack-legal-ai ::-webkit-scrollbar-thumb:hover {
     background: rgb(var(--primary));
   }
-
   /* Animation for search indicator */
   @keyframes pulse-glow {
     0%,

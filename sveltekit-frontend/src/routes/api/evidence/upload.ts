@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   let formData: FormData;
   try {
     formData = await request.formData();
-  } catch (e: unknown) {
+  } catch (e: any) {
     return json({ error: 'Invalid form data' }, { status: 400 });
   }
   const file = formData.get('file');
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     await fs.mkdir(uploadDir, { recursive: true });
     const arrayBuffer = await file.arrayBuffer();
     await fs.writeFile(filePath, Buffer.from(arrayBuffer));
-  } catch (e: unknown) {
+  } catch (e: any) {
     return json({ error: 'File upload failed', details: String(e) }, { status: 500 });
   }
   // Auto-tagging (simple: by file type)
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   };
   try {
     await db.insert(evidence).values(newEvidence);
-  } catch (e: unknown) {
+  } catch (e: any) {
     return json({ error: 'Database insert failed', details: String(e) }, { status: 500 });
   }
   return json(newEvidence, { status: 201 });

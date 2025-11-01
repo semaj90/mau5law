@@ -169,14 +169,14 @@ class FeedbackStore {
       });
       if (response.ok) {
         this.updateAnalytics(rating);
-        this.state.isCollecting = false;
+        this.state.isCollecting = $state(false);
         return true;
       } else {
         throw new Error('Failed to submit feedback');
       }
     } catch (error: any) {
       console.error('❌ Failed to submit feedback:', error);
-      this.state.isCollecting = false;
+      this.state.isCollecting = $state(false);
       return false;
     }
   }
@@ -184,7 +184,7 @@ class FeedbackStore {
    * Cancel current feedback collection
    */
   cancelFeedback() {
-    this.state.isCollecting = false;
+    this.state.isCollecting = $state(false);
   }
   /**
    * Get feedback recommendations based on user behavior
@@ -210,7 +210,7 @@ class FeedbackStore {
   clearSession() {
     this.state.activeSession = null;
     this.state.pendingFeedback = [];
-    this.state.isCollecting = false;
+    this.state.isCollecting = $state(false);
   }
   // Helper methods
   private detectDeviceType(): 'mobile' | 'tablet' | 'desktop' {

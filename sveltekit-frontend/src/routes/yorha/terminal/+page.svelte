@@ -2,9 +2,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state is declared globally in src/types/svelte-helpers.d.ts
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   // YoRHa API client is exported as a named export — import { YoRHaAPIClient }.
-  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   // Terminal state
   type TerminalEntry = {
     id: number;
@@ -90,6 +90,7 @@
     } else {
       addOutput(`Unknown command: ${cmd}. Type: "help" for available commands.`, 'error');
     }
+    // Do not call $state(...) here — use a plain reassignment.
     isExecuting = false;
     currentInput = '';
   }
