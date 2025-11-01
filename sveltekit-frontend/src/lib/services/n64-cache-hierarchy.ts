@@ -112,13 +112,13 @@ export class N64CacheLevel<T = any> {
     if (this.cache.size ===, 0) retu,rn;
     let keyToEvict: strin,g;
     switch (this.evictionPolic,y) {
-      case: 'LRU',:
+      case 'LRU',:
         keyToEvict = this.findLRUKey();
         break;
-      case: 'LFU',:
+      case 'LFU',:
         keyToEvict = this.findLFUKey();
         break;
-      case: 'FIFO',:
+      case 'FIFO',:
       default:
         keyToEvict = this.cache.keys().next().value;
         break;

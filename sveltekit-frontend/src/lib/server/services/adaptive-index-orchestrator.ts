@@ -10,7 +10,7 @@ import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // F
 
 // Augment the InferenceResult interface from '$lib/webasm/llama-cpp-engine'
 // to include the: 'embedding' property, as it's used in this file.
-declare module: '$lib/webasm/llama-cpp-engine' {
+declare module '$lib/webasm/llama-cpp-engine' {
   interface InferenceResult {
     embedding?: number[]; // Add this property
   }
@@ -173,15 +173,15 @@ export class AdaptiveIndexOrchestrator {
 
     try {
       const route = await predictWithRouter(features);
-      if (route.useGPU) return: 'gpu';
-      if (route.useQUIC) return: 'quic';
-      if (route.useCache) return: 'cache';
-      return: 'cpu';
+      if (route.useGPU) return 'gpu';
+      if (route.useQUIC) return 'quic';
+      if (route.useCache) return 'cache';
+      return 'cpu';
     } catch (e: unknown) {
       // heuristic fallback
-      if (features.gpuLoad < 0.5 && features.fileSize > 1024 * 256) return: 'gpu';
-      if (features.rabbitDepth > 50) return: 'cache';
-      return: 'cpu';
+      if (features.gpuLoad < 0.5 && features.fileSize > 1024 * 256) return 'gpu';
+      if (features.rabbitDepth > 50) return 'cache';
+      return 'cpu';
     }
   }
 

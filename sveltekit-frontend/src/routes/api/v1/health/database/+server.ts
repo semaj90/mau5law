@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case: 'health': {
+      case 'health': {
         // Guarded call: checkDatabaseHealth might not exist; provide fallback
         let health: unknown;
         if (typeof checker.checkDatabaseHealth === 'function') {
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'metrics': {
+      case 'metrics': {
         // Guarded call: getDatabaseMetrics might not exist; provide fallback
         let metrics: unknown;
         if (typeof checker.getDatabaseMetrics === 'function') {
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'validate': {
+      case 'validate': {
         // Guarded call: validateSchema might not exist; provide fallback
         if (typeof checker.validateSchema === 'function') {
           const isValid = await checker.validateSchema();
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
           });
         }
       }
-      case: 'vector': {
+      case 'vector': {
         // Guarded calls: testVectorOperations and isPgVectorEnabled might not exist
         const vectorTest =
           typeof checker.testVectorOperations === 'function' ? await checker.testVectorOperations() : false;
@@ -113,8 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       }
-      default:
-        return error(
+      default: return error(
           400,
           ensureError({
             message: `Invalid action: ${action}. Available: health, metrics, validate, vector`,
@@ -144,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action } = body;
     switch (action) {
-      case: 'clear_cache':
+      case 'clear_cache':
         // Guarded call: clearCache might not exist on the imported module
         if (typeof checker.clearCache === 'function') {
           checker.clearCache();
@@ -159,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
             processingTime: Date.now() - startTime,
           },
         });
-      case: 'force_check': {
+      case 'force_check': {
         // Guarded call: checkHealth might not exist; fall back to validateDatabaseOnStartup
         let health: unknown;
         if (typeof checker.checkHealth === 'function') {
@@ -182,8 +181,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      default:
-        return error(
+      default: return error(
           400,
           ensureError({
             message: `Invalid action: ${action}. Available: clear_cache, force_check`,

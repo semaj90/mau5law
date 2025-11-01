@@ -287,7 +287,7 @@ export const actions: Actions = {
       };
 
       switch (evidenceType) {
-        case: 'PDF':
+        case 'PDF':
           tempMetadata = {
             ...tempMetadata,
             kind: 'PDF',
@@ -300,7 +300,7 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence ?? null,
           };
           break;
-        case: 'IMAGE':
+        case 'IMAGE':
           tempMetadata = {
             ...tempMetadata,
             kind: 'IMAGE',
@@ -311,7 +311,7 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence ?? null,
           };
           break;
-        case: 'TEXT': {
+        case 'TEXT': {
           const textContent = fileBuffer.toString('utf-8');
           tempMetadata = {
             ...tempMetadata,

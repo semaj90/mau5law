@@ -52,7 +52,7 @@ export async function mcpCodebaseAnalyze(path: string): Promise<{ files: string[
 }
 export function generateMCPPrompt(context: any): string {
   // Implementation placeholder
-  return: '';
+  return '';
 }
 export const commonMCPQueries = {
   search: 'search',

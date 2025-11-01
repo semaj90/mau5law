@@ -65,13 +65,13 @@ class ReinforcementLearningCache {
     const currentWeight = this.learningModel.weights.get(key) ?? 0.5;
     let newWeight = currentWeight;
     switch (action) {
-      case: 'hit':
+      case 'hit':
         newWeight = Math.min(1.0, currentWeight + this.learningModel.learningRate);
         break;
-      case: 'miss':
+      case 'miss':
         newWeight = Math.max(0.0, currentWeight - this.learningModel.learningRate);
         break;
-      case: 'cached':
+      case 'cached':
         newWeight = currentWeight + this.learningModel.learningRate * 0.5;
         break;
     }

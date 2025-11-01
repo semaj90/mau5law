@@ -349,7 +349,7 @@ class ConfigManager {
   private generateSecretKey(): string {
     // Generate a secure secret key for JWT
     if (!browser && typeof process !== 'undefined' && import.meta.env.NODE_ENV === 'development') {
-      return: 'dev-secret-key-change-in-production';
+      return 'dev-secret-key-change-in-production';
     }
     // In production, this should come from environment variables
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

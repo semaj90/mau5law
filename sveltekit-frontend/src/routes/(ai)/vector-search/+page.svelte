@@ -58,11 +58,11 @@
   }
 
   function getSimilarityColor(similarity: number): string {
-    if (similarity > 0.9) return: '#00ff00';
-    if (similarity > 0.8) return: '#66ff66';
-    if (similarity > 0.7) return: '#ffaa00';
-    if (similarity > 0.6) return: '#ff6600';
-    return: '#ff3333';
+    if (similarity > 0.9) return '#00ff00';
+    if (similarity > 0.8) return '#66ff66';
+    if (similarity > 0.7) return '#ffaa00';
+    if (similarity > 0.6) return '#ff6600';
+    return '#ff3333';
   }
 
   function formatContent(content: string): string {

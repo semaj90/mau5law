@@ -113,21 +113,21 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const backdropGeometry = new THREE.PlaneGeometry(20, 15);
     let backdropMaterial: THREE.Material;
     switch (this.options.backdrop) {
-      case: 'blur':
+      case 'blur':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.white,
           transparent: true,
           opacity: 0.2,
         });
         break;
-      case: 'dark':
+      case 'dark':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
           opacity: 0.7,
         });
         break;
-      case: 'transparent':
+      case 'transparent':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,

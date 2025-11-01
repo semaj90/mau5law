@@ -526,15 +526,15 @@ export const selectors = {
     return 0;
   },
   getProcessingStage: (state: any) => {
-    if (state.matches('idle')) return: 'Ready';
-    if (state.matches('initializing')) return: 'Initializing';
-    if (state.matches('extractingContent')) return: 'Extracting Content';
-    if (state.matches('analyzing')) return: 'AI Analysis';
-    if (state.matches('storing')) return: 'Storing Results';
-    if (state.matches('completed')) return: 'Completed';
-    if (state.matches('error')) return: 'Error';
-    if (state.matches('failed')) return: 'Failed';
-    return: 'Unknown';
+    if (state.matches('idle')) return 'Ready';
+    if (state.matches('initializing')) return 'Initializing';
+    if (state.matches('extractingContent')) return 'Extracting Content';
+    if (state.matches('analyzing')) return 'AI Analysis';
+    if (state.matches('storing')) return 'Storing Results';
+    if (state.matches('completed')) return 'Completed';
+    if (state.matches('error')) return 'Error';
+    if (state.matches('failed')) return 'Failed';
+    return 'Unknown';
   },
   getAnalysisProgress: (state: any) => {
     if (!state.matches('analyzing')) return {}

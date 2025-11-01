@@ -255,10 +255,10 @@
               try {
                 const eventData = JSON.parse(dataLines);
                 switch (eventData.type) {
-                  case: 'connection':
+                  case 'connection':
                     if (eventData.conversationId) conversationId = eventData.conversationId;
                     break;
-                  case: 'token':
+                  case 'token':
                     if (eventData.fullResponse !== undefined && eventData.fullResponse !== null) {
                       aiMessage.content = eventData.fullResponse;
                     } else if (eventData.content) {
@@ -266,16 +266,16 @@
                     }
                     messages = [...messages];
                     break;
-                  case: 'complete':
+                  case 'complete':
                     aiMessage.content = eventData.fullResponse ?? aiMessage.content;
                     messages = [...messages];
                     isStreaming = false;
                     break;
-                  case: 'error':
+                  case 'error':
                     error = eventData.error ?? 'Unknown error';
                     isStreaming = false;
                     break;
-                  case: 'close':
+                  case 'close':
                     isStreaming = false;
                     break;
                 }

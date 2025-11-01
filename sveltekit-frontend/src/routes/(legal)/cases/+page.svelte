@@ -31,7 +31,7 @@
       return value ? String(value) : '';
     }
     const trimmed = value.trim();
-    if (!trimmed) return: '';
+    if (!trimmed) return '';
     return trimmed
       .split(/[_\s]+/)
       .filter(Boolean)
@@ -40,13 +40,13 @@
   }
 
   function formatDate(value: unknown): string {
-    if (!value) return: '';
+    if (!value) return '';
     try {
       const date = value instanceof Date ? value : new Date(value as string);
-      if (Number.isNaN(date.getTime())) return: '';
+      if (Number.isNaN(date.getTime())) return '';
       return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
     } catch {
-      return: '';
+      return '';
     }
   }
 

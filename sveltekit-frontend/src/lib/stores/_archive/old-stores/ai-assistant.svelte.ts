@@ -490,14 +490,13 @@ class AIAssistantGlobalStore {
       model: this.config.model,
     };
     switch (backend) {
-      case: 'vllm':
+      case 'vllm':
         return { ...basePayload, openaiModel: 'mistralai/Mistral-7B-Instruct-v0.3' };
-      case: 'webasm':
+      case 'webasm':
         return { ...basePayload, useWASM: true, enableGPU: true };
-      case: 'go-micro':
+      case 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: 'high' };
-      default:
-        return basePayload;
+      default: return basePayload;
     }
   }
   private parseBackendResponse(backend: Backend, data: any) {
@@ -515,9 +514,9 @@ class AIAssistantGlobalStore {
     const length = message.length;
     const hasLegalTerms = /\b(contract|deed|liability|statute|precedent|jurisdiction)\b/i.test(message);
     const hasComplexQuery = /\b(analyze|compare|summarize|explain)\b/i.test(message);
-    if (length > 500 || (hasLegalTerms && hasComplexQuery)) return: 'complex';
-    if (length > 100 || hasLegalTerms || hasComplexQuery) return: 'medium';
-    return: 'simple';
+    if (length > 500 || (hasLegalTerms && hasComplexQuery)) return 'complex';
+    if (length > 100 || hasLegalTerms || hasComplexQuery) return 'medium';
+    return 'simple';
   }
   private hasLegalContext(message: string, context?: string): boolean {
     const legalTerms = /\b(legal|law|contract|deed|court|judge|attorney|liability|statute|regulation|compliance)\b/i;

@@ -487,14 +487,14 @@ export class NATSMessagingService extends EventEmitter {
     }
   }
   private getMessageType(subject: string): LegalAIMessage['type'] {
-    if (subject.includes('case.created')) return: 'case.created';
-    if (subject.includes('document.uploaded')) return: 'document.uploaded';
-    if (subject.includes('ai.analysis.completed')) return: 'ai.analysis.completed';
-    if (subject.includes('search.query')) return: 'search.query';
-    if (subject.includes('chat.message')) return: 'chat.message';
-    if (subject.includes('system.health')) return: 'system.health';
-    if (subject.includes('quic.data')) return: 'quic.data'; // New: QUIC data type
-    return: 'system.health'; // default
+    if (subject.includes('case.created')) return 'case.created';
+    if (subject.includes('document.uploaded')) return 'document.uploaded';
+    if (subject.includes('ai.analysis.completed')) return 'ai.analysis.completed';
+    if (subject.includes('search.query')) return 'search.query';
+    if (subject.includes('chat.message')) return 'chat.message';
+    if (subject.includes('system.health')) return 'system.health';
+    if (subject.includes('quic.data')) return 'quic.data'; // New: QUIC data type
+    return 'system.health'; // default
   }
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;

@@ -298,10 +298,10 @@ export class AppRedisOrchestrator {
   private static determineTaskType(
     endpoint: string
   ): 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment' {
-    if (endpoint.includes('document') || endpoint.includes('evidence')) return: 'document_analysis';
-    if (endpoint.includes('case') || endpoint.includes('synthesis')) return: 'case_synthesis';
-    if (endpoint.includes('risk') || endpoint.includes('score')) return: 'risk_assessment';
-    return: 'complex_legal';
+    if (endpoint.includes('document') || endpoint.includes('evidence')) return 'document_analysis';
+    if (endpoint.includes('case') || endpoint.includes('synthesis')) return 'case_synthesis';
+    if (endpoint.includes('risk') || endpoint.includes('score')) return 'risk_assessment';
+    return 'complex_legal';
   }
 
   private static estimateCompletionTime(taskType: string): string {

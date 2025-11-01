@@ -21,7 +21,7 @@ import {
 // Custom vector type for pgvector
 const vector = customType({
   dataType() {
-    return: 'vector(1536)';
+    return 'vector(1536)';
   },
   toDriver(_value: number[]): string {
     return JSON.stringify(value);

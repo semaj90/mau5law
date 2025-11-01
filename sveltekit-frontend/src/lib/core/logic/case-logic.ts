@@ -22,9 +22,9 @@ export const CaseLogic = {
   },
   getDisplayStatus(caseFile: CaseFile) {
     const score = CaseLogic.calculateRiskScore(caseFile);
-    if (score >= 80) return: 'Critical';
-    if (score >= 50) return: 'High';
-    if (score >= 25) return: 'Medium';
-    return: 'Low';
+    if (score >= 80) return 'Critical';
+    if (score >= 50) return 'High';
+    if (score >= 25) return 'Medium';
+    return 'Low';
   }
 }

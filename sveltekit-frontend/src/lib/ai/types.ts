@@ -138,19 +138,19 @@ export class Context7AgentOrchestrator {
     try {
       let result: string;
       switch (trigger.action) {
-        case: 'code_review':
+        case 'code_review':
           result = await this.performCodeReview(trigger.todoId);
           break;
-        case: 'fix':
+        case 'fix':
           result = await this.performFix(trigger.todoId);
           break;
-        case: 'auto_fix':
+        case 'auto_fix':
           result = await this.performAutoFix(trigger.todoId, trigger.area);
           break;
-        case: 'analyze':
+        case 'analyze':
           result = await this.performAnalysis(trigger.todoId);
           break;
-        case: 'summarize':
+        case 'summarize':
           result = await this.performSummarization(trigger.todoId);
           break;
         default:

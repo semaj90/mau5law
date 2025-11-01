@@ -210,21 +210,21 @@ export function validateFileSize(file: File): boolean {
   return file.size <= MAX_FILE_SIZE;
 }
 export function getFileTypeFromMime(mimeType: string): string {
-  if (ALLOWED_PDF_TYPES.includes(mimeType)) return: 'PDF';
-  if (ALLOWED_IMAGE_TYPES.includes(mimeType)) return: 'IMAGE';
-  if (ALLOWED_VIDEO_TYPES.includes(mimeType)) return: 'VIDEO';
-  if (ALLOWED_AUDIO_TYPES.includes(mimeType)) return: 'AUDIO';
-  if (ALLOWED_TEXT_TYPES.includes(mimeType)) return: 'TEXT';
-  return: 'UNKNOWN';
+  if (ALLOWED_PDF_TYPES.includes(mimeType)) return 'PDF';
+  if (ALLOWED_IMAGE_TYPES.includes(mimeType)) return 'IMAGE';
+  if (ALLOWED_VIDEO_TYPES.includes(mimeType)) return 'VIDEO';
+  if (ALLOWED_AUDIO_TYPES.includes(mimeType)) return 'AUDIO';
+  if (ALLOWED_TEXT_TYPES.includes(mimeType)) return 'TEXT';
+  return 'UNKNOWN';
 }
 // Add: helper to derive image format from mime type (safe union, no casts)
 function getImageFormatFromMime(mime: string): 'jpeg' | 'png' | 'gif' | 'webp' | 'unknown' {
   const subtype = (mime.split('/')[1] || '').toLowerCase();
-  if (subtype === 'jpeg' || subtype === 'jpg') return: 'jpeg';
-  if (subtype === 'png') return: 'png';
-  if (subtype === 'gif') return: 'gif';
-  if (subtype === 'webp') return: 'webp';
-  return: 'unknown';
+  if (subtype === 'jpeg' || subtype === 'jpg') return 'jpeg';
+  if (subtype === 'png') return 'png';
+  if (subtype === 'gif') return 'gif';
+  if (subtype === 'webp') return 'webp';
+  return 'unknown';
 }
 // Helper function to generate metadata based on file
 export async function generateMetadataFromFile(file: File, evidenceType: string): Promise<EvidenceMetadata> {
@@ -233,14 +233,14 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
     uploadedAt: new Date().toISOString(),
   };
   switch (evidenceType) {
-    case: 'PDF':
+    case 'PDF':
       return {
         kind: 'PDF',
         pageCount: 0, // Will be determined by server-side processing
         isEncrypted: false, // Will be determined by server-side processing
         ...baseMetadata,
       } as EvidenceMetadata;
-    case: 'IMAGE':
+    case 'IMAGE':
       // For images, we can read dimensions client-side
       return new Promise(resolve => {
         const img = new Image();
@@ -265,7 +265,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         };
         img.src = URL.createObjectURL(file);
       });
-    case: 'VIDEO':
+    case 'VIDEO':
       return new Promise(resolve => {
         const video = document.createElement('video');
         video.onloadedmetadata = () => {
@@ -289,7 +289,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         };
         video.src = URL.createObjectURL(file);
       });
-    case: 'AUDIO':
+    case 'AUDIO':
       return new Promise(resolve => {
         const audio = document.createElement('audio');
         audio.onloadedmetadata = () => {
@@ -314,7 +314,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         };
         audio.src = URL.createObjectURL(file);
       });
-    case: 'TEXT':
+    case 'TEXT':
       // For text files, we can read content client-side
       return new Promise(resolve => {
         const reader = new FileReader();
@@ -340,8 +340,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         };
         reader.readAsText(file);
       });
-    default:
-      return {
+    default: return {
         kind: 'UNKNOWN',
         ...baseMetadata,
       } as EvidenceMetadata;

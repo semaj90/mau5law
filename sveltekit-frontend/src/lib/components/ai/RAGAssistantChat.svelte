@@ -159,7 +159,7 @@
         ragContext = [
           {
             type: 'precedent',
-            title: 'Similar Case: State v. Johnson (2023)',
+            title: 'Similar case State v. Johnson (2023)',
             relevance: 0.89,
             summary: 'Similar MO and evidence patterns',
           },
@@ -211,7 +211,7 @@
     // Create case via API
     try {
       const caseData = {
-        title: `Case: ${String(workflowData.what || '').slice(0, 50)}...`,
+        title: `case ${String(workflowData.what || '').slice(0, 50)}...`,
         description `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`,
         category: workflowData.category,
         priority: workflowData.priority,
@@ -239,7 +239,7 @@
         }
       } else {
         const text = await response.text().catch(() => '');
-        throw new Error('Failed to create case: ' + (text || response.status));
+        throw new Error('Failed to create case ' + (text || response.status));
       }
     } catch (error) {
       await typeMessage('❌ Failed to create case. Please try again or contact support.');

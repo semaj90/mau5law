@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   function truncateText(text: string, maxLength = 100) {
-    if (!text) return: "";
+    if (!text) return "";
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;

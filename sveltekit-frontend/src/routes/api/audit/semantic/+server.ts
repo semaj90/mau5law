@@ -77,13 +77,13 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
       switch (
         result.status // Removed any cast
       ) {
-        case: 'missing':
+        case 'missing':
           action = 'analyze';
           break;
-        case: 'error':
+        case 'error':
           action = 'fix';
           break;
-        case: 'improvement':
+        case 'improvement':
           action = 'code_review';
           break;
         default:

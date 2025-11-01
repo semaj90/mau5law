@@ -304,17 +304,16 @@ class SIMDBodyParser {
    */
   private identifyCourt(reporter: string): string {
     switch (reporter) {
-      case: 'U.S.':
-        return: 'Supreme Court';
-      case: 'S.Ct.':
-        return: 'Supreme Court';
-      case: 'F.2d':
-      case: 'F.3d':
-      case: 'F.2d':
-      case: 'F.3d':
-        return: 'Federal Circuit';
-      default:
-        return: 'Unknown';
+      case 'U.S.':
+        return 'Supreme Court';
+      case 'S.Ct.':
+        return 'Supreme Court';
+      case 'F.2d':
+      case 'F.3d':
+      case 'F.2d':
+      case 'F.3d':
+        return 'Federal Circuit';
+      default: return 'Unknown';
     }
   }
   /**

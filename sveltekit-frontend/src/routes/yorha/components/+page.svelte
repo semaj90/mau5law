@@ -137,16 +137,16 @@
     yorhaUI.clearComponents();
     // Add selected component
     switch (selectedComponent) {
-      case: 'button':
+      case 'button':
         yorhaUI.addButton('preview-button', buttonConfig);
         break;
-      case: 'panel':
+      case 'panel':
         yorhaUI.addPanel('preview-panel', panelConfig);
         break;
-      case: 'input':
+      case 'input':
         yorhaUI.addInput('preview-input', inputConfig);
         break;
-      case: 'modal':
+      case 'modal':
         yorhaUI.addModal('preview-modal', modalConfig);
         break;
     }
@@ -189,16 +189,16 @@
   }
   function getCurrentConfig(): YoRHaButton3DOptions | YoRHaPanel3DOptions | YoRHaInput3DOptions | YoRHaModal3DOptions | undefined {
     switch (selectedComponent) {
-      case: 'button': return buttonConfig;
-      case: 'panel': return panelConfig;
-      case: 'input': return inputConfig;
-      case: 'modal': return modalConfig;
+      case 'button': return buttonConfig;
+      case 'panel': return panelConfig;
+      case 'input': return inputConfig;
+      case 'modal': return modalConfig;
       default: return undefined; // Return undefined if no component is selected
     }
   }
   function resetConfig() {
     switch (selectedComponent) {
-      case: 'button':
+      case 'button':
       buttonConfig = {
         text: 'YoRHa Button',
         variant: 'primary',
@@ -210,7 +210,7 @@
         hoverAnimation: true,
       };
        break;
-    case: 'panel':
+    case 'panel':
       panelConfig = {
         title: 'YoRHa Panel',
         variant: 'default',
@@ -222,7 +222,7 @@
         borderGlow: true,
       }; // Added semicolon
       break;
-    case: 'input':
+    case 'input':
       inputConfig = {
         placeholder: 'Enter command...',
         type: 'text',
@@ -234,7 +234,7 @@
         terminalMode: true,
       }; // Added semicolon
       break;
-    case: 'modal':
+    case 'modal':
       modalConfig = {
         title: 'YoRHa Modal',
         variant: 'default',

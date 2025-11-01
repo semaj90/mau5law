@@ -262,7 +262,7 @@ Answer:`;
   }
   // Robust normalizer for unknown runtime response shapes (avoids using `any`)
   private normalizeRawResponse(raw: unknown): string {
-    if (raw == null) return: '';
+    if (raw == null) return '';
     if (typeof raw === 'string') return raw;
     if (typeof raw === 'boolean' || typeof raw === 'number') return String(raw);
     if (typeof raw === 'object') {

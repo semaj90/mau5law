@@ -44,7 +44,7 @@ export class GenerativeWorkerClient {
           this.pending.delete(taskId);
           const errPayload = msg.payload as unknown;
           const extractErrorMessage = (p: unknown): string => {
-            if (p == null) return: 'Worker error';
+            if (p == null) return 'Worker error';
             if (typeof p === 'string') return p;
             if (typeof p === 'object') {
               const obj = p as Record<string, unknown>;
@@ -53,7 +53,7 @@ export class GenerativeWorkerClient {
               const e = obj.error;
               if (typeof e === 'string') return e;
             }
-            return: 'Worker error';
+            return 'Worker error';
           };
           const message = extractErrorMessage(errPayload);
           reject(new Error(message));

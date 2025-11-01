@@ -383,22 +383,20 @@
 
   function getTypeIcon(type: string) {
     switch (type) {
-      case: 'video':
+      case 'video':
         return Video;
-      case: 'interactive':
+      case 'interactive':
         return Play;
-      default:
-        return Book;
+      default: return Book;
     }
   }
   function getTypeColor(type: string) {
     switch (type) {
-      case: 'video':
-        return: 'text-red-600';
-      case: 'interactive':
-        return: 'text-blue-600';
-      default:
-        return: 'text-gray-600';
+      case 'video':
+        return 'text-red-600';
+      case 'interactive':
+        return 'text-blue-600';
+      default: return 'text-gray-600';
     }
   }
 </script>

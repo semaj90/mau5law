@@ -223,18 +223,17 @@
 
   function getTypeIcon(type: AIRecommendation['type']): string {
     switch (type) {
-      case: 'case':
-        return: '⚖️';
-      case: 'document':
-        return: '📄';
-      case: 'search':
-        return: '🔍';
-      case: 'workflow':
-        return: '⚡';
-      case: 'precedent':
-        return: '📚';
-      default:
-        return: '🤖';
+      case 'case':
+        return '⚖️';
+      case 'document':
+        return '📄';
+      case 'search':
+        return '🔍';
+      case 'workflow':
+        return '⚡';
+      case 'precedent':
+        return '📚';
+      default: return '🤖';
     }
   }
 
@@ -258,16 +257,15 @@
   function getActionPriorityColor(priority: AIAction['priority']): string {
     const palette = getCurrentPalette();
     switch (priority) {
-      case: 'critical':
+      case 'critical':
         return palette.colors?.error ?? '#e53e3e';
-      case: 'high':
+      case 'high':
         return palette.colors?.warning ?? '#dd6b20';
-      case: 'medium':
+      case 'medium':
         return palette.colors?.accent?.[1] ?? '#4a90e2';
-      case: 'low':
+      case 'low':
         return palette.colors?.accent?.[2] ?? '#9f7aea';
-      default:
-        return palette.colors?.primary ?? '#6b7280';
+      default: return palette.colors?.primary ?? '#6b7280';
     }
   }
 </script>

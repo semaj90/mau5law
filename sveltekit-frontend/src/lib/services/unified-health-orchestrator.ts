@@ -148,13 +148,13 @@ const healthOrchestratorServices = {
     const { service } = input;
     console.log(`🔄 Attempting recovery for service: ${service}`);
     switch (service) {
-      case: 'webgpu':
+      case 'webgpu':
         return await recoverWebGPU();
-      case: 'wasmLLM':
+      case 'wasmLLM':
         return await recoverWASMLLM();
-      case: 'redis':
+      case 'redis':
         return await recoverRedis();
-      case: 'vectorService':
+      case 'vectorService':
         return await recoverVectorService();
       default:
         throw new Error(`Unknown service: ${service}`);
@@ -601,7 +601,7 @@ function resolveHealthStatus(result: PromiseSettledResult<boolean>): 'connected'
   if (result.status === 'fulfilled') {
     return result.value ? 'connected' : 'disconnected';
   } else {
-    return: 'error';
+    return 'error';
   }
 }
 export type HealthOrchestratorMachine = typeof healthOrchestratorMachine;
@@ -646,9 +646,9 @@ export class UnifiedHealthOrchestrator {
     const healthyStatuses = ['connected', 'available', 'loaded', 'healthy'];
     const healthyCount = serviceValues.filter(status => healthyStatuses.includes(status as string)).length;
     const totalCount = serviceValues.length;
-    if (healthyCount === totalCount) return: 'healthy';
-    if (healthyCount >= totalCount * 0.7) return: 'degraded';
-    return: 'unhealthy';
+    if (healthyCount === totalCount) return 'healthy';
+    if (healthyCount >= totalCount * 0.7) return 'degraded';
+    return 'unhealthy';
   }
   private formatQueueInfo(
     metrics: VectorServiceMetrics | null

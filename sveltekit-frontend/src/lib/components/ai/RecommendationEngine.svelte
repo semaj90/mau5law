@@ -199,39 +199,39 @@
   }
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case: 'strategy': return: '🎯';
-      case: 'evidence': return: '🔍';
-      case: 'legal_research': return: '📚';
-      case: 'next_action': return: '⚡';
-      case: 'risk_mitigation': return: '🛡️';
-      default: return: '💡';
+      case 'strategy': return '🎯';
+      case 'evidence': return '🔍';
+      case 'legal_research': return '📚';
+      case 'next_action': return '⚡';
+      case 'risk_mitigation': return '🛡️';
+      default: return '💡';
     }
   }
   function getCategoryColor(category: string): string {
     switch (category) {
-      case: 'strategy': return: 'bg-purple-100 text-purple-800 border-purple-200';
-      case: 'evidence': return: 'bg-blue-100 text-blue-800 border-blue-200';
-      case: 'legal_research': return: 'bg-green-100 text-green-800 border-green-200';
-      case: 'next_action': return: 'bg-orange-100 text-orange-800 border-orange-200';
-      case: 'risk_mitigation': return: 'bg-red-100 text-red-800 border-red-200';
-      default: return: 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'strategy': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'evidence': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'legal_research': return 'bg-green-100 text-green-800 border-green-200';
+      case 'next_action': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'risk_mitigation': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case: 'high': return: 'text-red-600';
-      case: 'medium': return: 'text-yellow-600';
-      case: 'low': return: 'text-green-600';
-      default: return: 'text-gray-600';
+      case 'high': return 'text-red-600';
+      case 'medium': return 'text-yellow-600';
+      case 'low': return 'text-green-600';
+      default: return 'text-gray-600';
     }
   }
   function getTimeframeColor(timeframe: string): string {
     switch (timeframe) {
-      case: 'immediate': return: 'bg-red-50 text-red-700 border-red-200';
-      case: 'short_term': return: 'bg-orange-50 text-orange-700 border-orange-200';
-      case: 'medium_term': return: 'bg-yellow-50 text-yellow-700 border-yellow-200';
-      case: 'long_term': return: 'bg-green-50 text-green-700 border-green-200';
-      default: return: 'bg-gray-50 text-gray-700 border-gray-200';
+      case 'immediate': return 'bg-red-50 text-red-700 border-red-200';
+      case 'short_term': return 'bg-orange-50 text-orange-700 border-orange-200';
+      case 'medium_term': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      case 'long_term': return 'bg-green-50 text-green-700 border-green-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   }
   let filteredRecommendations = $derived(() => {

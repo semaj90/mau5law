@@ -175,23 +175,23 @@
   // Get field type icon
   const getFieldTypeIcon = (type: FieldType) => {
     switch (type) {
-      case: 'name': return: '👤';
-      case: 'email': return: '📧';
-      case: 'phone': return: '📞';
-      case: 'date': return: '📅';
-      case: 'address': return: '📍';
-      case: 'case_number': return: '📋';
-      case: 'monetary_amount': return: '💰';
-      default: return: '📝';
+      case 'name': return '👤';
+      case 'email': return '📧';
+      case 'phone': return '📞';
+      case 'date': return '📅';
+      case 'address': return '📍';
+      case 'case_number': return '📋';
+      case 'monetary_amount': return '💰';
+      default: return '📝';
     }
   };
 
   // Get confidence color
   const getConfidenceColor = (confidence?: number) => {
-    if (!confidence) return: 'bg-gray-500';
-    if (confidence >= 0.9) return: 'bg-green-500';
-    if (confidence >= 0.7) return: 'bg-yellow-500';
-    return: 'bg-red-500';
+    if (!confidence) return 'bg-gray-500';
+    if (confidence >= 0.9) return 'bg-green-500';
+    if (confidence >= 0.7) return 'bg-yellow-500';
+    return 'bg-red-500';
   };
 
   // Helper to compute input classes for components (components don't support class: directives)

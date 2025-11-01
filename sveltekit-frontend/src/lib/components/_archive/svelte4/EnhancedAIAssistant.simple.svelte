@@ -100,7 +100,7 @@ https://svelte.dev/e/props_duplicate -->
         <Brain />
         <h3>Legal AI Assistant</h3>
         {#if caseId}
-          <span>Case: {caseId}</span>
+          <span>case {caseId}</span>
         {/if}
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">

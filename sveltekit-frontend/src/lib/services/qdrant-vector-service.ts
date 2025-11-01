@@ -238,7 +238,7 @@ class QdrantVectorService {
       brief: /\b(brief|memorandum|motion)\b/i,
       citation: /\b(cite|citation|reference)\b/i,
       statute: /\b(statute|code|law|act)\b/i,
-      case: /\b(case|proceeding|litigation)\b/i,
+      case /\b(case|proceeding|litigation)\b/i,
     };
 
     for (const [type, pattern] of Object.entries(documentTypes)) {

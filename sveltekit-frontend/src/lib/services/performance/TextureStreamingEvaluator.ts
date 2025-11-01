@@ -527,11 +527,11 @@ export class TextureStreamingEvaluator {
   private detectDeviceType(): 'desktop' | 'mobile' | 'unknown' {
     const userAgent = navigator.userAgent.toLowerCase();
     if (/mobile|android|iphone|ipad/.test(userAgent)) {
-      return: 'mobile';
+      return 'mobile';
     } else if (/desktop|windows|mac|linux/.test(userAgent)) {
-      return: 'desktop';
+      return 'desktop';
     }
-    return: 'unknown';
+    return 'unknown';
   }
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms);

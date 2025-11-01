@@ -549,17 +549,16 @@ export class InstantSearchEngine extends EventEmitter {
       if (this.options.prioritizeByRisk) {
         // Corrected syntax
         switch (doc.riskLevel) {
-          case: 'critical':
+          case 'critical':
             boost *= 1.3;
             break;
-          case: 'high':
+          case 'high':
             boost *= 1.2;
             break;
-          case: 'medium':
+          case 'medium':
             boost *= 1.1;
             break;
-          default:
-            break;
+          default: break;
         }
       }
       for (const config of Object.values(LEGAL_SEARCH_PATTERNS)) {

@@ -33,38 +33,36 @@
   // --- Helper Functions ---
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case: 'document':
-        return: 'i-lucide-file-text';
-      case: 'image':
-        return: 'i-lucide-image';
-      case: 'video':
-        return: 'i-lucide-video';
-      case: 'audio':
-        return: 'i-lucide-mic';
-      case: 'digital':
-        return: 'i-lucide-hard-drive';
-      default:
-        return: 'i-lucide-file';
+      case 'document':
+        return 'i-lucide-file-text';
+      case 'image':
+        return 'i-lucide-image';
+      case 'video':
+        return 'i-lucide-video';
+      case 'audio':
+        return 'i-lucide-mic';
+      case 'digital':
+        return 'i-lucide-hard-drive';
+      default: return 'i-lucide-file';
     }
   }
   function getTypeColor(type: string) {
     switch (type) {
-      case: 'document':
-        return: 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300';
-      case: 'image':
-        return: 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300';
-      case: 'video':
-        return: 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300';
-      case: 'audio':
-        return: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300';
-      case: 'digital':
-        return: 'bg-orange-50 text-orange-700 dark: bg-orange-950 dark:text-orange-300';
-      default:
-        return: 'bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
+      case 'document':
+        return 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300';
+      case 'image':
+        return 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300';
+      case 'video':
+        return 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300';
+      case 'audio':
+        return 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300';
+      case 'digital':
+        return 'bg-orange-50 text-orange-700 dark: bg-orange-950 dark:text-orange-300';
+      default: return 'bg-gray-50 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
     }
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

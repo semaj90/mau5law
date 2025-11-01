@@ -192,7 +192,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       // and need to be preserved. Avoid spreading: 'meta' directly to prevent type issues.
       // For example, if LegalMetadata can have a: 'title' property:
       // title: isString(meta?.title) ? (meta!.title as string) : undefined,
-      case: defaultCase, // Assign the validated case information
+      case defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
       processing: processing, // Assign the validated processing information
     };

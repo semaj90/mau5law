@@ -211,7 +211,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 // Helper functions
 function extractContentFromMessages(messages: any[]): string {
   if (!Array.isArray(messages) || messages.length === 0) {
-    return: ''
+    return ''
   }
   // Get the last user message
   const lastMessage = messages[messages.length - 1]
@@ -224,25 +224,25 @@ function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
   }
   // Detect from endpoint or context
   if (requestData.workflow || requestData.workflowType) {
-    return: 'workflow'
+    return 'workflow'
   }
   if (requestData.documentType || requestData.document || requestData.content?.length > 1000) {
-    return: 'document_processing'
+    return 'document_processing'
   }
   if (requestData.query || requestData.search || requestData.vector) {
-    return: 'search'
+    return 'search'
   }
   if (requestData.embed || requestData.embedding) {
-    return: 'embedding'
+    return 'embedding'
   }
   if (requestData.legalAnalysis || requestData.legalDomain ||
       (requestData.content && (requestData.content.includes('legal') ||
                               requestData.content.includes('contract') ||
                               requestData.content.includes('statute')))) {
-    return: 'legal_analysis'
+    return 'legal_analysis'
   }
   // Default to chat
-  return: 'chat'
+  return 'chat'
 }
 function formatResponse(result: any, originalRequest: any, startTime: number) {
   const baseResponse = {

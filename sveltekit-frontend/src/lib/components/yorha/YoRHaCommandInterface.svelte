@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte'; // createEventDispatcher is replaced by $event rune
-  import { writable, get } from 'svelte/store'; // Import: 'get' for store access in functions
+  import { writable, get } from 'svelte/store'; // import 'get' for store access in functions
   import type { SystemMetrics, CommandResult, YoRHaModule, HolographicData, LegalAISession } from '$lib/types/yorha-interface';
 
   // Define a new interface for command responses
@@ -355,16 +355,15 @@
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'ACTIVE':
-        return: '#00ff88';
-      case: 'STANDBY':
-        return: '#ffa500';
-      case: 'MAXIMUM':
-        return: '#ff0066';
-      case: 'OFFLINE':
-        return: '#666';
-      default:
-        return: '#00ff88';
+      case 'ACTIVE':
+        return '#00ff88';
+      case 'STANDBY':
+        return '#ffa500';
+      case 'MAXIMUM':
+        return '#ff0066';
+      case 'OFFLINE':
+        return '#666';
+      default: return '#00ff88';
     }
   }
 

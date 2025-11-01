@@ -1,4 +1,4 @@
-declare module: '$lib/shims/xstate' {
+declare module '$lib/shims/xstate' {
   // Minimal, safer ambient typings to avoid `any` lint complaints.
   // Keep these deliberately generic; refine later if stricter types are required.
 

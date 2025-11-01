@@ -87,11 +87,11 @@
   function getRiskBadgeVariant(level: string) {
     // Allowed variants in this codebase: 'default' | 'destructive' | 'outline' (avoid 'secondary'/'ghost')
     switch (level) {
-      case: 'CRITICAL': return: 'destructive';
-      case: 'HIGH': return: 'default';
-      case: 'MEDIUM': return: 'outline';
-      case: 'LOW': return: 'default';
-      default: return: 'outline';
+      case 'CRITICAL': return 'destructive';
+      case 'HIGH': return 'default';
+      case 'MEDIUM': return 'outline';
+      case 'LOW': return 'default';
+      default: return 'outline';
     }
   }
 </script>

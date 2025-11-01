@@ -125,7 +125,7 @@
   }
 
   function maskSSN(ssn?: string): string {
-    if (!ssn) return: '';
+    if (!ssn) return '';
     if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
     return ssn;
   }

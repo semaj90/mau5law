@@ -109,20 +109,19 @@
   // Get result type icon
   function getResultTypeIcon(type: string) {
     switch (type) {
-      case: 'case':
-        return: '⚖️';
-      case: 'evidence':
-        return: '🔍';
-      case: 'precedent':
-        return: '📚';
-      case: 'statute':
-        return: '📜';
-      case: 'criminal':
-        return: '👤';
-      case: 'document':
-        return: '📄';
-      default:
-        return: '📋';
+      case 'case':
+        return '⚖️';
+      case 'evidence':
+        return '🔍';
+      case 'precedent':
+        return '📚';
+      case 'statute':
+        return '📜';
+      case 'criminal':
+        return '👤';
+      case 'document':
+        return '📄';
+      default: return '📋';
     }
   }
   // Component lifecycle

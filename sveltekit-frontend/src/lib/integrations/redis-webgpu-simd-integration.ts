@@ -451,14 +451,14 @@ export class RedisWebGPUSIMDIntegration {
       Object.entries(groupedOps).map(async ([type, ops]) => {
         // Removed generic type from ops
         switch (type) {
-          case: 'legal_document':
+          case 'legal_document':
             for (const op of ops as LegalDocumentBatchOp[]) {
               // Cast to specific batch op type
               const result = await this.processLegalDocument(op.data, op.options);
               results[op.index] = result;
             }
             break;
-          case: 'vector_similarity':
+          case 'vector_similarity':
             // Can potentially batch WebGPU similarity computations
             for (const op of ops as VectorSimilarityBatchOp[]) {
               // Cast to specific batch op type
@@ -466,7 +466,7 @@ export class RedisWebGPUSIMDIntegration {
               results[op.index] = result;
             }
             break;
-          case: 'intelligent_todos':
+          case 'intelligent_todos':
             for (const op of ops as IntelligentTodosBatchOp[]) {
               // Cast to specific batch op type
               const result = await this.processIntelligentTodos(op.data, op.options);

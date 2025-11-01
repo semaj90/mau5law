@@ -243,9 +243,9 @@
       .append('circle')
       .attr('r', 18)
       .attr('fill', (d: GraphNode) => {
-        if (d.type === 'database') return: 'rgba(59,130,246,0.6)';
-        if (d.type === 'service') return: 'rgba(34,197,94,0.6)';
-        return: 'rgba(139,92,246,0.6)';
+        if (d.type === 'database') return 'rgba(59,130,246,0.6)';
+        if (d.type === 'service') return 'rgba(34,197,94,0.6)';
+        return 'rgba(139,92,246,0.6)';
       })
       .attr('stroke', 'rgba(255,255,255,0.06)')
       .attr('stroke-width', 1);

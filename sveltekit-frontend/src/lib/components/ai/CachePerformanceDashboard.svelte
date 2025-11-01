@@ -267,14 +267,13 @@
   function getHealthIcon() {
     performance.mark('function-start');
     switch (systemHealth) {
-      case: 'healthy':
+      case 'healthy':
         return { icon: CheckCircle, color: 'text-green-500' };
-      case: 'warning':
+      case 'warning':
         return { icon: AlertTriangle, color: 'text-yellow-500' };
-      case: 'critical':
+      case 'critical':
         return { icon: AlertTriangle, color: 'text-red-500' };
-      default:
-        return { icon: AlertTriangle, color: 'text-gray-500' };
+      default: return { icon: AlertTriangle, color: 'text-gray-500' };
     }
   }
 </script>

@@ -684,7 +684,7 @@ export class MultiCoreMCPVectorServer {
         try {
           let searchResults;
           switch (collection) {
-            case: 'vector_embeddings':
+            case 'vector_embeddings':
               searchResults = await this.sql`
                 SELECT
                   document_id,
@@ -698,7 +698,7 @@ export class MultiCoreMCPVectorServer {
                 LIMIT ${Math.ceil(limit / collections.length)}
               `;
               break;
-            case: 'case_embeddings':
+            case 'case_embeddings':
               // Assuming case_embeddings uses text embeddings that need conversion
               searchResults = await this.sql`
                 SELECT
@@ -1025,13 +1025,13 @@ export class MultiCoreMCPVectorServer {
       const searchStrategy = this.selectSearchStrategy(algorithm);
       let searchResults: SearchResult[];
       switch (searchStrategy) {
-        case: 'postgres_hnsw':
+        case 'postgres_hnsw':
           searchResults = await this.searchWithPostgresHNSW(queryEmbedding, k);
           break;
-        case: 'postgres_ivf_flat':
+        case 'postgres_ivf_flat':
           searchResults = await this.searchWithPostgresIVFFlat(queryEmbedding, k);
           break;
-        case: 'langchain':
+        case 'langchain':
           searchResults = await this.searchWithLangChain(queryText, k);
           break;
         default:
@@ -1169,9 +1169,9 @@ export class MultiCoreMCPVectorServer {
   private selectSearchStrategy(algorithm: string): SearchStrategy {
     if (algorithm === 'auto') {
       if (this.langchainVectorStore) {
-        return: 'langchain';
+        return 'langchain';
       } else {
-        return: 'postgres_hnsw';
+        return 'postgres_hnsw';
       }
     }
     const strategyMap: Record<string, SearchStrategy> = {

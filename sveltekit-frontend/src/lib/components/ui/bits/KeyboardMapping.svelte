@@ -185,11 +185,11 @@
   function formatShortcut(keys: string[]): string {
     const formatted = keys.map(key => {
       switch (key) {
-        case: 'ctrl': return: 'Ctrl';
-        case: 'cmd': return: 'Cmd';
-        case: 'alt': return: 'Alt';
-        case: 'shift': return: 'Shift';
-        case: 'space': return: 'Space';
+        case 'ctrl': return 'Ctrl';
+        case 'cmd': return 'Cmd';
+        case 'alt': return 'Alt';
+        case 'shift': return 'Shift';
+        case 'space': return 'Space';
         default: return key.toUpperCase();
       }
     });

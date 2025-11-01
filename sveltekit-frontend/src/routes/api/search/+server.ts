@@ -738,8 +738,8 @@ export const GET: RequestHandler = async (_event: RequestEvent): Promise<Respons
         return raw as SearchStatusResponse['services']['vectorSearch']['status'];
       }
       // map common external values conservatively
-      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return: 'unhealthy';
-      return: 'unknown';
+      if (raw === 'unavailable' || raw === 'down' || raw === 'error' || raw === '') return 'unhealthy';
+      return 'unknown';
     };
 
     // Get top queries from sorted set

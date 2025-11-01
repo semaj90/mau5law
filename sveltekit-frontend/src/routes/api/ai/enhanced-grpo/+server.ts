@@ -351,7 +351,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     const operation = url.searchParams.get('operation') || 'trending'
     const limit = parseInt(url.searchParams.get('limit') || '10')
     switch (operation) {
-      case: 'trending':
+      case 'trending':
         const days = parseInt(url.searchParams.get('days') || '7')
         const trendingTopics = await db.execute(sql`
           SELECT
@@ -376,7 +376,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           })),
           period_days: days
         })
-      case: 'recent':
+      case 'recent':
         const recentResponses = await db.execute(sql`
           SELECT
             id,
@@ -402,8 +402,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             usage_count: row.usage_count as number,
           })
         })
-      default:
-        return json({,
+      default: return json({,
           success: true,
           message: 'Enhanced GRPO API is operational',
           available_operations: ['trending', 'recent'],

@@ -9,18 +9,17 @@ export const GET: RequestHandler = async ({ url }) => {
   const documentCount = parseInt(url.searchParams.get('count') || '100000');
   try {
     switch (action) {
-      case: 'scaling-analysis':
+      case 'scaling-analysis':
         return json(await performScalingAnalysis(documentCount));
-      case: 'performance-comparison':
+      case 'performance-comparison':
         return json(await comparePerformanceAtScale(documentCount));
-      case: 'faiss-training-demo':
+      case 'faiss-training-demo':
         return json(await demonstrateFAISSTraining(documentCount));
-      case: 'enterprise-readiness':
+      case 'enterprise-readiness':
         return json(await assessEnterpriseReadiness(documentCount));
-      case: 'overview':
+      case 'overview':
         return json(await getScalingOverview()); // explicitly handle overview
-      default:
-        return json(await getScalingOverview());
+      default: return json(await getScalingOverview());
     }
   } catch (error) {
     console.error('FAISS scaling demo error:', error);

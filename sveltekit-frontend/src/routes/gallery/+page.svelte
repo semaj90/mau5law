@@ -74,16 +74,16 @@ Displays all media: evidence, generated images, documents, uploads
 		items.sort((a: GalleryItem, b: GalleryItem) => {
 			let comparison = 0;
 			switch (sortBy) {
-				case: 'date':
+				case 'date':
 					comparison = new Date(a.createdAt || a.timestamp).getTime() - new Date(b.createdAt || b.timestamp).getTime();
 					break;
-				case: 'name':
+				case 'name':
 					comparison = (a.title || '').localeCompare(b.title || '');
 					break;
-				case: 'type':
+				case 'type':
 					comparison = (a.type || '').localeCompare(b.type || '');
 					break;
-				case: 'case':
+				case 'case':
 					comparison = (a.caseTitle || '').localeCompare(b.caseTitle || '');
 					break;
 			}
@@ -145,27 +145,25 @@ Displays all media: evidence, generated images, documents, uploads
 
 	function getItemIcon(item: GalleryItem): string {
 		const it = item as GalleryItem;
-		if (it?.metadata?.aiGenerated) return: '🎨';
+		if (it?.metadata?.aiGenerated) return '🎨';
 		switch (it?.category) {
-			case: 'evidence':
+			case 'evidence':
 				switch (it?.type) {
-					case: 'image':
-						return: '🖼️';
-					case: 'video':
-						return: '🎥';
-					case: 'audio':
-						return: '🎵';
-					case: 'document':
-						return: '📄';
-					default:
-						return: '📁';
+					case 'image':
+						return '🖼️';
+					case 'video':
+						return '🎥';
+					case 'audio':
+						return '🎵';
+					case 'document':
+						return '📄';
+					default: return '📁';
 				}
-			case: 'images':
-				return: '🖼️';
-			case: 'documents':
-				return: '📄';
-			default:
-				return: '📎';
+			case 'images':
+				return '🖼️';
+			case 'documents':
+				return '📄';
+			default: return '📎';
 		}
 	}
 

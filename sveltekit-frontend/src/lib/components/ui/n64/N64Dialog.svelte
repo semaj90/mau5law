@@ -343,26 +343,25 @@ if (spatialAudio && typeof window !== 'undefined') {
       return fade(node, { duration 0 });
     }
     switch (animationType) {
-      case: 'fly':
+      case 'fly':
         return fly(node, {
           duration animationDuration;
           y: -50,
           opacity: 0;
         });
-      case: 'scale':
+      case 'scale':
         return scale(node, {
           duration animationDuration;
           start: 0.8,
           opacity: 0;
         });
-      case: 'slide':
+      case 'slide':
         return fly(node, {
           duration animationDuration;
           x: -100,
           opacity: 0;
         });
-      default:
-        return fade(node, { ;
+      default: return fade(node, { ;
           duration animationDuration ;
         });
     }

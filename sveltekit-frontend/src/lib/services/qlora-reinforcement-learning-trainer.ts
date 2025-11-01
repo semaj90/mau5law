@@ -211,16 +211,16 @@ export class QLoRAReinforcementTrainer {
     });
     // Add quality improvements based on preference type
     switch (feedback.preference_type) {
-      case: 'accuracy':
+      case 'accuracy':
         improvedOutput = this.enhanceAccuracy(improvedOutput);
         break;
-      case: 'completeness':
+      case 'completeness':
         improvedOutput = this.enhanceCompleteness(improvedOutput);
         break;
-      case: 'clarity':
+      case 'clarity':
         improvedOutput = this.enhanceClarity(improvedOutput);
         break;
-      case: 'relevance':
+      case 'relevance':
         improvedOutput = this.enhanceRelevance(improvedOutput);
         break;
     }

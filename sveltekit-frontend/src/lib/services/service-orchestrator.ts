@@ -360,16 +360,16 @@ export class ServiceOrchestrator {
     console.log(`🩹 Recovering from failure: ${context.failure_type}`);
     let recoveryStrategy: string;
     switch (context.failure_type) {
-      case: 'service_crash':
+      case 'service_crash':
         recoveryStrategy = await this.recoverFromServiceCrash(context);
         break;
-      case: 'network_partition':
+      case 'network_partition':
         recoveryStrategy = await this.recoverFromNetworkPartition(context);
         break;
-      case: 'resource_exhaustion':
+      case 'resource_exhaustion':
         recoveryStrategy = await this.recoverFromResourceExhaustion(context);
         break;
-      case: 'cascade_failure':
+      case 'cascade_failure':
         recoveryStrategy = await this.recoverFromCascadeFailure(context);
         break;
       default:
@@ -532,12 +532,12 @@ export class ServiceOrchestrator {
     const healthPercentage = (healthy / total) * 100;
     // Return a normalized overall health string based on thresholds
     if (healthPercentage >= 80) {
-      return: 'healthy';
+      return 'healthy';
     }
     if (healthPercentage >= 50) {
-      return: 'degraded';
+      return 'degraded';
     }
-    return: 'unhealthy';
+    return 'unhealthy';
   }
 
   // ---------- Added: concrete recovery helper implementations ----------
@@ -551,11 +551,11 @@ export class ServiceOrchestrator {
       }
       // Fallback: restart critical services
       await this.restartCriticalServices();
-      return: 'restarted_critical_services';
+      return 'restarted_critical_services';
     } catch (err) {
       // Fallback behavior
       await this.enableSafeMode();
-      return: 'recovery_failed_recovered_with_safe_mode';
+      return 'recovery_failed_recovered_with_safe_mode';
     }
   }
 
@@ -570,10 +570,10 @@ export class ServiceOrchestrator {
       }
       // Fallback to restarting critical services
       await this.restartCriticalServices();
-      return: 'restarted_critical_services_for_network_partition';
+      return 'restarted_critical_services_for_network_partition';
     } catch (err) {
       await this.enableSafeMode();
-      return: 'network_recovery_fallback_safe_mode_enabled';
+      return 'network_recovery_fallback_safe_mode_enabled';
     }
   }
 
@@ -582,11 +582,11 @@ export class ServiceOrchestrator {
       // Enable safe mode to free resources and restart critical services
       await this.enableSafeMode();
       await this.restartCriticalServices();
-      return: 'enabled_safe_mode_and_restarted_critical_services';
+      return 'enabled_safe_mode_and_restarted_critical_services';
     } catch (err) {
       // If even safe mode fails, perform emergency shutdown and report
       await this.emergencyShutdown();
-      return: 'emergency_shutdown_due_to_resource_exhaustion';
+      return 'emergency_shutdown_due_to_resource_exhaustion';
     }
   }
 
@@ -597,11 +597,11 @@ export class ServiceOrchestrator {
       // small delay for cleanup
       await this.sleep(1500);
       await this.restartCriticalServices();
-      return: 'emergency_shutdown_and_restart_after_cascade';
+      return 'emergency_shutdown_and_restart_after_cascade';
     } catch (err) {
       // last-resort fallback
       await this.enableSafeMode();
-      return: 'cascade_recovery_fallback_safe_mode';
+      return 'cascade_recovery_fallback_safe_mode';
     }
   }
 
@@ -611,11 +611,11 @@ export class ServiceOrchestrator {
       await this.restartCriticalServices();
       // Give the system time to stabilize
       await this.sleep(1000);
-      return: 'generic_restart_critical_services';
+      return 'generic_restart_critical_services';
     } catch (err) {
       // If generic recovery fails, enter safe mode
       await this.enableSafeMode();
-      return: 'generic_recovery_fallback_safe_mode';
+      return 'generic_recovery_fallback_safe_mode';
     }
   }
   // ---------- end added helpers ----------

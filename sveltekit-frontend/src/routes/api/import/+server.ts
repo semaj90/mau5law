@@ -69,14 +69,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Parse file based on type
     try {
       switch (file.type) {
-        case: 'application/json':
+        case 'application/json':
           data = JSON.parse(fileContent);
           break;
-        case: 'text/csv':
+        case 'text/csv':
           data = parseCSV(fileContent);
           break;
-        case: 'application/xml':
-        case: 'text/xml':
+        case 'application/xml':
+        case 'text/xml':
           data = parseXML(fileContent);
           break;
         default:
@@ -96,16 +96,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Process import based on type
     switch (importType) {
-      case: 'cases':
+      case 'cases':
         await importCases(data, overwriteExisting, results);
         break;
-      case: 'evidence':
+      case 'evidence':
         await importEvidence(data, overwriteExisting, results);
         break;
-      case: 'criminals':
+      case 'criminals':
         await importParticipants(data, overwriteExisting, results);
         break;
-      case: 'all': {
+      case 'all': {
         // Safely treat parsed data as an object and validate array shapes before calling import helpers.
         if (typeof data === 'object' && data !== null) {
           const payload = data as Record<string, unknown>;
@@ -126,8 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         break;
       }
-      default:
-        return json({ error: 'Invalid import type' }, { status: 400 });
+      default: return json({ error: 'Invalid import type' }, { status: 400 });
     }
 
     return json({
@@ -197,7 +196,7 @@ async function importCases(
         results.imported++;
       }
     } catch (error: unknown) {
-      results.errors.push(`Error importing case: ${error instanceof Error ? error.message : String(error)}`);
+      results.errors.push(`Error importing case ${error instanceof Error ? error.message : String(error)}`);
       results.skipped++;
     }
   }

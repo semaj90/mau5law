@@ -99,12 +99,12 @@
     // AI tool shortcuts
     if (hasContent && !disabled && !isGenerating) {
       switch (key) {
-        case: "s":
+        case "s":
           event.preventDefault();
           onSummarize();
           open = false;
           break;
-        case: "a":
+        case "a":
           event.preventDefault();
           onAnalyze();
           open = false;
@@ -118,10 +118,10 @@
     if (requiresContent && !hasContent) return;
     selectedItem = action;
     switch (action) {
-      case: "summarize":
+      case "summarize":
         onSummarize();
         break;
-      case: "analyze":
+      case "analyze":
         onAnalyze();
         break;
       default:

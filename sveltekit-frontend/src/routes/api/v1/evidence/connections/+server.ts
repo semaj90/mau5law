@@ -23,7 +23,7 @@ function getUserId(locals: unknown): string {
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   // fallback to a stable anonymous id or empty string as appropriate
-  return: 'unknown';
+  return 'unknown';
 }
 
 // Helper: convert unknown error to string message

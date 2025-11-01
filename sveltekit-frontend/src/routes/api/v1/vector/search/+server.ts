@@ -216,19 +216,19 @@ async function performVectorSearch(params: {
   let distanceOperator: string;
   let orderDirection: string;
   switch (searchMethod) {
-    case: 'cosine':
+    case 'cosine':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case: 'euclidean':
+    case 'euclidean':
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-    case: 'dot':
+    case 'dot':
       distanceOperator = '<#>';
       orderDirection = 'DESC';
       break;
-    case: 'hnsw':
+    case 'hnsw':
     default:
       distanceOperator = '<->';
       orderDirection = 'ASC';

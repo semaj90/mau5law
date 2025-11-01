@@ -105,10 +105,10 @@ export class EmbeddingsService {
     }
 
     switch (type) {
-      case: 'initialized':
-      case: 'embedding_result':
-      case: 'batch_embedding_result':
-      case: 'preprocess_result':
+      case 'initialized':
+      case 'embedding_result':
+      case 'batch_embedding_result':
+      case 'preprocess_result':
         pendingRequest.resolve(data);
         break;
       default:

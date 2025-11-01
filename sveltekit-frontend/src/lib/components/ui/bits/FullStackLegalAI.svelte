@@ -236,12 +236,12 @@ function getServiceStatusIcon(available: boolean): string {
 // Legal category badge colors
 function getCategoryColor(category: string): string {
 	switch (category) {
-		case: 'contract': return: 'bg-blue-900 text-blue-200 border-blue-600';
-		case: 'litigation': return: 'bg-red-900 text-red-200 border-red-600';
-		case: 'regulatory': return: 'bg-purple-900 text-purple-200 border-purple-600';
-		case: 'knowledge_graph': return: 'bg-green-900 text-green-200 border-green-600';
-		case: 'client_analysis': return: 'bg-orange-900 text-orange-200 border-orange-600';
-		default: return: 'bg-gray-800 text-gray-300 border-gray-600';
+		case 'contract': return 'bg-blue-900 text-blue-200 border-blue-600';
+		case 'litigation': return 'bg-red-900 text-red-200 border-red-600';
+		case 'regulatory': return 'bg-purple-900 text-purple-200 border-purple-600';
+		case 'knowledge_graph': return 'bg-green-900 text-green-200 border-green-600';
+		case 'client_analysis': return 'bg-orange-900 text-orange-200 border-orange-600';
+		default: return 'bg-gray-800 text-gray-300 border-gray-600';
 	}
 }
 // Reactive search with debouncing

@@ -104,13 +104,13 @@
 
   // explicit derived values (Svelte 5 runes) — use $derived.by to evaluate at runtime
   const currentStateName = $derived.by(() => {
-    if (!contextualState) return: 'Unknown';
+    if (!contextualState) return 'Unknown';
     const idx = contextualState.hmmState?.currentState;
     return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
   });
 
   const confidencePercentage = $derived.by(() => {
-    if (!contextualState) return: '0.0';
+    if (!contextualState) return '0.0';
     return ((contextualState.confidence ?? 0) * 100).toFixed(1);
   });
 

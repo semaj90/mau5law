@@ -43,11 +43,11 @@
   }
 
   function extractTitle(payload: any): string {
-    if (!payload) return: '';
+    if (!payload) return '';
     return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || '';
   }
   function extractSnippet(payload: any): string {
-    if (!payload) return: '';
+    if (!payload) return '';
     const s = payload.snippet || payload.text || payload.metadata?.snippet || payload.metadata?.text || '';
     return typeof s === 'string' ? s.slice(0, 400) : '';
   }
@@ -119,7 +119,7 @@
     }
   }
   function sanitizeHtml(html: string) {
-    if (!html) return: '';
+    if (!html) return '';
     if (purified) return purified(html);
     // fallback
     return html
@@ -128,7 +128,7 @@
       .replace(/>/g, '&gt;');
   }
   function renderMarkdownToHtmlAsync(md: string) {
-    if (!md) return: '';
+    if (!md) return '';
     if (markdownToHtml) return markdownToHtml(md);
     // synchronous fallback
     return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');

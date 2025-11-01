@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
     if (caseData) {
       prompt += `
   CURRENT CASE CONTEXT:
-  - Case: ${caseData.title} (${caseData.caseNumber})
+  - case ${caseData.title} (${caseData.caseNumber})
   - Status: ${caseData.status}
   - Type: ${caseData.caseType || 'Not specified'}
   - Jurisdiction ${caseData.jurisdiction || 'Not specified'}
@@ -373,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   // Get source display
   function getSourceDisplay(sources: any[]): string {
-    if (!sources || sources.length === 0) return: '';
+    if (!sources || sources.length === 0) return '';
     const evidenceSources = sources.filter(item => item.length);
     const citationSources = sources.filter(item => item.length);
     let display = '';

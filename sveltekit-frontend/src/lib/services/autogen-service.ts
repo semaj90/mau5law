@@ -295,15 +295,15 @@ export class AutoGenService {
     let initialPrompt = '';
 
     switch (workflowType) {
-      case: 'case_analysis':
+      case 'case_analysis':
         agents = [team.prosecutor, team.legalResearcher, team.coordinator];
         initialPrompt = `Please analyze the following case for prosecutorial merit and legal strategy:\n\n${input}`;
         break;
-      case: 'evidence_review':
+      case 'evidence_review':
         agents = [team.evidenceAnalyst, team.prosecutor, team.coordinator];
         initialPrompt = `Please review and analyze the following evidence:\n\n${input}`;
         break;
-      case: 'legal_research':
+      case 'legal_research':
         agents = [team.legalResearcher, team.prosecutor, team.coordinator];
         initialPrompt = `Please research legal precedents and applicable law for:\n\n${input}`;
         break;

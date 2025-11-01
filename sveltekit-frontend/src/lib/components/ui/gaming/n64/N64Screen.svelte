@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import: './N64Theme.css';
+  import './N64Theme.css';
   interface Props {
     width?: string;
     height?: string;

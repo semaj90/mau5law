@@ -341,10 +341,10 @@ export class Context7FlashAttentionIntegration {
    * Determine error priority
    */
   private determinePriority(categoryType: string): 'critical' | 'high' | 'medium' | 'low' {
-    if (categoryType.includes('svelte5') || categoryType.includes('migration')) return: 'critical';
-    if (categoryType.includes('ui_component') || categoryType.includes('binding')) return: 'high';
-    if (categoryType.includes('css') || categoryType.includes('selector')) return: 'medium';
-    return: 'low';
+    if (categoryType.includes('svelte5') || categoryType.includes('migration')) return 'critical';
+    if (categoryType.includes('ui_component') || categoryType.includes('binding')) return 'high';
+    if (categoryType.includes('css') || categoryType.includes('selector')) return 'medium';
+    return 'low';
   }
   /**
    * Determine if GPU acceleration should be used

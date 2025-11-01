@@ -189,15 +189,15 @@
   function handleKeydown(_event: KeyboardEvent) {
     if (!showSuggestions) return;
     switch (event.key) {
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, allSuggestions().length - 1);
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, -1);
         break;
-      case: 'Enter':
+      case 'Enter':
         event.preventDefault();
         if (selectedIndex >= 0) {
           selectSuggestion(allSuggestions()[selectedIndex]);
@@ -205,12 +205,12 @@
           handleSearch();
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         showSuggestions = false;
         selectedIndex = -1;
         inputElement.blur();
         break;
-      case: 'Tab':
+      case 'Tab':
         if (selectedIndex >= 0) {
           event.preventDefault();
           selectSuggestion(allSuggestions()[selectedIndex]);

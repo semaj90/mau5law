@@ -179,10 +179,10 @@ export class RealTimeSearchService {
   public isReady = derived(this.state, $state => $state.isConnected && !$state.isSearching);
   public hasResults = derived(this.state, $state => $state.results.length > 0);
   public searchStatus = derived(this.state, $state => {
-    if ($state.isSearching) return: 'searching';
-    if ($state.error) return: 'error';
-    if ($state.results.length > 0) return: 'results';
-    return: 'idle';
+    if ($state.isSearching) return 'searching';
+    if ($state.error) return 'error';
+    if ($state.results.length > 0) return 'results';
+    return 'idle';
   });
 
   constructor() {
@@ -347,16 +347,16 @@ export class RealTimeSearchService {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
       switch (message.type) {
-        case: 'search_results':
+        case 'search_results':
           this.handleSearchResults(message.data as SearchResultsData);
           break;
-        case: 'search_suggestions':
+        case 'search_suggestions':
           this.handleSearchSuggestions(message.data as SearchSuggestionsData);
           break;
-        case: 'search_progress':
+        case 'search_progress':
           this.handleSearchProgress(message.data as SearchProgressData);
           break;
-        case: 'error':
+        case 'error':
           this.handleSearchError(message.data as SearchErrorData);
           break;
         default:
@@ -421,18 +421,18 @@ export class RealTimeSearchService {
           if (message.searchId !== searchId) return;
 
           switch (message.type) {
-            case: 'search_result_chunk': { // Added curly braces for lexical declaration
+            case 'search_result_chunk': { // Added curly braces for lexical declaration
               const chunkResults = (message.data as SearchResultChunkData).results || [];
               results.push(...chunkResults.map((r: SearchResult) => ({ ...r, realTime: true })));
               this.state.update(s => ({ ...s, results: [...results] }));
               break;
             }
-            case: 'search_completed':
+            case 'search_completed':
               searchCompleted = true;
               this.state.update(s => ({ ...s, isSearching: false, results }));
               resolve(results);
               break;
-            case: 'search_error':
+            case 'search_error':
               reject(new Error((message.data as SearchErrorData).error));
               break;
           }

@@ -275,7 +275,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const receivedOptions = { ...options };
 
     switch (action) {
-      case: 'analyze': {
+      case 'analyze': {
         if (!key) {
           return json({ error: 'Key required for analysis' }, { status: 400 });
         }
@@ -304,7 +304,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json({ success: true, analysis, timestamp: Date.now() }, { status: 200 });
       }
-      case: 'optimize': {
+      case 'optimize': {
         // Trigger cognitive optimization
         const optimizationResult = {
           optimizedEntries: Math.floor(Math.random() * 100) + 50,
@@ -324,7 +324,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           { status: 200 }
         );
       }
-      case: 'predict': {
+      case 'predict': {
         if (!context.workflowStep) {
           return json({ error: 'Workflow step required for prediction' }, { status: 400 });
         }
@@ -339,8 +339,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json({ success: true, predictions, timestamp: Date.now() }, { status: 200 });
       }
-      default:
-        return json({ error: 'Invalid action. Use: analyze, optimize, predict' }, { status: 400 });
+      default: return json({ error: 'Invalid action. Use: analyze, optimize, predict' }, { status: 400 });
     }
   } catch (error: unknown) {
     const errMsg = error instanceof Error ? error.message : String(error);

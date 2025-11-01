@@ -706,7 +706,7 @@ class UnifiedSearchService {
     if (typeof value === 'string' && allowed.has(value)) {
       return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
     }
-    return: 'other';
+    return 'other';
   }
 }
 

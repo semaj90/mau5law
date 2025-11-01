@@ -235,7 +235,7 @@ export class UnifiedAIService {
 
   // NEW: safe error message extractor for unknown catch bindings
   private getErrorMessage(err: unknown): string {
-    if (!err) return: 'Unknown error';
+    if (!err) return 'Unknown error';
     if (err instanceof Error) return err.message;
     try {
       return typeof err === 'string' ? err : JSON.stringify(err);
@@ -324,13 +324,13 @@ export class UnifiedAIService {
       let result: UnifiedResponse;
       const mode = _options.mode || this.selectOptimalMode(_options);
       switch (mode) {
-        case: 'wasm':
+        case 'wasm':
           result = await this.queryWASM(_options);
           break;
-        case: 'langchain':
+        case 'langchain':
           result = await this.queryLangChain(_options);
           break;
-        case: 'gpu':
+        case 'gpu':
           result = await this.queryGPU(_options);
           break;
         default:
@@ -587,16 +587,16 @@ export class UnifiedAIService {
 
     // runtime-aware defaults
     if (browser && nesGPUIntegration && this.config.enableGPUAcceleration) {
-      return: 'gpu';
+      return 'gpu';
     }
     if (!browser && langChainOllamaService) {
-      return: 'langchain';
+      return 'langchain';
     }
     if (browser && wasmLLMService) {
-      return: 'wasm';
+      return 'wasm';
     }
     // last resort: hybrid
-    return: 'hybrid';
+    return 'hybrid';
   }
 
   /**
@@ -647,7 +647,7 @@ export class UnifiedAIService {
    * Format GPU results into a lightweight text snippet.
    */
   private formatGPUResults(docs: LegalDocument[]): string {
-    if (!docs || docs.length === 0) return: '';
+    if (!docs || docs.length === 0) return '';
     // join titles/snippets for a concise response
     return docs
       .slice(0, 5)
@@ -677,7 +677,7 @@ export class UnifiedAIService {
       const id = obj['id'];
       if (typeof id === 'string') return id;
     }
-    return: 'langchain-model';
+    return 'langchain-model';
   }
 }
 

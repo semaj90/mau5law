@@ -311,7 +311,7 @@ export class CHRROMMipmapIntegration {
     }
     // Medium mipmap levels -> Use icons for clean preview
     if (mipmapLevel >= 2 || (width <= 128 && height <= 128)) {
-      return: 'doc_summary_icon' as PatternType;
+      return 'doc_summary_icon' as PatternType;
     }
     // Low mipmap levels (large sizes) -> Use scalable elements
     return width > height ? ('progress_bar' as PatternType) : ('doc_summary_icon' as PatternType);

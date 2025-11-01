@@ -314,15 +314,15 @@ export class LokiRedisCache extends EventEmitter {
       const { documentId, operation, document } = data;
       // Update local Loki cache based on Redis changes
       switch (operation) {
-        case: 'update':
+        case 'update':
           if (document) {
             this.updateLocalDocument(documentId, document);
           }
           break;
-        case: 'delete':
+        case 'delete':
           this.removeLocalDocument(documentId);
           break;
-        case: 'create':
+        case 'create':
           if (document) {
             this.addLocalDocument(document);
           }
@@ -440,15 +440,15 @@ export class LokiRedisCache extends EventEmitter {
   private selectNESBank(document: CachedDocument): string {
     // Select NES bank based on document characteristics
     if (document.riskLevel === 'critical' || document.priority > 200) {
-      return: 'INTERNAL_RAM'; // Fastest access
+      return 'INTERNAL_RAM'; // Fastest access
     }
     if (document.type === 'contract' || document.type === 'evidence') {
-      return: 'CHR_ROM'; // Pattern storage
+      return 'CHR_ROM'; // Pattern storage
     }
     if (document.type === 'brief' || document.type === 'precedent') {
-      return: 'PRG_ROM'; // Logic storage
+      return 'PRG_ROM'; // Logic storage
     }
-    return: 'SAVE_RAM'; // Persistent storage
+    return 'SAVE_RAM'; // Persistent storage
   }
   async getDocument(documentId: string): Promise<CachedDocument | null> {
     const startTime = Date.now();
@@ -622,16 +622,16 @@ export class LokiRedisCache extends EventEmitter {
     score += (document.confidenceLevel || 0) * 100;
     // Risk level scoring
     switch (document.riskLevel) {
-      case: 'critical':
+      case 'critical':
         score += 50;
         break;
-      case: 'high':
+      case 'high':
         score += 30;
         break;
-      case: 'medium':
+      case 'medium':
         score += 15;
         break;
-      case: 'low':
+      case 'low':
         score += 5;
         break;
     }

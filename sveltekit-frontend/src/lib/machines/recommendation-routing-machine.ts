@@ -646,16 +646,15 @@ export const recommendationRoutingMachine = setup({
 // Helper functions
 function determinePriority(documentType?: string): 'high' | 'standard' | 'background' {
   switch (documentType) {
-    case: 'evidence':
-      return: 'high';
-    case: 'brief':
-      return: 'high';
-    case: 'deposition':
-      return: 'standard';
-    case: 'contract':
-      return: 'standard';
-    default:
-      return: 'background';
+    case 'evidence':
+      return 'high';
+    case 'brief':
+      return 'high';
+    case 'deposition':
+      return 'standard';
+    case 'contract':
+      return 'standard';
+    default: return 'background';
   }
 }
 function generateCacheKeys(context: RecommendationContext): string[] {

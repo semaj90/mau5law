@@ -134,16 +134,15 @@
     // Sort evidence
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case: 'date':
+        case 'date':
           return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
-        case: 'relevance':
+        case 'relevance':
           return b.relevanceScore - a.relevanceScore;
-        case: 'type':
+        case 'type':
           return a.type.localeCompare(b.type);
-        case: 'authenticity':
+        case 'authenticity':
           return a.authenticity.localeCompare(b.authenticity);
-        default:
-          return 0;
+        default: return 0;
       }
     });
     return filtered;

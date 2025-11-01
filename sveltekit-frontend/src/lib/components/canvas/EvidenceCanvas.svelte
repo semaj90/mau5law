@@ -110,13 +110,13 @@
     if ((file.fileSize || 0) > 10000000) risk += 20;
     // Risk from confidentiality level
     switch (file.confidentialityLevel) {
-      case: 'classified':
+      case 'classified':
         risk += 40;
         break;
-      case: 'confidential':
+      case 'confidential':
         risk += 25;
         break;
-      case: 'restricted':
+      case 'restricted':
         risk += 15;
         break;
       default:
@@ -126,13 +126,13 @@
     if (!file.chainOfCustody) risk += 30;
     // Risk from evidence type
     switch (file.evidenceType) {
-      case: 'digital':
+      case 'digital':
         risk += 10;
         break;
-      case: 'witness':
+      case 'witness':
         risk += 15;
         break;
-      case: 'forensic':
+      case 'forensic':
         risk += 5;
         break;
       default:
@@ -142,32 +142,30 @@
   }
   function getEvidenceColor(evidenceType: string): string {
     switch (evidenceType) {
-      case: 'forensic':
+      case 'forensic':
         return currentTheme.success;
-      case: 'document':
+      case 'document':
         return currentTheme.accent;
-      case: 'witness':
+      case 'witness':
         return currentTheme.warning;
-      case: 'digital':
-        return: '#00ccff';
-      case: 'physical':
-        return: '#9c88ff';
-      default:
-        return currentTheme.text;
+      case 'digital':
+        return '#00ccff';
+      case 'physical':
+        return '#9c88ff';
+      default: return currentTheme.text;
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'verified':
+      case 'verified':
         return currentTheme.success;
-      case: 'pending':
+      case 'pending':
         return currentTheme.warning;
-      case: 'disputed':
+      case 'disputed':
         return currentTheme.danger;
-      case: 'archived':
+      case 'archived':
         return currentTheme.border;
-      default:
-        return currentTheme.text;
+      default: return currentTheme.text;
     }
   }
   function renderScene() {

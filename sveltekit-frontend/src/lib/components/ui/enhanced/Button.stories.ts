@@ -67,7 +67,7 @@ export const Evidence: Story = {
     },
   },
 };
-export const Case: Story = {
+export const case Story = {
   args: {
     children: 'Create Case',
     variant: 'case',

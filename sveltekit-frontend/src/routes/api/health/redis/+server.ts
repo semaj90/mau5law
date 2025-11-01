@@ -13,7 +13,7 @@ export const GET: RequestHandler = async () => {
     try {
       return String(e);
     } catch {
-      return: 'Unknown error';
+      return 'Unknown error';
     }
   }
 

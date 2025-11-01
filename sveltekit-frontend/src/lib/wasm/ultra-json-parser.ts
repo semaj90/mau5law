@@ -239,15 +239,15 @@ export class UltraJSONParser {
       this.capabilities.sharedArrayBuffer &&
       this.capabilities.atomics
     ) {
-      return: 'optimal';
+      return 'optimal';
     }
     if (this.capabilities.wasmSIMD && this.capabilities.webgpuCompute) {
-      return: 'advanced';
+      return 'advanced';
     }
     if (this.capabilities.wasmSIMD || this.capabilities.webgpuCompute) {
-      return: 'basic';
+      return 'basic';
     }
-    return: 'none';
+    return 'none';
   }
   /**
    * Ultra-fast JSON parsing with SIMD acceleration
@@ -272,16 +272,16 @@ export class UltraJSONParser {
       // Select parsing strategy based on capabilities and data size
       const strategy = this.selectParsingStrategy(jsonString.length, opts);
       switch (strategy) {
-        case: 'wasm-simd':
+        case 'wasm-simd':
           result = await this.wasmSIMDParse<T>(jsonString);
           break;
-        case: 'webgpu-compute':
+        case 'webgpu-compute':
           result = await this.webgpuComputeParse<T>(jsonString);
           break;
-        case: 'nes-bridge':
+        case 'nes-bridge':
           result = await this.nesBridgeParse<T>(jsonString);
           break;
-        case: 'native-optimized':
+        case 'native-optimized':
           result = await this.nativeOptimizedParse<T>(jsonString);
           break;
         default:
@@ -317,22 +317,22 @@ export class UltraJSONParser {
   private selectParsingStrategy(dataSize: number, options: ParseOptions): string {
     // Small data (< 1KB) - use native JSON for minimal overhead
     if (dataSize < 1024) {
-      return: 'native';
+      return 'native';
     }
     // Large data with GPU support - use WebGPU compute
     if (dataSize > 100000 && this.capabilities.webgpuCompute && options.enableGPU) {
-      return: 'webgpu-compute';
+      return 'webgpu-compute';
     }
     // Medium data with SIMD support - use WASM SIMD
     if (dataSize > 10000 && this.capabilities.wasmSIMD && options.enableSIMD) {
-      return: 'wasm-simd';
+      return 'wasm-simd';
     }
     // Legal documents - use NES bridge for FlatBuffer optimization
     if (this.config.legalDocumentOptimization && dataSize > 5000) {
-      return: 'nes-bridge';
+      return 'nes-bridge';
     }
     // Optimized native parsing for remaining cases
-    return: 'native-optimized';
+    return 'native-optimized';
   }
   /**
    * WebAssembly SIMD parsing implementation
@@ -470,13 +470,13 @@ export class UltraJSONParser {
       const objectSize = this.estimateObjectSize(obj);
       const strategy = this.selectStringifyStrategy(objectSize, opts);
       switch (strategy) {
-        case: 'wasm-simd':
+        case 'wasm-simd':
           result = await this.wasmSIMDStringify(obj, opts);
           break;
-        case: 'webgpu-compute':
+        case 'webgpu-compute':
           result = await this.webgpuComputeStringify(obj, opts);
           break;
-        case: 'nes-bridge':
+        case 'nes-bridge':
           result = await this.nesBridgeStringify(obj, opts);
           break;
         default:
@@ -495,15 +495,15 @@ export class UltraJSONParser {
    */
   private selectStringifyStrategy(objectSize: number, options: StringifyOptions): string {
     if (objectSize > 100000 && this.capabilities.webgpuCompute && options.enableGPU) {
-      return: 'webgpu-compute';
+      return 'webgpu-compute';
     }
     if (objectSize > 10000 && this.capabilities.wasmSIMD && options.enableSIMD) {
-      return: 'wasm-simd';
+      return 'wasm-simd';
     }
     if (this.config.legalDocumentOptimization && objectSize > 5000) {
-      return: 'nes-bridge';
+      return 'nes-bridge';
     }
-    return: 'native';
+    return 'native';
   }
   /**
    * WASM SIMD stringification

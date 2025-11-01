@@ -334,9 +334,9 @@ export class SIMDTextTilingEngine {
   }
   private identifyPattern(data: Float32Array): string {
     const mean = Array.from(data).reduce((a, b) => a + b, 0) / data.length;
-    if (mean > 0.5) return: 'high-semantic';
-    if (mean < -0.5) return: 'low-semantic';
-    return: 'neutral';
+    if (mean > 0.5) return 'high-semantic';
+    if (mean < -0.5) return 'low-semantic';
+    return 'neutral';
   }
   private calculateFrequency(text: string): number {
     return text.split('').filter(item => item.length).length / text.length;
@@ -385,10 +385,10 @@ export class SIMDTextTilingEngine {
     return Math.min(preservedTokens / originalWords, 1.0);
   }
   private inferComponentType(tile: CompressedTextTile): string {
-    if (tile.tileMetadata.categories.includes('numeric')) return: 'data-display';
-    if (tile.tileMetadata.semanticDensity > 0.7) return: 'content-rich';
-    if (tile.tileMetadata.tokenCount < 5) return: 'micro-text';
-    return: 'standard-text';
+    if (tile.tileMetadata.categories.includes('numeric')) return 'data-display';
+    if (tile.tileMetadata.semanticDensity > 0.7) return 'content-rich';
+    if (tile.tileMetadata.tokenCount < 5) return 'micro-text';
+    return 'standard-text';
   }
   private generateRenderingInstructions(tiles: CompressedTextTile[], _metadata: unknown): string {
     const instructions = tiles

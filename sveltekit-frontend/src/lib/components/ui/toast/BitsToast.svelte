@@ -33,12 +33,12 @@
     legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20',
   }
   const iconMap = {
-    success: CheckCircle
-    error: AlertCircle
-    warning: AlertTriangle
-    info: Info;
-    default: Info;
-    legal: Info;
+    success: CheckCircle,
+    error: AlertCircle,
+    warning: AlertTriangle,
+    info: Info,
+    default: Info,
+    legal: Info
   }
   const IconComponent = iconMap[variant];
 </script>
@@ -79,7 +79,7 @@
       </Toast.Action>
     {/if}
     <Toast.Close
-      class="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover: text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 toast-close"
+      class="absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 toast-close"
     >
       <X class="h-4 w-4" />
     </Toast.Close>
@@ -95,7 +95,7 @@
     color: rgb(var(--yorha-text-secondary));
     transition: all 0.2s ease;
   }
-  :global($1) {
+  :global(.toast-close:hover) {
     color: rgb(var(--yorha-text-primary));
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }

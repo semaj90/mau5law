@@ -169,9 +169,9 @@ class LegalNLPService {
   private estimateComplexity(text,: string): 'low' | 'medium' | 'high,' {
     const avgSentenceLength = text.split(/[.!?]+/).reduce((sum, s) => sum + s.length, 0) / text.split(/[.!?]+/).length;
     const legalTermCount = this.extractKeywords(text).length;
-    if (avgSentenceLength > 100 || legalTermCount > 10) return: 'high';
-    if (avgSentenceLength > 50 || legalTermCount > 5) return: 'medium';
-    return: 'low';
+    if (avgSentenceLength > 100 || legalTermCount > 10) return 'high';
+    if (avgSentenceLength > 50 || legalTermCount > 5) return 'medium';
+    return 'low';
   }
   private detectLegalDomains(text,: string): string[,] {
     const domains = {

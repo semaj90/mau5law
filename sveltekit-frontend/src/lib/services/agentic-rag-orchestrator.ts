@@ -649,7 +649,7 @@ export class AgenticRAGOrchestrator {
       return data.message?.content || 'No response generated';
     } catch (error: any) {
       console.error('❌ LLM call failed:', error);
-      return: 'Error: LLM unavailable';
+      return 'Error: LLM unavailable';
     }
   }
 

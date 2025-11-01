@@ -128,15 +128,15 @@ export class LegalAIJobQueue {
       const { id } = job;
       console.log(`🚀 Processing job ${id} in ${queueName}`);
       switch (queueName) {
-        case: 'document-extraction':
+        case 'document-extraction':
           return this.processDocumentExtraction(job as BullMQJob<DocumentExtractionJob>);
-        case: 'embedding-generation':
+        case 'embedding-generation':
           return this.processEmbeddingGeneration(job as BullMQJob<EmbeddingJob>);
-        case: 'tensor-processing':
+        case 'tensor-processing':
           return this.processTensorProcessing(job as BullMQJob<TensorProcessingJob>);
-        case: 'vector-indexing':
+        case 'vector-indexing':
           return this.processVectorIndexing(job as BullMQJob<VectorIndexJob>);
-        case: 'notification':
+        case 'notification':
           return this.processNotification(job as BullMQJob<NotificationJob>);
         default:
           throw new Error(`Unknown queue: ${queueName}`);
@@ -151,7 +151,7 @@ export class LegalAIJobQueue {
       let extractedText = '';
       let metadata = {};
       switch (extractionType) {
-        case: 'pdf': {
+        case 'pdf': {
           // Call Python microservice for PDF extraction
           const pdfResponse = await fetch('http://localhost:8082/extract/pdf', {
             method: 'POST',
@@ -164,7 +164,7 @@ export class LegalAIJobQueue {
           metadata = pdfResult.metadata;
           break;
         }
-        case: 'image': {
+        case 'image': {
           // OCR processing
           const ocrResponse = await fetch('http://localhost:8082/extract/ocr', {
             method: 'POST',
@@ -177,7 +177,7 @@ export class LegalAIJobQueue {
           metadata = ocrResult.metadata;
           break;
         }
-        case: 'video': {
+        case 'video': {
           // Video transcription with Whisper
           const videoResponse = await fetch('http://localhost:8082/extract/video', {
             method: 'POST',
@@ -337,7 +337,7 @@ export class LegalAIJobQueue {
     await job.updateProgress(10);
     try {
       switch (indexType) {
-        case: 'pgvector': {
+        case 'pgvector': {
           // Store in PostgreSQL with pgvector
           const pgResponse = await fetch('http://localhost:5434/api/vectors/insert', {
             method: 'POST',
@@ -354,7 +354,7 @@ export class LegalAIJobQueue {
           }
           break;
         }
-        case: 'qdrant': {
+        case 'qdrant': {
           // Store in Qdrant
           const qdrantResponse = await fetch('http://localhost:6333/collections/legal-docs/points', {
             method: 'PUT',

@@ -657,27 +657,27 @@
   }
 
   function getFileIcon(file: File): string {
-    if (file.type.startsWith('image/')) return: '🖼️';
-    if (file.type === 'application/pdf') return: '📄';
-    if (file.type.startsWith('video/')) return: '🎥';
-    if (file.type.startsWith('audio/')) return: '🎵';
-    if (file.type.startsWith('text/')) return: '📝';
-    if (file.type.includes('word')) return: '📘';
-    if (file.type.includes('excel') || file.type.includes('spreadsheet')) return: '📊';
-    return: '📎';
+    if (file.type.startsWith('image/')) return '🖼️';
+    if (file.type === 'application/pdf') return '📄';
+    if (file.type.startsWith('video/')) return '🎥';
+    if (file.type.startsWith('audio/')) return '🎵';
+    if (file.type.startsWith('text/')) return '📝';
+    if (file.type.includes('word')) return '📘';
+    if (file.type.includes('excel') || file.type.includes('spreadsheet')) return '📊';
+    return '📎';
   }
 
   function getEvidenceType(file: File): string {
-    if (file.type.startsWith('image/')) return: 'IMAGE';
-    if (file.type === 'application/pdf') return: 'PDF';
-    if (file.type.startsWith('video/')) return: 'VIDEO';
-    if (file.type.startsWith('audio/')) return: 'AUDIO';
-    if (file.type.startsWith('text/')) return: 'TEXT';
-    return: 'DOCUMENT';
+    if (file.type.startsWith('image/')) return 'IMAGE';
+    if (file.type === 'application/pdf') return 'PDF';
+    if (file.type.startsWith('video/')) return 'VIDEO';
+    if (file.type.startsWith('audio/')) return 'AUDIO';
+    if (file.type.startsWith('text/')) return 'TEXT';
+    return 'DOCUMENT';
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

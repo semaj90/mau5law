@@ -116,7 +116,7 @@ https://svelte.dev/e/attribute_duplicate -->
     selectedFiles = selectedFiles.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -132,11 +132,11 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'running': return: 'bg-blue-500';
-      case: 'completed': return: 'bg-green-500';
-      case: 'failed': return: 'bg-red-500';
-      case: 'paused': return: 'bg-yellow-500';
-      default: return: 'bg-gray-500';
+      case 'running': return 'bg-blue-500';
+      case 'completed': return 'bg-green-500';
+      case 'failed': return 'bg-red-500';
+      case 'paused': return 'bg-yellow-500';
+      default: return 'bg-gray-500';
     }
   }
   async function pauseTraining() {

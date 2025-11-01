@@ -143,30 +143,30 @@ export const performanceMonitor = new PerformanceMonitor()
 
 export const formatMetricValue = (value: number, type: 'time'|'percentage'|'count'|'size'): string => {
   switch (type) {
-    case: 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
-    case: 'percentage': return `${Math.round(value*100)}%`
-    case: 'count': return value.toLocaleString()
-    case: 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}` }
+    case 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
+    case 'percentage': return `${Math.round(value*100)}%`
+    case 'count': return value.toLocaleString()
+    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}` }
     default: return value.toString()
   }
 }
 
 export const getHealthStatusColor = (status: 'healthy'|'degraded'|'unhealthy'): string => {
   switch (status) {
-    case: 'healthy': return: 'text-green-500'
-    case: 'degraded': return: 'text-yellow-500'
-    case: 'unhealthy': return: 'text-red-500'
-    default: return: 'text-gray-500'
+    case 'healthy': return 'text-green-500'
+    case 'degraded': return 'text-yellow-500'
+    case 'unhealthy': return 'text-red-500'
+    default: return 'text-gray-500'
   }
 }
 
 export const getAlertSeverityColor = (severity: Alert['severity']): string => {
   switch (severity) {
-    case: 'low': return: 'text-blue-500'
-    case: 'medium': return: 'text-yellow-500'
-    case: 'high': return: 'text-orange-500'
-    case: 'critical': return: 'text-red-500'
-    default: return: 'text-gray-500'
+    case 'low': return 'text-blue-500'
+    case 'medium': return 'text-yellow-500'
+    case 'high': return 'text-orange-500'
+    case 'critical': return 'text-red-500'
+    default: return 'text-gray-500'
   }
 }
 

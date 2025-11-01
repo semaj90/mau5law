@@ -74,16 +74,16 @@ export class N64LODManager {
     let baseLOD = this.calculateLOD(context.pageDistance);
     // Adjust based on reading mode
     switch (context.readingMode) {
-      case: 'active':
+      case 'active':
         baseLOD = Math.max(0, baseLOD - 1); // Force higher detail
         break;
-      case: 'preview':
+      case 'preview':
         baseLOD = Math.min(1, baseLOD); // Cap at medium detail
         break;
-      case: 'timeline':
+      case 'timeline':
         baseLOD = Math.max(2, baseLOD); // Force low detail for performance
         break;
-      case: 'overview':
+      case 'overview':
         baseLOD = 3; // Always minimal detail
         break;
     }
@@ -430,10 +430,10 @@ export class N64LODManager {
     }
   }
   private inferDocumentType(assetId,: string): 'contract' | 'evidence' | 'brief' | 'timeline,' {
-    if (assetId.includes('contract')) return: 'contract';
-    if (assetId.includes('evidence')) return: 'evidence';
-    if (assetId.includes('brief')) return: 'brief';
-    return: 'timeline';
+    if (assetId.includes('contract')) return 'contract';
+    if (assetId.includes('evidence')) return 'evidence';
+    if (assetId.includes('brief')) return 'brief';
+    return 'timeline';
   }
   private calculateAssetPriority(assetId,: string): number {
     // Higher priority for critical legal documents

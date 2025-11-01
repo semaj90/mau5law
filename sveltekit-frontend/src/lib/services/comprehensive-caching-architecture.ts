@@ -751,19 +751,19 @@ export class ComprehensiveCachingArchitecture {
       try {
         let result: CacheEntry<T> | null = null;
         switch (layer) {
-          case: 'loki':
+          case 'loki':
             result = await this.getFromLoki<T>(key, legalContext);
             break;
-          case: 'redis':
+          case 'redis':
             result = await this.getFromRedis<T>(key, legalContext);
             break;
-          case: 'qdrant':
+          case 'qdrant':
             if (includeEmbedding) result = await this.getFromQdrant<T>(key, legalContext);
             break;
-          case: 'postgres':
+          case 'postgres':
             result = await this.getFromPostgres<T>(key, includeEmbedding, legalContext);
             break;
-          case: 'neo4j':
+          case 'neo4j':
             result = await this.getFromNeo4j<T>(key, legalContext);
             break;
         }
@@ -831,19 +831,19 @@ export class ComprehensiveCachingArchitecture {
     const promises = layers.map(async layer => {
       try {
         switch (layer) {
-          case: 'loki':
+          case 'loki':
             await this.setInLoki(key, cacheEntry);
             break;
-          case: 'redis':
+          case 'redis':
             await this.setInRedis(key, cacheEntry);
             break;
-          case: 'qdrant':
+          case 'qdrant':
             if (embedding) await this.setInQdrant(key, cacheEntry);
             break;
-          case: 'postgres':
+          case 'postgres':
             await this.setInPostgres(key, cacheEntry);
             break;
-          case: 'neo4j':
+          case 'neo4j':
             await this.setInNeo4j(key, cacheEntry);
             break;
         }
@@ -959,16 +959,15 @@ export class ComprehensiveCachingArchitecture {
     const value = parseInt(matches[1], 10);
     const unit = matches[2].toLowerCase();
     switch (unit) {
-      case: 'day':
+      case 'day':
         return value;
-      case: 'week':
+      case 'week':
         return value * 7;
-      case: 'month':
+      case 'month':
         return value * 30;
-      case: 'year':
+      case 'year':
         return value * 365;
-      default:
-        return 2555;
+      default: return 2555;
     }
   }
 
@@ -998,11 +997,11 @@ export class ComprehensiveCachingArchitecture {
   }
 
   private determineLokiCollection(context?: LegalCacheContext): string {
-    if (context?.privilege_protected) return: 'privilege-protected';
-    if (context?.chain_of_custody_required) return: 'chain-of-custody';
-    if (context?.case_id) return: 'case-data';
-    if (context?.evidence_id) return: 'evidence-cache';
-    return: 'rag-results';
+    if (context?.privilege_protected) return 'privilege-protected';
+    if (context?.chain_of_custody_required) return 'chain-of-custody';
+    if (context?.case_id) return 'case-data';
+    if (context?.evidence_id) return 'evidence-cache';
+    return 'rag-results';
   }
 
   private async getFromRedis<T>(key: string, context?: LegalCacheContext): Promise<CacheEntry<T> | null> {

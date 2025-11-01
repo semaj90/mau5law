@@ -357,18 +357,17 @@ export class EnhancedSearchService {
   }
   private getItemsByCategory(category: SearchCategory): SearchableItem[] {
     switch (category) {
-      case: 'component':
+      case 'component':
         return this.searchIndex.components;
-      case: 'service':
+      case 'service':
         return this.searchIndex.goBinaries;
-      case: 'documentation':
+      case 'documentation':
         return this.searchIndex.documentation;
-      case: 'api':
+      case 'api':
         return this.searchIndex.apiEndpoints;
-      case: 'demo':
+      case 'demo':
         return this.searchIndex.demos;
-      default:
-        return [];
+      default: return [];
     }
   }
   // ===== SPECIALIZED SEARCH METHODS =====

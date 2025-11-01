@@ -82,7 +82,7 @@ export function useLegalCase(initialCaseId?: string) {
     error = null;
     try {
       const response = await fetch(`/api/cases/${caseId}`);
-      if (!response.ok) throw new Error(`Failed to load case: ${response.statusText}`);
+      if (!response.ok) throw new Error(`Failed to load case ${response.statusText}`);
       currentCase = await response.json();
       lastFetched = Date.now();
     } catch (err: any) {
@@ -116,7 +116,7 @@ export function useLegalCase(initialCaseId?: string) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
       });
-      if (!response.ok) throw new Error(`Failed to update case: ${response.statusText}`);
+      if (!response.ok) throw new Error(`Failed to update case ${response.statusText}`);
       const updated = await response.json();
       currentCase = updated;
       // Update in cases list if present
@@ -443,7 +443,7 @@ export function useLegalData(caseId?: string) {
     ]);
   }
   return {
-    case: caseComposable,
+    case caseComposable,
     evidence: evidenceComposable,
     persons: personComposable,
     isAnyLoading,

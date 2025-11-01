@@ -453,14 +453,13 @@ class EnhancedCachingService {
   // ============================================================================
   private _convertPriority(priority?: 'low' | 'medium' | 'high'): number {
     switch (priority) {
-      case: 'low':
+      case 'low':
         return 1;
-      case: 'medium':
+      case 'medium':
         return 5;
-      case: 'high':
+      case 'high':
         return 10;
-      default:
-        return 5;
+      default: return 5;
     }
   }
   private hashQuery(query: string): string {

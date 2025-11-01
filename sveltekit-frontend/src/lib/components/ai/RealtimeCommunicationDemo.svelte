@@ -190,16 +190,15 @@ https://svelte.dev/e/js_parse_error -->
    */
   function getConnectionStatusColor(connectionStatus: string): string {
     switch (connectionStatus) {
-      case: 'connected':
-        return: 'text-green-600';
-      case: 'connecting':
-        return: 'text-yellow-600';
-      case: 'disconnected':
-        return: 'text-gray-500';
-      case: 'error':
-        return: 'text-red-600';
-      default:
-        return: 'text-gray-500';
+      case 'connected':
+        return 'text-green-600';
+      case 'connecting':
+        return 'text-yellow-600';
+      case 'disconnected':
+        return 'text-gray-500';
+      case 'error':
+        return 'text-red-600';
+      default: return 'text-gray-500';
     }
   }
   /**
@@ -207,16 +206,15 @@ https://svelte.dev/e/js_parse_error -->
    */
   function getConnectionStatusIcon(connectionStatus: string): string {
     switch (connectionStatus) {
-      case: 'connected':
-        return: '●';
-      case: 'connecting':
-        return: '◐';
-      case: 'disconnected':
-        return: '○';
-      case: 'error':
-        return: '⚠';
-      default:
-        return: '?';
+      case 'connected':
+        return '●';
+      case 'connecting':
+        return '◐';
+      case 'disconnected':
+        return '○';
+      case 'error':
+        return '⚠';
+      default: return '?';
     }
   }
   /**

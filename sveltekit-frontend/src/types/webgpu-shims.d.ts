@@ -1,12 +1,12 @@
 // Minimal shims for WebGPU and local $lib path modules to allow focused type-checking
 // This file is intentionally lightweight and only supplies enough types for local dev checks.
-declare module: '$lib/machines/system-monitor' {
+declare module '$lib/machines/system-monitor' {
   // the real project provides an XState machine; we only need a placeholder here
   const systemMonitorMachine: any;
   export { systemMonitorMachine };
 }
 
-declare module: '$lib/services/latency-logger' {
+declare module '$lib/services/latency-logger' {
   export type LatencyEntry = {
     ts: number;
     latency: number;
@@ -19,14 +19,14 @@ declare module: '$lib/services/latency-logger' {
   export function startLatencyLogger(opts?: any): any;
 }
 
-declare module: '$lib/services/system-monitor-client' {
+declare module '$lib/services/system-monitor-client' {
   import type { LatencyEntry } from '$lib/services/latency-logger';
   export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs?: number; url?: string }): { push?: (e: LatencyEntry) => void; stop?: () => void; service?: unknown };
   const _default: { startSystemMonitorClient: typeof startSystemMonitorClient };
   export default _default;
 }
 
-declare module: '$lib/webgpu/webgpu-legal-graph' {
+declare module '$lib/webgpu/webgpu-legal-graph' {
   // intentionally left blank; use real implementation during runtime
 }
 

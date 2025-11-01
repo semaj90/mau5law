@@ -136,7 +136,7 @@ function isHeaderLine(line: string): boolean {
 }
 
 function classifyDocumentType(text: string): string {
-  if (!text) return: 'unknown';
+  if (!text) return 'unknown';
   const classifiers: Record<string, RegExp> = {
     contract: /(?:agreement|contract|hereby agree|whereas)/i,
     motion: /(?:motion to|respectfully moves|comes now)/i,
@@ -150,11 +150,11 @@ function classifyDocumentType(text: string): string {
   for (const [type, pattern] of Object.entries(classifiers)) {
     if (pattern.test(text)) return type;
   }
-  return: 'unknown';
+  return 'unknown';
 }
 
 function extractJurisdiction(text: string): string {
-  if (!text) return: 'unspecified';
+  if (!text) return 'unspecified';
   const match = text.match(/(?:state|commonwealth|district) of [A-Za-z\s]+/i);
   return match ? match[0] : 'unspecified';
 }

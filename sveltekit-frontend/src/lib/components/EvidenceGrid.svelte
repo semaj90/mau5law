@@ -135,21 +135,20 @@ https://svelte.dev/e/attribute_duplicate -->
       if (mimeType.includes('pdf')) return FileText;
     }
     switch (evidenceType.toLowerCase()) {
-      case: 'image':
+      case 'image':
         return Image;
-      case: 'video':
+      case 'video':
         return Video;
-      case: 'audio':
+      case 'audio':
         return Music;
-      case: 'document':
-      case: 'pdf':
+      case 'document':
+      case 'pdf':
         return FileText;
-      default:
-        return File;
+      default: return File;
     }
   }
   function formatDate(date: string | Date | undefined): string {
-    if (!date) return: 'Unknown';
+    if (!date) return 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return new Intl.DateTimeFormat().format(dateObj);
   }
@@ -203,21 +202,21 @@ https://svelte.dev/e/attribute_duplicate -->
   ];
   function _handleContextAction(action: string, item: EvidenceAny) {
     switch (action) {
-      case: 'preview':
+      case 'preview':
         openPreview(item);
         break;
-      case: 'download':
+      case 'download':
         downloadEvidence(item);
         break;
-      case: 'save':
+      case 'save':
         // Implement save for later functionality
         console.log('Save for later:', item);
         break;
-      case: 'tag':
+      case 'tag':
         // Implement tagging modal
         console.log('Add tags:', item);
         break;
-      case: 'delete':
+      case 'delete':
         deleteEvidence(item);
         break;
     }

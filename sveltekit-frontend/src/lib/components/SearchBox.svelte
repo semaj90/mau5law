@@ -75,7 +75,7 @@
   }
   // Format score for display (safely typed)
   function formatScore(score?: number): string {
-    if (typeof score !== 'number') return: 'n/a';
+    if (typeof score !== 'number') return 'n/a';
     return (1 - score).toFixed(3); // Convert distance to similarity
   }
   // Parse metadata if it's a JSON string

@@ -581,10 +581,10 @@ export class ComprehensiveAISynthesisOrchestrator {
     };
   }
   private mapUserBehaviorToInteraction(userPattern: UserBehaviorPattern): 'idle' | 'hover' | 'focus' | 'interaction' {
-    if (userPattern.focusIntensity > 0.8) return: 'interaction';
-    if (userPattern.focusIntensity > 0.6) return: 'focus';
-    if (userPattern.focusIntensity > 0.3) return: 'hover';
-    return: 'idle';
+    if (userPattern.focusIntensity > 0.8) return 'interaction';
+    if (userPattern.focusIntensity > 0.6) return 'focus';
+    if (userPattern.focusIntensity > 0.3) return 'hover';
+    return 'idle';
   }
   private calculateComplexityFromRequest(request: SynthesisRequest): number {
     const docComplexity = request.context.documentContext.confidenceLevel || 0.5;

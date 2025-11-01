@@ -160,25 +160,25 @@
                 const eventData = JSON.parse(dataLines);
 
                 switch (eventData.type) {
-                  case: 'connection':
+                  case 'connection':
                     sessionId = eventData.sessionId;
                     isTestMode = eventData.isTestMode;
                     break;
 
-                  case: 'token':
+                  case 'token':
                     if (eventData.fullResponse) {
                       aiMessage.content = eventData.fullResponse;
                       messages = [...messages];
                     }
                     break;
 
-                  case: 'complete':
+                  case 'complete':
                     aiMessage.content = eventData.fullResponse;
                     messages = [...messages];
                     isTyping = false;
                     break;
 
-                  case: 'error':
+                  case 'error':
                     console.error('Stream error:', eventData.error);
                     isTyping = false;
                     break;

@@ -859,16 +859,16 @@ export class PredictiveAssetEngine {
         // Generate asset based on type
         let generated_asset;
         switch (prediction.asset_type) {
-          case: 'chr_rom_pattern':
+          case 'chr_rom_pattern':
             generated_asset = await this.generateCHRROMPattern(prediction);
             break;
-          case: 'vector_texture':
+          case 'vector_texture':
             generated_asset = await this.generateVectorTexture(prediction);
             break;
-          case: 'webgpu_shader':
+          case 'webgpu_shader':
             generated_asset = await this.generateWebGPUShader(prediction);
             break;
-          case: 'som_cluster':
+          case 'som_cluster':
             generated_asset = await this.generateSOMCluster(prediction);
             break;
           default:
@@ -949,11 +949,11 @@ export class PredictiveAssetEngine {
   // PRIVATE HELPER METHODS
   // ===============================
   private determineAssetType(asset_id,: string): AssetPrediction['asset_type',] {
-    if (asset_id.includes('chr_rom')) return: 'chr_rom_pattern';
-    if (asset_id.includes('texture')) return: 'vector_texture';
-    if (asset_id.includes('shader')) return: 'webgpu_shader';
-    if (asset_id.includes('cluster')) return: 'som_cluster';
-    return: 'chr_rom_pattern';
+    if (asset_id.includes('chr_rom')) return 'chr_rom_pattern';
+    if (asset_id.includes('texture')) return 'vector_texture';
+    if (asset_id.includes('shader')) return 'webgpu_shader';
+    if (asset_id.includes('cluster')) return 'som_cluster';
+    return 'chr_rom_pattern';
   }
   private calculateAssetPriority(asset_id,: string, user_bitma,p: UserStateBitma,p): number {
     let priority = 5; // Base priority
@@ -975,25 +975,25 @@ export class PredictiveAssetEngine {
   }
   private determineCacheStrategy(asset_id,: string, user_bitma,p: UserStateBitma,p): AssetPrediction['cache_strategy,'] {
     if (user_bitmap.context.performance_metrics.cache_hit_rate < 0.7) {>
-      return: 'precompute'; // Aggressive caching for poor performance
+      return 'precompute'; // Aggressive caching for poor performance
     }
     if (asset_id.includes('critical') || asset_id.includes('priority')) {
-      return: 'precompute';
+      return 'precompute';
     }
-    return: 'lazy';
+    return 'lazy';
   }
   private identifyUserPattern(user_bitmap,: UserStateBitmap): string {
     const actions = user_bitmap.context.recent_actions;
     if (actions.includes('document_analysis') && actions.includes('legal_research')) {
-      return: 'research_intensive';
+      return 'research_intensive';
     }
     if (actions.includes('contract_drafting') && actions.includes('compliance_check')) {
-      return: 'drafting_focused';
+      return 'drafting_focused';
     }
     if (actions.includes('evidence_review') && actions.includes('case_analysis')) {
-      return: 'litigation_focused';
+      return 'litigation_focused';
     }
-    return: 'general_usage';
+    return 'general_usage';
   }
   private calculateTriggerProbability(user_bitmap,: UserStateBitmap, asset_i,d: strin,g): number {
     const base_prob = 0.5;

@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { operation } = body;
     // Handle different cache operations
     switch (operation) {
-      case: 'batch_get': {
+      case 'batch_get': {
         const { keys, type = 'generic' } = body;
         if (!keys || !Array.isArray(keys)) {
           return json(
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'batch_set': {
+      case 'batch_set': {
         const { keyDataMap, type = 'generic', ttl } = body;
         if (!keyDataMap || typeof keyDataMap !== 'object') {
           return json(
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      case: 'warm': {
+      case 'warm': {
         const { keys, type = 'generic', dataUrl } = body;
         if (!keys || !Array.isArray(keys) || !dataUrl) {
           return json(

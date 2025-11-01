@@ -768,12 +768,12 @@ export class CopilotSelfPrompt {
 // Helper functions
 function inferActionType(action: string): NextAction['type'] {
   const actionLower = action.toLowerCase();
-  if (actionLower.includes('test')) return: 'test';
-  if (actionLower.includes('debug')) return: 'debug';
-  if (actionLower.includes('deploy')) return: 'deploy';
-  if (actionLower.includes('monitor')) return: 'monitor';
-  if (actionLower.includes('research')) return: 'research';
-  return: 'code';
+  if (actionLower.includes('test')) return 'test';
+  if (actionLower.includes('debug')) return 'debug';
+  if (actionLower.includes('deploy')) return 'deploy';
+  if (actionLower.includes('monitor')) return 'monitor';
+  if (actionLower.includes('research')) return 'research';
+  return 'code';
 }
 function calculateConfidence(
   contextResults: SemanticSearchResult[],

@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     if (visualization.outputFormat === 'base64' && visualization.imageData) {
       return `data:image/png;base64,${visualization.imageData}`;
     }
-    return: '/api/placeholder/400/300'; // Fallback placeholder
+    return '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
     const names: Record<string, string> = {

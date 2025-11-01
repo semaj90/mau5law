@@ -271,19 +271,19 @@ export class DatabaseSyncManager {
       try {
         let result;
         switch (op.operation) {
-          case: 'create':
+          case 'create':
             result = await this.create(op.entity, op.data, op.options);
             break;
-          case: 'read':
+          case 'read':
             result = await this.read(op.entity, op.id, op.data, op.options);
             break;
-          case: 'update':
+          case 'update':
             result = await this.update(op.entity, op.id!, op.data, op.options);
             break;
-          case: 'patch':
+          case 'patch':
             result = await this.patch(op.entity, op.id!, op.data, op.options);
             break;
-          case: 'delete':
+          case 'delete':
             result = await this.delete(op.entity, op.id!, op.options);
             break;
         }
@@ -392,19 +392,19 @@ export class DatabaseSyncManager {
       const cacheKey = `sync-cache-${entity}`;
       const cache = JSON.parse(localStorage.getItem(cacheKey) || '{}');
       switch (operation) {
-        case: 'create':
+        case 'create':
           if (data && typeof (data as Record<string, unknown>)['id'] !== 'undefined') {
             const key = String((data as Record<string, unknown>)['id']);
             cache[key] = data as Record<string, unknown>;
           }
           break;
-        case: 'update':
-        case: 'patch':
+        case 'update':
+        case 'patch':
           if (id && cache[id]) {
             cache[id] = { ...cache[id], ...data };
           }
           break;
-        case: 'delete':
+        case 'delete':
           if (id && cache[id]) {
             delete cache[id];
           }

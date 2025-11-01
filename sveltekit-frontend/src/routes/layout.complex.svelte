@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import: '../app.css';
-  import: '../lib/styles/modern-yorha-theme.css';
+  import '../app.css';
+  import '../lib/styles/modern-yorha-theme.css';
   import { onMount, setContext } from 'svelte';
   import Navigation from '$lib/components/Navigation.svelte';
   const { children } = $props();

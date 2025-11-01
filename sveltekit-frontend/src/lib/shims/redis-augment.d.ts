@@ -1,5 +1,5 @@
 // Permissive Redis (ioredis-like) shim to include commonly used runtime methods.
-declare module: 'ioredis' {
+declare module 'ioredis' {
   class Redis {
     // common methods used in repo
     get(_key: string): Promise<any>;

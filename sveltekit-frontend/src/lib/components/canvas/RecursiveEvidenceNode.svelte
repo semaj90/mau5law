@@ -79,14 +79,14 @@
     return completeness / chainOfCustody.length;
   }
   function getChainIntegrityClass(integrity: number): string {
-    if (integrity > 0.8) return: 'chain-integrity-high';
-    if (integrity > 0.6) return: 'chain-integrity-medium';
-    return: 'chain-integrity-low';
+    if (integrity > 0.8) return 'chain-integrity-high';
+    if (integrity > 0.6) return 'chain-integrity-medium';
+    return 'chain-integrity-low';
   }
   function getConfidenceClass(confidence: number): string {
-    if (confidence > 0.8) return: 'confidence-high';
-    if (confidence > 0.6) return: 'confidence-medium';
-    return: 'confidence-low';
+    if (confidence > 0.8) return 'confidence-high';
+    if (confidence > 0.6) return 'confidence-medium';
+    return 'confidence-low';
   }
   function getRelationshipTypeIcon(type: string): string {
     const icons: Record<string, string> = {
@@ -101,13 +101,13 @@
     return icons[type] || '🔗';
   }
   function getLegalImplicationIcon(implication string): string {
-    if (implication.includes('critical')) return: '🔴';
-    if (implication.includes('chain_integrity')) return: '🔗';
-    if (implication.includes('timeline_gap')) return: '⏰';
-    if (implication.includes('authentication')) return: '🔐';
-    if (implication.includes('circular')) return: '🔄';
-    if (implication.includes('max_depth')) return: '⚠️';
-    return: '📋';
+    if (implication.includes('critical')) return '🔴';
+    if (implication.includes('chain_integrity')) return '🔗';
+    if (implication.includes('timeline_gap')) return '⏰';
+    if (implication.includes('authentication')) return '🔐';
+    if (implication.includes('circular')) return '🔄';
+    if (implication.includes('max_depth')) return '⚠️';
+    return '📋';
   }
   function formatTimestamp(timestamp: string): string {
     return new Date(timestamp).toLocaleString();

@@ -239,23 +239,23 @@
 
   function getFindingIcon(type: Finding['type']) {
     switch (type) {
-      case: 'pattern': return: '🔄';
-      case: 'anomaly': return: '⚠️';
-      case: 'match': return: '✅';
-      case: 'contradiction': return: '❌';
-      case: 'gap': return: '❓';
-      default: return: '📊';
+      case 'pattern': return '🔄';
+      case 'anomaly': return '⚠️';
+      case 'match': return '✅';
+      case 'contradiction': return '❌';
+      case 'gap': return '❓';
+      default: return '📊';
     }
   }
 
   function getCorrelationIcon(type: Correlation['correlationType']) {
     switch (type) {
-      case: 'temporal': return: '🕐';
-      case: 'spatial': return: '📍';
-      case: 'causal': return: '➡️';
-      case: 'semantic': return: '💭';
-      case: 'entity': return: '👥';
-      default: return: '🔗';
+      case 'temporal': return '🕐';
+      case 'spatial': return '📍';
+      case 'causal': return '➡️';
+      case 'semantic': return '💭';
+      case 'entity': return '👥';
+      default: return '🔗';
     }
   }
 </script>

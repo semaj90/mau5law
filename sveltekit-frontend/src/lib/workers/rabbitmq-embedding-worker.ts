@@ -127,13 +127,13 @@ class RabbitMQEmbeddingWorker {
       }
       let result: any;
       switch (payload.entity_type) {
-        case: 'document':
+        case 'document':
           result = await this.processDocumentEmbedding(payload);
           break;
-        case: 'case':
+        case 'case':
           result = await this.processCaseEmbedding(payload);
           break;
-        case: 'chunk':
+        case 'chunk':
           result = await this.processChunkEmbedding(payload);
           break;
         default:
@@ -260,10 +260,10 @@ class RabbitMQEmbeddingWorker {
       }
       documentData = doc;
       switch (embedding_type) {
-        case: 'title':
+        case 'title':
           textToEmbed = doc.title;
           break;
-        case: 'summary':
+        case 'summary':
           textToEmbed = doc.ai_summary || doc.title;
           break;
         default:
@@ -431,13 +431,13 @@ class RabbitMQEmbeddingWorker {
       };
       let result: any;
       switch (entity.entity_type) {
-        case: 'document':
+        case 'document':
           result = await this.processDocumentEmbedding(payload);
           break;
-        case: 'case':
+        case 'case':
           result = await this.processCaseEmbedding(payload);
           break;
-        case: 'chunk':
+        case 'chunk':
           result = await this.processChunkEmbedding(payload);
           break;
         default:

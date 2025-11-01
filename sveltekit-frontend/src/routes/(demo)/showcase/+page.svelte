@@ -101,27 +101,25 @@
 
   function statusLabelClass(status: DemoFeature['status']): string {
     switch (status) {
-      case: 'active':
-        return: 'status-active';
-      case: 'beta':
-        return: 'status-beta';
-      case: 'coming-soon':
-        return: 'status-coming-soon';
-      default:
-        return: '';
+      case 'active':
+        return 'status-active';
+      case 'beta':
+        return 'status-beta';
+      case 'coming-soon':
+        return 'status-coming-soon';
+      default: return '';
     }
   }
 
   function complexityLabelClass(complexity: DemoFeature['complexity']): string {
     switch (complexity) {
-      case: 'low':
-        return: 'complexity-low';
-      case: 'medium':
-        return: 'complexity-medium';
-      case: 'high':
-        return: 'complexity-high';
-      default:
-        return: '';
+      case 'low':
+        return 'complexity-low';
+      case 'medium':
+        return 'complexity-medium';
+      case 'high':
+        return 'complexity-high';
+      default: return '';
     }
   }
 </script>

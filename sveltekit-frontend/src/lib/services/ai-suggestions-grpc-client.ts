@@ -449,46 +449,44 @@ export async function rateLegalSuggestion(
 export const ReportTypeUtils = {
   fromString(type: string): ReportType {
     switch (type.toLowerCase()) {
-      case: 'prosecution_memo':
+      case 'prosecution_memo':
         return ReportType.PROSECUTION_MEMO;
-      case: 'case_brief':
+      case 'case_brief':
         return ReportType.CASE_BRIEF;
-      case: 'evidence_summary':
+      case 'evidence_summary':
         return ReportType.EVIDENCE_SUMMARY;
-      case: 'motion':
+      case 'motion':
         return ReportType.MOTION;
-      case: 'discovery_request':
+      case 'discovery_request':
         return ReportType.DISCOVERY_REQUEST;
-      case: 'witness_statement':
+      case 'witness_statement':
         return ReportType.WITNESS_STATEMENT;
-      case: 'legal_research':
+      case 'legal_research':
         return ReportType.LEGAL_RESEARCH;
-      case: 'closing_argument':
+      case 'closing_argument':
         return ReportType.CLOSING_ARGUMENT;
-      default:
-        return ReportType.REPORT_TYPE_UNSPECIFIED;
+      default: return ReportType.REPORT_TYPE_UNSPECIFIED;
     }
   },
   toString(type: ReportType): string {
     switch (type) {
       case ReportType.PROSECUTION_MEMO:
-        return: 'prosecution_memo';
+        return 'prosecution_memo';
       case ReportType.CASE_BRIEF:
-        return: 'case_brief';
+        return 'case_brief';
       case ReportType.EVIDENCE_SUMMARY:
-        return: 'evidence_summary';
+        return 'evidence_summary';
       case ReportType.MOTION:
-        return: 'motion';
+        return 'motion';
       case ReportType.DISCOVERY_REQUEST:
-        return: 'discovery_request';
+        return 'discovery_request';
       case ReportType.WITNESS_STATEMENT:
-        return: 'witness_statement';
+        return 'witness_statement';
       case ReportType.LEGAL_RESEARCH:
-        return: 'legal_research';
+        return 'legal_research';
       case ReportType.CLOSING_ARGUMENT:
-        return: 'closing_argument';
-      default:
-        return: 'unspecified';
+        return 'closing_argument';
+      default: return 'unspecified';
     }
   },
 };
@@ -506,17 +504,16 @@ export const RatingUtils = {
   toString(rating: Rating): string {
     switch (rating) {
       case Rating.VERY_POOR:
-        return: 'Very Poor';
+        return 'Very Poor';
       case Rating.POOR:
-        return: 'Poor';
+        return 'Poor';
       case Rating.FAIR:
-        return: 'Fair';
+        return 'Fair';
       case Rating.GOOD:
-        return: 'Good';
+        return 'Good';
       case Rating.EXCELLENT:
-        return: 'Excellent';
-      default:
-        return: 'Unspecified';
+        return 'Excellent';
+      default: return 'Unspecified';
     }
   },
 };

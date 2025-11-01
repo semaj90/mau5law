@@ -154,7 +154,7 @@ const createCaseStore = (): CaseStoreAPI => {
           activeCaseId: caseId,
           isLoading: false,
         }));
-        return { success: true, case: caseData };
+        return { success: true, case caseData };
       } else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
@@ -198,7 +198,7 @@ const createCaseStore = (): CaseStoreAPI => {
           },
           isLoading: false,
         }));
-        return { success: true, case: newCase };
+        return { success: true, case newCase };
       } else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
@@ -239,7 +239,7 @@ const createCaseStore = (): CaseStoreAPI => {
           activeCase: state.activeCase?.id === caseId ? { ...state.activeCase, ...updatedCase } : state.activeCase,
           isLoading: false,
         }));
-        return { success: true, case: updatedCase };
+        return { success: true, case updatedCase };
       } else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({

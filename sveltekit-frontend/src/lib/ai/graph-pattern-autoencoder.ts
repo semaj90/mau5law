@@ -17,8 +17,8 @@ import {
   mul,
   expandDims,
 } from '@tensorflow/tfjs';
-import: '@tensorflow/tfjs-backend-webgl';
-import: '@tensorflow/tfjs-backend-webgpu';
+import '@tensorflow/tfjs-backend-webgl';
+import '@tensorflow/tfjs-backend-webgpu';
 import { MultiLayerCache } from '../services/multiLayerCache.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
 
@@ -555,7 +555,7 @@ export class GraphPatternAutoEncoder {
     features.push(nodes.length / 1000); // Normalized node count
     // Node type distribution
     const typeCount = {
-      case: 0,
+      case 0,
       statute: 0,
       regulation: 0,
       precedent: 0,

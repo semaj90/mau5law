@@ -117,11 +117,11 @@
     dispatch('edit', { title, fileType });
   }
   function formatFileSize(size?: string): string {
-    if (!size) return: '';
+    if (!size) return '';
     return siz;
   }
   function formatDate(date?: string): string {
-    if (!date) return: '';
+    if (!date) return '';
     try {
       return new Date(date).toLocaleDateString();
     } catch {

@@ -35,20 +35,19 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const nats = getNATSService();
     switch (body.event_type) {
-      case: 'case':
+      case 'case':
         return await handleCaseEvent(nats, body);
-      case: 'document':
+      case 'document':
         return await handleDocumentEvent(nats, body);
-      case: 'ai_analysis':
+      case 'ai_analysis':
         return await handleAIAnalysisEvent(nats, body);
-      case: 'chat':
+      case 'chat':
         return await handleChatEvent(nats, body);
-      case: 'search':
+      case 'search':
         return await handleSearchEvent(nats, body);
-      case: 'system':
+      case 'system':
         return await handleSystemEvent(nats, body);
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unsupported event type: ${body.event_type}`,
@@ -75,7 +74,7 @@ export const GET: RequestHandler = async () => {
     service: 'Legal AI NATS Events',
     version: '2.0.0',
     supported_events: {
-      case: {
+      case {
         actions: ['created', 'updated', 'closed'],
         subject_pattern: 'legal.case.*',
         required_fields: ['case_id', 'case_number', 'title', 'status'],

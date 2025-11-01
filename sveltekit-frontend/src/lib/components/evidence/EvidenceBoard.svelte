@@ -395,32 +395,31 @@ https://svelte.dev/e/js_parse_error -->
   // Get evidence type icon
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case: 'document':
+      case 'document':
         return FileText;
-      case: 'photo':
+      case 'photo':
         return Image;
-      case: 'video':
+      case 'video':
         return Video;
-      case: 'audio':
+      case 'audio':
         return Music;
-      case: 'digital':
+      case 'digital':
         return Archive;
-      default:
-        return FileText;
+      default: return FileText;
     }
   }
   // Get analysis status color
   function getAnalysisStatusColor(evidence: any) {
     // runtime-guard evidence shape to avoid TS/runtime errors
-    if (evidence && (evidence as any).analyzed) return: 'text-green-600';
+    if (evidence && (evidence as any).analyzed) return 'text-green-600';
     if (
       loadingAnalysis &&
       evidence &&
       typeof (evidence as any).id === 'string' &&
       selectedEvidence.includes((evidence as any).id)
     )
-      return: 'text-yellow-600';
-    return: 'text-gray-400';
+      return 'text-yellow-600';
+    return 'text-gray-400';
   }
   // Render network view
   function renderNetworkView() {

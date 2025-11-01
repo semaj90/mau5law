@@ -161,7 +161,7 @@ export class OCRIntegrationService {
       let result: OCRResult;
 
       switch (selectedMethod) {
-        case: 'wasm_simd':
+        case 'wasm_simd':
           result = await this.processWithWorkerPool(imageData, {
             method: 'wasm_simd',
             confidenceThreshold,
@@ -170,7 +170,7 @@ export class OCRIntegrationService {
           });
           break;
 
-        case: 'cuda_tensorrt':
+        case 'cuda_tensorrt':
           result = await this.processWithConcurrentGPU(imageData, {
             confidenceThreshold,
             enableEmbedding,
@@ -178,7 +178,7 @@ export class OCRIntegrationService {
           });
           break;
 
-        case: 'agentic_controller':
+        case 'agentic_controller':
           result = await this.processWithAgentic(imageData, {
             confidenceThreshold,
             enableEmbedding,
@@ -238,20 +238,20 @@ export class OCRIntegrationService {
   private selectOptimalMethod(imageData: any): OCRMethod {
     // Complex images or server-side processing
     if (typeof window === 'undefined') {
-      return: 'agentic_controller';
+      return 'agentic_controller';
     }
 
     // Large files benefit from GPU acceleration
     if (imageData instanceof File && imageData.size > 2 * 1024 * 1024) {
-      return: 'cuda_tensorrt';
+      return 'cuda_tensorrt';
     }
 
     // Small/medium files - use client-side WASM for speed
     if (this.initialized && this.tensorProcessor) {
-      return: 'wasm_simd';
+      return 'wasm_simd';
     }
 
-    return: 'agentic_controller';
+    return 'agentic_controller';
   }
 
   private async processWithWasm(
@@ -641,16 +641,16 @@ export class OCRIntegrationService {
     // - Historical performance
 
     if (systemLoad.gpuQueueLength > 5) {
-      return: 'wasm_simd'; // Use local processing
+      return 'wasm_simd'; // Use local processing
     }
 
     if (systemLoad.workerPoolUtilization < 0.7 && this.workerPool.length > 0) {
-      return: 'wasm_simd'; // Parallel workers available
+      return 'wasm_simd'; // Parallel workers available
     }
 
     // Large files benefit from GPU
     if (imageData instanceof File && imageData.size > 2 * 1024 * 1024) {
-      return: 'cuda_tensorrt';
+      return 'cuda_tensorrt';
     }
 
     return this.selectOptimalMethod(imageData);
@@ -676,7 +676,7 @@ export class OCRIntegrationService {
 
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataToHash);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return: 'ocr:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return 'ocr:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   private async getCachedResult(cacheKey: string): Promise<OCRResult | null> {

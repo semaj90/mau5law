@@ -142,46 +142,43 @@
   // Provider Icons
   const getProviderIcon = (provider: string) => {
     switch (provider) {
-      case: 'ollama':
+      case 'ollama':
         return Cpu;
-      case: 'autogen':
+      case 'autogen':
         return Brain;
-      case: 'crewai':
+      case 'crewai':
         return Database;
-      case: 'langchain':
+      case 'langchain':
         return Globe;
-      default:
-        return Setting;
+      default: return Setting;
     }
   };
   // Status Colors
   const getStatusColor = (status: string) => {
     switch (status) {
-      case: 'online':
-        return: 'text-green-400';
-      case: 'offline':
-        return: 'text-red-400';
-      case: 'loading':
-        return: 'text-yellow-400';
-      case: 'error':
-        return: 'text-red-500';
-      default:
-        return: 'text-gray-400';
+      case 'online':
+        return 'text-green-400';
+      case 'offline':
+        return 'text-red-400';
+      case 'loading':
+        return 'text-yellow-400';
+      case 'error':
+        return 'text-red-500';
+      default: return 'text-gray-400';
     }
   };
   // Status Icons
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case: 'online':
+      case 'online':
         return CheckCircle;
-      case: 'offline':
+      case 'offline':
         return AlertCircle;
-      case: 'loading':
+      case 'loading':
         return Loader2;
-      case: 'error':
+      case 'error':
         return AlertCircl;
-      default:
-        return AlertCircl;
+      default: return AlertCircl;
     }
   };
   // State for dropdown

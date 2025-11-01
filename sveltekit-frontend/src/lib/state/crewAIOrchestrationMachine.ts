@@ -182,12 +182,12 @@ export const crewAIOrchestrationMachine = setup({
         if (event.type === 'USER_ACTIVITY') {
           // Infer intent from activity
           if (event.activity.includes('edit') || event.activity.includes('type')) {
-            return: 'editing';
+            return 'editing';
           } else if (event.activity.includes('review') || event.activity.includes('analyze')) {
-            return: 'reviewing';
+            return 'reviewing';
           }
         }
-        return: 'editing';
+        return 'editing';
       }
     }),
     // Set user to idle
@@ -205,7 +205,7 @@ export const crewAIOrchestrationMachine = setup({
         if (event.type === 'FOCUS_CHANGED') {
           return event.schema;
         }
-        return: 'document_edit';
+        return 'document_edit';
       }
     }),
     // Accept recommendation

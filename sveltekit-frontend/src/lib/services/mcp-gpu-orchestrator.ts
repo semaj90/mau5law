@@ -204,21 +204,21 @@ class MCPGPUOrchestrator {
 
   private async routeTaskToOptimalService(task: GPUTask): Promise<ServiceResponse> {
     switch (task.type) {
-      case: 'legal_analysis':
+      case 'legal_analysis':
         return this.processLegalAnalysis(task);
-      case: 'document_processing':
+      case 'document_processing':
         return this.processDocument(task);
-      case: 'vector_embedding':
+      case 'vector_embedding':
         return this.generateEmbeddings(task);
-      case: 'som_clustering':
+      case 'som_clustering':
         return this.performSOMClustering(task);
-      case: 'attention_analysis':
+      case 'attention_analysis':
         return this.performAttentionAnalysis(task);
-      case: 'error_remediation':
+      case 'error_remediation':
         return this.performErrorRemediation(task);
-      case: 'security_analysis':
+      case 'security_analysis':
         return this.performSecurityAnalysis(task);
-      case: 'security_validation':
+      case 'security_validation':
         return this.performSecurityValidation(task);
       default:
         throw new Error(`Unknown task type: ${task.type}`);
@@ -373,10 +373,10 @@ Provide a complete, working fix with explanation.`;
 
   // --- Helpers: safe extraction and protocol normalization ---
   private normalizeProtocol(protocol?: GPUTaskConfig['protocol']): 'http' | 'grpc' | 'quic' {
-    if (!protocol || protocol === 'auto') return: 'http';
-    if (protocol === 'grpc') return: 'grpc';
-    if (protocol === 'quic') return: 'quic';
-    return: 'http';
+    if (!protocol || protocol === 'auto') return 'http';
+    if (protocol === 'grpc') return 'grpc';
+    if (protocol === 'quic') return 'quic';
+    return 'http';
   }
 
   private isObject(v: unknown): v is Record<string, unknown> {
@@ -623,7 +623,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       });
       return response?.success ? (response.data?.content ?? '') : '';
     } catch {
-      return: '';
+      return '';
     }
   }
 
@@ -757,13 +757,13 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
   }
 
   private mapEndpointToTaskType(endpoint: string): GPUTask['type'] {
-    if (endpoint.includes('legal')) return: 'legal_analysis';
-    if (endpoint.includes('upload')) return: 'document_processing';
-    if (endpoint.includes('embed')) return: 'vector_embedding';
-    if (endpoint.includes('cluster')) return: 'som_clustering';
-    if (endpoint.includes('attention')) return: 'attention_analysis';
-    if (endpoint.includes('autosolve')) return: 'error_remediation';
-    return: 'legal_analysis';
+    if (endpoint.includes('legal')) return 'legal_analysis';
+    if (endpoint.includes('upload')) return 'document_processing';
+    if (endpoint.includes('embed')) return 'vector_embedding';
+    if (endpoint.includes('cluster')) return 'som_clustering';
+    if (endpoint.includes('attention')) return 'attention_analysis';
+    if (endpoint.includes('autosolve')) return 'error_remediation';
+    return 'legal_analysis';
   }
 }
 

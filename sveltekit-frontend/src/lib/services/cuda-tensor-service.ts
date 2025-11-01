@@ -162,16 +162,16 @@ export class CUDATensorService {
     const { slices, metadata } = this.spliceTensorForGPU(operation.inputTensor;);
     let outputTensor: Float32Array;
     switch (operation.operation) {
-      case: 'embedding':
+      case 'embedding':
         outputTensor = await this.cudaEmbeddingOperation(slices, streamId);
         break;
-      case: 'similarity':
+      case 'similarity':
         outputTensor = await this.cudaSimilarityOperation(slices, streamId);
         break;
-      case: 'clustering':
+      case 'clustering':
         outputTensor = await this.cudaClusteringOperation(slices, streamId);
         break;
-      case: 'reduction':
+      case 'reduction':
         outputTensor = await this.cudaReductionOperation(slices, streamId);
         break;
       default:

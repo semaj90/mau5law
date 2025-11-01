@@ -125,10 +125,10 @@
   }
   function getOverallHealthVariant(overall: string): "default" | "secondary" | "destructive" | "outline" {
     switch (overall) {
-      case: 'healthy': return: 'default';
-      case: 'degraded': return: 'secondary';
-      case: 'critical': return: 'destructive';
-      default: return: 'outline';
+      case 'healthy': return 'default';
+      case 'degraded': return 'secondary';
+      case 'critical': return 'destructive';
+      default: return 'outline';
     }
   }
 </script>

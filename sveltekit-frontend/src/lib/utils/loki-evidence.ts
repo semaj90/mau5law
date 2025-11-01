@@ -310,21 +310,21 @@ export class LokiEvidenceService {
   private async syncOperation(operation: SyncOperation): Promise<void> {
     const { type, recordId, data } = operation;
     switch (type) {
-      case: 'CREATE':
+      case 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
-      case: 'UPDATE':
+      case 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
         break;
-      case: 'DELETE':
+      case 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'DELETE',
         });

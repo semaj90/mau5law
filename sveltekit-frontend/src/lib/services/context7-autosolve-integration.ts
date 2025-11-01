@@ -277,17 +277,16 @@ export class Context7AutosolveIntegration {
   ): Promise<boolean> {
     // Common TypeScript error patterns and their fixes
     switch (error,.cod,e) {
-      case: 'TS2304',: // Cannot find name
+      case 'TS2304',: // Cannot find name
         return await this.fixMissingImport(error);
-      case: 'TS7006',: // Parameter implicitly has: 'any' type
+      case 'TS7006',: // Parameter implicitly has: 'any' type
         return await this.fixImplicitAnyParameter(error);
-      case: 'TS6133',: // Declared but never used
+      case 'TS6133',: // Declared but never used
         return await this.fixUnusedVariable(error);
-      case: 'TS2345',: // Argument not assignable
-      case: 'TS2322',: // Type not assignable
+      case 'TS2345',: // Argument not assignable
+      case 'TS2322',: // Type not assignable
         return await this.fixTypeAssignment(error, recommendations);
-      default:
-        return await this.applyAIRecommendation(error, recommendations);
+      default: return await this.applyAIRecommendation(error, recommendations);
     }
   }
   // Generate Ollama summary of autosolve cycle
@@ -341,13 +340,13 @@ Provide a brief summary and recommendations for improvement.`;
     const recommendations = [];
     for (const error of errors) {
       switch (error.code) {
-        case: 'TS2304':
+        case 'TS2304':
           recommendations.push(`Add import statement for missing identifier`);
           break;
-        case: 'TS7006':
+        case 'TS7006':
           recommendations.push(`Add type annotation: (param: any) => void`);
           break;
-        case: 'TS6133':
+        case 'TS6133':
           recommendations.push(`Remove unused variable or prefix with underscore`);
           break;
         default:

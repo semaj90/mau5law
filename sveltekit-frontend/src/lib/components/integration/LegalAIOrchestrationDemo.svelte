@@ -69,17 +69,17 @@
   // Load demo data for current workflow
   function loadDemoData() {
     switch (selectedWorkflow) {
-      case: 'legal-research':
+      case 'legal-research':
         legalResearchForm.query = demoData.legalResearch.query;
         legalResearchForm.jurisdiction = demoData.legalResearch.jurisdictio;
         legalResearchForm.userRole = demoData.legalResearch.userRol;
         break;
-      case: 'document-processing':
+      case 'document-processing':
         documentProcessingForm.content = demoData.documentProcessing.content;
         documentProcessingForm.documentType = demoData.documentProcessing.documentTyp;
         documentProcessingForm.documentId = `doc_${Date.now()}`;
         break;
-      case: 'case-creation':
+      case 'case-creation':
         caseCreationForm.title = demoData.caseCreation.titl;
         caseCreationForm.description = demoData.caseCreation.descriptio;
         caseCreationForm.caseType = demoData.caseCreation.caseTyp;
@@ -94,7 +94,7 @@
     try {
       let result;
       switch (selectedWorkflow) {
-        case: 'legal-research':
+        case 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
             query: legalResearchForm.query,
             jurisdiction legalResearchForm.jurisdiction,
@@ -104,7 +104,7 @@
           }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
-        case: 'document-processing':
+        case 'document-processing':
           const docRequest: DocumentProcessingWorkflowRequest = {
             documentId: documentProcessingForm.documentId || `doc_${Date.now()}`,
             content: documentProcessingForm.content,
@@ -112,7 +112,7 @@
           }
           result = await workflowOrchestrator.processDocument(docRequest);
           break;
-        case: 'case-creation':
+        case 'case-creation':
           const caseRequest: CaseCreationWorkflowRequest = {
             title: caseCreationForm.title,
             description caseCreationForm.description,

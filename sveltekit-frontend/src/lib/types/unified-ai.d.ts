@@ -1,4 +1,4 @@
-declare module: '$lib/wasm/wasm-llm-service.js' {
+declare module '$lib/wasm/wasm-llm-service.js' {
   import type { WASMLLMConfig, WASMLLMResponse } from '$lib/types/vector-jobs.js';
   export const wasmLLMService: {
     initialize(): Promise<boolean>;
@@ -9,7 +9,7 @@ declare module: '$lib/wasm/wasm-llm-service.js' {
   };
 }
 
-declare module: '$lib/ai/langchain-ollama-service.js' {
+declare module '$lib/ai/langchain-ollama-service.js' {
   // 'LangChainConfig' was defined but never used, so it's removed from the import.
   import type { QueryResult, ProcessingResult } from '$lib/ai/langchain-ollama-service.js';
   export const langChainOllamaService: {
@@ -21,7 +21,7 @@ declare module: '$lib/ai/langchain-ollama-service.js' {
   };
 }
 
-declare module: '$lib/gpu/nes-gpu-integration.js' {
+declare module '$lib/gpu/nes-gpu-integration.js' {
   import type { LegalDocument } from '$lib/gpu/nes-gpu-integration.js';
   import type { PerformanceMetrics } from '$lib/types/llm.ts'; // Import PerformanceMetrics for better type safety
   export const nesGPUIntegration: {
@@ -35,7 +35,7 @@ declare module: '$lib/gpu/nes-gpu-integration.js' {
   };
 }
 
-declare module: '$lib/server/db/enhanced-vector-operations.js' {
+declare module '$lib/server/db/enhanced-vector-operations.js' {
   import type { LegalDocument } from '$lib/gpu/nes-gpu-integration.js'; // Ensure LegalDocument is available for vector search results
   export const vectorOps: {
     searchDocuments(embedding: Float32Array, threshold: number): Promise<LegalDocument[]>;

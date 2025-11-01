@@ -375,33 +375,33 @@ export function generateMCPPrompt(request: MCPToolRequest): string {
   } = request;
 
   switch (tool) {
-    case: 'analyze-stack':
+    case 'analyze-stack':
       if (!component) throw new Error('Component is required for analyze-stack');
       return `analyze ${component}${context ? ` with context ${context}` : ''}`;
-    case: 'generate-best-practices':
+    case 'generate-best-practices':
       if (!area) throw new Error('Area is required for generate-best-practices');
       return `generate best practices for ${area}`;
-    case: 'suggest-integration':
+    case 'suggest-integration':
       if (!feature) throw new Error('Feature is required for suggest-integration');
       return `suggest integration for ${feature}${requirements ? ` with requirements ${requirements}` : ''}`;
-    case: 'resolve-library-id':
+    case 'resolve-library-id':
       if (!library) throw new Error('Library is required for resolve-library-id');
       return `resolve library id for ${library}`;
-    case: 'get-library-docs':
+    case 'get-library-docs':
       if (!library) throw new Error('Library is required for get-library-docs');
       return `get library docs for ${library}${topic ? ` topic ${topic}` : ''}`;
-    case: 'rag-query':
+    case 'rag-query':
       if (!query) throw new Error('Query is required for rag-query');
       return `rag query: "${query}"${caseId ? ` for case ${caseId}` : ''}${maxResults ? ` max results ${maxResults}` : ''}`;
-    case: 'rag-upload-document':
+    case 'rag-upload-document':
       if (!filePath) throw new Error('File path is required for rag-upload-document');
       return `upload document: "${filePath}"${caseId ? ` to case ${caseId}` : ''}${documentType ? ` as ${documentType}` : ''}`;
-    case: 'rag-get-stats':
-      return: 'get rag system statistics';
-    case: 'rag-analyze-relevance':
+    case 'rag-get-stats':
+      return 'get rag system statistics';
+    case 'rag-analyze-relevance':
       if (!query || !documentId) throw new Error('Query and document ID are required for rag-analyze-relevance');
       return `analyze relevance of document ${documentId} for query: "${query}"`;
-    case: 'rag-integration-guide':
+    case 'rag-integration-guide':
       if (!integrationType) throw new Error('Integration type is required for rag-integration-guide');
       return `get rag integration guide for ${integrationType}`;
     default:
@@ -420,45 +420,45 @@ export function validateMCPRequest(request: MCPToolRequest): {
     errors.push('Tool is required');
   }
   switch (request.tool) {
-    case: 'analyze-stack':
+    case 'analyze-stack':
       if (!request.component) errors.push('Component is required for analyze-stack');
       if (request.context && !['legal-ai', 'gaming-ui', 'performance'].includes(request.context)) {
         errors.push('Context must be one of: legal-ai, gaming-ui, performance');
       }
       break;
-    case: 'generate-best-practices':
+    case 'generate-best-practices':
       if (!request.area) errors.push('Area is required for generate-best-practices');
       if (request.area && !['performance', 'security', 'ui-ux'].includes(request.area)) {
         errors.push('Area must be one of: performance, security, ui-ux');
       }
       break;
-    case: 'suggest-integration':
+    case 'suggest-integration':
       if (!request.feature) errors.push('Feature is required for suggest-integration');
       break;
-    case: 'resolve-library-id':
+    case 'resolve-library-id':
       if (!request.library) errors.push('Library is required for resolve-library-id');
       break;
-    case: 'get-library-docs':
+    case 'get-library-docs':
       if (!request.library) errors.push('Library is required for get-library-docs');
       break;
-    case: 'rag-query':
+    case 'rag-query':
       if (!request.query) errors.push('Query is required for rag-query');
       if (request.maxResults && (request.maxResults < 1 || request.maxResults > 50))
         errors.push('Max results must be between 1 and 50');
       if (request.confidenceThreshold && (request.confidenceThreshold < 0 || request.confidenceThreshold > 1))
         errors.push('Confidence threshold must be between 0 and 1');
       break;
-    case: 'rag-upload-document':
+    case 'rag-upload-document':
       if (!request.filePath) errors.push('File path is required for rag-upload-document');
       break;
-    case: 'rag-get-stats':
+    case 'rag-get-stats':
       // No validation needed
       break;
-    case: 'rag-analyze-relevance':
+    case 'rag-analyze-relevance':
       if (!request.query) errors.push('Query is required for rag-analyze-relevance');
       if (!request.documentId) errors.push('Document ID is required for rag-analyze-relevance');
       break;
-    case: 'rag-integration-guide':
+    case 'rag-integration-guide':
       if (!request.integrationType) errors.push('Integration type is required for rag-integration-guide');
       if (
         request.integrationType &&

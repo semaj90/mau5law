@@ -82,7 +82,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <Brain class="w-6 h-6 text-blue-600" />
       <h3>Legal AI Assistant</h3>
       {#if caseId}
-        <span class="text-sm text-gray-600">Case: {caseId}</span>
+        <span class="text-sm text-gray-600">case {caseId}</span>
       {/if}
     </div>
     <div class="flex gap-2">

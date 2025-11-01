@@ -32,7 +32,7 @@ function getErrorMessage(e: unknown): string {
   try {
     return String(e);
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 

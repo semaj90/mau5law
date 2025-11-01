@@ -180,13 +180,13 @@ export const GET: RequestHandler = async ({ url }) => {
   const started = Date.now();
   try {
     switch (query) {
-      case: 'health':
+      case 'health':
         return await handleHealthCheck();
-      case: 'services':
+      case 'services':
         return await handleServiceDiscovery();
-      case: 'metrics':
+      case 'metrics':
         return await handleMetrics();
-      case: 'cluster':
+      case 'cluster':
         return await handleClusterStatus();
       default: {
         const data = {

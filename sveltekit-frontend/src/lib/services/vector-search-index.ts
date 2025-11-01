@@ -295,17 +295,17 @@ class VectorSearchIndex {
     strategy: SearchQuery['rankingStrategy']
   ): number {
     switch (strategy) {
-      case: 'legal_relevance': {
+      case 'legal_relevance': {
         // Boost legal entities and case references
         const legalBoost = metadata.legalEntities.length * 0.1 + metadata.caseReferences.length * 0.15;
         return similarityScore * (1 + legalBoost);
       }
-      case: 'citation_weighted': {
+      case 'citation_weighted': {
         // Weight by citation count
         const citationBoost = Math.log(metadata.citationCount + 1) * 0.2;
         return similarityScore * (1 + citationBoost);
       }
-      case: 'risk_prioritized': {
+      case 'risk_prioritized': {
         // Prioritize high-risk documents
         const riskMultiplier = {
           'critical': 1.5,
@@ -315,9 +315,8 @@ class VectorSearchIndex {
         }[metadata.riskLevel] || 1.0;
         return similarityScore * riskMultiplier;
       }
-      case: 'similarity':
-      default:
-        return similarityScore;
+      case 'similarity':
+      default: return similarityScore;
     }
   }
   async getStats(): Promise<IndexStats> {

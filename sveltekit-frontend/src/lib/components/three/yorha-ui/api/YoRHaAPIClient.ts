@@ -232,7 +232,7 @@ export class YoRHaAPIClient {
     this.stopDataStreams();
     for (const ds of this.layout.dataSources) {
       switch (ds.type) {
-        case: 'rest': {
+        case 'rest': {
           // Ensure endpoint is defined for REST data sources
           if (!ds.endpoint) {
             console.warn(`Data source: '${ds.name}' of type: 'rest' is missing an endpoint. Skipping.`);
@@ -256,7 +256,7 @@ export class YoRHaAPIClient {
           this.dataSourceIntervals.set(ds.name, interval);
           break;
         }
-        case: 'mock': {
+        case 'mock': {
           const interval = setInterval(() => {
             const data = {
               value: Math.random(),

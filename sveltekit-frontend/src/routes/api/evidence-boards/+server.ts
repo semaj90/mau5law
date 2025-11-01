@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     let query = db
       .select({
         board: evidenceBoards,
-        case: cases,
+        case cases,
       })
       .from(evidenceBoards)
       .innerJoin(cases, eq(evidenceBoards.caseId, cases.id))

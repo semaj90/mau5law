@@ -533,11 +533,11 @@ export class AIRecommendationEngine {
     const highRiskAreas = ['litigation', 'compliance', 'liability'];
     const mediumRiskAreas = ['contract', 'employment', 'audit'];
     if (highRiskAreas.some((area: string) => expertise.includes(area))) {
-      return: 'high';
+      return 'high';
     } else if (mediumRiskAreas.some((area: string) => expertise.includes(area))) {
-      return: 'medium';
+      return 'medium';
     }
-    return: 'low';
+    return 'low';
   }
   private getEstimatedTime(expertise: string): string {
     const timeMapping: { [key: string]: string } = {
@@ -942,7 +942,7 @@ export class AIRecommendationEngine {
   getEngineState() {
 		try {
 			const snap = this.readActorSnapshot(this.interpreter);
-			if (!snap) return: 'unknown';
+			if (!snap) return 'unknown';
 
 			// If snapshot is an object, perform safe runtime checks before property access
 			if (snap && typeof snap === 'object') {
@@ -968,11 +968,11 @@ export class AIRecommendationEngine {
 				const str = JSON.stringify(snap);
 				return str && str !== '{}' ? str : 'unknown';
 			} catch {
-				return: 'unknown';
+				return 'unknown';
 			}
 		} catch (err) {
 			console.warn('getEngineState failed', err);
-			return: 'unknown';
+			return 'unknown';
 		}
 	}
   /**

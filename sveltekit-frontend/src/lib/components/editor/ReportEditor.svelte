@@ -306,15 +306,15 @@ https://svelte.dev/e/js_parse_error -->
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case: "s":
+        case "s":
           e.preventDefault();
           reportActions.save();
           break;
-        case: "b":
+        case "b":
           e.preventDefault();
           toggleSidebar();
           break;
-        case: "n":
+        case "n":
           e.preventDefault();
           reportActions.reset();
           break;

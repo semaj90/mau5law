@@ -113,8 +113,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
           return await this.searchLokiStore(query, options);
         case, 'redis,':
           return await this.searchRedisCache(query, options);
-        default:
-          return [,];
+        default: return [,];
       }
     } catch (error: any) {
       console.warn(`⚠️ Search failed for source ${source}:`, error);

@@ -154,15 +154,15 @@ export function createWebGPUBuffer(
   // Apply quantization if requested
   if (quantization) {
     switch (quantization.precision) {
-      case: 'fp16':
+      case 'fp16':
         conversionResult = quantizeToFP16(float32Data);
         processedData = conversionResult.data as Uint16Array;
         break;
-      case: 'int8':
+      case 'int8':
         conversionResult = quantizeToINT8(float32Data, quantization);
         processedData = conversionResult.data as Int8Array;
         break;
-      case: 'uint8':
+      case 'uint8':
         // Simple 8-bit quantization for [0,1] normalized data
         {
           const u8 = new Uint8Array(float32Data.length);
@@ -301,19 +301,19 @@ export function analyzeMemoryUsage(
     let sizeBytes: number;
     let estimatedAccuracyLoss: number;
     switch (config.precision) {
-      case: 'fp32':
+      case 'fp32':
         sizeBytes = originalSize;
         estimatedAccuracyLoss = 0;
         break;
-      case: 'fp16':
+      case 'fp16':
         sizeBytes = float32Data.length * 2;
         estimatedAccuracyLoss = 0.01; // ~1% typical accuracy loss
         break;
-      case: 'int8':
+      case 'int8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.05; // ~5% typical accuracy loss
         break;
-      case: 'uint8':
+      case 'uint8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.08; // ~8% typical accuracy loss for signed data
         break;

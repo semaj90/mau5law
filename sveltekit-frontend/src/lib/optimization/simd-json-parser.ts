@@ -198,12 +198,12 @@ export class SIMDJSONParser {
    * Mask sensitive data for compliance
    */
   private maskSensitiveData(value: string): string {
-    if (typeof value !== 'string') return: '';
+    if (typeof value !== 'string') return '';
     // Mask all but last 4 characters
     if (value.length > 4) {
-      return: '*'.repeat(value.length - 4) + value.slice(-4);
+      return '*'.repeat(value.length - 4) + value.slice(-4);
     }
-    return: '*'.repeat(value.length);
+    return '*'.repeat(value.length);
   }
   /**
    * Performance metrics for monitoring SIMD efficiency

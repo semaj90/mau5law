@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: true,
         message: 'Case created successfully in PostgreSQL database',
         id: createdCase.id,
-        case: {
+        case {
           id: createdCase.id,
           caseNumber: createdCase.caseNumber,
           title: createdCase.title,

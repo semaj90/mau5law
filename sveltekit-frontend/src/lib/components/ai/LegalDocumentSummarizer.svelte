@@ -185,9 +185,9 @@ await checkServiceHealth();
   }
   // Get quality color based on score
   function getQualityColor(score: number): string {
-    if (score >= 0.8) return: 'text-green-600';
-    if (score >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (score >= 0.8) return 'text-green-600';
+    if (score >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {

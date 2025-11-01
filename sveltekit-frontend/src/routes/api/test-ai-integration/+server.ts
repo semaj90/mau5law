@@ -141,7 +141,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
       (field: string) => field in result
     );
     if (!hasRequiredFields) {
-      return: 'Orchestrator returned result but may be using mock data';
+      return 'Orchestrator returned result but may be using mock data';
     }
     return `Orchestrator executed successfully with ${Object.keys(result).length} result fields`;
   });
@@ -153,7 +153,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
       throw new Error('Memory graph did not return array format');
     }
     if (memoryData.length === 0) {
-      return: 'Memory graph returned empty array (may be expected)';
+      return 'Memory graph returned empty array (may be expected)';
     }
     return `Memory graph returned ${memoryData.length} nodes/relations`;
   });
@@ -165,7 +165,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
       throw new Error('Semantic search did not return array format');
     }
     if (searchResults.length === 0) {
-      return: 'Semantic search returned no results (may indicate service unavailable)';
+      return 'Semantic search returned no results (may indicate service unavailable)';
     }
     return `Semantic search returned ${searchResults.length} results`;
   });
@@ -247,7 +247,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       throw new Error('AI response invalid or empty');
     }
     if (data.response.length < 5) {
-      return: 'AI response too short, may indicate issues';
+      return 'AI response too short, may indicate issues';
     }
     return `AI generated response: "${data.response.substring(0, 50)}..."`;
   });
@@ -282,12 +282,12 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
       }
       const parsed = JSON.parse(data.response);
       if (parsed.status !== 'success' || parsed.number !== 42) {
-        return: 'AI returned JSON but with incorrect values';
+        return 'AI returned JSON but with incorrect values';
       }
-      return: 'AI successfully returned structured JSON response';
+      return 'AI successfully returned structured JSON response';
     } catch (error: unknown) {
       if (verbose) console.error('Failed to parse JSON response:', data.response);
-      return: 'AI response was not valid JSON format';
+      return 'AI response was not valid JSON format';
     }
   });
   return {
@@ -373,11 +373,11 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       throw new Error(`AI search returned error: ${data.error}`);
     }
     if (!data.results) {
-      return: 'AI enhancement did not return results';
+      return 'AI enhancement did not return results';
     }
     const hasAiConfidence = data.results.some(result => result.aiConfidence !== undefined);
     if (!hasAiConfidence) {
-      return: 'AI enhancement may not be working (no confidence scores)';
+      return 'AI enhancement may not be working (no confidence scores)';
     }
     return `AI-enhanced search returned ${data.results.length} results with confidence scores`;
   });
@@ -403,7 +403,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
       throw new Error(`MCP analysis returned error: ${data.error}`);
     }
     if (!data.metadata?.mcpAnalysis) {
-      return: 'MCP analysis was not executed (may be expected)';
+      return 'MCP analysis was not executed (may be expected)';
     }
     const hasMcpContext = data.mcpContext !== null;
     const hasAutoSuggestions = data.autoSuggestions && data.autoSuggestions.length > 0;
@@ -447,7 +447,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     // Check if any requests were rate limited (429)
     const rateLimited = statusCodes.some((code: number) => code === 429);
     if (rateLimited) {
-      return: 'Rate limiting is working (some requests returned 429)';
+      return 'Rate limiting is working (some requests returned 429)';
     }
     // Check rate limit headers
     const lastResponse = responses[responses.length - 1];
@@ -455,7 +455,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     if (rateLimitHeader !== null) {
       return `Rate limiting headers present, remaining: ${rateLimitHeader}`;
     }
-    return: 'Rate limiting may not be configured (all requests succeeded)';
+    return 'Rate limiting may not be configured (all requests succeeded)';
   });
   return {
     name: 'Find API Endpoint',
@@ -488,7 +488,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log('Memory Graph Read response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
     if (response.status === 404) {
-      return: 'Memory graph endpoint not implemented yet (expected)';
+      return 'Memory graph endpoint not implemented yet (expected)';
     }
     if (!response.ok) {
       throw new Error(`Memory graph read failed: ${response.status}`);
@@ -514,7 +514,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log('Memory Relation Creation response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
     if (response.status === 404) {
-      return: 'Memory relation endpoint not implemented yet (expected)';
+      return 'Memory relation endpoint not implemented yet (expected)';
     }
     if (!response.ok) {
       throw new Error(`Memory relation creation failed: ${response.status}`);
@@ -550,7 +550,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     if (verbose) console.log('Semantic Search Service response status:', response.status);
     // If endpoint doesn't exist, this is expected for now
     if (response.status === 404) {
-      return: 'Semantic search endpoint not implemented yet (expected)';
+      return 'Semantic search endpoint not implemented yet (expected)';
     }
     if (!response.ok) {
       throw new Error(`Semantic search failed: ${response.status}`);
@@ -574,12 +574,12 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       }
       const data: AiApiResponse = await response.json();
       if (!data.result || !(data.result as { collections: unknown[] }).collections) {
-        return: 'Qdrant connected but no collections found';
+        return 'Qdrant connected but no collections found';
       }
       return `Qdrant connected, ${(data.result as { collections: unknown[] }).collections.length} collections available`;
     } catch (error: unknown) {
       if (verbose) console.error('Qdrant connection error:', (error as Error).message);
-      return: 'Qdrant vector database not available (may be expected)';
+      return 'Qdrant vector database not available (may be expected)';
     }
   });
   return {

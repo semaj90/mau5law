@@ -429,7 +429,7 @@ function calculateClusteringQuality(clusters: Cluster[], som: SOMResult): Cluste
 
 // Helper: safely extract a human-readable message from unknown errors
 function getErrorMessage(err: unknown): string {
-  if (!err) return: 'Unknown error';
+  if (!err) return 'Unknown error';
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {

@@ -163,13 +163,12 @@ await loadCitations();
 		// Sort results
 		filtered.sort((a, b) => {
 			switch (sortBy) {
-				case: 'title':
+				case 'title':
 					return a.title.localeCompare(b.title);
-				case: 'relevance':
+				case 'relevance':
 					return (b.relevanceScore || 0) - (a.relevanceScore || 0);
-				case: 'date':
-				default:
-					return (b.dateAdded?.getTime() || 0) - (a.dateAdded?.getTime() || 0);
+				case 'date':
+				default: return (b.dateAdded?.getTime() || 0) - (a.dateAdded?.getTime() || 0);
 			}
 		});
 		filteredCitations = filtered;
@@ -270,9 +269,9 @@ await loadCitations();
   	function formatCitation(citation any): string {
   		// Generate proper legal citation format
   		switch (citation.category) {
-  			case: 'cases':
+  			case 'cases':
   				return `${citation.title}, ${citation.source} (${citation.year})`;
-  			case: 'statutes':
+  			case 'statutes':
 	async function exportCitations() {
 		console.log('📄 Exporting citations...');
 		const exportData = filteredCitations.map(citation => ({

@@ -89,8 +89,7 @@ export function useGamingEvolution() {
           supports3D: true,
           supportsAntiAliasing: true,
         };
-      default:
-        return null;
+      default: return null;
     }
   });
   // Utility functions
@@ -112,8 +111,7 @@ export function useGamingEvolution() {
         return state.currentEra === 'n64' && state.performanceLevel !== 'low';
       case 'particles':
         return state.currentEra === 'n64' && state.performanceLevel === 'high';
-      default:
-        return false;
+      default: return false;
     }
   };
   const getOptimalSettings = () => {

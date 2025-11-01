@@ -183,16 +183,15 @@ export const GET: RequestHandler = async ({ url }) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getEstimatedTime(type: string, data: any): number {
   switch (type) {
-    case: 'upsert': {
+    case 'upsert': {
       // Estimate based on content length
       const contentLength = JSON.stringify(data).length;
       return Math.max(500, Math.min(5000, contentLength / 10));
     }
-    case: 'reembed':
+    case 'reembed':
       return 2000; // Re-embedding typically takes 2 seconds
-    case: 'delete':
+    case 'delete':
       return 100; // Deletion is fast
-    default:
-      return 1000; // Default 1 second
+    default: return 1000; // Default 1 second
   }
 }

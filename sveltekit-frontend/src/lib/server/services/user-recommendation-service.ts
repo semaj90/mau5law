@@ -338,9 +338,9 @@ export class UserRecommendationService {
   }
   private assessQueryComplexity(queries: string[]): 'simple' | 'moderate' | 'complex' {
     const avgLength = queries.reduce((sum, q) => sum + q.length, 0) / queries.length;
-    if (avgLength < 50) return: 'simple';
-    if (avgLength < 150) return: 'moderate';
-    return: 'complex';
+    if (avgLength < 50) return 'simple';
+    if (avgLength < 150) return 'moderate';
+    return 'complex';
   }
   private extractActiveHours(sessions: { startedAt: Date | string | null }[]): number[] {
     const hourCounts = new Map<number, number>();

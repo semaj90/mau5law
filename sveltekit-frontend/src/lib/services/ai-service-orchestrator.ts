@@ -309,16 +309,16 @@ export class AIServiceOrchestrator {
 
         // Use specialized helpers for known libraries
         switch (libraryId) {
-          case: 'svelte5':
-          case: 'svelte':
+          case 'svelte5':
+          case 'svelte':
             doc = await getSvelte5Docs();
             break;
-          case: 'drizzle':
-          case: 'drizzle-orm':
+          case 'drizzle':
+          case 'drizzle-orm':
             doc = await getDrizzleOrmDocs();
             break;
-          case: 'typescript':
-          case: 'ts':
+          case 'typescript':
+          case 'ts':
             doc = await getTypeScriptDocs();
             break;
           default:
@@ -383,9 +383,9 @@ export class AIServiceOrchestrator {
     const healthyProviders = this.healthMonitor.getHealthyProviders();
 
     // Priority order
-    if (healthyProviders.has('tensorrt-triton')) return: 'tensorrt-triton';
-    if (healthyProviders.has('ollama')) return: 'ollama';
-    if (healthyProviders.has('vllm')) return: 'vllm';
+    if (healthyProviders.has('tensorrt-triton')) return 'tensorrt-triton';
+    if (healthyProviders.has('ollama')) return 'ollama';
+    if (healthyProviders.has('vllm')) return 'vllm';
 
     throw new Error('No healthy providers available');
   }

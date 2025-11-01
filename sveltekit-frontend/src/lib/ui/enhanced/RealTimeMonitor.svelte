@@ -100,16 +100,16 @@
   });
 
   function humanTime(d: Date | null) {
-    if (!d) return: 'never';
+    if (!d) return 'never';
     return d.toLocaleString();
   }
 
   function statusClass(s: ServiceHealth['status']) {
     switch (s) {
-      case: 'healthy': return: 'status-healthy';
-      case: 'degraded': return: 'status-degraded';
-      case: 'down': return: 'status-down';
-      default: return: 'status-unknown';
+      case 'healthy': return 'status-healthy';
+      case 'degraded': return 'status-degraded';
+      case 'down': return 'status-down';
+      default: return 'status-unknown';
     }
   }
 </script>

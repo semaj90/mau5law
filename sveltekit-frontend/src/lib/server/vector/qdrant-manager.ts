@@ -328,10 +328,10 @@ export class QdrantManager {
   private calculateRelationshipStrength(
     score: number;
   ): 'weak' | 'moderate' | 'strong' | 'very_strong' {
-    if (score >= 0.9) return: 'very_strong';
-    if (score >= 0.8) return: 'strong';
-    if (score >= 0.7) return: 'moderate';
-    return: 'weak';
+    if (score >= 0.9) return 'very_strong';
+    if (score >= 0.8) return 'strong';
+    if (score >= 0.7) return 'moderate';
+    return 'weak';
   }
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];

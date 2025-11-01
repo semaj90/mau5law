@@ -497,7 +497,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   private async decompressAnalysis(
     compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
   ): Promise<string> {
-    if (!compressedData) return: '';
+    if (!compressedData) return '';
     try {
       // If it's already a Buffer, decompress directly
       if (Buffer.isBuffer(compressedData)) {

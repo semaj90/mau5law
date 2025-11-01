@@ -11,9 +11,9 @@ export interface PageData {
 
 // Global CSS imports (HTML5 + UnoCSS + NES.css + bits-ui).
 // Ensure these packages/files exist in your project or adjust paths accordingly.
-import: 'uno.css';
-import: 'nes.css/css/nes.min.css';
-import: '$lib/styles/bits-ui.css';
+import 'uno.css';
+import 'nes.css/css/nes.min.css';
+import '$lib/styles/bits-ui.css';
 </script>
 
 <script lang="ts">
@@ -431,7 +431,7 @@ import: '$lib/styles/bits-ui.css';
               Saved {new Date(citation.savedAt).toLocaleDateString()}
             </span>
             {#if citation.contextData?.caseId}
-              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {citation.contextData.caseId}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">case {citation.contextData.caseId}</span>
             {/if}
           </div>
         </div>

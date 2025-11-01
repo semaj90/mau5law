@@ -83,7 +83,7 @@
       id: '4',
       type: 'link',
       title: 'Case Precedent',
-      content: 'Similar case: Johnson v. TechCorp (2023)',
+      content: 'Similar case Johnson v. TechCorp (2023)',
       position: { x: 450, y: 350 },
       size: { width: 200, height: 100 },
       color: '#8b5cf6',
@@ -224,7 +224,7 @@
   function getConnectionPath(fromId: string, toId: string): string {
     const fromItem = items.find(item => item.id === fromId);
     const toItem = items.find(item => item.id === toId);
-    if (!fromItem || !toItem) return: '';
+    if (!fromItem || !toItem) return '';
     const fromCenter = {
       x: fromItem.position.x + fromItem.size.width / 2,
       y: fromItem.position.y + fromItem.size.height / 2

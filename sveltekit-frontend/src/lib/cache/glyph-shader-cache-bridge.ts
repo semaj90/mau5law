@@ -416,15 +416,15 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
   ): void {
     const metrics = cachedShader.renderingMetrics;
     switch (event) {
-      case: 'cache_hit':
+      case 'cache_hit':
         // Cache hit rate is maintained automatically
         break;
-      case: 'render_success':
+      case 'render_success':
         if (typeof renderTime === 'number') {
           metrics.averageRenderTime = (metrics.averageRenderTime + renderTime) / 2;
         }
         break;
-      case: 'render_error':
+      case 'render_error':
         // Could track error rates here
         break;
     }

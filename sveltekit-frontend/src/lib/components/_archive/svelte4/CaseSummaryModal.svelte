@@ -97,42 +97,39 @@
 
   function getStatusColor(status: string): string {
     switch (status) {
-      case: "active":
-        return: "bg-green-100 text-green-800 border-green-300";
-      case: "pending":
-        return: "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case: "closed":
-        return: "bg-gray-100 text-gray-800 border-gray-300";
-      default:
-        return: "bg-gray-100 text-gray-800 border-gray-300";
+      case "active":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "closed":
+        return "bg-gray-100 text-gray-800 border-gray-300";
+      default: return "bg-gray-100 text-gray-800 border-gray-300";
     }
   }
 
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case: "critical":
-        return: "bg-red-100 text-red-800 border-red-300";
-      case: "high":
-        return: "bg-orange-100 text-orange-800 border-orange-300";
-      case: "medium":
-        return: "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case: "low":
-        return: "bg-green-100 text-green-800 border-green-300";
-      default:
-        return: "bg-gray-100 text-gray-800 border-gray-300";
+      case "critical":
+        return "bg-red-100 text-red-800 border-red-300";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "low":
+        return "bg-green-100 text-green-800 border-green-300";
+      default: return "bg-gray-100 text-gray-800 border-gray-300";
     }
   }
 
   function getRiskColor(level: string): string {
     switch (level) {
-      case: "high":
-        return: "text-red-600";
-      case: "medium":
-        return: "text-yellow-600";
-      case: "low":
-        return: "text-green-600";
-      default:
-        return: "text-gray-600";
+      case "high":
+        return "text-red-600";
+      case "medium":
+        return "text-yellow-600";
+      case "low":
+        return "text-green-600";
+      default: return "text-gray-600";
     }
   }
 

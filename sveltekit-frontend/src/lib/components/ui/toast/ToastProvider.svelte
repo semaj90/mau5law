@@ -20,7 +20,7 @@
     toasts = [...toasts, newToast];
     return {
       id,
-      dismiss: () => removeToast(id), // Changed semicolon to comma
+      dismiss: () => removeToast(id)
     }
   }
   export function removeToast(id: string) {
@@ -56,7 +56,7 @@
       variant: 'warning',
       title: 'Deadline Approaching',
       description: `${deadline} - ${daysLeft} days remaining`,
-      duration: 0, // Don't auto-dismiss warning;
+      duration: 0, // Don't auto-dismiss warning
       action: {
         label: 'View Details',
         onClick: () => {
@@ -71,7 +71,7 @@
       variant: 'error',
       title: 'System Error',
       description: error,
-      duration: 0, // Don't auto-dismiss error;
+      duration: 0, // Don't auto-dismiss error
       action: {
         label: 'Retry',
         onClick: () => {

@@ -385,13 +385,13 @@ export class WebGPUTextureStreamingService {
   private determineCacheRegion(textureSize: number): 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM' {
     // NES-style memory region mapping based on size and usage
     if (textureSize > 4 * 1024 * 1024) { // > 4MB: Large textures
-      return: 'PRG_ROM';
+      return 'PRG_ROM';
     } else if (textureSize > 1 * 1024 * 1024) { // 1-4MB: Medium textures
-      return: 'CHR_ROM';
+      return 'CHR_ROM';
     } else if (textureSize > 256 * 1024) { // 256KB-1MB: Small textures
-      return: 'CHR_RAM';
+      return 'CHR_RAM';
     } else { // < 256KB: Tiny textures
-      return: 'PRG_RAM';
+      return 'PRG_RAM';
     }
   }
   private supportsCompression(format: GPUTextureFormat): boolean {

@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action } = body || {};
 
     switch (action) {
-      case: 'add-sample-documents':
+      case 'add-sample-documents':
         // Add additional sample documents for testing
         return json(
           {
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case: 'rebuild-indexes':
+      case 'rebuild-indexes':
         // Rebuild database indexes
         return json(
           {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case: 'clear-cache':
+      case 'clear-cache':
         // Clear embedding and vector caches
         return json(
           {
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case: 'init':
+      case 'init':
         // Example: run setupDatabase if requested
         try {
           await setupDatabase();
@@ -65,8 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.error('❌ Setup error:', setupMsg);
           return json({ success: false, error: setupMsg }, { status: 500 });
         }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Unknown action. Available: add-sample-documents, rebuild-indexes, clear-cache, init',

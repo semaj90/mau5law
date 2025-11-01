@@ -157,12 +157,11 @@ class GPUWorker {
     // Process with WebGPU
     async processWithWebGPU(op: TensorOp): Promise<Float32Array> {
         switch (op.type) {
-            case: 'matmul':
+            case 'matmul':
                 return this.gpuMatMul(op.inputA, op.inputB!, op.params);
-            case: 'conv2d':
+            case 'conv2d':
                 return this.gpuConv2D(op.inputA, op.inputB!, op.params);
-            default:
-                return this.processWithWASM(op);
+            default: return this.processWithWASM(op);
         }
     }
     // GPU Matrix Multiplication
@@ -228,27 +227,25 @@ class GPUWorker {
     processWithWASM(op: TensorOp): Float32Array {
         if (!this.wasmModule) return new Float32Array();
         switch (op.type) {
-            case: 'matmul':
+            case 'matmul':
                 return this.wasmModule.matmul(op.inputA, op.inputB, op.params);
-            case: 'conv2d':
+            case 'conv2d':
                 return this.wasmModule.conv2d(op.inputA, op.inputB, op.params);
-            case: 'attention':
+            case 'attention':
                 return this.wasmModule.attention(op.inputA, op.inputB, op.params);
-            case: 'fft':
+            case 'fft':
                 return this.wasmModule.fft(op.inputA);
-            default:
-                return op.inputA;
+            default: return op.inputA;
         }
     }
     // CPU fallback
     processWithCPU(op: TensorOp): Float32Array {
         switch (op.type) {
-            case: 'matmul':
+            case 'matmul':
                 return this.cpuMatMul(op.inputA, op.inputB!);
-            case: 'conv2d':
+            case 'conv2d':
                 return this.cpuConv2D(op.inputA, op.inputB!);
-            default:
-                return op.inputA;
+            default: return op.inputA;
         }
     }
     // Simple CPU implementations
@@ -315,18 +312,18 @@ let gpuWorker: GPUWorker | null = null;
 self.addEventListener('message', async (_event: any) => {
     const { type, data } = event.data;
     switch (type) {
-        case: 'init':
+        case 'init':
             gpuWorker = new GPUWorker();
             await gpuWorker.initialize();
             self.postMessage({ type: 'ready' });
             break;
-        case: 'process':
+        case 'process':
             if (gpuWorker) {
                 const result = await gpuWorker.processTensorOp(data);
                 self.postMessage({ type: 'result', data: result });
             }
             break;
-        case: 'cache-stats':
+        case 'cache-stats':
             if (gpuWorker) {
                 // Return cache statistics
                 self.postMessage({ type: 'stats', data: { [key,: strin,g]: any } });

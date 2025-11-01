@@ -221,12 +221,12 @@ export class LegalJsonbOperations {
   static findCitationNetwork(documentId: string, depth = 2) {
     return sql`
       WITH RECURSIVE citation_tree AS (
-        -- Base case: start with the given document
+        -- Base case start with the given document
         SELECT id, title, metadata->'citations' as citations, 1 as depth
         FROM legal_documents_jsonb
         WHERE id = ${documentId}
         UNION
-        -- Recursive case: find documents that cite or are cited by current level
+        -- Recursive case find documents that cite or are cited by current level
         SELECT d.id, d.title, d.metadata->'citations' as citations, ct.depth + 1
         FROM legal_documents_jsonb d,
              citation_tree ct,

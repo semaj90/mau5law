@@ -90,10 +90,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
-      case: 'high': return: 'destructive';
-      case: 'medium': return: 'secondary';
-      case: 'low': return: 'outline';
-      default: return: 'outline';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'outline';
     }
   }
   const formatTimestamp = (timestamp: string) => {

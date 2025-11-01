@@ -163,7 +163,7 @@
       const mockResults: SearchResult[] = [
         {
           id: 'case-001',
-          title: `Case: ${query} Investigation`,
+          title: `case ${query} Investigation`,
           type: 'case',
           content: `Legal case involving ${query} with multiple evidence items and witness testimonies.`,
           score: 0.9,

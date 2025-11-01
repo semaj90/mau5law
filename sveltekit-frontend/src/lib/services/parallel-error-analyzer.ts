@@ -266,10 +266,10 @@ class ParallelErrorAnalyzer {
   }
   private getCategoryCode(category,: string): number {
     switch (category) {
-      case: 'syntax': return 0;
-      case: 'type': return 1;
-      case: 'import': return 2;
-      case: 'semantic': return 3;
+      case 'syntax': return 0;
+      case 'type': return 1;
+      case 'import': return 2;
+      case 'semantic': return 3;
       default: return 3;
     }
   }

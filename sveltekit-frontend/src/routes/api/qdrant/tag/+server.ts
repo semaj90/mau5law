@@ -148,22 +148,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Initialize collections if they don't exist
     await initializeCollections();
     switch (action) {
-      case: 'tag':
+      case 'tag':
         return await tagDocument(data as Record<string, unknown>, String(sessionId));
-      case: 'search':
+      case 'search':
         return await searchDocuments(data as Record<string, unknown>, String(sessionId));
-      case: 'batch_tag':
+      case 'batch_tag':
         return await batchTagDocuments(data as Record<string, unknown>, String(sessionId));
-      case: 'update_tags':
+      case 'update_tags':
         return await updateDocumentTags(data as Record<string, unknown>, String(sessionId));
-      case: 'delete':
+      case 'delete':
         return await deleteDocument(data as Record<string, unknown>, String(sessionId));
-      case: 'get_similar':
+      case 'get_similar':
         return await getSimilarDocuments(data as Record<string, unknown>, String(sessionId));
-      case: 'get_stats':
+      case 'get_stats':
         return await getCollectionStats(String(sessionId));
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     console.error('Qdrant API error:', getErrorMessage(error));
@@ -611,19 +610,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const caseId = url.searchParams.get('caseId');
     const limit = parseInt(url.searchParams.get('limit') || '20');
     switch (action) {
-      case: 'get_document':
+      case 'get_document':
         if (!documentId) return json({ error: 'Document ID required' }, { status: 400 });
         // coerce sessionId to string here to satisfy functions that expect string userId
         return await getDocument(documentId, String(sessionId));
-      case: 'list_documents':
+      case 'list_documents':
         // ensure caseId null is converted to undefined to match the expected param type
         return await listDocuments(String(sessionId), { caseId: caseId ?? undefined, limit });
-      case: 'get_tags':
+      case 'get_tags':
         return await getUserTags(String(sessionId));
-      case: 'health':
+      case 'health':
         return await getHealthStatus();
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     console.error('Qdrant GET error:', getErrorMessage(error));

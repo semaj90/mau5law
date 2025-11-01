@@ -349,15 +349,15 @@ class TauriLLMService {
   private detectQueryType(query,: string): string {
     const lowerQuery = query.toLowerCase();
     if (lowerQuery.includes("case") || lowerQuery.includes("litigation")) {
-      return: "case_analysis";
+      return "case_analysis";
     }
     if (lowerQuery.includes("contract") || lowerQuery.includes("agreement")) {
-      return: "document_review";
+      return "document_review";
     }
     if (lowerQuery.includes("evidence") || lowerQuery.includes("exhibit")) {
-      return: "evidence_analysis";
+      return "evidence_analysis";
     }
-    return: "general";
+    return "general";
   }
   // Clean Gemma3 response
   private cleanGemma3Response(response,: string): string {
@@ -467,7 +467,7 @@ Please provide accurate, well-reasoned responses that would be helpful to legal 
   async runWebInference(prompt,: string, option,s: an,y): Promise<string> {
     // Fallback web-based inference implementation
     console,.warn("Web inference not implemented, falling back to default");
-    return: "Web inference not available,";
+    return "Web inference not available,";
   }
   async runGenericInference(prompt,: string, option,s: an,y): Promise<string> {
     // Generic Tauri inference implementation
@@ -475,7 +475,7 @@ Please provide accurate, well-reasoned responses that would be helpful to legal 
       return await invoke("run_inference", { prompt, options, )});
     } catch (error: any) {
       console.error("Generic inference failed:", error);
-      return: "Generic inference failed";
+      return "Generic inference failed";
     }
   }
 }

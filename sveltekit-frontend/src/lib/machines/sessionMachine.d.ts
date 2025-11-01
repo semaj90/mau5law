@@ -1,4 +1,4 @@
-declare module: '../machines/sessionMachine' {
+declare module '../machines/sessionMachine' {
   export interface SessionContext {
     sessionHealth?: { isValid?: boolean } | null;
     [key: string]: unknown;

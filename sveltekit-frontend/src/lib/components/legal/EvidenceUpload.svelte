@@ -148,10 +148,10 @@
 
   // Determine file type
   function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' {
-    if (mimeType.startsWith('image/')) return: 'image';
-    if (mimeType.startsWith('video/')) return: 'video';
-    if (mimeType.startsWith('audio/')) return: 'audio';
-    return: 'document';
+    if (mimeType.startsWith('image/')) return 'image';
+    if (mimeType.startsWith('video/')) return 'video';
+    if (mimeType.startsWith('audio/')) return 'audio';
+    return 'document';
   }
 
   // Process all pending files
@@ -258,17 +258,17 @@
     };
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
-      case: 'document':
+      case 'document':
         extractedMetadata.extractedText = `Extracted text from ${evidenceFile.file.name}`;
         extractedMetadata.tags = ['legal document', 'evidence', 'text'];
         break;
-      case: 'image':
+      case 'image':
         extractedMetadata.tags = ['visual evidence', 'photograph', 'image'];
         break;
-      case: 'video':
+      case 'video':
         extractedMetadata.tags = ['video evidence', 'multimedia', 'recording'];
         break;
-      case: 'audio':
+      case 'audio':
         extractedMetadata.tags = ['audio evidence', 'recording', 'sound'];
         break;
     }
@@ -343,7 +343,7 @@
 
   // Utility functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -351,22 +351,22 @@
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case: 'completed': return: '#10b981';
-      case: 'processing':
-      case: 'uploading':
-      case: 'analyzing': return: '#3b82f6';
-      case: 'error': return: '#ef4444';
-      default: return: '#6b7280';
+      case 'completed': return '#10b981';
+      case 'processing':
+      case 'uploading':
+      case 'analyzing': return '#3b82f6';
+      case 'error': return '#ef4444';
+      default: return '#6b7280';
     }
   }
   function getStatusIcon(status: string): string {
     switch (status) {
-      case: 'completed': return: '✅';
-      case: 'uploading': return: '📤';
-      case: 'processing': return: '⚙️';
-      case: 'analyzing': return: '🧠';
-      case: 'error': return: '❌';
-      default: return: '📄';
+      case 'completed': return '✅';
+      case 'uploading': return '📤';
+      case 'processing': return '⚙️';
+      case 'analyzing': return '🧠';
+      case 'error': return '❌';
+      default: return '📄';
     }
   }
 </script>

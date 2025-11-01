@@ -165,13 +165,13 @@ const evidenceCanvasMachine = createMachine({
           const startTime = performance.now();
           let result;
           switch (input.type) {
-            case: 'ADD_EVIDENCE':
+            case 'ADD_EVIDENCE':
               result = await mockServices.addEvidenceToCanvas(input.canvasId, input.evidence);
               break;
-            case: 'MOVE_EVIDENCE':
+            case 'MOVE_EVIDENCE':
               result = await mockServices.moveEvidenceItem(input.canvasId, input.itemId, input.position);
               break;
-            case: 'CREATE_CONNECTION':
+            case 'CREATE_CONNECTION':
               result = await mockServices.createEvidenceConnection(input.canvasId, input.connection);
               break;
             default:

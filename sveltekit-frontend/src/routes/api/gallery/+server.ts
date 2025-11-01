@@ -446,15 +446,15 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   }
   // For other file types, return appropriate icons
   if (fileType.includes('pdf')) {
-    return: '/icons/pdf-thumbnail.svg';
+    return '/icons/pdf-thumbnail.svg';
   }
   if (fileType.includes('video')) {
-    return: '/icons/video-thumbnail.svg';
+    return '/icons/video-thumbnail.svg';
   }
   if (fileType.includes('audio')) {
-    return: '/icons/audio-thumbnail.svg';
+    return '/icons/audio-thumbnail.svg';
   }
-  return: '/icons/file-thumbnail.svg';
+  return '/icons/file-thumbnail.svg';
 }
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   // FIXED: Use: 'locals' and new RequestHandler type

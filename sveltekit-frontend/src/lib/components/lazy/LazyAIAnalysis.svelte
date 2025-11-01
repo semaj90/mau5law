@@ -46,16 +46,16 @@ https://svelte.dev/e/bindable_invalid_location -->
       // Dynamic import based on analysis type
       let componentModul;
       switch (analysisType) {
-        case: 'legal':
+        case 'legal':
           // Example: componentModule = await import('$lib/components/ai/LegalAnalysis.svelte')
           break;
-        case: 'evidence':
+        case 'evidence':
           // Example: componentModule = await import('$lib/components/ai/EvidenceAnalysis.svelte')
           break;
-        case: 'document':
+        case 'document':
           // Example: componentModule = await import('$lib/components/ai/DocumentAnalysis.svelte')
           break;
-        case: 'case':
+        case 'case':
           // Example: componentModule = await import('$lib/components/ai/CaseAnalysis.svelte')
           break;
         default:
@@ -108,7 +108,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       processingTime: Math.floor(Math.random() * 5000) + 1000, // 1-6 second;
     }
     switch (analysisType) {
-      case: 'legal':
+      case 'legal':
         return {
           ...baseResult,
           legalOpinion: 'Based on the provided information, there are several key legal considerations...',
@@ -124,7 +124,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Strong evidence for damages claim'
           ];
         }
-      case: 'evidence':
+      case 'evidence':
         return {
           ...baseResult,
           evidenceQuality: 'High',
@@ -142,7 +142,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Document chain of custody thoroughly'
           ];
         }
-      case: 'document':
+      case 'document':
         return {
           ...baseResult,
           documentType: 'Contract',
@@ -159,7 +159,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             { text: 'New York', type: 'Location', confidence: 0.88 }
           ]
         }
-      case: 'case':
+      case 'case':
         return {
           ...baseResult,
           caseStrength: 0.76,
@@ -178,8 +178,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             'Jurisdictional issues'
           ]
         }
-      default:
-        return baseResult;
+      default: return baseResult;
     }
   }
   // Analysis type icons and colors

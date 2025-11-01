@@ -18,7 +18,7 @@
   $: max = capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1;
 
   $: d = (() => {
-    if (!capped.length) return: '';
+    if (!capped.length) return '';
     const denom = capped.length > 1 ? capped.length - 1 : 1;
     return capped
       .map((v, i) => {

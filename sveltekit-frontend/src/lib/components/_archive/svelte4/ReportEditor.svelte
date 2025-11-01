@@ -88,23 +88,23 @@ https://svelte.dev/e/props_duplicate -->
     // Handle keyboard shortcuts
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
-        case: "s":
+        case "s":
           event.preventDefault();
           saveReport();
           break;
-        case: "b":
+        case "b":
           event.preventDefault();
           formatText("bold");
           break;
-        case: "i":
+        case "i":
           event.preventDefault();
           formatText("italic");
           break;
-        case: "u":
+        case "u":
           event.preventDefault();
           formatText("underline");
           break;
-        case: "k":
+        case "k":
           event.preventDefault();
           insertCitationPrompt();
           break;

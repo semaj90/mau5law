@@ -134,18 +134,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'search';
   try {
     switch (action) {
-      case: 'search':
+      case 'search':
         return await handleSearch(request);
-      case: 'analyze':
+      case 'analyze':
         return await handleAnalyze(request);
-      case: 'summarize':
+      case 'summarize':
         return await handleSummarize(request);
-      case: 'status':
+      case 'status':
         return await handleStatus();
-      case: 'queue-summarize':
+      case 'queue-summarize':
         return await handleQueueSummarize(request);
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (err: unknown) {
     // Use unknown for catch block
@@ -440,21 +439,21 @@ export const GET: RequestHandler = async ({ url }) => {
   // const endpoint = url.searchParams.get("endpoint"); // unused
   try {
     switch (action) {
-      case: 'status':
+      case 'status':
         return await handleStatus();
-      case: 'stats': {
+      case 'stats': {
         const stats = await forwardToRAGBackend<RagStatsResult>('/api/v1/rag/stats'); // Use specific type
         return json({ success: true, stats: stats.stats });
       }
-      case: 'health': {
+      case 'health': {
         const health = await forwardToRAGBackend<RagHealthStatus>('/health'); // Use specific type
         return json({ success: true, health });
       }
-      case: 'metrics': {
+      case 'metrics': {
         const metrics = await forwardToRAGBackend<RagDetailedHealthMetrics>('/health/detailed'); // Use specific type
         return json({ success: true, metrics });
       }
-      case: 'search': {
+      case 'search': {
         const query = url.searchParams.get('query');
         const searchType = url.searchParams.get('searchType') || 'hybrid';
         const limit = parseInt(url.searchParams.get('limit') || '10');
@@ -537,7 +536,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get('operation') || 'refresh';
     switch (operation) {
-      case: 'refresh': {
+      case 'refresh': {
         const refreshResult = await forwardToRAGBackend<RagCacheResult>('/api/v1/rag/cache', {
           // Use specific type
           method: 'POST',
@@ -546,7 +545,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         });
         return json({ success: true, result: refreshResult.result }); // Use typed result
       }
-      case: 'stats': {
+      case 'stats': {
         const cacheStats = await forwardToRAGBackend<RagCacheResult>('/api/v1/rag/stats'); // Use specific type
         return json({ success: true, stats: cacheStats.stats }); // Use typed result
       }

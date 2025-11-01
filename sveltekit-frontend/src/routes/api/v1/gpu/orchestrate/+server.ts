@@ -9,18 +9,17 @@ export const POST: RequestHandler = async ({ request }) => {
     // Supported actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
     const { action, data, config } = await request.json();
     switch (action) {
-      case: 'legal_analysis':
+      case 'legal_analysis':
         return await handleLegalAnalysis(data, config);
-      case: 'document_processing':
+      case 'document_processing':
         return await handleDocumentProcessing(data, config);
-      case: 'autosolve':
+      case 'autosolve':
         return await handleAutosolve(data, config);
-      case: 'gpu_task':
+      case 'gpu_task':
         return await handleGPUTask(data, config);
-      case: 'cluster_status':
+      case 'cluster_status':
         return await handleClusterStatus();
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     const errMsg =
@@ -32,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return: 'Unknown error';
+                return 'Unknown error';
               }
             })();
     console.error('GPU orchestration error:', errMsg);
@@ -397,7 +396,7 @@ export const GET: RequestHandler = async () => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return: 'Unknown error';
+                return 'Unknown error';
               }
             })();
     return json(

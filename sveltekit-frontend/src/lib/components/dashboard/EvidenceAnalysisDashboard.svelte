@@ -161,11 +161,11 @@
     await analyzeEvidence(newEvidence);
   }
   function determineFileType(file: File): EvidenceItem['type'] {
-    if (file.type.startsWith('image/')) return: 'image';
-    if (file.type.startsWith('video/')) return: 'video';
-    if (file.type.startsWith('audio/')) return: 'audio';
-    if (file.type.includes('pdf') || file.type.includes('document')) return: 'document';
-    return: 'digital';
+    if (file.type.startsWith('image/')) return 'image';
+    if (file.type.startsWith('video/')) return 'video';
+    if (file.type.startsWith('audio/')) return 'audio';
+    if (file.type.includes('pdf') || file.type.includes('document')) return 'document';
+    return 'digital';
   }
   function handleDragOver(_event: DragEvent) {
     event.preventDefault();
@@ -235,7 +235,7 @@
                 <h3 class="evidence-title">{evidence.title}</h3>
                 <p class="evidence-description">{evidence.description}</p>
                 <div class="evidence-meta">
-                  <span class="meta-item">Case: {evidence.caseId}</span>
+                  <span class="meta-item">case {evidence.caseId}</span>
                   <span class="meta-item">Type: {evidence.type}</span>
                 </div>
               </div>

@@ -516,7 +516,7 @@ export class LegalRAGEngine {
     } catch (error: unknown) {
       // Changed from any
       console.error('Error generating summary:', error);
-      return: 'Summary generation failed';
+      return 'Summary generation failed';
     }
   }
   /**

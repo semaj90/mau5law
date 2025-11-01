@@ -14,17 +14,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const startTime = Date.now();
     let result;
     switch (operation) {
-      case: 'generate_text':
+      case 'generate_text':
         result = await simulateTextGeneration(input, fallback);
         break;
-      case: 'generate_embedding':
+      case 'generate_embedding':
         result = await simulateEmbeddingGeneration(input);
         break;
-      case: 'capability_test':
+      case 'capability_test':
         result = await simulateCapabilityTest();
         break;
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown operation: ${operation}`,
@@ -171,17 +170,17 @@ function getRecommendedConfig(capabilities: any) {
     enableParallelProcessing: false,
   };
   switch (capabilities.deviceType) {
-    case: 'webgpu':
+    case 'webgpu':
       config.batchSize = 8;
       config.maxTokens = 8192;
       config.enableParallelProcessing = true;
       break;
-    case: 'webgl':
+    case 'webgl':
       config.batchSize = 4;
       config.maxTokens = 4096;
       config.useQuantization = true;
       break;
-    case: 'wasm':
+    case 'wasm':
       config.batchSize = 1;
       config.maxTokens = 2048;
       config.useQuantization = true;

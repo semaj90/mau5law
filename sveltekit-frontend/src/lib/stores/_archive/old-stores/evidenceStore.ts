@@ -240,14 +240,14 @@ class RealTimeEvidenceStore {
     if (message.channel === 'evidence_update') {
       const { type, evidenceId, data, changes, userId } = message.data;
       switch (type) {
-        case: 'EVIDENCE_CREATED':
+        case 'EVIDENCE_CREATED':
           // data is typed as Evidence | undefined; guard before calling
           if (data) this.handleEvidenceCreated(data, userId);
           break;
-        case: 'EVIDENCE_UPDATED':
+        case 'EVIDENCE_UPDATED':
           if (evidenceId && changes) this.handleEvidenceUpdated(evidenceId, changes, userId);
           break;
-        case: 'EVIDENCE_DELETED':
+        case 'EVIDENCE_DELETED':
           if (evidenceId) this.handleEvidenceDeleted(evidenceId, userId);
           break;
       }
@@ -428,12 +428,12 @@ class RealTimeEvidenceStore {
     const operation = history[currentIndex];
     // Reverse the operation
     switch (operation.type) {
-      case: 'CREATE':
+      case 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         }
         break;
-      case: 'UPDATE':
+      case 'UPDATE':
         if (operation.previousState) {
           this.evidence.update(items => {
             const index = items.findIndex(item => item.id === operation.evidenceId);
@@ -444,7 +444,7 @@ class RealTimeEvidenceStore {
           });
         }
         break;
-      case: 'DELETE':
+      case 'DELETE':
         if (operation.previousState) {
           this.evidence.update(items => [...items, operation.previousState!]);
         }
@@ -461,12 +461,12 @@ class RealTimeEvidenceStore {
     const operation = history[currentIndex + 1];
     // Replay the operation
     switch (operation.type) {
-      case: 'CREATE':
+      case 'CREATE':
         if (operation.newState) {
           this.evidence.update(items => [...items, operation.newState!]);
         }
         break;
-      case: 'UPDATE':
+      case 'UPDATE':
         if (operation.newState) {
           this.evidence.update(items => {
             const index = items.findIndex(item => item.id === operation.evidenceId);
@@ -477,7 +477,7 @@ class RealTimeEvidenceStore {
           });
         }
         break;
-      case: 'DELETE':
+      case 'DELETE':
         this.evidence.update(items => items.filter(item => item.id !== operation.evidenceId));
         break;
     }
@@ -530,7 +530,7 @@ class RealTimeEvidenceStore {
   // Utility methods
   private getCurrentUserId(): string {
     // In a real app, get from auth store or session
-    return: 'current-user-id';
+    return 'current-user-id';
   }
   public disconnect() {
     if (this.websocket) {

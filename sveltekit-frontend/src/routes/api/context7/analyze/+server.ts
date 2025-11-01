@@ -5,7 +5,7 @@ import eq from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 // Types for Context7 analysis payload (avoids 'any')
-type CaseLawConnection = { case: string; relevance: number };
+type CaseLawConnection = { case string; relevance: number };
 type SemanticMapping = { concept: string; confidence: number };
 
 interface Context7Analysis {
@@ -55,8 +55,8 @@ export const POST: RequestHandler = async ({ request }) => {
         legalEntities: ['Party A', 'Party B', 'Contract Terms'],
         keyTerms: ['indemnification', 'liability', 'termination'],
         caseLawConnections: [
-          { case: 'Smith v. Jones', relevance: 0.85 },
-          { case: 'Doe v. Corporation', relevance: 0.72 },
+          { case 'Smith v. Jones', relevance: 0.85 },
+          { case 'Doe v. Corporation', relevance: 0.72 },
         ],
         prosecutionRelevance: {
           score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0

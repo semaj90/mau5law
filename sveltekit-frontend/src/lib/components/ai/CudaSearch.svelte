@@ -255,19 +255,19 @@ Usage:
 
   function getSearchTypeColor(type: string): string {
     switch (type) {
-      case: 'semantic': return: 'bg-blue-100 text-blue-800';
-      case: 'keyword': return: 'bg-green-100 text-green-800';
-      case: 'hybrid': return: 'bg-purple-100 text-purple-800';
-      default: return: 'bg-gray-100 text-gray-800';
+      case 'semantic': return 'bg-blue-100 text-blue-800';
+      case 'keyword': return 'bg-green-100 text-green-800';
+      case 'hybrid': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
   function getDocumentTypeColor(type: string): string {
     switch (type) {
-      case: 'contract': return: 'bg-orange-100 text-orange-800';
-      case: 'agreement': return: 'bg-blue-100 text-blue-800';
-      case: 'lease': return: 'bg-green-100 text-green-800';
-      case: 'deed': return: 'bg-purple-100 text-purple-800';
-      default: return: 'bg-gray-100 text-gray-800';
+      case 'contract': return 'bg-orange-100 text-orange-800';
+      case 'agreement': return 'bg-blue-100 text-blue-800';
+      case 'lease': return 'bg-green-100 text-green-800';
+      case 'deed': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
 </script>

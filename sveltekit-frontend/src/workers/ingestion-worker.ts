@@ -152,19 +152,19 @@ if (isWorkerEnv) {
         this.currentTask = taskId;
         let result: unknown;
         switch (type) {
-          case: 'ingestion':
+          case 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
             break;
-          case: 'embedding':
+          case 'embedding':
             result = await this.processEmbeddingGeneration(data);
             break;
-          case: 'som_clustering':
+          case 'som_clustering':
             result = await this.processSOMClustering(data);
             break;
-          case: 'rtx_compression':
+          case 'rtx_compression':
             result = await this.processRTXCompression(data);
             break;
-          case: 'health_check':
+          case 'health_check':
             result = await this.performHealthCheck();
             break;
           default:
@@ -701,9 +701,9 @@ function guessFileType(fileName: string): string {
   const ext = (fileName || '').toLowerCase().split('.').pop() || '';
   const documentTypes = ['pdf', 'doc', 'docx', 'txt'];
   const imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
-  if (documentTypes.includes(ext)) return: 'document';
-  if (imageTypes.includes(ext)) return: 'image';
-  return: 'other';
+  if (documentTypes.includes(ext)) return 'document';
+  if (imageTypes.includes(ext)) return 'image';
+  return 'other';
 }
 function chunkTextStatic(text: string, chunkSize: number, overlap: number): string[] {
   const chunks: string[] = [];
@@ -733,19 +733,19 @@ if (isWorkerEnv) {
         this.currentTask = taskId;
         let result: unknown;
         switch (type) {
-          case: 'ingestion':
+          case 'ingestion':
             result = await this.processIngestion(data as IngestionTask);
             break;
-          case: 'embedding':
+          case 'embedding':
             result = await this.processEmbeddingGeneration(data);
             break;
-          case: 'som_clustering':
+          case 'som_clustering':
             result = await this.processSOMClustering(data);
             break;
-          case: 'rtx_compression':
+          case 'rtx_compression':
             result = await this.processRTXCompression(data);
             break;
-          case: 'health_check':
+          case 'health_check':
             result = await this.performHealthCheck();
             break;
           default:

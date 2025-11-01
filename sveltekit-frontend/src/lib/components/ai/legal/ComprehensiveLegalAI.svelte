@@ -261,7 +261,7 @@
     if (!simdCache) return;
     const testData = {
       legal: {
-        case: 'Test vs Example',
+        case 'Test vs Example',
         parties: ['Plaintiff', 'Defendant'],
         evidence: Array.from({ length: 100 }, (_, i) => ({
           id: i,

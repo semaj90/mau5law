@@ -170,10 +170,10 @@
   }
   function getOperationIcon(operation string) {
     switch (operation) {
-      case: 'document_vectorization': return Databa;
-      case: 'similarity_search': return BarChart3;
-      case: 'text_embedding': return Layer;
-      case: 'legal_entity_extraction': return Ey;
+      case 'document_vectorization': return Databa;
+      case 'similarity_search': return BarChart3;
+      case 'text_embedding': return Layer;
+      case 'legal_entity_extraction': return Ey;
       default: return Cpu;
     }
   }

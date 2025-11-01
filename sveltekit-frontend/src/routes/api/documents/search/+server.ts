@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Perform search based on type
     switch (searchType) {
-      case: 'vector':
+      case 'vector':
         if (queryEmbedding) {
           results = await vectorSearch(queryEmbedding, limit, threshold, filters);
           searchMethod = 'Vector Similarity';
@@ -71,15 +71,15 @@ export const POST: RequestHandler = async ({ request }) => {
           throw error(400, 'Embedding required for vector search');
         }
         break;
-      case: 'keyword':
+      case 'keyword':
         results = await keywordSearch(query, limit, filters);
         searchMethod = 'Full-text Search';
         break;
-      case: 'hybrid':
+      case 'hybrid':
         results = await hybridSearch(query, queryEmbedding, limit, threshold, filters);
         searchMethod = 'Hybrid (Vector + Keyword)';
         break;
-      case: 'semantic':
+      case 'semantic':
         if (queryEmbedding) {
           results = await semanticSearch(query, queryEmbedding, limit, threshold, filters);
           searchMethod = 'Semantic + Context';

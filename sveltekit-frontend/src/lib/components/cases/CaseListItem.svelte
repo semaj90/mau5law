@@ -26,42 +26,39 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case: "open":
-        return: "bg-green-100 text-green-800";
-      case: "in_progress":
-        return: "bg-yellow-100 text-yellow-800";
-      case: "closed":
-        return: "bg-blue-100 text-blue-800";
-      case: "archived":
-        return: "bg-gray-100 text-gray-800";
-      default:
-        return: "bg-gray-100 text-gray-800";
+      case "open":
+        return "bg-green-100 text-green-800";
+      case "in_progress":
+        return "bg-yellow-100 text-yellow-800";
+      case "closed":
+        return "bg-blue-100 text-blue-800";
+      case "archived":
+        return "bg-gray-100 text-gray-800";
+      default: return "bg-gray-100 text-gray-800";
   }}
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case: "low":
-        return: "bg-green-100 text-green-800";
-      case: "medium":
-        return: "bg-yellow-100 text-yellow-800";
-      case: "high":
-        return: "bg-orange-100 text-orange-800";
-      case: "urgent":
-        return: "bg-red-100 text-red-800";
-      default:
-        return: "bg-gray-100 text-gray-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "urgent":
+        return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
   }}
   function getStatusIcon(status: string) {
     switch (status) {
-      case: "open":
+      case "open":
         return CheckCircl;
-      case: "in_progress":
+      case "in_progress":
         return Clock;
-      case: "closed":
+      case "closed":
         return Archiv;
-      case: "archived":
+      case "archived":
         return Archiv;
-      default:
-        return FileText;
+      default: return FileText;
   }}
   let statusIcon = $derived(getStatusIcon(caseData.status));
   let formattedDate = $derived(formatDistanceToNow(new Date(caseData.openedAt), {);

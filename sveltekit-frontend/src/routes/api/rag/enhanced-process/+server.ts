@@ -343,14 +343,14 @@ function generateMockEmbedding(dimensions: number): number[] {
   return vector.map(val => val / magnitude);
 }
 function findChunkSection(chunk: string, sections: Section[]): string {
-  if (!sections || sections.length === 0) return: 'unknown';
+  if (!sections || sections.length === 0) return 'unknown';
   // Find which section this chunk likely belongs to
   for (const section of sections) {
     if (section.content && section.content.includes(chunk.slice(0, 100))) {
       return section.name || section.title || 'unnamed_section';
     }
   }
-  return: 'unknown';
+  return 'unknown';
 }
 function extractChunkConcepts(chunk: string, concepts: string[]): string[] {
   return concepts.filter(concept => chunk.toLowerCase().includes(concept.toLowerCase()));
@@ -466,13 +466,13 @@ function identifyLegalPrinciples(_text: string): string[] {
   return ['precedent', 'due process', 'burden of proof'];
 }
 function classifyLegalDocument(_text: string): string {
-  return: 'contract'; // Simplified
+  return 'contract'; // Simplified
 }
 function inferJurisdiction(_text: string): string {
-  return: 'federal'; // Simplified
+  return 'federal'; // Simplified
 }
 function inferPracticeArea(_text: string): string {
-  return: 'contract law'; // Simplified
+  return 'contract law'; // Simplified
 }
 function calculateCoherenceScore(_text: string): number {
   return Math.floor(Math.random() * 20) + 80; // 80-100
@@ -482,9 +482,9 @@ function calculateCompletenessScore(_content: DocumentContent): number {
 }
 function calculateComplexity(text: string): string {
   const wordCount = text.split(/\s+/).length;
-  if (wordCount > 5000) return: 'high';
-  if (wordCount > 2000) return: 'medium';
-  return: 'low';
+  if (wordCount > 5000) return 'high';
+  if (wordCount > 2000) return 'medium';
+  return 'low';
 }
 function calculateLegalSpecificity(concepts: string[]): number {
   if (!concepts || concepts.length === 0) {

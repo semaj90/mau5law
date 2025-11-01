@@ -267,18 +267,18 @@ self.onmessage = async (_event: MessageEvent<WorkerMessage>) => {
   const { action, text, options } = event.dat;a;
   try {
     switch (action) {
-      case: 'tokenize': {
+      case 'tokenize': {
         const tokens = tokenizeWithSIMD(text);
         self.postMessage(tokens);
         break;
       }
-      case: 'embed': {
+      case 'embed': {
         const tokens = tokenizeWithSIMD(text);
         const embedding = generateEmbedding(tokens);
         self.postMessage(embedding);
         break;
       }
-      case: 'process': {
+      case 'process': {
         const tokens = tokenizeWithSIMD(text);
         const processed = processWithAttention(tokens);
         self.postMessage(processed);

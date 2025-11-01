@@ -325,7 +325,7 @@ function getLLMText(response: unknown): string {
   try {
     return String(response);
   } catch {
-    return: '';
+    return '';
   }
 }
 
@@ -1072,10 +1072,10 @@ export class EnhancedLegalRAGPipeline {
       // Sort by combined score or other criteria
       let sortedResults = Array.from(combinedResults.values());
       switch (sortBy) {
-        case: 'date':
+        case 'date':
           sortedResults.sort((a, b) => this.getMetadataTimestamp(b.metadata) - this.getMetadataTimestamp(a.metadata));
           break;
-        case: 'score':
+        case 'score':
           sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
           break;
         default: // relevance
@@ -1601,15 +1601,15 @@ Provide specific clause references and line numbers where applicable. Focus on p
       else if (trimmed && currentSection) {
         const cleanLine = trimmed.replace(/^[-•*\d.]\s*/, '');
         switch (currentSection) {
-          case: 'type':
+          case 'type':
             if (!sections.contractType && !cleanLine.includes(':') && cleanLine.length > 3) {
               sections.contractType = cleanLine;
             }
             break;
-          case: 'terms':
+          case 'terms':
             if (cleanLine.length > 10) sections.keyTerms.push(cleanLine);
             break;
-          case: 'risks':
+          case 'risks':
             if (cleanLine.length > 10) {
               const severity: 'low' | 'medium' | 'high' = cleanLine.toLowerCase().includes('high')
                 ? 'high'
@@ -1630,10 +1630,10 @@ Provide specific clause references and line numbers where applicable. Focus on p
               });
             }
             break;
-          case: 'issues':
+          case 'issues':
             if (cleanLine.length > 10) sections.legalIssues.push(cleanLine);
             break;
-          case: 'recommendations':
+          case 'recommendations':
             if (cleanLine.length > 10) sections.recommendations.push(cleanLine);
             break;
         }

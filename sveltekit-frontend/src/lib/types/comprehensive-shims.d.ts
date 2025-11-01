@@ -142,7 +142,7 @@ declare namespace NodeJS {
 // Module augmentations (extended)
 // -----------------------------
 // RabbitMQ service export (support both import forms used in repo)
-declare module: '$lib/server/messaging/rabbitmq-service' {
+declare module '$lib/server/messaging/rabbitmq-service' {
   /**
    * Named export map of queue names
    * Example usage:
@@ -158,7 +158,7 @@ declare module: '$lib/server/messaging/rabbitmq-service' {
   export default _default;
 }
 
-declare module: '$lib/server/messaging/rabbitmq-service.js' {
+declare module '$lib/server/messaging/rabbitmq-service.js' {
   // same shape for the .js import variant
   export const QUEUES: Record<string, string>;
   const _default: Record<string, string>;
@@ -166,7 +166,7 @@ declare module: '$lib/server/messaging/rabbitmq-service.js' {
 }
 
 // Lightweight db client helper signature (centralized factory pattern)
-declare module: '$lib/server/db/client' {
+declare module '$lib/server/db/client' {
   /**
    * Returns the effective DATABASE_URL (reads process.env with safe fallback).
    */
@@ -180,7 +180,7 @@ declare module: '$lib/server/db/client' {
 }
 
 // Redis cache helper typings (minimal surface used across repo)
-declare module: '$lib/server/cache/redis' {
+declare module '$lib/server/cache/redis' {
   // Simplified redis client interface used in the repo
   export interface SimpleRedisClient {
     get(key: string): Promise<string | null>;
@@ -197,21 +197,21 @@ declare module: '$lib/server/cache/redis' {
 }
 
 // Keep existing module augmentations below (if any)
-declare module: '$lib/utils/webgpu-array-utils' {
+declare module '$lib/utils/webgpu-array-utils' {
   // strengthen types: expect Float32Array in/out for numeric array ops
   export function adaptiveQuantization(data: Float32Array): Float32Array;
   // normalizeVectors may be absent in some builds; export as an optional const typed as a function or undefined
   export const normalizeVectors: ((vectors: Float32Array) => Float32Array) | undefined;
 }
 
-declare module: './webgpu-rag-service' {
+declare module './webgpu-rag-service' {
   export interface GPUSearchMetrics {
     searchTime: number;
     resultCount: number;
   }
 }
 // Also provide a $lib alias for the same service (covers different import forms)
-declare module: '$lib/services/webgpu-rag-service' {
+declare module '$lib/services/webgpu-rag-service' {
   export interface GPUSearchMetrics {
     searchTime: number;
     resultCount: number;

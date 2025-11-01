@@ -27,18 +27,18 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json().catch(() => ({}))
     const action = body && typeof body === 'object' && 'action' in body ? String((body as any).action) : null
     switch (action) {
-        case: 'create': {
+        case 'create': {
             const id = generateUuidV4()
             workflows[id] = { id, state: 'created', createdAt: new Date().toISOString() }
             return json({ success: true, workflowId: id })
         }
-        case: 'execute': {
+        case 'execute': {
             const id = (body as any).workflowId
             if (!id || !workflows[id]) return json({ success: false, error: 'Workflow ID invalid' }, { status: 400 })
             workflows[id].state = 'executed'
             return json({ success: true, workflowId: id, result: { status: 'ok' } })
         }
-        case: 'get': {
+        case 'get': {
             const id = (body as any).workflowId
             if (id) {
                 const wf = workflows[id]
@@ -47,7 +47,6 @@ export const POST: RequestHandler = async ({ request }) => {
             }
             return json({ success: true, workflows: Object.values(workflows) })
         }
-        default:
-            return json({ success: false, error: 'Invalid action' }, { status: 400 })
+        default: return json({ success: false, error: 'Invalid action' }, { status: 400 })
     }
 }

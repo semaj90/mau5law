@@ -861,10 +861,10 @@ export class AsyncRabbitMQStateManager {
   private log(message: string, type: 'info' | 'success' | 'error' = 'info'): void {
     const prefix = this.enableN64Logging ? '🎮 [AsyncState]' : '[AsyncState]';
     switch (type) {
-      case: 'success':
+      case 'success':
         console.log(`${prefix} ✅ ${message}`);
         break;
-      case: 'error':
+      case 'error':
         console.error(`${prefix} ❌ ${message}`);
         break;
       default:

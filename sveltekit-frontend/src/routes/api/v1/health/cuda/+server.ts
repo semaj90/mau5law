@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       let serviceStatus: 'online' | 'offline' | 'degraded' = 'offline';
       let details: Record<string, unknown> = {}; // changed from any -> Record<string, unknown>
       switch (service.name) {
-        case: 'ollama':
+        case 'ollama':
           response = await fetch(service.url);
           if (response.ok) {
             const data = await response.json();
@@ -95,8 +95,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
             details = { httpStatus: response.status };
           }
           break;
-        case: 'enhanced-rag':
-        case: 'upload-service':
+        case 'enhanced-rag':
+        case 'upload-service':
           response = await fetch(service.url);
           serviceStatus = response.ok ? 'online' : 'degraded';
           if (response.ok) {

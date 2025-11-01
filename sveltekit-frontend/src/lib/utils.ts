@@ -20,7 +20,7 @@ export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
  * Format file size in human readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return: '0 Bytes';
+  if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -33,7 +33,7 @@ export function formatDate(date: string | Date): string {
   const d = new Date(date);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000);
-  if (diffInSeconds < 60) return: 'Just now';
+  if (diffInSeconds < 60) return 'Just now';
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
@@ -293,7 +293,7 @@ export const theme = {
       error: '#8B1521',
       info: '#2A4A5A',
       evidence: '#3A4A5A',
-      case: '#A51C30',
+      case '#A51C30',
       document: '#6A7A8A',
     },
   },

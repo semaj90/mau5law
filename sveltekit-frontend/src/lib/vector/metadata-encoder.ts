@@ -339,14 +339,13 @@ export class VectorMetadataEncoder {
     config: VectorEncodingConfig // Updated
   ): Float32Array | Int8Array | Uint8Array {
     switch (config.quantization) {
-      case: 'int8':
+      case 'int8':
         return this.quantizeToInt8(vector);
-      case: 'int4':
+      case 'int4':
         return this.quantizeToInt4(vector);
-      case: 'binary':
+      case 'binary':
         return this.quantizeToBinary(vector);
-      default:
-        return vector; // No quantization
+      default: return vector; // No quantization
     }
   }
 
@@ -396,14 +395,13 @@ export class VectorMetadataEncoder {
 
   private decodeVectorCPU(metadata: VectorMetadata): Float32Array {
     switch (metadata.quantization) {
-      case: 'int8':
+      case 'int8':
         return this.dequantizeFromInt8(metadata.encoding as Int8Array, metadata.encodedDimensions);
-      case: 'int4':
+      case 'int4':
         return this.dequantizeFromInt4(metadata.encoding as Uint8Array, metadata.encodedDimensions);
-      case: 'binary':
+      case 'binary':
         return this.dequantizeFromBinary(metadata.encoding as Uint8Array, metadata.encodedDimensions);
-      default:
-        return metadata.encoding as Float32Array;
+      default: return metadata.encoding as Float32Array;
     }
   }
 

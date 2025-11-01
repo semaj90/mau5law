@@ -112,19 +112,19 @@
   function handleKeydown(e: KeyboardEvent) {
     if (!open) return;
     switch (e.key) {
-      case: 'Escape':
+      case 'Escape':
         e.preventDefault();
         close();
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         e.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, filteredItems.length - 1);
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         e.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, 0);
         break;
-      case: 'Enter':
+      case 'Enter':
         e.preventDefault();
         if (filteredItems[selectedIndex]) {
           selectItem(filteredItems[selectedIndex]);

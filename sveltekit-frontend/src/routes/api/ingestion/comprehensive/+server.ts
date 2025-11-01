@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const data: PostAction = await request.json(); // Type assertion for incoming data
     const { action, ...params } = data; // params will be correctly typed based on action
     switch (action) {
-      case: 'submit_document': {
+      case 'submit_document': {
         // params is now { documentId: string; chunks: any[]; metadata?: Record<string, any> }
         const { documentId, chunks, metadata } = params as Extract<PostAction, { action: 'submit_document' }>;
         // Validate input
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
           trackingUrl: `/api/ingestion/comprehensive?action=get_job&jobId=${result.jobId}`,
         });
       }
-      case: 'get_job': {
+      case 'get_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'get_job' }>;
         if (!jobId) {
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
           workflow: result.workflow,
         });
       }
-      case: 'get_dashboard': {
+      case 'get_dashboard': {
         // params is now {}
         const dashboardData: IngestionDashboardData = ingestionService.getDashboardData();
         return json({
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
           dashboard: dashboardData,
         });
       }
-      case: 'retry_job': {
+      case 'retry_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'retry_job' }>;
         if (!jobId) {
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message,
         });
       }
-      case: 'cancel_job': {
+      case 'cancel_job': {
         // params is now { jobId: string }
         const { jobId } = params as Extract<PostAction, { action: 'cancel_job' }>;
         if (!jobId) {
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message,
         });
       }
-      case: 'pause_processing': {
+      case 'pause_processing': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.pauseProcessing();
         if (!result.success) {
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Processing paused successfully',
         });
       }
-      case: 'resume_processing': {
+      case 'resume_processing': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.resumeProcessing();
         if (!result.success) {
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Processing resumed successfully',
         });
       }
-      case: 'set_concurrency': {
+      case 'set_concurrency': {
         // params is now { concurrency: number }
         const { concurrency } = params as Extract<PostAction, { action: 'set_concurrency' }>;
         if (!concurrency) {
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message,
         });
       }
-      case: 'clear_completed': {
+      case 'clear_completed': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.clearCompletedJobs();
         if (!result.success) {
@@ -234,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Completed jobs cleared successfully',
         });
       }
-      case: 'reset_stats': {
+      case 'reset_stats': {
         // params is now {}
         const result: IngestionServiceResponse = await ingestionService.resetStats();
         if (!result.success) {
@@ -248,8 +248,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: result.message || 'Stats reset successfully',
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown action: ${action}`,
@@ -291,7 +290,7 @@ export const GET: RequestHandler = async ({ url }) => {
         dashboard: dashboardData,
       });
     }
-    // Default: return API documentation
+    // default: return API documentation
     const dashboardDataForDocs: IngestionDashboardData = ingestionService.getDashboardData();
     return json({
       success: true,

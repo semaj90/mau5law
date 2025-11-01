@@ -297,11 +297,11 @@
   }
   function upgradeQuality(): void {
     switch (currentQuality.tier) {
-      case: '8-BIT_NES':
+      case '8-BIT_NES':
         currentQuality = create16BitConfig();
         console.log('📈 Upgraded to 16-BIT SNES quality');
         break;
-      case: '16-BIT_SNES':
+      case '16-BIT_SNES':
         currentQuality = create64BitConfig();
         console.log('📈 Upgraded to 64-BIT N64 quality');
         break;
@@ -310,11 +310,11 @@
   }
   function downgradeQuality(): void {
     switch (currentQuality.tier) {
-      case: '64-BIT_N64':
+      case '64-BIT_N64':
         currentQuality = create16BitConfig();
         console.log('📉 Downgraded to 16-BIT SNES quality');
         break;
-      case: '16-BIT_SNES':
+      case '16-BIT_SNES':
         currentQuality = create8BitConfig();
         console.log('📉 Downgraded to 8-BIT NES quality');
         break;
@@ -339,15 +339,15 @@
     const element = canvasElement;
     // Apply CSS filters based on quality tier
     switch (currentQuality.tier) {
-      case: '8-BIT_NES':
+      case '8-BIT_NES':
         element.style.imageRendering = 'pixelated';
         element.style.filter = 'contrast(1.1) saturate(1.2)';
         break;
-      case: '16-BIT_SNES':
+      case '16-BIT_SNES':
         element.style.imageRendering = 'auto';
         element.style.filter = 'contrast(1.05) saturate(1.1)';
         break;
-      case: '64-BIT_N64':
+      case '64-BIT_N64':
         element.style.imageRendering = 'auto';
         element.style.filter = 'none';
         break;
@@ -360,13 +360,13 @@
     ctx.clearRect(0, 0, canvasElement?.width || 0, canvasElement?.height || 0);
     // Render based on quality tier
     switch (currentQuality.tier) {
-      case: '8-BIT_NES':
+      case '8-BIT_NES':
         renderNESStyle(ctx);
         break;
-      case: '16-BIT_SNES':
+      case '16-BIT_SNES':
         renderSNESStyle(ctx);
         break;
-      case: '64-BIT_N64':
+      case '64-BIT_N64':
         renderN64Style(ctx);
         break;
     }
@@ -447,13 +447,13 @@
   // Quality control API
   function setQuality(tier: QualityTier) {
     switch (tier) {
-      case: '8-BIT_NES':
+      case '8-BIT_NES':
         currentQuality = create8BitConfig();
         break;
-      case: '16-BIT_SNES':
+      case '16-BIT_SNES':
         currentQuality = create16BitConfig();
         break;
-      case: '64-BIT_N64':
+      case '64-BIT_N64':
         currentQuality = create64BitConfig();
         break;
     }

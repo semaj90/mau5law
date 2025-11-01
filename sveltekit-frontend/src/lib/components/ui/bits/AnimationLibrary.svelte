@@ -235,26 +235,26 @@
   export function getThemeAnimation(animationType: string, themeOverride?: string): any {
     const currentTheme = themeOverride || theme; // Fixed typo: them -> theme
     switch (currentTheme) {
-      case: 'gaming':
+      case 'gaming':
         switch (animationType) {
-          case: 'enter': return animations.glitchIn();
-          case: 'hover': return animations.neonGlow();
-          case: 'focus': return animations.pixelate();
+          case 'enter': return animations.glitchIn();
+          case 'hover': return animations.neonGlow();
+          case 'focus': return animations.pixelate();
           default: return animations.fadeIn();
         }
-      case: 'legal':
+      case 'legal':
         switch (animationType) {
-          case: 'enter': return animations.professionalFade();
-          case: 'slide': return animations.documentSlide();
-          case: 'scale': return animations.subtleScale();
+          case 'enter': return animations.professionalFade();
+          case 'slide': return animations.documentSlide();
+          case 'scale': return animations.subtleScale();
           default: return animations.fadeIn();
         }
       default:
         switch (animationType) {
-          case: 'enter': return animations.fadeIn();
-          case: 'slide': return animations.slideUp();
-          case: 'scale': return animations.scaleIn();
-          case: 'elastic': return animations.elastic();
+          case 'enter': return animations.fadeIn();
+          case 'slide': return animations.slideUp();
+          case 'scale': return animations.scaleIn();
+          case 'elastic': return animations.elastic();
           default: return animations.fadeIn();
         }
     }

@@ -224,19 +224,18 @@
   function fileTypeIcon(name: string): FileTypeIconData {
     const ext = name.split('.').pop()?.toLowerCase() || '';
     switch (ext) {
-      case: 'pdf':
+      case 'pdf':
         return { Icon FileText, color: 'text-red-600', bg: 'bg-red-100' };
-      case: 'doc':
-      case: 'docx':
+      case 'doc':
+      case 'docx':
         return { Icon FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
-      case: 'png':
-      case: 'jpg':
-      case: 'jpeg':
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
         return { Icon FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
-      case: 'zip':
+      case 'zip':
         return { Icon FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
-      default:
-        return { Icon FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
+      default: return { Icon FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
     }
   }
 

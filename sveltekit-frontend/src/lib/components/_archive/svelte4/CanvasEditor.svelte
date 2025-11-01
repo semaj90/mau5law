@@ -156,16 +156,15 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   function getConnectionColor(type: string): string {
     switch (type) {
-      case: 'person':
-        return: '#8b5cf6';
-      case: 'location':
-        return: '#10b981';
-      case: 'organization':
-        return: '#f59e0b';
-      case: 'temporal':
-        return: '#ef4444';
-      default:
-        return: '#6b7280';
+      case 'person':
+        return '#8b5cf6';
+      case 'location':
+        return '#10b981';
+      case 'organization':
+        return '#f59e0b';
+      case 'temporal':
+        return '#ef4444';
+      default: return '#6b7280';
     }
   }
 
@@ -268,21 +267,21 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   function getFileIcon(type: string): string {
-    if (type.includes('image')) return: '🖼️';
-    if (type.includes('pdf')) return: '📄';
-    if (type.includes('video')) return: '🎥';
-    if (type.includes('audio')) return: '🎵';
-    if (type.includes('text')) return: '📝';
-    return: '📁';
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('pdf')) return '📄';
+    if (type.includes('video')) return '🎥';
+    if (type.includes('audio')) return '🎵';
+    if (type.includes('text')) return '📝';
+    return '📁';
   }
 
   function getFileTypeColor(type: string): string {
-    if (type.includes('image')) return: '#ef4444';
-    if (type.includes('pdf')) return: '#dc2626';
-    if (type.includes('video')) return: '#7c3aed';
-    if (type.includes('audio')) return: '#059669';
-    if (type.includes('text')) return: '#2563eb';
-    return: '#6b7280';
+    if (type.includes('image')) return '#ef4444';
+    if (type.includes('pdf')) return '#dc2626';
+    if (type.includes('video')) return '#7c3aed';
+    if (type.includes('audio')) return '#059669';
+    if (type.includes('text')) return '#2563eb';
+    return '#6b7280';
   }
 
   function roundRect(

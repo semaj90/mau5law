@@ -35,9 +35,9 @@
     multipleFiles: true,
     validators: {
       file: (value) => {
-        if (!value || !(value instanceof File)) return: 'File is required';
+        if (!value || !(value instanceof File)) return 'File is required';
         const maxSize = 100 * 1024 * 1024; // 100MB
-        if (value.size > maxSize) return: 'File must be less than 100MB';
+        if (value.size > maxSize) return 'File must be less than 100MB';
         const allowedTypes = [
           'application/pdf',
           'application/msword',
@@ -48,7 +48,7 @@
           'image/tiff'
         ];
         if (!allowedTypes.includes(value.type)) {
-          return: 'File type not supported';
+          return 'File type not supported';
         }
         return null;
       }
@@ -157,7 +157,7 @@
   }
   // Format file size
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

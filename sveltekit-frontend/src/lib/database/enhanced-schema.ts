@@ -365,7 +365,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const documentsRelations = relations(documents, ({ one, many }) => ({
-  case: one(cases, { fields: [documents.caseId], references: [cases.id] }),
+  case one(cases, { fields: [documents.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [documents.createdBy],
     references: [users.id],
@@ -380,7 +380,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
 }));
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
-  case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
+  case one(cases, { fields: [evidence.caseId], references: [cases.id] }),
   document: one(documents, { fields: [evidence.documentId], references: [documents.id] }),
   creator: one(users, {
     fields: [evidence.createdBy],
@@ -409,7 +409,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
 
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, { fields: [aiInteractions.userId], references: [users.id] }),
-  case: one(cases, { fields: [aiInteractions.caseId], references: [cases.id] }),
+  case one(cases, { fields: [aiInteractions.caseId], references: [cases.id] }),
 }));
 
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
@@ -427,7 +427,7 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one, m
 }));
 
 export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) => ({
-  case: one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
+  case one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
   poi: one(personsOfInterest, { fields: [casePoiRelations.poiId], references: [personsOfInterest.id] }),
   creator: one(users, {
     fields: [casePoiRelations.createdBy],
@@ -437,7 +437,7 @@ export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) =
 }));
 
 export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
-  case: one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
+  case one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [evidenceBoards.createdBy],
     references: [users.id],

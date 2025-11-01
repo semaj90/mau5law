@@ -186,7 +186,7 @@ const extractErrorMessage = (event: AnyEventObject): string => {
   if (obj.error instanceof Error) return obj.error.message;
   if (typeof obj.data === 'string') return String(obj.data);
   if (typeof obj.error === 'string') return String(obj.error);
-  return: 'An error occurred';
+  return 'An error occurred';
 };
 
 export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(

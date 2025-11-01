@@ -25,7 +25,7 @@
           link: 'text-blue-500 underline-offset-4 hover:underline hover:text-blue-600',
           legal: 'nes-legal-priority-medium yorha-3d-button',
           evidence: 'nes-legal-priority-critical yorha-3d-button',
-          case: 'nes-legal-priority-high yorha-3d-button',
+          case 'nes-legal-priority-high yorha-3d-button',
           success: 'btn-nes-success',
           yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
           neural:

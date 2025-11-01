@@ -406,16 +406,16 @@ export class QLoRATrainingService {
     try {
       let outcome: any = { success: true }
       switch (action,.typ,e) {
-        case: 'predict',:
+        case 'predict',:
           outcome = await this.executePredictAction(state, action);
           break;
-        case: 'search',:
+        case 'search',:
           outcome = await this.executeSearchAction(state, action);
           break;
-        case: 'classify',:
+        case 'classify',:
           outcome = await this.executeClassifyAction(state, action);
           break;
-        case: 'generate',:
+        case 'generate',:
           outcome = await this.executeGenerateAction(state, action);
           break;
         default:

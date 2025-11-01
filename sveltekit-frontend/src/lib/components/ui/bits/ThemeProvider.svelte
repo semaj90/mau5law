@@ -71,7 +71,7 @@
     },
   });
   function getSystemTheme(): 'light' | 'dark' {
-    if (!browser) return: 'light';
+    if (!browser) return 'light';
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   function applyTheme(theme: 'light' | 'dark' | 'system') {

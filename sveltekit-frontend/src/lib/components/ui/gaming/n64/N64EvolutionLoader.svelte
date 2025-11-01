@@ -148,19 +148,19 @@
         canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
       );
       switch (currentStage) {
-        case: 'nes':
+        case 'nes':
           bgGradient.addColorStop(0, '#000000');
           bgGradient.addColorStop(1, '#222222');
           break;
-        case: 'snes':
+        case 'snes':
           bgGradient.addColorStop(0, '#001122');
           bgGradient.addColorStop(1, '#003366');
           break;
-        case: 'n64':
+        case 'n64':
           bgGradient.addColorStop(0, '#001a4d');
           bgGradient.addColorStop(1, '#004080');
           break;
-        case: 'modern':
+        case 'modern':
           bgGradient.addColorStop(0, '#0a0a2e');
           bgGradient.addColorStop(1, '#16213e');
           break;

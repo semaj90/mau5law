@@ -405,7 +405,7 @@ export class EnhancedAuthService {
         'unknown'
       );
     } catch {
-      return: 'unknown';
+      return 'unknown';
     }
   }
 

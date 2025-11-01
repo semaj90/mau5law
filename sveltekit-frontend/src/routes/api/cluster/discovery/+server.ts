@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const action = url.searchParams.get('action') || 'discover';
     const body = await request.json();
     switch (action) {
-      case: 'register': {
+      case 'register': {
         const { service } = body;
         if (!service || !service.name || !service.port) {
           return json({
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'deregister': {
+      case 'deregister': {
         const { serviceId } = body;
         const deregistered = await deregisterService(serviceId);
         return json({
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'health-check': {
+      case 'health-check': {
         const { serviceId, force = false } = body;
         const health = serviceId ? await checkServiceHealth(serviceId, force) : await performFullHealthCheck(force);
         return json({
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'failover': {
+      case 'failover': {
         const { serviceId, reason = 'manual', targetInstance } = body;
         const failoverResult = await executeFailover(serviceId, reason, targetInstance);
         return json({
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'update-config': {
+      case 'update-config': {
         const { config } = body;
         const updated = await updateDiscoveryConfig(config);
         return json({
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      case: 'discover': {
+      case 'discover': {
         const { force = false } = body;
         const discovered = await discoverServices(force);
         return json({
@@ -167,8 +167,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: Date.now(),
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: `Unknown action: ${action}`,

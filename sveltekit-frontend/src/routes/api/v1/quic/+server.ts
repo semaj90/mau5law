@@ -99,14 +99,14 @@ export const GET: RequestHandler = async ({ url }) => {
       if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
         services[serviceName] = (result as { status?: any; value?: any; reason?: any }).value;
         switch ((result as { status?: any; value?: any; reason?: any }).value.status) {
-          case: 'healthy':
+          case 'healthy':
             healthyCount++;
             break;
-          case: 'fallback':
+          case 'fallback':
             fallbackCount++;
             break;
-          case: 'unhealthy':
-          case: 'error':
+          case 'unhealthy':
+          case 'error':
             unhealthyCount++;
             break;
         }
@@ -329,14 +329,14 @@ async function executeServiceCommand(
 ): Promise<any> {
   const baseUrl = serviceConfig.baseUrl;
   switch (command) {
-    case: 'health-check':
+    case 'health-check':
       const healthResponse = await fetch(`${baseUrl}/health`);
       return {
         success: healthResponse.ok,
         status: healthResponse.status,
         data: healthResponse.ok ? await healthResponse.json() : null,
       };
-    case: 'clear-cache':
+    case 'clear-cache':
       const cacheResponse = await fetch(`${baseUrl}/cache`, {
         method: 'DELETE',
       });
@@ -345,7 +345,7 @@ async function executeServiceCommand(
         message: 'Cache cleared',
         data: cacheResponse.ok ? await cacheResponse.json() : null,
       };
-    case: 'update-config':
+    case 'update-config':
       if (!parameters) {
         throw new Error('Parameters required for config update');
       }
@@ -359,7 +359,7 @@ async function executeServiceCommand(
         message: 'Configuration updated',
         data: configResponse.ok ? await configResponse.json() : null,
       };
-    case: 'restart':
+    case 'restart':
       // In a real implementation, this would trigger a service restart
       return {
         success: true,

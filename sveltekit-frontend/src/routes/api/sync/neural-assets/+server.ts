@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case: 'assets': {
+      case 'assets': {
         // Generate predictive asset cache samples
         const assetPredictions = await mockDataGenerators.generateMockAssetPredictions(count);
         return json({
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'bitmap_sprites': {
+      case 'bitmap_sprites': {
         // Generate bitmap sprite cache states
         const spriteStates = await mockDataGenerators.generateMockEmbeddingShards(count);
         const bitmapSprites = spriteStates.map(
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'chr_manifests': {
+      case 'chr_manifests': {
         // Generate CHR-ROM manifest data
         const chrManifests = await mockDataGenerators.generateMockCHRManifests(count);
         return json({
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'predictive_cache': {
+      case 'predictive_cache': {
         // Get predictive cache performance data
         const mockCacheData = {
           cacheSize: Math.floor(Math.random() * 1000 + 500),
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'vector_similarity': {
+      case 'vector_similarity': {
         // Get vector similarity analysis for neural assets
         // Mock embeddings data
         const embeddingCount = Math.min(count, 10);
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'cache_health': {
+      case 'cache_health': {
         // Comprehensive cache health metrics
         const healthMetrics = {
           bitmapCache: {
@@ -233,8 +233,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             error: 'Unknown action',
             availableActions: [
@@ -267,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, params = {} } = body;
     switch (action) {
-      case: 'optimize_cache': {
+      case 'optimize_cache': {
         // Mock cache optimization
         const { cacheType, targetEfficiency = 0.9 } = params;
         const optimizationResult = {
@@ -302,7 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'generate_sprites': {
+      case 'generate_sprites': {
         // Generate new bitmap sprites based on document patterns
         const { documentIds, spriteCount = 10, compressionLevel = 3 } = params;
         if (!documentIds || !Array.isArray(documentIds)) {
@@ -334,7 +333,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'update_chr_manifest': {
+      case 'update_chr_manifest': {
         // Update CHR-ROM manifest with new sprite data
         const { manifestId, newSprites, optimizationLevel = 2 } = params;
         if (!manifestId) {
@@ -369,7 +368,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      case: 'predict_asset_usage': {
+      case 'predict_asset_usage': {
         // Predict future asset usage patterns
         const { timeHorizon = 3600, assetTypes, userContext } = params;
         const predictions = Array.from({ length: Math.min(assetTypes?.length || 5, 10) }, (_, i) => {
@@ -403,8 +402,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             error: 'Unknown POST action',
             availableActions: ['optimize_cache', 'generate_sprites', 'update_chr_manifest', 'predict_asset_usage'],

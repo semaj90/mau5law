@@ -454,34 +454,33 @@ export class LokiCacheVSCodeIntegration {
     console.log(`⚡ Executing: ${task.command} ${task.args?.join(' ') || ''}`);
     // Simulate task execution based on type
     switch (task.label) {
-      case: 'AI: Process Document':
+      case 'AI: Process Document':
         return {
           success: true,
           output: `Document processed successfully: ${args.documentPath || 'unknown'}`,
         };
-      case: 'Vector: Semantic Search':
+      case 'Vector: Semantic Search':
         return {
           success: true,
           output: `Search completed for: ${args.searchQuery || 'unknown'}`,
         };
-      case: 'Neo4j: Sync Graph Data':
+      case 'Neo4j: Sync Graph Data':
         return {
           success: true,
           output: 'Graph data synchronized successfully',
         };
-      case: 'Cache: Clear All Data':
+      case 'Cache: Clear All Data':
         await this.clearAll();
         return {
           success: true,
           output: 'Cache cleared successfully',
         };
-      case: 'GPU: Check Status':
+      case 'GPU: Check Status':
         return {
           success: true,
           output: 'GPU Status: RTX 3060 Ti - Available, 35 layers configured',
         };
-      default:
-        return {
+      default: return {
           success: true,
           output: `Task executed: ${task.label}`,
         };
@@ -736,12 +735,12 @@ export class LokiCacheVSCodeIntegration {
   // Helper methods
   private inferType(_key: string, _data: any): CacheableItem['type'] {
     const key = _key || '';
-    if (key.startsWith('search:')) return: 'search';
-    if (key.startsWith('embedding:')) return: 'embedding';
-    if (key.startsWith('analysis:')) return: 'analysis';
-    if (key.startsWith('task:')) return: 'task';
-    if (key.startsWith('config:')) return: 'config';
-    return: 'document';
+    if (key.startsWith('search:')) return 'search';
+    if (key.startsWith('embedding:')) return 'embedding';
+    if (key.startsWith('analysis:')) return 'analysis';
+    if (key.startsWith('task:')) return 'task';
+    if (key.startsWith('config:')) return 'config';
+    return 'document';
   }
   private getCollectionForType(type: CacheableItem['type']): string {
     const mapping: Record<CacheableItem['type'], string> = {
@@ -929,7 +928,7 @@ function safeRandomUUID(): string {
   }
 
   // last-resort RFC4122 v4 style pseudo-random UUID
-  return: 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0;
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);

@@ -75,10 +75,10 @@
   }
   function getCaseBadgeColor(status: string): string {
     switch(status) {
-      case: 'active': return: 'var(--nes-red)';
-      case: 'pending': return: 'var(--nes-yellow)';
-      case: 'closed': return: 'var(--nes-green)';
-      default: return: 'var(--nes-gray)';
+      case 'active': return 'var(--nes-red)';
+      case 'pending': return 'var(--nes-yellow)';
+      case 'closed': return 'var(--nes-green)';
+      default: return 'var(--nes-gray)';
     }
   }
 </script>

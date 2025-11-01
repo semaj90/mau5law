@@ -80,16 +80,16 @@
   }
   function generateVisualizationData() {
     switch (visualizationMode) {
-      case: 'neural-network':
+      case 'neural-network':
         generateNeuralNetwork();
         break;
-      case: 'quantum-field':
+      case 'quantum-field':
         generateQuantumField();
         break;
-      case: 'consciousness-map':
+      case 'consciousness-map':
         generateConsciousnessMap();
         break;
-      case: 'matrix-flow':
+      case 'matrix-flow':
         generateMatrixFlow();
         break;
     }
@@ -208,16 +208,16 @@
   }
   function updateVisualization(deltaTime: number) {
     switch (visualizationMode) {
-      case: 'neural-network':
+      case 'neural-network':
         updateNeuralNetwork(deltaTime);
         break;
-      case: 'quantum-field':
+      case 'quantum-field':
         updateQuantumField(deltaTime);
         break;
-      case: 'consciousness-map':
+      case 'consciousness-map':
         updateConsciousnessMap(deltaTime);
         break;
-      case: 'matrix-flow':
+      case 'matrix-flow':
         updateMatrixFlow(deltaTime);
         break;
     }
@@ -305,16 +305,16 @@
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, width, height);
     switch (visualizationMode) {
-      case: 'neural-network':
+      case 'neural-network':
         renderNeuralNetwork2D(ctx);
         break;
-      case: 'quantum-field':
+      case 'quantum-field':
         renderQuantumField2D(ctx);
         break;
-      case: 'consciousness-map':
+      case 'consciousness-map':
         renderConsciousnessMap2D(ctx);
         break;
-      case: 'matrix-flow':
+      case 'matrix-flow':
         renderMatrixFlow2D(ctx);
         break;
     }

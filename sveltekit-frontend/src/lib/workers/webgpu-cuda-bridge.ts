@@ -108,16 +108,16 @@ class WebGPUCudaBridge {
     try {
       let result;
       switch (task.type) {
-        case: 'inference':
+        case 'inference':
           result = await this.processInference(task);
           break;
-        case: 'embedding':
+        case 'embedding':
           result = await this.processEmbedding(task);
           break;
-        case: 'tensor-ops':
+        case 'tensor-ops':
           result = await this.processTensorOperations(task);
           break;
-        case: 'image-processing':
+        case 'image-processing':
           result = await this.processImageOperations(task);
           break;
         default:
@@ -567,16 +567,15 @@ class WebGPUCudaBridge {
     // This is a simplified implementation
     const inputArray = toFloat32Array(data);
     switch (config.operation) {
-      case: 'multiply':
+      case 'multiply':
         return inputArray.map(x => x * (config.factor || 1.0));
-      case: 'add':
+      case 'add':
         return inputArray.map(x => x + (config.value || 0.0));
-      case: 'normalize':
+      case 'normalize':
         const max = Math.max(...inputArray);
         const min = Math.min(...inputArray);
         return inputArray.map(x => (x - min) / (max - min));
-      default:
-        return Array.from(inputArray);
+      default: return Array.from(inputArray);
     }
   }
   private async runCPUTensorOps(data: BufferLike, config: any): Promise<any> {
@@ -584,16 +583,15 @@ class WebGPUCudaBridge {
     const inputArray = toFloat32Array(data);
     // Same operations as WebGPU version, but clearly marked as CPU fallback
     switch (config.operation) {
-      case: 'multiply':
+      case 'multiply':
         return inputArray.map(x => x * (config.factor || 1.0));
-      case: 'add':
+      case 'add':
         return inputArray.map(x => x + (config.value || 0.0));
-      case: 'normalize':
+      case 'normalize':
         const max = Math.max(...inputArray);
         const min = Math.min(...inputArray);
         return inputArray.map(x => (x - min) / (max - min));
-      default:
-        return Array.from(inputArray);
+      default: return Array.from(inputArray);
     }
   }
   private async processImageOperations(task: CudaProcessingTask): Promise<any> {
@@ -647,7 +645,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
   const { type, payload, requestId } = event.data;
   try {
     switch (type) {
-      case: 'init':
+      case 'init':
         const initialized = await bridge.initializeWebGPU();
         self.postMessage({
           type: 'init-complete',
@@ -656,7 +654,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
           status: bridge.getStatus(),
         });
         break;
-      case: 'process':
+      case 'process':
         const taskId = await bridge.addTask(payload);
         self.postMessage({
           type: 'task-queued',
@@ -664,14 +662,14 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
           taskId,
         });
         break;
-      case: 'status':
+      case 'status':
         self.postMessage({
           type: 'status-response',
           requestId,
           status: bridge.getStatus(),
         });
         break;
-      case: 'cleanup':
+      case 'cleanup':
         bridge.cleanup();
         self.postMessage({
           type: 'cleanup-complete',

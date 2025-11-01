@@ -147,7 +147,7 @@ Respectfully submitted,
         documentTypeId: 'opening_statement',
         description: 'Opening statement template for criminal defense',
         content: `OPENING STATEMENT,
-Case: {{CASE_TITLE}}
+case {{CASE_TITLE}}
 Defendant: {{DEFENDANT_NAME}}
 May it please the Court, counsel, and members of the jury:
 {{INTRODUCTION}}

@@ -53,7 +53,7 @@ export interface CaseCreateRequest {
   jurisdiction?: string;
 }
 export interface CaseCreateResponse {
-  case: Case;
+  case Case;
   message: string;
 }
 export type CaseCreate = ApiContract<CaseCreateRequest, CaseCreateResponse>;
@@ -66,7 +66,7 @@ export interface CaseUpdateRequest {
   jurisdiction?: string;
 }
 export interface CaseUpdateResponse {
-  case: Case;
+  case Case;
   message: string;
 }
 export type CaseUpdate = ApiContract<CaseUpdateRequest, CaseUpdateResponse>;
@@ -75,7 +75,7 @@ export interface CaseGetRequest {
   id: string;
 }
 export interface CaseGetResponse {
-  case: Case & {
+  case Case & {
     evidence: Evidence[];
     createdByUser?: User;
     leadProsecutorUser?: User;

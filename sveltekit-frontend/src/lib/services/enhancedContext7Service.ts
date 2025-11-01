@@ -28,7 +28,7 @@ export interface ComplianceReport {
 }
 
 export interface LegalPrecedent {
-  case: string;
+  case string;
   relevance: string;
   year: string;
   jurisdiction: string;
@@ -350,7 +350,7 @@ export class EnhancedContext7Service {
       const jurisdiction = this.extractValue(section, 'Jurisdiction', 'federal');
       const year = this.extractValue(section, 'Year', '') || (jurisdiction === 'federal' ? '2023' : '2023');
       return {
-        case: title.replace(/\([^)]*\)/, '').trim(),
+        case title.replace(/\([^)]*\)/, '').trim(),
         relevance,
         year,
         jurisdiction,

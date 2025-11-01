@@ -272,25 +272,24 @@ function getRoutingReason(orchestratorUsed: string, taskType: string, requestedO
     return `Explicitly requested ${requestedOrchestrator} orchestrator`;
   }
   switch (orchestratorUsed) {
-    case: 'server':
+    case 'server':
       return `Server orchestrator chosen for ${taskType} - optimal for complex processing`;
-    case: 'client':
+    case 'client':
       return `Client orchestrator chosen for ${taskType} - optimal for low latency`;
-    case: 'mcp':
+    case 'mcp':
       return `MCP multi-core chosen for ${taskType} - optimal for parallel processing`;
-    case: 'hybrid':
+    case 'hybrid':
       return `Hybrid approach used for ${taskType} - combining multiple orchestrators`;
-    default:
-      return `Routed to ${orchestratorUsed} orchestrator`;
+    default: return `Routed to ${orchestratorUsed} orchestrator`;
   }
 }
 function getPerformanceGrade(latency: number): string {
-  if (latency < 100) return: 'A+ (Excellent)';
-  if (latency < 300) return: 'A (Very Good)';
-  if (latency < 500) return: 'B (Good)';
-  if (latency < 1000) return: 'C (Fair)';
-  if (latency < 2000) return: 'D (Poor)';
-  return: 'F (Very Poor)';
+  if (latency < 100) return 'A+ (Excellent)';
+  if (latency < 300) return 'A (Very Good)';
+  if (latency < 500) return 'B (Good)';
+  if (latency < 1000) return 'C (Fair)';
+  if (latency < 2000) return 'D (Poor)';
+  return 'F (Very Poor)';
 }
 function getOptimizationRecommendations(result?: OrchestratorResult): string[] {
   const recommendations: string[] = [];

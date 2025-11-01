@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const cache = getRedisMetricsCache();
 
     switch (action) {
-      case: 'reset':
+      case 'reset':
         cache.resetMetrics();
         return json({
           success: true,
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metrics: cache.getMetrics(),
         });
 
-      case: 'test':
+      case 'test':
         // Perform test operations
         const testKey = `test:${Date.now()}`;
         await cache.set(testKey, 'test-value', 10);
@@ -62,8 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
 
-      default:
-        return json({ error: 'Invalid action. Use: reset, test' }, { status: 400 });
+      default: return json({ error: 'Invalid action. Use: reset, test' }, { status: 400 });
     }
   } catch (error) {
     console.error('Cache metrics action failed:', error);

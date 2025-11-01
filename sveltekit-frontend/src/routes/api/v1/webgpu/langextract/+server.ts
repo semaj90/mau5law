@@ -106,23 +106,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     let result: any;
     const startTime = Date.now();
     switch (action) {
-      case: 'process':
+      case 'process':
         result = await handleSingleDocumentProcessing(requestData);
         break;
-      case: 'batch':
+      case 'batch':
         result = await handleBatchDocumentProcessing(requestData);
         break;
-      case: 'benchmark':
+      case 'benchmark':
         result = await handleBenchmarkTesting(requestData);
         break;
-      case: 'stats':
+      case 'stats':
         result = await getLangChainWebGPUStats();
         break;
-      case: 'config':
+      case 'config':
         result = await handleConfigurationUpdate(requestData);
         break;
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',

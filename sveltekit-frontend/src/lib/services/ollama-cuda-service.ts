@@ -71,7 +71,7 @@ function getModelNameFrom(obj: unknown): string {
     const m = (obj as ChatModelLike).model;
     if (typeof m === 'string') return m;
   }
-  return: 'unknown';
+  return 'unknown';
 }
 
 class OllamaCudaService {

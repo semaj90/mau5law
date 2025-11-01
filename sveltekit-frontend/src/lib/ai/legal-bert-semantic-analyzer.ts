@@ -654,22 +654,21 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       // Map analyzer categories to cache document types accepted by lokiRedisCache
       const cacheType = ((): 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent' => {
         switch (analysis.classification.category) {
-          case: 'contract':
-            return: 'contract';
-          case: 'litigation':
-            return: 'evidence';
-          case: 'regulatory':
-            return: 'citation';
-          case: 'corporate':
-            return: 'brief';
+          case 'contract':
+            return 'contract';
+          case 'litigation':
+            return 'evidence';
+          case 'regulatory':
+            return 'citation';
+          case 'corporate':
+            return 'brief';
           // heuristic mappings for other categories
-          case: 'intellectual_property':
-          case: 'employment':
-          case: 'real_estate':
-          case: 'tax':
-          case: 'other':
-          default:
-            return: 'contract';
+          case 'intellectual_property':
+          case 'employment':
+          case 'real_estate':
+          case 'tax':
+          case 'other':
+          default: return 'contract';
         }
       })();
 
@@ -696,16 +695,16 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     let priority = 128; // Base priority
     // Risk-based priority adjustment
     switch (analysis.riskAssessment.overallRisk) {
-      case: 'critical':
+      case 'critical':
         priority = 255;
         break;
-      case: 'high':
+      case 'high':
         priority = 200;
         break;
-      case: 'medium':
+      case 'medium':
         priority = 150;
         break;
-      case: 'low':
+      case 'low':
         priority = 100;
         break;
     }

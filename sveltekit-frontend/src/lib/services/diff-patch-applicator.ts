@@ -297,14 +297,14 @@ export class DiffPatchApplicator {
         const lineContent = diffLine.slice(1);
 
         switch (operation) {
-          case: ' ': // Context line (unchanged)
+          case ' ': // Context line (unchanged)
             resultLines.push(lineContent);
             currentLineIndex++;
             break;
-          case: '+': // Addition
+          case '+': // Addition
             resultLines.push(lineContent);
             break;
-          case: '-': // Deletion
+          case '-': // Deletion
             currentLineIndex++;
             // Skip this line (don't add to result)
             break;
@@ -343,7 +343,7 @@ export class DiffPatchApplicator {
       return backupPath;
     } catch (error) {
       console.error('Error creating backup:', error);
-      return: '';
+      return '';
     }
   }
 

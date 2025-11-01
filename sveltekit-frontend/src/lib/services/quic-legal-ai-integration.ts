@@ -160,7 +160,7 @@ export class QUICLegalAIIntegration {
         const res = await fetch(url);
         return res.ok ? 'healthy' : 'critical';
       } catch {
-        return: 'critical';
+        return 'critical';
       }
     };
 

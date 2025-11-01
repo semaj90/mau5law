@@ -134,29 +134,29 @@
 
   // Utility functions
   function getEvidenceType(mimeType: string): EvidenceItem['type'] {
-    if (!mimeType) return: 'digital';
-    if (mimeType.startsWith('image/')) return: 'image';
-    if (mimeType.startsWith('video/')) return: 'video';
-    if (mimeType.startsWith('audio/')) return: 'audio';
-    if (mimeType.includes('pdf') || mimeType.includes('document')) return: 'document';
-    return: 'digital';
+    if (!mimeType) return 'digital';
+    if (mimeType.startsWith('image/')) return 'image';
+    if (mimeType.startsWith('video/')) return 'video';
+    if (mimeType.startsWith('audio/')) return 'audio';
+    if (mimeType.includes('pdf') || mimeType.includes('document')) return 'document';
+    return 'digital';
   }
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case: 'critical': return: 'bg-red-500';
-      case: 'high': return: 'bg-orange-500';
-      case: 'medium': return: 'bg-yellow-500';
-      case: 'low': return: 'bg-green-500';
-      default: return: 'bg-gray-500';
+      case 'critical': return 'bg-red-500';
+      case 'high': return 'bg-orange-500';
+      case 'medium': return 'bg-yellow-500';
+      case 'low': return 'bg-green-500';
+      default: return 'bg-gray-500';
     }
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case: 'analyzing': return: 'bg-blue-500';
-      case: 'analyzed': return: 'bg-green-500';
-      case: 'pending': return: 'bg-yellow-500';
-      case: 'tagged': return: 'bg-purple-500';
-      default: return: 'bg-gray-500';
+      case 'analyzing': return 'bg-blue-500';
+      case 'analyzed': return 'bg-green-500';
+      case 'pending': return 'bg-yellow-500';
+      case 'tagged': return 'bg-purple-500';
+      default: return 'bg-gray-500';
     }
   }
   // Initialize

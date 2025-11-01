@@ -459,7 +459,7 @@ export class AlertCenter {
    */
   private async sendNotificationToChannel(alert: RuntimeAlert, channel: NotificationChannel): Promise<void> {
     switch (channel.type) {
-      case: 'nats':
+      case 'nats':
         if (this.natsService) {
           await this.natsService.publish(channel.endpoint, {
             alert: {
@@ -474,13 +474,13 @@ export class AlertCenter {
           });
         }
         break;
-      case: 'dashboard':
+      case 'dashboard':
         // Dashboard notifications handled by WebSocket or SSE in browser
         if (typeof window !== 'undefined' && window.alertDashboard?.addAlert) {
           window.alertDashboard.addAlert(alert);
         }
         break;
-      case: 'webhook':
+      case 'webhook':
         await fetch(channel.endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -69,12 +69,12 @@ class TauriNotesService {
       let content: string;
       let extension: string;
       switch (format) {
-        case: "html":
+        case "html":
           content =
             note.html || (await this.renderMarkdownToHtml(note.markdown);
           extension = "html";
           break;
-        case: "json":
+        case "json":
           content = JSON.stringify(note, null, 2);
           extension = "json";
           break;
@@ -141,12 +141,12 @@ class TauriNotesService {
       let extension: string;
       let filename: string;
       switch (format) {
-        case: "html":
+        case "html":
           content = await this.notesToHtml(notes);
           extension = "html";
           filename = `notes-export-${timestamp}.${extension}`;
           break;
-        case: "json":
+        case "json":
           content = JSON.stringify(notes, null, 2);
           extension = "json";
           filename = `notes-export-${timestamp}.${extension}`;

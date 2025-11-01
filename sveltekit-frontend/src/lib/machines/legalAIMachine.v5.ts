@@ -111,7 +111,7 @@ export type LegalAIEvent =
   | { type: 'AUTH.LOGOUT' }
   | { type: 'AUTH.REGISTER'; userData: RegistrationData }
   | { type: 'CASES.LOAD'; filters?: Partial<LegalAIContext['cases']['filters']> }
-  | { type: 'CASES.SELECT'; case: Case }
+  | { type: 'CASES.SELECT'; case Case }
   | { type: 'CASES.CREATE'; caseData: Partial<Case> }
   | { type: 'CASES.SEARCH'; query: string }
   | { type: 'AI.QUERY'; prompt: string; context?: Record<string, unknown> }

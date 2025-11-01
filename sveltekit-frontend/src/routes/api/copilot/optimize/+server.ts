@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!action) throw kitError(400, 'Action parameter is required');
 
   switch (action) {
-    case: 'health':
+    case 'health':
       return json({
         status: 'healthy',
         services: {
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
       });
 
-    case: 'status':
+    case 'status':
       return json({
         service: 'Copilot Optimization API',
         version: '2.1.0',
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
       });
 
-    case: 'load_copilot':
+    case 'load_copilot':
       return json({
         success: true,
         content: generateExampleCopilotContent(),
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!action) throw kitError(400, 'Action is required');
 
   switch (action) {
-    case: 'optimize_index':
+    case 'optimize_index':
       return json({
         success: true,
         optimizedIndex: {
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: Date.now(),
       });
 
-    case: 'semantic_search':
+    case 'semantic_search':
       return json({
         success: true,
         query: content,

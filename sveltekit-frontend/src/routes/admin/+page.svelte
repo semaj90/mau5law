@@ -102,7 +102,7 @@
             id: 1,
             type: 'case_created',
             user: 'john.doe@law.com',
-            description: 'Created new case: Smith v. Johnson',
+            description: 'Created new case Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
             status: 'success',
           },

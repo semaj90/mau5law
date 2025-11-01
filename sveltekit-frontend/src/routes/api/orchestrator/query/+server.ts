@@ -197,18 +197,18 @@ export const POST: RequestHandler = async ({ request }) => {
     let memoryBank: string
     let bankSwitches = 1; // Nintendo-style bank switching
     switch (classification.type) {
-      case: 'simple':
+      case 'simple':
         answer = await fastRouter.chat(query)
         modelUsed = 'gemma-3-270m'
         memoryBank = 'L1_GPU_VRAM_ROUTER'
         break
-      case: 'complex_legal':
+      case 'complex_legal':
         answer = await legalExpert.chat(query)
         modelUsed = 'gemma-3-legal-2b'
         memoryBank = 'L1_GPU_VRAM_EXPERT'
         bankSwitches = 2; // More complex processing requires bank switching
         break
-      case: 'embedding':
+      case 'embedding':
         answer = await embeddingService.chat(query)
         modelUsed = 'embeddinggemma'
         memoryBank = 'L1_GPU_VRAM_EMBEDDING'

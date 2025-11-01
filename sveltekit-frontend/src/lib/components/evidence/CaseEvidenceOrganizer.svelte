@@ -217,19 +217,19 @@
     isLoading = true;
     try {
       switch (organizationMode) {
-        case: 'category':
+        case 'category':
           await organizeByCategory();
           break;
-        case: 'timeline':
+        case 'timeline':
           await organizeByTimeline();
           break;
-        case: 'priority':
+        case 'priority':
           await organizeByPriority();
           break;
-        case: 'ai_clusters':
+        case 'ai_clusters':
           await organizeByAIClusters();
           break;
-        case: 'chain_custody':
+        case 'chain_custody':
           await organizeByChainOfCustody();
           break;
       }
@@ -577,21 +577,21 @@
    */
   function calculateEvidencePriority(evidence: EvidenceItem): string { // Use EvidenceItem interface
     // AI-based priority calculation
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.8) return: 'critical';
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.6) return: 'high';
-    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.4) return: 'medium';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.8) return 'critical';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.6) return 'high';
+    if (evidence.metadata?.aiAnalysis?.importance && evidence.metadata.aiAnalysis.importance > 0.4) return 'medium';
     // Type-based priority
-    if (evidence.evidenceType === 'physical_evidence') return: 'high';
-    if (evidence.evidenceType === 'digital_evidence') return: 'high';
-    if (evidence.evidenceType === 'testimony') return: 'medium';
-    return: 'low';
+    if (evidence.evidenceType === 'physical_evidence') return 'high';
+    if (evidence.evidenceType === 'digital_evidence') return 'high';
+    if (evidence.evidenceType === 'testimony') return 'medium';
+    return 'low';
   }
 
   /**
    * Validate chain of custody
    */
   function validateChainOfCustody(custody: CustodyEntry[] | undefined): string { // Use CustodyEntry interface
-    if (!custody || custody.length === 0) return: 'missing';
+    if (!custody || custody.length === 0) return 'missing';
     const requiredFields = ['officer_id', 'timestamp', 'action'];
     const hasAllFields = custody.every(entry =>
       requiredFields.every(field => entry[field as keyof CustodyEntry]) // Type assertion for field access
@@ -600,9 +600,9 @@
       if (index === 0) return true;
       return new Date(entry.timestamp) >= new Date(custody[index - 1].timestamp);
     });
-    if (hasAllFields && isChronological) return: 'complete';
-    if (hasAllFields) return: 'incomplete';
-    return: 'invalid';
+    if (hasAllFields && isChronological) return 'complete';
+    if (hasAllFields) return 'incomplete';
+    return 'invalid';
   }
 
   /**
@@ -701,7 +701,7 @@
     <div class="header-content">
       <h1>Evidence Organization</h1>
       <div class="case-info">
-        <span class="case-id">Case: {caseId}</span>
+        <span class="case-id">case {caseId}</span>
         {#if isConnectedToCollaboration}
           <span class="collaboration-status">
             🌐 {collaborativeUsers.length + 1} users active

@@ -376,10 +376,10 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return: 'ppu';
-    if (dataSize <= 2048) return: 'ram';
-    if (dataSize <= 8192) return: 'chrRom';
-    return: 'prgRom';
+    if (dataSize <= 64) return 'ppu';
+    if (dataSize <= 2048) return 'ram';
+    if (dataSize <= 8192) return 'chrRom';
+    return 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
@@ -739,10 +739,10 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return: 'ppu';
-    if (dataSize <= 2048) return: 'ram';
-    if (dataSize <= 8192) return: 'chrRom';
-    return: 'prgRom';
+    if (dataSize <= 64) return 'ppu';
+    if (dataSize <= 2048) return 'ram';
+    if (dataSize <= 8192) return 'chrRom';
+    return 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
@@ -1102,10 +1102,10 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return: 'ppu';
-    if (dataSize <= 2048) return: 'ram';
-    if (dataSize <= 8192) return: 'chrRom';
-    return: 'prgRom';
+    if (dataSize <= 64) return 'ppu';
+    if (dataSize <= 2048) return 'ram';
+    if (dataSize <= 8192) return 'chrRom';
+    return 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {
@@ -1465,10 +1465,10 @@ export class NESStyleGPUBridge {
 
   // NES-style memory level selection
   private selectMemoryLevel(dataSize: number): keyof NESGPUMemoryHierarchy {
-    if (dataSize <= 64) return: 'ppu';
-    if (dataSize <= 2048) return: 'ram';
-    if (dataSize <= 8192) return: 'chrRom';
-    return: 'prgRom';
+    if (dataSize <= 64) return 'ppu';
+    if (dataSize <= 2048) return 'ram';
+    if (dataSize <= 8192) return 'chrRom';
+    return 'prgRom';
   }
 
   private storeInHierarchy(tensor: MultiDimArray, level: keyof NESGPUMemoryHierarchy): void {

@@ -107,7 +107,7 @@
     });
   }
   function formatData(data: unknown): string {
-    if (!data) return: '';
+    if (!data) return '';
     try {
       return JSON.stringify(data, null, 2);
     } catch {

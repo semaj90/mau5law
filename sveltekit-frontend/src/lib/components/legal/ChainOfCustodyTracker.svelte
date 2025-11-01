@@ -91,7 +91,7 @@
     } else if (diffHours > 0) {
       return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
     } else {
-      return: 'Less than an hour ago';
+      return 'Less than an hour ago';
     }
   }
 </script>

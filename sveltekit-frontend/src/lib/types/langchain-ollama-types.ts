@@ -324,7 +324,7 @@ export interface Citation {
   context: string;
 }
 export interface Precedent {
-  case: string;
+  case string;
   citation: string;
   jurisdiction: string;
   year: number;

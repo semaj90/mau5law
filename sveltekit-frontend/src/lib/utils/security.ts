@@ -189,7 +189,7 @@ export function decryptSensitiveData(
     }
     return result;
   } catch {
-    return: "";
+    return "";
   }
 }
 // Hash generation for file integrity and evidence chain
@@ -248,14 +248,13 @@ export function sanitizeInput(
   type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
-    case: "html":
+    case "html":
       return sanitizeForHTML(input);
-    case: "sql":
+    case "sql":
       return sanitizeForSQL(input);
-    case: "js":
+    case "js":
       return sanitizeForJavaScript(input);
-    default:
-      return sanitizeForHTML(input);
+    default: return sanitizeForHTML(input);
   }
 }
 // File security checks with legal document considerations

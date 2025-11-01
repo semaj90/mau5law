@@ -1,7 +1,7 @@
 // Auto-declarations to reduce noise while iteratively fixing the codebase.
 // Keep these minimal and temporary — they'll be tightened later.
 
-declare module: 'lucide-svelte' {
+declare module 'lucide-svelte' {
   const icons: any;
   export default icons;
   export const Search: any;
@@ -27,31 +27,31 @@ declare module: 'lucide-svelte' {
   export const Settings: any;
 }
 
-declare module: 'svelte-sonner' {
+declare module 'svelte-sonner' {
   export function toast(...args: any[]): any;
   const mod: { toast: (...args: any[]) => any };
   export default mod;
 }
 
-declare module: 'sveltekit-superforms';
-declare module: 'sveltekit-superforms/client';
-declare module: 'sveltekit-superforms/adapters';
+declare module 'sveltekit-superforms';
+declare module 'sveltekit-superforms/client';
+declare module 'sveltekit-superforms/adapters';
 
 // Allow imports from $lib/* (alias used in the project) with any shape.
-declare module: '$lib/*' {
+declare module '$lib/*' {
   const value: any;
   export default value;
 }
 
 // Fallback for other commonly-missing modules used across the UI
-declare module: 'sveltekit-superforms/*';
-declare module: 'svelte-sonner/*';
-declare module: '$lib/*' {
+declare module 'sveltekit-superforms/*';
+declare module 'svelte-sonner/*';
+declare module '$lib/*' {
   const whatever: any;
   export default whatever;
 }
 
-declare module: 'xstate' {
+declare module 'xstate' {
   // minimal declarations for focused typechecks
   const _x: any;
   export default _x;

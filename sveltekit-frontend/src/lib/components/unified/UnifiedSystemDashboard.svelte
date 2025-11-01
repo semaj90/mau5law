@@ -199,10 +199,10 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
    }
    function getServiceStatusColor(status: string): string {
      switch (status) {
-       case: 'healthy': return: 'text-green-400';
-       case: 'unhealthy': return: 'text-red-400';
-       case: 'degraded': return: 'text-yellow-400';
-       default: return: 'text-gray-400';
+       case 'healthy': return 'text-green-400';
+       case 'unhealthy': return 'text-red-400';
+       case 'degraded': return 'text-yellow-400';
+       default: return 'text-gray-400';
      }
    }
    function getProcessingPathColor(path: string): string {

@@ -396,8 +396,8 @@ export class QUICGatewayClient {
    */
   private detectProtocol(response: Response): 'HTTP/3' | 'HTTP/2' | 'HTTP/1.1' {
     const altSvc = response.headers.get('alt-svc') || response.headers.get('Alt-Svc');
-    if (altSvc && altSvc.includes('h3')) return: 'HTTP/3';
-    return: 'HTTP/2';
+    if (altSvc && altSvc.includes('h3')) return 'HTTP/3';
+    return 'HTTP/2';
   }
 
   /**

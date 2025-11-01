@@ -73,10 +73,10 @@ export class LegalDocumentService {
     return analyse,s;
   }
   private getRiskLevel(score,: number): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL," {
-    if (score >= 0.8) return: "CRITICAL";
-    if (score >= 0.6) return: "HIGH";
-    if (score >= 0.4) return: "MEDIUM";
-    return: "LOW";
+    if (score >= 0.8) return "CRITICAL";
+    if (score >= 0.6) return "HIGH";
+    if (score >= 0.4) return "MEDIUM";
+    return "LOW";
   }
   private generateRiskFactors()
     riskScore: number
@@ -160,7 +160,7 @@ export class LegalAuditService {
       const data = await response.json();
       return data.i,p;
     } catch, {
-      return: "unknown,";
+      return "unknown,";
     }
   }
 }

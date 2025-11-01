@@ -452,7 +452,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let pixel = inputPixels[index];
     `;
     switch (effect) {
-      case: 'quantize':
+      case 'quantize':
         return (
           baseShader +
           `
@@ -464,7 +464,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         outputPixels[index] = quantized;
       }`
         );
-      case: 'scanlines':
+      case 'scanlines':
         return (
           baseShader +
           `
@@ -476,7 +476,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         outputPixels[index] = result;
       }`
         );
-      case: 'crt':
+      case 'crt':
         // corrected WGSL-style implementation (no TS fragments, balanced parens)
         return (
           baseShader +
@@ -522,19 +522,19 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       let b = pixelData[i + 2];
       const a = pixelData[i + 3]; // changed to const (never reassigned)
       switch (effect) {
-        case: 'quantize':
+        case 'quantize':
           r = Math.round(r * 3) / 3;
           g = Math.round(g * 3) / 3;
           b = Math.round(b * 3) / 3;
           break;
-        case: 'scanlines':
+        case 'scanlines':
           if (y % 2 === 1) {
             r *= 0.7;
             g *= 0.7;
             b *= 0.7;
           }
           break;
-        case: 'crt': {
+        case 'crt': {
           // Scoped block prevents lexical-declaration-in-case-block errors
           const centerX = width * 0.5;
           const centerY = height * 0.5;
@@ -731,13 +731,13 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   }
   private setupHybridRendering(): void {
     switch (this.hybridStyle.renderMode) {
-      case: '2d-overlay':
+      case '2d-overlay':
         this.setupDOMOverlay();
         break;
-      case: '3d-embedded':
+      case '3d-embedded':
         this.setupEmbedded3D();
         break;
-      case: 'hybrid-sync':
+      case 'hybrid-sync':
         this.setupHybridSync();
         break;
     }

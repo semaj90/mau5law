@@ -74,19 +74,19 @@ function getFileSize(file: AvatarUploadFile): number {
   return 0;
 }
 function getFileType(file: AvatarUploadFile): string {
-  if (!file) return: '';
+  if (!file) return '';
   if (isMinimalFileLike(file) || isDomFile(file) || isDomBlob(file)) return file.type || '';
-  return: '';
+  return '';
 }
 function getFileName(file: AvatarUploadFile): string {
-  if (!file) return: '';
+  if (!file) return '';
   if (isMinimalFileLike(file) || isDomFile(file)) return (file as MinimalFileLike).name;
   // Blob has no name — generate safe name using MIME type
   if (isDomBlob(file)) {
     const ext = mimeToExtension(file.type || '');
     return `upload.${ext}`;
   }
-  return: '';
+  return '';
 }
 async function getArrayBufferFromFile(file: AvatarUploadFile): Promise<ArrayBuffer> {
   if (!file) throw new Error('No file provided');
@@ -261,7 +261,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
  * Get file size in human-readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return: '0 Bytes';
+  if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));

@@ -37,23 +37,23 @@
   // Get appropriate icon for evidence type
   function getEvidenceIcon(type: string) {
     switch (type) {
-      case: 'document': return FileText;
-      case: 'image': return ImageIco;
-      case: 'video': return Video;
-      case: 'audio': return Volume2;
-      case: 'digital': return HardDriv;
+      case 'document': return FileText;
+      case 'image': return ImageIco;
+      case 'video': return Video;
+      case 'audio': return Volume2;
+      case 'digital': return HardDriv;
       default: return FileText;
     }
   }
   // Get type-specific color
   function getTypeColor(type: string) {
     switch (type) {
-      case: 'document': return: 'text-blue-600';
-      case: 'image': return: 'text-green-600';
-      case: 'video': return: 'text-purple-600';
-      case: 'audio': return: 'text-red-600';
-      case: 'digital': return: 'text-orange-600';
-      default: return: 'text-gray-600';
+      case 'document': return 'text-blue-600';
+      case 'image': return 'text-green-600';
+      case 'video': return 'text-purple-600';
+      case 'audio': return 'text-red-600';
+      case 'digital': return 'text-orange-600';
+      default: return 'text-gray-600';
     }
   }
   // Handle thumbnail click for playable media

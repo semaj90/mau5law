@@ -200,16 +200,15 @@ export class GlyphCacheSystem {
     const charCode = char.charCodeAt(0);
     // Style-specific pattern generation
     switch (fontStyle) {
-      case: 'classic':
+      case 'classic':
         return this.generateClassicNESPattern(char, charCode);
-      case: 'modern':
+      case 'modern':
         return this.generateModernPattern(char, charCode);
-      case: 'legal':
+      case 'legal':
         return this.generateLegalPattern(char, charCode);
-      case: 'retro':
+      case 'retro':
         return this.generateRetroPattern(char, charCode);
-      default:
-        return this.generateClassicNESPattern(char, charCode);
+      default: return this.generateClassicNESPattern(char, charCode);
     }
   }
   private generateClassicNESPattern(char: string, charCode: number): Uint8Array {

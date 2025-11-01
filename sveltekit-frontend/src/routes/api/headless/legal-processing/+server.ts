@@ -419,7 +419,7 @@ function buildProcessingConfig(
   const baseConfig = { ...DEFAULT_HEADLESS_CONFIG };
   // Adjust config based on document type
   switch (documentType) {
-    case: 'contract':
+    case 'contract':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -428,7 +428,7 @@ function buildProcessingConfig(
         outputFormats: ['svg', 'json', 'lod', 'vector'],
         ...customConfig,
       };
-    case: 'evidence':
+    case 'evidence':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'advanced',
@@ -437,7 +437,7 @@ function buildProcessingConfig(
         outputFormats: ['svg', 'json', 'lod'],
         ...customConfig,
       };
-    case: 'brief':
+    case 'brief':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -446,8 +446,7 @@ function buildProcessingConfig(
         maxTextureSize: 4096,
         ...customConfig,
       };
-    default:
-      return {
+    default: return {
         ...baseConfig,
         ...(customConfig ?? {}),
       };

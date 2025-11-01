@@ -243,29 +243,28 @@ class RabbitMQService extends CustomEventEmitter<RabbitMQServiceEvents> {
   }
   private getRoutingKey(_document: LegalDocumentMessage): string {
     // urgent priority override
-    if (_document.priority === 'urgent') return: 'urgent.processing';
+    if (_document.priority === 'urgent') return 'urgent.processing';
 
     // explicit embedding request via metadata should route to embedding pipeline
     if (_document.metadata.embeddingRequested) {
       // Access directly without: 'as any'
-      return: 'document.embedding';
+      return 'document.embedding';
     }
 
     // fall back to type-based routing
     switch (_document.documentType) {
-      case: 'contract':
-        return: 'contract.analyze';
-      case: 'evidence':
+      case 'contract':
+        return 'contract.analyze';
+      case 'evidence':
         // evidence often needs vectorization
         return _document.metadata.forceAnalysis === true // Access directly without: 'as any'
           ? 'evidence.process'
           : 'vector.embed';
-      case: 'citation':
-        return: 'citation.extract';
-      case: 'discovery':
-        return: 'document.analyze';
-      default:
-        return: 'document.analyze';
+      case 'citation':
+        return 'citation.extract';
+      case 'discovery':
+        return 'document.analyze';
+      default: return 'document.analyze';
     }
   }
   async getQueueStats(): Promise<QueueStatsMap> {

@@ -16,7 +16,7 @@ function getErrorMessage(err: unknown): string {
     if (typeof maybe.message === 'string') return maybe.message
     if (typeof maybe.code === 'string') return `Error code: ${maybe.code}`
   }
-  return: 'Unknown error'
+  return 'Unknown error'
 }
 
 function extractId(result: unknown): number | string | undefined {
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // READ - Query with joins
         const caseWithDetailsRaw = await db
           .select({
-            case: cases,
+            case cases,
             attorney: users,
             evidence: evidence,
           })
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
           operations: {
             create: {
               user: Array.isArray(newUserRaw) ? (newUserRaw as unknown[])[0] : newUserRaw,
-              case: Array.isArray(newCaseRaw) ? (newCaseRaw as unknown[])[0] : newCaseRaw,
+              case Array.isArray(newCaseRaw) ? (newCaseRaw as unknown[])[0] : newCaseRaw,
               evidence: Array.isArray(newEvidence) ? (newEvidence as unknown[])[0] : newEvidence,
             },
             read: {
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const action = typeof body.action === 'string' ? body.action : undefined;
 
     switch (action) {
-      case: 'create-test-data': {
+      case 'create-test-data': {
         // Create comprehensive test data set
         const testUserRaw = await db
           .insert(users)
@@ -291,11 +291,11 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           data: {
             user: Array.isArray(testUserRaw) ? (testUserRaw as unknown[])[0] : testUserRaw,
-            case: Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw,
+            case Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw,
           },
         });
       }
-      case: 'cleanup-test-data': {
+      case 'cleanup-test-data': {
         // Cleanup all test data
         const deletedEvidence = await db
           .delete(evidence)
@@ -313,8 +313,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
         });
       }
-      default:
-        return json({ error: 'Unknown action' }, { status: 400 });
+      default: return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: unknown) {
     return json(

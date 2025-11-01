@@ -147,7 +147,7 @@ export class NESCacheOrchestrator {
       await this.garbageCollectNESRegion('CHR_ROM');
       if (!this.canAllocateToRegion('CHR_ROM', estimatedSize)) {
         console.warn('❌ Cannot cache sprite - CHR_ROM full');
-        return: '';
+        return '';
       }
     }
     // Optimize states for NES-style storage

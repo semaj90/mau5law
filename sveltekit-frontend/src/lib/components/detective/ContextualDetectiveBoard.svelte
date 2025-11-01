@@ -315,7 +315,7 @@
   <header class="board-header">
     <div class="case-info">
       <h1>Detective Analysis Board</h1>
-      <p class="case-id">Case: {caseId}</p>
+      <p class="case-id">case {caseId}</p>
     </div>
     {#if enableAnalytics && typingContext}
       <div class="analytics-panel">

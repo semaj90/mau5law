@@ -102,16 +102,16 @@ class AIServiceWorker {
       const { type, payload, taskId } = event.data; // use local event variable
       try {
         switch (type) {
-          case: 'PROCESS_AI_TASK':
+          case 'PROCESS_AI_TASK':
             await this.processAITask(payload as AITask, taskId);
             break;
-          case: 'CANCEL_TASK':
+          case 'CANCEL_TASK':
             this.cancelTask(taskId);
             break;
-          case: 'GET_STATUS':
+          case 'GET_STATUS':
             this.sendStatus();
             break;
-          case: 'UPDATE_PROVIDER_CONFIG':
+          case 'UPDATE_PROVIDER_CONFIG':
             this.updateProviderConfig(payload as Partial<AIProviderConfig>);
             break;
           default:
@@ -202,13 +202,13 @@ class AIServiceWorker {
 
     try {
       switch (provider.type) {
-        case: 'ollama':
+        case 'ollama':
           return await this.callOllama(provider, task, combinedSignal);
-        case: 'autogen':
+        case 'autogen':
           return await this.callAutoGen(provider, task, combinedSignal);
-        case: 'crewai':
+        case 'crewai':
           return await this.callCrewAI(provider, task, combinedSignal);
-        case: 'llamacpp':
+        case 'llamacpp':
           // If llamacpp needs a dedicated handler, implement similar to ollama
           return await this.callOllama(provider, task, combinedSignal);
         default:

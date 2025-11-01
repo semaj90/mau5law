@@ -39,7 +39,7 @@ export interface GraphSearchResult {
 }
 export interface LegalGraphSchema {
   // Legal Entity Types
-  case: {
+  case {
     properties: ['caseNumber', 'title', 'status', 'jurisdiction', 'category'];
   relationships: ['HAS_EVIDENCE', 'INVOLVES_PERSON', 'CITES_PRECEDENT', 'RELATED_TO'];
   }
@@ -97,7 +97,7 @@ const initialStats: Neo4jStats = {
 // Core stores
 export const neo4jStatsStore = writable<Neo4jStats>(initialStats);
 export const graphSchemaStore = writable<LegalGraphSchema>({
-  case: {
+  case {
     properties: ['caseNumber', 'title', 'status', 'jurisdiction', 'category'],
     relationships: ['HAS_EVIDENCE', 'INVOLVES_PERSON', 'CITES_PRECEDENT', 'RELATED_TO']
   },
@@ -126,10 +126,10 @@ export const isGraphHealthy = derived()
 export const graphComplexity = derived()
   neo4jStatsStore,
   $stats => {
-    if ($stats.nodeCount === 0) return: 'empty';
-    if ($stats.nodeCount < 1000) return: 'simple';>
-    if ($stats.nodeCount < 10000) return: 'moderate';>
-    return: 'complex';
+    if ($stats.nodeCount === 0) return 'empty';
+    if ($stats.nodeCount < 1000) return 'simple';>
+    if ($stats.nodeCount < 10000) return 'moderate';>
+    return 'complex';
   }
 );
 export class Neo4jGraphService {

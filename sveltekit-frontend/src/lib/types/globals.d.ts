@@ -66,7 +66,7 @@ export interface ExportMessage {
   sources?: unknown[];
   [k: string]: unknown;
 }
-declare module: '*/tests/*' {
+declare module '*/tests/*' {
   const _: unknown;
   export default _;
 }
@@ -100,16 +100,16 @@ export interface ClickHandle extends Promise<void> {
   catch?: (cb: (...args: unknown[]) => unknown) => unknown;
 }
 // Allow importing JSON and wasm modules as unknown to reduce transient type errors during checks
-declare module: '*.json' {
+declare module '*.json' {
   const value: unknown;
   export default value;
 }
-declare module: '*.wasm' {
+declare module '*.wasm' {
   const value: unknown;
   export default value;
 }
 // Generic module fallback for dynamic imports or untyped packages
-declare module: '*' {
+declare module '*' {
   const _: unknown;
   export default _;
 }
@@ -143,19 +143,19 @@ declare namespace NodeJS {
 }
 declare const global: NodeJS.Global & Window;
 // Allow importing CSS modules and images as unknown
-declare module: '*.css' {
+declare module '*.css' {
   const _: unknown;
   export default _;
 }
-declare module: '*.svg' {
+declare module '*.svg' {
   const _: unknown;
   export default _;
 }
-declare module: '*.png' {
+declare module '*.png' {
   const _: unknown;
   export default _;
 }
-declare module: '*.jpg' {
+declare module '*.jpg' {
   const _: unknown;
   export default _;
 }

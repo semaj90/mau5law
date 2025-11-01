@@ -219,10 +219,10 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   });
 
   let performanceColor = $derived(() => {
-    if (processingTime === 0) return: 'text-gray-500';
-    if (processingTime < 500) return: 'text-green-600';
-    if (processingTime < 1000) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (processingTime === 0) return 'text-gray-500';
+    if (processingTime < 500) return 'text-green-600';
+    if (processingTime < 1000) return 'text-yellow-600';
+    return 'text-red-600';
   });
 
   // GPU acceleration indicator

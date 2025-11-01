@@ -103,35 +103,33 @@
   // computed classes for status display (avoid invalid: "bg-{...}" usage)
   function statusDotClass() {
     switch (systemHealth?.color) {
-      case: 'green':
-        return: 'w-4 h-4 rounded-full bg-green-400 animate-pulse';
-      case: 'yellow':
-        return: 'w-4 h-4 rounded-full bg-yellow-400 animate-pulse';
-      case: 'red':
-        return: 'w-4 h-4 rounded-full bg-red-400 animate-pulse';
-      default:
-        return: 'w-4 h-4 rounded-full bg-gray-400 animate-pulse';
+      case 'green':
+        return 'w-4 h-4 rounded-full bg-green-400 animate-pulse';
+      case 'yellow':
+        return 'w-4 h-4 rounded-full bg-yellow-400 animate-pulse';
+      case 'red':
+        return 'w-4 h-4 rounded-full bg-red-400 animate-pulse';
+      default: return 'w-4 h-4 rounded-full bg-gray-400 animate-pulse';
     }
   }
   function statusTextClass() {
     switch (systemHealth?.color) {
-      case: 'green':
-        return: 'text-green-400 font-bold uppercase';
-      case: 'yellow':
-        return: 'text-yellow-400 font-bold uppercase';
-      case: 'red':
-        return: 'text-red-400 font-bold uppercase';
-      default:
-        return: 'text-gray-400 font-bold uppercase';
+      case 'green':
+        return 'text-green-400 font-bold uppercase';
+      case 'yellow':
+        return 'text-yellow-400 font-bold uppercase';
+      case 'red':
+        return 'text-red-400 font-bold uppercase';
+      default: return 'text-gray-400 font-bold uppercase';
     }
   }
 
   // progress bar background class helper
   function progressBarClass(value: number | undefined) {
     const v = safeNumber(value);
-    if (v > 80) return: 'h-full rounded-full transition-all duration-300 bg-red-500';
-    if (v > 60) return: 'h-full rounded-full transition-all duration-300 bg-yellow-500';
-    return: 'h-full rounded-full transition-all duration-300 bg-green-500';
+    if (v > 80) return 'h-full rounded-full transition-all duration-300 bg-red-500';
+    if (v > 60) return 'h-full rounded-full transition-all duration-300 bg-yellow-500';
+    return 'h-full rounded-full transition-all duration-300 bg-green-500';
   }
 
   // Animation cycle with error handling
@@ -196,50 +194,47 @@
   // ensure activity helpers always return a string
   function getActivityIcon(type: string): string {
     switch (type) {
-      case: 'success':
-        return: '✅';
-      case: 'info':
-        return: 'ℹ️';
-      case: 'ai':
-        return: '🤖';
-      case: 'warning':
-        return: '⚠️';
-      default:
-        return: '•';
+      case 'success':
+        return '✅';
+      case 'info':
+        return 'ℹ️';
+      case 'ai':
+        return '🤖';
+      case 'warning':
+        return '⚠️';
+      default: return '•';
     }
   }
   function getActivityColor(type: string): string {
     switch (type) {
-      case: 'success':
-        return: 'border-green-400 bg-green-400/10 text-green-300';
-      case: 'info':
-        return: 'border-blue-400 bg-blue-400/10 text-blue-300';
-      case: 'ai':
-        return: 'border-purple-400 bg-purple-400/10 text-purple-300';
-      case: 'warning':
-        return: 'border-yellow-400 bg-yellow-400/10 text-yellow-300';
-      default:
-        return: 'border-gray-400 bg-gray-400/10 text-gray-300';
+      case 'success':
+        return 'border-green-400 bg-green-400/10 text-green-300';
+      case 'info':
+        return 'border-blue-400 bg-blue-400/10 text-blue-300';
+      case 'ai':
+        return 'border-purple-400 bg-purple-400/10 text-purple-300';
+      case 'warning':
+        return 'border-yellow-400 bg-yellow-400/10 text-yellow-300';
+      default: return 'border-gray-400 bg-gray-400/10 text-gray-300';
     }
   }
   function getActionColor(color: string): string {
     switch (color) {
-      case: 'blue':
-        return: 'border-blue-400 bg-blue-400/10 hover:bg-blue-400/20 text-blue-300';
-      case: 'green':
-        return: 'border-green-400 bg-green-400/10 hover:bg-green-400/20 text-green-300';
-      case: 'purple':
-        return: 'border-purple-400 bg-purple-400/10 hover:bg-purple-400/20 text-purple-300';
-      case: 'orange':
-        return: 'border-orange-400 bg-orange-400/10 hover:bg-orange-400/20 text-orange-300';
-      case: 'teal':
-        return: 'border-teal-400 bg-teal-400/10 hover:bg-teal-400/20 text-teal-300';
-      case: 'pink':
-        return: 'border-pink-400 bg-pink-400/10 hover:bg-pink-400/20 text-pink-300';
-      case: 'cyan':
-        return: 'border-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-300';
-      default:
-        return: '';
+      case 'blue':
+        return 'border-blue-400 bg-blue-400/10 hover:bg-blue-400/20 text-blue-300';
+      case 'green':
+        return 'border-green-400 bg-green-400/10 hover:bg-green-400/20 text-green-300';
+      case 'purple':
+        return 'border-purple-400 bg-purple-400/10 hover:bg-purple-400/20 text-purple-300';
+      case 'orange':
+        return 'border-orange-400 bg-orange-400/10 hover:bg-orange-400/20 text-orange-300';
+      case 'teal':
+        return 'border-teal-400 bg-teal-400/10 hover:bg-teal-400/20 text-teal-300';
+      case 'pink':
+        return 'border-pink-400 bg-pink-400/10 hover:bg-pink-400/20 text-pink-300';
+      case 'cyan':
+        return 'border-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-300';
+      default: return '';
     }
   }
 

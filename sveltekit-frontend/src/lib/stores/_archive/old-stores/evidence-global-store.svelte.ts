@@ -120,7 +120,7 @@ class EvidenceGlobalStore {
     this.cases[caseId] = newCase;
     this.currentCaseId = caseId;
     this.persistState();
-    console.log(`📁 Created new case: ${newCase.title}`);
+    console.log(`📁 Created new case ${newCase.title}`);
     return caseId;
   }
   setCurrentCase(caseId: string) {
@@ -128,7 +128,7 @@ class EvidenceGlobalStore {
       this.currentCaseId = caseId;
       this.clearSelection();
       this.closeModal();
-      console.log(`📂 Switched to case: ${this.cases[caseId].title}`);
+      console.log(`📂 Switched to case ${this.cases[caseId].title}`);
     }
   }
   updateCase(caseId: string, updates: Partial<LegalCase>) {
@@ -474,7 +474,7 @@ class EvidenceGlobalStore {
     if (!caseData) throw new Error('Case not found');
     return JSON.stringify(
       {
-        case: caseData,
+        case caseData,
         exportedAt: new Date().toISOString(),
         version: '1.0',
       },
@@ -492,7 +492,7 @@ class EvidenceGlobalStore {
       caseData.title = `${caseData.title} (Imported)`;
       this.cases[newCaseId] = caseData;
       this.persistState();
-      console.log(`📥 Imported case: ${caseData.title}`);
+      console.log(`📥 Imported case ${caseData.title}`);
       return newCaseId;
     } catch (error) {
       throw new Error('Invalid case data format');

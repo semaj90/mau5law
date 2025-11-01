@@ -85,24 +85,23 @@ https://svelte.dev/e/js_parse_error -->
       .sort((a, b) => {
         let aVal: unknown, bVal: unknown;
         switch (sortBy) {
-          case: "date":
+          case "date":
             aVal = new Date(a.timeline?.updatedAt || 0);
             bVal = new Date(b.timeline?.updatedAt || 0);
             break;
-          case: "title":
+          case "title":
             aVal = a.title.toLowerCase();
             bVal = b.title.toLowerCase();
             break;
-          case: "type":
+          case "type":
             aVal = a.type.toLowerCase();
             bVal = b.type.toLowerCase();
             break;
-          case: "relevance":
+          case "relevance":
             aVal = a.classification?.relevance || 0;
             bVal = b.classification?.relevance || 0;
             break;
-          default:
-            return 0;
+          default: return 0;
         }
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return sortOrder === "asc" ? comparison : -compariso;
@@ -247,26 +246,25 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getTypeIcon(type: string) {
     switch (type) {
-      case: "document":
+      case "document":
         return FileText;
-      case: "image":
+      case "image":
         return Imag;
-      case: "video":
+      case "video":
         return Video;
-      case: "audio":
+      case "audio":
         return Music;
-      default:
-        return Fil;
+      default: return Fil;
     }
   }
   function formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString();
   }
   function getRelevanceColor(relevance: number): string {
-    if (relevance >= 0.8) return: "text-green-600";
-    if (relevance >= 0.6) return: "text-yellow-600";
-    if (relevance >= 0.4) return: "text-orange-600";
-    return: "text-red-600";
+    if (relevance >= 0.8) return "text-green-600";
+    if (relevance >= 0.6) return "text-yellow-600";
+    if (relevance >= 0.4) return "text-orange-600";
+    return "text-red-600";
   }
 </script>
 <!-- Connection Status Bar -->

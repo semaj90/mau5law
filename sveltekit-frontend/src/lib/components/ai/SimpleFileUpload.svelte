@@ -470,7 +470,7 @@
     files = files.filter((_, i) => i !== index);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -483,14 +483,14 @@
   }
   function getStageIcon(stage: string) {
     switch (stage) {
-      case: 'validation': return Check;
-      case: 'storage': return Cloud;
-      case: 'ocr': return Loader2;
-      case: 'embedding': return Cpu;
-      case: 'vectorization': return Database;
-      case: 'indexing': return Database;
-      case: 'tagging': return Zap;
-      case: 'caching': return Database;
+      case 'validation': return Check;
+      case 'storage': return Cloud;
+      case 'ocr': return Loader2;
+      case 'embedding': return Cpu;
+      case 'vectorization': return Database;
+      case 'indexing': return Database;
+      case 'tagging': return Zap;
+      case 'caching': return Database;
       default: return Check;
     }
   }

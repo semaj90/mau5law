@@ -522,7 +522,7 @@ export class ThreadSafePostgres {
           const params: unknown[] = [];
 
           switch (op.type) {
-            case: 'insert':
+            case 'insert':
               query = `
                 INSERT INTO ${op.table} (id, content, metadata, created_at, updated_at)
                 VALUES ($1, $2, $3, NOW(), NOW())
@@ -530,7 +530,7 @@ export class ThreadSafePostgres {
               params.push(op.id, JSON.stringify(op.data || {}), JSON.stringify({}));
               break;
 
-            case: 'update':
+            case 'update':
               query = `
                 UPDATE ${op.table}
                 SET content = $2, updated_at = NOW()
@@ -539,7 +539,7 @@ export class ThreadSafePostgres {
               params.push(op.id, JSON.stringify(op.data || {}));
               break;
 
-            case: 'delete':
+            case 'delete':
               query = `DELETE FROM ${op.table} WHERE id = $1`;
               params.push(op.id);
               break;

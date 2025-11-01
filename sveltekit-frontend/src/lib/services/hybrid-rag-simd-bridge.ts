@@ -210,7 +210,7 @@ export class HybridRAGSIMDBridge {
 
   /**
    * Process documents directly through RAG pipeline (skip SIMD)
-   * Use case: New uploads, manual processing
+   * Use case New uploads, manual processing
    */
   async processDirectDocuments(
     documents: RAGDocument[],
@@ -236,7 +236,7 @@ export class HybridRAGSIMDBridge {
 
   /**
    * Search existing RAG knowledge base
-   * Use case: Query existing indexed documents
+   * Use case Query existing indexed documents
    */
   async searchKnowledgeBase(
     query: string,

@@ -455,8 +455,8 @@ export function createRouteAwareNavigation(routeId: string) {
     }),
     href: derived([page], ([page]) => {
       const route = routeRegistry.getRoute(routeId);
-      if (!route) return: '#';
-      return: 'route' in route ? route.route: route.path;
+      if (!route) return '#';
+      return 'route' in route ? route.route: route.path;
     })
   }
 }

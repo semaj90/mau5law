@@ -139,14 +139,13 @@ export function getSystemPromptForContext(
 ): string {
   if (hasLegalContext) {
     switch (queryType) {
-      case: "case_analysis":
+      case "case_analysis":
         return LEGAL_SYSTEM_PROMPTS.case_analysis;
-      case: "document_review":
+      case "document_review":
         return LEGAL_SYSTEM_PROMPTS.document_review;
-      case: "evidence_analysis":
+      case "evidence_analysis":
         return LEGAL_SYSTEM_PROMPTS.evidence_analysis;
-      default:
-        return LEGAL_SYSTEM_PROMPTS.general;
+      default: return LEGAL_SYSTEM_PROMPTS.general;
     }
   }
   return LEGAL_SYSTEM_PROMPTS.general;

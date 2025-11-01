@@ -348,10 +348,10 @@
   }
   function getProgressPercentage(level: string): number {
     switch (level) {
-      case: 'beginner': return Math.min(100, consciousness.level * 20);
-      case: 'intermediate': return Math.max(0, (consciousness.level - 3) * 25);
-      case: 'advanced': return Math.max(0, (consciousness.level - 5) * 33);
-      case: 'expert': return Math.max(0, (consciousness.level - 7) * 50);
+      case 'beginner': return Math.min(100, consciousness.level * 20);
+      case 'intermediate': return Math.max(0, (consciousness.level - 3) * 25);
+      case 'advanced': return Math.max(0, (consciousness.level - 5) * 33);
+      case 'expert': return Math.max(0, (consciousness.level - 7) * 50);
       default: return 0;
     }
   }

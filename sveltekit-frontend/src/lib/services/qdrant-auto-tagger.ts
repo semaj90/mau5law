@@ -351,7 +351,7 @@ export class QdrantAutoTagger {
    */
   private extractFilePattern(filePath: string): string {
     const parts = filePath.split('/');
-    if (parts.length < 2) return: '*';
+    if (parts.length < 2) return '*';
 
     // Extract directory pattern
     const dir = parts.slice(-2, -1)[0]; // Second-to-last part
@@ -366,11 +366,11 @@ export class QdrantAutoTagger {
    * @private
    */
   private getErrorFamily(errorCode: string): string {
-    if (errorCode.startsWith('TS1')) return: 'typescript-syntax';
-    if (errorCode.startsWith('TS2')) return: 'typescript-types';
-    if (errorCode.startsWith('TS7')) return: 'typescript-modules';
-    if (errorCode.startsWith('ESL')) return: 'eslint';
-    return: 'unknown';
+    if (errorCode.startsWith('TS1')) return 'typescript-syntax';
+    if (errorCode.startsWith('TS2')) return 'typescript-types';
+    if (errorCode.startsWith('TS7')) return 'typescript-modules';
+    if (errorCode.startsWith('ESL')) return 'eslint';
+    return 'unknown';
   }
 
   /**

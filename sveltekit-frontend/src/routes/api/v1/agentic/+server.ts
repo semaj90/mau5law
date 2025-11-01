@@ -17,13 +17,13 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     const query = url.searchParams.get('query');
 
     switch (action) {
-      case: 'status':
+      case 'status':
         return await getSystemStatus(startTime, getClientAddress);
 
-      case: 'recent-errors':
+      case 'recent-errors':
         return await getRecentErrors(startTime);
 
-      case: 'fix-suggestions':
+      case 'fix-suggestions':
         if (!query) {
           throw error(400, 'Query parameter required for fix suggestions');
         }
@@ -81,13 +81,13 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       const { action, data } = requestData;
 
       switch (action) {
-        case: 'analyze-error':
+        case 'analyze-error':
           return await analyzeErrorText(data.errorText, startTime);
 
-        case: 'get-contextual-fixes':
+        case 'get-contextual-fixes':
           return await getContextualFixes(data.errorId, startTime);
 
-        case: 'mark-fix-applied':
+        case 'mark-fix-applied':
           return await markFixApplied(data.fixId, data.success, startTime);
 
         default:

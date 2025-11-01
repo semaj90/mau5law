@@ -137,26 +137,26 @@
 
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
-      case: 'message':
+      case 'message':
         messages = [...messages, normalizeIncomingMessage(data.message)];
         break;
-      case: 'typing':
+      case 'typing':
         isTyping = data.isTyping;
         break;
-      case: 'analysis':
+      case 'analysis':
         currentAnalysis = data.analysis;
         break;
-      case: 'rag_context':
+      case 'rag_context':
         ragContext = data.context;
         break;
-      case: 'metrics':
+      case 'metrics':
         // accept either: "metrics" or: "metric" from remote payloads
         processingMetrics = data.metrics ?? data.metric ?? processingMetrics;
         break;
-      case: 'stream':
+      case 'stream':
         streamingResponse += data.chunk;
         break;
-      case: 'stream_complete':
+      case 'stream_complete':
         if (streamingResponse) {
           messages = [
             ...messages,
@@ -316,7 +316,7 @@
 
   // Safe timestamp formatter (handles Date or ISO string or number)
   function formatTimestamp(ts: Date | string | number | undefined | null) {
-    if (!ts) return: '';
+    if (!ts) return '';
     let d: Date;
     if (typeof ts === 'string') {
       d = new Date(ts);

@@ -60,7 +60,7 @@ const caseManagementServices = {
       }),
     });
     if (!response.ok) {
-      throw new Error(`Failed to load case: ${response.statusText}`);
+      throw new Error(`Failed to load case ${response.statusText}`);
     }
     return await response.json();
   },
@@ -80,7 +80,7 @@ const caseManagementServices = {
       }),
     });
     if (!response.ok) {
-      throw new Error(`Failed to create case: ${response.statusText}`);
+      throw new Error(`Failed to create case ${response.statusText}`);
     }
     return await response.json();
   },
@@ -98,7 +98,7 @@ const caseManagementServices = {
       }),
     });
     if (!response.ok) {
-      throw new Error(`Failed to update case: ${response.statusText}`);
+      throw new Error(`Failed to update case ${response.statusText}`);
     }
     return await response.json();
   },

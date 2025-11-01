@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let recommendations = [];
 
     switch (type) {
-      case: 'case-similar':
+      case 'case-similar':
         // Find similar cases based on scoring
         const similarCases = await db
           .select({
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }));
         break;
 
-      case: 'auto-tags':
+      case 'auto-tags':
         // Get AI-generated tag recommendations
         const suggestedTags = await db
           .select({
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }));
         break;
 
-      case: 'next-actions':
+      case 'next-actions':
         // Query pattern analysis from user AI queries
         const queryPatterns = await db
           .select({
@@ -124,8 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }));
         break;
 
-      default:
-        return json(
+      default: return json(
           {
             error: `Unsupported recommendation type: ${type}`,
           },

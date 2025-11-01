@@ -75,18 +75,17 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { action, query, documents, ...options } = body;
     switch (action) {
-      case: 'query':
+      case 'query':
         return await handleRAGQuery(query, options);
-      case: 'ingest':
+      case 'ingest':
         return await handleDocumentIngestion(documents, options);
-      case: 'test':
+      case 'test':
         return await handleCacheTest(options);
-      case: 'metrics':
+      case 'metrics':
         return await handleCacheMetrics();
-      case: 'warmup':
+      case 'warmup':
         return await handleCacheWarmup();
-      default:
-        return json({ error: 'Invalid action. Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
+      default: return json({ error: 'Invalid action. Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
     }
   } catch (error: unknown) {
     console.error('Cached RAG API error:', error);
@@ -349,7 +348,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case: 'status':
+      case 'status':
         return json({
           success: true,
           data: {
@@ -366,15 +365,14 @@ export const GET: RequestHandler = async ({ url }) => {
             timestamp: new Date().toISOString(),
           },
         });
-      case: 'metrics':
+      case 'metrics':
         return await handleCacheMetrics();
-      case: 'test': {
+      case 'test': {
         // Braces added to avoid: "Unexpected lexical declaration in case block"
         const testType = url.searchParams.get('type') || 'smoke';
         return await handleCacheTest({ type: testType } as unknown);
       }
-      default:
-        return json({ error: 'Invalid action for GET request' }, { status: 400 });
+      default: return json({ error: 'Invalid action for GET request' }, { status: 400 });
     }
   } catch (error: unknown) {
     console.error('Cached RAG API GET error:', error);

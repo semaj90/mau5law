@@ -5,7 +5,7 @@
 	// UI libraries
 	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
 	import Badge from '$lib/components/ui/Badge.svelte';
-	import: 'nes.css/css/nes.min.css';
+	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
 	import * as Tooltip from 'bits-ui';
@@ -202,10 +202,10 @@
 	function handleAIActionTrigger(payload: any) {
 		const { type, data } = payload ?? {};
 		switch (type) {
-			case: 'suggestions':
+			case 'suggestions':
 				console.log('AI suggestions', data);
 				break;
-			case: 'evidence-connect':
+			case 'evidence-connect':
 				console.log('Evidence connections', data);
 				break;
 		}

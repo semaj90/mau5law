@@ -187,10 +187,10 @@ https://svelte.dev/e/js_parse_error -->
       return status ? 'bg-green-500' : 'bg-red-500';
     }
     switch (status) {
-      case: 'healthy': return: 'bg-green-500';
-      case: 'partial': return: 'bg-yellow-500';
-      case: 'down': return: 'bg-red-500';
-      default: return: 'bg-gray-500';
+      case 'healthy': return 'bg-green-500';
+      case 'partial': return 'bg-yellow-500';
+      case 'down': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   }
   // Handle authentication success

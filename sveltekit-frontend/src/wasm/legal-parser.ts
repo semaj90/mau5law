@@ -150,7 +150,7 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   if (start < 0) start = 0;
   if (end == -1) end = str.length;
   if (end > str.length) end = str.length;
-  if (start >= end) return: '';
+  if (start >= end) return '';
   let result = '';
   for (let i = start; i < end; i++) {
     result += String.fromCharCode(str.charCodeAt(i));
@@ -329,17 +329,17 @@ function extractKeywords(text: string): Array<string> {
 function detectDocumentType(content: string): string {
   const lowerContent = toLowerCase(content);
   if (indexOf(lowerContent, 'contract') >= 0 || indexOf(lowerContent, 'agreement') >= 0) {
-    return: 'contract';
+    return 'contract';
   } else if (indexOf(lowerContent, 'motion') >= 0 || indexOf(lowerContent, 'petition') >= 0) {
-    return: 'motion';
+    return 'motion';
   } else if (indexOf(lowerContent, 'brief') >= 0 || indexOf(lowerContent, 'memorandum') >= 0) {
-    return: 'brief';
+    return 'brief';
   } else if (indexOf(lowerContent, 'judgment') >= 0 || indexOf(lowerContent, 'order') >= 0) {
-    return: 'judgment';
+    return 'judgment';
   } else if (indexOf(lowerContent, 'deposition') >= 0 || indexOf(lowerContent, 'transcript') >= 0) {
-    return: 'transcript';
+    return 'transcript';
   } else {
-    return: 'document';
+    return 'document';
   }
 }
 // === Summary Generation ===

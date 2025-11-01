@@ -6,7 +6,7 @@ import { enhancedCachingService } from './enhanced-caching-service.js';
 import { cachedRAGService } from './cached-rag-service.js';
 import { enhancedRAGQueryWithCache } from './enhanced-rag-semantic-analyzer.js';
 import type { RAGQuery } from './enhanced-rag-semantic-analyzer.js';
-}
+
 export interface CacheTestResult {
   test: string;
   success: boolean;
@@ -68,9 +68,17 @@ export class CachingIntegrationTester {
         success: true,
         duration: Date.now() - startTime,
         details: {
-          firstCall: { cached: result1.cached, dimensions: result1.dimensions, model: result1?.model || "unknown", // @ts-ignore - Model property access },
-          secondCall: { cached: result2.cached, dimensions: result2.dimensions, model: result2?.model || "unknown", // @ts-ignore - Model property access },
-          embeddingLength: result1.embedding.length,
+          firstCall: { 
+            cached: result1.cached, 
+            dimensions: result1.dimensions, 
+            model: result1?.model || "unknown"
+          },
+          secondCall: { 
+            cached: result2.cached, 
+            dimensions: result2.dimensions, 
+            model: result2?.model || "unknown"
+          },
+          embeddingLength: result1.embedding.length
         }
       });
       console.log('✅ Embedding cache test passed');
@@ -79,7 +87,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Embedding cache test failed:', error);
@@ -114,7 +122,7 @@ export class CachingIntegrationTester {
           totalDocs: testDocs.length,
           cachedCount,
           freshCount,
-          results: results.map(r => ({ id: r.id, cached: r.cached, dimensions: r.dimensions }),
+          results: results.map(r => ({ id: r.id, cached: r.cached, dimensions: r.dimensions }))
         }
       });
       console.log(`✅ Batch embedding cache test passed: ${cachedCount} cached, ${freshCount} fresh`);
@@ -123,7 +131,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Batch embedding cache test failed:', error);
@@ -159,16 +167,16 @@ export class CachingIntegrationTester {
       }
       // First call - should miss cache
       const result1 = await enhancedCachingService.getCachedQueryResults(
-        testQuery)
+        testQuery,
         { type: "contract" },
         mockVectorSearchFn
-     ) );
+      );
       // Second call - should hit cache
       const result2 = await enhancedCachingService.getCachedQueryResults(
-        testQuery)
+        testQuery,
         { type: "contract" },
         mockVectorSearchFn
-     ) );
+      );
       if (!result2.cached) {
         throw new Error('Second query should have been cached');
       }
@@ -191,7 +199,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Query cache test failed:', error);
@@ -244,7 +252,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Full RAG pipeline test failed:', error);
@@ -289,7 +297,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Cache metrics test failed:', error);
@@ -339,7 +347,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Document ingestion test failed:', error);
@@ -368,7 +376,7 @@ export class CachingIntegrationTester {
         test: testName,
         success: false,
         duration: Date.now() - startTime,
-        details: { [key,: strin,g]: any },
+        details: {} as Record<string, any>,
         error: error.message
       });
       console.error('❌ Cache warmup test failed:', error);

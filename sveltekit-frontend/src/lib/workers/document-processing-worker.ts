@@ -261,14 +261,14 @@ class DocumentProcessingWorker {
     const { job } = context;
     // Different extraction methods based on file type
     switch (job.mimeType) {
-      case: 'application/pdf':
+      case 'application/pdf':
         context.extractedText = await this.extractPDFText(context.tempFilePath!);
         break;
-      case: 'image/jpeg':
-      case: 'image/png':
+      case 'image/jpeg':
+      case 'image/png':
         context.extractedText = await this.extractImageText(context.tempFilePath!);
         break;
-      case: 'text/plain':
+      case 'text/plain':
         context.extractedText = await this.extractPlainText(context.tempFilePath!);
         break;
       default:

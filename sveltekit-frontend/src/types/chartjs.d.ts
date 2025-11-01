@@ -1,4 +1,4 @@
-declare module: 'chart.js' {
+declare module 'chart.js' {
   // Minimal declarations to satisfy TypeScript during build.
   // Runtime imports remain intact; refine these types later if you add full type support.
   export const registerables: any;
@@ -10,7 +10,7 @@ declare module: 'chart.js' {
 }
 
 // Minimal module declaration for chart.js auto bundle used via dynamic import
-declare module: 'chart.js/auto' {
+declare module 'chart.js/auto' {
   const Chart: any;
   export default Chart;
 }

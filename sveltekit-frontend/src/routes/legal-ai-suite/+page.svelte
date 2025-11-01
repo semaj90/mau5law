@@ -216,21 +216,20 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getFactCheckBadgeVariant(status: string) {
     switch (status) {
-      case: 'FACT':
-        return: 'default';
-      case: 'FICTION':
-      case: 'DISPUTED':
-        return: 'destructive';
-      case: 'UNVERIFIED':
-        return: 'secondary';
-      default:
-        return: 'outline';
+      case 'FACT':
+        return 'default';
+      case 'FICTION':
+      case 'DISPUTED':
+        return 'destructive';
+      case 'UNVERIFIED':
+        return 'secondary';
+      default: return 'outline';
     }
   }
   function getProsecutionScoreColor(score: number) {
-    if (score >= 0.8) return: 'text-green-600';
-    if (score >= 0.6) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (score >= 0.8) return 'text-green-600';
+    if (score >= 0.6) return 'text-yellow-600';
+    return 'text-red-600';
   }
 </script>
 

@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     {#if analysisData.caseId}
       <p class="text-sm text-gray-600">
-        Case: {analysisData.caseId} • {analysisData.timestamp ?? 'Recently analyzed'}
+        case {analysisData.caseId} • {analysisData.timestamp ?? 'Recently analyzed'}
       </p>
     {/if}
   </div>

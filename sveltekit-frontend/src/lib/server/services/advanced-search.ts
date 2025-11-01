@@ -346,20 +346,20 @@ class AdvancedSearch {
     return results.slice().sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case: 'relevance':
+        case 'relevance':
           comparison = (a.relevanceScore || 0) - (b.relevanceScore || 0);
           break;
-        case: 'date': {
+        case 'date': {
           const aDate = getDateFromResult(a);
           const bDate = getDateFromResult(b);
           comparison = aDate - bDate;
           break;
         }
-        case: 'priority': {
+        case 'priority': {
           comparison = getPriorityValue(a) - getPriorityValue(b);
           break;
         }
-        case: 'status':
+        case 'status':
           comparison = stringify(a.type === 'case' ? a.metadata.status : undefined).localeCompare(
             stringify(b.type === 'case' ? b.metadata.status : undefined)
           );

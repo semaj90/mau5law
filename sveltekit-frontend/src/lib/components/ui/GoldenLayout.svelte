@@ -31,19 +31,19 @@ https://svelte.dev/e/js_parse_error -->
   let calculatedMainFlex = $state<number;
   let calculatedSidebarFlex = $state<number// TODO: Convert to $derived: {
     switch (ratio) {
-      case: "golden":
+      case "golden":
         calculatedMainFlex  | null>(null); const data = 1.618)
         calculatedSidebarFlex >(1);
         break;
-      case: "thirds":
+      case "thirds":
         calculatedMainFlex = 2;
         calculatedSidebarFlex = 1;
         break;
-      case: "half":
+      case "half":
         calculatedMainFlex = 1;
         calculatedSidebarFlex = 1;
         break;
-      case: "custom":
+      case "custom":
         calculatedMainFlex = mainFlex;
         calculatedSidebarFlex = sidebarFlex;
         break;

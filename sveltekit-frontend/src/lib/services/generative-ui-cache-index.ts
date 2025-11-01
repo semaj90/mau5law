@@ -583,11 +583,11 @@ export class GenerativeUICacheIndex {
   }
 
   private inferComponentType(params: Record<string, unknown>): UIComponentMetadata['type'] {
-    if (params.chart || params.data) return: 'chart';
-    if (params.form || params.fields) return: 'form';
-    if (params.animation || params.keyframes) return: 'animation';
-    if (params.visualization || params.graph) return: 'visualization';
-    return: 'widget';
+    if (params.chart || params.data) return 'chart';
+    if (params.form || params.fields) return 'form';
+    if (params.animation || params.keyframes) return 'animation';
+    if (params.visualization || params.graph) return 'visualization';
+    return 'widget';
   }
 
   private calculateComplexity(params: Record<string, unknown>): number {

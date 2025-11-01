@@ -151,26 +151,26 @@ $effect(() => {
                 try {
                   const eventData = JSON.parse(line.slice(6));
                   switch (eventData.type) {
-                    case: 'connection':
+                    case 'connection':
                       if (eventData.conversationId) {
                         conversationId = eventData.conversationId;
                       }
                       break;
-                    case: 'token':
+                    case 'token':
                       aiMessage.content = eventData.fullResponse || aiMessage.content + eventData.content;
                       // Trigger Svelte 5 reactivity
                       messages = [...messages];
                       break;
-                    case: 'complete':
+                    case 'complete':
                       aiMessage.content = eventData.fullResponse; // Corrected typo
                       messages = [...messages];
                       isStreaming = false;
                       break;
-                    case: 'error':
+                    case 'error':
                       error = eventData.error;
                       isStreaming = false;
                       break;
-                    case: 'close':
+                    case 'close':
                       isStreaming = false;
                       break;
                   }

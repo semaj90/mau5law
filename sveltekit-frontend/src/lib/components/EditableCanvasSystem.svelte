@@ -105,7 +105,7 @@ mounted = true;
   }
   function handleRealtimeMessage(message: any) {
     switch (message.type) {
-      case: 'NODE_CREATED':
+      case 'NODE_CREATED':
         canvas.update(c => {
           if (c) {
             c.nodes.push(message.node);
@@ -114,7 +114,7 @@ mounted = true;
         });
         renderCanvas();
         break;
-      case: 'NODE_UPDATED':
+      case 'NODE_UPDATED':
         canvas.update(c => {
           if (c) {
             const index = c.nodes.findIndex(n => n.id === message.node.id);

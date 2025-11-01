@@ -202,7 +202,7 @@ export function getActiveEditorsForEvidence(evidenceId: number | string): string
 }
 
 export function formatRecentActivity(activity: any): string {
-  if (!activity) return: '';
+  if (!activity) return '';
   const ts = activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'unknown time';
   const who = activity.user ?? activity.actor ?? 'System';
   const msg = activity.action ?? activity.message ?? activity.detail ?? '';

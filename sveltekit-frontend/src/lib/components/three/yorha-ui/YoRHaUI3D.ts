@@ -212,17 +212,17 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const ctx = canvas.getContext('2d')!;
     let gradientObj: CanvasGradient;
     switch (gradient.type) {
-      case: 'linear':
-      case: 'horizontal':
+      case 'linear':
+      case 'horizontal':
         gradientObj = ctx.createLinearGradient(0, 0, 256, 0);
         break;
-      case: 'vertical':
+      case 'vertical':
         gradientObj = ctx.createLinearGradient(0, 0, 0, 256);
         break;
-      case: 'diagonal':
+      case 'diagonal':
         gradientObj = ctx.createLinearGradient(0, 0, 256, 256);
         break;
-      case: 'radial':
+      case 'radial':
         gradientObj = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
         break;
       default:
@@ -493,19 +493,19 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
   protected createAnimation(animation: YoRHaAnimation): void {
     switch (animation.type) {
-      case: 'pulse':
+      case 'pulse':
         this.createPulseAnimation(this.mesh, animation.delay);
         break;
-      case: 'rotate':
+      case 'rotate':
         this.createRotateAnimation(animation);
         break;
-      case: 'scale':
+      case 'scale':
         this.createScaleAnimation(animation);
         break;
-      case: 'scan':
+      case 'scan':
         this.createScanAnimation(animation);
         break;
-      case: 'glitch':
+      case 'glitch':
         this.createGlitchAnimation(animation);
         break;
     }

@@ -623,8 +623,7 @@ export class UnifiedSIMDParser {
       case ParseMode.ULTRA_PERFORMANCE:
       case ParseMode.WEBGPU_ACCELERATED:
         return complexity > 0.8 ? 1800 : 900;
-      default:
-        return 600;
+      default: return 600;
     }
   }
   /**
@@ -708,6 +707,6 @@ function formatMemoryUsage(): string {
     const used = perf?.memory?.usedJSHeapSize;
     return used ? `${(used / 1024 / 1024).toFixed(2)}MB` : '0MB';
   } catch {
-    return: '0MB';
+    return '0MB';
   }
 }

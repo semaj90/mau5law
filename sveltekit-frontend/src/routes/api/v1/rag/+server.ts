@@ -127,14 +127,13 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   try {
     switch (action) {
-      case: 'health':
+      case 'health':
         return await handleHealthCheck();
-      case: 'stats':
+      case 'stats':
         return await handleStats();
-      case: 'models':
+      case 'models':
         return await handleModels();
-      default:
-        return json({
+      default: return json({
           service: 'Enhanced RAG API',
           version: '2.0.0',
           endpoints: {

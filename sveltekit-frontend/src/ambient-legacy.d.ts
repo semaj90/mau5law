@@ -31,17 +31,17 @@ interface LegalAgentsLegacy {
 }
 declare const crewAIOrchestrator: CrewAIOrchestratorLegacy;
 declare const LEGAL_AGENTS: LegalAgentsLegacy;
-declare module: '$lib/services/enhanced-rag-integration.js' {
+declare module '$lib/services/enhanced-rag-integration.js' {
   export const enhancedRAGService: unknown;
 }
-declare module: '$lib/*';
-declare module: '$lib/server/*';
-declare module: '$lib/server/db/*';
-declare module: '$lib/server/db';
-declare module: '$lib/server/db/schema-postgres';
-declare module: '$lib/server/db/schema-unified';
-declare module: '$lib/server/vector/qdrant';
-declare module: '$lib/services/semantic-search';
-declare module: '$lib/services/performance-optimizer';
-declare module: '$lib/services/security';
-declare module: '$lib/services/neo4j-planner-singleton';
+declare module '$lib/*';
+declare module '$lib/server/*';
+declare module '$lib/server/db/*';
+declare module '$lib/server/db';
+declare module '$lib/server/db/schema-postgres';
+declare module '$lib/server/db/schema-unified';
+declare module '$lib/server/vector/qdrant';
+declare module '$lib/services/semantic-search';
+declare module '$lib/services/performance-optimizer';
+declare module '$lib/services/security';
+declare module '$lib/services/neo4j-planner-singleton';

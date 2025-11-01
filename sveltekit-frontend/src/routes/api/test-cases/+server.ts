@@ -792,5 +792,5 @@ function getUserDisplayName(user: unknown): string {
     const fullName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
     return fullName || u.email || 'Unknown User';
   }
-  return: 'Unknown User';
+  return 'Unknown User';
 }

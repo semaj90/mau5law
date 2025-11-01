@@ -212,18 +212,18 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Apply demo-specific styling
     switch (demo) {
-      case: 'reranker':
+      case 'reranker':
         document.getElementById('evidence-card-1')?.classList.add('demo-highlight');
         break;
-      case: 'matrix':
+      case 'matrix':
         document.getElementById('analyze-btn-1')?.classList.add('ai-enhanced');
         break;
-      case: 'lod':
+      case 'lod':
         demoContainer?.querySelectorAll('*').forEach((el: Element) => {
           (el as HTMLElement).classList.add('lod-demo');
         });
         break;
-      case: 'prefetch':
+      case 'prefetch':
         // Show prefetch indicators
         break;
     }

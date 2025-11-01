@@ -291,7 +291,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 

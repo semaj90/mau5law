@@ -144,30 +144,30 @@ export class KeyboardNavigation {
   ): number {
     let newIndex = currentIndex;
     switch (key) {
-      case: 'ArrowRight':
+      case 'ArrowRight':
         if (orientation === 'horizontal') {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case: 'ArrowLeft':
+      case 'ArrowLeft':
         if (orientation === 'horizontal') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
         }
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         if (orientation === 'vertical') {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         if (orientation === 'vertical') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
         }
         break;
-      case: 'Home':
+      case 'Home':
         newIndex = 0;
         break;
-      case: 'End':
+      case 'End':
         newIndex = elements.length - 1;
         break;
     }
@@ -289,22 +289,22 @@ export class AriaUtils {
     const id = target.id || this.generateId();
     target.id = id;
     switch (relationship) {
-      case: 'describedby':
+      case 'describedby':
         {
           const describedBy = trigger.getAttribute('aria-describedby');
           trigger.setAttribute('aria-describedby', describedBy ? `${describedBy} ${id}` : id);
         }
         break;
-      case: 'labelledby':
+      case 'labelledby':
         {
           const labelledBy = trigger.getAttribute('aria-labelledby');
           trigger.setAttribute('aria-labelledby', labelledBy ? `${labelledBy} ${id}` : id);
         }
         break;
-      case: 'controls':
+      case 'controls':
         trigger.setAttribute('aria-controls', id);
         break;
-      case: 'owns':
+      case 'owns':
         {
           const owns = trigger.getAttribute('aria-owns');
           trigger.setAttribute('aria-owns', owns ? `${owns} ${id}` : id);

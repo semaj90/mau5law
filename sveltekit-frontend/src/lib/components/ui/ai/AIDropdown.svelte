@@ -43,7 +43,7 @@
 
 	function onTriggerKeydown(e: KeyboardEvent) {
 		switch (e.key) {
-			case: 'ArrowDown':
+			case 'ArrowDown':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -53,7 +53,7 @@
 					highlighted = highlighted === null ? 0 : Math.min(items.length - 1, highlighted + 1);
 				}
 				break;
-			case: 'ArrowUp':
+			case 'ArrowUp':
 				e.preventDefault();
 				if (!isOpen) {
 					isOpen = true;
@@ -63,8 +63,8 @@
 					highlighted = highlighted === null ? items.length - 1 : Math.max(0, highlighted - 1);
 				}
 				break;
-			case: 'Enter':
-			case: ' ':
+			case 'Enter':
+			case ' ':
 				e.preventDefault();
 				if (isOpen && highlighted !== null) {
 					selectItem(items[highlighted].id);
@@ -72,7 +72,7 @@
 					toggle();
 				}
 				break;
-			case: 'Escape':
+			case 'Escape':
 				e.preventDefault();
 				close();
 				break;

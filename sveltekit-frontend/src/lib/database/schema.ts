@@ -171,20 +171,20 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
 }));
 
 export const documentsRelations = relations(documents, ({ one, many }) => ({
-  case: one(cases),
+  case one(cases),
   creator: one(users),
   evidence: many(evidence),
 }));
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
-  case: one(cases),
+  case one(cases),
   document: one(documents),
   creator: one(users),
 }));
 
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users),
-  case: one(cases),
+  case one(cases),
 }));
 // Runtime guard: flag unintended server-side auth imports of legacy schema
 // Use a safer typed cast to avoid `any` lint errors

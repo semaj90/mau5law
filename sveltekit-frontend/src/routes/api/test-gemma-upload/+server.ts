@@ -71,7 +71,7 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
     return fullText || 'PDF text extraction requires additional PDF parsing library';
   } catch (error) {
     console.error('PDF extraction error:', error);
-    return: 'Error extracting PDF text';
+    return 'Error extracting PDF text';
   }
 }
 /**

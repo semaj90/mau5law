@@ -205,19 +205,19 @@ https://svelte.dev/e/js_parse_error -->
       // Handle command palette navigation
       if (open) {
         switch (event.key) {
-          case: "Escape":
+          case "Escape":
             event.preventDefault();
             open = false;
             break;
-          case: "ArrowDown":
+          case "ArrowDown":
             event.preventDefault();
             selectedIndex = Math.min(selectedIndex + 1, (filteredCommands?.length ?? 1) - 1);
             break;
-          case: "ArrowUp":
+          case "ArrowUp":
             event.preventDefault();
             selectedIndex = Math.max(selectedIndex - 1, 0);
             break;
-          case: "Enter":
+          case "Enter":
             event.preventDefault();
             executeCommand(filteredCommands[selectedIndex]);
             break;

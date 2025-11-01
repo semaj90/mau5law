@@ -72,11 +72,11 @@ function resolveDidYouMeanService(mod: unknown): DidYouMeanServiceType | null {
   // quick shape checks without using `any`
   if (!mod || typeof mod !== 'object') return null;
   const m = mod as Record<string, unknown>;
-  // case: module exports { didYouMeanService: {...} }
+  // case module exports { didYouMeanService: {...} }
   if (typeof m.didYouMeanService === 'object' && m.didYouMeanService !== null) {
     return m.didYouMeanService as DidYouMeanServiceType;
   }
-  // case: module itself is the service (has generateSuggestions function)
+  // case module itself is the service (has generateSuggestions function)
   if (typeof m.generateSuggestions === 'function') {
     return m as unknown as DidYouMeanServiceType;
   }

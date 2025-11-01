@@ -706,13 +706,13 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 	}
 
 	private inferMessageType(subject: string): MessageType {
-		if (subject.startsWith('legal.case')) return: 'case_management';
-		if (subject.startsWith('legal.document')) return: 'document_processing';
-		if (subject.startsWith('legal.ai')) return: 'ai_analysis';
-		if (subject.startsWith('legal.search')) return: 'search_operation';
-		if (subject.startsWith('legal.chat')) return: 'real_time_communication';
-		if (subject.startsWith('system')) return: 'system_monitoring';
-		return: 'unknown';
+		if (subject.startsWith('legal.case')) return 'case_management';
+		if (subject.startsWith('legal.document')) return 'document_processing';
+		if (subject.startsWith('legal.ai')) return 'ai_analysis';
+		if (subject.startsWith('legal.search')) return 'search_operation';
+		if (subject.startsWith('legal.chat')) return 'real_time_communication';
+		if (subject.startsWith('system')) return 'system_monitoring';
+		return 'unknown';
 	}
 
 	private encodeMessage(message: LegalAIMessage): Uint8Array {

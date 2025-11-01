@@ -98,10 +98,10 @@ export class SIMDJSONParser {
   private static extractStringField(json: string, fieldName: string): string {
     const startPattern = `"${fieldName}":"`;
     const startIndex = json.indexOf(startPattern);
-    if (startIndex === -1) return: '';
+    if (startIndex === -1) return '';
     const valueStart = startIndex + startPattern.length;
     const valueEnd = json.indexOf('"', valueStart);
-    if (valueEnd === -1) return: '';
+    if (valueEnd === -1) return '';
     return json.substring(valueStart, valueEnd);
   }
   // SIMD-optimized number field extraction

@@ -39,13 +39,13 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     // Simulate different processing flows based on routing key
     switch (routingKey) {
-      case: 'document':
+      case 'document':
         console.log('📄 Document queued for chunking:', message.document_id);
         break;
-      case: 'chunk':
+      case 'chunk':
         console.log('🧩 Chunk queued for embedding:', message.chunk_id);
         break;
-      case: 'embedding':
+      case 'embedding':
         console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id);
         break;
       default:

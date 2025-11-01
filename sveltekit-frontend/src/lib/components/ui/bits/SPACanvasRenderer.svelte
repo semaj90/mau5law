@@ -156,19 +156,19 @@ if (!canvas) return;
     const contentY = navigationHeight + 20;
     const contentHeight = canvasHeight - navigationHeight - 40;
     switch (currentView) {
-      case: 'dashboard':
+      case 'dashboard':
         renderDashboard(contentY, contentHeight);
         break;
-      case: 'evidence':
+      case 'evidence':
         renderEvidence(contentY, contentHeight);
         break;
-      case: 'documents':
+      case 'documents':
         renderDocuments(contentY, contentHeight);
         break;
-      case: 'chat':
+      case 'chat':
         renderChat(contentY, contentHeight);
         break;
-      case: 'cases':
+      case 'cases':
         renderCases(contentY, contentHeight);
         break;
     }

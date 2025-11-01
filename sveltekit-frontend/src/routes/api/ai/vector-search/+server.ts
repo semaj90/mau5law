@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Fallback to database-only search
     let results;
     switch (type) {
-      case: 'cases':
+      case 'cases':
         results = await db
           .select({
             id: caseEmbeddings.id,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
         break;
 
-      case: 'evidence':
+      case 'evidence':
         results = await db
           .select({
             id: evidenceVectors.id,

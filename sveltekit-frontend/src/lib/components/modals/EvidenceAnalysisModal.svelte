@@ -102,21 +102,20 @@ https: //svelte.dev/e/js_parse_error -->
 
   function getAdmissibilityColor(admissibility: string): string {
     switch (admissibility) {
-      case: 'admissible':
-        return: 'bg-green-100 text-green-800 border-green-300';
-      case: 'questionable':
-        return: 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case: 'inadmissible':
-        return: 'bg-red-100 text-red-800 border-red-300';
-      default:
-        return: 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'admissible':
+        return 'bg-green-100 text-green-800 border-green-300';
+      case 'questionable':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'inadmissible':
+        return 'bg-red-100 text-red-800 border-red-300';
+      default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getRelevanceColor(relevance: number): string {
-    if (relevance >= 8) return: 'text-green-600';
-    if (relevance >= 6) return: 'text-yellow-600';
-    if (relevance < 4) return: 'text-red-600';
-    return: 'text-gray-600';
+    if (relevance >= 8) return 'text-green-600';
+    if (relevance >= 6) return 'text-yellow-600';
+    if (relevance < 4) return 'text-red-600';
+    return 'text-gray-600';
   }
 </script>
 

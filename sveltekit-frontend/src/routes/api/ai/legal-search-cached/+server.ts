@@ -203,7 +203,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'stats';
   switch (action) {
-    case: 'stats': {
+    case 'stats': {
       // Wrap in block
       // Temporarily mock these as redisService does not expose them directly
       // Note: redisService needs to be updated to expose getStats() and getRedisInfo()
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'REALTIME'
       );
     } // End block
-    case: 'health': {
+    case 'health': {
       // Wrap in block
       // Temporarily mock as redisService does not expose isHealthy() directly
       // Note: redisService needs to be updated to expose isHealthy()
@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
       });
     } // End block
-    case: 'clear-cache': {
+    case 'clear-cache': {
       // Wrap in block
       try {
         const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
@@ -268,8 +268,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
     } // End block
-    default:
-      return json(
+    default: return json(
         {
           error: 'Invalid action',
           availableActions: ['stats', 'health', 'clear-cache'],

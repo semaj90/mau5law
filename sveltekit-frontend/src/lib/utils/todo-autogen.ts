@@ -213,16 +213,15 @@ class TodoAutogen {
    */
   private generateReviewInstructions(todo: TodoEntry): string {
     switch (todo.category) {
-      case: 'llm-misfire':
+      case 'llm-misfire':
         return `Analyze LLM failure patterns and suggest retry strategies, prompt optimization, or model switching. Focus on local Ollama GPU usage only.`;
-      case: 'typescript':
+      case 'typescript':
         return `Review TypeScript error and provide precise fix. Consider type safety, modern patterns, and SvelteKit 2 compatibility.`;
-      case: 'runtime':
+      case 'runtime':
         return `Investigate runtime exception, identify root cause, and suggest defensive programming patterns.`;
-      case: 'performance':
+      case 'performance':
         return `Analyze performance bottleneck and recommend optimizations using worker threads, WASM, or caching strategies.`;
-      default:
-        return `General review and resolution suggestions for this development issue.`;
+      default: return `General review and resolution suggestions for this development issue.`;
     }
   }
   /**

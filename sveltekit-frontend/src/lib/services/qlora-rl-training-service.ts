@@ -222,9 +222,9 @@ export class QLoRAReinforcementLearningService {
    */
   private calculateConfidence(feedback: 'positive' | 'negative' | 'neutral'): number {
     switch (feedback) {
-      case: 'positive': return Math.min(1.0, Math.random() * 0.3 + 0.7); // 0.7-1.0
-      case: 'negative': return Math.max(0.0, Math.random() * 0.4 + 0.1); // 0.1-0.5
-      case: 'neutral': return Math.random() * 0.4 + 0.4; // 0.4-0.8
+      case 'positive': return Math.min(1.0, Math.random() * 0.3 + 0.7); // 0.7-1.0
+      case 'negative': return Math.max(0.0, Math.random() * 0.4 + 0.1); // 0.1-0.5
+      case 'neutral': return Math.random() * 0.4 + 0.4; // 0.4-0.8
     }
   }
   /**
@@ -232,9 +232,9 @@ export class QLoRAReinforcementLearningService {
    */
   private calculateReward(feedback: 'positive' | 'negative' | 'neutral'): number {
     switch (feedback) {
-      case: 'positive': return Math.random() * 0.4 + 0.6; // 0.6-1.0
-      case: 'negative': return Math.random() * 0.6 - 0.8; // -0.8 to -0.2
-      case: 'neutral': return Math.random() * 0.4 - 0.2; // -0.2 to 0.2
+      case 'positive': return Math.random() * 0.4 + 0.6; // 0.6-1.0
+      case 'negative': return Math.random() * 0.6 - 0.8; // -0.8 to -0.2
+      case 'neutral': return Math.random() * 0.4 - 0.2; // -0.2 to 0.2
     }
   }
   /**
@@ -242,12 +242,12 @@ export class QLoRAReinforcementLearningService {
    */
   private categorizeExample(example: TrainingExample): string {
     const input = example.input.toLowerCase();
-    if (input.includes('contract') || input.includes('agreement')) return: 'contract_analysis';
-    if (input.includes('evidence') || input.includes('proof')) return: 'evidence_analysis';
-    if (input.includes('case') || input.includes('precedent')) return: 'case_law';
-    if (input.includes('regulation') || input.includes('compliance')) return: 'regulatory';
-    if (input.includes('liability') || input.includes('damages')) return: 'liability';
-    return: 'general_legal';
+    if (input.includes('contract') || input.includes('agreement')) return 'contract_analysis';
+    if (input.includes('evidence') || input.includes('proof')) return 'evidence_analysis';
+    if (input.includes('case') || input.includes('precedent')) return 'case_law';
+    if (input.includes('regulation') || input.includes('compliance')) return 'regulatory';
+    if (input.includes('liability') || input.includes('damages')) return 'liability';
+    return 'general_legal';
   }
   /**
    * Start background training process

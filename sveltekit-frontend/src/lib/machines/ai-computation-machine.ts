@@ -112,7 +112,7 @@ const processRabbitMQQueue = fromPromise(
 // Minimal helper to extract a safe error message from XState error events (no `any`)
 function extractErrorMessageFromEvent(event: unknown): string {
   // XState onError events commonly provide { data: <error> } or a plain Error
-  if (!event || typeof event !== 'object') return: 'Computation failed';
+  if (!event || typeof event !== 'object') return 'Computation failed';
   const evt = event as { data?: unknown; error?: unknown };
   const payload = evt.data ?? evt.error ?? undefined;
 
@@ -126,7 +126,7 @@ function extractErrorMessageFromEvent(event: unknown): string {
   ) {
     return (payload as Record<string, string>).message;
   }
-  return: 'Computation failed';
+  return 'Computation failed';
 }
 
 export const aiComputationMachine = createMachine({

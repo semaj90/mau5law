@@ -6,8 +6,8 @@
 -->
 <script lang="ts">
   // Using bits-ui + NES.css + UnoCSS; removed melt-ui & unused imports
-  import: 'nes.css/css/nes.min.css';
-  import: 'uno.css';
+  import 'nes.css/css/nes.min.css';
+  import 'uno.css';
   // removed invalid/unused lucide-svelte imports
   import { notifications } from '$lib/stores/unified';
   // Import our enhanced UI components

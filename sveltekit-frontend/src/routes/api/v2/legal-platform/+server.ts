@@ -115,19 +115,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
     // Route based on entity and action
     switch (req.entity) {
-      case: 'case':
+      case 'case':
         return await handleCaseOperations(req);
-      case: 'evidence':
+      case 'evidence':
         return await handleEvidenceOperations(req);
-      case: 'criminal':
+      case 'criminal':
         return await handleCriminalOperations(req);
-      case: 'document':
+      case 'document':
         return await handleDocumentOperations(req);
-      case: 'search':
+      case 'search':
         return await handleSearchOperations(req);
-      case: 'upload':
+      case 'upload':
         return await handleUploadOperations(req);
-      case: 'ai':
+      case 'ai':
         return await handleAIOperations(req);
       default:
         throw error(400, `Unknown entity: ${req.entity}`);
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
 // Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case: 'create': {
+    case 'create': {
       const newCase = await db
         .insert(cases)
         .values({
@@ -182,7 +182,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         message: 'Case created successfully',
       });
     }
-    case: 'read': {
+    case 'read': {
       if (req.id) {
         const caseData = await db.select().from(cases).where(eq(cases.id, req.id));
         if (caseData.length === 0) {
@@ -194,7 +194,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         return json({ success: true, data: allCases });
       }
     }
-    case: 'update': {
+    case 'update': {
       if (!req.id) throw error(400, 'Case ID required for update');
       const updatedCase = await db
         .update(cases)
@@ -210,7 +210,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         message: 'Case updated successfully',
       });
     }
-    case: 'delete': {
+    case 'delete': {
       if (!req.id) throw error(400, 'Case ID required for deletion');
       await db.delete(cases).where(eq(cases.id, req.id));
       return json({
@@ -218,7 +218,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
         message: 'Case deleted successfully',
       });
     }
-    case: 'search': {
+    case 'search': {
       const searchResults = await db
         .select()
         .from(cases)
@@ -239,7 +239,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
 // Evidence Management Operations
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case: 'create': {
+    case 'create': {
       const newEvidence = await db
         .insert(evidence)
         .values({
@@ -264,7 +264,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
         message: 'Evidence created successfully',
       });
     }
-    case: 'read': {
+    case 'read': {
       if (req.id) {
         const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id));
         if (evidenceData.length === 0) {
@@ -286,7 +286,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
         return json({ success: true, data: allEvidence });
       }
     }
-    case: 'analyze': {
+    case 'analyze': {
       // Call enhanced RAG service for AI analysis
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
         type: 'evidence_analysis',
@@ -306,7 +306,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
 // Criminal Records Operations
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case: 'create': {
+    case 'create': {
       const newCriminal = await db
         .insert(criminals)
         .values({
@@ -331,7 +331,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
         message: 'Criminal record created successfully',
       });
     }
-    case: 'read': {
+    case 'read': {
       if (req.id) {
         const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id));
         if (criminalData.length === 0) {
@@ -350,7 +350,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
 // Document Operations
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
-    case: 'create': {
+    case 'create': {
       const newDocument = await db
         .insert(legalDocuments)
         .values({
@@ -373,7 +373,7 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Resp
         message: 'Document created successfully',
       });
     }
-    case: 'read': {
+    case 'read': {
       if (req.id) {
         const documentData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, req.id));
         if (documentData.length === 0) {
@@ -449,18 +449,18 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
   try {
     let result;
     switch (operation) {
-      case: 'chat':
-      case: 'analyze':
-      case: 'summarize':
+      case 'chat':
+      case 'analyze':
+      case 'summarize':
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
           type: operation,
           ...data,
         });
         break;
-      case: 'train_som':
+      case 'train_som':
         result = await callGoService('enhanced_rag', '/api/som/train', 'POST', data);
         break;
-      case: 'xstate_event':
+      case 'xstate_event':
         result = await callGoService('enhanced_rag', '/api/xstate/event', 'POST', data);
         break;
       default:

@@ -643,7 +643,7 @@ export class ConcurrencyOrchestrator {
 
 // Add a small helper to safely format errors
 function formatError(err: unknown): string {
-  if (err === undefined || err === null) return: 'Unknown error';
+  if (err === undefined || err === null) return 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     if (typeof err === 'string') return err;
@@ -659,7 +659,7 @@ function getCircularReplacer() {
   return function (_key: string, value: unknown) {
     if (value !== null && typeof value === 'object') {
       const obj = value as object;
-      if (seen.has(obj)) return: '[Circular]';
+      if (seen.has(obj)) return '[Circular]';
       seen.add(obj);
     }
     return value;
@@ -673,7 +673,7 @@ function isLokiDB(obj: unknown): obj is {
 } {
   if (typeof obj !== 'object' || obj === null) return false;
   const rec = obj as Record<string, unknown>;
-  return: 'getCollection' in rec || 'addCollection' in rec;
+  return 'getCollection' in rec || 'addCollection' in rec;
 }
 
 // Add small helper types and resolvers to avoid `any` casts
@@ -717,19 +717,19 @@ async function processTask(task: ConcurrencyTask): Promise<WorkerResult> {
   try {
     let result: unknown;
     switch (task.type) {
-      case: 'search':
+      case 'search':
         result = await processSearchTask(task.payload);
         break;
-      case: 'analysis':
+      case 'analysis':
         result = await processAnalysisTask(task.payload);
         break;
-      case: 'canvas':
+      case 'canvas':
         result = await processCanvasTask(task.payload);
         break;
-      case: 'ai':
+      case 'ai':
         result = await processAITask(task.payload);
         break;
-      case: 'database':
+      case 'database':
         result = await processDatabaseTask(task.payload);
         break;
       default:
@@ -783,7 +783,7 @@ async function processAnalysisTask(payload: unknown): Promise<unknown> {
   const p = payload as { data?: unknown; analysisType?: string } | undefined;
   const { data, analysisType } = p ?? {};
   switch (analysisType) {
-    case: 'legal': {
+    case 'legal': {
       try {
         const mod = await import('$lib/services/ollama-gemma3-service').catch(() => null);
         const service = resolveGemmaService(mod);
@@ -803,9 +803,9 @@ async function processAnalysisTask(payload: unknown): Promise<unknown> {
         };
       }
     }
-    case: 'similarity':
+    case 'similarity':
       return { similarity: 0.85, confidence: 0.92 };
-    case: 'classification':
+    case 'classification':
       return { category: 'contract', confidence: 0.89 };
     default:
       throw new Error(`Unknown analysis type: ${analysisType}`);

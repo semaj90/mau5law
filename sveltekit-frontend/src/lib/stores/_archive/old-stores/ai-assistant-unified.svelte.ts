@@ -40,7 +40,7 @@ class AIAssistantUnified {
 
   setCurrentCase(caseId: string) {
     this.state.currentCaseId = caseId;
-    console.log(`AI Assistant set to case: ${caseId}`);
+    console.log(`AI Assistant set to case ${caseId}`);
   }
 
   async sendMessage(userId: string, content: string) {

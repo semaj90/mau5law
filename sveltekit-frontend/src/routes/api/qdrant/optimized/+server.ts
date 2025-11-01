@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       );
     }
     switch (action) {
-      case: 'health': {
+      case 'health': {
         const startTime = Date.now();
         const isHealthy = await qdrantOptimized.isHealthy();
         const memoryUsage = qdrantOptimized.getMemoryUsage();
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case: 'metrics': {
+      case 'metrics': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         const queryHistory = qdrantOptimized.getQueryHistory();
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      case: 'search': {
+      case 'search': {
         const collection = url.searchParams.get('collection') || 'legal_documents';
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           throw searchError;
         }
       }
-      case: 'cache_stats': {
+      case 'cache_stats': {
         const memoryUsage = qdrantOptimized.getMemoryUsage();
         const performanceMetrics = qdrantOptimized.getPerformanceMetrics();
         return json({
@@ -305,8 +305,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           },
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',
@@ -383,7 +382,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
     switch (action) {
-      case: 'batch_upsert': {
+      case 'batch_upsert': {
         // Admin only for batch operations
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -487,7 +486,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           throw upsertError;
         }
       }
-      case: 'clear_cache': {
+      case 'clear_cache': {
         // Admin only for cache management
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -522,7 +521,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           },
         });
       }
-      case: 'optimize_memory': {
+      case 'optimize_memory': {
         // Admin only for memory optimization
         if (!locals.user || locals.user.role !== 'admin') {
           return json(
@@ -565,8 +564,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           },
         });
       }
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid action',

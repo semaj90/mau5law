@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
   // const format = url.searchParams.get('format') || 'json' // Removed: 'format' is assigned a value but never used.
   try {
     switch (action) {
-      case: 'status':
+      case 'status':
         return json({
           success: true,
           database: {
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
           drizzle_orm: 'configured',
           timestamp: new Date().toISOString(),
         });
-      case: 'mock-data': {
+      case 'mock-data': {
         // Added block scope
         const mockData = initializeMockDataWithEmbeddings();
         return json({
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
           },
         });
       } // End block scope
-      case: 'api-examples':
+      case 'api-examples':
         return json({
           success: true,
           examples: mockApiResponses,
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async ({ url }) => {
             health_check: 'GET /api/test/mock-sync?action=status',
           },
         });
-      case: 'database-test':
+      case 'database-test':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
@@ -186,8 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
             { status: 500 }
           );
         }
-      default:
-        return json(
+      default: return json(
           {
             success: false, // Removed extra comma here
             error: `Unknown action: ${action}`,
@@ -216,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action /*, data */ } = await request.json(); // Removed: 'data' as it was unused
     switch (action) {
-      case: 'insert-mock-data':
+      case 'insert-mock-data':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
@@ -236,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
             '3. Use npm run db:studio to view data',
           ],
         });
-      case: 'test-vector-operations':
+      case 'test-vector-operations':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
@@ -274,8 +273,7 @@ export const POST: RequestHandler = async ({ request }) => {
             suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;',
           });
         }
-      default:
-        return json(
+      default: return json(
           {
             // Removed extra comma here
             success: false,

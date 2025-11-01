@@ -579,19 +579,19 @@ export class GGUFRuntimeService extends EventEmitter {
         const { type, id, data } = e.data;
         try {
           switch (type) {
-            case: 'LOAD_MODEL':
+            case 'LOAD_MODEL':
               inferenceEngine = new GGUFInferenceEngine(data.config);
               await inferenceEngine.loadModel(data.modelPath);
               self.postMessage({ type: 'MODEL_LOADED', id, success: true });
               break;
-            case: 'INFERENCE':
+            case 'INFERENCE':
               if (!inferenceEngine) {
                 throw new Error('Model not loaded');
               }
               const response = await inferenceEngine.inference(data.request); // Assign response
               self.postMessage({ type: 'INFERENCE_COMPLETE', id, data: response });
               break;
-            case: 'GET_STATUS':
+            case 'GET_STATUS':
               self.postMessage({
                 type: 'STATUS',
                 id,
@@ -603,7 +603,7 @@ export class GGUFRuntimeService extends EventEmitter {
                 }
               });
               break;
-            case: 'HEALTH_CHECK':
+            case 'HEALTH_CHECK':
               self.postMessage({
                 type: 'HEALTH_STATUS',
                 id,
@@ -614,7 +614,7 @@ export class GGUFRuntimeService extends EventEmitter {
                 }
               });
               break;
-            case: 'SHUTDOWN':
+            case 'SHUTDOWN':
               // Cleanup resources
               inferenceEngine = null;
               modelLoaded = false;
@@ -754,16 +754,16 @@ export class GGUFRuntimeService extends EventEmitter {
     if (!worker) return;
     worker.lastActivity = Date.now();
     switch (message.type) {
-      case: 'INFERENCE_COMPLETE':
+      case 'INFERENCE_COMPLETE':
         this.processInferenceComplete(worker, message.data as GGUFInferenceResponse);
         break;
-      case: 'INFERENCE_ERROR':
+      case 'INFERENCE_ERROR':
         this.processInferenceError(worker, message.error || 'Unknown error');
         break;
-      case: 'STATUS':
+      case 'STATUS':
         this.updateWorkerStats(worker, message.data);
         break;
-      case: 'HEALTH_STATUS':
+      case 'HEALTH_STATUS':
         this.updateWorkerHealth(worker, message.data);
         break;
     }

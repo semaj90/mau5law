@@ -383,10 +383,10 @@ https://svelte.dev/e/expected_token -->
       low: ['standard', 'typical', 'routine'];
     }
     const lowerText = text.toLowerCase();
-    if (riskTerms.critical.some(term => lowerText.includes(term))) return: 'critical';
-    if (riskTerms.high.some(term => lowerText.includes(term))) return: 'high';
-    if (riskTerms.medium.some(term => lowerText.includes(term))) return: 'medium';
-    return: 'low';
+    if (riskTerms.critical.some(term => lowerText.includes(term))) return 'critical';
+    if (riskTerms.high.some(term => lowerText.includes(term))) return 'high';
+    if (riskTerms.medium.some(term => lowerText.includes(term))) return 'medium';
+    return 'low';
   }
   function determinePracticeArea(text: string): string {
     const practiceAreas = {
@@ -403,7 +403,7 @@ https://svelte.dev/e/expected_token -->
         return arease;
       }
     }
-    return: 'General Legal';
+    return 'General Legal';
   }
   function extractKeyFindings(text: string): string[] {
     const sentences = text.split.filter(s => s.trim.length > 20);

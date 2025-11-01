@@ -499,7 +499,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       console.log(`🔢 Vector indexing: ${data.type} in ${data.collection}`);
       switch (data.type) {
-        case: 'index':
+        case 'index':
           if (data.content && data.id) {
             const embedding = await this.embeddings.embedQuery(data.content);
             // Store embedding in cache
@@ -518,8 +518,8 @@ export class RabbitMQManager extends EventEmitter {
             console.log(`✅ Indexed vector for ${data.id}`);
           }
           break;
-        case: 'similarity':
-        case: 'cache':
+        case 'similarity':
+        case 'cache':
           if (data.embedding && data.id && this.redisService?.set) {
             const cacheKey = `${data.type}:${data.collection}:${data.id}`;
             await this.redisService.set(
@@ -711,14 +711,13 @@ export class RabbitMQManager extends EventEmitter {
   }
   private getCachePatterns(type: string, id: string): string[] {
     switch (type) {
-      case: 'document':
+      case 'document':
         return [`document:${id}`, `documents:*`, `search:*document*`];
-      case: 'evidence':
+      case 'evidence':
         return [`evidence:${id}`, `evidence:*`, `search:*evidence*`];
-      case: 'case':
+      case 'case':
         return [`case:${id}`, `cases:*`, `timeline:${id}`];
-      default:
-        return [`${type}:${id}`];
+      default: return [`${type}:${id}`];
     }
   }
   private safeNack(msg: AmqpMessage): void {

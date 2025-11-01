@@ -9,7 +9,7 @@ import Redis, { type RedisOptions } from 'ioredis'; // Changed to type-only impo
 // import { EventEmitter } from 'events'; // No longer needed with module augmentation
 
 // Declare module augmentation for ioredis to include missing methods if types are incomplete
-declare module: 'ioredis' {
+declare module 'ioredis' {
   interface Redis {
     // Add: 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
     call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed any to unknown

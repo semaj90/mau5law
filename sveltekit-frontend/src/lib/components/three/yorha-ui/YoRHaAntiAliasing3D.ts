@@ -537,19 +537,19 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   private initializeAntiAliasing(): void {
     if (!this.aaConfig.enabled) return;
     switch (this.aaConfig.type) {
-      case: 'msaa':
+      case 'msaa':
         this.initializeMSAA();
         break;
-      case: 'fxaa':
+      case 'fxaa':
         this.initializeFXAA();
         break;
-      case: 'smaa':
+      case 'smaa':
         this.initializeSMAA();
         break;
-      case: 'taa':
+      case 'taa':
         this.initializeTAA();
         break;
-      case: 'auto':
+      case 'auto':
         this.initializeAutoAA();
         break;
     }
@@ -789,16 +789,16 @@ export const AntiAliasingUtils = {
   detectOptimalAAType(): AntiAliasingConfig['type'] {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-    if (!gl) return: 'none';
+    if (!gl) return 'none';
     const renderer = gl.getParameter(gl.RENDERER);
     const vendor = gl.getParameter(gl.VENDOR);
     // Simple heuristics based on GPU vendor/type
     if (renderer.includes('NVIDIA') && renderer.includes('RTX')) {
-      return: 'taa';
+      return 'taa';
     } else if (renderer.includes('AMD') || renderer.includes('Radeon')) {
-      return: 'msaa';
+      return 'msaa';
     } else {
-      return: 'fxaa';
+      return 'fxaa';
     }
   },
   getRecommendedSettings(targetFPS: number = 60): AntiAliasingConfig {

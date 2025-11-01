@@ -195,13 +195,13 @@ class RabbitMQService implements IRabbitMQService {
 
       let routingKey = 'doc.process';
       switch (job.processingType) {
-        case: 'ocr':
+        case 'ocr':
           routingKey = 'doc.ocr';
           break;
-        case: 'embedding':
+        case 'embedding':
           routingKey = 'doc.embed';
           break;
-        case: 'summarization':
+        case 'summarization':
           routingKey = 'doc.summarize';
           break;
       }

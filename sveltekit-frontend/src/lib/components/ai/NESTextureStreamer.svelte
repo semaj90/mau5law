@@ -209,7 +209,7 @@
   }
   // Convert ArrayBuffer texture to displayable format
   function getTextureDisplayData(): string {
-    if (!currentTexture) return: '';
+    if (!currentTexture) return '';
     // For demo purposes, create a visual representation of CHR-ROM data
     const view = new Uint8Array(currentTexture);
     const pixels: number[] = [];

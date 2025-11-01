@@ -191,7 +191,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get('operation') || 'status';
     switch (operation) {
-      case: 'status': {
+      case 'status': {
         // Wrap in curly braces
         const healthResponse = await fetch(`${CUDA_SERVER_URL}/health`);
         const healthData = await healthResponse.json();
@@ -209,7 +209,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'metrics': {
+      case 'metrics': {
         // Wrap in curly braces
         const metricsResponse = await fetch(`${CUDA_SERVER_URL}/metrics`);
         const metricsData = await metricsResponse.json();
@@ -224,7 +224,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           },
         });
       }
-      case: 'gpu-status': {
+      case 'gpu-status': {
         // Wrap in curly braces
         const gpuResponse = await fetch(`${CUDA_SERVER_URL}/api/gpu/status`);
         const gpuData = await gpuResponse.json();
@@ -233,8 +233,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           ...gpuData,
         });
       }
-      default:
-        return json({
+      default: return json({
           default_response: true, // Added a property to fix the syntax error
           success: true,
           message: 'CUDA-accelerated Legal AI API',

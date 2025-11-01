@@ -7,17 +7,16 @@ export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json().catch(() => ({}));
   const action = (body.action || body.type || '').toString();
   switch (action) {
-    case: 'reduceLOD':
+    case 'reduceLOD':
       await optimizer.reduceLODPublic();
       return new Response(JSON.stringify({ ok: true, status: 'reduced' }), { status: 200 });
-    case: 'increaseLOD':
+    case 'increaseLOD':
       await optimizer.increaseLODPublic();
       return new Response(JSON.stringify({ ok: true, status: 'increased' }), { status: 200 });
-    case: 'adjustLimits':
+    case 'adjustLimits':
       await optimizer.adjustObjectLimitsPublic();
       return new Response(JSON.stringify({ ok: true, status: 'adjusted' }), { status: 200 });
-    default:
-      return new Response(JSON.stringify({ ok: true, status: 'noop', data: optimizer.getStatus() }), { status: 200 });
+    default: return new Response(JSON.stringify({ ok: true, status: 'noop', data: optimizer.getStatus() }), { status: 200 });
   }
 };
 

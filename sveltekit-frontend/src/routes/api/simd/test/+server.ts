@@ -35,16 +35,15 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     },
   };
   switch (size) {
-    case: 'small':
+    case 'small':
       return { ...baseObj, data: 'x'.repeat(100) }; // ~200 bytes
-    case: 'medium':
+    case 'medium':
       return { ...baseObj, data: 'x'.repeat(5000) }; // ~5KB
-    case: 'large':
+    case 'large':
       return { ...baseObj, data: 'x'.repeat(50000), chunks: Array(100).fill(baseObj) }; // ~50KB
-    case: 'xlarge':
+    case 'xlarge':
       return { ...baseObj, data: 'x'.repeat(500000), chunks: Array(1000).fill(baseObj) }; // ~500KB
-    default:
-      return baseObj;
+    default: return baseObj;
   }
 }
 
@@ -123,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     switch (test_type) {
-      case: 'simd_health': {
+      case 'simd_health': {
         try {
           // use typed client
           const health = await simdClient.healthCheck?.();
@@ -142,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      case: 'json_parsing_benchmark': {
+      case 'json_parsing_benchmark': {
         const testSizes = ['small', 'medium', 'large'] as const;
         const benchmarkResults: Record<string, BenchmarkResults> = {};
         for (const size of testSizes) {
@@ -161,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      case: 'cache_performance': {
+      case 'cache_performance': {
         const cacheService = fallbackCacheService;
         const testData = generateTestData('large');
         const cacheKey = `test:${Date.now()}`;
@@ -197,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      case: 'redis_json_operations': {
+      case 'redis_json_operations': {
         const testData = generateTestData('medium');
         // typed operations array
         const operations: RedisOperationResult[] = [];
@@ -234,8 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      default:
-        return json(
+      default: return json(
           {
             error:
               'Invalid test_type. Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations',

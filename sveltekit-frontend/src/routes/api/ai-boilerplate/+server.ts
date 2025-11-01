@@ -303,7 +303,7 @@ function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
   return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
 }
 function buildContextPrompt(context?: BoilerplateRequestContext): string {
-  if (!context) return: '';
+  if (!context) return '';
   let contextPrompt = 'Context for this document:\n';
   if (context.defendant_name) {
     contextPrompt += `- Defendant: ${context.defendant_name}\n`;
@@ -324,22 +324,20 @@ function buildContextPrompt(context?: BoilerplateRequestContext): string {
 }
 function getLengthGuidance(length?: string): string {
   switch (length) {
-    case: 'brief':
-      return: '1-2 paragraphs (100-200 words)';
-    case: 'detailed':
-      return: '4-6 paragraphs (400-600 words)';
-    default:
-      return: '2-4 paragraphs (200-400 words)';
+    case 'brief':
+      return '1-2 paragraphs (100-200 words)';
+    case 'detailed':
+      return '4-6 paragraphs (400-600 words)';
+    default: return '2-4 paragraphs (200-400 words)';
   }
 }
 function getLengthTokens(length?: string): number {
   switch (length) {
-    case: 'brief':
+    case 'brief':
       return 300;
-    case: 'detailed':
+    case 'detailed':
       return 800;
-    default:
-      return 500;
+    default: return 500;
   }
 }
 function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighPerformingPhrase[]) {
@@ -348,7 +346,7 @@ function generateFallbackBoilerplate(type: BoilerplateType, sourcePhrases: HighP
       .slice(0, 3)
       .map((p: HighPerformingPhrase) => p.phrase)
       .join(', ')}, which clearly establishes the defendant's culpability.`,
-    'evidence_summary': `The following evidence strongly supports the prosecution's case: ${sourcePhrases
+    'evidence_summary': `The following evidence strongly supports the prosecution's case ${sourcePhrases
       .slice(0, 5)
       .map((p: HighPerformingPhrase) => p.phrase)
       .join(

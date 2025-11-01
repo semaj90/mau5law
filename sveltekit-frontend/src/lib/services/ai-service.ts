@@ -306,11 +306,11 @@ class EnhancedAIService {
     if (this.config.preferLocal && this.config.legalDomain && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalBERT = models.some((m) => m.architecture === "legal-bert" && m.type === "embedding");
-      if (hasLegalBERT) return: "tauri-legal-bert";
+      if (hasLegalBERT) return "tauri-legal-bert";
       const hasBERT = models.some((m) => m.architecture === "bert" && m.type === "embedding");
-      if (hasBERT) return: "tauri-bert";
+      if (hasBERT) return "tauri-bert";
     }
-    return: "openai";
+    return "openai";
   }
 
    // Provider selection for LLM
@@ -319,10 +319,10 @@ class EnhancedAIService {
     if (this.config.preferLocal && options.legalContext && typeof tauri.isAvailable === "function" && tauri.isAvailable()) {
       const models = typeof tauri.getAvailableModels === "function" ? tauri.getAvailableModels() : [];
       const hasLegalLLM = models.some((m) => m.type === "chat" && m.domain === "legal");
-      if (hasLegalLLM) return: "tauri-local";
+      if (hasLegalLLM) return "tauri-local";
     }
-    if (env.OLLAMA_URL) return: "ollama";
-    return: "openai";
+    if (env.OLLAMA_URL) return "ollama";
+    return "openai";
   }
 
   // Build system prompt

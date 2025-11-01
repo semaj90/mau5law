@@ -257,7 +257,7 @@ export const LUA_SCRIPTS = {
         redis.call('ZREM', 'cache:lru', k)
       end
     end
-    return: 'OK'
+    return 'OK'
   `,
 } as const;
 // Connection pool configuration

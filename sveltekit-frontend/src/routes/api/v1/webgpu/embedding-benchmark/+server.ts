@@ -103,20 +103,19 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log(`🧪 Legal Embedding Benchmark: ${mode} - Client: ${clientAddr}`);
     let result: BenchmarkResult;
     switch (mode) {
-      case: 'single':
+      case 'single':
         result = await runSingleDocumentBenchmark(config);
         break;
-      case: 'batch':
+      case 'batch':
         result = await runBatchProcessingBenchmark(config);
         break;
-      case: 'stress':
+      case 'stress':
         result = await runStressTestBenchmark(config);
         break;
-      case: 'comparison':
+      case 'comparison':
         result = await runComparisonBenchmark(config);
         break;
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Invalid benchmark mode',
@@ -378,14 +377,13 @@ function getAllSampleDocuments() {
   const allDocs: Array<{ text: string; type: DocumentType }> = [];
   function mapCategoryToType(category: string): DocumentType {
     switch (category) {
-      case: 'contracts':
-        return: 'contract';
-      case: 'cases':
-        return: 'case';
-      case: 'statutes':
-        return: 'statute';
-      default:
-        return: 'brief';
+      case 'contracts':
+        return 'contract';
+      case 'cases':
+        return 'case';
+      case 'statutes':
+        return 'statute';
+      default: return 'brief';
     }
   }
   for (const [category, docs] of Object.entries(SAMPLE_LEGAL_DOCUMENTS)) {

@@ -217,9 +217,9 @@
   }
   // Get confidence badge class
   function getConfidenceBadgeClass(score: number): string {
-    if (score >= 0.9) return: 'vector-confidence-high';
-    if (score >= 0.7) return: 'vector-confidence-medium';
-    return: 'vector-confidence-low';
+    if (score >= 0.9) return 'vector-confidence-high';
+    if (score >= 0.7) return 'vector-confidence-medium';
+    return 'vector-confidence-low';
   }
   // Format confidence percentage
   function formatConfidence(score: number): string {

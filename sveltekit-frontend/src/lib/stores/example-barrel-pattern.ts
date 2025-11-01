@@ -5,7 +5,7 @@
  * Benefits:
  * - Type-safe centralized state management
  * - Auto-completion in IDEs
- * - Easy to import: import { counterStore, todoStore } from '$lib/stores'
+ * - Easy to import import { counterStore, todoStore } from '$lib/stores'
  * - Performance optimized with fine-grained reactivity
  */
 
@@ -52,12 +52,11 @@ export const todoStore = (() => {
   // Derived computed values
   let filteredTodos = $derived(() => {
     switch (filter) {
-      case: 'active':
+      case 'active':
         return todos.filter(t => !t.completed);
-      case: 'completed':
+      case 'completed':
         return todos.filter(t => t.completed);
-      default:
-        return todos;
+      default: return todos;
     }
   });
 

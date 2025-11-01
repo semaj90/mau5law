@@ -581,6 +581,6 @@ function getOllamaEndpoint(): string {
     return dockerDefault || localhostFallback;
   } catch {
     // In case of any unexpected error, return conservative localhost fallback
-    return: 'http://localhost:11434';
+    return 'http://localhost:11434';
   }
 }

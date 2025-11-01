@@ -128,21 +128,21 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Era-specific adjustments
     switch (era) {
-      case: '8bit':
+      case '8bit':
         root.style.setProperty('--gaming-current-era', '"8bit"');
         root.style.setProperty('--gaming-pixel-rendering', 'pixelated');
         root.style.setProperty('--gaming-font-smoothing', 'none');
         root.style.setProperty('--gaming-border-radius', '0px');
         root.style.setProperty('--gaming-transition-speed', 'var(--gaming-transition-instant)');
         break;
-      case: '16bit':
+      case '16bit':
         root.style.setProperty('--gaming-current-era', '"16bit"');
         root.style.setProperty('--gaming-pixel-rendering', 'auto');
         root.style.setProperty('--gaming-font-smoothing', 'antialiased');
         root.style.setProperty('--gaming-border-radius', '2px');
         root.style.setProperty('--gaming-transition-speed', 'var(--gaming-transition-fast)');
         break;
-      case: 'n64':
+      case 'n64':
         root.style.setProperty('--gaming-current-era', '"n64"');
         root.style.setProperty('--gaming-pixel-rendering', 'auto');
         root.style.setProperty('--gaming-font-smoothing', 'antialiased');

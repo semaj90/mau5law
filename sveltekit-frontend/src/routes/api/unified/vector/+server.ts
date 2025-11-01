@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case: 'status': {
+      case 'status': {
         const health = await unifiedVectorOrchestrator.healthCheck();
         return json({
           success: true,
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      case: 'stats': {
+      case 'stats': {
         const stats = await unifiedVectorOrchestrator.getStatistics();
         return json({
           success: true,
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      case: 'performance': {
+      case 'performance': {
         const performance = unifiedVectorOrchestrator.getPerformanceAnalytics();
         return json({
           success: true,
@@ -103,8 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      default:
-        return json(
+      default: return json(
           {
             success: false,
             error: 'Unknown action',

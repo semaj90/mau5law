@@ -319,7 +319,7 @@ export const usersRelations = relations(users, ({ many }: Relations) => ({
   aiHistory: many(aiHistory),
 }));
 export const documentsRelations = relations(documents, ({ one, many }: Relations) => ({
-  case: one(cases, {
+  case one(cases, {
     fields: [documents.case_id],
     references: [cases.id],
   }),
@@ -339,7 +339,7 @@ export const casesRelations = relations(cases, ({ one, many }: Relations) => ({
   citations: many(citations),
 }));
 export const evidenceRelations = relations(evidence, ({ one, many }: Relations) => ({
-  case: one(cases, {
+  case one(cases, {
     fields: [evidence.case_id],
     references: [cases.id],
   }),
@@ -360,7 +360,7 @@ export const documentChunksRelations = relations(document_chunks, ({ one }: Rela
   }),
 }));
 export const citationsRelations = relations(citations, ({ one }: Relations) => ({
-  case: one(cases, {
+  case one(cases, {
     fields: [citations.case_id],
     references: [cases.id],
   }),

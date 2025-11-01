@@ -163,11 +163,11 @@
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
-          case: "s":
+          case "s":
             e.preventDefault();
             saveContent(editor); // editor is guaranteed to be non-null here
             break;
-          case: "z":
+          case "z":
             if (e.shiftKey) {
               editor.commands.redo();
             } else {
@@ -335,13 +335,13 @@
   //   const handleKeyDown = (e: KeyboardEvent) => { // Corrected effect syntax
   //     if (e.ctrlKey || e.metaKey) {
   //       switch (e.key) {
-  //         case: "s":
+  //         case "s":
   //           e.preventDefault();
   //           if (editor) { // Ensure editor is initialized before saving
   //             saveContent(editor);
   //           }
   //           break;
-  //         case: "z":
+  //         case "z":
   //           if (e.shiftKey) {
   //             editor?.commands.redo();
   //           } else {

@@ -162,16 +162,16 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
   }
   // Apply sorting
   switch (sortBy) {
-    case: 'similarity':
+    case 'similarity':
       mockMatches.sort((a, b) => b.similarityScore - a.similarityScore);
       break;
-    case: 'date':
+    case 'date':
       mockMatches.sort((a, b) => new Date(b.dateDecided).getTime() - new Date(a.dateDecided).getTime());
       break;
-    case: 'citations':
+    case 'citations':
       mockMatches.sort((a, b) => b.citationCount - a.citationCount);
       break;
-    case: 'authority':
+    case 'authority':
       mockMatches.sort(
         (a, b) =>
           (b.precedentialValue === 'BINDING' ? 1 : 0) - (a.precedentialValue === 'BINDING' ? 1 : 0) ||

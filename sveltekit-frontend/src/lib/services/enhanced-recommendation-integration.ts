@@ -29,7 +29,7 @@ export interface QLoRATopologyPredictorOptions {
 }
 
 // Augment the types to include missing methods and destroy
-declare module: '$lib/graph/sora-graph-traversal' {
+declare module '$lib/graph/sora-graph-traversal' {
   export interface SoraGraphTraversal {
     findDocumentRelationships(
       documents: Document[],
@@ -39,7 +39,7 @@ declare module: '$lib/graph/sora-graph-traversal' {
   }
 }
 
-declare module: '$lib/ai/qlora-topology-predictor' {
+declare module '$lib/ai/qlora-topology-predictor' {
   export interface QLoRATopologyPredictor {
     // Remove the constructor declaration from the interface, as interfaces cannot have constructors.
     // new (options: QLoRATopologyPredictorOptions): QLoRATopologyPredictor;
@@ -53,7 +53,7 @@ declare module: '$lib/ai/qlora-topology-predictor' {
   }
 }
 
-declare module: '$lib/wasm/qlora-wasm-loader' {
+declare module '$lib/wasm/qlora-wasm-loader' {
   export interface QLoRAWasmLoader {
     load(config: { modelPath: string; enableSIMDOptimization: boolean; enableGPUOffloading: boolean }): Promise<void>;
     enhanceRecommendations(
@@ -330,16 +330,16 @@ export class EnhancedRecommendationIntegration {
     }
     // Handle non-request messages
     switch (type) {
-      case: 'RECOMMENDATIONS_COMPLETE':
+      case 'RECOMMENDATIONS_COMPLETE':
         this.handleRecommendationsComplete(data as RecommendationsCompleteEventData);
         break;
-      case: 'FEEDBACK_TRAINING_COMPLETE':
+      case 'FEEDBACK_TRAINING_COMPLETE':
         this.handleFeedbackTrainingComplete(data);
         break;
-      case: 'CONTEXT_UPDATE_COMPLETE':
+      case 'CONTEXT_UPDATE_COMPLETE':
         this.handleContextUpdateComplete(data);
         break;
-      case: 'ASSET_PREDICTION_COMPLETE':
+      case 'ASSET_PREDICTION_COMPLETE':
         this.handleAssetPredictionComplete(data as AssetPredictionCompleteEventData);
         break;
       default:

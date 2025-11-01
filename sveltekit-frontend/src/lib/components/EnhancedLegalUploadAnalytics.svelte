@@ -415,7 +415,7 @@
   }
 
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 Bytes';
+    if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -433,10 +433,10 @@
 
   function getPriorityColor(urgency?: string) {
     switch (urgency) {
-      case: 'critical': return: 'text-red-500';
-      case: 'high': return: 'text-orange-500';
-      case: 'medium': return: 'text-yellow-500';
-      default: return: 'text-blue-500';
+      case 'critical': return 'text-red-500';
+      case 'high': return 'text-orange-500';
+      case 'medium': return 'text-yellow-500';
+      default: return 'text-blue-500';
     }
   }
 </script>
@@ -456,7 +456,7 @@
           </CardTitle>
           <CardDescription class="nes-container">
             {#if caseId}
-              Case: <span class="font-mono text-blue-400">{caseId}</span>
+              case <span class="font-mono text-blue-400">{caseId}</span>
             {/if}
             {#if legalContext.practiceArea}
               • {legalContext.practiceArea}

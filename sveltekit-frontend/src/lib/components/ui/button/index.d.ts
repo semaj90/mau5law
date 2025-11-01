@@ -21,7 +21,7 @@ export default class Button extends SvelteComponentTyped<ButtonProps> {}
  * Also provide module declaration so direct imports of the .svelte file are typed:
  * import SimpleButton from './SimpleButton.svelte';
  */
-declare module: './SimpleButton.svelte' {
+declare module './SimpleButton.svelte' {
   import type { SvelteComponentTyped } from 'svelte';
   export interface SimpleButtonProps {
     type?: ButtonType;

@@ -236,26 +236,26 @@
   // Search handlers
   function handleSearch(entity: string) {
     switch (entity) {
-      case: 'cases':
+      case 'cases':
         fetchCases();
         break;
-      case: 'evidence':
+      case 'evidence':
         fetchEvidence();
         break;
-      case: 'reports':
+      case 'reports':
         fetchReports();
         break;
-      case: 'criminals':
+      case 'criminals':
         fetchCriminals();
         break;
-      case: 'activities':
+      case 'activities':
         fetchActivities();
         break;
     }
   }
   // Format date helper
   function formatDate(dateString: string) {
-    if (!dateString) return: 'N/A';
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString();
   }
   // Initialize

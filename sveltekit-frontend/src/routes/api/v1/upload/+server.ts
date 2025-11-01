@@ -152,17 +152,16 @@ export const GET: RequestHandler = async ({ url }) => {
   const documentId = url.searchParams.get('id');
   try {
     switch (action) {
-      case: 'health':
+      case 'health':
         return await handleHealthCheck();
-      case: 'status':
+      case 'status':
         if (!documentId) {
           return error(400, ensureError({ message: 'Document ID required for status check' }));
         }
         return await handleStatusCheck(documentId);
-      case: 'config':
+      case 'config':
         return await handleConfigInfo();
-      default:
-        return json({
+      default: return json({
           service: 'Enhanced Upload API',
           version: '2.0.0',
           endpoints: {

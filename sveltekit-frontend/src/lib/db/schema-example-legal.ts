@@ -30,7 +30,7 @@ import { vector } from 'drizzle-orm/pg-core';
 // ==================================================
 
 export interface LegalMetadata {
-  case: {
+  case {
     id: string;
     caseNumber: string;
     jurisdiction: string;

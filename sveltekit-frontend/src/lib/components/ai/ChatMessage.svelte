@@ -12,7 +12,7 @@
   import { chatActions } from '$lib/stores/chat'; // adjusted store path
   import { notifications } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
-  import: '../chat/chat-message.css';
+  import '../chat/chat-message.css';
 
   // reactive derived values - correct Svelte 5 usage
   let isUser = $derived.by(() => message?.role === 'user' || message?.type === 'user');
@@ -51,20 +51,20 @@
 
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
-      case: 'encouraging': return: 'text-green-600';
-      case: 'supportive': return: 'text-blue-600';
-      case: 'enthusiastic': return: 'text-purple-600';
-      case: 'thoughtful': return: 'text-indigo-600';
-      case: 'professional': return: 'text-gray-600';
-      default: return: 'text-gray-500';
+      case 'encouraging': return 'text-green-600';
+      case 'supportive': return 'text-blue-600';
+      case 'enthusiastic': return 'text-purple-600';
+      case 'thoughtful': return 'text-indigo-600';
+      case 'professional': return 'text-gray-600';
+      default: return 'text-gray-500';
     }
   }
 
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
-      case: 'encouraging': return ThumbsUp;
-      case: 'supportive': return Heart;
-      case: 'enthusiastic': return Star;
+      case 'encouraging': return ThumbsUp;
+      case 'supportive': return Heart;
+      case 'enthusiastic': return Star;
       default: return null;
     }
   }

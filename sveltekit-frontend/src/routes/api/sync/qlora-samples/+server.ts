@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case: 'samples': {
+      case 'samples': {
         const mockStates = mockDataGenerators.generateMockQLoRAStates(count);
         const types = mockStates.length ? [...new Set(mockStates.map(s => s.documentType))] : [];
         const avgComplexity =
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case: 'predictions': {
+      case 'predictions': {
         const predictions: Array<any> = [];
         const sampleDocs = await mockDataGenerators.generateMockLegalDocuments(count);
         for (const doc of sampleDocs.slice(0, Math.min(5, sampleDocs.length))) {
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case: 'hmm_som_predictions': {
+      case 'hmm_som_predictions': {
         const hmmPredictions = mockDataGenerators.generateMockAssetPredictions(count);
         const countPreds = hmmPredictions.length;
         const aggregateStats = countPreds
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case: 'training_history': {
+      case 'training_history': {
         const trainingJobs = Array.from({ length: count }, (_, i) => ({
           id: `job_${Date.now()}_${i}`,
           documentId: `doc_${i}`,
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case: 'performance_metrics': {
+      case 'performance_metrics': {
         const mockAccuracies = Array.from({ length: 50 }, () => 0.8 + Math.random() * 0.15);
         const mockTrainingTimes = Array.from({ length: 50 }, () => 1000 + Math.random() * 5000);
         const metrics = {
@@ -257,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action, params = {} } = body;
 
     switch (action) {
-      case: 'train_sample': {
+      case 'train_sample': {
         // Avoid unused variable by not destructuring unused feedback
         const { documentId, config } = params as {
           documentId?: string;
@@ -285,7 +285,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
 
-      case: 'update_prediction': {
+      case 'update_prediction': {
         const { predictionId, feedback, actualOutcome } = params as any;
         if (!predictionId) {
           return json({ error: 'predictionId required' }, { status: 400 });
@@ -308,7 +308,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
 
-      case: 'batch_train': {
+      case 'batch_train': {
         const {
           documents,
           baseConfig,

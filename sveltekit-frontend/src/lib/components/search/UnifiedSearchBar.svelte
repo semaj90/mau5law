@@ -307,15 +307,15 @@ await initializeSearchServices();
   function handleKeydown(_event: KeyboardEvent) {
     if (!showDropdown || searchResults.length === 0) return;
     switch (event.key) {
-      case: 'ArrowDown':
+      case 'ArrowDown':
         event.preventDefault();
         selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
         break;
-      case: 'ArrowUp':
+      case 'ArrowUp':
         event.preventDefault();
         selectedIndex = Math.max(selectedIndex - 1, -1);
         break;
-      case: 'Enter':
+      case 'Enter':
         event.preventDefault();
         if (selectedIndex >= 0) {
           handleResultClick(searchResults[selectedIndex]);
@@ -323,7 +323,7 @@ await initializeSearchServices();
           handleResultClick(searchResults[0]);
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         showDropdown = false;
         selectedIndex = -1;
         searchInput.blur();
@@ -341,20 +341,20 @@ await initializeSearchServices();
   // Source icon mapping
   function getSourceIcon(source: string): string {
     switch (source) {
-      case: 'postgresql': return: '🗃️';
-      case: 'qdrant': return: '🧠';
-      case: 'minio': return: '🗄️';
-      case: 'loki': return: '📊';
-      default: return: '📄';
+      case 'postgresql': return '🗃️';
+      case 'qdrant': return '🧠';
+      case 'minio': return '🗄️';
+      case 'loki': return '📊';
+      default: return '📄';
     }
   }
   function getSourceLabel(source: string): string {
     switch (source) {
-      case: 'postgresql': return: 'Database';
-      case: 'qdrant': return: 'Vector';
-      case: 'minio': return: 'Files';
-      case: 'loki': return: 'Logs';
-      default: return: 'Unknown';
+      case 'postgresql': return 'Database';
+      case 'qdrant': return 'Vector';
+      case 'minio': return 'Files';
+      case 'loki': return 'Logs';
+      default: return 'Unknown';
     }
   }
 </script>

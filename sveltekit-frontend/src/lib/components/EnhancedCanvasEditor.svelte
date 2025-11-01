@@ -212,29 +212,29 @@
     if (!canvas) return;
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case: "z":
+        case "z":
           e.preventDefault();
           if (e.shiftKey) redo();
           else undo();
           break;
-        case: "s":
+        case "s":
           e.preventDefault();
           saveCanvas();
           break;
-        case: "c":
+        case "c":
           e.preventDefault();
           copySelected();
           break;
-        case: "v":
+        case "v":
           e.preventDefault();
           pasteClipboard();
           break;
-        case: "a":
+        case "a":
           e.preventDefault();
           selectAll();
           break;
-        case: "Delete":
-        case: "Backspace":
+        case "Delete":
+        case "Backspace":
           e.preventDefault();
           deleteSelected();
           break;
@@ -247,11 +247,11 @@
     if (!canvas) return;
     const pointer = canvas.getPointer(event.e || event);
     switch (state.tool) {
-      case: "rect": createRectangle(pointer); break;
-      case: "circle": createCircle(pointer); break;
-      case: "text": createText(pointer); break;
-      case: "line": createLine(pointer); break;
-      case: "arrow": createArrow(pointer); break;
+      case "rect": createRectangle(pointer); break;
+      case "circle": createCircle(pointer); break;
+      case "text": createText(pointer); break;
+      case "line": createLine(pointer); break;
+      case "arrow": createArrow(pointer); break;
     }
   }
 
@@ -562,8 +562,8 @@
     canvas.isDrawingMode = false;
     canvas.selection = toolId === "select";
     switch (toolId) {
-      case: "pan": canvas.defaultCursor = "grab"; break;
-      case: "text": canvas.defaultCursor = "text"; break;
+      case "pan": canvas.defaultCursor = "grab"; break;
+      case "text": canvas.defaultCursor = "text"; break;
       default: canvas.defaultCursor = "default";
     }
   }
@@ -664,15 +664,15 @@
     let dataUrl = "";
     let filename = "";
     switch (format) {
-      case: "png":
+      case "png":
         dataUrl = canvas.toDataURL ? canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }) : "";
         filename = `canvas-${caseId}.png`;
         break;
-      case: "svg":
+      case "svg":
         dataUrl = `data:image/svg+xml;base64,${btoa(canvas.toSVG ? canvas.toSVG() : "")}`;
         filename = `canvas-${caseId}.svg`;
         break;
-      case: "json":
+      case "json":
         const jsonData = canvas.toJSON ? canvas.toJSON() : {};
         dataUrl = `data:application/json;base64,${btoa(JSON.stringify(jsonData, null, 2))}`;
         filename = `canvas-${caseId}.json`;

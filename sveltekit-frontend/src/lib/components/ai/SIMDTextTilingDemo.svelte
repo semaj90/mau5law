@@ -232,18 +232,18 @@ https://svelte.dev/e/expected_token -->
     processingLogs = [`[${timestamp}] ${message}`, ...processingLogs.slice(0, 19)]; // Keep last 20 logs
   }
   function getCompressionColor(ratio) {
-    if (ratio > 100) return: 'text-purple-600 font-bold';
-    if (ratio > 50) return: 'text-green-600 font-bold';
-    if (ratio > 25) return: 'text-blue-600 font-semibold';
-    if (ratio > 10) return: 'text-orange-600';
-    return: 'text-red-600';
+    if (ratio > 100) return 'text-purple-600 font-bold';
+    if (ratio > 50) return 'text-green-600 font-bold';
+    if (ratio > 25) return 'text-blue-600 font-semibold';
+    if (ratio > 10) return 'text-orange-600';
+    return 'text-red-600';
   }
   function getQualityTierColor(tier) {
     switch (tier) {
-      case: 'nes': return: 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case: 'snes': return: 'bg-blue-100 text-blue-800 border-blue-300';
-      case: 'n64': return: 'bg-purple-100 text-purple-800 border-purple-300';
-      default: return: 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'nes': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case 'snes': return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'n64': return 'bg-purple-100 text-purple-800 border-purple-300';
+      default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function clearAll() {

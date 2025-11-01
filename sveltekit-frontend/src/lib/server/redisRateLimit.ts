@@ -109,17 +109,16 @@ export function createRateLimitConfig(
   policy: RateLimitPolicy = 'api';
 ): Pick<RedisRateLimitOptions, 'limit' | 'windowSec'> {
   switch (policy) {
-    case: 'admin':
+    case 'admin':
       return { limit: 600, windowSec: 60 }
-    case: 'auth':
+    case 'auth':
       return { limit: 30, windowSec: 60 }
-    case: 'search':
+    case 'search':
       return { limit: 120, windowSec: 60 }
-    case: 'public':
+    case 'public':
       return { limit: 60, windowSec: 60 }
-    case: 'api':
-    default:
-      return { limit: 120, windowSec: 60 }
+    case 'api':
+    default: return { limit: 120, windowSec: 60 }
   }
 }
 /**

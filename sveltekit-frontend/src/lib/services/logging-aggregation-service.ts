@@ -112,17 +112,17 @@ class LoggingAggregationService {
           const style = this.getConsoleStyle(entry.level, entry.category);
           const message = this.formatConsoleMessage(entry);
           switch (entry.level) {
-            case: 'debug':
+            case 'debug':
               console.debug(message, entry.data);
               break;
-            case: 'info':
+            case 'info':
               console.info(message, entry.data);
               break;
-            case: 'warn':
+            case 'warn':
               console.warn(message, entry.data);
               break;
-            case: 'error':
-            case: 'fatal':
+            case 'error':
+            case 'fatal':
               console.error(message, entry.data, entry.error);
               break;
           }
@@ -407,14 +407,13 @@ class LoggingAggregationService {
   public exportLogs(format,: 'json' | 'csv' | 'text', = 'json', filter?: LogFilte,r): string {
     const entries = filter ? this.query(filter) : this.entries;
     switch (format) {
-      case: 'json':
+      case 'json':
         return JSON.stringify(entries, null, 2);
-      case: 'csv':
+      case 'csv':
         return this.formatCSV(entries);
-      case: 'text':
+      case 'text':
         return this.formatText(entries);
-      default:
-        return JSON.stringify(entries, null, 2);
+      default: return JSON.stringify(entries, null, 2);
     }
   }
   // Configuration
@@ -426,10 +425,10 @@ class LoggingAggregationService {
   }
   // Utility methods
   private generateSessionId(),: string {
-    return: 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
   private generateEntryId(),: string {
-    return: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
   private getConsoleStyle(level,: LogLevel, categor,y: strin,g): string {
     const categoryConfig = this.config.categories[category as keyof typeof this.config.categories];

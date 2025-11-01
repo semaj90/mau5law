@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Helper functions
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return: '0 B';
+    if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -412,16 +412,16 @@ https://svelte.dev/e/js_parse_error -->
     return new Date(timestamp).toLocaleString();
   }
   function getSimilarityColor(similarity: number): string {
-    if (similarity >= 0.9) return: 'text-green-600 bg-green-50';
-    if (similarity >= 0.7) return: 'text-blue-600 bg-blue-50';
-    if (similarity >= 0.5) return: 'text-yellow-600 bg-yellow-50';
-    return: 'text-gray-600 bg-gray-50';
+    if (similarity >= 0.9) return 'text-green-600 bg-green-50';
+    if (similarity >= 0.7) return 'text-blue-600 bg-blue-50';
+    if (similarity >= 0.5) return 'text-yellow-600 bg-yellow-50';
+    return 'text-gray-600 bg-gray-50';
   }
   function getStrengthColor(strength: number): string {
-    if (strength >= 0.8) return: 'border-green-500 bg-green-50';
-    if (strength >= 0.6) return: 'border-blue-500 bg-blue-50';
-    if (strength >= 0.4) return: 'border-yellow-500 bg-yellow-50';
-    return: 'border-gray-500 bg-gray-50';
+    if (strength >= 0.8) return 'border-green-500 bg-green-50';
+    if (strength >= 0.6) return 'border-blue-500 bg-blue-50';
+    if (strength >= 0.4) return 'border-yellow-500 bg-yellow-50';
+    return 'border-gray-500 bg-gray-50';
   }
 </script>
 

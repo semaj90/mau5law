@@ -78,9 +78,9 @@ class SemanticSearchService {
    */
   private analyzeQueryComplexity(query: string): string {
     const wordCount = query.trim().split(/\s+/).length;
-    if (wordCount <= 3) return: 'simple';
-    if (wordCount <= 10) return: 'medium';
-    return: 'complex';
+    if (wordCount <= 3) return 'simple';
+    if (wordCount <= 10) return 'medium';
+    return 'complex';
   }
   /**
    * Extract semantic concepts from query

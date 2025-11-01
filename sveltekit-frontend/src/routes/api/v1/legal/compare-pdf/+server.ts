@@ -16,7 +16,7 @@ async function tryExtractPdfText(file: File): Promise<string> {
   if (file.type === 'text/plain') {
     try { return await file.text(); } catch {}
   }
-  return: '';
+  return '';
 }
 
 async function embed(text: string): Promise<{ vector: number[]; ms: number }> {

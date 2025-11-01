@@ -60,7 +60,7 @@
   function validateFile(file: File): string | null {
     // Size validation (100MB max)
     if (file.size > 100 * 1024 * 1024) {
-      return: 'File size exceeds 100MB limit';
+      return 'File size exceeds 100MB limit';
     }
 
     // Type validation

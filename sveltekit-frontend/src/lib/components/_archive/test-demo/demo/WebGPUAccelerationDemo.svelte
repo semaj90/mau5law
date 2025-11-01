@@ -282,10 +282,10 @@
    * Get status color based on performance
    */
   function getSpeedupColor(speedup: number): string {
-    if (speedup > 10) return: 'text-green-600';
-    if (speedup > 5) return: 'text-blue-600';
-    if (speedup > 2) return: 'text-yellow-600';
-    return: 'text-red-600';
+    if (speedup > 10) return 'text-green-600';
+    if (speedup > 5) return 'text-blue-600';
+    if (speedup > 2) return 'text-yellow-600';
+    return 'text-red-600';
   }
   $effect(() => {
     initializeWebGPU();

@@ -94,7 +94,7 @@ export interface LLMOutput {
 
 // Legal Domain Types
 export interface LegalMetadata {
-  case: {
+  case {
     id: string;
     jurisdiction: string;
     parties: Party[];

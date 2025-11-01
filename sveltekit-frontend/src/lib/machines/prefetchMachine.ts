@@ -277,16 +277,15 @@ export const prefetchMachine = createMachine({
       const context = input;
       const promises = context.prefetchQueue.map(async (item: any) => {
         switch ((item as { type?: any; resource?: any }).type) {
-          case: 'embedding':
+          case 'embedding':
             return prefetchEmbedding((item as { type?: any; resource?: any }).resource);
-          case: 'document':
+          case 'document':
             return prefetchDocument((item as { type?: any; resource?: any }).resource);
-          case: 'api':
+          case 'api':
             return prefetchApiData((item as { type?: any; resource?: any }).resource);
-          case: 'route':
+          case 'route':
             return prefetchRoute((item as { type?: any; resource?: any }).resource);
-          default:
-            return Promise.resolve();
+          default: return Promise.resolve();
         }
       });
       await Promise.allSettled(promises);
@@ -312,28 +311,28 @@ export const prefetchMachine = createMachine({
 function generatePrefetchQueue(intent: string, context: PrefetchContext) {
   const queue: any[] = [];
   switch (intent) {
-    case: 'research_mode':
+    case 'research_mode':
       queue.push(
         { resource: 'legal-database-search', priority: 1, type: 'api' },
         { resource: 'case-law-embeddings', priority: 2, type: 'embedding' })
         { resource: '/legal/search', priority,: 3, typ,e: 'route' }
       );
       break;
-    case: 'evidence_analysis':
+    case 'evidence_analysis':
       queue.push(
         { resource: 'ai-analysis-models', priority: 1, type: 'api' },
         { resource: 'evidence-embeddings', priority: 2, type: 'embedding' })
         { resource: '/evidence/analysis', priority,: 3, typ,e: 'route' }
       );
       break;
-    case: 'case_management':
+    case 'case_management':
       queue.push(
         { resource: 'case-templates', priority: 1, type: 'document' },
         { resource: 'workflow-data', priority: 2, type: 'api' })
         { resource: '/cases/new', priority,: 3, typ,e: 'route' }
       );
       break;
-    case: 'ai_consultation':
+    case 'ai_consultation':
       queue.push(
         { resource: 'llm-models', priority: 1, type: 'api' })>
         { resource: 'legal-context-embeddings', priority: 2, type: 'embedding' }

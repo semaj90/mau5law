@@ -876,9 +876,9 @@ export class HybridGemmaBitmapEngine {
     confidence: number,
     metrics: { fps: number; memoryUsage: number }
   ): 'aggressive' | 'conservative' | 'balanced' {
-    if (confidence > 85 && metrics.fps > 55 && metrics.memoryUsage < 70) return: 'aggressive';
-    else if (confidence < 60 || metrics.fps < 45 || metrics.memoryUsage > 85) return: 'conservative';
-    return: 'balanced';
+    if (confidence > 85 && metrics.fps > 55 && metrics.memoryUsage < 70) return 'aggressive';
+    else if (confidence < 60 || metrics.fps < 45 || metrics.memoryUsage > 85) return 'conservative';
+    return 'balanced';
   }
   private synthesizePrimaryRecommendation(
     semantic: { matches: SemanticSearchResult[] },
@@ -890,17 +890,17 @@ export class HybridGemmaBitmapEngine {
     return `Based on ${context.workflowStage} workflow: combine ${semanticAction} insights with predicted ${behavioralAction}`;
   }
   private determinePreloadStrategy(priority: number, context: LegalContext): 'immediate' | 'background' | 'ondemand' {
-    if (priority > 80 && context.systemMetrics.fps > 55) return: 'immediate';
-    else if (priority > 50) return: 'background';
-    return: 'ondemand';
+    if (priority > 80 && context.systemMetrics.fps > 55) return 'immediate';
+    else if (priority > 50) return 'background';
+    return 'ondemand';
   }
   private determineQualityTier(metrics: {
     fps: number;
     memoryUsage: number;
   }): '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64' {
-    if (metrics.fps >= 58 && metrics.memoryUsage < 70) return: '64-BIT_N64';
-    else if (metrics.fps >= 50 && metrics.memoryUsage < 80) return: '16-BIT_SNES';
-    return: '8-BIT_NES';
+    if (metrics.fps >= 58 && metrics.memoryUsage < 70) return '64-BIT_N64';
+    else if (metrics.fps >= 50 && metrics.memoryUsage < 80) return '16-BIT_SNES';
+    return '8-BIT_NES';
   }
   private async calculateCacheHitRate(): Promise<number> {
     try {

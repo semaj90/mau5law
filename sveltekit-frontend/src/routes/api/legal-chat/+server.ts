@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 4: Build conversation context for AI
     const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory} law.
     ${practiceArea ? `Your practice area focus is ${practiceArea}.` : ''}
-    ${caseId ? `You are currently working on case: ${caseId}.` : ''}
+    ${caseId ? `You are currently working on case ${caseId}.` : ''}
     Provide accurate, helpful legal information while noting that this is not legal advice.
     Use the provided context and conversation history to give informed responses.
     ${ragContext ? `\nRelevant legal context:\n${ragContext}` : ''}`;

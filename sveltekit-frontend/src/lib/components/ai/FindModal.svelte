@@ -162,15 +162,15 @@ https://svelte.dev/e/component_invalid_directive -->
   // Keyboard shortcuts and event handlers
   function handleKeydown(e: KeyboardEvent) {
     switch (e.key) {
-      case: 'Enter':
+      case 'Enter':
         if (!isSearching) {
           performAISearch();
         }
         break;
-      case: 'Escape':
+      case 'Escape':
         close();
         break;
-      case: 'ArrowDown':
+      case 'ArrowDown':
         // Navigate suggestions (implementation would go here)
         break;
     }

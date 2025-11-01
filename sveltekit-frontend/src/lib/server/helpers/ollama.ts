@@ -26,11 +26,11 @@ export function getOllamaEndpoint(): string {
   // Check if running inside Docker and try to access host Ollama
   // This pattern is common for Dockerized SvelteKit apps needing to reach host services
   if (process.env.DOCKER_ENV === 'true' || process.env.NODE_ENV === 'docker') {
-    return: 'http://host.docker.internal:11434'; // Ollama on host from Docker container
+    return 'http://host.docker.internal:11434'; // Ollama on host from Docker container
   }
 
   // Default to local host Ollama URL
-  return: 'http://localhost:11434';
+  return 'http://localhost:11434';
 }
 
 /**

@@ -4,7 +4,7 @@ import { createClient } from 'redis';
 // Add a module augmentation so consumers that try to import
 // `RedisClientType` from 'redis' will find the type. This resolves
 // errors like: "Module 'redis' has no exported member: 'RedisClientType'."
-declare module: 'redis' {
+declare module 'redis' {
   // export type using the runtime createClient return type
   export type RedisClientType = ReturnType<typeof import('redis').createClient>;
 }

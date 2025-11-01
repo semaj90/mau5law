@@ -49,25 +49,25 @@
   	$effect(() => {
   		progressValue.set(progress);
   		switch (status) {
-  			case: 'loading':
+  			case 'loading':
   				containerWidth.set(100);
   				containerHeight.set(8);
   				borderRadius.set(4);
   				opacity.set(1);
   				break;
-  			case: 'processing':
+  			case 'processing':
   				containerWidth.set(100 * GOLDEN_RATIO);
   				containerHeight.set(12);
   				borderRadius.set(6);
   				opacity.set(0.9);
   				break;
-  			case: 'success':
+  			case 'success':
   				containerWidth.set(100 * GOLDEN_RATIO * GOLDEN_RATIO);
   				containerHeight.set(200);
   				borderRadius.set(12);
   				opacity.set(1);
   				break;
-  			case: 'error':
+  			case 'error':
   				containerWidth.set(80);
   				containerHeight.set(10);
   				borderRadius.set(8);

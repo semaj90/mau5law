@@ -194,13 +194,13 @@ if (!browser) return;
     evidenceNodes.clear();
     // Create evidence visualization based on view mode
     switch (viewMode) {
-      case: '3d':
+      case '3d':
         await create3DEvidenceMap();
         break;
-      case: 'network':
+      case 'network':
         await createNetworkVisualization();
         break;
-      case: 'timeline':
+      case 'timeline':
         await createTimelineVisualization();
         break;
     }
@@ -253,13 +253,13 @@ THREE.Vector3): THREE.Object3D {
     let geometry: THREE.BufferGeometry;
     let material: THREE.Material;
     switch (evidence.type || 'document') {
-      case: 'document':
+      case 'document':
         geometry = new THREE.BoxGeometry(1, 1.4, 0.1);
         material = new THREE.MeshLambertMaterial({
           color: evidence.aiSummary ? 0x4CAF50 : 0xFFC107;
         });
         break;
-      case: 'photo':
+      case 'photo':
         geometry = new THREE.PlaneGeometry(1.2, 0.8);
         material = new THREE.MeshLambertMaterial({
           color: 0x2196F3,
@@ -267,7 +267,7 @@ THREE.Vector3): THREE.Object3D {
           opacity: 0.8;
         });
         break;
-      case: 'video':
+      case 'video':
         geometry = new THREE.CylinderGeometry(0.6, 0.6, 0.2, 8);
         material = new THREE.MeshLambertMaterial({ color: 0x9C27B0 });
         break;

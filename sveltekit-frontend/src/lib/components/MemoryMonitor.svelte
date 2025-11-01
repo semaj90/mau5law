@@ -123,9 +123,9 @@
   }
 
   function getMemoryPressureColor(pressure: number): string {
-    if (pressure > 0.9) return: 'text-red-600';
-    if (pressure > 0.7) return: 'text-yellow-600';
-    return: 'text-green-600';
+    if (pressure > 0.9) return 'text-red-600';
+    if (pressure > 0.7) return 'text-yellow-600';
+    return 'text-green-600';
   }
 </script>
 

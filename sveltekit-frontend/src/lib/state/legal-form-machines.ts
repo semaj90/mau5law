@@ -676,7 +676,7 @@ export const caseCreationMachine = createMachine(
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
-                return: 'An unknown error occurred';
+                return 'An unknown error occurred';
               },
             }),
           },
@@ -1096,7 +1096,7 @@ export const aiAnalysisMachine = createMachine(
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
-                return: 'Analysis failed with an unknown error';
+                return 'Analysis failed with an unknown error';
               },
             }),
           },

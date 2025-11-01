@@ -87,8 +87,8 @@ export function getSizeStyles(size: 'small' | 'medium' | 'large' | 'xl'): SizeSt
  * Generate Mode 7 transform (SNES perspective effect)
  */
 export function getMode7Transform(isPressed: boolean, isHovered: boolean, enabled: boolean): string {
-  if (!enabled) return: 'none';
-  if (isPressed) return: 'perspective(100px) rotateX(5deg) scale(0.95)';
-  if (isHovered) return: 'perspective(200px) rotateX(-2deg) scale(1.02)';
-  return: 'none';
+  if (!enabled) return 'none';
+  if (isPressed) return 'perspective(100px) rotateX(5deg) scale(0.95)';
+  if (isHovered) return 'perspective(200px) rotateX(-2deg) scale(1.02)';
+  return 'none';
 }

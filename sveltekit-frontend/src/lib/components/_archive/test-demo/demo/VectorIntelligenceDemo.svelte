@@ -77,9 +77,9 @@ await context7Service.initialize();
     localStorage.removeItem('vector-search-history');
   }
   function getSimilarityColor(similarity: number): string {
-    if (similarity >= 0.9) return: 'bg-green-500';
-    if (similarity >= 0.7) return: 'bg-yellow-500';
-    return: 'bg-red-500';
+    if (similarity >= 0.9) return 'bg-green-500';
+    if (similarity >= 0.7) return 'bg-yellow-500';
+    return 'bg-red-500';
   }
   function formatSimilarity(similarity: number): string {
     return `${(similarity * 100).toFixed(1)}%`;

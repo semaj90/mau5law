@@ -330,14 +330,14 @@ export class DimensionalTensorStore {
       }))
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
-          case: 'lru':
+          case 'lru':
             return a.metadata.lastAccessed - b.metadata.lastAccessed;
-          case: 'importance':
+          case 'importance':
             if (a.metadata.importance !== b.metadata.importance) {
               return a.metadata.importance - b.metadata.importance; // Evict lowest importance
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
-          case: 'distance': {
+          case 'distance': {
             const distA = Math.hypot(...a.metadata.position);
             const distB = Math.hypot(...b.metadata.position);
             if (distA !== distB) {
@@ -345,7 +345,7 @@ export class DimensionalTensorStore {
             }
             return a.metadata.lastAccessed - b.metadata.lastAccessed; // Fallback to LRU
           }
-          case: 'hybrid':
+          case 'hybrid':
           default: {
             const scoreA = (Date.now() - a.metadata.lastAccessed) / (a.memorySize || 1);
             const scoreB = (Date.now() - b.metadata.lastAccessed) / (b.memorySize || 1);

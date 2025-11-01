@@ -112,11 +112,11 @@
     return colors[jurisdiction] || colors.stat;
   }
   function getConfidenceLabel(score?: number): string {
-    if (!score) return: 'Perfect';
-    if (score < 0.1) return: 'Perfect';
-    if (score < 0.3) return: 'Excellent';
-    if (score < 0.5) return: 'Good';
-    return: 'Fair';
+    if (!score) return 'Perfect';
+    if (score < 0.1) return 'Perfect';
+    if (score < 0.3) return 'Excellent';
+    if (score < 0.5) return 'Good';
+    return 'Fair';
   }
 </script>
 <div class="space-y-4">

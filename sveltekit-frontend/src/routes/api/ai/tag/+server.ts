@@ -518,13 +518,13 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
  * Simple evidence type detector from filename or content-type hint.
  */
 function detectEvidenceType(fileType?: string | null | undefined): LegalMetadata['evidenceType'] {
-  if (!fileType || typeof fileType !== 'string') return: 'document';
+  if (!fileType || typeof fileType !== 'string') return 'document';
   const ft = fileType.toLowerCase();
-  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return: 'photo';
-  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return: 'video';
-  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return: 'audio';
-  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return: 'document';
-  return: 'other';
+  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return 'photo';
+  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return 'video';
+  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return 'audio';
+  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return 'document';
+  return 'other';
 }
 
 /**

@@ -8,20 +8,6 @@
   import { goto } from '$app/navigation';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
   import { onMount } from 'svelte';
-  // dynamic loader for YoRHaModal to handle modules that export named or default
-  let YoRHaModalComponent = $state<any>(null);
-  onMount(async () => {
-    try {
-      // cast import to unknown then any so TypeScript won't complain about missing properties
-      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as unknown;
-      const modAny = mod as any;
-      // prefer default, then common named variants, then fallback to the module itself
-      const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny;
-      YoRHaModalComponent = LoadedComponent as any;
-    } catch (e) {
-      console.warn('Failed to load YoRHaModal component', e);
-    }
-  });
   import {
     Activity,
     BarChart3,
@@ -102,29 +88,44 @@
     }
   ];
 
-  let { data = {} }: { data?: DetectiveData } = $props();
-
-  let selectedSection = $state<SectionId>('command-center');
-  let showNewCaseModal = $state(false);
-  let statusMessage = $state<string | null>(null);
-
-  let newCaseData = $state({
-    title: '',
-    description: '',
-    priority: 'medium' as: 'low' | 'medium' | 'high' | 'critical'
+  // dynamic loader for YoRHaModal to handle modules that export named or default
+  let YoRHaModalComponent: any = null;
+  onMount(async () => {
+    try {
+      // cast import to unknown then any so TypeScript won't complain about missing properties
+      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as unknown;
+      const modAny = mod as any;
+      // prefer default, then common named variants, then fallback to the module itself
+      const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny;
+      YoRHaModalComponent = LoadedComponent as any;
+    } catch (e) {
+      console.warn('Failed to load YoRHaModal component', e);
+    }
   });
 
-  const quickStats = $derived(() => ({
+  // standard Svelte prop (page data)
+  export let data: DetectiveData = {} as DetectiveData;
+
+  let selectedSection: SectionId = 'command-center';
+  let showNewCaseModal = false;
+  let statusMessage: string | null = null;
+
+  let newCaseData = {
+    title: '',
+    description: '',
+    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
+  };
+
+  // reactive derived values (standard Svelte)
+  $: quickStats = {
     activeCases: data.stats?.activeCases ?? 0,
     evidenceItems: data.stats?.evidenceItems ?? 0,
     personsOfInterest: data.stats?.personsOfInterest ?? 0,
     aiQueries: data.stats?.aiQueries ?? 0
-  }));
+  };
 
-  const recentCases = $derived(() => Array.isArray(data.recentCases) ? data.recentCases.slice(0, 6) : []);
-  const evidenceInsights = $derived(
-    () => Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : []
-  );
+  $: recentCases = Array.isArray(data.recentCases) ? data.recentCases.slice(0, 6) : [];
+  $: evidenceInsights = Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : [];
 
   function selectSection(section: SectionId) {
     selectedSection = section;
@@ -169,14 +170,13 @@
 
   function priorityBadge(priority?: string) {
     switch (priority) {
-      case: 'critical':
-        return: 'border-red-500/50 text-red-300';
-      case: 'high':
-        return: 'border-orange-500/50 text-orange-300';
-      case: 'medium':
-        return: 'border-amber-500/50 text-amber-300';
-      default:
-        return: 'border-slate-500/40 text-slate-300';
+      case 'critical':
+        return 'border-red-500/50 text-red-300';
+      case 'high':
+        return 'border-orange-500/50 text-orange-300';
+      case 'medium':
+        return 'border-amber-500/50 text-amber-300';
+      default: return 'border-slate-500/40 text-slate-300';
     }
   }
 </script>

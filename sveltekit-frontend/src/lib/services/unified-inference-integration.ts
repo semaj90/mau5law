@@ -102,13 +102,13 @@ export class UnifiedInferenceEngine {
     let result: InferenceResult;
     try {
       switch (this.selectOptimalEngine(request)) {
-        case: 'go-gpu':
+        case 'go-gpu':
           result = await this.runGoGpuInference(request);
           break;
-        case: 'fastapi':
+        case 'fastapi':
           result = await this.runFastApiInference(request);
           break;
-        case: 'webasm':
+        case 'webasm':
           result = await this.runWebAsmInference(request);
           break;
         default:
@@ -258,13 +258,13 @@ export class UnifiedInferenceEngine {
    */
   private selectOptimalEngine(request: UnifiedInferenceRequest): string {
     if (request.priority === 'critical' || request.text.length > 10000) {
-      return: 'go-gpu';
+      return 'go-gpu';
     }
     if (request.operation === 'embedding') {
-      return: 'fastapi';
+      return 'fastapi';
     }
     if (request.operation === 'similarity' || (typeof navigator !== 'undefined' && !navigator.onLine)) {
-      return: 'webasm';
+      return 'webasm';
     }
     return this.config.preferredEngine;
   }
@@ -393,11 +393,11 @@ export class UnifiedInferenceEngine {
       try {
         console.log(`🔄 Trying fallback engine: ${engine}`);
         switch (engine) {
-          case: 'fastapi':
+          case 'fastapi':
             return await this.runFastApiInference(request);
-          case: 'webasm':
+          case 'webasm':
             return await this.runWebAsmInference(request);
-          case: 'go-gpu':
+          case 'go-gpu':
             return await this.runGoGpuInference(request);
           default:
             continue;
@@ -417,24 +417,22 @@ export class UnifiedInferenceEngine {
   }
   private selectGemmaModel(operation: string): string {
     switch (operation) {
-      case: 'embedding':
-        return: 'embeddinggemma:latest';
-      case: 'legal-analysis':
-        return: 'gemma3-legal:latest';
-      case: 'classification':
-        return: 'gemma3-legal:latest';
-      default:
-        return: 'gemma3-legal:latest';
+      case 'embedding':
+        return 'embeddinggemma:latest';
+      case 'legal-analysis':
+        return 'gemma3-legal:latest';
+      case 'classification':
+        return 'gemma3-legal:latest';
+      default: return 'gemma3-legal:latest';
     }
   }
   private getWasmModelName(operation: string): string {
     switch (operation) {
-      case: 'embedding':
-        return: 'wasm-embedding-model';
-      case: 'similarity':
-        return: 'wasm-similarity-model';
-      default:
-        return: 'wasm-general-model';
+      case 'embedding':
+        return 'wasm-embedding-model';
+      case 'similarity':
+        return 'wasm-similarity-model';
+      default: return 'wasm-general-model';
     }
   }
   private getLodConfidence(lodLevel: number): number {

@@ -209,7 +209,7 @@ export async function getDocumentsWithCaseInfo(caseId: string) {
   return db
     .select({
       document: legalDocuments,
-      case: legalCases,
+      case legalCases,
     })
     .from(legalDocuments)
     .leftJoin(legalCases, eq(legalDocuments.caseId, legalCases.id))
@@ -229,7 +229,7 @@ export async function getCaseWithDocuments(caseId: string) {
     .where(eq(legalDocuments.caseId, caseId));
 
   return {
-    case: caseData[0],
+    case caseData[0],
     documents,
   };
 }
@@ -461,7 +461,7 @@ export async function completeDocumentUpload(params: {
         fileHash: params.fileHash,
         uploadedBy: params.userId,
         metadata: {
-          case: {
+          case {
             id: params.caseId,
             caseNumber: '',
             jurisdiction: '',

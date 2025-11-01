@@ -408,10 +408,10 @@ if (!browser) return;
   // --- New helper implementations (kept small and deterministic) ---
   function getTimeMarkerInterval(precision: string, timeSpanMs: number): number {
     switch (precision) {
-      case: 'hour': return 60 * 60 * 1000;
-      case: 'day': return 24 * 60 * 60 * 1000;
-      case: 'week': return 7 * 24 * 60 * 60 * 1000;
-      case: 'month': return 30 * 24 * 60 * 60 * 1000;
+      case 'hour': return 60 * 60 * 1000;
+      case 'day': return 24 * 60 * 60 * 1000;
+      case 'week': return 7 * 24 * 60 * 60 * 1000;
+      case 'month': return 30 * 24 * 60 * 60 * 1000;
       default: return 24 * 60 * 60 * 1000;
     }
   }
@@ -746,7 +746,7 @@ if (!browser) return;
             tags: ['legal', 'filing']
           }
         ],
-        metadata: { court: 'Superior Court', case: '2024-CV-001' }
+        metadata: { court: 'Superior Court', case '2024-CV-001' }
       },
       {
         id: 'event_2',

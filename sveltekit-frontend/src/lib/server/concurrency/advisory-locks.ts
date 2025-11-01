@@ -6,7 +6,7 @@ import { sql } from '$lib/database/connection';
 import { randomUUID } from 'crypto';
 // Lock types for legal AI operations
 export const LOCK_TYPES = {
-  CASE: 'case',
+  case 'case',
   EVIDENCE: 'evidence',
   DOCUMENT: 'document',
   USER: 'user',

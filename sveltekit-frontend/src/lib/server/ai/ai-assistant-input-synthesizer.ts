@@ -734,22 +734,22 @@ export class AIAssistantInputSynthesizer {
   private async extractIntent(query: string, analysis: SynthesizerAnalysisResult): Promise<string> {
     const queryLower = query.toLowerCase();
     if (queryLower.includes('how to') || queryLower.includes('how do')) {
-      return: 'procedural_guidance';
+      return 'procedural_guidance';
     } else if (queryLower.includes('what is') || queryLower.includes('define')) {
-      return: 'definition_request';
+      return 'definition_request';
     } else if (queryLower.includes('case') || (analysis.entities ?? []).some(e => e.type === 'CASE_CITATION')) {
-      return: 'case_analysis';
+      return 'case_analysis';
     } else if (
       queryLower.includes('contract') ||
       (analysis.concepts ?? []).some(c => (typeof c === 'string' ? c === 'contract' : c.concept === 'contract'))
     ) {
-      return: 'contract_analysis';
+      return 'contract_analysis';
     } else if (queryLower.includes('statute') || (analysis.entities ?? []).some(e => e.type === 'STATUTE')) {
-      return: 'statute_interpretation';
+      return 'statute_interpretation';
     } else if (queryLower.includes('precedent') || queryLower.includes('ruling')) {
-      return: 'precedent_search';
+      return 'precedent_search';
     } else {
-      return: 'general_legal_query';
+      return 'general_legal_query';
     }
   }
 

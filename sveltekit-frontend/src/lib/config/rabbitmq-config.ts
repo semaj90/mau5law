@@ -331,8 +331,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         prefetchCount: 5,
         retryAttempts: 2,
       };
-    default:
-      return baseConfig;
+    default: return baseConfig;
   }
 };
 // Connection URL helper

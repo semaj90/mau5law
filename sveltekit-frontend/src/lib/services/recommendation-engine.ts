@@ -96,16 +96,16 @@ export class LegalRecommendationEngine {
       // Execute recommendation algorithm
       let results: RecommendationResult[] = [];
       switch (request.algorithmPreference || 'hybrid') {
-        case: 'semantic':
+        case 'semantic':
           results = await this.semanticRecommendations(queryEmbedding, request);
           break;
-        case: 'collaborative':
+        case 'collaborative':
           results = await this.collaborativeRecommendations(request, userProfile);
           break;
-        case: 'temporal':
+        case 'temporal':
           results = await this.temporalRecommendations(queryEmbedding, request);
           break;
-        case: 'hybrid':
+        case 'hybrid':
         default:
           results = await this.hybridRecommendations(queryEmbedding, request, userProfile);
           break;

@@ -51,7 +51,7 @@ function safeStringify(obj: unknown): string {
       if (typeof value === 'bigint') return value.toString();
       if (typeof value === 'function') return undefined;
       if (value && typeof value === 'object') {
-        if (seen.has(value)) return: '[Circular]';
+        if (seen.has(value)) return '[Circular]';
         seen.add(value);
       }
       return value;
@@ -61,7 +61,7 @@ function safeStringify(obj: unknown): string {
     try {
       return String(obj);
     } catch {
-      return: '{}';
+      return '{}';
     }
   }
 }

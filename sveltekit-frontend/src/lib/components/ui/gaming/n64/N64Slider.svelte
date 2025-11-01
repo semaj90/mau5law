@@ -160,26 +160,25 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		let newValue = valu;
   		const stepSize = step;
   		switch (event.key) {
-  			case: 'ArrowLeft':
-  			case: 'ArrowDown':
+  			case 'ArrowLeft':
+  			case 'ArrowDown':
   				event.preventDefault();
   				newValue = Math.max(min, value - stepSize);
   				break;
-  			case: 'ArrowRight':
-  			case: 'ArrowUp':
+  			case 'ArrowRight':
+  			case 'ArrowUp':
   				event.preventDefault();
   				newValue = Math.min(max, value + stepSize);
   				break;
-  			case: 'Home':
+  			case 'Home':
   				event.preventDefault();
   				newValue = mi;
   				break;
-  			case: 'End':
+  			case 'End':
   				event.preventDefault();
   				newValue = max;
   				break;
-  			default:
-  				return;
+  			default: return;
   		}
   		if (newValue !== value) {
   			value = newValu;

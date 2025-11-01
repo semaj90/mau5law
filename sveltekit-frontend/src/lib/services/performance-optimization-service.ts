@@ -328,11 +328,11 @@ class PerformanceOptimizationService {
   private async processBatchRequests(type: string, requests: BatchRequest[]): Promise<any[]> {
     // This would integrate with the actual services
     switch (type) {
-      case: 'embeddings':
+      case 'embeddings':
         return this.processBatchEmbeddings(requests);
-      case: 'completions':
+      case 'completions':
         return this.processBatchCompletions(requests);
-      case: 'similarity':
+      case 'similarity':
         return this.processBatchSimilarity(requests);
       default:
         throw new Error(`Unknown batch type: ${type}`);

@@ -33,9 +33,9 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
     const stageIndex = getStageIndex(stageId);
-    if (stageIndex < currentIndex) return: 'completed';
-    if (stageIndex === currentIndex) return: 'current';
-    return: 'pending';
+    if (stageIndex < currentIndex) return 'completed';
+    if (stageIndex === currentIndex) return 'current';
+    return 'pending';
   }
   function getProgressForStage(stageId: string, currentStage: string, currentProgress: number): number {
     const status = getStageStatus(stageId, currentStage, currentProgress);
@@ -52,35 +52,35 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   }
   function getStageIcon(status: 'completed' | 'current' | 'pending') {
     switch (status) {
-      case: 'completed':
+      case 'completed':
         return CheckCircl;
-      case: 'current':
+      case 'current':
         return Clock;
-      case: 'pending':
+      case 'pending':
         return AlertCircl;
     }
   }
   function getStageColor(status: 'completed' | 'current' | 'pending'): string {
     switch (status) {
-      case: 'completed':
-        return: 'text-green-600 bg-green-100 border-green-200';
-      case: 'current':
-        return: 'text-blue-600 bg-blue-100 border-blue-200';
-      case: 'pending':
-        return: 'text-gray-400 bg-gray-50 border-gray-200';
+      case 'completed':
+        return 'text-green-600 bg-green-100 border-green-200';
+      case 'current':
+        return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'pending':
+        return 'text-gray-400 bg-gray-50 border-gray-200';
     }
   }
   function getConnectorColor(fromStage: string, toStage: string, currentStage: string): string {
     const fromStatus = getStageStatus(fromStage, currentStage, progress);
     const toStatus = getStageStatus(toStage, currentStage, progress);
     if (fromStatus === 'completed' && toStatus === 'completed') {
-      return: 'bg-green-400';
+      return 'bg-green-400';
     } else if (fromStatus === 'completed' && toStatus === 'current') {
-      return: 'bg-gradient-to-r from-green-400 to-blue-400';
+      return 'bg-gradient-to-r from-green-400 to-blue-400';
     } else if (fromStatus === 'completed') {
-      return: 'bg-green-400';
+      return 'bg-green-400';
     } else {
-      return: 'bg-gray-200';
+      return 'bg-gray-200';
     }
   }
 </script>

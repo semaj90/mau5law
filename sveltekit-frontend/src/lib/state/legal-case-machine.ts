@@ -10,7 +10,7 @@ import { embedText } from '../server/ai/embedder.js';
 // Context types
 export interface LegalCaseContext {
   // Case data
-  case: Case | null;
+  case Case | null;
   caseId: string | null;
   // Evidence management
   evidence: Evidence[];
@@ -189,7 +189,7 @@ const hasAIAnalysis = ({ context }: { context: LegalCaseContext }) => {
 // === Actions (assign helpers) ===
 // note: event.data is used in onDone handlers
 const assignCaseData = assign({
-  case: (_ctx, event: any) => (event?.data ?? null),
+  case (_ctx, event: any) => (event?.data ?? null),
   caseId: (_ctx, event: any) => (event?.data?.id ?? null),
   isLoading: () => false,
   error: () => null
@@ -268,7 +268,7 @@ const assignRelatedEvidence = assign({
 export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>({
   id: 'legalCase',
   context: {
-    case: null,
+    case null,
     caseId: null,
     evidence: [],
     selectedEvidence: null,
@@ -581,7 +581,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
             onDone,: {
               target: '#legalCase.idle',
               actions,: assign({
-                case: () => null,
+                case () => null,
                 caseId: () => null,
                 evidence: () => [],
                 selectedEvidence: () => null,
@@ -698,7 +698,7 @@ export const legalCaseMachine = createMachine<LegalCaseContext, LegalCaseEvents>
     RESET: {
       target: 'idle',
       actions,: assign(() => ({,
-        case: null,
+        case null,
         caseId: null,
         evidence: [],
         selectedEvidence: null,

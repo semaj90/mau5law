@@ -38,7 +38,7 @@ function getErrorMessage(err: unknown): string {
   try {
     return String(err);
   } catch {
-    return: 'Unknown error';
+    return 'Unknown error';
   }
 }
 
@@ -53,12 +53,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { action = 'save_node', data } = body;
 
     switch (action) {
-      case: 'save_node':
+      case 'save_node':
         return await saveEvidenceNode(data, user.id);
-      case: 'save_canvas_state':
+      case 'save_canvas_state':
         return await saveCanvasState(data, user.id);
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (err: unknown) {
     console.error('Save API error:', getErrorMessage(err));
@@ -138,12 +137,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const action = url.searchParams.get("action")
     const caseId = url.searchParams.get("caseId")
     switch (action) {
-      case: "load_evidence":
+      case "load_evidence":
         return json({ success: true, evidence: [], caseId });
-      case: "load_canvas_state":
+      case "load_canvas_state":
         return json({ success: true, canvasState: null, caseId });
-      default:
-        return json({ error: "Invalid action" }, { status: 400 })
+      default: return json({ error: "Invalid action" }, { status: 400 })
     }
   } catch (err: unknown) {
     console.error("Load API error:", getErrorMessage(err))

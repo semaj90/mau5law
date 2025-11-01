@@ -67,45 +67,45 @@
   function buildRequest(): MCPToolRequest {
     const request: MCPToolRequest = { tool: selectedTool as any }
     switch (selectedTool) {
-      case: 'analyze-stack':
+      case 'analyze-stack':
         request.component = component;
         request.context = context as any;
         break;
-      case: 'generate-best-practices':
+      case 'generate-best-practices':
         request.area = area as any;
         break;
-      case: 'suggest-integration':
+      case 'suggest-integration':
         request.feature = featur;
         request.requirements = requirement;
         break;
-      case: 'resolve-library-id':
-      case: 'get-library-docs':
+      case 'resolve-library-id':
+      case 'get-library-docs':
         request.library = library;
         if (selectedTool === 'get-library-docs' && topic) {
           request.topic = topic;
         }
         break;
-      case: 'rag-query':
+      case 'rag-query':
         request.query = ragQuery;
         request.maxResults = maxResult;
         request.confidenceThreshold = confidenceThreshold;
         if (ragCaseId) request.caseId = ragCaseId;
         if (documentTypes) request.documentTypes = documentTypes.split.map(t => t.trim());
         break;
-      case: 'rag-upload-document':
+      case 'rag-upload-document':
         request.filePath = filePath;
         if (ragCaseId) request.caseId = ragCaseId;
         request.documentType = documentTyp;
         if (documentTitle) request.title = documentTitl;
         break;
-      case: 'rag-get-stats':
+      case 'rag-get-stats':
         // No additional parameters needed
         break;
-      case: 'rag-analyze-relevance':
+      case 'rag-analyze-relevance':
         request.query = ragQuery;
         request.documentId = documentId;
         break;
-      case: 'rag-integration-guide':
+      case 'rag-integration-guide':
         request.integrationType = integrationType as any;
         break;
     }
@@ -164,7 +164,7 @@
   // Generate mock response for demonstration
   function generateMockResponse(request: MCPToolRequest) {
     switch (request.tool) {
-      case: 'analyze-stack':
+      case 'analyze-stack':
         return {
           content: [{,
             type: 'text',
@@ -191,7 +191,7 @@
   - Secure API endpoints with proper authentication`
           }]
         }
-      case: 'generate-best-practices':
+      case 'generate-best-practices':
         return {
           content: [{,
             type: 'text',
@@ -227,7 +227,7 @@
   - Document all security and compliance measures`
           }]
         }
-      case: 'suggest-integration':
+      case 'suggest-integration':
         return {
           content: [{,
             type: 'text',
@@ -268,7 +268,7 @@
   - Data encryption for sensitive information`
           }]
         }
-      case: 'resolve-library-id':
+      case 'resolve-library-id':
         const libraryMap: Record<string, string> = {
           'sveltekit': 'sveltekit',
           'svelte': 'sveltekit',
@@ -288,7 +288,7 @@
   Available documentation: ${Object.keys.join(', ')}`
           }]
         }
-      case: 'get-library-docs':
+      case 'get-library-docs':
         return {
           content: [{,
             type: 'text',
@@ -318,8 +318,7 @@
   - Test with legal professional workflows`
           }]
         }
-      default:
-        return {
+      default: return {
           content: [{
             type: 'text',
             text: `Tool ${request.tool} not implemented in mock response.`

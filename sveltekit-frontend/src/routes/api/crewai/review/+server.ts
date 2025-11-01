@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action') || 'status';
     const taskId = url.searchParams.get('taskId');
     switch (action) {
-      case: 'status':
+      case 'status':
         if (!taskId) {
           // Get all active reviews
           const activeReviews = await crewAIOrchestrator.getActiveReviews();
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
             },
           });
         }
-      case: 'agents':
+      case 'agents':
         // Get available agents
         const agents = crewAIOrchestrator.getAvailableAgents();
         return json({
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
             })),
           },
         });
-      case: 'presets':
+      case 'presets':
         // Get common agent combinations
         return json({
           success: true,
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ],
           },
         });
-      case: 'health':
+      case 'health':
         // Health check for CrewAI system
         const activeReviews = await crewAIOrchestrator.getActiveReviews();
         const isHealthy = activeReviews.length < 10; // Arbitrary threshold

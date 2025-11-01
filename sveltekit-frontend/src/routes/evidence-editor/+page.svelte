@@ -39,7 +39,7 @@
         </Button>
         <div class="space-y-4">
           {#if caseId}
-            Case: {caseId}
+            case {caseId}
           {:else}
             Demo Mode
           {/if}

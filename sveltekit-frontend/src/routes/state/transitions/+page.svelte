@@ -17,7 +17,7 @@
         {
           id: 'logout',
           event: 'LOGOUT',
-          from 'authenticated',
+          from: 'authenticated',
           to: 'unauthenticated',
           timestamp: new Date().toISOString(),
           duration: 150,
@@ -28,7 +28,7 @@
         {
           id: 'refresh',
           event: 'REFRESH_TOKEN',
-          from 'authenticated',
+          from: 'authenticated',
           to: 'refreshing',
           timestamp: new Date(Date.now() - 30000).toISOString(),
           duration: 300,
@@ -39,7 +39,7 @@
         {
           id: 'profile',
           event: 'VIEW_PROFILE',
-          from 'authenticated',
+          from: 'authenticated',
           to: 'authenticated.profile',
           timestamp: new Date(Date.now() - 60000).toISOString(),
           duration: 50,
@@ -55,7 +55,7 @@
         {
           id: 'submit',
           event: 'SUBMIT_CASE',
-          from 'reviewing',
+          from: 'reviewing',
           to: 'submitting',
           timestamp: new Date().toISOString(),
           duration: 500,
@@ -66,7 +66,7 @@
         {
           id: 'save-draft',
           event: 'SAVE_DRAFT',
-          from 'reviewing',
+          from: 'reviewing',
           to: 'draft',
           timestamp: new Date(Date.now() - 45000).toISOString(),
           duration: 200,
@@ -125,17 +125,17 @@
   function getTransitionColor(transition: any) {
     const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0;
     const age = Date.now() - ts;
-    if (age < 30000) return: 'border-green-200 bg-green-50';
-    if (age < 300000) return: 'border-blue-200 bg-blue-50';
-    return: 'border-gray-200 bg-gray-50';
+    if (age < 30000) return 'border-green-200 bg-green-50';
+    if (age < 300000) return 'border-blue-200 bg-blue-50';
+    return 'border-gray-200 bg-gray-50';
   }
 
   function getStateColor(state: string) {
-    if (!state) return: 'bg-gray-100 text-gray-800';
-    if (state.includes('error')) return: 'bg-red-100 text-red-800';
-    if (state.includes('loading') || state.includes('submitting')) return: 'bg-yellow-100 text-yellow-800';
-    if (state.includes('authenticated') || state.includes('completed')) return: 'bg-green-100 text-green-800';
-    return: 'bg-blue-100 text-blue-800';
+    if (!state) return 'bg-gray-100 text-gray-800';
+    if (state.includes('error')) return 'bg-red-100 text-red-800';
+    if (state.includes('loading') || state.includes('submitting')) return 'bg-yellow-100 text-yellow-800';
+    if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
+    return 'bg-blue-100 text-blue-800';
   }
 </script>
 

@@ -127,13 +127,13 @@ export function calculateRelevanceScore(
  * Infer entity type from result data
  */
 function inferType(result: RawSearchResult): SearchResult['type'] {
-  if (result.caseNumber || result.case_id) return: 'case';
-  if (result.evidenceType || result.evidence_type) return: 'evidence';
-  if (result.firstName && result.lastName) return: 'criminal';
-  if (result.documentType || result.document_type) return: 'document';
-  if (result.citation || result.precedent) return: 'precedent';
-  if (result.statute || result.law) return: 'statute';
-  return: 'document';
+  if (result.caseNumber || result.case_id) return 'case';
+  if (result.evidenceType || result.evidence_type) return 'evidence';
+  if (result.firstName && result.lastName) return 'criminal';
+  if (result.documentType || result.document_type) return 'document';
+  if (result.citation || result.precedent) return 'precedent';
+  if (result.statute || result.law) return 'statute';
+  return 'document';
 }
 /**
  * Calculate default score when none provided

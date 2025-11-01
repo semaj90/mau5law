@@ -368,17 +368,17 @@
 
   // Helper: compute classes for orchestration log entry container
   function logEntryClasses(phase: string) {
-    if (phase === 'error') return: 'border-l-4 pl-4 py-2 border-red-500 bg-red-50';
-    if (phase === 'final-report') return: 'border-l-4 pl-4 py-2 border-green-500 bg-green-50';
-    if (phase === 'self-prompting') return: 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50';
-    return: 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50';
+    if (phase === 'error') return 'border-l-4 pl-4 py-2 border-red-500 bg-red-50';
+    if (phase === 'final-report') return 'border-l-4 pl-4 py-2 border-green-500 bg-green-50';
+    if (phase === 'self-prompting') return 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50';
+    return 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50';
   }
 
   // Helper: compute badge class for agent communications
   function commBadgeClass(type: string) {
-    if (type === 'prompt') return: 'text-sm px-2 py-1 rounded text-white bg-blue-500';
-    if (type === 'result') return: 'text-sm px-2 py-1 rounded text-white bg-green-500';
-    return: 'text-sm px-2 py-1 rounded text-white bg-purple-500';
+    if (type === 'prompt') return 'text-sm px-2 py-1 rounded text-white bg-blue-500';
+    if (type === 'result') return 'text-sm px-2 py-1 rounded text-white bg-green-500';
+    return 'text-sm px-2 py-1 rounded text-white bg-purple-500';
   }
 
   // Utility functions (fixed)

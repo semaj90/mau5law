@@ -238,16 +238,16 @@
     const currentTime = Date.now() * 0.001;
     try {
       switch (activeVisualization) {
-        case: 'attentionHeatmap':
+        case 'attentionHeatmap':
           renderAttentionHeatmap(currentTime);
           break;
-        case: 'documentNetwork':
+        case 'documentNetwork':
           renderDocumentNetwork(currentTime);
           break;
-        case: 'evidenceTimeline':
+        case 'evidenceTimeline':
           renderEvidenceTimeline(currentTime);
           break;
-        case: 'textFlow':
+        case 'textFlow':
           renderTextFlow(currentTime);
           break;
       }

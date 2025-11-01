@@ -153,16 +153,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action') || 'process';
   try {
     switch (action) {
-      case: 'check':
+      case 'check':
         return json(await handleTypeScriptCheck());
-      case: 'process':
+      case 'process':
         return json(await handleErrorProcessing(request));
-      case: 'test':
+      case 'test':
         return json(await handleSystemTest());
-      case: 'stats':
+      case 'stats':
         return json(await handleStatsRequest());
-      default:
-        return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: unknown) {
     // Changed: 'any' to: 'unknown'

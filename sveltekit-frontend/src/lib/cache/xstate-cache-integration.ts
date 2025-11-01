@@ -67,7 +67,7 @@ export const cacheActor = fromPromise(
     const startTime = performance.now();
     try {
       switch (input.operation) {
-        case: 'get': {
+        case 'get': {
           if (!input.key) throw new Error('Key required for get operation');
           const cachedData = await headlessUICache.get(input.key, input.semanticQuery);
           const responseTime = performance.now() - startTime;
@@ -98,7 +98,7 @@ export const cacheActor = fromPromise(
             };
           }
         }
-        case: 'set': {
+        case 'set': {
           if (!input.key || input.data === undefined) {
             throw new Error('Key and data required for set operation');
           }
@@ -115,7 +115,7 @@ export const cacheActor = fromPromise(
             responseTime: performance.now() - startTime,
           };
         }
-        case: 'invalidate': {
+        case 'invalidate': {
           if (input.key) {
             // Invalidate specific key - would need to implement in cache
             console.log(`[Cache] Invalidating key: ${input.key}`);
@@ -132,7 +132,7 @@ export const cacheActor = fromPromise(
             responseTime: performance.now() - startTime,
           };
         }
-        case: 'sync': {
+        case 'sync': {
           // Trigger cache sync with server
           console.log('[Cache] Syncing with server...');
           return {
@@ -188,7 +188,7 @@ export const cacheActions = {
     if (!ev) return ctx;
 
     switch (ev.type) {
-      case: 'CACHE_HIT': {
+      case 'CACHE_HIT': {
         return {
           ...ctx,
           cache: {
@@ -199,7 +199,7 @@ export const cacheActions = {
           },
         };
       }
-      case: 'CACHE_MISS': {
+      case 'CACHE_MISS': {
         return {
           ...ctx,
           cache: {
@@ -210,8 +210,7 @@ export const cacheActions = {
           },
         };
       }
-      default:
-        return ctx;
+      default: return ctx;
     }
   }),
   /**

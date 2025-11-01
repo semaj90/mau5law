@@ -111,14 +111,13 @@
   }
   function formatCellValue(value: unknown, column: TableColumn) {
     switch (column.type) {
-      case: 'date':
+      case 'date':
         return new Date(String(value)).toLocaleDateString();
-      case: 'number':
+      case 'number':
         return typeof value === 'number' ? value.toLocaleString() : String(value);
-      case: 'status':
+      case 'status':
         return String(value);
-      default:
-        return String(value);
+      default: return String(value);
     }
   }
   function getCellClass(column: TableColumn) {

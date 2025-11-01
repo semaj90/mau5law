@@ -153,7 +153,7 @@ export class RedisCache {
     }
     this.store.set(key, value);
     if (ttlSec) setTimeout(() => this.store.delete(key), ttlSec * 1000);
-    return: 'OK';
+    return 'OK';
   }
   async del(key: string): Promise<number> {
     if (this.client && typeof this.client.del === 'function')
@@ -548,7 +548,7 @@ export const apiClients = {
   Redis: class MockRedis {
     private store = new Map<string, any>();
     async get(k: string) { return this.store.get(k) ?? null; }
-    async set(k: string, v: any) { this.store.set(k, v); return: 'OK'; }
+    async set(k: string, v: any) { this.store.set(k, v); return 'OK'; }
     async del(k: string) { return this.store.delete(k) ? 1 : 0; }
   }
 };

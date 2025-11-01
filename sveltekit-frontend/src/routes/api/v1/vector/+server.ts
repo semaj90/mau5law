@@ -38,16 +38,15 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'health';
   try {
     switch (action) {
-      case: 'health':
+      case 'health':
         return await getHealthStatus();
-      case: 'metrics':
+      case 'metrics':
         return await getSystemMetrics();
-      case: 'queues':
+      case 'queues':
         return await getQueueStatus();
-      case: 'performance':
+      case 'performance':
         return await getPerformanceMetrics();
-      default:
-        return json({ error: 'Unknown action' }, { status: 400 });
+      default: return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Vector API GET error:', error);
@@ -68,14 +67,13 @@ async function routeVectorRequest(
   // Determine processing path based on configuration and availability
   const processingPath = await determineProcessingPath(request, operation);
   switch (processingPath) {
-    case: 'cuda':
+    case 'cuda':
       return await processCUDA(request, jobId, operation);
-    case: 'webgpu':
+    case 'webgpu':
       return await processWebGPU(request, jobId, operation);
-    case: 'wasm':
+    case 'wasm':
       return await processWASM(request, jobId, operation);
-    default:
-      return await processDefault(request, jobId, operation);
+    default: return await processDefault(request, jobId, operation);
   }
 }
 async function determineProcessingPath(
@@ -91,7 +89,7 @@ async function determineProcessingPath(
     if (cudaResponse.ok) {
       const health = await cudaResponse.json();
       if (health.cuda) {
-        return: 'cuda';
+        return 'cuda';
       }
     }
   } catch (error: any) {
@@ -100,13 +98,13 @@ async function determineProcessingPath(
   // Check WebGPU preference and availability
   if (preferences.useWebGPU || USE_WEBGPU_FALLBACK) {
     // WebGPU check would be done client-side, but we can assume availability
-    return: 'webgpu';
+    return 'webgpu';
   }
   // For text generation tasks, prefer WASM LLM
   if (operation === 'generate' || operation === 'analysis') {
-    return: 'wasm';
+    return 'wasm';
   }
-  return: 'default';
+  return 'default';
 }
 async function processCUDA(
   request: VectorOperationRequest,
@@ -393,9 +391,9 @@ function resolveServiceStatus(result: PromiseSettledResult<any>) {
       .status === 'fulfilled' &&
     (result as { job_id?: any; queue_position?: any; estimated_wait_time_ms?: any; status?: any; value?: any }).value
   ) {
-    return: 'connected';
+    return 'connected';
   }
-  return: 'error';
+  return 'error';
 }
 // Job status endpoint
 export const GET_STATUS: RequestHandler = async ({ params, url }) => {

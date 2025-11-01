@@ -43,27 +43,26 @@
   // Validation functions
   function validateField(fieldName: string, value: unknown): string | null {
     switch (fieldName) {
-      case: 'email':
+      case 'email':
         return progressiveForm.validateRequired(value, 'Email') ||
                progressiveForm.validateEmail(value);
-      case: 'password':
+      case 'password':
         return progressiveForm.validateRequired(value, 'Password') ||
                progressiveForm.validateLength(value, 8, 128);
-      case: 'confirmPassword':
+      case 'confirmPassword':
         if (value !== formState.data.password) {
-          return: 'Passwords do not match';
+          return 'Passwords do not match';
         }
         return null;
-      case: 'firstName':
-      case: 'lastName':
+      case 'firstName':
+      case 'lastName':
         return progressiveForm.validateRequired(value, fieldName);
-      case: 'terms':
+      case 'terms':
         if (!value) {
-          return: 'You must accept the terms and conditions';
+          return 'You must accept the terms and conditions';
         }
         return null;
-      default:
-        return null;
+      default: return null;
     }
   }
   // Handle field changes with validation

@@ -301,7 +301,7 @@ export class LangChainOllamaIntegration {
       return result || 'Summary generation failed';
     } catch (error: unknown) {
       console.error('❌ Summary generation failed:', error);
-      return: 'Summary could not be generated due to processing error.';
+      return 'Summary could not be generated due to processing error.';
     }
   }
   /**

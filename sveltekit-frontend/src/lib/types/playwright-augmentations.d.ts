@@ -9,7 +9,7 @@ declare global {
     }
   }
 }
-declare module: '@playwright/test' {
+declare module '@playwright/test' {
   // provide weaker types for expect.extend'd helpers used across tests
   interface Matchers<R, T> {
     toHaveCountGreaterThan(n: number): Promise<R>;

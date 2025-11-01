@@ -244,17 +244,16 @@ export const cacheStore: Writable<CacheStoreState> = writable({
     try {
       const pathValue = this.getJsonPathValue(content, jsonPath);
       switch (operator) {
-        case: '@>': // Contains
+        case '@>': // Contains
           return JSON.stringify(pathValue).includes(JSON.stringify(value));
-        case: '@?': // Path exists
+        case '@?': // Path exists
           return pathValue !== undefined;
-        case: '@@': // Text search
+        case '@@': // Text search
           return JSON.stringify(pathValue).toLowerCase().includes(String(value).toLowerCase());
-        case: '->': // Extract JSON object
-        case: '->>': // Extract as text
+        case '->': // Extract JSON object
+        case '->>': // Extract as text
           return pathValue === value;
-        default:
-          return false;
+        default: return false;
       }
     } catch {
       return false;
