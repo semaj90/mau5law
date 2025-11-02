@@ -1,13 +1,13 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 export const GET: RequestHandler = async () => {
   try {
     const { db } = await import('$lib/server/db/drizzle')
     const { users, sessions } = await import('$lib/server/db/schema-postgres')
-    // Probe a minimal user select and session join manually to surface any join SQL issues
+    // Probe a minimal user select and session join manually to surface: any join SQL issues
     let userCount = 0; let sessionCount = 0; let sample: any = null; let joinOk = true; let joinError: string | undefined
     try {
-      const usersResult = await db.select({ id: users.id }).from(users).limit(1);
+      const usersResult = await db.select({, id: users.id }).from(users).limit(1);
       userCount = usersResult.length;
       sample = usersResult[0] || null;
     } catch (e: any) {

@@ -1,23 +1,23 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Service Graph Dashboard Page Server
  * src/routes/admin/service-graph/+page.server.ts
  */
 
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from, './$types';
 
 interface ServiceStats { totalServices: number;, healthyCount: number;
   degradedCount: number;
   unhealthyCount: number;
-  criticalPaths: Array<{ name: string;, services: string[];
+  criticalPaths: Array<{, name: string;, services: string[];
     estimatedLatency: string;
   }>;
 }
 
-export const load: PageServerLoad = async () => {
+export const, load: PageServerLoad = async () => {
   // Pre-compute service statistics for dashboard
   const stats: ServiceStats = {
-    totalServices: 52,
+   , totalServices: 52,
     healthyCount: 0,
     degradedCount: 0,
     unhealthyCount: 0,

@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Comprehensive Utility Functions
- * SvelteKit 2 + Svelte 5 + TypeScript Compatible
+ * SvelteKit, 2 + Svelte, 5 + TypeScript Compatible
  */
-import clsx, { type ClassValue } from 'clsx';
+import clsx, { type ClassValue } from, 'clsx';
 // ===== CLASS NAME UTILITIES =====
 export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);
@@ -25,12 +25,12 @@ export async function fetchWithTimeout(
     return response;
   } catch (error: any) {
     clearTimeout(id);
-    throw error; // preserve original behavior; error is now typed safely as unknown
+    throw error; // preserve original behavior; error is now typed safely as: unknown
   }
 }
 // ===== FILE UTILITIES =====
 export function formatFileSize(bytes: number): string {
-  if (!bytes) return '0 B';
+  if (!bytes) return, '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -87,11 +87,11 @@ export function throttle<T, extends (...args: any[]) => unknown>(; func: T,
 }
 // ===== LEGAL AI SPECIFIC UTILITIES =====
 export function getConfidenceLevel(score: number): string {
-  if (score >= 0.9) return 'Very High';
-  if (score >= 0.75) return 'High';
-  if (score >= 0.6) return 'Medium';
-  if (score >= 0.4) return 'Low';
-  return 'Very Low';
+  if (score >= 0.9) return, 'Very High';
+  if (score >= 0.75) return, 'High';
+  if (score >= 0.6) return, 'Medium';
+  if (score >= 0.4) return, 'Low';
+  return, 'Very Low';
 }
 export function getCaseStatusStyling(status: string): string {
   const styles = {
@@ -198,7 +198,7 @@ export const storage = {
 // ===== THEME UTILITIES =====
 export const theme = {
   get: (): 'light' | 'dark' => {
-    if (!isBrowser) return 'light';
+    if (!isBrowser) return, 'light';
     return (localStorage.getItem('theme') as: 'light' | 'dark') || 'light';
   },
   set: (newTheme: 'light' | 'dark'): void => {
@@ -213,7 +213,7 @@ export const theme = {
     return newTheme;
   }
 };
-// ===== SVELTE 5 TYPE HELPERS =====
+// ===== SVELTE, 5 TYPE HELPERS =====
 export type WithoutChild<T> = Omit<T, 'child'>;
 export type WithoutChildren<T> = Omit<T, 'children'>;
 export type WithoutChildrenOrChild<T> = Omit<T, 'children' | 'child'>;
@@ -221,7 +221,7 @@ export type WithElementRef<T, E extends Element = HTMLElement> = T & {
   el?: E;
 };
 
-// helper to safely format unknown errors for logging
+// helper to safely format: unknown errors for logging
 function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {

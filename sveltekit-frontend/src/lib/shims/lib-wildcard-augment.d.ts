@@ -1,10 +1,10 @@
-// Wildcard $lib shim: expose common named exports as; permissive: "any" to reduce
+// Wildcard $lib shim: expose common named exports as;, permissive: "any" to reduce
 // large-volume errors during migration. Keep minimal and extend as needed.
-declare module '$lib/*' {
+declare module, '$lib/*' {
   const _any: any;
   export default _any;
   // common high-noise named exports used across the repo — declared permissively
-  export const case any;
+  export const case: any;
   export const Evidence: any;
   export const AIFindResult: any;
   export const VectorService: any;
@@ -36,5 +36,5 @@ declare module '$lib/*' {
   export const analyzeCurrentErrors: any;
   // Additional missing exports
   export const crewAIService: any;
-  export const phase13Stores: any;
+  export const, phase13Stores: any;
 }

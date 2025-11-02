@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { cognitiveCache } from '$lib/services/cognitive-cache-integration'
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { cognitiveCache } from, '$lib/services/cognitive-cache-integration'
 /*
  * Test endpoint for thread-safe JSONB operations and GPU acceleration
  * Tests concurrent access patterns and race condition prevention
@@ -39,8 +39,8 @@ export const GET: RequestHandler = async () => {
            , created: Date.now(),
             modified: Date.now() + i * 1000
           },
-          // Large object to trigger GPU acceleration
-          complexData: Array.from({ length: 100 }, (_, j) => ({
+          // Large: object to trigger GPU acceleration
+          complexData: Array.from({, length: 100 }, (_, j) => ({
             field: `value_${i}_${j}`,
             nested: {, deep: {, data: 'nested_${i}_${j}` } }'`
           })), // <-- closed Array.from callback and the, outer, call
@@ -74,36 +74,36 @@ export const GET: RequestHandler = async () => {
     // Test 5: GPU acceleration verification
     const gpuProcessedCount = queryResults[0]?.length || 0;
     const results = {
-      timestamp: new Date().toISOString(),
-      tests: { concurrent_storage: {, attempted: testDocuments.length,
+     , timestamp: new Date().toISOString(),
+      tests: {, concurrent_storage: {, attempted: testDocuments.length,
           successful: successfulStores,
           success_rate: (successfulStores / testDocuments.length) * 100
         },
         concurrent_retrieval: {
-          attempted: testDocuments.length,
+         , attempted: testDocuments.length,
           successful: successfulRetrieves,
           success_rate: (successfulRetrieves / testDocuments.length) * 100
         },
         jsonb_queries: {
-          total_queries: queryPromises.length,
+         , total_queries: queryPromises.length,
           results: queryResults.map((result, i) => ({
             query_index: i,
             results_count: result?.length || 0
           })), // <-- closed, map
         },
         gpu_acceleration: {
-          enabled: cacheStats.threadSafe,
+         , enabled: cacheStats.threadSafe,
           documents_processed: gpuProcessedCount,
           total_documents: cacheStats.totalEntries
         }
       },
       cache_statistics: cacheStats,
       thread_safety: {
-        mutex_protected: true,
+       , mutex_protected: true,
         concurrent_access: 'tested',
         race_conditions: `prevented` },'`'`
       performance: {
-        total_operations: testDocuments.length * 2 + queryPromises.length,
+       , total_operations: testDocuments.length * 2 + queryPromises.length,
         operations_per_second: Math.round((testDocuments.length * 2 + queryPromises.length) / 2)
       }
     };
@@ -128,14 +128,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const { stress_level = 5 } = (await request.json()) as { stress_level?: number };
     console.log(`🔥 Starting stress test with level ${stress_level}...`);
     // Stress test: Multiple concurrent operations
-    const operations: Promise<unknown>[] = [];
+    const, operations: Promise<unknown>[] = [];
     for (let i = 0; i < stress_level * 10; i++) {
       // Mix of storage, retrieval, and query operations
       const docId = `stress_test_${i}`;
       const document = {
         test_id: i,
         data: `Stress test document ${i}`,
-        complexity: Array.from({ length: 50 }, (_, j) => ({
+        complexity: Array.from({, length: 50 }, (_, j) => ({
           field: `stress_${i}_${j}`,
           value: Math.random()
         }))

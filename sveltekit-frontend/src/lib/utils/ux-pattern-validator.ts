@@ -4,10 +4,10 @@
  */
 interface UXPattern { name: string;, description: string;
   category: 'consistency' | 'usability' | 'performance' | 'accessibility';
-  validate: () => boolean | Promise<boolean>;
+ , validate: () => boolean | Promise<boolean>;
   recommendation: string;
 }
-interface UXValidationResult { pattern: UXPattern;, passed: boolean;
+interface UXValidationResult {, pattern: UXPattern;, passed: boolean;
   message: string;
   timestamp: Date;
 }
@@ -15,7 +15,7 @@ export class UXPatternValidator {
   private patterns: UXPattern[] = [
     // Design Consistency Patterns
     {
-      name: 'legal-color-scheme-consistency',
+     , name: 'legal-color-scheme-consistency',
       description: 'All components use consistent legal AI color scheme',
       category: 'consistency',
       validate: () => {
@@ -240,7 +240,7 @@ export class UXPatternValidator {
       failedPatterns: number;
       scorePercentage: number;
     };
-    byCategory: Record<string, UXValidationResult[]>;
+   , byCategory: Record<string, UXValidationResult[]>;
     recommendations: string[];
   }> {
     const results = await this.validateAllPatterns();
@@ -285,13 +285,13 @@ export class UXPatternValidator {
     runMonitoring();
     // Set up periodic monitoring (guard for non-browser environments)
     if (typeof window !== 'undefined') {
-      // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs number)
-      monitoringInterval = window.setInterval(runMonitoring, 30000) as unknown as ReturnType<typeof, setInterval>; // Every 30 seconds
+      // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs: number)
+      monitoringInterval = window.setInterval(runMonitoring, 30000) as: unknown as ReturnType<typeof, setInterval>; // Every, 30 seconds
     }
     return () => {
       if (monitoringInterval !== undefined) {
-        // clearInterval expects a number in lib.dom; cast safe for runtime
-        clearInterval(monitoringInterval as unknown as number);
+        // clearInterval expects a: number in lib.dom; cast safe for runtime
+        clearInterval(monitoringInterval as: unknown, as: number);
       }
     };
   }
@@ -311,8 +311,8 @@ export class PerformanceMetrics {
     // If PerformanceObserver is not available (SSR or older env), return empty metrics
     if (typeof PerformanceObserver === 'undefined') return {};
     return new Promise(resolve => {
-      // Use a typed partial metrics object instead of `any`
-      const metrics: Partial<{ lcp: number; fid: number; cls: number }> = {};
+      // Use a typed partial metrics: object instead of `any`
+      const metrics: Partial<{ lcp: number; fid: number;, cls: number }> = {};
 
       // Largest Contentful Paint
       try {

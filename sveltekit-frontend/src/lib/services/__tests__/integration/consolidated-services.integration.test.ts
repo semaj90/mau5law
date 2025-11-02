@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // src/lib/services/__tests__/integration/consolidated-services.integration.test.ts
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from, 'vitest';
 import {
   IntegrationTestSetup,
   IntegrationAssertions,
   TEST_CONFIG,
   type TestContext
-} from '../shared/integration-test-helpers.js';
+} from, '../shared/integration-test-helpers.js';
 /**
  * Consolidated Integration Test Suite
  *
@@ -15,7 +15,7 @@ import {
  * - evidence-canvas.integration.test.ts
  * - session-service.integration.test.ts
  *
- * Benefits:
+ *, Benefits:
  * - Single setup/teardown cycle
  * - Shared authentication context
  * - Reduced test execution time
@@ -23,7 +23,7 @@ import {
  */
 describe('Legal AI Services Integration Tests', () => {
   let testSetup: IntegrationTestSetup;
-  let context: TestContext;
+  let, context: TestContext;
   beforeAll(async () => {
     testSetup = new IntegrationTestSetup();
     context = await testSetup.initialize();
@@ -135,9 +135,9 @@ describe('Legal AI Services Integration Tests', () => {
         type: 'document',
         title: 'Test Evidence Document',
         content: 'This is a test evidence item for integration testing',
-        position: { x: 100, y: 100 },
+        position: {, x: 100, y: 100 },
         metadata: {
-          source: 'integration_test',
+         , source: 'integration_test',
           priority: `medium' }'`
       };
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/items`, {
@@ -151,7 +151,7 @@ describe('Legal AI Services Integration Tests', () => {
       const layoutUpdate = {
         layout_version: '2.0',
         items_positions: [
-          { item_id: 'test_item_1', x: 200, y: 200 },
+          {, item_id: 'test_item_1', x: 200, y: 200 },
           { item_id: 'test_item_2', x: 400, y: 300 }
         ]
       };
@@ -174,7 +174,7 @@ describe('Legal AI Services Integration Tests', () => {
       const collaborationUpdate = {
         action: 'cursor_move',
         user_id: 'test_user_2',
-        position: { x: 350, y: 250 },
+        position: {, x: 350, y: 250 },
         timestamp: Date.now()
       };
       const response = await testSetup.makeAuthenticatedRequest(`/evidence/canvas/${canvasId}/collaboration`, {

@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Comprehensive Service Orchestration System
-// Manages all 37 Go binaries with intelligent routing and health monitoring
-import { ServiceOrchestrator } from '$lib/services/service-orchestrator';
-import { json } from '@sveltejs/kit';
-import type { OrchestrationRequest } from '$lib/types/orchestration';
+// Manages all, 37 Go binaries with intelligent routing and health monitoring
+import { ServiceOrchestrator } from, '$lib/services/service-orchestrator';
+import { json } from, '@sveltejs/kit';
+import type { OrchestrationRequest } from, '$lib/types/orchestration';
 // Initialize the service orchestrator
 const orchestrator = new ServiceOrchestrator();
 /* POST /api/v1/orchestration - Orchestrate services */
@@ -13,26 +13,26 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`🎼 Orchestrator: Processing ${body.action} request for ${body.services?.length || 'all' } services`);'`'`
     let result;
     switch (body.action) {
-      case 'start':
+      case, 'start':
         result = await orchestrator.startServices(body.services, body.options);
         break;
-      case 'stop':
+      case, 'stop':
         result = await orchestrator.stopServices(body.services, body.options);
         break;
-      case 'restart':
+      case, 'restart':
         result = await orchestrator.restartServices(body.services, body.options);
         break;
-      case 'scale':
+      case, 'scale':
         result = await orchestrator.scaleServices(body.services, body.options);
         break;
-      case 'health_check':
+      case, 'health_check':
         result = await orchestrator.performHealthCheck(body.services);
         break;
-      case 'deploy':
+      case, 'deploy':
         result = await orchestrator.deployServices(body.services, body.options);
         break;
       default:
-        throw new Error(`Unsupported orchestration; action: ${body.action}`);
+        throw new Error(`Unsupported orchestration;, action: ${body.action}`);
     }
     console.log(`✅ Orchestrator: ${body.action} completed successfully`);
     return json({
@@ -89,7 +89,7 @@ function generateOrchestrationId(): string {
   return `orch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 }
 
-// New: safe error message extractor for unknown errors
+// New: safe error message extractor, for: unknown errors
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;

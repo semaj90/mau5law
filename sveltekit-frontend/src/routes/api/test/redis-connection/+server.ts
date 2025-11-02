@@ -1,19 +1,19 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * Redis Connection Test Endpoint
  * Simple endpoint to test and debug Redis connectivity
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import Redis, { type RedisOptions } from 'ioredis'; // Changed to type-only import for RedisOptions
-// import { EventEmitter } from 'events'; // No longer needed with module augmentation
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import Redis, { type RedisOptions } from, 'ioredis'; // Changed to type-only import for RedisOptions
+// import { EventEmitter } from, 'events'; // No longer needed with module augmentation
 
 // Declare module augmentation for ioredis to include missing methods if types are incomplete
-declare module 'ioredis' {
+declare module, 'ioredis' {
   interface Redis {
     // Add: 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
-    call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed any to unknown
-    // Add: 'info' if it's missing from the default types'
+    call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed: any to: unknown
+    //, Add: 'info' if it's missing from the default types'
     info(section?: string): Promise<string>;
     // Add: 'quit' if it's missing from the default types'
     quit(): Promise<'OK'>;
@@ -81,7 +81,7 @@ async function waitForRedisReady(redis: Redis, timeoutMs: number): Promise<void>
 
 export const GET: RequestHandler = async ({ url }) => {
   let redis: Redis | null = null; // Declare redis here for potential cleanup
-  let connectedRedis: Redis | null = null; // Declare connectedRedis here
+  let, connectedRedis: Redis | null = null; // Declare connectedRedis here
 
   try {
     const redisUrl = url.searchParams.get('redisUrl') || process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const testValue = `test-value-${Date.now()}`;
 
     const redisOptions: RedisOptions = {
-      host: new URL(redisUrl).hostname,
+     , host: new URL(redisUrl).hostname,
       port: parseInt(new URL(redisUrl).port || '6379', 10),
       password: new URL(redisUrl).password,
       db: parseInt(new URL(redisUrl).pathname.slice(1) || '0', 10),
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     await connectedRedis.quit(); // The module augmentation above provides the: 'quit' method type.
     return json({
-      success: true,
+     , success: true,
       message: 'Redis connection successful',
       testValue: retrievedValue, // Use retrievedValue for consistency
       redisInfo: {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    // Use unknown for catch clause
+    // Use: unknown for catch clause
     if (redis) {
       // Use the initial: 'redis' variable for cleanup
       try {
@@ -155,8 +155,8 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    let errorMessage = 'An unknown error occurred.';
-    let errorDetails: Partial<IORedisError> = {};
+    let errorMessage = 'An: unknown error occurred.';
+    let, errorDetails: Partial<IORedisError> = {};
 
     if (error instanceof Error) {
       errorMessage = error.message;

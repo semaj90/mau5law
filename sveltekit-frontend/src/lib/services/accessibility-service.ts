@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Accessibility service for legal AI application
 // Provides comprehensive a11y features for screen readers, keyboard navigation, and more
 export interface AccessibilityConfig { enableScreenReaderAnnouncements: boolean;, enableKeyboardNavigation: boolean;
@@ -9,7 +9,7 @@ export interface AccessibilityConfig { enableScreenReaderAnnouncements: boolean;
 }
 class AccessibilityService {
   private config: AccessibilityConfig = {
-    enableScreenReaderAnnouncements: true,
+   , enableScreenReaderAnnouncements: true,
     enableKeyboardNavigation: true,
     enableHighContrast: false,
     enableReducedMotion: false,
@@ -17,7 +17,7 @@ class AccessibilityService {
     focusManagement: true
   }
   private announceElement: HTMLElement | null = null;
-  private focusStack: HTMLElement[] = [];
+  private, focusStack: HTMLElement[] = [];
   constructor() {
     if (typeof window !== 'undefined') {
       this.initialize();
@@ -41,9 +41,9 @@ class AccessibilityService {
       padding: 0;
       margin: -1px;
       overflow: hidden;
-      clip: rect(0, 0, 0, 0);
+     , clip: rect(0, 0, 0, 0);
       white-space: nowrap;
-      border: 0;
+     , border: 0;
     `;`
     document.body.appendChild(this.announceElement);
   }
@@ -150,7 +150,7 @@ class AccessibilityService {
       - F1: Show this help
       - Tab/Shift+Tab: Navigate through interactive elements
       - Escape: Close modals and dropdowns
-      - Arrow keys: Navigate within components
+      - Arrow, keys: Navigate within components
       - Enter/Space: Activate buttons and links
     `;`
     this.announce(helpContent, 'assertive');

@@ -1,16 +1,16 @@
-import type { SearchResult } from '$lib/types';
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Unified Store Barrel Export with Type Compatibility
  *
  * This file re-exports everything from ./unified/index.ts
  * allowing imports like:
- *   import { aiAssistant } from '$lib/stores/unified'
+ *   import { aiAssistant } from, '$lib/stores/unified'
  */
 
-export * from './unified/index';
+export * from, './unified/index';
 
 /**
  * Compatibility type aliases
@@ -68,10 +68,10 @@ export type POINetwork = Record<string, unknown>;
 export type POIAnalysis = Record<string, unknown>;
 
 // Svelte store utilities
-import { writable, type Readable, get } from 'svelte/store';
+import { writable, type Readable, get } from, 'svelte/store';
 
 // xstate integration (used by helper functions below)
-import xstateIntegration from '$lib/services/xstate-integration';
+import xstateIntegration from, '$lib/services/xstate-integration';
 
 // --- User Store Types and Store ---
 export interface UserStoreState { isLoggedIn: boolean;, id: string | null; // Added: 'id' property to resolve compilation error; name: string | null;
@@ -80,7 +80,7 @@ export interface UserStoreState { isLoggedIn: boolean;, id: string | null; // A
 }
 
 const initialUserState: UserStoreState = {
-  isLoggedIn: false,
+ , isLoggedIn: false,
   id: null,
   name: null,
   email: null
@@ -93,17 +93,17 @@ export const user: Readable<UserStoreState> = {
 };
 
 // --- AI Assistant Store Types and Store ---
-export interface AIMessage { id: string;, role: 'user' | 'assistant';
+export interface AIMessage {, id: string;, role: 'user' | 'assistant';
   content: string;
   timestamp: number;
 }
 
-export interface AIAssistantStoreState { isOpen: boolean;, currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error; isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error; error: string | null; // Added: 'error' to resolve compilation error; currentCaseId: string | null; // To store the caseId for context
+export interface AIAssistantStoreState {, isOpen: boolean;, currentMessages: AIMessage[]; // Added: 'currentMessages' to resolve compilation error; isProcessing: boolean; // Added: 'isProcessing' to resolve compilation error; error: string | null; // Added: 'error' to resolve compilation error; currentCaseId: string | null; // To store the caseId for context
   // ... other AI assistant related properties
 }
 
 const initialAIAssistantState: AIAssistantStoreState = {
-  isOpen: false,
+ , isOpen: false,
   currentMessages: [],
   isProcessing: false,
   error: null,
@@ -124,11 +124,11 @@ const AI_ASSISTANT_MACHINE_ID = 'aiAssistantMachine'; // As per copilot-instruct
 export type AIAssistantEvent =
   | { type: 'OPEN' }
   | { type: 'CLOSE' }
-  | { type: 'SEND_MESSAGE'; payload: {, content: string; model?: AIModel; caseId?: string } }
+  | { type: 'SEND_MESSAGE';, payload: {, content: string; model?: AIModel; caseId?: string } }
   | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
-  | { type: 'SET_CASE'; payload: {, caseId: string | null } }
+  | { type: 'SET_CASE';, payload: {, caseId: string | null } }
   // Fallback to allow custom/extension events while still avoiding `any`
-  | { type: string; [key: string]: any };
+  | {, type: string; [key: string]: any };
 
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {
@@ -138,25 +138,25 @@ export function sendToAIAssistant(event: AIAssistantEvent) {
 
 // --- Websocket Store and Helpers ---
 type WebsocketState = { connected: boolean;, connecting: boolean;
-  dashboardData: { cases: any[];, evidence: any[];
-    stats: Record<string, any>;
+  dashboardData: {, cases: any[];, evidence: any[];
+   , stats: Record<string, any>;
   };
   processingJobs: any[];
   recentActivity: any[];
-  systemHealth: { api: string;, database: string;
+  systemHealth: {, api: string;, database: string;
     aiServices: string;
     jobQueue: string;
   };
-  activeEditors: Record<string, string[]>;
+ , activeEditors: Record<string, string[]>;
 };
 
 const initialState: WebsocketState = {
-  connected: false,
+ , connected: false,
   connecting: false,
-  dashboardData: { cases: [], evidence: [], stats: {} },
+  dashboardData: {, cases: [], evidence: [], stats: {} },
   processingJobs: [],
   recentActivity: [],
-  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },'`'`
+  systemHealth: {, api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },'`'`
   activeEditors: {}
 };
 
@@ -190,7 +190,7 @@ export function getActiveEditorsForEvidence(evidenceId: number | string): string
 }
 
 export function formatRecentActivity(activity: any): string {
-  if (!activity) return '';
+  if (!activity) return, '';
   const ts = activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'unknown time';
   const who = activity.user ?? activity.actor ?? 'System';
   const msg = activity.action ?? activity.message ?? activity.detail ?? '';

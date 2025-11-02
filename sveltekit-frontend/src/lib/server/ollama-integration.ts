@@ -1,6 +1,6 @@
 // sveltekit-frontend/src/lib/server/ollama-integration.ts
-import { OLLAMA_BASE_URL } from '$env/static/private';
-import type { EmbeddingRequest, EmbeddingResponse, GenerateRequest, GenerateResponse } from '$lib/types/ollama';
+import { OLLAMA_BASE_URL } from, '$env/static/private';
+import type { EmbeddingRequest, EmbeddingResponse, GenerateRequest, GenerateResponse } from, '$lib/types/ollama';
 
 /**
  * Generates embeddings for a given text using the Ollama API.

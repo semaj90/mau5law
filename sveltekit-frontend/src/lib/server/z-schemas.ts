@@ -2,7 +2,7 @@
  * 🧩 Shared Zod Schemas
  * Provides consistent ID validation for UUIDs and CUIDs across all routes.
  */
-import { z } from 'zod';
+import { z } from, 'zod';
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const cuidRegex = /^c[^\s]{8}$/i;

@@ -221,7 +221,7 @@ let processingErrors = $state<Record<string, string>>({});
     }
   }
 </script>
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" use:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Document Upload</h2>
     <p class="text-gray-600">Upload legal documents, contracts, evidence, and other case materials</p>
@@ -263,7 +263,7 @@ let processingErrors = $state<Record<string, string>>({});
   />
   <!-- Uploaded Files List -->
   {#if formData.uploaded_files.length > 0}
-    <div class="mt-8" transition:slide>
+    <div class="mt-8" use:slide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         Uploaded Files ({formData.uploaded_files.length})
       </h3>
@@ -271,7 +271,7 @@ let processingErrors = $state<Record<string, string>>({});
         {#each formData.uploaded_files as file, index}
           {@const progress = uploadProgress[file.name] || 0}
           {@const error = processingErrors[file.name]}
-          <div class="border border-gray-200 rounded-lg p-4" transition:fade>
+          <div class="border border-gray-200 rounded-lg p-4" use:fade>
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3 flex-1">
                 <span class="text-2xl">{getFileIcon(file.type)}</span>
@@ -328,7 +328,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- OCR Results Summary -->
   {#if formData.ocr_results.length > 0}
-    <div class="mt-8" transition:slide>
+    <div class="mt-8" use:slide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         OCR Processing Results ({formData.ocr_results.length})
       </h3>
@@ -351,7 +351,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- Processing Status Indicator -->
   {#if formData.processing_status === 'processing'}
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:fade>
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4" use:fade>
       <div class="flex items-center">
         <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
         <div>
@@ -363,7 +363,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- Error Summary -->
   {#if Object.keys(errors).length > 0}
-    <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
+    <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" use:fade>
       <h4 class="text-sm font-medium text-red-800 mb-2">Processing Errors:</h4>
       <ul class="text-xs text-red-600 space-y-1">
         {#each Object.entries(processingErrors) as [filename, error]}

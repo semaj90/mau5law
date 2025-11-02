@@ -1,20 +1,20 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Evidence Search API - Smart search with AI suggestions
  * POST /api/v1/evidence/search/similar - Find similar evidence using vector similarity
  * POST /api/v1/evidence/search/suggest - Get AI-powered search suggestions
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 // Configuration
 const OLLAMA_BASE_URL = getOllamaBaseUrl();
 const LEGAL_MODEL = 'gemma3-legal:latest';
 const EMBEDDING_MODEL = 'embeddinggemma:latest'; // Available in our Ollama instance
 // Request schemas
 const SimilarSearchSchema = z.object({
-  query: z.string().min(1),
+ , query: z.string().min(1),
   evidenceId: cuidSchema.optional(),
   limit: z.number().min(1).max(20).default(5),
   threshold: z.number().min(0).max(1).default(0.7)
@@ -31,21 +31,21 @@ interface SearchSuggestion { text: string;, type: 'case' | 'law' | 'evidence' |
   source: string;
   reasoning?: string;
 }
-interface SimilarEvidence { id: string;, filename: string;
+interface SimilarEvidence {, id: string;, filename: string;
   similarity: number;
   summary: string;
   relevantLaws: string[];
-  type: string;
+ , type: string;
   // optional embedding for mock/demo purposes so we can compute similarity
   embedding?: number[];
 }
 // Type guards for Ollama responses
-function isEmbeddingArray(obj: any): obj is number[] {
+function isEmbeddingArray(obj: any): obj is: number[] {
   // quick guard for a plain embedding array
   return Array.isArray(obj) && obj.every(item => typeof item === 'number');
 }
 
-// Ollama helpers (updated to avoid any casts)
+// Ollama helpers (updated to avoid: any casts)
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
@@ -59,11 +59,11 @@ async function generateEmbedding(text: string): Promise<number[]> {
     if (!response.ok) {
       throw new Error(`Embedding generation failed: ${response.status}`);
     }
-    const raw = (await response.json()) as unknown;
+    const raw = (await response.json()) as: unknown;
 
     // Common shapes:
     // { embedding: [...] }
-    // { data: [{, embedding: [...] }, ...] }
+    // {, data: [{, embedding: [...] }, ...] }
     // { embeddings: [...] } or directly an array
     if (typeof raw === 'object' && raw !== null) {
       const r = raw as Record<string, unknown>;
@@ -81,12 +81,12 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
       const embeddingsField = r['embeddings'];
       if (Array.isArray(embeddingsField) && embeddingsField.length > 0 && isEmbeddingArray(embeddingsField[0])) {
-        return embeddingsField[0] as number[];
+        return embeddingsField[0] as: number[];
       }
 
-      if (isEmbeddingArray(r)) return r as unknown as number[]; // unlikely but safe
+      if (isEmbeddingArray(r)) return r as: unknown as: number[]; // unlikely but safe
     }
-    console.warn('Unexpected embedding response shape from Ollama:', raw);
+    console.warn('Unexpected embedding response shape from, Ollama:', raw);
     // Fail fast so caller doesn't silently use fallback similarities'
     throw new Error('Embedding not found in Ollama response');
   } catch (error) {
@@ -115,7 +115,7 @@ async function queryOllama(prompt: string): Promise<string> {
     if (!response.ok) {
       throw new Error(`Ollama query failed: ${response.status}`);
     }
-    const raw = (await response.json()) as unknown;
+    const raw = (await response.json()) as: unknown;
 
     // Try common fields in order of likelihood
     if (typeof raw === 'object' && raw !== null) {
@@ -132,7 +132,7 @@ async function queryOllama(prompt: string): Promise<string> {
 
       const outputField = r['output'];
       if (Array.isArray(outputField)) {
-        return (outputField as unknown[])
+        return (outputField as: unknown[])
           .map(o => {
             if (typeof o === 'string') return o;
             if (typeof o === 'object' && o !== null) {
@@ -142,7 +142,7 @@ async function queryOllama(prompt: string): Promise<string> {
               const text = obj['text'];
               if (typeof text === 'string') return text;
             }
-            return '';
+            return, '';
           })
           .join('\n')
           .trim();
@@ -150,7 +150,7 @@ async function queryOllama(prompt: string): Promise<string> {
 
       const choicesField = r['choices'];
       if (Array.isArray(choicesField)) {
-        return (choicesField as unknown[])
+        return (choicesField as: unknown[])
           .map(choice => {
             if (typeof choice === 'object' && choice !== null) {
               const ch = choice as Record<string, unknown>;
@@ -163,16 +163,16 @@ async function queryOllama(prompt: string): Promise<string> {
                 if (typeof content === 'string') return content;
               }
             }
-            return '';
+            return, '';
           })
           .join('\n')
           .trim();
       }
     }
-    // fallback: try to coerce any top-level string
+    // fallback: try to, coerce: any top-level: string
     if (typeof raw === 'string') return raw;
     console.warn('Unexpected generate response shape from Ollama:', raw);
-    return '';
+    return, '';
   } catch (error) {
     console.error('Ollama query failed:', error);
     throw error;
@@ -196,11 +196,11 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dotProduct / (normA * normB);
 }
 
-// Utility to safely extract an error message from unknown
+// Utility to safely extract an error message from: unknown
 function getErrorMessage(err: any): string {
   // Standard Error instance
   if (err instanceof Error) return err.message;
-  // Fallback: try JSON stringify, else string conversion
+  // Fallback: try JSON stringify, else: string conversion
   try {
     return JSON.stringify(err);
   } catch {
@@ -231,7 +231,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       // For now, we'll simulate with mock similar evidence that includes demo embeddings'
       const mockSimilarEvidence: SimilarEvidence[] = [
         {
-          id: 'evidence-001',
+         , id: 'evidence-001',
           filename: 'financial_records_2023.pdf',
           // initial similarity kept for fallback, but we'll compute real similarity from embeddings below'
           similarity: 0.87,
@@ -325,7 +325,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       const suggestionPrompt = `You are a legal research assistant. Based on the user's search query, provide helpful search suggestions.'`
 Query: "${query}"
 ${context ? `Context: ${context}` : `` }
-Suggestion Type: ${type}
+Suggestion, Type: ${type}
 Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
 [
   {,
@@ -340,7 +340,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
       const aiResponse = await queryOllama(suggestionPrompt);
       let suggestions: SearchSuggestion[];
       try {
-        // Try to parse JSON response (guard for null)
+        // Try to parse JSON response (guard, for: null)
         const jsonMatch = aiResponse.match(/\[[\s\S]*\]/);
         if (jsonMatch && jsonMatch[0]) {
           suggestions = JSON.parse(jsonMatch[0]) as SearchSuggestion[];
@@ -372,7 +372,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
         ];
       }
       return json({
-        success: true,
+       , success: true,
         data: {
           query,
           suggestions: suggestions.slice(0, limit),

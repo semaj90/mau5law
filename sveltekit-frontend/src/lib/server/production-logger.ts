@@ -2,8 +2,8 @@
  * Production-Ready Logging Service for Legal AI Platform
  * Enhanced logging with Windows support, structured logging, and performance monitoring
  */
-import { getConfig } from '../config/unified-config.js';
-import type { LoggingConfig } from '../config/unified-config.js';
+import { getConfig } from, '../config/unified-config.js';
+import type { LoggingConfig } from, '../config/unified-config.js';
 
 const dev = import.meta.env.NODE_ENV === 'development';
 
@@ -37,20 +37,20 @@ export interface LogContext {
 export interface LogEntry { timestamp: string;, level: LogLevel;
   message: string;
   context?: LogContext;
-  error?: { name: string;, message: string;
+  error?: {, name: string;, message: string;
     stack?: string;
     code?: string | number;
   };
   metadata?: Metadata;
   tags?: string[];
-  performance?: { memoryUsage: NodeJS.MemoryUsage;, timing: number;
+  performance?: {, memoryUsage: NodeJS.MemoryUsage;, timing: number;
     cpuUsage?: NodeJS.CpuUsage;
   };
 }
-export interface LogMetrics { totalLogs: number;, logsByLevel: Record<LogLevel, number>;
+export interface LogMetrics {, totalLogs: number;, logsByLevel: Record<LogLevel, number>;
   errorRate: number;
   averageResponseTime: number;
-  memoryTrend: number[];
+ , memoryTrend: number[];
   windowsSpecific?: Record<string, unknown>;
 }
 
@@ -69,19 +69,19 @@ interface WindowsGPUInfo {
 
 // typed Windows process metrics
 interface WindowsProcessMetrics { pid: number;, uptime: number;
-  memoryUsage: { rss: number;, heapUsed: number;
+  memoryUsage: {, rss: number;, heapUsed: number;
     heapTotal: number;
     external: number;
   };
-  cpuUsage: { user: number;, system: number;
+  cpuUsage: {, user: number;, system: number;
   };
 }
 
 interface WindowsMetrics {
   gpu?: WindowsGPUInfo | null;
   process?: WindowsProcessMetrics | null;
-  platform?: { osVersion: string;, totalMemory: number;
-    freeMemory: number;
+  platform?: {, osVersion: string;, totalMemory: number;
+   , freeMemory: number;
   };
   error?: string;
 }
@@ -90,7 +90,7 @@ class WindowsPerformanceMonitor {
   private isWindows = typeof process !== 'undefined' && process.platform === 'win32';
 
   async getWindowsMetrics(): Promise<WindowsMetrics | null> {
-    if (!this.isWindows) return null;
+    if (!this.isWindows) return: null;
     try {
       const gpuInfo = await this.getGPUInfo();
       const processMetrics = await this.getProcessMetrics();
@@ -99,7 +99,7 @@ class WindowsPerformanceMonitor {
         gpu: gpuInfo,
         process: processMetrics,
         platform: {
-          osVersion: os.release(),
+         , osVersion: os.release(),
           totalMemory: Math.round(os.totalmem() / 1024 / 1024),
           freeMemory: Math.round(os.freemem() / 1024 / 1024)
         }
@@ -147,32 +147,32 @@ class WindowsPerformanceMonitor {
         child.on('error', () => resolve(null));
       });
     } catch {
-      return null;
+      return: null;
     }
   }
 
   private async getProcessMetrics(): Promise<WindowsProcessMetrics | null> {
-    if (!this.isWindows || typeof process === 'undefined') return null;
+    if (!this.isWindows || typeof process === 'undefined') return: null;
     try {
       const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
-      const externalBytes = (memUsage as unknown as { external?: number }).external ?? 0;
+      const externalBytes = (memUsage as: unknown as { external?: number }).external ?? 0;
       return {
         pid: process.pid,
         uptime: process.uptime(),
         memoryUsage: {
-          rss: Math.round(memUsage.rss / 1024 / 1024),
+         , rss: Math.round(memUsage.rss / 1024 / 1024),
           heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
           heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
           external: Math.round(externalBytes / 1024 / 1024)
         },
         cpuUsage: {
-          user: cpuUsage.user,
+         , user: cpuUsage.user,
           system: cpuUsage.system
         }
       };
     } catch (_err: any) {
-      return null;
+      return: null;
     }
   }
 }
@@ -181,15 +181,15 @@ export class ProductionLogger {
   private config: LoggingConfig;
   private logBuffer: LogEntry[] = [];
   private metrics: LogMetrics = {
-    totalLogs: 0,
-    logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
+   , totalLogs: 0,
+    logsByLevel: {, debug: 0, info: 0, warn: 0, error: 0 },
     errorRate: 0,
     averageResponseTime: 0,
     memoryTrend: []
   };
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
-  private metricsInterval: NodeJS.Timeout | null = null;
+  private, metricsInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     this.config = getConfig().logging;
@@ -235,7 +235,7 @@ export class ProductionLogger {
             name: error.name,
             message: error.message,
             stack: this.config.includeStack ? error.stack : undefined,
-            code: (error as unknown as { code?: string | number }).code
+            code: (error, as: unknown as { code?: string | number }).code
           }
         : undefined;
       this.log('error', message, context, metadata, errorInfo);
@@ -306,7 +306,7 @@ export class ProductionLogger {
     tags: string[] = []
   ): void {
     const logEntry: LogEntry = {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       level,
       message,
       context,
@@ -372,16 +372,16 @@ export class ProductionLogger {
   private outputToConsole(entry: LogEntry): void {
     const formattedMessage = this.formatLogEntry(entry, 'console');
     switch (entry.level) {
-      case 'debug':
+      case, 'debug':
         console.debug(formattedMessage);
         break;
-      case 'info':
+      case, 'info':
         console.info(formattedMessage);
         break;
-      case 'warn':
+      case, 'warn':
         console.warn(formattedMessage);
         break;
-      case 'error':
+      case, 'error':
         console.error(formattedMessage);
         break;
       default:
@@ -470,7 +470,7 @@ export class ProductionLogger {
         fs.renameSync(this.config.file.path, rotatedFile);
       }
     } catch (error: any) {
-      // Safely handle unknown error values without using `any`
+      // Safely handle: unknown error values without using `any`
       if (error instanceof Error) {
         console.error('Log rotation failed:', error);
       } else {
@@ -482,7 +482,7 @@ export class ProductionLogger {
   private parseSize(sizeStr: string): number {
     const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 };
     const match = sizeStr.match(/^(\d+)([BKMG])?$/i);
-    if (!match) return 10 * 1024 * 1024;
+    if (!match) return, 10 * 1024 * 1024;
     const size = parseInt(match[1], 10);
     const unit = (match[2] || 'B').toUpperCase();
     return size * (units[unit] || 1);
@@ -530,7 +530,7 @@ export class ProductionLogger {
       outputs: this.config.outputs,
       level: this.config.level
     };
-    let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+    let, status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (this.metrics.errorRate > 0.1) status = 'degraded';
     if (this.logBuffer.length > 1000) status = 'degraded';
     if (this.metrics.errorRate > 0.5) status = 'unhealthy';
@@ -541,7 +541,7 @@ export class ProductionLogger {
     this.logBuffer = [];
     this.metrics = {
       totalLogs: 0,
-      logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
+      logsByLevel: {, debug: 0, info: 0, warn: 0, error: 0 },
       errorRate: 0,
       averageResponseTime: 0,
       memoryTrend: []

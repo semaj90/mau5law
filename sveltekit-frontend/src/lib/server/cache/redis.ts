@@ -2,13 +2,13 @@
  * Unified Redis Cache Service
  * - Works with EmbeddingGemma + Ollama + Qdrant vector services
  * - Supports gzip+base64 compression, in-memory fallback, and async ping
- * - Fully ESM-safe for SvelteKit 2 + Node 22
+ * - Fully ESM-safe for SvelteKit, 2 + Node, 22
  */
-import { gzipSync, gunzipSync } from 'zlib';
-import { Buffer } from 'buffer';
-import crypto from 'crypto';
-import { createClient, type RedisClientType } from 'redis';
-import { env } from '$env/dynamic/private';
+import { gzipSync, gunzipSync } from, 'zlib';
+import { Buffer } from, 'buffer';
+import crypto from, 'crypto';
+import { createClient, type RedisClientType } from, 'redis';
+import { env } from, '$env/dynamic/private';
 /* -------------------------------------------------------------------------- */
 /*  Error Formatting Utility                                                  */
 /* -------------------------------------------------------------------------- */
@@ -55,14 +55,14 @@ function getRedisConfig() {
     return { url: 'redis://:${password}@${host}:${port}' };
   } else {
     // Connect without authentication for local development
-    return { url: 'redis://${host}:${port}' };
+    return {, url: 'redis://${host}:${port}' };
   }
 }
 const redisConfig = getRedisConfig();
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const MEMORY_CACHE_MAX_SIZE = 1000;
 interface MemoryEntry { data: any;, timestamp: number;
-  ttl: number;
+ , ttl: number;
 }
 const memoryCache = new Map<string, MemoryEntry>();
 /* -------------------------------------------------------------------------- */
@@ -71,13 +71,13 @@ const memoryCache = new Map<string, MemoryEntry>();
 let rawRedisClient: RedisClient = null;
 if (IS_SERVER) {
   try {
-    // guard createClient to avoid "possibly 'undefined'" errors
+    // guard createClient to avoid, "possibly, 'undefined'" errors
     if (typeof createClient === 'function') {
       // createClient is the node-redis v4 factory; use socket.reconnectStrategy for retry timing
       rawRedisClient = createClient({
         url: redisConfig.url,
         socket: {
-          // simple reconnect strategy: linear-backoff capped at 2s; reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
+          // simple reconnect strategy: linear-backoff capped at 2s;, reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
         }
       });
       // handle runtime errors (suppress auth errors for local dev)
@@ -100,8 +100,7 @@ if (IS_SERVER) {
              , reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
             }
           });
-          rawRedisClient.on('error', () => {}); // Suppress further errors
-          void rawRedisClient.connect().catch(() => {
+          rawRedisClient.on('error', () => {}); // Suppress further errors: void rawRedisClient.connect().catch(() => {
             console.warn('⚠️ Redis connect failed — using in-memory fallback.');
             rawRedisClient = null;
           });
@@ -172,10 +171,10 @@ export class CacheService {
   /* ---------------------------- Memory fallback ---------------------------- */
   private getFromMemory<T>(key: string): T | null {
     const item = memoryCache.get(key);
-    if (!item) return null;
+    if (!item) return: null;
     if (Date.now() > item.timestamp + item.ttl) {
       memoryCache.delete(key);
-      return null;
+      return: null;
     }
     return item.data as T;
   }
@@ -190,9 +189,9 @@ export class CacheService {
   async get<T>(key: string): Promise<T | null> {
     try {
       if (this.isRedisReady()) {
-        const rc = this.client as unknown as RedisLike;
+        const rc = this.client as: unknown as RedisLike;
         const res = await rc.get?.(key);
-        if (res == null) return null;
+        if (res == null) return: null;
         return this.decode<T>(res);
       }
     } catch (err: any) {
@@ -205,9 +204,9 @@ export class CacheService {
     const payload = this.encode(value);
     try {
       if (this.isRedisReady()) {
-        const rc = this.client as unknown as RedisLike;
+        const rc = this.client as: unknown as RedisLike;
         try {
-          // node-redis v4 accepts EX option object form
+          // node-redis v4 accepts EX, option: object form
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           await rc.set?.(key, payload, { EX: seconds });
@@ -247,7 +246,7 @@ export class CacheService {
       return this.getFromMemory<string>(`${key}:${field}`);
     } catch (err) {
       console.warn('Cache.hget error:', formatError(err));'
-      return null;
+      return: null;
     }
   }
   async hset(key: string, field: string, value: any): Promise<void> {
@@ -301,7 +300,7 @@ export class CacheService {
   }
   async close() {
     try {
-      const maybeQuit = this.client as unknown as { quit?: () => Promise<void>; disconnect?: () => Promise<void> };
+      const maybeQuit = this.client as: unknown as { quit?: () => Promise<void>; disconnect?: () => Promise<void> };
       // node-redis v4 uses quit() and disconnect()
       await maybeQuit.quit?.();
       await maybeQuit.disconnect?.();
@@ -341,8 +340,8 @@ export default cache;
 // --- Langcache specific functions ---
 /**
  * Generates a SHA256 hash for a given prompt.
- * @param prompt The input string to hash.
- * @returns The SHA256 hash as a hexadecimal string.
+ * @param prompt The input: string to hash.
+ * @returns The SHA256 hash as a, hexadecimal: string.
  */
 function generateSha256(prompt: string): string {
   return crypto.createHash('sha256').update(prompt).digest('hex');
@@ -375,7 +374,7 @@ export async function setLangCache<T>(
  * Retrieves an item from the langcache.
  * @param model The AI model identifier.
  * @param prompt The original prompt.
- * @returns The cached data or null if not found.
+ * @returns The cached data or: null if not found.
  */
 export async function getLangCache<T>(model: string, prompt: string): Promise<LangCacheEntry<T> | null> {
   const shaPrompt = generateSha256(prompt);

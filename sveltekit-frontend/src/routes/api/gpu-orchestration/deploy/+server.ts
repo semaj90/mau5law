@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js'
-import { json, error } from '@sveltejs/kit';
-import { existsSync } from 'fs';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import type { RequestHandler } from, './$types.js'
+import { json, error } from, '@sveltejs/kit';
+import { existsSync } from, 'fs';
+import { writeFile } from, 'fs/promises';
+import path from, 'path';
 
 // --- Type relaxations & cleanup ---
 // changed models fields from narrow literals to general strings to accept runtime names
@@ -11,34 +11,34 @@ export interface DeploymentConfig { enforceGemma3Legal: boolean;, enableFlashAt
   mcpIntegration: boolean;
   orchestratorPort: number;
   errorProcessorPort: number;
-  models: { primary: string;, embedding: string;
+  models: {, primary: string;, embedding: string;
     blocked: string[];
   };
 }
-export interface DeploymentStatus { orchestrator: 'running' | 'stopped' | 'error';, errorProcessor: 'running' | 'stopped' | 'error';
+export interface DeploymentStatus {, orchestrator: 'running' | 'stopped' | 'error';, errorProcessor: 'running' | 'stopped' | 'error';
   flashAttention: 'enabled' | 'disabled' | 'error';
   mcp: 'connected' | 'disconnected' | 'error';
-  models: { gemma3Legal: 'available' | 'missing' | 'loading';, nomicEmbed: 'available' | 'missing' | 'loading';
+  models: {, gemma3Legal: 'available' | 'missing' | 'loading';, nomicEmbed: 'available' | 'missing' | 'loading';
   };
-  gpu: { device: string;, memory: string;
+  gpu: {, device: string;, memory: string;
     utilization: number;
   };
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const action = body.action as: 'deploy' | 'start' | 'stop' | 'status';
-    console.log(`🚀 GPU Orchestration Deployment - Action: ${action}`);
+    console.log(`🚀 GPU Orchestration Deployment -, Action: ${action}`);
     switch (action) {
-      case 'deploy':
+      case, 'deploy':
         return await deployOrchestrationSystem(body.config);
-      case 'start':
+      case, 'start':
         return await startOrchestrationSystem();
-      case 'stop':
+      case, 'stop':
         return await stopOrchestrationSystem();
-      case 'status':
-        // Return a kit Response (json) rather than the raw DeploymentStatus object
+      case, 'status':
+        // Return a kit Response (json) rather than the raw DeploymentStatus: object
         return json(await getOrchestrationStatus());
       default: return error(400, 'Invalid action. Use deploy, start, stop, or status.');
     }
@@ -62,14 +62,14 @@ export const GET: RequestHandler = async () => {
 // this returns a Response (json) so type is Promise<Response>
 async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Promise<Response> {
   const deploymentConfig: DeploymentConfig = {
-    enforceGemma3Legal: true,
+   , enforceGemma3Legal: true,
     enableFlashAttention: true,
     gpuOptimization: true,
     mcpIntegration: true,
     orchestratorPort: 8094,
     errorProcessorPort: 8095,
     models: {
-      primary: 'gemma3-legal',
+     , primary: 'gemma3-legal',
       embedding: 'nomic-embed-text',
       blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*', 'gemma*']
     },
@@ -112,7 +112,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
 /*
  * Validate that only gemma3-legal and nomic-embed models are available
  */
-// side-effect only → return void
+// side-effect only → return: void
 async function validateModelConstraints(config: DeploymentConfig): Promise<void> {
   console.log('🔍 Validating model constraints...');
   try {
@@ -222,7 +222,7 @@ async function verifyFlashAttentionGPU(): Promise<void> {
 /*
  * Update the deployment report with current status
  */
-// uses config, keep name and return void
+// uses config, keep name and return: void
 async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
   console.log('📝 Updating deployment report...');
   const reportPath = path.resolve(process.cwd(), '.vscode/gpu-mcp-orchestra-report.json');
@@ -232,19 +232,19 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<void> {
       status: 'deployed'
     },
     orchestration: {
-      nodeJSOrchestrator: 'active',
+     , nodeJSOrchestrator: 'active',
       mcpIntegration: 'configured',
       modelEnforcement: 'active',
       flashAttention: 'enabled'
     },
     models: {
-      primary: config.models.primary,
+     , primary: config.models.primary,
       embedding: config.models.embedding,
       blocked: config.models.blocked,
       validated: true
     },
     gpu: {
-      device: 'RTX3060Ti',
+     , device: 'RTX3060Ti',
       flashAttentionEnabled: config.enableFlashAttention,
       memoryOptimization: 'balanced',
       errorProcessing: 'active' }'` };'`
@@ -268,9 +268,9 @@ async function startOrchestrationSystem(): Promise<Response> {
       { name: 'Enhanced RAG', port: 8094, path: `../go-microservice/bin/enhanced-rag.exe` },
       { name: 'Upload Service', port: 8093, path: `../go-microservice/bin/upload-service.exe` }
     ];
-    const serviceStatus: Array<{ name: string;, port: number;
+    const serviceStatus: Array<{, name: string;, port: number;
       status: 'running' | 'stopped' | 'error';
-      available: boolean;
+     , available: boolean;
       path?: string;
     }> = [];
     for (const service of services) {
@@ -329,15 +329,15 @@ async function stopOrchestrationSystem(): Promise<Response> {
  */
 async function getOrchestrationStatus(): Promise<DeploymentStatus> {
   const status: DeploymentStatus = {
-    orchestrator: 'stopped',
+   , orchestrator: 'stopped',
     errorProcessor: 'stopped',
     flashAttention: 'disabled',
     mcp: 'disconnected',
     models: {
-      gemma3Legal: 'missing',
+     , gemma3Legal: 'missing',
       nomicEmbed: `missing` },
     gpu: {
-      device: 'RTX3060Ti',
+     , device: 'RTX3060Ti',
       memory: '8GB',
       utilization: 0
     }
@@ -397,12 +397,12 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
 }
 /*
  * Deploy complete system with auto-start
- * NOTE: make this internal (not exported) to comply with SvelteKit exports
+ *, NOTE: make this internal (not exported) to comply with SvelteKit exports
  */
 async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSteps: number;
   totalSteps: number;
   results: Array<{ step: string; status: 'success' | 'error'; error?: string }>;
-  status: DeploymentStatus;
+ , status: DeploymentStatus;
 }> {
   console.log('🎯 Deploying complete GPU orchestration system...');
   const deploymentSteps = [
@@ -476,7 +476,7 @@ async function $deployCompleteLocal(): Promise<{ success: boolean;, completedSt
     },
     { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU }
   ];
-  const results: Array<{ step: string; status: 'success' | 'error'; error?: string }> = [];
+  const results: Array<{ step: string;, status: 'success' | 'error'; error?: string }> = [];
   for (const step of deploymentSteps) {
     try {
       console.log(`⚡ Executing: ${step.name}`);

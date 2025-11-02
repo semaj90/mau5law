@@ -1,12 +1,12 @@
-import { Buffer } from 'node:buffer';
-import { Embeddings } from '@langchain/core/embeddings';
+import { Buffer } from, 'node:buffer';
+import { Embeddings } from, '@langchain/core/embeddings';
 export interface TensorRtEmbeddingsConfig {
   endpoint?: string;
   model?: string;
 }
 export class TensorRtEmbeddings extends Embeddings {
   private readonly endpoint: string;
-  private readonly model: string;
+  private readonly, model: string;
   constructor(cfg: TensorRtEmbeddingsConfig = {}) {
     super();
     this.endpoint = cfg.endpoint ?? process.env.TRITON_HTTP_URL ?? 'http://localhost:8000';
@@ -29,14 +29,14 @@ export class TensorRtEmbeddings extends Embeddings {
           name: 'TEXT_INPUT',
           shape: [1],
           datatype: 'BYTES',
-          parameters: { binary_data: false },
+          parameters: {, binary_data: false },
           data: [Buffer.from(text, 'utf-8').toString('base64')]
         },
       ],
       outputs: [
         {,
           name: 'VECTOR',
-          parameters: { binary_data: false }
+          parameters: {, binary_data: false }
         },
       ]
     };
@@ -49,7 +49,7 @@ export class TensorRtEmbeddings extends Embeddings {
       const message = await response.text();
       throw new Error(`TensorRT inference failed: ${response.status} ${message}`);
     }
-    const result = (await response.json()) as { outputs: Array<{ name: string; data?: number[]; shape: number[] }>;
+    const result = (await response.json()) as { outputs: Array<{ name: string; data?: number[];, shape: number[] }>;
     };
     const output = result.outputs?.find((item) => item.name === 'VECTOR');
     if (!output?.data) {

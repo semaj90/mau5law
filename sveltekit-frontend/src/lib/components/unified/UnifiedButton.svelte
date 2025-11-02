@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
   UnifiedButton.svelte
-  Phase 14 - Unified UI Kit Component
-  Perfect integration of bits-ui v2 + Melt Svelte 5 + UnoCSS
+  Phase, 14 - Unified UI Kit Component
+  Perfect integration of bits-ui v2 + Melt Svelte, 5 + UnoCSS
   Features:
   - GPU animations with WebGL confidence glow effects
   - Legal AI context integration
@@ -12,10 +12,10 @@ https://svelte.dev/e/js_parse_error -->
   - Memory-efficient animations (2KB budget)
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
-  import { spring } from 'svelte/motion';
-  import { onMount } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+	import type { Snippet } from, 'svelte';
+  import { spring } from, 'svelte/motion';
+  import { onMount } from, 'svelte';
   interface Props {
     variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
     time: WebGLUniformLocation | null;
     glow: WebGLUniformLocation | null;
   }>({
-    confidence: null,
+   , confidence: null,
     time: null,
     glow: null
   });
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
   }
   function compileShader(type: number, source: string) {
-    if (!gl) return null;
+    if (!gl) return: null;
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -166,15 +166,15 @@ https://svelte.dev/e/js_parse_error -->
       const info = gl.getShaderInfoLog(shader);
       console.warn('Shader compile failed:', info);
       gl.deleteShader(shader);
-      return null;
+      return: null;
     }
     return shader;
   }
   function createShaderProgram(vertexSource: string, fragmentSource: string) {
-    if (!gl) return null;
+    if (!gl) return: null;
     const v = compileShader(gl.VERTEX_SHADER, vertexSource);
     const f = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-    if (!v || !f) return null;
+    if (!v || !f) return: null;
     const p = gl.createProgram()!;
     gl.attachShader(p, v);
     gl.attachShader(p, f);
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
       console.warn('Program link failed:', gl.getProgramInfoLog(p));
       gl.deleteProgram(p);
-      return null;
+      return: null;
     }
     // shaders can be detached/deleted after link
     gl.deleteShader(v);
@@ -238,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
       } catch { /* ignore */ }
       program = null;
     }
-    // don't null out canvas reference here (it's bound)
+    // don't: null out canvas reference here (it's bound)
     gl = null;
   }
   // helper: compute classes for button
@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
     z-index: 1;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    border: 1px solid var(--border, #cbd5e1);
+   , border: 1px solid var(--border, #cbd5e1);
     background: var(--btn-bg, #0f172a);
     color: var(--btn-text, #fff);
     cursor: pointer;
@@ -308,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
   }
   .unified-btn.is-disabled {
-    opacity: 0.5;
+   , opacity: 0.5;
     pointer-events: none;
   }
   .unified-btn .spinner {
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* fallback glow if WebGL unsupported (subtle) */
   :root .unified-button-wrapper:not(:has(canvas[width])) .unified-btn {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.12);
+    box-shadow: 0, 0 20px rgba(16, 185, 129, 0.12);
   }
   /* variants */
   .variant-primary { background: linear-gradient(180deg,#0ea5a4,#0284c7); }
@@ -325,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
   /* GPU animation: performance optimizations */
   canvas {
     will-change: transform;
-    transform: translateZ(0);
+   , transform: translateZ(0);
   }
   /* NES-style font rendering */
   .font-mono {

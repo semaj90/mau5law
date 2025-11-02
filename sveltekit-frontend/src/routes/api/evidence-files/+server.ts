@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db, evidence } from '$lib/server/db/client.js';
-import { minioService } from '$lib/server/storage/minio-service.js';
-import crypto from 'node:crypto';
-import { sql, eq, desc } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db, evidence } from, '$lib/server/db/client.js';
+import { minioService } from, '$lib/server/storage/minio-service.js';
+import crypto from, 'node:crypto';
+import { sql, eq, desc } from, 'drizzle-orm';
 function sha256(buf: Buffer) {
   return crypto.createHash('sha256').update(buf).digest('hex');
 }
@@ -74,9 +74,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     if (!file) return json({ success: false, error: 'file missing' }, { status: 400 });
-    const title = (formData.get('title') as string) || file.name;
-    const caseId = formData.get('case_id') as string | null;
-    const evidenceType = (formData.get('evidence_type') as string) || 'UNKNOWN';
+    const title = (formData.get('title') as: string) || file.name;
+    const caseId = formData.get('case_id') as: string | null;
+    const evidenceType = (formData.get('evidence_type') as: string) || 'UNKNOWN';
     await minioService.initialize();
     const arrayBuf = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuf);
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         isAdmissible: true,
         confidentialityLevel: 'standard',
         canvasPosition: {},
-        uploadedBy: null, // TODO: Get from session; createdAt: new Date().toISOString(),
+        uploadedBy: null, // TODO: Get from session;, createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       })
       .returning({ id: evidence.id, createdAt: evidence.createdAt });

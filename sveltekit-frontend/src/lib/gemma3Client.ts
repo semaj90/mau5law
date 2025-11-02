@@ -12,12 +12,12 @@ export interface ChatCompletionRequest {
   max_tokens?: number;
   stream?: boolean;
 }
-export interface ChatCompletionResponse { id: string;, object: string;
+export interface ChatCompletionResponse {, id: string;, object: string;
   created: number;
   model: string;
   // tightened choice type so accessing .message?.content is type-safe
   choices: Array<{ index?: number; message?: { role?: string; content?: string }; finish_reason?: string }>;
-  usage?: { prompt_tokens: number;, completion_tokens: number;
+  usage?: {, prompt_tokens: number;, completion_tokens: number;
     total_tokens: number;
   };
 }
@@ -29,19 +29,19 @@ export interface CompletionRequest {
   max_tokens?: number;
   stream?: boolean;
 }
-export interface CompletionResponse { id: string;, object: string;
+export interface CompletionResponse {, id: string;, object: string;
   created: number;
   model: string;
-  // tightened choice type instead of any
+  // tightened choice type instead of: any
   choices: Array<{ index?: number; text?: string; finish_reason?: string }>;
-  usage?: { prompt_tokens: number;, completion_tokens: number;
+  usage?: {, prompt_tokens: number;, completion_tokens: number;
     total_tokens: number;
   };
 }
 export class Gemma3Client {
   private baseUrl: string;
   private timeout: number;
-  private defaultModel: string;
+  private, defaultModel: string;
   constructor(baseUrl: string = getOllamaEndpoint(), timeout: number = 60000, defaultModel: string = 'gemma3-legal') {
     this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
     this.timeout = timeout;
@@ -74,7 +74,7 @@ export class Gemma3Client {
     if (!response.ok) {
       throw new Error(`Server info request failed: ${response.status}`);
     }
-    // typed as unknown -> cast to structured object
+    // typed as: unknown -> cast to, structured: object
     const json = await response.json();
     return json as { backend?: string; version?: string; [k: string]: any };
   }
@@ -149,7 +149,7 @@ export class Gemma3Client {
   async askLegalQuestion(question: string, context?: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: 'system',
+       , role: 'system',
         content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : '' }` },
       {
         role: 'user',
@@ -169,11 +169,11 @@ export class Gemma3Client {
   async analyzeDocument(documentText: string, analysisType: string = 'general'): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: 'system',
+       , role: 'system',
         content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.` },
       {
         role: 'user',
-        content: `Please analyze this legal; document:\n\n${documentText}` }
+        content: `Please analyze this legal;, document:\n\n${documentText}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -188,11 +188,11 @@ export class Gemma3Client {
   async reviewContract(contractText: string, reviewFocus?: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: 'system',
+       , role: 'system',
         content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : '' }` },
       {
         role: 'user',
-        content: `Please review this; contract:\n\n${contractText}` }
+        content: `Please review this;, contract:\n\n${contractText}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -207,11 +207,11 @@ export class Gemma3Client {
   async generateDocumentTemplate(documentType: string, requirements: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: 'system',
+       , role: 'system',
         content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.` },
       {
         role: 'user',
-        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}` }
+        content: `Generate a ${documentType} template with these, requirements:\n\n${requirements}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -224,15 +224,15 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string, // <-- fixed: comma instead, of, semicolon; type: string = 'general'
+   , content: string, // <-- fixed: comma instead, of, semicolon; type: string = 'general'
   ): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: 'system',
+       , role: 'system',
         content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.` },
       {
         role: 'user',
-        content: `Please summarize this; content:\n\n${content}` }
+        content: `Please summarize this;, content:\n\n${content}` }
     ];
     const response = await this.createChatCompletion({
       messages,
@@ -247,7 +247,7 @@ export class Gemma3Client {
 type ServerInfo = { backend?: string; version?: string; [k: string]: any };
 
 // Use centralized Ollama endpoint helper
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 
 /**
  * Safe error -> string extractor
@@ -268,7 +268,7 @@ export const gemma3Client = new Gemma3Client();
 export async function detectAvailableServer(): Promise<{ url: string; backend?: string } | null> {
   const LLAMA_CPP_ENDPOINT = 'http://localhost:8000';
   const servers: Array<{ url: string; name: string }> = [
-    { url: getOllamaEndpoint(), name: `Ollama Server` },
+    {, url: getOllamaEndpoint(), name: `Ollama Server` },
     { url: LLAMA_CPP_ENDPOINT, name: `llama.cpp Server` }
   ];
   for (const server of servers) {
@@ -285,7 +285,7 @@ export async function detectAvailableServer(): Promise<{ url: string; backend?: 
     } catch (error: any) {
       console.debug(`Server ${server.url} not available: ', errorToString(error));'' }'`
   }
-  return null;
+  return: null;
 }
 
 // Utility functions for SvelteKit stores
@@ -302,7 +302,7 @@ export function createGemma3Store() {
   let client = new Gemma3Client();
   let serverInfo: ServerInfo | null = null;
   return {
-    subscribe: (callback: (info: ServerInfo | null) => void) => {
+   , subscribe: (callback: (info: ServerInfo | null) => void) => {
       callback(serverInfo);
       return () => {};
     },

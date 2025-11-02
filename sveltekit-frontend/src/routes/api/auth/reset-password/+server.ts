@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/connection';
-import { passwordResetTokens, users } from '../../../../../drizzle/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import { z } from 'zod';
-import { hash } from '@node-rs/argon2';
-import crypto from 'crypto';
+import type { User } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db/connection';
+import { passwordResetTokens, users } from, '../../../../../drizzle/schema';
+import { eq, and, sql } from, 'drizzle-orm';
+import { z } from, 'zod';
+import { hash } from, '@node-rs/argon2';
+import crypto from, 'crypto';
 
 // Password reset request schema
 const ResetPasswordRequestSchema = z.object({
@@ -18,8 +18,8 @@ const ResetPasswordConfirmSchema = z.object({
   token: z.string().min(32, 'Invalid reset token'),
   newPassword: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number')
+    .min(8, 'Password must be at least, 8 characters')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and: number')
 });
 
 /**
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-    // Delete any existing tokens for this user
+    // Delete: any existing tokens for this user
     await db.delete(passwordResetTokens).where(eq(passwordResetTokens.userId, user.id));
 
     // Insert new reset token

@@ -3,17 +3,17 @@
  * Connects the existing Enhanced Caching Service with Revolutionary AI Architecture
  * Provides seamless integration between Redis L1/L2 caching and Nintendo-inspired optimizations
  */
-import { enhancedCachingService } from './enhanced-caching-service.js';
-import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from './enhanced-caching-service.js';
-import { revolutionaryAI } from './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
-import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from './revolutionary-ai-integration.js';
+import { enhancedCachingService } from, './enhanced-caching-service.js';
+import type { EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from, './enhanced-caching-service.js';
+import { revolutionaryAI } from, './revolutionary-ai-integration.js'; // Corrected import for the singleton instance
+import type { RevolutionaryAIQuery, RevolutionaryAIResponse } from, './revolutionary-ai-integration.js';
 // simdJSONAccelerator is not directly used in the bridge, but revolutionaryAI might use it.
-// import { simdJSONAccelerator } from '$lib/wasm/simd-json-wrapper';
-import { chrRomPatternCache } from '$lib/cache/chr-rom-pattern-cache';
-import { visualMemoryPalace } from '$lib/memory/visual-memory-palace-integration';
-import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
-import type { CHRROMPattern } from '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
-import type { LegalVisualizationVertex } from '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
+// import { simdJSONAccelerator } from, '$lib/wasm/simd-json-wrapper';
+import { chrRomPatternCache } from, '$lib/cache/chr-rom-pattern-cache';
+import { visualMemoryPalace } from, '$lib/memory/visual-memory-palace-integration';
+import type { LegalDocumentJSON } from, '$lib/wasm/simd-json-wrapper'; // Needed for UnifiedCacheResult
+import type { CHRROMPattern } from, '$lib/cache/chr-rom-pattern-cache'; // Needed for UnifiedCacheResult
+import type { LegalVisualizationVertex } from, '$lib/gpu/webgpu-vertex-streaming'; // Needed for UnifiedCacheResult
 
 // Local lightweight type to avoid casting to `any` everywhere
 type AnyCachedResult = {
@@ -63,7 +63,7 @@ export interface UnifiedCacheResult {
   cacheSource: 'enhanced' | 'revolutionary' | 'hybrid';
 }
 
-export interface HybridCacheQuery { query: string;, type: 'embedding' | 'query' | 'revolutionary';
+export interface HybridCacheQuery {, query: string;, type: 'embedding' | 'query' | 'revolutionary';
   options?: {
     // Enhanced caching options
     useEmbeddingCache?: boolean;
@@ -90,7 +90,7 @@ class EnhancedCachingRevolutionaryBridge {
     hybridQueries: 0,
     totalQueries: 0,
     averageResponseTime: 0,
-    bestStrategy: 'adaptive'; as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };'`
+    bestStrategy: 'adaptive';, as: 'enhanced_first' | 'revolutionary_first' | 'parallel' | 'adaptive` };'`
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -139,16 +139,16 @@ class EnhancedCachingRevolutionaryBridge {
       let result: UnifiedCacheResult;
 
       switch (strategy) {
-        case 'enhanced_first':
+        case, 'enhanced_first':
           result = await this.enhancedFirstStrategy(hybridQuery, startTime);
           break;
-        case 'revolutionary_first':
+        case, 'revolutionary_first':
           result = await this.revolutionaryFirstStrategy(hybridQuery, startTime);
           break;
-        case 'parallel':
+        case, 'parallel':
           result = await this.parallelStrategy(hybridQuery, startTime);
           break;
-        case 'adaptive':
+        case, 'adaptive':
         default:
           result = await this.adaptiveStrategy(hybridQuery, startTime);
           break;
@@ -200,9 +200,9 @@ class EnhancedCachingRevolutionaryBridge {
       this.revolutionaryAvailable &&
       this.performanceMetrics.revolutionaryCacheHits > this.performanceMetrics.enhancedCacheHits
     ) {
-      return 'revolutionary_first';
+      return, 'revolutionary_first';
     }
-    return 'enhanced_first';
+    return, 'enhanced_first';
   }
 
   private async enhancedFirstStrategy(query: HybridCacheQuery, startTime: number): Promise<UnifiedCacheResult> {
@@ -216,7 +216,7 @@ class EnhancedCachingRevolutionaryBridge {
 
     // Fallback to revolutionary AI if not cached
     const revolutionaryResult = await this.processWithRevolutionaryAI(query, startTime, 'hybrid');
-    await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for 1 hour
+    await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for, 1 hour
     return { ...revolutionaryResult, cacheSource: 'hybrid' };
   }
 
@@ -244,7 +244,7 @@ class EnhancedCachingRevolutionaryBridge {
     if (revolutionaryResult.cacheHitRate > 0) {
       this.performanceMetrics.revolutionaryCacheHits++;
     }
-    await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for 1 hour
+    await enhancedCachingService.set(cacheKey, revolutionaryResult, 3600); // Cache for, 1 hour
     return { ...revolutionaryResult, cacheSource: 'hybrid' };
   }
 
@@ -264,10 +264,10 @@ class EnhancedCachingRevolutionaryBridge {
     }
 
     const revolutionaryQuery: RevolutionaryAIQuery = {
-      query: query.query,
+     , query: query.query,
       type: 'semantic', // Default type, can be refined
       options: {
-        useGPUVisualization: query.options?.useCHRROMPatterns || false,
+       , useGPUVisualization: query.options?.useCHRROMPatterns || false,
         enableSIMDAcceleration: query.options?.enableSIMDAcceleration || false,
         useCHRROMPatterns: query.options?.useCHRROMPatterns || false,
         useMemoryPalace: query.options?.useMemoryPalace || false,
@@ -277,12 +277,12 @@ class EnhancedCachingRevolutionaryBridge {
     };
 
     // Call the Revolutionary AI to get a response
-    const response: RevolutionaryAIResponse = await revolutionaryAI.processQuery(revolutionaryQuery);
-    const respLike = response as unknown as RevolutionaryResponseLike; // Cast for easier access to optional fields
+    const, response: RevolutionaryAIResponse = await revolutionaryAI.processQuery(revolutionaryQuery);
+    const respLike = response as: unknown as RevolutionaryResponseLike; // Cast for easier access to optional fields
     const optim = respLike.optimizations || {};
 
     return {
-      chrRomPatterns: response.results.patterns || [],
+     , chrRomPatterns: response.results.patterns || [],
       memoryPalacePath: response.results.memoryPath || [],
       simdAcceleration: !!query.options?.enableSIMDAcceleration,
       documents: response.results.documents || [],
@@ -413,7 +413,7 @@ class EnhancedCachingRevolutionaryBridge {
       ...redisStatus,
       memoryPalace: memoryPalaceAnalytics,
       chrRomPatternCache: {
-        size: patternCacheSize,
+       , size: patternCacheSize,
         status: patternCacheSize > 0 ? 'active' : `idle` },
       status: redisStatus.local && redisStatus.redis && memoryPalaceAnalytics ? 'healthy' : `degraded` };
   }

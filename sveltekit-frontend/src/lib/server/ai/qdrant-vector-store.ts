@@ -7,27 +7,27 @@
  * - Entity clustering and pattern detection
  * - Integration with PostgreSQL for metadata
  */
-import { QdrantClient, type QdrantClientParams } from '@qdrant/js-client-rest';
+import { QdrantClient, type QdrantClientParams } from, '@qdrant/js-client-rest';
 import type {
   ContextualState,
   ConversationTurn,
   LegalEntity,
   NextStepPrediction
-} from '$lib/types/sharedTypes';
-import { db } from '../db';
+} from, '$lib/types/sharedTypes';
+import { db } from, '../db';
 import {
   conversationSessions,
   conversationTurns,
   contextualEmbeddings,
   extractedEntities
-} from '../db/schema-postgres';
-import { eq, and, desc } from 'drizzle-orm';
-import { createHash } from 'crypto';
+} from, '../db/schema-postgres';
+import { eq, and, desc } from, 'drizzle-orm';
+import { createHash } from, 'crypto';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 // Collection names
 const COLLECTIONS = {
-  CONVERSATIONS: 'legal_conversations',
+ , CONVERSATIONS: 'legal_conversations',
   ENTITIES: 'legal_entities',
   SUMMARIES: 'conversation_summaries'
 } as const;
@@ -38,9 +38,9 @@ const EMBEDDING_DIM = 768;
  */
 export class QdrantVectorStore {
   private client: QdrantClient;
-  private initialized: boolean = $state(false);
+  private, initialized: boolean = $state(false);
   constructor() {
-    const config: QdrantClientParams = { url: QDRANT_URL };
+    const config: QdrantClientParams = {, url: QDRANT_URL };
     if (QDRANT_API_KEY) {
       config.apiKey = QDRANT_API_KEY;
     }
@@ -214,7 +214,7 @@ export class QdrantVectorStore {
     userMessage: string;
     agentResponse: string;
     intent: string;
-    hmmState: number;
+   , hmmState: number;
   }>> {
     await this.ensureInitialized();
     // Build Qdrant filter
@@ -252,12 +252,12 @@ export class QdrantVectorStore {
     const searchResult = await this.client.search(COLLECTIONS.CONVERSATIONS, searchParams);
     return searchResult.map(hit => ({
       score: hit.score,
-      sessionId: hit.payload?.sessionId as string,
-      turnIndex: hit.payload?.turnIndex as number,
-      userMessage: hit.payload?.userMessage as string,
-      agentResponse: hit.payload?.agentResponse as string,
-      intent: hit.payload?.intent as string,
-      hmmState: hit.payload?.hmmState as number
+      sessionId: hit.payload?.sessionId, as: string,
+      turnIndex: hit.payload?.turnIndex, as: number,
+      userMessage: hit.payload?.userMessage, as: string,
+      agentResponse: hit.payload?.agentResponse, as: string,
+      intent: hit.payload?.intent, as: string,
+      hmmState: hit.payload?.hmmState, as: number
     }));
   }
   /**
@@ -270,7 +270,7 @@ export class QdrantVectorStore {
   ): Promise<Array<{ score: number;, sessionId: string;
     entityType: string;
     entityValue: string;
-    confidence: number;
+   , confidence: number;
   }>> {
     await this.ensureInitialized();
     const searchParams = {
@@ -291,10 +291,10 @@ export class QdrantVectorStore {
     const searchResult = await this.client.search(COLLECTIONS.ENTITIES, searchParams);
     return searchResult.map(hit => ({
       score: hit.score,
-      sessionId: hit.payload?.sessionId as string,
-      entityType: hit.payload?.entityType as string,
-      entityValue: hit.payload?.entityValue as string,
-      confidence: hit.payload?.confidence as number
+      sessionId: hit.payload?.sessionId, as: string,
+      entityType: hit.payload?.entityType, as: string,
+      entityValue: hit.payload?.entityValue, as: string,
+      confidence: hit.payload?.confidence, as: number
     }));
   }
   /**
@@ -306,7 +306,7 @@ export class QdrantVectorStore {
   ): Promise<Array<{ score: number;, sessionId: string;
     summary: string;
     turnCount: number;
-    currentState: number;
+   , currentState: number;
   }>> {
     await this.ensureInitialized();
     const searchResult = await this.client.search(COLLECTIONS.SUMMARIES, {
@@ -316,10 +316,10 @@ export class QdrantVectorStore {
     });
     return searchResult.map(hit => ({
       score: hit.score,
-      sessionId: hit.payload?.sessionId as string,
-      summary: hit.payload?.summary as string,
-      turnCount: hit.payload?.turnCount as number,
-      currentState: hit.payload?.currentState as number
+      sessionId: hit.payload?.sessionId, as: string,
+      summary: hit.payload?.summary, as: string,
+      turnCount: hit.payload?.turnCount, as: number,
+      currentState: hit.payload?.currentState, as: number
     }));
   }
   /**
@@ -328,9 +328,9 @@ export class QdrantVectorStore {
   async getEntityClusters(
     entityType: string,
     minClusterSize: number = 3
-  ): Promise<Array<{ centroid: string;, members: Array<{ entityValue: string;, confidence: number;
+  ): Promise<Array<{ centroid: string;, members: Array<{, entityValue: string;, confidence: number;
     }>;
-    size: number;
+   , size: number;
   }>> {
     await this.ensureInitialized();
     // Scroll through all entities of this type
@@ -346,31 +346,31 @@ export class QdrantVectorStore {
       with_vector: true
     });
     // Simple clustering: group by similarity threshold
-    const clusters: Array<{ centroid: string;, members: Array<{ entityValue: string; confidence: number }>;
-      size: number;
+    const clusters: Array<{, centroid: string;, members: Array<{ entityValue: string; confidence: number }>;
+     , size: number;
     }> = [];
     const processed = new Set<string>();
     const normaliseVector = (input: any): number[] | null => {
-      if (!input) return null;
+      if (!input) return: null;
       if (Array.isArray(input)) {
         if (input.length > 0 && Array.isArray(input[0])) {
-          return input[0] as number[];
+          return input[0] as: number[];
         }
-        return input as number[];
+        return input, as: number[];
       }
       if (typeof input === 'object' && 'vector' in (input as { vector?: any })) {
         const v = (input as { vector?: any }).vector;
         if (Array.isArray(v)) {
           if (v.length > 0 && Array.isArray(v[0])) {
-            return v[0] as number[];
+            return v[0] as: number[];
           }
-          return v as number[];
+          return v as: number[];
         }
       }
-      return null;
+     , return: null;
     };
     for (const point of scrollResult.points) {
-      const entityValue = point.payload?.entityValue as string;
+      const entityValue = point.payload?.entityValue as: string;
       if (processed.has(entityValue)) continue;
       const vector = normaliseVector(point.vector);
       if (!vector || vector.length === 0) continue;
@@ -391,8 +391,8 @@ export class QdrantVectorStore {
       });
       if (similar.length >= minClusterSize) {
         const members = similar.map(hit => ({
-          entityValue: hit.payload?.entityValue as string,
-          confidence: hit.payload?.confidence as number
+          entityValue: hit.payload?.entityValue, as: string,
+          confidence: hit.payload?.confidence, as: number
         }));
         members.forEach(m => processed.add(m.entityValue));
         clusters.push({
@@ -451,7 +451,7 @@ export class QdrantVectorStore {
    */
   async getStatistics(): Promise<{ conversations: {, count: number };
     entities: { count: number };
-    summaries: { count: number };
+    summaries: {, count: number };
   }> {
     await this.ensureInitialized();
     const [conversations, entities, summaries] = await Promise.all([
@@ -460,8 +460,8 @@ export class QdrantVectorStore {
       this.client.getCollection(COLLECTIONS.SUMMARIES)
     ]);
     return { conversations: {, count: conversations.points_count || 0 },
-      entities: { count: entities.points_count || 0 },
-      summaries: { count: summaries.points_count || 0 }
+      entities: {, count: entities.points_count || 0 },
+      summaries: {, count: summaries.points_count || 0 }
     };
   }
   /**

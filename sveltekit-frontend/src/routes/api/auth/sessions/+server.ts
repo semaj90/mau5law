@@ -2,11 +2,11 @@
  * Sessions management endpoint - List all active sessions for a user
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { db } from, '$lib/server/db';
+import { sessions, as sessionsTable } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 
 export const GET: RequestHandler = async (event) => {
   try {
@@ -202,11 +202,11 @@ export const DELETE: RequestHandler = async (event) => {
 
 function detectDeviceType(userAgent: string): 'mobile' | 'tablet' | 'desktop' | 'unknown' {
   if (/mobile|android/i.test(userAgent)) {
-    return 'mobile';
+    return, 'mobile';
   } else if (/tablet|ipad/i.test(userAgent)) {
-    return 'tablet';
+    return, 'tablet';
   } else if (/windows|mac|linux/i.test(userAgent)) {
-    return 'desktop';
+    return, 'desktop';
   }
-  return 'unknown';
+  return, 'unknown';
 }

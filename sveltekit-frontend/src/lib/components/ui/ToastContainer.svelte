@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { toastStore } from '$lib/stores/toast';
-  // helper: build class string safely to avoid inline expression parsing issues
+  import { toastStore } from, '$lib/stores/toast';
+  // helper: build, class: string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
     return [
       'toast-item',
@@ -68,11 +68,11 @@
   }
   @keyframes slideInRight {
     from {
-      transform: translateX(100%);
+     , transform: translateX(100%);
       opacity: 0;
     }
     to {
-      transform: translateX(0);
+     , transform: translateX(0);
       opacity: 1;
     }
   }
@@ -85,7 +85,7 @@
     }
     .toast-item {
       min-width: auto;
-      padding: 12px;
+     , padding: 12px;
     }
     .toast-message {
       font-size: 12px;

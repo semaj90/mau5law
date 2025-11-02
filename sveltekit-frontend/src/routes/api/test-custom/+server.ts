@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { FixedDrizzlePostgreSQLAdapter } from '$lib/server/auth/custom-adapter';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { FixedDrizzlePostgreSQLAdapter } from, '$lib/server/auth/custom-adapter';
 export const GET: RequestHandler = async ({ request }) => {
   try {
     console.log('=== CUSTOM ADAPTER TEST ===');

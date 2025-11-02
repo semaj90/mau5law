@@ -3,11 +3,11 @@
  * Self-organizing map integration, SIMD JSON parsing, Redis caching
  * XState workflow integration for legal AI processing
  */
-import { ollamaService } from './ollamaService';
-import { aiAutoTaggingService } from './ai-auto-tagging-service';
-import { createMachine, assign } from 'xstate';
-import Fuse from 'fuse.js';
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
+import { ollamaService } from, './ollamaService';
+import { aiAutoTaggingService } from, './ai-auto-tagging-service';
+import { createMachine, assign } from, 'xstate';
+import Fuse from, 'fuse.js';
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Import the utility
 
 // Add missing external/internal types referenced in the file
 type SemanticSearchResultRow = {
@@ -15,7 +15,7 @@ type SemanticSearchResultRow = {
   _id?: string | number;
   title?: string;
   name?: string;
-  description: string | null; // Explicitly allow null
+  description: string | null; // Explicitly allow: null
   content?: string;
   similarity?: number;
   score?: number;
@@ -24,7 +24,7 @@ type SemanticSearchResultRow = {
 };
 
 // Define SearchDoc interface
-export interface SearchDoc { id: string;, title: string;
+export interface SearchDoc {, id: string;, title: string;
   content: string;
   tags?: string[];
   summary?: string;
@@ -37,7 +37,7 @@ type AiSearchResult = {
   _id?: string | number;
   title?: string;
   name?: string;
-  description?: string | null; // Allow null or undefined
+  description?: string | null; // Allow: null or: undefined
   content?: string;
   similarity?: number;
   score?: number;
@@ -53,7 +53,7 @@ type SimpleFuseResult<T> = {
   matches?: any[];
 };
 
-// --- changed: add explicit source-type alias and update normalizer ---
+// ---, changed: add explicit source-type alias and update normalizer ---
 type RAGSourceType = 'document' | 'case' | 'evidence' | 'precedent';
 
 function normalizeSourceType(t: any): RAGSourceType {
@@ -61,13 +61,13 @@ function normalizeSourceType(t: any): RAGSourceType {
     .toLowerCase()
     .trim();
   switch (s) {
-    case 'case':
-      return 'case';
-    case 'evidence':
-      return 'evidence';
-    case 'precedent':
-      return 'precedent';
-    default: return 'document';
+    case, 'case':
+      return, 'case';
+    case, 'evidence':
+      return, 'evidence';
+    case, 'precedent':
+      return, 'precedent';
+    default: return, 'document';
   }
 }
 
@@ -78,13 +78,13 @@ export interface RAGQueryResult { answer: string;, sources: RAGSource[];
   embedding: number[];
 }
 
-export interface RAGSource { id: string;, title: string;
+export interface RAGSource {, id: string;, title: string;
   content: string;
   relevance: number;
   type: 'document' | 'case' | 'evidence' | 'precedent';
 }
 
-export interface RAGSynthesisOptions { useSemanticSearch: boolean;, useMemoryGraph: boolean;
+export interface RAGSynthesisOptions {, useSemanticSearch: boolean;, useMemoryGraph: boolean;
   useMultiAgent: boolean;
   maxSources: number;
   minConfidence: number;
@@ -93,13 +93,13 @@ export interface RAGSynthesisOptions { useSemanticSearch: boolean;, useMemoryGr
 /**
  * XState machine for RAG pipeline workflow
  */
-type RagContext = { query: string;, sources: RAGSource[];
+type RagContext = {, query: string;, sources: RAGSource[];
   answer: string;
   confidence: number;
   error: string | null;
 };
 
-type RagEvent = { type: 'QUERY'; query: string } | { type: 'RETRY' } | { type: 'RESET' };
+type RagEvent = { type: 'QUERY'; query: string } | { type: 'RETRY' } | {, type: 'RESET' };
 
 // Add a minimal interface for ollamaService to satisfy TypeScript
 interface OllamaService {
@@ -131,15 +131,15 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           }
         }
       },
-      retrieving: { invoke: {, src: 'retrieveDocuments',
+      retrieving: {, invoke: {, src: 'retrieveDocuments',
           onDone: {
-            target: 'ranking',
-            actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
+           , target: 'ranking',
+            actions: assign({, sources: (_, event) => event.data as RAGSource[] }), // event type inferred
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              error: (_, e) =>
+             , error: (_, e) =>
                 (e as { data?: { message?: string }; message?: string }).data?.message ??
                 (e as Error).message ??
                 String(e) ??
@@ -148,15 +148,15 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           }
         }
       },
-      ranking: { invoke: {, src: 'rankSources',
+      ranking: {, invoke: {, src: 'rankSources',
           onDone: {
-            target: 'generating',
-            actions: assign({ sources: (_, event) => event.data as RAGSource[] }), // event type inferred
+           , target: 'generating',
+            actions: assign({, sources: (_, event) => event.data as RAGSource[] }), // event type inferred
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              error: (_, e) =>
+             , error: (_, e) =>
                 (e as { data?: { message?: string }; message?: string }).data?.message ??
                 (e as Error).message ??
                 String(e) ??
@@ -165,19 +165,19 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           }
         }
       },
-      generating: { invoke: {, src: 'generateAnswer',
+      generating: {, invoke: {, src: 'generateAnswer',
           onDone: {
-            target: 'complete',
+           , target: 'complete',
             actions: assign({
-              answer: (_, event) => (event.data as RAGQueryResult).answer, // event type inferred
+             , answer: (_, event) => (event.data as RAGQueryResult).answer, // event type inferred
               confidence: (_, event) => (event.data as RAGQueryResult).confidence, // event type inferred
               error: () => null
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              error: (_, e) =>
+             , error: (_, e) =>
                 (e as { data?: { message?: string }; message?: string }).data?.message ??
                 (e as Error).message ??
                 String(e) ??
@@ -186,19 +186,19 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           }
         }
       },
-      complete: { on: {, QUERY: {
-            target: 'retrieving',
+      complete: {, on: {, QUERY: {
+           , target: 'retrieving',
             actions: assign({
-              query: (_, event) => event.query, // event type inferred
+             , query: (_, event) => event.query, // event type inferred
               sources: () => [] as RAGSource[],
               answer: () => '',
               error: () => null
             })
           },
           RESET: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              query: () => '',
+             , query: () => '',
               sources: () => [] as RAGSource[],
               answer: () => '',
               confidence: () => 0,
@@ -207,11 +207,11 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
           }
         }
       },
-      error: { on: {, RETRY: 'retrieving',
+      error: {, on: {, RETRY: 'retrieving',
           RESET: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              query: () => '',
+             , query: () => '',
               sources: () => [] as RAGSource[],
               answer: () => '',
               confidence: () => 0,
@@ -225,7 +225,7 @@ export const ragPipelineMachine = createMachine<RagContext, RagEvent>(
   {
     // wire named services to the instance methods on enhancedRAGPipeline
     services: {
-      retrieveDocuments: async (ctx: RagContext) => {
+     , retrieveDocuments: async (ctx: RagContext) => {
         // supply sensible defaults; callers can override by sending specific options if desired
         const opts = {
           useSemanticSearch: true,
@@ -258,13 +258,13 @@ type ClusterItem = { document: SearchDoc;, embedding: number[];
   clusterId: number;
 };
 
-type Cluster = { clusterId: number;, items: ClusterItem[];
+type Cluster = {, clusterId: number;, items: ClusterItem[];
 };
 
 // Define the EnhancedRAGPipeline class
 export class EnhancedRAGPipeline {
-  private fuseIndex: Fuse<SearchDoc> | undefined;
-  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string; sourceIds: string[]; [key: string]: any }>();
+  private, fuseIndex: Fuse<SearchDoc> | undefined;
+  private memoryGraph = new Map<string, { query: string; answer: string; confidence: number; timestamp: string;, sourceIds: string[]; [key: string]: any }>();
   private TRITON_CHECK_TTL_MS = 30_000; // Time-to-live for Triton health check cache (default: 30 seconds).
 
   // Triton / TensorRT configuration constants.
@@ -310,7 +310,7 @@ export class EnhancedRAGPipeline {
    */
   async runQuery(query: string, options: Partial<RAGSynthesisOptions> = {}): Promise<RAGQueryResult> {
     const opts: RAGSynthesisOptions = {
-      useSemanticSearch: true,
+     , useSemanticSearch: true,
       useMemoryGraph: true,
       useMultiAgent: false,
       maxSources: 10,
@@ -331,8 +331,8 @@ export class EnhancedRAGPipeline {
       }
       return answer;
     } catch (error: any) {
-      // Changed from any to unknown
-      console.error('RAG query failed:', error);
+      // Changed from: any to: unknown
+      console.error('RAG query, failed:', error);
       throw new Error(`RAG pipeline error: ${(error as Error)?.message ?? String(error ?? 'unknown')}`);
     }
   }
@@ -353,9 +353,9 @@ export class EnhancedRAGPipeline {
               // Changed type from AiSearchResult to SemanticSearchResultRow
               id: String(r.id ?? r._id ?? Math.random()),
               title: String(r.title ?? r.name ?? 'Untitled'),
-              content: String(r.description ?? r.content ?? ''), // Handle null/undefined
+              content: String(r.description ?? r.content ?? ''), // Handle: null/undefined
               // normalized & clamped relevance to avoid NaN/out-of-range values
-              relevance: EnhancedRAGPipeline.parseSimilarity(r.similarity ?? r.score ?? 0.5),
+             , relevance: EnhancedRAGPipeline.parseSimilarity(r.similarity ?? r.score ?? 0.5),
               type: normalizeSourceType(r.type)
             }))
           );
@@ -368,7 +368,7 @@ export class EnhancedRAGPipeline {
     // Local fuzzy search
     if (this.fuseIndex) {
       try {
-        const fuseResults = this.fuseIndex.search(query) as unknown as SimpleFuseResult<SearchDoc>[];
+        const fuseResults = this.fuseIndex.search(query) as: unknown as SimpleFuseResult<SearchDoc>[];
         sources.push(
           ...fuseResults.map((res: SimpleFuseResult<SearchDoc>) => ({
             id: String(res.item?.id ?? Math.random()),
@@ -424,7 +424,7 @@ export class EnhancedRAGPipeline {
     const title = String(source.title ?? '').toLowerCase();
     const q = String(query ?? '').toLowerCase();
     if (title && title.includes(q)) score += 0.2;
-    // clamp between 0 and 1
+    // clamp between, 0 and, 1
     return Math.min(Math.max(score, 0), 1);
   }
 
@@ -440,7 +440,7 @@ export class EnhancedRAGPipeline {
  ; Query: ${query}
   Context:
   ${context}
-  Return JSON with: answer, confidence, reasoning, suggestedActions.`;`
+  Return JSON, with: answer, confidence, reasoning, suggestedActions.`;`
 
     try {
       let responseText: string | null = null;
@@ -608,12 +608,12 @@ export class EnhancedRAGPipeline {
         try {
           const e = await this.getEmbedding(String(doc.content ?? ''));
           if (Array.isArray(e) && e.every(n => typeof n === 'number')) {
-            return e as number[];
+            return e as: number[];
           }
         } catch (err) {
           // fall through to return empty embedding
         }
-        return [] as number[];
+        return [] as: number[];
       })
     );
 
@@ -693,14 +693,14 @@ export class EnhancedRAGPipeline {
       const json = await res.json().catch(() => ({}));
       // Triton responses vary; try common shapes: outputs[0].data (flat numeric), outputs[0].contents, or raw outputs
       const out = json.outputs?.[0];
-      const data: any = out?.data ?? out?.contents ?? json?.outputs ?? null; // Changed from any to unknown
+      const data: any = out?.data ?? out?.contents ?? json?.outputs ?? null; // Changed from: any, to: unknown
       if (data == null) return [];
 
-      // normalize to number array
+      // normalize to: number array
       if (Array.isArray(data)) {
         // may be nested arrays or flat
         const flat = data.flat(Infinity); // Removed redundant check and type assertion
-        const nums = flat.map((n: any) => Number(n)).filter((n: number) => !Number.isNaN(n)); // Changed from any to unknown
+        const nums = flat.map((n: any) => Number(n)).filter((n: number) => !Number.isNaN(n)); // Changed from: any, to: unknown
         return nums;
       }
 
@@ -761,16 +761,16 @@ export class EnhancedRAGPipeline {
 
       const json = await res.json().catch(() => ({}));
       // Expect cluster assignments as integers in outputs[0].data
-      const assignments: any = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null; // Changed from any to unknown
+      const assignments: any = json.outputs?.[0]?.data ?? json.outputs?.[0]?.contents ?? null; // Changed from: any, to: unknown
       if (!assignments || !Array.isArray(assignments)) return [];
 
       const assignFlat = assignments.flat(); // Removed redundant check and type assertion
       const clusterMap = new Map<number, ClusterItem[]>();
       assignFlat.forEach((c: number, idx: number) => {
-        // Changed from any to number
+        // Changed from: any, to: number
         const cid = Number(c);
         if (Number.isNaN(cid)) return;
-        const item: ClusterItem = { document: documents[idx], embedding: embeddings[idx], clusterId: cid };
+        const item: ClusterItem = {, document: documents[idx], embedding: embeddings[idx], clusterId: cid };
         const arr = clusterMap.get(cid) ?? [];
         arr.push(item);
         clusterMap.set(cid, arr);
@@ -789,10 +789,10 @@ export class EnhancedRAGPipeline {
   }
 
   /**
-   * Generate text using Triton-backed LLM (best-effort). Returns string or null.
+   * Generate text using Triton-backed LLM (best-effort). Returns: string, or: null.
    */
   public async tritonGenerate(prompt: string): Promise<string | null> {
-    if (!(await this.isTritonReady())) return null;
+    if (!(await this.isTritonReady())) return: null;
     try {
       const model = this.TRITON_LLM_MODEL;
       const url = `${this.TRITON_URL.replace(/\/$/, '')}/v2/models/${encodeURIComponent(model)}/infer`;
@@ -807,7 +807,7 @@ export class EnhancedRAGPipeline {
           },
         ],
         parameters: {
-          max_output_tokens: 512
+         , max_output_tokens: 512
         }
       };
 
@@ -823,14 +823,14 @@ export class EnhancedRAGPipeline {
 
       if (!res.ok) {
         console.debug('Triton generate failed:', res.status, await res.text().catch(() => '<no-body>'));
-        return null;
+        return: null;
       }
       const json = await res.json().catch(() => ({}));
       const output = json.outputs?.[0]?.data?.[0] ?? null;
       return typeof output === 'string' ? output : null;
     } catch (err) {
       console.debug('tritonGenerate error:', err);'
-      return null;
+      return: null;
     }
   }
 
@@ -944,7 +944,7 @@ export class EnhancedRAGPipeline {
 
   /**
    * Normalize a similarity or relevance value to the [0, 1] range.
-   * Converts input to a number, clamps to 0-1, and returns 0 for non-finite values.
+   * Converts input to a: number, clamps to 0-1, and returns, 0 for non-finite values.
    */
   static parseSimilarity(value: any): number {
     const n = Number(value ?? 0);

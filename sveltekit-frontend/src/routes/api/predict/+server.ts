@@ -1,11 +1,11 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
 
 const LANGEXTRACT_BASE = process.env.LANGEXTRACT_URL
   ? process.env.LANGEXTRACT_URL.replace(/\/analyze$/, '')
   : 'http://localhost:8081';
 const LANGEXTRACT_PREDICT = `${LANGEXTRACT_BASE}/predict`;
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const word = url.searchParams.get('word') || '';
   const top = url.searchParams.get('top') || '5';
   try {

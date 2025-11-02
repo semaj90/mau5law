@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // XState v5 Legal Case Management Workflow - Minimal Stub
-import { createMachine } from 'xstate';
+import { createMachine } from, 'xstate';
 
 export interface LegalCaseContext { caseId: string;, title: string;
   description: string;
@@ -19,7 +19,7 @@ export type LegalCaseEvent =
   | { type: 'ARCHIVE' };
 
 export const legalCaseManagementMachine = createMachine({
-  id: 'legalCaseManagement',
+ , id: 'legalCaseManagement',
   initial: 'idle',
   context: {
    , caseId: '',

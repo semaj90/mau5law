@@ -1,11 +1,11 @@
-import { getContext7MulticoreService } from '$lib/services/context7-multicore.js';
-import type { RequestHandler } from './$types.js';
+import { getContext7MulticoreService } from, '$lib/services/context7-multicore.js';
+import type { RequestHandler } from, './$types.js';
 const startTime = Date.now();
 let requestCount = 0;
 export interface YoRHaSystemStatus { database: { connected: boolean; latency: number; activeConnections: number; queryCount: number };
   backend: { healthy: boolean; uptime: number; activeServices: number; cpuUsage: number; memoryUsage: number };
   frontend: { renderFPS: number; componentCount: number; activeComponents: number; webGPUEnabled: boolean };
-  multicore?: { totalWorkers: number;, healthyWorkers: number;
+  multicore?: {, totalWorkers: number;, healthyWorkers: number;
     busyWorkers: number;
     queueSize: number;
     activeTasks: number;
@@ -16,7 +16,7 @@ export interface YoRHaSystemStatus { database: { connected: boolean; latency: nu
   timestamp: string;
   systemLoad: number;
   gpuUtilization: number;
-  networkLatency: number;
+ , networkLatency: number;
 }
 function collectStatus(): YoRHaSystemStatus {
   const mem = process.memoryUsage();
@@ -52,14 +52,14 @@ function collectStatus(): YoRHaSystemStatus {
       queryCount: Math.floor(Math.random() * 1000) + 500
     },
     backend: {
-      healthy: true,
+     , healthy: true,
       uptime: Math.floor((Date.now() - startTime) / 1000),
       activeServices: multicoreStatus?.healthyWorkers || 5,
       cpuUsage: Number(cpuApprox.toFixed(2)),
       memoryUsage: rssMB
     },
     frontend: {
-      renderFPS: Math.floor(Math.random() * 10) + 55,
+     , renderFPS: Math.floor(Math.random() * 10) + 55,
       componentCount: 778,
       activeComponents: Math.floor(Math.random() * 50) + 150,
       webGPUEnabled: true

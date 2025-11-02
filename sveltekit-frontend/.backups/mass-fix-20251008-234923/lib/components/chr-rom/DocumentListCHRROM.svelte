@@ -241,7 +241,7 @@ $effect(() => {
         </div>
         <!-- Hover-Triggered Patterns (Advanced) -->
         {#if hoveredDocument === doc.id}
-          <div class="hover-details" transition:slide>
+          <div class="hover-details" use:slide>
             <div class="entity-heatmap">
               <span class="label">Entities:</span>
               <div class="{getPatternRenderingClass(doc.id, 'entity_heatmap')} chr-rom-heatmap">

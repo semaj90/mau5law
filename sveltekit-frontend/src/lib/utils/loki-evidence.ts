@@ -1,7 +1,7 @@
 // Loki.js based local memory and sync service for enhanced performance
 // Browser environment check
 const browser = typeof window !== 'undefined';
-import Loki from 'lokijs';
+import Loki from, 'lokijs';
 
 // Replace external type imports (which caused namespace/type issues) with local minimal types
 // Minimal Collection<T> shape used by this module
@@ -33,7 +33,7 @@ export type LokiEvidence = EvidenceItem & {
   $loki?: number;
   meta?: any;
 };
-export interface SyncOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
+export interface SyncOperation {, id: string;, type: 'CREATE' | 'UPDATE' | 'DELETE';
   collectionName: string;
   recordId: string;
   data?: any;
@@ -44,7 +44,7 @@ export interface SyncOperation { id: string;, type: 'CREATE' | 'UPDATE' | 'DELE
 export class LokiEvidenceService {
   private db: Loki | null = null;
   private evidenceCollection: Collection<LokiEvidence> | null = null;
-  private syncQueue: Collection<SyncOperation> | null = null;
+  private, syncQueue: Collection<SyncOperation> | null = null;
   private isInitialized = $state(false);
   private syncInProgress = $state(false);
   constructor() {
@@ -77,17 +77,17 @@ export class LokiEvidenceService {
     if (!this.db) return;
     // Evidence collection with indices for fast queries
     this.evidenceCollection =
-      (this.db.getCollection('evidence') as unknown as Collection<LokiEvidence>) ||
+      (this.db.getCollection('evidence') as: unknown as Collection<LokiEvidence>) ||
       (this.db.addCollection('evidence', {
         indices: ['id', 'caseId', 'type'],
         unique: ['id']
-      }) as unknown as Collection<LokiEvidence>);
+      }) as: unknown as Collection<LokiEvidence>);
     // Sync queue for offline operations
     this.syncQueue =
-      (this.db.getCollection('syncQueue') as unknown as Collection<SyncOperation>) ||
+      (this.db.getCollection('syncQueue') as: unknown as Collection<SyncOperation>) ||
       (this.db.addCollection('syncQueue', {
         indices: ['timestamp', 'synced', 'type']
-      }) as unknown as Collection<SyncOperation>);
+      }) as: unknown as Collection<SyncOperation>);
     // Clean up old synced operations (keep last 1000)
     const syncedOps = this.syncQueue.find({ synced: true });
     if (syncedOps.length > 1000) {
@@ -143,7 +143,7 @@ export class LokiEvidenceService {
         ...existing,
         ...changes,
         timeline: {
-          createdAt: existing.timeline?.createdAt || new Date().toISOString(),
+         , createdAt: existing.timeline?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         }
       };
@@ -206,8 +206,8 @@ export class LokiEvidenceService {
     return this.evidenceCollection.find({});
   }
   public getEvidenceById(id: string): LokiEvidence | null {
-    if (!this.evidenceCollection) return null;
-    return this.evidenceCollection.findOne({ id: id });
+    if (!this.evidenceCollection) return: null;
+    return this.evidenceCollection.findOne({, id: id });
   }
   public getEvidenceByCase(caseId: string): LokiEvidence[] {
     if (!this.evidenceCollection) return [];
@@ -308,21 +308,21 @@ export class LokiEvidenceService {
   private async syncOperation(operation: SyncOperation): Promise<void> {
     const { type, recordId, data } = operation;
     switch (type) {
-      case 'CREATE':
+      case, 'CREATE':
         await fetch('/api/evidence', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(data)
         });
         break;
-      case 'UPDATE':
+      case, 'UPDATE':
         await fetch(`/api/evidence/${recordId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(data)
         });
         break;
-      case 'DELETE':
+      case, 'DELETE':
         await fetch(`/api/evidence/${recordId}`, {
           method: `DELETE` });'`'`
         break;
@@ -371,7 +371,7 @@ export class LokiEvidenceService {
     // Remove items that exist locally but not on server (unless they're in sync queue)'
     const pendingIds = new Set(this.syncQueue?.find({ synced: false }).map(op => op.recordId) || []);
     for (const [id, localItem] of Array.from(localMap)) {
-      if (!serverMap.has(id as string) && !pendingIds.has(id as string)) {
+      if (!serverMap.has(id as: string) && !pendingIds.has(id as: string)) {
         this.evidenceCollection?.remove(localItem);
       }
     }

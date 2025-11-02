@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
-// Simple test endpoint to verify relay auth works without any imports
-export const POST: RequestHandler = async ({ cookies }) => {
+import type { RequestHandler } from, './$types.js';
+// Simple test endpoint to verify relay auth works without: any imports
+export const, POST: RequestHandler = async ({ cookies }) => {
   try {
     console.log('🧪 Test relay endpoint called');
-    // Manual session creation without any external dependencies
+    // Manual session creation without: any external dependencies
     const sessionId = 'test-session-' + Date.now();
     // Create session cookie manually
     cookies.set('auth-session', sessionId, {

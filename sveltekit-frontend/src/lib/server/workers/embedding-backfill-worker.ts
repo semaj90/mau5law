@@ -4,9 +4,9 @@
  * Automatically generates embeddings for evidence files that don't have them yet.'
  * Integrates with the existing evidence upload pipeline and embedding API.
  */
-import { query } from '$lib/server/db/client.js';
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { embeddingService } from '$lib/services/embedding-service.js';
+import { query } from, '$lib/server/db/client.js';
+import { minioService } from, '$lib/server/storage/minio-service.js';
+import { embeddingService } from, '$lib/services/embedding-service.js';
 interface EvidenceFile { id: number;, title: string;
   description?: string;
   storage_bucket: string;
@@ -15,9 +15,9 @@ interface EvidenceFile { id: number;, title: string;
   file_type: string;
   case_id?: string;
 }
-interface BackfillResult { processed: number;, success: number;
+interface BackfillResult {, processed: number;, success: number;
   failed: number;
-  errors: Array<any>
+ , errors: Array<any>
 export class EmbeddingBackfillWorker {
   private isRunning = $state(false);
   private batchSize = 10;
@@ -53,7 +53,7 @@ export class EmbeddingBackfillWorker {
       );
       console.log(`📋 Found ${evidenceFiles.length} files to process`);
       const result: BackfillResult = {
-        processed: 0,
+       , processed: 0,
         success: 0,
         failed: 0,
         errors: []
@@ -132,7 +132,7 @@ export class EmbeddingBackfillWorker {
     // - TXT file reading
     // - OCR for images using tesseract.js
     switch (file.mime_type) {
-      case 'text/plain':
+      case, 'text/plain':
         try {
           // Get file from MinIO and extract text
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
@@ -142,7 +142,7 @@ export class EmbeddingBackfillWorker {
         } catch (error) {
           console.warn(`Failed to extract text from ${file.object_name}: ', error);'' }'`
         break;
-      case 'application/json':
+      case, 'application/json':
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
           // removed unused response assignment
@@ -169,7 +169,7 @@ export class EmbeddingBackfillWorker {
       body: JSON.stringify({,
         text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to: 'openai'; or: 'nomic' when ready;
-        dimensions: 768
+       , dimensions: 768
       })
     });
     if (!(response as { text?: any; json?: any; ok?: any; statusText?: any }).ok) {
@@ -204,8 +204,8 @@ export class EmbeddingBackfillWorker {
       query('SELECT COUNT(*) as count FROM evidence_files'),
       query('SELECT COUNT(*) as count FROM evidence_files WHERE embeddings IS NOT NULL')
     ]);
-    const total = parseInt((totalResult.rows[0] as any).count);
-    const withEmbeddings = parseInt((withEmbeddingsResult.rows[0] as any).count);
+    const total = parseInt((totalResult.rows[0] as: any).count);
+    const withEmbeddings = parseInt((withEmbeddingsResult.rows[0] as: any).count);
     const withoutEmbeddings = total - withEmbeddings;
     const percentage = total > 0 ? (withEmbeddings / total) * 100 : 0;
     return {

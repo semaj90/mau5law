@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Production Vector Search Testing API
 // Tests vector ranking, reranking, and RAG pipeline integration
-import { vectorRankingService } from '$lib/services/vector-ranking-service';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
+import { vectorRankingService } from, '$lib/services/vector-ranking-service';
+import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
 
 // Placeholder imports for missing services
 const legalBERT = { analyzeLegalText: async (_text: string) => ({, entities: [],
@@ -40,9 +40,9 @@ interface TestResult {
   [key: string]: any;
 }
 
-interface Results { query: string;, testType: string;
+interface Results {, query: string;, testType: string;
   timestamp: string;
-  tests: Record<string, TestResult>;
+ , tests: Record<string, TestResult>;
   summary?: { successRate: number;, passedTests: number;
     totalTests: number;
     overallProcessingTime: number;
@@ -70,7 +70,7 @@ type EnhancedRagQueryShim = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   logger.info('Vector search test initiated');
   try {
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       tests: {}
     };
-    // Test 1: Vector Ranking Service
+    // Test, 1: Vector Ranking Service
     if (testType === 'all' || testType === 'ranking') {
       try {
         logger.info('Testing vector ranking service');
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
-    // Test 2: Legal Analysis
+    // Test, 2: Legal Analysis
     if (testType === 'all' || testType === 'analysis') {
       try {
         logger.info('Testing LegalBERT analysis');
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence: analysis.sentiment.confidence
         };
         logger.info(
-          `Legal analysis: ${results.tests.legalAnalysis.entities} entities, ${results.tests.legalAnalysis.concepts} concepts`
+          `Legal, analysis: ${results.tests.legalAnalysis.entities} entities, ${results.tests.legalAnalysis.concepts} concepts`
         );
       } catch (error: any) {
         logger.error('Legal analysis test failed', error);
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
-    // Test 3: Enhanced RAG Pipeline
+    // Test, 3: Enhanced RAG Pipeline
     if (testType === 'all' || testType === 'rag') {
       try {
         logger.info('Testing Enhanced RAG Pipeline');
@@ -138,8 +138,8 @@ export const POST: RequestHandler = async ({ request }) => {
             useMemoryGraph: true,
             useMultiAgent: true
           }
-        } as unknown as EnhancedRagQueryShim);
-        const safeRag = rawRag as unknown as {
+        }, as: unknown as EnhancedRagQueryShim);
+        const safeRag = rawRag as: unknown as {
           response?: string;
           answer?: string;
           sources?: any[];
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
-    // Test 4: LangChain RAG
+    // Test, 4: LangChain RAG
     if (testType === 'all' || testType === 'langchain') {
       try {
         logger.info('Testing LangChain RAG');
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime: langchainResult.metadata?.processingTime ?? 0
         };
         logger.info(
-          `LangChain RAG: ${results.tests.langchainRAG.sourceDocuments} sources, confidence ${results.tests.langchainRAG.confidence}`
+          `LangChain, RAG: ${results.tests.langchainRAG.sourceDocuments} sources, confidence ${results.tests.langchainRAG.confidence}`
         );
       } catch (error: any) {
         logger.error('LangChain RAG test failed', error);
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: error instanceof Error ? error.message : `Unknown error` };
       }
     }
-    // Test 5: Qdrant Direct Search
+    // Test, 5: Qdrant Direct Search
     if (testType === 'all' || testType === 'qdrant') {
       try {
         logger.info('Testing Qdrant direct search');
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
               : 0,
           embeddingDimensions: embeddingResult.dimensions
         };
-        logger.info(`Qdrant search: ${qdrantResults.length} results found`);
+        logger.info(`Qdrant, search: ${qdrantResults.length} results found`);
       } catch (error: any) {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
       totalTests,
       overallProcessingTime: Date.now() - startTime,
       status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : `all_failed` };
-    logger.info(`Vector search tests completed: ${successCount}/${totalTests} passed`);
+    logger.info(`Vector search tests, completed: ${successCount}/${totalTests} passed`);
     return json(results);
   } catch (error: any) {
     logger.error('Vector search test failed', error);
@@ -257,9 +257,9 @@ export const GET: RequestHandler = async () => {
     logger.info('Vector services health check');
     const health = {
       timestamp: new Date().toISOString(),
-      services: { qdrant: await qdrantService.healthCheck().catch(() => ({, status: 'error' })),
+      services: {, qdrant: await qdrantService.healthCheck().catch(() => ({, status: 'error' })),
         legalBERT: await legalBERT.healthCheck().catch(() => ({ status: 'error' })),
-        enhancedRAG: { status: `available` },'`'`
+        enhancedRAG: {, status: `available` },'`'`
         langchainRAG: await legalRAG.healthCheck().catch(() => ({ status: `error` }))
       }
     };

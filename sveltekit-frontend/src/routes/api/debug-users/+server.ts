@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Debug endpoint to check and create users
-import { json } from '@sveltejs/kit';
-import { users } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import { users } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
 export async function GET(): Promise<any> {
   try {
     // Check if users exist

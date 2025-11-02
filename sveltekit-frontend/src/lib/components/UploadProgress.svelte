@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import { onMount, onDestroy } from, 'svelte';
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
-  import { writable, type Writable } from 'svelte/store';
+  import { writable, type Writable } from, 'svelte/store';
   // Props (exported to avoid $props() compile issues in this environment)
   const { caseId } = $props<{ caseId: string }>()
   const { uploadId } = $props<{ uploadId: string }>()
@@ -19,11 +19,11 @@ import type { Document } from '$lib/types';
     stage: string;
     progress: number;
     status: string;
-    metrics: Record<string, unknown>;
+   , metrics: Record<string, unknown>;
     error: string | null;
   };
   const progressData: Writable<Progress> = writable({
-    stage: 'idle',
+   , stage: 'idle',
     progress: 0,
     status: 'pending',
     metrics: {},
@@ -33,17 +33,17 @@ import type { Document } from '$lib/types';
     clusters: any[];
     embeddings: any[];
     interpolationResults: any[];
-    metrics: Record<string, unknown>;
+   , metrics: Record<string, unknown>;
   };
   const tensorResults: Writable<TensorResultsType> = writable({
-    clusters: [],
+   , clusters: [],
     embeddings: [],
     interpolationResults: [],
     metrics: {}
   });
   const aiSuggestions = writable({
     suggestions: [] as Array<{ text?: string; confidence?: number }>,
-    relevantDocuments: [] as Array<{ title: string; relevanceScore?: number }>,
+    relevantDocuments: [] as Array<{, title: string; relevanceScore?: number }>,
     confidence: 0
   });
   const realtimeMetrics = writable({
@@ -57,7 +57,7 @@ import type { Document } from '$lib/types';
     // attempt optional dynamic import of uploadStore (safe if module doesn't export it)'
     try {
       const mod = await import('$lib/stores/unified');
-      uploadStoreRef = (mod as any).uploadStore ?? (mod as any).default ?? null;
+      uploadStoreRef = (mod as: any).uploadStore ?? (mod as: any).default ?? null;
     } catch {
       uploadStoreRef = null;
     }
@@ -103,9 +103,9 @@ import type { Document } from '$lib/types';
       // Update realtime metrics if present
       realtimeMetrics.update((current) => ({
         ...current,
-        uploadSpeed: (data?.metrics?.uploadSpeed as number) ?? current.uploadSpeed,
-        processingTime: (data?.metrics?.processingTime as number) ?? current.processingTime,
-        memoryUsage: (data?.metrics?.memoryUsage as number) ?? current.memoryUsage
+        uploadSpeed: (data?.metrics?.uploadSpeed, as: number) ?? current.uploadSpeed,
+        processingTime: (data?.metrics?.processingTime, as: number) ?? current.processingTime,
+        memoryUsage: (data?.metrics?.memoryUsage, as: number) ?? current.memoryUsage
       }));
       // Optional: inform XState/uploadStore (use uploadStoreRef safely)
       try {
@@ -134,7 +134,7 @@ import type { Document } from '$lib/types';
         if (result.metrics?.gpuUtilization !== undefined) {
           realtimeMetrics.update((current) => ({
             ...current,
-            gpuUtilization: (result.metrics.gpuUtilization as number) ?? current.gpuUtilization
+            gpuUtilization: (result.metrics.gpuUtilization, as: number) ?? current.gpuUtilization
           }));
         }
       }
@@ -240,7 +240,7 @@ import type { Document } from '$lib/types';
   }
   // Helpers
   function formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -262,7 +262,7 @@ import type { Document } from '$lib/types';
         class="w-3 h-3 rounded-full"
         class:bg-green-500={$connectionStatus === 'connected'}
         class:bg-yellow-500={$connectionStatus === 'connecting'}
-        class:bg-red-500={$connectionStatus === 'disconnected'}
+       , class:bg-red-500={$connectionStatus === 'disconnected'}
       ></div>
       <span class="text-sm text-gray-600, dark:text-gray-400, capitalize">
         {$connectionStatus}
@@ -279,7 +279,7 @@ import type { Document } from '$lib/types';
         {$progressData.progress}%
       </span>
     </div>
-    <div class="w-full bg-gray-200 dark:bg-gray-700, rounded-full, h-2">
+    <div class="w-full bg-gray-200, dark:bg-gray-700, rounded-full, h-2">
       <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
         style="width: {$progressData.progress + '%'}"
@@ -335,13 +335,13 @@ import type { Document } from '$lib/types';
           {$tensorResults.clusters.length || 0}
         </div>
       </div>
-      <div class="bg-green-50 dark:bg-green-900/20, rounded-lg, p-4">
+      <div class="bg-green-50, dark:bg-green-900/20, rounded-lg, p-4">
         <div class="text-sm text-green-600, dark:text-green-400, mb-1">Embeddings</div>
         <div class="text-2xl font-bold, text-green-700, dark:text-green-300">
           {$tensorResults.embeddings.length || 0}
         </div>
       </div>
-      <div class="bg-purple-50 dark:bg-purple-900/20, rounded-lg, p-4">
+      <div class="bg-purple-50, dark:bg-purple-900/20, rounded-lg, p-4">
         <div class="text-sm text-purple-600, dark:text-purple-400, mb-1">Interpolations</div>
         <div class="text-2xl font-bold, text-purple-700, dark:text-purple-300">
           {$tensorResults.interpolationResults.length || 0}
@@ -391,7 +391,7 @@ import type { Document } from '$lib/types';
       {/if}
   {/if}
 <style>
-  /* Add any custom styles here */
+  /* Add: any custom styles here */
   .transition-all {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

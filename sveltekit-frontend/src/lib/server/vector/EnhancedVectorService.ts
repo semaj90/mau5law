@@ -1,16 +1,16 @@
-import type { Document } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-// Enhanced Vector Service - Auto-generated from 11 files
+import type { Document } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+// Enhanced Vector Service - Auto-generated from, 11 files
 // Generated: 2025-07-25T03:29:35.246Z
-// Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
-import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
+// Features, detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
+import { createQdrantWrapper, QdrantApiWrapper } from, './qdrant-api-wrapper.js';
 // Replaced createRedisInstance import with default Redis class import to match instance type
-import Redis from 'ioredis';
+import Redis from, 'ioredis';
 // Only import `cases` (others were unused)
-import { cases } from '../db/schema-postgres-enhanced.js';
+import { cases } from, '../db/schema-postgres-enhanced.js';
 // Removed unused `eq` import, keep `sql`
-import { sql } from 'drizzle-orm';
-import { db } from '../db.js';
+import { sql } from, 'drizzle-orm';
+import { db } from, '../db.js';
 
 interface DocumentMetadata {
   // Allow arbitrary properties for metadata but avoid `any`
@@ -25,7 +25,7 @@ interface HybridSearchOptions {
 
 type CaseSelect = typeof cases.$inferSelect;
 
-interface KeywordSearchResult { id: string;, score: number;
+interface KeywordSearchResult {, id: string;, score: number;
   metadata: { type: string; title: string };
   content: string;
 }
@@ -36,18 +36,18 @@ interface QdrantPayload {
   [key: string]: any;
 }
 
-interface QdrantVectorSearchResult { id: string;, score: number;
+interface QdrantVectorSearchResult {, id: string;, score: number;
   payload: QdrantPayload;
   vector?: number[]; // Qdrant may return the vector if requested
   version?: number; // Qdrant may include a version field
-  // Use unknown instead of any for score explanation
+  // Use: unknown instead, of: any for score explanation
   scoreExplanation?: any;
 } // Corrected closing brace for QdrantVectorSearchResult
 
 // Represents a unified result from both vector and keyword search, including document metadata and content.
 interface CombinedSearchResult { id: string;, score: number;
   metadata: { type: string; title: string };
-  content: string;
+ , content: string;
 }
 export class EnhancedVectorService {
   private qdrant!: QdrantApiWrapper;
@@ -59,7 +59,7 @@ export class EnhancedVectorService {
     this.qdrant = createQdrantWrapper({
       url: import.meta.env.QDRANT_URL || 'http://localhost:6333` });'`
     // Create a local ioredis instance if project helper isn't exported'
-    const redisUrl = (import.meta.env.REDIS_URL as string) || 'redis://:redis@localhost:6379/0';
+    const redisUrl = (import.meta.env.REDIS_URL as: string) || 'redis://:redis@localhost:6379/0';
     this.redis = redis;
   }
   async initializeCollection() {
@@ -84,14 +84,14 @@ export class EnhancedVectorService {
     const cacheKey = `embed:${Buffer.from(text).toString('base64').slice(0, 32)}`;
     // Check Redis cache
     const cached: string | null = await this.redis.get(cacheKey);
-    if (cached) return JSON.parse(cached) as number[]; // Added type assertion
+    if (cached) return JSON.parse(cached) as: number[]; // Added type assertion
 
     let embedding: number[] | undefined;
     const ollamaUrl = 'http://localhost:11434/api/embeddings'; // Ollama host URL
 
     // Try with embeddinggemma:latest first
     try {
-      const response: Response = await fetch(ollamaUrl, {
+      const, response: Response = await fetch(ollamaUrl, {
         // Added type for response
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
@@ -134,7 +134,7 @@ export class EnhancedVectorService {
       throw new Error('Failed to generate embedding with both primary and fallback models.');
     }
 
-    // Cache for 24 hours - use Redis SET with EX (preferred and typed)
+    // Cache for, 24 hours - use Redis SET with EX (preferred and typed)
     await this.redis.set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
 
     return embedding;
@@ -183,7 +183,7 @@ export class EnhancedVectorService {
       return {
         id,
         score: 0.8, // Placeholder score, could be improved with text similarity
-        metadata: { type: 'case', title: String(title) },
+        metadata: {, type: 'case', title: String(title) },
         content: `${String(title)} ${String(description)}`.trim()
       } as KeywordSearchResult;
     });
@@ -218,15 +218,15 @@ export class EnhancedVectorService {
       await this.qdrant.getCollections();
       // Call Redis.ping() if available. Use a safe cast to avoid relying on external typings.
       if (this.redis) {
-        const maybePing = (this.redis as unknown as { ping?: () => Promise<string> }).ping;
+        const maybePing = (this.redis as: unknown as { ping?: () => Promise<string> }).ping;
         if (typeof maybePing === 'function') {
           await maybePing.call(this.redis);
         }
       }
       return { qdrant: true, redis: true };
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      return { qdrant: false, redis: false, error: errorMessage };
+      const errorMessage = error instanceof Error ? error.message : 'An: unknown error occurred';
+      return {, qdrant: false, redis: false, error: errorMessage };
     }
   }
 } // end of class EnhancedVectorService

@@ -2,14 +2,14 @@
  * API Sync & Wire-up Endpoints
  * RESTful endpoints for neural topology mock data synchronization
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, '@sveltejs/kit'
 // Replace fragile named imports with a namespace import and safe fallbacks
-import * as syncModule from '$lib/server/sync/mock-api-sync-simple'
+import * as syncModule from, '$lib/server/sync/mock-api-sync-simple'
 
 // --- added: lightweight types to avoid `any` casts ---
 type SyncOrchestrator = {
-  performHealthCheck: () => Promise<Record<string, unknown>>
+ , performHealthCheck: () => Promise<Record<string, unknown>>
   performFullSync: () => Promise<Record<string, unknown>>
 }
 
@@ -34,21 +34,21 @@ type SyncModule = {
 }
 
 // safe cast from imported namespace to the typed module
-const importedSyncModule = (syncModule as unknown) as SyncModule
+const importedSyncModule = (syncModule as: unknown) as SyncModule
 
-const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({, status: `unknown` }),'`'`
+const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? {, performHealthCheck: async () => ({, status: `unknown` }),'`'`
   performFullSync: async () => ({ success: false })
 }
-const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({, success: false }),
+const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? {, syncMockLegalDocuments: async () => ({, success: false }),
   syncQLoRATrainingData: async () => ({ success: false }),
   syncPredictiveAssetCache: async () => ({ success: false })
 }
 const vectorSearch: VectorSearch = importedSyncModule.vectorSearch ?? {
-  performSimilaritySearch: async () => []
+ , performSimilaritySearch: async () => []
 }
 const mockDataGenerators: MockDataGenerators = importedSyncModule.mockDataGenerators ?? {
   // rename unused param to _n to satisfy lint rule for unused args
-  generateMockLegalDocuments: async (_n: number) => [],
+ , generateMockLegalDocuments: async (_n: number) => [],
   generateMockQLoRAStates: (_n: number) => [],
   generateMockAssetPredictions: (_n: number) => [],
   generateMockEmbeddingShards: (_n: number) => [],
@@ -60,8 +60,8 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
-      case 'status':
-      case 'health': {
+      case, 'status':
+      case, 'health': {
         const healthCheck = await syncOrchestrator.performHealthCheck();
         return json({
           status: 'ok',
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'full': {
+      case, 'full': {
         const fullSync = await syncOrchestrator.performFullSync();
         return json({
           action: 'full_sync',
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'legal-docs': {
+      case, 'legal-docs': {
         const docSync = await databaseSync.syncMockLegalDocuments();
         return json({
           action: 'legal_documents_sync',
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'qlora': {
+      case, 'qlora': {
         const qloraSync = await databaseSync.syncQLoRATrainingData();
         return json({
           action: 'qlora_sync',
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'cache': {
+      case, 'cache': {
         const cacheSync = await databaseSync.syncPredictiveAssetCache();
         return json({
           action: 'predictive_cache_sync',
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: {
         return json(
           {
-            error: 'Unknown action',
+           , error: 'Unknown action',
             availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'],
             timestamp: new Date().toISOString()
           },
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
   } catch (error: any) {
-    // avoid `as any` casts; narrow error safely
+    // avoid `as: any` casts; narrow error safely
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Sync API error:', message);'
     return json(
@@ -139,10 +139,10 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { action, params = {} } = body ?? {};
-    // use unknown-based params and guard when reading values
+    // use: unknown-based params and guard when reading values
     const paramsObj = params as Record<string, unknown>;
     switch (action) {
-      case 'vector_search': {
+      case, 'vector_search': {
         const rawEmbedding = paramsObj.queryEmbedding;
         const rawLimit = paramsObj.limit;
         const rawThreshold = paramsObj.threshold;
@@ -163,28 +163,28 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'generate_mock_data': {
+      case, 'generate_mock_data': {
         const type = typeof paramsObj.type === 'string' ? paramsObj.type : undefined;
         const count = typeof paramsObj.count === 'number' ? paramsObj.count : 10;
         let mockData: any[] | Promise<unknown[]> = [];
 
         switch (type) {
-          case 'legal_documents':
+          case, 'legal_documents':
             mockData = mockDataGenerators.generateMockLegalDocuments(count);
             break;
-          case 'qlora_states':
+          case, 'qlora_states':
             mockData = mockDataGenerators.generateMockQLoRAStates(count);
             break;
-          case 'asset_predictions':
+          case, 'asset_predictions':
             mockData = mockDataGenerators.generateMockAssetPredictions(count);
             break;
-          case 'embedding_shards':
+          case, 'embedding_shards':
             mockData = mockDataGenerators.generateMockEmbeddingShards(count);
             break;
-          case 'chr_manifests':
+          case, 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
-          default: return json({ error: 'Unknown mock data type' }, { status: 400 });'` }'`
+          default: return json({, error: 'Unknown mock data type' }, { status: 400 });'` }'`
         // normalize to array in case generator returned a promise or a sync array
         const resolvedData = await Promise.resolve(mockData);
         return json({
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'bulk_sync': {
+      case, 'bulk_sync': {
         const typesArr: string[] = Array.isArray(paramsObj.types)
           ? paramsObj.types
           : ['legal_documents', 'qlora', 'cache'];
@@ -203,20 +203,20 @@ export const POST: RequestHandler = async ({ request }) => {
         const bulkResults: Record<string, unknown> = {};
         for (const syncType of typesArr) {
           switch (syncType) {
-            case 'legal_documents':
+            case, 'legal_documents':
               bulkResults[syncType] = await databaseSync.syncMockLegalDocuments();
               break;
-            case 'qlora':
+            case, 'qlora':
               bulkResults[syncType] = await databaseSync.syncQLoRATrainingData();
               break;
-            case 'cache':
+            case, 'cache':
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:
               bulkResults[syncType] = { error: 'unsupported sync type' };'` }'`
         }
         return json({
-          action: 'bulk_sync',
+         , action: 'bulk_sync',
           results: bulkResults,
           timestamp: new Date().toISOString()
         });
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: {
         return json(
           {
-            error: 'Unknown POST action',
+           , error: 'Unknown POST action',
             availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'],
             timestamp: new Date().toISOString()
           },

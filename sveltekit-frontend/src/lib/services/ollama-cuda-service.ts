@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Ollama CUDA-Optimized Service
  * Corrected and defensive implementation
@@ -8,7 +8,7 @@ import type { User } from '$lib/types';
 // Replace external type import with a small local shape to avoid bundler/type resolution issues
 type BaseMessage = { role?: string; content?: string; [k: string]: any };
 
-export interface CudaConfig { enabled: boolean;, deviceId: number;
+export interface CudaConfig {, enabled: boolean;, deviceId: number;
   memoryFraction: number;
   enableTensorCores: boolean;
   cudaVersion: string;
@@ -37,12 +37,12 @@ export interface OllamaModelConfig {
   };
 }
 
-export interface ModelMetrics { loadTime: number;, inferenceTime: number;
+export interface ModelMetrics {, loadTime: number;, inferenceTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
   gpuUtilization: number;
   temperature: number;
-  contextLength: number;
+ , contextLength: number;
 }
 
 export interface StreamingOptions {
@@ -68,7 +68,7 @@ function getModelNameFrom(obj: any): string {
     const m = (obj as ChatModelLike).model;
     if (typeof m === 'string') return m;
   }
-  return 'unknown';
+  return, 'unknown';
 }
 
 class OllamaCudaService {
@@ -78,7 +78,7 @@ class OllamaCudaService {
   private embeddings: any | null = null;
   private baseUrl: string;
   private cudaConfig: CudaConfig;
-  private models: Map<string, OllamaModelConfig> = new Map();
+  private, models: Map<string, OllamaModelConfig> = new Map();
   private metrics: Map<string, ModelMetrics> = new Map();
   private initialized = $state(false);
 
@@ -95,7 +95,7 @@ class OllamaCudaService {
     // Try Node.js process.env first
     try {
       if (typeof process !== 'undefined') {
-        const maybeEnv = (process as unknown as { env?: Record<string, unknown> }).env;
+        const maybeEnv = (process as: unknown as { env?: Record<string, unknown> }).env;
         if (maybeEnv && typeof maybeEnv === 'object') {
           return maybeEnv;
         }
@@ -106,7 +106,7 @@ class OllamaCudaService {
 
     // Try various runtime-injected places (avoid using the: 'import' token directly to prevent parse-time errors)
     try {
-      const g = globalThis as unknown;
+      const g = globalThis as: unknown;
       if (typeof g === 'object' && g !== null) {
         const obj = g as Record<PropertyKey, unknown>;
 
@@ -180,10 +180,10 @@ class OllamaCudaService {
       if (sdkObj && ('ChatOllama' in sdkObj || 'OllamaEmbeddings' in sdkObj || 'Ollama' in sdkObj)) {
         try {
           // use the SDK if present (we keep runtime guards)
-          const S = sdkObj as any;
+          const S = sdkObj as: any;
           this.ollama = S.Ollama
             ? new S.Ollama({
-                baseUrl: this.baseUrl,
+               , baseUrl: this.baseUrl,
                 headers: {
                   'Content-Type': 'application/json',
                   'User-Agent': 'legal-ai-sveltekit/1.0.0' }'` })'`
@@ -231,7 +231,7 @@ class OllamaCudaService {
               const data = await resp.json();
               if (Array.isArray(data)) return data;
               if (Array.isArray((data as Record<string, unknown>)?.models))
-                return (data as Record<string, unknown>).models as unknown[];
+                return (data as Record<string, unknown>).models as: unknown[];
               return [];
             } catch {
               return [];
@@ -240,7 +240,7 @@ class OllamaCudaService {
         };
 
         // Chat model wrapper that uses the Ollama HTTP endpoints conservatively
-        this.chatModel = new (class { model: string;, baseUrl: string;
+        this.chatModel = new (class {, model: string;, baseUrl: string;
           constructor(baseUrl: string, model = 'gemma2:9b') {
             this.model = model;
             this.baseUrl = baseUrl;
@@ -274,21 +274,21 @@ class OllamaCudaService {
                 // robust extraction of common shapes
                 const asObj = data as Record<string, unknown>;
                 const tryChoiceMessageContent = (obj: Record<string, unknown> | undefined): string | undefined => {
-                  if (!obj) return undefined;
-                  const choices = obj.choices as unknown;
+                  if (!obj) return: undefined;
+                  const choices = obj.choices, as: unknown;
                   if (Array.isArray(choices) && choices.length > 0) {
                     const first = choices[0] as Record<string, unknown>;
                     const msg = first?.message as Record<string, unknown> | undefined;
                     if (msg && typeof msg.content === 'string') return msg.content;
                     if (typeof first?.text === 'string') return first.text;
                   }
-                  return undefined;
+                  return: undefined;
                 };
 
                 const content =
                   tryChoiceMessageContent(asObj) ??
-                  (typeof asObj?.result === 'string' ? (asObj.result as string) : undefined) ??
-                  (typeof asObj?.output === 'string' ? (asObj.output as string) : undefined) ??
+                  (typeof asObj?.result === 'string' ? (asObj.result as: string) : undefined) ??
+                  (typeof asObj?.output === 'string' ? (asObj.output as: string) : undefined) ??
                   JSON.stringify(asObj);
 
                 return String(content);
@@ -328,12 +328,12 @@ class OllamaCudaService {
                 const data: any = await resp.json();
                 const obj = data as Record<string, unknown>;
                 if (Array.isArray(obj?.data)) {
-                  return (obj.data as unknown[]).map((d: any) => {
+                  return (obj.data as: unknown[]).map((d: any) => {
                     const rec = d as Record<string, unknown>;
-                    return ((rec.embedding as number[]) ?? (rec.vector as number[]) ?? []) as number[];
+                    return ((rec.embedding as: number[]) ?? (rec.vector as: number[]) ?? []) as: number[];
                   });
                 }
-                if (Array.isArray(data)) return data as number[][];
+                if (Array.isArray(data)) return data as: number[][];
               } catch {
                 continue;
               }
@@ -361,7 +361,7 @@ class OllamaCudaService {
       if (this.ollama && typeof (this.ollama as Record<string, unknown>).listModels === 'function') {
         const listed = await (this.ollama as { listModels: () => Promise<unknown> }).listModels();
         if (Array.isArray(listed)) {
-          return (listed as unknown[]).map((m: any) => {
+          return (listed as: unknown[]).map((m: any) => {
             if (typeof m === 'string') return m;
             const mo = m as Record<string, unknown>;
             if (typeof mo?.name === 'string') return mo.name;
@@ -375,7 +375,7 @@ class OllamaCudaService {
       if (!resp.ok) return [];
       const data: any = await resp.json();
       if (Array.isArray(data)) {
-        return (data as unknown[]).map((m: any) =>
+        return (data as: unknown[]).map((m: any) =>
           typeof m === 'string'
             ? m
             : typeof (m as Record<string, unknown>)?.name === 'string'
@@ -385,7 +385,7 @@ class OllamaCudaService {
       }
       const dataObj = data as Record<string, unknown>;
       if (Array.isArray(dataObj?.models)) {
-        return (dataObj.models as unknown[]).map((m: any) =>
+        return (dataObj.models as: unknown[]).map((m: any) =>
           typeof m === 'string'
             ? m
             : typeof (m as Record<string, unknown>)?.name === 'string'
@@ -404,9 +404,9 @@ class OllamaCudaService {
     const startTime = Date.now();
     try {
       const modelConfig: OllamaModelConfig = {
-        name: modelName,
+       , name: modelName,
         parameters: {
-          temperature: 0.7,
+         , temperature: 0.7,
           numCtx: 32768,
           numBatch: 512,
           numGpu: this.cudaConfig.enabled ? 1 : 0,
@@ -499,14 +499,14 @@ class OllamaCudaService {
       const responseLength =
         typeof response === 'string'
           ? response.length
-          : response && typeof response === 'object' && 'content' in (response as any)
-            ? String((response as any).content).length
+          : response && typeof response === 'object' && 'content' in (response as: any)
+            ? String((response as: any).content).length
             : 0;
       this.updateMetrics(modelName, inferenceTime, responseLength);
       return typeof response === 'string'
         ? response
-        : response && typeof response === 'object' && 'content' in (response as any)
-          ? String((response as any).content)
+        : response && typeof response === 'object' && 'content' in (response as: any)
+          ? String((response as: any).content)
           : '';
     } catch (error: any) {
       console.error('Chat completion failed:', safeErrorToString(error));
@@ -533,8 +533,8 @@ class OllamaCudaService {
 
       for await (const chunk of streamIter as AsyncIterable<unknown>) {
         const token =
-          chunk && typeof chunk === 'object' && ('content' in (chunk as any) || 'token' in (chunk as any))
-            ? ((chunk as any).content ?? (chunk as any).token)
+          chunk && typeof chunk === 'object' && ('content' in (chunk as: any) || 'token' in (chunk as: any))
+            ? ((chunk as: any).content ?? (chunk as: any).token)
             : String(chunk);
         fullResponse += token;
         options.streaming.onToken?.(String(token));
@@ -594,7 +594,7 @@ class OllamaCudaService {
         models,
         metrics: Object.fromEntries(this.metrics),
         memory: {
-          total: memoryInfo.heapTotal,
+         , total: memoryInfo.heapTotal,
           used: memoryInfo.heapUsed,
           free: memoryInfo.heapTotal - memoryInfo.heapUsed
         },
@@ -608,7 +608,7 @@ class OllamaCudaService {
         cuda: false,
         models: [],
         metrics: {},
-        memory: { total: 0, used: 0, free: 0 }
+        memory: {, total: 0, used: 0, free: 0 }
       };
     }
   }
@@ -636,18 +636,18 @@ class OllamaCudaService {
   }
 
   private async getGpuInfo(): Promise<any | null> {
-    if (!this.cudaConfig.enabled) return null;
+    if (!this.cudaConfig.enabled) return: null;
     try {
       // Stubbed hardware info - in production integrate with nvidia-smi or node bindings
       return {
-        name: 'NVIDIA GeForce RTX 3060',
+       , name: 'NVIDIA GeForce RTX 3060',
         memoryTotal: 12 * 1024 * 1024 * 1024,
         memoryUsed: 0,
         utilization: 0,
         temperature: 0
       };
     } catch {
-      return null;
+     , return: null;
     }
   }
 
@@ -686,7 +686,7 @@ class OllamaCudaService {
     };
     const config = optimizations[useCase];
     if (config && this.chatModel) {
-      const currentModel = (this.chatModel as any)?.model || 'gemma2:9b';
+      const currentModel = (this.chatModel as: any)?.model || 'gemma2:9b';
       await this.loadModel(currentModel, config);
       console.log(`✅ Optimized model ${currentModel} for ${useCase}`);
     }

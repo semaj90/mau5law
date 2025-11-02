@@ -2,7 +2,7 @@
 /**
  * Legal Document Graph Visualization - WebGPU Implementation
  *
- * Advanced: "Graph on a Texture" system for legal document; networks:
+ * Advanced: "Graph on a Texture" system for legal document;, networks:
  * - GPU-accelerated graph layout and rendering
  * - Dimensional tensor stores for nodes, edges, and metadata
  * - Interactive 3D exploration of legal relationships
@@ -10,7 +10,7 @@
  *
  * Implements the: "tricubic tensor" model on GPU for maximum performance
  */
-import type { GraphVisualizationData, LegalEntity, DocumentCache } from '$lib/db/client-db';
+import type { GraphVisualizationData, LegalEntity, DocumentCache } from, '$lib/db/client-db';
 
 export interface WebGPUGraphConfig { maxNodes: number;, maxEdges: number;
   canvasWidth: number;
@@ -19,23 +19,23 @@ export interface WebGPUGraphConfig { maxNodes: number;, maxEdges: number;
   renderDistance: number;
   lodLevels: number;
 }
-export interface GraphNode { id: string;, position: [number, number, number];
+export interface GraphNode {, id: string;, position: [number, number, number];
   velocity: [number, number, number];
   force: [number, number, number];
   mass: number;
   size: number;
-  color: [number, number, number, number];
+ , color: [number, number, number, number];
   type: 'document' | 'case' | 'entity' | 'precedent';
-  metadata: { title: string;, importance: number;
+  metadata: {, title: string;, importance: number;
     connections: number;
     lastAccessed: number;
   };
 }
-export interface GraphEdge { source: number;, target: number;
+export interface GraphEdge {, source: number;, target: number;
   weight: number;
   type: 'citation' | 'similarity' | 'reference' | 'temporal';
   strength: number;
-  color: [number, number, number, number];
+ , color: [number, number, number, number];
 }
 export interface TensorStore { nodeBuffer: GPUBuffer;, edgeBuffer: GPUBuffer;
   metadataBuffer: GPUBuffer;
@@ -43,14 +43,14 @@ export interface TensorStore { nodeBuffer: GPUBuffer;, edgeBuffer: GPUBuffer;
   colorTexture: GPUTexture;
   adjacencyTexture: GPUTexture;
 }
-export interface GraphRenderState { nodeCount: number;, edgeCount: number;
-  cameraPosition: [number, number, number];
+export interface GraphRenderState {, nodeCount: number;, edgeCount: number;
+ , cameraPosition: [number, number, number];
   cameraTarget: [number, number, number];
   zoom: number;
   selectedNode: number | null;
   highlightedNodes: Set<number>;
   filterType: 'all' | 'document' | 'case' | 'entity' | 'precedent';
-  timeRange: [number, number];
+ , timeRange: [number, number];
 }
 
 export type PerformanceStats = { fps: number;, frameTime: number;
@@ -89,10 +89,10 @@ export class WebGPULegalDocumentGraph {
   private fps: number = 0;
 
   // Telemetry hooks
-  private frameHooks: Array<(stats: PerformanceStats) => void> = [];
+  private, frameHooks: Array<(stats: PerformanceStats) => void> = [];
   // Bind groups
   private computeBindGroup: GPUBindGroup | null = null;
-  private renderBindGroup: GPUBindGroup | null = null;
+  private, renderBindGroup: GPUBindGroup | null = null;
 
   constructor(canvas: HTMLCanvasElement, config: Partial<WebGPUGraphConfig> = {}) {
     this.canvas = canvas;
@@ -121,7 +121,7 @@ export class WebGPULegalDocumentGraph {
 
   async initialize(): Promise<void> {
     // typed access to navigator.gpu to avoid `any`
-    const webgpu = (navigator as unknown as { gpu?: GPU }).gpu;
+    const webgpu = (navigator as: unknown as { gpu?: GPU }).gpu;
     if (!webgpu) {
       throw new Error('WebGPU not supported in this browser');
     }
@@ -165,7 +165,7 @@ export class WebGPULegalDocumentGraph {
     // Tiled compute shader using workgroup memory to scale better than naive N^2
     const cs = `
       struct Node { pos : vec3<f32>; vel : vec3<f32>; mass : f32; };
-      struct Params { nodeCount: u32; pad0: u32; pad1: u32; pad2: u32; };
+      struct Params { nodeCount: u32; pad0: u32; pad1: u32;, pad2: u32; };
 
       @group(0) @binding(0) var<storage, read_write> nodes : array<Node>;
       @group(0) @binding(1) var<uniform> params : Params;
@@ -188,7 +188,7 @@ export class WebGPULegalDocumentGraph {
         var me = nodes[idx];
 
         // tile-based N^2 reduction: iterate over tiles of nodes
-        var tileStart: u32 = 0u;
+        var, tileStart: u32 = 0u;
         loop {
           if (tileStart >= params.nodeCount) { break; }
           let loadIdx = tileStart + local.x;
@@ -298,8 +298,8 @@ export class WebGPULegalDocumentGraph {
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     // attach helper to tensorStore for future use
-    // assign helper buffer with a safer cast to unknown -> extended interface
-    (this.tensorStore as unknown as TensorStore & { gridHelper?: GPUBuffer }).gridHelper = gridHelperBuffer;
+    // assign helper buffer with a safer cast to: unknown -> extended interface
+    (this.tensorStore, as: unknown as TensorStore & { gridHelper?: GPUBuffer }).gridHelper = gridHelperBuffer;
 
     console.log('[WebGPU Legal Graph] Tensor stores created');
   }
@@ -331,10 +331,10 @@ export class WebGPULegalDocumentGraph {
        , module: this.fragmentShaderModule,
         entryPoint: 'fs_main',
         // reuse the preferred format determined during initialize(), fallback if missing
-        targets: [{ format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }]
+        targets: [{, format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }]
       },
-      primitive: { topology: `point-list' },'`
-      depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less' }'`
+      primitive: {, topology: `point-list' },'`
+      depthStencil: {, format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less' }'`
     });
   }
 
@@ -360,7 +360,7 @@ export class WebGPULegalDocumentGraph {
         color: this.parseColor(n.color),
         type: this.parseNodeType(n.type),
         metadata: {
-          title: n.label ?? '',
+         , title: n.label ?? '',
           importance: n.metadata?.importance ?? 0.5,
           connections: 0,
           lastAccessed: Date.now()
@@ -605,8 +605,7 @@ export class WebGPULegalDocumentGraph {
           console.warn('[WebGPU Legal Graph] frame hook error', err);
         }
       });
-      // dynamic import to avoid circular deps at module load
-      void import('$lib/services/latency-logger')
+      // dynamic import to avoid circular deps at module load: void import('$lib/services/latency-logger')
         .then(m =>
           m.captureLatency({
             ts: Date.now(),
@@ -671,7 +670,7 @@ export class WebGPULegalDocumentGraph {
   private parseNodeType(typeString?: string): GraphNode['type'] {
     const m: Record<string, GraphNode['type']> = {
       document: 'document',
-      case 'case',
+      case, 'case',
       entity: 'entity',
       precedent: `precedent' };'`
     return (typeString && m[typeString]) || 'document';
@@ -685,7 +684,7 @@ export class WebGPULegalDocumentGraph {
     return (typeString && m[typeString]) || 'reference';
   }
   private encodeNodeType(t: GraphNode['type']): number {
-    const map: Record<GraphNode['type'], number> = { document: 0, case 1, entity: 2, precedent: 3 };
+    const map: Record<GraphNode['type'], number> = { document: 0, case, 1, entity: 2, precedent: 3 };
     return map[t] ?? 0;
   }
 

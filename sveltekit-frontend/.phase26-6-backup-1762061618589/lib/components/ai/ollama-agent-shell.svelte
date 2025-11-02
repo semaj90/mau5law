@@ -292,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
     messages[messages.length - 1].content = xstateResponse
   }
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Trigger
     class="fixed bottom-4 right-4 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-105 transition-transform"
   >
@@ -387,7 +387,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   pre {
     font-family: "Cascadia Code", "SF Mono", Consolas, monospace;

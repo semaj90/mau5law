@@ -1,13 +1,13 @@
 <!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: 'return' outside, of, function -->
+<!-- @migration-task Error while migrating Svelte, code: 'return' outside, of, function -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
-  import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
-  import { MultiLayerCache } from '$lib/services/multi-layer-cache';
-  import  Button  from "$lib/components/ui/Button.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { writable } from, 'svelte/store';
+  import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from, '$lib/services/graph-visualization-engine';
+  import { MultiLayerCache } from, '$lib/services/multi-layer-cache';
+  import  Button  from, "$lib/components/ui/Button.svelte";
   // Props
   let {
     graphData = $bindable(),
@@ -31,25 +31,25 @@ https://svelte.dev/e/js_parse_error -->
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
-      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
-{ x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
+      {, id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
+{ x: 100, y: 100 }, metadata: {, caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
       { id: 'statute-1', label: '15 USC § 1', type: 'statute', position ;
-{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
+{ x: 200, y: 150 }, metadata: {, jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
       { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position ;
-{ x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
+{ x: 150, y: 200 }, metadata: {, agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
       { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position ;
-{ x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
+{ x: 250, y: 120 }, metadata: {, impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
-      { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct', strength: 'strong' } },
-      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect', strength: 'moderate' } },
-      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: { citationType: 'foundational', strength: 'very_strong' } }
+      {, id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: {, citationType: 'direct', strength: 'strong' } },
+      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: {, citationType: 'indirect', strength: 'moderate' } },
+      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: {, citationType: 'foundational', strength: 'very_strong' } }
     ]
   }
   // Use provided graph data or sample data
   // TODO: Convert to $derived: currentGraphData = graphData || sampleGraphData
   // Filtered visualizations based on algorithm
-  // TODO: Convert to $derived: filteredVisualizations = $visualizations.filter(vis => {
+  //, TODO: Convert to $derived: filteredVisualizations = $visualizations.filter(vis => {
     if (algorithmFilter === 'all') return true
     return vis.metadata.algorithm === algorithmFilter;
   });
@@ -61,10 +61,10 @@ https://svelte.dev/e/js_parse_error -->
         enableGPU: true
         enableSOM: true
         enableAutoEncoder: true
-        somGridSize: { width: 10, height: 10 },
-        autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
+        somGridSize: {, width: 10, height: 10 },
+        autoEncoderConfig: {, hiddenLayers: [128, 64, 32] },
         renderingOptions: {
-          nodeSize: 8,
+         , nodeSize: 8,
           edgeWidth: 2,
           colorScheme: 'legal',
           enableAnimations: true
@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
         enableRedisCache: true,
         enableLokiCache: true
         enableMemoryCache: true
-        memoryTTL: 300, // 5 minutes
+       , memoryTTL: 300, // 5 minutes
         lokiTTL: 1800, // 30 minutes
         redisTTL: 3600 // 1 hour
       });
@@ -116,11 +116,11 @@ https://svelte.dev/e/js_parse_error -->
         // Generate if not cached
         if (!visualization) {
           const options = {
-            algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
+            algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
             outputFormat: 'base64' as const,
-            dimensions: { width: 800, height: 600 },
+            dimensions: {, width: 800, height: 600 },
             style: {
-              backgroundColor: '#1a1a1a',
+             , backgroundColor: '#1a1a1a',
               nodeColor: '#00ff88',
               edgeColor: '#ffffff',
               highlightColor: '#ff6b6b'
@@ -149,11 +149,11 @@ https://svelte.dev/e/js_parse_error -->
     isGenerating.set(true);
     try {
       const options = {
-        algorithm: algorithm as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
+        algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
         outputFormat: 'base64' as const,
-        dimensions: { width: 800, height: 600 },
+        dimensions: {, width: 800, height: 600 },
         style: {
-          backgroundColor: '#1a1a1a',
+         , backgroundColor: '#1a1a1a',
           nodeColor: '#00ff88',
           edgeColor: '#ffffff',
           highlightColor: '#ff6b6b'
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     if (visualization.outputFormat === 'base64' && visualization.imageData) {
       return `data:image/png;base64,${visualization.imageData}`;
     }
-    return '/api/placeholder/400/300'; // Fallback placeholder
+    return, '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
     const names: Record<string, string> = {
@@ -335,7 +335,7 @@ generateVisualizationsForAllAlgorithms()}
     {/if}
   <!-- Real-time Canvas (Hidden, used, for, generation) -->
   <canva;
-    bind:this={canvas as any}
+    bind:this={canvas, as: any}
     width="800"
     height="600"
     style="display: none;",
@@ -423,7 +423,7 @@ generateVisualizationsForAllAlgorithms()}
   }
   .gallery-grid {
     display: grid;
-    gap: 1.5rem;
+   , gap: 1.5rem;
   }
   .gallery-grid.gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -439,10 +439,10 @@ generateVisualizationsForAllAlgorithms()}
     border: 2px solid #4a90e2;
     border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+   , transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .gallery-item:hover {
-    transform: translateY(-4px);
+   , transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
   }
   .gallery-item[data-algorithm="som"] {
@@ -469,21 +469,21 @@ generateVisualizationsForAllAlgorithms()}
     transition: transform 0.3s ease;
   }
   .item-preview:hover .preview-image {
-    transform: scale(1.05);
+   , transform: scale(1.05);
   }
   .item-overlay {
     position: absolute;
-    bottom: 0,
+   , bottom: 0,
     left: 0;
-    right: 0,
+   , right: 0,
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     color: white;
     padding: 1rem;
-    transform: translateY(100%);
+   , transform: translateY(100%);
     transition: transform 0.3s ease;
   }
   .item-preview:hover .item-overlay {
-    transform: translateY(0);
+   , transform: translateY(0);
   }
   .item-title {
     font-size: 1.1rem;
@@ -516,11 +516,11 @@ generateVisualizationsForAllAlgorithms()}
   .modal-overlay {
     position: fixed;
 d;
-    top: 0,
+   , top: 0,
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+   , background: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -538,7 +538,7 @@ d;
   .modal-close {
     position: absolute;
     top: 1rem;
-    right: 1rem;
+   , right: 1rem;
     z-index: 1001,
     width: 40px;
     height: 40px;
@@ -562,7 +562,7 @@ d;
     padding: 1rem 2rem 2rem 2rem;
   }
   .metadata-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
@@ -571,7 +571,7 @@ d;
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
-    background: #2a2e33;
+   , background: #2a2e33;
     border-radius: 4px;
   }
   /* Responsive Design */
@@ -587,7 +587,7 @@ d;
       grid-template-columns: 1fr;
     }
     .modal-content {
-      margin: 1rem;
+     , margin: 1rem;
       max-width: calc(100vw - 2rem);
     }
     .metadata-grid {
@@ -597,7 +597,7 @@ d;
   /* Animation for generation */
   @keyframes pulse {
     0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+    50% {, opacity: 1; }
   }
   .gallery-item:has(.generate-btn:disabled) {,
     animation: pulse 2s infinite;

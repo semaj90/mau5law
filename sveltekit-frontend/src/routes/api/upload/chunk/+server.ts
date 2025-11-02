@@ -1,16 +1,16 @@
-import { error, json } from '@sveltejs/kit';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { appendFile, mkdir } from 'fs/promises';
-import type { RequestHandler } from './$types.js';
+import { error, json } from, '@sveltejs/kit';
+import { tmpdir } from, 'os';
+import { join } from, 'path';
+import { appendFile, mkdir } from, 'fs/promises';
+import type { RequestHandler } from, './$types.js';
 const UPLOAD_DIR = join(tmpdir(), 'chunked-uploads');
 // Receives and appends a single chunk
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });
-    const formData = await (request as any).formData();
+    const formData = await (request as: any).formData();
     const chunk = formData.get('chunk') as File;
-    const fileId = formData.get('fileId') as string;
+    const fileId = formData.get('fileId') as: string;
     if (!chunk || !fileId) {
       throw error(400, 'Invalid chunk data.');
     }

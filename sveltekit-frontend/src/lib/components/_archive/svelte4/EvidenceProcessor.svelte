@@ -1,9 +1,9 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { createActor } from 'xstate';
-  import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
-  import type { ProgressMsg } from '$lib/types/progress';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { createActor } from, 'xstate';
+  import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from, '$lib/machines/uploadMachine';
+  import type { ProgressMsg } from, '$lib/types/progress';
   interface Props {
     evidenceId: string;
     steps?: string[];
@@ -73,7 +73,7 @@
         message,
         typ;
       }
-    ].slice(-50); // Keep last 50 logs
+    ].slice(-50); // Keep last, 50 logs
   }
   async function startProcessing(): Promise<any> {
     try {
@@ -120,24 +120,24 @@
   }
   function getStepIcon(step: string): string {
     switch (step) {
-      case 'ocr': return '🔍';
-      case 'embedding': return '🧠';
-      case 'rag':
-      case 'analysis': return '📚';
-      default: return '⚙️';
+      case, 'ocr': return, '🔍';
+      case, 'embedding': return, '🧠';
+      case, 'rag':
+      case, 'analysis': return, '📚';
+      default: return, '⚙️';
     }
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'done': return 'text-green-600';
-      case 'error': return 'text-red-600';
-      case 'processing': return 'text-blue-600';
-      case 'uploading': return 'text-yellow-600';
-      default: return 'text-gray-600';
+      case, 'done': return, 'text-green-600';
+      case, 'error': return, 'text-red-600';
+      case, 'processing': return, 'text-blue-600';
+      case, 'uploading': return, 'text-yellow-600';
+      default: return, 'text-gray-600';
     }
   }
   function formatFragment(fragment: any): string {
-    if (!fragment) return '';
+    if (!fragment) return, '';
     if (typeof fragment === 'string') return fragment;
     if (fragment.textPreview) return fragment.textPreview;
     if (fragment.snippet) return fragment.snippet;
@@ -191,14 +191,14 @@ https://svelte.dev/e/js_parse_error -->
       {#if hasError}
         <button
           onclick={retry}
-          class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+          class="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500, focus:ring-offset-2"
         >
           Retry
         </button>
       {/if}
       <button
         onclick={() => (showDetails = !showDetails)}
-        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500, focus:ring-offset-2"
       >
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
         <h4, class="font-medium, text-red-900">Error</h4>
       </div>
       <p, class="text-red-700, mt-1">
-        {fileProgress.error || context.lastError || 'An unknown error occurred'}
+        {fileProgress.error || context.lastError || 'An: unknown error occurred'}
       </p>
     </div>
   {/if}
@@ -391,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+<!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->
 
 <style>
   .evidence-processor {

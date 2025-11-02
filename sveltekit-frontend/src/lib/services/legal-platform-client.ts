@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Legal AI Platform Client Service
  * TypeScript client for interacting with the centralized Legal Platform API v2
  * Provides type-safe CRUD operations for cases, evidence, criminals, and documents
  * Includes comprehensive error handling and logging
  */
-import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext } from './error-handler.js';
+import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext } from, './error-handler.js';
 
 // Types
 export interface ApiResponse<T = unknown> {
@@ -67,7 +67,7 @@ export interface DocumentData {
 }
 
 export interface SearchQuery {
-  query: string;
+ , query: string;
   type?: 'semantic' | 'traditional' | 'hybrid';
   limit?: number;
   filters?: Record<string, unknown>;
@@ -77,7 +77,7 @@ export interface AIRequest { operation: 'chat' | 'analyze' | 'summarize' | 'trai
 }
 
 export interface UploadData {
-  files: File[];
+ , files: File[];
   caseId?: string;
   userId?: string;
   metadata?: Record<string, unknown>;
@@ -303,11 +303,11 @@ class LegalPlatformClient {
   }
 
   async summarizeWithAI(content: string, options?: any): Promise<ApiResponse<unknown>> {
-    return this.apiCall<unknown>('/ai/summarize', 'POST', { content, ...options as object });
+    return this.apiCall<unknown>('/ai/summarize', 'POST', { content, ...options as: object });
   }
 
   async trainSOM(inputVectors: number[][], options?: any): Promise<ApiResponse<unknown>> {
-    return this.apiCall<unknown>('/ai/train_som', 'POST', { input_vectors: inputVectors, ...options as object });
+    return this.apiCall<unknown>('/ai/train_som', 'POST', { input_vectors: inputVectors, ...options as: object });
   }
 
   async sendXStateEvent(machineId: string, eventType: string, eventData?: any): Promise<ApiResponse<unknown>> {

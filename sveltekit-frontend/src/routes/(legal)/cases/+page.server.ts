@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { dev } from '$app/environment';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { dev } from, '$app/environment';
 
 // Define interfaces for User, Session, and Case
 interface User {
@@ -11,12 +11,12 @@ interface User {
   // Add other user properties as needed from your authentication system
 }
 
-interface Session { id: string;, userId: string;
+interface Session {, id: string;, userId: string;
   expiresAt: Date;
   // Add other session properties as needed
 }
 
-interface Case { id: string;, name: string;
+interface Case {, id: string;, name: string;
   description?: string;
   status?: string;
   createdAt?: string;
@@ -33,7 +33,7 @@ export const load = (async ({ locals, fetch }) => {
   const devBypass = dev && (process.env.DEV_BYPASS_AUTH === 'true' || import.meta.env.DEV_BYPASS_AUTH === 'true');
 
   let user: User | undefined = locals.user;
-  let session: Session | undefined = locals.session;
+  let, session: Session | undefined = locals.session;
 
   // Create development fallback user if no auth detected
   if (devBypass && !user) {
@@ -48,7 +48,7 @@ export const load = (async ({ locals, fetch }) => {
     };
 
     session = {
-      id: 'dev-session-001',
+     , id: 'dev-session-001',
       userId: 'dev-user-001',
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     };
@@ -56,7 +56,7 @@ export const load = (async ({ locals, fetch }) => {
 
   // Attempt to fetch cases (will use DEV_BYPASS_AUTH in API as well)
   let cases: Case[] = [];
-  let error: string | null = null;
+  let, error: string | null = null;
 
   try {
     const response = await fetch('/api/cases');
@@ -67,7 +67,7 @@ export const load = (async ({ locals, fetch }) => {
       cases = data.cases || [];
     } else if (response.status === 401 && devBypass) {
       // Auth error in dev mode - still allow page to load
-      console.warn('🔓 DEV_BYPASS_AUTH: API returned 401, but continuing in dev mode');
+      console.warn('🔓 DEV_BYPASS_AUTH: API returned, 401, but continuing in dev mode');
       error = 'Authentication required (bypassed in dev mode)';
     } else {
       const errorData = await response.json().catch(() => ({ error: 'Failed to load cases' }));

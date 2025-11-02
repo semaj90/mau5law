@@ -1,8 +1,8 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { personsOfInterest } from '$lib/server/db/schema-postgres';
-import { z } from 'zod';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { db, sql } from, '$lib/server/db';
+import { personsOfInterest } from, '$lib/server/db/schema-postgres';
+import { z } from, 'zod';
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -31,7 +31,7 @@ class PersonsOfInterestCRUDService {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest`
-    )) as unknown as Array<{ count: number }>;
+    )) as: unknown as Array<{, count: number }>;
     const rows = await db.select().from(personsOfInterest).limit(limit).offset(offset);
     const total = totalRow?.count ?? rows.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -39,12 +39,12 @@ class PersonsOfInterestCRUDService {
   }
   async listByRiskLevel(
     riskLevel: 'low' | 'medium' | 'high' | 'critical',
-    { page, limit }: { page: number; limit: number }
+    { page, limit }: { page: number;, limit: number }
   ) {
     const offset = (page - 1) * limit;
     const [totalRow] = (await db.execute(
       sql`SELECT COUNT(*)::int AS count FROM persons_of_interest WHERE threat_level = ${riskLevel}`
-    )) as unknown as Array<{ count: number }>;
+    )) as: unknown as Array<{, count: number }>;
     const rows = await db
       .select()
       .from(personsOfInterest)
@@ -72,7 +72,7 @@ class PersonsOfInterestCRUDService {
         createdBy: this.userId
       })
       .returning({ id: personsOfInterest.id });
-    return row?.id as string;
+    return row?.id as: string;
   }
   async getById(id: string) {
     const rows = await db

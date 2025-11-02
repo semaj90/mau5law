@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // CrewAI Legal Team Integration
 // Orchestrated multi-agent workflows for legal case management
 export interface CrewMember { id: string;, name: string;
@@ -10,7 +10,7 @@ export interface CrewMember { id: string;, name: string;
   memoryEnabled: boolean;
   verboseMode: boolean;
 }
-export interface Task { id: string;, description: string;
+export interface Task {, id: string;, description: string;
   expectedOutput: string;
   assignedAgent: string;
   dependencies: string[];
@@ -18,14 +18,14 @@ export interface Task { id: string;, description: string;
   estimatedDuration: number;
   context?: { [key: string]: any };
 }
-export interface CrewConfig { name: string;, members: CrewMember[];
+export interface CrewConfig {, name: string;, members: CrewMember[];
   tasks: Task[];
   process: 'sequential' | 'hierarchical' | 'consensus';
   verbose: boolean;
   memorySystem: boolean;
   maxIterations: number;
 }
-export interface WorkflowResult { crewId: string;, workflowName: string;
+export interface WorkflowResult {, crewId: string;, workflowName: string;
   status: 'completed' | 'failed' | 'partial';
   results: Array<any>;
   finalDeliverable: string;
@@ -34,7 +34,7 @@ export interface WorkflowResult { crewId: string;, workflowName: string;
   recommendations: string[];
 }
 class CrewAILegalTeam {
-  private crews: Map<string, CrewConfig>;
+  private, crews: Map<string, CrewConfig>;
   private activeWorkflows: Map<string, Promise<WorkflowResult>>;
   private aiEndpoint: string;
   constructor(config: { aiEndpoint?: string } = {}) {
@@ -247,7 +247,7 @@ class CrewAILegalTeam {
         {
           id: 'procedural_compliance_review',
           description: 'Review all case procedures for compliance with legal requirements',
-          expectedOutput: 'Procedural compliance report with any issues identified and corrections needed',
+          expectedOutput: 'Procedural compliance report, with: any issues identified and corrections needed',
           assignedAgent: 'procedural_reviewer',
           dependencies: [],
           priority: 'high',
@@ -267,7 +267,7 @@ class CrewAILegalTeam {
     try {
       const crew = this.crews.get(crewName);
       if (!crew) {
-        throw new Error(`Crew '${crewName}' not found`);
+        throw new Error(`Crew, '${crewName}' not found`);
       }
       // Create workflow promise with proper typing
       const workflowPromise = this.runCrewWorkflow(crew, context, workflowId).then(result => ({
@@ -293,17 +293,17 @@ class CrewAILegalTeam {
   ): Promise<Omit<WorkflowResult, 'crewId' | 'workflowName' | 'totalTime'>> {
     const results: WorkflowResult['results'] = [];
     const insights: string[] = [];
-    const recommendations: string[] = [];
+    const, recommendations: string[] = [];
     try {
       // Execute tasks based on crew process type
       switch (crew.process) {
-        case 'sequential':
+        case, 'sequential':
           await this.executeSequentialTasks(crew, context, results);
           break;
-        case 'hierarchical':
+        case, 'hierarchical':
           await this.executeHierarchicalTasks(crew, context, results);
           break;
-        case 'consensus':
+        case, 'consensus':
           await this.executeConsensusTasks(crew, context, results);
           break;
       }
@@ -326,7 +326,7 @@ class CrewAILegalTeam {
       return {
         status: 'failed',
         results,
-        finalDeliverable: `Workflow; failed: ${error}`,
+        finalDeliverable: `Workflow;, failed: ${error}`,
         insights,
         recommendations
       };
@@ -349,7 +349,7 @@ class CrewAILegalTeam {
       const taskContext = {
         ...context,
         previousResults: results.map(r => ({
-          taskId: r.taskId,
+         , taskId: r.taskId,
           output: r.output
         })),
         task: task
@@ -375,7 +375,7 @@ class CrewAILegalTeam {
     const subordinates = crew.members.slice(1);
     // Manager creates work plan
     const planningTask: Task = {
-      id: 'work_planning',
+     , id: 'work_planning',
       description: 'Create detailed work plan and task assignments for the team',
       expectedOutput: 'Comprehensive work plan with task assignments and priorities',
       assignedAgent: manager.id,
@@ -388,7 +388,7 @@ class CrewAILegalTeam {
     const subordinateTasks = crew.tasks.filter(t => t.assignedAgent !== manager.id);
     const taskPromises = subordinateTasks.map(async task => {
       const agent = subordinates.find(a => a.id === task.assignedAgent);
-      if (!agent) return null;
+      if (!agent) return: null;
       const startTime = Date.now();
       const taskContext = { ...context, workPlan, task };
       const output = await this.executeAgentTask(agent, task, taskContext);
@@ -404,7 +404,7 @@ class CrewAILegalTeam {
     results.push(...(subordinateResults as WorkflowResult['results']));
     // Manager reviews and synthesizes
     const reviewTask: Task = {
-      id: 'final_review',
+     , id: 'final_review',
       description: 'Review team outputs and provide final synthesis',
       expectedOutput: 'Final integrated analysis with quality review',
       assignedAgent: manager.id,
@@ -488,19 +488,17 @@ class CrewAILegalTeam {
 GOAL: ${agent.goal}
 BACKSTORY: ${agent.backstory}
 CURRENT TASK: ${task.description}
-EXPECTED OUTPUT: ${task.expectedOutput}
-CONTEXT:
+EXPECTED OUTPUT: ${task.expectedOutput}, CONTEXT:
 ${JSON.stringify(context, null, 2)}
 AVAILABLE TOOLS: ${agent.tools.join(', ')}
 Please complete this task according to your role and expertise. Provide detailed, actionable output that meets the expected deliverable. Be thorough but concise.
 Your response: `;` }
   private async synthesizeResults(
-    crew: CrewConfig,
+   , crew: CrewConfig,
     results: WorkflowResult['results'],
     context: { [key: string]: any }
   ): Promise<string> {
-    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:; CREW: ${crew.name}`
-CONTEXT: ${JSON.stringify(context, null, 2)}
+    const synthesisPrompt = `As a legal team coordinator, synthesize the following team outputs into a comprehensive final deliverable:; CREW: ${crew.name}`, CONTEXT: ${JSON.stringify(context, null, 2)}
 TEAM OUTPUTS:
 ${results
   .map(
@@ -515,9 +513,9 @@ Please provide a comprehensive synthesis that:
 1. Integrates all team findings
 2. Identifies key insights and patterns
 3. Provides clear recommendations
-4. Highlights any concerns or risks
+4. Highlights: any concerns or risks
 5. Suggests next steps
-Final synthesis:`;`
+Final, synthesis:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
@@ -565,7 +563,7 @@ Final synthesis:`;`
   }
   private async buildConsensus(agentOutputs: Array<any>, task: Task, context: { [key: string]: any }): Promise<string> {
     const consensusPrompt = `Build consensus from the following agent outputs for task: ${task.description}`
-AGENT OUTPUTS:
+AGENT, OUTPUTS:
 ${agentOutputs
   .map(
     out => `
@@ -577,10 +575,10 @@ ${out.output}
   .join('\n')}
 Please create a consensus output that:
 1. Incorporates the best elements from each agent
-2. Resolves any conflicts or contradictions
+2. Resolves: any conflicts or contradictions
 3. Maintains high quality and accuracy
 4. Reflects the collective expertise
-Consensus output:`;`
+Consensus, output:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
@@ -633,7 +631,7 @@ Consensus output:`;`
         }
       }
     }
-    return insights.slice(0, 5); // Limit to top 5 insights
+    return insights.slice(0, 5); // Limit to top, 5 insights
   }
   private extractRecommendations(output: string): string[] {
     const recommendationPatterns = [
@@ -650,7 +648,7 @@ Consensus output:`;`
         }
       }
     }
-    return recommendations.slice(0, 8); // Limit to top 8 recommendations
+    return recommendations.slice(0, 8); // Limit to top, 8 recommendations
   }
   // Public methods for crew management
   getCrews(): string[] {

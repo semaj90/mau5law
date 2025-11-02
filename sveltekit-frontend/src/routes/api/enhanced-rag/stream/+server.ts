@@ -1,14 +1,14 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js';
-import { dev } from '$app/environment';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { enhancedRAGService } from, '$lib/services/enhanced-rag-integration.js';
+import { dev } from, '$app/environment';
 
 // Validate incoming request
 const StreamQuerySchema = z.object({
 	query: z.string().min(1).max(2000),
 	options: z
 		.object({
-			maxResults: z.number().min(1).max(50).optional().default(10),
+		, maxResults: z.number().min(1).max(50).optional().default(10),
 			includeGraph: z.boolean().optional().default(true),
 			confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
 		})
@@ -17,7 +17,7 @@ const StreamQuerySchema = z.object({
 });
 
 // Minimal typed wrapper for the RAG service
-type RagService = { processLegalQuery: (; q: string,
+type RagService = { processLegalQuery: (;, q: string,
 		opts?: { maxResults?: number; includeGraph?: boolean; confidenceThreshold?: number }
 	) => Promise<{
 		response: string;
@@ -29,7 +29,7 @@ type RagService = { processLegalQuery: (; q: string,
 	}>;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { query, options } = StreamQuerySchema.parse(body);
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const startTime = Date.now();
         try {
-          const ragService = enhancedRAGService as unknown as RagService;
+          const ragService = enhancedRAGService as: unknown as RagService;
           const ragResponse = await ragService.processLegalQuery(query, options);
 
           const processingTime = Date.now() - startTime;

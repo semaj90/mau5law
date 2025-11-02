@@ -1,8 +1,8 @@
-import { db } from '$lib/db/connection';
-import { eq, desc } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import { chatSessions } from '$lib/server/db/schema-unified';
-import type { RequestHandler } from './$types.js';
+import { db } from, '$lib/db/connection';
+import { eq, desc } from, 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import { chatSessions } from, '$lib/server/db/schema-unified';
+import type { RequestHandler } from, './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const sessionData = await request.json();
@@ -31,14 +31,14 @@ export const POST: RequestHandler = async ({ request }) => {
       session: newSession
     });
   } catch (error: any) {
-    // Changed from 'any' to: 'unknown'
-    console.error('Error creating chat session:', error);
+    // Changed from, 'any' to: 'unknown'
+    console.error('Error creating chat, session:', error);
     return json(
       {
         error: 'Failed to create chat session',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 } // Corrected placement of status object
+      { status: 500 } // Corrected placement of, status: object
     );
   }
 };
@@ -62,14 +62,14 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ sessions });
     }
   } catch (error: any) {
-    // Changed from 'any' to: 'unknown'
-    console.error('Error fetching chat sessions:', error);
+    // Changed from, 'any' to: 'unknown'
+    console.error('Error fetching chat, sessions:', error);
     return json(
       {
         error: 'Failed to fetch chat sessions',
         details: error instanceof Error ? error.message : 'Unknown error'
       },
-      { status: 500 } // Corrected placement of status object
+      { status: 500 } // Corrected placement of, status: object
     );
   }
 };

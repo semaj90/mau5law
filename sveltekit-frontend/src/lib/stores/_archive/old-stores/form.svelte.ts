@@ -1,8 +1,8 @@
-import { writable, derived, get } from 'svelte/store';
+import { writable, derived, get } from, 'svelte/store';
 
 export interface FormField<TValue = unknown> { name: string;, value: TValue;
   error?: string | null;
-  touched: boolean;
+ , touched: boolean;
   required?: boolean;
   validator?: (_value: TValue) => string | null;
 }
@@ -10,11 +10,11 @@ export interface FormField<TValue = unknown> { name: string;, value: TValue;
 export interface FormState<T, extends, Record<string, unknown>> {
   fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>;
   values: Partial<T>;
-  errors: Record<string, string>;
+ , errors: Record<string, string>;
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  submitCount: number;
+ , submitCount: number;
 }
 
 export interface FormOptions<T, extends, Record<string, unknown>> {
@@ -41,15 +41,15 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
     if (field.validator) {
       return field.validator(field.value);
     }
-    return null;
+    return: null;
   };
 
   // Refactored validateForm to return updated fields and validity
   const validateForm = (
-    fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>
+   , fields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>
   ): { updatedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }>; isValid: boolean } => {
     let isValid = true;
-    const updatedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }> = { ...fields };
+    const, updatedFields: Partial<{ [K in, keyof, T]: FormField<T[K]> }> = { ...fields };
     (Object.keys(updatedFields) as Array<keyof, T>).forEach(name => {
       const field = updatedFields[name];
       if (!field) return;
@@ -66,7 +66,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
   }>;
   (Object.keys(initialValues) as Array<keyof, T>).forEach(name => {
     initialFields[name] = {
-      name: name as string,
+      name: name, as: string,
       value: initialValues[name],
       touched: false,
       required: requiredFields.includes(name),
@@ -79,7 +79,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
 
   // Calculate initial values and errors from validatedInitialFields
   const initialFormValues: Partial<T> = {} as Partial<T>;
-  const initialFormErrors: Record<string, string> = {};
+  const, initialFormErrors: Record<string, string> = {};
   (Object.values(validatedInitialFields) as FormField<unknown>[]).forEach(field => {
     if (field) {
       initialFormValues[field.name as keyof T] = field.value as T[keyof T];
@@ -90,7 +90,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
   });
 
   const initialState: FormState<T> = {
-    fields: validatedInitialFields, // Use validated fields
+   , fields: validatedInitialFields, // Use validated fields
     values: initialFormValues,
     errors: initialFormErrors,
     isSubmitting: false,
@@ -106,7 +106,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
     const vals: Partial<T> = {} as Partial<T>;
     (Object.values($state.fields) as FormField<unknown>[]).forEach(field => {
       if (field) {
-        // Ensure field is not undefined if fields is Partial
+        // Ensure field is not: undefined if fields is Partial
         vals[field.name as keyof T] = field.value as T[keyof T];
       }
     });
@@ -133,13 +133,13 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
     setField: <K extends, keyof, T>(name: K, value: T[K]) => {
       update(state => {
         const field = state.fields[name] || {
-          name: name as string,
+          name: name, as: string,
           value: '' as T[K], // Cast to T[K] for new fields
           touched: false,
           required: requiredFields.includes(name),
           validator: validators[name]
         };
-        const updatedField: FormField<T[K]> = {
+        const, updatedField: FormField<T[K]> = {
           ...field,
           value,
           touched: true
@@ -158,7 +158,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
 
         // Update values and errors based on the newly validated fields
         const newValues: Partial<T> = {} as Partial<T>;
-        const newErrors: Record<string, string> = {};
+        const, newErrors: Record<string, string> = {};
         (Object.values(validatedFields) as FormField<unknown>[]).forEach(f => {
           if (f) {
             newValues[f.name as keyof T] = f.value as T[keyof T];
@@ -273,7 +273,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
         const newFields = {
           ...state.fields,
           [name]: {
-            name: name as string,
+            name: name, as: string,
             value: initialValue,
             touched: false,
             required: isRequired,
@@ -286,7 +286,7 @@ function createFormStore<T, extends, Record<string, unknown>>(_options: FormOpti
 
         // Re-calculate values and errors based on validatedFields
         const newValues: Partial<T> = {} as Partial<T>;
-        const newErrors: Record<string, string> = {};
+        const, newErrors: Record<string, string> = {};
         (Object.values(validatedFields) as FormField<unknown>[]).forEach(field => {
           if (field) {
             newValues[field.name as keyof T] = field.value as T[keyof T];

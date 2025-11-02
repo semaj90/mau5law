@@ -4,7 +4,7 @@
  * Alternatively, proxy to Go backend via vite.config.ts proxy
  */
 
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from, './$types';
 
 export const GET: RequestHandler = async ({ request }) => {
   // If using SvelteKit's WebSocket support (requires compatible adapter)'

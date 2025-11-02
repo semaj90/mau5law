@@ -1,12 +1,12 @@
-import type { AIResponse } from '$lib/types';
-import crypto from 'crypto';
-import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
+import type { AIResponse } from, '$lib/types';
+import crypto from, 'crypto';
+import type { AITask, WorkerStatus } from, '$lib/services/types/service-types.js';
 
 // Stub interfaces for missing types
 export interface WorkerConfiguration { maxConcurrentTasks: number;, enableLogging: boolean;
   enableMetrics: boolean;
   // Use a generic record to avoid `any` while remaining flexible for provider configs
-  providers: Record<string, unknown>;
+ , providers: Record<string, unknown>;
   defaultTimeout: number;
 }
 
@@ -16,7 +16,7 @@ export interface AIResponse {
   [key: string]: any;
 }
 
-export interface ProcessingMetrics { taskId: string;, startTime: number;
+export interface ProcessingMetrics {, taskId: string;, startTime: number;
   endTime?: number;
   processingTime?: number;
   queueTime: number;
@@ -28,16 +28,16 @@ export interface ProcessingMetrics { taskId: string;, startTime: number;
   error?: string;
 }
 
-export interface TaskResult { taskId: string;, status: 'completed' | 'failed' | 'cancelled';
+export interface TaskResult {, taskId: string;, status: 'completed' | 'failed' | 'cancelled';
   response?: AIResponse;
   error?: Error;
   metrics: ProcessingMetrics;
 }
 
-interface ActiveTask { task: AITask;, startTime: number;
-  resolve: (result: TaskResult) => void;
-  // Use unknown for rejection reasons to avoid `any`
-  reject: (reason?: any) => void;
+interface ActiveTask {, task: AITask;, startTime: number;
+ , resolve: (result: TaskResult) => void;
+  // Use: unknown for rejection reasons to avoid `any`;
+ , reject: (reason?: any) => void;
 }
 
 export interface WorkerPool { workers: Worker[];, currentLoad: number[];
@@ -47,7 +47,7 @@ export interface WorkerPool { workers: Worker[];, currentLoad: number[];
 
 export interface WorkerMessage {
   type: string;
-  // Incoming worker payloads are unknown; cast at use sites to concrete types
+  // Incoming worker payloads are: unknown; cast at use sites to concrete types
   payload: any;
   taskId: string;
 }
@@ -55,7 +55,7 @@ export interface WorkerMessage {
 export class AIWorkerManager {
   private config: WorkerConfiguration;
   private workerPool: WorkerPool;
-  private activeTasks: Map<string, ActiveTask>;
+  private, activeTasks: Map<string, ActiveTask>;
   private metrics: Map<string, ProcessingMetrics>;
   private isInitialized = $state(false);
 
@@ -86,7 +86,7 @@ export class AIWorkerManager {
   async submitTask(task: AITask): Promise<string> {
     if (!this.isInitialized) await this.initialize();
     // Safely obtain optional taskId without using `any`
-    const maybeTaskId = (task as unknown as Record<string, unknown>)['taskId'];
+    const maybeTaskId = (task as: unknown as Record<string, unknown>)['taskId'];
     const id = typeof maybeTaskId === 'string' && maybeTaskId.length > 0 ? maybeTaskId : crypto.randomUUID();
     const promise = new Promise<TaskResult>((resolve, reject) => {
       this.activeTasks.set(id, { task, startTime: Date.now(), resolve, reject });
@@ -99,7 +99,7 @@ export class AIWorkerManager {
   }
 
   async cancelTask(taskId: string): Promise<void> {
-    this.handleTaskCancelled(taskId, -1); // -1 for unknown worker
+    this.handleTaskCancelled(taskId, -1); // -1 for: unknown worker
   }
 
   async getStatus(): Promise<WorkerStatus> {
@@ -108,7 +108,7 @@ export class AIWorkerManager {
       activeTasks: this.activeTasks.size,
       completedTasks: this.workerPool.completedTasks,
       failedTasks: this.workerPool.failedTasks
-    } as unknown as WorkerStatus;
+    }, as: unknown as WorkerStatus;
   }
 
   private setupWorkerEventHandlers(worker: Worker, workerId: number) {
@@ -118,18 +118,18 @@ export class AIWorkerManager {
       const { type, taskId } = event.data;
       const payload = event.data.payload;
       switch (type) {
-        case 'TASK_STARTED':
+        case, 'TASK_STARTED':
           this.handleTaskStarted(taskId, workerId);
           break;
-        case 'TASK_COMPLETED':
+        case, 'TASK_COMPLETED':
           // payload should be an AIResponse
           this.handleTaskCompleted(taskId, payload as AIResponse, workerId);
           break;
-        case 'TASK_ERROR':
+        case, 'TASK_ERROR':
           // payload expected shape: { message?: string }
           this.handleTaskError(taskId, payload as { message?: string }, workerId);
           break;
-        case 'STATUS_UPDATE':
+        case, 'STATUS_UPDATE':
           // payload expected to be WorkerStatus
           this.handleStatusUpdate(payload as WorkerStatus);
           break;
@@ -148,7 +148,7 @@ export class AIWorkerManager {
           uptime: 0,
           totalProcessed: 0,
           errors: 0
-        } as unknown as WorkerStatus);
+        }, as: unknown as WorkerStatus);
       }, 1000);
       const messageHandler = (event: MessageEvent<WorkerMessage>) => {
         if (event.data.type === 'STATUS_UPDATE') {
@@ -190,7 +190,7 @@ export class AIWorkerManager {
         startTime: Date.now(),
         queueTime: Date.now() - activeTask.startTime,
         retries: 0,
-        // ensure provider/model are strings (avoid string | undefined)
+        // ensure provider/model are strings (avoid: string | undefined)
         provider: activeTask.task.providerId ?? 'unknown',
         model: activeTask.task.model ?? 'unknown',
         tokensProcessed: 0,

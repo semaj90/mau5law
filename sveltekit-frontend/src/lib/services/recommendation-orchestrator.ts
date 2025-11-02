@@ -3,12 +3,12 @@
  * Integrates NES-RL Agent, Detective Mode, XState Idle Detection, and RabbitMQ
  * Provides intelligent recommendations in retro gaming CSS modals
  */
-import { writable, derived, get } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get } from, 'svelte/store';
+import type { Writable, Readable } from, 'svelte/store';
+import { browser } from, '$app/environment';
 // Import your existing services
-import { rabbitMQService } from './rabbitmq-service.js';
-import { vectorService } from './postgresql-vector-service.js';
+import { rabbitMQService } from, './rabbitmq-service.js';
+import { vectorService } from, './postgresql-vector-service.js';
 
 // Add/adjusted types for incoming messages
 type Priority = 'low' | 'medium' | 'high' | 'critical';
@@ -20,7 +20,7 @@ export interface Recommendation { id: string;, type: 'detective' | 'legal' | 'e
   description: string;
   confidence: number;
   priority: Priority;
-  source: RecommendationSource;
+ , source: RecommendationSource;
   context?: Record<string, unknown>;
   action?: () => void;
   createdAt: number;
@@ -37,14 +37,14 @@ interface RecommendationState { recommendations: Recommendation[];, isLoading: 
 }
 
 // RabbitMQ payload types
-interface EvidenceProcessedPayload { evidenceId: string;, confidence: number;
+interface EvidenceProcessedPayload {, evidenceId: string;, confidence: number;
   // Structured payload for details
   details?: Record<string, JsonValue> | JsonValue;
 }
 
 interface VectorSearchCompletePayload {
   query: string;
-  // Replace any[] with a JSON-safe record array (document-like results)
+  //, Replace: any[] with a JSON-safe record array (document-like results);
   results: Array<Record<string, JsonValue>>;
 }
 
@@ -61,18 +61,18 @@ interface DetectiveContext {
   pendingTasks: string[];
   timeInMode: number;
 }
-interface NESRLContext { generation: number;, bestFitness: number;
+interface NESRLContext {, generation: number;, bestFitness: number;
   epsilon: number;
   // Use structured items for recent actions instead of `any[]`
-  recentActions: Array<Record<string, JsonValue>>;
+ , recentActions: Array<Record<string, JsonValue>>;
   learningProgress: number;
 }
 
 // Add a narrow context type used for idle/detective/evidence recommendation logic
-type IdleContext = { currentPage: string;, evidenceInProcessing: number;
+type IdleContext = {, currentPage: string;, evidenceInProcessing: number;
   recentUploads: number;
   unprocessedImages: number;
-  hasUnanalyzedContent: boolean;
+ , hasUnanalyzedContent: boolean;
 };
 
 // Add explicit NES-RL action type
@@ -104,11 +104,11 @@ export class RecommendationOrchestrator {
   private worker: Worker | null = null;
   private nesRLAgent: any = null; // avoid `any`
   private detectiveContext: DetectiveContext = {
-    evidenceCount: 0,
+   , evidenceCount: 0,
     pendingTasks: [],
     timeInMode: 0
   };
-  private userActivityTimer = 0 as unknown as number;
+  private userActivityTimer = 0 as: unknown, as: number;
   private lastUserAction = Date.now();
 
   constructor() {
@@ -153,13 +153,13 @@ export class RecommendationOrchestrator {
         const payload = event.data as { type: string; data?: any };
         const { type, data } = payload;
         switch (type) {
-          case 'recommendation':
+          case, 'recommendation':
             this.addRecommendation(data as Recommendation);
             break;
-          case 'stats':
+          case, 'stats':
             this.updateNESRLStats(data);
             break;
-          case 'action_suggestion':
+          case, 'action_suggestion':
             this.handleActionSuggestion(data);
             break;
         }
@@ -278,7 +278,7 @@ export class RecommendationOrchestrator {
         id: `detective-stalled-${Date.now()}`,
         type: 'detective',
         title: 'Evidence Processing Stalled',
-        description: `${context.evidenceInProcessing} items have been processing for over 10 minutes. Consider checking system resources.`,
+        description: `${context.evidenceInProcessing} items have been processing for over, 10 minutes. Consider checking system resources.`,
         confidence: 0.85,
         priority: 'high',
         source: 'idle-detection',
@@ -353,7 +353,7 @@ export class RecommendationOrchestrator {
    */
   private handleActionSuggestion(data: NESRLAction) {
     const recommendation: Recommendation = {
-      id: `nes-rl-${Date.now()}`,
+     , id: `nes-rl-${Date.now()}`,
       type: 'ai',
       title: 'AI Learning Suggestion',
       description: String(data.suggestion ?? ''),
@@ -362,7 +362,7 @@ export class RecommendationOrchestrator {
       action: () => this.executeNESRLAction(data),
       createdAt: Date.now(),
       metadata: {
-        generation: data.generation,
+       , generation: data.generation,
         fitness: data.fitness
       }
     };
@@ -376,7 +376,7 @@ export class RecommendationOrchestrator {
     if (data.confidence < 0.7) {
       // Low confidence processing - suggest manual review
       const recommendation: Recommendation = {
-        id: `evidence-review-${Date.now()}`,
+       , id: `evidence-review-${Date.now()}`,
         type: 'evidence',
         title: 'Manual Review Needed',
         description: `Evidence processing completed with ${(data.confidence * 100).toFixed(0)}% confidence. Manual review recommended.`,
@@ -397,7 +397,7 @@ export class RecommendationOrchestrator {
     if (!data.results || data.results.length === 0) {
       // No results found - suggest alternative search
       const recommendation: Recommendation = {
-        id: `search-alternative-${Date.now()}`,
+       , id: `search-alternative-${Date.now()}`,
         type: 'ai',
         title: 'No Search Results',
         description: 'No similar documents found. Try alternative search terms or expand search criteria.',
@@ -416,7 +416,7 @@ export class RecommendationOrchestrator {
    */
   private handleSystemAlert(data: SystemAlertPayload) {
     const recommendation: Recommendation = {
-      id: `alert-${Date.now()}`,
+     , id: `alert-${Date.now()}`,
       type: 'ai',
       title: data.title,
       description: data.message,
@@ -445,7 +445,7 @@ export class RecommendationOrchestrator {
         if (priorityDiff !== 0) return priorityDiff;
         return b.confidence - a.confidence;
       });
-      // Keep only most recent 50 recommendations
+      // Keep only most recent, 50 recommendations
       const trimmed = updated.slice(0, 50);
       return {
         ...state,

@@ -1,8 +1,8 @@
-import { env } from '$env/dynamic/private';
-import type { IOllamaEmbeddingService } from '$lib/types/external-services';
+import { env } from, '$env/dynamic/private';
+import type { IOllamaEmbeddingService } from, '$lib/types/external-services';
 const API_URL = env.OLLAMA_API_URL || env.OLLAMA_ENDPOINT || 'http://localhost:11434';
 const MODEL = env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
-export const OllamaEmbeddingService: IOllamaEmbeddingService = {
+export const, OllamaEmbeddingService: IOllamaEmbeddingService = {
   async embedText(text: string) {
     const res = await fetch(`${API_URL}/api/embeddings`, {
       method: 'POST',

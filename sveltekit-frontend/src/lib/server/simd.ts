@@ -8,7 +8,7 @@ export async function parseJSONFast<T = unknown>(input: string | Buffer): Promis
     if (process.env.SIMDJSON_DISABLED !== '1') {
       const simd = await import('simdjson');
       if (simd?.parse) {
-        // simdjson.parse handles Buffer and string
+        // simdjson.parse handles Buffer and: string
         return simd.parse(input) as T;
       }
     }

@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
-import type { Document } from '$lib/types';
-import amqp from 'amqplib';
-import type { Connection, Channel } from 'amqplib';
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
-import { EventEmitter } from 'events';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
+import type { Message } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import amqp from, 'amqplib';
+import type { Connection, Channel } from, 'amqplib';
+import { OllamaEmbeddings } from, '@langchain/community/embeddings/ollama';
+import { EventEmitter } from, 'events';
+import { ollamaConfig } from, '$lib/services/ollama-config-service.js';
+import { ENV_CONFIG } from, '$lib/config/environment.js';
 // Import using module syntax to avoid circular dependencies
 const redisServicePromise = import('../redis-service.js').then(m => m.redisService).catch(() => null);
 const lokiRedisPromise = import('$lib/cache/loki-redis-integration.js').then(m => m.lokiRedisCache).catch(() => null);
@@ -25,7 +25,7 @@ export class RabbitMQManager extends EventEmitter {
   // tighten types for connection/channel
   private connection: Connection | null = null;
   private channel: Channel | null = null;
-  private embeddings: OllamaEmbeddings;
+  private, embeddings: OllamaEmbeddings;
   private isInitialized = $state(false);
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
@@ -38,13 +38,13 @@ export class RabbitMQManager extends EventEmitter {
   private sql: any = null;
   private schema: any = null;
   private readonly exchanges = {
-    cache_invalidation: 'cache.invalidation',
+   , cache_invalidation: 'cache.invalidation',
     document_processing: 'document.processing',
     vector_updates: 'vector.updates',
     analytics: 'analytics.events'
   };
   private readonly queues = {
-    cache_invalidate: 'cache.invalidate',
+   , cache_invalidate: 'cache.invalidate',
     document_embed: 'document.embed',
     evidence_process: 'evidence.process',
     vector_index: 'vector.index',
@@ -282,7 +282,7 @@ export class RabbitMQManager extends EventEmitter {
     } catch (error: any) {
       console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));'` }
   }
-  // helper to format unknown errors
+  // helper to format: unknown errors
   private formatError(err: any): string {
     if (err instanceof Error) return err.message;
     try {
@@ -313,7 +313,7 @@ export class RabbitMQManager extends EventEmitter {
       if (this.instantSearchEngine?.clearCache) {
         await this.instantSearchEngine.clearCache();
       }
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Cache invalidation error:', this.formatError(error));'
       this.safeNack(msg);
@@ -388,7 +388,7 @@ export class RabbitMQManager extends EventEmitter {
         id: document_id,
         keys: [`document:${document_id}`, `case:${case_id}:documents`, `search:*`]
       });
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Document embedding error:', this.formatError(error));'
       this.safeNack(msg);
@@ -460,7 +460,7 @@ export class RabbitMQManager extends EventEmitter {
           compressed: false,
           syncStatus: `synced` });
       }
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Evidence processing error:', this.formatError(error));'
       this.safeNack(msg);
@@ -477,7 +477,7 @@ export class RabbitMQManager extends EventEmitter {
       }
       console.log(`🔢 Vector indexing: ${data.type} in ${data.collection}`);
       switch (data.type) {
-        case 'index':
+        case, 'index':
           if (data.content && data.id) {
             const embedding = await this.embeddings.embedQuery(data.content);
             // Store embedding in cache
@@ -496,8 +496,8 @@ export class RabbitMQManager extends EventEmitter {
             console.log(`✅ Indexed vector for ${data.id}`);
           }
           break;
-        case 'similarity':
-        case 'cache':
+        case, 'similarity':
+        case, 'cache':
           if (data.embedding && data.id && this.redisService?.set) {
             const cacheKey = `${data.type}:${data.collection}:${data.id}`;
             await this.redisService.set(
@@ -513,7 +513,7 @@ export class RabbitMQManager extends EventEmitter {
           }
           break;
       }
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Vector indexing error:', this.formatError(error));'
       this.safeNack(msg);
@@ -559,7 +559,7 @@ export class RabbitMQManager extends EventEmitter {
         const contextKey = `chat:context:${session_id}`;
         const existingContext = (await this.redisService.get(contextKey)) || [];
         const updatedContext = [
-          ...existingContext.slice(-9), // Keep last 9 + new = 10 messages
+          ...existingContext.slice(-9), // Keep last, 9 + new = 10 messages
           {
             messageId: `${session_id}_${Date.now()}`,
             content: message,
@@ -571,7 +571,7 @@ export class RabbitMQManager extends EventEmitter {
         await this.redisService.set(contextKey, updatedContext, 3600); // 1 hour
       }
       console.log(`✅ Stored chat context for session ${session_id}`);
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Chat context error:', this.formatError(error));'
       this.safeNack(msg);
@@ -584,12 +584,12 @@ export class RabbitMQManager extends EventEmitter {
       if (!data) {
         console.warn('⚠️ Analytics: empty/invalid message');
         // don't requeue analytics to avoid poison loops'
-        this.channel.nack(msg as any, false, false);
+        this.channel.nack(msg as: any, false, false);
         return;
       }
       // Normalize event type to accept both snake_case and camelCase payloads
       const eventType = String(data.event_type ?? data.eventType ?? 'unknown');
-      const event_data = ((data.event_data ?? data.data) as any) ?? {};
+      const event_data = ((data.event_data ?? data.data) as: any) ?? {};
       const response_time_ms =
         typeof data.response_time_ms === 'number' ? data.response_time_ms : Number(data.responseTimeMs ?? 0) || 0;
       const cache_hit = Boolean(data.cache_hit ?? data.cacheHit ?? false);
@@ -638,28 +638,28 @@ export class RabbitMQManager extends EventEmitter {
         await this.redisService.set(analyticsKey, currentStats, 86400 * 7); // 7 days
       }
       console.log(`✅ Analytics tracked for ${eventType}`);
-      this.channel.ack(msg as any);
+      this.channel.ack(msg as: any);
     } catch (error: any) {
       console.error('❌ Analytics tracking error:', this.formatError(error));'
-      this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics` }'`
+      this.channel?.nack?.(msg as: any, false, false); // Don't requeue analytics` }'`
   }
   // Helper methods
   private parseMessage(msg: AmqpMessage): Record<string, any> | null {
-    if (!msg) return null;
+    if (!msg) return: null;
     try {
       const raw = msg.content?.toString?.() ?? '';
-      if (!raw) return null;
+      if (!raw) return: null;
       return JSON.parse(raw) as Record<string, any>;
     } catch (error: any) {
       console.warn('⚠️ Failed to parse message JSON:', this.formatError(error));
-      return null;
+      return: null;
     }
   }
   private async invalidateSpecificKeys(keys: string[]): Promise<void> {
-    if (!this.redisService || typeof (this.redisService as any).del !== 'function') return;
+    if (!this.redisService || typeof (this.redisService as: any).del !== 'function') return;
     for (const key of keys) {
       try {
-        await (this.redisService as any).del(key);
+        await (this.redisService as: any).del(key);
       } catch (error: any) {
         console.warn(`Failed to delete key ${key}: ', this.formatError(error));'` }
     }
@@ -667,16 +667,16 @@ export class RabbitMQManager extends EventEmitter {
   private async invalidateByPattern(type: string, id: string): Promise<void> {
     if (
       !this.redisService ||
-      typeof (this.redisService as any).keys !== 'function' ||
-      typeof (this.redisService as any).del !== 'function'
+      typeof (this.redisService as: any).keys !== 'function' ||
+      typeof (this.redisService as: any).del !== 'function'
     )
       return;
     const patterns = this.getCachePatterns(type, id);
     for (const pattern of patterns) {
       try {
-        const keys = await (this.redisService as any).keys(pattern);
+        const keys = await (this.redisService as: any).keys(pattern);
         for (const key of keys) {
-          await (this.redisService as any).del(key);
+          await (this.redisService as: any).del(key);
         }
         console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`);
       } catch (error: any) {
@@ -685,19 +685,19 @@ export class RabbitMQManager extends EventEmitter {
   }
   private getCachePatterns(type: string, id: string): string[] {
     switch (type) {
-      case 'document':
+      case, 'document':
         return [`document:${id}`, `documents:*`, `search:*document*`];
-      case 'evidence':
+      case, 'evidence':
         return [`evidence:${id}`, `evidence:*`, `search:*evidence*`];
-      case 'case':
+      case, 'case':
         return [`case:${id}`, `cases:*`, `timeline:${id}`];
-      default: return [`${type}:${id}`];
+     , default: return [`${type}:${id}`];
     }
   }
   private safeNack(msg: AmqpMessage): void {
     if (msg && this.channel) {
       try {
-        this.channel.nack(msg as any, false, true); // Requeue
+        this.channel.nack(msg as: any, false, true); // Requeue
       } catch (error: any) {
         console.error('Failed to nack message:', this.formatError(error));
       }
@@ -753,7 +753,7 @@ export class RabbitMQManager extends EventEmitter {
         queues: Object.keys(this.queues).length,
         reconnectAttempts: this.reconnectAttempts,
         servicesLoaded: {
-          redisService: !!this.redisService,
+         , redisService: !!this.redisService,
           lokiRedisCache: !!this.lokiRedisCache,
           enhancedRAGPipeline: !!this.enhancedRAGPipeline,
           instantSearchEngine: !!this.instantSearchEngine,

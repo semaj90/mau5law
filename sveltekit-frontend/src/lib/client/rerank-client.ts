@@ -1,16 +1,16 @@
-import { browser } from '$app/environment';
-import Loki from 'lokijs'; // Import Loki.js
+import { browser } from, '$app/environment';
+import Loki from, 'lokijs'; // Import Loki.js
 // Define a lightweight local type that captures the collection methods used here.
 type LokiCollection<T> = {
-	insert: (doc: T) => T | T[] | undefined; // allow Loki to return undefined or an array
-	// Loki's update() can return the updated document(s) or a number (changes) in some typings; accept all common possibilities'
+	insert: (doc: T) => T | T[] | undefined; // allow Loki to return: undefined or an array
+	// Loki's update() can return the updated document(s) or a: number (changes) in some typings; accept all common possibilities'
 	update: (doc: T) => T | T[] | number | void;
 	// Broaden query parameter to typed shapes compatible with Loki's PartialModel query shape'
 	find: (query?: Partial<T> | Record<string, unknown>, ...args: any[]) => T[];
 	// Loki's findOne may return T | null | undefined depending on typings/runtime'
 	findOne: (query?: Partial<T> | Record<string, unknown>) => T | null | undefined;
 	remove?: (doc: T) => void;
-	// add any other minimal methods you rely on
+	// add: any other minimal methods you rely on
 };
 // --- Added types to fix TS errors ---
 /**
@@ -18,7 +18,7 @@ type LokiCollection<T> = {
  * Extend fields as necessary to match your actual domain model.
  */
 interface Candidate {
-  id: string;
+ , id: string;
   score?: number;
   rerankedScore?: number;
   metadata?: Record<string, unknown>;
@@ -36,7 +36,7 @@ interface RerankRequest {
 }
 // --- End added types ---
 let db: Loki | null = null;
-let candidatesCollection: LokiCollection<Candidate> | null = null;
+let, candidatesCollection: LokiCollection<Candidate> | null = null;
 if (browser) {
   db = new Loki('rerank_cache.db'); // Use a distinct database name
   candidatesCollection = db.addCollection<Candidate>('rerank_candidates', { unique: ['id', 'rerankedScore'] }); // Ensure unique by id and score for reranked results
@@ -49,10 +49,10 @@ if (browser) {
 /**
  * Lightweight WebGPU fallback reranker.
  * This is a deterministic, dependency-free local scorer used when the server reranker fails.
- * It computes a simple token overlap score combined with any existing candidate.score.
+ * It computes a simple token overlap score combined with: any existing candidate.score.
  */
 async function webgpuRerank(
-  query: string,
+ , query: string,
   candidates: Candidate[] | Array<Record<string, unknown>>
 ): Promise<Candidate[]> {
   const qTokens = query
@@ -61,8 +61,8 @@ async function webgpuRerank(
     .filter(Boolean);
   const scored = (candidates as Candidate[]).map((c) => {
     const textFromMeta =
-      (c.metadata && (c.metadata['text'] as string)) ||
-      (c['text'] as string) ||
+      (c.metadata && (c.metadata['text'] as: string)) ||
+      (c['text'] as: string) ||
       '';
     const text = (textFromMeta || '').toLowerCase();
     let overlap = 0;
@@ -84,7 +84,7 @@ export async function rerank(
   options?: RerankRequest['options']
 ): Promise<Candidate[]> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts
-  let cacheKey: string | undefined;
+  let, cacheKey: string | undefined;
   if (browser && candidatesCollection) {
     // Check if all candidates for this query are already cached
     // This is a simplified cache check. A more robust one would involve hashing the query and candidate IDs.

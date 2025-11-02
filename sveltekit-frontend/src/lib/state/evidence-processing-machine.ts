@@ -4,15 +4,15 @@
  * Orchestrates the complete pipeline:
  * Upload → Analysis → Neural Sprite → PNG Embedding → MinIO Storage → Search Indexing
  */
-import { createMachine, assign, fromPromise } from 'xstate';
-import type { LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
-import type { GlyphRequest, GlyphResponse } from '$lib/services/glyph-diffusion-service.js';
+import { createMachine, assign, fromPromise } from, 'xstate';
+import type { LegalAIMetadata } from, '$lib/services/png-embed-extractor.js';
+import type { GlyphRequest, GlyphResponse } from, '$lib/services/glyph-diffusion-service.js';
 // Evidence processing context
 export interface EvidenceProcessingContext {
   evidenceId: string;
   file?: File;
   uploadProgress: number;
-  analysisResults?: { confidence: number;, classifications: string[];
+  analysisResults?: {, confidence: number;, classifications: string[];
     entities: Array<any>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
@@ -22,10 +22,10 @@ export interface EvidenceProcessingContext {
     result?: GlyphResponse;
     neuralSpriteEnabled: boolean;
   }
-  portableArtifact?: { enhancedPngUrl: string;, metadata: LegalAIMetadata;
+  portableArtifact?: {, enhancedPngUrl: string;, metadata: LegalAIMetadata;
     compressionRatio?: number;
   }
-  minioStorage?: { artifactId: string;, storageUrl: string;
+  minioStorage?: {, artifactId: string;, storageUrl: string;
     indexed: boolean;
   }
   errors: string[];
@@ -53,11 +53,11 @@ export type EvidenceProcessingEvent =
   | { type: 'CANCEL_PROCESSING' }
   | { type: 'RESET' }
 // Services for async operations
-const uploadFileService = fromPromise(async ({ input }: { input: {, file: File } }) => {
+const uploadFileService = fromPromise(async ({ input }: {, input: {, file: File } }) => {
   // Simulate file upload with progress
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ success: true;, message: 'File "${input.file.name}" uploaded successfully' });
+      resolve({ success: true;, message: 'File, "${input.file.name}" uploaded successfully' });
     }, 1000);
   });
 });
@@ -88,7 +88,7 @@ const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisR
     headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({,
       evidence_id: input.evidenceId,
-      prompt: `Legal evidence; visualization: ${input.analysisResults.summary}`,
+      prompt: `Legal evidence;, visualization: ${input.analysisResults.summary}`,
       style: 'legal',
       dimensions: [512, 512],
       neural_sprite_config: input.neuralSpriteConfig;
@@ -100,14 +100,14 @@ const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisR
   }
   return (result as { success?: any; error?: any; data?: any }).data;
 });
-const embedPNGService = fromPromise(async ({ input }: { input: {, glyphResult: GlyphResponse; analysisResults: any;, evidenceId: string }
+const embedPNGService = fromPromise(async ({ input }: { input: {, glyphResult: GlyphResponse;, analysisResults: any;, evidenceId: string }
 }) => {
   // PNG embedding with metadata happens in the glyph generation API
   // This service represents additional processing if needed
   return {
     enhancedPngUrl: input.glyphResult.enhanced_artifact_url || input.glyphResult.glyph_url,
     metadata: {
-      version: '2.0',
+     , version: '2.0',
       created_at: new Date().toISOString(),
       evidence_id: input.evidenceId,
       analysis_results: input.analysisResults,
@@ -115,7 +115,7 @@ const embedPNGService = fromPromise(async ({ input }: { input: {, glyphResult: G
     } as LegalAIMetadata
   }
 });
-const storeInMinIOService = fromPromise(async ({ input }: { input: {, enhancedPngUrl: string; metadata: LegalAIMetadata;, evidenceId: string }
+const storeInMinIOService = fromPromise(async ({ input }: { input: {, enhancedPngUrl: string;, metadata: LegalAIMetadata;, evidenceId: string }
 }) => {
   // Store in MinIO and index in PostgreSQL
   // This would call the Go artifact indexing service
@@ -139,13 +139,13 @@ export const evidenceProcessingMachine = createMachine();
       events,: { [ke,y: strin,g]: any } as EvidenceProcessingEvent
     },
     context: {
-      evidenceId: '',
+     , evidenceId: '',
       uploadProgress,: 0,
       errors,: [],
       processingTimeMs,: 0,
       streamingUpdates,: []
     },
-    states: { idle: {, on: { UPLOAD_FILE: {, target: 'uploading',
+    states: {, idle: {, on: {, UPLOAD_FILE: {, target: 'uploading',
             actions,: assign({
               file: ({ event }) => event.file,
               evidenceId: ({ event }) => event.evidenceId,
@@ -166,7 +166,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         }
       },
-      uploading: { invoke: {, src: uploadFileService; input: ({ context }) => ({ file: context.file! }),
+      uploading: {, invoke: {, src: uploadFileService;, input: ({ context }) => ({ file: context.file! }),
           onDone,: {
             target: 'analyzing',
             actions,: assign({
@@ -191,7 +191,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
@@ -211,8 +211,8 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled' }'` },'`
-      analyzing: { invoke: {, src: analyzeEvidenceService; input: ({ context }) => ({
+         , CANCEL_PROCESSING: 'cancelled' }'` },'`
+      analyzing: {, invoke: {, src: analyzeEvidenceService;, input: ({ context }) => ({
             file: context.file!,
             evidenceId: context.evidenceId;
           }),
@@ -240,7 +240,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
@@ -259,8 +259,8 @@ export const evidenceProcessingMachine = createMachine();
             })
           }
         },
-        on: { ANALYSIS_PROGRESS: {, actions: assign({
-              streamingUpdates: ({ context, event }) => [
+        on: {, ANALYSIS_PROGRESS: {, actions: assign({
+             , streamingUpdates: ({ context, event }) => [
                 ...context.streamingUpdates.slice(0, -1),
                 {
                   step: 'analysis',
@@ -272,7 +272,7 @@ export const evidenceProcessingMachine = createMachine();
               ]
             })
           },
-          CONFIGURE_NEURAL_SPRITE: { actions: assign({, glyphGeneration: ({ context, event }) => ({
+          CONFIGURE_NEURAL_SPRITE: {, actions: assign({, glyphGeneration: ({ context, event }) => ({
                 ...context.glyphGeneration,
                 request: {
                  , evidence_id: parseInt(context.evidenceId),
@@ -286,7 +286,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           CANCEL_PROCESSING: 'cancelled' }'` },'`
-      generatingGlyph: { invoke: {, src: generateGlyphService; input: ({ context }) => ({
+      generatingGlyph: {, invoke: {, src: generateGlyphService;, input: ({ context }) => ({
             analysisResults: context.analysisResults!,
             evidenceId: context.evidenceId,
             neuralSpriteConfig: context.glyphGeneration?.request.neural_sprite_config;
@@ -318,7 +318,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
@@ -337,8 +337,8 @@ export const evidenceProcessingMachine = createMachine();
             })
           }
         },
-        on: { GLYPH_PROGRESS: {, actions: assign({
-              streamingUpdates: ({ context, event }) => [
+        on: {, GLYPH_PROGRESS: {, actions: assign({
+             , streamingUpdates: ({ context, event }) => [
                 ...context.streamingUpdates.slice(0, -1),
                 {
                   step: 'glyph_generation',
@@ -351,7 +351,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           CANCEL_PROCESSING: 'cancelled' }'` },'`
-      embeddingPNG: { invoke: {, src: embedPNGService; input: ({ context }) => ({
+      embeddingPNG: {, invoke: {, src: embedPNGService;, input: ({ context }) => ({
             glyphResult: context.glyphGeneration!.result!,
             analysisResults: context.analysisResults!,
             evidenceId: context.evidenceId;
@@ -384,7 +384,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
@@ -404,8 +404,8 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled' }'` },'`
-      storingInMinIO: { invoke: {, src: storeInMinIOService; input: ({ context }) => ({
+         , CANCEL_PROCESSING: 'cancelled' }'` },'`
+      storingInMinIO: {, invoke: {, src: storeInMinIOService;, input: ({ context }) => ({
             enhancedPngUrl: context.portableArtifact!.enhancedPngUrl,
             metadata: context.portableArtifact!.metadata,
             evidenceId: context.evidenceId;
@@ -428,7 +428,7 @@ export const evidenceProcessingMachine = createMachine();
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions,: assign({
               errors: ({ context, event }) => [
                 ...context.errors,
@@ -448,11 +448,11 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled';
+         , CANCEL_PROCESSING: 'cancelled';
         }
       },
       completed: {
-        type: 'final',
+       , type: 'final',
         entry,: assign({
           processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs
         }),
@@ -460,8 +460,8 @@ export const evidenceProcessingMachine = createMachine();
           RESET: 'idle';
         }
       },
-      error: { on: {, RETRY_CURRENT_STEP: {
-            target: 'analyzing', // Could be smarter about which state to retry
+      error: {, on: {, RETRY_CURRENT_STEP: {
+           , target: 'analyzing', // Could be smarter about which state to retry
             actions,: assign({
               errors: [];
             })
@@ -469,7 +469,7 @@ export const evidenceProcessingMachine = createMachine();
           RESET: 'idle';
         }
       },
-      cancelled: { on: {, RESET: 'idle' }'` }'`
+      cancelled: {, on: {, RESET: 'idle' }'` }'`
     }
   }
 );

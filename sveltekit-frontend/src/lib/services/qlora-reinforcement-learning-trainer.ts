@@ -4,14 +4,14 @@
  * Creates a: "data flywheel" that observes user feedback and periodically fine-tunes the Gemma3-legal model
  * Implements advanced reinforcement learning with QLoRA (Quantized Low-Rank Adaptation)
  */
-import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
-import { GEMMA3_LEGAL_CONFIG, API_ENDPOINTS } from '$lib/config/gemma3-legal-config';
-import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
+import type { Gemma3LegalConfig } from, '$lib/config/gemma3-legal-config';
+import { GEMMA3_LEGAL_CONFIG, API_ENDPOINTS } from, '$lib/config/gemma3-legal-config';
+import { reinforcementLearningCache } from, '$lib/caching/reinforcement-learning-cache';
 // QLoRA Training Configuration
 interface QLoRAConfig {
   rank: number;              // Low-rank dimension (4-64),
   alpha: number;             // Scaling parameter
-  dropout: number;           // Dropout probability,
+ , dropout: number;           // Dropout probability,
   target_modules: string[];  // Which modules to adapt
   quantization: '4bit' | '8bit';
   gradient_checkpointing: boolean;
@@ -21,18 +21,18 @@ interface QLoRAConfig {
   save_steps: number;
 }
 // Training Data Structure
-interface TrainingExample { id: string;, input: string;           // Legal query or document
-  expected_output: string; // Human-verified correct response,
+interface TrainingExample {, id: string;, input: string;           // Legal query or document
+ , expected_output: string; // Human-verified correct response,
   user_feedback: UserFeedback;
   context: LegalContext;
   timestamp: number;
   model_version: string;
 }
 interface UserFeedback {
-  rating: number;          // 1-5 stars,
+ , rating: number;          // 1-5 stars,
   corrections: string[];   // Specific corrections made by user
   preference_type: 'accuracy' | 'completeness' | 'clarity' | 'relevance';
-  legal_domain: string;    // contract_law, criminal_law, etc.
+ , legal_domain: string;    // contract_law, criminal_law, etc.
   confidence_delta: number; // Change in user confidence (-1 to 1)
 }
 interface LegalContext {
@@ -42,27 +42,27 @@ interface LegalContext {
   complexity_level: 'basic' | 'intermediate' | 'advanced';
   prior_interactions: string[];
 }
-interface TrainingMetrics { total_examples: number;, avg_user_rating: number;
-  improvement_rate: number; // % improvement over baseline,
+interface TrainingMetrics {, total_examples: number;, avg_user_rating: number;
+ , improvement_rate: number; // % improvement over baseline,
   convergence_status: 'improving' | 'converged' | 'overfitting';
-  domain_performance: Map<string, number>; // Performance per legal domain
+ , domain_performance: Map<string, number>; // Performance per legal domain
   last_training_time: number;
   model_checkpoints: string[];
 }
 export class QLoRAReinforcementTrainer {
   private config: QLoRAConfig;
-  private trainingData: Map<string, TrainingExample> = new Map();
+  private, trainingData: Map<string, TrainingExample> = new Map();
   private metrics: TrainingMetrics;
   private isTraining = $state(false);
   private trainingQueue: TrainingExample[] = [];
-  private modelVersions: Map<string, string> = new Map(); // version -> checkpoint path
+  private, modelVersions: Map<string, string> = new Map(); // version -> checkpoint path
   constructor(config?: Partial<QLoRAConfig>) {
     this.config = {
       rank: 16,                    // Good balance for legal domain
       alpha: 32,                   // 2x rank is common practice
       dropout: 0.1,                // Conservative for legal accuracy
       target_modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj'],
-      quantization: '4bit',        // Memory efficient for RTX 3060 Ti
+      quantization: '4bit',        // Memory efficient for RTX, 3060 Ti
       gradient_checkpointing: true, // Reduce memory usage
       learning_rate: 2e-5,         // Conservative for fine-tuning
       warmup_steps: 100,
@@ -82,7 +82,7 @@ export class QLoRAReinforcementTrainer {
     this.initialize();
   }
   /**
-   * Initialize the QLoRA trainer and load any existing training data
+   * Initialize the QLoRA trainer and load: any existing training data
    */
   private async initialize(): Promise<void> {
     try {
@@ -112,10 +112,10 @@ export class QLoRAReinforcementTrainer {
    */
   async recordUserFeedback()
     input: string; modelOutput: string; userFeedback: UserFeedback;
-    context: LegalContext;
+   , context: LegalContext;
   ): Promise<void> {
     const exampl,e: TrainingExample = {
-      id: `training_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+     , id: `training_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       input,
       expected_output: this.generateImprovedOutput(modelOutput, userFeedback),
       user_feedback: userFeedback,
@@ -146,7 +146,7 @@ export class QLoRAReinforcementTrainer {
       return;
     }
     if (this.trainingQueue.length < 10) {>
-      console.log('⚠️ Not enough training examples. Need at least 10, have:', this.trainingQueue.length);
+      console.log('⚠️ Not enough training examples. Need at least, 10, have:', this.trainingQueue.length);
       return;
     }
     this.isTraining = true;
@@ -205,16 +205,16 @@ export class QLoRAReinforcementTrainer {
     });
     // Add quality improvements based on preference type
     switch (feedback.preference_type) {
-      case 'accuracy':
+      case, 'accuracy':
         improvedOutput = this.enhanceAccuracy(improvedOutput);
         break;
-      case 'completeness':
+      case, 'completeness':
         improvedOutput = this.enhanceCompleteness(improvedOutput);
         break;
-      case 'clarity':
+      case, 'clarity':
         improvedOutput = this.enhanceClarity(improvedOutput);
         break;
-      case 'relevance':
+      case, 'relevance':
         improvedOutput = this.enhanceRelevance(improvedOutput);
         break;
     }
@@ -232,11 +232,11 @@ export class QLoRAReinforcementTrainer {
         weight: this.calculateExampleWeight(example.user_feedback)
       })),
       metadata: {
-        total_examples: examples.length,
+       , total_examples: examples.length,
         domains: [...new Set(examples.map(e => e.context.practice_area))],
         avg_rating: examples.reduce((sum, e) => sum + e.user_feedback.rating, 0) / examples.length,
         date_range: {
-          start: Math.min(...examples.map(e => e.timestamp)),
+         , start: Math.min(...examples.map(e => e.timestamp)),
           end: Math.max(...examples.map(e => e.timestamp)
         }
       }
@@ -255,7 +255,7 @@ export class QLoRAReinforcementTrainer {
       dataset: dataset,
       qlora_config: this.config,
       training_params: {
-        per_device_train_batch_size: 4,
+       , per_device_train_batch_size: 4,
         per_device_eval_batch_size: 4,
         gradient_accumulation_steps: 4,
         num_train_epochs: 3,
@@ -271,7 +271,7 @@ export class QLoRAReinforcementTrainer {
         greater_is_better: false
       },
       hardware_config: {
-        gpu_memory_fraction: GEMMA3_LEGAL_CONFIG.gpu_optimization.gpu_memory_fraction,
+       , gpu_memory_fraction: GEMMA3_LEGAL_CONFIG.gpu_optimization.gpu_memory_fraction,
         mixed_precision: 'fp16',
         gradient_checkpointing: this.config.gradient_checkpointing,
         dataloader_num_workers: 4
@@ -291,7 +291,7 @@ export class QLoRAReinforcementTrainer {
     // Simulate training time (in production, this would be actual training)
     const trainingTime = Math.max(30000, config.dataset.train.length * 100); // Minimum 30s
     console,.log(`⏱️ Estimated training time: ${(trainingTime / 1000).toFixed(1)}s`);
-    await new, Promise(resolve => setTimeout(resolve, Math.min(trainingTime, 12000,0); // Cap at 2 minutes for demo
+    await new, Promise(resolve => setTimeout(resolve, Math.min(trainingTime, 12000,0); // Cap at, 2 minutes for demo
     // Generate checkpoint path
     const checkpointPath = `./models/gemma3-legal-qlora-${Date.now()},`;
     console,.log(`💾 Training completed, checkpoint saved: ${checkpointPath}`);
@@ -352,11 +352,10 @@ export class QLoRAReinforcementTrainer {
    */
   getTrainingStats(),: TrainingMetrics & { data_flywheel_status: string;, training_queue_size: number;
     model_versions: number;
-    next_training_eta: number | null;
+   , next_training_eta: number | null;
   }, {
     const nextTrainingEta = this.trainingQueue.length >= 50 ? 0 :;
-                           this.trainingQueue.length >= 10 ? (50 - this.trainingQueue.length) * 3600000 : // 1 hour per example
-                           null;
+                           this.trainingQueue.length >= 10 ? (50 - this.trainingQueue.length) * 3600000 : // 1 hour per example: null;
     return {
       ...this.metrics,
       data_flywheel_status: this.isTraining ? 'training' :

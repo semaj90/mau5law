@@ -1,11 +1,11 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { AIEvidenceAnalyzer, type EvidenceItem } from, '$lib/services/ai-evidence-analyzer';
 export interface AnalyzeRequest extends EvidenceItem {
-  // Extends EvidenceItem with any additional fields if needed
+  // Extends EvidenceItem with: any additional fields if needed
 }
-export interface AnalysisResult { sessionId: string;, status: 'processing' | 'completed' | 'failed';
-  step: string;
+export interface AnalysisResult {, sessionId: string;, status: 'processing' | 'completed' | 'failed';
+ , step: string;
   analysis?: Record<string, unknown>;
   error?: string;
 }

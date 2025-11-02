@@ -1,11 +1,11 @@
 <!-- Real-time RAG, Interface, Component -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { useMachine } from '@xstate/svelte';
-  import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from '$lib/stores/realtime-rag.svelte.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, onDestroy } from, 'svelte';
+  import { useMachine } from, '@xstate/svelte';
+  import { createRealtimeRAGStore, ragQueryMachine, ragQueryServices } from, '$lib/stores/realtime-rag.svelte.js';
   // Props for integration with existing components
   let {
     selectedCaseId = $bindable(),
@@ -62,7 +62,7 @@ import type { Document } from '$lib/types';
         maxResults,
         confidenceThreshold,
         caseId: selectedCaseId
-        documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
+       , documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
       }
     });
   }
@@ -115,7 +115,7 @@ import type { Document } from '$lib/types';
       <textarea
         bind:value={query}
         placeholder="Ask a legal question about your documents..."
-        class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
         rows="3"
         disabled={machineState.matches('querying')}
         onkeydown={e => {
@@ -129,15 +129,15 @@ import type { Document } from '$lib/types';
         type="button"
         onclick={handleQuerySubmit}
         disabled={!query.trim() || machineState.matches('querying')}
-        class="absolute bottom-3 right-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+        class="absolute bottom-3 right-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed flex items-center space-x-2"
       >
         {#if machineState.matches('querying')}
-          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0, 24, 24">
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0, 0, 24, 24">
             <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path
               class="opacity-75"
               fill="currentColor"
-              d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              d="m4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3 7.938l3-2.647z"
             ></path>
           </svg>
           <span>Analyzing...</span>
@@ -267,10 +267,10 @@ import type { Document } from '$lib/types';
     <div, class="error-section, mt-6">
       <div class="p-4 bg-red-50 border, border-red-200, rounded-lg">
         <div class="flex, items-center, space-x-2">
-          <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0, 20, 20">
+          <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0, 0, 20, 20">
             <path
               fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              d="M10 18a8, 8 0 100-16, 8, 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
               clip-rule="evenodd"
             ></path>
           </svg>
@@ -293,9 +293,9 @@ import type { Document } from '$lib/types';
   <div, class="upload-section, mt-6">
     <div class="border-2 border-dashed border-gray-300 rounded-lg p-6, hover:border-blue-400, transition-colors">
       <div, class="text-center">
-        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0, 48, 48">
+        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0, 0, 48, 48">
           <path
-            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+            d="M28 8H12a4, 4 0 00-4 4v20m32-12v8m0 0v8a4, 4 0 01-4 4H12a4, 4 0 01-4-4v-4m32-4l-3.172-3.172a4, 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4, 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -323,27 +323,27 @@ import type { Document } from '$lib/types';
             <div class="flex, items-center, space-x-3">
               <div, class="processing-spinner">
                 {#if job.status === 'processing'}
-                  <svg class="animate-spin h-4 w-4 text-yellow-600" fill="none" viewBox="0 0, 24, 24">
+                  <svg class="animate-spin h-4 w-4 text-yellow-600" fill="none" viewBox="0, 0, 24, 24">
                     <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path
                       class="opacity-75"
                       fill="currentColor"
-                      d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="m4 12a8, 8 0 018-8V0C5.373, 0 0 5.373, 0 12h4zm2 5.291A7.962 7.962, 0 014 12H0c0 3.042 1.135 5.824, 3 7.938l3-2.647z"
                     ></path>
                   </svg>
                 {:else if job.status === 'completed'}
-                  <svg class="h-4 w-4 text-green-600" fill="currentColor" viewBox="0 0, 20, 20">
+                  <svg class="h-4 w-4 text-green-600" fill="currentColor" viewBox="0, 0, 20, 20">
                     <path
                       fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      d="M16.707 5.293a1, 1, 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
                       clip-rule="evenodd"
                     ></path>
                   </svg>
                 {:else}
-                  <svg class="h-4 w-4 text-red-600" fill="currentColor" viewBox="0 0, 20, 20">
+                  <svg class="h-4 w-4 text-red-600" fill="currentColor" viewBox="0, 0, 20, 20">
                     <path
                       fill-rule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      d="M4.293 4.293a1, 1 0 011.414 0L10 8.586l4.293-4.293a1, 1 0 111.414 1.414L11.414 10l4.293 4.293a1, 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1, 1 0 01-1.414-1.414L8.586, 10 4.293 5.707a1, 1 0 010-1.414z"
                       clip-rule="evenodd"
                     ></path>
                   </svg>
@@ -391,14 +391,14 @@ import type { Document } from '$lib/types';
     animation: pulse 1s infinite;
   }
   .source-card:hover {
-    transform: translateY(-1px);
+   , transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
   @keyframes pulse {
     0%,
@@ -410,7 +410,7 @@ import type { Document } from '$lib/types';
     }
   }
   .processing-spinner {
-    display: flex;
+   , display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -426,7 +426,7 @@ import type { Document } from '$lib/types';
     }
     .rag-header .flex {
       flex-direction: column;
-      gap: 0.5rem;
+     , gap: 0.5rem;
     }
   }
 </style>

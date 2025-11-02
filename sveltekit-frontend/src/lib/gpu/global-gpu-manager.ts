@@ -1,5 +1,5 @@
-import type { HybridGPUContext } from './hybrid-gpu-context';
-import { browser } from '$app/environment';
+import type { HybridGPUContext } from, './hybrid-gpu-context';
+import { browser } from, '$app/environment';
 // --- added local minimal WebGPU-like types to avoid `any` casts ---
 type GPUAdapterLike = {
 	requestDevice?: () => Promise<unknown | null>;
@@ -12,9 +12,9 @@ type NavigatorWithGPU = Navigator & {
 // --- end added types ---
 class GlobalGPUManager {
 	private static instance: GlobalGPUManager;
-	private gpuEnabled: boolean = $state(false);
+	private, gpuEnabled: boolean = $state(false);
 	private contextType: 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback' = 'cpu-fallback';
-	private hybridGPUContext: HybridGPUContext | null = null;
+	private, hybridGPUContext: HybridGPUContext | null = null;
 	private constructor() {}
 	static getInstance(): GlobalGPUManager {
 		if (!GlobalGPUManager.instance) {
@@ -32,7 +32,7 @@ class GlobalGPUManager {
 		try {
 			// Attempt WebGPU initialization (defensive & SSR-safe)
 			// use a typed navigator reference instead of casting to `any`
-			const nav = (typeof navigator !== 'undefined' ? (navigator as unknown as NavigatorWithGPU) : undefined);
+			const nav = (typeof navigator !== 'undefined' ? (navigator as: unknown as NavigatorWithGPU) : undefined);
 			if (nav?.gpu) {
 				try {
 					const adapter = await nav.gpu.requestAdapter?.();

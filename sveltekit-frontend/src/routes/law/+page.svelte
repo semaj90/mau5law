@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
 
   // 1. Define Law interface
   interface Law {
@@ -11,11 +11,11 @@ https://svelte.dev/e/js_parse_error -->
     code?: string;
     description?: string;
     category?: string;
-    createdAt?: string; // ISO date string
+    createdAt?: string; // ISO date: string
   }
 
   // 2. Update laws type
-  let laws: Law[] = $state([]);
+  let, laws: Law[] = $state([]);
   let loading = $state<boolean>(true);
   let error: string | null = null;
   let searchQuery = $state<string>('');
@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="flex, items-center, justify-between">
     <h1, class="text-3xl, font-bold">Law Database</h1>
     <a href="/law/add" class="flex items-center gap-2, text-blue-600, hover:underline">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
       </svg>
       Add Statute
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
         id="search"
         placeholder="Search by title, description, or code..."
         class="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        bind:value={searchQuery}
+       , bind:value={searchQuery}
       />
     </div>
   </div>
@@ -81,24 +81,24 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {:else if error}
     <div class="flex items-center justify-center, gap-2, text-red-600">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0, 24, 24">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0, 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
         />
       </svg>
       <span>{error}</span>
     </div>
   {:else if filteredLaws.length === 0}
     <div class="flex flex-col items-center justify-center, gap-4, text-gray-600">
-      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          d="M9 12h6m-6 4h6m2 5H7a2, 2 0 01-2-2V5a2, 2 0 012-2h5.586a1, 1 0 01.707.293l5.414 5.414a1, 1 0 01.293.707V19a2, 2 0 01-2 2z"
         />
       </svg>
       <h3, class="text-xl, font-semibold">No laws found</h3>

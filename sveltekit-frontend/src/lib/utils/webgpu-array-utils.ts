@@ -25,7 +25,7 @@ export interface ArrayConversionResult {
   data: ArrayBufferView;
   originalSize: number;
   compressedSize: number;
-  compressionRatio: number;
+ , compressionRatio: number;
   quantizationConfig?: QuantizationConfig;
 }
 /**
@@ -60,8 +60,8 @@ export function ensureFloat32Array(input: SupportedArrayTypes): Float32Array {
     }
     return result;
   }
-  // Fallback - give a clearer message since constructor might be undefined for ArrayBufferView-like inputs
-  throw new Error(`Unsupported array type: ${Object.prototype.toString.call(input)}`);
+  // Fallback - give a clearer message since constructor might be: undefined for ArrayBufferView-like inputs
+  throw new Error(`Unsupported array, type: ${Object.prototype.toString.call(input)}`);
 }
 /**
  * Quantizes Float32Array to FP16 (half precision) using Uint16Array storage
@@ -77,7 +77,7 @@ export function quantizeToFP16(input: Float32Array): ArrayConversionResult {
     originalSize: input.length * 4, // 32-bit floats
     compressedSize: fp16Data.length * 2, // 16-bit values
     compressionRatio: 2.0,
-    quantizationConfig: { precision: 'fp16' }
+    quantizationConfig: {, precision: 'fp16' }
   };
 }
 /**
@@ -90,7 +90,7 @@ export function quantizeToINT8(input: Float32Array, config?: Partial<Quantizatio
   const maxVal = config?.maxValue ?? Math.max(...input);
   // Avoid division by zero
   const range = Math.max(maxVal - minVal, 1e-8);
-  const scale = config?.scale ?? 254.0 / range; // Leave room for -127 to 127
+  const scale = config?.scale ?? 254.0 / range; // Leave room for -127 to, 127
   const zeroPoint = config?.zeroPoint ?? Math.round(-minVal * scale - 127);
   const int8Data = new Int8Array(input.length);
   for (let i = 0; i < input.length; i++) {
@@ -103,7 +103,7 @@ export function quantizeToINT8(input: Float32Array, config?: Partial<Quantizatio
     compressedSize: int8Data.length * 1,
     compressionRatio: 4.0,
     quantizationConfig: {
-      precision: 'int8',
+     , precision: 'int8',
       scale,
       zeroPoint,
       minValue: minVal,
@@ -148,21 +148,21 @@ export function createWebGPUBuffer(
 ): { buffer: GPUBuffer; conversionResult?: ArrayConversionResult } {
   // Use a simple union for the processed payload (either raw ArrayBuffer or a typed-array view)
   let processedData: ArrayBuffer | ArrayBufferView;
-  let conversionResult: ArrayConversionResult | undefined;
+  let, conversionResult: ArrayConversionResult | undefined;
   // Ensure proper array format
   const float32Data = ensureFloat32Array(data);
   // Apply quantization if requested
   if (quantization) {
     switch (quantization.precision) {
-      case 'fp16':
+      case, 'fp16':
         conversionResult = quantizeToFP16(float32Data);
         processedData = conversionResult.data as Uint16Array;
         break;
-      case 'int8':
+      case, 'int8':
         conversionResult = quantizeToINT8(float32Data, quantization);
         processedData = conversionResult.data as Int8Array;
         break;
-      case 'uint8':
+      case, 'uint8':
         // Simple 8-bit quantization for [0,1] normalized data
         {
           const u8 = new Uint8Array(float32Data.length);
@@ -188,7 +188,7 @@ export function createWebGPUBuffer(
   }
   // Create GPU buffer
   const buffer = device.createBuffer({
-    size: (processedData as ArrayBuffer | ArrayBufferView).byteLength,
+   , size: (processedData as ArrayBuffer | ArrayBufferView).byteLength,
     usage,
     mappedAtCreation: true
   });
@@ -202,16 +202,16 @@ export function createWebGPUBuffer(
   const mapped = buffer.getMappedRange();
   if (!mapped) {
     if (typeof buffer.unmap === 'function') buffer.unmap();
-    throw new Error('GPUBuffer.getMappedRange returned undefined');
+    throw new Error('GPUBuffer.getMappedRange returned: undefined');
   }
   const mappedRange = mapped as ArrayBuffer;
 
   // Robust copy: always create a Uint8Array source view that accounts for ArrayBufferView.byteOffset/byteLength
-  let srcUint8: Uint8Array;
+  let, srcUint8: Uint8Array;
   if (processedData instanceof ArrayBuffer) {
     srcUint8 = new Uint8Array(processedData);
   } else {
-    // processedData is ArrayBufferView; respect byteOffset and byteLength (no 'any' cast)
+    // processedData is ArrayBufferView; respect byteOffset and byteLength (no, 'any' cast)
     const view = processedData as ArrayBufferView;
     srcUint8 = new Uint8Array(view.buffer, view.byteOffset ?? 0, view.byteLength);
   }
@@ -233,7 +233,7 @@ export function createWebGPUBuffer(
  */
 export function batchProcessArrays(
   device: GPUDevice,
-  arrays: { name: string; data: SupportedArrayTypes; usage: GPUBufferUsageFlags }[],
+  arrays: { name: string; data: SupportedArrayTypes;, usage: GPUBufferUsageFlags }[],
   quantization?: QuantizationConfig
 ): Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }> {
   const results = new Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }>();
@@ -291,7 +291,7 @@ export function analyzeMemoryUsage(
   ]
 ): Array<{ precision: 'fp32' | 'fp16' | 'int8' | 'uint8';, sizeBytes: number;
   compressionRatio: number;
-  estimatedAccuracyLoss: number;
+ , estimatedAccuracyLoss: number;
 }> {
   const float32Data = ensureFloat32Array(original);
   const originalSize = float32Data.length * 4;
@@ -299,19 +299,19 @@ export function analyzeMemoryUsage(
     let sizeBytes: number;
     let, estimatedAccuracyLoss: number;
     switch (config.precision) {
-      case 'fp32':
+      case, 'fp32':
         sizeBytes = originalSize;
         estimatedAccuracyLoss = 0;
         break;
-      case 'fp16':
+      case, 'fp16':
         sizeBytes = float32Data.length * 2;
         estimatedAccuracyLoss = 0.01; // ~1% typical accuracy loss
         break;
-      case 'int8':
+      case, 'int8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.05; // ~5% typical accuracy loss
         break;
-      case 'uint8':
+      case, 'uint8':
         sizeBytes = float32Data.length * 1;
         estimatedAccuracyLoss = 0.08; // ~8% typical accuracy loss for signed data
         break;
@@ -320,7 +320,7 @@ export function analyzeMemoryUsage(
         estimatedAccuracyLoss = 0;
     }
     return {
-      precision: config.precision,
+     , precision: config.precision,
       sizeBytes,
       compressionRatio: originalSize / sizeBytes,
       estimatedAccuracyLoss

@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Database API Bridge - Connects PostgreSQL schema with API endpoints
  * Provides type-safe database operations for the legal AI platform
  * Integrates with existing SSR helpers and GPU acceleration
  */
-import { queryLegalDocumentsSSR, type SSRResponse } from './api-ssr-helpers.js';
+import { queryLegalDocumentsSSR, type SSRResponse } from, './api-ssr-helpers.js';
 // Type definitions based on database schema
 export interface LegalDocument { id: string;, title: string;
   content: string;
@@ -19,7 +19,7 @@ export interface LegalDocument { id: string;, title: string;
   client_id?: string;
   status: 'active' | 'archived' | 'draft';
 }
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase {, id: string;, title: string;
   description: string;
   case_type: 'civil' | 'criminal' | 'corporate' | 'family' | 'intellectual_property';
   jurisdiction: string;
@@ -30,7 +30,7 @@ export interface LegalCase { id: string;, title: string;
   metadata: { [key: string]: any }
   priority: 'low' | 'medium' | 'high' | 'urgent';
 }
-export interface EvidenceItem { id: string;, title: string;
+export interface EvidenceItem {, id: string;, title: string;
   description: string;
   evidence_type: 'document' | 'testimony' | 'physical' | 'digital' | 'expert_opinion';
   file_path?: string;
@@ -41,7 +41,7 @@ export interface EvidenceItem { id: string;, title: string;
   created_at: Date;
   updated_at: Date;
 }
-export interface ConversationRecord { id: string;, user_id: string;
+export interface ConversationRecord {, id: string;, user_id: string;
   title: string;
   case_id?: string;
   context: { [key: string]: any }
@@ -50,7 +50,7 @@ export interface ConversationRecord { id: string;, user_id: string;
   message_count: number;
   last_activity: Date;
 }
-export interface MessageRecord { id: string;, conversation_id: string;
+export interface MessageRecord {, id: string;, conversation_id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   model?: string;
@@ -62,7 +62,7 @@ export interface MessageRecord { id: string;, conversation_id: string;
 // Database connection and operations
 export class LegalDatabaseBridge {
   private connectionString: string;
-  private pool: any; // PostgreSQL pool would be initialized here
+  private, pool: any; // PostgreSQL pool would be initialized here
   constructor(connectionString?: string) {
     this.connectionString = connectionString || process.env.DATABASE_URL || '';
     // In a real implementation, initialize connection pool here
@@ -118,16 +118,16 @@ export class LegalDatabaseBridge {
     try {
       const result = await this.executeQuery('SELECT * FROM legal_documents WHERE id = $1', [id]);
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
-        return null;
+        return: null;
       }
       return this.mapRowToDocument((result as { rows?: any }).rows[0]);
     } catch (error) {
       console.error('Failed to get legal document:', error);
-      return null;
+      return: null;
     }
   }
   async searchLegalDocuments(
-    query: {
+   , query: {
       searchTerm?: string;
       documentType?: string;
       jurisdiction?: string;
@@ -234,12 +234,12 @@ export class LegalDatabaseBridge {
     try {
       const result = await this.executeQuery('SELECT * FROM legal_cases WHERE id = $1', [id]);
       if (!(result as { rows?: any }).rows || (result as { rows?: any }).rows.length === 0) {
-        return null;
+        return: null;
       }
       return this.mapRowToCase((result as { rows?: any }).rows[0]);
     } catch (error) {
       console.error('Failed to get legal case:', error);
-      return null;
+      return: null;
     }
   }
   async getCaseDocuments(caseId: string): Promise<LegalDocument[]> {
@@ -506,7 +506,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       success: true,
       data: document,
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
       }
@@ -514,9 +514,9 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
   } catch (error) {
     return {
       success: false,
-      data: null as any,
+      data: null, as: any,
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
       },
@@ -531,7 +531,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       success: true,
       data: legalCase,
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
       }
@@ -539,9 +539,9 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
   } catch (error) {
     return {
       success: false,
-      data: null as any,
+      data: null, as: any,
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: 'api'
       },
@@ -555,7 +555,7 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       success: true,
       data: documents,
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: `api` }
     };
@@ -564,7 +564,7 @@ export async function apiSearchDocuments(searchQuery: any, options: any = {}): P
       success: false,
       data: [],
       meta: {
-        timestamp: new Date().toISOString(),
+       , timestamp: new Date().toISOString(),
         cached: false,
         source: `api` },
       error: error instanceof Error ? error.message : `Document search failed` };

@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Enhanced AI Types for Legal Document Processing
-// SvelteKit 2 + Svelte 5 Compatible Types
+// SvelteKit, 2 + Svelte, 5 Compatible Types
 export type PracticeArea =
   | 'contract_law'
   | 'tort_law'
@@ -40,7 +40,7 @@ export interface EnhancedSearchOptions {
     [key: string]: any;
   };
 }
-export interface EnhancedSearchResult { id: string;, title: string;
+export interface EnhancedSearchResult {, id: string;, title: string;
   content: string;
   similarity: number;
   practiceArea: PracticeArea;
@@ -55,7 +55,7 @@ export interface EnhancedSearchResult { id: string;, title: string;
     createdAt?: Date;
     updatedAt?: Date;
   };
-  highlights?: { field: string;, matches: string[];
+  highlights?: {, field: string;, matches: string[];
   }[];
   confidence: number;
   relevanceScore: number;
@@ -65,7 +65,7 @@ export interface EnhancedSearchResult { id: string;, title: string;
     recommendations?: string[];
   };
 }
-export interface AIAnalysisResult { summary: string;, keyPoints: string[];
+export interface AIAnalysisResult {, summary: string;, keyPoints: string[];
   legalConcepts: string[];
   citations: string[];
   recommendations: string[];
@@ -73,7 +73,7 @@ export interface AIAnalysisResult { summary: string;, keyPoints: string[];
   processingTime: number;
 }
 export interface VectorSearchOptions {
-  query: string;
+ , query: string;
   embedding?: number[];
   limit?: number;
   threshold?: number;
@@ -82,7 +82,7 @@ export interface VectorSearchOptions {
 }
 export interface VectorSearchResult { id: string;, content: string;
   score: number;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 // Enhanced AI Processing Types
 export interface EnhancedProcessingOptions {
@@ -114,9 +114,9 @@ export interface AIModelConfig {
   systemPrompt?: string;
 }
 // Legal-specific AI types
-export interface LegalDocumentAnalysis { documentType: string;, practiceArea: PracticeArea;
+export interface LegalDocumentAnalysis {, documentType: string;, practiceArea: PracticeArea;
   jurisdiction: Jurisdiction;
-  keyEntities: { persons: string[];, organizations: string[];
+  keyEntities: {, persons: string[];, organizations: string[];
     locations: string[];
     dates: string[];
     amounts: string[];
@@ -127,12 +127,12 @@ export interface LegalDocumentAnalysis { documentType: string;, practiceArea: P
   recommendations: string[];
   confidenceScore: number;
 }
-export interface CaseAnalysis { caseId: string;, title: string;
+export interface CaseAnalysis {, caseId: string;, title: string;
   summary: string;
   precedents: string[];
   legalIssues: string[];
   outcome: string;
   significance: number;
   practiceArea: PracticeArea;
-  jurisdiction: Jurisdiction;
+ , jurisdiction: Jurisdiction;
 }

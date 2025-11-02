@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-  import { onMount } from 'svelte';
+import type { User } from, '$lib/types';
+  import { onMount } from, 'svelte';
 
   type PerformanceStats = {
     webgpuAvailable: boolean;
     webglAvailable: boolean;
-    userAgent: string;
+   , userAgent: string;
   };
 
   let statusMessage = 'Not checked yet';
@@ -13,7 +13,7 @@ import type { User } from '$lib/types';
   let errors: string[] = [];
   let recommendations: string[] = [];
   let performanceStats: PerformanceStats = {
-    webgpuAvailable: false,
+   , webgpuAvailable: false,
     webglAvailable: false,
     userAgent: navigator.userAgent
   };
@@ -34,9 +34,9 @@ import type { User } from '$lib/types';
 
   async function checkWebGPU(): Promise<boolean> {
     try {
-      const hasGPU = !!(navigator as any).gpu;
+      const hasGPU = !!(navigator as: any).gpu;
       if (!hasGPU) return false;
-      const adapter = await (navigator as any).gpu.requestAdapter?.();
+      const adapter = await (navigator as: any).gpu.requestAdapter?.();
       return !!adapter;
     } catch {
       return false;
@@ -136,7 +136,7 @@ import type { User } from '$lib/types';
   .container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 2rem;
+   , padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #111827;
   }
@@ -154,7 +154,7 @@ import type { User } from '$lib/types';
   section {
     background: white;
     border-radius: 12px;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.06);
   }
 
@@ -172,7 +172,7 @@ import type { User } from '$lib/types';
     cursor: pointer;
   }
 
-  button:hover:not(:disabled) {
+ , button:hover:not(:disabled) {
     background: #1d4ed8;
   }
 
@@ -209,7 +209,7 @@ import type { User } from '$lib/types';
 
   .details h3 {
     color: #374151;
-    margin: 0.75rem 0 0.5rem 0;
+   , margin: 0.75rem, 0 0.5rem 0;
     font-size: 1rem;
   }
 
@@ -229,7 +229,7 @@ import type { User } from '$lib/types';
   }
 
   .recommendation-list li {
-    color: #059669;
+   , color: #059669;
   }
 </style>
 

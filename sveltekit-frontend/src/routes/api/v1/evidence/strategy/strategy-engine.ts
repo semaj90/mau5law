@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
  * Mock LegalStrategyEngine for unified analysis route.
  * Generates deterministic pseudo strategies for provided evidence IDs.
@@ -13,20 +13,20 @@ interface GenerateStrategyArgs { evidenceIds: string[];, strategyType: string;
 }
 
 // Strongly-typed risk assessment and outcome structures
-interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: string[];
+interface RiskAssessment {, overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: string[];
   mitigationStrategies: string[];
 }
 
-interface OutcomeProjection { scenario: string;, probability: number;
+interface OutcomeProjection {, scenario: string;, probability: number;
   description: string;
 }
 
-interface Approach { name: string;, rationale: string;
+interface Approach {, name: string;, rationale: string;
 }
 
-interface StrategyResult { primaryApproach: Approach;, alternativeApproaches: Approach[];
+interface StrategyResult {, primaryApproach: Approach;, alternativeApproaches: Approach[];
   riskAssessment?: RiskAssessment;
-  outcomeProjections: OutcomeProjection[];
+ , outcomeProjections: OutcomeProjection[];
 }
 
 // Update return type from Promise<any> to Promise<StrategyResult>
@@ -43,20 +43,20 @@ export class LegalStrategyEngine {
     const riskLevels = ['low', 'medium', 'high', 'critical'] as const;
 
     const primary: Approach = {
-      name: strategyType,
+     , name: strategyType,
       rationale: 'Derived from evidence thematic clustering and case context'
     };
 
     const alternativeApproaches: Approach[] = generateAlternatives
       ? [
-          { name: 'fallback-mediation', rationale: 'Lower cost resolution' },
+          {, name: 'fallback-mediation', rationale: 'Lower cost resolution' },
           { name: 'evidence-consolidation', rationale: 'Strengthen documentary chain' }
         ]
       : [];
 
     const riskAssessment: RiskAssessment | undefined = includeRiskAssessment
       ? {
-          overallRisk: (riskLevels[Math.floor(pr(1) * riskLevels.length)] as RiskAssessment['overallRisk']) || 'medium',
+         , overallRisk: (riskLevels[Math.floor(pr(1) * riskLevels.length)] as RiskAssessment['overallRisk']) || 'medium',
           riskFactors: ['evidence gaps', 'timeline inconsistencies'].slice(0, Math.floor(pr(2) * 2) + 1),
           mitigationStrategies: ['gather supplementary affidavits', 'perform deeper forensic review'].slice(
             0,
@@ -67,7 +67,7 @@ export class LegalStrategyEngine {
 
     const outcomeProjections: OutcomeProjection[] = [
       {
-        scenario: 'settlement',
+       , scenario: 'settlement',
         probability: +(0.4 + pr(4) * 0.2).toFixed(2),
         description: 'Early negotiated resolution'
       },

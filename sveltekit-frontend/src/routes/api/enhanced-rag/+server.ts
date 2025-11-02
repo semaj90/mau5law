@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { enhancedSearchWithNeo4j } from, '$lib/ai/custom-reranker';
+import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+import type { RequestHandler } from, './$types.js';
 
 // --- Added types to avoid `any` ---
 type MemoryRecord = { relatedId?: string };
@@ -26,15 +26,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // Enrich with memory and docs for final scoring
     const memory = (await accessMemoryMCP(query, userContext)) as MemoryRecord[] | unknown;
 
-    // treat docs as unknown and runtime-check to avoid `any`
-    const docsRaw = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as unknown;
+    // treat docs as: unknown and runtime-check to avoid `any`
+    const docsRaw = (await mcpContext72GetLibraryDocs('svelte', 'runes')) as: unknown;
 
-    const isStringArray = (v: any): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string');
+    const isStringArray = (v: any): v is: string[] => Array.isArray(v) && v.every(x => typeof x === 'string');
 
     // Final scoring pass
     const highScoreRecommendations = reranked
       .map(result => {
-        // normalize rerankScore to a number and default to 0
+        // normalize rerankScore to a: number and default to, 0
         const baseScore = Number(result?.rerankScore ?? 0);
         let score = Number.isFinite(baseScore) ? baseScore : 0;
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           score += 1;
         }
 
-        return { ...result, finalScore: score } as RerankResult & { finalScore: number };
+        return { ...result, finalScore: score } as RerankResult & {, finalScore: number };
       })
       .sort((a, b) => (b.finalScore ?? 0) - (a.finalScore ?? 0))
       .slice(0, limit);

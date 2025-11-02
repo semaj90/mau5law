@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { personsOfInterest, casePoiRelations } from '$lib/database/enhanced-schema';
-import { eq, and, desc, ilike, or } from 'drizzle-orm';
-import { z } from 'zod';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { personsOfInterest, casePoiRelations } from, '$lib/database/enhanced-schema';
+import { eq, and, desc, ilike, or } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 // Validation schemas
 const createPoiSchema = z.object({
@@ -18,7 +18,7 @@ const createPoiSchema = z.object({
   threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).default('low'),
   physicalDescription: z
     .object({
-      height: z.string().optional(),
+     , height: z.string().optional(),
       weight: z.string().optional(),
       hair: z.string().optional(),
       eyes: z.string().optional(),
@@ -27,7 +27,7 @@ const createPoiSchema = z.object({
     .optional(),
   profileData: z
     .object({
-      modusOperandi: z.string().optional(),
+     , modusOperandi: z.string().optional(),
       knownHabits: z.array(z.string()).optional().default([]),
       associates: z.array(z.string()).optional().default([])
     })

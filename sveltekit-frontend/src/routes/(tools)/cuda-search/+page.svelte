@@ -1,7 +1,7 @@
 <!-- Test page for CUDA, Search, integration -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import SearchBox from '$lib/components/SearchBox.svelte';
+import type { Document } from, '$lib/types';
+  import SearchBox from, '$lib/components/SearchBox.svelte';
   // Handle search results
   function handleResults(data) {
     console.log('Search results received:', data);
@@ -21,7 +21,7 @@ import type { Document } from '$lib/types';
   <section class="hero, nes-container, with-title">
     <h1, class="title">⚡ CUDA Legal AI Search</h1>
     <p, class="nes-text">
-      🚀 <strong>RTX 3060 Ti</strong> powered semantic search using Ollama's Gemma3:legal-latest model'
+      🚀 <strong>RTX, 3060 Ti</strong> powered semantic search using Ollama's Gemma3:legal-latest model'
       <br />
       🔗 <strong>pgvector</strong> similarity search with PostgreSQL
       <br />
@@ -43,7 +43,7 @@ import type { Document } from '$lib/types';
       <div, class="feature-item, nes-container">
         <h3, class="nes-text, is-primary">🖥️ CUDA Acceleration</h3>
         <ul, class="nes-list, is-disc">
-          <li>RTX 3060 Ti with 4,864 CUDA cores</li>
+          <li>RTX, 3060 Ti with, 4,864 CUDA cores</li>
           <li>152 Tensor cores for AI workloads</li>
           <li>8GB GDDR6X memory</li>
           <li>GPU-optimized embedding generation</li>
@@ -156,7 +156,7 @@ Content-Type: application/json
     background-color: #2d3436;
   }
   .feature-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     margin-top: 20px;
@@ -172,7 +172,7 @@ Content-Type: application/json
     background-color: #2d3436;
   }
   .api-details h3 {
-    margin: 20px 0 10px 0;
+   , margin: 20px, 0 10px 0;
     color: #92cc41;
   }
   .code-block {
@@ -190,7 +190,7 @@ Content-Type: application/json
     background-color: #2d3436;
   }
   .status-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
     margin-top: 20px;
@@ -203,7 +203,7 @@ Content-Type: application/json
   .status-item a {
     text-decoration none;
   }
-  .status-item a:hover {
+  .status-item, a:hover {
     text-decoration underline;
   }
   /* Responsive design */
@@ -224,7 +224,7 @@ Content-Type: application/json
   /* NES.css enhancements */
   :global(.nes-container.with-title > .title) {
     background-color: inherit;
-    padding: 0 20px;
+   , padding: 0 20px;
   }
   :global(.nes-list.is-disc) {
     list-style-type: disc;

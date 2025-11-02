@@ -472,7 +472,7 @@
   </div>
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}
-    <Dialog.Root>
+    <Dialog>
       <Dialog.Content class="max-w-2xl nes-dialog is-dark">
         <Dialog.Header>
           <Dialog.Title class="nes-text is-primary">Message Analysis</Dialog.Title>
@@ -503,7 +503,7 @@
           <Button class="nes-btn is-small" variant="ghost">Close</Button>
         </Dialog.Footer>
       </Dialog.Content>
-    </Dialog.Root>
+    </Dialog>
   {/if}
 </div>
 <style>

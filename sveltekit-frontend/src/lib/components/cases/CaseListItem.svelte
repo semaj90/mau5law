@@ -1,5 +1,5 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface Props {
     onclick?: (event?: any) => void;
     onstatusChange?: (event?: any) => void;
@@ -11,10 +11,10 @@
     isActive = false,
     disabled = false
   : any } = $props();
-  import  Badge  from "$lib/components/ui/index.svelte";
-  import type { Case as CaseType } from '$lib/types';
-  import { formatDistanceToNow } from "date-fns";
-  import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";
+  import  Badge  from, "$lib/components/ui/index.svelte";
+  import type { Case as CaseType } from, '$lib/types';
+  import { formatDistanceToNow } from, "date-fns";
+  import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from, "lucide-svelte";
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -26,37 +26,37 @@
   }
   function getStatusColor(status: string) {
     switch (status) {
-      case "open":
-        return "bg-green-100 text-green-800";
-      case "in_progress":
-        return "bg-yellow-100 text-yellow-800";
-      case "closed":
-        return "bg-blue-100 text-blue-800";
-      case "archived":
-        return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case, "open":
+        return, "bg-green-100 text-green-800";
+      case, "in_progress":
+        return, "bg-yellow-100 text-yellow-800";
+      case, "closed":
+        return, "bg-blue-100 text-blue-800";
+      case, "archived":
+        return, "bg-gray-100 text-gray-800";
+      default: return, "bg-gray-100 text-gray-800";
   }}
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case "low":
-        return "bg-green-100 text-green-800";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800";
-      case "high":
-        return "bg-orange-100 text-orange-800";
-      case "urgent":
-        return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case, "low":
+        return, "bg-green-100 text-green-800";
+      case, "medium":
+        return, "bg-yellow-100 text-yellow-800";
+      case, "high":
+        return, "bg-orange-100 text-orange-800";
+      case, "urgent":
+        return, "bg-red-100 text-red-800";
+      default: return, "bg-gray-100 text-gray-800";
   }}
   function getStatusIcon(status: string) {
     switch (status) {
-      case "open":
+      case, "open":
         return CheckCircl;
-      case "in_progress":
+      case, "in_progress":
         return Clock;
-      case "closed":
+      case, "closed":
         return Archiv;
-      case "archived":
+      case, "archived":
         return Archiv;
       default: return FileText;
   }}
@@ -68,11 +68,11 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-import type {Case} from '$lib/types';
+import type {Case} from, '$lib/types';
 <div
   class="space-y-4"
   class:active={isActive}
-  class:disabled
+ , class:disabled
   onclick={handleClick}
   onkeydown={e => e.key === 'Enter' && handleClick()}
   role="button"

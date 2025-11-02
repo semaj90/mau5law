@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { cache } from '$lib/server/cache/redis';
-import { embedText } from '$lib/server/embedding-gateway';
-import { hashString32 } from '$lib/utils/chunk';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { cache } from, '$lib/server/cache/redis';
+import { embedText } from, '$lib/server/embedding-gateway';
+import { hashString32 } from, '$lib/utils/chunk';
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const payload = await request.json();

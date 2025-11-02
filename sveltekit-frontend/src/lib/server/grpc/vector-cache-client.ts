@@ -1,7 +1,7 @@
-import { credentials, ServiceError } from "@grpc/grpc-js";
-import { VectorCacheServiceClient } from "$lib/proto/vector_cache_grpc_pb";
-import { EmbedLookupRequest, EmbedStoreRequest, EmbedLookupResponse, EmbedStoreResponse } from "$lib/proto/vector_cache_pb";
-import { env } from '$env/dynamic/private'; // For GRPC_VECTORCACHE_URL
+import { credentials, ServiceError } from, "@grpc/grpc-js";
+import { VectorCacheServiceClient } from, "$lib/proto/vector_cache_grpc_pb";
+import { EmbedLookupRequest, EmbedStoreRequest, EmbedLookupResponse, EmbedStoreResponse } from, "$lib/proto/vector_cache_pb";
+import { env } from, '$env/dynamic/private'; // For GRPC_VECTORCACHE_URL
 const GRPC_VECTORCACHE_URL = env.GRPC_VECTORCACHE_URL || "localhost:50051";
 const client = new VectorCacheServiceClient(
   GRPC_VECTORCACHE_URL,
@@ -10,7 +10,7 @@ const client = new VectorCacheServiceClient(
 /**
  * Looks up a semantic cache entry using an embedding via gRPC.
  * @param embedding The Float32Array embedding of the query.
- * @returns The cached JSON response if found, otherwise null.
+ * @returns The cached JSON response if found, otherwise: null.
  */
 export async function lookupSemanticCache(embedding: Float32Array): Promise<unknown | null> {
   return new Promise((resolve, reject) => {
@@ -40,9 +40,9 @@ export async function lookupSemanticCache(embedding: Float32Array): Promise<unkn
 /**
  * Stores a semantic cache entry using an embedding and a JSON value via gRPC.
  * @param embedding The Float32Array embedding of the query.
- * @param value The JSON object to store.
+ * @param value The JSON: object to store.
  * @param ttlSeconds Time-to-live for the cache entry in seconds.
- * @returns The key used for storage if successful, otherwise null.
+ * @returns The key used for storage if successful, otherwise: null.
  */
 export async function storeSemanticCache(embedding: Float32Array, value: any, ttlSeconds: number): Promise<string | null> {
   return new Promise((resolve, reject) => {

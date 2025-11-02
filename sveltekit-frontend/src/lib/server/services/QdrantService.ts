@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // QdrantService.ts - Production Implementation
 // Fixed: 384-dimensional vectors for nomic-embed-text
-import { QdrantClient } from '@qdrant/js-client-rest';
-import * as crypto from 'crypto';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import * as crypto from, 'crypto';
 
 // Simple logger implementation
 const logger = {
@@ -13,7 +13,7 @@ const logger = {
 };
 
 // Environment fallback (typed)
-const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
+const metaEnv = (import.meta as: unknown as { env?: Record<string, string | undefined> }).env;
 const env = {
   QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333` };'`
 
@@ -73,7 +73,7 @@ export interface CollectionInfo {
   [k: string]: any;
 }
 
-export interface BatchUpsertResult { operation_id: string;, status: string;
+export interface BatchUpsertResult {, operation_id: string;, status: string;
   successful?: boolean;
 }
 
@@ -82,14 +82,14 @@ export class QdrantService {
   private readonly VECTOR_SIZE = 384; // Fixed for nomic-embed-text
   private readonly DEFAULT_COLLECTION = 'legal_documents';
   private readonly COLLECTIONS = {
-    documents: 'legal_documents',
+   , documents: 'legal_documents',
     cases: 'case_embeddings',
     evidence: 'evidence_vectors` };'`
 
   constructor() {
     const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';
     // Use the real client but type it as QdrantClientLike
-    this.client = new QdrantClient({ url: qdrantUrl }) as unknown as QdrantClientLike;
+    this.client = new QdrantClient({, url: qdrantUrl }) as: unknown as QdrantClientLike;
     logger.info('QdrantService initialized', {
       url: qdrantUrl,
       vectorSize: this.VECTOR_SIZE
@@ -160,7 +160,7 @@ export class QdrantService {
         id: document.id || crypto.randomUUID(),
         vector: document.vector,
         payload: {
-          content: document.content ?? '',
+         , content: document.content ?? '',
           title: document.title ?? '',
           type: document.type ?? 'document',
           metadata: document.metadata ?? {},
@@ -196,7 +196,7 @@ export class QdrantService {
         id: doc.id || crypto.randomUUID(),
         vector: doc.vector,
         payload: {
-          content: doc.content ?? '',
+         , content: doc.content ?? '',
           title: doc.title ?? '',
           type: doc.type ?? 'document',
           metadata: doc.metadata ?? {},
@@ -286,14 +286,14 @@ export class QdrantService {
           id: String(res['id']),
           score: Number(res['score']),
           payload,
-          vector: includeVector ? (res['vector'] as number[] | undefined) : undefined,
+          vector: includeVector ? (res['vector'], as: number[] | undefined) : undefined,
           similarity: Number(res['score']),
           content: String(payload['content'] ?? ''),
           title: String(payload['title'] ?? ''),
           type: String(payload['type'] ?? 'document'),
           metadata: (payload['metadata'] as Record<string, unknown> | undefined) ?? {},
           case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
-          created_at: payload['created_at'] as string | undefined,
+          created_at: payload['created_at'], as: string | undefined,
           relevance_score: Number(payload['relevance_score'] ?? res['score'])
         } as VectorSearchResult;
       });
@@ -314,13 +314,13 @@ export class QdrantService {
         with_vector: true
       });
       if (!Array.isArray(results) || results.length === 0) {
-        return null;
+        return: null;
       }
       const point = results[0];
       const payload = (point['payload'] as Record<string, unknown> | undefined) ?? {};
       return {
         id: String(point['id']),
-        vector: (point['vector'] as number[]) ?? [],
+        vector: (point['vector'], as: number[]) ?? [],
         content: String(payload['content'] ?? ''),
         title: String(payload['title'] ?? ''),
         type: String(payload['type'] ?? 'document'),
@@ -419,7 +419,7 @@ export class QdrantService {
     try {
       const result = await this.client.createSnapshot(collection);
       logger.info(`Created snapshot for ${collection}`, result);
-      return (result?.['name'] as string) ?? String(Date.now());
+      return (result?.['name'] as: string) ?? String(Date.now());
     } catch (error: any) {
       logger.error('Failed to create snapshot', error);
       throw error instanceof Error ? error : new Error(String(error));

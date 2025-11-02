@@ -1,6 +1,6 @@
 // Server-Sent Events endpoint for real-time workflow updates
-import type { RequestHandler } from './$types.js'
-import { workflowOrchestrator } from '$lib/server/workflows/orchestrator'
+import type { RequestHandler } from, './$types.js'
+import { workflowOrchestrator } from, '$lib/server/workflows/orchestrator'
 export const GET: RequestHandler = async ({ url, request }) => {
   console.log('📡 SSE client connected to workflow updates')
   const workflowId = url.searchParams.get('workflowId')
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           console.log('📡 SSE client disconnected (heartbeat failed)')
           clearInterval(heartbeatInterval)
         }
-      }, 30000); // Every 30 seconds
+      }, 30000); // Every, 30 seconds
       // Send periodic stats update if no specific workflow
       let statsInterval: NodeJS.Timeout | null = null
       if (!workflowId) {
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             console.log('📡 SSE client disconnected (stats update failed)')
             clearInterval(statsInterval!)
           }
-        }, 5000); // Every 5 seconds
+        }, 5000); // Every, 5 seconds
       }
       // Handle client disconnect
       let disconnected = false
@@ -136,12 +136,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
       const abortController = new AbortController()
       request.signal?.addEventListener('abort', cleanup)
       // Store cleanup function for explicit disconnect handling
-      (controller as any).cleanup = cleanup
+      (controller as: any).cleanup = cleanup
     },
     cancel() {
       console.log('📡 SSE stream cancelled')
-      if ((this as any).cleanup) {
-        (this as any).cleanup()
+      if ((this as: any).cleanup) {
+        (this as: any).cleanup()
       }
     }
   })

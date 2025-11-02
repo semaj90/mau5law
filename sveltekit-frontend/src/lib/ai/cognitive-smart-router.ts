@@ -7,11 +7,11 @@
  * - Neo4j SIMD worker (AVX2 vectorized graph operations)
  * - llamacpp-ollama-integration.ts (RTX + Ollama native)
  */
-import { webLlamaService } from './webasm-llamacpp.js';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
-import { WebGPUAIEngine } from '../webgpu/webgpu-ai-engine.js';
-import type { WebLlamaResponse } from './webasm-llamacpp.js';
-import type { OllamaConfig, LlamaCppConfig } from '../services/llamacpp-ollama-integration.js';
+import { webLlamaService } from, './webasm-llamacpp.js';
+import { nesCacheOrchestrator } from, '../services/nes-cache-orchestrator.js';
+import { WebGPUAIEngine } from, '../webgpu/webgpu-ai-engine.js';
+import type { WebLlamaResponse } from, './webasm-llamacpp.js';
+import type { OllamaConfig, LlamaCppConfig } from, '../services/llamacpp-ollama-integration.js';
 // Route decision interfaces
 export interface RouteRequest { prompt: string;, requestType: 'legal-analysis' | 'ui-interaction' | 'batch-processing' | 'real-time-chat';
   priority: 'low' | 'normal' | 'high' | 'critical';
@@ -19,15 +19,15 @@ export interface RouteRequest { prompt: string;, requestType: 'legal-analysis' 
   preferredEngine?: string;
   context?: any;
 }
-export interface RouteDecision { engine: 'webasm-cache' | 'nes-orchestrator' | 'ollama' | 'llamacpp-cuda';, reasoning: string;
+export interface RouteDecision {, engine: 'webasm-cache' | 'nes-orchestrator' | 'ollama' | 'llamacpp-cuda';, reasoning: string;
   expectedLatency: number;
   fallbackChain: string[];
   confidence: number;
 }
-export interface CognitiveMetrics { totalRequests: number;, routingDecisions: Record<string, number>;
+export interface CognitiveMetrics {, totalRequests: number;, routingDecisions: Record<string, number>;
   averageLatency: Record<string, number>;
   cacheHitRatio: number;
-  engineUtilization: Record<string, number>;
+ , engineUtilization: Record<string, number>;
   successRate: Record<string, number>;
 }
 // Configuration using existing infrastructure
@@ -39,7 +39,7 @@ const ROUTING_CONFIG = { thresholds: {, cacheHitRatio: 0.85,
   // Based on your existing engines
   engineCapabilities: {
     'webasm-cache': {
-      maxLatency: 5,
+     , maxLatency: 5,
       strengths: ['ui-interaction', 'cached-queries'],
       gpuRequired: true,
       memoryFootprint: 58000, // NES budget in bytes
@@ -51,7 +51,7 @@ const ROUTING_CONFIG = { thresholds: {, cacheHitRatio: 0.85,
       memoryFootprint: 59424, // Total NES budget
     },
     ollama: {
-      maxLatency: 200,
+     , maxLatency: 200,
       strengths: ['batch-processing', 'large-context'],
       gpuRequired: false,
       memoryFootprint: 7300777888, // 7.3GB model size
@@ -77,30 +77,30 @@ class CognitiveSmartRouter {
     engine: string
   ): 'wasm' | 'worker' | 'cache' | 'fallback' | 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' {
     switch (engine) {
-      case 'ollama':
-      case 'llamacpp':
-      case 'gemma3':
-        return 'ollama';
-      case 'wasm':
-      case 'webasm':
-      case 'webasm-cache':
-        return 'webasm-cache';
-      case 'cache':
-        return 'cache';
-      case 'worker':
-      case 'nes-orchestrator':
-      case 'neural-sprite':
-        return 'nes-orchestrator';
-      case 'llamacpp-cuda':
-        return 'llamacpp-cuda';
-      default: return 'fallback';
+      case, 'ollama':
+      case, 'llamacpp':
+      case, 'gemma3':
+        return, 'ollama';
+      case, 'wasm':
+      case, 'webasm':
+      case, 'webasm-cache':
+        return, 'webasm-cache';
+      case, 'cache':
+        return, 'cache';
+      case, 'worker':
+      case, 'nes-orchestrator':
+      case, 'neural-sprite':
+        return, 'nes-orchestrator';
+      case, 'llamacpp-cuda':
+        return, 'llamacpp-cuda';
+      default: return, 'fallback';
     }
   }
   private metrics: CognitiveMetrics;
-  private engineHealthCache: Map<string, { healthy: boolean; lastCheck: number }>;
-  private isWebGPUAvailable: boolean = $state(false);
+  private, engineHealthCache: Map<string, { healthy: boolean; lastCheck: number }>;
+  private, isWebGPUAvailable: boolean = $state(false);
   private isOllamaAvailable: boolean = $state(false);
-  private gpuLayers: number = 35; // Reasonable default, not 999
+  private gpuLayers: number = 35; // Reasonable default, not, 999
   constructor() {
     this.metrics = {
       totalRequests: 0,
@@ -144,7 +144,7 @@ class CognitiveSmartRouter {
         ...fallbackResponse,
         processingPath: 'fallback',
         routingDecision: {
-          engine: 'ollama',
+         , engine: 'ollama',
           reasoning: 'Fallback due to routing failure',
           expectedLatency: 200,
           fallbackChain: [],
@@ -200,7 +200,7 @@ class CognitiveSmartRouter {
     }
     // Final fallback
     return {
-      engine: 'ollama',
+     , engine: 'ollama',
       reasoning: 'Default fallback - most reliable',
       expectedLatency: 200,
       fallbackChain: [],
@@ -212,14 +212,14 @@ class CognitiveSmartRouter {
    */
   private async executeOnEngine(engine: string, request: RouteRequest): Promise<WebLlamaResponse> {
     switch (engine) {
-      case 'webasm-cache':
+      case, 'webasm-cache':
         return await webLlamaService.generate(request.prompt, {
           maxTokens: 2048,
           useCache: true,
           enableRanking: true,
           temperature: 0.1
         });
-      case 'nes-orchestrator':
+      case, 'nes-orchestrator':
         // Use NES orchestrator for GPU-accelerated processing
         const nesHealth = nesCacheOrchestrator.getMemoryStats();
         if (nesHealth.utilization < 0.9) {
@@ -228,8 +228,8 @@ class CognitiveSmartRouter {
           return result;
         }
       // Fallthrough to Ollama if NES memory full
-      case 'ollama':
-      case 'llamacpp-cuda':
+      case, 'ollama':
+      case, 'llamacpp-cuda':
       default:
         // Use existing Ollama integration
         return await this.processWithOllama(request);
@@ -244,7 +244,7 @@ class CognitiveSmartRouter {
     // This would integrate with your existing NES cache system
     // For now, we'll simulate the response format'
     const response: WebLlamaResponse = {
-      text: `[NES Orchestrator Processing] ${request.prompt}`,
+     , text: `[NES Orchestrator Processing] ${request.prompt}`,
       tokensGenerated: Math.floor(Math.random() * 500) + 100,
       processingTime: performance.now() - startTime,
       confidence: 0.9,
@@ -253,7 +253,7 @@ class CognitiveSmartRouter {
       vectorSimilarity: 0,
       processingPath: 'worker',
       metrics: {
-        embeddingTime: 5,
+       , embeddingTime: 5,
         inferenceTime: 45,
         cacheTime: 2,
         totalTime: performance.now() - startTime
@@ -294,7 +294,7 @@ class CognitiveSmartRouter {
         vectorSimilarity: 0,
         processingPath: 'ollama',
         metrics: {
-          embeddingTime: 0,
+         , embeddingTime: 0,
           inferenceTime:
             (result as { response?: any; eval_count?: any; eval_duration?: any }).eval_duration / 1000000 || 0, // ns to ms
           cacheTime: 0,
@@ -343,16 +343,16 @@ class CognitiveSmartRouter {
     }
     let healthy = $state<boolean>(false);
     switch (engine) {
-      case 'webasm-cache':
+      case, 'webasm-cache':
         healthy = this.isWebGPUAvailable && typeof webLlamaService !== 'undefined';
         break;
-      case 'nes-orchestrator':
+      case, 'nes-orchestrator':
         healthy = this.isWebGPUAvailable && typeof nesCacheOrchestrator !== 'undefined';
         break;
-      case 'ollama':
+      case, 'ollama':
         healthy = this.isOllamaAvailable;
         break;
-      case 'llamacpp-cuda':
+      case, 'llamacpp-cuda':
         // Would check if llama.cpp CUDA is available
         healthy = this.isOllamaAvailable; // Fallback for now
         break;
@@ -411,7 +411,7 @@ class CognitiveSmartRouter {
    * Configure GPU layers (reasonable default, not 999)
    */
   setGPULayers(layers: number): void {
-    // Reasonable range for RTX 3060
+    // Reasonable range for RTX, 3060
     this.gpuLayers = Math.max(1, Math.min(layers, 50));
   }
 }

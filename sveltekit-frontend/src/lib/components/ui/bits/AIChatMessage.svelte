@@ -1,8 +1,8 @@
-<!-- AI Chat Message: Svelte 5, Bits, UI, UnoCSS, analytics, logging -->
+<!-- AI Chat Message: Svelte, 5, Bits, UI, UnoCSS, analytics, logging -->
 <script, lang="ts">
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
   interface Props {
-    message: { role: string; content: string; timestamp?: string; references?: any[] };
+    message: { role: string;, content: string; timestamp?: string; references?: any[] };
     showReferences?: boolean;
   }
   let { message, showReferences = false }: Props = $props();
@@ -14,7 +14,7 @@ import type { Message } from '$lib/types';
     class:bg-blue-100={isUser}
     class:bg-gray-100={!isUser}
     class:text-right={isUser}
-    class:text-left={!isUser}
+   , class:text-left={!isUser}
   >
     <div>{message.content}</div>
     {#if showReferences && message.references?.length}

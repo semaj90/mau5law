@@ -1,17 +1,17 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /// <reference, types="node" />
 /**
  * 🧠 RabbitMQ Worker for Legal AI Document Processing
  * Integrates SvelteKit with Go Legal AI Server + shared Redis
  */
 
-import * as amqp from 'amqplib';
-import type { ConsumeMessage } from 'amqplib';
-import { randomUUID } from 'crypto';
-import { db } from '$lib/server/db/client';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { cuidSchema } from '$lib/server/z-schemas';
+import * as amqp from, 'amqplib';
+import type { ConsumeMessage } from, 'amqplib';
+import { randomUUID } from, 'crypto';
+import { db } from, '$lib/server/db/client';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { cuidSchema } from, '$lib/server/z-schemas';
 
 const GO_SERVER_URL = process.env.GO_SERVER_URL || 'http://localhost:8080';
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@localhost:5672';
@@ -127,9 +127,9 @@ export async function addLegalAIJob(
   const jobId = jobData.jobId ?? randomUUID();
   const payload = { ...jobData, jobId };
 
-  // typed headers object
+  // typed headers: object
   const headers: { attempts: number; maxAttempts: number } = {
-    attempts: 0,
+   , attempts: 0,
     maxAttempts: options?.attempts ?? 3
   };
 
@@ -137,7 +137,7 @@ export async function addLegalAIJob(
   const properties: {
     persistent: boolean;
     priority?: number;
-    headers: { attempts: number; maxAttempts: number } | Record<string, unknown>;
+    headers: { attempts: number;, maxAttempts: number } | Record<string, unknown>;
     expiration?: string;
   } = {
     persistent: true,
@@ -179,7 +179,7 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
     case_id: jobData.caseId,
     document_type: jobData.documentType,
     options: {
-      extract_entities: jobData.options?.extractEntities ?? true,
+     , extract_entities: jobData.options?.extractEntities ?? true,
       generate_summary: jobData.options?.generateSummary ?? true,
       assess_risk: jobData.options?.assessRisk ?? true,
       generate_embedding: jobData.options?.generateEmbedding ?? true,
@@ -231,7 +231,7 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
   try {
     // if your db client uses a different execute signature, adjust accordingly
     // Some db client typings expose execute(sql: string) only; narrow with an intermediate cast
-    await (db as unknown as { execute: (sql: string, params?: any[]) => Promise<unknown> }).execute(sql, [
+    await (db as: unknown as {, execute: (sql: string, params?: any[]) => Promise<unknown> }).execute(sql, [
       documentId,
       aiSummary,
       aiEntities,
@@ -264,13 +264,13 @@ export interface LegalAIJobData {
   };
 }
 
-export interface GoServerResponse { success: boolean;, document_id: string;
+export interface GoServerResponse {, success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
   risk_assessment?: RiskAssessment;
   embedding?: number[];
   processing_time: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   error?: string;
 }
 
@@ -280,8 +280,8 @@ export interface LegalEntity { type: string;, value: string;
   end_pos: number;
 }
 
-export interface RiskAssessment { overall_risk: string;, risk_score: number;
+export interface RiskAssessment {, overall_risk: string;, risk_score: number;
   risk_factors: string[];
   recommendations: string[];
-  confidence: number;
+ , confidence: number;
 }

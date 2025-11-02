@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import { User, Bot, AlertTriangle } from 'lucide-svelte';
+  import { User, Bot, AlertTriangle } from, 'lucide-svelte';
   interface Props {
-    message: { role: 'user' | 'assistant' | 'error'; content: string; timestamp?: string };
+    message: { role: 'user' | 'assistant' | 'error';, content: string; timestamp?: string };
     analyticsLog?: (_event: any) => void;
   }
   let { message, analyticsLog = () => {} }: Props = $props();
@@ -17,7 +17,7 @@
   class:bg-nier-surface-light={message.role === 'assistant'}
   class:bg-red-100={message.role === 'error'}
   class:text-right={message.role === 'user'}
-  class:text-left={message.role !== 'user'}
+ , class:text-left={message.role !== 'user'}
 >
   {#if message.role === 'user'}
     <User class="w-5, h-5, text-nier-accent" />

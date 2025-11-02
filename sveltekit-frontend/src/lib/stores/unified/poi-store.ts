@@ -1,20 +1,20 @@
 /**
  * POIStore - Unified Persons of Interest Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - legal-poi.ts
  * - poi-network.ts
  * - poi-analysis.ts
  * - poi-timeline.ts
  *
- * Usage:
- *   import { poiStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { poiStore } from, '$lib/stores/unified';
  *
  *   poiStore.createPOI({ name: 'John Doe' });
  *   $: pois = $poiStore.personOfInterest;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -38,7 +38,7 @@ export interface PersonOfInterest { id: string;, name: string;
   updatedAt: number;
 }
 
-export interface POIRelationship { id: string;, poiId1: string;
+export interface POIRelationship {, id: string;, poiId1: string;
   poiId2: string;
   type: RelationshipType;
   strength: number; // 0-1
@@ -46,7 +46,7 @@ export interface POIRelationship { id: string;, poiId1: string;
   evidence?: string[];
 }
 
-export interface TimelineEvent { id: string;, poiId: string;
+export interface TimelineEvent {, id: string;, poiId: string;
   date: number;
   title: string;
   description: string;
@@ -54,7 +54,7 @@ export interface TimelineEvent { id: string;, poiId: string;
   location?: string;
 }
 
-export interface POICluster { id: string;, pois: PersonOfInterest[];
+export interface POICluster {, id: string;, pois: PersonOfInterest[];
   theme: string;
   confidence: number;
 }
@@ -69,19 +69,19 @@ interface POIStoreState {
 
   // Relationships
   relationships: POIRelationship[];
-  relationshipGraph: Map<string, string[]>;
+ , relationshipGraph: Map<string, string[]>;
 
   // Network analysis
   clusters: POICluster[];
   networkMetrics: {
-    centrality: Map<string, number>;
+   , centrality: Map<string, number>;
     clustering: Map<string, number>;
     density: number;
   };
 
   // Timeline
   timeline: TimelineEvent[];
-  timelineByPOI: Map<string, TimelineEvent[]>;
+ , timelineByPOI: Map<string, TimelineEvent[]>;
 
   // Risk analysis
   riskScores: Map<string, number>;
@@ -95,13 +95,13 @@ interface POIStoreState {
 }
 
 const initialState: POIStoreState = {
-  personOfInterest: [],
+ , personOfInterest: [],
   activePOI: null,
   relationships: [],
   relationshipGraph: new Map(),
   clusters: [],
   networkMetrics: {
-    centrality: new Map(),
+   , centrality: new Map(),
     clustering: new Map(),
     density: 0
   },
@@ -137,7 +137,7 @@ function createPOIStore() {
         if (response.ok) {
           const data = await response.json();
           const pois: PersonOfInterest[] = data.pois || [];
-          const relationships: POIRelationship[] = data.relationships || [];
+          const, relationships: POIRelationship[] = data.relationships || [];
 
           update(s => ({
             ...s,
@@ -320,7 +320,7 @@ function createPOIStore() {
 
       try {
         const state: { pois: PersonOfInterest[]; relationships: POIRelationship[] } = {
-          pois: [],
+         , pois: [],
           relationships: []
         };
         subscribe(s => {
@@ -489,10 +489,10 @@ export const relationships = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { personOfInterest, createPOI } from '$lib/stores/legal-poi'
- *   import { poiNetwork } from '$lib/stores/poi-network'
+ * Old imports to, replace:
+ *   import { personOfInterest, createPOI } from, '$lib/stores/legal-poi'
+ *   import { poiNetwork } from, '$lib/stores/poi-network'
  *
  * New imports:
- *   import { poiStore, pois, activePOI, relationships } from '$lib/stores/unified'
+ *   import { poiStore, pois, activePOI, relationships } from, '$lib/stores/unified'
  */

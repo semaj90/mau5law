@@ -1,7 +1,7 @@
-import { writable } from 'svelte/store';
-import { cubicOut } from 'svelte/easing';
+import { writable } from, 'svelte/store';
+import { cubicOut } from, 'svelte/easing';
 
-export const sidebarStore = writable<{ open: boolean }>({ open: false });
+export const sidebarStore = writable<{ open: boolean }>({, open: false });
 
 // Convenience helpers used across the app
 export function openSidebar() {
@@ -32,7 +32,7 @@ export const defaultTransition: Required<Pick<TransitionParams, 'duration' | 'ea
 
 // Build params for slide-like transitions used with `slide`/`fly` exports
 export function slideParams(
-	direction: 'left' | 'right' | 'up' | 'down' = 'left',
+, direction: 'left' | 'right' | 'up' | 'down' = 'left',
 	distance = 200,
 	duration = defaultTransition.duration
 ): TransitionParams {

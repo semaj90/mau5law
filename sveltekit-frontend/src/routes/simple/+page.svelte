@@ -1,8 +1,8 @@
 <!-- Simple test homepage to verify, routing, works -->
 <script, lang="ts">
-  import { goto } from '$app/navigation';
-  import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
+  import { goto } from, '$app/navigation';
+  import { browser } from, '$app/environment';
+  import { onMount } from, 'svelte';
 
   // client-only values to avoid SSR window access
   let currentUrl = 'SSR - Not available';
@@ -53,7 +53,7 @@
     </div>
     <div class="mt-8 p-4, bg-gray-100, rounded">
       <h3, class="font-semibold">Debug Info:</h3>
-      <p>Current URL: {currentUrl}</p>
+      <p>Current, URL: {currentUrl}</p>
       <p>Time: {currentTime}</p>
     </div>
   </div>

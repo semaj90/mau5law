@@ -1,19 +1,19 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 import {
 	aiAssistantInputSynthesizer as aiAssistantSynthesizer,
 	type SynthesizedInput
-} from '$lib/services/ai-assistant-input-synthesizer';
-import { cachingLayer, type CacheStats } from '$lib/server/ai/caching-layer';
-import { feedbackLoop } from '$lib/server/ai/feedback-loop';
-import { monitoringService } from '$lib/server/ai/monitoring-service';
-import { streamingService } from '$lib/server/ai/streaming-service';
+} from, '$lib/services/ai-assistant-input-synthesizer';
+import { cachingLayer, type CacheStats } from, '$lib/server/ai/caching-layer';
+import { feedbackLoop } from, '$lib/server/ai/feedback-loop';
+import { monitoringService } from, '$lib/server/ai/monitoring-service';
+import { streamingService } from, '$lib/server/ai/streaming-service';
 import {
 	ollamaLLM,
 	type OllamaHealthCheckResponse,
 	type OllamaResponse
-} from '$lib/services/providers/ollama/local-llm';
-import { logger } from '$lib/server/logger';
+} from, '$lib/services/providers/ollama/local-llm';
+import { logger } from, '$lib/server/logger';
 
 type TestStatus = 'passed' | 'failed' | 'warning';
 
@@ -23,7 +23,7 @@ interface TestResult<T = unknown> { name: string;, status: TestStatus;
 	error?: string;
 }
 
-interface HealthTestPayload { synthesizer: {, ok: boolean;
+interface HealthTestPayload {, synthesizer: {, ok: boolean;
 		latencyMs: number;
 		confidence: number;
 		contextEntries: number;
@@ -32,27 +32,27 @@ interface HealthTestPayload { synthesizer: {, ok: boolean;
 	ollama?: OllamaHealthCheckResponse | null;
 }
 
-interface SynthesisTestPayload { processedQuery: string;, confidence: number;
+interface SynthesisTestPayload {, processedQuery: string;, confidence: number;
 	contextEntries: number;
 	latencyMs: number;
 }
 
-interface CacheTestPayload { cacheWorking: boolean;, hitRate: number;
+interface CacheTestPayload {, cacheWorking: boolean;, hitRate: number;
 	redisConnected: boolean;
 	memoryUsage: number;
 }
 
-interface StreamingTestPayload { progressUpdates: number;, stagesCompleted: string[];
+interface StreamingTestPayload {, progressUpdates: number;, stagesCompleted: string[];
 	activeStreams: number;
 }
 
-interface OllamaTestPayload { available: boolean;, models: string[];
+interface OllamaTestPayload {, available: boolean;, models: string[];
 	generationWorked: boolean;
 	embeddingsWorked: boolean;
 	latencyMs: number;
 }
 
-interface FeedbackTestPayload { interactionCount: number;, queueSize: number;
+interface FeedbackTestPayload {, interactionCount: number;, queueSize: number;
 	hasRecommendations: boolean;
 }
 
@@ -64,7 +64,7 @@ interface MonitoringPerformance {
 	[key: string]: any;
 }
 
-interface MonitoringTestPayload { totalRequests: number;, successRate: number;
+interface MonitoringTestPayload {, totalRequests: number;, successRate: number;
 	cacheHitRate: number;
 	performance: MonitoringPerformance;
 	hasPrometheusMetrics: boolean;
@@ -73,9 +73,9 @@ interface MonitoringTestPayload { totalRequests: number;, successRate: number;
 type RecommendationPriority = 'high' | 'medium' | 'low';
 type RecommendationCategory = 'infrastructure' | 'performance' | 'quality' | 'reliability';
 
-interface Recommendation { priority: RecommendationPriority;, category: RecommendationCategory;
+interface Recommendation {, priority: RecommendationPriority;, category: RecommendationCategory;
 	message: string;
-	action: string;
+, action: string;
 }
 
 interface RecommendationContext {
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async () => {
 
 	const tests: TestResult[] = [];
 	let healthSummary: HealthTestPayload | null = null;
-	let performanceSummary: MonitoringTestPayload | null = null;
+	let, performanceSummary: MonitoringTestPayload | null = null;
 
 	try {
 		const healthTest = await testHealthCheck();
@@ -202,7 +202,7 @@ async function testHealthCheck(): Promise<TestResult<HealthTestPayload>> {
 			name: 'Health Check',
 			status: 'passed',
 			durationMs: now() - started,
-			result: { synthesizer: {, ok: true,
+			result: {, synthesizer: {, ok: true,
 					latencyMs: synthLatency,
 					confidence,
 					contextEntries
@@ -235,7 +235,7 @@ async function testBasicSynthesis(): Promise<TestResult<SynthesisTestPayload>> {
 		]);
 		const latencyMs = now() - synthStart;
 		const payload: SynthesisTestPayload = {
-			processedQuery: result.processedQuery,
+		, processedQuery: result.processedQuery,
 			confidence: result.metadata?.confidence ?? 0,
 			contextEntries: Array.isArray(result.context) ? result.context.length : 0,
 			latencyMs
@@ -245,7 +245,7 @@ async function testBasicSynthesis(): Promise<TestResult<SynthesisTestPayload>> {
 			payload.processedQuery && payload.confidence > 0 ? 'passed' : 'warning';
 
 		return {
-			name: 'Basic Synthesis',
+		, name: 'Basic Synthesis',
 			status,
 			durationMs: now() - started,
 			result: payload
@@ -305,7 +305,7 @@ async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 				status: 'warning',
 				durationMs: now() - started,
 				result: {
-					progressUpdates: 0,
+				, progressUpdates: 0,
 					stagesCompleted: [],
 					activeStreams: 0
 				}
@@ -315,7 +315,7 @@ async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 		let progressUpdates = 0;
 		const stagesCompleted: string[] = [];
 
-		await streamingService.synthesizeWithProgress({ input: {, query: 'Streamed synthesis test query',
+		await streamingService.synthesizeWithProgress({, input: {, query: 'Streamed synthesis test query',
 				context: {, userId: `test_user' },'`
 				options: {}
 			},
@@ -363,7 +363,7 @@ async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 				status: 'warning',
 				durationMs: now() - started,
 				result: {
-					available: false,
+				, available: false,
 					models: [],
 					generationWorked: false,
 					embeddingsWorked: false,
@@ -429,7 +429,7 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 				status: 'warning',
 				durationMs: now() - started,
 				result: {
-					interactionCount: 0,
+				, interactionCount: 0,
 					queueSize: 0,
 					hasRecommendations: false
 				}
@@ -437,9 +437,9 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 		}
 
 		await feedbackLoop.recordInteraction({
-			requestId: `test_request_${Date.now()}`,
+		, requestId: `test_request_${Date.now()}`,
 			query: 'Test feedback query',
-			result: { metadata: {, confidence: 0.8 } },
+			result: {, metadata: {, confidence: 0.8 } },
 			userId: 'test_user',
 			timestamp: new Date()
 		});
@@ -493,7 +493,7 @@ async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 				status: 'warning',
 				durationMs: now() - started,
 				result: {
-					totalRequests: 0,
+				, totalRequests: 0,
 					successRate: 0,
 					cacheHitRate: 0,
 					performance: {},
@@ -503,7 +503,7 @@ async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 		}
 
 		monitoringService.trackRequest({
-			requestId: `test_${Date.now()}`,
+		, requestId: `test_${Date.now()}`,
 			userId: 'test_user',
 			query: 'Monitoring test query',
 			timestamp: new Date()
@@ -526,7 +526,7 @@ async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 				: '';
 
 		const payload: MonitoringTestPayload = {
-			totalRequests: Number((stats as { counters?: { totalRequests?: number } })?.counters?.totalRequests ?? 0),
+		, totalRequests: Number((stats as { counters?: { totalRequests?: number } })?.counters?.totalRequests ?? 0),
 			successRate: Number((stats as { rates?: { successRate?: number } })?.rates?.successRate ?? 0),
 			cacheHitRate: Number((stats as { rates?: { cacheHitRate?: number } })?.rates?.cacheHitRate ?? 0),
 			performance: ((stats as { performance?: MonitoringPerformance })?.performance ?? {}) as MonitoringPerformance,

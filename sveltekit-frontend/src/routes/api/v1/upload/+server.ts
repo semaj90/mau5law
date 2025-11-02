@@ -1,23 +1,23 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
 /*
- * Enhanced Upload API Endpoint - SvelteKit 2 Production
+ * Enhanced Upload API Endpoint - SvelteKit, 2 Production
  * Integrates with Upload service (port 8093) with advanced file processing
  * Supports document analysis, OCR, embedding generation, and metadata extraction
  */
-import { ensureError } from '$lib/utils/ensure-error';
-import { dev } from '$app/environment';
-import type { EnhancedUploadRequest, EnhancedUploadResponse, APIRequestContext } from '$lib/types/api.js';
-import { embeddingService } from '$lib/server/embedding-service.js';
-import crypto from 'crypto';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { dev } from, '$app/environment';
+import type { EnhancedUploadRequest, EnhancedUploadResponse, APIRequestContext } from, '$lib/types/api.js';
+import { embeddingService } from, '$lib/server/embedding-service.js';
+import crypto from, 'crypto';
 
 // Upload Service Configuration
 const UPLOAD_SERVICE_CONFIG = {
   http: 'http://localhost:8093',
   health: '/health',
   endpoints: {
-    upload: '/api/upload',
+   , upload: '/api/upload',
     process: '/api/process',
     status: '/api/status',
     metadata: '/api/metadata',
@@ -26,9 +26,9 @@ const UPLOAD_SERVICE_CONFIG = {
 };
 // Document Processor Configuration
 const DOCUMENT_PROCESSOR_CONFIG = {
-  http: 'http://localhost:8081',
+ , http: 'http://localhost:8081',
   endpoints: {
-    process: '/api/process',
+   , process: '/api/process',
     ocr: '/api/ocr',
     analyze: '/api/analyze',
     health: '/api/health'
@@ -36,7 +36,7 @@ const DOCUMENT_PROCESSOR_CONFIG = {
 };
 // Supported file types and limits
 const FILE_CONFIG = {
-  maxSize: 100 * 1024 * 1024, // 100MB
+ , maxSize: 100 * 1024 * 1024, // 100MB
   allowedTypes: [
     'application/pdf',
     'application/msword',
@@ -110,10 +110,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       performOCR: formData.get('performOCR') === 'true',
       generateEmbeddings: formData.get('generateEmbeddings') === 'true',
       analyzeContent: formData.get('analyzeContent') === 'true',
-      userId: formData.get('userId') as string,
-      sessionId: formData.get('sessionId') as string,
-      caseId: formData.get('caseId') as string,
-      tags: formData.getAll('tags') as string[],
+      userId: formData.get('userId') as: string,
+      sessionId: formData.get('sessionId') as: string,
+      caseId: formData.get('caseId') as: string,
+      tags: formData.getAll('tags') as: string[],
       metadata: {} as Record<string, unknown>
     };
     const context: APIRequestContext = {
@@ -151,17 +151,17 @@ export const GET: RequestHandler = async ({ url }) => {
   const documentId = url.searchParams.get('id');
   try {
     switch (action) {
-      case 'health':
+      case, 'health':
         return await handleHealthCheck();
-      case 'status':
+      case, 'status':
         if (!documentId) {
           return error(400, ensureError({ message: 'Document ID required for status check' }));
         }
         return await handleStatusCheck(documentId);
-      case 'config':
+      case, 'config':
         return await handleConfigInfo();
       default: return json({
-          service: 'Enhanced Upload API',
+         , service: 'Enhanced Upload API',
           version: '2.0.0',
           endpoints: {
            , upload: 'POST /api/v1/upload',

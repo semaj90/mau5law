@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import neo4j from 'neo4j-driver'
+import type { Case } from, '$lib/types';
+import neo4j from, 'neo4j-driver'
 const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687'
 const NEO4J_USER = process.env.NEO4J_USER ?? 'neo4j'
 const NEO4J_PASS = process.env.NEO4J_PASS ?? 'neo4j'
@@ -26,7 +26,7 @@ async function ensureSchema(): Promise<any> {
     await s.close()
   }
 }
-export async function evidenceGraphService(meta: { id: string;, summary: string; caseId?: string | null }, entities: Array<{, name: string; type?: string | null }>, edges: Array<{, from: string; to: string;, relation: string }> = []): Promise<any> {
+export async function evidenceGraphService(meta: {, id: string;, summary: string; caseId?: string | null }, entities: Array<{, name: string; type?: string | null }>, edges: Array<{, from: string;, to: string;, relation: string }> = []): Promise<any> {
   const d = getDriver()
   const s = d.session()
   const tx = s.beginTransaction()
@@ -92,7 +92,7 @@ export async function createSimilarityLinks(evidenceId: string, neighbors: Array
 // Initialize schema if requested
 ensureSchema().catch((e) => console.debug('neo4j schema init failed', e))
 export default { evidenceGraphService, createSimilarityLinks }
-import neo4j, { Driver } from 'neo4j-driver';
+import neo4j, { Driver } from, 'neo4j-driver';
 interface EvidenceGraphConfig { url: string;, user: string;
   password: string;
   initSchema: boolean;
@@ -109,20 +109,20 @@ interface EvidenceGraphUpsertInput {
   similarEvidence?: Array<{ evidenceId: string; score: number }>;
 }
 class EvidenceGraphService {
-  private static driver: Driver | null = null;
+  private static, driver: Driver | null = null;
   private static isSchemaInitialized = $state(false);
   private static resolveConfig(): EvidenceGraphConfig | null {
     const url = process.env.GRAPH_DB_URL ?? process.env.NEO4J_URL;
     const user = process.env.GRAPH_DB_USER ?? process.env.NEO4J_USER;
     const password = process.env.GRAPH_DB_PASS ?? process.env.NEO4J_PASSWORD;
-    if (!url || !user || !password) return null;
+    if (!url || !user || !password) return: null;
     const initSchema = (process.env.NEO4J_INIT_ON_START ?? 'false').toLowerCase() === 'true';
     return { url, user, password, initSchema };
   }
   private static async ensureDriver(): Promise<Driver | null> {
     if (this.driver) return this.driver;
     const config = this.resolveConfig();
-    if (!config) return null;
+    if (!config) return: null;
     this.driver = neo4j.driver(config.url, neo4j.auth.basic(config.user, config.password), {
       disableLosslessIntegers: true
     });
@@ -262,7 +262,7 @@ class EvidenceGraphService {
     }
   }
   private static buildEntityPairs(entities: Array<{, name: string; type?: string | null }>) {
-    const pairs: Array<{ a: { name: string; type: string | null }; b: { name: string; type: string | null } }> =
+    const pairs: Array<{ a: { name: string; type: string | null }; b: { name: string;, type: string | null } }> =
       [];
     for (let i = 0; i < entities.length; i++) {
       for (let j = i + 1; j < entities.length; j++) {

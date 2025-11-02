@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import RedisService from './redis-service'; // Your RedisService class above
-import { z } from 'zod'; // z is imported but not used in the provided snippet, keeping it as per prompt.
-import type { CachedEmbedding, CachedSearch } from './redis-service'; // Import types for clarity
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import RedisService from, './redis-service'; // Your RedisService class above
+import { z } from, 'zod'; // z is imported but not used in the provided snippet, keeping it as per prompt.
+import type { CachedEmbedding, CachedSearch } from, './redis-service'; // Import types for clarity
 
 // Placeholder for embedding model
 // In a real scenario, this would integrate with Ollama, Gemma3-Legal, etc.
@@ -74,7 +74,7 @@ export async function POST_search({ request }: { request: Request }): Promise<an
   // Replace this with your actual search logic (PGVector + legal DB)
   const computeFn = async () => {
     // Example: search legal cases
-    return [{ caseId: '123', title: 'Example Case', query, timestamp: new Date().toISOString() }];
+    return [{, caseId: '123', title: 'Example Case', query, timestamp: new Date().toISOString() }];
   };
 
   const results = await getCachedSearchResults(query, computeFn);

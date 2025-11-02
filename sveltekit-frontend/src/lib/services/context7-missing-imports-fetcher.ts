@@ -9,7 +9,7 @@ import type {
   Context7Integration,
   MissingImportAnalysis,
   CodeSnippet
-} from '$lib/types/automated-resolution';
+} from, '$lib/types/automated-resolution';
 
 type LibraryDocs = {
   library: string;
@@ -21,7 +21,7 @@ type LibraryDocs = {
   apiReference: ApiRefEntry[];
 };
 
-type ApiRefEntry = { name: string;, type: string;
+type ApiRefEntry = {, name: string;, type: string;
   signature: string;
   description: string;
   library: string;
@@ -29,7 +29,7 @@ type ApiRefEntry = { name: string;, type: string;
 
 export class Context7MissingImportsFetcher {
   private mcpServerUrl: string; // MCP server endpoint
-  private cache: Map<string, Context7McpResponse> = new Map();
+  private, cache: Map<string, Context7McpResponse> = new Map();
   private libraryMappings: Map<string, string> = new Map();
   constructor() {
     // Use environment variable for production-ready endpoint, with localhost fallback for dev.
@@ -43,13 +43,13 @@ export class Context7MissingImportsFetcher {
    */
   async fetchMissingImplementations(analysis: MissingImportAnalysis): Promise<Context7Integration> {
     const integration: Context7Integration = {
-      svelteComplete: null,
+     , svelteComplete: null,
       drizzleOrmDocs: null,
       xStateDocs: null,
       bestPractices: new Map()
     };
     try {
-      // Fetch Svelte 5 complete documentation for missing runes/components
+      // Fetch Svelte, 5 complete documentation for missing runes/components
       if (this.hasSvelteMissingItems(analysis)) {
         integration.svelteComplete = await this.fetchSvelteCompleteDocs(analysis);
       }
@@ -71,7 +71,7 @@ export class Context7MissingImportsFetcher {
     return integration;
   }
   /**
-   * 📖 SVELTE 5 COMPLETE DOCUMENTATION FETCHER
+   * 📖 SVELTE, 5 COMPLETE DOCUMENTATION FETCHER
    */
   private async fetchSvelteCompleteDocs(analysis: MissingImportAnalysis): Promise<LibraryDocs> {
     const svelteTopics = this.determineSvelteTopics(analysis);
@@ -194,7 +194,7 @@ export class Context7MissingImportsFetcher {
         library: libraryId.split('/').pop() || libraryId,
         content: '# ${libraryId} Documentation\n\nDocumentation for ${topics.join(', ')} topics.`,'`
         metadata: {
-          tokenCount: 1000,
+         , tokenCount: 1000,
           topics: topicsMeta,
           confidence: 0.7
         },
@@ -375,7 +375,7 @@ export class Context7MissingImportsFetcher {
     const apiRef: ApiRefEntry[] = [];
     const contentLines = response && typeof response.content === 'string' ? response.content.split(/\r?\n/) : [];
     for (const line of contentLines) {
-      if (line.includes('function ') || line.includes('export const: ') || line.includes('export; function: ')) {
+      if (line.includes('function, ') || line.includes('export const: ') || line.includes('export; function: ')) {
         const nameMatch = line.match(/(?:function|const|export function|export const)\s+([A-ZaZ0-9_]+)/);
         apiRef.push({
           name: nameMatch?.[1] ?? 'unknown',
@@ -405,7 +405,7 @@ export class Context7MissingImportsFetcher {
       version: '5.0',
       topics: 'runes|components|lifecycle',
       documentation: `
-# Svelte 5 Runes (Fallback Implementation)
+# Svelte, 5 Runes (Fallback Implementation)
 ## Reactive State
 - \`$state\`: Create reactive state
 - \`$derived\`: Create computed values

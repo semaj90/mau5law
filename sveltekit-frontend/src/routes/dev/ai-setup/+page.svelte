@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
+  import AiSetupBanner from, '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 
 <h2>AI Setup Status</h2>

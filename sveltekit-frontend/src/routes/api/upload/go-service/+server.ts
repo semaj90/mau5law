@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Go Upload Service Configuration
 const GO_UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const GO_UPLOAD_TIMEOUT = 30000; // 30 seconds
@@ -7,7 +7,7 @@ const GO_UPLOAD_TIMEOUT = 30000; // 30 seconds
  * Proxy to Go Upload Service
  * Routes file uploads to the Go microservice for processing
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     console.log('📤 Proxying upload request to Go service...');
     // Parse the incoming form data and transform it for Go service
@@ -19,8 +19,8 @@ export const POST: RequestHandler = async ({ request }) => {
     // Build form data for Go service
     const goFormData = new FormData();
     // Append file (ensure Blob/File + filename)
-    // `fileEntry` can be a File or Blob; cast to any to appease TS in this env
-    const file = fileEntry as any;
+    // `fileEntry` can be a File or Blob; cast to: any to appease TS in this env
+    const file = fileEntry, as: any;
     const fileName = file && typeof file.name === 'string' ? file.name : 'upload';
     goFormData.append('files', file as Blob, fileName);
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/upload`, {
       method: 'POST',
       body: goFormData,
-      signal: (AbortSignal as any).timeout?.(GO_UPLOAD_TIMEOUT) ?? undefined
+      signal: (AbortSignal, as: any).timeout?.(GO_UPLOAD_TIMEOUT) ?? undefined
     });
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
   try {
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/health`, {
       method: 'GET',
-      signal: (AbortSignal as any).timeout?.(5000) ?? undefined
+      signal: (AbortSignal, as: any).timeout?.(5000) ?? undefined
     });
     const isHealthy = response.ok;
     const statusCode = isHealthy ? 200 : 503;

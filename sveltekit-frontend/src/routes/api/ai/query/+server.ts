@@ -1,6 +1,6 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { z } from 'zod';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { z } from, 'zod';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -12,15 +12,15 @@ import { json, type RequestHandler } from '@sveltejs/kit';
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Memory, Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from '$lib/server/services/ai-service.js';
+import { aiService } from, '$lib/server/services/ai-service.js';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
 
 // Define a type for the AI query result to avoid using: 'any'
 type ProcessQueryResult = {
@@ -31,10 +31,10 @@ type ProcessQueryResult = {
 };
 
 const querySchema = z.object({
-  query: z.string().min(1).max(5000),
+ , query: z.string().min(1).max(5000),
   caseId: cuidSchema.optional(),
   options: z.object({
-    model: z.string().optional(),
+   , model: z.string().optional(),
     temperature: z.number().min(0).max(2).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
     includeContext: z.boolean().optional(),

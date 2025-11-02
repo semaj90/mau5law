@@ -1,4 +1,4 @@
-import type { Case as LegalCase, Evidence as EvidenceType } from './database'; // ensure database.ts exports these types
+import type { Case as LegalCase, Evidence as EvidenceType } from, './database'; // ensure database.ts exports these types
 
 // Define specific interfaces for node data
 export interface Person { id: string;, name: string;
@@ -13,7 +13,7 @@ export interface CanvasConnectionData {
 }
 
 // Discriminated union for nodes to ensure node.type and node.data align
-export interface CaseNode { id: string;, x: number;
+export interface CaseNode {, id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -21,7 +21,7 @@ export interface CaseNode { id: string;, x: number;
   data: LegalCase;
 }
 
-export interface EvidenceNode { id: string;, x: number;
+export interface EvidenceNode {, id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -29,7 +29,7 @@ export interface EvidenceNode { id: string;, x: number;
   data: EvidenceType;
 }
 
-export interface PersonNode { id: string;, x: number;
+export interface PersonNode {, id: string;, x: number;
   y: number;
   width: number;
   height: number;
@@ -37,12 +37,12 @@ export interface PersonNode { id: string;, x: number;
   data: Person;
 }
 
-export interface ConnectionNode { id: string;, x: number;
+export interface ConnectionNode {, id: string;, x: number;
   y: number;
   width: number;
   height: number;
   type: 'connection';
-  data: CanvasConnectionData;
+ , data: CanvasConnectionData;
 }
 
 // CanvasNode now discriminated union of the above
@@ -52,7 +52,7 @@ export type CanvasNode = CaseNode | EvidenceNode | PersonNode | ConnectionNode;
 export interface CanvasConnection { id: string;, sourceId: string;
   targetId: string;
   type: 'related' | 'involves' | 'contains';
-  strength: number;
+ , strength: number;
 }
 
 // Interactive canvas state (unchanged semantics, tightened metadata type)
@@ -60,11 +60,11 @@ export interface InteractiveCanvasState {
   id?: string;
   nodes: CanvasNode[];
   connections: CanvasConnection[];
-  viewport: { x: number;, y: number;
+  viewport: {, x: number;, y: number;
     zoom: number;
   };
   animation?: string;
   frame?: number;
   fabricJSON?: string;
-  metadata?: { [key: string]: any }; // Changed from any to unknown
+  metadata?: { [key: string]: any }; // Changed from: any, to: unknown
 }

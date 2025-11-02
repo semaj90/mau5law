@@ -3,10 +3,10 @@
  * Provides authentication, authorization, data protection, and security monitoring
  * Enhanced for legal document handling and attorney-client privilege protection
  */
-import { browser } from "$app/environment";
-import type { User } from "$lib/types/user";
-import crypto from "crypto";
-import { EventEmitter } from "events";
+import { browser } from, "$app/environment";
+import type { User } from, "$lib/types/user";
+import crypto from, "crypto";
+import { EventEmitter } from, "events";
 // Security configuration
 export interface SecurityConfig { maxFileSize: number;, allowedFileTypes: string[];
   sessionTimeout: number;
@@ -16,7 +16,7 @@ export interface SecurityConfig { maxFileSize: number;, allowedFileTypes: strin
   encryptionKey?: string;
 }
 export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
-  maxFileSize: 50 * 1024 * 1024, // 50MB
+ , maxFileSize: 50 * 1024 * 1024, // 50MB
   allowedFileTypes: [
     "image/jpeg",
     "image/png",
@@ -38,7 +38,7 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
   requireMFA: false
 }
 // Authentication and session management
-export interface UserSession { userId: string;, username: string;
+export interface UserSession {, userId: string;, username: string;
   name?: string;
   role: string;
   permissions: string[];
@@ -75,7 +75,7 @@ export interface SecurityEvent {
 class SessionManager {
   private session: UserSession | null = null;
   private config: SecurityConfig;
-  private sessionCheckInterval: number | null = null;
+  private, sessionCheckInterval: number | null = null;
   constructor(config: SecurityConfig = DEFAULT_SECURITY_CONFIG) {
     this.config = config;
   }
@@ -105,7 +105,7 @@ class SessionManager {
         type: "logout",
         userId: this.session.userId,
         timestamp: Date.now(),
-        details: { username: this.session.username },
+        details: {, username: this.session.username },
         severity: "low"
       });
     }
@@ -185,7 +185,7 @@ export function decryptSensitiveData(
     }
     return result;
   } catch {
-    return "";
+    return, "";
   }
 }
 // Hash generation for file integrity and evidence chain
@@ -244,24 +244,24 @@ export function sanitizeInput(
  , type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
-    case "html":
+    case, "html":
       return sanitizeForHTML(input);
-    case "sql":
+    case, "sql":
       return sanitizeForSQL(input);
-    case "js":
+    case, "js":
       return sanitizeForJavaScript(input);
     default: return sanitizeForHTML(input);
   }
 }
 // File security checks with legal document considerations
 export interface FileSecurityResult { isSafe: boolean;, issues: string[];
-  risk: "low" | "medium" | "high";
+ , risk: "low" | "medium" | "high";
   isLegalDocument?: boolean;
   requiresPrivilegedAccess?: boolean;
 }
 export function checkFileSecurityAI(file: File): FileSecurityResult {
   const issues: string[] = [];
-  let risk: "low" | "medium" | "high" = "low";
+  let, risk: "low" | "medium" | "high" = "low";
   let isLegalDocument = $state<boolean>(false);
   let requiresPrivilegedAccess = $state<boolean>(false);
   // File size check
@@ -390,7 +390,7 @@ export function logSecurityEvent(_event: Omit<SecurityEvent, "timestamp">;
   if (browser) {
     const events = JSON.parse(localStorage.getItem("security_events") || "[]");
     events.push(fullEvent);
-    // Keep only last 100 events
+    // Keep only last, 100 events
     if (events.length > 100) {
       events.splice(0, events.length - 100);
     }
@@ -416,10 +416,10 @@ export function generateCSPNonce(): string {
 export function checkPasswordStrength(password: string): { score: number;, feedback: string[];
   isStrong: boolean;
 } {
-  const feedback: string[] = [];
+  const, feedback: string[] = [];
   let score = 0;
   if (password.length >= 8) score += 1;
-  else feedback.push("Password should be at least 8 characters long");
+  else feedback.push("Password should be at least, 8 characters long");
   if (/[a-z]/.test(password)) score += 1;
   else feedback.push("Include lowercase letters");
   if (/[A-Z]/.test(password)) score += 1;
@@ -432,7 +432,7 @@ export function checkPasswordStrength(password: string): { score: number;, feed
   const isStrong = score >= 4;
   return { score, feedback, isStrong }
 }
-// Secure random string generation
+// Secure random: string generation
 export function generateSecureToken(length: number = 32): string {
   if (browser && crypto.getRandomValues) {
     const array = new Uint8Array(length);
@@ -462,7 +462,7 @@ export interface ChainOfCustodyEvent { timestamp: number;, action: "created" | 
   }
 }
 export function addChainOfCustodyEvent(
-  evidenceId: string,
+ , evidenceId: string,
   event: Omit<ChainOfCustodyEvent, "timestamp">;
 ): void {
   const fullEvent: ChainOfCustodyEvent = {

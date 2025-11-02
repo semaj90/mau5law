@@ -1,33 +1,33 @@
 <script, lang="ts">
-  import { Input } from '$lib/components/ui/input';
-  import { Button } from '$lib/components/ui/button';
-  // Svelte 5 runes are auto-imported
-  import type { PageData, ActionData } from './$types.js';
-  import { onMount, onDestroy } from 'svelte';
-  import { enhance } from '$app/forms';
-  import { goto } from '$app/navigation';
+  import { Input } from, '$lib/components/ui/input';
+  import { Button } from, '$lib/components/ui/button';
+  // Svelte, 5 runes are auto-imported
+  import type { PageData, ActionData } from, './$types.js';
+  import { onMount, onDestroy } from, 'svelte';
+  import { enhance } from, '$app/forms';
+  import { goto } from, '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
     getConfidenceClass,
     formatAnalysisDate
-   from "$lib/components/ui/orchestrated.svelte";
+   from, "$lib/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
   import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
     Database, Clock, BarChart3, Thermometer, Power, Memory,
     CheckCircle, AlertCircle, Eye, Download, Upload, Layers
-  } from 'lucide-svelte';
-  let { data, form }: { data: PageData; form: ActionData } = $props();
-  // Svelte 5 runes for CUDA streaming state
+  } from, 'lucide-svelte';
+  let { data, form }: { data: PageData;, form: ActionData } = $props();
+  // Svelte, 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');
   let inputText = $state<string>('');
   let batchSize = $state<number>(10);
@@ -40,7 +40,7 @@
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
   // Real-time metrics update
   let metricsInterval: NodeJS.Timeout | null = null;
-  let streamingSocket: EventSource | null = null;
+  let, streamingSocket: EventSource | null = null;
   // Derived states
   let gpuStatus = $derived((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
   let canStream = $derived(!isStreaming && inputText.trim.length > 0);
@@ -103,7 +103,7 @@
           processingTime: Math.floor(Math.random() * 2000) + 500,
           gpuAccelerated: useGpu,
           results: {
-            vectorsGenerated: Math.floor(Math.random() * 500) + 100,
+           , vectorsGenerated: Math.floor(Math.random() * 500) + 100,
             entitiesExtracted: Math.floor(Math.random() * 20) + 5,
             confidence: 0.85 + Math.random() * 0.1;
           }
@@ -170,12 +170,12 @@
   function formatThroughput(docsPerSec: number): string {
     return docsPerSec >= 1000 ? `${(docsPerSec / 1000).toFixed(1)}K/s` : `${docsPerSec}/s`;
   }
-  function getOperationIcon(operation string) {
+  function getOperationIcon(operation: string) {
     switch (operation) {
-      case 'document_vectorization': return Databa;
-      case 'similarity_search': return BarChart3;
-      case 'text_embedding': return Layer;
-      case 'legal_entity_extraction': return Ey;
+      case, 'document_vectorization': return Databa;
+      case, 'similarity_search': return BarChart3;
+      case, 'text_embedding': return Layer;
+      case, 'legal_entity_extraction': return Ey;
       default: return Cpu;
     }
   }
@@ -249,7 +249,7 @@
           class="flex items-center gap-2" px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
-          {@render tab.icon({ class: "w-4 h-4" })}
+          {@render tab.icon({, class: "w-4 h-4" })}
           {tab.label}
         </button>
       {/each}

@@ -7,7 +7,7 @@ export function getOllamaEndpoint(): string {
   // Use process.env.OLLAMA_URL for Docker service name or production environment.
   // Fallback to localhost for local development without Docker Compose.
   const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-  console.log(`Using Ollama endpoint: ${ollamaUrl}`);
+  console.log(`Using Ollama, endpoint: ${ollamaUrl}`);
   return ollamaUrl;
 }
 
@@ -20,10 +20,10 @@ export function getOllamaModelEndpoint(model: string): string {
   // Ollama typically uses /api/generate or /api/embeddings for models.
   // This example assumes a common pattern, adjust based on actual Ollama API.
   switch (model) {
-    case 'gemma3-legal:latest':
+    case, 'gemma3-legal:latest':
       return `${baseUrl}/api/generate`; // Or specific path for generation
-    case 'embeddinggemma:latest':
+    case, 'embeddinggemma:latest':
       return `${baseUrl}/api/embeddings`; // Or specific path for embeddings
-    default: return `${baseUrl}/api/generate`; // Default to generate endpoint
+   , default: return `${baseUrl}/api/generate`; // Default to generate endpoint
   }
 }

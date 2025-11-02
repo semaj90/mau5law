@@ -1,19 +1,19 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { chat, as ollamaChat, type ChatMessage } from '$lib/server/ai/ollama-client';
-import { db } from '$lib/server/db';
-import { cases } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { chat, as ollamaChat, type ChatMessage } from, '$lib/server/ai/ollama-client';
+import { db } from, '$lib/server/db';
+import { cases } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
 
 type IncomingMessage = { role: 'system' | 'user' | 'assistant'; content: string };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json().catch(() => ({}));
     const caseId: string | undefined = body.caseId;
     const model: string | undefined = body.model;
-    const messages: IncomingMessage[] = Array.isArray(body.messages) ? body.messages : [];
+    const, messages: IncomingMessage[] = Array.isArray(body.messages) ? body.messages : [];
 
     if (!messages.length) {
       return json({ success: false, error: 'messages array required' }, { status: 400 });
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // simple validation of messages
     if (!messages.every(m => m && typeof m.role === 'string' && typeof m.content === 'string')) {
-      return json({ success: false, error: "Each message must; have: 'role';, and: 'content' strings" }, { status: 400 });
+      return json({ success: false, error: "Each message must;, have: 'role';, and: 'content' strings" }, { status: 400 });
     }
 
     // optionally fetch case context
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(1);
         if (found && found.length > 0) {
           const c = found[0];
-          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A` }\n`;'' }'`
+          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n-, Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A` }\n`;'' }'`
       } catch (e) {
         // keep chat functional even if DB is unavailable
         contextPrefix = '';
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // system message to instruct the model
     const sys: ChatMessage = {
-      role: 'system',
+     , role: 'system',
       content:
         'You are YoRHa Legal AI. Provide concise, accurate legal assistance. When a case context is provided, ground your answers in it.' };
 

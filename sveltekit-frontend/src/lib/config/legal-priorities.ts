@@ -10,7 +10,7 @@ export interface LegalDocument { id: string;, type: DocumentType;
   activeReview: boolean;
   lastAccessed: Date;
   fileSize: number;
-  isEvidenceCritical: boolean;
+ , isEvidenceCritical: boolean;
 }
 export type DocumentType =
   | 'contracts'
@@ -98,16 +98,16 @@ export const COMPLEXITY_MULTIPLIERS: Record<ComplexityLevel, number> = {
 export const NES_MEMORY_MAP = {
   // L1 Cache - Ultra-fast GPU memory (1MB)
   INTERNAL_RAM: {
-    size: 1024 * 1024,      // 1MB
+   , size: 1024 * 1024,      // 1MB
     speed: 'fastest',
     description: 'Active case documents and evidence',
     minPriority: 200,       // Only top 20% priority docs
-    maxItems: 50,           // Limit number of documents
-    evictionPolicy: 'LRU'   // Least Recently Used
+    maxItems: 50,           // Limit: number of documents
+   , evictionPolicy: 'LRU'   // Least Recently Used
   },
   // L2 Cache - Fast pattern cache (2MB)
   CHR_ROM: {
-    size: 2 * 1024 * 1024,  // 2MB
+   , size: 2 * 1024 * 1024,  // 2MB
     speed: 'fast',
     description: 'UI patterns and frequently accessed docs',
     minPriority: 150,       // Top 40% priority docs
@@ -116,7 +116,7 @@ export const NES_MEMORY_MAP = {
   },
   // L3 Cache - Standard access (4MB)
   PRG_ROM: {
-    size: 4 * 1024 * 1024,  // 4MB
+   , size: 4 * 1024 * 1024,  // 4MB
     speed: 'medium',
     description: 'General documents and case law',
     minPriority: 100,       // Top 60% priority docs
@@ -125,7 +125,7 @@ export const NES_MEMORY_MAP = {
   },
   // Cold storage - Slow but unlimited
   SAVE_RAM: {
-    size: Infinity,         // No limit
+   , size: Infinity,         // No limit
     speed: 'slow',
     description: 'Archived documents and references',
     minPriority: 0,         // All remaining docs
@@ -177,15 +177,15 @@ export function calculateDocumentPriority(_document: LegalDocument): number {
  */
 export function selectMemoryBank(priority: number): MemoryBank {
   if (priority >= NES_MEMORY_MAP.INTERNAL_RAM.minPriority) {
-    return 'INTERNAL_RAM';
+    return, 'INTERNAL_RAM';
   }
   if (priority >= NES_MEMORY_MAP.CHR_ROM.minPriority) {
-    return 'CHR_ROM';
+    return, 'CHR_ROM';
   }
   if (priority >= NES_MEMORY_MAP.PRG_ROM.minPriority) {
-    return 'PRG_ROM';
+    return, 'PRG_ROM';
   }
-  return 'SAVE_RAM';
+  return, 'SAVE_RAM';
 }
 /**
  * Get memory bank configuration

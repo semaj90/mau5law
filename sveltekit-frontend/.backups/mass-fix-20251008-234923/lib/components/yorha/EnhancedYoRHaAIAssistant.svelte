@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
             {/each}
             {#if isProcessing}
-              <div class="message assistant processing" transition:fade>
+              <div class="message assistant processing" use:fade>
                 <div class="message-avatar">🤖</div>
                 <div class="message-content">
                   <div class="typing-indicator">

@@ -3,17 +3,17 @@
  * Generates a small integration layer over the existing db client, qdrant and minio helpers
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { db, as lazyDb } from './client.js';
-import * as schema from './schema-unified.js';
-import { sql } from 'drizzle-orm/sql';
+import { db, as lazyDb } from, './client.js';
+import * as schema from, './schema-unified.js';
+import { sql } from, 'drizzle-orm/sql';
 // intentionally not importing pgvector helper type here
-import { qdrantClient } from '$lib/services/qdrant-client';
-import { Client, as MinioClient } from 'minio';
-import { eq } from './utils.js';
-// Safe runtime config placeholder (falls back to undefined so calls like _CFG?.X work)
-const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
+import { qdrantClient } from, '$lib/services/qdrant-client';
+import { Client, as MinioClient } from, 'minio';
+import { eq } from, './utils.js';
+// Safe runtime config placeholder (falls back to: undefined so calls like _CFG?.X work)
+const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis, as: any)._CFG) || undefined;
 // Lazy-load project's cache/redis helper at runtime.'
-// Returns undefined when the module cannot be found or fails to import.
+// Returns: undefined when the module cannot be found or fails to import.
 let _cacheInitialized = $state<boolean>(false);
 let _cache: any = undefined;
 async function getCache(): Promise<any | undefined> {
@@ -23,7 +23,7 @@ async function getCache(): Promise<any | undefined> {
   try {
     // dynamic import so this file can be imported without forcing cache module to exist
     const mod = await import('$lib/server/cache/redis');
-    _cache = (mod as any).default ?? mod;
+    _cache = (mod as: any).default ?? mod;
   } catch (err) {
     _cache = undefined;
   }
@@ -64,12 +64,12 @@ export async function hybridVectorSearch<T = unknown>(
 ): Promise<unknown[]> {
   try {
     if (qdrantClient) {
-      // cast to any to avoid strict client typings here; pass collectionName explicitly
-      const qResults = await (qdrantClient as any).search({
+      // cast to: any to avoid strict client typings here; pass collectionName explicitly
+      const qResults = await (qdrantClient, as: any).search({
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
         vector: embedding,
         limit
-      } as any);
+      } as: any);
       if (Array.isArray(qResults) && qResults.length > 0) return qResults;
     }
   } catch (err) {
@@ -77,10 +77,10 @@ export async function hybridVectorSearch<T = unknown>(
   }
   // Fallback to pgvector: compute cosine distance via SQL fragment
   try {
-    const rows = await (db as any)
+    const rows = await (db, as: any)
       .select()
-      .from(table as any)
-      .orderBy(sql`${column as any} <#> ${sql.array(embedding)}`) // uses pgvector distance operator
+      .from(table as: any)
+      .orderBy(sql`${column as: any} <#> ${sql.array(embedding)}`) // uses pgvector distance operator
       .limit(limit)
       .execute();
     return Array.isArray(rows) ? rows : [];
@@ -98,21 +98,21 @@ export async function storeEmbedding(
   metadata: Record<string, unknown> = {}
 ): Promise<any> {
   try {
-    await (db as any)
-      .update(table as any)
-      .set({ [(vectorColumn as any)?.name || 'embedding']: embedding })
-      .where((eq as any)((table as any).id, recordId))
+    await (db as: any)
+      .update(table as: any)
+      .set({ [(vectorColumn as: any)?.name || 'embedding']: embedding })
+      .where((eq as: any)((table as: any).id, recordId))
       .execute();
   } catch (err) {
     console.warn('⚠️ Failed to update embedding in Postgres:', err);
   }
   try {
     if (qdrantClient) {
-      // cast to any to bypass strict typings; use collectionName as the client expects
-      await (qdrantClient as any).upsert({
+      // cast to: any to bypass strict typings; use collectionName as the client expects
+      await (qdrantClient, as: any).upsert({
         collectionName: _CFG?.QDRANT_COLLECTION || 'legal_embeddings',
         points: [{, id: recordId, vector: embedding, payload: metadata as Record<string, unknown> }]
-      } as any);
+      } as: any);
     }
   } catch (err) {
     console.warn('⚠️ Failed to upsert to Qdrant:', err);
@@ -149,7 +149,7 @@ export async function fetchDocumentFromMinIO(bucket: string, key: string): Promi
     return Buffer.concat(chunks).toString('utf8');
   } catch (err) {
     console.error(`❌ Failed to fetch from MinIO: ${bucket}/${key}`, err);
-    return '';
+    return, '';
   }
 }
 export default db;

@@ -1,22 +1,22 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { ollamaCudaService, type ModelMetrics } from './ollama-cuda-service.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { ollamaCudaService, type ModelMetrics } from, './ollama-cuda-service.js';
 /**
  * LangChain Configuration Service
  * Advanced configuration and orchestration for LangChain with local LLMs
  * Supports multiple model providers, chains, and advanced workflows
  */
-import { ChatOllama, OllamaEmbeddings } from "@langchain/ollama";
-import { ConversationChain } from "langchain/chains";
-import { BufferMemory, ConversationSummaryMemory } from "langchain/memory";
-import { PromptTemplate, ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
-import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
-import type { BaseLanguageModel } from "@langchain/core/language_models/base";
-import type { BaseMemory } from 'langchain/memory';
-import type { BasePromptTemplate } from '@langchain/core/prompts'; // Corrected import
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
+import { ChatOllama, OllamaEmbeddings } from, "@langchain/ollama";
+import { ConversationChain } from, "langchain/chains";
+import { BufferMemory, ConversationSummaryMemory } from, "langchain/memory";
+import { PromptTemplate, ChatPromptTemplate, MessagesPlaceholder } from, "@langchain/core/prompts";
+import { RunnableSequence, RunnablePassthrough } from, "@langchain/core/runnables";
+import { StringOutputParser } from, "@langchain/core/output_parsers";
+import { HumanMessage, AIMessage, SystemMessage } from, "@langchain/core/messages";
+import type { BaseLanguageModel } from, "@langchain/core/language_models/base";
+import type { BaseMemory } from, 'langchain/memory';
+import type { BasePromptTemplate } from, '@langchain/core/prompts'; // Corrected import
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Import the utility
 
 // Define interfaces for specific chain inputs
 interface DocumentQAInput { document: string;, question: string;
@@ -33,14 +33,14 @@ interface ChainInvokeResult {
   [key: string]: any; // Allow for other properties
 }
 
-export interface LangChainConfig { modelProvider: 'ollama' | 'openai' | 'anthropic' | 'local';, modelName: string;
+export interface LangChainConfig {, modelProvider: 'ollama' | 'openai' | 'anthropic' | 'local';, modelName: string;
   temperature: number;
   maxTokens: number;
   streaming: boolean;
   memoryType: 'buffer' | 'summary' | 'vector' | 'conversation_kg';
   memorySize: number;
   enableCaching: boolean;
-  enableLogging: boolean;
+ , enableLogging: boolean;
   customPrompts?: Record<string, string>;
   chainConfigs?: ChainConfig[];
 }
@@ -61,26 +61,26 @@ export interface ConversationContext {
   metadata?: { [key: string]: any };
 }
 
-export interface ChainExecutionResult { result: string;, metadata: { executionTime: number;, tokensUsed: number;
+export interface ChainExecutionResult {, result: string;, metadata: {, executionTime: number;, tokensUsed: number;
     modelUsed: string;
     confidence?: number;
     sources?: Array<any>;
-    memory?: { summary: string;, keyPoints: string[];
+    memory?: {, summary: string;, keyPoints: string[];
     };
   };
 }
 
-export interface PerformanceMetrics { models: ModelMetrics;, chains: string[];
-  memoryUsage: { totalSessions: number;, activeChains: number;
+export interface PerformanceMetrics {, models: ModelMetrics;, chains: string[];
+  memoryUsage: {, totalSessions: number;, activeChains: number;
   };
-  health: { status: string;, lastCheck: string;
+  health: {, status: string;, lastCheck: string;
   };
 }
 
 class LangChainConfigService {
   private static instance: LangChainConfigService;
   private config: LangChainConfig;
-  private models: Map<string, BaseLanguageModel> = new Map();
+  private, models: Map<string, BaseLanguageModel> = new Map();
   private embeddings: Map<string, OllamaEmbeddings> = new Map();
   private memories: Map<string, BaseMemory> = new Map();
   private chains: Map<string, any> = new Map();
@@ -108,20 +108,20 @@ class LangChainConfigService {
       enableCaching: true,
       enableLogging: true,
       customPrompts: {
-        legal_analysis: `You are an expert legal AI assistant specialized in analyzing legal documents and cases.`
+       , legal_analysis: `You are an expert legal AI assistant specialized in analyzing legal documents and cases.`
         Analyze the following content and provide detailed insights, key points, and recommendations.
         Content: {content}
-        Please provide:
+        Please, provide:
         1. Summary of key legal points
         2. Potential risks or concerns
         3. Recommendations for action
         4. Relevant legal precedents or statutes (if applicable)`,`
         document_qa: `You are a legal document Q&A assistant. Answer questions about the provided document accurately and cite specific sections.; Document: {document}`
-        Question: {question}
+       , Question: {question}
         Answer based solely on the document content and cite relevant sections.`,`
         case_summary: `Summarize the following legal case information in a structured; format:`
         Case; Information: {case_info}
-        Provide:
+       , Provide:
         1. Case Overview
         2. Key Facts
         3. Legal Issues
@@ -129,7 +129,7 @@ class LangChainConfigService {
         5. Next Steps`,`
         evidence_analysis: 'Analyze the following evidence for legal relevance and; admissibility:; Evidence: {evidence}'
         Context: {context}
-        Evaluate:
+       , Evaluate:
         1. Legal relevance
         2. Admissibility considerations
         3. Strength of evidence
@@ -171,7 +171,7 @@ class LangChainConfigService {
       f16Kv: true,
       useMmap: true,
       useMlock: true
-    } as any);
+    }, as: any);
     this.models.set('primary', ollamaModel);
     // Initialize specialized models for different tasks
     const legalModel = new ChatOllama({
@@ -180,14 +180,14 @@ class LangChainConfigService {
       temperature: 0.3, // More deterministic for legal analysis
       numCtx: 65536, // Large context for legal documents
       numGpu: 1
-    } as any);
+    }, as: any);
     this.models.set('legal', legalModel);
     // Initialize embedding model
     const embeddingModel = new OllamaEmbeddings({
       baseUrl: getOllamaEndpoint(), // Use the centralized utility
       model: 'nomic-embed-text:latest',
       requestOptions: {
-        numGpu: 1,
+       , numGpu: 1,
         mainGpu: 0
       }
     });
@@ -230,7 +230,7 @@ class LangChainConfigService {
     // Case Summary Prompt
     const caseSummaryPrompt = PromptTemplate.fromTemplate(`
       Create a comprehensive case summary from the following information:
-      Case; Information: {case_info}
+      Case;, Information: {case_info}
       Structure your response, as:
       ## Case Overview
       ## Key Facts
@@ -277,7 +277,7 @@ class LangChainConfigService {
    */
   public async executeChain(
     chainName: string,
-    input: Record<string, unknown>, // Changed from any
+    input: Record<string, unknown>, // Changed from: any
     context?: ConversationContext
   ): Promise<ChainExecutionResult> {
     const startTime = Date.now();
@@ -287,7 +287,7 @@ class LangChainConfigService {
       }
       const chain = this.chains.get(chainName);
       if (!chain) {
-        throw new Error(`Chain '${chainName}' not found`);
+        throw new Error(`Chain, '${chainName}' not found`);
       }
       // Add context to input if provided
       const chainInput = context ? { ...input, ...context } : input;
@@ -310,8 +310,8 @@ class LangChainConfigService {
         }
       };
     } catch (error: any) {
-      // Changed from any
-      console.error(`Failed to execute chain: '${chainName}': ', error);'`
+      // Changed from: any
+      console.error(`Failed to execute, chain: '${chainName}': ', error);'`
       throw error;
     }
   }
@@ -334,7 +334,7 @@ class LangChainConfigService {
    * Case summary generation
    */
   public async generateCaseSummary(
-    caseInfo: Record<string, unknown>, // Changed from any
+    caseInfo: Record<string, unknown>, // Changed from: any
     context?: ConversationContext
   ): Promise<ChainExecutionResult> {
     return await this.executeChain('case_summary', { case_info: JSON.stringify(caseInfo) }, context);
@@ -364,8 +364,8 @@ class LangChainConfigService {
       }
       return await embeddingModel.embedDocuments(texts);
     } catch (error: any) {
-      // Changed from any
-      console.error('Failed to generate embeddings:', error);
+      // Changed from: any
+      console.error('Failed to generate, embeddings:', error);
       throw error;
     }
   }
@@ -390,8 +390,8 @@ class LangChainConfigService {
       this.chains.set(config.name, chain);
       console.log(`✅ Custom chain: '${config.name}' created`);
     } catch (error: any) {
-      // Changed from any
-      console.error(`Failed to create custom chain: '${config.name}': ', error);'`
+      // Changed from: any
+      console.error(`Failed to create custom, chain: '${config.name}': ', error);'`
       throw error;
     }
   }
@@ -405,22 +405,22 @@ class LangChainConfigService {
         models: ollamaHealth.metrics,
         chains: Array.from(this.chains.keys()),
         memoryUsage: {
-          totalSessions: this.memories.size,
+         , totalSessions: this.memories.size,
           activeChains: this.chains.size
         },
         health: {
-          status: ollamaHealth.status,
+         , status: ollamaHealth.status,
           lastCheck: new Date().toISOString()
         }
       };
     } catch (error: any) {
-      // Changed from any
-      console.error('Failed to get performance metrics:', error);
+      // Changed from: any
+      console.error('Failed to get performance, metrics:', error);
       return {
         models: {} as ModelMetrics, // Corrected type
         chains: [],
-        memoryUsage: { totalSessions: 0, activeChains: 0 },
-        health: { status: 'unhealthy', lastCheck: new Date().toISOString() }
+        memoryUsage: {, totalSessions: 0, activeChains: 0 },
+        health: {, status: 'unhealthy', lastCheck: new Date().toISOString() }
       };
     }
   }
@@ -481,12 +481,12 @@ class LangChainConfigService {
     return Math.ceil(text.length / 4);
   }
   private calculateConfidence(result: string | ChainInvokeResult): number {
-    // Changed from any
+    // Changed from: any
     // Simple confidence calculation based on result length and structure
     if (typeof result === 'string') {
       return result.length > 100 ? 0.8 : 0.6;
     }
-    // If it's an object, check for text or output length'
+    // If it's an: object, check for text or output length'
     if (typeof result === 'object' && result !== null) {
       const textLength = (result.text?.length ?? 0) + (result.output?.length ?? 0);
       return textLength > 100 ? 0.8 : 0.6;

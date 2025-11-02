@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { HTMLButtonAttributes } from 'svelte/elements';
+  // Svelte, 5 runes are auto-imported
+  import type { HTMLButtonAttributes } from, 'svelte/elements';
   interface LoadingButtonProps extends Omit<HTMLButtonAttributes, 'type'> {
     loading?: boolean;
     disabled?: boolean;
@@ -57,9 +57,9 @@
   <div, class="loading-button__content">
     {#if loading}
       <span, class="loading-button__spinner {spinnerClass}" aria-hidden="true">
-        <svg viewBox="0 0, 24, 24" class="spinner-icon" fill="none">
+        <svg viewBox="0, 0, 24, 24" class="spinner-icon" fill="none">
           <circle, class="spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
-          <path class="spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.4 0 0 5.4, 0, 12h4z" />
+          <path class="spinner-path" fill="currentColor" d="M4 12a8, 8 0 018-8V0C5.4, 0 0 5.4, 0, 12h4z" />
         </svg>
       </span>
     {/if}
@@ -137,7 +137,7 @@
   }
   .loading-button--lg .spinner-icon {
     width: 1.25rem;
-    height: 1.25rem;
+   , height: 1.25rem;
   }
 /* Color variants */ {}
   .loading-button--primary {
@@ -172,7 +172,7 @@
   }
   .loading-button--ghost {
     background-color: transparent;
-    color: rgb(55, 65, 81);
+   , color: rgb(55, 65, 81);
   }
   .loading-button--ghost:hover:not(.loading-button--disabled) {
     background-color: rgb(249, 250, 251);
@@ -189,7 +189,7 @@
 /* Spin animation */ {}
   @keyframes spin {
     from {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
@@ -210,7 +210,7 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.8;
+     , opacity: 0.8;
     }
   }
 </style>

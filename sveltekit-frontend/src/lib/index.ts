@@ -1,30 +1,30 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Legal AI Platform - Comprehensive Library Exports
- * SvelteKit 2 + Svelte 5 + TypeScript
+ * SvelteKit, 2 + Svelte, 5 + TypeScript
  *
  * Centralized export file for all components, services, stores, and utilities
  * "Wire it up" - TypeScript polyfills and WebAssembly/WebGPU fallbacks
  */
-// SvelteKit 2 Polyfills - Import first to ensure module availability
-import './polyfills.js';
-import { barrelStore } from './stores/barrel-functions.js';
+// SvelteKit, 2 Polyfills - Import first to ensure module availability
+import, './polyfills.js';
+import { barrelStore } from, './stores/barrel-functions.js';
 // Enhanced Type Definitions - Import to register module augmentations
-// import './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
-// import './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
+// import, './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
+// import, './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====
-export * from './types/index.js';
+export * from, './types/index.js';
 // ===== TYPE GUARDS & UTILITIES =====
-export * from './utils/type-guards.js';
+export * from, './utils/type-guards.js';
 // ===== ENHANCED API CLIENT =====
-export { EnhancedApiClient, apiClient as enhancedApiClient } from './services/enhanced-api-client.js';
+export { EnhancedApiClient, apiClient as enhancedApiClient } from, './services/enhanced-api-client.js';
 // ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====
 // Temporarily commented to avoid LegalDocument export conflict
-// export * from './components/index.js'
+// export * from, './components/index.js'
 // ===== FILE UPLOAD SERVICES =====
-export { default, as localStorageFiles } from './services/localStorage-file-fallback.js';
-export { default, as enhancedFileUpload } from './services/enhanced-file-upload.js';
+export { default, as localStorageFiles } from, './services/localStorage-file-fallback.js';
+export { default, as enhancedFileUpload } from, './services/enhanced-file-upload.js';
 // ===== UTILITIES & TYPES =====
 export {
   cn,
@@ -44,9 +44,9 @@ export {
   isBrowser,
   storage,
   theme
-} from './utils.js';
-// Export type helpers for Svelte 5 compatibility
-export type { WithoutChild, WithoutChildren, WithoutChildrenOrChild, WithElementRef } from './utils.js';
+} from, './utils.js';
+// Export type helpers for Svelte, 5 compatibility
+export type { WithoutChild, WithoutChildren, WithoutChildrenOrChild, WithElementRef } from, './utils.js';
 // ===== OLLAMA INTEGRATION SERVICES =====
 export {
   comprehensiveOllamaSummarizer,
@@ -54,24 +54,24 @@ export {
   type ComprehensiveSummaryResponse,
   type SummarizerConfig,
   type SummarizerStats
-} from './services/comprehensive-ollama-summarizer.js';
+} from, './services/comprehensive-ollama-summarizer.js';
 export {
   ollamaIntegrationLayer,
   type IntegratedChatRequest,
   type IntegratedChatResponse,
   type OllamaServiceStatus
-} from './services/ollama-integration-layer.js';
+} from, './services/ollama-integration-layer.js';
 export {
   LangChainOllamaService,
   langChainOllamaService,
   type LangChainConfig,
   type ProcessingResult,
   type QueryResult
-} from './ai/langchain-ollama-service.js';
+} from, './ai/langchain-ollama-service.js';
 // ===== SERVER SERVICES (Server-side only) =====
 // Note: These should only be imported on the server side
-export type { AuthService } from './server/auth.js';
-export type { EmbeddingService, EmbeddingOptions } from './server/embedding-service.js';
+export type { AuthService } from, './server/auth.js';
+export type { EmbeddingService, EmbeddingOptions } from, './server/embedding-service.js';
 // ===== VERSION INFO =====
 export const VERSION = '2.0.0';
 export const BUILD_DATE = new Date().toISOString();
@@ -83,7 +83,7 @@ export const FRAMEWORK_INFO = {
 };
 // ===== FEATURE FLAGS =====
 export const FEATURES = {
-  GPU_ACCELERATION: true,
+ , GPU_ACCELERATION: true,
   VECTOR_SEARCH: true,
   REAL_TIME_CHAT: true,
   CONTEXT7_INTEGRATION: true,
@@ -96,7 +96,7 @@ export const FEATURES = {
 } as const;
 // ===== DEVELOPMENT UTILITIES =====
 export const DEV_TOOLS = {
-  COMPONENT_COUNT: 392,
+ , COMPONENT_COUNT: 392,
   ROUTE_COUNT: 82,
   API_ENDPOINT_COUNT: 145,
   STORE_COUNT: 8,
@@ -112,7 +112,7 @@ export {
   lokiCollectionMethods,
   configurationProperties,
   utilityFunctions
-} from './stores/barrel-functions.js';
+} from, './stores/barrel-functions.js';
 // ===== DATABASE COMPATIBILITY LAYER =====
 export {
   default as drizzleCompatibilityFix,
@@ -124,14 +124,14 @@ export {
   enhanceResultWithTypes,
   entityEnhancers,
   createTypeSafeQuery
-} from './database/drizzle-compatibility-fix.js';
+} from, './database/drizzle-compatibility-fix.js';
 // Make barrel store globally available
 if (typeof globalThis !== 'undefined') {
   globalThis.barrelStore = barrelStore;
 }
 // ===== ENHANCED SERVICES & STORES =====
-// Global User Store with Svelte 5 Runes
-export { default, as globalUserStore } from './stores/global-user-store.svelte.js';
+// Global User Store with Svelte, 5 Runes
+export { default, as globalUserStore } from, './stores/global-user-store.svelte.js';
 // Search Services with Fuse.js Integration
 export {
   searchService,
@@ -140,16 +140,16 @@ export {
   searchComponents,
   searchDocumentation,
   searchDemos
-} from './services/search-service.js';
+} from, './services/search-service.js';
 // Hybrid Vector Operations
 export {
   hybridVectorService,
   hybridSearch,
   syncVectorData,
   getVectorSystemHealth
-} from './services/hybrid-vector-operations.js';
+} from, './services/hybrid-vector-operations.js';
 // Search Types
-export type { SearchResult, SearchCategory, SearchOptions, SearchFilter, SearchState } from './types/search.types.js';
+export type { SearchResult, SearchCategory, SearchOptions, SearchFilter, SearchState } from, './types/search.types.js';
 // Default export for convenience
 export default {
   VERSION,

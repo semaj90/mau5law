@@ -1,5 +1,5 @@
 // QUIC Authentication Client for Lucia v3 integration
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
 interface AuthRequest { email: string;, password: string;
   ipAddress?: string;
   userAgent?: string;
@@ -14,7 +14,7 @@ interface AuthResponse {
   refreshToken?: string;
   error?: string;
 }
-interface UserProfile { userId: string;, email: string;
+interface UserProfile {, userId: string;, email: string;
   firstName: string;
   lastName: string;
   organization?: string;
@@ -24,13 +24,13 @@ interface UserProfile { userId: string;, email: string;
   preferences?: UserPreferences;
   permissions?: UserPermissions;
 }
-interface UserPreferences { theme: 'light' | 'dark' | 'auto';, language: string;
+interface UserPreferences {, theme: 'light' | 'dark' | 'auto';, language: string;
   emailNotifications: boolean;
   pushNotifications: boolean;
   timezone: string;
 }
-interface UserPermissions { allowedActions: string[];, allowedResources: string[];
-  featureFlags: Record<string, boolean>;
+interface UserPermissions {, allowedActions: string[];, allowedResources: string[];
+ , featureFlags: Record<string, boolean>;
   apiRateLimit: number;
   storageQuotaMb: number;
   canAccessQuic: boolean;
@@ -45,7 +45,7 @@ interface SessionValidation {
 }
 export class QuicAuthClient {
   private baseUrl: string;
-  private useHttp3: boolean;
+  private, useHttp3: boolean;
   constructor(baseUrl: string = 'https://localhost:4433', useHttp3: boolean = true) {
     this.baseUrl = baseUrl;
     this.useHttp3 = useHttp3;
@@ -216,7 +216,7 @@ export class QuicAuthClient {
   private async makeRequest(endpoint: string, body: any): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
     const options: RequestInit = {
-      method: 'POST',
+     , method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
-import type { ServerLoad, Actions } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
-import { getUserId } from '$lib/server/auth/utils';
-import pool from '$lib/server/db/client';
-import { sql } from 'drizzle-orm';
+import type { Case } from, '$lib/types';
+import type { ServerLoad, Actions } from, '@sveltejs/kit';
+import { redirect } from, '@sveltejs/kit';
+import { getUserId } from, '$lib/server/auth/utils';
+import pool from, '$lib/server/db/client';
+import { sql } from, 'drizzle-orm';
 
 // Row types returned by the DB queries
 type CaseRow = { id: string;, title: string;
   status: string;
   created_at: string | Date | null;
 };
-type POIRow = { id: string;, name: string;
+type POIRow = {, id: string;, name: string;
   status: string;
   created_at: string | Date | null;
 };
@@ -19,9 +19,9 @@ type POIRow = { id: string;, name: string;
 type RecentCase = { id: string; title: string; status: string; createdAt: Date };
 type RecentPOI = { id: string; name: string; status: string; createdAt: Date };
 
-export const load: ServerLoad = async ({ locals }) => {
+export const, load: ServerLoad = async ({ locals }) => {
   // Validate user/session; redirect to login if not authenticated
-  // getUserId expects the Locals object (contains pg, redis, etc.)
+  // getUserId expects the Locals: object (contains pg, redis, etc.)
   const userId = getUserId(locals);
   if (!userId) {
     throw redirect(303, '/login');
@@ -32,7 +32,7 @@ export const load: ServerLoad = async ({ locals }) => {
 
   // Prepare containers
   let recentCases: RecentCase[] = [];
-  let recentCriminals: RecentPOI[] = [];
+  let, recentCriminals: RecentPOI[] = [];
 
   // Fetch recent cases
   try {
@@ -40,7 +40,7 @@ export const load: ServerLoad = async ({ locals }) => {
     const casesResult = await pool.execute(
       sql`SELECT id, title, status, created_at FROM cases ORDER BY created_at DESC LIMIT 5`
     );
-    recentCases = (casesResult as unknown as CaseRow[]).map((r: CaseRow) => ({
+    recentCases = (casesResult as: unknown as CaseRow[]).map((r: CaseRow) => ({
       id: r.id,
       title: r.title,
       status: r.status,
@@ -56,7 +56,7 @@ export const load: ServerLoad = async ({ locals }) => {
     const poisResult = await pool.execute(
       sql`SELECT id, name, status, created_at FROM points_of_interest ORDER BY created_at DESC LIMIT 5`
     );
-    recentCriminals = (poisResult as unknown as POIRow[]).map((r: POIRow) => ({
+    recentCriminals = (poisResult as: unknown as POIRow[]).map((r: POIRow) => ({
       id: r.id,
       name: r.name,
       status: r.status,
@@ -77,7 +77,7 @@ export const load: ServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  logout: async ({ cookies }) => {
+ , logout: async ({ cookies }) => {
     // Clear the auth-session cookie
     cookies.delete('auth-session', { path: '/' });'`'`
     // Redirect back to homepage after logout

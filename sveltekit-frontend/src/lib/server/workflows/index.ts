@@ -1,15 +1,15 @@
 // Barrel export for workflow orchestration modules
-// Clean imports: import { workflowOrchestrator, DocumentProcessingActor } from '$lib/server/workflows'
+// Clean imports: import { workflowOrchestrator, DocumentProcessingActor } from, '$lib/server/workflows'
 
-export { workflowOrchestrator, as default } from './orchestrator.js';
-export { workflowOrchestrator } from './orchestrator.js';
-export type { WorkflowInstance, OrchestrationEvent } from './orchestrator.js';
+export { workflowOrchestrator, as default } from, './orchestrator.js';
+export { workflowOrchestrator } from, './orchestrator.js';
+export type { WorkflowInstance, OrchestrationEvent } from, './orchestrator.js';
 
-export { documentProcessingMachine } from './document-processing.js';
-export type { DocumentProcessingContext, DocumentProcessingEvent } from './document-processing.js';
+export { documentProcessingMachine } from, './document-processing.js';
+export type { DocumentProcessingContext, DocumentProcessingEvent } from, './document-processing.js';
 
-export { legalCaseManagementMachine } from './legal-case-management.js';
-export type { LegalCaseContext, LegalCaseEvent } from './legal-case-management.js';
+export { legalCaseManagementMachine } from, './legal-case-management.js';
+export type { LegalCaseContext, LegalCaseEvent } from, './legal-case-management.js';
 
 export type {
   // Vector database types
@@ -57,4 +57,4 @@ export type {
   DeepPartial,
   RequireKeys,
   AsyncFunction
-} from './shared-types.js';
+} from, './shared-types.js';

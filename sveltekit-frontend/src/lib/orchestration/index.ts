@@ -9,8 +9,8 @@ export type {
   JobPriority,
   RetryConfig,
   OptimizedRabbitMQOrchestrator
-} from './optimized-rabbitmq-orchestrator.js';
-export { optimizedOrchestrator } from './optimized-rabbitmq-orchestrator.js';
+} from, './optimized-rabbitmq-orchestrator.js';
+export { optimizedOrchestrator } from, './optimized-rabbitmq-orchestrator.js';
 // Sora Integration Exports
 export interface SoraMoogleIntegration {
   initialize(): Promise<void>;
@@ -45,7 +45,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
     return { prediction: 'mock_result', confidence: 0.9 };
   }
 };
-export const soraGraphTraversal: SoraGraphTraversal = {
+export const, soraGraphTraversal: SoraGraphTraversal = {
   async buildUserJourneyGraphs(data: any, options?: any, config?: any) {
     console.log('[SoraGraph] Building user journey graphs');
     return {

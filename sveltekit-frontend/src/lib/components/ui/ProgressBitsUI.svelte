@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { Progress, as ProgressPrimitive } from 'bits-ui';
+  import { Progress, as ProgressPrimitive } from, 'bits-ui';
   interface Props {
     value?: number;
     max?: number;
@@ -8,7 +8,7 @@
     showPercentage?: boolean;
   }
   let { value = 0, max = 100, variant = 'default', class: className = '', showPercentage = false }: Props = $props();
-  // reactive percentage using Svelte 5 runes
+  // reactive percentage using Svelte, 5 runes
   let percentage = $derived(Math.min(Math.max((value / (max || 1)) * 100, 0), 100));
   let variantClass = $derived(
     variant === 'success'
@@ -54,7 +54,7 @@
   /* minimal NES-like pattern for legal variant */
   .nes-progress.is-pattern::before {
     content: '';
-    position: absolute; inset: 0;
+    position: absolute;, inset: 0;
     background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.06) 10px, rgba(255,255,255,0.06) 20px);
     pointer-events: none;
   }

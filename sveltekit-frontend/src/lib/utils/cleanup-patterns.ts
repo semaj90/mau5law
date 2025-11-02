@@ -1,6 +1,6 @@
 
 /**
- * Common cleanup patterns for Svelte 5 components
+ * Common cleanup patterns for Svelte, 5 components
  */
 export function createEventListener<T extends, keyof, HTMLElementEventMap>(
   element: HTMLElement,
@@ -91,7 +91,7 @@ export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
     });
   }
 }
-// Hook-like pattern for Svelte 5
+// Hook-like pattern for Svelte, 5
 export function useCleanup() {
   const cleanupFunctions: (() => void)[] = [];
   const addCleanup = (cleanup: () => void) => {

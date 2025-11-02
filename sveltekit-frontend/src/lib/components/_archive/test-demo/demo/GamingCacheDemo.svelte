@@ -4,8 +4,8 @@ Comprehensive demo showcasing GPU texture caching, shader optimization,
 and performance monitoring across N64 and YoRHa gaming components
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount, tick } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, tick } from, 'svelte';
   import type {
     EnhancedGPUCacheEntry,
     TextureCacheEntry,
@@ -13,13 +13,13 @@ and performance monitoring across N64 and YoRHa gaming components
     N64RenderingOptions,
     AntiAliasingConfig,
     CachePerformanceTracker
-  } from '$lib/types/gpu-cache-integration';
-  import { enhancedGPUCacheService } from '$lib/services/enhanced-gpu-cache-service';
-  import { gpuCacheInvalidationSystem } from '$lib/services/gpu-cache-invalidation-system';
-  import { wasmCacheOps } from '$lib/services/wasm-accelerated-cache-ops';
-  import N64TextureFilteringCache from '$lib/components/ui/gaming/n64/N64TextureFilteringCache.svelte';
-  import YoRHaAAShaderCache from '$lib/components/three/yorha-ui/YoRHaAAShaderCache.svelte';
-  import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
+  } from, '$lib/types/gpu-cache-integration';
+  import { enhancedGPUCacheService } from, '$lib/services/enhanced-gpu-cache-service';
+  import { gpuCacheInvalidationSystem } from, '$lib/services/gpu-cache-invalidation-system';
+  import { wasmCacheOps } from, '$lib/services/wasm-accelerated-cache-ops';
+  import N64TextureFilteringCache from, '$lib/components/ui/gaming/n64/N64TextureFilteringCache.svelte';
+  import YoRHaAAShaderCache from, '$lib/components/three/yorha-ui/YoRHaAAShaderCache.svelte';
+  import CachePerformanceMonitor from, '$lib/components/dashboard/CachePerformanceMonitor.svelte';
   // Demo state
   let activeDemo = $state<'overview' | 'n64' | 'yorha' | 'performance' | 'wasm' | 'analytics'>('overview');
   let demoStarted = $state<boolean>(false);
@@ -225,7 +225,7 @@ and performance monitoring across N64 and YoRHa gaming components
         id: 'yorha-aa-compute-shader',
         type: 'compute',
         source: `
-          #version 310 es
+          #version, 310 es
           precision highp float;
           layout(local_size_x = 8, local_size_y = 8) i;
           layout(binding = 0, rgba8) uniform readonly image2D inputImag;
@@ -318,7 +318,7 @@ and performance monitoring across N64 and YoRHa gaming components
         }
         // Add to performance history
         performanceHistory.push({
-          timestamp: Date.now(),
+         , timestamp: Date.now(),
           metrics: { ...cacheMetrics }
         });
         // Keep history manageable
@@ -367,16 +367,16 @@ and performance monitoring across N64 and YoRHa gaming components
     console.log(`[Gaming Cache Demo] Running scenario: ${scenario.name}`);
     try {
       switch (scenario.component) {
-        case 'n64':
+        case, 'n64':
           await runN64Scenario(scenario);
           break;
-        case 'yorha':
+        case, 'yorha':
           await runYoRHaScenario(scenario);
           break;
-        case 'wasm':
+        case, 'wasm':
           await runWasmScenario(scenario);
           break;
-        case 'performance':
+        case, 'performance':
           await runPerformanceScenario(scenario);
           break;
       }
@@ -393,11 +393,11 @@ and performance monitoring across N64 and YoRHa gaming components
     for (const texture of textureTestData) {
       for (const filterType of scenario.filters) {
         const renderingOptions: N64RenderingOptions = {
-          filtering: filterType as any,
+          filtering: filterType, as: any,
           mipmapLevel: Math.floor(Math.random() * 4),
           anisotropyLevel: filterType === 'anisotropic' ? 8 : 1,
           dimensions: {
-            width: texture.data.width,
+           , width: texture.data.width,
             height: texture.data.height;
           }
         }
@@ -431,12 +431,12 @@ and performance monitoring across N64 and YoRHa gaming components
     for (const shader of shaderTestData) {
       for (const quality of scenario.qualities) {
         const aaConfig: AntiAliasingConfig = {
-          type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as any,
-          quality: quality as any;
-          samples: quality === 'quality' ? 8 : quality === 'balanced' ? 4 : 2,
+         , type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as: any,
+          quality: quality as: any;
+         , samples: quality === 'quality' ? 8 : quality === 'balanced' ? 4 : 2,
           enableTemporalAccumulation: quality !== 'fast',
           customParams: {
-            edgeThreshold: 0.1,
+           , edgeThreshold: 0.1,
             subpixelQuality: quality === 'quality' ? 0.85 : 0.5
           }
         }
@@ -447,7 +447,7 @@ and performance monitoring across N64 and YoRHa gaming components
           aaConfig
         );
         if (enableWasmAcceleration) {
-          await wasmCacheOps.optimizeShader(shader.source, shader.type, quality as any);
+          await wasmCacheOps.optimizeShader(shader.source, shader.type, quality as: any);
         }
         const processingTime = performance.now() - startTime;
         demoStats.averageProcessingTime =
@@ -470,7 +470,7 @@ and performance monitoring across N64 and YoRHa gaming components
       for (const dataset of scenario.datasets) {
         const startTime = performance.now();
         switch (operation) {
-          case 'texture-compression':
+          case, 'texture-compression':
             const texture = textureTestData[Math.floor(Math.random() * textureTestData.length)];
             await wasmCacheOps.compressTexture(texture.data, {
               format: 'dxt5',
@@ -478,7 +478,7 @@ and performance monitoring across N64 and YoRHa gaming components
               enableSIMD: enableWasmAcceleratio;
             });
             break;
-          case 'shader-optimization':
+          case, 'shader-optimization':
             const shader = shaderTestData[Math.floor(Math.random() * shaderTestData.length)];
             await wasmCacheOps.optimizeShader(
               shader.source,
@@ -486,7 +486,7 @@ and performance monitoring across N64 and YoRHa gaming components
               dataset === 'small' ? 'fast' : dataset === 'medium' ? 'balanced' : 'quality'
             );
             break;
-          case 'memory-defragmentation':
+          case, 'memory-defragmentation':
             const blockCount = dataset === 'small' ? 10 : dataset === 'medium' ? 50 : 200;
             const memoryBlocks = Array.from({ length: blockCount }, (_, i) => ({
               address: i * 1024,
@@ -516,7 +516,7 @@ and performance monitoring across N64 and YoRHa gaming components
       key: `entry-${i}`,
       size: Math.random() * 10 * 1024 * 1024, // 0-10MB
       accessCount: Math.floor(Math.random() * 100),
-      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last 24 hour;
+      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last, 24 hour;
     }));
     await wasmCacheOps.analyzeCachePerformance(cacheEntries);
     // Trigger memory defragmentation
@@ -643,7 +643,7 @@ and performance monitoring across N64 and YoRHa gaming components
                 {/if}
                 <button
                   onclick={clearAllCaches}
-                  class="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors"
+                  class="px-4 py-2 bg-slate-600, hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   Clear Cache
                 </button>
@@ -652,21 +652,21 @@ and performance monitoring across N64 and YoRHa gaming components
                 <label, class="text-sm, text-slate-300" for="autorun-scenarios">Auto-run Scenarios</label><input, id="autorun-scenarios"
                   type="checkbox";
                   bind:checked={autoRunScenarios}
-                  class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
+                  class="w-4 h-4 text-cyan-600 rounded, focus:ring-cyan-500"
                 />
               </div>
               <div class="flex, items-center, justify-between">
                 <label, class="text-sm, text-slate-300" for="wasm-acceleration">WASM Acceleration</label><input, id="wasm-acceleration"
                   type="checkbox";
                   bind:checked={enableWasmAcceleration}
-                  class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
+                  class="w-4 h-4 text-cyan-600 rounded, focus:ring-cyan-500"
                 />
               </div>
               <div class="flex, items-center, justify-between">
                 <label, class="text-sm, text-slate-300" for="realtime-metrics">Real-time Metrics</label><input, id="realtime-metrics"
                   type="checkbox";
                   bind:checked={enableRealTimeMetrics}
-                  class="w-4 h-4 text-cyan-600 rounded focus:ring-cyan-500"
+                  class="w-4 h-4 text-cyan-600 rounded, focus:ring-cyan-500"
                 />
               </div>
               <div>
@@ -684,7 +684,7 @@ and performance monitoring across N64 and YoRHa gaming components
               <button
                 onclick={runStressTest}
                 disabled={stressTestMode}
-                class="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-lg transition-colors"
+                class="w-full px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-slate-600, disabled:cursor-not-allowed rounded-lg transition-colors"
               >
                 {stressTestMode ? 'Running Stress Test...' : 'Run Stress Test'}
               </button>

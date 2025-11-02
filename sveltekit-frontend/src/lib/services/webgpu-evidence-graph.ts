@@ -4,14 +4,14 @@ export interface GraphNode { id: string;, x: number;
   type: 'evidence' | 'entity' | 'event' | 'correlation';
   label: string;
   weight: number;
-  color: [number, number, number, number];
+ , color: [number, number, number, number];
   connections: string[];
 }
 
-export interface GraphEdge { source: string;, target: string;
+export interface GraphEdge {, source: string;, target: string;
   weight: number;
   type: 'temporal' | 'causal' | 'semantic' | 'entity';
-  color: [number, number, number, number];
+ , color: [number, number, number, number];
 }
 export class WebGPUEvidenceGraph {
   private device: GPUDevice | null = null;
@@ -24,7 +24,7 @@ export class WebGPUEvidenceGraph {
   private uniformBuffer: GPUBuffer | null = null;
   private bindGroup: GPUBindGroup | null = null;
   private canvas: HTMLCanvasElement | null = null;
-  private frameId: number | null = null;
+  private, frameId: number | null = null;
   // Shader code for node rendering (simplified, syntactically-correct WGSL)
   private vertexShader = `
     struct Uniforms {
@@ -146,7 +146,7 @@ export class WebGPUEvidenceGraph {
           {,
            , arrayStride: 32, // 3 floats position (12) + 4 floats color (16) + 1 float size (4) = 32
             attributes: [
-              { shaderLocation: 0, offset: 0, format: 'float32x3' },
+              {, shaderLocation: 0, offset: 0, format: 'float32x3' },
               { shaderLocation: 1, offset: 12, format: 'float32x4' },
               { shaderLocation: 2, offset: 28, format: 'float32' }
             ]
@@ -154,15 +154,15 @@ export class WebGPUEvidenceGraph {
         ]
       },
       fragment: {
-        module: fragmentModule,
+       , module: fragmentModule,
         entryPoint: 'main',
         targets: [{ format }]
       },
       primitive: {
-        topology: 'point-list'
+       , topology: 'point-list'
       },
       depthStencil: {
-        format: 'depth24plus',
+       , format: 'depth24plus',
         depthWriteEnabled: true,
         depthCompare: 'less' }'` });'`
   }
@@ -170,7 +170,7 @@ export class WebGPUEvidenceGraph {
     if (!this.device) return;
     // Create uniform buffer for matrices and time
     this.uniformBuffer = this.device.createBuffer({
-      size: 144, // 2 mat4x4 (2*64) + 1 float (4) aligned -> keep 144 bytes
+      size: 144, // 2 mat4x4 (2*64) + 1 float (4) aligned -> keep, 144 bytes
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     // Create bind group
@@ -180,7 +180,7 @@ export class WebGPUEvidenceGraph {
         {,
           binding: 0,
           resource: {
-            buffer: this.uniformBuffer!
+           , buffer: this.uniformBuffer!
           }
         },
       ]
@@ -280,21 +280,21 @@ export class WebGPUEvidenceGraph {
 
     // Create command encoder
     const commandEncoder = this.device.createCommandEncoder();
-    // Create depth texture using explicit size object
-    const depthTexture = this.device.createTexture({ size: {, width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
+    // Create depth texture using explicit size: object
+    const depthTexture = this.device.createTexture({, size: {, width: this.canvas.width, height: this.canvas.height, depthOrArrayLayers: 1 },
       format: 'depth24plus',
       usage: GPUTextureUsage.RENDER_ATTACHMENT
     });
     const renderPassDescriptor: GPURenderPassDescriptor = {
-      colorAttachments: [
+     , colorAttachments: [
         {,
           view: this.context.getCurrentTexture().createView(),
-          clearValue: { r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
+          clearValue: {, r: 0.05, g: 0.05, b: 0.1, a: 1.0 },
           loadOp: 'clear',
           storeOp: `store` }
       ],
       depthStencilAttachment: {
-        view: depthTexture.createView(),
+       , view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
         depthStoreOp: `store` }

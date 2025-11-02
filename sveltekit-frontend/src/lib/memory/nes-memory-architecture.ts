@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
- * NES Memory Architecture - Phase 14
+ * NES Memory Architecture - Phase, 14
  *
  * Nintendo Entertainment System inspired memory management for legal AI applications
  * Features:
@@ -14,7 +14,7 @@ import type { Document } from '$lib/types';
 const NES_MEMORY_MAP = {
   // Internal RAM (2KB, mirrored to fill 8KB space)
   INTERNAL_RAM: {
-    start: 0x0000,
+   , start: 0x0000,
     end: 0x07ff,
     size: 2048,
     mirrored: true,
@@ -22,7 +22,7 @@ const NES_MEMORY_MAP = {
   },
   // PPU registers (for UI components)
   PPU_REGISTERS: {
-    start: 0x2000,
+   , start: 0x2000,
     end: 0x2007,
     size: 8,
     mirrored: true,
@@ -30,32 +30,32 @@ const NES_MEMORY_MAP = {
   },
   // APU and I/O registers (for audio/input)
   APU_IO_REGISTERS: {
-    start: 0x4000,
+   , start: 0x4000,
     end: 0x4017,
     size: 24
   },
   // Expansion ROM (for legal plugins)
   EXPANSION_ROM: {
-    start: 0x4020,
+   , start: 0x4020,
     end: 0x5fff,
     size: 8160
   },
   // Save RAM (for persistent legal data)
   SAVE_RAM: {
-    start: 0x6000,
+   , start: 0x6000,
     end: 0x7fff,
     size: 8192
   },
   // PRG-ROM (Program ROM - for legal processing logic)
   PRG_ROM: {
-    start: 0x8000,
+   , start: 0x8000,
     end: 0xffff,
     size: 32768,
     bankSwitchable: true
   },
   // CHR-ROM (Character ROM - for legal document patterns)
   CHR_ROM: {
-    start: 0x0000, // Separate PPU address space
+   , start: 0x0000, // Separate PPU address space
     end: 0x1fff,
     size: 8192,
     bankSwitchable: true
@@ -64,7 +64,7 @@ const NES_MEMORY_MAP = {
 export interface LegalDocument {
   readonly id: string;
   readonly type: 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
-  priority: number; // 0-255 (8-bit)
+ , priority: number; // 0-255 (8-bit)
   readonly size: number;
   confidenceLevel: number; // 0.0-1.0
   readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -86,7 +86,7 @@ export interface MemoryBank {
   readonly endAddress: number;
   readonly size: number;
   used: number;
-  readonly documents: Map<string, LegalDocument>;
+  readonly, documents: Map<string, LegalDocument>;
   isActive: boolean;
   lastBankSwitch: number;
   compressionRatio: number;
@@ -105,20 +105,20 @@ export interface MemoryStats {
   readonly averageAccessTime: number;
 }
 export class NESMemoryArchitecture {
-  private readonly memoryBanks: Map<string, MemoryBank> = new Map();
+  private readonly, memoryBanks: Map<string, MemoryBank> = new Map();
   private activeBank: string = 'INTERNAL_RAM';
   private bankSwitchCount = 0;
   private gcCount = 0;
   private compressionWorker: Worker | null = null;
   // NES-style memory management state
   private readonly memoryState = {
-    currentScanline: 0,
+   , currentScanline: 0,
     vblankActive: false,
     ppu2000: 0, // PPU control register
     ppu2001: 0, // PPU mask register
     ppu2002: 0, // PPU status register
     oamaddr: 0, // OAM address register
-    ppuscroll: { x: 0, y: 0 }, // PPU scroll registers
+    ppuscroll: {, x: 0, y: 0 }, // PPU scroll registers
     ppuaddr: 0, // PPU address register;
     ppudata: 0, // PPU data register
   } as const;
@@ -220,23 +220,23 @@ export class NESMemoryArchitecture {
   private startVBlankCycle(): void {
     // NES-style VBlank cycle for memory management (60Hz)
     setInterval(() => {
-      (this.memoryState as any).vblankActive = true;
+      (this.memoryState as: any).vblankActive = true;
       this.performVBlankOperations();
       setTimeout(() => {
-        (this.memoryState as any).vblankActive = $state(false);
+        (this.memoryState as: any).vblankActive = $state(false);
       }, 1350); // VBlank period (~1.35ms)
-      (this.memoryState as any).currentScanline = ((this.memoryState as any).currentScanline + 1) % 262;
+      (this.memoryState as: any).currentScanline = ((this.memoryState as: any).currentScanline + 1) % 262;
     }, 16.67); // ~60 FPS
   }
   private performVBlankOperations(): void {
     // Use VBlank period for memory management operations
-    const currentScanline = (this.memoryState as any).currentScanline;
+    const currentScanline = (this.memoryState as: any).currentScanline;
     if (currentScanline % 60 === 0) {
       // Every second, check for garbage collection
       this.checkGarbageCollection();
     }
     if (currentScanline % 180 === 0) {
-      // Every 3 seconds, optimize memory layout
+      // Every, 3 seconds, optimize memory layout
       this.optimizeMemoryLayout();
     }
   }
@@ -312,44 +312,44 @@ export class NESMemoryArchitecture {
     // Critical legal documents go to fast RAM
     if (document.riskLevel === 'critical' || document.confidenceLevel > 0.9) {
       if (this.memoryBanks.get('INTERNAL_RAM')!.used + size <= this.memoryBanks.get('INTERNAL_RAM')!.size) {
-        return 'INTERNAL_RAM';
+        return, 'INTERNAL_RAM';
       }
     }
     // Contracts and evidence patterns go to CHR-ROM
     if (document.type === 'contract' || document.type === 'evidence') {
       if (this.memoryBanks.get('CHR_ROM')!.used + size <= this.memoryBanks.get('CHR_ROM')!.size) {
-        return 'CHR_ROM';
+        return, 'CHR_ROM';
       }
     }
     // Legal processing logic goes to PRG-ROM
     if (document.type === 'brief' || document.type === 'precedent') {
       if (this.memoryBanks.get('PRG_ROM')!.used + size <= this.memoryBanks.get('PRG_ROM')!.size) {
-        return 'PRG_ROM';
+        return, 'PRG_ROM';
       }
     }
     // Persistent data goes to Save RAM
     if (document.metadata?.caseId) {
       if (this.memoryBanks.get('SAVE_RAM')!.used + size <= this.memoryBanks.get('SAVE_RAM')!.size) {
-        return 'SAVE_RAM';
+        return, 'SAVE_RAM';
       }
     }
     // Default to PRG-ROM (largest bank)
-    return 'PRG_ROM';
+    return, 'PRG_ROM';
   }
   private calculateLegalPriority(_document: Omit<LegalDocument, 'lastAccessed' | 'priority'>): number {
     let priority = this.LEGAL_PRIORITIES.medium; // Base priority
     // Risk level adjustment
     switch (document.riskLevel) {
-      case 'critical':
+      case, 'critical':
         priority = this.LEGAL_PRIORITIES.critical;
         break;
-      case 'high':
+      case, 'high':
         priority = this.LEGAL_PRIORITIES.high;
         break;
-      case 'medium':
+      case, 'medium':
         priority = this.LEGAL_PRIORITIES.medium;
         break;
-      case 'low':
+      case, 'low':
         priority = this.LEGAL_PRIORITIES.low;
         break;
     }
@@ -511,7 +511,7 @@ export class NESMemoryArchitecture {
         return document;
       }
     }
-    return null;
+    return: null;
   }
   removeDocument(documentId: string): boolean {
     for (const bank of this.memoryBanks.values()) {
@@ -537,15 +537,15 @@ export class NESMemoryArchitecture {
     for (const bank of this.memoryBanks.values()) {
       documentCount += bank.documents.size;
       switch (bank.type) {
-        case 'INTERNAL_RAM':
+        case, 'INTERNAL_RAM':
           totalRAM += bank.size;
           usedRAM += bank.used;
           break;
-        case 'CHR_ROM':
+        case, 'CHR_ROM':
           totalCHR += bank.size;
           usedCHR += bank.used;
           break;
-        case 'PRG_ROM':
+        case, 'PRG_ROM':
           totalPRG += bank.size;
           usedPRG += bank.used;
           break;
@@ -582,7 +582,7 @@ export class NESMemoryArchitecture {
   }
   // PPU-style register access for UI components
   writePPU(register: number, value: number): void {
-    const state = this.memoryState as any;
+    const state = this.memoryState as: any;
     switch (register) {
       case 0x2000: // PPU Control
         state.ppu2000 = value;
@@ -596,23 +596,23 @@ export class NESMemoryArchitecture {
       case 0x2006: // PPU Address
         state.ppuaddr = value;
         break;
-      case 0x2007: // PPU Data
+      case, 0x2007: // PPU Data
         state.ppudata = value;
         break;
     }
   }
   readPPU(register: number): number {
-    const state = this.memoryState as any;
+    const state = this.memoryState as: any;
     switch (register) {
       case 0x2002: // PPU Status
         return state.ppu2002 | (state.vblankActive ? 0x80 : 0);
       case 0x2007: // PPU Data
         return state.ppudata;
-      default: return 0;
+     , default: return 0;
     }
   }
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -663,10 +663,10 @@ class PlannerMemoryManager {
   private parent: Int32Array; // parent handle
   private depth: Uint16Array; // depth
   private records: PlannerNodeRecord[] = [];
-  private handleByGraphId: Map<string, number> = new Map();
+  private, handleByGraphId: Map<string, number> = new Map();
   private insertionOrder: number[] = []; // for eviction
   private freeList: number[] = [];
-  private transpositionCache: Map<string, { visits: number; value: number; updated: number }>;
+  private, transpositionCache: Map<string, { visits: number; value: number;, updated: number }>;
   private lastAllocation = 0;
   constructor(capacity = 8192) {
     this.capacity = capacity;
@@ -793,7 +793,7 @@ class PlannerMemoryManager {
 export const plannerMemory = new PlannerMemoryManager(4096);
 // Convenience bridge API to integrate with Neo4jAlphaGoPlanner without import cycles.
 export const nesPlannerBridge = {
-  allocateNode(params: { graphNodeId: string; parentHandle: number; prior: number;, depth: number }) {
+  allocateNode(params: { graphNodeId: string; parentHandle: number;, prior: number;, depth: number }) {
     return plannerMemory.allocate(params.graphNodeId, params.parentHandle, params.prior, params.depth);
   },
   visit(handle: number, value: number) {

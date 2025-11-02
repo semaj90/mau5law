@@ -3,16 +3,16 @@
  * Modern TypeScript patterns for WASM integration
  */
 // Global WebAssembly module declarations
-declare module '*.wasm' {
+declare module, '*.wasm' {
   const wasmModule: (imports?: WebAssembly.Imports) => Promise<WebAssembly.Instance>;
   export default wasmModule;
 }
-declare module '*.wasm?url' {
+declare module, '*.wasm?url' {
   const wasmUrl: string;
   export default wasmUrl;
 }
 // Enhanced WebAssembly memory management types
-export interface WASMMemoryManager { memory: WebAssembly.Memory;, view: DataView;
+export interface WASMMemoryManager {, memory: WebAssembly.Memory;, view: DataView;
   allocate(size: number): number;
   deallocate(ptr: number): void;
   writeBuffer(ptr: number, data: ArrayBuffer | Uint8Array): void;
@@ -24,7 +24,7 @@ export interface WASMMemoryManager { memory: WebAssembly.Memory;, view: DataVie
 export interface LegalWASMModule {
   // Memory management
   memory: WebAssembly.Memory;
-  allocate: (size: number) => number;
+ , allocate: (size: number) => number;
   deallocate: (ptr: number) => void;
   // Text processing functions
   extract_entities: (textPtr: number, textLen: number) => number;
@@ -44,7 +44,7 @@ export interface LegalWASMBridge { module: LegalWASMModule;, memory: WASMMemory
   // High-level document processing methods
   processLegalDocument(content: string): Promise<{ entities: Array<any>;, classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+   , confidence: number;
   }>;
   extractMetadata(content: string): Promise<Record<string, unknown>>;
   // Vector operations
@@ -61,8 +61,8 @@ export interface WASMRabbitMQMessage { id: string;, type: 'legal_document' | 'e
     documentId?: string;
   };
   wasmProcessed?: boolean;
-  processingResult?: { success: boolean;, data: any;
-    processingTime: number;
+  processingResult?: {, success: boolean;, data: any;
+   , processingTime: number;
   };
 }
 // Memory allocation utilities
@@ -85,11 +85,11 @@ export interface WASMInstantiationOptions {
 }
 // Performance monitoring for WASM operations
 export interface WASMPerformanceMetrics { instantiationTime: number;, memoryUsage: number;
-  operationCounts: { textProcessing: number;, vectorOperations: number;
+  operationCounts: {, textProcessing: number;, vectorOperations: number;
     memoryAllocations: number;
   };
-  averageOperationTime: { documentProcessing: number;, embeddingNormalization: number;
-    similarityCalculation: number;
+  averageOperationTime: {, documentProcessing: number;, embeddingNormalization: number;
+   , similarityCalculation: number;
   };
 }
 // Error types for WASM operations (declaration only)
@@ -111,8 +111,8 @@ export interface VectorOperationResult { success: boolean;, result: Float32Arra
   processingTime: number;
   error?: string;
 }
-export interface SimilaritySearchResult { documentId: string;, similarity: number;
-  metadata: Record<string, unknown>;
+export interface SimilaritySearchResult {, documentId: string;, similarity: number;
+ , metadata: Record<string, unknown>;
 }
 // Global augmentation for WASM-enhanced features
 declare global {

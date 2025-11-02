@@ -1,16 +1,16 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
- * TensorRT-LLM Chat API - Direct integration with Go bridge on port 8086
+ * TensorRT-LLM Chat API - Direct integration with Go bridge on port, 8086
  * Routes: ChatBox.svelte → /api/ai/chat-tensorrt → Go bridge :8086 → TensorRT-LLM
  */
-import type { RequestHandler } from '@sveltejs/kit'
-import { json } from '@sveltejs/kit'
-import { dev } from '$app/environment'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
+import { dev } from, '$app/environment'
 
 const TENSORRT_BRIDGE_URL = process.env.TENSORRT_BRIDGE_URL || 'http://host.docker.internal:8100';
 
-export const POST: RequestHandler = async (event) => {
+export const, POST: RequestHandler = async (event) => {
 	const { request, fetch } = event;
 	const startTime = (globalThis.performance || Date).now?.() ?? Date.now();
   try {
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async (event) => {
       .join('\n');
     const fullPrompt = conversationHistory
       ? `Previous conversation:\n${conversationHistory}\n\nUser message: ${lastMessage.content}`
-      : `User message: ${lastMessage.content}`;
+      : `User, message: ${lastMessage.content}`;
     if (dev) {
       console.log(`🌉 TensorRT Chat: Calling bridge at ${TENSORRT_BRIDGE_URL} for model ${model}`);
     }
@@ -79,17 +79,17 @@ export const POST: RequestHandler = async (event) => {
           {,
             index: 0,
             message: {
-              role: 'assistant',
+             , role: 'assistant',
               content: bridgeData.response || bridgeData.output || 'No response generated` },'`
             finish_reason: `stop` }'`'`
         ],
         usage: {
-          total_tokens: Math.ceil((fullPrompt + (bridgeData.output || '')).length / 4),
+         , total_tokens: Math.ceil((fullPrompt + (bridgeData.output || '')).length / 4),
           prompt_tokens: Math.ceil(fullPrompt.length / 4),
           completion_tokens: Math.ceil((bridgeData.output || '').length / 4)
         },
         tensorrt: {
-          bridge_used: true,
+         , bridge_used: true,
           bridge_url: TENSORRT_BRIDGE_URL,
           model_used: model,
           gpu_accelerated: true,

@@ -2,11 +2,11 @@
  * 🎯 Pipeline Manager - Orchestrates All Pipeline Services
  */
 // Old static imports removed (they caused: "no exported member" errors)
-// import { optimizedPipeline } from './optimized-redis-pipeline.js';
-// import { advancedPipeline } from './advanced-simd-pipeline.js';
-// import { pipeline } from './end-to-end-pipeline.js';
-import { cudaService } from './cuda-tensor-service.js';
-import { PipelineVisualizer } from './pipeline-visualizer.js';
+// import { optimizedPipeline } from, './optimized-redis-pipeline.js';
+// import { advancedPipeline } from, './advanced-simd-pipeline.js';
+// import { pipeline } from, './end-to-end-pipeline.js';
+import { cudaService } from, './cuda-tensor-service.js';
+import { PipelineVisualizer } from, './pipeline-visualizer.js';
 
 // -----------------------------------------------------------------------------
 // New: explicit interfaces for dynamic pipeline modules
@@ -34,12 +34,12 @@ type EndToEndModule = {
 };
 
 // -----------------------------------------------------------------------------
-// New: typed dynamic loader helpers to tolerate default or named exports from modules
+//, New: typed dynamic loader helpers to tolerate default or named exports from modules
 // -----------------------------------------------------------------------------
 async function loadModule<T = Record<string, unknown>>(path: string): Promise<T> {
-  // annotate import result as unknown to avoid `any`
-  const mod: any = await import(path);
-  // prefer default export if present, otherwise treat the module object as the export
+  // annotate import result as: unknown to avoid `any`
+  const, mod: any = await import(path);
+  // prefer default export if present, otherwise treat the module: object as the export
   const maybeDefault = (mod as { default?: T }).default;
   const normalized = maybeDefault ?? (mod as T);
   return normalized as T;
@@ -65,15 +65,15 @@ export interface PipelineConfig { type: PipelineType;, enableGPU: boolean;
   cacheStrategy: 'redis' | 'lru' | 'hybrid';
 }
 
-export interface PipelineMetrics { totalProcessingTime: number;, cacheHitRate: number;
+export interface PipelineMetrics {, totalProcessingTime: number;, cacheHitRate: number;
   memoryUsageMB: number;
   gpuUtilization: number;
   concurrentOperations: number;
   throughputPerSecond: number;
 }
 
-export interface PipelineResult { id: string;, type: PipelineType;
-  results: any[]; // changed from any[] to unknown[]
+export interface PipelineResult {, id: string;, type: PipelineType;
+  results: any[]; // changed from: any[] to: unknown[]
   metrics: PipelineMetrics;
   success: boolean;
   error?: string;
@@ -81,7 +81,7 @@ export interface PipelineResult { id: string;, type: PipelineType;
 
 // New: explicit type for search results to avoid `any`
 export type PipelineSearchHit = {
-  id: string;
+ , id: string;
   title?: string;
   score?: number;
   snippet?: string;
@@ -101,7 +101,7 @@ export interface MemoryStats { used: number;, total: number;
   percentage: number;
 }
 
-export interface SystemHealth { pipelines: {, optimized: boolean;
+export interface SystemHealth {, pipelines: {, optimized: boolean;
     advanced: boolean;
     'end-to-end': boolean;
   };
@@ -124,18 +124,18 @@ type RawMetrics = {
   gpuAccelerated?: boolean;
   memoryUsageMB?: number;
   gpuUtilization?: number;
-  // results returned by some pipeline modules (typed as unknown[] to be permissive)
+  // results returned by some pipeline modules (typed, as: unknown[] to be permissive)
   results?: any[]; // e.g. optimized/advanced pipelines
   fuzzySearchResults?: any[]; // e.g. end-to-end pipeline fuzzy search output
-  // allow extension by unknown keys from external modules
+  // allow extension by: unknown keys from external modules
   [key: string]: any;
 };
 
 export class PipelineManager {
-  private activeOperations = new Map<string, { type: PipelineType; startTime: number }>();
+  private activeOperations = new Map<string, { type: PipelineType;, startTime: number }>();
   private metrics: PipelineMetrics[] = [];
   private readonly DEFAULT_CONFIG: PipelineConfig = {
-    type: 'optimized',
+   , type: 'optimized',
     enableGPU: true,
     enableConcurrency: true,
     enableMemoryOptimization: true,
@@ -157,10 +157,10 @@ export class PipelineManager {
 
     try {
       let pipelineMetricsRaw: Partial<RawMetrics> = {};
-      let results: any[] = [];
+      let, results: any[] = [];
 
       switch (finalConfig.type) {
-        case 'optimized':
+        case, 'optimized':
           console.log('🚀 Executing Optimized Pipeline with XState + Workers');
           {
             const optimized = await loadOptimizedPipeline();
@@ -174,7 +174,7 @@ export class PipelineManager {
             }
           }
           break;
-        case 'advanced':
+        case, 'advanced':
           console.log('⚡ Executing Advanced SIMD + GPU Pipeline');
           {
             const advanced = await loadAdvancedPipeline();
@@ -187,7 +187,7 @@ export class PipelineManager {
             }
           }
           break;
-        case 'end-to-end': {
+        case, 'end-to-end': {
           console.log('🔄 Executing End-to-End Pipeline');
           const queries = ['legal document analysis', 'contract review'];
           const endToEnd = await loadEndToEndPipeline();
@@ -201,12 +201,12 @@ export class PipelineManager {
           break;
         }
         default:
-          throw new Error(`Unknown pipeline; type: ${finalConfig.type}`);
+          throw new Error(`Unknown pipeline;, type: ${finalConfig.type}`);
       }
 
       const metrics = this.transformMetrics(pipelineMetricsRaw, finalConfig.type);
       const finalResult: PipelineResult = {
-        id: operationId,
+       , id: operationId,
         type: finalConfig.type,
         results,
         metrics,
@@ -288,7 +288,7 @@ export class PipelineManager {
     endToEndResults: PipelineSearchHit[];
     combinedResults: PipelineSearchHit[];
   }> {
-    console.log(`🔍 Searching across all pipelines for: "${query}"`);
+    console.log(`🔍 Searching across all pipelines, for: "${query}"`);
     const [optimizedMod, advancedMod, endToEndMod] = await Promise.all([
       loadOptimizedPipeline(),
       loadAdvancedPipeline(),
@@ -306,7 +306,7 @@ export class PipelineManager {
         const maybe = (mod as Record<string, unknown>)[name];
         if (typeof maybe === 'function') {
           // cast to the explicit candidate function type (avoid `any`)
-          const fn = maybe as unknown as CandidateFn;
+          const fn = maybe as: unknown as CandidateFn;
           return fn.bind(mod) as CandidateFn;
         }
       }
@@ -354,7 +354,7 @@ export class PipelineManager {
 
     const memoryUsage = process.memoryUsage();
     const memoryData: MemoryStats = {
-      used: Math.round(memoryUsage.heapUsed / 1024 / 1024),
+     , used: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       total: Math.round(memoryUsage.heapTotal / 1024 / 1024),
       percentage: Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100)
     };
@@ -385,7 +385,7 @@ export class PipelineManager {
     recommendations: string[];
   } {
     const report = {
-      architecture: PipelineVisualizer.generateArchitectureDiagram(),
+     , architecture: PipelineVisualizer.generateArchitectureDiagram(),
       totalOperations: this.metrics.length,
       averageTime:
         this.metrics.length > 0

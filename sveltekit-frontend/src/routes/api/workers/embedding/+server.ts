@@ -2,23 +2,23 @@
  * Embedding Worker Management API
  * Controls RabbitMQ embedding workers and job queuing
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { rabbitmqEmbeddingWorker } from '$lib/workers/rabbitmq-embedding-worker';
-import { rabbitMQService } from '$lib/services/rabbitmq-connection';
-import { QUEUES } from '$lib/config/rabbitmq-config';
-import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from '$lib/workers/rabbitmq-embedding-worker';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { rabbitmqEmbeddingWorker } from, '$lib/workers/rabbitmq-embedding-worker';
+import { rabbitMQService } from, '$lib/services/rabbitmq-connection';
+import { QUEUES } from, '$lib/config/rabbitmq-config';
+import type { EmbeddingJobPayload, BulkEmbeddingJobPayload } from, '$lib/workers/rabbitmq-embedding-worker';
 // Worker status and control endpoints
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'status':
+      case, 'status':
         return await getWorkerStatus();
-      case 'health':
+      case, 'health':
         return await getWorkerHealth();
-      case 'stats':
+      case, 'stats':
         return await getWorkerStats();
-      case 'queues':
+      case, 'queues':
         return await getQueueInfo();
       default: return await getWorkerStatus();
     }
@@ -37,21 +37,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action');
     switch (action) {
-      case 'start':
+      case, 'start':
         return await startWorker();
-      case 'stop':
+      case, 'stop':
         return await stopWorker();
-      case 'restart':
+      case, 'restart':
         return await restartWorker();
-      case 'reset-stats':
+      case, 'reset-stats':
         return await resetWorkerStats();
-      case 'queue-job':
+      case, 'queue-job':
         return await queueEmbeddingJob(request);
-      case 'queue-bulk':
+      case, 'queue-bulk':
         return await queueBulkEmbeddingJob(request);
-      case 'test':
+      case, 'test':
         return await testWorker(request);
-      default: return json({ error: 'Unknown action' }, { status: 400 });
+      default: return json({, error: 'Unknown action' }, { status: 400 });
     }
   } catch (error) {
     console.error('Error in embedding worker API:', error);
@@ -104,7 +104,7 @@ async function getQueueInfo(): Promise<Response> {
     // Define a concrete type for queue entries to avoid `any`
     type QueueInfo = { name: string; status: string };
 
-    const queueInfo: Record<string, QueueInfo> = {};
+    const, queueInfo: Record<string, QueueInfo> = {};
 
     for (const queueName of queueNames) {
       queueInfo[queueName] = {
@@ -113,7 +113,7 @@ async function getQueueInfo(): Promise<Response> {
       };
     }
     return json({
-      queues: queueInfo,
+     , queues: queueInfo,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -160,7 +160,7 @@ async function stopWorker(): Promise<Response> {
 async function restartWorker(): Promise<Response> {
   try {
     await rabbitmqEmbeddingWorker.stop();
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait, 2 seconds
     await rabbitmqEmbeddingWorker.start();
     return json({
       message: 'Worker restarted successfully',
@@ -289,7 +289,7 @@ async function testWorker(request: Request): Promise<Response> {
     const { test_type = 'basic' } = await request.json().catch(() => ({}));
     let testPayload: EmbeddingJobPayload;
     switch (test_type) {
-      case 'document':
+      case, 'document':
         testPayload = {
           entity_type: 'document',
           entity_id: 'test-doc-' + Date.now(),
@@ -297,7 +297,7 @@ async function testWorker(request: Request): Promise<Response> {
             'This is a test document for embedding generation. It contains legal content about contracts and agreements.',
           embedding_type: `content` };'`'`
         break;
-      case 'case':
+      case, 'case':
         testPayload = {
           entity_type: 'case',
           entity_id: 'test-case-' + Date.now(),
@@ -305,7 +305,7 @@ async function testWorker(request: Request): Promise<Response> {
         break;
       default:
         testPayload = {
-          entity_type: 'document',
+         , entity_type: 'document',
           entity_id: 'test-basic-' + Date.now(),
           text_content: 'Basic test text for embedding generation.',
           embedding_type: `content` };

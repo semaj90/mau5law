@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import Fuse from 'fuse.js';
+import type { Case } from, '$lib/types';
+import Fuse from, 'fuse.js';
 
 export interface LocalDoc { id: string;, text: string;
-  metadata?: { [key: string]: unknown }; // Changed 'any' to 'unknown'
+  metadata?: { [key: string]: unknown }; // Changed, 'any' to, 'unknown'
 }
 
 export interface LocalSearchResult extends LocalDoc {
@@ -13,14 +13,14 @@ type MaybePromise<T> = T | Promise<T>;
 
 // Very small in-memory TTL cache (fallback when Redis is not available)
 class TinyTTLCache<V> {
-  private map = new Map<string, { v: V; t: number }>();
+  private map = new Map<string, { v: V;, t: number }>();
   constructor(private ttlMs = 60_000) {}
   get(k: string): V | undefined {
     const hit = this.map.get(k);
-    if (!hit) return undefined;
+    if (!hit) return: undefined;
     if (Date.now() - hit.t > this.ttlMs) {
       this.map.delete(k);
-      return undefined;
+      return: undefined;
     }
     return hit.v;
   }
@@ -31,9 +31,9 @@ class TinyTTLCache<V> {
 
 interface RedisClient {
   get: (_key: string) => MaybePromise<string | null>;
-  setex?: (_key: string, seconds: number, value: string) => MaybePromise<string | number | void>; // Changed 'any' to 'string | number | void'
-  set?: (_key: string, value: string) => MaybePromise<string | number | void>; // Changed 'any' to 'string | number | void'
-  expire?: (_key: string, seconds: number) => MaybePromise<string | number | void>; // Changed 'any' to 'string | number | void'
+  setex?: (_key: string, seconds: number, value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
+  set?: (_key: string, value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
+  expire?: (_key: string, seconds: number) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
 }
 
 // Define a type for the dynamically imported Redis modules
@@ -58,7 +58,7 @@ export class LocalSearchPipeline {
       keys: [
         {, name: 'text', weight: 0.8 },
         { name: 'metadata.title', weight: 0.2 }
-      ] as Fuse.FuseOptionKey<LocalDoc>[], // Changed 'any' to Fuse.FuseOptionKey<LocalDoc>[]
+      ] as Fuse.FuseOptionKey<LocalDoc>[], // Changed, 'any' to Fuse.FuseOptionKey<LocalDoc>[]
     });
   }
 
@@ -90,14 +90,14 @@ export class LocalSearchPipeline {
     if (this.docs.size === 0) {
       const seed: LocalDoc[] = [
         {
-          id: 'seed-1',
+         , id: 'seed-1',
           text: 'Contract indemnification clause and liability limitations for commercial agreements.',
-          metadata: { title: 'Indemnification Basics', type: 'contract' }
+          metadata: {, title: 'Indemnification Basics', type: 'contract' }
         },
         {
           id: 'seed-2',
           text: 'Case law summary regarding breach of contract and damages calculation methods.',
-          metadata: { title: 'Breach and Damages', type: 'case-law' }
+          metadata: {, title: 'Breach and Damages', type: 'case-law' }
         },
       ];
       this.addDocuments(seed);
@@ -145,7 +145,7 @@ export class LocalSearchPipeline {
     // Fuse v7: search takes only the query; enforce limit by slicing
     const hits = this.fuse.search(query).slice(0, limit);
     const results: LocalSearchResult[] = hits.map(h => ({
-      id: h.item.id,
+     , id: h.item.id,
       text: h.item.text,
       metadata: h.item.metadata,
       score: 1 - (h.score ?? 0)

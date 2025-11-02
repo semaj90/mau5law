@@ -1,7 +1,7 @@
 <!-- YoRHa Detective Interface, Demo, Page -->
 <script, lang="ts">
-  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
-  import { fade } from 'svelte/transition';
+  import YorHADetectiveInterface from, '$lib/components/ui/core/YorHADetectiveInterface.svelte';
+  import { fade } from, 'svelte/transition';
   let isBooting = $state<boolean>(true);
   let bootProgress = $state<number>(0);
   let bootMessages = $state<string[]>([]);
@@ -53,7 +53,7 @@
       </div>
       <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8, mb-8, min-h-[200px]">
         {#each bootMessages as message, index}
-          <div class="boot-message flex items-center gap-4, mb-3, text-[0.75rem] md:text-[0.875rem] py-2" transitionfade={{ delay: 200 }}>
+          <div class="boot-message flex items-center gap-4, mb-3, text-[0.75rem] md:text-[0.875rem] py-2" transitionfade={{, delay: 200 }}>
             <span class="message-prefix, text-[#666666] font-bold, min-w-[2rem]">[{(index + 1).toString().padStart(2, '0')}]</span>
             <span class="message-text, flex-1, text-[#cccccc]">{message}</span>
             <span, class="message-status, text-[#00ff41] font-bold">✓</span>
@@ -86,14 +86,14 @@
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);
   }
   .logo-symbol {
-    text-shadow: 0 0 20px #00ff41;
+    text-shadow: 0, 0 20px #00ff41;
   }
   .logo-main {
-    text-shadow: 0 0 15px #00ff41;
+    text-shadow: 0, 0 15px #00ff41;
   }
   .progress-fill {
     background: linear-gradient(90deg, #00ff41, #00cc34);
-    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    box-shadow: 0, 0 10px rgba(0, 255, 65, 0.5);
   }
   .progress-bar {
     border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
@@ -105,7 +105,7 @@
   }
   .boot-messages {
     text-align: left;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     border: 1px solid #333333;
     border-radius: 8px;
     padding: 2rem;
@@ -120,7 +120,7 @@
     padding: 0.5rem 0;
   }
   .boot-message.current {
-    background: rgba(0, 255, 65, 0.1);
+   , background: rgba(0, 255, 65, 0.1);
     border-left: 3px solid #00ff41;
     padding-left: 1rem;
     margin-left: -1rem;
@@ -151,19 +151,19 @@
   }
   .system-info {
     font-size: 0.75rem;
-    color: #666666;
+   , color: #666666;
     line-height: 1.5; /* Corrected syntax */
   }
   @keyframes glow-pulse {
     0%,
     100% {
-      text-shadow: 0 0 20px #00ff41;
+      text-shadow: 0, 0 20px #00ff41;
       transform: scale(1);
     }
     50% {
       text-shadow:
-        0 0 30px #00ff41,
-        0 0 40px #00ff41;
+        0, 0 30px #00ff41,
+        0, 0 40px #00ff41;
       transform: scale(1.05);
     }
   }
@@ -176,7 +176,7 @@
       opacity: 1; /* Corrected syntax */
     }
     60% {
-      opacity: 1; /* Corrected syntax */
+     , opacity: 1; /* Corrected syntax */
     }
     80%,
     100% {
@@ -196,7 +196,7 @@
       font-size: 2rem;
     }
     .boot-messages {
-      padding: 1rem;
+     , padding: 1rem;
     }
     .boot-message {
       font-size: 0.75rem;

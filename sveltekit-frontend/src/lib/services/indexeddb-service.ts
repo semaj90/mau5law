@@ -1,20 +1,20 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import { browser } from '$app/environment'
-import type { DataType, RAGObject } from '$lib/types/shared'
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
+import { browser } from, '$app/environment'
+import type { DataType, RAGObject } from, '$lib/types/shared'
 
 export interface CachedDocument extends RAGObject {
   syncStatus: 'synced' | 'pending' | 'error';
   lastUpdated?: number
 }
 
-export interface SearchResult { query: string, results: RAGObject[]; timestamp: number; executionTime: number;
+export interface SearchResult {, query: string, results: RAGObject[]; timestamp: number; executionTime: number;
 }
 
-export interface UserInteraction { id: string, type: 'search' | 'view' | 'edit' | 'ai_query'
+export interface UserInteraction {, id: string, type: 'search' | 'view' | 'edit' | 'ai_query'
   query?: string
   documentId?: string;
-  timestamp: number;
+ , timestamp: number;
   metadata?: Record<string, unknown>
 }
 
@@ -44,7 +44,7 @@ export class IndexedDBService {
       request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result
 
-        // Recreate object stores safely
+        // Recreate: object stores safely
         const stores = ['documents', 'searchResults', 'userInteractions', 'embeddings']
         for (const name of stores) {
           if (!db.objectStoreNames.contains(name)) {
@@ -56,8 +56,7 @@ export class IndexedDBService {
                 store.createIndex('type', 'type', { unique: false })
                 store.createIndex('syncStatus', 'syncStatus', { unique: false })
               } catch (e) {
-                // ignore index creation failure on older browsers / migrations
-                void e
+                // ignore index creation failure on older browsers / migrations: void e
               }
             }
           }

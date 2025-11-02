@@ -7,14 +7,14 @@ export interface WebGPUCapabilities {
   available: boolean;
   adapter?: GPUAdapter;
   device?: GPUDevice;
-  limits: { maxBufferSize: number;, maxComputeWorkgroupSizeX: number;
+  limits: {, maxBufferSize: number;, maxComputeWorkgroupSizeX: number;
     maxComputeWorkgroupSizeY: number;
     maxComputeWorkgroupSizeZ: number;
   };
   features: string[];
 }
 
-export interface VectorOperation { type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';, inputA: Float32Array;
+export interface VectorOperation {, type: 'similarity' | 'clustering' | 'embedding' | 'matrix_multiply';, inputA: Float32Array;
   inputB?: Float32Array;
   dimensions: number;
   options?: {
@@ -24,7 +24,7 @@ export interface VectorOperation { type: 'similarity' | 'clustering' | 'embeddin
   };
 }
 
-export interface ComputeResult { type: string;, result: Float32Array;
+export interface ComputeResult {, type: string;, result: Float32Array;
   executionTime: number;
   workgroupsDispatched: number;
   bufferSize: number;
@@ -33,14 +33,14 @@ export interface ComputeResult { type: string;, result: Float32Array;
 class WebGPUAccelerator {
   private capabilities: WebGPUCapabilities | null = null;
   private device: GPUDevice | null = null;
-  private computeShaders: Map<string, GPUShaderModule> = new Map();
+  private, computeShaders: Map<string, GPUShaderModule> = new Map();
   private bufferPool: Map<string, GPUBuffer> = new Map();
   private initialized = $state(false);
 
   // Clean WGSL shader sources (minimal and syntactically valid)
   private readonly shaderSources: Record<string, string> = {
     vectorSimilarity: '
-      struct Params { dims: u32 };
+      struct Params {, dims: u32 };
       @group(0) @binding(0) var<storage, read> vectorA: array<f32>;
       @group(0) @binding(1) var<storage, read> vectorB: array<f32>;
       @group(0) @binding(2) var<storage, read_write> result: array<f32>;
@@ -75,7 +75,7 @@ class WebGPUAccelerator {
     if (this.initialized && this.capabilities) return this.capabilities;
 
     try {
-      const gpu = (navigator as any).gpu;
+      const gpu = (navigator as: any).gpu;
       if (!gpu) throw new Error('WebGPU not supported in this browser');
 
       const adapter = await gpu.requestAdapter({ powerPreference: 'high-performance' });
@@ -89,12 +89,12 @@ class WebGPUAccelerator {
         adapter,
         device,
         limits: {
-          maxBufferSize: (device.limits?.maxStorageBufferBindingSize as number) || 0,
+          maxBufferSize: (device.limits?.maxStorageBufferBindingSize, as: number) || 0,
           maxComputeWorkgroupSizeX: device.limits?.maxComputeWorkgroupSizeX || 0,
           maxComputeWorkgroupSizeY: device.limits?.maxComputeWorkgroupSizeY || 0,
           maxComputeWorkgroupSizeZ: device.limits?.maxComputeWorkgroupSizeZ || 0
         },
-        features: Array.from((adapter as any).features || [])
+        features: Array.from((adapter, as: any).features || [])
       };
 
       await this.initializeShaders();
@@ -105,7 +105,7 @@ class WebGPUAccelerator {
       this.capabilities = {
         available: false,
         limits: {
-          maxBufferSize: 0,
+         , maxBufferSize: 0,
           maxComputeWorkgroupSizeX: 0,
           maxComputeWorkgroupSizeY: 0,
           maxComputeWorkgroupSizeZ: 0
@@ -192,7 +192,7 @@ class WebGPUAccelerator {
     });
 
     const pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
-      compute: { module: shader, entryPoint: 'main' }'` });'`
+      compute: {, module: shader, entryPoint: 'main' }'` });'`
 
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,

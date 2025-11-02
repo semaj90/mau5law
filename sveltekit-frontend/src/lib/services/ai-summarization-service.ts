@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * AI Summarization Service with Embeddings Generation
  * Comprehensive document processing and analysis pipeline
  */
-import { ollamaCudaService } from './ollama-cuda-service.js';
-import { db } from "$lib/server/db/index";
-import { evidence, cases } from '$lib/server/db/schema';
-import { eq, sql, and, desc } from 'drizzle-orm';
-import type { AiAnalysisResult } from '$lib/schemas/file-upload';
-import { createHash } from 'crypto';
+import { ollamaCudaService } from, './ollama-cuda-service.js';
+import { db } from, "$lib/server/db/index";
+import { evidence, cases } from, '$lib/server/db/schema';
+import { eq, sql, and, desc } from, 'drizzle-orm';
+import type { AiAnalysisResult } from, '$lib/schemas/file-upload';
+import { createHash } from, 'crypto';
 
 export interface SummarizationOptions {
   maxLength?: number;
@@ -31,16 +31,16 @@ export interface DocumentChunk { id: string;, content: string;
   importance?: number;
 }
 
-export interface LegalEntity { name: string;, type: 'person' | 'organization' | 'location' | 'other';
+export interface LegalEntity {, name: string;, type: 'person' | 'organization' | 'location' | 'other';
   confidence: number;
   mentions: number;
 }
 
-export interface SummarizationResult { summary: string;, keyPoints: string[];
+export interface SummarizationResult {, summary: string;, keyPoints: string[];
   entities: LegalEntity[];
   keywords: string[];
   categories: string[];
-  sentiment?: { score: number;, label: 'positive' | 'negative' | 'neutral';
+  sentiment?: {, score: number;, label: 'positive' | 'negative' | 'neutral';
   };
   confidence: number;
   processingTime: number;
@@ -52,27 +52,27 @@ export interface SummarizationResult { summary: string;, keyPoints: string[];
 }
 
 export type BatchSummarizationItem =
-  | { documentId: string;, success: true;
+  | {, documentId: string;, success: true;
       result: SummarizationResult;
     }
-  | { documentId: string;, success: false;
+  | {, documentId: string;, success: false;
       error: string;
     };
 
-export interface BatchSummarizationResult { results: BatchSummarizationItem[];, totalProcessed: number;
+export interface BatchSummarizationResult {, results: BatchSummarizationItem[];, totalProcessed: number;
   totalSuccess: number;
   totalFailures: number;
   processingTime: number;
 }
 
-export interface CaseSummaryStats { totalEvidence: number;, processedEvidence: number;
+export interface CaseSummaryStats {, totalEvidence: number;, processedEvidence: number;
   avgConfidence: number;
   mostCommonCategories: string[];
   totalWordCount: number;
   avgReadingTime: number;
 }
 
-interface ParsedAIResponse { summary: string;, keyPoints: string[];
+interface ParsedAIResponse {, summary: string;, keyPoints: string[];
   entities: LegalEntity[];
   keywords: string[];
   categories: string[];
@@ -81,7 +81,7 @@ interface ParsedAIResponse { summary: string;, keyPoints: string[];
 }
 
 class AISummarizationService {
-  private static instance: AISummarizationService;
+  private static, instance: AISummarizationService;
   private maxChunkSize = 4000; // Maximum characters per chunk
   private chunkOverlap = 200; // Overlap between chunks
   private cache = new Map<string, SummarizationResult>();
@@ -100,7 +100,7 @@ class AISummarizationService {
     try {
       // Set defaults
       const opts: Required<SummarizationOptions> = {
-        maxLength: options.maxLength || 500,
+       , maxLength: options.maxLength || 500,
         style: options.style || 'paragraph',
         includeKeywords: options.includeKeywords ?? true,
         includeEntities: options.includeEntities ?? true,
@@ -117,7 +117,7 @@ class AISummarizationService {
       }
       // Calculate basic metrics
       const wordCount = this.countWords(content);
-      const readingTime = Math.ceil(wordCount / 200); // Assuming 200 WPM reading speed
+      const readingTime = Math.ceil(wordCount / 200); // Assuming, 200 WPM reading speed
       // Split content into manageable chunks
       const chunks = this.chunkDocument(content);
       // Generate embeddings for chunks
@@ -145,7 +145,7 @@ class AISummarizationService {
       const documentEmbedding = await this.generateDocumentEmbedding(content);
       // Build result
       const result: SummarizationResult = {
-        summary: analysis.summary,
+       , summary: analysis.summary,
         keyPoints: analysis.keyPoints,
         entities: analysis.entities,
         keywords: analysis.keywords,
@@ -172,7 +172,7 @@ class AISummarizationService {
    * Batch summarize multiple documents
    */
   public async batchSummarize(
-    documents: Array<{, id: string; content: string }>,
+    documents: Array<{, id: string;, content: string }>,
     options: SummarizationOptions = {}
   ): Promise<BatchSummarizationResult> {
     const startTime = Date.now();
@@ -288,7 +288,7 @@ class AISummarizationService {
       combinedContent += `Description: ${caseData.description}\n`;
       combinedContent += `Category: ${caseData.category}\n`;
       combinedContent += `Priority: ${caseData.priority}\n\n`;
-      combinedContent += `Evidence Summary:\n`;
+      combinedContent += `Evidence, Summary:\n`;
       evidenceRecords.forEach((ev: (typeof evidenceRecords)[number], index: number) => {
         combinedContent += `${index + 1}. ${ev.title}\n`;
         if (ev.aiSummary) {
@@ -297,7 +297,7 @@ class AISummarizationService {
         if (ev.description) {
           combinedContent += `   Description: ${ev.description}\n`;
         }
-        combinedContent += `   Type: ${ev.evidenceType}\n\n`;
+        combinedContent += `  , Type: ${ev.evidenceType}\n\n`;
       });
       // Perform comprehensive case summarization
       const result = await this.summarizeDocument(combinedContent, {
@@ -337,7 +337,7 @@ class AISummarizationService {
     try {
       // Get document embedding
       const doc = await db
-        .select({ contentEmbedding: sql<number[]>`content_embedding` })'`'`
+        .select({, contentEmbedding: sql<number[]>`content_embedding` })'`'`
         .from(evidence)
         .where(eq(evidence.id, documentId))
         .limit(1);
@@ -394,7 +394,7 @@ class AISummarizationService {
       // Calculate average confidence
       const confidenceScores = evidenceRecords
         .map((e: (typeof evidenceRecords)[number]) => (e.aiAnalysis as AiAnalysisResult)?.confidence)
-        .filter((c: number | undefined): c is number => typeof c === 'number');
+        .filter((c: number | undefined): c is: number => typeof c === 'number');
       const avgConfidence =
         confidenceScores.length > 0
           ? confidenceScores.reduce((sum: number, c: number) => sum + c, 0) / confidenceScores.length
@@ -402,7 +402,7 @@ class AISummarizationService {
       // Get most common categories
       const allCategories = evidenceRecords
         .flatMap((e: (typeof evidenceRecords)[number]) => (e.aiAnalysis as AiAnalysisResult)?.categories || [])
-        .filter((c: string): c is string => typeof c === 'string');
+        .filter((c: string): c is: string => typeof c === 'string');
       const categoryCount = allCategories.reduce(
         (acc: Record<string, number>, cat: string) => {
           acc[cat] = (acc[cat] || 0) + 1;
@@ -411,7 +411,7 @@ class AISummarizationService {
         {} as Record<string, number>
       );
       const mostCommonCategories = Object.entries(categoryCount)
-        .sort(([, a], [, b]) => (b as number) - (a as number))
+        .sort(([, a], [, b]) => (b as: number) - (a as: number))
         .slice(0, 5)
         .map(([cat]) => cat);
       // Estimate word counts and reading time
@@ -491,7 +491,7 @@ class AISummarizationService {
   }
   private async generateDocumentEmbedding(content: string): Promise<number[]> {
     try {
-      // Use first 4000 characters for document-level embedding
+      // Use first, 4000 characters for document-level embedding
       const truncatedContent = content.substring(0, 4000);
       return await ollamaCudaService.generateEmbedding(truncatedContent);
     } catch (error: any) {
@@ -502,22 +502,22 @@ class AISummarizationService {
   private buildSummaryPrompt(content: string, options: Required<SummarizationOptions>): string {
     let prompt = `Analyze and summarize the following legal document. `;
     switch (options.style) {
-      case 'bullet_points':
+      case, 'bullet_points':
         prompt += `Provide a summary in bullet point format. `;
         break;
-      case 'executive_summary':
+      case, 'executive_summary':
         prompt += `Provide an executive summary suitable for legal professionals. `;
         break;
-      case 'technical':
+      case, 'technical':
         prompt += `Provide a technical analysis with detailed insights. `;
         break;
-      case 'legal':
+      case, 'legal':
         prompt += `Provide a legal analysis focusing on legal implications and precedents. `;
         break;
       default:
         prompt += `Provide a comprehensive paragraph summary. `;
     }
-    prompt += `Maximum length: ${options.maxLength} words.\n\n`;
+    prompt += `Maximum, length: ${options.maxLength} words.\n\n`;
     const requestedAnalysis = [];
     if (options.includeKeywords) requestedAnalysis.push('key terms and keywords');
     if (options.includeEntities) requestedAnalysis.push('important entities (people, organizations, locations)');
@@ -527,7 +527,7 @@ class AISummarizationService {
       prompt += `Additionally, identify: ${requestedAnalysis.join(', ')}.\n\n`;
     }
     prompt += `Document content:\n${content}\n\n`;
-    prompt += `Provide your response as a JSON object with the following structure: '`
+    prompt += `Provide your response as a JSON: object with the following, structure: '`
 {
   "summary": "Your summary here",
   "keyPoints": ["key point 1", "key point 2"],
@@ -603,7 +603,7 @@ class AISummarizationService {
    */
   public getCacheStats(): { size: number; keys: string[] } {
     return {
-      size: this.cache.size,
+     , size: this.cache.size,
       keys: Array.from(this.cache.keys())
     };
   }

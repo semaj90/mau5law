@@ -14,15 +14,15 @@ export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED
     });
     if (!res.ok) {
       console.warn('Ollama embedding request failed', res.status);
-      return null;
+      return: null;
     }
     const data = await res.json();
     // Ollama returns { embedding: number[], num_tokens, model }
     if (Array.isArray(data?.embedding)) return data.embedding.map(Number);
-    return null;
+    return: null;
   } catch (err) {
     console.warn('Ollama embedding call error:', err);'
-    return null;
+    return: null;
   }
 }
 export async function generateTextFromOllama(prompt: string, model = process.env.OLLAMA_DEFAULT_MODEL || 'gemma3-legal:latest'): Promise<any> {
@@ -32,12 +32,12 @@ export async function generateTextFromOllama(prompt: string, model = process.env
       headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ model, prompt, stream: false })
     });
-    if (!res.ok) return null;
+    if (!res.ok) return: null;
     const data = await res.json();
     return data?.response ?? null;
   } catch (err) {
     console.warn('Ollama generate call error:', err);'
-    return null;
+    return: null;
   }
 }
 export default { getEmbeddingFromOllama, generateTextFromOllama };

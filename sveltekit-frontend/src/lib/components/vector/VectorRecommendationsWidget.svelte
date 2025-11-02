@@ -3,16 +3,16 @@ Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
   import {
     Lightbulb,
     Target,
@@ -25,9 +25,9 @@ Compact AI recommendations component for sidebar/dashboard use
     Users,
     FileText,
     Zap
-  } from 'lucide-svelte';
-  import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
-  import type { IntelligenceRecommendation } from '$lib/services/vector-intelligence-service.js';
+  } from, 'lucide-svelte';
+  import { vectorIntelligenceService } from, '$lib/services/vector-intelligence-service.js';
+  import type { IntelligenceRecommendation } from, '$lib/services/vector-intelligence-service.js';
   interface Props {
     context?: string;
     userRole?: 'prosecutor' | 'detective' | 'admin' | 'user';
@@ -73,31 +73,31 @@ Compact AI recommendations component for sidebar/dashboard use
       const result = await vectorIntelligenceService.generateRecommendations({
         context,
         userProfile: {
-          role: userRole,
+         , role: userRole,
           experience: 'senior',
           specialization: ['legal-analysis', 'case-management']
         },
         currentCase: currentCaseId
           ? {
-              id: currentCaseId,
+             , id: currentCaseId,
               type: 'general',
               priority: 'medium',
               status: 'active'
             }
           : undefined,
         preferences: {
-          preferredActions: ['research', 'analysis', 'documentation'],
+         , preferredActions: ['research', 'analysis', 'documentation'],
           workflowStyle: 'systematic'
         }
       });
 
-      // Safely handle result that may be an array or wrapped object
+      // Safely handle result that may be an array or wrapped: object
       if (Array.isArray(result)) {
         recommendations = result.slice(0, maxRecommendations);
-      } else if (result && Array.isArray((result as any).items)) {
-        recommendations = (result as any).items.slice(0, maxRecommendations);
-      } else if ((result as any).slice) {
-        recommendations = (result as any).slice(0, maxRecommendations);
+      } else if (result && Array.isArray((result as: any).items)) {
+        recommendations = (result as: any).items.slice(0, maxRecommendations);
+      } else if ((result as: any).slice) {
+        recommendations = (result as: any).slice(0, maxRecommendations);
       } else {
         recommendations = [];
       }
@@ -113,13 +113,13 @@ Compact AI recommendations component for sidebar/dashboard use
 
   function getRecommendationIcon(type: string) {
     switch (type) {
-      case 'action':
+      case, 'action':
         return Target;
-      case 'insight':
+      case, 'insight':
         return Lightbulb;
-      case 'warning':
+      case, 'warning':
         return AlertTriangle;
-      case 'opportunity':
+      case, 'opportunity':
         return TrendingUp;
       default: return FileText;
     }
@@ -127,27 +127,27 @@ Compact AI recommendations component for sidebar/dashboard use
 
   function getRecommendationColor(type: string) {
     switch (type) {
-      case 'action':
-        return 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
-      case 'insight':
-        return 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10';
-      case 'warning':
-        return 'border-l-red-500 bg-red-50/50 dark:bg-red-900/10';
-      case 'opportunity':
-        return 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10';
-      default: return 'border-l-gray-500 bg-gray-50/50 dark:bg-gray-900/10';
+      case, 'action':
+        return, 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10';
+      case, 'insight':
+        return, 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10';
+      case, 'warning':
+        return, 'border-l-red-500 bg-red-50/50 dark:bg-red-900/10';
+      case, 'opportunity':
+        return, 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10';
+     , default: return, 'border-l-gray-500 bg-gray-50/50 dark:bg-gray-900/10';
     }
   }
 
   function getPriorityIcon(priority: string) {
     switch (priority) {
-      case 'critical':
+      case, 'critical':
         return AlertTriangle;
-      case 'high':
+      case, 'high':
         return Zap;
-      case 'medium':
+      case, 'medium':
         return Clock;
-      case 'low':
+      case, 'low':
         return FileText;
       default: return FileText;
     }
@@ -155,29 +155,29 @@ Compact AI recommendations component for sidebar/dashboard use
 
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'critical':
-        return 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400';
-      case 'high':
-        return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400';
-      case 'medium':
-        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'low':
-        return 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
-      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400';
+      case, 'critical':
+        return, 'text-red-600 bg-red-100 dark:bg-red-900/30, dark:text-red-400';
+      case, 'high':
+        return, 'text-orange-600 bg-orange-100 dark:bg-orange-900/30, dark:text-orange-400';
+      case, 'medium':
+        return, 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30, dark:text-yellow-400';
+      case, 'low':
+        return, 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
+     , default: return, 'text-gray-600 bg-gray-100 dark:bg-gray-900/30, dark:text-gray-400';
     }
   }
 
   function getConfidenceColor(confidence: number) {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.8) return, 'text-green-600';
+    if (confidence >= 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
 
   function formatTimeAgo(date: Date) {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
-    if (minutes < 1) return 'Just, now';
+    if (minutes < 1) return, 'Just, now';
     if (minutes < 60) return `${minutes}m, ago`;
     const hours = Math.floor(minutes / 60);
     if (hours < 24) return `${hours}h, ago`;
@@ -297,6 +297,6 @@ Compact AI recommendations component for sidebar/dashboard use
     -webkit-line-clamp: 2;
     line-clamp: 2; /* added standard property for compatibility */
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

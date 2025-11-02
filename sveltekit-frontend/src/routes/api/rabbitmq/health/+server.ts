@@ -3,8 +3,8 @@
  *
  * Provides health status for RabbitMQ service and queues
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Import the actual RabbitMQ service
@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
       status: isServiceHealthy && isConnectionHealthy ? 'healthy' : 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: {
-        status: isConnectionHealthy ? 'connected' : 'disconnected',
+       , status: isConnectionHealthy ? 'connected' : 'disconnected',
         host: 'localhost',
         port: 5672,
         vhost: '/',
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async () => {
       },
       queues: {
         'legal.docs.process': {
-          status: isServiceHealthy ? 'ready' : 'unknown',
+         , status: isServiceHealthy ? 'ready' : 'unknown',
           messages: 0,
           consumers: 0
         },
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async () => {
       },
       exchanges: {
         'legal.main': {
-          status: isServiceHealthy ? 'ready' : 'unknown',
+         , status: isServiceHealthy ? 'ready' : 'unknown',
           type: 'direct',
           durable: true
         },
@@ -62,12 +62,12 @@ export const GET: RequestHandler = async () => {
       version: '3.8.9',
       uptime: '2d 14h 32m',
       memory: {
-        used: '124MB',
+       , used: '124MB',
         limit: '512MB',
         percentage: 24
       },
       worker: {
-        available: true,
+       , available: true,
         endpoint: '/api/workers/rabbitmq'
       }
     };
@@ -85,10 +85,10 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         connection: {
-          status: 'disconnected'
+         , status: 'disconnected'
         },
         worker: {
-          available: false,
+         , available: false,
           error: 'Service unavailable'
         }
       },

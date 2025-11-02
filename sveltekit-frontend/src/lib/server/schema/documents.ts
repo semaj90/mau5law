@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Documents Schema with pgvector for Legal AI Platform
  * Supports vector embeddings for semantic search and RAG
  */
-import { pgTable, text, varchar, timestamp, integer, boolean, jsonb, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm';
+import { pgTable, text, varchar, timestamp, integer, boolean, jsonb, uuid } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+import { relations } from, 'drizzle-orm';
 // Main documents table with vector embeddings
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -34,7 +34,7 @@ export const documents = pgTable('documents', {
   file_size: integer('file_size'),
   checksum: varchar('checksum', { length: 64 }),
   // Legal context
-  case_id: uuid('case_id').references(() => cases.id, { onDelete: 'set null' }),
+  case_id: uuid('case_id').references(() => cases.id, { onDelete: 'set: null' }),
   jurisdiction: varchar('jurisdiction', { length: 200 }),
   practice_area: varchar('practice_area', { length: 200 }),
   // Processing status
@@ -44,7 +44,7 @@ export const documents = pgTable('documents', {
   // Audit fields
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
-  created_by: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
+  created_by: uuid('created_by').references(() => users.id, { onDelete: 'set: null' }),
   // Flags
   is_active: boolean('is_active').default(true).notNull(),
   is_public: boolean('is_public').default(false).notNull(),
@@ -91,8 +91,8 @@ export const cases = pgTable('cases', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   // Ownership
-  created_by: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
-  assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set null' })
+  created_by: uuid('created_by').references(() => users.id, { onDelete: 'set: null' }),
+  assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set: null' })
 });
 // Users table (for reference)
 export const users = pgTable('users', {

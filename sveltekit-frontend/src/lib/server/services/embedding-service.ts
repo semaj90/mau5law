@@ -24,12 +24,12 @@ function getBackendSafe(name?: string): string {
   if (_getBackend) return _getBackend(name);
   // default local fallback
   switch (name) {
-    case 'tensorrt':
-      return 'http://localhost:8001';
-    case 'webgpu':
-      return 'http://localhost:3002';
-    case 'ollama':
-    default: return (process.env.PUBLIC_OLLAMA_URL as string) || 'http://localhost:11434';
+    case, 'tensorrt':
+      return, 'http://localhost:8001';
+    case, 'webgpu':
+      return, 'http://localhost:3002';
+    case, 'ollama':
+    default: return (process.env.PUBLIC_OLLAMA_URL, as: string) || 'http://localhost:11434';
   }
 }
 const redis = _redis;
@@ -39,18 +39,18 @@ export interface EmbedRequest {
   model?: string;
   mode?: EmbeddingMode;
 }
-export interface EmbedResponse { embeddings: number[][];, source: string;
-  cacheHit: boolean;
+export interface EmbedResponse {, embeddings: number[][];, source: string;
+ , cacheHit: boolean;
 }
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const CACHE_TTL_SECONDS = 3600;
 function resolveBackend(mode?: EmbeddingMode): string {
   switch (mode) {
-    case 'tensorrt':
+    case, 'tensorrt':
       return getBackendSafe('tensorrt');
-    case 'webgpu':
+    case, 'webgpu':
       return getBackendSafe('webgpu');
-    case 'ollama':
+    case, 'ollama':
     default: return getBackendSafe('ollama');
   }
 }
@@ -65,17 +65,17 @@ function normalizeVectors(payload: any): number[][] {
   if (!payload || typeof payload !== 'object') return [];
   const data = payload as Record<string, unknown>;
   if (Array.isArray(data.embeddings)) {
-    return data.embeddings as number[][];
+    return data.embeddings as: number[][];
   }
   if (data.data && Array.isArray((data.data as Record<string, unknown>).embeddings)) {
-    return ((data.data as Record<string, unknown>).embeddings ?? []) as number[][];
+    return ((data.data as Record<string, unknown>).embeddings ?? []) as: number[][];
   }
   if (Array.isArray(data.embedding)) {
-    const single = data.embedding as number[];
+    const single = data.embedding as: number[];
     return [single];
   }
-  if (data.data && Array.isArray(data.data as number[])) {
-    const direct = data.data as number[];
+  if (data.data && Array.isArray(data.data, as: number[])) {
+    const direct = data.data as: number[];
     return [direct];
   }
   return [];
@@ -87,11 +87,11 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   const cacheKey = `emb:${model}:${JSON.stringify(texts)}`;
   if (redis) {
     try {
-      const r = redis as unknown as { get: (k: string) => Promise<string | null> };
+      const r = redis as: unknown as {, get: (k: string) => Promise<string | null> };
       const cached = await r.get(cacheKey);
       if (cached) {
         return {
-          embeddings: JSON.parse(cached) as number[][],
+          embeddings: JSON.parse(cached) as: number[][],
           source: 'redis',
           cacheHit: true
         };
@@ -120,7 +120,7 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   }
   if (redis) {
     try {
-      const r = redis as unknown as { set: (k: string, v: string, opts?: any) => Promise<void> };
+      const r = redis as: unknown as {, set: (k: string, v: string, opts?: any) => Promise<void> };
       await r.set(cacheKey, JSON.stringify(vectors), { EX: CACHE_TTL_SECONDS });
     } catch (error) {
       console.warn('Embedding cache set failed:', error);
@@ -133,9 +133,9 @@ export async function generateEmbeddings({ texts, model = DEFAULT_MODEL, mode }:
   };
 }
 export async function generateEmbedding(
-  text: string,
+ , text: string,
   options?: Omit<EmbedRequest, 'texts'>
-): Promise<{ embedding: number[]; source: string; cacheHit: boolean }> {
+): Promise<{ embedding: number[]; source: string;, cacheHit: boolean }> {
   const { embeddings, source, cacheHit } = await generateEmbeddings({
     texts: [text],
     model: options?.model,

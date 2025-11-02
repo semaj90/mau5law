@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // FlatBuffer utilities for legal document processing
 // Integrates with Go microservices for high-performance data exchange
-import { Builder } from 'flatbuffers';
+import { Builder } from, 'flatbuffers';
 // Mock FlatBuffer types until we can generate from schemas
 // In production, these would be auto-generated from legal_data.fbs
 interface DocumentContent { id: string;, title: string;
@@ -10,13 +10,13 @@ interface DocumentContent { id: string;, title: string;
   compressed: boolean;
   checksum: number;
 }
-interface VectorEmbedding { documentId: string;, embedding: Float32Array;
+interface VectorEmbedding {, documentId: string;, embedding: Float32Array;
   model: string;
   dimension: number;
   confidence: number;
 }
-interface LegalEntity { text: string;, type: string;
-  confidence: number;
+interface LegalEntity {, text: string;, type: string;
+ , confidence: number;
   startPos?: number;
   endPos?: number;
   entityId?: string;
@@ -33,7 +33,7 @@ interface LegalEntityExtraction { documentId: string;, entities: LegalEntity[];
   } | null;
 }
 
-interface SearchResultItem { documentId: string;, score: number;
+interface SearchResultItem {, documentId: string;, score: number;
   excerpt: string;
   metadata: { type: string; jurisdiction: string };
 }
@@ -44,7 +44,7 @@ interface SearchResultItem { documentId: string;, score: number;
  * Integrates with Go microservices via QUIC/HTTP3
  */
 export class FlatBufferLegalProcessor {
-  private builder: Builder;
+  private, builder: Builder;
   private readonly API_BASE = 'http://localhost:8084'; // Go microservice endpoint
   constructor() {
     this.builder = new Builder(1024 * 1024); // 1MB initial buffer
@@ -62,7 +62,7 @@ export class FlatBufferLegalProcessor {
     compress?: boolean;
   }): Promise<Uint8Array> {
     this.builder.clear();
-    // Convert content to bytes if string
+    // Convert content to bytes if: string
     const contentBytes =
       typeof document.content === 'string' ? new TextEncoder().encode(document.content) : document.content;
     // Compress if requested (integrates with Go gzip compression)
@@ -134,10 +134,10 @@ export class FlatBufferLegalProcessor {
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
-    filters?: { [key: string]: any }; // Changed: 'any'; to: 'unknown'
+    filters?: { [key: string]: any }; // Changed: 'any';, to: 'unknown'
     limit?: number;
   }): Promise<Array<SearchResultItem>> {
-    // Changed: 'any'; to: 'SearchResultItem'
+    // Changed: 'any';, to: 'SearchResultItem'
     // Corrected return type
     try {
       // Prepare search request as FlatBuffer
@@ -221,7 +221,7 @@ export class FlatBufferLegalProcessor {
   private createDocumentFlatBuffer(doc: DocumentContent): Uint8Array {
     // Stub implementation: does not serialize actual FlatBuffer data.
     // The offsets and builder areunused here; this should be replaced with proper FlatBuffer serialization.
-    // TODO: Implement FlatBuffer schema serialization using builder and offsets.
+    //, TODO: Implement FlatBuffer schema serialization using builder and offsets.
     const builder = this.builder;
     // Create strings
     const $idOffset = builder.createString(doc.id); // Renamed to suppress unused warning
@@ -235,7 +235,7 @@ export class FlatBufferLegalProcessor {
   private createEmbeddingFlatBuffer(embedding: VectorEmbedding): Uint8Array {
     // Stub implementation: does not serialize actual FlatBuffer data.
     // The offsets and builder are unused here; this should be replaced with proper FlatBuffer serialization.
-    // TODO: Implement FlatBuffer schema serialization using builder and offsets.
+    //, TODO: Implement FlatBuffer schema serialization using builder and offsets.
     const builder = this.builder;
     const $docIdOffset = builder.createString(embedding.documentId); // Renamed to suppress unused warning
     const $modelOffset = builder.createString(embedding.model || 'unknown'); // Renamed to suppress unused warning
@@ -351,7 +351,7 @@ export class FlatBufferLegalProcessor {
         documentId: 'result-doc-1',
         score: 0.89,
         excerpt: 'Sample search result excerpt...',
-        metadata: { type: 'contract', jurisdiction: 'federal' }'' }
+        metadata: {, type: 'contract', jurisdiction: 'federal' }'' }
     ];
   }
   private extractEntitiesLocally(documentId: string, _content: Uint8Array): LegalEntityExtraction {
@@ -365,7 +365,7 @@ export class FlatBufferLegalProcessor {
 }
 // Performance monitoring for FlatBuffer operations
 export class FlatBufferPerformanceMonitor {
-  private metrics: Map<string, number[]> = new Map();
+  private, metrics: Map<string, number[]> = new Map();
   startTiming(operation: string): () => void {
     const startTime = performance.now();
     return () => {
@@ -384,7 +384,7 @@ export class FlatBufferPerformanceMonitor {
     return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
   }
   getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const report: Record<string, { avg: number; min: number; max: number; count: number }> = {}; // Refined type
+    const, report: Record<string, { avg: number; min: number; max: number;, count: number }> = {}; // Refined type
     for (const [operation, times] of this.metrics.entries()) {
       report[operation] = {
         avg: this.getAverageTime(operation),

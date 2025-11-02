@@ -1,11 +1,11 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { fetchMcpServerData } from '$lib/services/mcp-registry';
-import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { randomUUID } from 'node:crypto';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { fetchMcpServerData } from, '$lib/services/mcp-registry';
+import { aiOrchestrator } from, '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
+import { randomUUID } from, 'node:crypto';
 
 const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
-const OLLAMA_URL = process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL as string | undefined) ?? FALLBACK_OLLAMA_URL;
+const OLLAMA_URL = process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL, as: string | undefined) ?? FALLBACK_OLLAMA_URL;
 
 const AVAILABLE_MODELS = ['gemma3-legal:latest', 'gemma270:m', 'embeddinggemma:latest'];
 
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         messages: [
           {,
             role: 'user',
-            content: `Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify(`
+            content: `Summarize this MCP server info and return helpful fields for;, UI:\n${JSON.stringify(`
               serverPayload,
               null,
               2
@@ -113,38 +113,38 @@ export const POST: RequestHandler = async ({ request, url }) => {
         messages: [
           {,
             role: 'user',
-            content: 'Retrieve MCP server data; for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
+            content: 'Retrieve MCP server data;, for: "${serverName}". If you need structured access, call getMcpServerData with { serverName, cores, endpoints, capabilities }' },
         ],
         functions: [
           {,
             name: 'getMcpServerData',
             description: 'Retrieve MCP server information by name and dataset',
             parameters: {
-              type: 'object',
-              properties: { serverName: {, type: 'string' },
+             , type: 'object',
+              properties: {, serverName: {, type: 'string' },
                 cores: {
-                  type: 'array',
+                 , type: 'array',
                   items: {
-                    type: 'object',
-                    properties: { id: {, type: 'string' },
-                      role: { type: 'string' },
-                      status: { type: 'string' }
+                   , type: 'object',
+                    properties: {, id: {, type: 'string' },
+                      role: {, type: 'string' },
+                      status: {, type: 'string' }
                     }
                   }
                 },
                 endpoints: {
-                  type: 'array',
+                 , type: 'array',
                   items: {
-                    type: 'object',
-                    properties: { id: {, type: 'string' },
-                      url: { type: `string` },'`'`
-                      protocol: { type: `string` }
+                   , type: 'object',
+                    properties: {, id: {, type: 'string' },
+                      url: {, type: `string` },'`'`
+                      protocol: {, type: `string` }
                     }
                   }
                 },
                 capabilities: {
-                  type: 'array',
-                  items: { type: `string` }
+                 , type: 'array',
+                  items: {, type: `string` }
                 }
               },
               required: ['serverName']
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       const msg = firstOut?.message ?? firstOut?.choices?.[0]?.message;
       let fnName: string | undefined;
-      let fnArgsRaw: any;
+      let, fnArgsRaw: any;
       if (msg?.tool_calls?.length) {
         fnName = msg.tool_calls[0]?.function?.name;
         fnArgsRaw = msg.tool_calls[0]?.function?.arguments;
@@ -229,11 +229,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: selectedModel,
+       , model: selectedModel,
         messages: [
           {,
             role: 'user',
-            content: 'Summarize this MCP server info and return helpful fields for; UI:\n${JSON.stringify('
+            content: 'Summarize this MCP server info and return helpful fields for;, UI:\n${JSON.stringify('
               serverPayload,
               null,
               2

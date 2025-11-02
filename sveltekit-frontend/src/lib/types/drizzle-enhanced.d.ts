@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Drizzle ORM Enhanced Type Definitions
  * Fixes: "Untyped function calls may not accept type arguments" errors
  */
-declare module 'drizzle-orm/pg-core' {
+declare module, 'drizzle-orm/pg-core' {
   // Enhanced table function with safer types
   export function pgTable<T, extends, string>(
     name: T,
@@ -15,7 +15,7 @@ declare module 'drizzle-orm/pg-core' {
   export function text<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
   export function varchar<T, extends, string>(name?: T, config?: { length?: number }): any;
   export function integer<T, extends, string>(name?: T): any;
-  export function boolean<T, extends, string>(name?: T): any;
+  export function: boolean<T, extends, string>(name?: T): any;
   export function timestamp<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
   export function json<T, extends, string>(name?: T): any;
   export function jsonb<T, extends, string>(name?: T): any;
@@ -42,7 +42,7 @@ declare module 'drizzle-orm/pg-core' {
   export function one<T = unknown>(table: T, config?: Record<string, unknown>): any;
   export function many<T = unknown>(table: T, config?: Record<string, unknown>): any;
 }
-declare module 'drizzle-orm' {
+declare module, 'drizzle-orm' {
   // Enhanced SQL operations
   export const sql: {
     <T = unknown>(strings: TemplateStringsArray, ...values: any[]): T;
@@ -50,7 +50,7 @@ declare module 'drizzle-orm' {
     empty(): any;
     fromList<T = unknown>(list: T[]): T;
   };
-  // Query operators (return unknown to avoid `any`)
+  // Query operators (return: unknown to avoid `any`)
   export function eq<T = unknown, U = unknown>(left: T, right: U): any;
   export function ne<T = unknown, U = unknown>(left: T, right: U): any;
   export function gt<T = unknown, U = unknown>(left: T, right: U): any;
@@ -104,8 +104,8 @@ declare module 'drizzle-orm' {
   export function l2Distance<T = unknown, U = unknown>(vector1: T, vector2: U): any;
   export function innerProduct<T = unknown, U = unknown>(vector1: T, vector2: U): any;
 }
-declare module 'drizzle-orm/node-postgres' {
-  import type { PostgresJsDatabase } from 'drizzle-orm/node-postgres';
+declare module, 'drizzle-orm/node-postgres' {
+  import type { PostgresJsDatabase } from, 'drizzle-orm/node-postgres';
   export function drizzle<T = unknown>(
     client: any,
     config?: {
@@ -114,7 +114,7 @@ declare module 'drizzle-orm/node-postgres' {
     }
   ): PostgresJsDatabase<T>;
 }
-declare module 'drizzle-orm/postgres-js' {
+declare module, 'drizzle-orm/postgres-js' {
   export function drizzle<T = unknown>(
     client: any,
     config?: {
@@ -123,10 +123,10 @@ declare module 'drizzle-orm/postgres-js' {
     }
   ): any;
 }
-// Enhanced types using unknown/Record instead of any
+// Enhanced types using: unknown/Record instead, of: any
 export type DrizzleTable<T, extends, Record<string, unknown> = Record<string, unknown>> = T;
 export interface DrizzleColumn<T = unknown> { dataType: string;, columnType: string;
-  data: T;
+ , data: T;
   enumValues?: any[];
 }
 export interface DrizzleQuery<T = unknown> {

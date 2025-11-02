@@ -1,13 +1,13 @@
 <!--
   Legal Document Processor Component
-  Demonstrates XState integration with Svelte 5 for legal document processing
+  Demonstrates XState integration with Svelte, 5 for legal document processing
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { useMachine } from '@xstate/svelte';
-  import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
-  import type { LegalDocument } from '$lib/services/legalRAGEngine';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { useMachine } from, '@xstate/svelte';
+  import { legalDocumentProcessingMachine, selectors } from, '$lib/state/legalDocumentProcessingMachine';
+  import type { LegalDocument } from, '$lib/services/legalRAGEngine';
   // Props
   let {
     document = $bindable(),
@@ -59,13 +59,13 @@ import type { Case } from '$lib/types';
       type: 'START_PROCESSING',
       document,
       options: {
-        extractEntities: true,
+       , extractEntities: true,
         generateSummary: true
         assessRisk: true
         generateEmbedding: true
         storeInQdrant: true
         useContext7: true
-        useSemanticSearch: false
+       , useSemanticSearch: false
       }
     });
   }
@@ -77,9 +77,9 @@ import type { Case } from '$lib/types';
   }
   // UI helper functions
   function getProgressColor(progress: number): string {
-    if (progress < 30) return 'bg-red-500';
-    if (progress < 70) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (progress < 30) return, 'bg-red-500';
+    if (progress < 70) return, 'bg-yellow-500';
+    return, 'bg-green-500';
   }
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -156,10 +156,10 @@ import type { Case } from '$lib/types';
           <div class="flex, items-center, space-x-2">
             {#if status === 'completed'}
               <div class="w-4 h-4 rounded-full bg-green-500 flex, items-center, justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0, 20, 20">
+                <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0, 0, 20, 20">
                   <path
                     fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    d="M16.707 5.293a1, 1, 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
                     clip-rule="evenodd"
                   />
                 </svg>
@@ -181,7 +181,7 @@ import type { Case } from '$lib/types';
       {#if $context.summary}
         <div, class="mb-4">
           <h4, class="font-medium, mb-2">AI Summary</h4>
-          <p class="text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800, p-3, rounded">
+          <p class="text-sm text-gray-700 dark:text-gray-300 bg-white, dark:bg-gray-800, p-3, rounded">
             {$context.summary}
           </p>
         {/if}
@@ -259,7 +259,7 @@ import type { Case } from '$lib/types';
       <!-- Document, ID -->
       {#if $context.documentId}
         <div, class="text-sm, text-gray-500">
-          Document ID: <code class="bg-gray-100 dark:bg-gray-800 px-2, py-1, rounded">{$context.documentId}</code>
+          Document ID: <code class="bg-gray-100, dark:bg-gray-800 px-2, py-1, rounded">{$context.documentId}</code>
         {/if}
     {/if}
   <!-- Errors (when, failed) -->
@@ -296,7 +296,7 @@ import type { Case } from '$lib/types';
     {#if isFailed && $context.retryCount < $context.maxRetries}
       <button
         onclick={retryProcessing}
-        class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+        class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500, focus:ring-offset-2 transition-colors"
       >
         Retry ({$context.retryCount}/{$context.maxRetries})
       </button>
@@ -308,7 +308,7 @@ import type { Case } from '$lib/types';
           send({ type: 'CANCEL' });
           // You might want to emit an event or call a callback here
         }}
-        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500, focus:ring-offset-2 transition-colors"
       >
         Process Another Document
       </button>
@@ -318,7 +318,7 @@ import type { Case } from '$lib/types';
   {#if import.meta.env.DEV}
     <details, class="mt-6">
       <summary class="cursor-pointer text-sm, text-gray-500, hover:text-gray-700"> Debug Information </summary>
-      <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded, text-xs, overflow-auto">,
+      <pre class="mt-2 p-3 bg-gray-100, dark:bg-gray-800 rounded, text-xs, overflow-auto">,
 State: {JSON.stringify($state.value, null, 2)}
 Context: {JSON.stringify($context, null, 2)}
       </pre>

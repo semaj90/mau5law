@@ -201,7 +201,7 @@
   const IconThumbUp = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14 9V5a3 3 0 00-6 0v4" stroke="currentColor" stroke-width="1.5"/><path d="M4 15h6l1 5 7-8V5H4v10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
   const IconThumbDown = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 15v4a3 3 0 006 0v-4" stroke="currentColor" stroke-width="1.5"/><path d="M20 9h-6l-1-5-7 8V19h14V9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <!-- removed class attribute from Dialog.Content to avoid strict prop typing; apply classes to inner wrapper -->
   <Dialog.Content>
     <div class="max-w-4xl max-h-[80vh] flex flex-col">
@@ -383,7 +383,7 @@
       </div>
     </div>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   :global(.prose p) {
     font-size: 0.875rem;

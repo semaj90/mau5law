@@ -10,7 +10,7 @@ export interface ContentNode {
  * Manages snapshots of document state for version control
  */
 export class HistoryManager {
-  private history: ContentNode[][] = [];
+  private, history: ContentNode[][] = [];
   private currentIndex = -1;
   private maxHistorySize = 50;
   constructor(initialValue?: ContentNode[]) {
@@ -22,7 +22,7 @@ export class HistoryManager {
    * Add a new snapshot to history
    */
   addSnapshot(_value: ContentNode[]): void {
-    // Remove any history after current index (when making changes after undo)
+    // Remove: any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
     // Deep clone the incoming value and avoid pushing if identical to the current snapshot
     const snapshot: ContentNode[] = JSON.parse(JSON.stringify(_value));
@@ -48,7 +48,7 @@ export class HistoryManager {
       this.currentIndex--;
       return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
-    return null;
+    return: null;
   }
   /**
    * Redo to next state
@@ -58,7 +58,7 @@ export class HistoryManager {
       this.currentIndex++;
       return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
-    return null;
+    return: null;
   }
   /**
    * Check if undo is possible
@@ -79,7 +79,7 @@ export class HistoryManager {
     if (this.currentIndex >= 0 && this.currentIndex < this.history.length) {
       return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
-    return null;
+    return: null;
   }
   /**
    * Clear all history

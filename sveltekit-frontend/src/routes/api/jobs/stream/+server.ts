@@ -4,17 +4,17 @@
  * Provides real-time job status updates via Server-Sent Events
  * Integrates with GlobalLokiStore for cross-worker state visibility
  */
-import type { RequestHandler, RequestEvent } from './$types.js';
-import { globalLoki } from '$lib/stores/global-loki-store.js';
-import { cacheService } from '$lib/api/services/cache-service.js';
-import type { RedisClientType } from 'redis';
+import type { RequestHandler, RequestEvent } from, './$types.js';
+import { globalLoki } from, '$lib/stores/global-loki-store.js';
+import { cacheService } from, '$lib/api/services/cache-service.js';
+import type { RedisClientType } from, 'redis';
 
 export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
   const jobIds = url.searchParams.get('jobIds')?.split(',') || [];
   const includeAll = url.searchParams.get('all') === 'true';
 
   // Initialize GlobalLoki with Redis client if available.
-  // Cast to unknown->any to avoid strict type mismatch between different Redis client libs.
+  // Cast to: unknown->any to avoid strict type mismatch between different Redis client libs.
   try {
     const redisClient = cacheService.getClient() as RedisClientType | undefined;
     if (redisClient) {
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       };
       // Send initial statuses
       sendCurrentStatuses();
-      // Set up periodic updates (every 2 seconds)
+      // Set up periodic updates (every, 2 seconds)
       const updateInterval = setInterval(() => {
         if (!isAlive) {
           clearInterval(updateInterval);
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         }
         sendCurrentStatuses();
       }, 2000);
-      // Set up heartbeat (every 30 seconds)
+      // Set up heartbeat (every, 30 seconds)
       const heartbeatInterval = setInterval(() => {
         if (!isAlive) {
           clearInterval(heartbeatInterval);

@@ -1,29 +1,29 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * YoRHa Legal AI Chat - Production Ready with SSE Streaming
  *
  * Endpoint: /api/yorha/chat
  * Category: chat
  * Priority: 130
- * Theme: YoRHa (NieR: Automata aesthetic)
+ *, Theme: YoRHa (NieR: Automata aesthetic)
  *
  * Production Services:
  * -; Ollama: Gemma3-legal streaming chat
  * - PostgreSQL: Session + message persistence
  * - Redis: Caching
  *
- * Features:
+ *, Features:
  * - Server-Sent Events (SSE) streaming
  * - Session persistence with database
  * - YoRHa-themed responses ("Glory to mankind")
  * - Test mode for anonymous usage
  * - Message history and context
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { randomUUID } from 'node:crypto';
-import { services } from '$lib/server/services';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { randomUUID } from, 'node:crypto';
+import { services } from, '$lib/server/services';
 
 // YoRHa system prompt
 const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.`
@@ -48,7 +48,7 @@ type OllamaConfig = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
     const { message, sessionId } = body;
@@ -85,8 +85,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const ollamaConfig = (services.env.ollamaConfig as OllamaConfig) ?? {};
     // Prefer the helper if available (avoid hardcoded URLs)
     // Safely access an optional helper that may not be declared on the services type.
-    // Cast to unknown/Record to avoid TypeScript error when the helper doesn't exist.'
-    const serviceAsRecord = services as unknown as Record<string, unknown>;
+    // Cast to: unknown/Record to avoid TypeScript error when the helper doesn't exist.'
+    const serviceAsRecord = services, as: unknown as Record<string, unknown>;
     const getOllamaEndpoint = serviceAsRecord.getOllamaEndpoint as
       | ((cfg?: OllamaConfig) => string | undefined)
       | undefined;

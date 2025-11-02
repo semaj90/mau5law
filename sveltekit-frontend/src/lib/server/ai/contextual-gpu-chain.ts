@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { ChatOllama } from '@langchain/community/chat_models/ollama';
-import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';
-import { Neo4jGraph } from '@langchain/community/graphs/neo4j';
-import { RedisChatMemory } from 'langchain/memory/redis';
-import { createClient, type RedisClientType } from 'redis';
-import { CONFIG } from '$lib/config/env.server';
-import { TensorRtEmbeddings } from '$lib/server/ai/tensorrt-embeddings';
+import type { User } from, '$lib/types';
+import { RunnableSequence } from, '@langchain/core/runnables';
+import { ChatOllama } from, '@langchain/community/chat_models/ollama';
+import { QdrantVectorStore } from, '@langchain/community/vectorstores/qdrant';
+import { Neo4jGraph } from, '@langchain/community/graphs/neo4j';
+import { RedisChatMemory } from, 'langchain/memory/redis';
+import { createClient, type RedisClientType } from, 'redis';
+import { CONFIG } from, '$lib/config/env.server';
+import { TensorRtEmbeddings } from, '$lib/server/ai/tensorrt-embeddings';
 const redisMemoryClient: RedisClientType = createClient({
-  url: process.env.REDIS_URL ?? CONFIG.REDIS_URL
+ , url: process.env.REDIS_URL ?? CONFIG.REDIS_URL
 });
 const memoryReady = redisMemoryClient.connect().catch((error) => {
   console.warn('[contextualChain] redis memory unavailable', error);
@@ -41,7 +41,7 @@ export const contextualChain = RunnableSequence.from<ContextualChainInput, strin
       MATCH (u:User {id: $userId})-[:VIEWED]->(e:Evidence)-[:TAGGED_WITH]->(t:Tag)<-[:TAGGED_WITH]-(r:Evidence)
       RETURN r.summary AS summary, r.id AS id
       ORDER BY size((r)-[:TAGGED_WITH]->(:Tag)) DESC
-      LIMIT 5
+      LIMIT, 5
     `;`
     const related =
       userId != null
@@ -51,7 +51,7 @@ export const contextualChain = RunnableSequence.from<ContextualChainInput, strin
             MATCH (e:Evidence)-[:TAGGED_WITH]->(t:Tag)
             RETURN e.summary AS summary, e.id AS id
             ORDER BY e.rank DESC
-            LIMIT 5
+            LIMIT, 5
           `
           );
     const contextChunks = [

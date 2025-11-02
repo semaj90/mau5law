@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // @ts-nocheck
-import { pgTable, text, uuid, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { vector } from 'pgvector/drizzle';
-import { relations } from 'drizzle-orm/relations';
+import { pgTable, text, uuid, timestamp, jsonb, index } from, 'drizzle-orm/pg-core';
+import { sql } from, 'drizzle-orm';
+import { vector } from, 'pgvector/drizzle';
+import { relations } from, 'drizzle-orm/relations';
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
@@ -61,12 +61,12 @@ export type User = { id: string;, email: string;
   role?: string | null;
   createdAt: Date;
 };
-export type Session = { id: string;, userId: string;
+export type Session = {, id: string;, userId: string;
   expiresAt: Date;
 };
-export type Document = { id: string;, userId: string | null;
+export type Document = {, id: string;, userId: string | null;
   title: string;
-  content: string;
+ , content: string;
   model?: string | null;
   embedding?: number[] | Float32Array | null;
   summary?: string | null;
@@ -76,12 +76,12 @@ export type Document = { id: string;, userId: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
-export type EmbeddingsCache = { id: string;, textHash: string;
+export type EmbeddingsCache = {, id: string;, textHash: string;
   model: string;
   embedding: number[] | Float32Array;
   // replaced `any` with safer type
   tags?: any[] | null;
-  createdAt: Date;
+ , createdAt: Date;
 };
 // Insert / new-record types (id optional / auto-generated where applicable)
 export type NewUser = {
@@ -99,7 +99,7 @@ export type NewDocument = {
   id?: string;
   userId?: string | null;
   title: string;
-  content: string;
+ , content: string;
   model?: string;
   embedding?: number[] | Float32Array | null;
   summary?: string | null;
@@ -111,7 +111,7 @@ export type NewEmbeddingsCache = {
   id?: string;
   textHash: string;
   model?: string;
-  embedding: number[] | Float32Array;
+ , embedding: number[] | Float32Array;
   // replaced `any` with safer type
   tags?: any[] | null;
 };

@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 interface SemanticSearchRequest {
   query: string;
   limit?: number;
@@ -14,14 +14,14 @@ interface SemanticSearchRequest {
     };
   };
 }
-interface EmbeddingResponse { embedding: number[];, model: string;
+interface EmbeddingResponse {, embedding: number[];, model: string;
   modelType: string;
   dimensions: number;
   processingTime: number;
 }
-interface VectorSearchResult { id: string;, title: string;
+interface VectorSearchResult {, id: string;, title: string;
   document_type: string;
-  distance: number;
+ , distance: number;
   metadata?: Record<string, unknown>;
   content?: string;
 }
@@ -32,22 +32,22 @@ interface EmbeddingMetadata { model: string;, dimensions: number;
 }
 type RelevanceLevel = 'high' | 'medium' | 'low';
 
-interface EnhancedVectorSearchResult extends VectorSearchResult { semantic_score: number;, relevance_level: RelevanceLevel;
+interface EnhancedVectorSearchResult extends VectorSearchResult {, semantic_score: number;, relevance_level: RelevanceLevel;
   embedding_metadata: EmbeddingMetadata;
 }
 
-interface SemanticSearchResponse { success: boolean;, query: string;
-  // Use the strongly typed enhanced result array instead of any
+interface SemanticSearchResponse {, success: boolean;, query: string;
+  // Use the strongly typed enhanced result array instead of: any;
   results: EnhancedVectorSearchResult[];
   embedding_time: number;
   search_time: number;
   total_time: number;
   total_results: number;
-  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
+  semantic_scores?: {, highest_relevance: number;, lowest_relevance: number;
     average_relevance: number;
   };
 }
-export const POST: RequestHandler = async ({ request, fetch }) => {
+export const, POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
     const body: SemanticSearchRequest = await request.json();
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const searchPayload = {
       queryEmbedding: embeddingData.embedding,
       options: {
-        limit: body.limit || 10,
+       , limit: body.limit || 10,
         threshold: body.threshold || 1.0, // Cosine distance threshold
       }
     };
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
         // Filter by parties
         if (body.filters?.parties) {
-          const parties = Array.isArray(metadata.parties) ? (metadata.parties as unknown[]).map(p => String(p)) : [];
+          const parties = Array.isArray(metadata.parties) ? (metadata.parties as: unknown[]).map(p => String(p)) : [];
           const hasMatchingParty = body.filters.parties.some(party => parties.includes(party));
           if (!hasMatchingParty) return false;
         }
@@ -145,21 +145,21 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           }
         : undefined;
     // Step 5: Enhanced result formatting
-    const enhancedResults: EnhancedVectorSearchResult[] = results.map(
+    const, enhancedResults: EnhancedVectorSearchResult[] = results.map(
       (result: VectorSearchResult) =>
         ({
           ...result,
           semantic_score: 1 - Number(result.distance), // Convert distance to similarity score
           relevance_level: Number(result.distance) < 0.3 ? 'high' : Number(result.distance) < 0.7 ? 'medium' : 'low',
           embedding_metadata: {
-            model: embeddingData?.model || 'unknown',
+           , model: embeddingData?.model || 'unknown',
             dimensions: embeddingData.dimensions,
             query: body.query
           }
         }) as EnhancedVectorSearchResult
     );
     const response: SemanticSearchResponse = {
-      success: true,
+     , success: true,
       query: body.query,
       results: enhancedResults,
       embedding_time: embeddingTime,

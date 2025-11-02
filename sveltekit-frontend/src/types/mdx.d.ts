@@ -1,6 +1,6 @@
 // MDX type stubs to fix @types/mdx JSX namespace issues
 /// <reference, types="react" />
-declare module '*.mdx' {
+declare module, '*.mdx' {
   let MDXComponent: (props: any) => JSX.Element;
   export default MDXComponent;
 }
@@ -15,7 +15,7 @@ declare global {
       props: { [key: string]: any };
     }
     interface ElementChildrenAttribute {
-      children: { [key: string]: any };
+     , children: { [key: string]: any };
     }
   }
 }

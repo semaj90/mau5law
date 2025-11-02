@@ -1,18 +1,18 @@
-import type { Actions, PageServerLoad } from './$types';
-import { Client, as MinioClient } from 'minio';
-import { Buffer } from 'buffer';
-import { db } from '$lib/server/db';
-import { documents } from '$lib/server/db/enhanced-embedding-schema';
-import { DocumentUploadSchema, type UploadData } from './schema';
-import { fail } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from, './$types';
+import { Client, as MinioClient } from, 'minio';
+import { Buffer } from, 'buffer';
+import { db } from, '$lib/server/db';
+import { documents } from, '$lib/server/db/enhanced-embedding-schema';
+import { DocumentUploadSchema, type UploadData } from, './schema';
+import { fail } from, '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-  // Provide a minimal initial form object instead of calling superValidate with a Zod schema.
+  // Provide a minimal initial form: object instead of calling superValidate with a Zod schema.
   // The action performs validation with Zod, so the load only needs to initialize shape for the client.
   const form = {
     valid: true,
     data: {
-      title: '',
+     , title: '',
       tags: undefined,
       file: undefined
     } as UploadData,
@@ -34,20 +34,20 @@ function makeMinioClient() {
 }
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+ , default: async ({ request }) => {
     // parse multipart/form-data manually and validate with Zod to avoid superValidate overload/type issues
     // destructure request from the action event to satisfy linter rules
     const fd = await request.formData();
-    const title = (fd.get('title') as string) ?? '';
-    const tags = fd.get('tags') as string | null;
+    const title = (fd.get('title') as: string) ?? '';
+    const tags = fd.get('tags') as: string | null;
     const file = fd.get('file') as File | Blob | null;
 
     // validate using Zod schema
     const parsed = DocumentUploadSchema.safeParse({ title, tags, file });
 
-    // minimal form-like object compatible with existing code paths
+    // minimal form-like: object compatible with existing code paths
     const form = {
-      valid: parsed.success,
+     , valid: parsed.success,
       data: parsed.success ? (parsed.data as UploadData) : { title, tags: tags ?? undefined, file: file ?? undefined },
       errors: parsed.success ? {} : parsed.error.format()
     };
@@ -55,7 +55,7 @@ export const actions: Actions = {
     if (!form.valid) return fail(400, { form });
 
     if (!file) {
-      // mark form invalid and return 400
+      // mark form invalid and return, 400
       return fail(400, { form: { ...form, valid: false, errors: {, file: ['No file provided'] } } });
     }
 
@@ -66,7 +66,7 @@ export const actions: Actions = {
         const r = res as Record<string, unknown>;
         if ('etag' in r && typeof r.etag === 'string') return r.etag;
       }
-      return 'ok';
+      return, 'ok';
     }
 
     try {
@@ -104,10 +104,10 @@ export const actions: Actions = {
 
       const etag = getEtag(uploadRes);
 
-      return { form, result: { message: `File uploaded successfully (${etag})` } };
+      return { form, result: {, message: `File uploaded successfully (${etag})` } };
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
-      // keep returning a shape the client expects; use 500 status if desired
-      return { form, result: { error: `Upload, failed: ${msg}` } };`` }
+      // keep returning a shape the client expects; use, 500 status if desired
+      return { form, result: {, error: `Upload, failed: ${msg}` } };`` }
   }
 };

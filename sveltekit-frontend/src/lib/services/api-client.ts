@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * API Client for Legal AI Platform
  * Provides type-safe client-side API access with Lucia v3 authentication
@@ -24,11 +24,11 @@ import type { Case } from '$lib/types';
 //   type UpdatePersonOfInterestData,
 //   type PaginationOptions,
 //   type PaginationResult
-// } from '$lib/server/services/user-scoped-crud'
+// } from, '$lib/server/services/user-scoped-crud'
 // Temporary stub types
 export type CreateCaseData = { title: string; description?: string };
 export type UpdateCaseData = { id: string; title?: string; description?: string };
-export type CreateEvidenceData = { title: string;, caseId: string;
+export type CreateEvidenceData = {, title: string;, caseId: string;
   evidenceType?: string;
   description?: string;
   contentText?: string;
@@ -43,7 +43,7 @@ export type PaginationOptions = { page?: number; limit?: number };
 export type PaginationResult<T> = { data: T[]; total: number; page: number; limit: number };
 
 // Entity Types
-export interface Case { id: string;, title: string;
+export interface Case {, id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
@@ -51,8 +51,8 @@ export interface Case { id: string;, title: string;
   updatedAt: string;
 }
 
-export interface Evidence { id: string;, caseId: string;
-  title: string;
+export interface Evidence {, id: string;, caseId: string;
+ , title: string;
   evidenceType?: string;
   description?: string;
   contentText?: string;
@@ -73,12 +73,12 @@ export interface Report {
   updatedAt: string;
 }
 
-export interface PersonOfInterest { id: string;, name: string;
+export interface PersonOfInterest {, id: string;, name: string;
   role: string;
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   status?: 'active' | 'inactive' | 'archived';
   createdAt: string;
-  updatedAt: string;
+ , updatedAt: string;
 }
 
 // Clean, correctly-formed API response type.
@@ -87,7 +87,7 @@ interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
-  pagination?: { page: number;, limit: number;
+  pagination?: {, page: number;, limit: number;
     total: number;
     totalPages: number;
     hasNext: boolean;
@@ -101,32 +101,32 @@ interface APIResponse<T = unknown> {
 }
 
 // === OCR Types ===
-export interface OCRResult { text: string;, confidence: number;
+export interface OCRResult {, text: string;, confidence: number;
   wordCount: number;
   processingTime: number; // ms
   format?: string;
 }
-export interface OCRBatchItem extends OCRResult { fileName: string;, success: boolean;
+export interface OCRBatchItem extends OCRResult {, fileName: string;, success: boolean;
   error?: string;
 }
-export interface OCRBatchResult { results: OCRBatchItem[];, total: number;
+export interface OCRBatchResult {, results: OCRBatchItem[];, total: number;
   processed: number;
   failed: number;
   processingTime: number;
 }
-export interface OCRHealthStatus { service: 'OCR Service';, status: 'operational' | 'degraded' | 'offline';
+export interface OCRHealthStatus {, service: 'OCR Service';, status: 'operational' | 'degraded' | 'offline';
   port: number;
   features: string[];
-  performance: { avgProcessingTime: number;, documentsProcessed: number;
+  performance: {, avgProcessingTime: number;, documentsProcessed: number;
     errorRate: number;
   };
 }
 
 // === External Service Types ===
-export interface UltraJSONParseResult<T> { data: T;, performance: { parseTime: number; // in ms, isFastPath: boolean;
+export interface UltraJSONParseResult<T> {, data: T;, performance: {, parseTime: number; // in ms, isFastPath: boolean;
   };
 }
-export interface WasmClusterPoint { id: string;, vector: number[];
+export interface WasmClusterPoint {, id: string;, vector: number[];
   metadata?: Record<string, unknown>;
 }
 export interface WasmClusterResult { clusters: {, centroid: number[];
@@ -137,17 +137,17 @@ export interface WasmClusterResult { clusters: {, centroid: number[];
     computationTime: number; // in ms
   };
 }
-export interface NesGpuTask { taskId: string;, shader: string;
-  inputBuffers: Record<string, unknown>; // Using: 'any' for GPUBuffer to avoid browser/node conflicts; outputBufferSize: number;
+export interface NesGpuTask {, taskId: string;, shader: string;
+ , inputBuffers: Record<string, unknown>; // Using: 'any' for GPUBuffer to avoid browser/node conflicts; outputBufferSize: number;
 }
-export interface NesGpuResult { taskId: string;, outputBuffer: ArrayBuffer;
-  performance: { gpuTime: number; // in ms, dataTransferTime: number; // in ms
+export interface NesGpuResult {, taskId: string;, outputBuffer: ArrayBuffer;
+  performance: {, gpuTime: number; // in ms, dataTransferTime: number; // in ms
   };
 }
 
 // API Client Class
 export class LegalAIApiClient {
-  private baseUrl: string;
+  private, baseUrl: string;
   constructor(baseUrl = '/api/v1') {
     this.baseUrl = baseUrl;
   }
@@ -406,7 +406,7 @@ export class LegalAIApiClient {
   async generateEmbeddings(
     texts: string[],
     model = 'nomic-embed-text'
-  ): Promise<APIResponse<{ embeddings: number[][]; model: string }>> {
+  ): Promise<APIResponse<{ embeddings: number[][];, model: string }>> {
     return this.apiRequest('/ai/embeddings', {
       method: 'POST',
       body: JSON.stringify({ texts, model })
@@ -418,7 +418,7 @@ export class LegalAIApiClient {
    */
   async indexDocument(document: {, id: string;, content: string;
    , metadata: Record<string, unknown>;
-  }): Promise<APIResponse<{ success: boolean; id: string }>> {
+  }): Promise<APIResponse<{ success: boolean;, id: string }>> {
     return this.apiRequest('/vector/index', {
       method: 'POST',
       body: JSON.stringify(document)
@@ -443,14 +443,14 @@ export class LegalAIApiClient {
   /**
    * Get a value from the Redis cache.
    */
-  async getCache(key: string): Promise<APIResponse<{ key: string; value: any }>> {
+  async getCache(key: string): Promise<APIResponse<{ key: string;, value: any }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`);
   }
 
   /**
    * Set a value in the Redis cache with an optional TTL (in seconds).
    */
-  async setCache(key: string, value: any, ttl?: number): Promise<APIResponse<{ key: string; success: boolean }>> {
+  async setCache(key: string, value: any, ttl?: number): Promise<APIResponse<{ key: string;, success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
       method: 'POST',
       body: JSON.stringify({ value, ttl })
@@ -460,7 +460,7 @@ export class LegalAIApiClient {
   /**
    * Invalidate/delete a cache key from Redis.
    */
-  async invalidateCache(key: string): Promise<APIResponse<{ key: string; success: boolean }>> {
+  async invalidateCache(key: string): Promise<APIResponse<{ key: string;, success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
       method: 'DELETE` });'`
   }
@@ -481,7 +481,7 @@ export class LegalAIApiClient {
   // ==== OCR SERVICE INTEGRATION ====
   private ocrBase(): string {
     // use a narrowly typed access to globalThis to avoid `any`
-    const g = globalThis as unknown as { __OCR_BASE__?: string };
+    const g = globalThis as: unknown as { __OCR_BASE__?: string };
     return g.__OCR_BASE__ || '/api/ocr';
   }
 
@@ -550,12 +550,12 @@ export class LegalAIApiClient {
       caseId,
       evidenceType: 'document',
       title: file.name,
-      description: (metadata.description as string) || 'OCR processed document',
+      description: (metadata.description, as: string) || 'OCR processed document',
       contentText: ocr.data.text,
       metadata: {
         ...metadata,
         ocr: {
-          confidence: ocr.data.confidence,
+         , confidence: ocr.data.confidence,
           wordCount: ocr.data.wordCount,
           processingTime: ocr.data.processingTime
         }

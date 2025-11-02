@@ -1,12 +1,12 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
-  import { tick } from 'svelte';
-  import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
-  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
-  // defensive wrapper in case the store import is undefined at runtime
-  const store = (enhancedRAGStore as any) ?? {};
+  import { tick } from, 'svelte';
+  import { enhancedRAGStore } from, '$lib/stores/enhanced-rag-store.js';
+  import  Input  from, "$lib/components/ui/enhanced-bits/Input.svelte";
+  import  Button  from, "$lib/components/ui/enhanced-bits/Button.svelte";
+  // defensive wrapper in case the store import is: undefined at runtime
+  const store = (enhancedRAGStore, as: any) ?? {};
   let searchQuery = '';
   let isLoading = $state<boolean>(false);
   let lastDuration = 0;
@@ -74,7 +74,7 @@ import type { Document } from '$lib/types';
         <div class="flex, items-center, justify-between">
           <div>
             <h3, class="is-primary">
-              {optimizedResults.length} results {#if ragState.currentQuery}for "{ragState.currentQuery}"{/if}
+              {optimizedResults.length} results {#if ragState.currentQuery}for, "{ragState.currentQuery}"{/if}
             </h3>
             <p, class="text-sm">
               Found in {searchDuration}ms • Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
@@ -112,7 +112,7 @@ import type { Document } from '$lib/types';
   }
   .search-bar {
     display: flex;
-    gap: 8px;
+   , gap: 8px;
     align-items: center;
   }
   .bits-row :global(.bits-input) {
@@ -127,12 +127,12 @@ import type { Document } from '$lib/types';
     gap: 12px;
   }
   .result-main h4 {
-    margin: 0 0 6px 0;
+   , margin: 0, 0 6px 0;
   }
   .badge {
     font-size: 0.85rem;
     background: #edf2ff;
-    padding: 4px 8px;
+   , padding: 4px 8px;
     border-radius: 6px;
   }
 </style>
@@ -147,7 +147,7 @@ import type { Document } from '$lib/types';
   }
   .search-bar {
     display: flex;
-    gap: 8px;
+   , gap: 8px;
     align-items: center;
   }
   .bits-row :global(.bits-input) {
@@ -162,12 +162,12 @@ import type { Document } from '$lib/types';
     gap: 12px;
   }
   .result-main h4 {
-    margin: 0 0 6px 0;
+   , margin: 0, 0 6px 0;
   }
   .badge {
     font-size: 0.85rem;
     background: #edf2ff;
-    padding: 4px 8px;
+   , padding: 4px 8px;
     border-radius: 6px;
   }
 </style>

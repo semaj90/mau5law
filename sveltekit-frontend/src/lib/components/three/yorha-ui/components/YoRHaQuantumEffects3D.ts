@@ -2,9 +2,9 @@
  * YoRHa Quantum Visual Effects 3D
  * Advanced quantum field visualization and reality manipulation effects
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from '../YoRHaUI3D.js';
-import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from '../webgpu/YoRHaWebGPUMath.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from, '../YoRHaUI3D.js';
+import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from, '../webgpu/YoRHaWebGPUMath.js';
 export interface QuantumFieldOptions { particleCount: number;, fieldSize: Vector3GPU;
   quantumCoherence: number;
   entanglementStrength: number;
@@ -12,19 +12,19 @@ export interface QuantumFieldOptions { particleCount: number;, fieldSize: Vecto
   uncertaintyPrinciple: boolean;
   collapseProbability: number;
   enableTunneling: boolean;
-  dimensions: 3 | 4 | 8; // 3D, spacetime, or hyperdimensional
+ , dimensions: 3 | 4 | 8; // 3D, spacetime, or hyperdimensional
 }
 export interface ConsciousnessVisualizationOptions {
   awarenessLevel: number; // 0-1,
   thoughtPatterns: 'linear' | 'circular' | 'fractal' | 'chaotic';
-  cognitiveLoad: number; // 0-1,
+ , cognitiveLoad: number; // 0-1,
   synapticActivity: number; // 0-1
-  neuralNetworkComplexity: number; // 1-10,
+ , neuralNetworkComplexity: number; // 1-10,
   emergentProperties: boolean;
   selfAwareness: boolean;
 }
 export interface RealityDistortionOptions {
-  matrixGlitchIntensity: number; // 0-1,
+ , matrixGlitchIntensity: number; // 0-1,
   temporalDistortion: number; // 0-1
   spatialWarp: Vector3GPU;
   causalityLoop: boolean;
@@ -52,7 +52,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   private consciousnessOptions: ConsciousnessVisualizationOptions;
   private realityOptions: RealityDistortionOptions;
   constructor(
-    options: {
+   , options: {
       quantum?: Partial<QuantumFieldOptions>;
       consciousness?: Partial<ConsciousnessVisualizationOptions>;
       reality?: Partial<RealityDistortionOptions>;
@@ -67,7 +67,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     // Default configurations
     this.quantumOptions = {
       particleCount: 1000,
-      fieldSize: { x: 10, y: 8, z: 10 },
+      fieldSize: {, x: 10, y: 8, z: 10 },
       quantumCoherence: 0.8,
       entanglementStrength: 0.5,
       waveFunction: 'superposition',
@@ -90,7 +90,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     this.realityOptions = {
       matrixGlitchIntensity: 0.2,
       temporalDistortion: 0.1,
-      spatialWarp: { x: 0, y: 0, z: 0 },
+      spatialWarp: {, x: 0, y: 0, z: 0 },
       causalityLoop: false,
       paradoxResolution: 'branch',
       realityStability: 0.85,
@@ -138,7 +138,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         },
         waveFunction: new Complex(Math.random(), Math.random()),
         entangled: Math.random() < this.quantumOptions.entanglementStrength,
-        entanglementPartner: undefined as number | undefined,
+        entanglementPartner: undefined, as: number | undefined,
         probability: Math.random(),
         collapsed: false,
         spin: Math.random() * Math.PI * 2,
@@ -147,7 +147,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       // Set entanglement partners
       if (particle.entangled && i > 0) {
         const partnerIndex = Math.floor(Math.random() * i);
-        particle.entanglementPartner = partnerIndex as number;
+        particle.entanglementPartner = partnerIndex as: number;
         if (this.quantumParticles[partnerIndex]) {
           this.quantumParticles[partnerIndex].entanglementPartner = i;
         }
@@ -195,7 +195,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z * 0.8
         },
         activation: Math.random() * this.consciousnessOptions.awarenessLevel,
-        connections: [] as number[],
+        connections: [], as: number[],
         thought: this.generateRandomThought(),
         awareness: Math.random() * this.consciousnessOptions.awarenessLevel,
         firing: false,
@@ -478,13 +478,13 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   }
   private getWaveFunctionValue(): number {
     switch (this.quantumOptions.waveFunction) {
-      case 'sine':
+      case, 'sine':
         return 0.0;
-      case 'cosine':
+      case, 'cosine':
         return 1.0;
-      case 'complex':
+      case, 'complex':
         return 2.0;
-      case 'superposition':
+      case, 'superposition':
         return 3.0;
       default: return 0.0;
     }
@@ -618,7 +618,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   }
   public getQuantumMetrics(): { coherence: number;, entanglement: number;
     collapsed: number;
-    tunneling: number;
+   , tunneling: number;
   } {
     const collapsedCount = this.quantumParticles.filter(item => !!item.collapsed).length;
     const entangledCount = this.quantumParticles.filter(item => !!item.entangled).length;
@@ -631,7 +631,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
   }
   public getConsciousnessMetrics(): { awareness: number;, activity: number;
     selfAware: boolean;
-    networkComplexity: number;
+   , networkComplexity: number;
   } {
     const totalActivity = this.consciousnessNodes.reduce((sum, node) => sum + (node.activation || 0), 0);
     return {
@@ -646,7 +646,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     paradoxes: number;
   } {
     return {
-      stability: this.realityOptions.realityStability,
+     , stability: this.realityOptions.realityStability,
       glitchLevel: this.realityOptions.matrixGlitchIntensity,
       temporalDistortion: this.realityOptions.temporalDistortion,
       paradoxes: this.realityOptions.causalityLoop ? 1 : 0
@@ -660,10 +660,10 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     this.consciousnessNodes.length = 0;
   }
 }
-// Complex number utility class for quantum calculations
+// Complex: number utility class for quantum calculations
 class Complex {
   constructor(
-    public real: number,
+    public, real: number,
     public imaginary: number
   ) {}
   magnitude(): number {

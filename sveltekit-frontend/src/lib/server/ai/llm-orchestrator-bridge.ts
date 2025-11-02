@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * LLM Orchestrator Bridge - Unifies local and server orchestrators
  * Connects enhanced-orchestrator.ts, unified-client-llm-orchestrator.ts, and API endpoints
@@ -8,14 +8,14 @@ import type { Document } from '$lib/types';
  * - Client-side: Unified Client LLM Orchestrator (Gemma + ONNX)
  * - Bridge: Routes requests to optimal orchestrator based on task type and context
  */
-import { execSync } from 'child_process';
-import * as dotenv from 'dotenv';
+import { execSync } from, 'child_process';
+import * as dotenv from, 'dotenv';
 dotenv.config(); // load .env if present
 
 // Auto-discover Docker container hostnames
 function resolveDockerService(host: string, fallback: string): string {
   try {
-    const output = execSync(`docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" ${host}`, {
+    const output = execSync(`docker inspect -f, "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" ${host}`, {
       stdio: ['ignore', 'pipe', 'ignore']
     })
       .toString()
@@ -44,17 +44,17 @@ export const dockerEnv = {
 
 console.log('🌐 Unified Docker Environment:', dockerEnv);
 
-import { orchestrator, as enhancedOrchestrator } from './enhanced-orchestrator.js';
-import { unifiedClientLLMOrchestrator } from '$lib/ai/unified-client-llm-orchestrator.js';
-import { mcpMultiCore } from '$lib/server/mcp/multi-core-integration.js';
-import type { MCPTask } from '$lib/server/mcp/multi-core-integration.js';
-import { logger } from './logger.js';
-import type { ClientLLMRequest, InferenceResult } from '$lib/ai/unified-client-llm-orchestrator.js';
-import xstateIntegration from '$lib/services/xstate-integration'; // ADDED: Import xstateIntegration
+import { orchestrator, as enhancedOrchestrator } from, './enhanced-orchestrator.js';
+import { unifiedClientLLMOrchestrator } from, '$lib/ai/unified-client-llm-orchestrator.js';
+import { mcpMultiCore } from, '$lib/server/mcp/multi-core-integration.js';
+import type { MCPTask } from, '$lib/server/mcp/multi-core-integration.js';
+import { logger } from, './logger.js';
+import type { ClientLLMRequest, InferenceResult } from, '$lib/ai/unified-client-llm-orchestrator.js';
+import xstateIntegration from, '$lib/services/xstate-integration'; // ADDED: Import xstateIntegration
 
 // A helper type to represent the loosely-typed result from various orchestrator/inference calls
 // This avoids using `any` in casts.
-type UntypedOrchestratorResult = { success: boolean;, response: string;
+type UntypedOrchestratorResult = {, success: boolean;, response: string;
   modelUsed: string;
   executionMetrics: {
     totalLatency: number;
@@ -66,7 +66,7 @@ type UntypedOrchestratorResult = { success: boolean;, response: string;
   [key: string]: any;
 };
 
-export interface LLMBridgeRequest { id: string;, type: 'chat' | 'legal_analysis' | 'document_processing' | 'embedding' | 'search' | 'workflow';
+export interface LLMBridgeRequest {, id: string;, type: 'chat' | 'legal_analysis' | 'document_processing' | 'embedding' | 'search' | 'workflow';
   content: string;
   context?: {
     userId?: string;
@@ -101,7 +101,7 @@ interface RoutingDecision {
   [key: string]: any;
 }
 
-// ADDED: Define the expected result type from the enhanced orchestrator (avoid `any`)
+//, ADDED: Define the expected result type from the enhanced orchestrator (avoid `any`)
 interface EnhancedOrchestratorResult {
   success?: boolean;
   response?: string;
@@ -119,8 +119,8 @@ interface EnhancedOrchestratorResult {
 export interface LLMBridgeResponse { success: boolean;, response: string;
   orchestratorUsed: 'server' | 'client' | 'hybrid';
   modelUsed: string;
-  executionMetrics: { totalLatency: number;, routingTime: number;
-    processingTime: number;
+  executionMetrics: {, totalLatency: number;, routingTime: number;
+   , processingTime: number;
     cacheHitRate?: number;
     memoryUsed?: number;
     gpuAccelerated?: boolean;
@@ -174,22 +174,22 @@ export class LLMOrchestratorBridge {
       const processingStartTime = performance.now();
       let result: LLMBridgeResponse;
       switch (routingDecision.orchestrator) {
-        case 'server':
+        case, 'server':
           result = await this.executeServerOrchestrator(request, routingDecision);
           this.performanceMetrics.serverRoutedRequests++;
           break;
-        case 'client':
+        case, 'client':
           result = await this.executeClientOrchestrator(request, routingDecision);
           this.performanceMetrics.clientRoutedRequests++;
           break;
-        case 'mcp':
+        case, 'mcp':
           result = await this.executeMCPOrchestrator(request, routingDecision);
           break;
-        case 'hybrid':
+        case, 'hybrid':
           result = await this.executeHybridOrchestrator(request, routingDecision);
           break;
         default:
-          throw new Error(`Unknown; orchestrator: ${routingDecision.orchestrator}`);
+          throw new Error(`Unknown;, orchestrator: ${routingDecision.orchestrator}`);
       }
       const processingTime = performance.now() - processingStartTime;
       const totalLatency = performance.now() - startTime;
@@ -212,7 +212,7 @@ export class LLMOrchestratorBridge {
         orchestratorUsed: 'server',
         modelUsed: 'none',
         executionMetrics: {
-          totalLatency: performance.now() - startTime,
+         , totalLatency: performance.now() - startTime,
           routingTime: 0,
           processingTime: 0
         },
@@ -239,7 +239,7 @@ export class LLMOrchestratorBridge {
     if (request.options?.model && ['gemma270m', 'legal-bert'].includes(request.options.model)) {
       return {
         orchestrator: 'client',
-        reasoning: 'Client-side model; requested: ${request.options?.model || 'unknown' }`,'`
+        reasoning: 'Client-side model;, requested: ${request.options?.model || 'unknown' }`,'`
         confidence: 1.0
       };
     }
@@ -256,25 +256,25 @@ export class LLMOrchestratorBridge {
     ) {
       return {
         orchestrator: 'mcp',
-        reasoning: `MCP multi-core; optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,
+        reasoning: `MCP multi-core;, optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,
         confidence: 0.85
       };
     }
     // Task-based routing
     switch (request.type) {
-      case 'embedding':
+      case, 'embedding':
         return {
           orchestrator: 'client',
           reasoning: 'Embedding tasks are faster on client-side ONNX',
           confidence: 0.9
         };
-      case 'workflow':
+      case, 'workflow':
         return {
           orchestrator: 'server',
           reasoning: 'Complex workflows require server orchestrator with XState',
           confidence: 0.95
         };
-      case 'legal_analysis': {
+      case, 'legal_analysis': {
         // Complex legal analysis -> server, simple questions -> client
         const isComplex =
           request.content.length > 500 ||
@@ -283,23 +283,23 @@ export class LLMOrchestratorBridge {
           request.content.includes('statute');
         return {
           orchestrator: isComplex ? 'server' : 'client',
-          reasoning: 'Legal analysis; complexity: ${isComplex ? 'high' : `low' }`,'`'`
+          reasoning: 'Legal analysis;, complexity: ${isComplex ? 'high' : `low' }`,'`'`
           confidence: 0.8
         };
       }
-      case 'search':
+      case, 'search':
         return {
           orchestrator: 'server',
           reasoning: 'Search requires pgvector and Neo4j integration',
           confidence: 0.9
         };
-      case 'document_processing':
+      case, 'document_processing':
         return {
           orchestrator: 'server',
           reasoning: 'Document processing needs full pipeline with caching',
           confidence: 0.85
         };
-      case 'chat':
+      case, 'chat':
       default:
         // Latency-based routing for chat
         if (
@@ -314,7 +314,7 @@ export class LLMOrchestratorBridge {
           };
         } else {
           return {
-            orchestrator: 'server',
+           , orchestrator: 'server',
             reasoning: 'Default to server for comprehensive chat capabilities',
             confidence: 0.6
           };
@@ -325,7 +325,7 @@ export class LLMOrchestratorBridge {
    * Execute request using server-side enhanced orchestrator
    */
   private async executeServerOrchestrator(
-    request: LLMBridgeRequest,
+   , request: LLMBridgeRequest,
     _routing: RoutingDecision
   ): Promise<LLMBridgeResponse> {
     try {
@@ -333,7 +333,7 @@ export class LLMOrchestratorBridge {
       const eventPayload = {
         content: request.content,
         context: {
-          userId: request.context?.userId || 'anonymous',
+         , userId: request.context?.userId || 'anonymous',
           sessionId: request.context?.sessionId,
           caseId: request.context?.caseId,
           documentType: request.context?.documentType,
@@ -341,7 +341,7 @@ export class LLMOrchestratorBridge {
           previousContext: request.context?.previousContext
         },
         options: {
-          temperature: request.options?.temperature || 0.3,
+         , temperature: request.options?.temperature || 0.3,
           maxTokens: request.options?.maxTokens || 1024,
           useGPU: request.options?.useGPU || true,
           enableStreaming: request.options?.enableStreaming || false,
@@ -356,7 +356,7 @@ export class LLMOrchestratorBridge {
       const eventType = `${request.type.toUpperCase()}_REQUEST`;
 
       // Send an event to the enhanced orchestrator via xstateIntegration
-      // Assuming: 'enhancedOrchestrator' is the machine ID string.
+      // Assuming: 'enhancedOrchestrator' is the machine, ID: string.
       const result = await xstateIntegration.sendEvent(enhancedOrchestrator, {
         type: eventType,
         payload: eventPayload
@@ -366,13 +366,13 @@ export class LLMOrchestratorBridge {
       const typedResult: EnhancedOrchestratorResult = result as EnhancedOrchestratorResult;
 
       return {
-        success: typedResult.success ?? true,
+       , success: typedResult.success ?? true,
         response:
           typedResult.summary || typedResult.detailed_discussion || typedResult.response || 'No response generated',
         orchestratorUsed: 'server',
         modelUsed: typedResult.modelUsed || 'gemma3-legal:latest:latest',
         executionMetrics: {
-          totalLatency: 0,
+         , totalLatency: 0,
           routingTime: 0,
           processingTime: 0,
           gpuAccelerated: typedResult.executionMetrics?.gpuAccelerated ?? true,
@@ -400,12 +400,12 @@ export class LLMOrchestratorBridge {
       const preferredModel = this.mapPreferredModelToClient(request.options?.model);
 
       const clientRequest: ClientLLMRequest = {
-        id: request.id,
+       , id: request.id,
         prompt: request.content,
         task: this.mapTaskToClientTask(request.type),
         priority: request.options?.priority || 'normal',
         context: {
-          userId: request.context?.userId || 'anonymous',
+         , userId: request.context?.userId || 'anonymous',
           sessionId: request.context?.sessionId || 'default',
           legalDomain: request.context?.legalDomain,
           documentType: request.context?.documentType,
@@ -419,15 +419,15 @@ export class LLMOrchestratorBridge {
           enableContextSwitching: true
         },
         resourceLimits: {
-          maxGPUMemoryMB: 4096,
+         , maxGPUMemoryMB: 4096,
           maxDDRRAMCacheMB: 8192,
           allowModelSwitching: true,
           enableParallelInference: true
         }
       };
-      const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
-      const untyped = result as unknown as UntypedOrchestratorResult;
-      // Ensure executionMetrics is indexable to avoid TS: '{}' property errors
+      const, result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
+      const untyped = result as: unknown as UntypedOrchestratorResult;
+      // Ensure executionMetrics is indexable to avoid, TS: '{}' property errors
       const execMetrics = (untyped.executionMetrics ?? {}) as UntypedOrchestratorResult['executionMetrics'];
       const modelUsed = String(untyped.modelUsed ?? '');
       const totalLatency = execMetrics.totalLatency ?? 0;
@@ -435,7 +435,7 @@ export class LLMOrchestratorBridge {
 
       return {
         success: !!untyped.success,
-        response: (untyped.response as string) ?? '',
+        response: (untyped.response, as: string) ?? '',
         orchestratorUsed: 'client',
         modelUsed,
         executionMetrics: {
@@ -443,10 +443,10 @@ export class LLMOrchestratorBridge {
           routingTime: 0,
           processingTime: totalLatency,
           cacheHitRate,
-          memoryUsed: (execMetrics.memoryUsed as number) ?? 0,
+          memoryUsed: (execMetrics.memoryUsed, as: number) ?? 0,
           gpuAccelerated: modelUsed.includes('gpu')
         },
-        confidence: (execMetrics.qualityScore as number) ?? 0,
+        confidence: (execMetrics.qualityScore, as: number) ?? 0,
         requestId: request.id
       };
     } catch (error) {
@@ -463,14 +463,14 @@ export class LLMOrchestratorBridge {
   ): Promise<LLMBridgeResponse> {
     try {
       const mcpTask: MCPTask = {
-        id: `mcp_${request.id}`,
+       , id: `mcp_${request.id}`,
         type: this.mapTaskTypeToMCP(request.type),
         priority: this.mapPriorityToMCP(request.options?.priority || 'normal'),
         payload: {
-          content: request.content,
+         , content: request.content,
           context: request.context,
           options: {
-            model: request.options?.model || 'auto',
+           , model: request.options?.model || 'auto',
             temperature: request.options?.temperature || 0.3,
             maxTokens: request.options?.maxTokens || 1024,
             useGPU: request.options?.useGPU !== false
@@ -488,7 +488,7 @@ export class LLMOrchestratorBridge {
         orchestratorUsed: 'hybrid' as const,
         modelUsed: mcpResponse.metadata?.model || 'mcp-worker',
         executionMetrics: {
-          totalLatency: mcpResponse.processingTime ?? 0,
+         , totalLatency: mcpResponse.processingTime ?? 0,
           routingTime: 0,
           processingTime: mcpResponse.processingTime ?? 0,
           cacheHitRate: mcpResponse.metadata?.cacheHit ? 1.0 : 0.0,
@@ -538,22 +538,22 @@ export class LLMOrchestratorBridge {
 
   // Helper: map external model names to client orchestrator allowed union
   private mapPreferredModelToClient(model?: string): 'auto' | 'gemma270m' | 'legal-bert' | 'gemma-legal' {
-    if (!model || model === 'auto') return 'auto';
+    if (!model || model === 'auto') return, 'auto';
     switch (model) {
-      case 'gemma270m':
-        return 'gemma270m';
-      case 'legal-bert':
-        return 'legal-bert';
+      case, 'gemma270m':
+        return, 'gemma270m';
+      case, 'legal-bert':
+        return, 'legal-bert';
       // Map various server/variant tags to the client's canonical: 'gemma-legal'
-      case 'gemma-legal':
-      case 'gemma-legal:latest':
-      case 'gemma3-legal':
-      case 'gemma3-legal:latest':
-      case 'gemma3-legal:latest:latest':
-        return 'gemma-legal';
+      case, 'gemma-legal':
+      case, 'gemma-legal:latest':
+      case, 'gemma3-legal':
+      case, 'gemma3-legal:latest':
+      case, 'gemma3-legal:latest:latest':
+        return, 'gemma-legal';
       default:
-        // fallback; to: 'auto' for server-orchestrator and unknown strings
-        return 'auto';
+        // fallback; to: 'auto' for server-orchestrator, and: unknown strings
+        return, 'auto';
     }
   }
 
@@ -563,47 +563,47 @@ export class LLMOrchestratorBridge {
     bridgeTask: string
   ): 'chat' | 'legal_analysis' | 'context_switch' | 'embedding' | 'rl_training' {
     switch (bridgeTask) {
-      case 'legal_analysis':
-        return 'legal_analysis';
-      case 'embedding':
-        return 'embedding';
-      case 'document_processing':
-        return 'legal_analysis';
-      case 'search':
-        return 'context_switch';
-      case 'workflow':
-        return 'legal_analysis';
-      case 'chat':
-      default: return 'chat';
+      case, 'legal_analysis':
+        return, 'legal_analysis';
+      case, 'embedding':
+        return, 'embedding';
+      case, 'document_processing':
+        return, 'legal_analysis';
+      case, 'search':
+        return, 'context_switch';
+      case, 'workflow':
+        return, 'legal_analysis';
+      case, 'chat':
+      default: return, 'chat';
     }
   }
   private mapTaskTypeToMCP(bridgeTask: string): 'embedding' | 'generation' | 'analysis' | 'search' | 'workflow' {
     switch (bridgeTask) {
-      case 'embedding':
-        return 'embedding';
-      case 'legal_analysis':
-        return 'analysis';
-      case 'document_processing':
-        return 'analysis';
-      case 'search':
-        return 'search';
-      case 'workflow':
-        return 'workflow';
-      case 'chat':
-      default: return 'generation';
+      case, 'embedding':
+        return, 'embedding';
+      case, 'legal_analysis':
+        return, 'analysis';
+      case, 'document_processing':
+        return, 'analysis';
+      case, 'search':
+        return, 'search';
+      case, 'workflow':
+        return, 'workflow';
+      case, 'chat':
+      default: return, 'generation';
     }
   }
   private mapPriorityToMCP(bridgePriority: string): 'low' | 'normal' | 'high' | 'critical' {
     switch (bridgePriority) {
-      case 'low':
-        return 'low';
-      case 'normal':
-        return 'normal';
-      case 'high':
-        return 'high';
-      case 'realtime':
-        return 'critical';
-      default: return 'normal';
+      case, 'low':
+        return, 'low';
+      case, 'normal':
+        return, 'normal';
+      case, 'high':
+        return, 'high';
+      case, 'realtime':
+        return, 'critical';
+      default: return, 'normal';
     }
   }
   private generateRequestId(): string {
@@ -663,7 +663,7 @@ export class LLMOrchestratorBridge {
     } else {
       bridgeStatus = 'offline';
     }
-    return { bridge: {, status: bridgeStatus, // ADDED: comma; activeRequests: this.activeRequests.size,
+    return { bridge: {, status: bridgeStatus, // ADDED: comma;, activeRequests: this.activeRequests.size,
         totalRequests: this.performanceMetrics.totalRequests,
         successRate:
           this.performanceMetrics.totalRequests > 0

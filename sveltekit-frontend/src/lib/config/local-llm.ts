@@ -1,8 +1,8 @@
 /// <reference, types="vite/client" />
 // Local LLM Configuration for Ollama and llama.cpp integration
 // Manages local model paths and configurations for the legal AI assistant
-import { existsSync } from "fs";
-import { join } from "path";
+import { existsSync } from, "fs";
+import { join } from, "path";
 // Base paths for local LLM installations (relative to project root)
 const projectRoot = process.cwd().includes("sveltekit-frontend")
   ? join(process.cwd(), "..", "..") // If running from sveltekit-frontend
@@ -12,7 +12,7 @@ const projectRoot = process.cwd().includes("sveltekit-frontend")
 export const LOCAL_LLM_PATHS = {
   // Ollama installation
   ollama: {
-    executable: join(projectRoot, 'Ollama', 'ollama.exe'),
+   , executable: join(projectRoot, 'Ollama', 'ollama.exe'),
     app: join(projectRoot, 'Ollama', 'ollama app.exe'),
     baseUrl: 'http://localhost:11434',
     modelsPath:
@@ -20,13 +20,13 @@ export const LOCAL_LLM_PATHS = {
   },
   // llama.cpp installation
   llamaCpp: {
-    basePath: join(projectRoot, 'llama.cpp'),
+   , basePath: join(projectRoot, 'llama.cpp'),
     executable: join(projectRoot, 'llama.cpp', 'llama-server.exe'),
     baseUrl: 'http://localhost:8080'
   },
   // Local Gemma3 Q4_K_M model
   gemmaModel: {
-    path: join(projectRoot, 'gemma3Q4_K_M', 'mohf16-Q4_K_M.gguf'),
+   , path: join(projectRoot, 'gemma3Q4_K_M', 'mohf16-Q4_K_M.gguf'),
     name: 'gemma3-legal:latest', // Use the custom model we'll create'
     ollamaModel: 'gemma3-legal:latest', // Custom Ollama model name
     fallbackModel: 'gemma3-legal:latest', // Fallback to existing model
@@ -39,7 +39,7 @@ export const LOCAL_LLM_PATHS = {
 export const MODEL_CONFIGS = {
   // Legal AI assistant configuration (optimized for Q4_K_M)
   legal: {
-    temperature: 0.1,
+   , temperature: 0.1,
     maxTokens: 1024,
     topP: 0.9,
     topK: 40,
@@ -49,7 +49,7 @@ export const MODEL_CONFIGS = {
   },
   // Fast response configuration
   fast: {
-    temperature: 0.3,
+   , temperature: 0.3,
     maxTokens: 256,
     topP: 0.8,
     topK: 20,
@@ -59,7 +59,7 @@ export const MODEL_CONFIGS = {
   },
   // Detailed analysis configuration
   detailed: {
-    temperature: 0.8,
+   , temperature: 0.8,
     maxTokens: 1024,
     topP: 0.95,
     topK: 50,
@@ -74,11 +74,11 @@ export function checkLocalInstallations() {
       path: LOCAL_LLM_PATHS.ollama.executable
     },
     llamaCpp: {
-      available: existsSync(LOCAL_LLM_PATHS.llamaCpp.basePath),
+     , available: existsSync(LOCAL_LLM_PATHS.llamaCpp.basePath),
       path: LOCAL_LLM_PATHS.llamaCpp.basePath
     },
     gemmaModel: {
-      available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),
+     , available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),
       path: LOCAL_LLM_PATHS.gemmaModel.path
     }
   }
@@ -89,16 +89,16 @@ export function getPreferredProvider() {
   const installations = checkLocalInstallations();
   // Priority: Ollama > llama.cpp (Ollama is easier to manage)
   if (installations.ollama.available) {
-    return "ollama";
+    return, "ollama";
   } else if (installations.llamaCpp.available) {
-    return "llamacpp";
+    return, "llamacpp";
   }
-  return null;
+  return: null;
 }
 // Environment variables for development
 export const ENV_CONFIG = {
   // Ollama configuration
-  OLLAMA_BASE_URL:
+ , OLLAMA_BASE_URL:
     import.meta.env.OLLAMA_BASE_URL || LOCAL_LLM_PATHS.ollama.baseUrl,
   OLLAMA_MODELS: import.meta.env.OLLAMA_MODELS || LOCAL_LLM_PATHS.ollama.modelsPath,
   // llama.cpp configuration
@@ -161,16 +161,15 @@ export async function loadGemmaModel(): Promise<any> {
 # Set parameters for Q4_K_M quantization
 PARAMETER temperature 0.1
 PARAMETER top_p 0.9
-PARAMETER top_k 40
+PARAMETER top_k, 40
 PARAMETER repeat_penalty 1.05
-PARAMETER num_ctx 8192
+PARAMETER num_ctx, 8192
 # Gemma3 template format
 TEMPLATE: """<start_of_turn>user"
 {{ .Prompt }}<end_of_turn>
 <start_of_turn>model
 {{ .Response }}<end_of_turn>"""
-# Set system message for legal AI
-SYSTEM: """You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice."""
+# Set system message for legal AI, SYSTEM: """You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice."""
 `;`
     writeFileSync(modelfilePath, modelfileContent);
     // Import the model into Ollama

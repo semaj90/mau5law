@@ -2,13 +2,13 @@
  * Conversation Service for Legal AI Chat
  * Provides lightweight in-memory storage with optional Redis persistence.
  */
-import { randomUUID } from 'crypto';
-import { logger } from '../production-logger.js';
-import { getRedisClient } from '$lib/server/database/redis-client';
+import { randomUUID } from, 'crypto';
+import { logger } from, '../production-logger.js';
+import { getRedisClient } from, '$lib/server/database/redis-client';
 export interface ConversationContext {
   [key: string]: any;
 }
-export interface Conversation { id: string;, userId: string;
+export interface Conversation {, id: string;, userId: string;
   title: string;
   caseId?: string;
   context?: ConversationContext;
@@ -16,18 +16,18 @@ export interface Conversation { id: string;, userId: string;
   updatedAt: Date;
   isArchived?: boolean;
 }
-export interface ChatMessage { id: string;, conversationId: string;
+export interface ChatMessage {, id: string;, conversationId: string;
   role: 'user' | 'assistant' | 'system';
-  content: string;
+ , content: string;
   metadata?: Record<string, unknown>;
   createdAt: Date;
 }
-export interface CreateConversationData { userId: string;, title: string;
+export interface CreateConversationData {, userId: string;, title: string;
   caseId?: string;
   context?: ConversationContext;
 }
-export interface AddMessageData { conversationId: string;, role: 'user' | 'assistant' | 'system';
-  content: string;
+export interface AddMessageData {, conversationId: string;, role: 'user' | 'assistant' | 'system';
+ , content: string;
   metadata?: Record<string, unknown>;
 }
 type RedisClient = Record<string, unknown>;
@@ -41,7 +41,7 @@ class ConversationService {
   async create(data: CreateConversationData): Promise<Conversation> {
     const now = new Date();
     const conversation: Conversation = {
-      id: randomUUID(),
+     , id: randomUUID(),
       userId: data.userId,
       title: data.title,
       caseId: data.caseId,
@@ -66,7 +66,7 @@ class ConversationService {
     }
     if (!conversation) throw new Error(`Conversation ${data.conversationId} not found`);
     const message: ChatMessage = {
-      id: randomUUID(),
+     , id: randomUUID(),
       conversationId: data.conversationId,
       role: data.role,
       content: data.content,
@@ -95,7 +95,7 @@ class ConversationService {
   /** Retrieve a conversation with its messages */
   async getConversationWithMessages(
     conversationId: string
-  ): Promise<{ conversation: Conversation | null; messages: ChatMessage[] }> {
+  ): Promise<{ conversation: Conversation | null;, messages: ChatMessage[] }> {
     let conversation = this.conversations.get(conversationId) ?? null;
     let messages = this.messages.get(conversationId) ?? [];
     if (!conversation) {
@@ -115,7 +115,7 @@ class ConversationService {
   /** Convert messages to chat-friendly format */
   convertTochatMessages(messages: ChatMessage[]): Array<{ role: ChatMessage['role']; content: string }> {
     return messages.map(msg => ({
-      role: msg.role,
+     , role: msg.role,
       content: msg.content
     }));
   }
@@ -138,7 +138,7 @@ class ConversationService {
     return true;
   }
   /** Simple statistics about stored conversations */
-  async getStats(): Promise<{ totalConversations: number; totalMessages: number; averageMessagesPerConversation: number }> {
+  async getStats(): Promise<{ totalConversations: number; totalMessages: number;, averageMessagesPerConversation: number }> {
     const totalConversations = this.conversations.size;
     const totalMessages = Array.from(this.messages.values()).reduce((sum, list) => sum + list.length, 0);
     const averageMessagesPerConversation =
@@ -198,12 +198,12 @@ class ConversationService {
   }
   private async loadConversationFromRedis(conversationId: string): Promise<Conversation | null> {
     const client = await this.getRedisClient();
-    if (!client) return null;
+    if (!client) return: null;
     const getFn = (client as { get?: (key: string) => Promise<string | null> }).get;
-    if (!getFn) return null;
+    if (!getFn) return: null;
     try {
       const raw = await getFn.call(client, this.conversationKey(conversationId));
-      if (!raw) return null;
+      if (!raw) return: null;
       const parsed = JSON.parse(raw) as Omit<Conversation, 'createdAt' | 'updatedAt'> & { createdAt: string;, updatedAt: string;
       };
       return {
@@ -213,7 +213,7 @@ class ConversationService {
       };
     } catch (err) {
       logger.warn('Failed to load conversation from Redis', err);
-      return null;
+      return: null;
     }
   }
   private async loadMessagesFromRedis(conversationId: string): Promise<ChatMessage[]> {
@@ -243,10 +243,10 @@ class ConversationService {
   private async getRedisClient(): Promise<RedisClient | null> {
     try {
       const client = await getRedisClient();
-      return client as unknown as RedisClient | null;
+      return client as: unknown as RedisClient | null;
     } catch (err) {
       logger.warn('Redis client unavailable for conversation service', err);
-      return null;
+      return: null;
     }
   }
   private async setWithTTL(client: RedisClient, key: string, value: string): Promise<void> {

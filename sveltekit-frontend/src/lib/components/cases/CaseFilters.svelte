@@ -1,17 +1,17 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Case } from '$lib/types/api';
-  import  Input  from "$lib/components/ui/input/Input.svelte";
-  import * as Select from '$lib/components/ui/select.svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
+  // Svelte, 5 runes are auto-imported
+  import type { Case } from, '$lib/types/api';
+  import  Input  from, "$lib/components/ui/input/Input.svelte";
+  import * as Select from, '$lib/components/ui/select.svelte';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import { Search, Filter, SortAsc, SortDesc } from, 'lucide-svelte';
   interface Props {
     cases: Case[];
     filteredCases: Case[];
     searchQuery: string;
     statusFilter: string;
     sortBy: string;
-    sortOrder: 'asc' | 'desc';
+   , sortOrder: 'asc' | 'desc';
   }
   let { cases = [],
     filteredCases = [],
@@ -32,7 +32,7 @@
   // 6. BULK ACTIONS - Multi-select and batch operations
   //
   // 📋 WIRING REQUIREMENTS:
-  // - Dependencies: fuse.js, date-fns, file-saver
+  // -, Dependencies: fuse.js, date-fns, file-saver
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
@@ -41,11 +41,11 @@
   //   status: string[]
   //   dateRange: { start: Date end: Date }
   //   assignee: string[]
-  //   priority: ['high', 'medium', 'low']
+  //  , priority: ['high', 'medium', 'low']
   //   tags: string[]
   //   evidenceCount: { min: number max: number }
   //   hasAttachments: boolean
-  //   lastActivityDays: number
+  //  , lastActivityDays: number
   // }
   $effect(() => {
     // TODO: IMPLEMENT ADVANCED FILTERING LOGIC
@@ -57,7 +57,7 @@
     // 5. Assignee filtering with user lookup
     // 6. Priority and status combination filtering
     //
-    // ENHANCEMENT: Replace with Fuse.js fuzzy search
+    //, ENHANCEMENT: Replace with Fuse.js fuzzy search
     // const fuse = new Fuse(cases, {
     //   keys: ['title', 'description', 'tags', 'assignee.name'],
     //   threshold: 0.3,
@@ -105,7 +105,7 @@
         <Select.Item, value="pending">Pending</Select.Item>
         <Select.Item, value="closed">Closed</Select.Item>
       </Select.Content>
-    </Select.Root>
+    </Select>
   </div>
   <div class="flex, items-center, gap-2">
     <Select.Root, bind:value={sortBy}>
@@ -117,7 +117,7 @@
         <Select.Item, value="title">Title</Select.Item>
         <Select.Item, value="status">Status</Select.Item>
       </Select.Content>
-    </Select.Root>
+    </Select>
   </div>
   <Button
     variant="ghost"
@@ -144,14 +144,14 @@
     align-items: center;
 }
   .search-input {
-    flex: 1,
+   , flex: 1,
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
   .filter-select {
     padding: 0.5rem;
-    border: 1px solid #ccc;
+   , border: 1px solid #ccc;
     border-radius: 4px;
 }
 </style>

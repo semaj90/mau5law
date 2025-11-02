@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Citations Manager Module
  * Authentication-aware citation saving and importing system
@@ -19,24 +19,24 @@ export interface Citation { id: string;, title: string;
   notes?: string;
   userId?: string;
 }
-export interface SavedCitation extends Citation { savedAt: Date;, userId: string;
+export interface SavedCitation extends Citation {, savedAt: Date;, userId: string;
   collection?: string;
   isPrivate: boolean;
 }
-export interface CitationCollection { id: string;, name: string;
+export interface CitationCollection {, id: string;, name: string;
   description?: string;
-  citations: string[]; // Citation IDs,
+ , citations: string[]; // Citation IDs,
   userId: string;
   createdAt: Date;
   updatedAt: Date;
   isShared: boolean;
 }
-export interface AuthUser { id: string;, email: string;
+export interface AuthUser {, id: string;, email: string;
   name: string;
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
   isAuthenticated: boolean;
 }
-export interface CitationImportOptions { format: 'bluebook' | 'apa' | 'mla' | 'custom';, includeKeyPoints: boolean;
+export interface CitationImportOptions {, format: 'bluebook' | 'apa' | 'mla' | 'custom';, includeKeyPoints: boolean;
   includeSummary: boolean;
   includeNotes: boolean;
 }
@@ -44,7 +44,7 @@ export class CitationsManager {
   private storageKey = 'legal-ai-citations';
   private collectionsKey = 'legal-ai-collections';
   private currentUser: AuthUser | null = null;
-  private subscribers: Array<(user: AuthUser | null) => void> = [];
+  private, subscribers: Array<(user: AuthUser | null) => void> = [];
   constructor() {
     this.loadUserState();
   }
@@ -140,7 +140,7 @@ export class CitationsManager {
       throw new Error('User must be authenticated to create collections');
     }
     const collection: CitationCollection = {
-      id: `collection-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+     , id: `collection-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       name,
       description,
       citations: [],
@@ -207,11 +207,11 @@ export class CitationsManager {
   // Import/Export Methods
   formatCitationForImport(citation: Citation, options: CitationImportOptions): string {
     switch (options.format) {
-      case 'bluebook':
+      case, 'bluebook':
         return this.formatBluebook(citation, options);
-      case 'apa':
+      case, 'apa':
         return this.formatAPA(citation, options);
-      case 'mla':
+      case, 'mla':
         return this.formatMLA(citation, options);
       default: return this.formatCustom(citation, options);
     }

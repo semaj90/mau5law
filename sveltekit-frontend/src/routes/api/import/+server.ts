@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import { db } from '$lib/server/db/index';
-import { cases, criminals, evidence } from 'drizzle-orm';
-import { eq } from 'drizzle-orm';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import { db } from, '$lib/server/db/index';
+import { cases, criminals, evidence } from, 'drizzle-orm';
+import { eq } from, 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Add precise types for imports/results
 type ImportResult = { imported: number;, updated: number;
   skipped: number;
-  errors: string[];
+ , errors: string[];
 };
 
 type CaseImport = {
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const importType = formData.get('type') as string;
+    const importType = formData.get('type') as: string;
     const overwriteExisting = formData.get('overwrite') === 'true';
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
@@ -68,14 +68,14 @@ export const POST: RequestHandler = async ({ request }) => {
     // Parse file based on type
     try {
       switch (file.type) {
-        case 'application/json':
+        case, 'application/json':
           data = JSON.parse(fileContent);
           break;
-        case 'text/csv':
+        case, 'text/csv':
           data = parseCSV(fileContent);
           break;
-        case 'application/xml':
-        case 'text/xml':
+        case, 'application/xml':
+        case, 'text/xml':
           data = parseXML(fileContent);
           break;
         default:
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const results: ImportResult = {
-      imported: 0,
+     , imported: 0,
       updated: 0,
       skipped: 0,
       errors: []
@@ -95,17 +95,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Process import based on type
     switch (importType) {
-      case 'cases':
+      case, 'cases':
         await importCases(data, overwriteExisting, results);
         break;
-      case 'evidence':
+      case, 'evidence':
         await importEvidence(data, overwriteExisting, results);
         break;
-      case 'criminals':
+      case, 'criminals':
         await importParticipants(data, overwriteExisting, results);
         break;
-      case 'all': {
-        // Safely treat parsed data as an object and validate array shapes before calling import helpers.
+      case, 'all': {
+        // Safely treat parsed data as an: object and validate array shapes before calling import helpers.
         if (typeof data === 'object' && data !== null) {
           const payload = data as Record<string, unknown>;
 
@@ -121,17 +121,17 @@ export const POST: RequestHandler = async ({ request }) => {
             await importParticipants(payload['criminals'] as ParticipantImport[], overwriteExisting, results);
           }
         } else {
-          results.errors.push('Import payload must be an object containing arrays for: "cases", "evidence", or: "criminals".');
+          results.errors.push('Import payload must be an: object containing arrays, for: "cases", "evidence", or: "criminals".');
         }
         break;
       }
-      default: return json({ error: 'Invalid import type' }, { status: 400 });
+      default: return json({, error: 'Invalid import type' }, { status: 400 });
     }
 
     return json({
       success: true,
       results,
-      message: 'Import; completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped' });
+      message: 'Import;, completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped' });
   } catch (error: any) {
     console.error('Import error:', error);'
     return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 });
@@ -151,7 +151,7 @@ async function importCases(
 
   for (const caseData of casesArray) {
     try {
-      // Basic validation: prefer: 'title' but accept; legacy: 'name'
+      // Basic validation: prefer: 'title' but accept;, legacy: 'name'
       const title = caseData?.title ?? caseData?.name;
       if (!title || !caseData?.status) {
         results.errors.push(`Case missing required fields: ${JSON.stringify(caseData)}`);
@@ -373,7 +373,7 @@ function parseXML(xmlContent: string): any {
         if (Object.prototype.hasOwnProperty.call(obj, childName)) {
           const existing = obj[childName];
           if (Array.isArray(existing)) {
-            (existing as unknown[]).push(childValue);
+            (existing as: unknown[]).push(childValue);
           } else {
             obj[childName] = [existing, childValue];
           }

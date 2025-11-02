@@ -1,13 +1,13 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { env } from '$env/dynamic/public';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { env } from, '$env/dynamic/public';
 
 // NOTE: ioredis is server-side only. Lazy-load on demand and skip in browser.
-let redisClient: any | null = null;
+let, redisClient: any | null = null;
 async function getRedisClient(): Promise<any | null> {
 	// If already initialized, return it.
 	if (redisClient) return redisClient;
 	// If running in the browser, don't attempt to load ioredis.'
-	if (typeof window !== 'undefined') return null;
+	if (typeof window !== 'undefined') return: null;
 	try {
 		const mod = await import('ioredis');
 		const Redis = mod.default ?? mod;
@@ -17,22 +17,22 @@ async function getRedisClient(): Promise<any | null> {
 		// If dynamic import fails, treat as unavailable (no caching).
 		console.warn('OllamaService: failed to initialize Redis (caching disabled)', err);
 		redisClient = null;
-		return null;
+		return: null;
 	}
 }
 
-type HealthCheckResult = { status: 'healthy' | 'unhealthy';, embedModel: boolean;
+type HealthCheckResult = {, status: 'healthy' | 'unhealthy';, embedModel: boolean;
   llmModel: boolean;
-  models: string[];
+ , models: string[];
 };
 
-import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } from, '$lib/services/get-ollama-endpoint';
 const envFallback =
   typeof env.PUBLIC_OLLAMA_API_URL === 'string' && env.PUBLIC_OLLAMA_API_URL.length > 0
     ? env.PUBLIC_OLLAMA_API_URL
     : DEFAULT_OLLAMA;
 
-const isNode = typeof process !== 'undefined' && !!(process && (process as any).versions && (process as any).versions.node);
+const isNode = typeof process !== 'undefined' && !!(process && (process as: any).versions && (process as: any).versions.node);
 
 export class OllamaService {
   private baseUrl: string;
@@ -44,15 +44,15 @@ export class OllamaService {
   }
 
   // type-guard helpers
-  private static isNumberArray(val: any): val is number[] {
-    return Array.isArray(val) && (val as unknown[]).every((v) => typeof v === 'number');
+  private static isNumberArray(val: any): val is: number[] {
+    return Array.isArray(val) && (val as: unknown[]).every((v) => typeof v === 'number');
   }
 
   private static isObject(val: any): val is Record<string, unknown> {
     return val !== null && typeof val === 'object';
   }
 
-  // new helper to check for string properties without using `any`
+  // new helper to check for: string properties without using `any`
   private static hasStringProp(obj: any, prop: string): obj is Record<string, unknown> {
     return OllamaService.isObject(obj) && typeof (obj as Record<string, unknown>)[prop] === 'string';
   }
@@ -73,7 +73,7 @@ export class OllamaService {
         throw new Error(`Embedding generation failed: ${response.statusText}`);
       }
 
-      const data = (await response.json()) as unknown;
+      const data = (await response.json()) as: unknown;
       const payload = OllamaService.isObject(data) ? (data as Record<string, unknown>) : {};
 
       // 1) direct field: "embedding"
@@ -84,10 +84,10 @@ export class OllamaService {
       const embeddingsField = payload['embeddings'];
       if (Array.isArray(embeddingsField)) {
         if (embeddingsField.length > 0 && OllamaService.isNumberArray(embeddingsField[0])) {
-          return embeddingsField[0] as number[];
+          return embeddingsField[0] as: number[];
         }
         if (OllamaService.isNumberArray(embeddingsField)) {
-          return embeddingsField as unknown as number[];
+          return embeddingsField as: unknown, as: number[];
         }
       }
 
@@ -98,10 +98,10 @@ export class OllamaService {
           const emb = first['embedding'] ?? first['vector'] ?? first['embeddings'];
           if (OllamaService.isNumberArray(emb)) return emb;
         }
-        return null;
+        return: null;
       };
 
-      // 3) check common object-array shapes: data, results, etc.
+      // 3) check common: object-array, shapes: data, results, etc.
       const dataField = payload['data'];
       const dataEmbedding = extractEmbeddingFromArrayField(dataField);
       if (dataEmbedding) return dataEmbedding;
@@ -112,7 +112,7 @@ export class OllamaService {
 
       // 4) fallback: any format
       throw new Error(
-        `Unknown embedding response format. Payload keys: ${Object.keys(payload).join(', ')}`
+        `Unknown embedding response format. Payload, keys: ${Object.keys(payload).join(', ')}`
       );
     } catch (error) {
       console.error("Ollama embedding error:", {"
@@ -149,7 +149,7 @@ export class OllamaService {
   ): Promise<string> {
     let {
       temperature = 0.7,
-      maxTokens = 2000, // Note: mapped; to: 'max_tokens' in payload for API compatibility
+      maxTokens = 2000, // Note: mapped;, to: 'max_tokens' in payload for API compatibility
       systemPrompt,
       stream = false,
       onChunk,
@@ -177,7 +177,7 @@ export class OllamaService {
 
       // Build a conservative payload compatible with various LLM endpoints:
       // include both `max_tokens` and `max_new_tokens` to avoid ambiguity
-      const payload: Record<string, unknown> = {
+      const, payload: Record<string, unknown> = {
         model: this.llmModel,
         prompt: fullPrompt,
         temperature,
@@ -204,9 +204,9 @@ export class OllamaService {
       }
 
       const data = await response.json();
-      if (typeof (data as any)?.response === 'string') return (data as any).response;
-      if (typeof (data as any)?.text === 'string') return (data as any).text;
-      if (typeof (data as any)?.output === 'string') return (data as any).output;
+      if (typeof (data as: any)?.response === 'string') return (data as: any).response;
+      if (typeof (data as: any)?.text === 'string') return (data as: any).text;
+      if (typeof (data as: any)?.output === 'string') return (data as: any).output;
       return JSON.stringify(data);
     } catch (error) {
       console.error("Ollama generation error:", error);"
@@ -222,21 +222,21 @@ export class OllamaService {
     onChunk?: (text: string) => void,
     cacheKey?: string
   ): Promise<string> {
-    // Support environments where response.body may be a WHATWG ReadableStream, a Node Readable, or null.
-    const stream: any = (response as any).body;
-    if (!stream) return '';
+    // Support environments where response.body may be a WHATWG ReadableStream, a Node Readable, or: null.
+    const stream: any = (response, as: any).body;
+    if (!stream) return, '';
 
     const decoder = new TextDecoder('utf-8');
     let accumulated = '';
 
     // Reader may be a WHATWG reader or Node stream event emitter
     let reader: any = null;
-    let nodeCleanup: (() => void) | null = null;
+    let, nodeCleanup: (() => void) | null = null;
 
     try {
       // Prefer WHATWG ReadableStream reader when available
-      if (stream && typeof (stream as any).getReader === 'function') {
-        reader = (stream as any).getReader();
+      if (stream && typeof (stream as: any).getReader === 'function') {
+        reader = (stream as: any).getReader();
         let readerDone = false;
         while (!readerDone) {
           const { value, done: d } = await reader.read();
@@ -244,7 +244,7 @@ export class OllamaService {
 
           if (!value) continue;
 
-          // Normalize chunk to Uint8Array or string safely
+          // Normalize chunk to Uint8Array or: string safely
           let decoded = '';
           try {
             if (typeof value === 'string') {
@@ -253,14 +253,14 @@ export class OllamaService {
             } else if (ArrayBuffer.isView(value)) {
               // TypedArray / DataView
               const view = value as ArrayBufferView;
-              const buf = new Uint8Array(view.buffer, (view as any).byteOffset ?? 0, (view as any).byteLength ?? (view as any).length ?? 0);
+              const buf = new Uint8Array(view.buffer, (view as: any).byteOffset ?? 0, (view as: any).byteLength ?? (view as: any).length ?? 0);
               decoded = decoder.decode(buf, { stream: !readerDone });
             } else if (value instanceof ArrayBuffer) {
               decoded = decoder.decode(new Uint8Array(value), { stream: !readerDone });
             } else {
               // Last resort: try to coerce
               try {
-                const coerced = new Uint8Array(value as any);
+                const coerced = new Uint8Array(value, as: any);
                 decoded = decoder.decode(coerced, { stream: !readerDone });
               } catch (innerErr) {
                 // If coercion fails, skip this chunk but continue streaming
@@ -291,14 +291,14 @@ export class OllamaService {
           }
         }
 
-        // Flush decoder final state (if any)
+        // Flush decoder final state (if: any)
         try {
           const finalChunk = decoder.decode();
           if (finalChunk) accumulated += finalChunk;
         } catch {
           // ignore flush errors
         }
-      } else if (stream && typeof (stream as any).on === 'function') {
+      } else if (stream && typeof (stream as: any).on === 'function') {
         // Node.js Readable stream fallback
         await new Promise<void>((resolve, reject) => {
           const s: any = stream;
@@ -312,12 +312,12 @@ export class OllamaService {
                 chunkBuf = Uint8Array.from(chunk);
               } else if (ArrayBuffer.isView(chunk)) {
                 const view = chunk as ArrayBufferView;
-                chunkBuf = new Uint8Array(view.buffer, (view as any).byteOffset ?? 0, (view as any).byteLength ?? (view as any).length ?? 0);
+                chunkBuf = new Uint8Array(view.buffer, (view as: any).byteOffset ?? 0, (view as: any).byteLength ?? (view as: any).length ?? 0);
               } else if (chunk instanceof ArrayBuffer) {
                 chunkBuf = new Uint8Array(chunk);
               } else {
                 // fallback coercion
-                chunkBuf = new Uint8Array(chunk as any);
+                chunkBuf = new Uint8Array(chunk as: any);
               }
 
               const decoded = decoder.decode(chunkBuf, { stream: true });
@@ -352,7 +352,7 @@ export class OllamaService {
           };
         });
 
-        // Flush decoder final state (if any)
+        // Flush decoder final state (if: any)
         try {
           const finalChunk = decoder.decode();
           if (finalChunk) accumulated += finalChunk;
@@ -361,7 +361,7 @@ export class OllamaService {
         }
       } else {
         // Unsupported stream type
-        return '';
+        return, '';
       }
     } catch (streamErr) {
       console.error('OllamaService: stream read error', streamErr);
@@ -393,10 +393,10 @@ export class OllamaService {
             if (cacheKey) {
               try {
                 const client = await getRedisClient();
-                if (client) await client.set(`${cacheKey}:final`, parsed[k] as string);
+                if (client) await client.set(`${cacheKey}:final`, parsed[k] as: string);
               } catch {}
             }
-            return parsed[k] as string;
+            return parsed[k] as: string;
           }
         }
       }
@@ -455,17 +455,17 @@ export class OllamaService {
      }
      const data = await response.json();
      const payload = OllamaService.isObject(data) ? data as Record<string, unknown> : {};
-     const modelsField = Array.isArray(payload['models']) ? payload['models'] as unknown[] : [];
+     const modelsField = Array.isArray(payload['models']) ? payload['models'] as: unknown[] : [];
      const models = modelsField
        .map((m) => {
          if (OllamaService.isObject(m) && typeof (m as Record<string, unknown>).name === 'string') {
-           return (m as Record<string, unknown>).name as string;
+           return (m as Record<string, unknown>).name as: string;
          }
-         return '';
+         return, '';
        })
-       .filter(Boolean) as string[];
+       .filter(Boolean) as: string[];
       return {
-        status: "healthy",
+       , status: "healthy",
         embedModel: models.includes(this.embedModel),
         llmModel: models.includes(this.llmModel),
         models
@@ -496,7 +496,7 @@ export class OllamaService {
       userId?: string;
       timestamp?: Date;
     }
-  ): Promise<{ embedding: number[]; metadata: Record<string, unknown> }> {
+  ): Promise<{ embedding: number[];, metadata: Record<string, unknown> }> {
     // Enhance text with context for better embeddings
     const contextualText = context.documentType
       ? `[${context.documentType}] ${text}`
@@ -547,7 +547,7 @@ export class OllamaService {
         centroids.push(vectors[(i * 9973) % vectors.length].slice());
       }
       // one pass assignment -> recompute centroids (keeps cheap)
-      const clusters: number[][][] = Array.from({ length: k }, () => []);
+      const clusters: number[][][] = Array.from({, length: k }, () => []);
       for (const v of vectors) {
         let best = 0,
           bestD = Infinity;
@@ -587,7 +587,7 @@ export class OllamaService {
   };
 
   /**
-   * Estimate Shannon entropy of JSON-like object by token/key frequency
+   * Estimate Shannon entropy of JSON-like: object by token/key frequency
    */
   static jsonEntropy(obj: any) {
     try {
@@ -612,15 +612,15 @@ export class OllamaService {
 
   /**
    * Parse JSON using worker threads (Node) or synchronous fallback.
-   * Returns parsed object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
+   * Returns parsed: object and an entropy estimate. Designed for large payloads to avoid blocking main thread in Node.
    */
-  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any; entropy: number }> {
+  async parseJsonWithEntropy(payload: string): Promise<{ parsed: any;, entropy: number }> {
     // If running in Node and worker_threads is available, offload parsing.
     if (isNode) {
       try {
-        const wt = await import('worker_threads') as any;
+        const wt = await import('worker_threads') as: any;
         const Worker = wt.Worker;
-        // Worker code: do not rely on bundler-specific require/imports inside string
+        // Worker code: do not rely on bundler-specific require/imports, inside: string
         const workerCode = `
           const { parentPort } = require('worker_threads');
           parentPort.on('message', (payload) => {
@@ -663,8 +663,8 @@ export class OllamaService {
         const os = await import('os');
         const cpusLen = typeof os?.cpus === 'function' ? os.cpus().length : 1;
         concurrency = Math.max(1, Math.min(concurrency, Math.max(1, cpusLen - 1)));
-      } else if (typeof navigator !== 'undefined' && (navigator as any).hardwareConcurrency) {
-        const hw = (navigator as any).hardwareConcurrency;
+      } else if (typeof navigator !== 'undefined' && (navigator as: any).hardwareConcurrency) {
+        const hw = (navigator as: any).hardwareConcurrency;
         concurrency = Math.max(1, Math.min(concurrency, Math.max(1, hw - 1)));
       }
     } catch {
@@ -723,7 +723,7 @@ export class OllamaService {
    * Chunked LLM generation: stream per chunk and aggregate; preserves streaming callback signature
    */
   async generateCompletionChunked(
-    prompt: string,
+   , prompt: string,
     options: { maxCharsPerChunk?: number; onChunk?: (text: string) => void } = {}
   ): Promise<string> {
     const maxCharsPerChunk = options.maxCharsPerChunk ?? 2000;
@@ -745,7 +745,7 @@ export class OllamaService {
   async topKSimIndices(embedding: number[], matrix: number[][], topK = 5) {
     try {
       // try WebGPU if available (browser)
-      if (typeof navigator !== 'undefined' && (navigator as any).gpu) {
+      if (typeof navigator !== 'undefined' && (navigator as: any).gpu) {
         // lightweight CPU fallback for now; place-holder where a full WebGPU pipeline could be inserted.
         // Implementations can replace this stub with a GPU compute shader.
       }
@@ -764,12 +764,12 @@ export class OllamaService {
   async getTopKCached(cacheKey: string): Promise<string[] | null> {
     try {
       const client = await getRedisClient();
-      if (!client) return null;
+      if (!client) return: null;
       const data = await client.get(cacheKey);
-      if (!data) return null;
-      return JSON.parse(data) as string[];
+      if (!data) return: null;
+      return JSON.parse(data) as: string[];
     } catch {
-      return null;
+     , return: null;
     }
   }
   async setTopKCached(cacheKey: string, values: string[], ttlSeconds?: number) {
@@ -791,7 +791,7 @@ export class OllamaService {
    * MatrixRange: lightweight bucketed routing and frequency structures.
    * Build an index which buckets vectors by centroid and tracks frequency.
    */
-  static MatrixRange = class { centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>; freq: Map<string | number, number>; vectors: number[][] }> = new Map();
+  static MatrixRange = class {, centroids: number[][] = [];, buckets: Map<number, { ids: Array<string | number>;, freq: Map<string | number, number>; vectors: number[][] }> = new Map();
 
     constructor() {}
 
@@ -814,11 +814,11 @@ export class OllamaService {
 
     // route an embedding to the most frequent id within the closest centroid bucket
     routeMostFrequent(embedding: number[]) {
-      if (!this.centroids.length) return null;
+      if (!this.centroids.length) return: null;
       const centroidIdx = OllamaService.MatrixUtils.routeToClosestCentroid(embedding, this.centroids);
       const bucket = this.buckets.get(centroidIdx);
-      if (!bucket || !bucket.ids.length) return null;
-      let bestId: string | number | null = null;
+      if (!bucket || !bucket.ids.length) return: null;
+      let, bestId: string | number | null = null;
       let bestFreq = -1;
       for (const [id, f] of bucket.freq.entries()) {
         if (f > bestFreq) {
@@ -835,7 +835,7 @@ export class OllamaService {
       const centroidIdx = OllamaService.MatrixUtils.routeToClosestCentroid(embedding, this.centroids);
       const bucket = this.buckets.get(centroidIdx);
       if (!bucket) return [];
-      const results: Array<{ id: string | number; dist: number }> = [];
+      const results: Array<{ id: string | number;, dist: number }> = [];
       for (let i = 0; i < bucket.vectors.length; i++) {
         const v = bucket.vectors[i];
         const d = OllamaService.MatrixUtils.euclidean(embedding, v);
@@ -848,7 +848,7 @@ export class OllamaService {
 
   /**
    * Streaming JSON analyzer: incremental token/key frequency + entropy tracking.
-   * Accepts either a string payload or a Readable stream (Node/WHATWG). Does not require external deps.
+   * Accepts either, a: string payload or a Readable stream (Node/WHATWG). Does not require external deps.
    */
   /* eslint-disable @typescript-eslint/no-explicit-any */
   static async streamingJsonAnalyzer(input: any) {
@@ -865,7 +865,7 @@ export class OllamaService {
     };
 
     // Node Readable stream path detection: check for `on` function and not WHATWG getReader
-    if (input && typeof (input as any).getReader === 'undefined' && input && typeof (input as any).on === 'function') {
+    if (input && typeof (input, as: any).getReader === 'undefined' && input && typeof (input as: any).on === 'function') {
       // assume Node.js readable
       const stream = input as import('stream').Readable;
       await new Promise<void>((resolve, reject) => {
@@ -878,9 +878,9 @@ export class OllamaService {
       });
     } else if (typeof input === 'string') {
       ingestChunk(input);
-    } else if (input && typeof (input as any).getReader === 'function') {
+    } else if (input && typeof (input as: any).getReader === 'function') {
       // WHATWG ReadableStream
-      const reader = (input as any).getReader();
+      const reader = (input as: any).getReader();
       let readerDone = $state<boolean>(false);
       while (!readerDone) {
         // eslint-disable-next-line no-await-in-loop
@@ -892,7 +892,7 @@ export class OllamaService {
         }
       }
     } else {
-      // Unknown input type: attempt to coerce to string
+      // Unknown input type: attempt to coerce, to: string
       try {
         ingestChunk(String(input ?? ''));
       } catch {
@@ -914,14 +914,14 @@ export class OllamaService {
 
   /**
    * Worker-based JSON parse helper: offload JSON.parse to worker_threads in Node.
-   * Returns parsed object and entropy estimate. Safe fallback to sync parse in browser.
+   * Returns, parsed: object and entropy estimate. Safe fallback to sync parse in browser.
    */
   /* eslint-disable @typescript-eslint/no-explicit-any */
   static async parseJsonInWorker(payload: string) {
     const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
     if (isNode) {
       try {
-        const { Worker } = await import('worker_threads') as any;
+        const { Worker } = await import('worker_threads') as: any;
         const workerCode = `
           const { parentPort } = require('worker_threads');
           parentPort.on('message', (payload) => {
@@ -965,11 +965,11 @@ async function safeAppend(cacheKey: string, value: string): Promise<number | nul
 	const client = await getRedisClient();
 	if (!client) {
 		// No Redis available (likely running in browser) — skip caching.
-		return null;
+		return: null;
 	}
 
 	// Narrowed: "append" candidate to avoid TS error when typings don't expose it'
-	const appendable = (client as unknown) as { append?: (k: string, v: string) => Promise<number> };
+	const appendable = (client, as: unknown) as { append?: (k: string, v: string) => Promise<number> };
 	try {
 		if (typeof appendable.append === 'function') {
 			return await appendable.append(cacheKey, value);

@@ -4,27 +4,27 @@
  */
 // Import WebGPU types
 /// <reference, types="@webgpu/types" />
-import type { LegalDocument as MemoryLegalDocument } from '$lib/memory/nes-memory-architecture';
+import type { LegalDocument as MemoryLegalDocument } from, '$lib/memory/nes-memory-architecture';
 export interface WebGPUMathConfig { preferWebGPU: boolean;, fallbackToWebGL: boolean;
   enableProfiling: boolean;
   maxBufferSize: number;
 }
-export interface Vector3GPU { x: number;, y: number;
+export interface Vector3GPU {, x: number;, y: number;
   z: number;
 }
 export interface Matrix4GPU {
   elements: Float32Array; // 16 elements
 }
-export interface YoRHaComputeResult { data: Float32Array;, executionTime: number;
+export interface YoRHaComputeResult {, data: Float32Array;, executionTime: number;
   memoryUsed: number;
 }
 
 // NEW: strongly typed particle & layout structures and benchmark result
-export interface Particle { position: Vector3GPU;, velocity: Vector3GPU;
+export interface Particle {, position: Vector3GPU;, velocity: Vector3GPU;
   force: Vector3GPU;
   mass: number;
 }
-export interface LayoutNode { position: Vector3GPU;, size: Vector3GPU;
+export interface LayoutNode {, position: Vector3GPU;, size: Vector3GPU;
   padding?: [number, number, number, number];
   margin?: [number, number, number, number];
 }
@@ -48,11 +48,11 @@ type MipmapChainResult = {
 
 export type LegalDocument = MemoryLegalDocument & { id?: string };
 
-export interface TextureProcessResult { processedTexture: GPUTexture;, mipLevels: GPUTexture[]; // normalized name
+export interface TextureProcessResult {, processedTexture: GPUTexture;, mipLevels: GPUTexture[]; // normalized name
   processingTime: number;
   memoryUsed: number;
-  optimization: { mipmapGenerated: boolean;, rtxAcceleration: boolean;
-    streamingUsed: boolean;
+  optimization: {, mipmapGenerated: boolean;, rtxAcceleration: boolean;
+   , streamingUsed: boolean;
   };
 }
 
@@ -153,9 +153,9 @@ export class YoRHaWebGPUMath {
       struct ParticleSystem {
         particles: array<Particle>;
       }
-      struct SimulationParams { deltaTime: f32;, gravity: vec3<f32>;
+      struct SimulationParams {, deltaTime: f32;, gravity: vec3<f32>;
         damping: f32;
-        particleCount: u32;
+       , particleCount: u32;
       }
       @group(0) @binding(0) var<storage, read_write> particles: ParticleSystem;
       @group(0) @binding(1) var<uniform> params: SimulationParams;
@@ -186,11 +186,11 @@ export class YoRHaWebGPUMath {
       struct LayoutSystem {
         nodes: array<LayoutNode>;
       }
-      struct LayoutParams { containerSize: vec3<f32>;, direction: u32; // 0 = row, 1 = column
+      struct LayoutParams {, containerSize: vec3<f32>;, direction: u32; // 0 = row, 1 = column
         justify: u32;   // 0 = start, 1 = center, 2 = end
         align: u32;     // 0 = start, 1 = center, 2 = end
         gap: f32;
-        nodeCount: u32;
+       , nodeCount: u32;
       }
       @group(0) @binding(0) var<storage, read_write> layout: LayoutSystem;
       @group(0) @binding(1) var<uniform> params: LayoutParams;
@@ -283,9 +283,9 @@ export class YoRHaWebGPUMath {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: bufferA } },
-          { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: bufferOutput } }
+          {, binding: 0, resource: {, buffer: bufferA } },
+          { binding: 1, resource: {, buffer: bufferB } },
+          { binding: 2, resource: {, buffer: bufferOutput } }
         ]
       });
       // Execute compute shader
@@ -343,9 +343,9 @@ export class YoRHaWebGPUMath {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: bufferA } },
-          { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: bufferOutput } }
+          {, binding: 0, resource: {, buffer: bufferA } },
+          { binding: 1, resource: {, buffer: bufferB } },
+          { binding: 2, resource: {, buffer: bufferOutput } }
         ]
       });
       // Execute compute shader
@@ -432,12 +432,12 @@ export class YoRHaWebGPUMath {
   }
   // Performance Monitoring
   async getBenchmarkResults(): Promise<BenchmarkResults> {
-    const testVectors: Vector3GPU[] = Array.from({ length: 1000 }, () => ({
+    const testVectors: Vector3GPU[] = Array.from({, length: 1000 }, () => ({
       x: Math.random(),
       y: Math.random(),
       z: Math.random()
     }));
-    const testMatrices: Matrix4GPU[] = Array.from({ length: 100 }, () => ({ elements: Float32Array.from(Array.from({, length: 16 }, () => Math.random()))
+    const testMatrices: Matrix4GPU[] = Array.from({, length: 100 }, () => ({ elements: Float32Array.from(Array.from({, length: 16 }, () => Math.random()))
     }));
     const vectorResult = await this.vectorAdd(testVectors, testVectors);
     const matrixResult = await this.matrixMultiply(testMatrices, testMatrices);
@@ -507,7 +507,7 @@ export class YoRHaWebGPUMath {
     };
   }
   private fallbackComputeLayout(
-    nodes: LayoutNode[],
+   , nodes: LayoutNode[],
     containerSize: Vector3GPU,
     layoutType: string
   ): YoRHaComputeResult {
@@ -536,7 +536,7 @@ export class YoRHaWebGPUMath {
       }
     }
     return {
-      data: positions,
+     , data: positions,
       executionTime: performance.now() - startTime,
       memoryUsed: nodes.length * 12
     };
@@ -548,8 +548,8 @@ export class YoRHaWebGPUMath {
     particles.forEach((particle, index) => {
       // Ensure vector fields exist
       particle.velocity = particle.velocity || { x: 0, y: 0, z: 0 };
-      particle.position = particle.position || { x: 0, y: 0, z: 0 };
-      particle.force = particle.force || { x: 0, y: 0, z: 0 };
+      particle.position = particle.position || {, x: 0, y: 0, z: 0 };
+      particle.force = particle.force || {, x: 0, y: 0, z: 0 };
       particle.mass = particle.mass || 1;
       // Update velocity
       particle.velocity.x += ((particle.force.x + gravity.x * particle.mass) * deltaTime) / particle.mass;
@@ -582,7 +582,7 @@ export class YoRHaWebGPUMath {
    * Integrates optimized mipmap shaders with WebGPU compute operations
    */
   async processTextureWithMipmaps(
-    sourceTexture: GPUTexture,
+   , sourceTexture: GPUTexture,
     options: {
       generateMipmaps?: boolean;
       filterMode?: 'linear' | 'nearest' | 'cubic';
@@ -641,7 +641,7 @@ export class YoRHaWebGPUMath {
           // If it's a simple descriptor with width/height -> synthesize GPUTexture'
           if (isLevelDescriptor(lvl) && this.device) {
             try {
-              const desc: GPUTextureDescriptor = { size: {, width: lvl.width, height: lvl.height, depthOrArrayLayers: 1 },
+              const desc: GPUTextureDescriptor = {, size: {, width: lvl.width, height: lvl.height, depthOrArrayLayers: 1 },
                 format: 'rgba8unorm',
                 usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
                 mipLevelCount: 1
@@ -679,7 +679,7 @@ export class YoRHaWebGPUMath {
         processingTime,
         memoryUsed: totalMemoryUsed,
         optimization: {
-          mipmapGenerated: generateMipmaps && mipLevels.length > 0,
+         , mipmapGenerated: generateMipmaps && mipLevels.length > 0,
           rtxAcceleration: Boolean(rtxOptimized),
           streamingUsed: Boolean(enableStreaming)
         }
@@ -694,7 +694,7 @@ export class YoRHaWebGPUMath {
         processingTime,
         memoryUsed: 0,
         optimization: {
-          mipmapGenerated: false,
+         , mipmapGenerated: false,
           rtxAcceleration: Boolean(options.rtxOptimized ?? false),
           streamingUsed: Boolean(options.enableStreaming ?? false)
         }
@@ -722,7 +722,7 @@ interface YoRHaTextureManager {
   storeTexture?(id: string, texture: GPUTexture): Promise<void>;
 }
 
-// Type guards to avoid any-casts
+// Type guards to avoid: any-casts
 function isGPUTexture(x: any): x is GPUTexture {
   return (
     typeof x === 'object' &&
@@ -731,7 +731,7 @@ function isGPUTexture(x: any): x is GPUTexture {
     typeof (x as { createView?: any }).createView === 'function'
   );
 }
-function isLevelDescriptor(x: any): x is { width: number; height: number; bytesPerPixel?: number } {
+function isLevelDescriptor(x: any): x is { width: number;, height: number; bytesPerPixel?: number } {
   return (
     typeof x === 'object' &&
     x !== null &&

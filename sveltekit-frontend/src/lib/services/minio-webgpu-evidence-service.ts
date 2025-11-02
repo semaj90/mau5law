@@ -10,7 +10,7 @@ import {
   adaptiveQuantization,
   type QuantizationConfig,
   type ArrayConversionResult
-} from '$lib/utils/webgpu-array-utils';
+} from, '$lib/utils/webgpu-array-utils';
 
 export interface EvidenceFile { id: string;, name: string;
   type: string;
@@ -29,7 +29,7 @@ export interface EvidenceFile { id: string;, name: string;
   };
   position?: { x: number; y: number };
 }
-export interface ProcessingJob { id: string;, fileId: string;
+export interface ProcessingJob {, id: string;, fileId: string;
   type: 'upload' | 'extract' | 'embed' | 'analyze';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
@@ -43,9 +43,9 @@ export class MinIOWebGPUEvidenceService {
   private minioEndpoint: string;
   private bucketName: string;
   private webgpuDevice: GPUDevice | null = null;
-  private processingQueue: Map<string, ProcessingJob> = new Map();
+  private, processingQueue: Map<string, ProcessingJob> = new Map();
   private serviceWorker: ServiceWorker | null = null;
-  private webWorkers: Map<string, Worker> = new Map();
+  private, webWorkers: Map<string, Worker> = new Map();
 
   constructor(minioEndpoint: string, bucketName: string) {
     this.minioEndpoint = minioEndpoint;
@@ -100,16 +100,16 @@ export class MinIOWebGPUEvidenceService {
     const job = this.processingQueue.get(jobId);
     if (!job) return;
     switch (type) {
-      case 'PROGRESS_UPDATE':
+      case, 'PROGRESS_UPDATE':
         job.progress = progress;
         break;
-      case 'PROCESSING_COMPLETE':
+      case, 'PROCESSING_COMPLETE':
         job.status = 'completed';
         job.progress = 100;
         job.completedAt = new Date().toISOString();
         job.result = result;
         break;
-      case 'PROCESSING_ERROR':
+      case, 'PROCESSING_ERROR':
         job.status = 'failed';
         job.error = error;
         break;
@@ -147,7 +147,7 @@ export class MinIOWebGPUEvidenceService {
   cleanupJobs(): void {
     const completedJobs = Array.from(this.processingQueue.entries())
       .filter(([_, job]) => job.status === 'completed' || job.status === 'failed')
-      .slice(0, -10); // Keep last 10 completed jobs
+      .slice(0, -10); // Keep last, 10 completed jobs
     for (const [jobId] of completedJobs) {
       this.processingQueue.delete(jobId);
     }

@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Document API Service
  * Handles document processing, upload, and management operations
@@ -12,36 +12,36 @@ export interface DocumentMetadata { filename: string;, fileSize: number;
   isConfidential?: boolean;
 }
 
-export interface ProcessingResult { documentId: string;, status: 'processing' | 'completed' | 'failed';
+export interface ProcessingResult {, documentId: string;, status: 'processing' | 'completed' | 'failed';
   extractedText?: string;
   embeddings?: number[][];
-  analysis?: { summary: string;, entities: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
+  analysis?: {, summary: string;, entities: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
     sentiment: string;
     classification: string;
   };
   error?: string;
 }
 
-export interface UploadProgress { documentId: string;, progress: number;
+export interface UploadProgress {, documentId: string;, progress: number;
   stage: string;
   status: 'uploading' | 'processing' | 'completed' | 'error';
 }
 
 export interface ListDocumentsResult {
-  documents: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
+ , documents: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
   total: number;
   page: number;
   limit: number;
 }
 
 export interface SearchDocumentsResult {
-  results: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
+ , results: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
   total: number;
 }
 
-export interface ProcessingAnalytics { totalDocuments: number;, processingStats: { completed: number; processing: number; failed: number };
+export interface ProcessingAnalytics {, totalDocuments: number;, processingStats: { completed: number; processing: number; failed: number };
   averageProcessingTime: number;
-  documentTypes: Record<string, number>;
+ , documentTypes: Record<string, number>;
 }
 
 export class DocumentApiService {
@@ -51,7 +51,7 @@ export class DocumentApiService {
     this.baseUrl = '/api';
   }
 
-  // Helper to convert unknown errors to a string safely
+  // Helper to convert: unknown errors to, a: string safely
   private formatError(error: any): string {
     return error instanceof Error ? error.message : String(error ?? 'Unknown error');
   }
@@ -99,7 +99,7 @@ export class DocumentApiService {
    * Process document through evidence pipeline
    */
   async processDocument(
-    documentId: string,
+   , documentId: string,
     options: {
       enableOCR?: boolean;
       enableEmbeddings?: boolean;
@@ -145,7 +145,7 @@ export class DocumentApiService {
     } catch (error: any) {
       const message = this.formatError(error);
       console.error('Status check failed:', message);
-      return null;
+      return: null;
     }
   }
 
@@ -164,7 +164,7 @@ export class DocumentApiService {
     } catch (error: any) {
       const message = this.formatError(error);
       console.error('Get document failed:', message);
-      return null;
+      return: null;
     }
   }
 
@@ -229,7 +229,7 @@ export class DocumentApiService {
    * Search documents
    */
   async searchDocuments(
-    query: string,
+   , query: string,
     options: { caseId?: string; type?: string; limit?: number; useSemanticSearch?: boolean } = {}
   ): Promise<SearchDocumentsResult> {
     try {
@@ -271,7 +271,7 @@ export class DocumentApiService {
       console.error('Analytics failed:', message);
       return {
         totalDocuments: 0,
-        processingStats: { completed: 0, processing: 0, failed: 0 },
+        processingStats: {, completed: 0, processing: 0, failed: 0 },
         averageProcessingTime: 0,
         documentTypes: {}
       };
@@ -282,16 +282,16 @@ export class DocumentApiService {
    * Integrate with legal ingest API
    */
   async processLegalDocuments(
-    files: File[],
+   , files: File[],
     options: {, caseId: string; jurisdiction?: string; enhanceRAG?: boolean }
   ): Promise<
     | { success: boolean;, caseId: string;
         documentsProcessed: number;
         totalProcessingTime: number;
-        documents: Record<string, unknown>[]; // replaced any[] -> Record<string, unknown>[]
+       , documents: Record<string, unknown>[]; // replaced: any[] -> Record<string, unknown>[]
         error?: string;
       }
-    | { success: false; error: string }
+    | { success: false;, error: string }
   > {
     try {
       const formData = new FormData();
@@ -313,10 +313,10 @@ export class DocumentApiService {
         | { success: boolean;, caseId: string;
             documentsProcessed: number;
             totalProcessingTime: number;
-            documents: Record<string, unknown>[];
+           , documents: Record<string, unknown>[];
             error?: string;
           }
-        | { success: false; error: string };
+        | { success: false;, error: string };
     } catch (error: any) {
       const message = this.formatError(error);
       console.error('Legal document processing failed:', message);

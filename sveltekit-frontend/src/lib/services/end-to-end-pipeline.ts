@@ -1,23 +1,23 @@
 /**
  * End-to-End Array Loop Pipeline
  * Demonstrates: Redis → Array Processing → LokiJS → Fuse.js → Service Worker → Storage
- * Features: nomic-embed-text, compression, batch processing, offline-first
+ *, Features: nomic-embed-text, compression, batch processing, offline-first
  */
-import { cache } from '$lib/server/cache/redis';
-import { vectorService } from '$lib/server/vector/EnhancedVectorService';
-import { LokiEvidenceService } from '$lib/utils/loki-evidence';
-import Fuse from 'fuse.js';
+import { cache } from, '$lib/server/cache/redis';
+import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
+import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
+import Fuse from, 'fuse.js';
 
 export interface SearchPipelineResult { id: string;, content: string;
   embedding: number[];
   score: number;
   // replace `any` with a safer record type
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   source: 'redis' | 'vector' | 'keyword';
   processingTime: number;
 }
 
-// New: strongly-typed vector search item (replaces `any`)
+//, New: strongly-typed vector search item (replaces `any`)
 export interface VectorSearchItem {
   id?: string;
   content?: string;
@@ -35,19 +35,19 @@ export type HybridSearchOptions = {
   [key: string]: any;
 };
 
-export type EvidenceRecord = { id: string;, title: string;
+export type EvidenceRecord = {, id: string;, title: string;
   description: string;
   type: string;
   tags: any[];
   createdAt: Date;
   updatedAt: Date;
   attachments: any[];
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 };
 
 export class EndToEndPipeline {
   private lokiService: LokiEvidenceService;
-  private fuseIndex: Fuse<SearchPipelineResult>;
+  private, fuseIndex: Fuse<SearchPipelineResult>;
 
   constructor() {
     this.lokiService = new LokiEvidenceService();
@@ -60,9 +60,9 @@ export class EndToEndPipeline {
 
   // Helper: safe base64 encoding that works in both Node and browser environments
   private encodeBase64(input: string): string {
-    if (typeof globalThis !== 'undefined' && typeof (globalThis as any).Buffer === 'function') {
+    if (typeof globalThis !== 'undefined' && typeof (globalThis as: any).Buffer === 'function') {
       // Node.js / bundler environments that polyfill Buffer
-      return (globalThis as any).Buffer.from(input, 'utf8').toString('base64');
+      return (globalThis as: any).Buffer.from(input, 'utf8').toString('base64');
     }
     // Browser fallback
     return btoa(unescape(encodeURIComponent(input)));
@@ -71,21 +71,21 @@ export class EndToEndPipeline {
   // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
   // (moved type aliases to top-level)
 
-  // normalize unknown backend results to our VectorSearchItem shape (no `any`)
+  // normalize: unknown backend results to our VectorSearchItem shape (no `any`)
   private normalizeToVectorSearchItem(r: any): VectorSearchItem {
     if (!r || typeof r !== 'object') return {};
     const obj = r as Record<string, unknown>;
     const embedding = Array.isArray(obj.embedding)
-      ? (obj.embedding as unknown[]).map(v => (typeof v === 'number' ? v : Number(v))).filter(n => !Number.isNaN(n)) as number[]
+      ? (obj.embedding as: unknown[]).map(v => (typeof v === 'number' ? v : Number(v))).filter(n => !Number.isNaN(n)) as: number[]
       : undefined;
 
     return {
-      id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined),
+     , id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined),
       content: typeof obj.content === 'string' ? obj.content : (typeof obj.text === 'string' ? obj.text : ''),
       score: typeof obj.score === 'number' ? obj.score : (typeof obj.similarity === 'number' ? obj.similarity : undefined),
       metadata: (obj.metadata && typeof obj.metadata === 'object') ? obj.metadata as Record<string, unknown> : {},
       embedding,
-      ...obj, // keep extra fields but typed as unknown via the index signature on VectorSearchItem
+      ...obj, // keep extra fields but typed as: unknown via the index signature on VectorSearchItem
     };
   }
 
@@ -108,9 +108,9 @@ export class EndToEndPipeline {
         // Generate embedding with nomic-embed-text via EnhancedVectorService
         const embedding = await vectorService.generateEmbedding(query);
 
-        // Use a properly-typed options object
-        const opts: HybridSearchOptions = { limit: 20, threshold: 0.7 };
-        const rawSearchResults: any = await vectorService.hybridSearch(query, opts);
+        // Use a properly-typed options: object
+        const opts: HybridSearchOptions = {, limit: 20, threshold: 0.7 };
+        const, rawSearchResults: any = await vectorService.hybridSearch(query, opts);
 
         // normalize/marshal into VectorSearchItem[] (no `any`)
         const searchResults: VectorSearchItem[] = (Array.isArray(rawSearchResults) ? rawSearchResults : []).map(r =>
@@ -124,7 +124,7 @@ export class EndToEndPipeline {
           const score = typeof item?.score === 'number' ? item.score : 1;
           const metadata = (item?.metadata && typeof item.metadata === 'object') ? item.metadata as Record<string, unknown> : {};
           const itemEmbedding: number[] =
-            Array.isArray(item?.embedding) && item!.embedding!.length > 0 ? (item.embedding as number[]) : (embedding ?? []);
+            Array.isArray(item?.embedding) && item!.embedding!.length > 0 ? (item.embedding as: number[]) : (embedding ?? []);
           return {
             id,
             content,
@@ -136,7 +136,7 @@ export class EndToEndPipeline {
           };
         });
 
-        // Cache results for 15 minutes (900 seconds) - adapter may expect ms or secs; original used ms so keep ms
+        // Cache results for, 15 minutes (900 seconds) - adapter may expect ms or secs; original used ms so keep ms
         await cache.set(cacheKey, results, 900000);
         console.log(`💾 Cached ${results.length} results for: ${query}`);
       } else {
@@ -160,8 +160,8 @@ export class EndToEndPipeline {
       const result = results[index];
       try {
         // A) LokiJS - Client-side IndexedDB storage
-        // cast to any to avoid TS errors when the LokiEvidenceService type differs
-        await (this.lokiService as unknown as { addEvidence(e: EvidenceRecord): Promise<void> }).addEvidence({
+        // cast to: any to avoid TS errors when the LokiEvidenceService type differs
+        await (this.lokiService, as: unknown as { addEvidence(e: EvidenceRecord): Promise<void> }).addEvidence({
           id: result.id,
           title:
             (result.metadata?.title && typeof result.metadata.title === 'string')
@@ -172,7 +172,7 @@ export class EndToEndPipeline {
             (result.metadata?.type && typeof result.metadata.type === 'string')
               ? String(result.metadata.type)
               : 'document',
-          tags: Array.isArray(result.metadata?.tags) ? (result.metadata.tags as unknown[]) : [],
+          tags: Array.isArray(result.metadata?.tags) ? (result.metadata.tags as: unknown[]) : [],
           createdAt: new Date(),
           updatedAt: new Date(),
           attachments: [],
@@ -279,7 +279,7 @@ export class EndToEndPipeline {
    */
   async executeFullPipeline(queries: string[]): Promise<{ totalResults: number;, cacheHits: number;
     processingTime: number;
-    fuzzySearchResults: SearchPipelineResult[];
+   , fuzzySearchResults: SearchPipelineResult[];
   }> {
     const startTime = Date.now();
     console.log('🚀 Starting End-to-End Pipeline');

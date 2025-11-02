@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/database';
-import { testRagDocuments, testRagEmbeddings, testRagSearchSessions } from '$lib/server/db/schema-test-rag';
-import { desc, sql } from 'drizzle-orm';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { qdrantService } from '$lib/services/qdrant-vector-service';
+import type { SearchResult } from, '$lib/types';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/database';
+import { testRagDocuments, testRagEmbeddings, testRagSearchSessions } from, '$lib/server/db/schema-test-rag';
+import { desc, sql } from, 'drizzle-orm';
+import { gpuRAGService } from, '$lib/services/gpu-rag-service';
+import { qdrantService } from, '$lib/services/qdrant-vector-service';
 
 /**
  * Test RAG Search API
@@ -13,13 +13,13 @@ import { qdrantService } from '$lib/services/qdrant-vector-service';
  * Endpoint: POST /api/test-rag/search
  */
 
-interface SearchResult { id: string;, documentId: string;
+interface SearchResult {, id: string;, documentId: string;
   filename: string;
   content: string;
   fullContent: string;
   similarity: number;
   score: number;
-  searchType: 'semantic' | 'text' | 'hybrid';
+ , searchType: 'semantic' | 'text' | 'hybrid';
   confidence?: number;
   metadata?: Record<string, unknown>;
   legalAnalysis?: Record<string, unknown>;
@@ -37,7 +37,7 @@ async function generateQueryEmbedding(query: string): Promise<number[] | null> {
     return result.embedding;
   } catch (error) {
     console.error('[Test RAG Search] Failed to generate query embedding:', error);
-    return null;
+    return: null;
   }
 }
 
@@ -45,7 +45,7 @@ async function generateQueryEmbedding(query: string): Promise<number[] | null> {
  * Perform semantic vector search using pgvector cosine similarity
  */
 async function vectorSearch(
-  queryEmbedding: number[],
+ , queryEmbedding: number[],
   limit: number = 10,
   threshold: number = 0.7
 ): Promise<SearchResult[]> {
@@ -53,7 +53,7 @@ async function vectorSearch(
     console.log(`🔢 [Test RAG Search] Performing vector similarity search (limit=${limit}, threshold=${threshold})...`);
 
     // Use PostgreSQL pgvector cosine similarity (<=>)
-    // 1 - distance = similarity (0 to 1, where 1 is identical)
+    // 1 - distance = similarity (0 to, 1, where, 1 is identical)
     const results = await db
       .select({
         id: testRagEmbeddings.id,
@@ -131,8 +131,8 @@ async function textSearch(query: string, limit: number = 10): Promise<SearchResu
       filename: r.filename,
       content: r.content,
       fullContent: r.content,
-      similarity: Math.min((r.rank as number) * 2, 1.0),
-      score: r.rank as number,
+      similarity: Math.min((r.rank, as: number) * 2, 1.0),
+      score: r.rank, as: number,
       searchType: 'text' as const,
       confidence: r.confidence || undefined,
       metadata: r.metadata,
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.log(`\n🔍 [Test RAG Search] Query: "${query}" (type=${searchType}, limit=${limit})');'`
 
     let results: SearchResult[] = [];
-    let queryEmbedding: number[] | null = null;
+    let, queryEmbedding: number[] | null = null;
 
     if (searchType === 'semantic' || searchType === 'hybrid') {
       // Generate query embedding
@@ -237,7 +237,7 @@ export const POST: RequestHandler = async ({ request }) => {
           searchType,
           resultCount: results.length,
           metadata: {
-            processingTime: `${processingTime}ms`,
+           , processingTime: `${processingTime}ms`,
             threshold
           }
         });
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * GET: Health check and stats
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
 
@@ -293,11 +293,11 @@ export const GET: RequestHandler = async ({ url }) => {
           .from(testRagDocuments)
           .limit(1)) as Array<{ count: number }>;
         const embCountRows = (await db
-          .select({ count: sql<number>`COUNT(*)` })
+          .select({, count: sql<number>`COUNT(*)` })
           .from(testRagEmbeddings)
           .limit(1)) as Array<{ count: number }>;
         const sesCountRows = (await db
-          .select({ count: sql<number>`COUNT(*)' })'`
+          .select({, count: sql<number>`COUNT(*)' })'`
           .from(testRagSearchSessions)
           .limit(1)) as Array<{ count: number }>;
 

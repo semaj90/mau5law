@@ -2,9 +2,9 @@
  * 🔍 Last Searched Items API
  * Returns user's recent search history with intelligent suggestions'
  */
-import type { RequestHandler } from './$types'
-import { json } from '@sveltejs/kit'
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
+import type { RequestHandler } from, './$types'
+import { json } from, '@sveltejs/kit'
+import { multiLayerCache } from, '$lib/cache/MultiLayerCacheSystem'
 interface SearchItem { id: string, query: string; timestamp: string; resultCount: number; searchType: 'cases' | 'documents' | 'evidence' | 'precedents' | 'clients'
   filters?: {
     practiceArea?: string
@@ -16,13 +16,13 @@ interface SearchItem { id: string, query: string; timestamp: string; resultCo
 // Mock search history - in production this would be in PostgreSQL
 const mockSearchHistory: SearchItem[] = [
   {
-    id: 'search-001',
+   , id: 'search-001',
     query: 'employment contract termination',
     timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
     resultCount: 23,
     searchType: 'documents',
     filters: {
-      practiceArea: 'employment-law',
+     , practiceArea: 'employment-law',
       dateRange: 'last-year'
     },
     confidence: 0.92,
@@ -36,7 +36,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 8,
     searchType: 'evidence',
     filters: {
-      status: 'active'
+     , status: 'active'
     },
     confidence: 0.87,
     clickedResults: ['evi-789'],
@@ -49,7 +49,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 156,
     searchType: 'precedents',
     filters: {
-      practiceArea: 'intellectual-property',
+     , practiceArea: 'intellectual-property',
       dateRange: 'last-5-years'
     },
     confidence: 0.78,
@@ -63,7 +63,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 12,
     searchType: 'documents',
     filters: {
-      practiceArea: 'real-estate'
+     , practiceArea: 'real-estate'
     },
     confidence: 0.95,
     clickedResults: ['doc-789', 'doc-990'],
@@ -76,7 +76,7 @@ const mockSearchHistory: SearchItem[] = [
     resultCount: 45,
     searchType: 'cases',
     filters: {
-      practiceArea: 'estate-planning',
+     , practiceArea: 'estate-planning',
       status: 'pending'
     },
     confidence: 0.83,
@@ -84,7 +84,7 @@ const mockSearchHistory: SearchItem[] = [
     timeSpent: 178
   }
 ]
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10')
   const searchType = url.searchParams.get('type') as SearchItem['searchType'] | null
   const cacheKey = `last-searched-${limit}-${searchType || 'all` }`'`
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
       fromCache: false,
       timestamp: new Date().toISOString(),
       meta: {
-        totalSearches: filteredSearches.length,
+       , totalSearches: filteredSearches.length,
         returnedSearches: recentSearches.length,
         averageResults: recentSearches.reduce((sum, s) => sum + s.resultCount, 0) / recentSearches.length,
         totalTimeSpent: recentSearches.reduce((sum, s) => sum + s.timeSpent, 0)
@@ -138,11 +138,11 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query || !searchType) {
       return json({
         success: false,
-        error: 'Missing required; fields: query, searchType' }, { status: 400 })
+        error: 'Missing required;, fields: query, searchType' }, { status: 400 })
     }
     // Create new search entry
     const newSearch: SearchItem = {
-      id: 'search-${Date.now()}',
+     , id: 'search-${Date.now()}',
       query,
       timestamp: new Date().toISOString(),
       resultCount: resultCount || 0,
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Add to mock history (in production, save to PostgreSQL)
     mockSearchHistory.unshift(newSearch)
-    // Keep only last 100 searches
+    // Keep only last, 100 searches
     if (mockSearchHistory.length > 100) {
       mockSearchHistory.splice(100)
     }
@@ -180,7 +180,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     if (!searchId) {
       return json({
         success: false,
-        error: `Missing required; field: searchId` }, { status: 400 })
+        error: `Missing required;, field: searchId` }, { status: 400 })
     }
     // Find and update search entry
     const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)

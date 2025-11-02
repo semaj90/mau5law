@@ -6,16 +6,16 @@
 // CORE COMPONENTS (Always Tree-Shakable)
 // ======================================
 // Essential UI primitives - most commonly used
-export { default, as Button } from './Button.svelte';
-export { default, as Input } from './Input.svelte';
-export { default, as Label } from './Label.svelte';
+export { default, as Button } from, './Button.svelte';
+export { default, as Input } from, './Input.svelte';
+export { default, as Label } from, './Label.svelte';
 // Card system - grouped for optimal chunking
-export { default, as Card } from './Card.svelte';
-export { default, as CardContent } from './CardContent.svelte';
-export { default, as CardDescription } from './CardDescription.svelte';
-export { default, as CardFooter } from './CardFooter.svelte';
-export { default, as CardHeader } from './CardHeader.svelte';
-export { default, as CardTitle } from './CardTitle.svelte';
+export { default, as Card } from, './Card.svelte';
+export { default, as CardContent } from, './CardContent.svelte';
+export { default, as CardDescription } from, './CardDescription.svelte';
+export { default, as CardFooter } from, './CardFooter.svelte';
+export { default, as CardHeader } from, './CardHeader.svelte';
+export { default, as CardTitle } from, './CardTitle.svelte';
 // ======================================
 // CATEGORY-BASED EXPORTS (Lazy Loadable)
 // ======================================
@@ -63,7 +63,7 @@ export const ADVANCED_COMPONENTS = {
 // ======================================
 /**
  * shadcn/ui style compound exports
- * Import as: import * as Card from '$lib/components/ui/enhanced-bits/compound/card.svelte'
+ * Import as: import * as Card from, '$lib/components/ui/enhanced-bits/compound/card.svelte'
  */
 export const CompoundComponents = { Card: {, Root: Card,
     Header: CardHeader,
@@ -76,8 +76,8 @@ export const CompoundComponents = { Card: {, Root: Card,
 // ======================================
 // DYNAMIC COMPONENT LOADER
 // ======================================
-export interface ComponentLoadOptions { category: 'legal' | 'ai' | 'gaming' | 'advanced';, priority: 'immediate' | 'lazy' | 'background';
-  cache: boolean;
+export interface ComponentLoadOptions {, category: 'legal' | 'ai' | 'gaming' | 'advanced';, priority: 'immediate' | 'lazy' | 'background';
+ , cache: boolean;
 }
 class ComponentLoader {
   private loadedComponents = new Map<string, any>();
@@ -99,7 +99,7 @@ class ComponentLoader {
     const componentMap = this.getComponentMap(category);
     const loader = componentMap[name as keyof typeof componentMap];
     if (!loader) {
-      throw new Error(`Component "${name}" not found in category: "${category}"`);
+      throw new Error(`Component, "${name}" not found in category: "${category}"`);
     }
     // Create loading promise
     const loadingPromise = this.loadWithPriority(loader, priority);
@@ -116,18 +116,18 @@ class ComponentLoader {
   }
   private getComponentMap(category: string) {
     switch (category) {
-      case 'legal': return LEGAL_COMPONENTS;
-      case 'ai': return AI_COMPONENTS;
-      case 'gaming': return GAMING_COMPONENTS;
-      case 'advanced': return ADVANCED_COMPONENTS;
+      case, 'legal': return LEGAL_COMPONENTS;
+      case, 'ai': return AI_COMPONENTS;
+      case, 'gaming': return GAMING_COMPONENTS;
+      case, 'advanced': return ADVANCED_COMPONENTS;
       default: return ADVANCED_COMPONENTS;
     }
   }
   private async loadWithPriority(loader: () => Promise<any>, priority: string) {
     switch (priority) {
-      case 'immediate':
+      case, 'immediate':
         return await loader();
-      case 'lazy':
+      case, 'lazy':
         // Use requestIdleCallback for non-critical loading
         return new Promise((resolve, reject) => {
           if ('requestIdleCallback' in window) {
@@ -149,7 +149,7 @@ class ComponentLoader {
             }, 0);
           }
         });
-      case 'background':
+      case, 'background':
         // Load in the next frame
         return new Promise((resolve, reject) => {
           requestAnimationFrame(async () => {
@@ -228,7 +228,7 @@ export function getComponentBundleInfo() {
   return {
     bundles: COMPONENT_BUNDLES,
     estimatedSizes: {
-      core: '~15KB',
+     , core: '~15KB',
       legal: '~45KB',
       ai: '~38KB',
       gaming: '~22KB',
@@ -241,7 +241,7 @@ export function getComponentBundleInfo() {
 // BACKWARDS COMPATIBILITY
 // ======================================
 // Re-export bits-ui for existing code compatibility
-export * from 'bits-ui';
+export * from, 'bits-ui';
 // Legacy exports - will be deprecated in next major version
-export { default, as Select } from '../Select.svelte';
-export { default, as DialogWrapper } from '../DialogWrapper.svelte';
+export { default, as Select } from, '../Select.svelte';
+export { default, as DialogWrapper } from, '../DialogWrapper.svelte';

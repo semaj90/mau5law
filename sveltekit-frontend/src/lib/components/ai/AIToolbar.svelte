@@ -1,15 +1,15 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
-<!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
+<!-- import  ErrorBoundary, from, "$lib/components/ErrorBoundary.svelte"; -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  Input  from "$lib/components/ui/input/Input.svelte";
-  import Loader2 from 'lucide-svelte/icons/loader-2';
-  import Bot from 'lucide-svelte/icons/bot';
-  import MessageSquare from 'lucide-svelte/icons/message-square';
-  import FileText from 'lucide-svelte/icons/file-text';
-  import Search from 'lucide-svelte/icons/search';
-  import Sparkles from 'lucide-svelte/icons/sparkles';
-  import Zap from 'lucide-svelte/icons/zap';
+  // Svelte, 5 runes are auto-imported
+  import  Input  from, "$lib/components/ui/input/Input.svelte";
+  import Loader2 from, 'lucide-svelte/icons/loader-2';
+  import Bot from, 'lucide-svelte/icons/bot';
+  import MessageSquare from, 'lucide-svelte/icons/message-square';
+  import FileText from, 'lucide-svelte/icons/file-text';
+  import Search from, 'lucide-svelte/icons/search';
+  import Sparkles from, 'lucide-svelte/icons/sparkles';
+  import Zap from, 'lucide-svelte/icons/zap';
 
   // Exported props (use standard exports to avoid svelte-preprocess type errors)
   const { onAISearch } = $props<{ onAISearch: ((res: any) }>()
@@ -19,12 +19,12 @@
 
   // Local state
   let aiSearchQuery: string = '';
-  let errorMessage: string = '';
+  let, errorMessage: string = '';
   let isAISearching = $state<boolean>(false);
   let isAIChatting = $state<boolean>(false);
   let isSummarizing = $state<boolean>(false);
   let aiSearchResults: any[] = [];
-  let aiChatMessage: string = '';
+  let, aiChatMessage: string = '';
   let aiChatResponse = '';
   let summarizeText = '';
   let summaryResult = '';
@@ -43,7 +43,7 @@
         maxResults: 10,
         useAI: true,
         advancedOptions: {
-          useVector: true,
+         , useVector: true,
           similarityThreshold: 0.7
         }
       };
@@ -134,7 +134,7 @@
     summaryResult = '';
     errorMessage = '';
     try {
-      const payload = { text: summarizeText, type: 'legal', options: { max_tokens: 500 } };
+      const payload = { text: summarizeText, type: 'legal', options: {, max_tokens: 500 } };
       const response = await fetch('/api/ai/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -234,7 +234,7 @@
           <textarea
             name="aiChat"
             placeholder="Ask a legal question..."
-            bind:value={aiChatMessage}
+           , bind:value={aiChatMessage}
             onkeydown={handleAIChatKeydown}
             disabled={disabled}
             rows="2"

@@ -2,9 +2,9 @@
  * YoRHa 3D Button Component
  * Low-poly button with advanced styling and YoRHa aesthetic
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
-import { resolveVariantStyle } from '../theme/yorha-theme-adapter.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
+import { resolveVariantStyle } from, '../theme/yorha-theme-adapter.js';
 export interface YoRHaButton3DOptions extends Omit<YoRHaStyle, 'variant'> {
   text?: string;
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger';
@@ -41,20 +41,20 @@ export class YoRHaButton3D extends YoRHa3DComponent {
           ...options.hover?.transform
         },
         shadow: {
-          enabled: true,
+         , enabled: true,
           offsetY: -0.08,
           intensity: 0.6,
           ...options.hover?.shadow
         },
         ...options.hover
       },
-      active: { transform: {, position: new THREE.Vector3(0, -0.01, 0),
+      active: {, transform: {, position: new THREE.Vector3(0, -0.01, 0),
           ...options.active?.transform
         },
         ...options.active
       },
       disabled: {
-        backgroundColor: YORHA_COLORS.interaction.disabled,
+       , backgroundColor: YORHA_COLORS.interaction.disabled,
         opacity: 0.6,
         ...options.disabled
       }
@@ -138,7 +138,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
   private getIconGeometry(icon: string): THREE.BufferGeometry {
     const size = 0.2;
     switch (icon) {
-      case 'play': {
+      case, 'play': {
         // Triangle for play button
         const playShape = new THREE.Shape();
         playShape.moveTo(size * 0.8, 0);
@@ -147,7 +147,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         playShape.closePath();
         return new THREE.ShapeGeometry(playShape);
       }
-      case 'pause': {
+      case, 'pause': {
         // Two rectangles for pause
         const pauseShape = new THREE.Shape();
         const w = size * 0.35;
@@ -169,10 +169,10 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         pauseShape.add(rect2);
         return new THREE.ShapeGeometry(pauseShape);
       }
-      case 'stop':
+      case, 'stop':
         // Square for stop
         return new THREE.PlaneGeometry(size, size);
-      case 'arrow-right': {
+      case, 'arrow-right': {
         // Arrow pointing right
         const arrowShape = new THREE.Shape();
         const w = size * 1.2;
@@ -189,7 +189,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         arrowShape.closePath();
         return new THREE.ShapeGeometry(arrowShape);
       }
-      case 'plus': {
+      case, 'plus': {
         // Plus sign
         const shape = new THREE.Shape();
         const s = size / 2;
@@ -218,25 +218,25 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (!this.iconMesh || !this.options.iconPosition) return;
     const spacing = 0.3;
     switch (this.options.iconPosition) {
-      case 'left':
+      case, 'left':
         this.iconMesh.position.x = -spacing;
         if (this.textMesh) {
           this.textMesh.position.x = spacing * 0.5;
         }
         break;
-      case 'right':
+      case, 'right':
         this.iconMesh.position.x = spacing;
         if (this.textMesh) {
           this.textMesh.position.x = -spacing * 0.5;
         }
         break;
-      case 'top':
+      case, 'top':
         this.iconMesh.position.y = spacing;
         if (this.textMesh) {
           this.textMesh.position.y = -spacing * 0.5;
         }
         break;
-      case 'bottom':
+      case, 'bottom':
         this.iconMesh.position.y = -spacing;
         if (this.textMesh) {
           this.textMesh.position.y = spacing * 0.5;
@@ -269,8 +269,8 @@ export class YoRHaButton3D extends YoRHa3DComponent {
   }
   private static getVariantStyle(variant: string, size: string): Partial<YoRHaStyle> {
     const sizeStyles = { small: {, width: 1.5, height: 0.5, fontSize: 0.12 },
-      medium: { width: 2, height: 0.6, fontSize: 0.16 },
-      large: { width: 3, height: 0.8, fontSize: 0.2 }
+      medium: {, width: 2, height: 0.6, fontSize: 0.16 },
+      large: {, width: 3, height: 0.8, fontSize: 0.2 }
     } as const;
     const resolved = resolveVariantStyle(variant, { enableGlow: variant === 'accent' });
     return {
@@ -279,7 +279,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       borderColor: resolved.borderColor,
       textColor: resolved.textColor,
       hover: resolved.hover
-        ? { backgroundColor: resolved.hover.backgroundColor, textColor: resolved.hover.textColor }
+        ? {, backgroundColor: resolved.hover.backgroundColor, textColor: resolved.hover.textColor }
         : undefined,
       glow: resolved.glow,
       opacity: resolved.opacity,

@@ -294,7 +294,7 @@
     }
   }
 </script>
-<Dialog.Root bind:open>
+<Dialog bind:open>
   <Dialog.Trigger>
     <Button variant="ghost" class="gap-2 nes-btn"> <!-- Simplified bits-btn -->
       <MessageCircle class="h-4 w-4" />
@@ -439,7 +439,7 @@
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
 /* Custom styles for enhanced appearance */
   :global(.chat-message-content) {

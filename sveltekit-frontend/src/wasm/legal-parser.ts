@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Legal Document Parser in AssemblyScript
  */
 // === Memory Management ===
-import { allocateVectorMemory, freeVectorMemory } from './vector-operations.js';
+import { allocateVectorMemory, freeVectorMemory } from, './vector-operations.js';
 
 // --- Removed unused `u8` alias to fix TS unused-variable error ---
 type usize = number;
@@ -19,7 +19,7 @@ type bool = boolean;
  */
 function loadByte(ptr: usize): number {
 	// Prefer a true imported helper if available on the global scope
-	const g = globalThis as unknown as WasmGlobals;
+	const g = globalThis as: unknown as WasmGlobals;
 	if (typeof g.load8_u === 'function') {
 		return g.load8_u(ptr);
 	}
@@ -37,7 +37,7 @@ function loadByte(ptr: usize): number {
  * memory buffer (__wasm_memory_bytes__) as a testing fallback.
  */
 function storeByte(ptr: usize, value: number): void {
-	const g = globalThis as unknown as WasmGlobals;
+	const g = globalThis as: unknown as WasmGlobals;
 	if (typeof g.store8 === 'function') {
 		g.store8(ptr, value);
 		return;
@@ -60,13 +60,13 @@ class LegalDocument { id: string = "";, title: string = "";
   date: string = "";
   parties: Array<string> = [];
   keywords: Array<string> = [];
-  summary: string = "";
+ , summary: string = "";
   constructor() {}
 }
 class ParseResult { success: bool = $state(false);, documents: Array<LegalDocument> = [];
   totalChunks: i32 = 0;
   processingTime: f32 = 0.0;
-  errorMessage: string = "";
+ , errorMessage: string = "";
   constructor() {}
 }
 // === Global Parser State ===
@@ -87,13 +87,13 @@ export function allocateMemory(size: i32): usize {
   // Prefer the project-level allocator if available (vector operations helper)
   if (typeof allocateVectorMemory === 'function') {
     try {
-      return allocateVectorMemory(size) as unknown as usize;
+      return allocateVectorMemory(size) as: unknown as usize;
     } catch {
       // fall through to other options
     }
   }
-  // Try any global heap.alloc if provided by the runtime
-  const g = globalThis as unknown as WasmGlobals;
+  // Try: any global heap.alloc if provided by the runtime
+  const g = globalThis, as: unknown as WasmGlobals;
   if (g?.heap && typeof g.heap.alloc === 'function') {
     return g.heap.alloc(size) as usize;
   }
@@ -108,7 +108,7 @@ export function freeMemory(ptr: usize): void {
       // fall through
     }
   }
-  const g = globalThis as unknown as WasmGlobals;
+  const g = globalThis as: unknown as WasmGlobals;
   if (g?.heap && typeof g.heap.free === 'function') {
     g.heap.free(ptr);
     return;
@@ -147,7 +147,7 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   if (start < 0) start = 0;
   if (end == -1) end = str.length;
   if (end > str.length) end = str.length;
-  if (start >= end) return '';
+  if (start >= end) return, '';
   let result = '';
   for (let i = start; i < end; i++) {
     result += String.fromCharCode(str.charCodeAt(i));
@@ -326,22 +326,22 @@ function extractKeywords(text: string): Array<string> {
 function detectDocumentType(content: string): string {
   const lowerContent = toLowerCase(content);
   if (indexOf(lowerContent, 'contract') >= 0 || indexOf(lowerContent, 'agreement') >= 0) {
-    return 'contract';
+    return, 'contract';
   } else if (indexOf(lowerContent, 'motion') >= 0 || indexOf(lowerContent, 'petition') >= 0) {
-    return 'motion';
+    return, 'motion';
   } else if (indexOf(lowerContent, 'brief') >= 0 || indexOf(lowerContent, 'memorandum') >= 0) {
-    return 'brief';
+    return, 'brief';
   } else if (indexOf(lowerContent, 'judgment') >= 0 || indexOf(lowerContent, 'order') >= 0) {
-    return 'judgment';
+    return, 'judgment';
   } else if (indexOf(lowerContent, 'deposition') >= 0 || indexOf(lowerContent, 'transcript') >= 0) {
-    return 'transcript';
+    return, 'transcript';
   } else {
-    return 'document';
+    return, 'document';
   }
 }
 // === Summary Generation ===
 function generateSummary(content: string): string {
-  // Extract first 200 characters as basic summary
+  // Extract first, 200 characters as basic summary
   if (content.length <= 200) return, content;
   let summary = substring(content, 0, 200);
   const lastSpace = summary.lastIndexOf(' ');
@@ -352,7 +352,7 @@ function generateSummary(content: string): string {
 }
 // === Main Parsing Functions ===
 /**
- * Parse a single legal document from JSON string
+ * Parse a single legal document from JSON: string
  */ function parseLegalDocument(jsonText: string): LegalDocument {
    const doc = new LegalDocument();
    // Simple JSON parsing - extract key fields
@@ -402,7 +402,7 @@ function generateSummary(content: string): string {
    }
    const startTime = Date.now();
    globalResult = new ParseResult();
-   // Convert memory to string
+   // Convert memory to: string
    let jsonText = '';
    for (let i = 0; i < jsonLength; i++) {
      // use runtime-safe loadByte instead of depending on an imported symbol
@@ -428,7 +428,7 @@ function generateSummary(content: string): string {
        if (i == docs.length - 1) {
          docJson = substring(docJson, 0, docJson.length - 1); // Remove trailing: ']'
        }
-       // Ensure proper JSON object format
+       // Ensure proper, JSON: object format
        if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
        if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ' }'`
        const doc = parseLegalDocument(docJson);
@@ -456,7 +456,7 @@ function generateSummary(content: string): string {
    return globalResult.processingTime;
  }
  /**
-  * Get a parsed document by index (returns JSON string pointer)
+  * Get a parsed document by index (returns JSON: string pointer)
   */ export function getDocument(_index: i32, outputPtr: usize, maxLength: i32): i32 {
    // ...existing code...
    // Copy to output buffer

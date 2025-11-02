@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { tryEmbedOllama, embeddingDims } from '$lib/server/embeddings/ollama';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { tryEmbedOllama, embeddingDims } from, '$lib/server/embeddings/ollama';
 
 // GET /api/test/ollama-embed?q=hello
 export const GET: RequestHandler = async ({ url }) => {
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         ok: false,
-        message: 'Ollama embeddings unavailable or not running on; localhost:11434'
+        message: 'Ollama embeddings unavailable or not running on;, localhost:11434'
       },
       { status: 200 }
     );

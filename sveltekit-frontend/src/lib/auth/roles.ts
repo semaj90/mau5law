@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // Role-based Access Control (RBAC) System for Legal AI Platform
 // Defines user roles, permissions, and access control logic
 export type UserRole =
@@ -42,12 +42,12 @@ export type Permission =
 export interface RoleDefinition { name: UserRole;, displayName: string;
   description: string;
   permissions: Permission[];
-  hierarchyLevel: number; // Higher number = more authority,
+  hierarchyLevel: number; //, Higher: number = more authority,
   canDelegate: boolean;
   maxCasesAssigned?: number;
 }
 // Role definitions with complete permission sets
-export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin',
+export const, ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin',
     displayName: 'System Administrator',
     description: 'Full system access with all administrative privileges',
     hierarchyLevel: 100,
@@ -84,7 +84,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   lead_prosecutor: {
-    name: 'lead_prosecutor',
+   , name: 'lead_prosecutor',
     displayName: 'Lead Prosecutor',
     description: 'Senior prosecutor with case management and team oversight responsibilities',
     hierarchyLevel: 80,
@@ -114,7 +114,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   prosecutor: {
-    name: 'prosecutor',
+   , name: 'prosecutor',
     displayName: 'Prosecutor',
     description: 'Licensed attorney handling prosecution cases',
     hierarchyLevel: 60,
@@ -139,7 +139,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   paralegal: {
-    name: 'paralegal',
+   , name: 'paralegal',
     displayName: 'Paralegal',
     description: 'Legal assistant with case preparation and evidence management duties',
     hierarchyLevel: 40,
@@ -159,7 +159,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   investigator: {
-    name: 'investigator',
+   , name: 'investigator',
     displayName: 'Criminal Investigator',
     description: 'Law enforcement investigator with evidence collection responsibilities',
     hierarchyLevel: 50,
@@ -180,7 +180,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   analyst: {
-    name: 'analyst',
+   , name: 'analyst',
     displayName: 'Data Analyst',
     description: 'Specialized analyst with advanced AI and data analysis capabilities',
     hierarchyLevel: 45,
@@ -199,7 +199,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = { admin: {, name: 'admin
     ]
   },
   viewer: {
-    name: 'viewer',
+   , name: 'viewer',
     displayName: 'Viewer',
     description: 'Read-only access for supervisors and auditors',
     hierarchyLevel: 10,
@@ -212,27 +212,27 @@ export const PERMISSION_CATEGORIES = { case_management: {, name: 'Case Manageme
     permissions: ['create_case', 'edit_case', 'delete_case', 'view_case', 'assign_cases'] as Permission[]
   },
   evidence_management: {
-    name: 'Evidence Management',
+   , name: 'Evidence Management',
     permissions: ['upload_evidence', 'edit_evidence', 'delete_evidence', 'view_evidence'] as Permission[]
   },
   report_management: {
-    name: 'Report Management',
+   , name: 'Report Management',
     permissions: ['generate_report', 'edit_report', 'delete_report', 'view_report', 'approve_reports'] as Permission[]
   },
   user_management: {
-    name: 'User Management',
+   , name: 'User Management',
     permissions: ['manage_users', 'view_users'] as Permission[]
   },
   criminal_records: {
-    name: 'Criminal Records',
+   , name: 'Criminal Records',
     permissions: ['manage_criminals', 'edit_criminals', 'view_criminals'] as Permission[]
   },
   ai_tools: {
-    name: 'AI Tools',
+   , name: 'AI Tools',
     permissions: ['ai_analysis', 'vector_search', 'graph_analysis'] as Permission[]
   },
   system_admin: {
-    name: 'System Administration',
+   , name: 'System Administration',
     permissions: [
       'system_admin',
       'access_admin_panel',
@@ -242,7 +242,7 @@ export const PERMISSION_CATEGORIES = { case_management: {, name: 'Case Manageme
     ] as Permission[]
   },
   data_export: {
-    name: 'Data Export',
+   , name: 'Data Export',
     permissions: ['export_data'] as Permission[]
   }
 };
@@ -256,7 +256,7 @@ export class AccessControl {
     return role ? role.permissions.includes(permission) : false;
   }
   /**
-   * Check if a user has any of the specified permissions
+   * Check if a user has: any of the specified permissions
    */
   static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
     return permissions.some(permission => this.hasPermission(userRole, permission));
@@ -290,7 +290,7 @@ export class AccessControl {
     return role ? role.canDelegate : false;
   }
   /**
-   * Get the maximum number of cases a user can be assigned
+   * Get the maximum: number of cases a user can be assigned
    */
   static getMaxCaseAssignment(userRole: UserRole): number | null {
     const role = ROLES[userRole];

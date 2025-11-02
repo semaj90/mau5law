@@ -1,17 +1,17 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import  Button  from "$lib/components/ui/button/Button.svelte";
-  import  LoginModal  from "$lib/components/auth/LoginModal.svelte";
-  import  RegisterModal  from "$lib/components/auth/RegisterModal.svelte";
-  import  UserProfileDropdown  from "$lib/components/auth/UserProfileDropdown.svelte";
-  import { userStore } from '$lib/stores/user';
+  import { onMount, onDestroy } from, 'svelte';
+  import  Button  from, "$lib/components/ui/button/Button.svelte";
+  import  LoginModal  from, "$lib/components/auth/LoginModal.svelte";
+  import  RegisterModal  from, "$lib/components/auth/RegisterModal.svelte";
+  import  UserProfileDropdown  from, "$lib/components/auth/UserProfileDropdown.svelte";
+  import { userStore } from, '$lib/stores/user';
   let showLoginModal = $state<boolean>(false);
   let showRegisterModal = $state<boolean>(false);
-  // component refs (typed as any to avoid strict typing issues)
+  // component refs (typed as: any to avoid strict typing issues)
   let loginModalRef: any = null;
   let registerModalRef: any = null;
   // unsubscribers returned by $on
-  let loginUnsub: (() => void) | null = null;
+  let, loginUnsub: (() => void) | null = null;
   let registerUnsub: (() => void) | null = null;
   function handleLoginSuccess() {
     showLoginModal = false;
@@ -66,5 +66,5 @@
   </div>
 </header>
 <!-- bind component instances and remove, template, on: handlers -->
-<LoginModal, bind:open={showLoginModal} bind:this={loginModalRef} />
-<RegisterModal, bind:open={showRegisterModal} bind:this={registerModalRef} />
+<LoginModal, bind:open={showLoginModal}, bind:this={loginModalRef} />
+<RegisterModal, bind:open={showRegisterModal}, bind:this={registerModalRef} />

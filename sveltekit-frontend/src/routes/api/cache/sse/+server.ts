@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit'
-import { cacheEventBus } from '$lib/server/cache/cache-events'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { cacheEventBus } from, '$lib/server/cache/cache-events'
 export const GET: RequestHandler = async () => {
   const encoder = new TextEncoder()
   const stream = new ReadableStream<Uint8Array>({
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async () => {
       };
 
       // safe runtime check for signal + addEventListener (no @ts-ignore needed)
-      const maybeSignal = (controller as unknown as { signal?: AbortSignal }).signal;
+      const maybeSignal = (controller as: unknown as { signal?: AbortSignal }).signal;
       if (maybeSignal && typeof maybeSignal.addEventListener === 'function') {
         maybeSignal.addEventListener('abort', abort);
       }

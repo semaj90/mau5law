@@ -1,13 +1,13 @@
 <script, lang="ts">
-	import { onMount } from 'svelte';
-	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
+	import { onMount } from, 'svelte';
+	import { detectGPUSupport } from, '$lib/utils/gpu-capabilities';
 	const { bucket } = $props<{ bucket: string }>()
 	const { accept } = $props<{ accept: string }>()
 	let file: File | null = null;
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
-	// fixed: proper TypeScript type + valid object literal
+	// fixed: proper TypeScript type + valid: object literal
 	let gpu: { webgpu: boolean; webgl2: boolean; cssHardwareAcceleration: boolean } = {
-		webgpu: false,
+	, webgpu: false,
 		webgl2: false,
 		cssHardwareAcceleration: false
 	};
@@ -41,9 +41,9 @@
 	</button>
 	<div, class="status">Status: {status}</div>
 	<div, class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
-	<!-- TODO: Implement optimized MinIO multipart upload with, hashing, offload -->
+	<!--, TODO: Implement optimized MinIO multipart upload with, hashing, offload -->
 </div>
 <style>
 	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }
-	button[disabled] { opacity: 0.6; cursor: not-allowed; }
+	button[disabled] { opacity: 0.6;, cursor: not-allowed; }
 </style>

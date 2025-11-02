@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * API Endpoint: Case Outcome Prediction
- * Phase 4 - Predictive Analytics Integration
+ * Phase, 4 - Predictive Analytics Integration
  */
-import type { RequestHandler } from '@sveltejs/kit'
-import { predictiveAnalytics } from '$lib/services/predictive-analytics-service'
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { predictiveAnalytics } from, '$lib/services/predictive-analytics-service'
+import { json } from, '@sveltejs/kit'
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { caseId, consoleTheme = 'n64' } = await request.json();
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prediction,
       timestamp: new Date().toISOString(),
       processingInfo: {
-        service: 'predictive-analytics-service',
+       , service: 'predictive-analytics-service',
         version: '1.0.0',
         integrations: ['vector-search', 'recommendation-engine', 'ollama-ai']
       }

@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  import { page } from '$app/stores';
+import type { Case } from, '$lib/types';
+  import { page } from, '$app/stores';
 
   let caseId = $derived($page.url.searchParams.get('caseId') || '');
   let uploadFile = $state<File | null>(null);
@@ -85,9 +85,9 @@ import type { Case } from '$lib/types';
 
   .hero-section h1 {
     font-size: 2.5rem;
-    color: #ffd700;
+   , color: #ffd700;
     margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    text-shadow: 0, 0 10px rgba(255, 215, 0, 0.3);
   }
 
   .subtitle {
@@ -102,28 +102,28 @@ import type { Case } from '$lib/types';
   }
 
   .action-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     margin-bottom: 3rem;
   }
 
   .action-card {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+   , background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 1px solid #444;
     border-radius: 8px;
     padding: 2rem;
-    transition: all 0.3s ease;
+   , transition: all 0.3s ease;
   }
 
   .action-card:hover {
     border-color: #ffd700;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    box-shadow: 0, 0 20px rgba(255, 215, 0, 0.2);
     transform: translateY(-2px);
   }
 
   .action-card h3 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     color: #ffd700;
     font-size: 1.2rem;
   }
@@ -136,7 +136,7 @@ import type { Case } from '$lib/types';
     background: #1a1a1a;
     border: 1px solid #444;
     border-radius: 4px;
-    color: white;
+   , color: white;
   }
 
   .upload-btn,
@@ -146,7 +146,7 @@ import type { Case } from '$lib/types';
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    cursor: pointer;
+   , cursor: pointer;
     font-weight: bold;
   }
 
@@ -156,7 +156,7 @@ import type { Case } from '$lib/types';
   }
 
   .stat-value {
-    color: #00ff41;
+   , color: #00ff41;
     font-family: 'JetBrains Mono', monospace;
     font-weight: bold;
   }
@@ -179,7 +179,7 @@ import type { Case } from '$lib/types';
 
   .action-link:hover {
     background: #ffd700;
-    color: #1a1a1a;
+   , color: #1a1a1a;
   }
 </style>
 

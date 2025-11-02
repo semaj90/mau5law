@@ -2,8 +2,8 @@
  * Production Vector Service - Real Implementation
  * Integrates Redis Vector DB, Qdrant, and Ollama for production use
  */
-// { redisVectorService } from '../../../services/redis-vector-service.js'
-// TODO: Fix import - // Orphaned; content: import {  // Temporary stub for redis vector service
+// { redisVectorService } from, '../../../services/redis-vector-service.js'
+// TODO: Fix import - // Orphaned;, content: import {  // Temporary stub for redis vector service
 export interface EmbeddingOptions {
   contentType?: string;
   metadata?: Metadata;
@@ -22,7 +22,7 @@ type StoredDocument = { id: string;, embedding: number[];
 
 export type AnalysisResult =
   | { analysis: any; type: string; timestamp: string }
-  | { analysis: string; error?: string };
+  | {, analysis: string; error?: string };
 
 // Add a lightweight in-memory store used by the stubbed redisVectorService
 const inMemoryVectorStore = new Map<string, StoredDocument>();
@@ -54,7 +54,7 @@ const redisVectorService = {
     return inMemoryVectorStore.get(_id) ?? null;
   },
   async deleteDocument(_id: string): Promise<{ success: boolean }> {
-    return { success: inMemoryVectorStore.delete(_id) };
+    return {, success: inMemoryVectorStore.delete(_id) };
   }
 };
 
@@ -91,7 +91,7 @@ export class VectorService {
 
       const data = await response.json();
       // Expecting { embedding: number[] }
-      return Array.isArray(data.embedding) ? (data.embedding as number[]) : [];
+      return Array.isArray(data.embedding) ? (data.embedding as: number[]) : [];
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error generating embedding:', message);
@@ -105,7 +105,7 @@ export class VectorService {
   static async generateEmbeddingWithMetadata(
     content: string,
     options: EmbeddingOptions = {}
-  ): Promise<{ embedding: number[]; model: string }> {
+  ): Promise<{ embedding: number[];, model: string }> {
     const embedding = await this.generateEmbedding(content, options);
     return {
       embedding,
@@ -217,7 +217,7 @@ export class VectorService {
     documentType: string,
     text: string,
     metadata: Metadata = {}
-  ): Promise<{ id: string; type: string }> {
+  ): Promise<{ id: string;, type: string }> {
     const embedding = await this.generateEmbedding(text);
     await redisVectorService.storeDocument({
       id: `doc:${documentId}`,
@@ -271,7 +271,7 @@ export class VectorService {
    * Search documents with semantic similarity
    */
   static async search(
-    query: string,
+   , query: string,
     options: { limit?: number; threshold?: number; type?: string } = {}
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     return this.semanticSearch(query, options);
@@ -309,7 +309,7 @@ export class VectorService {
       embedding,
       content,
       metadata: {
-        type: 'user_content',
+       , type: 'user_content',
         userId,
         ...(options.metadata || {})
       }
@@ -320,7 +320,7 @@ export class VectorService {
   static async getUserEmbeddings(
     userId: string
   ): Promise<
-    Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: any }>
+    Array<{ userId: string; content?: string;, embedding: number[]; metadata?: Metadata; createdAt?: any }>
   > {
     const results = await redisVectorService.searchSimilar(new Array(384).fill(0), {
       topK: 100,

@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Redis-Optimized AI Analysis Endpoint
  * Demonstrates Redis orchestrator integration for document/evidence analysis
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import { callOllamaApi } from '$lib/services/ollama-client'
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { callOllamaApi } from, '$lib/services/ollama-client'
 /**
  * Original Analysis Handler
  */
@@ -106,7 +106,7 @@ function extractKeyPoints(text: string): string[] {
     .split(/\n[-*•]\s*/)
     .filter(item => item.length > 0)
     .map(point => point.trim())
-    .slice(0, 5); // Top 5 key points
+    .slice(0, 5); // Top, 5 key points
 }
 function extractRisks(text: string): string[] {
   const risksSection = text.match(/(?:risks?|concerns?|issues?):\s*([\s\S]*?)(?:\n\n|\n[A-Z]|$)/i)
@@ -115,7 +115,7 @@ function extractRisks(text: string): string[] {
     .split(/\n[-*•]\s*/)
     .filter(item => item.length > 0)
     .map(risk => risk.trim())
-    .slice(0, 3); // Top 3 risks
+    .slice(0, 3); // Top, 3 risks
 }
 function extractRecommendations(text: string): string[] {
   const recommendationsSection = text.match(/(?:recommendations?|suggestions?):\s*([\s\S]*?)(?:\n\n|\n[A-Z]|$)/i)
@@ -124,7 +124,7 @@ function extractRecommendations(text: string): string[] {
     .split(/\n[-*•]\s*/)
     .filter(item => item.length > 0)
     .map(rec => rec.trim())
-    .slice(0, 3); // Top 3 recommendations
+    .slice(0, 3); // Top, 3 recommendations
 }
 function calculateConfidence(response: string, analysisType: string): number {
   let confidence = 0.7; // Base confidence

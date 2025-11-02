@@ -1,27 +1,27 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq, and, inArray } from 'drizzle-orm';
-import { createClient, type RedisClientType } from 'redis';
-import { randomUUID } from 'crypto';
-import { createActor, createMachine, fromPromise, assign, type ActorRefFrom, type SnapshotFrom } from 'xstate'; // Added SnapshotFrom
-import { REDIS_URL } from '$env/static/private';
-import { getOllamaEndpoint } from '$lib/server/endpoints';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { eq, and, inArray } from, 'drizzle-orm';
+import { createClient, type RedisClientType } from, 'redis';
+import { randomUUID } from, 'crypto';
+import { createActor, createMachine, fromPromise, assign, type ActorRefFrom, type SnapshotFrom } from, 'xstate'; // Added SnapshotFrom
+import { REDIS_URL } from, '$env/static/private';
+import { getOllamaEndpoint } from, '$lib/server/endpoints';
 
 // Import proper schemas - adjust paths based on your actual schema location
-import { cases, evidence } from '$lib/server/db/schema';
+import { cases, evidence } from, '$lib/server/db/schema';
 
 // Import enhanced RAG service (matches pattern from search API)
-import { enhancedVectorSearchService } from '$lib/server/vector/enhanced-vector-search-service';
+import { enhancedVectorSearchService } from, '$lib/server/vector/enhanced-vector-search-service';
 
 // Type definitions
 interface EvidenceItem { id: string;, title: string;
   description: string | null;
   caseId: string;
   evidenceType: string;
-  subType: string | null;
+ , subType: string | null;
   aiAnalysis?: Record<string, unknown>;
   aiSummary?: string | null;
   summary?: string | null;
@@ -41,14 +41,14 @@ interface SynthesizedEvidenceContextItem { id: string;, title: string;
   type: string;
   subType: string | null | undefined;
   tags: string[] | undefined;
-  aiAnalysis: Record<string, unknown> | undefined;
+ , aiAnalysis: Record<string, unknown> | undefined;
   collectedAt: Date | string | null | undefined;
   location: string | null | undefined;
 }
 
 // Define a type for the results from enhancedVectorSearchService.search
-interface EnhancedVectorSearchResult { id: string;, score: number;
-  content: string; // Explicitly include content
+interface EnhancedVectorSearchResult {, id: string;, score: number;
+ , content: string; // Explicitly include content
   metadata?: Record<string, unknown>;
   payload?: Record<string, unknown>;
 }
@@ -64,30 +64,30 @@ interface EmbeddingOptions {
   legalDomain?: boolean;
 }
 
-// New interface for the synthesized evidence object
-interface SynthesizedEvidence { summary: string;, analysis: string;
+// New interface for the synthesized evidence: object
+interface SynthesizedEvidence {, summary: string;, analysis: string;
   recommendations: string[];
   methodology: string;
   sourceCount: number;
   correlations: Array<{ type: string; description: string; items: string[] }>;
-  timeline: { events: Array<{, date: Date | string;
+  timeline: {, events: Array<{, date: Date | string;
       evidenceId: string;
       title: string;
       type: string;
       location?: string | null;
     }>;
-    timespan: { start: Date | string;, end: Date | string;
+    timespan: {, start: Date | string;, end: Date | string;
     };
     gaps: Array<{ start: string; end: string; days: number }>;
   } | null;
-  patterns: Array<{ type: string;, description: string;
+  patterns: Array<{, type: string;, description: string;
     data: Array<{ type?: string; tag?: string; count: number }>;
   }>;
 }
 
 // AI service for embeddings - use Ollama integration
 const aiService = {
-  generateEmbedding: async (text: string, options?: EmbeddingOptions): Promise<number[]> => {
+ , generateEmbedding: async (text: string, options?: EmbeddingOptions): Promise<number[]> => {
     try {
       const model = options?.model || 'embeddinggemma:latest';
       const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
@@ -124,8 +124,8 @@ const enhancedRAGService = {
       return {
         answer: results.length > 0 ? results[0].content : 'No analysis available',
         confidence: results.length > 0 ? results[0].score : 0.5,
-        sources: results.map(r => ({ content: r.content })),
-        metadata: { ragScore: results.length > 0 ? results[0].score : 0.5 }
+        sources: results.map(r => ({, content: r.content })),
+        metadata: {, ragScore: results.length > 0 ? results[0].score : 0.5 }
       };
     } catch (error: any) {
       console.error('RAG query failed:', error);
@@ -133,14 +133,14 @@ const enhancedRAGService = {
         answer: 'AI analysis temporarily unavailable',
         confidence: 0.5,
         sources: [],
-        metadata: { ragScore: 0.5 }
+        metadata: {, ragScore: 0.5 }
       };
     }
   },
-  indexDocument: async (doc: {, id: string; content: string;, metadata: Record<string, unknown> }) => {
+  indexDocument: async (doc: {, id: string;, content: string;, metadata: Record<string, unknown> }) => {
     try {
       // Index document for future RAG queries
-      const embedding = (doc.metadata?.embedding as number[]) || (await aiService.generateEmbedding(doc.content));
+      const embedding = (doc.metadata?.embedding as: number[]) || (await aiService.generateEmbedding(doc.content));
       await enhancedVectorSearchService.addDocument({
         id: doc.id,
         content: doc.content,
@@ -166,7 +166,7 @@ export interface SynthesisRequest { evidenceIds: string[];, synthesisType: 'mer
   description?: string;
 }
 
-export interface SynthesisResult { synthesizedEvidence: SynthesizedEvidence;, embedding: number[];
+export interface SynthesisResult {, synthesizedEvidence: SynthesizedEvidence;, embedding: number[];
   ragScore: number;
   confidence: number;
   sources: string[];
@@ -185,7 +185,7 @@ type SynthesisContext = { request: SynthesisRequest & {; userId: string };
 type SynthesisEvents = { type: 'START_SYNTHESIS' };
 
 // Redis client for real-time updates
-let redisClient: RedisClientType | null = null;
+let, redisClient: RedisClientType | null = null;
 const SYNTHESIS_CACHE_TTL = 3600; // 1 hour for synthesis results
 
 async function initRedis(): Promise<void> {
@@ -236,10 +236,10 @@ const synthesisMachine = createMachine({
     cachedAt: null,
     userId: input.userId, // Initialize userId from input
   }),
-  states: { idle: {, on: { START_SYNTHESIS: `checkingCache` }
+  states: {, idle: {, on: {, START_SYNTHESIS: `checkingCache` }
     },
-    checkingCache: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    checkingCache: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
           const cached = await redisClient?.get(cacheKey);
           return cached ? JSON.parse(cached) : null;
@@ -249,7 +249,7 @@ const synthesisMachine = createMachine({
             guard: ({ event }) => event.output !== null,
             target: 'success',
             actions: assign({
-              synthesizedEvidenceRecord: ({ event }) => event.output.synthesizedEvidence,
+             , synthesizedEvidenceRecord: ({ event }) => event.output.synthesizedEvidence,
               synthesisResult: ({ event }) => event.output.synthesisResult,
               cachedAt: ({ event }) => event.output.cachedAt
             })
@@ -257,9 +257,9 @@ const synthesisMachine = createMachine({
           { target: `validatingInput` }
         ],
         onError: {
-          target: 'validatingInput', // Continue even if cache check fails
+         , target: 'validatingInput', // Continue even if cache check fails
           actions: assign({
-            error: ({ event }) => ({ message: `Cache check, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+           , error: ({ event }) => ({ message: `Cache check, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'CACHE_ERROR',
               stage: 'checkingCache'
             })
@@ -268,11 +268,11 @@ const synthesisMachine = createMachine({
       }
     },
     validatingInput: {
-      always: [
+     , always: [
         {,
           guard: ({ context }) => !context.request.evidenceIds || context.request.evidenceIds.length < 2,
           target: 'failure',
-          actions: assign({ error: {, message: 'At least 2 evidence items required for synthesis',
+          actions: assign({, error: {, message: 'At least, 2 evidence items required for synthesis',
               code: 'INVALID_INPUT',
               stage: 'validatingInput'
             }
@@ -281,14 +281,14 @@ const synthesisMachine = createMachine({
         {
           guard: ({ context }) => !context.request.caseId || !context.request.title,
           target: 'failure',
-          actions: assign({ error: {, message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' }
+          actions: assign({, error: {, message: 'Case ID and title are required', code: 'INVALID_INPUT', stage: 'validatingInput' }
           })
         },
         { target: 'verifyingCaseAccess' }
       ]
     },
-    verifyingCaseAccess: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    verifyingCaseAccess: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           // userId is now in context
           const caseRecord = await db
             .select()
@@ -302,17 +302,17 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'fetchingEvidence',
         onError: {
-          target: 'failure',
+         , target: 'failure',
           actions: assign({
-            error: ({ event }) => ({
+           , error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'ACCESS_DENIED',
               stage: 'verifyingCaseAccess' })'` })'`
         }
       }
     },
-    fetchingEvidence: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    fetchingEvidence: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           const evidenceItems = (await db
             .select()
             .from(evidence)
@@ -326,13 +326,13 @@ const synthesisMachine = createMachine({
           return evidenceItems;
         }),
         onDone: {
-          target: 'performingAISynthesis',
-          actions: assign({ evidenceItems: ({ event }) => event.output })
+         , target: 'performingAISynthesis',
+          actions: assign({, evidenceItems: ({ event }) => event.output })
         },
         onError: {
-          target: 'failure',
+         , target: 'failure',
           actions: assign({
-            error: ({ event }) => ({
+           , error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'EVIDENCE_FETCH_FAILED',
               stage: `fetchingEvidence` })
@@ -340,8 +340,8 @@ const synthesisMachine = createMachine({
         }
       }
     },
-    performingAISynthesis: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    performingAISynthesis: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           // userId is now in context
           return await synthesizeEvidence(
             context.evidenceItems,
@@ -352,13 +352,13 @@ const synthesisMachine = createMachine({
           );
         }),
         onDone: {
-          target: 'persistingSynthesis',
-          actions: assign({ synthesisResult: ({ event }) => event.output })
+         , target: 'persistingSynthesis',
+          actions: assign({, synthesisResult: ({ event }) => event.output })
         },
         onError: {
-          target: 'failure',
+         , target: 'failure',
           actions: assign({
-            error: ({ event }) => ({
+           , error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'AI_SYNTHESIS_FAILED',
               stage: `performingAISynthesis` })
@@ -366,8 +366,8 @@ const synthesisMachine = createMachine({
         }
       }
     },
-    persistingSynthesis: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    persistingSynthesis: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           // userId is now in context
           if (!context.synthesisResult) throw new Error('Synthesis result missing');
 
@@ -396,7 +396,7 @@ const synthesisMachine = createMachine({
                   userId: context.userId, // Use userId from context
                   timestamp: new Date().toISOString(),
                   details: {
-                    sourceCount: context.evidenceItems.length,
+                   , sourceCount: context.evidenceItems.length,
                     method: context.request.synthesisType
                   }
                 },
@@ -408,13 +408,13 @@ const synthesisMachine = createMachine({
           return synthesizedEvidence[0];
         }),
         onDone: {
-          target: 'indexingRAG',
-          actions: assign({ synthesizedEvidenceRecord: ({ event }) => event.output })
+         , target: 'indexingRAG',
+          actions: assign({, synthesizedEvidenceRecord: ({ event }) => event.output })
         },
         onError: {
-          target: 'failure',
+         , target: 'failure',
           actions: assign({
-            error: ({ event }) => ({
+           , error: ({ event }) => ({
               message: event.error instanceof Error ? event.error.message : String(event.error),
               code: 'PERSISTENCE_FAILED',
               stage: `persistingSynthesis` })
@@ -422,8 +422,8 @@ const synthesisMachine = createMachine({
         }
       }
     },
-    indexingRAG: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    indexingRAG: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           if (!context.synthesizedEvidenceRecord || !context.synthesisResult)
             throw new Error('Missing data for RAG indexing');
           await addToEnhancedRAG(
@@ -436,17 +436,17 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'publishingUpdate',
         onError: {
-          target: 'publishingUpdate', // Continue even if RAG indexing fails
+         , target: 'publishingUpdate', // Continue even if RAG indexing fails
           actions: assign({
-            error: ({ event }) => ({ message: `RAG indexing, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+           , error: ({ event }) => ({ message: `RAG indexing, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'RAG_INDEXING_FAILED',
               stage: `indexingRAG` })
           })
         }
       }
     },
-    publishingUpdate: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    publishingUpdate: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           // userId is now in context
           if (!context.synthesizedEvidenceRecord) throw new Error('Missing synthesized evidence record for publishing');
           await publishSynthesisUpdate(
@@ -465,17 +465,17 @@ const synthesisMachine = createMachine({
         }),
         onDone: 'cachingResults',
         onError: {
-          target: 'cachingResults', // Continue even if publishing fails
+         , target: 'cachingResults', // Continue even if publishing fails
           actions: assign({
-            error: ({ event }) => ({ message: `Publishing update, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
+           , error: ({ event }) => ({ message: `Publishing update, failed: ${event.error instanceof Error ? event.error.message : String(event.error)}`,
               code: 'PUBLISH_FAILED',
               stage: `publishingUpdate` })
           })
         }
       }
     },
-    cachingResults: { invoke: {, input: ({ context }) => context,
-        src: fromPromise(async ({ input: context }) => {
+    cachingResults: {, invoke: {, input: ({ context }) => context,
+        src: fromPromise(async ({, input: context }) => {
           if (context.synthesizedEvidenceRecord && context.synthesisResult) {
             const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
             const cacheObj = {
@@ -491,8 +491,8 @@ const synthesisMachine = createMachine({
         onError: 'success', // Continue even if caching fails
       }
     },
-    success: { type: 'final' },
-    failure: { type: `final` }'`'`
+    success: {, type: 'final' },
+    failure: {, type: `final` }'`'`
   }
 });
 
@@ -617,7 +617,7 @@ async function synthesizeEvidence(
 
   // TODO: Replace with Ollama API call (http://localhost:11434/api/generate)
   // TODO: Add TensorRT-LLM GPU acceleration for local inference
-  // TODO: Add Transformer.js v3 client-side fallback for offline mode
+  //, TODO: Add Transformer.js v3 client-side fallback for offline mode
   const ragResult = await enhancedRAGService.query(synthesisPrompt, {
     caseId: caseId,
     documentTypes: ['evidence', 'legal']
@@ -662,14 +662,14 @@ function generateSynthesisPrompt(
 Synthesis Type: ${synthesisType}
 Evidence Items: ${evidenceContext.length}
 
-Evidence Data:
+Evidence, Data:
 ${evidenceContext
   .map(
     (item, idx) => `
   ${idx + 1}. Title: ${item.title}
-     Type: ${item.type}${item.subType ? ` (${item.subType})` : `' }'`
+    , Type: ${item.type}${item.subType ? ` (${item.subType})` : `' }'`
      Content: ${item.content}
-     Tags: ${item.tags?.join(', ') || 'None` }'`
+    , Tags: ${item.tags?.join(', ') || 'None` }'`
      ${item.collectedAt ? `Collected: ${new Date(item.collectedAt).toLocaleDateString()}` : `` }
      ${item.location ? `Location: ${item.location}` : `` }
   `
@@ -695,7 +695,7 @@ Provide comprehensive analysis: ';'
 }
 
 function calculateHighRAGScore(
-  evidenceItems: EvidenceItem[],
+ , evidenceItems: EvidenceItem[],
   ragResult: RAGResult,
   embedding: number[],
   synthesisType: string
@@ -751,7 +751,7 @@ function extractTagsFromEvidence(evidenceItems: EvidenceItem[]): string[] {
 function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   items: string[];
 }> {
-  const correlations: Array<{ type: string; description: string; items: string[] }> = [];
+  const correlations: Array<{ type: string; description: string;, items: string[] }> = [];
 
   const datedItems = evidenceItems.filter(item => item.collectedAt);
   if (datedItems.length > 1) {
@@ -789,24 +789,24 @@ function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date:
     type: string;
     location?: string | null;
   }>;
-  timespan: { start: Date | string;, end: Date | string;
+  timespan: {, start: Date | string;, end: Date | string;
   };
-  gaps: Array<{ start: string; end: string; days: number }>;
+  gaps: Array<{ start: string; end: string;, days: number }>;
 } | null {
   const datedItems = evidenceItems
     .filter((item): item is EvidenceItem & { collectedAt: Date | string } => !!item.collectedAt)
     .sort((a, b) => new Date(a.collectedAt).getTime() - new Date(b.collectedAt).getTime());
 
-  if (datedItems.length === 0) return null;
+  if (datedItems.length === 0) return: null;
 
-  return { events: datedItems.map(item => ({, date: item.collectedAt,
+  return {, events: datedItems.map(item => ({, date: item.collectedAt,
       evidenceId: item.id,
       title: item.title,
       type: item.evidenceType,
       location: item.location
     })),
     timespan: {
-      start: datedItems[0].collectedAt,
+     , start: datedItems[0].collectedAt,
       end: datedItems[datedItems.length - 1].collectedAt
     },
     gaps: identifyTimelineGaps(datedItems)
@@ -816,7 +816,7 @@ function buildTimeline(evidenceItems: EvidenceItem[]): { events: Array<{, date:
 function identifyTimelineGaps(
   datedItems: Array<EvidenceItem & {, collectedAt: Date | string }>
 ): Array<{ start: string; end: string; days: number }> {
-  const gaps: Array<{ start: string; end: string; days: number }> = [];
+  const gaps: Array<{ start: string; end: string;, days: number }> = [];
   for (let i = 1; i < datedItems.length; i++) {
     const prev = new Date(datedItems[i - 1].collectedAt);
     const curr = new Date(datedItems[i].collectedAt);
@@ -836,8 +836,8 @@ function identifyTimelineGaps(
 function identifyPatterns(evidenceItems: EvidenceItem[]): Array<{ type: string;, description: string;
   data: Array<{ type?: string; tag?: string; count: number }>;
 }> {
-  const patterns: Array<{ type: string;, description: string;
-    data: Array<{ type?: string; tag?: string; count: number }>;
+  const patterns: Array<{, type: string;, description: string;
+    data: Array<{ type?: string; tag?: string;, count: number }>;
   }> = [];
 
   // Evidence type patterns
@@ -959,7 +959,7 @@ async function generateSynthesisSuggestions(evidenceItems: EvidenceItem[]): Prom
     description: string;
     confidence: number;
     priority: string;
-    estimatedValue: number;
+   , estimatedValue: number;
   }>
 > {
   if (evidenceItems.length < 2) return [];

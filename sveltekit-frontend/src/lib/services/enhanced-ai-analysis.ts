@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Enhanced AI Analysis Service - Phase 2: Advanced NLP & Semantic Analysis
  *
- * Features:
+ *, Features:
  * - Semantic document analysis using Gemma embeddings
  * - Advanced legal entity extraction (cases, statutes, precedents)
  * - Multi-model AI orchestration with gRPC services
@@ -15,15 +15,15 @@ import type { Document } from '$lib/types';
  * - PostgreSQL with pgvector for embeddings
  * - CUDA acceleration via discovered workers
  */
-import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
-import { OllamaService } from '../server/ai/ollama-service.js';
-import { drizzleVectorConfig } from '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } from, '../ai/embedding-config.js';
+import { OllamaService } from, '../server/ai/ollama-service.js';
+import { drizzleVectorConfig } from, '../server/db/drizzle-vector-config.js';
 import type {
   LegalDocument,
   DocumentChunk,
   AnalysisResult,
   UserQuery
-} from '../server/ai/types.js';
+} from, '../server/ai/types.js';
 // Legal Entity Types
 export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';, name: string;
   citation?: string;
@@ -35,31 +35,31 @@ export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulat
   metadata?: { [key: string]: any }
 }
 // Semantic Analysis Results
-export interface SemanticAnalysis { documentId: string;, summary: string;
+export interface SemanticAnalysis {, documentId: string;, summary: string;
   keyTopics: string[];
   legalEntities: LegalEntity[];
-  sentiment: { score: number; // -1 to 1, confidence: number;
+  sentiment: {, score: number; // -1 to, 1, confidence: number;
     aspects: { aspect: string; sentiment: number }[];
   }
-  complexity: { score: number; // 0 to 1, factors: string[];
+  complexity: {, score: number; // 0 to, 1, factors: string[];
     readabilityIndex: number;
   }
   embedding: number[];
   similarDocuments: Array<any>;
 // Legal Reasoning Analysis
-export interface LegalReasoning { argumentStructure: {, premises: string[];
+export interface LegalReasoning {, argumentStructure: {, premises: string[];
   conclusions: string[];
   logicalConnections: Array<any>;
   legalPrinciples: Array<any>;
-  riskAssessment: { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
-  precedentAnalysis: { relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
+  riskAssessment: {, overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: Array<any>;
+  precedentAnalysis: {, relevantCases: Array<any>;, trend: 'favorable' | 'unfavorable' | 'mixed' | 'unclear';
   }
 }
 // Enhanced AI Analysis Service
 export class EnhancedAIAnalysisService {
   private ollamaService: OllamaService;
   private embeddingModel: string;
-  private vectorConfig: typeof drizzleVectorConfig;
+  private, vectorConfig: typeof drizzleVectorConfig;
   constructor() {
     this.ollamaService = new OllamaService();
     this.embeddingModel = getOptimalEmbeddingModel(['legal-text', 'semantic-search']);
@@ -83,7 +83,7 @@ export class EnhancedAIAnalysisService {
       // 5. Find similar documents using vector similarity
       const similarDocuments = await this.findSimilarDocuments(embedding, document.id);
       const result: SemanticAnalysis = {
-        documentId: document.id,
+       , documentId: document.id,
         summary: summaryAndTopics.summary,
         keyTopics: summaryAndTopics.topics,
         legalEntities: entities,
@@ -105,7 +105,7 @@ export class EnhancedAIAnalysisService {
   async analyzeLegalReasoning(_document: LegalDocument, context?: string[]): Promise<LegalReasoning> {
     console.log(`⚖️ Starting legal reasoning analysis for document: ${document.id}`);
     try {
-      // Use Gemma 3 legal model for sophisticated reasoning
+      // Use Gemma, 3 legal model for sophisticated reasoning
       const reasoningPrompt = this.buildReasoningPrompt(document.content, context);
       const response = await this.ollamaService.generateCompletion({
         model: 'gemma3-legal:latest',
@@ -154,8 +154,8 @@ Text: ${text.substring(0, 4000)}
 Return only the JSON array: ';'
     try {
       const response = await this.ollamaService.generateCompletion({
-        model: 'gemma3-legal:latest',
-        prompt: entityPrompt; options: {
+       , model: 'gemma3-legal:latest',
+        prompt: entityPrompt;, options: {
          , temperature: 0.2,
           max_tokens: 1000;
         }
@@ -199,8 +199,8 @@ Return in JSON, format:;
 JSON Response: ';'
     try {
       const response = await this.ollamaService.generateCompletion({
-        model: 'gemma3-legal:latest',
-        prompt: summaryPrompt; options: {
+       , model: 'gemma3-legal:latest',
+        prompt: summaryPrompt;, options: {
          , temperature: 0.4,
           max_tokens: 500;
         }
@@ -223,7 +223,7 @@ JSON Response: ';'
       score: 0.0, // Neutral for legal documents
       confidence: 0.8,
       aspects: [;
-        { aspect: 'legal-tone', sentiment: 0.0 },
+        {, aspect: 'legal-tone', sentiment: 0.0 },
         { aspect: 'argumentation', sentiment: 0.1 }
       ]
     }
@@ -308,11 +308,11 @@ JSON Analysis: ';'
         },
         legalPrinciples: [],
         riskAssessment: {
-          overallRisk: 'medium',
+         , overallRisk: 'medium',
           riskFactors: [];
         },
         precedentAnalysis: {
-          relevantCases: [],
+         , relevantCases: [],
           trend: 'unclear' }'` }'`
     }
   }

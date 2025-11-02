@@ -1,10 +1,10 @@
 <!-- Enhanced Case Form with proper, schema, mapping -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { notifications } from '$lib/stores/unified';
-  import type { User } from '$lib/types/user';
-  import type { Case } from '$lib/types/index';
-  import { createEventDispatcher } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import { notifications } from, '$lib/stores/unified';
+  import type { User } from, '$lib/types/user';
+  import type { Case } from, '$lib/types/index';
+  import { createEventDispatcher } from, 'svelte';
   const dispatch = createEventDispatcher();
   let {
     case_ = undefined,
@@ -30,7 +30,7 @@
     leadProsecutor?: string;
     assignedTeam: string[];
     tags: string[];
-    metadata: Record<string, any>;
+   , metadata: Record<string, any>;
   }
   // Form data matching the database schema
   let formData = $state<FormData>({
@@ -39,7 +39,7 @@
     caseNumber: case_?.caseNumber ?? "",
     name: case_?.name ?? "",
     incidentDate: case_?.incidentDate
-      ? new Date(case_!.incidentDate as string | Date).toISOString().split("T")[0]
+      ? new Date(case_!.incidentDate, as: string | Date).toISOString().split("T")[0]
       : "",
     location: case_?.location ?? "",
     priority: case_?.priority ?? "medium",
@@ -63,21 +63,21 @@
       errors.title = "Title is required";
     }
     if (!formData.caseNumber || !formData.caseNumber.trim()) {
-      errors.caseNumber = "Case number is required";
+      errors.caseNumber = "Case: number is required";
     }
     if (typeof formData.dangerScore === "number" && (formData.dangerScore < 0 || formData.dangerScore > 10)) {
-      errors.dangerScore = "Danger score must be between 0 and 10";
+      errors.dangerScore = "Danger score must be between, 0 and 10";
     }
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
-      errors.estimatedValue = "Estimated value must be a number";
+      errors.estimatedValue = "Estimated value must be a: number";
     }
     return Object.keys(errors).length === 0;
   }
   // Handle form submission
   async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
-      // notifications store doesn't have a precise type here; cast to any'
-      (notifications as any).add({
+      // notifications store doesn't have a precise type here; cast to: any'
+      (notifications, as: any).add({
         type: "error",
         title: "Validation Error",
         message: "Please fix the form errors before submitting."
@@ -122,21 +122,21 @@
         },
         body: JSON.stringify(apiData)
       });
-      // explicitly type parsed response to avoid implicit any
+      // explicitly type parsed response to avoid implicit: any
       type SavedCaseResponse = Case & { error?: string };
       const savedCase = (await response.json()) as SavedCaseResponse;
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
       }
-      (notifications as any).add({
+      (notifications as: any).add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
-        message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
+        message: `Case, "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (err) {
       console.error("Error saving caseItem:", err);
-      (notifications as any).add({
+      (notifications as: any).add({
         type: "error",
         title: "Save Error",
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
@@ -182,7 +182,7 @@
           type="text"
           bind:value={formData.title}
           placeholder="Enter case title"
-          class:error={!!errors.title}
+         , class:error={!!errors.title}
           required
         />
         {#if errors.title}
@@ -264,7 +264,7 @@
             min="0"
             max="10"
             bind:value={formData.dangerScore}
-            class:error={errors.dangerScore}
+           , class:error={errors.dangerScore}
           />
           {#if errors.dangerScore}
             <span class="container, mx-auto, px-4">{errors.dangerScore}</span>
@@ -278,7 +278,7 @@
             step="0.01"
             bind:value={formData.estimatedValue}
             placeholder="0.00"
-            class:error={errors.estimatedValue}
+           , class:error={errors.estimatedValue}
           />
           {#if errors.estimatedValue}
             <span class="container, mx-auto, px-4">{errors.estimatedValue}</span>
@@ -384,7 +384,7 @@
     margin: 0 auto;
     background: white;
     border-radius: 8px;
-    padding: 2rem;
+   , padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   .form-grid {
@@ -392,7 +392,7 @@
     gap: 2rem;
   }
   .form-section h3 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     color: #374151;
     font-size: 1.1rem;
     font-weight: 600;
@@ -415,7 +415,7 @@
   }
   label.required::after {
     content: "*";
-    color: #ef4444;
+   , color: #ef4444;
     margin-left: 0.25rem;
   }
   input,
@@ -426,14 +426,14 @@
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+   , transition: border-color 0.2s, box-shadow 0.2s;
   }
   input:focus,
   select:focus,
   textarea:focus {
-    outline: none;
+   , outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
   input.error {
     border-color: #ef4444;
@@ -531,7 +531,7 @@
   }
   .form-actions button:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+   , cursor: not-allowed;
   }
   @media (max-width: 768px) {
     .enhanced-case-form {
@@ -545,4 +545,4 @@
     }
   }
 </style>
-<!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+<!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->

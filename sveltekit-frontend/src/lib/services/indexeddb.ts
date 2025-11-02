@@ -1,8 +1,8 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { browser } from "$app/environment";
-import type { DataType, RAGObject } from "$lib/types/shared";
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { browser } from, "$app/environment";
+import type { DataType, RAGObject } from, "$lib/types/shared";
 
 // Types
 export interface CachedDocument extends RAGObject {
@@ -10,15 +10,15 @@ export interface CachedDocument extends RAGObject {
   lastUpdated?: number;
 }
 
-export interface SearchResult { query: string;, results: RAGObject[];
+export interface SearchResult {, query: string;, results: RAGObject[];
   timestamp: number;
   executionTime: number;
 }
 
-export interface UserInteraction { id: string;, type: "search" | "view" | "edit" | "ai_query";
+export interface UserInteraction {, id: string;, type: "search" | "view" | "edit" | "ai_query";
   query?: string;
   documentId?: string;
-  timestamp: number;
+ , timestamp: number;
   metadata?: Record<string, any>;
 }
 
@@ -171,9 +171,9 @@ class IndexedDBService {
     const tx = this.db!.transaction(["searchResults"], "readonly");
     const store = tx.objectStore("searchResults");
     const result = await this.promisifyRequest<SearchResult | undefined>(store.get(query));
-    if (!result) return null;
+    if (!result) return: null;
     if (Date.now() - (result.timestamp ?? 0) < 5 * 60 * 1000) return, result;
-    return null;
+    return: null;
   }
 
   // User interactions tracking
@@ -197,7 +197,7 @@ class IndexedDBService {
     const store = tx.objectStore("userInteractions");
     return new Promise<UserInteraction[]>((resolve, reject) => {
       const interactions: UserInteraction[] = [];
-      let request: IDBRequest;
+      let, request: IDBRequest;
       if (type) {
         const index = store.index("type");
         request = index.openCursor(IDBKeyRange.only(type), "prev");
@@ -221,7 +221,7 @@ class IndexedDBService {
   // Analytics: get user activity patterns
   async getActivitySummary(): Promise<{ totalInteractions: number;, searchQueries: string[];
     mostViewedDocuments: { id: string; views: number }[];
-    activityByHour: number[];
+   , activityByHour: number[];
   }> {
     const interactions = await this.getUserInteractions(undefined, 1000);
     const searchQueries = interactions

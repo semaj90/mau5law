@@ -4,9 +4,9 @@
  * Validates email, password strength, and duplicate accounts
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { authService, auth } from '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from '$lib/server/errors';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { authService, auth } from, '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
 
 interface RegisterRequest { email: string;, password: string;
   firstName?: string;
@@ -14,7 +14,7 @@ interface RegisterRequest { email: string;, password: string;
   displayName?: string;
 }
 
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Parse request body - handle both JSON and form data
     let data: RegisterRequest;
@@ -25,11 +25,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     } else if (contentType?.includes('application/x-www-form-urlencoded')) {
       const formData = await request.formData();
       data = {
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
-        firstName: formData.get('firstName') as string | undefined,
-        lastName: formData.get('lastName') as string | undefined,
-        displayName: formData.get('displayName') as string | undefined
+        email: formData.get('email') as: string,
+        password: formData.get('password') as: string,
+        firstName: formData.get('firstName') as: string | undefined,
+        lastName: formData.get('lastName') as: string | undefined,
+        displayName: formData.get('displayName') as: string | undefined
       };
     } else {
       throw new Error('Invalid content type');

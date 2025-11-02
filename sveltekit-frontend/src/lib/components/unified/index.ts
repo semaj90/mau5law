@@ -1,15 +1,15 @@
 /**
- * Unified UI Kit - Phase 14
+ * Unified UI Kit - Phase, 14
  *
- * Perfect integration of bits-ui v2 + Melt Svelte 5 + UnoCSS
+ * Perfect integration of bits-ui v2 + Melt Svelte, 5 + UnoCSS
  * Features:
  * - GPU-accelerated animations with WebGL/WebGPU
  * - Legal AI context integration
  * - NES-style memory constraints and pixel effects
  * - Real-time collaboration support
  */
-export { default, as UnifiedButton } from './UnifiedButton.svelte';
-export { default, as UnifiedDialog } from './UnifiedDialog.svelte';
+export { default, as UnifiedButton } from, './UnifiedButton.svelte';
+export { default, as UnifiedDialog } from, './UnifiedDialog.svelte';
 // Export types for TypeScript support
 export type UnifiedButtonProps = {
   variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
@@ -44,8 +44,8 @@ export type UnifiedDialogProps = {
   legalContext?: {
     caseId?: string;
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
-    aiAnalysis?: { riskLevel: 'low' | 'medium' | 'high';, confidence: number;
-      suggestions: string[];
+    aiAnalysis?: {, riskLevel: 'low' | 'medium' | 'high';, confidence: number;
+     , suggestions: string[];
     };
   };
   onOpenChange?: (open: boolean) => void;

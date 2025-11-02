@@ -16,10 +16,10 @@
  * - Connection pooling and query optimization
  * - GPU acceleration for embedding generation
  */
-import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from './enhanced-ai-analysis.js';
-import { precedentAnalysisEngine } from './precedent-analysis-engine.js';
-import { db } from '../server/db/drizzle-vector-config.js';
-import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
+import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from, './enhanced-ai-analysis.js';
+import { precedentAnalysisEngine } from, './precedent-analysis-engine.js';
+import { db } from, '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } from, '../ai/embedding-config.js';
 // Search Query Types
 export interface VectorSearchQuery {
   text: string;
@@ -27,7 +27,7 @@ export interface VectorSearchQuery {
   filters?: {
     documentTypes?: string[];
     jurisdictions?: string[];
-    dateRange?: { start: Date; end: Date }
+    dateRange?: { start: Date;, end: Date }
     authors?: string[];
     tags?: string[];
     minConfidence?: number;
@@ -58,7 +58,7 @@ export interface VectorSearchResult {
   };
   similarity: number;
   relevanceScore: number;
-  rankingFactors: { semanticScore: number;, keywordScore: number;
+  rankingFactors: {, semanticScore: number;, keywordScore: number;
     metadataScore: number;
     recencyScore: number;
     authorityScore: number;
@@ -68,26 +68,26 @@ export interface VectorSearchResult {
   explanation?: string;
 }
 // Document Metadata
-export interface DocumentMetadata { indexedAt: Date;, lastUpdated: Date;
+export interface DocumentMetadata {, indexedAt: Date;, lastUpdated: Date;
   documentHash: string;
   embeddingModel: string;
   embeddingVersion: string;
   extractedEntities: LegalEntity[];
   keyTerms: string[];
   topics: string[];
-  classification: { type: string;, confidence: number;
+  classification: {, type: string;, confidence: number;
     category: string;
     subcategory?: string;
   };
-  quality: { contentQuality: number;, completeness: number;
+  quality: {, contentQuality: number;, completeness: number;
     accuracy: number;
   };
-  relationships: { citedDocuments: string[];, citingDocuments: string[];
+  relationships: {, citedDocuments: string[];, citingDocuments: string[];
     relatedDocuments: string[];
   };
 }
 // Document Snippet
-export interface DocumentSnippet { text: string;, startOffset: number;
+export interface DocumentSnippet {, text: string;, startOffset: number;
   endOffset: number;
   relevanceScore: number;
   highlightedText: string;
@@ -103,20 +103,20 @@ export interface SearchAnalytics {
   cacheHit: boolean;
   indexesUsed: string[];
   queryPlan?: string;
-  relevanceFeedback?: { clickedResults: number[];, dwell_times: number[];
+  relevanceFeedback?: {, clickedResults: number[];, dwell_times: number[];
     userSatisfaction?: number;
   };
 }
 // Index Statistics
-export interface IndexStatistics { totalDocuments: number;, totalEmbeddings: number;
+export interface IndexStatistics {, totalDocuments: number;, totalEmbeddings: number;
   indexSize: number; // bytes
   avgEmbeddingDimensions: number;
   lastIndexUpdate: Date;
   indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';
-  performanceMetrics: { avgQueryTime: number;, cacheHitRate: number;
+  performanceMetrics: {, avgQueryTime: number;, cacheHitRate: number;
     indexUtilization: number;
   };
-  storageBreakdown: { embeddings: number;, metadata: number;
+  storageBreakdown: {, embeddings: number;, metadata: number;
     fullText: number;
     indexes: number;
   };
@@ -124,9 +124,9 @@ export interface IndexStatistics { totalDocuments: number;, totalEmbeddings: nu
 export class EnterpriseVectorSearchService {
   private embeddingModel: string;
   private _vectorConfig: typeof drizzleVectorConfig; // renamed to avoid unused var lint
-  private searchCache: Map<string, { results: VectorSearchResult[]; timestamp: number }> = new Map();
+  private, searchCache: Map<string, { results: VectorSearchResult[];, timestamp: number }> = new Map();
   private analytics: SearchAnalytics[] = [];
-  private indexStats: IndexStatistics;
+  private, indexStats: IndexStatistics;
   constructor() {
     // getOptimalEmbeddingModel accepts a single option; use the closest legal preset
     this.embeddingModel = getOptimalEmbeddingModel('legal-general');
@@ -139,12 +139,12 @@ export class EnterpriseVectorSearchService {
       lastIndexUpdate: new Date(),
       indexHealth: 'optimal',
       performanceMetrics: {
-        avgQueryTime: 0,
+       , avgQueryTime: 0,
         cacheHitRate: 0,
         indexUtilization: 0
       },
       storageBreakdown: {
-        embeddings: 0,
+       , embeddings: 0,
         metadata: 0,
         fullText: 0,
         indexes: 0
@@ -156,7 +156,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Perform hybrid vector + keyword search
    */
-  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number; processingTime: number }> {
+  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number;, processingTime: number }> {
     // use slice instead of deprecated substr
     const queryId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
@@ -243,14 +243,14 @@ export class EnterpriseVectorSearchService {
    * Index a single document with optimized embedding generation
    */
   async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number; metadata: DocumentMetadata }> {
-    console.log(`📥 Indexing document: ${document.id}`);
+    console.log(`📥 Indexing, document: ${document.id}`);
     const startTime = Date.now();
     try {
       // 1. Generate comprehensive analysis
       const analysis = await enhancedAIAnalysis.analyzeDocument(document);
       // 2. Create document metadata
       const metadata: DocumentMetadata = {
-        indexedAt: new Date(),
+       , indexedAt: new Date(),
         lastUpdated: new Date(),
         documentHash: this.calculateDocumentHash(document),
         embeddingModel: this.embeddingModel,
@@ -259,18 +259,18 @@ export class EnterpriseVectorSearchService {
         keyTerms: this.extractKeyTerms(document.content),
         topics: analysis.keyTopics,
         classification: {
-          type: document.type || 'unknown',
+         , type: document.type || 'unknown',
           confidence: 0.85,
           category: this.classifyDocument(analysis),
           subcategory: undefined
         },
         quality: {
-          contentQuality: this.assessContentQuality(document),
+         , contentQuality: this.assessContentQuality(document),
           completeness: this.assessCompleteness(document),
           accuracy: 0.85 // Would be determined by validation processes
         },
         relationships: {
-          citedDocuments: this.extractCitations(document.content),
+         , citedDocuments: this.extractCitations(document.content),
           citingDocuments: [],
           relatedDocuments: []
         }
@@ -347,7 +347,7 @@ export class EnterpriseVectorSearchService {
         const batchResults = await Promise.allSettled(batchPromises);
         batchResults.forEach((r: PromiseSettledResult<any>) => {
           if (r.status === 'fulfilled') {
-            const value = r.value as { documentId: string; success: boolean; skipped?: boolean; error?: string };
+            const value = r.value as { documentId: string;, success: boolean; skipped?: boolean; error?: string };
             if (value.success) successful++;
             else failed++;
             results.push(value);
@@ -441,7 +441,7 @@ export class EnterpriseVectorSearchService {
       popularQueries: Array<any>;
     };
     indexStats: IndexStatistics;
-    performanceTrends: Array<any>;
+   , performanceTrends: Array<any>;
   } {
     let filteredAnalytics = this.analytics;
     if (timeRange) {
@@ -487,7 +487,7 @@ export class EnterpriseVectorSearchService {
     }
     // Check performance
     if (this.indexStats.performanceMetrics.avgQueryTime > 1000) {
-      alerts.push('Query response time exceeds 1 second threshold');
+      alerts.push('Query response time exceeds, 1 second threshold');
     }
     if (this.indexStats.performanceMetrics.cacheHitRate < 0.3) {
       alerts.push('Cache hit rate below optimal threshold');
@@ -497,12 +497,12 @@ export class EnterpriseVectorSearchService {
       healthy,
       indexHealth: this.indexStats.indexHealth,
       performance: {
-        avgQueryTime: this.indexStats.performanceMetrics.avgQueryTime,
+       , avgQueryTime: this.indexStats.performanceMetrics.avgQueryTime,
         cacheHitRate: this.indexStats.performanceMetrics.cacheHitRate,
         indexUtilization: this.indexStats.performanceMetrics.indexUtilization
       },
       storage: {
-        totalDocuments: this.indexStats.totalDocuments,
+       , totalDocuments: this.indexStats.totalDocuments,
         indexSize: this.formatBytes(this.indexStats.indexSize),
         availableSpace: 'Unknown' // Would query actual storage
       },
@@ -514,7 +514,7 @@ export class EnterpriseVectorSearchService {
     try {
       // Use enhanced AI analysis for consistent embedding generation
       const tempDoc: LegalDocument = {
-        id: 'temp_query',
+       , id: 'temp_query',
         content: query,
         type: 'query' };'`'`
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
@@ -556,13 +556,13 @@ export class EnterpriseVectorSearchService {
     const keywords = queryText.toLowerCase().split(/\s+/);
     // Mock keyword search results
     return [{ document: {, id: 'keyword_match_1',
-        content: 'Document containing; keywords: ${keywords.join(', ')}`,'`
+        content: 'Document containing;, keywords: ${keywords.join(', ')}`,'`
         title: 'Keyword Matched Document',
         type: 'statute' },'`'`
       similarity: 0,
       relevanceScore: 0.7,
       rankingFactors: {
-        semanticScore: 0,
+       , semanticScore: 0,
         keywordScore: 0.7,
         metadataScore: 0.1,
         recencyScore: 0.1,
@@ -572,7 +572,7 @@ export class EnterpriseVectorSearchService {
     }];
   }
   private async mergeAndRankResults(
-    vectorResults: VectorSearchResult[],
+   , vectorResults: VectorSearchResult[],
     keywordResults: VectorSearchResult[],
     query: VectorSearchQuery
   ): Promise<VectorSearchResult[]> {
@@ -674,7 +674,7 @@ export class EnterpriseVectorSearchService {
       ranking: query.ranking,
       options: { ...query.options, useCache: undefined }
     })}`;' }'`
-  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string;, metadata: DocumentMetadata }): Promise<void> {
+  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string;, title: string;, metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector
     console.log(`💾 Storing vector for document ${doc.id}`);
     // Simulated storage delay
@@ -709,10 +709,10 @@ export class EnterpriseVectorSearchService {
   }
   private classifyDocument(analysis: SemanticAnalysis): string {
     const topics = analysis.keyTopics;
-    if (topics.some(t => t.includes('contract'))) return 'contract';
-    if (topics.some(t => t.includes('case'))) return 'case-law';
-    if (topics.some(t => t.includes('statute'))) return 'legislation';
-    return 'general';
+    if (topics.some(t => t.includes('contract'))) return, 'contract';
+    if (topics.some(t => t.includes('case'))) return, 'case-law';
+    if (topics.some(t => t.includes('statute'))) return, 'legislation';
+    return, 'general';
   }
   private assessContentQuality(doc: LegalDocument): number {
     // Simple quality assessment based on length and structure

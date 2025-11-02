@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /**
  * MinIO Integration Test API
  * Basic functionality test for Phase 1: upload, AI analysis, storage
@@ -78,13 +78,13 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     console.log('📄 Testing file upload...');
     try {
       const testFileContent = `Legal Document Test`
-This is a test legal document for Phase 1 functionality testing.
+This is a test legal document for Phase, 1 functionality testing.
 Content includes:
 - Contract terms and conditions
 - Evidence documentation
 - Case reference materials
 - Witness testimony summary
-Generated at: ${new Date().toISOString()}
+Generated, at: ${new Date().toISOString()}
 Test ID: ${Math.random().toString(36).substring(7)}
       `;`
       const testFile = new File([testFileContent], 'test-legal-document.txt', {
@@ -151,7 +151,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
           totalTime: '${totalTime}ms' },
         results: testResults,
         timestamp: new Date().toISOString(),
-        phase: `Phase; 1: Basic upload, AI analysis, storage functionality` }),'`'`
+        phase: `Phase;, 1: Basic upload, AI analysis, storage functionality` }),'`'`
       {
         status: 200,
         headers: { 'Content-Type': `application/json` }

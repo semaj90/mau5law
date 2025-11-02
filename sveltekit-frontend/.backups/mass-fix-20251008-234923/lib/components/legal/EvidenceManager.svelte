@@ -254,7 +254,7 @@
             📤 Upload Evidence
           </Button>
           {#if selectedEvidence.size > 0}
-            <div class="bulk-actions" transition:fade>
+            <div class="bulk-actions" use:fade>
               <Button onclick={() => exportSelected('pdf')} variant="outline">
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
@@ -267,7 +267,7 @@
     <CardContent>
       <!-- Upload Section -->
       {#if showUpload}
-        <div class="upload-section" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="upload-section" use:fly={{ y: -20, duration: 300 }}>
           <div class="upload-area">
             <input
               type="file"
@@ -338,7 +338,7 @@
           <div
             class="evidence-item"
             class:selected={selectedEvidence.has(evidence.id)}
-            transition:scale={evidenceBuilder.animations.enter}
+            use:scale={evidenceBuilder.animations.enter}
           >
             <div class="evidence-header">
               <div class="evidence-select">
@@ -441,7 +441,7 @@
           </div>
         {/each}
         {#if filteredEvidence.length === 0}
-          <div class="no-evidence" transition:fade>
+          <div class="no-evidence" use:fade>
             <span class="no-evidence-icon">🔍</span>
             <h3>No Evidence Found</h3>
             <p>No evidence matches your current search and filter criteria.</p>

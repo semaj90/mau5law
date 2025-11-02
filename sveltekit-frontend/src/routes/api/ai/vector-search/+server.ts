@@ -5,17 +5,17 @@
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 200
- * Redis Type: vectorSearch
+ * Redis, Type: vectorSearch
  *
  * Routes to enhanced-rag-service.exe for semantic search
  * Integrates with your WebAssembly Graph Engine
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { enhancedRAGClient } from '$lib/services/enhanced-rag-client';
-import { db } from '$lib/server/db';
-import { contentEmbeddings, caseEmbeddings, evidenceVectors } from '$lib/server/db/schema-postgres';
-import { desc, sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { enhancedRAGClient } from, '$lib/services/enhanced-rag-client';
+import { db } from, '$lib/server/db';
+import { contentEmbeddings, caseEmbeddings, evidenceVectors } from, '$lib/server/db/schema-postgres';
+import { desc, sql } from, 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Fallback to database-only search
     let results;
     switch (type) {
-      case 'cases':
+      case, 'cases':
         results = await db
           .select({
             id: caseEmbeddings.id,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
         break;
 
-      case 'evidence':
+      case, 'evidence':
         results = await db
           .select({
             id: evidenceVectors.id,
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: // 'content'
         results = await db
           .select({
-            id: contentEmbeddings.id,
+           , id: contentEmbeddings.id,
             contentId: contentEmbeddings.contentId,
             contentType: contentEmbeddings.contentType,
             textContent: contentEmbeddings.textContent,
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type,
         count: results.length,
         threshold,
-        source: 'database', // Will be: 'enhanced-rag' when connected; processingTime: Date.now() % 100, // Mock processing time
+        source: 'database', // Will be: 'enhanced-rag' when connected;, processingTime: Date.now() % 100, // Mock processing time
       }
     });
   } catch (error) {

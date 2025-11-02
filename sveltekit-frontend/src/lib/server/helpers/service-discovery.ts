@@ -8,7 +8,7 @@
  *
  * Usage:
  * ```typescript`
- * import { ServiceDiscovery } from '$lib/server/helpers/service-discovery';
+ * import { ServiceDiscovery } from, '$lib/server/helpers/service-discovery';
  *
  * const discovery = new ServiceDiscovery();
  *
@@ -28,12 +28,12 @@
  * });
  * ```
  */
-import { discoverServiceEndpoint, verifyServiceEndpoint } from './docker-discovery';
+import { discoverServiceEndpoint, verifyServiceEndpoint } from, './docker-discovery';
 export interface ServiceConfig {
   // Environment variable name to check first
   envVar: string;
   // Fallback URL if env var and discovery fail
-  fallback: string;
+ , fallback: string;
   // Docker container name (exact match preferred)
   containerName?: string;
   // Port to look for in container
@@ -81,7 +81,7 @@ export class ServiceDiscovery {
     }
     // Try to discover URL
     let url: string;
-    let source: 'env' | 'discovery' | 'fallback';
+    let, source: 'env' | 'discovery' | 'fallback';
     try {
       // Use docker-discovery helper which already handles env var + Docker discovery + fallback
       url = await discoverServiceEndpoint(config.envVar, config.fallback, {
@@ -106,7 +106,7 @@ export class ServiceDiscovery {
       source = 'fallback';
     }
     // Optional: verify endpoint is reachable
-    let verified: boolean | undefined;
+    let, verified: boolean | undefined;
     if (config.verify) {
       verified = await verifyServiceEndpoint(url, config.verifyTimeout);
       if (!verified) {
@@ -155,7 +155,7 @@ export class ServiceDiscovery {
    */
   getCacheStats(): { size: number; entries: string[] } {
     return {
-      size: this.cache.size,
+     , size: this.cache.size,
       entries: Array.from(this.cache.keys())
     };
   }
@@ -178,56 +178,56 @@ export const COMMON_SERVICES = { minio: {, envVar: 'MINIO_ENDPOINT',
     verify: true
   } as ServiceConfig,
   minioConsole: {
-    envVar: 'MINIO_CONSOLE_ENDPOINT',
+   , envVar: 'MINIO_CONSOLE_ENDPOINT',
     fallback: 'http://localhost:9001',
     containerName: 'legal-ai-minio',
     port: 9001,
     verify: false
   } as ServiceConfig,
   ollama: {
-    envVar: 'OLLAMA_URL',
+   , envVar: 'OLLAMA_URL',
     fallback: 'http://localhost:11434',
     containerName: 'ollama',
     port: 11434,
     verify: true
   } as ServiceConfig,
   qdrant: {
-    envVar: 'QDRANT_URL',
+   , envVar: 'QDRANT_URL',
     fallback: 'http://localhost:6333',
     containerName: 'qdrant',
     port: 6333,
     verify: true
   } as ServiceConfig,
   redis: {
-    envVar: 'REDIS_HOST',
+   , envVar: 'REDIS_HOST',
     fallback: 'redis://localhost:6379',
     containerName: 'redis',
     port: 6379,
     verify: false // TCP, harder to verify with HTTP
   } as ServiceConfig,
   postgres: {
-    envVar: 'DATABASE_URL',
+   , envVar: 'DATABASE_URL',
     fallback: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
     containerName: 'postgres',
     port: 5432,
     verify: false // TCP, harder to verify
   } as ServiceConfig,
   neo4j: {
-    envVar: 'NEO4J_URL',
+   , envVar: 'NEO4J_URL',
     fallback: 'bolt://localhost:7687',
     containerName: 'neo4j',
     port: 7687,
     verify: false
   } as ServiceConfig,
   rabbitmq: {
-    envVar: 'RABBITMQ_URL',
+   , envVar: 'RABBITMQ_URL',
     fallback: 'amqp://rabbitmq:5672',
     containerName: 'rabbitmq',
     port: 5672,
     verify: false
   } as ServiceConfig,
   rabbitmqManagement: {
-    envVar: 'RABBITMQ_MANAGEMENT_URL',
+   , envVar: 'RABBITMQ_MANAGEMENT_URL',
     fallback: 'http://localhost:15672',
     containerName: 'rabbitmq',
     port: 15672,

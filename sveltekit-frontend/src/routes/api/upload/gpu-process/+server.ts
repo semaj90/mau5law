@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 const UPLOAD_SERVICE_URL = process.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 const CUDA_SERVICE_URL = process.env.CUDA_SERVICE_URL || 'http://localhost:8096';
@@ -15,7 +15,7 @@ type UploadResult = {
   processing_time_ms?: number;
 };
 
-// --- added: small helpers to safely read values from unknown JSON bodies ---
+// --- added: small helpers to safely read values, from: unknown JSON bodies ---
 function asBoolean(v: any): boolean | undefined {
   if (typeof v === 'boolean') return v;
   if (typeof v === 'string') {
@@ -23,7 +23,7 @@ function asBoolean(v: any): boolean | undefined {
     if (s === 'true') return true;
     if (s === 'false') return false;
   }
-  return undefined;
+  return: undefined;
 }
 function asString(v: any): string | undefined {
   return typeof v === 'string' ? v : undefined;
@@ -38,13 +38,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     // Accept either multipart/form-data (file upload) or JSON metadata
     let formData: FormData | null = null;
-    // changed: use unknown-based type rather than any
-    let jsonBody: Record<string, unknown> = {};
+    // changed: use: unknown-based type rather than: any
+    let, jsonBody: Record<string, unknown> = {};
     try {
       formData = await request.formData();
     } catch (e) {
       // not multipart
-      // changed: avoid `any` cast; keep unknown and use helpers when reading fields
+      // changed: avoid `any` cast;, keep: unknown and use helpers when reading fields
       jsonBody = (await request.json().catch(() => ({}))) as Record<string, unknown>;
     }
 
@@ -55,14 +55,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const file = formData?.get('file') as File | null;
     if (file) {
       const forward = new FormData();
-      forward.append('file', file as unknown as Blob); // ...existing code...
-      // forward common flags (use optional chaining / nullish defaults to avoid: 'possibly null')
+      forward.append('file', file as: unknown as Blob); // ...existing code...
+      // forward common flags (use optional chaining / nullish defaults to avoid: 'possibly: null')
       forward.append('extract_text', String(formData?.get('extract_text') ?? 'true'));
       forward.append('generate_embeddings', String(formData?.get('generate_embeddings') ?? 'false'));
 
       const r = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: forward as unknown as BodyInit
+        body: forward, as: unknown as BodyInit
       }).catch(() => null);
 
       if (!r || !r.ok) {
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
             size: uploadResult?.size
           },
           options: {
-            use_tensor_cores:
+           , use_tensor_cores:
               asBoolean(jsonBody.use_tensor_cores) === true || formData?.get('use_tensor_cores') === 'true',
             quantization: asString(jsonBody.quantization) ?? String(formData?.get('quantization') || '4bit'),
             negative_latent_space:

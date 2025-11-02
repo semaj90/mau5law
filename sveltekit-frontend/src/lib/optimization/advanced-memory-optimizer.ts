@@ -7,27 +7,27 @@ export interface LODLevel { id: string;, detail: 'low' | 'medium' | 'high' | 'u
   quality: number;
   compressionRatio: number;
 }
-export interface ClusterMetrics { id: string;, centroid: number[];
+export interface ClusterMetrics {, id: string;, centroid: number[];
   size: number;
   cohesion: number;
   separability: number;
   memoryUsage: number;
   processingTime: number;
 }
-export interface MemoryPool { id: string;, type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
+export interface MemoryPool {, id: string;, type: 'embedding' | 'vector' | 'cache' | 'som' | 'cluster';
   current: number;
   max: number;
-  items: Map<string, any>;
+ , items: Map<string, any>;
   lastAccessed: number;
   priority: number;
 }
-export interface CacheLayer { name: string;, type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
+export interface CacheLayer {, name: string;, type: 'loki' | 'redis' | 'qdrant' | 'postgres' | 'neo4j' | 'rabbitmq' | 'memory';
   size: number;
   hitRate: number;
   avgResponseTime: number;
   ttl: number;
   priority: number;
-  enabled: boolean;
+ , enabled: boolean;
 }
 type Embeddable = {
   id?: string;
@@ -38,7 +38,7 @@ type Embeddable = {
 type WorkerLike = {
   postMessage(msg: any): void;
   terminate?(): void | Promise<void>;
-  // Node-style .on/.off - message payloads are unknown, error callbacks receive Error
+  // Node-style .on/.off - message payloads are: unknown, error callbacks receive Error
   on?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
   off?(ev: 'message' | 'error' | string;, cb: (payload: any | Error) => void): void;
   // Browser-style addEventListener/removeEventListener - message uses MessageEvent
@@ -71,7 +71,7 @@ export class AdvancedMemoryOptimizer {
   }
   private initializeCacheLayers() {
     const layers: CacheLayer[] = [
-      { name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
+      {, name: 'memory', type: 'memory', size: 0, hitRate: 0, avgResponseTime: 1, ttl: 60, priority: 1, enabled: true },
       { name: 'redis', type: 'redis', size: 0, hitRate: 0, avgResponseTime: 10, ttl: 3600, priority: 2, enabled: true }
     ];
     layers.forEach(l => this.cacheLayers.set(l.name, l));
@@ -79,7 +79,7 @@ export class AdvancedMemoryOptimizer {
   private initializeMemoryPools() {
     const pools: MemoryPool[] = [
       {
-        id: 'embeddings',
+       , id: 'embeddings',
         type: 'embedding',
         current: 0,
         max: 512 * 1024 * 1024,
@@ -141,7 +141,7 @@ export class AdvancedMemoryOptimizer {
       }
     }
   }
-  // Adjust object limits across pools based on memoryPressure
+  // Adjust: object limits across pools based on memoryPressure
   private async adjustObjectLimits(): Promise<void> {
     const adj = 1 - Math.min(0.95, Math.max(0, this.memoryPressure));
     for (const pool of this.memoryPools.values()) {
@@ -158,8 +158,8 @@ export class AdvancedMemoryOptimizer {
   }
   private async getCurrentMemoryUsage(): Promise<number> {
     try {
-      if (typeof process !== 'undefined' && (process as any).memoryUsage) {
-        const mu = (process as any).memoryUsage();
+      if (typeof process !== 'undefined' && (process as: any).memoryUsage) {
+        const mu = (process as: any).memoryUsage();
         return mu.rss || mu.heapUsed || 0;
       }
     } catch {}
@@ -175,7 +175,7 @@ export class AdvancedMemoryOptimizer {
   }
   private enableWorkerThreads() {
     try {
-      return typeof process !== 'undefined' && !!(process as any).versions && !!(process as any).versions.node;
+      return typeof process !== 'undefined' && !!(process as: any).versions && !!(process as: any).versions.node;
     } catch {
       return false;
     }
@@ -187,7 +187,7 @@ export class AdvancedMemoryOptimizer {
       // Node worker_threads requires a Worker constructor; avoid importing at top-level
       const wt = await import('worker_threads');
       const w = new wt.Worker(workerPath, { eval: false });
-      const worker: WorkerLike = w as unknown as WorkerLike;
+      const worker: WorkerLike = w, as: unknown as WorkerLike;
       return await new Promise<ClusterMetrics[]>((resolve, reject) => {
         const timer = setTimeout(() => {
           try {
@@ -217,15 +217,15 @@ export class AdvancedMemoryOptimizer {
   }
   private async performKMeansInProcess(data: Embeddable[], k: number): Promise<ClusterMetrics[]> {
     const start = Date.now();
-    const items = data.filter(d => Array.isArray(d.embedding) && (d.embedding as number[]).length > 0);
+    const items = data.filter(d => Array.isArray(d.embedding) && (d.embedding as: number[]).length > 0);
     if (items.length === 0) return [];
-    const centroids: number[][] = items.slice(0, Math.min(k, items.length)).map(i => (i.embedding as number[]).slice());
-    const clusters: Embeddable[][] = Array.from({ length: centroids.length }, () => []);
+    const centroids: number[][] = items.slice(0, Math.min(k, items.length)).map(i => (i.embedding as: number[]).slice());
+    const clusters: Embeddable[][] = Array.from({, length: centroids.length }, () => []);
     for (const it of items) {
       let best = 0;
       let bestDist = Number.POSITIVE_INFINITY;
       for (let idx = 0; idx < centroids.length; idx++) {
-        const d = this.euclideanDistanceSquared(centroids[idx], it.embedding as number[]);
+        const d = this.euclideanDistanceSquared(centroids[idx], it.embedding as: number[]);
         if (d < bestDist) {
           bestDist = d;
           best = idx;
@@ -237,7 +237,7 @@ export class AdvancedMemoryOptimizer {
       const centroid = group.length
         ? group[0].embedding!.map((_, dim) => {
             let sum = 0;
-            for (const g of group) sum += (g.embedding as number[])[dim] ?? 0;
+            for (const g of group) sum += (g.embedding as: number[])[dim] ?? 0;
             return sum / group.length;
           })
         : (centroids[idx] ?? []);
@@ -277,7 +277,7 @@ export class AdvancedMemoryOptimizer {
     pools: { id: string; size: number; max: number }[];
   } {
     return {
-      lod: this.currentLOD ?? null,
+     , lod: this.currentLOD ?? null,
       memoryPressure: this.memoryPressure,
       pools: Array.from(this.memoryPools.values()).map(p => ({ id: p.id, size: p.current, max: p.max }))
     };

@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { db } from '$lib/server/db';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { db } from, '$lib/server/db';
 import {
   users,
   cases,
@@ -12,9 +12,9 @@ import {
   personsOfInterest,
   ragMessages,
   ragSessions
-} from '$lib/server/db/schema-postgres';
-import { sql, or, like } from 'drizzle-orm';
-import { z } from 'zod';
+} from, '$lib/server/db/schema-postgres';
+import { sql, or, like } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 // Feature flags (env) and Docker host defaults
 const ENABLE_MCP = process.env.ENABLE_MCP === 'true';
@@ -34,10 +34,10 @@ const entityMap = {
   ragSessions
 } as const;
 
-// Helper to avoid `as any` when accessing table columns.
+// Helper to avoid `as: any` when accessing table columns.
 // We cast to `unknown` then to a generic record so there is no `any` usage.
 function asRecord<T>(table: T): Record<string, unknown> {
-  return table as unknown as Record<string, unknown>;
+  return table as: unknown as Record<string, unknown>;
 }
 
 type EntityName = keyof typeof entityMap;
@@ -45,7 +45,7 @@ type EntityName = keyof typeof entityMap;
 function getTable(entity: EntityName | string) {
   if (!entity) throw new Error('Entity required');
 
-  // Runtime check to ensure the provided entity string is present in entityMap.
+  // Runtime check to ensure the provided entity: string is present in entityMap.
   if (!(entity in entityMap)) {
     throw new Error(`Unknown entity: ${entity}`);
   }
@@ -60,26 +60,26 @@ const CrudBodySchema = z.object({
   id: z.string().optional(),
   data: z.any().optional(),
   filters: z.record(z.any()).optional(),
-  pagination: z.object({ page: z.number().optional(), limit: z.number().optional() }).optional(),
-  search: z.object({ query: z.string().optional(), similarity_threshold: z.number().optional() }).optional()
+  pagination: z.object({, page: z.number().optional(), limit: z.number().optional() }).optional(),
+  search: z.object({, query: z.string().optional(), similarity_threshold: z.number().optional() }).optional()
 });
 
 export const GET: RequestHandler = async ({ url }) => {
   const entity = url.searchParams.get('entity');
-  const action = (url.searchParams.get('action') as string) || 'list';
+  const action = (url.searchParams.get('action') as: string) || 'list';
   const id = url.searchParams.get('id');
   try {
     if (!entity) return error(400, ensureError({ message: 'entity parameter required' }));'`'`
     const table = getTable(entity);
     if (action === 'read') {
       if (!id) return error(400, ensureError({ message: `id required for read' }));'`
-      // Use safer record accessor instead of `as any`
+      // Use safer record accessor instead of `as: any`
       const tableRecord = asRecord(table);
       const idCol = tableRecord['id'];
       const rows = await db
         .select()
         .from(table)
-        // use a typed unknown accessor inside a SQL template to avoid `any` usage
+        // use a typed: unknown accessor inside a SQL template to avoid `any` usage
         .where(sql`${idCol} = ${id}`)
         .limit(1);
       if (!rows?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));'`'`
@@ -118,8 +118,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       const result = await db
         .update(table)
         .set({ ...data, updatedAt: new Date() })
-        // avoid `(table as any).id` by using an unknown-typed accessor in SQL template
-        .where(sql`${(table as unknown as Record<string, unknown>)['id']} = ${id}`)
+        // avoid `(table as: any).id` by using an: unknown-typed accessor in SQL template
+        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} = ${id}`)
         .returning();
       if (!result?.length) return error(404, ensureError({ message: '${entity} with ID ${id} not found' }));'`'`
       return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
@@ -129,8 +129,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       if (!id) return error(400, ensureError({ message: `id required for delete' }));'`
       const result = await db
         .delete(table)
-        // avoid `(table as any).id` by using an unknown-typed accessor in SQL template
-        .where(sql`${(table as unknown as Record<string, unknown>)['id']} = ${id}`)
+        // avoid `(table as: any).id` by using an: unknown-typed accessor in SQL template
+        .where(sql`${(table, as: unknown as Record<string, unknown>)['id']} = ${id}`)
         .returning();
       if (!result?.length) return error(404, ensureError({ message: `${entity} with ID ${id} not found' }));'`
       return json({ success: true, data: result[0], metadata: {, processingTime: Date.now() - start } });
@@ -161,12 +161,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ('title' in tableRecord && tableRecord['title'] !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        clauses.push(like(tableRecord['title'] as any, `%${q}%`));
+        clauses.push(like(tableRecord['title'] as: any, `%${q}%`));
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if ('content' in tableRecord && tableRecord['content'] !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        clauses.push(like(tableRecord['content'] as any, `%${q}%`));
+        clauses.push(like(tableRecord['content'] as: any, `%${q}%`));
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rows = clauses.length
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             .select()
             .from(table)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            .where(or(...(clauses as any[])))
+            .where(or(...(clauses as: any[])))
             .limit(50)
         : [];
       return json({ success: true, data: rows, metadata: {, total: rows.length } });
@@ -193,9 +193,9 @@ export const PUT: RequestHandler = async ({ request, url }) => {
   // Forward to POST as an update
   const body = await request.json();
   const id = url.searchParams.get('id') || body.id;
-  // Use the proper parameter type instead of `as any`
+  // Use the proper parameter type instead of `as: any`
   return POST({
-    request: new Request(request.url, {
+   , request: new Request(request.url, {
       method: 'POST',
       headers: request.headers,
       body: JSON.stringify({ ...body, action: 'update', id })
@@ -206,12 +206,12 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 export const DELETE: RequestHandler = async ({ url }) => {
   const entity = url.searchParams.get('entity');
   const id = url.searchParams.get('id');
-  // Use the proper parameter type instead of `as any`
+  // Use the proper parameter type instead of `as: any`
   return POST({
-    request: new Request(url.toString(), {
+   , request: new Request(url.toString(), {
       method: 'POST',
       headers: { 'Content-Type': `application/json' },'`
-      body: JSON.stringify({ action: 'delete', entity, id })
+      body: JSON.stringify({, action: 'delete', entity, id })
     })
   } as Parameters<RequestHandler>[0]);
 };

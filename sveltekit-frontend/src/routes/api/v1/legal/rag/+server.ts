@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * POST /api/v1/legal/rag
  *
@@ -10,9 +10,9 @@ import type { Document } from '$lib/types';
  * - Complete response caching (Redis)
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getLegalAIPipeline } from, '$lib/server/integrations';
 
 /**
  * POST /api/v1/legal/rag
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: s.metadata
         })),
         metadata: {
-          model: result.model,
+         , model: result.model,
           tokensUsed: result.tokensUsed,
           cacheHit: result.cacheHit,
           processingTimeMs: result.processingTimeMs,
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const type = url.searchParams.get('type');
 
     if (!query) {
-      throw error(400, 'Missing "query" parameter');
+      throw error(400, 'Missing, "query" parameter');
     }
 
     // Build filter

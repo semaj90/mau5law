@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence, cases } from '$lib/server/db/schema';
-import { sql, desc, and, ne } from 'drizzle-orm';
+import type { Case } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence, cases } from, '$lib/server/db/schema';
+import { sql, desc, and, ne } from, 'drizzle-orm';
 
 /**
  * POST /api/v1/evidence/similar - Find similar evidence using OCR embeddings
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     if (embedding.length !== 384) {
-      throw error(400, 'Embedding must be 384 dimensions for Gemma model');
+      throw error(400, 'Embedding must be, 384 dimensions for Gemma model');
     }
 
     // Convert embedding to PostgreSQL vector format
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         )
       )
       .orderBy(desc(sql`1 - (ocr_embedding <-> ${embeddingVector}::vector)`))
-      .limit(Math.min(limit, 20)); // Cap at 20 results
+      .limit(Math.min(limit, 20)); // Cap at, 20 results
 
     const similarEvidence = await queryBuilder;
 
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'Cache-Control': 'max-age=300', // Cache for 5 minutes
+          'Cache-Control': 'max-age=300', // Cache for, 5 minutes
         }
       }
     );

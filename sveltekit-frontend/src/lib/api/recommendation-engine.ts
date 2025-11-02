@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎯 Recommendation Engine API Client
  * Client-side functions for accessing recommendation APIs
@@ -7,13 +7,13 @@ import type { Document } from '$lib/types';
 interface RecentCaseResponse { success: boolean;, data: RecentCase[];
   fromCache: boolean;
   timestamp: string;
-  meta?: { totalCases: number;, returnedCases: number;
+  meta?: {, totalCases: number;, returnedCases: number;
     highestPriority: number;
     algorithm: string;
     cacheExpiry: number;
   };
 }
-interface RecentCase { id: string;, title: string;
+interface RecentCase {, id: string;, title: string;
   status: 'active' | 'pending' | 'closed';
   lastAccessed: string;
   confidence: number;
@@ -21,10 +21,10 @@ interface RecentCase { id: string;, title: string;
   caseType: string;
   urgency: 'low' | 'normal' | 'high' | 'critical';
   glyphSignature?: string;
-  metadata: { clientName: string;, practiceArea: string;
+  metadata: {, clientName: string;, practiceArea: string;
     daysOpen: number;
     documentCount: number;
-    lastActivity: string;
+   , lastActivity: string;
   };
 }
 /**
@@ -59,7 +59,7 @@ export async function getRecentCases(limit: number = 5): Promise<RecentCase[]> {
         urgency: 'high',
         glyphSignature: 'fb001',
         metadata: {
-          clientName: 'Sample Client',
+         , clientName: 'Sample Client',
           practiceArea: 'General Practice',
           daysOpen: 30,
           documentCount: 25,

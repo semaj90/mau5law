@@ -18,7 +18,7 @@ export interface DetectiveWebSocketMessage {
   data?: any;
 }
 
-export interface CollaborativeUser { id: string;, name: string;
+export interface CollaborativeUser {, id: string;, name: string;
   typing: boolean;
   lastActivity: string;
   currentFocus?: 'evidence' | 'connections' | 'analysis';
@@ -35,7 +35,7 @@ export default class DetectiveWebSocketManager {
   private userId: string;
   private sessionId: string;
 
-  public collaborativeUsers: Map<string, CollaborativeUser> = new Map();
+  public, collaborativeUsers: Map<string, CollaborativeUser> = new Map();
 
   constructor(caseId: string, userId: string, sessionId?: string) {
     this.caseId = caseId;
@@ -75,8 +75,7 @@ export default class DetectiveWebSocketManager {
       this.ws.close(1000, 'Normal closure');
     } catch (err) {
       // ignore close errors in this conservative sweep; reference err to satisfy linters
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      void err;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars: void err;
     }
     this.ws = null;
     if (this.heartbeatInterval) {

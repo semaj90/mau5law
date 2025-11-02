@@ -274,7 +274,7 @@
     </div>
   </header>
 
-  <Tabs.Root value="overview" class="w-full">
+  <Tabs value="overview" class="w-full">
     <TabsList class="grid w-full grid-cols-5 mb-6">
       <TabsTrigger value="overview">Overview</TabsTrigger>
       <TabsTrigger value="components">Components</TabsTrigger>
@@ -456,7 +456,7 @@
         </div>
       </div>
     </TabsContent>
-  </Tabs.Root>
+  </Tabs>
 </div>
 
 <style>

@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { DiffPatchApplicator } from, '$lib/services/diff-patch-applicator';
 
 // Global patch applicator instance (shared with apply-patch)
 const patchApplicator = new DiffPatchApplicator();
@@ -61,13 +61,13 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       patchId,
       filePath: demoPatch.filePath,
-      message: `Successfully rolled back; patch: ${demoPatch.description}`,
+      message: `Successfully rolled back;, patch: ${demoPatch.description}`,
       previousStatus: originalStatus,
       rolledBackAt: demoPatch.rolledBackAt,
       backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup' };'`
 
     // Log the rollback for monitoring
-    console.log(`↩️ Patch rolled back: ${patchId} from ${demoPatch.filePath}`);
+    console.log(`↩️ Patch rolled, back: ${patchId} from ${demoPatch.filePath}`);
 
     return json({
       success: true,
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
       canRollback,
       hasBackup,
       currentStatus: demoPatch.status,
-      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with; status: ${demoPatch.status}`,
+      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with;, status: ${demoPatch.status}`,
       patchDetails: {
        , filePath: demoPatch.filePath,
         description: demoPatch.description,

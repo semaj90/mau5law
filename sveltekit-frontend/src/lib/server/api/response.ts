@@ -1,21 +1,21 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-// Standardized API Response Handlers for SvelteKit 2
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+// Standardized API Response Handlers for SvelteKit, 2
 // Production-ready response patterns with comprehensive error handling
-import { json, type RequestEvent } from '@sveltejs/kit';
-import { z } from 'zod';
-import type { ApiError } from '../../types/api.js';
-import type { APIResponse as UnifiedAPIResponse } from '$lib/types';
+import { json, type RequestEvent } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import type { ApiError } from, '../../types/api.js';
+import type { APIResponse as UnifiedAPIResponse } from, '$lib/types';
 // Standard response interface
 export interface StandardApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: ApiError;
-  meta?: { timestamp: string;, requestId: string;
+  meta?: {, timestamp: string;, requestId: string;
     processingTime: number;
     version: string;
-    pagination?: { page: number;, limit: number;
+    pagination?: {, page: number;, limit: number;
       total: number;
       hasNext: boolean;
       hasPrev: boolean;
@@ -26,11 +26,11 @@ export interface StandardApiResponse<T = unknown> {
 // Enhanced error class for API errors
 export class ApiErrorClass extends Error {
   public readonly code: string;
-  public readonly statusCode: number;
+  public readonly, statusCode: number;
   public readonly details?: Record<string, unknown>;
   public readonly timestamp: Date;
   constructor(
-    message: string,
+   , message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
     details?: Record<string, unknown>
@@ -51,10 +51,10 @@ export function apiSuccess<T>(
   pagination?: StandardApiResponse<T>['meta']['pagination']
 ): Response {
   const response: StandardApiResponse<T> = {
-    success: true,
+   , success: true,
     data,
     meta: {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       requestId,
       processingTime,
       version: '2.0',
@@ -94,14 +94,14 @@ export function apiError(
   }
   // Add fallback data for legal API endpoints
   const response: StandardApiResponse<unknown> = {
-    success: false,
+   , success: false,
     error: {
       ...apiErrorData,
       message: 'failure default to mock'
     },
     data: generateMockFallbackData(apiErrorData.code),
     meta: {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       requestId,
       processingTime,
       version: '2.0',
@@ -132,7 +132,7 @@ export function validationError(
 // --- Unified Builders (Lightweight wrappers aligned with new shared types) ---
 export function buildSuccessResponse<T>(
   data: T,
-  metadata: {, processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number;, requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: true,
@@ -143,7 +143,7 @@ export function buildSuccessResponse<T>(
 export function buildErrorResponse(
   code: string,
   message: string,
-  metadata: {, processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number;, requestId: string }
 ): UnifiedAPIResponse {
   return {
     success: false,
@@ -153,7 +153,7 @@ export function buildErrorResponse(
 }
 export function buildFormSubmissionResult(
   result: any,
-  metadata: {, processingTimeMs: number; requestId: string }
+  metadata: {, processingTimeMs: number;, requestId: string }
 ): any {
   return {
     ...(result as Record<string, unknown>),
@@ -173,8 +173,8 @@ function generateMockFallbackData(errorCode: string): any {
   };
   // Context-aware mock data generation
   switch (errorCode) {
-    case 'DATABASE_ERROR':
-    case 'INTERNAL_ERROR':
+    case, 'DATABASE_ERROR':
+    case, 'INTERNAL_ERROR':
       return {
         ...baseData,
         cases: [
@@ -201,14 +201,14 @@ function generateMockFallbackData(errorCode: string): any {
           },
         ],
         pagination: {
-          page: 1,
+         , page: 1,
           limit: 50,
           total: 1,
           hasNext: false,
           hasPrev: false
         }
       };
-    case 'NOT_FOUND':
+    case, 'NOT_FOUND':
       return {
         ...baseData,
         suggested: [
@@ -220,8 +220,8 @@ function generateMockFallbackData(errorCode: string): any {
           },
         ]
       };
-    case 'UNAUTHORIZED':
-    case 'FORBIDDEN':
+    case, 'UNAUTHORIZED':
+    case, 'FORBIDDEN':
       return {
         ...baseData,
         demoMode: true,
@@ -233,7 +233,7 @@ function generateMockFallbackData(errorCode: string): any {
 }
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
-  handler: (event: RequestEvent) => Promise<T>,
+ , handler: (event: RequestEvent) => Promise<T>,
   event: RequestEvent
 ): Promise<Response> {
   const startTime = Date.now();
@@ -242,7 +242,7 @@ export async function withApiHandler<T>(
   (event.locals as { requestId?: string }).requestId = requestId;
   // Development auth bypass: when enabled, inject a demo user into locals
   try {
-    const metaEnv = import.meta as unknown as { env?: Record<string, string | undefined> };
+    const metaEnv = import.meta as: unknown as { env?: Record<string, string | undefined> };
     const devBypass = process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.env?.DEV_BYPASS_AUTH === 'true';
     if (devBypass && process.env.NODE_ENV !== 'production') {
       // Only inject a minimal demo user suitable for development

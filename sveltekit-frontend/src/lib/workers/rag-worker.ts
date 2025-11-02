@@ -1,15 +1,15 @@
-import Minio from 'minio';
-import { createWorker } from 'tesseract.js';
-import fetch from 'node-fetch';
-import { getOllamaEndpoint } from '$lib/utils/ollama-utils';
-import { db } from '$lib/server/db';
-import { documents } from '$lib/server/db/enhanced-embedding-schema';
-import { eq } from 'drizzle-orm';
-import { QdrantClient } from '@qdrant/js-client-rest';
+import Minio from, 'minio';
+import { createWorker } from, 'tesseract.js';
+import fetch from, 'node-fetch';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-utils';
+import { db } from, '$lib/server/db';
+import { documents } from, '$lib/server/db/enhanced-embedding-schema';
+import { eq } from, 'drizzle-orm';
+import { QdrantClient } from, '@qdrant/js-client-rest';
 
 interface IngestResult { title: string;, contentLength: number;
   embeddingSize: number;
-  mirroredToQdrant: boolean;
+ , mirroredToQdrant: boolean;
 }
 
 function minioClient() {
@@ -50,7 +50,7 @@ export async function processDocument(bucket: string, objectKey: string): Promis
       const embedRes = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text })
+        body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text })
       });
       const embedJson = (await embedRes.json()) as { embedding?: number[] };
 

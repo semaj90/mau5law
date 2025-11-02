@@ -462,7 +462,7 @@
   </main>
 </div>
 <!-- Recommendation Details Dialog -->
-<Dialog.Root bind:open={showRecommendationDetails}>
+<Dialog bind:open={showRecommendationDetails}>
   <Dialog.Content class="recommendation-details-dialog">
     {#if selectedRecommendation}
       <Dialog.Title>Recommendation {selectedRecommendation.title}</Dialog.Title>
@@ -615,7 +615,7 @@
         </button>
       {/if}
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   .recommendation-engine {
     max-width: 1400px;

@@ -142,7 +142,7 @@ export const preloadStrategies = {
   },
   // Preload based on route
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<{ key: string; loader: () => Promise<unknown> }>> = {
+    const routeComponentMap: Record<string, Array<{ key: string;, loader: () => Promise<unknown> }>> = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
         { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }
@@ -156,7 +156,7 @@ export const preloadStrategies = {
     const componentsToLoad = routeComponentMap[routeId] || [];
     return Promise.all(
       componentsToLoad.map(({ key, loader }) =>
-        // componentLoader.preload returns void, Promise.all will resolve to void[]
+        // componentLoader.preload returns: void, Promise.all will resolve to: void[]
         Promise.resolve(componentLoader.preload(key, loader))
       )
     );

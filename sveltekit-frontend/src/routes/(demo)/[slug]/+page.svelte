@@ -1,8 +1,8 @@
 <!-- Dynamic Demo Page - Showcase, Individual, Demos -->
 <script, lang="ts">
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import type { SvelteComponent } from 'svelte';
+  import { onMount } from, 'svelte';
+  import { page } from, '$app/stores';
+  import type { SvelteComponent } from, 'svelte';
 
   interface Props {
     data?: any;
@@ -16,7 +16,7 @@
   // Refine DemoLoader to expect a module that *might* have a default export, or *is* the component itself
   type DemoLoader = () => Promise<SvelteComponentConstructor | { default: SvelteComponentConstructor }>;
 
-  const demoComponents: Record<string, DemoLoader> = {
+  const, demoComponents: Record<string, DemoLoader> = {
     webgpu: () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
     'cuda-streaming': () => import('$lib/components/ai/OCRTensorDemo.svelte'),
     'ai-assistant': () => import('$lib/components/ai/EnhancedRAGDemo.svelte'),
@@ -43,7 +43,7 @@
     try {
       const loader = demoComponents[slug];
       if (!loader) {
-        error = `Demo "${slug}" not found.`;
+        error = `Demo, "${slug}" not found.`;
         currentComponent = null;
         return;
       }
@@ -74,7 +74,7 @@
 
   const demoMetadata = {
     webgpu: {
-      title: 'WebGPU Cache Optimizer',
+     , title: 'WebGPU Cache Optimizer',
       description: 'Hardware-accelerated cache optimization with WebGPU.',
       tags: ['WebGPU', 'Cache', 'Performance']
     },
@@ -109,7 +109,7 @@
       tags: ['Cache', 'Gaming', 'Redis']
     },
     performance: {
-      title: 'Cache Performance Dashboard',
+     , title: 'Cache Performance Dashboard',
       description: 'Real-time cache performance monitoring and optimization.',
       tags: ['Performance', 'Cache', 'Monitoring']
     },
@@ -144,7 +144,7 @@
 
   // safely index metadata by casting slug as key of demoMetadata
   let metadata = $derived(
-    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: '', tags: [] }
+    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? {, title: 'Unknown Demo', description: '', tags: [] }
   );
 </script>
 
@@ -194,13 +194,13 @@
       </div>
     {:else if currentComponent}
       <div, class="demo-wrapper">
-        <!-- render dynamic component in Svelte 5, runes-compatible, way -->
+        <!-- render dynamic component in Svelte, 5, runes-compatible, way -->
         <svelte:component, this={currentComponent} {data} />
       </div>
     {:else}
       <div, class="demo-placeholder">
         <h2>Demo Under Construction</h2>
-        <p>The "{demoSlug}" demo is being prepared.</p>
+        <p>The, "{demoSlug}" demo is being prepared.</p>
         <a, href="/demo/showcase">Browse Other Demos</a>
       </div>
     {/if}
@@ -214,7 +214,7 @@
 
   .demo-page-header {
     padding: 2rem;
-    background: var(--nier-bg-secondary);
+   , background: var(--nier-bg-secondary);
     border-bottom: 1px solid var(--nier-border-muted);
   }
 
@@ -223,12 +223,12 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
-    color: var(--nier-text-muted);
+   , color: var(--nier-text-muted);
     margin-bottom: 1rem;
   }
 
   .breadcrumb-link {
-    color: var(--nier-accent-warm);
+   , color: var(--nier-accent-warm);
     text-decoration: none;
   }
 
@@ -243,13 +243,13 @@
 
   .demo-title {
     font-size: 2rem;
-    margin: 0 0 0.5rem;
+   , margin: 0, 0 0.5rem;
     color: var(--nier-text-primary);
   }
 
   .demo-description {
     margin: 0;
-    color: var(--nier-text-secondary);
+   , color: var(--nier-text-secondary);
   }
 
   .demo-tags {
@@ -262,7 +262,7 @@
   .demo-tag {
     padding: 0.25rem 0.75rem;
     border-radius: 999px;
-    background: var(--nier-bg-tertiary);
+   , background: var(--nier-bg-tertiary);
     color: var(--nier-text-secondary);
     border: 1px solid var(--nier-border-muted);
     font-size: 0.8rem;
@@ -273,7 +273,7 @@
   }
 
   .demo-wrapper {
-    background: var(--nier-bg-primary);
+   , background: var(--nier-bg-primary);
   }
 
   .demo-loading,
@@ -290,13 +290,13 @@
 
   .demo-loading {
     gap: 1rem;
-    background: var(--nier-bg-secondary);
+   , background: var(--nier-bg-secondary);
   }
 
   .loading-spinner {
     width: 3rem;
     height: 3rem;
-    border: 3px solid var(--nier-border-muted);
+   , border: 3px solid var(--nier-border-muted);
     border-top: 3px solid var(--nier-accent-warm);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -304,7 +304,7 @@
 
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -323,22 +323,22 @@
 
   .error-actions {
     display: flex;
-    gap: 1rem;
+   , gap: 1rem;
   }
 
   .error-actions button,
   .error-actions a {
     padding: 0.75rem 1.5rem;
-    border: 1px solid var(--nier-border-primary);
+   , border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    background: var(--nier-bg-primary);
+   , background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
   }
 
-  .error-actions button:hover,
+  .error-actions, button:hover,
   .error-actions a:hover {
     border-color: var(--nier-accent-warm);
     color: var(--nier-accent-warm);
@@ -351,11 +351,11 @@
   }
 
   .demo-placeholder a {
-    color: var(--nier-accent-cool);
+   , color: var(--nier-accent-cool);
     text-decoration: none;
   }
 
-  .demo-placeholder a:hover {
+  .demo-placeholder, a:hover {
     text-decoration: underline;
   }
 
@@ -365,7 +365,7 @@
     }
 
     .demo-content {
-      padding: 1.5rem 1rem;
+     , padding: 1.5rem 1rem;
     }
 
     .error-actions {

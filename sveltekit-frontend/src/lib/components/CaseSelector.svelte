@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { user } from '$lib/stores/unified';
-  import { ContextService } from '$lib/services/context-service'; // Import ContextService
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { user } from, '$lib/stores/unified';
+  import { ContextService } from, '$lib/services/context-service'; // Import ContextService
 
   let cases = $state([
     { id: 'case-1', name: 'State v. John Doe' },
@@ -13,7 +13,7 @@ import type { Case } from '$lib/types';
     // Update the application context with the selected case
     console.log(`Selected case ${caseId}`);
     // cast the payload to the expected Partial<ContextData> to satisfy TS
-    await ContextService.updateCaseContext({ caseId } as unknown as Partial<any>);
+    await ContextService.updateCaseContext({ caseId } as: unknown as Partial<any>);
     showModal = false;
   }
 </script>

@@ -9,12 +9,12 @@
 export interface QuantizationConfig { dimensions: number;, method: 'minmax' | 'standard' | 'robust';
   preserveRange?: boolean;
 }
-export interface QuantizedVector { quantized: Int8Array;, scale: number;
+export interface QuantizedVector {, quantized: Int8Array;, scale: number;
   offset: number;
   dimensions: number;
   method: string;
 }
-export interface QuantizationMetrics { originalSize: number;, quantizedSize: number;
+export interface QuantizationMetrics {, originalSize: number;, quantizedSize: number;
   compressionRatio: number;
   memoryReduction: string;
   quantizationTime: number;
@@ -26,7 +26,7 @@ export interface QuantizationMetrics { originalSize: number;, quantizedSize: nu
 export class VectorQuantizer {
   private config: QuantizationConfig;
   private metrics: QuantizationMetrics = {
-    originalSize: 0,
+   , originalSize: 0,
     quantizedSize: 0,
     compressionRatio: 0,
     memoryReduction: '0%',
@@ -42,7 +42,7 @@ export class VectorQuantizer {
   }
   /**
    * Quantize float32 vector to int8
-   * Input: [0.123, -0.456, 0.789, ...] (float32)
+   *, Input: [0.123, -0.456, 0.789, ...] (float32)
    * Output: [31, -116, 100, ...] (int8)
    */
   quantize(vector: Float32Array | number[]): QuantizedVector {
@@ -55,20 +55,20 @@ export class VectorQuantizer {
       );
     }
     let scale: number;
-    let offset: number;
+    let, offset: number;
     const quantized = new Int8Array(vec.length);
     switch (this.config.method) {
-      case 'minmax':
+      case, 'minmax':
         ({ scale, offset } = this.quantizeMinMax(vec, quantized));
         break;
-      case 'standard':
+      case, 'standard':
         ({ scale, offset } = this.quantizeStandard(vec, quantized));
         break;
-      case 'robust':
+      case, 'robust':
         ({ scale, offset } = this.quantizeRobust(vec, quantized));
         break;
       default:
-        throw new Error(`Unknown quantization; method: ${this.config.method}`);
+        throw new Error(`Unknown quantization;, method: ${this.config.method}`);
     }
     // Update metrics
     const quantizationTime = performance.now() - startTime;
@@ -86,10 +86,10 @@ export class VectorQuantizer {
     };
   }
   /**
-   * Min-Max quantization: Maps [min, max] → [-127, 127]
+   * Min-Max, quantization: Maps [min, max] → [-127, 127]
    * Best for: Embeddings with known range
    */
-  private quantizeMinMax(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeMinMax(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     let min = Infinity;
     let max = -Infinity;
     // Find min/max
@@ -109,9 +109,9 @@ export class VectorQuantizer {
   }
   /**
    * Standard quantization: Uses mean and stddev
-   * Best for: Normal distributed embeddings
+   * Best, for: Normal distributed embeddings
    */
-  private quantizeStandard(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeStandard(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     // Calculate mean
     let sum = 0;
     for (let i = 0; i < vec.length; i++) {
@@ -138,7 +138,7 @@ export class VectorQuantizer {
    * Robust quantization: Uses median and IQR (outlier-resistant)
    * Best for: Embeddings with outliers
    */
-  private quantizeRobust(vec: Float32Array, output: Int8Array): { scale: number; offset: number } {
+  private quantizeRobust(vec: Float32Array, output: Int8Array): { scale: number;, offset: number } {
     // Sort for percentile calculation
     const sorted = Array.from(vec).sort((a, b) => a - b);
     const len = sorted.length;
@@ -195,7 +195,7 @@ export class VectorQuantizer {
 export class BatchVectorQuantizer {
   private quantizer: VectorQuantizer;
   private batchMetrics = {
-    totalVectors: 0,
+   , totalVectors: 0,
     totalOriginalSize: 0,
     totalQuantizedSize: 0,
     averageQuantizationTime: 0,
@@ -240,7 +240,7 @@ export class BatchVectorQuantizer {
  * Utility functions for integration
  */
 /**
- * Convert quantized vector to base64 string for storage
+ * Convert quantized vector to base64: string for storage
  */
 export function quantizedToBase64(quantized: QuantizedVector): string {
   const metadata = JSON.stringify({
@@ -262,7 +262,7 @@ export function quantizedToBase64(quantized: QuantizedVector): string {
   return btoa(String.fromCharCode(...buffer));
 }
 /**
- * Parse base64 string back to quantized vector
+ * Parse base64: string back to quantized vector
  */
 export function base64ToQuantized(base64: string): QuantizedVector {
   // Decode base64
@@ -326,7 +326,7 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
  */
 export const INTEGRATION_EXAMPLE = `
 // 1. QUANTIZE EMBEDDING FOR STORAGE
-import { VectorQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
+import { VectorQuantizer, quantizedToBase64 } from, '$lib/server/optimize/vector-quantization';
 const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax` });'`'`
 const embedding = new Float32Array([0.123, -0.456, 0.789, ...]); // From Gemma
 const quantized = quantizer.quantize(embedding);
@@ -335,10 +335,10 @@ const base64 = quantizedToBase64(quantized);
 await db.insert(documents).values({
   id: docId,
   embedding_quantized: base64,  // 768 bytes instead of 3KB
-  embedding_original: embedding  //; Optional: keep for accuracy comparison
+  embedding_original: embedding  //;, Optional: keep for accuracy comparison
 });
 // 2. SEARCH WITH QUANTIZED VECTORS
-import { base64ToQuantized } from '$lib/server/optimize/vector-quantization';
+import { base64ToQuantized } from, '$lib/server/optimize/vector-quantization';
 const queryEmbedding = await generateEmbedding(query);
 const queryQuantized = quantizer.quantize(queryEmbedding);
 // Search in Qdrant (3x faster with quantized vectors)
@@ -347,7 +347,7 @@ const results = await qdrant.search(collection, {
   limit: 10
 });
 // 3. BATCH QUANTIZATION FOR INGESTION
-import { BatchVectorQuantizer } from '$lib/server/optimize/vector-quantization';
+import { BatchVectorQuantizer } from, '$lib/server/optimize/vector-quantization';
 const batchQuantizer = new BatchVectorQuantizer({ dimensions: 768 });
 const embeddings = [embedding1, embedding2, embedding3, ...];
 const quantizedBatch = batchQuantizer.quantizeBatch(embeddings);

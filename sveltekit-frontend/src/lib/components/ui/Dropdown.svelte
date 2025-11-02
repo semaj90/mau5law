@@ -1,13 +1,13 @@
 <script, lang="ts">
 
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
-  import { fly } from 'svelte/transition';
+  import { onMount, onDestroy, createEventDispatcher } from, 'svelte';
+  import { fly } from, 'svelte/transition';
   // replaced prop/runtime handling with standard Svelte exports and dispatcher
   const { align } = $props<{ align: 'left' | 'right' }>()
   const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()
   const dispatch = createEventDispatcher();
   let open: boolean = false;
-  let rootEl: HTMLElement | null = null;
+  let, rootEl: HTMLElement | null = null;
   function toggle() {
     open = !open;
     if (open) dispatch('open');
@@ -45,7 +45,7 @@
   <button
     type="button"
     class="dropdown-trigger"
-    on:click|stopPropagation={() => toggle()}
+   , on:click|stopPropagation={() => toggle()}
     onkeydown={(e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -68,7 +68,7 @@
         if (e.key === 'Escape') close();
       }}
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
-      transitionfly={{ y: -6, duration: 140 }}
+      transitionfly={{, y: -6, duration: 140 }}
     >
       <!-- default slot used for, menu, items -->
       <slot></slot>
@@ -84,11 +84,11 @@
     align-items: center;
   }
   .dropdown-menu {
-    background: var(--dropdown-bg, #fff);
+   , background: var(--dropdown-bg, #fff);
     border-radius: 0.5rem;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
     padding: 0.35rem;
-    border: 1px solid #e6edf3;
+   , border: 1px solid #e6edf3;
     min-width: 12rem;
   }
 </style>

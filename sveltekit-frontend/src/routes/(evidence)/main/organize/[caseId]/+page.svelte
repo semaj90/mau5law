@@ -8,10 +8,10 @@
   - Interactive evidence management
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
-  import { onMount } from 'svelte';
-  import CaseEvidenceOrganizer from '$lib/components/evidence/CaseEvidenceOrganizer.svelte';
+  // Svelte, 5 runes are auto-imported
+  import { page } from, '$app/stores';
+  import { onMount } from, 'svelte';
+  import CaseEvidenceOrganizer from, '$lib/components/evidence/CaseEvidenceOrganizer.svelte';
   // Get case ID from route parameters
   const caseId = $page.params.caseId;
   // State
@@ -76,7 +76,7 @@ if (!caseId) {
       mode: organization.type,
       evidenceCount: evidence.length,
       structure: organizatio;
-    }, ...organizationHistory].slice(0, 10); // Keep last 10 organization attempts
+    }, ...organizationHistory].slice(0, 10); // Keep last, 10 organization attempts
     console.log('[Evidence Organization] Evidence reorganized:', organization.type);
   }
   /**
@@ -89,7 +89,7 @@ if (!caseId) {
     } else {
       selectedEvidence = [...selectedEvidence, { ...evidence, selectionContext: context }];
     }
-    console.log('[Evidence Selection] Evidence selected:', evidence.title, 'Context:', context);
+    console.log('[Evidence Selection] Evidence, selected:', evidence.title, 'Context:', context);
   }
   /**
    * Handle organization mode changes
@@ -100,10 +100,10 @@ if (!caseId) {
     organizationStats = {
       ...organizationStats,
       currentMode: mode
-      lastUpdate: new Date().toISOString(),
+     , lastUpdate: new Date().toISOString(),
       structure: structur;
     }
-    console.log('[Organization Change] Mode changed to:', mode);
+    console.log('[Organization Change] Mode changed, to:', mode);
   }
   /**
    * Export organization results
@@ -155,7 +155,7 @@ if (!caseId) {
           organizationData: organizationStats
           selectedEvidence,
           includeCharts: true
-          includeRecommendations: true
+         , includeRecommendations: true
         })
       });
       if (response.ok) {
@@ -372,7 +372,7 @@ if (!caseId) {
   }
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -389,7 +389,7 @@ if (!caseId) {
     border: none;
     border-radius: 0.375rem;
     text-decoration none;
-    cursor: pointer;
+   , cursor: pointer;
     font-weight: 500;
   }
   .error-container buttonhover,
@@ -399,8 +399,7 @@ if (!caseId) {
   .evidence-organization-page {
     display: grid;
     grid-template-areas:
-      'header header'
-      'main sidebar';
+      'header header', 'main sidebar';
     grid-template-columns: 1fr 350px;
     grid-template-rows: auto 1fr;
     height: 100vh;
@@ -408,7 +407,7 @@ if (!caseId) {
   }
   .page-header {
     grid-area: header;
-    background: white;
+   , background: white;
     border-bottom: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
@@ -420,7 +419,7 @@ if (!caseId) {
     gap: 2rem;
   }
   .case-info h1 {
-    margin: 0 0 0.75rem 0;
+   , margin: 0, 0 0.75rem 0;
     font-size: 1.75rem;
     color: #1e293b;
     font-weight: 700;
@@ -491,7 +490,7 @@ if (!caseId) {
   }
   .action-buttons {
     display: flex;
-    gap: 0.75rem;
+   , gap: 0.75rem;
     flex-wrap: wrap;
   }
   .action-buttons button,
@@ -567,11 +566,11 @@ if (!caseId) {
   .sidebar-panel {
     background: white;
     border-radius: 0.5rem;
-    padding: 1.25rem;
+   , padding: 1.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .sidebar-panel h3 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     font-size: 1rem;
     font-weight: 600;
     color: #1e293b;
@@ -593,7 +592,7 @@ if (!caseId) {
     border: 1px solid #e2e8f0;
   }
   .evidence-info {
-    flex: 1,
+   , flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -671,7 +670,7 @@ if (!caseId) {
   .history-mode {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #1e293b;
+   , color: #1e293b;
   }
   .history-time,
   .history-count {
@@ -713,7 +712,7 @@ if (!caseId) {
   }
   .stat-description {
     font-size: 0.75rem;
-    color: #6b7280;
+   , color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-top: 0.25rem;
@@ -722,8 +721,7 @@ if (!caseId) {
   @media (max-width: 1024px) {
     .evidence-organization-page {
       grid-template-areas:
-        'header'
-        'main';
+        'header', 'main';
       grid-template-columns: 1fr;
     }
     .sidebar {
@@ -731,7 +729,7 @@ if (!caseId) {
     }
     .header-content {
       flex-direction: column;
-      gap: 1rem;
+     , gap: 1rem;
     }
     .page-actions {
       align-items: stretch;

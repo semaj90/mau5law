@@ -2,7 +2,7 @@
 declare global {
   namespace Fuse {
     interface FuseOptions<T> {
-      // Use T so the generic is not unused; restrict to string keys
+      // Use T so the generic is not unused; restrict to: string keys
       keys?: (Extract<keyof T, string> | { name: Extract<keyof T, string>; weight: number })[];
       threshold?: number;
       includeScore?: boolean;
@@ -23,29 +23,29 @@ declare global {
     length?: number;
   }
   namespace Asset3DSearchResult {
-    interface Result { id: string;, score: number;
+    interface Result {, id: string;, score: number;
     }
   }
   namespace HybridRAGResult {
-    interface Result { content: string;, score: number;
+    interface Result {, content: string;, score: number;
     }
   }
   namespace ChatRequest {
     interface Request {
-      messages: any[]; // replace `any` with `unknown` to avoid Unexpected any error
+      messages: any[]; // replace `any` with `unknown` to avoid Unexpected: any error
       stream?: boolean;
     }
   }
   namespace ChatResponse {
-    interface Response { message: string;, done: boolean;
+    interface Response {, message: string;, done: boolean;
     }
   }
-  interface GPUSearchMetrics { searchTime: number;, resultCount: number;
+  interface GPUSearchMetrics {, searchTime: number;, resultCount: number;
   }
   namespace PipelineSearchResult {
-    interface Result { id: string;, score: number;
+    interface Result {, id: string;, score: number;
       snippet: string;
-      source: string;
+     , source: string;
     }
   }
 }

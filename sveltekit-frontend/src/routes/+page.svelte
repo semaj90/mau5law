@@ -1,16 +1,16 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 	// Replace broken named imports with safe namespace import + fallbacks
-	import { browser } from '$app/environment';
-	import { derived, writable } from 'svelte/store';
-	import * as unified from '$lib/stores/unified';
-  import LoginButton from '$lib/components/auth/LoginButton.svelte';
-  import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
+	import { browser } from, '$app/environment';
+	import { derived, writable } from, 'svelte/store';
+	import * as unified from, '$lib/stores/unified';
+  import LoginButton from, '$lib/components/auth/LoginButton.svelte';
+  import RegisterModal from, '$lib/components/auth/RegisterModal.svelte';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {
 		type UploadFile = { id: string; file: File; name: string; progress: number; error?: boolean };
-		const events: Record<string, Function[]> = {};
+		const, events: Record<string, Function[]> = {};
 		const files: UploadFile[] = [];
 
 		async function uploadImpl(file: File): Promise<any> {
@@ -44,7 +44,7 @@ import type { Case } from '$lib/types';
 				// ensure we get a File[] and let TS know it
 				const arr = Array.from(list as FileList | File[]) as File[];
 				arr.forEach((file) => {
-					const id = (crypto as any)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+					const id = (crypto as: any)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
 					files.push(fileObj);
 					// start upload and update progress (coarse)
@@ -69,11 +69,11 @@ import type { Case } from '$lib/types';
 	}
 
 	// Create safe local stores that fall back if unified exports are missing
-	const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
-	const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
-	const engineState = (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
-	const errorMessage = (unified as any).errorMessage ?? writable<string>('');
-	const runQuery = (unified as any).runQuery ?? (async (_q: string) => {
+	const recommendations = (unified as: any).recommendations ?? writable<any[]>([]);
+	const partialRecommendations = (unified as: any).partialRecommendations ?? writable<any[]>([]);
+	const engineState = (unified as: any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
+	const errorMessage = (unified as: any).errorMessage ?? writable<string>('');
+	const runQuery = (unified as: any).runQuery ?? (async (_q: string) => {
 		console.warn('runQuery stub called - unified.runQuery not available');
 	});
 
@@ -81,9 +81,9 @@ import type { Case } from '$lib/types';
 	let displayRecommendations = derived(
 		[recommendations, partialRecommendations, engineState],
 		([$recs, $partial, $state]) => {
-			// cast to any before accessing .items to satisfy TS
-			const recsArr = Array.isArray($recs) ? $recs : (($recs as any)?.items ?? []);
-			const partialArr = Array.isArray($partial) ? $partial : (($partial as any)?.items ?? []);
+			// cast to: any before accessing .items to satisfy TS
+			const recsArr = Array.isArray($recs) ? $recs : (($recs as: any)?.items ?? []);
+			const partialArr = Array.isArray($partial) ? $partial : (($partial as: any)?.items ?? []);
 			// show streaming partials while processing, otherwise final recommendations
 			if ($state === 'processing' && partialArr.length) return partialArr;
 			return recsArr.length ? recsArr : partialArr;
@@ -100,12 +100,12 @@ import type { Case } from '$lib/types';
 	};
 
 	let workerDetails = {
-		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
+		ocr: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		embedding: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		autotag: {, status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
 	};
 
-	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+	let stats = $state({, totalCases: 0, totalEvidence: 0, processingJobs: 0 });
 	let loading = $state<boolean>(true);
 	let userQuery = $state<string>('');
 	let registerOpen = $state<boolean>(false);
@@ -205,25 +205,25 @@ import type { Case } from '$lib/types';
 
 	function getStatusColor(status: string) {
 		switch (status) {
-			case 'online':
-				return 'is-success'; // NES.css success color
-			case 'offline':
-				return 'is-error'; // NES.css error color
-			case 'degraded':
-				return 'is-warning'; // NES.css warning color
-			default: return 'is-disabled'; // NES.css disabled/default color
+			case, 'online':
+				return, 'is-success'; // NES.css success color
+			case, 'offline':
+				return, 'is-error'; // NES.css error color
+			case, 'degraded':
+				return, 'is-warning'; // NES.css warning color
+			default: return, 'is-disabled'; // NES.css disabled/default color
 		}
 	}
 
 	function getStatusIcon(status: string) {
 		switch (status) {
-			case 'online':
-				return '✅';
-			case 'offline':
-				return '❌';
-			case 'degraded':
-				return '⚠️'; // Changed for degraded status
-			default: return '⏳';
+			case, 'online':
+				return, '✅';
+			case, 'offline':
+				return, '❌';
+			case, 'degraded':
+				return, '⚠️'; // Changed for degraded status
+			default: return, '⏳';
 		}
 	}
 
@@ -251,7 +251,7 @@ import type { Case } from '$lib/types';
 
   const uploader = createFileUploader('/api/upload');
 
-  // annotate parameter to avoid implicit any
+  // annotate parameter to avoid implicit: any
   uploader.on('success', (res: any) => {
     console.log('Uploaded:', res?.url ?? res);
   });
@@ -269,7 +269,7 @@ import type { Case } from '$lib/types';
     <h1, class="nes-text, is-primary">⚖️ YoRHa Legal AI Platform</h1>
     <p class="nes-text, is-success, subtitle-custom">GPU-Accelerated Legal Intelligence System</p>
     <p class="nes-text, is-disabled, tech-stack-custom">
-      SvelteKit 2 · Svelte 5 · PostgreSQL 17 · Redis · Gemma3 Legal · RTX GPU
+      SvelteKit, 2 · Svelte, 5 · PostgreSQL, 17 · Redis · Gemma3 Legal · RTX GPU
     </p>
 
     <!-- Auth, Buttons -->
@@ -455,13 +455,13 @@ import type { Case } from '$lib/types';
       <h2, class="nes-text, is-success">YoRHa Detective Command Center</h2>
       <p class="nes-text, is-white, featured-description-custom">
         Full-featured AI detective interface with real-time Ollama chat, PostgreSQL chat history, and retro gaming
-        aesthetic. Stream responses from Gemma3-Legal with 30 GPU layers!
+        aesthetic. Stream responses from Gemma3-Legal with, 30 GPU layers!
       </p>
       <div, class="featured-tech-custom">
         <span, class="tech-badge">Ollama Streaming</span>
         <span, class="tech-badge">PostgreSQL</span>
         <span, class="tech-badge">pgvector</span>
-        <span, class="tech-badge">GPU 30 Layers</span>
+        <span, class="tech-badge">GPU, 30 Layers</span>
       </div>
       <span class="nes-btn, is-success, featured-button-custom">Launch Detective Interface →</span>
     </a>
@@ -621,15 +621,15 @@ import type { Case } from '$lib/types';
     text-align: center;
     margin-bottom: 3rem;
     padding: 3rem 1rem;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
+   , background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
     border: 2px solid rgba(255, 215, 0, 0.3);
   }
 
   .hero-section-custom .nes-text.is-primary {
     font-size: 3rem;
-    color: #ffd700; /* Override NES.css primary color */
+   , color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    text-shadow: 0, 0 20px rgba(255, 215, 0, 0.5);
     font-weight: 800;
   }
 
@@ -642,7 +642,7 @@ import type { Case } from '$lib/types';
 
   .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
     font-size: 0.95rem;
-    color: #888; /* Override NES.css disabled color */
+   , color: #888; /* Override NES.css disabled color */
     font-family: 'JetBrains Mono', monospace;
   }
 
@@ -655,7 +655,7 @@ import type { Case } from '$lib/types';
   }
 
   .status-grid-custom {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     padding: 1.5rem;
@@ -673,7 +673,7 @@ import type { Case } from '$lib/types';
   }
 
   .workers-grid-custom {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
@@ -709,7 +709,7 @@ import type { Case } from '$lib/types';
   .tech-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: rgba(168, 85, 247, 0.2);
+   , background: rgba(168, 85, 247, 0.2);
     border: 1px solid #a855f7;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -718,7 +718,7 @@ import type { Case } from '$lib/types';
   }
 
   .quick-stats-custom {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
@@ -728,22 +728,22 @@ import type { Case } from '$lib/types';
     display: flex;
     align-items: center;
     gap: 1.5rem;
-  transition: all 0.3s ease;
+ , transition: all 0.3s ease;
   }
 
   .stat-card-custom:hover {
     border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    box-shadow: 0, 0 30px rgba(255, 215, 0, 0.3);
     transform: translateY(-4px);
   }
 
   .stat-icon-custom {
     font-size: 3rem;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+   , filter: drop-shadow(0, 0 10px rgba(255, 215, 0, 0.5));
   }
 
   .stat-content-custom h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0, 0 0.5rem 0;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -752,7 +752,7 @@ import type { Case } from '$lib/types';
   .stat-value-custom {
     font-size: 2rem;
     font-weight: bold;
-    margin: 0;
+   , margin: 0;
     font-family: 'JetBrains Mono', monospace;
   }
 
@@ -771,12 +771,12 @@ import type { Case } from '$lib/types';
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+   , gap: 1rem;
   }
 
   .action-card-custom:hover {
     border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    box-shadow: 0, 0 30px rgba(255, 215, 0, 0.3);
     transform: translateY(-4px);
   }
 
@@ -787,14 +787,14 @@ import type { Case } from '$lib/types';
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ffd700, #00ff41);
+   , background: linear-gradient(90deg, #ffd700, #00ff41);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   .card-icon-custom {
     font-size: 3rem;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
+   , filter: drop-shadow(0, 0 15px rgba(255, 215, 0, 0.5));
   }
 
   .card-button-custom {
@@ -814,7 +814,7 @@ import type { Case } from '$lib/types';
     position: relative;
     display: block;
     padding: 3rem;
-    background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+   , background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
     border: 3px solid #00ff41;
     border-radius: 16px;
     text-decoration: none;
@@ -830,7 +830,7 @@ import type { Case } from '$lib/types';
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
+   , background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite;
   }
@@ -849,12 +849,12 @@ import type { Case } from '$lib/types';
     top: 1rem;
     right: 1rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+   , background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
     color: #000;
     font-weight: 900;
     font-size: 0.75rem;
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    box-shadow: 0, 0 20px rgba(0, 255, 65, 0.5);
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -865,7 +865,7 @@ import type { Case } from '$lib/types';
       opacity: 1;
     }
     50% {
-      transform: scale(1.05);
+     , transform: scale(1.05);
       opacity: 0.9;
     }
   }
@@ -873,14 +873,14 @@ import type { Case } from '$lib/types';
   .featured-icon-custom {
     font-size: 4rem;
     margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    text-shadow: 0, 0 20px rgba(0, 255, 65, 0.5);
   }
 
   .featured-card-custom .nes-text.is-success {
     font-size: 2rem;
-    color: #00ff41;
+   , color: #00ff41;
     margin-bottom: 1rem;
-    text-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+    text-shadow: 0, 0 15px rgba(0, 255, 65, 0.3);
   }
 
   .featured-card-custom .nes-text.is-white.featured-description-custom {
@@ -903,12 +903,12 @@ import type { Case } from '$lib/types';
     font-weight: 900;
     font-size: 1.2rem;
     border-radius: 8px;
-  transition: all 0.3s ease;
+ , transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
   }
 
   .featured-card-custom:hover .featured-button-custom {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
+   , background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
     box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
     transform: scale(1.05);
   }
@@ -955,7 +955,7 @@ import type { Case } from '$lib/types';
   .card {
     background: #ffffff;
     border-radius: 12px;
-    padding: 1rem;
+   , padding: 1rem;
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
   transition: transform 200ms ease, opacity 200ms ease;
     overflow: hidden;
@@ -964,13 +964,13 @@ import type { Case } from '$lib/types';
   .card.streaming {
     opacity: 0.95;
     animation: pulse 1.2s infinite alternate;
-    border: 1px dashed rgba(43, 108, 176, 0.12);
+   , border: 1px dashed rgba(43, 108, 176, 0.12);
   }
 
   .card.dym {
     color: #ff6600;
     border-left: 4px solid #ff9a3c;
-    background: linear-gradient(90deg, #fffaf5, #fff);
+   , background: linear-gradient(90deg, #fffaf5, #fff);
   }
 
   @keyframes pulse {
@@ -987,7 +987,7 @@ import type { Case } from '$lib/types';
     color: #6b7280;
     margin-top: 0.5rem;
     display: flex;
-    gap: 1rem;
+   , gap: 1rem;
     align-items: center;
   }
 

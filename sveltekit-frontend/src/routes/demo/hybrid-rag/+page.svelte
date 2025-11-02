@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
   /**
    * 🧪 Hybrid RAG + SIMD Pipeline Demo
    *
@@ -9,10 +9,10 @@ import type { Document } from '$lib/types';
    * - View synthesis ranking scores
    */
 
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Upload, Search, Zap, Database } from 'lucide-svelte';
+  import Button from, '$lib/components/ui/Button.svelte';
+  import { Upload, Search, Zap, Database } from, 'lucide-svelte';
 
-  // State management using Svelte 5 runes
+  // State management using Svelte, 5 runes
   let query = $state<string>('');
   let documents = $state<any[]>([]);
   let results = $state<any[]>([]);
@@ -27,7 +27,7 @@ import type { Document } from '$lib/types';
       id: 'doc1',
       title: 'Employment Contract - Software Engineer',
       content:
-        'This employment agreement is entered into between TechCorp Inc. and John Smith for the position of Senior Software Engineer. The employee will receive a salary of $150,000 per year with benefits including health insurance, 401k matching, and stock options. The employment is at-will and can be terminated by either party with 2 weeks notice.',
+        'This employment agreement is entered into between TechCorp Inc. and John Smith for the position of Senior Software Engineer. The employee will receive a salary of $150,000 per year with benefits including health insurance, 401k matching, and stock options. The employment is at-will and can be terminated by either party with, 2 weeks notice.',
       source: 'sample',
       createdAt: new Date().toISOString()
     },
@@ -35,7 +35,7 @@ import type { Document } from '$lib/types';
       id: 'doc2',
       title: 'Non-Disclosure Agreement',
       content:
-        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information for any purpose other than the agreed business relationship. This agreement remains in effect for 5 years from the date of signing.',
+        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: any purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.',
       source: 'sample',
       createdAt: new Date().toISOString()
     },
@@ -43,7 +43,7 @@ import type { Document } from '$lib/types';
       id: 'doc3',
       title: 'Service Level Agreement - Cloud Services',
       content:
-        'CloudProvider guarantees 99.9% uptime for all cloud services. In case of downtime exceeding the SLA, customers are entitled to service credits. The provider will respond to critical incidents within 1 hour and resolve them within 4 hours.',
+        'CloudProvider guarantees 99.9% uptime for all cloud services. In case of downtime exceeding the SLA, customers are entitled to service credits. The provider will respond to critical incidents within, 1 hour and resolve them within, 4 hours.',
       source: 'sample',
       createdAt: new Date().toISOString()
     },
@@ -51,7 +51,7 @@ import type { Document } from '$lib/types';
       id: 'doc4',
       title: 'Intellectual Property Assignment',
       content:
-        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and any patentable inventions.',
+        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and: any patentable inventions.',
       source: 'sample',
       createdAt: new Date().toISOString()
     }
@@ -100,7 +100,7 @@ import type { Document } from '$lib/types';
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Stage 2: Process through RAG pipeline
-      processingStage = 'Embedding with embeddinggemma:latest...';
+      processingStage = 'Embedding with, embeddinggemma:latest...';
       const response = await fetch('/api/rag/hybrid-pipeline/direct', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +109,7 @@ import type { Document } from '$lib/types';
           query,
           config: {
             ranking: {
-              weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2 }
+              weights: {, relevance: 0.5, keywords: 0.3, synthesis: 0.2 }
             }
           }
         })
@@ -181,9 +181,9 @@ import type { Document } from '$lib/types';
 
   // Get score color
   function getScoreColor(score: number): string {
-    if (score >= 0.7) return 'text-green-400';
-    if (score >= 0.4) return 'text-yellow-400';
-    return 'text-red-400';
+    if (score >= 0.7) return, 'text-green-400';
+    if (score >= 0.4) return, 'text-yellow-400';
+    return, 'text-red-400';
   }
 </script>
 
@@ -423,7 +423,7 @@ import type { Document } from '$lib/types';
 <style>
   .hybrid-rag-demo {
     background: #212529;
-    color: #d4af37;
+   , color: #d4af37;
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 
@@ -445,7 +445,7 @@ import type { Document } from '$lib/types';
 
   @keyframes spin {
     from {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);

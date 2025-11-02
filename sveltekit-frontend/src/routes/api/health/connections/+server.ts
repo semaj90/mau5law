@@ -1,8 +1,8 @@
 /**
  * Health Check API - Connection Pool Status
  *
- * SvelteKit 2 Route Pattern:
- * ✅ Only; exports: GET, POST, PUT, DELETE, PATCH
+ * SvelteKit, 2 Route Pattern:
+ * ✅ Only;, exports: GET, POST, PUT, DELETE, PATCH
  * ❌ NO arbitrary exports (RabbitConnection, createRedisInstance, etc.)
  *
  * QUIC/HTTP3 Safe:
@@ -12,8 +12,8 @@
  * - No connection recreation per request
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { healthCheckAll } from '$lib/server/connections/connection-pool';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { healthCheckAll } from, '$lib/server/connections/connection-pool';
 
 /**
  * GET /api/health/connections
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ request }) => {
  * Force reconnection test (for debugging)
  * QUIC-safe: Properly isolated error handling
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 		const { service } = body;
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 // ============================================================================
-// NO OTHER EXPORTS ALLOWED IN SVELTEKIT 2 ROUTES
+// NO OTHER EXPORTS ALLOWED IN SVELTEKIT, 2 ROUTES
 // ============================================================================
 
 // ❌ DON'T DO THIS:'

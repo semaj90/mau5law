@@ -1,7 +1,7 @@
 <script, lang="ts">
-	import { cn } from '$lib/utils'; // Import cn utility
+	import { cn } from, '$lib/utils'; // Import cn utility
 
-	// Use $props() for Svelte 5 runes mode
+	// Use $props() for Svelte, 5 runes mode
 	let {
 		type = 'button',
 		variant = 'primary',
@@ -25,7 +25,7 @@
 			? 'bg-gray-900 text-white border-gray-900 hover:bg-gray-800'
 			: variant === 'secondary'
 			? 'bg-white text-gray-900 border-gray-300 hover:bg-gray-50'
-			: 'bg-transparent text-gray-700 border-transparent hover:bg-gray-100'
+			: 'bg-transparent text-gray-700 border-transparent, hover:bg-gray-100'
 	);
 
 	const bySize = $derived(size === 'sm' ? 'h-8 px-3 text-sm' : size === 'lg' ? 'h-12 px-6 text-base' : 'h-10 px-4 text-sm');

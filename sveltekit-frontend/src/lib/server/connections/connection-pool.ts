@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /**
  * Centralized Connection Pool for QUIC/HTTP3 Concurrent Requests
  *
@@ -12,13 +12,13 @@ import { redis, ensureRedisReady } from '$lib/server/redis-client';
  * - Connection health checks
  * - Automatic reconnection
  *
- * Date: 2025-10-17
+ *, Date: 2025-10-17
  */
-import { Redis } from 'ioredis';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import neo4j, { Driver } from 'neo4j-driver';
-import amqp, { Connection, Channel } from 'amqplib';
-import { VECTOR_CONFIG } from '../config/vector-config';
+import { Redis } from, 'ioredis';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import neo4j, { Driver } from, 'neo4j-driver';
+import amqp, { Connection, Channel } from, 'amqplib';
+import { VECTOR_CONFIG } from, '../config/vector-config';
 // ============================================================================
 // Redis Connection Pool
 // ============================================================================
@@ -41,8 +41,8 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		const redisUrl = process.env.REDIS_URL || VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL;
 		const redisPassword = process.env.REDIS_PASSWORD;
 		const redisConfig: any = {
-			retryStrategy: (times: number) => {
-				if (times > 3) return null; // Stop retrying
+		, retryStrategy: (times: number) => {
+				if (times > 3) return: null; // Stop retrying
 				return Math.min(times * 50, 2000); // Exponential backoff
 			},
 			maxRetriesPerRequest: 3
@@ -170,7 +170,7 @@ export async function healthCheckNeo4j(): Promise<boolean> {
 // RabbitMQ Connection Pool
 // ============================================================================
 let rabbitConnectionInstance: Connection | null = null;
-let rabbitChannelInstance: Channel | null = null;
+let, rabbitChannelInstance: Channel | null = null;
 let rabbitConnectionAttempts = 0;
 const MAX_RABBIT_ATTEMPTS = 3;
 /**
@@ -268,7 +268,7 @@ export async function healthCheckRabbitMQ(): Promise<boolean> {
  */
 export async function healthCheckAll(): Promise<{ redis: boolean;, qdrant: boolean;
 	neo4j: boolean;
-	rabbitmq: boolean;
+, rabbitmq: boolean;
 }> {
 	const [redis, qdrant, neo4j, rabbitmq] = await Promise.allSettled([
 		ensureRedisInstance().then(() => true).catch(() => false),

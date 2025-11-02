@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
  * Gallery Item API - Individual Item Operations
  * Handles CRUD operations for specific gallery items
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/database'
-import { evidence, cases } from '$lib/server/db/schema'
-import { eq, and } from 'drizzle-orm'
-import { unlink } from 'fs/promises'
-import { existsSync } from 'fs'
-import path from 'path'
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { db } from, '$lib/server/database'
+import { evidence, cases } from, '$lib/server/db/schema'
+import { eq, and } from, 'drizzle-orm'
+import { unlink } from, 'fs/promises'
+import { existsSync } from, 'fs'
+import path from, 'path'
 
 export interface GalleryItemDetail { id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated';
   title: string;
@@ -32,7 +32,7 @@ export interface GalleryItemDetail { id: string;, type: 'evidence' | 'document'
   ocrText?: string;
   contentText?: string;
   embedding?: number[];
-  processingStatus: { uploaded: boolean;, ocrComplete: boolean;
+  processingStatus: {, uploaded: boolean;, ocrComplete: boolean;
     embeddingComplete: boolean;
     thumbnailComplete: boolean;
     processed: boolean;
@@ -53,7 +53,7 @@ export interface UpdateGalleryItemRequest {
 type EmbeddingType = number[] | Uint8Array | null;
 
 interface EvidenceRow {
-  id: string;
+ , id: string;
   title?: string | null;
   description?: string | null;
   fileName?: string | null;
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     } as EvidenceRow;
 
     // Determine item type based on fileType
-    let itemType: 'evidence' | 'document' | 'image' | 'ai-generated' = 'evidence';
+    let, itemType: 'evidence' | 'document' | 'image' | 'ai-generated' = 'evidence';
     const fileType = (item.fileType ?? '').toLowerCase();
     if (fileType.startsWith('image/')) {
       itemType = 'image';
@@ -121,22 +121,22 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       try {
         return new Date(v).toISOString();
       } catch {
-        return undefined;
+        return: undefined;
       }
     };
 
-    // normalize embedding (handle Uint8Array or number[])
+    // normalize embedding (handle Uint8Array, or: number[])
     let embeddingArray: number[] | undefined;
     if (item.embedding) {
       if (Array.isArray(item.embedding)) {
-        embeddingArray = item.embedding as number[];
+        embeddingArray = item.embedding as: number[];
       } else if (item.embedding instanceof Uint8Array) {
         embeddingArray = Array.from(item.embedding);
       }
     }
 
     const response: GalleryItemDetail = {
-      id: item.id,
+     , id: item.id,
       type: itemType,
       title: item.title || item.fileName || 'Untitled',
       description: item.description || undefined,
@@ -147,18 +147,18 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       filePath: item.filePath || '',
       url: `/api/files/evidence/${item.id}`,
       thumbnailUrl: generateThumbnailUrl(item.filePath || '', item.fileType || ''),
-      uploadedAt: toIso(item.uploadedAt, true) as string,
-      processedAt: toIso(item.processedAt) as string | undefined,
+      uploadedAt: toIso(item.uploadedAt, true) as: string,
+      processedAt: toIso(item.processedAt) as: string | undefined,
       caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
-      tags: Array.isArray(item.tags) ? (item.tags as string[]) : [],
+      tags: Array.isArray(item.tags) ? (item.tags as: string[]) : [],
       metadata: (item.metadata as { [key: string]: any }) || {},
       isPublic: !!item.isPublic,
       ocrText: item.ocrText || undefined,
       contentText: item.contentText || undefined,
       embedding: embeddingArray,
       processingStatus: {
-        uploaded: true,
+       , uploaded: true,
         ocrComplete: !!item.ocrText,
         embeddingComplete: !!embeddingArray,
         thumbnailComplete: !!generateThumbnailUrl(item.filePath || '', item.fileType || ''),
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'X-Item-Type': itemType,
         'X-File-Size': (item.fileSize ?? 0).toString(),
-        'Cache-Control': 'private, max-age=300', // Cache for 5 minutes
+        'Cache-Control': 'private, max-age=300', // Cache for, 5 minutes
       }
     });
   } catch (err) {
@@ -202,8 +202,8 @@ export const PUT: RequestHandler = async ({ params, request, locals: _locals }) 
         throw error(400, 'Case not found');
       }
     }
-    // Build update object with only provided fields
-    const updateFields: Partial<
+    // Build update: object with only provided fields
+    const, updateFields: Partial<
       typeof evidence.$inferInsert & { isPublic?: boolean; metadata?: Record<string, unknown> }
     > = {};
     if (updateData.title !== undefined) {
@@ -316,7 +316,7 @@ export const DELETE: RequestHandler = async ({ params, locals: _locals }) => {
 };
 // Helper functions
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
-  if (!filePath || !fileType) return undefined
+  if (!filePath || !fileType) return: undefined
   // For images, generate thumbnail path
   if (fileType.startsWith('image/')) {
     const pathParts = filePath.split('/')
@@ -325,25 +325,25 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     return `${dir}/thumb_${fileName}` }'`'`
   // For other file types, return type-specific icons
   if (fileType.includes('pdf')) {
-    return '/icons/pdf-thumbnail.svg'
+    return, '/icons/pdf-thumbnail.svg'
   }
   if (fileType.includes('video')) {
-    return '/icons/video-thumbnail.svg'
+    return, '/icons/video-thumbnail.svg'
   }
   if (fileType.includes('audio')) {
-    return '/icons/audio-thumbnail.svg'
+    return, '/icons/audio-thumbnail.svg'
   }
   if (fileType.includes('document') || fileType.includes('text')) {
-    return '/icons/document-thumbnail.svg'
+    return, '/icons/document-thumbnail.svg'
   }
-  return '/icons/file-thumbnail.svg` }'`
+  return, '/icons/file-thumbnail.svg` }'`
 function generateThumbnailPath(filePath: string): string | null {
   try {
     const pathParts = filePath.split('/')
     const fileName = pathParts.pop()
-    if (!fileName) return null
+    if (!fileName) return: null
     const dir = pathParts.join('/')
     return `${dir}/thumb_${fileName}` } catch (error) {
-    return null
+    return: null
   }
 }

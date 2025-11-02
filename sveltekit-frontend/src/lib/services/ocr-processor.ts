@@ -1,47 +1,47 @@
-import type { Document } from '$lib/types';
-import path from 'path';
-import { createWorker } from 'tesseract.js';
-import pdf2pic from 'pdf2pic';
-import sharp from 'sharp';
-import fs from 'fs';
+import type { Document } from, '$lib/types';
+import path from, 'path';
+import { createWorker } from, 'tesseract.js';
+import pdf2pic from, 'pdf2pic';
+import sharp from, 'sharp';
+import fs from, 'fs';
 
-// small helper for safer logging of unknown errors
+// small helper for safer logging of: unknown errors
 const safeErrorToString = (err: any): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));
 
 // light typing for pdf2pic module to avoid `any` casts
 type Pdf2PicModule = {
   fromBuffer?: (;
-    buffer: Buffer; opts: Record<string, unknown>
+    buffer: Buffer;, opts: Record<string, unknown>
   ) => (page: number) => Promise<{ path?: string; name?: string }>;
-  fromPath?: (
+  fromPath?: (;
     path: string,
     opts: Record<string, unknown>
   ) => (page: number) => Promise<{ path?: string; name?: string }>;
 };
-const pdf2picModule = pdf2pic as unknown as Pdf2PicModule;
+const pdf2picModule = pdf2pic as: unknown as Pdf2PicModule;
 
-export interface OCRResult { text: string;, confidence: number;
+export interface OCRResult {, text: string;, confidence: number;
   pages: PageResult[];
   metadata: DocumentMetadata;
   processing_time: number;
 }
 
-export interface PageResult { page_number: number;, text: string;
+export interface PageResult {, page_number: number;, text: string;
   confidence: number;
   blocks: TextBlock[];
   images: ImageRegion[];
 }
 
-export interface TextBlock { text: string;, bbox: BoundingBox;
+export interface TextBlock {, text: string;, bbox: BoundingBox;
   confidence: number;
   font_size?: number;
   font_family?: string;
 }
 
-export interface ImageRegion { bbox: BoundingBox;, type: 'figure' | 'table' | 'diagram' | 'signature';
+export interface ImageRegion {, bbox: BoundingBox;, type: 'figure' | 'table' | 'diagram' | 'signature';
 }
 
-export interface BoundingBox { x: number;, y: number;
+export interface BoundingBox {, x: number;, y: number;
   width: number;
   height: number;
 }
@@ -55,7 +55,7 @@ export interface DocumentMetadata {
   modification_date?: Date;
   page_count: number;
   file_size: number;
-  content_type: string;
+ , content_type: string;
 }
 
 export class EnhancedOCRProcessor {
@@ -167,10 +167,10 @@ export class EnhancedOCRProcessor {
         if (!this.worker || !this.tesseractReady) throw new Error('Tesseract worker not initialized');
         const ocrResult = await this.worker.recognize(enhancedImagePath);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const ocrData = ((ocrResult as any)?.data ?? {}) as Record<string, unknown>;
+        const ocrData = ((ocrResult as: any)?.data ?? {}) as Record<string, unknown>;
 
         const pageResult: PageResult = {
-          page_number: pageNum,
+         , page_number: pageNum,
           text: String(ocrData.text || ''),
           confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
           blocks: this.extractTextBlocks(ocrData),
@@ -210,10 +210,10 @@ export class EnhancedOCRProcessor {
     if (!this.worker || !this.tesseractReady) throw new Error('Tesseract worker not initialized');
     const ocrResult = await this.worker.recognize(enhancedImagePath);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ocrData = ((ocrResult as any)?.data ?? {}) as Record<string, unknown>;
+    const ocrData = ((ocrResult as: any)?.data ?? {}) as Record<string, unknown>;
 
     const pageResult: PageResult = {
-      page_number: 1,
+     , page_number: 1,
       text: String(ocrData.text || ''),
       confidence: typeof ocrData.confidence === 'number' ? ocrData.confidence : 0,
       blocks: this.extractTextBlocks(ocrData),
@@ -229,7 +229,7 @@ export class EnhancedOCRProcessor {
       confidence: pageResult.confidence,
       pages: [pageResult],
       metadata: {
-        page_count: 1,
+       , page_count: 1,
         file_size: fileStats.size,
         content_type: 'image/${path.extname(filePath).slice(1)}' },
       processing_time: 0
@@ -353,7 +353,7 @@ export class EnhancedOCRProcessor {
   getProcessingStats(): { supportedFormats: string[];, tesseractReady: boolean;
   } {
     return {
-      supportedFormats: this.supportedFormats,
+     , supportedFormats: this.supportedFormats,
       tesseractReady: this.tesseractReady
     };
   }

@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 
 // Minimal socket shape used by manager (avoid `any`)
 type RawWebSocket = {
@@ -8,14 +8,14 @@ type RawWebSocket = {
 };
 
 // Enhanced WebSocket message types
-export interface WebSocketMessage { type: 'evidence_processing' | 'ai_result' | 'vector_match' | 'graph_update' | 'system_health' | 'cache_update';, data: any;
+export interface WebSocketMessage {, type: 'evidence_processing' | 'ai_result' | 'vector_match' | 'graph_update' | 'system_health' | 'cache_update';, data: any;
   timestamp: Date;
   clientId?: string;
   priority?: number;
 }
-export interface ConnectedClient { id: string;, ws: RawWebSocket;
+export interface ConnectedClient {, id: string;, ws: RawWebSocket;
   subscriptions: Set<string>;
-  lastSeen: Date;
+ , lastSeen: Date;
   metadata?: {
     userAgent?: string;
     userId?: string;
@@ -31,7 +31,7 @@ class EnhancedWebSocketManager {
   }
   addClient(clientId: string, ws: RawWebSocket, metadata?: Record<string, string>) {
     const client: ConnectedClient = {
-      id: clientId,
+     , id: clientId,
       ws,
       subscriptions: new Set(['system', 'processing']), // Default subscriptions
       lastSeen: new Date(),
@@ -151,9 +151,9 @@ class EnhancedWebSocketManager {
         data: {
           evidenceId,
           matches: (matches as Array<Record<string, unknown>>).map(match => ({
-            id: (match as any).id,
-            similarity: (match as any).similarity,
-            content: ((match as any).content as string | undefined)?.slice(0, 100) + '...` })),'`
+            id: (match, as: any).id,
+            similarity: (match, as: any).similarity,
+            content: ((match, as: any).content as: string | undefined)?.slice(0, 100) + '...` })),'`
           totalMatches: matches.length
         },
         timestamp: new Date()
@@ -169,10 +169,10 @@ class EnhancedWebSocketManager {
         data: {
           evidenceId,
           relationships: (relationships as Array<Record<string, unknown>>).map(rel => ({
-            from (rel as any).from || (rel as any).fromId,
-            to: (rel as any).to || (rel as any).toId,
-            type: (rel as any).type,
-            strength: (rel as any).strength ?? (rel as any).confidence
+            from (rel as: any).from || (rel as: any).fromId,
+            to: (rel, as: any).to || (rel as: any).toId,
+            type: (rel, as: any).type,
+            strength: (rel, as: any).strength ?? (rel as: any).confidence
           })),
           totalRelationships: relationships.length
         },
@@ -211,7 +211,7 @@ class EnhancedWebSocketManager {
     this.healthCheckInterval = setInterval(() => {
       const now = new Date();
       const staleClients: string[] = [];
-      // Check for stale connections (no activity in 5 minutes)
+      // Check for stale connections (no activity in, 5 minutes)
       for (const [clientId, client] of this.clients) {
         const timeSinceLastSeen = now.getTime() - client.lastSeen.getTime();
         if (timeSinceLastSeen > 5 * 60 * 1000) {

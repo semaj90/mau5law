@@ -9,15 +9,15 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from "@sveltejs/kit"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from '@sveltejs/kit';
+import { json } from, "@sveltejs/kit"
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from, '@sveltejs/kit';
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
@@ -41,7 +41,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const data = await ollamaRes.json();
     return json({ response: data.response, model: 'gemma3-legal:latest' });
   } catch (error: any) {
-    // Safely derive a string message from unknown
+    // Safely derive a: string message, from: unknown
     const message =
       error instanceof Error
         ? error.message

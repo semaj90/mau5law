@@ -1,17 +1,17 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Legal RAG Embedding Orchestrator
 // Handles case-specific law retrieval with optimized embedding strategies
 // Integrates multiple embedding models for different legal content types
-import { multiEmbeddingVectorService } from './multi-embedding-vector-service.js';
-import type { SearchQuery } from './multi-embedding-vector-service.js';
-import { redis } from '$lib/server/cache/redis'; // Import Redis client
-import { db } from '$lib/server/db/client'; // Import Drizzle client
-import * as schema from '$lib/server/db/schema'; // Import Drizzle schema
-import { eq } from 'drizzle-orm'; // Import Drizzle utility for equality checks
+import { multiEmbeddingVectorService } from, './multi-embedding-vector-service.js';
+import type { SearchQuery } from, './multi-embedding-vector-service.js';
+import { redis } from, '$lib/server/cache/redis'; // Import Redis client
+import { db } from, '$lib/server/db/client'; // Import Drizzle client
+import * as schema from, '$lib/server/db/schema'; // Import Drizzle schema
+import { eq } from, 'drizzle-orm'; // Import Drizzle utility for equality checks
 
 // Extend SearchQuery to include query_embedding if it's not already defined in multi-embedding-vector-service.js'
 // This is a common pattern for vector search services.
-declare module './multi-embedding-vector-service.js' {
+declare module, './multi-embedding-vector-service.js' {
   export interface SearchQuery {
     query_embedding?: number[];
   }
@@ -22,13 +22,13 @@ export interface EmbeddingResult { vector: number[];, model: string;
   // Add other relevant metadata if available from multiEmbeddingVectorService
 }
 
-export interface EmbeddingsBundle { case_context: number[];, legal_domain: number[];
+export interface EmbeddingsBundle {, case_context: number[];, legal_domain: number[];
   jurisdictional: number[];
   temporal: number[];
   models_used: string[];
 }
 
-export interface VectorSearchResultItem { id: string;, content: string;
+export interface VectorSearchResultItem {, id: string;, content: string;
   metadata?: Record<string, unknown>;
   similarity_scores?: Record<string, number>;
   // Add other properties returned by the vector search service
@@ -51,13 +51,13 @@ export interface SearchOptions {
   confidence_threshold?: number;
 }
 
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase {, id: string;, title: string;
   jurisdiction: string;
   practice_area: string;
   case_type: 'civil' | 'criminal' | 'appellate' | 'constitutional' | 'administrative';
   status: 'active' | 'closed' | 'pending' | 'appeal';
   filing_date: Date;
-  parties: { plaintiff: string[];, defendant: string[];
+  parties: {, plaintiff: string[];, defendant: string[];
     counsel: string[];
   };
   court: string;
@@ -69,14 +69,14 @@ export interface LegalCase { id: string;, title: string;
   legal_precedents: string[];
   evidence_ids: string[];
   document_ids: string[];
-  metadata: { complexity_score: number;, precedent_value: number;
+  metadata: {, complexity_score: number;, precedent_value: number;
     settlement_probability?: number;
     estimated_duration?: string;
     budget_category?: string;
   };
 }
 
-export interface LegalLaw { id: string;, title: string;
+export interface LegalLaw {, id: string;, title: string;
   jurisdiction: string;
   law_type: 'statute' | 'regulation' | 'ordinance' | 'constitutional' | 'case_law' | 'administrative';
   section: string;
@@ -90,27 +90,27 @@ export interface LegalLaw { id: string;, title: string;
   penalties: string[];
   exceptions: string[];
   interpretations: Array<any>;
-  metadata: { complexity_level: 'basic' | 'intermediate' | 'advanced' | 'expert';, applicability_score: number;
+  metadata: {, complexity_level: 'basic' | 'intermediate' | 'advanced' | 'expert';, applicability_score: number;
     controversy_level: number;
     enforcement_frequency: number;
   };
 }
 
-export interface RAGContext { case_id: string;, query_type: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
+export interface RAGContext {, case_id: string;, query_type: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
   relevant_laws: LegalLaw[];
   relevant_cases: LegalCase[];
   relevant_documents: any[];
-  contextual_embeddings: { case_context: number[];, legal_domain: number[];
+  contextual_embeddings: {, case_context: number[];, legal_domain: number[];
     jurisdictional: number[];
     temporal: number[];
   };
-  confidence_scores: { law_relevance: number;, case_relevance: number;
+  confidence_scores: {, law_relevance: number;, case_relevance: number;
     document_relevance: number;
     overall_confidence: number;
   };
-  search_metadata: { embedding_models_used: string[];, search_time_ms: number;
+  search_metadata: {, embedding_models_used: string[];, search_time_ms: number;
     total_results_considered: number;
-    filters_applied: string[];
+   , filters_applied: string[];
   };
 }
 
@@ -118,7 +118,7 @@ class LegalRAGEmbeddingOrchestrator {
   // Removed in-memory caches, now using Redis as per instructions
   // private caseCache: Map<string, LegalCase> = new Map();
   // private lawCache: Map<string, LegalLaw> = new Map();
-  // private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
+  // private ragCache: Map<string, { context: RAGContext;, timestamp: Date }> = new Map();
 
   constructor() {
     // The constructor no longer initializes in-memory maps.
@@ -132,31 +132,31 @@ class LegalRAGEmbeddingOrchestrator {
     temporal_weight: number;
   }> = {
     'case-law': {
-      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest; hybrid_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
+     , primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest;, hybrid_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_schema: 'legal-case',
       boost_fields: ['case_type', 'jurisdiction', 'practice_area'],
       temporal_weight: 0.8
     },
     'statute': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest;, hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'law_type', 'effective_date'],
       temporal_weight: 0.6
     },
     'regulation': {
-      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest; hybrid_models: ['embeddinggemma:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'gemma3-legal:latest', // Updated to gemma3-legal:latest;, hybrid_models: ['embeddinggemma:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'citation',
       boost_fields: ['jurisdiction', 'enforcement_frequency'],
       temporal_weight: 0.7
     },
     'case-document': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest;, hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'document',
       boost_fields: ['document_type', 'case_id', 'relevance_score'],
       temporal_weight: 0.9
     },
     'user-query': {
-      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest; hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
+      primary_model: 'embeddinggemma:latest', // Updated to embeddinggemma:latest;, hybrid_models: ['gemma3-legal:latest', 'nomic-embed-text'], // Updated models
       metadata_schema: 'user-query',
       boost_fields: ['intent', 'practice_area'],
       temporal_weight: 1.0
@@ -173,7 +173,7 @@ class LegalRAGEmbeddingOrchestrator {
   // Safe id generator - avoid `any`
   private safeRandomId(): string {
     try {
-      const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+      const g = globalThis as: unknown as { crypto?: { randomUUID?: () => string } };
       const rnd = g?.crypto?.randomUUID?.();
       if (typeof rnd === 'string' && rnd.length > 0) return rnd;
     } catch {
@@ -190,7 +190,7 @@ class LegalRAGEmbeddingOrchestrator {
       query_type?: 'legal_research' | 'precedent_search' | 'statute_lookup' | 'case_analysis' | 'document_review';
       jurisdiction_filter?: string;
       practice_area_filter?: string;
-      date_range?: {, start: Date; end: Date };
+      date_range?: {, start: Date;, end: Date };
       max_results?: number;
       include_related_cases?: boolean;
       include_statutory_authority?: boolean;
@@ -205,7 +205,7 @@ class LegalRAGEmbeddingOrchestrator {
     const cachedRaw = await redis.get(cacheKey);
     if (cachedRaw) {
       try {
-        const cached = JSON.parse(cachedRaw) as { context: RAGContext; timestamp: string };
+        const cached = JSON.parse(cachedRaw) as { context: RAGContext;, timestamp: string };
         if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5, minutes, TTL
           return cached.context;
         }
@@ -237,20 +237,20 @@ class LegalRAGEmbeddingOrchestrator {
       );
 
       const ragContext: RAGContext = {
-        case_id: caseId,
+       , case_id: caseId,
         query_type: options.query_type || 'legal_research',
         relevant_laws: relevantLaws,
         relevant_cases: relevantCases,
         relevant_documents: relevantDocuments,
         contextual_embeddings: {
-          case_context: queryEmbeddings.case_context,
+         , case_context: queryEmbeddings.case_context,
           legal_domain: queryEmbeddings.legal_domain,
           jurisdictional: queryEmbeddings.jurisdictional,
           temporal: queryEmbeddings.temporal
         },
         confidence_scores: confidenceScores,
         search_metadata: {
-          embedding_models_used: queryEmbeddings.models_used || [],
+         , embedding_models_used: queryEmbeddings.models_used || [],
           search_time_ms: this.nowMs() - startTime,
           total_results_considered: relevantLaws.length + relevantCases.length + relevantDocuments.length,
           filters_applied: this.getAppliedFilters(options)
@@ -275,19 +275,19 @@ class LegalRAGEmbeddingOrchestrator {
     const strategy = this.embeddingStrategies[queryType] ?? this.embeddingStrategies['user-query'];
     const contextualQuery = this.enhanceQueryWithCaseContext(query, legalCase);
 
-    // Keep svc as unknown and guard calls
-    const svc = multiEmbeddingVectorService as unknown;
+    // Keep svc as: unknown and guard calls
+    const svc = multiEmbeddingVectorService as: unknown;
 
     const inputs = [
-      { text: `${contextualQuery} [Case Context: ${legalCase.case_summary}]`, type: 'contextual', opts: { optimizeFor: 'accuracy', model: strategy.primary_model } },
-      { text: `${contextualQuery} [Practice Area: ${legalCase.practice_area}]`, type: 'legal_domain', opts: { preferredModels: strategy.hybrid_models } },
-      { text: `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`, type: 'jurisdictional', opts: { optimizeFor: 'accuracy', model: strategy.primary_model } },
-      { text: `${contextualQuery} [Filing Date: ${legalCase.filing_date.toISOString()}]`, type: 'temporal', opts: { optimizeFor: 'balanced', model: strategy.primary_model } }
+      { text: `${contextualQuery} [Case, Context: ${legalCase.case_summary}]`, type: 'contextual', opts: {, optimizeFor: 'accuracy', model: strategy.primary_model } },
+      { text: `${contextualQuery} [Practice, Area: ${legalCase.practice_area}]`, type: 'legal_domain', opts: {, preferredModels: strategy.hybrid_models } },
+      { text: `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`, type: 'jurisdictional', opts: {, optimizeFor: 'accuracy', model: strategy.primary_model } },
+      { text: `${contextualQuery} [Filing, Date: ${legalCase.filing_date.toISOString()}]`, type: 'temporal', opts: {, optimizeFor: 'balanced', model: strategy.primary_model } }
     ];
 
     const promises = inputs.map(async i => {
       try {
-        const svcAny = svc as any;
+        const svcAny = svc, as: any;
         if (typeof svcAny.generateEmbeddings === 'function') {
           // Assuming generateEmbeddings returns { primary: EmbeddingResult, secondary?: EmbeddingResult[] }
           const result = await svcAny.generateEmbeddings(i.text, i.type, i.opts);
@@ -298,7 +298,7 @@ class LegalRAGEmbeddingOrchestrator {
         // eslint-disable-next-line no-console
         console.debug('generateEmbeddings call failed for input', i.type, err);
       }
-      return null;
+      return: null;
     });
 
     const [caseContext, legalDomain, jurisdictional, temporal] = await Promise.all(promises);
@@ -317,9 +317,9 @@ class LegalRAGEmbeddingOrchestrator {
     };
   }
 
-  // Helper: merge multiple embedding vectors into a single averaged embedding
+  //, Helper: merge multiple embedding vectors into a single averaged embedding
   private mergeEmbeddings(vectors: Array<number[] | undefined | null>): number[] {
-    const valid = vectors.filter(Boolean) as number[][];
+    const valid = vectors.filter(Boolean) as: number[][];
     if (valid.length === 0) return [];
     const dim = Math.max(...valid.map(v => v.length));
     const sum = new Array<number>(dim).fill(0);
@@ -334,10 +334,10 @@ class LegalRAGEmbeddingOrchestrator {
 
   // Helper: runtime-safe vector search adapter - explicit return type
   private async callVectorSearch(searchQuery: SearchQuery): Promise<VectorSearchResult> {
-    const svcAny = multiEmbeddingVectorService as unknown as Record<string, unknown>;
+    const svcAny = multiEmbeddingVectorService as: unknown as Record<string, unknown>;
     const candidates = ['searchSimilar', 'search', 'query', 'findSimilar', 'searchVectors', 'searchEmbeddings'];
     for (const name of candidates) {
-      const fn = svcAny[name] as unknown;
+      const fn = svcAny[name] as: unknown;
       if (typeof fn === 'function') {
         try {
           // @ts-ignore dynamic invocation
@@ -351,7 +351,7 @@ class LegalRAGEmbeddingOrchestrator {
     }
 
     // last-resort: attempt generic execute or return empty results
-    const execute = svcAny.execute as unknown;
+    const execute = svcAny.execute, as: unknown;
     if (typeof execute === 'function') {
       try {
         // @ts-ignore
@@ -368,22 +368,22 @@ class LegalRAGEmbeddingOrchestrator {
   // Search for relevant laws using optimized embeddings
   private async searchRelevantLaws(queryEmbeddings: EmbeddingsBundle, legalCase: LegalCase, options: SearchOptions): Promise<LegalLaw[]> {
     const searchQuery: SearchQuery = {
-      query: '', // Query text might be empty if only embedding is used
+     , query: '', // Query text might be empty if only embedding is used
       query_embedding: this.mergeEmbeddings([
         queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional, queryEmbeddings.temporal
       ]),
       embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
       metadata_filters: {
-        jurisdiction: options.jurisdiction_filter || legalCase.jurisdiction,
-        law_type: this.determineLawTypes(options.query_type as string),
-        effective_date: options.date_range ? { gte: options.date_range.start, lte: options.date_range.end } : undefined
+       , jurisdiction: options.jurisdiction_filter || legalCase.jurisdiction,
+        law_type: this.determineLawTypes(options.query_type, as: string),
+        effective_date: options.date_range ? {, gte: options.date_range.start, lte: options.date_range.end } : undefined
       },
       schema_types: ['citation'],
-      hybrid_weights: { semantic: 0.3, legal: 0.4, contextual: 0.2, temporal: 0.1 },
+      hybrid_weights: {, semantic: 0.3, legal: 0.4, contextual: 0.2, temporal: 0.1 },
       similarity_threshold: options.confidence_threshold ?? 0.7,
       max_results: options.max_results ?? 10,
       boost_recent: false,
-      user_context: { userId: 'system', sessionId: 'legal-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
+      user_context: {, userId: 'system', sessionId: 'legal-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
     const searchResult = await this.callVectorSearch(searchQuery);
@@ -394,18 +394,18 @@ class LegalRAGEmbeddingOrchestrator {
   private async searchRelevantCases(queryEmbeddings: EmbeddingsBundle, legalCase: LegalCase, options: SearchOptions): Promise<LegalCase[]> {
     if (!options?.include_related_cases) return [];
     const searchQuery: SearchQuery = {
-      query: '',
+     , query: '',
       query_embedding: this.mergeEmbeddings([
         queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional
       ]),
       embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
-      metadata_filters: { jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed` },'`
+      metadata_filters: {, jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed` },'`
       schema_types: ['legal-case'],
-      hybrid_weights: { semantic: 0.25, legal: 0.35, contextual: 0.25, temporal: 0.15 },
+      hybrid_weights: {, semantic: 0.25, legal: 0.35, contextual: 0.25, temporal: 0.15 },
       similarity_threshold: options.confidence_threshold ?? 0.75,
       max_results: Math.min(options.max_results ?? 5, 10),
       boost_recent: true,
-      user_context: { userId: 'system', sessionId: 'case-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
+      user_context: {, userId: 'system', sessionId: 'case-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
     const searchResult = await this.callVectorSearch(searchQuery);
@@ -415,18 +415,18 @@ class LegalRAGEmbeddingOrchestrator {
   // Search for relevant documents
   private async searchRelevantDocuments(queryEmbeddings: EmbeddingsBundle, caseId: string, options: SearchOptions): Promise<unknown[]> {
     const searchQuery: SearchQuery = {
-      query: '',
+     , query: '',
       query_embedding: this.mergeEmbeddings([
         queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.temporal
       ]),
       embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'nomic-embed-text'], // Updated models
-      metadata_filters: { case_id: caseId, document_type: this.determineDocumentTypes(options?.query_type as string) },
+      metadata_filters: {, case_id: caseId, document_type: this.determineDocumentTypes(options?.query_type, as: string) },
       schema_types: ['document', 'evidence'],
-      hybrid_weights: { semantic: 0.4, legal: 0.3, contextual: 0.25, temporal: 0.05 },
+      hybrid_weights: {, semantic: 0.4, legal: 0.3, contextual: 0.25, temporal: 0.05 },
       similarity_threshold: options?.confidence_threshold ?? 0.6,
       max_results: options?.max_results ?? 15,
       boost_recent: true,
-      user_context: { userId: 'system', sessionId: 'document-search', caseId }
+      user_context: {, userId: 'system', sessionId: 'document-search', caseId }
     };
 
     const searchResult = await this.callVectorSearch(searchQuery);
@@ -452,7 +452,7 @@ class LegalRAGEmbeddingOrchestrator {
     embeddings: any
   ): { law_relevance: number;, case_relevance: number;
     document_relevance: number;
-    overall_confidence: number;
+   , overall_confidence: number;
   } {
     const lawRelevance = laws.length > 0
       ? laws.reduce((sum, law) => sum + (law.metadata?.applicability_score || 0), 0) / laws.length
@@ -522,28 +522,28 @@ class LegalRAGEmbeddingOrchestrator {
       const sim = (r.similarity_scores as Record<string, unknown>) || {};
 
       const metadata: LegalLaw['metadata'] = {
-        complexity_level: (meta.complexity_level as any) || 'intermediate',
-        applicability_score: (sim?.overall as number) ?? 0.5,
-        controversy_level: (meta.controversy_level as number) ?? 0,
-        enforcement_frequency: (meta.enforcement_frequency as number) ?? 0
+        complexity_level: (meta.complexity_level, as: any) || 'intermediate',
+        applicability_score: (sim?.overall, as: number) ?? 0.5,
+        controversy_level: (meta.controversy_level, as: number) ?? 0,
+        enforcement_frequency: (meta.enforcement_frequency, as: number) ?? 0
       };
 
       const law: LegalLaw = {
-        id: (r.id as string) || this.safeRandomId(),
-        title: (meta.title as string) || 'Unknown Law',
-        jurisdiction: (meta.jurisdiction as string) || 'Unknown',
-        law_type: ((meta.law_type as any) || 'statute'),
-        section: (meta.section as string) || '',
-        subsection: (meta.subsection as string) || undefined,
-        effective_date: meta.effective_date ? new Date(meta.effective_date as string) : new Date(),
-        amendment_history: (meta.amendment_history as unknown[] ) || [],
-        content: (r.content as string) || '',
-        related_laws: (meta.related_laws as string[]) || [],
-        precedent_cases: (meta.precedent_cases as string[]) || [],
-        enforcement_mechanisms: (meta.enforcement_mechanisms as string[]) || [],
-        penalties: (meta.penalties as string[]) || [],
-        exceptions: (meta.exceptions as string[]) || [],
-        interpretations: (meta.interpretations as unknown[]) || [],
+        id: (r.id, as: string) || this.safeRandomId(),
+        title: (meta.title, as: string) || 'Unknown Law',
+        jurisdiction: (meta.jurisdiction, as: string) || 'Unknown',
+        law_type: ((meta.law_type, as: any) || 'statute'),
+        section: (meta.section, as: string) || '',
+        subsection: (meta.subsection, as: string) || undefined,
+        effective_date: meta.effective_date ? new Date(meta.effective_date, as: string) : new Date(),
+        amendment_history: (meta.amendment_history, as: unknown[] ) || [],
+        content: (r.content, as: string) || '',
+        related_laws: (meta.related_laws, as: string[]) || [],
+        precedent_cases: (meta.precedent_cases, as: string[]) || [],
+        enforcement_mechanisms: (meta.enforcement_mechanisms, as: string[]) || [],
+        penalties: (meta.penalties, as: string[]) || [],
+        exceptions: (meta.exceptions, as: string[]) || [],
+        interpretations: (meta.interpretations, as: unknown[]) || [],
         metadata
       };
       return law;
@@ -557,31 +557,31 @@ class LegalRAGEmbeddingOrchestrator {
       const sim = (r.similarity_scores as Record<string, unknown>) || {};
 
       const metadata: LegalCase['metadata'] = {
-        complexity_score: (meta.complexity_score as number) ?? 0.5,
-        precedent_value: (sim?.overall as number) ?? 0.5,
-        settlement_probability: meta.settlement_probability as number | undefined,
-        estimated_duration: meta.estimated_duration as string | undefined,
-        budget_category: meta.budget_category as string | undefined
+        complexity_score: (meta.complexity_score, as: number) ?? 0.5,
+        precedent_value: (sim?.overall, as: number) ?? 0.5,
+        settlement_probability: meta.settlement_probability, as: number | undefined,
+        estimated_duration: meta.estimated_duration, as: string | undefined,
+        budget_category: meta.budget_category as: string | undefined
       };
 
       const legalCase: LegalCase = {
-        id: (r.id as string) || this.safeRandomId(),
-        title: (meta.title as string) || 'Unknown Case',
-        jurisdiction: (meta.jurisdiction as string) || 'Unknown',
-        practice_area: (meta.practice_area as string) || 'General',
-        case_type: ((meta.case_type as any) || 'civil'),
-        status: ((meta.status as any) || 'closed'),
-        filing_date: meta.filing_date ? new Date(meta.filing_date as string) : new Date(),
-        parties: (meta.parties as any) || { plaintiff: [], defendant: [], counsel: [] },
-        court: (meta.court as string) || 'Unknown Court',
-        judge: (meta.judge as string) || undefined,
-        docket_number: (meta.docket_number as string) || '',
-        related_laws: (meta.related_laws as string[]) || [],
-        key_issues: (meta.key_issues as string[]) || [],
-        case_summary: (r.content as string) || '',
-        legal_precedents: (meta.legal_precedents as string[]) || [],
-        evidence_ids: (meta.evidence_ids as string[]) || [],
-        document_ids: (meta.document_ids as string[]) || [],
+        id: (r.id, as: string) || this.safeRandomId(),
+        title: (meta.title, as: string) || 'Unknown Case',
+        jurisdiction: (meta.jurisdiction, as: string) || 'Unknown',
+        practice_area: (meta.practice_area, as: string) || 'General',
+        case_type: ((meta.case_type, as: any) || 'civil'),
+        status: ((meta.status, as: any) || 'closed'),
+        filing_date: meta.filing_date ? new Date(meta.filing_date, as: string) : new Date(),
+        parties: (meta.parties, as: any) || { plaintiff: [], defendant: [], counsel: [] },
+        court: (meta.court, as: string) || 'Unknown Court',
+        judge: (meta.judge, as: string) || undefined,
+        docket_number: (meta.docket_number, as: string) || '',
+        related_laws: (meta.related_laws, as: string[]) || [],
+        key_issues: (meta.key_issues, as: string[]) || [],
+        case_summary: (r.content, as: string) || '',
+        legal_precedents: (meta.legal_precedents, as: string[]) || [],
+        evidence_ids: (meta.evidence_ids, as: string[]) || [],
+        document_ids: (meta.document_ids, as: string[]) || [],
         metadata
       };
 
@@ -604,12 +604,12 @@ class LegalRAGEmbeddingOrchestrator {
 
     // Fetch from PostgreSQL using Drizzle ORM
     // Assuming: 'cases' is a table in your schema and has; a: 'case_id' column
-    const caseData = await db.query.cases.findFirst({ where: eq(schema.cases.id, caseId) });
+    const caseData = await db.query.cases.findFirst({, where: eq(schema.cases.id, caseId) });
 
     if (caseData) {
       // Map Drizzle ORM result to LegalCase interface
       const legalCase: LegalCase = {
-        id: caseData.id,
+       , id: caseData.id,
         title: caseData.title,
         description: caseData.description ?? undefined,
         priority: caseData.priority as LegalCase['priority'] ?? undefined,
@@ -625,21 +625,21 @@ class LegalRAGEmbeddingOrchestrator {
         court: caseData.court ?? 'Unknown Court',
         judge: caseData.judge ?? undefined,
         docket_number: caseData.docketNumber ?? '',
-        related_laws: (caseData.relatedLaws as string[]) || [],
-        key_issues: (caseData.keyIssues as string[]) || [],
+        related_laws: (caseData.relatedLaws, as: string[]) || [],
+        key_issues: (caseData.keyIssues, as: string[]) || [],
         case_summary: caseData.caseSummary ?? '',
-        legal_precedents: (caseData.legalPrecedents as string[]) || [],
-        evidence_ids: (caseData.evidenceIds as string[]) || [],
-        document_ids: (caseData.documentIds as string[]) || [],
+        legal_precedents: (caseData.legalPrecedents, as: string[]) || [],
+        evidence_ids: (caseData.evidenceIds, as: string[]) || [],
+        document_ids: (caseData.documentIds, as: string[]) || [],
         metadata: (caseData.metadata as LegalCase['metadata']) || { complexity_score: 0, precedent_value: 0 }
       };
 
-      // Cache the result in Redis for 1 hour (3600 seconds)
+      // Cache the result in Redis for, 1 hour (3600 seconds)
       await redis.set(cacheKey, JSON.stringify(legalCase), 'EX', 3600);
       return legalCase;
     }
 
-    return null; // Case not found
+    return: null; // Case not found
   }
 
   // Public API methods
@@ -651,13 +651,13 @@ class LegalRAGEmbeddingOrchestrator {
         // laws: this.lawCache.size,
         // ragContexts: this.ragCache.size
         // Placeholder for Redis stats if needed
-        redis_status: await redis.ping().then(() => 'connected').catch(() => 'disconnected'),
+       , redis_status: await redis.ping().then(() => 'connected').catch(() => 'disconnected'),
         embeddingStrategies: Object.keys(this.embeddingStrategies),
-        multiEmbeddingMetrics: null as unknown
+        multiEmbeddingMetrics: null as: unknown
       }
     };
 
-    const svcAny = multiEmbeddingVectorService as unknown as Record<string, unknown>;
+    const svcAny = multiEmbeddingVectorService, as: unknown as Record<string, unknown>;
     if (typeof svcAny.getPerformanceMetrics === 'function') {
       try {
         // @ts-ignore dynamic call
@@ -673,7 +673,7 @@ class LegalRAGEmbeddingOrchestrator {
 
   async clearCache(): Promise<void> {
     // In-memory caches removed. For Redis, you might clear specific keys or flushall.
-    // For now, this method will not perform any action on Redis to avoid accidental data loss.
+    // For now, this method will not perform: any action on Redis to avoid accidental data loss.
     // If a specific cache clearing mechanism for Redis is desired, it should be implemented here.
     console.warn('clearCache() called. In-memory caches have been removed. Redis cache clearing not implemented here.');
   }

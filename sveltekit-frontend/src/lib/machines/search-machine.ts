@@ -1,22 +1,22 @@
-import { createMachine, assign, setup, fromPromise } from 'xstate'; // removed unused sendParent
+import { createMachine, assign, setup, fromPromise } from, 'xstate'; // removed unused sendParent
 // ============================================================================
 // 1. TYPES - Define a single source of truth for all types
 // ============================================================================
 type Analytics = { totalResults: number;, searchTime: number;
-  relevanceScore: number;
+ , relevanceScore: number;
 };
-// The machine's context (its "extended state")'
+// The machine's context (its, "extended state")'
 export type SearchContext = { query: string;, filters: Record<string, unknown>;
   results: any[];
   searchHistory: string[];
   analytics: Analytics;
-  validationErrors: Record<string, string[]>;
+ , validationErrors: Record<string, string[]>;
   error: string | null;
 };
 // The events that can be sent to the machine
 export type SearchEvent =
   | { type: 'UPDATE_QUERY'; query: string }
-  | { type: 'UPDATE_FILTERS'; filters: Record<string, unknown> }
+  | { type: 'UPDATE_FILTERS';, filters: Record<string, unknown> }
   | { type: 'SEARCH' }
   | { type: 'LOAD_HISTORY' }
   | { type: 'CLEAR' }
@@ -25,27 +25,27 @@ export type SearchEvent =
 // 2. ACTORS - Define async logic and side effects separately
 // ============================================================================
 const actors = {
-  loadHistoryFromStorage: fromPromise(async () => {
+ , loadHistoryFromStorage: fromPromise(async () => {
     // Safe localStorage access (guards against SSR)
     if (typeof localStorage === 'undefined') {
       return [];
     }
     try {
       const stored = localStorage.getItem('legal-ai:search-history');
-      return stored ? (JSON.parse(stored) as string[]) : [];
+      return stored ? (JSON.parse(stored) as: string[]) : [];
     } catch {
       console.warn('Failed to parse search history from localStorage.');
       return [];
     }
   }),
   validateSearchInput: fromPromise(
-    async ({ input }: { input: {, query: string;, filters: Record<string, unknown> } }) => {
+    async ({ input }: {, input: {, query: string;, filters: Record<string, unknown> } }) => {
       const errors: Record<string, string[]> = {};
       if (!input.query?.trim() && Object.keys(input.filters).length === 0) {
         errors.general = ['Please enter a search query or select a filter.'];
       }
       if (input.query && input.query.length > 200) {
-        errors.query = ['Search query is too long (max 200 characters).'];
+        errors.query = ['Search query is too long (max, 200 characters).'];
       }
       // Example: Date range validation
       const dateRange = input.filters.dateRange as { from?: string; to?: string } | undefined;
@@ -63,7 +63,7 @@ const actors = {
     }
   ),
   performSearchApiCall: fromPromise(
-    async ({ input }: { input: {, query: string;, filters: Record<string, unknown> } }) => {
+    async ({ input }: {, input: {, query: string;, filters: Record<string, unknown> } }) => {
       const startTime = Date.now();
       const searchParams = new URLSearchParams();
       if (input.query) {
@@ -85,7 +85,7 @@ const actors = {
       return {
         results: data.results || [],
         analytics: {
-          totalResults: data.total || 0,
+         , totalResults: data.total || 0,
           searchTime,
           relevanceScore: data.averageRelevance || 0
         }
@@ -112,14 +112,14 @@ const actions = { saveHistoryToStorage: assign({, searchHistory: context => {
 // ============================================================================
 export const searchMachine = setup({
   // Provide the types and implementations for actors and actions
-  types: {} as { context: SearchContext;, events: SearchEvent;
+  types: {} as {, context: SearchContext;, events: SearchEvent;
     actors: { loadHistoryFromStorage: { output: string[]; error: Error };
-      validateSearchInput: { input: { query: string; filters: Record<string, unknown> };
-        output: { query: string; filters: Record<string, unknown> };
+      validateSearchInput: { input: { query: string;, filters: Record<string, unknown> };
+        output: { query: string;, filters: Record<string, unknown> };
         error: Record<string, string[]>;
       };
-      performSearchApiCall: { input: { query: string; filters: Record<string, unknown> };
-        output: {, results: any[]; analytics: Analytics };
+      performSearchApiCall: { input: { query: string;, filters: Record<string, unknown> };
+        output: {, results: any[];, analytics: Analytics };
        , error: Error;
       };
     };
@@ -139,85 +139,85 @@ export const searchMachine = setup({
     error: null
   },
   states: {, idle: {, on: {, UPDATE_QUERY: {, actions: assign({
-           , query: (context, event) => (event as any).query
+           , query: (context, event) => (event as: any).query
           })
         },
-        UPDATE_FILTERS: { actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) })
+        UPDATE_FILTERS: {, actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as: any).filters || {}) })
           })
         },
         SEARCH: 'validating',
         LOAD_HISTORY: 'loadingHistory'
       }
     },
-    loadingHistory: { invoke: {, src: 'loadHistoryFromStorage',
+    loadingHistory: {, invoke: {, src: 'loadHistoryFromStorage',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            searchHistory: (context, event) => (event as any).output as string[]
+           , searchHistory: (context, event) => (event as: any).output as: string[]
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: () => 'Failed to load search history.'
+           , error: () => 'Failed to load search history.'
           })
         }
       }
     },
-    validating: { invoke: {, src: 'validateSearchInput',
+    validating: {, invoke: {, src: 'validateSearchInput',
         input: ({ context }) => ({ query: context.query, filters: context.filters }),
         onDone: {
-          target: 'searching',
+         , target: 'searching',
           actions: assign({
-            validationErrors: () => ({}) as Record<string, string[]>,
+           , validationErrors: () => ({}) as Record<string, string[]>,
             error: () => null
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            validationErrors: (context, event) => (event as any).error as Record<string, string[]>,
+           , validationErrors: (context, event) => (event as: any).error as Record<string, string[]>,
             error: () => 'Search input is invalid.' })'` }'`
       }
     },
     searching: {
-      tags: ['loading'],
+     , tags: ['loading'],
       invoke: {
-        src: 'performSearchApiCall',
+       , src: 'performSearchApiCall',
         input: ({ context }) => ({ query: context.query, filters: context.filters }),
         onDone: {
-          target: 'results',
+         , target: 'results',
           // Run multiple actions: first assign results, then save history
           actions: [
             assign({,
-              results: (context, event) => (event as any).output.results as unknown[],
-              analytics: (context, event) => (event as any).output.analytics as Analytics
+              results: (context, event) => (event as: any).output.results as: unknown[],
+              analytics: (context, event) => (event as: any).output.analytics as Analytics
             }),
             'saveHistoryToStorage',
           ]
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: (context, event) => {
-              const err = (event as any).error;
+           , error: (context, event) => {
+              const err = (event as: any).error;
               return err?.message ?? String(err ?? 'Unknown error');
             }
           })
         }
       }
     },
-    results: { on: {, SEARCH: 'validating',
-        UPDATE_QUERY: { actions: assign({, query: (context, event) => (event as any).query
+    results: {, on: {, SEARCH: 'validating',
+        UPDATE_QUERY: {, actions: assign({, query: (context, event) => (event as: any).query
           })
         },
-        UPDATE_FILTERS: { actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as any).filters || {}) })
+        UPDATE_FILTERS: {, actions: assign({, filters: (context, event) => ({ ...context.filters, ...((event as: any).filters || {}) })
           })
         },
         CLEAR: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            query: () => '',
+           , query: () => '',
             filters: () => ({}) as Record<string, unknown>,
             results: () => [],
             analytics: () => ({ totalResults: 0, searchTime: 0, relevanceScore: 0 }),
@@ -227,13 +227,13 @@ export const searchMachine = setup({
         }
       }
     },
-    error: { on: {, RETRY: 'searching',
+    error: {, on: {, RETRY: 'searching',
         SEARCH: 'validating', // Allow a new search to clear the error
         UPDATE_QUERY: {
           // When user types, clear the error and update query
           target: 'idle',
           actions: assign({
-            query: (context, event) => (event as any).query,
+           , query: (context, event) => (event as: any).query,
             error: () => null
           })
         }

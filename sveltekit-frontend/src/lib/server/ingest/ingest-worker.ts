@@ -7,29 +7,29 @@
  * - Generates embeddings with Gemma multimodal
  * - Inserts directly into Postgres with pgvector
  */
-import { parentPort } from "worker_threads";
-import { fetchMinioObject } from './minio.js';
+import { parentPort } from, "worker_threads";
+import { fetchMinioObject } from, './minio.js';
 import {
   extractTextFromImage,
   extractTextFromPDF,
   extractAudioFromBuffer,
   sampleFramesFromVideo,
   parseJsonWithSimd
-} from './extractors.js';
+} from, './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath
-} from './embed.js';
-import { db } from '../db/client.js';
-import { userDocuments } from '../db/unified-schema.js';
-import fs from "fs/promises";
+} from, './embed.js';
+import { db } from, '../db/client.js';
+import { userDocuments } from, '../db/unified-schema.js';
+import fs from, "fs/promises";
 interface Job {
   id: string;
   minioUrl?: string;
   fileBuffer?: Buffer;
   filename?: string;
-  userId: string;
+ , userId: string;
   contentType?: string;
   metadata?: { [key: string]: any }
 }
@@ -54,7 +54,7 @@ parentPort.on("message", async (job: Job) => {
     let textContent = "";
     let embedding: number[] | null = null;
     let modality = "text";
-    let processingMetadata: { [key: string]: any } = {}
+    let, processingMetadata: { [key: string]: any } = {}
     if (["png", "jpg", "jpeg", "webp", "bmp"].includes(ext)) {
       // Image processing: OCR + image embedding
       modality = "image";

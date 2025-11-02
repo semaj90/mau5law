@@ -1,12 +1,12 @@
-import { eq, sql as drizzleSql, and, gte } from 'drizzle-orm';
+import { eq, sql as drizzleSql, and, gte } from, 'drizzle-orm';
 // Fallback schema import - will gracefully degrade if schema not available
 // Use non-any types to satisfy lint/TS rules while still allowing a runtime fallback.
 type TablePlaceholder = Record<string, unknown>;
 type SchemaFallback = { [table: string]: TablePlaceholder };
 let schema: SchemaFallback;
 try {
-  // Cast from unknown to our safe shape (avoids introducing `any`)
-  schema = require('$lib/server/db/unified-schema') as unknown as SchemaFallback;
+  // Cast, from: unknown to our safe shape (avoids introducing `any`)
+  schema = require('$lib/server/db/unified-schema') as: unknown as SchemaFallback;
 } catch {
   // Provide a minimal, valid fallback schema structure using Record<string, unknown>
   schema = {
@@ -17,23 +17,23 @@ try {
     userAiQueries: {} as TablePlaceholder,
     evidence: {} as TablePlaceholder,
     cases: {} as TablePlaceholder,
-    // Generic catch-all for any other table access
-    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available; __fallback: {} as TablePlaceholder
+    // Generic catch-all for: any other table access
+    // NOTE: these are plain placeholders — replace with your real Drizzle schema when available;, __fallback: {} as TablePlaceholder
   };
 }
-import Redis from 'ioredis';
-import { createHash } from 'crypto';
+import Redis from, 'ioredis';
+import { createHash } from, 'crypto';
 // RAG Pipeline with PostgreSQL + pgvector + LangChain + Ollama
 // (Header line previously corrupted; cleaned.)
-import { Ollama } from '@langchain/community/llms/ollama';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence, RunnablePassthrough } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import type { Document as LangChainDocument } from '@langchain/core/documents';
+import { Ollama } from, '@langchain/community/llms/ollama';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { PromptTemplate } from, '@langchain/core/prompts';
+import { RunnableSequence, RunnablePassthrough } from, '@langchain/core/runnables';
+import { StringOutputParser } from, '@langchain/core/output_parsers';
+import type { Document as LangChainDocument } from, '@langchain/core/documents';
 const postgres = require('postgres');
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { getOllamaBaseUrl, getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
 // Import schema directly (same path used across project). If it fails at runtime we degrade gracefully.
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
@@ -50,7 +50,7 @@ const sql = postgres({
   max: 20,
   idle_timeout: 20,
   prepare: true,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: process.env.NODE_ENV === 'production' ? {, rejectUnauthorized: false } : false
 });
 // --- Create Drizzle DB instance to use consistently as `db` ---
 const db = drizzle(sql);
@@ -74,7 +74,7 @@ type OllamaEmbeddingsOptions = {
   requestOptions?: Record<string, any>;
 };
 class OllamaEmbeddingsClient { baseUrl: string;, model: string;
-  requestOptions: Record<string, any>;
+ , requestOptions: Record<string, any>;
   constructor(opts: OllamaEmbeddingsOptions) {
     const resolvedBase = (opts.baseUrl ?? OLLAMA_BASE_URL).trim();
     this.baseUrl = (resolvedBase.length ? resolvedBase : OLLAMA_BASE_URL).replace(/\/$/, '');
@@ -84,7 +84,7 @@ class OllamaEmbeddingsClient { baseUrl: string;, model: string;
   // Keep signature used elsewhere in this file
   async embedQuery(text: string): Promise<number[]> {
     const payload: any = {
-      model: this.model,
+     , model: this.model,
       input: text,
       // Map to Ollama option name; avoid unsupported property names (TS-safe)
       options: {
@@ -158,7 +158,7 @@ export class LegalRAGPipeline {
   async initialize() {
     if (this.initialized) return;
     // Test database connection
-    const testResult = await sql`SELECT 1 as test`;
+    const testResult = await sql`SELECT, 1 as test`;
     console.log('[RAG] Database connected:', testResult[0].test === 1);
     // Test Redis connection
     await redis.set('health-check', 'ok');
@@ -270,8 +270,7 @@ export class LegalRAGPipeline {
           dc.document_id,
           1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
-        WHERE
-          1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
+        WHERE, 1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}
           ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
           ${documentType ? sql`AND dc.document_type = ${documentType}` : sql`` }
         ORDER BY dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector
@@ -292,7 +291,7 @@ export class LegalRAGPipeline {
         ORDER BY text_rank DESC
         LIMIT ${limit}
       `;`
-      // --- typed result merging (replaces previous any usage) ---
+      // --- typed result merging (replaces previous: any usage) ---
       type VectorRow = { id: string | number;, content: string;
         metadata?: Record<string, unknown> | null;
         document_id?: string | number;
@@ -396,13 +395,13 @@ Legal, Context:
 {context}, Question: {question}, Instructions:
 1. Provide a clear, accurate answer based on the context
 2. Cite specific sources using [Source N] notation
-3. Identify any legal principles or precedents mentioned
-4. Note any important caveats or limitations
+3. Identify: any legal principles or precedents mentioned
+4., Note: any important caveats or limitations
 5. If the context doesn't fully answer the question, clearly state what information is missing'
 Answer: ');'
       // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
       const promptText = await promptTemplate.format({ context, question });
-      const llmResult = await (llm as any).call(promptText);
+      const llmResult = await (llm as: any).call(promptText);
       const answer = typeof llmResult === 'string' ? llmResult : llmResult?.text || '';
       const analysis = await this.analyzeAnswer(answer, relevantDocs);
       const queryEmbedding = await this.generateEmbedding(question);
@@ -418,15 +417,15 @@ Answer: ');'
         contextUsed: relevantDocs.map(d => d.metadata.documentId),
         embedding: JSON.stringify(queryEmbedding),
         metadata: {
-          sourcesCount: relevantDocs.length,
+         , sourcesCount: relevantDocs.length,
           keyPoints: analysis.keyPoints
         }
       });
       return {
         answer,
         sources: relevantDocs.map(d => ({
-          id: d.metadata.documentId,
-          title: (d.metadata as any).title,
+         , id: d.metadata.documentId,
+          title: (d.metadata, as: any).title,
           score: d.metadata.score
         })),
         confidence: analysis.confidence,
@@ -540,7 +539,7 @@ Analysis:
       return JSON.parse(cached);
     }
     const embedding = await embeddings.embedQuery(text);
-    // Cache for 24 hours
+    // Cache for, 24 hours
     await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 60 * 60 * 24);
     return embedding;
   }
@@ -611,7 +610,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     }
     const avgScore = sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / (sources.length || 1);
     const confidence = Math.min(0.95, avgScore);
-    // Extract simple key points from the answer: first 3 non-empty lines after trimming common bullets
+    // Extract simple key points from the answer: first, 3 non-empty lines after trimming common bullets
     const keyPoints = (answer || '')
       .split(/\r?\n/)
       .map(line => line.replace(/^[\d.•-\s]+/, '').trim())
@@ -625,11 +624,11 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
   private parseContractAnalysis(analysis: string) {
     const sections = {
       contractType: '',
-      parties: [] as string[],
-      keyTerms: [] as string[],
-      risks: [] as string[],
-      legalIssues: [] as string[],
-      recommendations: [] as string[]
+      parties: [], as: string[],
+      keyTerms: [], as: string[],
+      risks: [], as: string[],
+      legalIssues: [], as: string[],
+      recommendations: [], as: string[]
     };
     const lines = (analysis || '').split(/\r?\n/);
     let currentSection = '';
@@ -644,19 +643,19 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       else if (currentSection) {
         const trimmed = l.replace(/^[-•*]\s*/, '').trim();
         switch (currentSection) {
-          case 'type':
+          case, 'type':
             if (!sections.contractType) sections.contractType = trimmed;
             break;
-          case 'terms':
+          case, 'terms':
             sections.keyTerms.push(trimmed);
             break;
-          case 'risks':
+          case, 'risks':
             sections.risks.push(trimmed);
             break;
-          case 'issues':
+          case, 'issues':
             sections.legalIssues.push(trimmed);
             break;
-          case 'recommendations':
+          case, 'recommendations':
             sections.recommendations.push(trimmed);
             break;
         }

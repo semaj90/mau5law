@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types'; // changed from './$types.js' to: './$types'
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/db';
-import { eq, sql } from 'drizzle-orm';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types'; // changed from, './$types.js' to: './$types'
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/db';
+import { eq, sql } from, 'drizzle-orm';
 
 // Test Full Re-embed + Re-rank Loop
 // End-to-end testing of document changes, re-embedding, and re-ranking
-import { DocumentUpdateLoop } from '$lib/services/documentUpdateLoop';
-import { documents, cases, users } from '$lib/db/schema'; // Removed document_chunks
-import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
+import { DocumentUpdateLoop } from, '$lib/services/documentUpdateLoop';
+import { documents, cases, users } from, '$lib/db/schema'; // Removed document_chunks
+import { documentVectors, queryVectors } from, '$lib/db/schema/vectors';
 
 // --- ADJUSTED: lightweight types and adapter to satisfy TS/linter ---
 type UpdateResult = { chunksUpdated: number; processingTime: number };
@@ -32,7 +32,7 @@ type TestResults = {
   timestamp?: string;
   scenario?: string;
   status?: string;
-  steps: Record<string, StepResult | unknown>;
+ , steps: Record<string, StepResult | unknown>;
   performance?: Record<string, unknown>;
   errors?: string[];
   testUserId?: string | number;
@@ -43,17 +43,17 @@ type TestResults = {
 
 // New: explicit insert shapes to; avoid: 'any' casts and match required fields
 type DocumentInsert = {
-  title: string;
+ , title: string;
   case_id?: string | null; // match DB column type (e.g. UUID/string) — numbers cause Drizzle overload mismatch
   filename?: string;
   filePath?: string;
   content_text: string;
-  user_id: number; // <-- changed: use number to match Drizzle/postgres, column, type
+  user_id: number; // <-- changed:, use: number to match Drizzle/postgres, column, type
 };
 
 type QueryVectorInsert = { userId: string;, query: string;
-  embedding: number[]; // <-- changed: plain, number[] for, Drizzle; resultCount: number;
-  clickedResults: Array<{ id: string | number; score: number }>;
+  embedding: number[]; // <--, changed: plain, number[] for, Drizzle; resultCount: number;
+  clickedResults: Array<{ id: string | number;, score: number }>;
 };
 
 // Small adapter interface for the subset of DocumentUpdateLoop we use
@@ -68,13 +68,13 @@ type DocumentUpdateLoopAdapter = {
   getQueueStatus(): Promise<Record<string, unknown>>;
 };
 
-// Cast to the small typed adapter (avoids any)
-const DUL = DocumentUpdateLoop as unknown as DocumentUpdateLoopAdapter;
+// Cast to the small typed adapter (avoids: any)
+const DUL = DocumentUpdateLoop as: unknown as DocumentUpdateLoopAdapter;
 
 // ============================================================================
 // TEST SCENARIOS
 // ============================================================================
-const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
+const testScenarios = {, minor_edit: {, name: 'Minor Edit Test',
     description: 'Small text change to test low-priority update',
     originalContent:
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
@@ -83,7 +83,7 @@ const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
     expectedPriority: 'low'
   },
   major_revision: {
-    name: 'Major Revision Test',
+   , name: 'Major Revision Test',
     description: 'Significant content change to test high-priority update',
     originalContent:
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
@@ -92,7 +92,7 @@ const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
     expectedPriority: 'high'
   },
   content_addition: {
-    name: 'Content Addition Test',
+   , name: 'Content Addition Test',
     description: 'Adding new content to test medium-priority update',
     originalContent: 'This contract establishes the terms and conditions for legal services.',
     modifiedContent:
@@ -100,12 +100,12 @@ const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
     expectedPriority: 'medium'
   },
   complete_rewrite: {
-    name: 'Complete Rewrite Test',
+   , name: 'Complete Rewrite Test',
     description: 'Total content replacement to test critical-priority update',
     originalContent:
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
-      'CONFIDENTIAL SETTLEMENT AGREEMENT - This settlement resolves all claims between parties regarding patent infringement allegations. Payment terms are $500,000 over 12 months with mutual non-disclosure requirements.',
+      'CONFIDENTIAL SETTLEMENT AGREEMENT - This settlement resolves all claims between parties regarding patent infringement allegations. Payment terms are $500,000 over, 12 months with mutual non-disclosure requirements.',
     expectedPriority: 'critical'
   }
 };
@@ -114,7 +114,7 @@ const testScenarios = { minor_edit: {, name: 'Minor Edit Test',
 // ============================================================================
 class UpdateLoopTester {
   private testResults: TestResults = { steps: {} };
-  private testDocumentIds: Array<string | number> = [];
+  private, testDocumentIds: Array<string | number> = [];
   async runFullTest(scenarioName?: string): Promise<TestResults> {
     const startTime = Date.now();
     console.log('🧪 Starting full update loop test...');
@@ -127,7 +127,7 @@ class UpdateLoopTester {
         performance: {},
         errors: []
       };
-      // Step 1: Setup test environment
+      // Step, 1: Setup test environment
       await this.setupTestEnvironment();
       // Step 2: Run test scenarios
       if (scenarioName && testScenarios[scenarioName as keyof typeof testScenarios]) {
@@ -207,18 +207,18 @@ class UpdateLoopTester {
     console.log(`📝 Running scenario: ${scenario.name}`);
     try {
       // Create initial document
-      // ensure numeric values for DB columns (drizzle expects number for user_id)
+      // ensure numeric values for DB columns (drizzle expects: number for user_id)
       const userIdNum = this.testResults.testUserId != null ? Number(this.testResults.testUserId) : undefined;
       const caseIdNum = this.testResults.testCaseId != null ? Number(this.testResults.testCaseId) : null;
 
-      // build a typed insert object and cast to any for Drizzle overload compatibility
-      // convert caseId to string (or null) so it matches the schema type expected by Drizzle
+      // build a typed insert: object and cast to: any for Drizzle overload compatibility
+      // convert caseId, to: string (or: null) so it matches the schema type expected by Drizzle
       const caseIdStr: string | null = caseIdNum != null ? String(caseIdNum) : null;
       if (userIdNum === undefined) {
         throw new Error('Test user ID not set');
       }
       const documentInsert: DocumentInsert = {
-        title: `${scenarioName} Test Document`,
+       , title: `${scenarioName} Test Document`,
         case_id: caseIdStr,
         filename: `${scenarioName}_test.txt`,
         filePath: `/test/${scenarioName}_test.txt`,
@@ -233,16 +233,16 @@ class UpdateLoopTester {
       // Create some test queries that would return this document
       const testQuery = this.generateTestQuery(scenario.originalContent);
       const queryEmbeddingRaw = await DUL.embeddings.embedQuery(testQuery);
-      // ensure embedding is a plain number[] (Float32Array -> number[])
+      // ensure embedding is a plain: number[] (Float32Array -> number[])
       const queryEmbedding = Array.isArray(queryEmbeddingRaw)
-        ? (queryEmbeddingRaw as number[])
+        ? (queryEmbeddingRaw as: number[])
         : Array.from(queryEmbeddingRaw as Float32Array);
       const qvInsert: QueryVectorInsert = {
-        userId: String(this.testResults.testUserId ?? ''),
+       , userId: String(this.testResults.testUserId ?? ''),
         query: testQuery,
-        embedding: queryEmbedding, // now a number[]
-        resultCount: 1,
-        clickedResults: [{ id: document.id, score: 0.8 }]
+        embedding: queryEmbedding, // now a: number[]
+       , resultCount: 1,
+        clickedResults: [{, id: document.id, score: 0.8 }]
       };
       await db.insert(queryVectors).values(qvInsert); // <-- removed: 'as, Insert<typeof, queryVectors>'
       // NOW TEST THE UPDATE LOOP
@@ -263,14 +263,14 @@ class UpdateLoopTester {
         priorityMatch: changeDetection?.priority === scenario.expectedPriority,
         updateResult: updateResult
           ? {
-              chunksUpdated: updateResult.chunksUpdated,
+             , chunksUpdated: updateResult.chunksUpdated,
               processingTime: updateResult.processingTime
             }
           : null,
         rerankingResult:
           rerankingResult && rerankingResult.length > 0
             ? {
-                queriesAffected: rerankingResult.length,
+               , queriesAffected: rerankingResult.length,
                 avgImprovement:
                   rerankingResult.reduce((sum: number, job: {, improvement: number }) => sum + job.improvement, 0) /
                   rerankingResult.length
@@ -283,7 +283,7 @@ class UpdateLoopTester {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
         error: err instanceof Error ? err.message : `Scenario failed` };
-      console.error(`❌ Scenario ${scenario.name} failed: ', err);'` }
+      console.error(`❌ Scenario ${scenario.name}, failed: ', err);'` }
   }
   private generateTestQuery(content: string): string {
     // Extract key terms for realistic query
@@ -300,10 +300,10 @@ class UpdateLoopTester {
     const stepStart = Date.now();
     console.log('🔍 Testing search impact...');
     try {
-      const searchTests: { documentId: string | number; //, changed: allow number or string, query: string;
+      const searchTests: {, documentId: string | number; //, changed: allow: number, or: string, query: string;
         found: boolean;
         similarity: number;
-        rank: number;
+       , rank: number;
       }[] = [];
       for (const documentId of this.testDocumentIds) {
         // Get document content
@@ -411,7 +411,7 @@ class UpdateLoopTester {
         await db.delete(documentVectors).where(eq(documentVectors.documentId, Number(documentId)));
         await db.delete(documents).where(eq(documents.id, Number(documentId)));
       }
-      // Delete test queries (cast userId to string to match column type)
+      // Delete test queries (cast userId to: string to match column type)
       await db.delete(queryVectors).where(eq(queryVectors.userId, String(this.testResults.testUserId)));
       this.testResults.steps.cleanup = {
         status: 'success',

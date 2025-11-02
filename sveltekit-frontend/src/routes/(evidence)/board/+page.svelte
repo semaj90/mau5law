@@ -1,14 +1,14 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import Card from '$lib/components/ui/enhanced-bits.svelte';
+  // Svelte, 5 runes are auto-imported
+  import EnhancedEvidenceBoard from, '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
+  import Button from, '$lib/components/ui/Button.svelte';
+  import Card from, '$lib/components/ui/enhanced-bits.svelte';
 
   let pageLoaded = $state<boolean>(false);
   let showWelcome = $state<boolean>(true);
   $effect(() => {
     pageLoaded = true;
-    // Auto-hide welcome after 3 seconds
+    // Auto-hide welcome after, 3 seconds
     setTimeout(() => (showWelcome = false), 3000);
   });
 </script>
@@ -20,10 +20,10 @@
 <div, class="evidence-page-container">
   {#if showWelcome && pageLoaded}
     <div, class="welcome-banner, animate-fade-in">
-      <Card.Root variant="evidence" hoverable, fullWidth, class="nes-container">
+      <Card variant="evidence" hoverable, fullWidth, class="nes-container">
         <div, class="nier-bits-yorha-panel-header">
           <h3, class="nier-bits-nes-text, is-primary">🎯 Evidence Board Ready</h3>
-          <p, class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
+          <p, class="nier-bits-nes-text">AI-powered evidence management with RTX, 3060 Ti acceleration</p>
         </div>
         <div, class="nier-bits-yorha-panel-content">
           <div, class="welcome-stats">
@@ -44,7 +44,7 @@
         <div, class="nier-bits-yorha-panel-content">
           <Button.Root, class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>Get Started →</Button>
         </div>
-      </Card.Root>
+      </Card>
     </div>
   {/if}
   {#if pageLoaded}
@@ -66,12 +66,12 @@
   .welcome-banner {
     position fixed;
     top: 20px;
-    right: 20px;
+   , right: 20px;
     z-index: 1000,
     width: 320px;
-    background: rgba(0, 0, 0, 0.9);
+   , background: rgba(0, 0, 0, 0.9);
     border: 2px solid #00ff41;
-    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    box-shadow: 0, 0 20px rgba(0, 255, 65, 0.3);
   }
   .animate-fade-in {
     animation: fadeInSlide 0.5s ease-out;
@@ -79,11 +79,11 @@
   @keyframes fadeInSlide {
     from {
       opacity: 0;
-      transform: translateX(100%);
+     , transform: translateX(100%);
     }
     to {
       opacity: 1;
-      transform: translateX(0);
+     , transform: translateX(0);
     }
   }
   .welcome-stats {
@@ -97,7 +97,7 @@
     flex-direction: column;
     align-items: center;
     padding: 8px;
-    background: rgba(0, 255, 65, 0.1);
+   , background: rgba(0, 255, 65, 0.1);
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px;
   }
@@ -133,7 +133,7 @@
   }
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);

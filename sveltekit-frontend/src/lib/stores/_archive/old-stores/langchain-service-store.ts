@@ -1,24 +1,24 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * LangChain Service Logic Layer with Database Sync
  * Decoupled reactive store that handles complex LangChain/Ollama operations
  * with full database synchronization via REST API
  */
-import { writable, derived, type Readable } from 'svelte/store';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
-import { browser } from '$app/environment';
+import { writable, derived, type Readable } from, 'svelte/store';
+import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
+import { browser } from, '$app/environment';
 // Simple state interfaces for UI consumption
 export interface LangChainState { isProcessing: boolean;, isAvailable: boolean;
   error: string | null;
   models: string[];
 }
-export interface DocumentProcessingState { isProcessing: boolean;, progress: number;
+export interface DocumentProcessingState {, isProcessing: boolean;, progress: number;
   result: ProcessedDocument | null;
   error: string | null;
   sessionId: string | null;
   documentId: string | null;
 }
-export interface ProcessedDocument { id: string;, summary: string;
+export interface ProcessedDocument {, id: string;, summary: string;
   keyTerms: string[];
   entities: any[];
   contractTerms: any[];
@@ -26,12 +26,12 @@ export interface ProcessedDocument { id: string;, summary: string;
   cacheHit: boolean;
   sessionId: string;
 }
-export interface ChatState { messages: Array<any>;, isTyping: boolean;
+export interface ChatState {, messages: Array<any>;, isTyping: boolean;
   error: string | null;
 }
 // Internal reactive stores
 const langchainState = writable<LangChainState>({
-  isProcessing: false,
+ , isProcessing: false,
   isAvailable: false,
   error: null,
   models: []
@@ -115,13 +115,13 @@ class LangChainServiceLogic {
         })
       });
       documentProcessingState.update(state => ({ ...state, progress: 75 }));
-      if (!(response as any).ok) {
-        const errorData = await (response as any).json().catch(() => ({}));
+      if (!(response as: any).ok) {
+        const errorData = await (response as: any).json().catch(() => ({}));
         throw new Error(
-          (errorData as any).error || `HTTP ${(response as any).status}: ${(response as any).statusText}`
+          (errorData as: any).error || `HTTP ${(response as: any).status}: ${(response as: any).statusText}`
         );
       }
-      const result: ProcessedDocument = await (response as any).json();
+      const result: ProcessedDocument = await (response, as: any).json();
       documentProcessingState.update(state => ({ ...state, progress: 100 }));
       // Update state with successful result
       documentProcessingState.set({
@@ -252,7 +252,7 @@ export const documentProcessing: Readable<DocumentProcessingState> = {
   subscribe: documentProcessingState.subscribe
 };
 export const chatService: Readable<ChatState> = {
-  subscribe: chatState.subscribe
+ , subscribe: chatState.subscribe
 };
 // Derived computed states
 export const isLangChainReady = derived(

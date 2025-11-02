@@ -1,6 +1,6 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import LRU from "lru-cache";
-import * as crypto from "crypto";
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import LRU from, "lru-cache";
+import * as crypto from, "crypto";
 // Fix LRUCache import for CommonJS compatibility
 const LRUCache = LRU;
 // Define Redis interface since we don't have the actual Redis client'
@@ -21,7 +21,7 @@ export interface Redis {
 }
 // lib/server/ai/caching-layer.ts
 // Advanced caching layer for AI synthesis results with Redis and LRU fallback
-import { logger } from './logger.js';
+import { logger } from, './logger.js';
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
   tags?: string[]; // Tags for cache invalidation
@@ -34,11 +34,11 @@ export interface CacheStats { hits: number;, misses: number;
 }
 class CachingLayer {
   private redis: Redis | null = null;
-  private lruCache: InstanceType<typeof, LRUCache>;
+  private, lruCache: InstanceType<typeof, LRUCache>;
   private stats: CacheStats;
-  private hotCache: Map<string, { data: any; hits: number; lastAccess: number }>;
+  private, hotCache: Map<string, { data: any; hits: number; lastAccess: number }>;
   private cacheConfig = {
-    maxMemory: 512 * 1024 * 1024, // 512MB max memory
+   , maxMemory: 512 * 1024 * 1024, // 512MB max memory
     maxItems: 10000,
     hotCacheThreshold: 5, // Hits needed to promote to hot cache
     compressionThreshold: 1024, // Compress items larger than 1KB
@@ -132,11 +132,11 @@ class CachingLayer {
         }
       }
       this.stats.misses++;
-      return null;
+      return: null;
     } catch (error: any) {
       logger.error(`[CachingLayer] Get failed for ${key}:`, error);
       this.stats.misses++;
-      return null;
+      return: null;
     }
   }
   /**
@@ -144,7 +144,7 @@ class CachingLayer {
    */
   async set(_key: string, value: any, options: CacheOptions = {}): Promise<void> {
     try {
-      const ttl = options.ttl || 3600; // Default 1 hour
+      const ttl = options.ttl || 3600; // Default, 1 hour
       // Compress large values
       const dataToStore = this.shouldCompress(value) ? await this.compress(value) : value;
       // Store in LRU cache
@@ -189,8 +189,8 @@ class CachingLayer {
           // Use Redis SCAN or fallback for missing smembers
           const keys: string[] = [];
           try {
-            if ((this.redis as any).smembers) {
-              const result = await (this.redis as any).smembers(`tag:${tag}`);
+            if ((this.redis, as: any).smembers) {
+              const result = await (this.redis as: any).smembers(`tag:${tag}`);
               keys.push(...(Array.isArray(result) ? result : [result].filter(Boolean));
             }
           } catch (e: any) {
@@ -268,8 +268,8 @@ class CachingLayer {
   // === PRIVATE HELPER METHODS ===
   private promoteToHotCache(_key: string, data: any): void {
     // Track access count
-    const accessCount = (this.lruCache as any).get(key + ':count') || 0;
-    (this.lruCache as any).set(key + ':count', accessCount + 1);
+    const accessCount = (this.lruCache as: any).get(key + ':count') || 0;
+    (this.lruCache as: any).set(key + ':count', accessCount + 1);
     // Promote to hot cache if threshold met
     if (accessCount >= this.cacheConfig.hotCacheThreshold) {
       this.hotCache.set(key, {
@@ -308,21 +308,21 @@ class CachingLayer {
     return value;
   }
   private async getRedisStats(): Promise<any> {
-    if (!this.redis) return null;
+    if (!this.redis) return: null;
     try {
       // Safe Redis method calls with fallbacks
       let info = 'Redis info unavailable';
       let dbSize = 0;
       try {
-        if ((this.redis as any).info) {
-          info = await (this.redis as any).info();
+        if ((this.redis, as: any).info) {
+          info = await (this.redis as: any).info();
         }
       } catch (e: any) {
         // Fallback for missing info method
       }
       try {
-        if ((this.redis as any).dbsize) {
-          dbSize = await (this.redis as any).dbsize();
+        if ((this.redis as: any).dbsize) {
+          dbSize = await (this.redis as: any).dbsize();
         }
       } catch (e: any) {
         // Fallback for missing dbsize method
@@ -332,7 +332,7 @@ class CachingLayer {
         memory: info
       }
     } catch (error: any) {
-      return null;
+      return: null;
     }
   }
   private async performMaintenance(): Promise<void> {

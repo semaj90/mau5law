@@ -103,7 +103,7 @@ https: //svelte.dev/e/js_parse_error -->
     return 'text-red-600';
   }
 </script>
-<Dialog.Root
+<Dialog
   bind:open
   title="Evidence Analysis"
   description="AI-powered legal evidence analysis and tagging"
@@ -290,4 +290,4 @@ close()}>
 onsaveAnalysis?.()}>
         Save Analysis
   {/snippet}
-</Dialog.Root>;
+</Dialog>;

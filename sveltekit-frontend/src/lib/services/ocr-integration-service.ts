@@ -4,15 +4,15 @@
  * Supports multiple processing methods with intelligent fallback
  */
 
-import { OCRTensorProcessor } from '$lib/client/ocr-tensor-processor';
-import type { EvidenceWithRelations } from '$lib/server/db/schema';
+import { OCRTensorProcessor } from, '$lib/client/ocr-tensor-processor';
+import type { EvidenceWithRelations } from, '$lib/server/db/schema';
 
 // OCR Processing Methods
 type OCRMethod = 'wasm_simd' | 'cuda_tensorrt' | 'agentic_controller';
 
 interface OCRResult { text: string;, confidence: number;
   regions: Array<{
-    bbox: [number, number, number, number];
+   , bbox: [number, number, number, number];
     text: string;
     confidence: number;
   }>;
@@ -20,7 +20,7 @@ interface OCRResult { text: string;, confidence: number;
   processingMethod: OCRMethod;
   processingTime: number;
   metadata: {
-    modelUsed: string;
+   , modelUsed: string;
     lodLevel?: number;
     tensorOptimization?: boolean;
     gpuAccelerated?: boolean;
@@ -31,7 +31,7 @@ export class OCRIntegrationService {
   private tensorProcessor?: OCRTensorProcessor;
   private initialized = $state(false);
   private workerPool: Worker[] = [];
-  private activeJobs = new Map<string, { resolve: Function; reject: Function; startTime: number }>();
+  private activeJobs = new Map<string, { resolve: Function; reject: Function;, startTime: number }>();
 
   constructor() {
     // Initialize client-side processor if in browser
@@ -157,7 +157,7 @@ export class OCRIntegrationService {
       let result: OCRResult;
 
       switch (selectedMethod) {
-        case 'wasm_simd':
+        case, 'wasm_simd':
           result = await this.processWithWorkerPool(imageData, {
             method: 'wasm_simd',
             confidenceThreshold,
@@ -166,7 +166,7 @@ export class OCRIntegrationService {
           });
           break;
 
-        case 'cuda_tensorrt':
+        case, 'cuda_tensorrt':
           result = await this.processWithConcurrentGPU(imageData, {
             confidenceThreshold,
             enableEmbedding,
@@ -174,7 +174,7 @@ export class OCRIntegrationService {
           });
           break;
 
-        case 'agentic_controller':
+        case, 'agentic_controller':
           result = await this.processWithAgentic(imageData, {
             confidenceThreshold,
             enableEmbedding,
@@ -184,7 +184,7 @@ export class OCRIntegrationService {
           break;
 
         default:
-          throw new Error(`Unknown processing; method: ${selectedMethod}`);
+          throw new Error(`Unknown processing;, method: ${selectedMethod}`);
       }
 
       // 5. Cache result in Redis (fire-and-forget)
@@ -234,25 +234,25 @@ export class OCRIntegrationService {
   private selectOptimalMethod(imageData: any): OCRMethod {
     // Complex images or server-side processing
     if (typeof window === 'undefined') {
-      return 'agentic_controller';
+      return, 'agentic_controller';
     }
 
     // Large files benefit from GPU acceleration
     if (imageData instanceof File && imageData.size > 2 * 1024 * 1024) {
-      return 'cuda_tensorrt';
+      return, 'cuda_tensorrt';
     }
 
     // Small/medium files - use client-side WASM for speed
     if (this.initialized && this.tensorProcessor) {
-      return 'wasm_simd';
+      return, 'wasm_simd';
     }
 
-    return 'agentic_controller';
+    return, 'agentic_controller';
   }
 
   private async processWithWasm(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     if (!this.tensorProcessor || !this.initialized) {
       throw new Error('WASM processor not initialized');
@@ -281,7 +281,7 @@ export class OCRIntegrationService {
       processingMethod: 'wasm_simd',
       processingTime,
       metadata: {
-        modelUsed: result.modelUsed || 'tesseract_wasm',
+       , modelUsed: result.modelUsed || 'tesseract_wasm',
         lodLevel: result.lodLevel,
         tensorOptimization: result.tensorOptimization,
         gpuAccelerated: false
@@ -290,8 +290,8 @@ export class OCRIntegrationService {
   }
 
   private async processWithCuda(
-    imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+   , imageData: any,
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     // Call CUDA service worker endpoint
     const formData = new FormData();
@@ -332,14 +332,14 @@ export class OCRIntegrationService {
       processingMethod: 'cuda_tensorrt',
       processingTime,
       metadata: {
-        modelUsed: 'tensorrt_gemma',
+       , modelUsed: 'tensorrt_gemma',
         gpuAccelerated: true
       }
     };
   }
 
   private async processWithAgentic(
-    imageData: any,
+   , imageData: any,
     options: {, confidenceThreshold: number;, enableEmbedding: boolean;
      , startTime: number;
       evidenceId?: number;
@@ -376,7 +376,7 @@ export class OCRIntegrationService {
         processingMethod: 'agentic_controller',
         processingTime,
         metadata: {
-          modelUsed: 'tesseract_gemma',
+         , modelUsed: 'tesseract_gemma',
           gpuAccelerated: true
         }
       };
@@ -409,7 +409,7 @@ export class OCRIntegrationService {
       processingMethod: 'agentic_controller',
       processingTime,
       metadata: {
-        modelUsed: 'tesseract_gemma',
+       , modelUsed: 'tesseract_gemma',
         gpuAccelerated: true,
         asyncProcessing: true
       }
@@ -558,8 +558,8 @@ export class OCRIntegrationService {
    * Process with worker pool for maximum concurrency
    */
   private async processWithWorkerPool(
-    imageData: any,
-    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+   , imageData: any,
+    options: { method: string; confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     return new Promise((resolve, reject) => {
       // Find available worker or queue if all busy
@@ -588,7 +588,7 @@ export class OCRIntegrationService {
         enableEmbedding: options.enableEmbedding
       });
 
-      // Timeout after 60 seconds
+      // Timeout after, 60 seconds
       setTimeout(() => {
         if (this.activeJobs.has(jobId)) {
           this.activeJobs.delete(jobId);
@@ -603,7 +603,7 @@ export class OCRIntegrationService {
    */
   private async processWithConcurrentGPU(
     imageData: any,
-    options: { confidenceThreshold: number; enableEmbedding: boolean; startTime: number }
+    options: { confidenceThreshold: number; enableEmbedding: boolean;, startTime: number }
   ): Promise<OCRResult> {
     // Check GPU queue status via Redis
     const queueLength = await this.getGPUQueueLength();
@@ -634,16 +634,16 @@ export class OCRIntegrationService {
     // - Historical performance
 
     if (systemLoad.gpuQueueLength > 5) {
-      return 'wasm_simd'; // Use local processing
+      return, 'wasm_simd'; // Use local processing
     }
 
     if (systemLoad.workerPoolUtilization < 0.7 && this.workerPool.length > 0) {
-      return 'wasm_simd'; // Parallel workers available
+      return, 'wasm_simd'; // Parallel workers available
     }
 
     // Large files benefit from GPU
     if (imageData instanceof File && imageData.size > 2 * 1024 * 1024) {
-      return 'cuda_tensorrt';
+      return, 'cuda_tensorrt';
     }
 
     return this.selectOptimalMethod(imageData);
@@ -669,7 +669,7 @@ export class OCRIntegrationService {
 
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataToHash);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return 'ocr:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return, 'ocr:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   private async getCachedResult(cacheKey: string): Promise<OCRResult | null> {
@@ -690,7 +690,7 @@ export class OCRIntegrationService {
     } catch (error) {
       console.warn('Redis cache read failed:', error);
     }
-    return null;
+    return: null;
   }
 
   private async cacheResult(cacheKey: string, result: OCRResult): Promise<void> {
@@ -780,7 +780,7 @@ export class OCRIntegrationService {
   }
 
   private async getSystemLoadMetrics(): Promise<{ gpuQueueLength: number;, workerPoolUtilization: number;
-    redisConnections: number;
+   , redisConnections: number;
   }> {
     try {
       const response = await fetch('/api/v1/system/load-metrics');

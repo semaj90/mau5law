@@ -3,7 +3,7 @@
  * Bridges 3D YoRHa component color usage with UnoCSS tokens, NES.css fallback palette,
  * and Bits UI v2 semantic roles. Allows future theming without touching core geometry logic.
  */
-import { YORHA_COLORS } from '../YoRHaUI3D.js';
+import { YORHA_COLORS } from, '../YoRHaUI3D.js';
 // NES.css retro fallback palette (selected core colors)
 export const NES_PALETTE = {
   blue: '#209cee',
@@ -17,17 +17,17 @@ export const NES_PALETTE = {
 } as const;
 // Bits UI v2 style semantic roles we want to map (simplified)
 // These reference UnoCSS theme token names (see uno.config.ts)
-const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string; accent?: string }> = { primary: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
-  secondary: { bg: 'yorha-bg-secondary', border: 'yorha-border', text: 'yorha-text-secondary' },
-  accent: { bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
-  ghost: { bg: 'yorha-bg-primary', border: 'yorha-border', text: 'yorha-text-primary' },
-  danger: { bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
-  success: { bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' },
-  warning: { bg: 'yorha-warning', border: 'yorha-border', text: 'yorha-text-primary' },
-  info: { bg: 'ai-status-processing', border: 'yorha-border', text: 'yorha-text-primary' },
-  terminal: { bg: 'gothic-bg-secondary', border: 'gothic-border-primary', text: 'gothic-text-primary' },
-  alert: { bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
-  confirm: { bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' }
+const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string; accent?: string }> = {, primary: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
+  secondary: {, bg: 'yorha-bg-secondary', border: 'yorha-border', text: 'yorha-text-secondary' },
+  accent: {, bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
+  ghost: {, bg: 'yorha-bg-primary', border: 'yorha-border', text: 'yorha-text-primary' },
+  danger: {, bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
+  success: {, bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' },
+  warning: {, bg: 'yorha-warning', border: 'yorha-border', text: 'yorha-text-primary' },
+  info: {, bg: 'ai-status-processing', border: 'yorha-border', text: 'yorha-text-primary' },
+  terminal: {, bg: 'gothic-bg-secondary', border: 'gothic-border-primary', text: 'gothic-text-primary' },
+  alert: {, bg: 'yorha-error', border: 'yorha-border', text: 'yorha-text-primary' },
+  confirm: {, bg: 'yorha-success', border: 'yorha-border', text: 'yorha-text-primary' }
 }
 // Cache of resolved tokens to numeric hex for Three.js
 const resolvedCache = new Map<string, number>();
@@ -35,20 +35,20 @@ const resolvedCache = new Map<string, number>();
 function isHexColor(str: string): boolean {
   return /^#?[0-9a-fA-F]{6}$/.test(str);
 }
-// Convert hex string (with or without #) to number for Three.js
+// Convert hex: string (with or without #) to: number for Three.js
 function hexToNumber(hex: string): number {
   const clean = hex.startsWith('#') ? hex.slice(1) : hex;
   return parseInt(clean, 16);
 }
 // Attempt to read CSS variable from document (runtime fallback).
 function readCssVar(name: string): string | undefined {
-  if (typeof window === 'undefined' || !window.document) return undefined;
+  if (typeof window === 'undefined' || !window.document) return: undefined;
   const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   return val || undefined;
 }
 // Primary resolution pipeline:
 // 1. Direct numeric value already provided
-// 2. Hex string literal
+// 2., Hex: string literal
 // 3. CSS var --color-name
 // 4. Uno token -> try css var --uno-color-name (common pattern)
 // 5. NES palette fallback
@@ -98,7 +98,7 @@ export function resolveColorToken(
 export interface VariantResolvedStyle { backgroundColor: number;, borderColor: number;
   textColor: number;
   hover?: { backgroundColor?: number; textColor?: number; opacity?: number };
-  glow?: { enabled: boolean; color?: number; intensity?: number };
+  glow?: {, enabled: boolean; color?: number; intensity?: number };
   opacity?: number;
   borderWidth?: number;
 }
@@ -121,7 +121,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
     borderColor,
     textColor,
     glow,
-    hover: { backgroundColor: hoverColor }
+    hover: {, backgroundColor: hoverColor }
   };
 }
 // Central exported theme adapter

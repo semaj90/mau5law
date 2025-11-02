@@ -3,11 +3,11 @@
  * Useful for security - sign out from all other devices
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { sessions, as sessionsTable } from '$lib/server/db/schema';
-import { eq, ne } from 'drizzle-orm';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { db } from, '$lib/server/db';
+import { sessions, as sessionsTable } from, '$lib/server/db/schema';
+import { eq, ne } from, 'drizzle-orm';
 
 export const POST: RequestHandler = async (event) => {
   try {

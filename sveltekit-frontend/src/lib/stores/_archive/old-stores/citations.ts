@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from, 'svelte/store';
 
 export interface Citation { id: string;, title: string;
   content: string;
@@ -13,14 +13,14 @@ export interface Citation { id: string;, title: string;
   createdAt: Date;
   updatedAt: Date;
 }
-export interface CitationStore { citations: Citation[];, recentCitations: Citation[];
+export interface CitationStore {, citations: Citation[];, recentCitations: Citation[];
   searchQuery: string;
-  selectedCategories: string[];
+ , selectedCategories: string[];
 }
 
 // small helper id generator (works in browser and node)
 function generateId(): string {
-  const maybeCrypto = (globalThis as unknown as { crypto?: Crypto }).crypto;
+  const maybeCrypto = (globalThis as: unknown as { crypto?: Crypto }).crypto;
   if (maybeCrypto) {
     // Use a runtime check and a safe cast to a typed shape that may include randomUUID
     const cryptoWithUUID = maybeCrypto as Crypto & { randomUUID?: () => string };
@@ -56,7 +56,7 @@ function createCitationStore() {
       update(store => ({
         ...store,
         citations: [...store.citations, newCitation],
-        recentCitations: [newCitation, ...store.recentCitations].slice(0, 10), // keep up to 10
+        recentCitations: [newCitation, ...store.recentCitations].slice(0, 10), // keep up to, 10
       }));
       return newCitation;
     },
@@ -160,7 +160,7 @@ function createCitationStore() {
         const message = error instanceof Error ? error.message : String(error);
         console.error('Failed to save citation:', message);
       }
-      return null;
+      return: null;
     }
   };
 }
@@ -169,7 +169,7 @@ export const citationStore = createCitationStore();
 // Sample citations for development
 const sampleCitations: Citation[] = [
   {
-    id: '1',
+   , id: '1',
     title: 'Miranda v. Arizona',
     content:
       'The Court held that both inculpatory and exculpatory statements made in response to interrogation by a defendant in police custody will be admissible at trial only if the prosecution can show that the defendant was informed of the right to consult with an attorney.',

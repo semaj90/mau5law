@@ -1,27 +1,27 @@
 /**
  * WebGPU QLoRA Topology Prediction API
- * SvelteKit 2 API endpoint for legal AI topology optimization
+ * SvelteKit, 2 API endpoint for legal AI topology optimization
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { qloraTopologyPredictor } from '$lib/ai/qlora-topology-predictor';
-import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
-import type { LegalDocument } from '$lib/memory/nes-memory-architecture';
-import type { UserBehaviorPattern } from '$lib/ai/qlora-topology-predictor';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { qloraTopologyPredictor } from, '$lib/ai/qlora-topology-predictor';
+import { webgpuRAGService } from, '$lib/webgpu/webgpu-rag-service';
+import type { LegalDocument } from, '$lib/memory/nes-memory-architecture';
+import type { UserBehaviorPattern } from, '$lib/ai/qlora-topology-predictor';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // parse JSON safely and avoid `any`
     const body = await request.json().catch(() => ({}) as Record<string, unknown>);
     const b = body as Record<string, unknown>;
-    const _rawDocType = typeof b['documentType'] === 'string' ? (b['documentType'] as string) : undefined;
+    const _rawDocType = typeof b['documentType'] === 'string' ? (b['documentType'] as: string) : undefined;
     const allowedDocTypes = new Set(['evidence', 'contract', 'brief', 'citation', 'precedent']);
     const documentType =
       _rawDocType && allowedDocTypes.has(_rawDocType) ? (_rawDocType as LegalDocument['type']) : 'contract';
-    const complexity = typeof b['complexity'] === 'number' ? (b['complexity'] as number) : 0.7;
+    const complexity = typeof b['complexity'] === 'number' ? (b['complexity'] as: number) : 0.7;
 
     // Create mock legal document
     const document: LegalDocument = {
-      id: `doc_${Date.now()}`,
+     , id: `doc_${Date.now()}`,
       type: documentType,
       priority: Math.max(0, Math.min(255, Math.floor((complexity || 0.5) * 255))),
       size: 1024 * 1024, // default 1MB
@@ -46,9 +46,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const query =
       typeof b['query'] === 'string'
-        ? (b['query'] as string)
+        ? (b['query'] as: string)
         : typeof b['prompt'] === 'string'
-          ? (b['prompt'] as string)
+          ? (b['prompt'] as: string)
           : 'topology optimization';
 
     // Conditional fallback for user analytics when there's no active user session'

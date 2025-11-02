@@ -1,10 +1,10 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  import type { Snippet } from 'svelte';
-  import { afterNavigate } from '$app/navigation';
-  import { browser } from '$app/environment';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  import type { Snippet } from, 'svelte';
+  import { afterNavigate } from, '$app/navigation';
+  import { browser } from, '$app/environment';
+  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
 
   interface Props {
     data?: any;
@@ -12,7 +12,7 @@ import type { Document } from '$lib/types';
   }
 
   // avoid unused: 'data' warning by renaming to `_data`
-  let { data: _data, children }: Props = $props();
+  let {, data: _data, children }: Props = $props();
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
@@ -33,7 +33,7 @@ import type { Document } from '$lib/types';
   // AI-focused console theme (cyberpunk for AI work)
   const consolePalette: ConsolePaletteName = 'cyberpunk';
 
-  // Get current route (make reactive with Svelte 5 runes)
+  // Get current route (make reactive with Svelte, 5 runes)
   let currentPath = $state<string>('');
 
   // Use $effect for side-effects in runes mode.
@@ -46,12 +46,12 @@ import type { Document } from '$lib/types';
     // set initial path
     currentPath = window.location.pathname;
 
-    // Register navigation handler. afterNavigate may be typed to return void,
-    // so cast via unknown and treat as optional unsubscribe to avoid invalid cast.
+    // Register navigation handler. afterNavigate may be typed to return: void,
+    // so cast via: unknown and treat as optional unsubscribe to avoid invalid cast.
     const maybeUnsub = afterNavigate((nav) => {
-      // `to` may be undefined in some cases; fallback to window.location
+      // `to` may be: undefined in some cases; fallback to window.location
       currentPath = nav?.to?.url?.pathname ?? window.location.pathname;
-    }) as unknown as (() => void) | void;
+    }) as: unknown as (() => void) | void;
 
     // Return cleanup that only calls unsubscribe if it's actually a function.'
     return () => {
@@ -125,7 +125,7 @@ import type { Document } from '$lib/types';
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--surface-primary, #0a0a0a);
+   , background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ccff);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
@@ -147,25 +147,25 @@ import type { Document } from '$lib/types';
 
   .ai-icon {
     font-size: 2rem;
-    filter: drop-shadow(0 0 8px #00ccff);
+   , filter: drop-shadow(0, 0 8px #00ccff);
   }
 
   .ai-title {
     font-size: 1.5rem;
     font-weight: bold;
     color: #00ccff;
-    margin: 0;
-    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+   , margin: 0;
+    text-shadow: 0, 0 10px rgba(0, 204, 255, 0.5);
   }
 
   .ai-badge {
     background: linear-gradient(45deg, #00ccff, #0099cc);
     color: #000;
-    padding: 0.25rem 0.75rem;
+   , padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: bold;
-    box-shadow: 0 0 8px rgba(0, 204, 255, 0.4);
+    box-shadow: 0, 0 8px rgba(0, 204, 255, 0.4);
   }
 
   /* Navigation */
@@ -180,10 +180,10 @@ import type { Document } from '$lib/types';
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--border-primary, #00ccff);
+   , border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--text-secondary, #66ccff);
+   , color: var(--text-secondary, #66ccff);
     background: var(--surface-primary, #0a0a0a);
     transition: all 0.3s ease;
     position: relative;
@@ -197,7 +197,7 @@ import type { Document } from '$lib/types';
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
+   , background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
     transition: left 0.5s ease;
   }
 
@@ -208,23 +208,23 @@ import type { Document } from '$lib/types';
   .ai-nav-item:hover {
     border-color: #00ffcc;
     color: #00ffcc;
-    background: var(--surface-tertiary, #1a1a1a);
-    box-shadow: 0 0 12px rgba(0, 255, 204, 0.3);
-    text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+   , background: var(--surface-tertiary, #1a1a1a);
+    box-shadow: 0, 0 12px rgba(0, 255, 204, 0.3);
+    text-shadow: 0, 0 8px rgba(0, 255, 204, 0.5);
   }
 
   .ai-nav-item.active {
     border-color: #ff6600;
     color: #ff6600;
-    background: var(--surface-tertiary, #1a1a1a);
+   , background: var(--surface-tertiary, #1a1a1a);
     font-weight: bold;
-    box-shadow: 0 0 16px rgba(255, 102, 0, 0.4);
-    text-shadow: 0 0 8px rgba(255, 102, 0, 0.6);
+    box-shadow: 0, 0 16px rgba(255, 102, 0, 0.4);
+    text-shadow: 0, 0 8px rgba(255, 102, 0, 0.6);
   }
 
   .ai-nav-icon {
     font-size: 1.2rem;
-    filter: drop-shadow(0 0 4px currentColor);
+   , filter: drop-shadow(0, 0 4px currentColor);
   }
 
   .ai-nav-text {
@@ -235,7 +235,7 @@ import type { Document } from '$lib/types';
   .ai-content {
     flex: 1;
     overflow-y: auto;
-    background: var(--surface-primary, #0a0a0a);
+   , background: var(--surface-primary, #0a0a0a);
     position: relative;
   }
 
@@ -246,7 +246,7 @@ import type { Document } from '$lib/types';
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+   , bottom: 0;
     background-image:
       linear-gradient(45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%),
       linear-gradient(-45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%);
@@ -267,16 +267,16 @@ import type { Document } from '$lib/types';
   .ai-placeholder {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--surface-secondary, #111111);
+   , background: var(--surface-secondary, #111111);
     border: 2px dashed #00ccff;
     border-radius: 1rem;
-    box-shadow: 0 0 20px rgba(0, 204, 255, 0.2);
+    box-shadow: 0, 0 20px rgba(0, 204, 255, 0.2);
   }
 
   .ai-placeholder h2 {
     color: #00ccff;
     margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+    text-shadow: 0, 0 10px rgba(0, 204, 255, 0.5);
   }
 
   /* Footer */
@@ -301,13 +301,13 @@ import type { Document } from '$lib/types';
     align-items: center;
     gap: 1rem;
     font-size: 0.9rem;
-    color: var(--text-muted, #66ccff);
+   , color: var(--text-muted, #66ccff);
   }
 
   .ai-current strong {
     color: #00ffcc;
     text-transform: uppercase;
-    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
+    text-shadow: 0, 0 6px rgba(0, 255, 204, 0.5);
   }
 
   .ai-controls {
@@ -317,10 +317,10 @@ import type { Document } from '$lib/types';
 
   .ai-main-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--border-primary, #00ccff);
+   , border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--text-primary, #00ccff);
+   , color: var(--text-primary, #00ccff);
     background: var(--surface-primary, #0a0a0a);
     transition: all 0.3s ease;
     font-size: 0.9rem;
@@ -328,9 +328,9 @@ import type { Document } from '$lib/types';
 
   .ai-main-btn:hover {
     border-color: #00ffcc;
-    color: #00ffcc;
-    box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
-    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
+   , color: #00ffcc;
+    box-shadow: 0, 0 10px rgba(0, 255, 204, 0.3);
+    text-shadow: 0, 0 6px rgba(0, 255, 204, 0.5);
   }
 
   /* Responsive */
@@ -356,18 +356,18 @@ import type { Document } from '$lib/types';
   }
 
   .ai-content::-webkit-scrollbar-track {
-    background: var(--surface-tertiary, #1a1a1a);
+   , background: var(--surface-tertiary, #1a1a1a);
     border: 1px solid #00ccff;
   }
 
   .ai-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #00ccff, #0099cc);
+   , background: linear-gradient(180deg, #00ccff, #0099cc);
     border-radius: 6px;
-    box-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
+    box-shadow: 0, 0 8px rgba(0, 204, 255, 0.5);
   }
 
   .ai-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #00ffcc, #00ccaa);
-    box-shadow: 0 0 12px rgba(0, 255, 204, 0.7);
+   , background: linear-gradient(180deg, #00ffcc, #00ccaa);
+    box-shadow: 0, 0 12px rgba(0, 255, 204, 0.7);
   }
 </style>

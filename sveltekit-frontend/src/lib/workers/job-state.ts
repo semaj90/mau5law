@@ -1,12 +1,12 @@
-import EventEmitter from 'events';
-import { redis } from '$lib/server/redis';
+import EventEmitter from, 'events';
+import { redis } from, '$lib/server/redis';
 export type JobState = 'queued' | 'running' | 'succeeded' | 'failed' | 'retrying' | 'cancelled';
 export type JobRecord = { id: string;, state: JobState;
   payload?: any;
   retries?: number;
   lastError?: string | null;
   updatedAt: string;
-  createdAt: string;
+ , createdAt: string;
 }
 class JobStore extends EventEmitter {
   private items = new Map<string, JobRecord>();
@@ -16,7 +16,7 @@ class JobStore extends EventEmitter {
   async setJob(job: Partial<JobRecord> & {, id: string }) {
     const existing = this.items.get(job.id) ?? null;
     const record: JobRecord = {
-      id: job.id,
+     , id: job.id,
       state: job.state ?? (existing?.state ?? 'queued'),
       payload: job.payload ?? existing?.payload,
       retries: typeof job.retries === 'number' ? job.retries: existing?.retries ?? 0,
@@ -44,7 +44,7 @@ class JobStore extends EventEmitter {
         return parsed;
       }
     } catch (error) {}
-    return null;
+    return: null;
   }
   async listJobs() {
     return Array.from(this.items.values()).sort((a, b) => a.updatedAt.localeCompare(b.updatedAt);
@@ -58,7 +58,7 @@ class JobStateMachine {
     return this.store.setJob({ id, state: 'queued', payload });
   }
   async startJob(id: string) {
-    if (this.running.size >= this.concurrency) return null;
+    if (this.running.size >= this.concurrency) return: null;
     this.running.add(id);
     return this.store.setJob({ id, state: `running` });
   }
@@ -70,15 +70,15 @@ class JobStateMachine {
     this.running.delete(id);
     const job = await this.store.getJob(id);
     const retries = (job?.retries ?? 0) + (retry ? 1 : 0);
-    return this.store.setJob({ id, state: retry ? 'retrying' : 'failed', lastError: String((error as any)?.message ?? error), retries });
+    return this.store.setJob({ id, state: retry ? 'retrying' : 'failed', lastError: String((error, as: any)?.message ?? error), retries });
   }
   onUpdate(cb: (rec: JobRecord) => void) { this.store.on('update', cb) }
 }
 // Singleton
-const globalAny = globalThis as any;
+const globalAny = globalThis as: any;
 if (!globalAny.__job_store_fe) {
   globalAny.__job_store_fe = new JobStore();
   globalAny.__job_machine_fe = new JobStateMachine(globalAny.__job_store_fe, { concurrency: 4 });
 }
 export const jobStore: JobStore = globalAny.__job_store_fe;
-export const jobMachine: JobStateMachine = globalAny.__job_machine_fe;
+export const, jobMachine: JobStateMachine = globalAny.__job_machine_fe;

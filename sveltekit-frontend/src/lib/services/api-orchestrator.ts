@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
- * Comprehensive API Orchestration System - SvelteKit 2 Production
- * Integrates all 37 Go microservices with multi-protocol support
+ * Comprehensive API Orchestration System - SvelteKit, 2 Production
+ * Integrates all, 37 Go microservices with multi-protocol support
  * Windows-native deployment with intelligent routing and failover
  */
 // Service endpoint configuration interfaces
@@ -16,10 +16,10 @@ export interface ServiceEndpoint {
   websocket?: string;
   health?: string;
   tier?: ServiceTier;
-  status: 'active' | 'experimental' | 'disabled' | 'maintenance';
+ , status: 'active' | 'experimental' | 'disabled' | 'maintenance';
   timeout?: number;
   retries?: number;
-  metadata?: Record<string, unknown>; // changed from any
+  metadata?: Record<string, unknown>; // changed from: any
   primary?: string;
   secondary?: string;
   embeddings?: string;
@@ -47,7 +47,7 @@ export interface ProtocolEndpoint { protocol: ServiceTier;, host: string;
   monitor?: {
     enabled?: boolean;
     interval?: number;
-    [key: string]: any; // changed from any
+    [key: string]: any; // changed from: any
   };
 }
 export interface DatabaseEndpoint extends ProtocolEndpoint {}
@@ -55,7 +55,7 @@ export interface MessagingEndpoint extends ProtocolEndpoint {}
 export interface FrontendEndpoint extends ProtocolEndpoint {}
 export interface HealthCheckResult {
   healthy?: boolean;
-  status: string;
+ , status: string;
   timestamp?: string;
   details?: Record<string, unknown>;
   error?: string;
@@ -72,7 +72,7 @@ export interface APIRequestContext {
   ipAddress?: string;
   sessionId?: string;
   traceId?: string;
-  metadata?: Record<string, unknown>; // changed from any
+  metadata?: Record<string, unknown>; // changed from: any
 }
 export interface MultiProtocolRequestOptions {
   timeout?: number;
@@ -85,7 +85,7 @@ export interface MultiProtocolRequestOptions {
   cacheResponse?: boolean;
   validateResponse?: boolean;
   headers?: Record<string, string>;
-  body?: any; // changed from any
+  body?: any; // changed from: any
   context?: APIRequestContext;
   protocol?: ServiceTier;
   method?: string;
@@ -93,11 +93,11 @@ export interface MultiProtocolRequestOptions {
 export class APIOrchestrator {
   private static instance: APIOrchestrator;
   private serviceEndpoints: ServiceEndpoints;
-  private healthCache: Map<string, { result: HealthCheckResult; timestamp: number }> = new Map();
-  private requestMetrics: Map<string, { count: number; totalTime: number; errors: number }> = new Map();
+  private, healthCache: Map<string, { result: HealthCheckResult;, timestamp: number }> = new Map();
+  private requestMetrics: Map<string, { count: number; totalTime: number;, errors: number }> = new Map();
 
   // NEW: simple per-service circuit breaker state
-  private circuitBreakers: Map<
+  private, circuitBreakers: Map<
     string,
     { failures: number; lastFailure?: number; openUntil?: number; failureWindowMs?: number; openDurationMs?: number }
   > = new Map();
@@ -105,7 +105,7 @@ export class APIOrchestrator {
   // NEW: in-memory response cache (simple, process-local)
   private responseCache: Map<
     string,
-    { data: any; headers: Record<string, string>; status: number; expires: number }
+    { data: any;, headers: Record<string, string>; status: number;, expires: number }
   > = new Map();
 
   private constructor() {
@@ -127,7 +127,7 @@ export class APIOrchestrator {
     return {
       // Core AI Services (Tier 1) - Always Running
       enhancedRAG: {
-        http: 'http://localhost:8094',
+       , http: 'http://localhost:8094',
         grpc: 'localhost:50051',
         quic: 'localhost:8216',
         websocket: 'ws://localhost:8094/ws',
@@ -136,19 +136,19 @@ export class APIOrchestrator {
         status: 'active'
       },
       uploadService: {
-        http: 'http://localhost:8093',
+       , http: 'http://localhost:8093',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       documentProcessor: {
-        http: 'http://localhost:8081',
+       , http: 'http://localhost:8081',
         health: '/api/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       grpcServer: {
-        http: 'http://localhost:50051',
+       , http: 'http://localhost:50051',
         grpc: 'localhost:50051',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
@@ -156,56 +156,56 @@ export class APIOrchestrator {
       },
       // AI Enhancement Services (Tier 2) - Advanced Features
       advancedCUDA: {
-        http: 'http://localhost:8095',
+       , http: 'http://localhost:8095',
         health: '/health',
         tier: ServiceTier.ULTRA_FAST,
         status: 'experimental'
       },
       dimensionalCache: {
-        http: 'http://localhost:8097',
+       , http: 'http://localhost:8097',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'experimental'
       },
       xstateManager: {
-        http: 'http://localhost:8212',
+       , http: 'http://localhost:8212',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       moduleManager: {
-        http: 'http://localhost:8099',
+       , http: 'http://localhost:8099',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'experimental'
       },
       recommendationEngine: {
-        http: 'http://localhost:8100',
+       , http: 'http://localhost:8100',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'experimental'
       },
       // Specialized AI Services
       enhancedSemanticArchitecture: {
-        http: 'http://localhost:8201',
+       , http: 'http://localhost:8201',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       enhancedLegalAI: {
-        http: 'http://localhost:8202',
+       , http: 'http://localhost:8202',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       enhancedMulticore: {
-        http: 'http://localhost:8206',
+       , http: 'http://localhost:8206',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       liveAgentEnhanced: {
-        http: 'http://localhost:8200',
+       , http: 'http://localhost:8200',
         websocket: 'ws://localhost:8200/ws',
         health: '/health',
         tier: ServiceTier.REALTIME,
@@ -213,26 +213,26 @@ export class APIOrchestrator {
       },
       // File & Document Services
       ginUpload: {
-        http: 'http://localhost:8207',
+       , http: 'http://localhost:8207',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       summarizerService: {
-        http: 'http://localhost:8209',
+       , http: 'http://localhost:8209',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       aiSummary: {
-        http: 'http://localhost:8211',
+       , http: 'http://localhost:8211',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       // Multi-Core Ollama Cluster
       ollama: {
-        primary: ollama.primary,
+       , primary: ollama.primary,
         secondary: ollama.secondary,
         embeddings: ollama.embeddings,
         health: '/api/tags',
@@ -241,33 +241,33 @@ export class APIOrchestrator {
       },
       // Database Services
       postgresql: {
-        host: 'localhost',
+       , host: 'localhost',
         port: 5432,
         database: 'legal_ai_db',
         health: '/health',
         status: 'active'
       },
       redis: {
-        host: 'localhost',
+       , host: 'localhost',
         port: 6379,
         health: '/health',
         status: 'active'
       },
       qdrant: {
-        http: 'http://localhost:6333',
+       , http: 'http://localhost:6333',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       neo4j: {
-        http: 'http://localhost:7474',
+       , http: 'http://localhost:7474',
         health: '/db/data/',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       // Messaging & Communication
       nats: {
-        server: 'nats://localhost:4225',
+       , server: 'nats://localhost:4225',
         websocket: 'ws://localhost:4226',
         monitor: 'http://localhost:8225',
         health: '/healthz',
@@ -275,51 +275,51 @@ export class APIOrchestrator {
       },
       // Infrastructure & Monitoring Services
       clusterManager: {
-        http: 'http://localhost:8213',
+       , http: 'http://localhost:8213',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       loadBalancer: {
-        http: 'http://localhost:8224',
+       , http: 'http://localhost:8224',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       gpuIndexerService: {
-        http: 'http://localhost:8220',
+       , http: 'http://localhost:8220',
         health: '/health',
         tier: ServiceTier.HIGH_PERF,
         status: 'active'
       },
       contextErrorPipeline: {
-        http: 'http://localhost:8219',
+       , http: 'http://localhost:8219',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       simdHealth: {
-        http: 'http://localhost:8217',
+       , http: 'http://localhost:8217',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       // Development & Testing
       simpleServer: {
-        http: 'http://localhost:8225',
+       , http: 'http://localhost:8225',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       testServer: {
-        http: 'http://localhost:8226',
+       , http: 'http://localhost:8226',
         health: '/health',
         tier: ServiceTier.STANDARD,
         status: 'active'
       },
       // Frontend
       sveltekit: {
-        http: 'http://localhost:5173',
+       , http: 'http://localhost:5173',
         dev: 'http://localhost:5174',
         health: '/health',
         status: 'active'
@@ -359,7 +359,7 @@ export class APIOrchestrator {
     };
 
     const timeout = options.timeout ?? this.getTimeoutForTier(serviceConfig);
-    // use typed helper instead of: 'as any' casts
+    // use typed helper instead of: 'as: any' casts
     const signal = this.getAbortSignal(timeout);
     if (signal) requestOptions.signal = signal;
 
@@ -436,7 +436,7 @@ export class APIOrchestrator {
 
     const startTime = Date.now();
     let healthUrl: string | null = null;
-    let result: HealthCheckResult;
+    let, result: HealthCheckResult;
 
     try {
       if (config.http) {
@@ -488,9 +488,9 @@ export class APIOrchestrator {
           .catch(() => ({}));
         const data = (raw ?? {}) as Record<string, unknown>;
         const metadata: Record<string, unknown> = {};
-        if (typeof data['version'] === 'string') metadata.version = data['version'] as string;
+        if (typeof data['version'] === 'string') metadata.version = data['version'] as: string;
         if (typeof data['uptime'] === 'number' || typeof data['uptime'] === 'string') metadata.uptime = data['uptime'];
-        if (typeof data['connections'] === 'number') metadata.connections = data['connections'] as number;
+        if (typeof data['connections'] === 'number') metadata.connections = data['connections'] as: number;
         if (data['memory_usage'] !== undefined) metadata.memoryUsage = data['memory_usage'];
         else if (data['memoryUsage'] !== undefined) metadata.memoryUsage = data['memoryUsage'];
         if (data['cpu_usage'] !== undefined) metadata.cpuUsage = data['cpu_usage'];
@@ -533,7 +533,7 @@ export class APIOrchestrator {
         return config.http ?? config.primary ?? null;
       case ServiceTier.WEBSOCKET:
         return config.websocket ?? null;
-      default: return config.http ?? config.primary ?? null;
+     , default: return config.http ?? config.primary ?? null;
     }
   }
 
@@ -550,7 +550,7 @@ export class APIOrchestrator {
       case ServiceTier.REALTIME:
         return 5000;
       case ServiceTier.STANDARD:
-     ; default: return 10_000;
+     ;, default: return 10_000;
     }
   }
 
@@ -592,7 +592,7 @@ export class APIOrchestrator {
   /**
    * Get all services with their configurations
    */
-  getAllServices(): Array<{ name: string; config: ServiceEndpoint; protocols: string[] }> {
+  getAllServices(): Array<{ name: string; config: ServiceEndpoint;, protocols: string[] }> {
     return Object.entries(this.serviceEndpoints).map(([name, config]) => ({
       name,
       config,
@@ -630,7 +630,7 @@ export class APIOrchestrator {
     return out;
   }
 
-  // NEW helper: build a stable cache key for GET requests
+  // NEW, helper: build a stable cache key for GET requests
   private buildCacheKey(service: string, endpoint: string, method: string, headers?: Record<string, string>, body?: any) {
     const safeBody = body ? JSON.stringify(body) : '';
     return `${service}|${method}|${endpoint}|${safeBody}`;
@@ -677,8 +677,8 @@ export class APIOrchestrator {
 
   // NEW helper: AbortSignal with timeout
   private getAbortSignal(timeoutMs?: number): AbortSignal | undefined {
-    // If AbortController is not available, return undefined (graceful)
-    if (typeof AbortController === 'undefined') return undefined;
+    // If AbortController is not available, return: undefined (graceful)
+    if (typeof AbortController === 'undefined') return: undefined;
     const controller = new AbortController();
     if (typeof timeoutMs === 'number' && timeoutMs > 0) {
       const id = setTimeout(() => {
@@ -697,22 +697,22 @@ export class APIOrchestrator {
 
 // Exported helper: derive Ollama endpoints from env or defaults.
 // Use this helper from other modules instead of hardcoding Ollama URLs.
-export function getOllamaEndpoint(): { primary: string; secondary: string; embeddings: string } {
+export function getOllamaEndpoint(): { primary: string; secondary: string;, embeddings: string } {
 	// Prefer explicit env vars, then docker-specific vars, then local defaults.
 	const primary =
-		(process.env.OLLAMA_URL as string | undefined) ??
-		(process.env.OLLAMA_PRIMARY as string | undefined) ??
-		(process.env.DOCKER_OLLAMA_URL as string | undefined) ??
+		(process.env.OLLAMA_URL as: string | undefined) ??
+		(process.env.OLLAMA_PRIMARY as: string | undefined) ??
+		(process.env.DOCKER_OLLAMA_URL as: string | undefined) ??
 		'http://localhost:11434';
 
 	const secondary =
-		(process.env.OLLAMA_SECONDARY as string | undefined) ??
-		(process.env.DOCKER_OLLAMA_SECONDARY as string | undefined) ??
+		(process.env.OLLAMA_SECONDARY, as: string | undefined) ??
+		(process.env.DOCKER_OLLAMA_SECONDARY as: string | undefined) ??
 		'http://localhost:11435';
 
 	const embeddings =
-		(process.env.OLLAMA_EMBEDDINGS as string | undefined) ??
-		(process.env.DOCKER_OLLAMA_EMBEDDINGS as string | undefined) ??
+		(process.env.OLLAMA_EMBEDDINGS, as: string | undefined) ??
+		(process.env.DOCKER_OLLAMA_EMBEDDINGS as: string | undefined) ??
 		primary;
 
 	return { primary, secondary, embeddings };

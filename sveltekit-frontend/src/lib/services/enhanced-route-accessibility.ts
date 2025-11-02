@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-/** * Enhanced Accessibility Integration for All Route Categories * Ensures consistent accessibility across 268+ routes in the Legal AI platform */ import { accessibilityService } from './accessibility-service.js'; import { aiAccessibilityPatterns } from './ai-accessibility-patterns.js'; export interface RouteAccessibilityConfig { routeType: 'essential' | 'demo' | 'test' | 'dev' | 'showcase' | 'legal' | 'admin' | 'misc';, category: string; enhancedFeatures: { voiceCommands?: boolean; aiIntegration?: boolean; progressiveDisclosure?: boolean; specialKeyboards?: boolean; customAnnouncements?: boolean; }
+import type { User } from, '$lib/types';
+/** * Enhanced Accessibility Integration for All Route Categories * Ensures consistent accessibility across 268+ routes in the Legal AI platform */ import { accessibilityService } from, './accessibility-service.js'; import { aiAccessibilityPatterns } from, './ai-accessibility-patterns.js'; export interface RouteAccessibilityConfig { routeType: 'essential' | 'demo' | 'test' | 'dev' | 'showcase' | 'legal' | 'admin' | 'misc';, category: string;, enhancedFeatures: { voiceCommands?: boolean; aiIntegration?: boolean; progressiveDisclosure?: boolean; specialKeyboards?: boolean; customAnnouncements?: boolean; }
   routeSpecificPatterns?: { skipToContent?: string; mainHeading?: string; contextualHelp?: string[]; customShortcuts?: Record<string, string>; }
-} // Route category configurations based on the Complete Route Inventory const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = { // CORE ESSENTIAL ROUTES (30 routes) - Full accessibility essential: { routeType: 'essential', category: 'Core Application Features', enhancedFeatures: { voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'main-content', mainHeading: 'h1', contextualHelp: [
+} // Route category configurations based on the Complete Route Inventory const ROUTE_ACCESSIBILITY_CONFIGS: Record<string, RouteAccessibilityConfig> = { // CORE ESSENTIAL ROUTES (30 routes) - Full accessibility essential: {, routeType: 'essential', category: 'Core Application Features', enhancedFeatures: {, voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'main-content', mainHeading: 'h1', contextualHelp: [
         'Use Alt+A for accessibility settings',
         'Tab to navigate between elements',
         'Enter or Space to activate buttons',
@@ -10,7 +10,7 @@ import type { User } from '$lib/types';
         'Alt+S': 'Skip to main content',
         'Alt+A': 'Open accessibility settings', F1: 'Show help'
       } }
-  }, // DEMO ROUTES (114 routes) - Enhanced demo accessibility demo: { routeType: 'demo', category: 'Demonstration Features', enhancedFeatures: { voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: false, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'demo-content', mainHeading: 'h1', contextualHelp: [
+  }, // DEMO ROUTES (114 routes) - Enhanced demo accessibility demo: {, routeType: 'demo', category: 'Demonstration Features', enhancedFeatures: {, voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: false, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'demo-content', mainHeading: 'h1', contextualHelp: [
         'This is a demonstration interface',
         'All features are fully accessible',
         'Voice commands available for AI demos',
@@ -20,7 +20,7 @@ import type { User } from '$lib/types';
         'Ctrl+Shift+V': 'Toggle voice commands (AI demos)',
         'Alt+E': 'Explain demo features'
       } }
-  }, // TEST ROUTES (45 routes) - Testing-focused accessibility test: { routeType: 'test', category: 'Testing Interfaces', enhancedFeatures: { voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'test-content', mainHeading: 'h1', contextualHelp: [
+  }, // TEST ROUTES (45 routes) - Testing-focused accessibility test: {, routeType: 'test', category: 'Testing Interfaces', enhancedFeatures: {, voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'test-content', mainHeading: 'h1', contextualHelp: [
         'Testing interface - all controls accessible',
         'Use Tab to navigate test controls',
         'Results announced automatically',
@@ -30,7 +30,7 @@ import type { User } from '$lib/types';
         'Alt+R': 'View test results',
         'Alt+C': 'Clear test results'
       } }
-  }, // DEVELOPMENT ROUTES (25 routes) - Developer accessibility dev: { routeType: 'dev', category: 'Development Tools', enhancedFeatures: { voiceCommands: false, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: false }, routeSpecificPatterns: { skipToContent: 'dev-tools', mainHeading: 'h1', contextualHelp: [
+  }, // DEVELOPMENT ROUTES (25 routes) - Developer accessibility dev: {, routeType: 'dev', category: 'Development Tools', enhancedFeatures: {, voiceCommands: false, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: false }, routeSpecificPatterns: {, skipToContent: 'dev-tools', mainHeading: 'h1', contextualHelp: [
         'Development interface',
         'Enhanced keyboard shortcuts available',
         'Code navigation optimized for screen readers',
@@ -40,7 +40,7 @@ import type { User } from '$lib/types';
         'Alt+M': 'Performance metrics',
         'Alt+L': 'View logs'
       } }
-  }, // UI/UX SHOWCASE ROUTES (20 routes) - Visual accessibility focus showcase: { routeType: 'showcase', category: 'Design Showcase', enhancedFeatures: { voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: false, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'showcase-content', mainHeading: 'h1', contextualHelp: [
+  }, // UI/UX SHOWCASE ROUTES (20 routes) - Visual accessibility focus showcase: {, routeType: 'showcase', category: 'Design Showcase', enhancedFeatures: {, voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: false, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'showcase-content', mainHeading: 'h1', contextualHelp: [
         'Visual showcase with enhanced accessibility',
         'All components support screen readers',
         'High contrast mode available',
@@ -50,7 +50,7 @@ import type { User } from '$lib/types';
         'Alt+H': 'High contrast mode',
         'Alt+F': 'Font size adjustment'
       } }
-  }, // LEGAL DOMAIN ROUTES (18 routes) - Legal-specific accessibility legal: { routeType: 'legal', category: 'Legal Tools', enhancedFeatures: { voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'legal-content', mainHeading: 'h1', contextualHelp: [
+  }, // LEGAL DOMAIN ROUTES (18 routes) - Legal-specific accessibility legal: {, routeType: 'legal', category: 'Legal Tools', enhancedFeatures: {, voiceCommands: true, aiIntegration: true, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'legal-content', mainHeading: 'h1', contextualHelp: [
         'Legal document interface',
         'Voice commands for document navigation',
         'AI assistance available',
@@ -60,7 +60,7 @@ import type { User } from '$lib/types';
         'Ctrl+Shift+C': 'Citations view',
         'Alt+E': 'Evidence management'
       } }
-  }, // ADMIN ROUTES (15 routes) - Administrative accessibility admin: { routeType: 'admin', category: 'Administration', enhancedFeatures: { voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: { skipToContent: 'admin-content', mainHeading: 'h1', contextualHelp: [
+  }, // ADMIN ROUTES (15 routes) - Administrative accessibility admin: {, routeType: 'admin', category: 'Administration', enhancedFeatures: {, voiceCommands: false, aiIntegration: false, progressiveDisclosure: true, specialKeyboards: true, customAnnouncements: true }, routeSpecificPatterns: {, skipToContent: 'admin-content', mainHeading: 'h1', contextualHelp: [
         'Administrative interface',
         'Enhanced security and accessibility',
         'Data tables fully navigable',
@@ -71,7 +71,7 @@ import type { User } from '$lib/types';
         'Alt+S': 'System status'
       } }
   } }
-export class EnhancedRouteAccessibility { private currentRouteConfig: RouteAccessibilityConfig | null = null; private routeObserver: MutationObserver | null = null; constructor() { this.setupRouteDetection(); this.initializeGlobalAccessibility(); }
+export class EnhancedRouteAccessibility { private currentRouteConfig: RouteAccessibilityConfig | null = null; private, routeObserver: MutationObserver | null = null; constructor() { this.setupRouteDetection(); this.initializeGlobalAccessibility(); }
   /** * Initialize route detection and automatic accessibility enhancement */ private setupRouteDetection() { if (typeof window === 'undefined') return; // Monitor route changes this.routeObserver = new MutationObserver(() => { this.detectAndEnhanceRoute(); }); this.routeObserver.observe(document.body, { childList: true, subtree: true; , attributes: true, attributeFilter: ['data-sveltekit-route'] }); // Initial route detection this.detectAndEnhanceRoute(); }
   /** * Detect current route and apply appropriate accessibility enhancements */ private detectAndEnhanceRoute() { const currentPath = window.location.pathname; const routeConfig = this.getRouteConfig(currentPath); if (routeConfig && routeConfig !== this.currentRouteConfig) { this.currentRouteConfig = routeConfig; this.applyRouteAccessibility(routeConfig); this.announceRouteChange(currentPath, routeConfig); }
   } /** * Determine route configuration based on path */ private getRouteConfig(path: string): RouteAccessibilityConfig | null { // Essential routes if (this.isEssentialRoute(path)) { return ROUTE_ACCESSIBILITY_CONFIGS.essential; }
@@ -105,9 +105,9 @@ export class EnhancedRouteAccessibility { private currentRouteConfig: RouteAcces
     // Set up route-specific skip links this.setupSkipLinks(config); // Configure custom keyboard shortcuts this.setupCustomShortcuts(config); // Enhance bits-ui components accessibility this.enhanceBitsUIAccessibility(config); // Set up contextual help this.setupContextualHelp(config); }
   /** * Set up skip navigation links */ private setupSkipLinks(config: RouteAccessibilityConfig) { const skipLink = document.getElementById('skip-to-content'); if (skipLink && config.routeSpecificPatterns?.skipToContent) { skipLink.setAttribute('href', `#${config.routeSpecificPatterns.skipToContent}`); }
     // Ensure main content area has proper ID const mainContent = document.querySelector('main, [role="main"], .main-content'); if (mainContent && config.routeSpecificPatterns?.skipToContent) { mainContent.id = config.routeSpecificPatterns.skipToContent; }
-  } /** * Set up custom keyboard shortcuts for route */ private setupCustomShortcuts(config: RouteAccessibilityConfig) { if (!config.routeSpecificPatterns?.customShortcuts) return; const handleKeydown = (_event: KeyboardEvent) => { const shortcuts = config.routeSpecificPatterns?.customShortcuts; if (!shortcuts) return; // Build key combination string const keyCombo = [ event.ctrlKey && 'Ctrl', event.altKey && 'Alt', event.shiftKey && 'Shift', event.key ].filter((item) => item.join)('+'); const action = shortcuts[keyCombo]; if (action) { event.preventDefault(); this.executeCustomAction(keyCombo, action); }
+  } /** * Set up custom keyboard shortcuts for route */ private setupCustomShortcuts(config: RouteAccessibilityConfig) { if (!config.routeSpecificPatterns?.customShortcuts) return; const handleKeydown = (_event: KeyboardEvent) => { const shortcuts = config.routeSpecificPatterns?.customShortcuts; if (!shortcuts) return; // Build key combination: string const keyCombo = [ event.ctrlKey && 'Ctrl', event.altKey && 'Alt', event.shiftKey && 'Shift', event.key ].filter((item) => item.join)('+'); const action = shortcuts[keyCombo]; if (action) { event.preventDefault(); this.executeCustomAction(keyCombo, action); }
     } // Remove existing listeners document.removeEventListener('keydown', handleKeydown); // Add new listener document.addEventListener('keydown', handleKeydown); }
-  /** * Execute custom keyboard action */ private executeCustomAction(keyCombo: string, action: string) { accessibilityService.announceToScreenReader(`Executing: ${ action }`); // Handle common actions switch (keyCombo) { case 'Alt+D': this.showDemoNavigation(); break; case 'Alt+T': this.toggleTesting(); break; case 'Alt+V': this.toggleVisualOptions(); break; case 'Alt+L': this.showLegalActions(); break; case 'Ctrl+Shift+A': this.showAdminMenu(); break; default: console.log(`Custom; action: ${ action } (${ keyCombo })`); }
+  /** * Execute custom keyboard action */ private executeCustomAction(keyCombo: string, action: string) { accessibilityService.announceToScreenReader(`Executing: ${ action }`); // Handle common actions switch (keyCombo) { case, 'Alt+D': this.showDemoNavigation(); break; case, 'Alt+T': this.toggleTesting(); break; case, 'Alt+V': this.toggleVisualOptions(); break; case, 'Alt+L': this.showLegalActions(); break; case, 'Ctrl+Shift+A': this.showAdminMenu(); break; default: console.log(`Custom;, action: ${ action } (${ keyCombo })`); }
   } /** * Enhance bits-ui components with route-specific accessibility */ private enhanceBitsUIAccessibility(config: RouteAccessibilityConfig) { // Add route-specific ARIA labels to bits-ui components const buttons = document.querySelectorAll('[data-bits-ui="button"], .legal-ai-btn'); buttons.forEach((button) => { if (!button.getAttribute('aria-label') && !button.getAttribute('aria-labelledby')) { const text = button.textContent?.trim(); if (text) { button.setAttribute('aria-label', `${ text } (${config.category})`); }
       } }); // Enhance form components const inputs = document.querySelectorAll('[data-bits-ui="input"], .legal-ai-input'); inputs.forEach((input) => { if (!input.getAttribute('aria-describedby')) { const parentLabel = input.closest('label, .form-group'); if (parentLabel) { const helpText = parentLabel.querySelector('.help-text, .description'); if (helpText) { const helpId = `help-${Math.random().toString(36).substr(2, 9)}`; helpText.id = helpId; input.setAttribute('aria-describedby', helpId); }
         } }
@@ -115,7 +115,7 @@ export class EnhancedRouteAccessibility { private currentRouteConfig: RouteAcces
       } }); }
   /** * Set up contextual help for route */ private setupContextualHelp(config: RouteAccessibilityConfig) { // Create or update help system const helpButton = document.querySelector('[data-help-trigger]'); if (helpButton && config.routeSpecificPatterns?.contextualHelp) { helpButton.setAttribute('aria-label', 'Show contextual help for this page'); // Update help content const helpContent = config.routeSpecificPatterns.contextualHelp.join('\n'); helpButton.setAttribute('data-help-content', helpContent); }
   } /** * Announce route change to screen readers */ private announceRouteChange(path: string, config: RouteAccessibilityConfig) { const routeName = this.getReadableRouteName(path); const announcement = `Navigated to ${ routeName }. ${config.category} interface loaded.`; accessibilityService.announceToScreenReader(announcement); }
-  /** * Convert route path to readable name */ private getReadableRouteName(path: string): string { if (path === '/') return 'Homepage'; return path; .replace(/^\//, '') .replace(/\//g, ' ') .replace(/-/g, ' ') .replace(/([a-z]) => [A-Z])/g, '$1 $2') .split(' ') .map((word) => word.charAt(0).toUpperCase() + word.slice(1) .join(' '); }
+  /** * Convert route path to readable name */ private getReadableRouteName(path: string): string { if (path === '/') return, 'Homepage'; return path; .replace(/^\//, '') .replace(/\//g, ' ') .replace(/-/g, ' ') .replace(/([a-z]) => [A-Z])/g, '$1 $2') .split(' ') .map((word) => word.charAt(0).toUpperCase() + word.slice(1) .join(' '); }
   /** * Initialize global accessibility features */ private initializeGlobalAccessibility() { // Set up global keyboard shortcuts that work across all routes document.addEventListener('keydown', (event) => { // Alt+A: Accessibility settings (global) if (event.altKey && event.key.toLowerCase() === 'a') { event.preventDefault(); this.triggerAccessibilitySettings(); }
       // F1: Contextual help (global) if (event.key === 'F1') { event.preventDefault(); this.showContextualHelp(); }
       // Alt+S: Skip to content (global) if (event.altKey && event.key.toLowerCase() === 's') { event.preventDefault(); this.skipToContent(); }

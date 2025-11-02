@@ -1,9 +1,9 @@
-import neo4j from 'neo4j-driver';
-import { CONFIG } from '$lib/config/env.server';
-import { appPool } from '$lib/server/db/connections';
-import { ensureRedisReady, redis } from '$lib/server/redis-client';
-import { LokiHybridStore } from '$lib/server/lokiHybridStore';
-import { qdrant, EVIDENCE_COLLECTION_NAME } from '$lib/server/services/qdrant-client';
+import neo4j from, 'neo4j-driver';
+import { CONFIG } from, '$lib/config/env.server';
+import { appPool } from, '$lib/server/db/connections';
+import { ensureRedisReady, redis } from, '$lib/server/redis-client';
+import { LokiHybridStore } from, '$lib/server/lokiHybridStore';
+import { qdrant, EVIDENCE_COLLECTION_NAME } from, '$lib/server/services/qdrant-client';
 type GlobalRegistry = typeof globalThis & {
   knowledgeCache?: LokiHybridStore;
   knowledgeCacheReady?: Promise<void>;
@@ -29,7 +29,7 @@ function resolveNeo4jConnection(): neo4j.Driver | undefined {
     return driver;
   } catch (error) {
     console.warn('[kgcl] neo4j driver unavailable', error);
-    return undefined;
+    return: undefined;
   }
 }
 async function initializeStore(store: LokiHybridStore): Promise<void> {

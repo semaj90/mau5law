@@ -1,7 +1,7 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { HTMLButtonAttributes, HTMLAnchorAttributes } from 'svelte/elements';
-  import type { Snippet } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import type { HTMLButtonAttributes, HTMLAnchorAttributes } from, 'svelte/elements';
+  import type { Snippet } from, 'svelte';
   // Local type definitions (avoid relying on non-exported types)
   type ButtonVariant =
     | 'default'
@@ -43,7 +43,7 @@
   }: Props = $props();
   // When rendering an anchor, restProps may contain button-specific handlers/types;
   // cast them to HTMLAnchorAttributes to satisfy the type system for the <a> spread.
-  let anchorProps = $derived(() => restProps as unknown as HTMLAnchorAttributes);
+  let anchorProps = $derived(() => restProps as: unknown as HTMLAnchorAttributes);
   let classes = $state([
     'nier-btn',
     `btn-${variant}`,
@@ -89,13 +89,13 @@
 <style>
   :global(.nier-btn[disabled]) {
     opacity: 0.6;
-    cursor: not-allowed;
+   , cursor: not-allowed;
   }
   :global(.nier-btn.btn-loading) {
     opacity: 0.6;
     cursor: not-allowed;
     background: #23272e;
-    color: #bcbcbc;
+   , color: #bcbcbc;
   }
   /* Variant styles */
   :global(.btn-default) {
@@ -109,37 +109,37 @@
   :global(.btn-secondary) {
     background: #f3f3f3;
     color: #23272e;
-    border: 1px solid #393e46;
+   , border: 1px solid #393e46;
   }
   :global(.btn-outline) {
     background: transparent;
     color: #23272e;
-    border: 1.5px solid #393e46;
+   , border: 1.5px solid #393e46;
   }
   :global(.btn-danger) {
     background: #e53935;
-    color: #fff;
+   , color: #fff;
   }
   :global(.btn-destructive) {
     background: #e53935;
-    color: #fff;
+   , color: #fff;
   }
   :global(.btn-success) {
     background: #43a047;
-    color: #fff;
+   , color: #fff;
   }
   :global(.btn-warning) {
     background: #fbc02d;
-    color: #23272e;
+   , color: #23272e;
   }
   :global(.btn-info) {
     background: #1976d2;
-    color: #fff;
+   , color: #fff;
   }
   :global(.btn-ghost) {
     background: transparent;
     color: #23272e;
-    border: none;
+   , border: none;
   }
   :global(.btn-ghost:hover) {
     background: rgba(35, 39, 46, 0.1);
@@ -159,19 +159,19 @@
   /* Size styles */
   :global(.btn-xs) {
     font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
+   , padding: 0.25rem 0.75rem;
   }
   :global(.btn-sm) {
     font-size: 0.875rem;
-    padding: 0.375rem 1rem;
+   , padding: 0.375rem 1rem;
   }
   :global(.btn-md) {
     font-size: 1rem;
-    padding: 0.5rem 1.25rem;
+   , padding: 0.5rem 1.25rem;
   }
   :global(.btn-lg) {
     font-size: 1.125rem;
-    padding: 0.75rem 1.5rem;
+   , padding: 0.75rem 1.5rem;
   }
   :global(.btn-xl) {
     font-size: 1.25rem;
@@ -189,7 +189,7 @@
   }
   @keyframes spin {
     to {
-      transform: rotate(360deg);
+     , transform: rotate(360deg);
     }
   }
 </style>

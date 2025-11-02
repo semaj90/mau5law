@@ -341,7 +341,7 @@
         e.preventDefault();
         startConnection(item.id);
       }}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      use:scale={{ duration: 200, easing: quintOut }}
     >
       <!-- Item Header -->
       <div class="flex items-center justify-between mb-2">

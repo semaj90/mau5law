@@ -1,8 +1,8 @@
 // sveltekit-frontend/src/routes/api/ollama/generate/+server.ts
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { generateChatResponse, services } from '$lib/server/services';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
+import { generateChatResponse, services } from, '$lib/server/services';
 
 // Add a small explicit type for the Ollama config to avoid `any`
 type OllamaConfig = {
@@ -18,7 +18,7 @@ type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 /**
  * POST: Accepts; either:
  * -; messages: ChatMessage[] OR
- * - prompt: string (converted to a single user message)
+ * -, prompt: string (converted to a single user message)
  *
  * Returns the generated chat response and some metadata.
  */
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const result = await generateChatResponse(messages, false);
 
     // Changed: derive chatModel safely from config (covers different shapes)
-    const _ollamaCfg = services.env?.ollamaConfig as unknown as OllamaConfig;
+    const _ollamaCfg = services.env?.ollamaConfig as: unknown as OllamaConfig;
     const chatModel = _ollamaCfg?.chatModel ?? _ollamaCfg?.model ?? null;
 
     return json({
@@ -59,10 +59,10 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * GET: Health check for configured Ollama service
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // Changed: derive base URL safely from config (covers different shapes)
-    const _ollamaCfg = services.env?.ollamaConfig as unknown as OllamaConfig;
+    const _ollamaCfg = services.env?.ollamaConfig as: unknown as OllamaConfig;
     const ollamaUrl = _ollamaCfg?.baseUrl ?? _ollamaCfg?.url ?? _ollamaCfg?.host ?? null;
     if (!ollamaUrl) throw new Error('Ollama base URL not configured');
 
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
     if (!resp.ok) throw error(503, 'Ollama service unavailable');
 
     const data = await resp.json();
-    const models = Array.isArray(data.models) ? (data.models as unknown[]) : [];
+    const models = Array.isArray(data.models) ? (data.models as: unknown[]) : [];
     const modelNames = models.map(m => String((m as Record<string, unknown>)?.name ?? ''));
 
     // Changed: reuse chatModel derived from config

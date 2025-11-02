@@ -2,8 +2,8 @@
  * SIMD-accelerated body parser for hot SvelteKit API endpoints
  * Optimizes JSON parsing for legal AI CRUD operations
  */
-import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
-import { dev } from '$app/environment';
+import { nodeSIMDJSON, fastParse } from, '$lib/services/node-simd-json.js';
+import { dev } from, '$app/environment';
 
 // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
 // We only need the: 'request'; and: 'url' properties in this module.
@@ -13,7 +13,7 @@ type LightRequestEvent = {
 };
 
 // Performance monitoring
-interface BodyParseMetrics { endpoint: string;, contentLength: number;
+interface BodyParseMetrics {, endpoint: string;, contentLength: number;
   parseTime: number;
   simdUsed: boolean;
   timestamp: number;
@@ -21,7 +21,7 @@ interface BodyParseMetrics { endpoint: string;, contentLength: number;
 class SIMDBodyParser {
   private metrics: BodyParseMetrics[] = [];
   private simdEnabled: boolean;
-  private hotEndpoints: Set<string> = new Set([
+  private, hotEndpoints: Set<string> = new Set([
     '/api/ai/chat',
     '/api/ai/inference',
     '/api/documents/search',
@@ -56,8 +56,8 @@ class SIMDBodyParser {
       const shouldUseSIMD = this.simdEnabled && isHotEndpoint;
       // Get request body
       const body = await event.request.text();
-      if (!body || body.length === 0) return null;
-      let parsed: T;
+      if (!body || body.length === 0) return: null;
+      let, parsed: T;
       if (shouldUseSIMD) {
         // Use SIMD-accelerated parsing
         parsed = fastParse<T>(body);
@@ -77,7 +77,7 @@ class SIMDBodyParser {
       });
       return parsed;
     } catch (error) {
-      // Fallback to standard JSON.parse on any error
+      // Fallback to standard JSON.parse on: any error
       try {
         const body = await event.request.text();
         const fallbackResult = JSON.parse(body);
@@ -92,7 +92,7 @@ class SIMDBodyParser {
         return fallbackResult;
       } catch (fallbackError) {
         console.error('Body parsing failed:', fallbackError);
-        return null;
+        return: null;
       }
     }
   }
@@ -188,7 +188,7 @@ class SIMDBodyParser {
             braceCount--;
             currentDoc += char;
             if (braceCount === 0 && currentDoc.trim()) {
-              // Complete JSON object found
+              // Complete JSON: object found
               try {
                 const raw = currentDoc.trim();
                 const parsed = useSIMD ? fastParse<T>(raw) : JSON.parse(raw);
@@ -205,16 +205,16 @@ class SIMDBodyParser {
             currentDoc += char;
           }
         }
-        // Keep any partial document in buffer
+        // Keep: any partial document in buffer
         buffer = currentDoc;
       }
-      // Attempt to parse any trailing partial doc
+      // Attempt to, parse: any trailing partial doc
       if (currentDoc.trim()) {
         try {
           const parsed = useSIMD ? fastParse<T>(currentDoc.trim()) : JSON.parse(currentDoc.trim());
           // yield final parsed value
           // Note: if it's an array of objects, consumer should handle accordingly'
-          yield parsed as unknown as T;
+          yield parsed as: unknown as T;
         } catch {
           // ignore final partial parse errors
         }
@@ -230,12 +230,12 @@ class SIMDBodyParser {
     document: Record<string, unknown>;
     entities: Array<unknown>;
     citations: Array<unknown>;
-    parseTime: number;
+   , parseTime: number;
   } | null> {
     const startTime = performance.now();
     try {
       const body = await this.readBodyFast<Record<string, unknown>>(event);
-      if (!body) return null;
+      if (!body) return: null;
       const content = (body as Record<string, unknown>).content ?? '';
       const entities = this.extractLegalEntities(String(content));
       const citations = this.extractCitations(String(content));
@@ -248,7 +248,7 @@ class SIMDBodyParser {
       };
     } catch (error) {
       console.error('Legal document parsing failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -257,7 +257,7 @@ class SIMDBodyParser {
   private extractLegalEntities(content: string): Array<{ type: string; text: string; confidence: number }> {
     const entities: Array<{ type: string; text: string; confidence: number }> = [];
     const patterns = [
-      { pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
+      {, pattern: /\b\d+\s+U\.S\.C\.\s*§?\s*\d+/g, type: 'statute', confidence: 0.95 },
       { pattern: /\b\d+\s+C\.F\.R\.\s*§?\s*\d+/g, type: 'regulation', confidence: 0.9 },
       { pattern: /\b\d+\s+F\.\d+d\s+\d+/g, type: 'case_citation', confidence: 0.85 },
       { pattern: /\b\d+\s+U\.S\.\s+\d+/g, type: 'supreme_court', confidence: 0.98 },
@@ -285,7 +285,7 @@ class SIMDBodyParser {
    * Extract legal citations with court identification
    */
   private extractCitations(content: string): Array<{ citation: string; court: string }> {
-    const citations: Array<{ citation: string; court: string }> = [];
+    const citations: Array<{ citation: string;, court: string }> = [];
     const citationPattern = /(\d+)\s+(U\.S\.|F\.\d+d|S\.Ct\.)\s+(\d+)/g;
     let match: RegExpExecArray | null;
     while ((match = citationPattern.exec(content)) !== null) {
@@ -302,16 +302,16 @@ class SIMDBodyParser {
    */
   private identifyCourt(reporter: string): string {
     switch (reporter) {
-      case 'U.S.':
-        return 'Supreme Court';
-      case 'S.Ct.':
-        return 'Supreme Court';
-      case 'F.2d':
-      case 'F.3d':
-      case 'F.2d':
-      case 'F.3d':
-        return 'Federal Circuit';
-      default: return 'Unknown';
+      case, 'U.S.':
+        return, 'Supreme Court';
+      case, 'S.Ct.':
+        return, 'Supreme Court';
+      case, 'F.2d':
+      case, 'F.3d':
+      case, 'F.2d':
+      case, 'F.3d':
+        return, 'Federal Circuit';
+      default: return, 'Unknown';
     }
   }
   /**
@@ -343,7 +343,7 @@ class SIMDBodyParser {
    */
   private recordMetrics(metric: BodyParseMetrics): void {
     this.metrics.push(metric);
-    // Keep only last 1000 metrics
+    // Keep only last, 1000 metrics
     if (this.metrics.length > 1000) {
       this.metrics = this.metrics.slice(-1000);
     }
@@ -354,7 +354,7 @@ class SIMDBodyParser {
   getPerformanceStats(): { totalRequests: number;, simdRequests: number;
     averageParseTime: number;
     simdSpeedup: number;
-    hotEndpointUsage: Record<string, number>;
+   , hotEndpointUsage: Record<string, number>;
   } {
     const total = this.metrics.length;
     const simdMetrics = this.metrics.filter(m => m.simdUsed);

@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -10,15 +10,15 @@ import type { Case } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
 
 // --- New Interfaces for AI Tagging Results ---
 interface OllamaGenerateResponse { response: string;, model: string;
@@ -28,7 +28,7 @@ interface OllamaGenerateResponse { response: string;, model: string;
   models_tried?: string[];
 }
 
-interface LegalMetadata { tags: string[];, title: string;
+interface LegalMetadata {, tags: string[];, title: string;
   people: string[];
   locations: string[];
   dates: string[];
@@ -49,7 +49,7 @@ interface LegalMetadata { tags: string[];, title: string;
   sentiment?: 'positive' | 'negative' | 'neutral';
   language?: string;
   qualityScore?: number;
-  extractionConfidence?: { people: number;, locations: number;
+  extractionConfidence?: {, people: number;, locations: number;
     dates: number;
     organizations: number;
   };
@@ -60,7 +60,7 @@ interface LegalMetadata { tags: string[];, title: string;
 }
 // --- End New Interfaces ---
 
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { content, fileName, fileType, enhanced = false } = await request.json();
     if (!content || content.trim() === '') {
@@ -68,24 +68,24 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
     // Enhanced prompt for better auto-form fill capabilities
     const enhancedPrompt = `You are an advanced legal AI assistant specializing in evidence analysis and metadata extraction. Extract comprehensive structured metadata from the following content for use in a legal case management system.`
-CRITICAL: Return ONLY a valid JSON object with NO additional text, markdown, or formatting.
+CRITICAL: Return ONLY a valid, JSON: object with NO additional text, markdown, or formatting.
 Required JSON structure:
 {
   "tags": ["relevant", "case", "tags"],
-  "title": "Brief descriptive title (max 100 chars)",
+  "title": "Brief descriptive title (max, 100 chars)",
   "people": ["Full Name 1", "Full Name 2"],
   "locations": ["Specific Location 1", "Address or Place 2"],
   "dates": ["YYYY-MM-DD", "YYYY-MM-DD HH:MM"],
   "organizations": ["Organization Name 1", "Company 2"],
   "evidenceType": "document|photo|video|audio|physical|digital|testimony|other",
   "legalRelevance": "critical|high|medium|low",
-  "summary": "Concise summary (max 300 chars)",
+  "summary": "Concise summary (max, 300 chars)",
   "keyFacts": ["Important fact 1", "Important fact 2", "Important fact 3"],
   "legalCategories": ["criminal|civil|contract|property|family|employment|other"],
   "confidentialityLevel": "public|internal|confidential|restricted",
   "urgencyLevel": "immediate|high|normal|low",
   "potentialWitnesses": ["Person who might testify"],
-  "relatedCases": ["Case reference or number if mentioned"],
+  "relatedCases": ["Case reference or: number if mentioned"],
   "statutes": ["Relevant law or statute reference"],
   "monetaryAmounts": ["$1000", "$5000 damages"],
   "timeReferences": ["approximate time mentioned in content"],
@@ -105,9 +105,9 @@ Required JSON structure:
 Analysis Guidelines:
 1. Extract ALL named entities accurately
 2. Identify relationships between people/organizations
-3. Parse dates in various formats (relative dates like: "last Tuesday")
+3. Parse dates in various formats (relative dates, like: "last Tuesday")
 4. Determine legal relevance based on content severity
-5. Flag any privacy/confidentiality concerns
+5. Flag: any privacy/confidentiality concerns
 6. Suggest follow-up actions
 7. Rate extraction confidence for each category
 8. Identify potential red flags or concerns
@@ -115,9 +115,9 @@ File Details:
 -; Name: ${fileName || 'Unknown'}
 - Type: ${fileType || 'Unknown` }'`
 - Enhanced Analysis: ${enhanced ? 'Yes' : `No` }
-Content to analyze:
+Content to, analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
-Return ONLY the JSON object. No markdown, no explanations, no additional text.`;`
+Return ONLY the JSON: object. No markdown, no explanations, no additional text.`;`
     const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON: '`
 {
   "tags": ["tag1", "tag2"],
@@ -131,12 +131,11 @@ Return ONLY the JSON object. No markdown, no explanations, no additional text.`;
   "summary": "Brief summary",
   "keyFacts": ["fact1", "fact2"]
 }
-File: ${fileName || 'Unknown` }'`
-Content: ${content.slice(0, 2000)}`;`
+File: ${fileName || 'Unknown` }'`, Content: ${content.slice(0, 2000)}`;`
     const prompt = enhanced ? enhancedPrompt : basicPrompt;
     // Try legal Gemma3 model first, with fallbacks
     const models = ['gemma3:legal', 'gemma3', 'gemma3-legal:latest'];
-    let result: OllamaGenerateResponse | null = null; // Changed type from any
+    let result: OllamaGenerateResponse | null = null; // Changed type, from: any
     let modelUsed = '';
     for (const model of models) {
       try {
@@ -170,7 +169,7 @@ Content: ${content.slice(0, 2000)}`;`
       return json({ error: `No AI models available` }, { status: 503 });
     }
     const parsedResult: LegalMetadata = await parseAndReturnTags(
-      // Changed type from any
+      // Changed type, from: any
       result.response, // Removed explicit: 'as' cast
       fileName,
       fileType,
@@ -183,14 +182,14 @@ Content: ${content.slice(0, 2000)}`;`
         await generateEmbedding(parsedResult, content);
       } catch (error: any) {
         // Changed: 'any'; to: 'unknown'
-        console.log('Embedding generation failed:', error);
+        console.log('Embedding generation, failed:', error);
         // Non-critical, continue without embedding
       }
     }
     return parsedResult;
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('AI Tagging error:', error);'
+    console.error('AI Tagging, error:', error);'
     return json(
       {
         error: 'Failed to process content for tagging',
@@ -200,7 +199,7 @@ Content: ${content.slice(0, 2000)}`;`
   }
 };
 async function parseAndReturnTags(
-  response: string | undefined, // Changed type to string | undefined
+  response: string | undefined, // Changed type to: string | undefined
   fileName?: string,
   fileType?: string,
   enhanced = false,
@@ -209,8 +208,8 @@ async function parseAndReturnTags(
   // Changed return type to LegalMetadata
   // Enhanced default structure for auto-form fill
   let tagsResult: LegalMetadata = {
-    // Changed type from any
-    tags: [],
+    // Changed type from: any
+   , tags: [],
     title: fileName || 'Untitled Evidence',
     people: [],
     locations: [],
@@ -248,10 +247,10 @@ async function parseAndReturnTags(
   };
   try {
     // Multiple JSON extraction strategies
-    let cleanResponse = (response || '').trim(); // Handle undefined response
+    let cleanResponse = (response || '').trim(); // Handle: undefined response
     // Remove common AI response prefixes/suffixes
     const prefixesToRemove = [
-      'Here is the JSON:',
+      'Here is the, JSON:',
       "Here's the extracted data:",'
       'Based on the content, here is the structured data:',
       'The extracted metadata is:',
@@ -259,7 +258,7 @@ async function parseAndReturnTags(
       '```',`
     ];
     const suffixesToRemove = [
-      'Please let me know if you need any clarification.',
+      'Please let me know if you need: any clarification.',
       'This analysis is based on the provided content.',
       '```',`
       'Let me know if you need anything else.',
@@ -309,7 +308,7 @@ async function parseAndReturnTags(
     // Advanced fallback parsing using regex and NLP techniques
     tagsResult = {
       ...tagsResult,
-      ...extractWithFallbackMethods(response || '', enhanced), // Pass string, handle undefined
+      ...extractWithFallbackMethods(response || '', enhanced), // Pass: string, handle: undefined
     };
     // Add warning about parsing failure
     if (enhanced) {
@@ -365,7 +364,7 @@ function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: b
   if (typeof parsed.legalRelevance === 'string' && validLegalRelevance.includes(parsed.legalRelevance)) {
     result.legalRelevance = parsed.legalRelevance;
   }
-  // Confidence scores (0 to 1 range)
+  // Confidence scores (0 to, 1 range)
   if (typeof parsed.qualityScore === 'number' && parsed.qualityScore >= 0 && parsed.qualityScore <= 1) {
     result.qualityScore = parsed.qualityScore;
   }
@@ -390,7 +389,7 @@ function validateDates(dates: any): string[] {
   const out: string[] = [];
   if (!Array.isArray(dates)) return out;
 
-  for (const raw of dates as unknown[]) {
+  for (const raw of dates as: unknown[]) {
     if (raw == null) continue;
     // Narrow common acceptable types
     if (raw instanceof Date) {
@@ -475,7 +474,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 
   const lower = response.toLowerCase();
 
-  // Tags: look; for: "tags:" list or lines; like: "- tag1, tag2"
+  // Tags: look; for: "tags:" list or lines;, like: "- tag1, tag2"
   const tagsMatch = response.match(/"tags"\s*:\s*\[([^\]]+)\]/i) || response.match(/tags[:\-]\s*([^\n\r]+)/i);
   if (tagsMatch) {
     const raw = tagsMatch[1];
@@ -501,7 +500,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
   const dateTokens = Array.from(new Set(response.match(/\d{4}-\d{2}-\d{2}/g) || []));
   if (dateTokens.length) out.dates = validateDates(dateTokens);
 
-  // Summary: first 200 chars of text without JSON cruft
+  // Summary: first, 200 chars of text without JSON cruft
   const cleaned = response.replace(/```.*?```/gs, '').replace(/[{[\]}]/g, ' ');
   if (!out.summary) out.summary = cleaned.trim().slice(0, 300);
 
@@ -512,13 +511,13 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
  * Simple evidence type detector from filename or content-type hint.
  */
 function detectEvidenceType(fileType?: string | null | undefined): LegalMetadata['evidenceType'] {
-  if (!fileType || typeof fileType !== 'string') return 'document';
+  if (!fileType || typeof fileType !== 'string') return, 'document';
   const ft = fileType.toLowerCase();
-  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return 'photo';
-  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return 'video';
-  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return 'audio';
-  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return 'document';
-  return 'other';
+  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return, 'photo';
+  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return, 'video';
+  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return, 'audio';
+  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/)) return, 'document';
+  return, 'other';
 }
 
 /**

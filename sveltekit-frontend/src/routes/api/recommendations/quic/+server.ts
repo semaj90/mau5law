@@ -1,12 +1,12 @@
 // Ultra-Fast QUIC Neo4j Recommendations API - 5-15ms Response Target
 // Integrates with running QUIC Tensor Server (port 4433)
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError'
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError'
 
 // --- Added: minimal engine typings to avoid `any` ---
 type RecommendationResult = {
-  processingTime: number;
+ , processingTime: number;
   protocol?: string;
   cacheHit?: boolean;
   tensorMetrics?: { tensorCoresUsed?: boolean };
@@ -58,7 +58,7 @@ type PostBody = {
 
 // Import QUIC recommendation engine (will be available after build)
 // let QuicEngine: any = null
-let QuicEngine: QuicRecommendationEngine | null = null
+let, QuicEngine: QuicRecommendationEngine | null = null
 
 // Lazy load the QUIC engine to handle build-time imports
 async function getQuicEngine(): Promise<QuicRecommendationEngine> {
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
       caseId,
       practiceArea,
       jurisdiction,
-      maxResults: Math.min(maxResults, 50), // Cap at 50
+      maxResults: Math.min(maxResults, 50), // Cap at, 50
       threshold: Math.max(0.1, Math.min(threshold, 1.0)), // Clamp 0.1-1.0
       useGPU,
       useTensorCores
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const batchResults = await Promise.allSettled(
         batchQueries.map((batchQuery: BatchQueryOrString) => {
           const isString = typeof batchQuery === 'string';
-          const q = isString ? (batchQuery as string) : (batchQuery as BatchQuery).query || '';
+          const q = isString ? (batchQuery as: string) : (batchQuery as BatchQuery).query || '';
           const bq = isString ? ({} as BatchQuery) : (batchQuery as BatchQuery);
           return engine.getRecommendations({
             query: q,
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         }),
         performance: {
-          totalBatchTime: totalTime,
+         , totalBatchTime: totalTime,
           averagePerQuery: totalTime / batchQueries.length,
           successRate: successful.length / batchQueries.length
         }
@@ -263,8 +263,7 @@ export const OPTIONS: RequestHandler = async () => {
 			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 			'Access-Control-Allow-Headers': 'Content-Type, X-Protocol, X-Priority',
 			'Access-Control-Max-Age': '86400',
-			'Alt-Svc': 'h3=":4433"; ma=3600', // Advertise QUIC/HTTP3
-			'X-API-Version': '1.0',
+			'Alt-Svc': 'h3=":4433"; ma=3600', // Advertise QUIC/HTTP3, 'X-API-Version': '1.0',
 			'X-Supported-Protocols': 'QUIC, HTTP/2, HTTP/1.1',
 			'X-Target-Latency': '5-15ms' }
 	})

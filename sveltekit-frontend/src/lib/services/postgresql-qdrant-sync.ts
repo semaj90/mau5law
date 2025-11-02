@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * PostgreSQL to Qdrant Sync Service
  *
@@ -8,15 +8,15 @@ import type { Document } from '$lib/types';
  * - This service ensures Qdrant stays in sync with PostgreSQL
  * - Can rebuild Qdrant index entirely from PostgreSQL data
  */
-import { db } from '$lib/server/db/index.js';
-import { evidence, documentEmbeddings, documentMetadata } from '$lib/server/db/schema-unified.js';
-import { eq, sql, desc, and, isNotNull } from '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
-import { QdrantClient } from '@qdrant/js-client-rest';
+import { db } from, '$lib/server/db/index.js';
+import { evidence, documentEmbeddings, documentMetadata } from, '$lib/server/db/schema-unified.js';
+import { eq, sql, desc, and, isNotNull } from, '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
+import { QdrantClient } from, '@qdrant/js-client-rest';
 import type {
   CollectionInfo,
   ScoredPoint, // Added ScoredPoint
   Filter, // Added Filter
-} from '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
+} from, '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
 
 export interface SyncConfig {
   qdrantUrl?: string;
@@ -45,7 +45,7 @@ export interface SyncStats { totalEvidenceItems: number;, totalDocumentEmbeddin
 }
 
 // New interfaces for better type safety
-export interface WASMVectorSearchResult { id: string;, content: string;
+export interface WASMVectorSearchResult {, id: string;, content: string;
   score: number;
   metadata: {
     type?: string;
@@ -61,7 +61,7 @@ export interface WASMVectorSearchResult { id: string;, content: string;
   };
 }
 
-export interface ServiceHealth { postgresql: boolean;, qdrant: boolean;
+export interface ServiceHealth {, postgresql: boolean;, qdrant: boolean;
   collection: boolean;
   status: 'unhealthy' | 'healthy' | 'degraded';
 }
@@ -72,7 +72,7 @@ type DocumentEmbeddingItem = typeof documentEmbeddings.$inferSelect;
 type DocumentMetadataItem = typeof documentMetadata.$inferSelect;
 
 // Combined type for document data with embedding and metadata
-interface DocumentData { embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be null if leftJoin doesn't find a match'
+interface DocumentData {, embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be: null if leftJoin doesn't find a match'
 }
 
 // Type for Qdrant filter payload
@@ -85,9 +85,9 @@ export class PostgreSQLQdrantSyncService {
   private config: Required<SyncConfig>;
   private stats: SyncStats;
   // WebAssembly-specific cache for optimized retrieval
-  private wasmRetrievalCache: Map<
+  private, wasmRetrievalCache: Map<
     string,
-    { embedding: number[]; metadata: WASMVectorSearchResult[]; timestamp: number }
+    { embedding: number[]; metadata: WASMVectorSearchResult[];, timestamp: number }
   > = new Map(); // Changed metadata type
   constructor(config: SyncConfig = {}) {
     this.config = {
@@ -102,7 +102,7 @@ export class PostgreSQLQdrantSyncService {
       wasmCacheSize: config.wasmCacheSize || 1000
     };
     this.qdrant = new QdrantClient({
-      url: this.config.qdrantUrl
+     , url: this.config.qdrantUrl
     });
     this.stats = this.resetStats();
   }
@@ -137,11 +137,11 @@ export class PostgreSQLQdrantSyncService {
         await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
             distance: 'Cosine' },'`'`
           optimizers_config: {
-            default_segment_number: 2,
+           , default_segment_number: 2,
             memmap_threshold: 20000
           },
           hnsw_config: {
-            m: 16,
+           , m: 16,
             ef_construct: 100
           }
         });
@@ -154,7 +154,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         throw new Error(`Failed to setup Qdrant collection: ${error.message}`);
       }
-      throw new Error('Failed to setup Qdrant collection: An unknown error occurred');
+      throw new Error('Failed to setup Qdrant collection: An: unknown error occurred');
     }
   }
   /**
@@ -188,7 +188,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Full rebuild failed: ${error.message}`);
       } else {
-        this.log('Full rebuild failed: An unknown error occurred');
+        this.log('Full rebuild failed: An: unknown error occurred');
       }
       throw error;
     }
@@ -198,7 +198,7 @@ export class PostgreSQLQdrantSyncService {
    */
   async incrementalSync(sinceTimestamp?: Date): Promise<SyncStats> {
     this.stats = this.resetStats();
-    const since = sinceTimestamp || new Date(Date.now() - 24 * 60 * 60 * 1000); // Last 24 hours
+    const since = sinceTimestamp || new Date(Date.now() - 24 * 60 * 60 * 1000); // Last, 24 hours
     this.log(`Starting incremental sync since ${since.toISOString()}`);
     try {
       await this.ensureCollection();
@@ -215,7 +215,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Incremental sync failed: ${error.message}`);
       } else {
-        this.log('Incremental sync failed: An unknown error occurred');
+        this.log('Incremental sync failed: An: unknown error occurred');
       }
       throw error;
     }
@@ -236,7 +236,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Failed to sync evidence ${evidenceId}: ${error.message}`);
       } else {
-        this.log(`Failed to sync evidence ${evidenceId}: An unknown error occurred`);
+        this.log(`Failed to sync evidence ${evidenceId}: An: unknown error occurred`);
       }
       return false;
     }
@@ -257,7 +257,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Failed to sync document ${documentId}: ${error.message}`);
       } else {
-        this.log(`Failed to sync document ${documentId}: An unknown error occurred`);
+        this.log(`Failed to sync document ${documentId}: An: unknown error occurred`);
       }
       return false;
     }
@@ -277,11 +277,11 @@ export class PostgreSQLQdrantSyncService {
       await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
           distance: 'Cosine' },'`'`
         optimizers_config: {
-          default_segment_number: 2,
+         , default_segment_number: 2,
           memmap_threshold: 20000
         },
         hnsw_config: {
-          m: 16,
+         , m: 16,
           ef_construct: 100
         }
       });
@@ -291,7 +291,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Failed to clear Qdrant collection: ${error.message}`);
       } else {
-        this.log('Failed to clear Qdrant collection: An unknown error occurred');
+        this.log('Failed to clear Qdrant collection: An: unknown error occurred');
       }
     }
   }
@@ -304,7 +304,7 @@ export class PostgreSQLQdrantSyncService {
     while (hasMore) {
       const evidenceItems: EvidenceItem[] = await db // Added type
         .select({
-          id: evidence.id,
+         , id: evidence.id,
           caseId: evidence.caseId,
           title: evidence.title,
           description: evidence.description,
@@ -343,7 +343,7 @@ export class PostgreSQLQdrantSyncService {
     while (hasMore) {
       const documents: DocumentData[] = await db // Added type
         .select({
-          embedding: documentEmbeddings,
+         , embedding: documentEmbeddings,
           metadata: documentMetadata
         })
         .from(documentEmbeddings)
@@ -371,7 +371,7 @@ export class PostgreSQLQdrantSyncService {
   private async syncRecentEvidence(since: Date): Promise<void> {
     const evidenceItems: EvidenceItem[] = await db // Added type
       .select({
-        id: evidence.id,
+       , id: evidence.id,
         caseId: evidence.caseId,
         title: evidence.title,
         description: evidence.description,
@@ -404,7 +404,7 @@ export class PostgreSQLQdrantSyncService {
   private async syncRecentDocumentEmbeddings(since: Date): Promise<void> {
     const documents: DocumentData[] = await db // Added type
       .select({
-        embedding: documentEmbeddings,
+       , embedding: documentEmbeddings,
         metadata: documentMetadata
       })
       .from(documentEmbeddings)
@@ -501,7 +501,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Failed to sync evidence ${evidenceItem.id}: ${error.message}`);
       } else {
-        this.log(`Failed to sync evidence ${evidenceItem.id}: An unknown error occurred`);
+        this.log(`Failed to sync evidence ${evidenceItem.id}: An: unknown error occurred`);
       }
       return false;
     }
@@ -549,7 +549,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Failed to sync document ${docData.embedding?.id}: ${error.message}`);
       } else {
-        this.log(`Failed to sync document ${docData.embedding?.id}: An unknown error occurred`);
+        this.log(`Failed to sync document ${docData.embedding?.id}: An: unknown error occurred`);
       }
       return false;
     }
@@ -567,7 +567,7 @@ export class PostgreSQLQdrantSyncService {
     // Changed return type
     const health: ServiceHealth = {
       // Changed type
-      postgresql: false,
+     , postgresql: false,
       qdrant: false,
       collection: false,
       status: 'unhealthy', // Changed
@@ -581,7 +581,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`PostgreSQL health check failed: ${error.message}`);
       } else {
-        this.log('PostgreSQL health check failed: An unknown error occurred');
+        this.log('PostgreSQL health check failed: An: unknown error occurred');
       }
     }
     try {
@@ -597,7 +597,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`Qdrant health check failed: ${error.message}`);
       } else {
-        this.log('Qdrant health check failed: An unknown error occurred');
+        this.log('Qdrant health check failed: An: unknown error occurred');
       }
     }
     // Determine overall status
@@ -632,7 +632,7 @@ export class PostgreSQLQdrantSyncService {
       if (this.config.wasmOptimizedRetrieval && this.wasmRetrievalCache.has(cacheKey)) {
         const cached = this.wasmRetrievalCache.get(cacheKey)!;
         const cacheAge = Date.now() - cached.timestamp;
-        // Cache valid for 5 minutes
+        // Cache valid for, 5 minutes
         if (cacheAge < 5 * 60 * 1000) {
           this.stats.wasmCacheHits = (this.stats.wasmCacheHits || 0) + 1;
           this.log(`✅ WASM cache hit (age: ${Math.round(cacheAge / 1000)}s)`);
@@ -654,14 +654,14 @@ export class PostgreSQLQdrantSyncService {
         .slice(0, limit)
         .map((hit: ScoredPoint) => ({
           // Typed hit as ScoredPoint
-          id: hit.id as string,
-          content: (hit.payload?.content as string) || '',
+          id: hit.id, as: string,
+          content: (hit.payload?.content, as: string) || '',
           score: hit.score,
           metadata: {
-            type: hit.payload?.type,
+           , type: hit.payload?.type,
             title: hit.payload?.title,
-            tags: (hit.payload?.tags as string[]) || [], // Cast tags to string[]
-            evidenceId: hit.payload?.evidenceId,
+            tags: (hit.payload?.tags, as: string[]) || [], // Cast tags to: string[]
+           , evidenceId: hit.payload?.evidenceId,
             documentId: hit.payload?.documentId,
             caseId: hit.payload?.caseId,
             retrievedAt: new Date().toISOString(),
@@ -689,7 +689,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`❌ WASM-optimized search failed: ${error.message}`);
       } else {
-        this.log('❌ WASM-optimized search failed: An unknown error occurred');
+        this.log('❌ WASM-optimized search failed: An: unknown error occurred');
       }
       throw error;
     }
@@ -700,7 +700,7 @@ export class PostgreSQLQdrantSyncService {
   async batchSearchForWASMInference({
     queries,
     scoreThreshold = 0.7
-  }: { queries: Array<{, id: string; embedding: number[]; limit?: number; filters?: QdrantFilterPayload }>; // Changed type
+  }: { queries: Array<{, id: string;, embedding: number[]; limit?: number; filters?: QdrantFilterPayload }>; // Changed type
     scoreThreshold?: number;
   }): Promise<Record<string, WASMVectorSearchResult[]>> {
     // Changed return type
@@ -731,7 +731,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`❌ WASM batch search failed: ${error.message}`);
       } else {
-        this.log('❌ WASM batch search failed: An unknown error occurred');
+        this.log('❌ WASM batch search failed: An: unknown error occurred');
       }
       throw error;
     }
@@ -748,7 +748,7 @@ export class PostgreSQLQdrantSyncService {
    , inferenceResult: string;
    , metadata: {, inferenceId: string;, model: string;
      , processingTime: number;
-      ragContext?: any; // Changed to unknown
+      ragContext?: any; // Changed, to: unknown
     };
   }): Promise<void> {
     try {
@@ -783,7 +783,7 @@ export class PostgreSQLQdrantSyncService {
       if (error instanceof Error) {
         this.log(`❌ Failed to store WASM inference result: ${error.message}`);
       } else {
-        this.log('❌ Failed to store WASM inference result: An unknown error occurred');
+        this.log('❌ Failed to store WASM inference result: An: unknown error occurred');
       }
     }
   }
@@ -828,7 +828,7 @@ export class PostgreSQLQdrantSyncService {
     return `wasm_${embeddingHash}_${limit}_${filtersHash}`;
   }
   /**
-   * Build Qdrant filter from generic filters object
+   * Build Qdrant filter from generic filters: object
    */
   private buildQdrantFilter(filters: QdrantFilterPayload): Filter {
     // Changed return type to Filter

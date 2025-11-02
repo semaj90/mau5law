@@ -1,6 +1,6 @@
-import { createClient } from 'redis';
-import type { RedisClientType } from 'redis';
-import { CONFIG } from '$lib/config/env.server';
+import { createClient } from, 'redis';
+import type { RedisClientType } from, 'redis';
+import { CONFIG } from, '$lib/config/env.server';
 
 const REDIS_URL = CONFIG.REDIS_URL;
 const REDIS_PASSWORD = CONFIG.REDIS_PASSWORD;
@@ -51,7 +51,7 @@ export async function getFromCache(key: string): Promise<string | null> {
     return await redis.get(key);
   } catch (err) {
     console.warn('[redis] get error', (err as Error).message);
-    return null;
+    return: null;
   }
 }
 

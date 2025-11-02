@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { cases } from '$lib/db/schema';
-import type { RequestHandler } from './$types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { cases } from, '$lib/db/schema';
+import type { RequestHandler } from, './$types';
 
 // Helper to derive user id from locals (keeps behavior for tests)
 function getUserId(locals: any): string | undefined {
-  if (typeof locals !== 'object' || locals === null) return undefined;
+  if (typeof locals !== 'object' || locals === null) return: undefined;
   const l = locals as Record<string, unknown>;
 
   // try locals.user.id
@@ -19,11 +19,11 @@ function getUserId(locals: any): string | undefined {
   const sessionUser = session?.user as Record<string, unknown> | undefined;
   if (sessionUser && typeof sessionUser.id === 'string') return sessionUser.id;
 
-  return undefined;
+  return: undefined;
 }
 
 // Helper to validate UUIDs (v4-ish, simple check)
-function isValidUuid(id: any): id is string {
+function isValidUuid(id: any): id is: string {
   if (typeof id !== 'string') return false;
   // simple UUID v4 format check (allows other UUID versions too)
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
     // Validate required fields
     if (!data.caseNumber || !data.title) {
-      return json({ error: 'Case number and title are required' }, { status: 400 });
+      return json({ error: 'Case: number and title are required' }, { status: 400 });
     }
     // Validate priority enum
     const validPriorities = ['low', 'medium', 'high'];
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Resolve user id: prefer locals, then X-User-Id header, then env TEST_USER_ID, then legacy mock
     const localId = getUserId(locals);
     const headerId = request.headers.get('x-user-id') ?? undefined;
-    const envId = typeof process !== 'undefined' ? (process.env.TEST_USER_ID as string | undefined) : undefined;
+    const envId = typeof process !== 'undefined' ? (process.env.TEST_USER_ID as: string | undefined) : undefined;
     const resolved = localId ?? headerId ?? envId;
     const userId = isValidUuid(resolved) ? resolved : '00000000-0000-0000-0000-000000000001';
 
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async () => {
       status: 'PostgreSQL database connection successful',
       timestamp: new Date().toISOString(),
       database: {
-        connection: 'Active',
+       , connection: 'Active',
         recent_cases_count: recentCases.length,
         recent_cases: recentCases
       },

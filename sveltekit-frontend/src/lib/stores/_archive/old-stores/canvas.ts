@@ -1,11 +1,11 @@
 
-import { writable } from "svelte/store";
+import { writable } from, "svelte/store";
 // Orphaned content: import type { Evidence
 // Sidebar state
 export const sidebarStore = writable({
-  open: false,
+ , open: false,
   width: 320,
-  items: [] as any[],
+  items: [], as: any[],
   searchQuery: "",
   loading: false
 });
@@ -37,9 +37,9 @@ export const toolbarStore = writable({
 export const canvasStore = writable({
   width: 800,
   height: 600,
-  objects: [] as any[],
-  selectedObjects: [] as any[],
-  clipboard: null as any,
+  objects: [], as: any[],
+  selectedObjects: [], as: any[],
+  clipboard: null, as: any,
   isDirty: false,
   isLoading: false,
   panX: 0,
@@ -53,7 +53,7 @@ export const aiStore = writable({
   prompt: "",
   response: "",
   isGenerating: false;
- , history: [] as any[]
+ , history: [], as: any[]
 });
 // File upload state
 export const uploadStore = writable({

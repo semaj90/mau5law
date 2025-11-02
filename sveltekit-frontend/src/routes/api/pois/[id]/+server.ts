@@ -1,7 +1,7 @@
-import { personsOfInterest } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit/server'; // Import json helper
+import { personsOfInterest } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit/server'; // Import json helper
 
 export const GET: RequestHandler = async ({ params, locals: { db } }) => {
   // Add locals: { db }
@@ -23,7 +23,7 @@ export const PUT: RequestHandler = async ({ request, params, locals: { db } }) =
   // Add locals: { db }
   try {
     const data = await request.json();
-    // Remove posX/posY, use position object if needed
+    // Remove posX/posY, use position: object if needed
     const [poi] = await db
       .update(personsOfInterest)
       .set({

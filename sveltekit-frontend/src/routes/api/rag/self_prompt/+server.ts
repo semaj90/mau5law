@@ -1,21 +1,21 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Self-prompting endpoint: expands user query into enriched prompt using passages + graph context.
-import type { RequestHandler } from '@sveltejs/kit';
-import { getRedisService } from '$lib/server/redis/redis-service';
-import { db } from '$lib/server/database';
-import { getEmbedding } from '$lib/server/services/embedding-service';
-import postgres from 'postgres';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { getRedisService } from, '$lib/server/redis/redis-service';
+import { db } from, '$lib/server/database';
+import { getEmbedding } from, '$lib/server/services/embedding-service';
+import postgres from, 'postgres';
 interface Passage { id: string;, text: string;
   pagerank?: number;
 }
-const sql = (db as any).session?.client as ReturnType<typeof postgres> | undefined;
+const sql = (db, as: any).session?.client as ReturnType<typeof postgres> | undefined;
 const REDIS_TTL_SECONDS = 300;
 async function initialVectorSearch(query: string, k: number): Promise<Passage[]> {
   if (!sql) return [];
   try {
     let queryEmbedding = await getEmbedding(query, 'ollama');
     const dimRow = await sql`SELECT vector_dims(embedding) as dim FROM passages WHERE embedding IS NOT NULL LIMIT 1`;
-    const targetDim = (dimRow as any[])[0]?.dim ?? queryEmbedding.length;
+    const targetDim = (dimRow as: any[])[0]?.dim ?? queryEmbedding.length;
     if (queryEmbedding.length !== targetDim) {
       if (queryEmbedding.length > targetDim) queryEmbedding = queryEmbedding.slice(0, targetDim);
       else queryEmbedding = queryEmbedding.concat(new Array(targetDim - queryEmbedding.length).fill(0));
@@ -28,7 +28,7 @@ async function initialVectorSearch(query: string, k: number): Promise<Passage[]>
       ORDER BY embedding <=> ${embLiteral}::vector
       LIMIT ${k}
     `;`
-    return rows as any;
+    return rows as: any;
   } catch (e) {
     console.error('initialVectorSearch error', e);
     return [];
@@ -45,7 +45,7 @@ async function fetchGraphNeighbors(passageIds: string[], k: number): Promise<Pas
     ORDER BY ge.weight DESC
     LIMIT ${k}
   `;`
-  return rows as any;
+  return rows as: any;
 }
 function extractConcepts(passages: Passage[]): string[] {
   const tokens = new Map<string, number>();
@@ -68,16 +68,16 @@ function composePrompt(
   concepts: string[],
   tokenBudget = 1200
 ) {
-  // Basic pruning: truncate each passage to first 280 chars for now
+  // Basic pruning: truncate each passage to first, 280 chars for now
   const trim = (s: string) => (s.length > 280 ? s.slice(0, 277) + '…' : s);
   const coreText = core.map((p, i) => `[CORE ${i + 1} ${p.id}] ${trim(p.text)}`).join('\n');
   const neighborText = neighbors
     .slice(0, 8)
     .map((p, i) => `[REL ${i + 1} ${p.id}] ${trim(p.text)}`)
     .join('\n');
-  return `User Intent: ${userQuery}\nKey Concepts: ${concepts.join(', ')}\nCore Passages:\n${coreText}\nRelated Passages:\n${neighborText}\nInstructions: Provide a comprehensive legal answer citing the most relevant clauses. Emphasize accuracy and legal context.`;
+  return `User Intent: ${userQuery}\nKey, Concepts: ${concepts.join(', ')}\nCore Passages:\n${coreText}\nRelated Passages:\n${neighborText}\nInstructions: Provide a comprehensive legal answer citing the most relevant clauses. Emphasize accuracy and legal context.`;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now();
   const { query, k = 5, neighborK = 12, useCache = true } = await request.json();
   if (!query) return new Response(JSON.stringify({ error: 'query required' }), { status: 400 });'`'`

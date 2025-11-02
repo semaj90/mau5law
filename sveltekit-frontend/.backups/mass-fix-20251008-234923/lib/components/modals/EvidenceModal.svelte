@@ -76,7 +76,7 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
     open = false;
   }
 </script>
-<Dialog.Root bind:open={open}>
+<Dialog bind:open={open}>
   <div class="uno-p-4 uno-bg-white uno-shadow">
     <div class="mb-4">
       <h2 class="text-lg font-bold mb-2">Evidence Details</h2>
@@ -110,7 +110,7 @@ Cancel
 (open = false)} variant="ghost">Close
     </div>
   </div>
-</Dialog.Root>
+</Dialog>
 <style>
   /* @unocss-include */
   .uno-shadow {

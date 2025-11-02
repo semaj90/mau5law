@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Advanced Search & Filtering System (Simplified)
  * Supports full-text search, filters, and suggestions
  */
-import { db, and, gte, like, lte, or } from '$lib/server/db/index';
-import type { SQL } from 'drizzle-orm/sql';
-import { cases, evidence } from '$lib/server/db/schema-postgres';
+import { db, and, gte, like, lte, or } from, '$lib/server/db/index';
+import type { SQL } from, 'drizzle-orm/sql';
+import { cases, evidence } from, '$lib/server/db/schema-postgres';
 // --- ADD: typed result shapes for selected columns (fixes missing names) ---
 type CaseRow = { id: number | string;, title: string | null;
   description: string | null;
@@ -14,7 +14,7 @@ type CaseRow = { id: number | string;, title: string | null;
   createdAt: Date | string | null;
   tags: string[] | null;
 };
-type EvidenceRow = { id: number | string;, fileName: string | null;
+type EvidenceRow = {, id: number | string;, fileName: string | null;
   description: string | null;
   fileType: string | null;
   uploadedAt: Date | string | null;
@@ -24,7 +24,7 @@ export interface SearchFilters {
   query?: string;
   caseStatus?: string[];
   priority?: string[];
-  dateRange?: { start: string;, end: string;
+  dateRange?: {, start: string;, end: string;
   };
   tags?: string[];
   evidenceType?: string[];
@@ -33,7 +33,7 @@ export interface SearchFilters {
   limit?: number;
   offset?: number;
 }
-export interface SearchResponse { results: SearchResult[];, total: number;
+export interface SearchResponse {, results: SearchResult[];, total: number;
   facets: { caseStatus: { value: string; count: number }[];
     priority: { value: string; count: number }[];
     evidenceType: { value: string; count: number }[];
@@ -42,7 +42,7 @@ export interface SearchResponse { results: SearchResult[];, total: number;
   suggestions?: string[];
   queryTime: number;
 }
-// --- CHANGES START: explicit metadata types & discriminated union (no `any`) ---
+// --- CHANGES, START: explicit metadata types & discriminated union (no `any`) ---
 type CaseMetadata = {
   status?: string | null;
   priority?: string | null;
@@ -61,11 +61,11 @@ export type SearchResultCase = { type: 'case';, id: string;
   metadata: CaseMetadata;
   highlights?: string[];
 };
-export type SearchResultEvidence = { type: 'evidence';, id: string;
+export type SearchResultEvidence = {, type: 'evidence';, id: string;
   title: string;
   description?: string;
   relevanceScore?: number;
-  metadata: EvidenceMetadata;
+ , metadata: EvidenceMetadata;
   highlights?: string[];
 };
 export type SearchResult = SearchResultCase | SearchResultEvidence;
@@ -157,7 +157,7 @@ class AdvancedSearch {
         description: case_.description ?? undefined,
         relevanceScore: this.calculateRelevance(text, filters.query),
         metadata: {
-          status: case_.status,
+         , status: case_.status,
           priority: case_.priority,
           createdAt: case_.createdAt,
           tags: case_.tags
@@ -201,7 +201,7 @@ class AdvancedSearch {
         description: evid.description || undefined,
         relevanceScore: this.calculateRelevance(text, filters.query),
         metadata: {
-          fileType: evid.fileType,
+         , fileType: evid.fileType,
           uploadedAt: evid.uploadedAt,
           caseId: evid.caseId
         },
@@ -216,24 +216,24 @@ class AdvancedSearch {
     // In a real implementation, these would be computed from actual data
     return {
       caseStatus: [
-        { value: 'open', count: 45 },
+        {, value: 'open', count: 45 },
         { value: 'in_progress', count: 32 },
         { value: 'pending', count: 18 },
         { value: 'closed', count: 89 }
       ],
       priority: [
-        { value: 'high', count: 23 },
+        {, value: 'high', count: 23 },
         { value: 'medium', count: 67 },
         { value: 'low', count: 34 }
       ],
       evidenceType: [
-        { value: 'document', count: 156 },
+        {, value: 'document', count: 156 },
         { value: 'image', count: 89 },
         { value: 'video', count: 34 },
         { value: 'audio', count: 12 }
       ],
       tags: [
-        { value: 'urgent', count: 23 },
+        {, value: 'urgent', count: 23 },
         { value: 'fraud', count: 45 },
         { value: 'assault', count: 34 },
         { value: 'theft', count: 67 }
@@ -314,25 +314,25 @@ class AdvancedSearch {
       }
       return 0;
     };
-    // helper to safely stringify possibly undefined values
+    // helper to safely stringify possibly: undefined values
     const stringify = (v: any) => (v == null ? '' : String(v));
     return results.slice().sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case 'relevance':
+        case, 'relevance':
           comparison = (a.relevanceScore || 0) - (b.relevanceScore || 0);
           break;
-        case 'date': {
+        case, 'date': {
           const aDate = getDateFromResult(a);
           const bDate = getDateFromResult(b);
           comparison = aDate - bDate;
           break;
         }
-        case 'priority': {
+        case, 'priority': {
           comparison = getPriorityValue(a) - getPriorityValue(b);
           break;
         }
-        case 'status':
+        case, 'status':
           comparison = stringify(a.type === 'case' ? a.metadata.status : undefined).localeCompare(
             stringify(b.type === 'case' ? b.metadata.status : undefined)
           );

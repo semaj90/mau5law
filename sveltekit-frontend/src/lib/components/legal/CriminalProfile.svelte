@@ -1,8 +1,8 @@
 <!-- Criminal Profile Component for Legal, AI, App -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
   // Removed invalid runes import and problematic lucide-svelte named imports
-  import { cn } from '$lib/utils';
+  import { cn } from, '$lib/utils';
   // --- CHANGED: Add minimal TS interfaces to avoid: "undefined" property access errors ---
   interface CriminalRecord {
     id?: string;
@@ -46,7 +46,7 @@ import type { Case } from '$lib/types';
     notes?: string;
   }
   // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
-  const { profile } = $props<{ profile: CriminalProfile | undefined }>()
+  const { profile } = $props<{, profile: CriminalProfile | undefined }>()
   const { viewMode } = $props<{ viewMode: 'full' | 'summary' | 'identification' }>()
   const { showSensitiveInfo = $state(false) } = $props()
   const { interactive = true } = $props()
@@ -56,25 +56,25 @@ import type { Case } from '$lib/types';
   const { className } = $props<{ className: string }>()
   // Configs - consistent property names
   const riskConfig = {
-    low: { label: 'Low Risk', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    medium: { label: 'Medium Risk', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    high: { label: 'High Risk', className: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
-    extreme: { label: 'Extreme Risk', className: 'bg-red-500/20 text-red-400 border-red-500/30' }
+    low: {, label: 'Low Risk', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    medium: {, label: 'Medium Risk', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+    high: {, label: 'High Risk', className: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+    extreme: {, label: 'Extreme Risk', className: 'bg-red-500/20 text-red-400 border-red-500/30' }
   };
   const statusConfig = {
-    at_large: { label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: '⚠️' },
-    incarcerated: { label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: '🔒' },
-    on_parole: { label: 'On Parole', className: 'bg-yellow-500/20 text-yellow-400', icon: '👁️' },
-    probation: { label: 'Probation', className: 'bg-blue-500/20 text-blue-400', icon: '📄' },
-    deceased: { label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: '⚰️' },
-    cleared: { label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: '✅' }
+    at_large: {, label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: '⚠️' },
+    incarcerated: {, label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: '🔒' },
+    on_parole: {, label: 'On Parole', className: 'bg-yellow-500/20 text-yellow-400', icon: '👁️' },
+    probation: {, label: 'Probation', className: 'bg-blue-500/20 text-blue-400', icon: '📄' },
+    deceased: {, label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: '⚰️' },
+    cleared: {, label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: '✅' }
   };
   const dispositionConfig = {
-    convicted: { label: 'Convicted', className: 'bg-red-500/20 text-red-400' },
-    acquitted: { label: 'Acquitted', className: 'bg-green-500/20 text-green-400' },
-    dismissed: { label: 'Dismissed', className: 'bg-blue-500/20 text-blue-400' },
-    pending: { label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400' },
-    sealed: { label: 'Sealed', className: 'bg-gray-500/20 text-gray-400' }
+    convicted: {, label: 'Convicted', className: 'bg-red-500/20 text-red-400' },
+    acquitted: {, label: 'Acquitted', className: 'bg-green-500/20 text-green-400' },
+    dismissed: {, label: 'Dismissed', className: 'bg-blue-500/20 text-blue-400' },
+    pending: {, label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400' },
+    sealed: {, label: 'Sealed', className: 'bg-gray-500/20 text-gray-400' }
   };
   // helpers
   function toDate(d: string | Date): Date {
@@ -115,13 +115,13 @@ import type { Case } from '$lib/types';
       ? profile.identification.mugshots[0]
       : undefined)
   // Replace icons with emoji/icon fallbacks to avoid lucide-svelte export issues
-  let statusInfo: { label: string; className: string; icon?: string } = statusConfig.cleared;
+  let statusInfo: { label: string;, className: string; icon?: string } = statusConfig.cleared;
   let statusInfo = $derived(statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared)
   function formatDate(date: string | Date): string {
     return toDate(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
   function maskSSN(ssn?: string): string {
-    if (!ssn) return '';
+    if (!ssn) return, '';
     if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
     return ssn;
   }
@@ -164,7 +164,7 @@ import type { Case } from '$lib/types';
         <div class="flex items-start, justify-between, mb-2">
           <div>
             <h2 class="text-xl font-bold, text-yorha-text-primary, font-mono">{getFullName()}</h2>
-            <div class="text-sm, text-yorha-text-secondary, font-mono">ID: {profile?.id} • Age: {age}</div>
+            <div class="text-sm, text-yorha-text-secondary, font-mono">ID: {profile?.id} •, Age: {age}</div>
           </div>
           <!-- Current Status (computed reactively, in, script) -->
           <div class="flex, items-center, gap-2">
@@ -222,7 +222,7 @@ import type { Case } from '$lib/types';
     {#if viewMode === 'full' || viewMode === 'identification'}
       <div>
         <h3 class="text-sm font-semibold text-yorha-text-primary font-mono, mb-3, uppercase">Personal Information</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3, text-sm, font-mono">
+        <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3 gap-3, text-sm, font-mono">
           <div>
             <span, class="text-yorha-text-secondary">Date of Birth:</span>
             <div, class="text-yorha-text-primary">{formatDate(profile.personalInfo.dateOfBirth)}</div>
@@ -402,7 +402,7 @@ import type { Case } from '$lib/types';
 </div>
 <style>
   .criminal-profile {
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
   }
 </style>
           </p>
@@ -425,6 +425,6 @@ import type { Case } from '$lib/types';
 </div>
 <style>
   .criminal-profile {
-    transition: all 0.2s ease;
+   , transition: all 0.2s ease;
   }
 </style>

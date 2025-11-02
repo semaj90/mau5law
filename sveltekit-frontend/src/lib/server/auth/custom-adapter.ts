@@ -1,5 +1,5 @@
 // Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
-// import { type, Adapter, type DatabaseSession, type DatabaseUser } from 'lucia'
+// import { type, Adapter, type DatabaseSession, type DatabaseUser } from, 'lucia'
 // Temporary type stubs for Lucia (not installed)
 interface Adapter {
   deleteSession(sessionId: string): Promise<void>;
@@ -14,16 +14,16 @@ interface DatabaseSession { id: string;, userId: string;
   expiresAt: Date;
   expires_at?: Date;
   // replaced `any` with safer Record type
-  attributes: Record<string, unknown>;
+ , attributes: Record<string, unknown>;
 }
 interface DatabaseUser {
   id: string;
   // replaced `any` with safer Record type
-  attributes: Record<string, unknown>;
+ , attributes: Record<string, unknown>;
 }
-import { db } from '$lib/server/db/drizzle';
-import { sessions, users } from '$lib/server/db/schema-postgres';
-import { eq, sql } from '$lib/server/db/utils';
+import { db } from, '$lib/server/db/drizzle';
+import { sessions, users } from, '$lib/server/db/schema-postgres';
+import { eq, sql } from, '$lib/server/db/utils';
 
 // --- new/adjusted DB row types for safer casting (moved to top-level) ---
 type UserRow = {
@@ -49,13 +49,13 @@ type SessionRow = {
   created_at?: Date | string | null;
 };
 
-type QueryResultRow = { user: UserRow;, session: SessionRow;
+type QueryResultRow = {, user: UserRow;, session: SessionRow;
 };
 // --- end new types ---
 
-// Helper: safely convert DB values to Date or null
+// Helper: safely convert DB values to Date, or: null
 function toDate(value: Date | string | undefined | null): Date | null {
-  if (value == null) return null;
+  if (value == null) return: null;
   if (value instanceof Date) {
     return isNaN(value.getTime()) ? null : value;
   }
@@ -63,14 +63,14 @@ function toDate(value: Date | string | undefined | null): Date | null {
   return isNaN(d.getTime()) ? null : d;
 }
 
-// New helper: safely extract a; string: 'code' property from unknown errors
+// New helper: safely extract a; string: 'code' property, from: unknown errors
 function extractErrorCode(err: any): string | undefined {
-  if (!err || typeof err !== 'object') return undefined;
+  if (!err || typeof err !== 'object') return: undefined;
   const record = err as Record<string, unknown>;
   const codeVal = record['code'];
   if (typeof codeVal === 'string') return codeVal;
   if (typeof codeVal === 'number') return String(codeVal);
-  return undefined;
+  return: undefined;
 }
 
 export class FixedDrizzlePostgreSQLAdapter implements Adapter {
@@ -110,32 +110,32 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         .where(eq(sessions.id, sessionId))
         .limit(1);
 
-      // safer runtime check instead of `(result as any[]).length`
+      // safer runtime check instead of `(result as: any[]).length`
       if (!Array.isArray(result) || result.length === 0) {
         return [null, null];
       }
 
-      // cast through unknown to our explicit typed shape
-      const row = result[0] as unknown as QueryResultRow;
+      // cast through: unknown to our explicit typed shape
+      const row = result[0], as: unknown as QueryResultRow;
       const { user, session } = row;
 
       const expires = toDate(session.expires_at ?? session.expiresAt) ?? new Date();
 
       const databaseSession: DatabaseSession = {
-        id: String(session.id),
+       , id: String(session.id),
         userId: String(session.user_id ?? session.userId ?? ''),
         expiresAt: expires,
         attributes: {
-          ip_address: session.ip_address ?? null,
+         , ip_address: session.ip_address ?? null,
           user_agent: session.user_agent ?? null,
           session_context: session.session_context ?? null,
           created_at: session.created_at ?? null
         }
       };
       const databaseUser: DatabaseUser = {
-        id: String(user.id),
+       , id: String(user.id),
         attributes: {
-          email: user.email ?? null,
+         , email: user.email ?? null,
           firstName: user.first_name ?? null,
           lastName: user.last_name ?? null,
           role: user.role ?? 'user',
@@ -158,14 +158,14 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       if (!Array.isArray(result)) {
         return [];
       }
-      const rows = result as unknown as SessionRow[];
+      const rows = result as: unknown as SessionRow[];
 
       return rows.map(s => ({
-        id: String(s.id),
+       , id: String(s.id),
         userId: String(s.user_id ?? s.userId ?? userId),
         expiresAt: toDate(s.expires_at ?? s.expiresAt) ?? new Date(),
         attributes: {
-          ip_address: s.ip_address ?? null,
+         , ip_address: s.ip_address ?? null,
           user_agent: s.user_agent ?? null,
           session_context: s.session_context ?? null,
           created_at: s.created_at ?? null

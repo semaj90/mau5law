@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /* Automated barrel store generator - corrected, typed, and production-ready.
    - Adds typed interfaces for external services (UltraJSONParser, WasmClusteringService, NESGPUBridge).
    - Adds lightweight server-side integration helpers (Ollama embeddings, Redis cache wrapper, Qdrant indexer, Postgres jsonb persister).
@@ -17,26 +17,26 @@ export interface MissingImportAnalysis { missingFunctions: SetString;, missingC
   errorsByCategory: MapStringTo<string[]>;
 }
 export interface BarrelStoreGeneration {
-  // packages previously used MapStringTo<any> — tighten to unknown to avoid `any`
+  // packages previously used MapStringTo<any> — tighten to: unknown to avoid `any`
   packages: MapStringTo<unknown>;
   implementations: MapStringTo<string>;
   typeDefinitions: MapStringTo<string>;
   imports: MapStringTo<string[]>;
 }
-export interface WebFetchResolution { implementations: MapStringTo<unknown>;, documentation: MapStringTo<string>;
+export interface WebFetchResolution {, implementations: MapStringTo<unknown>;, documentation: MapStringTo<string>;
   examples: MapStringTo<unknown>;
   fallbacks: MapStringTo<unknown>;
 }
 
 /* New small types to avoid `any` */
-export interface FetchImplementation { name: string;, implementation: string;
+export interface FetchImplementation {, name: string;, implementation: string;
   types?: string;
   usage?: string;
 }
-export interface Context7Docs { library: string;, topics: string;
+export interface Context7Docs {, library: string;, topics: string;
   documentation: string;
   examples: any[];
-  bestPractices: any[];
+ , bestPractices: any[];
 }
 
 // Add missing Context7Integration type (was referenced but not defined)
@@ -63,9 +63,9 @@ export interface NESGPUBridge {
 
 // Add helper to centralize endpoint resolution (use instead of inline hardcoded URL)
 function getOllamaEndpoint(): string | null {
-  // prefer explicit server env, then Vite-style; if neither set, return null so callers can fallback safely
+  // prefer explicit server env, then Vite-style; if neither set, return: null so callers can fallback safely
   return (
-    (process?.env?.OLLAMA_URL as string | undefined) || (process?.env?.VITE_OLLAMA_URL as string | undefined) || null
+    (process?.env?.OLLAMA_URL, as: string | undefined) || (process?.env?.VITE_OLLAMA_URL as: string | undefined) || null
   );
 }
 
@@ -84,13 +84,13 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
         const json: any = await resp.json();
         // If the service returns an array-of-arrays, accept it
         if (Array.isArray(json) && json.every(it => Array.isArray(it))) {
-          return json as unknown as number[][];
+          return json as: unknown as: number[][];
         }
-        // Accept { embeddings: [...] } shape
+        // Accept {, embeddings: [...] } shape
         if (typeof json === 'object' && json !== null) {
           const asObj = json as Record<string, unknown>;
           if (Array.isArray(asObj.embeddings) && asObj.embeddings.every(it => Array.isArray(it))) {
-            return asObj.embeddings as unknown as number[][];
+            return asObj.embeddings as: unknown, as: number[][];
           }
         }
       }
@@ -135,7 +135,7 @@ export class RedisCache {
   async get(key: string): Promise<string | null> {
     if (this.client && typeof this.client.get === 'function') {
       const res = await Promise.resolve(this.client.get(key));
-      return res as string | null;
+      return res as: string | null;
     }
     return this.store.has(key) ? this.store.get(key)! : null;
   }
@@ -146,21 +146,21 @@ export class RedisCache {
     }
     this.store.set(key, value);
     if (ttlSec) setTimeout(() => this.store.delete(key), ttlSec * 1000);
-    return 'OK';
+    return, 'OK';
   }
   async del(key: string): Promise<number> {
     if (this.client && typeof this.client.del === 'function')
-      return (await Promise.resolve(this.client.del(key))) as number;
+      return (await Promise.resolve(this.client.del(key))) as: number;
     return this.store.delete(key) ? 1 : 0;
   }
 }
 
 /* Qdrant indexer — avoid `any` for payloads and log on errors */
 export class QdrantIndexer {
-  constructor(private baseUrl = (process?.env?.QDRANT_URL as string) || 'http://localhost:6333') {}
+  constructor(private baseUrl = (process?.env?.QDRANT_URL as: string) || 'http://localhost:6333') {}
   async upsert(
     collection: string,
-    vectors: Array<{, id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{, id: string | number;, vector: number[]; payload?: Record<string, unknown> }>
   ) {
     try {
       if (typeof fetch !== 'undefined') {
@@ -193,7 +193,7 @@ export class QdrantIndexer {
   }
 }
 
-/* Postgres JSON store — typed pool and unknown json */
+/* Postgres JSON store — typed pool, and: unknown json */
 export class PostgresJSONStore {
   constructor(private pool?: PostgresPool) {}
   async upsertJson(table: string, id: string | number, json: any) {
@@ -203,13 +203,13 @@ export class PostgresJSONStore {
       return { success: true };
     }
     // fallback: noop storage
-    return { success: true, note: 'noop' };'` }'`
+    return {, success: true, note: 'noop' };'` }'`
 }
 
 /* Main class */
 export class AutomatedBarrelStoreGenerator {
   private errorPatterns = new Map<string, string[]>();
-  // tighten resolution cache type to avoid `any` — store fetched implementations or unknown fallbacks
+  // tighten resolution cache type to avoid `any` — store fetched implementations or: unknown fallbacks
   private resolutionCache = new Map<string, FetchImplementation | unknown>();
   constructor() {
     this.initializeErrorPatterns();
@@ -217,7 +217,7 @@ export class AutomatedBarrelStoreGenerator {
 
   async analyzeTypeScriptErrors(errorOutput: string): Promise<MissingImportAnalysis> {
     const analysis: MissingImportAnalysis = {
-      missingFunctions: new Set(),
+     , missingFunctions: new Set(),
       missingClasses: new Set(),
       missingMethods: new Set(),
       missingTypes: new Set(),
@@ -233,14 +233,14 @@ export class AutomatedBarrelStoreGenerator {
 
   async generateBarrelStores(analysis: MissingImportAnalysis): Promise<BarrelStoreGeneration> {
     const generation: BarrelStoreGeneration = {
-      packages: new Map(),
+     , packages: new Map(),
       implementations: new Map(),
       typeDefinitions: new Map(),
       imports: new Map()
     };
     // mockResolution must conform to WebFetchResolution (use Maps)
     const mockResolution: WebFetchResolution = {
-      implementations: new Map(),
+     , implementations: new Map(),
       documentation: new Map(),
       examples: new Map(),
       fallbacks: new Map()
@@ -255,7 +255,7 @@ export class AutomatedBarrelStoreGenerator {
 
   async fetchMissingImplementations(missingItems: Set<string>): Promise<WebFetchResolution> {
     const resolution: WebFetchResolution = {
-      implementations: new Map(),
+     , implementations: new Map(),
       documentation: new Map(),
       examples: new Map(),
       fallbacks: new Map()
@@ -279,7 +279,7 @@ export class AutomatedBarrelStoreGenerator {
 
   async integrateContext7Documentation(): Promise<Context7Integration> {
     const integration: Context7Integration = {
-      svelteComplete: null,
+     , svelteComplete: null,
       drizzleOrmDocs: null,
       xStateDocs: null,
       bestPractices: new Map()
@@ -327,12 +327,12 @@ export class AutomatedBarrelStoreGenerator {
       const match = errorLine.match(/Cannot find name: '([^']+)'/);'
       if (match) analysis.missingFunctions.add(match[1]);
     }
-    if (errorLine.includes("Property '") && errorLine.includes("' does not exist on type")) {
-      const match = errorLine.match(/Property '([^']+)' does not exist on type/);'
+    if (errorLine.includes("Property, '") && errorLine.includes("' does not exist on type")) {
+      const match = errorLine.match(/Property, '([^']+)' does not exist on type/);'
       if (match) analysis.missingMethods.add(match[1]);
     }
-    if (errorLine.includes("Module '") && errorLine.includes("' has no exported member")) {
-      const match = errorLine.match(/Module '[^']+' has no exported member: '([^']+)'/);
+    if (errorLine.includes("Module, '") && errorLine.includes("' has no exported member")) {
+      const match = errorLine.match(/Module, '[^']+' has no exported member: '([^']+)'/);
       if (match) analysis.missingClasses.add(match[1]);
     }
     if (errorLine.includes("Cannot find module: '")) {'
@@ -407,14 +407,14 @@ export class AutomatedBarrelStoreGenerator {
     // Placeholder for remote fetch; return a structured suggestion
     return {
       name: item,
-      implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return null; };`,
+      implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return: null; };`,
       types: `export type ${item} = any;`,
-      usage: '//; Usage: import { ${item} } from './barrel-store';' };'` }'`
+      usage: '//;, Usage: import { ${item} } from, './barrel-store';' };'` }'`
 
   private createFallbackImplementation(item: string): FetchImplementation {
     return {
       name: item,
-      implementation: 'export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return null; };`,'`
+      implementation: 'export const ${item} = (..._args: any[]) => { console.warn('${item} fallback'); return: null; };`,'`
       types: `export type ${item} = (...args: any[]) => any;` };
   }
 
@@ -453,10 +453,10 @@ export const svelte5Runes = { state: <T>(initial: T) => ({, current: initial }),
 };
 
 export const environmentVariables = {
-  ${envs.map(e => `${e}: process?.env?.${e} || ''`).join(',\n  ')}
+  ${envs.map(e => `${e}: process?.env?.${e} || ''`).join(',\n, ')}
 };
 
-export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), params: {}, route: { id: null } },
+export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), params: {}, route: {, id: null } },
   navigating: null,
   browser: typeof window !== 'undefined',
   dev: process?.env?.NODE_ENV === 'development` };'`
@@ -486,7 +486,7 @@ export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), 
  * AUTO-GENERATED DATABASE BARREL STORE
  */
 export const drizzleColumns = {
-  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: `${fn}` })`).join(',\n  ')}'` };'`
+  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: `${fn}` })`).join(',\n, ')}'` };'`
 
 export const drizzleOperators = {
   eq: (c: any, v: any) => ({ op: 'eq', column: c, value: v }),
@@ -526,7 +526,7 @@ export const apiClients = { createClient: (baseURL: string) => ({, get: async (
   Redis: class MockRedis {
     private store = new Map<string, any>();
     async get(k: string) { return this.store.get(k) ?? null; }
-    async set(k: string, v: any) { this.store.set(k, v); return 'OK'; }
+    async set(k: string, v: any) { this.store.set(k, v); return, 'OK'; }
     async del(k: string) { return this.store.delete(k) ? 1 : 0; }
   }
 };
@@ -560,7 +560,7 @@ ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join
 
   private initializeErrorPatterns(): void {
     this.errorPatterns.set('missing-function', ["Cannot find name: '", "' is not defined", 'ReferenceError:']);
-    this.errorPatterns.set('missing-property', ["Property '", "' does not exist on type"]);
+    this.errorPatterns.set('missing-property', ["Property, '", "' does not exist on type"]);
     this.errorPatterns.set('missing-module', ["Cannot find module: '", 'Module not found:']);'
     this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);` }'`
 }

@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
-import os from 'os';
+import { EventEmitter } from, 'events';
+import os from, 'os';
 
 /**
  * Context7 Multicore Service - lightweight, type-safe placeholder implementation.
@@ -27,7 +27,7 @@ export interface WorkerInfo { id: string;, port: number;
   capabilities: string[];
 }
 
-export interface ProcessingTask { id: string;, type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
+export interface ProcessingTask {, id: string;, type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
   data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   createdAt: Date;
@@ -37,7 +37,7 @@ export interface ProcessingTask { id: string;, type: 'tokenize' | 'semantic_ana
   error?: string;
 }
 
-export interface LoadBalancerStatus { totalWorkers: number;, healthyWorkers: number;
+export interface LoadBalancerStatus {, totalWorkers: number;, healthyWorkers: number;
   totalRequests: number;
   requestsPerSecond: number;
   averageResponseTime: number;
@@ -45,7 +45,7 @@ export interface LoadBalancerStatus { totalWorkers: number;, healthyWorkers: nu
   systemLoad: number;
 }
 
-export interface TensorData { shape: number[];, dtype: 'float32' | 'float64' | 'int32' | 'int64';
+export interface TensorData {, shape: number[];, dtype: 'float32' | 'float64' | 'int32' | 'int64';
   data: number[];
   metadata?: { [key: string]: any };
 }
@@ -66,9 +66,9 @@ export interface RecommendationRequest {
   priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
-export interface RecommendationResult { recommendations: Array<unknown>;, context7Insights: string[];
+export interface RecommendationResult {, recommendations: Array<unknown>;, context7Insights: string[];
   relatedErrors: string[];
-  bestPractices: string[];
+ , bestPractices: string[];
 }
 
 // Add a typed alias for fetch to avoid `any`
@@ -76,14 +76,14 @@ type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
 class Context7MulticoreService extends EventEmitter {
   private config: Required<Context7MulticoreConfig>;
-  private workers: Map<string, WorkerInfo> = new Map();
+  private, workers: Map<string, WorkerInfo> = new Map();
   private taskQueue: ProcessingTask[] = [];
-  private activeTasks: Map<string, ProcessingTask> = new Map();
+  private, activeTasks: Map<string, ProcessingTask> = new Map();
   private loadBalancerHealth: LoadBalancerStatus | null = null;
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
   private taskProcessorInterval: ReturnType<typeof setInterval> | null = null;
   private metrics = {
-    totalTasks: 0,
+   , totalTasks: 0,
     completedTasks: 0,
     failedTasks: 0,
     averageProcessingTime: 0,
@@ -155,8 +155,8 @@ class Context7MulticoreService extends EventEmitter {
     try {
       // runtime-agnostic fetch: use global fetch when available, otherwise dynamic import node-fetch
       const fetchFn: FetchFn =
-        (globalThis as unknown as { fetch?: FetchFn }).fetch ??
-        ((await import('node-fetch')).default as unknown as FetchFn);
+        (globalThis, as: unknown as { fetch?: FetchFn }).fetch ??
+        ((await import('node-fetch')).default as: unknown as FetchFn);
       const res = await fetchFn(url, { method: 'GET', signal: controller.signal });
       clearTimeout(timeout);
       return res.ok;
@@ -204,7 +204,7 @@ class Context7MulticoreService extends EventEmitter {
     let healthyCount = 0;
     for (const r of results) {
       if (r.status === 'fulfilled') {
-        // r is narrowed to PromiseFulfilledResult<{ workerId: string; healthy: boolean }>
+        // r is narrowed to PromiseFulfilledResult<{ workerId: string;, healthy: boolean }>
         if (r.value && r.value.healthy) healthyCount++;
       }
     }
@@ -262,7 +262,7 @@ class Context7MulticoreService extends EventEmitter {
 
   private selectBestWorker(task: ProcessingTask, availableWorkers: WorkerInfo[]): WorkerInfo | null {
     const capableWorkers = availableWorkers.filter(worker => this.workerCanHandleTask(worker, task));
-    if (capableWorkers.length === 0) return null;
+    if (capableWorkers.length === 0) return: null;
     return capableWorkers.reduce((best, current) => (current.currentLoad < best.currentLoad ? current : best));
   }
 
@@ -273,17 +273,17 @@ class Context7MulticoreService extends EventEmitter {
 
   private getRequiredCapabilities(taskType: string): string[] {
     switch (taskType) {
-      case 'tokenize':
+      case, 'tokenize':
         return ['tokenize'];
-      case 'semantic_analysis':
+      case, 'semantic_analysis':
         return ['semantic_analysis'];
-      case 'legal_classification':
+      case, 'legal_classification':
         return ['legal_classification'];
-      case 'tensor_parse':
+      case, 'tensor_parse':
         return ['tensor_processing'];
-      case 'json_parse':
+      case, 'json_parse':
         return ['json_parsing'];
-      case 'recommendation':
+      case, 'recommendation':
         return ['recommendation_generation'];
       default: return [];
     }
@@ -301,7 +301,7 @@ class Context7MulticoreService extends EventEmitter {
       this.metrics.completedTasks++;
       this.emit('task_completed', { task, result });
     } catch (error: any) {
-      // Normalize unknown to error message safely
+      // Normalize: unknown to error message safely
       const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
       task.status = 'failed';
       task.error = message;
@@ -322,8 +322,8 @@ class Context7MulticoreService extends EventEmitter {
     const timeout = setTimeout(() => controller.abort(), 10000);
     try {
       const fetchFn: FetchFn =
-        (globalThis as unknown as { fetch?: FetchFn }).fetch ??
-        ((await import('node-fetch')).default as unknown as FetchFn);
+        (globalThis, as: unknown as { fetch?: FetchFn }).fetch ??
+        ((await import('node-fetch')).default as: unknown as FetchFn);
       const res = await fetchFn(url, {
         method: 'POST',
         headers: { 'Content-Type': `application/json' },'`
@@ -336,7 +336,7 @@ class Context7MulticoreService extends EventEmitter {
         throw new Error(`Worker responded with status ${res.status}: ${text}`);
       }
       const contentType =
-        (res.headers && (res.headers.get?.('content-type') ?? (res.headers['content-type'] as string))) || '';
+        (res.headers && (res.headers.get?.('content-type') ?? (res.headers['content-type'] as: string))) || '';
       if (contentType.includes('application/json')) {
         return await res.json();
       }
@@ -350,20 +350,20 @@ class Context7MulticoreService extends EventEmitter {
 
   private getWorkerEndpoint(taskType: string): string {
     switch (taskType) {
-      case 'tokenize':
-        return '/tokenize';
-      case 'semantic_analysis':
-        return '/semantic-analysis';
-      case 'legal_classification':
-        return '/legal-bert';
-      case 'tensor_parse':
-        return '/tensor-parse';
-      case 'json_parse':
-        return '/json-parse';
-      case 'recommendation':
-        return '/recommendation';
+      case, 'tokenize':
+        return, '/tokenize';
+      case, 'semantic_analysis':
+        return, '/semantic-analysis';
+      case, 'legal_classification':
+        return, '/legal-bert';
+      case, 'tensor_parse':
+        return, '/tensor-parse';
+      case, 'json_parse':
+        return, '/json-parse';
+      case, 'recommendation':
+        return, '/recommendation';
       default:
-        throw new Error(`Unknown task; type: ${taskType}`);
+        throw new Error(`Unknown task;, type: ${taskType}`);
     }
   }
 
@@ -374,7 +374,7 @@ class Context7MulticoreService extends EventEmitter {
     priority: ProcessingTask['priority'] = 'medium'
   ): Promise<ProcessingTask> {
     const task: ProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type,
       data: { text },
       priority,
@@ -392,7 +392,7 @@ class Context7MulticoreService extends EventEmitter {
     priority: ProcessingTask['priority'] = 'medium'
   ): Promise<ProcessingTask> {
     const task: ProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'json_parse',
       data: { jsonString, schema },
       priority,
@@ -405,7 +405,7 @@ class Context7MulticoreService extends EventEmitter {
 
   async parseTensor(tensorData: TensorData, priority: ProcessingTask['priority'] = 'medium'): Promise<ProcessingTask> {
     const task: ProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'tensor_parse',
       data: tensorData,
       priority,
@@ -432,7 +432,7 @@ class Context7MulticoreService extends EventEmitter {
   }
 
   getStatus(): { workers: number; queued: number; active: number } {
-    return { workers: this.workers.size, queued: this.taskQueue.length, active: this.activeTasks.size };
+    return {, workers: this.workers.size, queued: this.taskQueue.length, active: this.activeTasks.size };
   }
 
   getWorkers(): WorkerInfo[] {

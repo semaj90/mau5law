@@ -1,9 +1,9 @@
-import type { AIResponse } from '$lib/types';
-import type { Message } from '$lib/types';
-// Evidence Management Types for SvelteKit 2 AI Platform
+import type { AIResponse } from, '$lib/types';
+import type { Message } from, '$lib/types';
+// Evidence Management Types for SvelteKit, 2 AI Platform
 // Optimized for PostgreSQL + PGVector + Qdrant + MinIO + Redis
 
-import type { ActorRef } from 'xstate';
+import type { ActorRef } from, 'xstate';
 
 /**
  * Defines the structure for an evidence item used in the legal AI platform.
@@ -16,7 +16,7 @@ export interface Evidence {
   // An optional, more specific evidence type, often used for display or filtering.
   // If present, it might override or refine the: 'type' property in some contexts.
   evidenceType?: 'document' | 'image' | 'video' | 'audio' | 'link' | string;
-  title: string;
+ , title: string;
   description?: string;
   url?: string;
   tags?: string[];
@@ -24,37 +24,37 @@ export interface Evidence {
   fileSize?: number;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  // Generic metadata object to store additional, unstructured information.
+  // Generic metadata: object to store additional, unstructured information.
   metadata?: {
     size?: number;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     format?: string;
-    [key: string]: any; // Allows for any other arbitrary metadata properties.
+    [key: string]: any; // Allows for: any other arbitrary metadata properties.
   };
 }
 
 // ==================== Evidence File Types ====================
 
-export type EvidenceFile = { id: string;, userId: string;
+export type EvidenceFile = {, id: string;, userId: string;
   caseId?: string;
   filename: string;
   originalName: string;
   mimeType: string;
   size: number;
   bucket: string;
-  path: string; // MinIO object path: userId/caseId/fileId-filename; uploadedAt: Date;
+  path: string; // MinIO: object path: userId/caseId/fileId-filename; uploadedAt: Date;
   tags: string[];
   embedding?: number[]; // 768-dim vector for semantic search
   summary?: string;
   legalAnalysis?: string;
   extractedText?: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
   processingError?: string;
 };
 
-export type EvidenceUploadInput = { file: File;, userId: string;
+export type EvidenceUploadInput = {, file: File;, userId: string;
   caseId?: string;
   tags?: string[];
   metadata?: Record<string, unknown>;
@@ -71,9 +71,9 @@ export type EvidenceAnalysisResult = { success: boolean;, fileId: string;
 
 // ==================== AI Agent Types ====================
 
-export type AIAgentTool = { name: string;, description: string;
-  parameters: Record<string, { type: string; description: string; required?: boolean }>;
-  execute: (params: Record<string, unknown>) => Promise<unknown>;
+export type AIAgentTool = {, name: string;, description: string;
+ , parameters: Record<string, { type: string; description: string; required?: boolean }>;
+ , execute: (params: Record<string, unknown>) => Promise<unknown>;
 };
 
 export type AIToolInvocation = { tool: string;, params: Record<string, unknown>;
@@ -81,20 +81,20 @@ export type AIToolInvocation = { tool: string;, params: Record<string, unknown>
   timestamp: number;
 };
 
-export type AIResponse = { text: string;, source: 'ollama' | 'tensorrt';
+export type AIResponse = {, text: string;, source: 'ollama' | 'tensorrt';
   model: string;
   toolInvocations?: AIToolInvocation[];
   tokensUsed?: number;
   responseTimeMs: number;
 };
 
-export type ChatMessage = { id: string;, role: 'user' | 'assistant' | 'system';
+export type ChatMessage = {, id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
   userId: string;
   caseId?: string;
   evidenceIds?: string[];
-  aiMetadata?: { source: 'ollama' | 'tensorrt';, model: string;
+  aiMetadata?: {, source: 'ollama' | 'tensorrt';, model: string;
     toolsUsed?: string[];
   };
 };
@@ -114,7 +114,7 @@ export type VectorSearchQuery = {
   };
 };
 
-export type VectorSearchResult = { id: string;, score: number;
+export type VectorSearchResult = {, id: string;, score: number;
   evidence: EvidenceFile;
   distance: number;
 };
@@ -141,16 +141,16 @@ export type WorkflowEvent =
 
 // ==================== Cache Types ====================
 
-export type CacheEntry<T> = { data: T;, timestamp: number;
+export type CacheEntry<T> = {, data: T;, timestamp: number;
   ttl: number;
   userId?: string;
 };
 
-export type EmbeddingCache = CacheEntry<{ fileId: string;, embedding: VectorEmbedding;
+export type EmbeddingCache = CacheEntry<{, fileId: string;, embedding: VectorEmbedding;
   model: string;
 }>;
 
-export type AnalysisCache = CacheEntry<{ fileId: string;, summary: string;
+export type AnalysisCache = CacheEntry<{, fileId: string;, summary: string;
   tags: string[];
   legalNotes?: string;
 }>;
@@ -164,11 +164,11 @@ export type APIResponse<T = unknown> = {
   timestamp: number;
 };
 
-export type UploadResponse = APIResponse<{ fileId: string;, path: string;
+export type UploadResponse = APIResponse<{, fileId: string;, path: string;
   processingStarted: boolean;
 }>;
 
-export type SearchResponse = APIResponse<{ results: VectorSearchResult[];, totalFound: number;
+export type SearchResponse = APIResponse<{, results: VectorSearchResult[];, totalFound: number;
   queryTimeMs: number;
 }>;
 
@@ -183,7 +183,7 @@ export type WSMessage =
 
 // ==================== Export Actor Types ====================
 
-// Correct the generic arguments for ActorRef: ActorRef<TEvent, TSnapshot>
+// Correct the generic arguments for, ActorRef: ActorRef<TEvent, TSnapshot>
 export type EvidenceActor = ActorRef<WorkflowEvent, EvidenceSnapshot>;
 
 // Replace SnapshotFrom<> usage (causes TS issues) with an explicit lightweight snapshot shape

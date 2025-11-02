@@ -1,4 +1,4 @@
-declare module '$lib/server/db/existing-user-operations' {
+declare module, '$lib/server/db/existing-user-operations' {
   export interface ExistingUser { id: string;, email: string;
     role?: string;
     first_name?: string;
@@ -14,7 +14,7 @@ declare module '$lib/server/db/existing-user-operations' {
     isActive?: boolean;
     [key: string]: any;
   }
-  export interface ExistingSession { id: string;, user_id: string;
+  export interface ExistingSession {, id: string;, user_id: string;
     expires_at: Date;
     // aliases
     sessionId?: string;
@@ -26,7 +26,7 @@ declare module '$lib/server/db/existing-user-operations' {
     [key: string]: any;
   }
   export interface ServiceResult<T = any> {
-    success: boolean;
+   , success: boolean;
     data?: T;
     user?: ExistingUser | null;
     session?: ExistingSession | null;
@@ -42,6 +42,6 @@ declare module '$lib/server/db/existing-user-operations' {
   export { ExistingUserAuthService, as ExistingUserAuthService };
 }
 // also declare the .js import path used by routes
-declare module '$lib/server/db/existing-user-operations.js' {
-  export * from '$lib/server/db/existing-user-operations';
+declare module, '$lib/server/db/existing-user-operations.js' {
+  export * from, '$lib/server/db/existing-user-operations';
 }

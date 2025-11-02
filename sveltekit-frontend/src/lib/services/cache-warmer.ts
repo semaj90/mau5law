@@ -1,10 +1,10 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Legal Cache Warmer - Proactive preloading for legal assets
  */
-import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from '$lib/config/legal-priorities';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { lodManager } from '$lib/services/N64LODManager';
+import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from, '$lib/config/legal-priorities';
+import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
+import { lodManager } from, '$lib/services/N64LODManager';
 
 export interface UserProfile { userId: string;, practiceAreas: LegalCategory[];
   recentCases: string[];
@@ -13,14 +13,14 @@ export interface UserProfile { userId: string;, practiceAreas: LegalCategory[];
   memoryPreference: 'performance' | 'balanced' | 'conservative';
 }
 
-export interface CacheWarmingStrategy { name: string;, description: string;
+export interface CacheWarmingStrategy {, name: string;, description: string;
   priorityThreshold: number;
   maxDocuments: number;
   preloadLODs: number[];
   memoryBudget: number; // bytes
 }
 
-export interface WarmingResult { documentsProcessed: number;, texturesLoaded: number;
+export interface WarmingResult {, documentsProcessed: number;, texturesLoaded: number;
   memoryUsed: number;
   cacheHitRateImprovement: number;
   processingTime: number;
@@ -28,7 +28,7 @@ export interface WarmingResult { documentsProcessed: number;, texturesLoaded: n
   warnings: string[];
 }
 
-export interface CaseContext { caseId: string;, caseType: LegalCategory | string;
+export interface CaseContext {, caseId: string;, caseType: LegalCategory | string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   documents: LegalDocument[];
   relatedCases: string[];
@@ -38,10 +38,10 @@ export interface CaseContext { caseId: string;, caseType: LegalCategory | strin
 /**
  * Pre-defined warming strategies for different use cases
  */
-export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
+export const, WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
   // Aggressive warming for litigation deadlines
   litigation_emergency: {
-    name: 'Litigation Emergency',
+   , name: 'Litigation Emergency',
     description: 'Maximum performance for critical court deadlines',
     priorityThreshold: 180,
     maxDocuments: 20,
@@ -50,7 +50,7 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
   },
   // Standard preparation for active case work
   active_case_prep: {
-    name: 'Active Case Preparation',
+   , name: 'Active Case Preparation',
     description: 'Balanced warming for active case development',
     priorityThreshold: 150,
     maxDocuments: 50,
@@ -59,7 +59,7 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
   },
   // Background warming for research sessions
   research_session: {
-    name: 'Research Session',
+   , name: 'Research Session',
     description: 'Conservative warming for legal research',
     priorityThreshold: 120,
     maxDocuments: 100,
@@ -68,7 +68,7 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
   },
   // Conservative warming for general use
   background_maintenance: {
-    name: 'Background Maintenance',
+   , name: 'Background Maintenance',
     description: 'Light warming for routine document access',
     priorityThreshold: 100,
     maxDocuments: 200,
@@ -106,7 +106,7 @@ export class LegalCacheWarmer {
       this.updateUserBehaviorData(userProfile.userId, caseContext, strategy);
       const processingTime = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - startTime;
       const result: WarmingResult = {
-        documentsProcessed: prioritizedDocs.length,
+       , documentsProcessed: prioritizedDocs.length,
         texturesLoaded: textureResults.texturesLoaded,
         memoryUsed: textureResults.memoryUsed + chrRomResults.memoryUsed,
         cacheHitRateImprovement: this.estimateCacheHitImprovement(strategy),
@@ -178,13 +178,13 @@ export class LegalCacheWarmer {
   private calculateContextualPriority(document: LegalDocument, userProfile: UserProfile, basePriority?: number): number {
     let priority = typeof basePriority === 'number' ? basePriority : calculateDocumentPriority(document) || 0;
 
-    if (userProfile.practiceAreas && userProfile.practiceAreas.includes((document as any).category)) {
+    if (userProfile.practiceAreas && userProfile.practiceAreas.includes((document as: any).category)) {
       priority = Math.min(255, priority * 1.2);
     }
-    if (userProfile.preferredDocumentTypes && userProfile.preferredDocumentTypes.includes((document as any).type)) {
+    if (userProfile.preferredDocumentTypes && userProfile.preferredDocumentTypes.includes((document as: any).type)) {
       priority = Math.min(255, priority * 1.15);
     }
-    if (userProfile.recentCases && userProfile.recentCases.some(caseId => (document as any).id?.includes(caseId))) {
+    if (userProfile.recentCases && userProfile.recentCases.some(caseId => (document as: any).id?.includes(caseId))) {
       priority = Math.min(255, priority * 1.3);
     }
     return Math.floor(priority);
@@ -195,7 +195,7 @@ export class LegalCacheWarmer {
   private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number; warnings: string[] }> {
     let texturesLoaded = 0;
     let memoryUsed = 0;
-    const warnings: string[] = [];
+    const, warnings: string[] = [];
 
     for (const document of documents) {
       try {
@@ -259,14 +259,14 @@ export class LegalCacheWarmer {
   }
   /**
    * Warm CHR-ROM UI patterns (lightweight placeholder implementation)
-   * Returns a minimal result object so callers can sum memory usages and warnings.
+   * Returns a minimal result: object so callers can sum memory usages and warnings.
    */
   private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[]; patternsLoaded: number }> {
     const warnings: string[] = [];
     let memoryUsed = 0;
     let patternsLoaded = 0;
 
-    // Minimal deterministic work: simulate small memory usage per document and record warnings if any.
+    // Minimal deterministic work: simulate small memory usage per document and record warnings, if: any.
     try {
       for (const doc of documents) {
         // cheap heuristic: only: "warm" a pattern for higher-priority docs
@@ -310,7 +310,7 @@ export class LegalCacheWarmer {
     // Higher thresholds and more documents => higher expected improvement up to cap.
     try {
       const thresholdFactor = Math.max(0, Math.min(1, (strategy.priorityThreshold - 80) / 175)); // map [80..255] -> [0..1]
-      const docFactor = Math.max(0, Math.min(1, strategy.maxDocuments / 200)); // normalized against 200 docs
+      const docFactor = Math.max(0, Math.min(1, strategy.maxDocuments / 200)); // normalized against, 200 docs
       const memoryFactor = Math.max(0, Math.min(1, strategy.memoryBudget / (2 * 1024 * 1024))); // normalized against 2MB
 
       const raw = (0.5 * thresholdFactor) + (0.3 * docFactor) + (0.2 * memoryFactor);

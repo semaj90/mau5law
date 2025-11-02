@@ -1,12 +1,12 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 /*
  * Cognitive Cache API Endpoint
  * Unified interface for Reinforcement Learning Cache + GPU Shader Cache
  * Provides intelligent caching with ML-driven decision making
  */
-import * as cognitiveIntegration from '$lib/services/cognitive-cache-integration';
-import { dev } from '$app/environment';
+import * as cognitiveIntegration from, '$lib/services/cognitive-cache-integration';
+import { dev } from, '$app/environment';
 
 // --- Added types to avoid `any` casts ---
 type CacheType = 'legal-data' | 'shader' | 'replay' | string;
@@ -25,7 +25,7 @@ interface CognitiveGetOptions {
   [k: string]: any;
 }
 
-interface CognitiveGetRequest { key: string;, type: CacheType;
+interface CognitiveGetRequest {, key: string;, type: CacheType;
   context?: CognitiveGetContext;
   options?: CognitiveGetOptions;
 }
@@ -43,7 +43,7 @@ interface CognitiveGetResult {
   predictions?: any;
 }
 
-interface CognitiveMetrics { totalRequests: number;, cacheHits: number;
+interface CognitiveMetrics {, totalRequests: number;, cacheHits: number;
   averageLatency?: number;
   cognitiveAccuracy?: number;
   cognitiveHits?: number;
@@ -72,9 +72,9 @@ type Distribution = {
   shaderRatio?: number;
 };
 
-type Learning = { reinforcementActive: boolean;, adaptationRate: number;
+type Learning = {, reinforcementActive: boolean;, adaptationRate: number;
   predictionImprovement: number;
-  cognitiveEvolutionScore: number;
+ , cognitiveEvolutionScore: number;
 };
 
 type Detailed = {
@@ -91,8 +91,8 @@ type Predictions = {
   recommendedActions?: string[];
 };
 
-type CognitiveMetricsResponse = { performance: CognMetricsPerformance;, distribution: Distribution;
-  learning: Learning;
+type CognitiveMetricsResponse = {, performance: CognMetricsPerformance;, distribution: Distribution;
+ , learning: Learning;
   detailed?: Detailed;
   predictions?: Predictions;
 };
@@ -178,8 +178,8 @@ export const GET: RequestHandler = async ({ url }) => {
     const enablePredictive = url.searchParams.get('predictive') === 'true';
     const semanticTags = url.searchParams.get('tags')?.split(',').filter(Boolean) ?? [];
 
-    // Convert priority to number when numeric, otherwise keep string
-    let priority: number | string | undefined = undefined;
+    // Convert priority to: number when numeric, otherwise keep: string
+    let, priority: number | string | undefined = undefined;
     if (priorityParam !== null) {
       const n = Number(priorityParam);
       priority = Number.isFinite(n) ? n : priorityParam;
@@ -201,8 +201,8 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     };
 
-    // Use a typed cognitiveCache reference instead of `as any`
-    const cognitiveCache = cognitiveIntegration.cognitiveCache as unknown as CognitiveCache;
+    // Use a typed cognitiveCache reference instead of `as: any`
+    const cognitiveCache = cognitiveIntegration.cognitiveCache, as: unknown as CognitiveCache;
     const result = await cognitiveCache.get(req);
 
     if (result && result.data !== undefined) {
@@ -263,7 +263,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const receivedOptions = { ...options };
 
     switch (action) {
-      case 'analyze': {
+      case, 'analyze': {
         if (!key) {
           return json({ error: 'Key required for analysis' }, { status: 400 });
         }
@@ -272,18 +272,18 @@ export const PUT: RequestHandler = async ({ request }) => {
           key,
           cognitiveScore: Math.random() * 0.3 + 0.7, // Mock analysis
           accessPatterns: {
-            frequency: Math.random(),
+           , frequency: Math.random(),
             recentAccess: Date.now() - Math.random() * 86400000,
             userContexts: ['legal-analyst', 'prosecutor'],
             workflowSteps: ['doc-load', 'evidence-view', 'analysis']
           },
           predictions: {
-            futureAccess: 0.8,
+           , futureAccess: 0.8,
             optimalCacheLayer: 'hybrid',
             recommendedActions: ['Increase priority weight', 'Preload related content', 'Update semantic tags']
           },
           physicsMetrics: {
-            memoryMomentum: [0.3, 0.7, 0.1],
+           , memoryMomentum: [0.3, 0.7, 0.1],
             cacheTemperature: 0.6,
             accessPressure: 0.4
           },
@@ -292,7 +292,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json({ success: true, analysis, timestamp: Date.now() }, { status: 200 });
       }
-      case 'optimize': {
+      case, 'optimize': {
         // Trigger cognitive optimization
         const optimizationResult = {
           optimizedEntries: Math.floor(Math.random() * 100) + 50,
@@ -304,7 +304,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         };
         return json(
           {
-            success: true,
+           , success: true,
             optimization: optimizationResult,
             message: 'Cognitive optimization completed',
             timestamp: Date.now()
@@ -312,7 +312,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           { status: 200 }
         );
       }
-      case 'predict': {
+      case, 'predict': {
         if (!context.workflowStep) {
           return json({ error: 'Workflow step required for prediction' }, { status: 400 });'` }'`
         // Generate workflow predictions
@@ -324,9 +324,9 @@ export const PUT: RequestHandler = async ({ request }) => {
           // include options for traceability
           optionsUsed: receivedOptions
         };
-        return json({ success: true, predictions, timestamp: Date.now() }, { status: 200 });
+        return json({, success: true, predictions, timestamp: Date.now() }, { status: 200 });
       }
-      default: return json({ error: `Invalid action., Use: analyze, optimize, predict` }, { status: 400 });
+      default: return json({, error: `Invalid action., Use: analyze, optimize, predict` }, { status: 400 });
     }
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
@@ -399,7 +399,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
   try {
     const includeDetailed = url.searchParams.get('detailed') === 'true';
     const includePredictions = url.searchParams.get('predictions') === 'true';
-    const cognitiveCache = cognitiveIntegration.cognitiveCache as unknown as CognitiveCache;
+    const cognitiveCache = cognitiveIntegration.cognitiveCache as: unknown as CognitiveCache;
 
     const metrics = cognitiveCache.getMetrics?.() ?? {
       totalRequests: 0,
@@ -408,20 +408,20 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     const statistics = (await cognitiveCache.getStatistics?.()) ?? {};
 
     // Use a proper typed response instead of `any`
-    const response: CognitiveMetricsResponse = { performance: {, totalRequests: metrics.totalRequests,
+    const response: CognitiveMetricsResponse = {, performance: {, totalRequests: metrics.totalRequests,
         cacheHits: metrics.cacheHits,
         hitRate: metrics.totalRequests > 0 ? metrics.cacheHits / metrics.totalRequests : 0,
         averageLatency: metrics.averageLatency,
         cognitiveAccuracy: metrics.cognitiveAccuracy
       },
       distribution: {
-        cognitiveHits: metrics.cognitiveHits,
+       , cognitiveHits: metrics.cognitiveHits,
         shaderHits: metrics.shaderHits,
         cognitiveRatio: metrics.totalRequests > 0 ? (metrics.cognitiveHits ?? 0) / metrics.totalRequests : 0,
         shaderRatio: metrics.totalRequests > 0 ? (metrics.shaderHits ?? 0) / metrics.totalRequests : 0
       },
       learning: {
-        reinforcementActive: true,
+       , reinforcementActive: true,
         adaptationRate: 0.85,
         predictionImprovement: 0.12,
         cognitiveEvolutionScore: 0.73
@@ -432,11 +432,11 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       response.detailed = {
         cacheStatistics: statistics,
         memoryUsage: {
-          reinforcementCache: '45 MB',
+         , reinforcementCache: '45 MB',
           shaderCache: '128 MB',
           totalMemory: `173 MB` },
         physicsState: {
-          momentum: [0.4, 0.6, 0.2],
+         , momentum: [0.4, 0.6, 0.2],
           temperature: 0.65,
           pressure: 0.35
         }

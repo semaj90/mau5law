@@ -1,4 +1,4 @@
-import { WSRegistry } from './ws-registry';
+import { WSRegistry } from, './ws-registry';
 
 /**
  * Dynamic WebSocket client for legal AI platform
@@ -20,7 +20,7 @@ export class DynamicWebSocketClient<T = unknown> {
   private ws: WebSocket | null = null;
   private config: Required<WSClientConfig<T>>;
   private reconnectAttempts = 0;
-  private status: WSConnectionStatus = 'disconnected';
+  private, status: WSConnectionStatus = 'disconnected';
   private keepaliveTimer?: ReturnType<typeof, setInterval>;
 
   constructor(config: WSClientConfig<T>) {

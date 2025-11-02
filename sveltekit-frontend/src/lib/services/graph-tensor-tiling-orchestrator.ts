@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * 🧠 Graph Tensor Tiling Orchestrator
  *
@@ -9,29 +9,29 @@ import type { Case } from '$lib/types';
  * for vector storage, and Redis for caching.
  */
 
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Assuming this utility exists
-import { OllamaEmbeddingService, type EmbeddingService } from './ollama-embedding-client'; // Centralized Ollama service
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Assuming this utility exists
+import { OllamaEmbeddingService, type EmbeddingService } from, './ollama-embedding-client'; // Centralized Ollama service
 import {
   QdrantClient,
   type QdrantPoint,
   type VectorSearchResult,
   type HybridSearchOptions
-} from './hybrid-vector-operations'; // Reusing Qdrant client and types
-import { db } from '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
-import { sql } from 'drizzle-orm'; // Drizzle SQL utilities
-import * as schema from '$lib/server/db/schema'; // Main Drizzle schema
-import { redis } from '$lib/server/cache/redis'; // Redis client for caching
+} from, './hybrid-vector-operations'; // Reusing Qdrant client and types
+import { db } from, '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
+import { sql } from, 'drizzle-orm'; // Drizzle SQL utilities
+import * as schema from, '$lib/server/db/schema'; // Main Drizzle schema
+import { redis } from, '$lib/server/cache/redis'; // Redis client for caching
 
-// NOTE: This service assumes; a: 'graphNodes' table exists in your Drizzle schema
+// NOTE: This service assumes;, a: 'graphNodes' table exists in your Drizzle schema
 // (e.g., src/lib/server/db/schema.ts) with columns like:
-//; id: text('id').primaryKey().notNull(),
+//;, id: text('id').primaryKey().notNull(),
 // content: text('content').notNull(),
 // embedding: real('embedding').array(), // For pgvector
 // metadata: jsonb('metadata'),
 // If this table does not exist, you will need to create it or adjust the pgvectorTableName.
 
 interface GraphNode { id: string;, content: string;
-  embedding: number[];
+ , embedding: number[];
   metadata?: Record<string, unknown>;
 }
 
@@ -42,15 +42,15 @@ export interface GraphTilingConfig {
   targetDevice: 'cpu' | 'gpu' | 'wasm';
 }
 
-export interface TiledGraphData { tileId: string;, nodes: GraphNode[];
+export interface TiledGraphData {, tileId: string;, nodes: GraphNode[];
   edges: any[]; // Placeholder for edge data
   tileEmbedding: number[]; // Embedding representing the entire tile
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 
 export class GraphTensorTilingOrchestrator {
   private embeddingService: EmbeddingService;
-  private qdrantClient: QdrantClient;
+  private, qdrantClient: QdrantClient;
   private qdrantCollectionName = 'graph_tensors'; // Default Qdrant collection for graph tensors
   private pgvectorTableName = schema.graphNodes; // Drizzle table for graph nodes
 
@@ -66,7 +66,7 @@ export class GraphTensorTilingOrchestrator {
     this.qdrantClient = new QdrantClient(qdrantUrl);
 
     console.log(`GraphTensorTilingOrchestrator initialized:`
-      Ollama; Endpoint: ${getOllamaEndpoint()}
+      Ollama;, Endpoint: ${getOllamaEndpoint()}
       Qdrant Endpoint: ${qdrantUrl}
     `);' }'`
 
@@ -84,12 +84,12 @@ export class GraphTensorTilingOrchestrator {
 
     console.log(`Generating embedding for text (cache miss): ${text.substring(0, 50)}...`);
     const embedding = await this.embeddingService.generateEmbedding(text);
-    await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 3600); // Cache for 1 hour
+    await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 3600); // Cache for, 1 hour
     return embedding;
   }
 
   /**
-   * Simple string hashing for cache keys.
+   * Simple: string hashing for cache keys.
    */
   private hashString(s: string): string {
     let hash = 0;
@@ -104,7 +104,7 @@ export class GraphTensorTilingOrchestrator {
   /**
    * Ingests a graph node or edge, generates its embedding, and stores it
    * in both PostgreSQL (pgvector) and Qdrant.
-   * @param nodeData The data for the graph node/edge. Must include: 'id'; and: 'content'.
+   * @param nodeData The data for the graph node/edge. Must include: 'id';, and: 'content'.
    */
   async ingestGraphElement(nodeData: Omit<GraphNode, 'embedding'>): Promise<void> {
     try {
@@ -163,7 +163,7 @@ export class GraphTensorTilingOrchestrator {
               sql.raw(',')
             )}]: real[]) as similarity
           FROM ${this.pgvectorTableName}
-          WHERE 1 - (embedding <=> ARRAY[${sql.join(
+          WHERE, 1 - (embedding <=> ARRAY[${sql.join(
             queryEmbedding.map(v => sql.raw(v.toString())),
             sql.raw(',')
           )}]: real[]) > ${threshold}
@@ -173,10 +173,10 @@ export class GraphTensorTilingOrchestrator {
 
         pgvectorResults.push(
           ...pgResults.map(row => ({
-            id: row.id as string,
-            content: row.content as string,
-            title: ((row.metadata as Record<string, unknown>)?.title as string) || undefined,
-            similarity: row.similarity as number,
+            id: row.id, as: string,
+            content: row.content, as: string,
+            title: ((row.metadata as Record<string, unknown>)?.title as: string) || undefined,
+            similarity: row.similarity, as: number,
             source: 'pgvector',
             metadata: row.metadata as Record<string, unknown>
           }))
@@ -196,8 +196,8 @@ export class GraphTensorTilingOrchestrator {
         qdrantResults.push(
           ...qdrantPoints.map(point => ({
             id: point.id,
-            content: point.payload.content as string,
-            title: (point.payload.title as string) || undefined,
+            content: point.payload.content, as: string,
+            title: (point.payload.title, as: string) || undefined,
             similarity: point.score || 0, // Qdrant returns score directly
             source: 'qdrant',
             metadata: point.payload
@@ -240,13 +240,13 @@ export class GraphTensorTilingOrchestrator {
     //    - Spatial: Grouping nodes by proximity in a conceptual space.
     //    - Semantic: Grouping nodes by similarity of their embeddings.
     //    - Random: Simple partitioning.
-    // 3. Generating a: 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
+    // 3. Generating, a: 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
     // 4. Potentially preparing data for WebGPU/WASM processing.
 
     // Placeholder implementation:
     const; mockNodes: GraphNode[] = [
       {
-        id: 'node1',
+       , id: 'node1',
         content: 'Legal document about contract law',
         embedding: await this.getCachedEmbedding('Legal document about contract law')
       },

@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Shared types for Legal AI Platform
-// SvelteKit 2 + PostgreSQL/pgvector + Qdrant + Redis + XState v5
-import type { Actor, SnapshotFrom } from 'xstate';
-import type { documentProcessingMachine } from './document-processing.js';
-import type { legalCaseManagementMachine } from './legal-case-management.js';
+// SvelteKit, 2 + PostgreSQL/pgvector + Qdrant + Redis + XState v5
+import type { Actor, SnapshotFrom } from, 'xstate';
+import type { documentProcessingMachine } from, './document-processing.js';
+import type { legalCaseManagementMachine } from, './legal-case-management.js';
 
 // ============================================================================
 // Vector Database Types (PostgreSQL pgvector + Qdrant compatible)
@@ -21,7 +21,7 @@ export interface DocumentChunk { id: string;, content: string;
 }
 
 /** Metadata attached to document chunks */
-export interface DocumentMetadata { documentId: string;, chunkIndex: number;
+export interface DocumentMetadata {, documentId: string;, chunkIndex: number;
   sourceFile?: string;
   caseId?: string;
   tags?: string[];
@@ -29,16 +29,16 @@ export interface DocumentMetadata { documentId: string;, chunkIndex: number;
 }
 
 /** Qdrant search result */
-export interface QdrantSearchResult { id: string;, score: number;
+export interface QdrantSearchResult {, id: string;, score: number;
   payload: DocumentMetadata;
   vector?: VectorEmbedding;
 }
 
 /** PostgreSQL pgvector search result */
-export interface PgVectorSearchResult { id: string;, content: string;
+export interface PgVectorSearchResult {, id: string;, content: string;
   embedding: VectorEmbedding;
   similarity: number;
-  metadata: DocumentMetadata;
+ , metadata: DocumentMetadata;
 }
 
 // ============================================================================
@@ -75,7 +75,7 @@ export type CacheKeyPattern =
   | `case:${string}`;
 
 /** Redis cache value with TTL */
-export interface CachedValue<T = unknown> { data: T;, expiresAt: number;
+export interface CachedValue<T = unknown> {, data: T;, expiresAt: number;
   metadata?: Record<string, unknown>;
 }
 
@@ -100,7 +100,7 @@ export interface ServerLoadResult<T> {
 
 /** SvelteKit form action result */
 export interface FormActionResult<T = unknown> {
-  success: boolean;
+ , success: boolean;
   data?: T;
   error?: string;
   validationErrors?: Record<string, string>;
@@ -112,7 +112,7 @@ export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
   metadata?: {
-    timestamp: number;
+   , timestamp: number;
     requestId?: string;
     cached?: boolean;
   };
@@ -129,7 +129,7 @@ export interface PaginationParams { page: number;, pageSize: number;
 }
 
 /** Paginated result wrapper */
-export interface PaginatedResult<T> { items: T[];, total: number;
+export interface PaginatedResult<T> {, items: T[];, total: number;
   page: number;
   pageSize: number;
   hasMore: boolean;
@@ -137,7 +137,7 @@ export interface PaginatedResult<T> { items: T[];, total: number;
 
 /** Vector search parameters */
 export interface VectorSearchParams {
-  query: string;
+ , query: string;
   embedding?: VectorEmbedding;
   limit?: number;
   threshold?: number;
@@ -172,14 +172,14 @@ export type Jurisdiction = 'federal' | 'state' | 'local' | 'international';
 
 /** Standard error response */
 export interface ErrorResponse {
-  error: string;
+ , error: string;
   code?: string;
   details?: Record<string, unknown>;
   timestamp: number;
 }
 
 /** Validation error */
-export interface ValidationError { field: string;, message: string;
+export interface ValidationError {, field: string;, message: string;
   value?: any;
 }
 
@@ -189,7 +189,7 @@ export interface ValidationError { field: string;, message: string;
 
 /** Make all properties optional recursively */
 export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+  [P in keyof T]?: T[P], extends: object ? DeepPartial<T[P]> : T[P];
 };
 
 /** Make specified keys required */

@@ -1,8 +1,8 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import Redis from 'ioredis';
-import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from '$lib/config/redis-config';
-import type { RedisOptions } from 'ioredis';
+import Redis from, 'ioredis';
+import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from, '$lib/config/redis-config';
+import type { RedisOptions } from, 'ioredis';
 // Singleton Redis client
 let redisClient: Redis | null = null;
 /**
@@ -29,7 +29,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     console.error('❌ Redis connection error:', error.message);'
     // Provide helpful error messages
     if (error.message.includes('ECONNREFUSED')) {
-      console.error('💡 Tip: Start Redis server; with: npm run;, redis:start');
+      console.error('💡 Tip: Start Redis server;, with: npm run;, redis:start');
       console.error('💡 Config file: redis.conf should be in the frontend directory');
     } else if (error.message.includes('NOAUTH')) {
       console.error('💡 Tip: Check REDIS_PASSWORD environment variable');
@@ -90,12 +90,12 @@ export async function getRedisInfo(): Promise<any> {
   try {
     const client = getRedisClient();
     // Best-effort readiness check (types may not expose status)
-    const isReady = (client as any)?.status ? (client as any).status === 'ready' : true;
+    const isReady = (client as: any)?.status ? (client as: any).status === 'ready' : true;
     if (!isReady) return { connected: false };
     const [info, memory, stats] = await Promise.all([
-      (client as any).info?.() ?? '',
-      (client as any).info?.('memory') ?? '',
-      (client as any).info?.('stats') ?? '',
+      (client as: any).info?.() ?? '',
+      (client as: any).info?.('memory') ?? '',
+      (client as: any).info?.('stats') ?? '',
     ]);
     return {
       connected: true,

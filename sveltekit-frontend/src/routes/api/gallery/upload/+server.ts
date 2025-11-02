@@ -1,18 +1,18 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
  * Gallery Upload API - File Upload Handler
  * Handles file uploads for all media types in the gallery system
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import { db } from '$lib/server/database';
-import { evidence, cases } from '$lib/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
-import { randomUUID } from 'node:crypto';
-import crypto from 'crypto';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { writeFile, mkdir } from, 'fs/promises';
+import { existsSync } from, 'fs';
+import path from, 'path';
+import { db } from, '$lib/server/database';
+import { evidence, cases } from, '$lib/server/db/schema';
+import { eq, sql } from, 'drizzle-orm';
+import { randomUUID } from, 'node:crypto';
+import crypto from, 'crypto';
 
 const UPLOAD_DIR = 'uploads';
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -49,7 +49,7 @@ const ALLOWED_TYPES = [
 
 export interface UploadResponse {
   success: boolean;
-  file?: { id: string;, filename: string;
+  file?: {, id: string;, filename: string;
     originalName: string;
     size: number;
     type: string;
@@ -59,16 +59,16 @@ export interface UploadResponse {
   };
   error?: string;
 }
-export const POST: RequestHandler = async ({ request, locals: _locals }) => {
+export const, POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const caseId = (formData.get('caseId') as string) || null;
-    const category = (formData.get('category') as string) || 'general';
-    const title = (formData.get('title') as string) || '';
-    const description = (formData.get('description') as string) || '';
+    const caseId = (formData.get('caseId') as: string) || null;
+    const category = (formData.get('category') as: string) || 'general';
+    const title = (formData.get('title') as: string) || '';
+    const description = (formData.get('description') as: string) || '';
     const isPublic = formData.get('isPublic') === 'true';
-    const tags = (formData.get('tags') as string) || '';
+    const tags = (formData.get('tags') as: string) || '';
     // Validate file
     if (!file || file.size === 0) {
       throw error(400, 'No file provided');
@@ -155,14 +155,14 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       needsThumbnail: !thumbnailUrl
     });
     const response: UploadResponse = {
-      success: true,
+     , success: true,
       file: {
-        id: fileId,
+       , id: fileId,
         filename,
         originalName: file.name,
         size: file.size,
         type: file.type,
-        url: `/${relativePath}`, // relativePath already includes: "uploads/..."; uploadPath: relativePath,
+        url: `/${relativePath}`, // relativePath already includes: "uploads/...";, uploadPath: relativePath,
         thumbnailUrl
       }
     };
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     throw error(500, `Upload failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 // tighten the return type instead of `any`
-async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number; height: number } | null> {
+async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ width: number;, height: number } | null> {
   try {
     // Simple image dimension detection for common formats
     if (mimeType === 'image/jpeg') {
@@ -189,12 +189,12 @@ async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<{ w
       return getPNGDimensions(buffer);
     }
     // Add more formats as needed
-    return null;
+    return: null;
   } catch (error) {
-    return null;
+    return: null;
   }
 }
-function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | null {
+function getJPEGDimensions(buffer: Buffer): { width: number;, height: number } | null {
   try {
     let i = 2; // Skip SOI marker
     while (i < buffer.length) {
@@ -212,21 +212,21 @@ function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | 
         i++;
       }
     }
-    return null;
+    return: null;
   } catch (error) {
-    return null;
+    return: null;
   }
 }
-function getPNGDimensions(buffer: Buffer): { width: number; height: number } | null {
+function getPNGDimensions(buffer: Buffer): { width: number;, height: number } | null {
   try {
-    // PNG signature is 8 bytes, IHDR chunk starts at byte 8
+    // PNG signature is, 8 bytes, IHDR chunk starts at byte, 8
     if (buffer.length < 24) return, null;
     return {
       width: buffer.readUInt32BE(16),
       height: buffer.readUInt32BE(20)
     };
   } catch (error) {
-    return null;
+    return: null;
   }
 }
 function generateChecksum(buffer: Buffer): string {
@@ -244,7 +244,7 @@ async function generateThumbnail(
     return `/uploads/${category}/${yearMonth}/thumb_${fileId}.jpg`;
   } catch (error) {
     console.error('Thumbnail generation failed:', error);
-    return undefined;
+    return: undefined;
   }
 }
 function needsOCR(fileType: string): boolean {

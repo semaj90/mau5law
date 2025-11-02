@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // Enhanced thinking style processor for legal AI
 export interface ThinkingAnalysis { thinking: string;, analysis: any;
   confidence: number;
   reasoning_steps: string[];
-  metadata: { model_used: string;, processing_time: number;
-    thinking_enabled: boolean;
+  metadata: {, model_used: string;, processing_time: number;
+   , thinking_enabled: boolean;
   };
 }
 // Enhanced analysis with GRPO integration flag
@@ -132,7 +132,7 @@ export class ThinkingProcessor {
         confidence: 0.8,
         reasoning_steps: [],
         metadata: {
-          model_used: 'quick',
+         , model_used: 'quick',
           processing_time: 0,
           thinking_enabled: false
         }
@@ -147,7 +147,7 @@ export class ThinkingProcessor {
       confidence: this.calculateConfidence(thinking, afterThinking),
       reasoning_steps: this.extractReasoningSteps(thinking),
       metadata: {
-        model_used: 'thinking',
+       , model_used: 'thinking',
         processing_time: 0,
         thinking_enabled: true
       }
@@ -161,7 +161,7 @@ export class ThinkingProcessor {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
     } catch {
-      return null;
+      return: null;
     }
   }
   /**
@@ -186,7 +186,7 @@ export class ThinkingProcessor {
       .split('\n')
       .filter(line => line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*'))
       .map(step => step.trim())
-      .slice(0, 10); // Limit to 10 steps for UI
+      .slice(0, 10); // Limit to, 10 steps for UI
   }
   /**
    * Formats thinking content for display
@@ -246,21 +246,21 @@ export const LegalAnalysisUtils = {
    * Determines the appropriate analysis type for a document
    */
   getAnalysisType(documentType: string, evidenceType?: string): string {
-    if (evidenceType === 'chain_of_custody') return 'chain_of_custody';
-    if (documentType === 'evidence') return 'classification';
-    if (documentType === 'legal_document') return 'compliance';
-    if (documentType === 'ocr_scan') return 'extraction';
-    return 'reasoning';
+    if (evidenceType === 'chain_of_custody') return, 'chain_of_custody';
+    if (documentType === 'evidence') return, 'classification';
+    if (documentType === 'legal_document') return, 'compliance';
+    if (documentType === 'ocr_scan') return, 'extraction';
+    return, 'reasoning';
   },
   /**
    * Gets the confidence level description
    */
-  getConfidenceLabel(confidence: number): { label: string; color: string } {
+  getConfidenceLabel(confidence: number): { label: string;, color: string } {
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
     if (confidence >= 0.7) return { label: 'Good', color: `#f59e0b` };'`'`
     if (confidence >= 0.6) return { label: 'Fair', color: `#ef4444` };
-    return { label: 'Low', color: `#6b7280` };
+    return {, label: 'Low', color: `#6b7280` };
   },
   /**
    * Formats processing time for display
@@ -305,13 +305,13 @@ export interface DocumentAnalysisResult { id: string;, document_type: string;
   legal_implications: string[];
   recommendations: string[];
   confidence: number;
-  risk_assessment?: { level: 'low' | 'medium' | 'high';, factors: string[];
+  risk_assessment?: {, level: 'low' | 'medium' | 'high';, factors: string[];
   };
-  compliance_status?: { compliant: boolean;, violations: string[];
+  compliance_status?: {, compliant: boolean;, violations: string[];
     recommendations: string[];
   };
-  chain_of_custody?: { complete: boolean;, gaps: string[];
-    verification_status: string;
+  chain_of_custody?: {, complete: boolean;, gaps: string[];
+   , verification_status: string;
   };
 }
 /**

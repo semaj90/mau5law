@@ -3,7 +3,7 @@
  * Integrates high-performance JSON parsing across the data pipeline
  */
 // Import WASM SIMD parser
-import type { LegalDocumentWASM, SIMDJSONParser } from '../../wasm/simd-json-parser.js';
+import type { LegalDocumentWASM, SIMDJSONParser } from, '../../wasm/simd-json-parser.js';
 // Legal document interfaces
 export interface LegalDocument { id: string;, title: string;
   content: string;
@@ -15,7 +15,7 @@ export interface LegalDocument { id: string;, title: string;
   confidence: number;
   rawResponse?: { [key: string]: any };
 }
-export interface LegalMetadata { documentType: string;, jurisdiction: string;
+export interface LegalMetadata {, documentType: string;, jurisdiction: string;
   courtLevel: string;
   caseNumber: string;
   filingDate: Date;
@@ -23,25 +23,25 @@ export interface LegalMetadata { documentType: string;, jurisdiction: string;
   practiceAreas: string[];
   tags: string[];
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  customFields: Record<string, string>;
+ , customFields: Record<string, string>;
 }
 export interface Party { name: string;, role: string;
   type: 'individual' | 'corporation' | 'government';
   contact?: string;
 }
-export interface LegalEntity { text: string;, entityType: 'statute' | 'case_citation' | 'regulation' | 'court' | 'party';
+export interface LegalEntity {, text: string;, entityType: 'statute' | 'case_citation' | 'regulation' | 'court' | 'party';
   confidence: number;
   startPos: number;
   endPos: number;
 }
-export interface Citation { citation: string;, title: string;
+export interface Citation {, citation: string;, title: string;
   year: number;
   court: string;
   confidence: number;
   context: string;
 }
 // Performance metrics
-export interface SIMDPerformanceMetrics { parseTime: number;, documentCount: number;
+export interface SIMDPerformanceMetrics {, parseTime: number;, documentCount: number;
   avgTimePerDoc: number;
   speedupFactor: number;
   simdEnabled: boolean;
@@ -53,7 +53,7 @@ export interface SIMDPerformanceMetrics { parseTime: number;, documentCount: nu
  */
 export class SIMDJSONAccelerationService {
   private wasmModule: any;
-  private isInitialized: boolean = $state(false);
+  private, isInitialized: boolean = $state(false);
   private fallbackMode: boolean = $state(false);
   private performanceMetrics: SIMDPerformanceMetrics[] = [];
   constructor() {
@@ -139,7 +139,7 @@ export class SIMDJSONAccelerationService {
       // Use optimized JavaScript batch parsing
       const jsonStr =
         typeof jsonArray === 'string' ? jsonArray : new TextDecoder().decode(jsonArray);
-      const docsArray = JSON.parse(jsonStr) as any[];
+      const docsArray = JSON.parse(jsonStr) as: any[];
       results = docsArray.map(doc => this.parseDocumentJS(JSON.stringify(doc)));
     }
     const parseTime = performance.now() - startTime;
@@ -152,7 +152,7 @@ export class SIMDJSONAccelerationService {
    */
   async processForIndexing(documents: any[]): Promise<LegalDocument[]> {
     const startTime = performance.now();
-    // Convert to JSON string for batch processing
+    // Convert to JSON: string for batch processing
     const jsonString = JSON.stringify(documents);
     const processed = await this.parseBatch(jsonString);
     // Add indexing-specific processing
@@ -179,7 +179,7 @@ export class SIMDJSONAccelerationService {
     // JavaScript fallback with optimized regex
     const entities: LegalEntity[] = [];
     const patterns = [
-      { pattern: /\b\d+\s+U\.S\.\s+\d+\b/g, type: 'case_citation' },
+      {, pattern: /\b\d+\s+U\.S\.\s+\d+\b/g, type: 'case_citation' },
       { pattern: /\b\d+\s+F\.\d+d\s+\d+\b/g, type: `case_citation` },'`'`
       { pattern: /\b\d+\s+U\.S\.C\.\s+§?\s*\d+/g, type: `statute` },
       { pattern: /\b\d+\s+C\.F\.R\.\s+§?\s*\d+/g, type: `regulation` },
@@ -190,7 +190,7 @@ export class SIMDJSONAccelerationService {
       while ((match = pattern.exec(content)) !== null) {
         entities.push({
           text: match[0],
-          entityType: type as any,
+          entityType: type, as: any,
           confidence: 0.85,
           startPos: match.index,
           endPos: match.index + match[0].length
@@ -242,7 +242,7 @@ export class SIMDJSONAccelerationService {
     } as LegalDocument;
   }
   /**
-   * Convert WASM result to JavaScript object
+   * Convert WASM result to, JavaScript: object
    */
   private convertWASMToJS(wasmDoc: LegalDocumentWASM): LegalDocument {
     return {
@@ -256,7 +256,7 @@ export class SIMDJSONAccelerationService {
       processedAt: new Date(wasmDoc.processedAt),
       confidence: wasmDoc.confidence,
       rawResponse: {
-        wasmProcessed: true,
+       , wasmProcessed: true,
         entityCount: wasmDoc.entityCount,
         citationCount: wasmDoc.citationCount
       }
@@ -280,11 +280,11 @@ export class SIMDJSONAccelerationService {
    */
   private determineCourtFromCitation(reporter: string): string {
     switch (reporter) {
-      case 'U.S.': return 'Supreme Court';
-      case 'S.Ct.': return 'Supreme Court';
-      case 'F.2d':
-      case 'F.3d': return 'Federal Circuit';
-      default: return 'Unknown';
+      case, 'U.S.': return, 'Supreme Court';
+      case, 'S.Ct.': return, 'Supreme Court';
+      case, 'F.2d':
+      case, 'F.3d': return, 'Federal Circuit';
+      default: return, 'Unknown';
     }
   }
   private extractContext(text: string, position: number, length: number): string {
@@ -304,10 +304,10 @@ export class SIMDJSONAccelerationService {
       avgTimePerDoc: parseTime / documentCount,
       speedupFactor: this.calculateSpeedupFactor(parseTime, documentCount),
       simdEnabled: !this.fallbackMode,
-      memoryUsage: (performance as any).memory?.usedJSHeapSize || 0
+      memoryUsage: (performance, as: any).memory?.usedJSHeapSize || 0
     }
     this.performanceMetrics.push(metrics);
-    // Keep only last 100 metrics
+    // Keep only last, 100 metrics
     if (this.performanceMetrics.length > 100) {
       this.performanceMetrics.shift();
     }
@@ -322,7 +322,7 @@ export class SIMDJSONAccelerationService {
    */
   getPerformanceStats(): { averageParseTime: number;, averageSpeedup: number;
     totalDocumentsProcessed: number;
-    simdUtilization: number;
+   , simdUtilization: number;
   } {
     if (this.performanceMetrics.length === 0) {
       return {

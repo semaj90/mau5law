@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Simple chat test without database dependencies
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 const CUDA_SERVER_URL = 'http://localhost:8096';
 interface ChatRequest {
   messages: Array<any>;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     console.log('🔥 Chat test API called');
     const body: ChatRequest = await request.json();
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw new Error('No task ID returned from CUDA service');
     }
     // Wait a bit then get result
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait, 2 seconds
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
     if (!resultResponse.ok) {
       throw new Error(`Failed to get result: ${resultResponse.status}`);

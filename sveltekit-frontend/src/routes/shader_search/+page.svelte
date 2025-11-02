@@ -2,9 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment';
-  import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
+  // Svelte, 5 runes are auto-imported
+  import { browser } from, '$app/environment';
+  import type { ShaderSearchResult, ShaderSearchQuery } from, '$lib/webgpu/shader-cache-manager';
 
   interface SearchResponse {
     shaders: ShaderSearchResult[];
@@ -27,10 +27,10 @@ https://svelte.dev/e/js_parse_error -->
     }
     topOperations: { operation: string; count: number }[];
     averagePerformance: number;
-    totalUsage: number;
+   , totalUsage: number;
   }
 
-  // Reactive state (Svelte 5 runes)
+  // Reactive state (Svelte, 5 runes)
   let searchQuery = $state<string>('');
   let selectedOperation = $state<string>('');
   let selectedShaderType = $state<'webgpu' | 'webgl' | 'all'>('all');
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       const data: any = await response.json();
       stats = {
         totalShaders: {
-          total: data?.totalShaders?.total ?? 0,
+         , total: data?.totalShaders?.total ?? 0,
           webgpu: data?.totalShaders?.webgpu ?? 0,
           webgl: data?.totalShaders?.webgl ?? 0
         },
@@ -81,19 +81,19 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/shaders/unified', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limit: 100 })
+        body: JSON.stringify({, limit: 100 })
       });
       if (!response.ok) throw new Error(`Filters fetch failed: ${response.status}`);
       const data: any = await response.json();
       const tagSet = new Set<string>();
       const operationSet = new Set<string>();
       (data?.shaders ?? []).forEach((shader: any) => {
-        const md = shader?.metadata as any;
+        const md = shader?.metadata as: any;
         if (Array.isArray(md?.tags)) md.tags.forEach((t: string) => tagSet.add(t));
         if (md?.operation) operationSet.add(md.operation);
       });
       availableTags = Array.from(tagSet).sort();
-      // Merge with stats-derived operations if any
+      // Merge with stats-derived operations if: any
       const ops = Array.from(operationSet);
       availableOperations = ops.concat(availableOperations.filter(o => !ops.includes(o))).sort();
     } catch (error) {
@@ -105,13 +105,13 @@ https://svelte.dev/e/js_parse_error -->
     isSearching = true;
     try {
       const query: ShaderSearchQuery = {
-        text: (searchQuery || '').trim() || undefined,
+       , text: (searchQuery || '').trim() || undefined,
         operation: selectedOperation || undefined,
         tags: selectedTags.length > 0 ? selectedTags : undefined,
         shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
         sortBy,
         limit
-      } as any; // cast to any if ShaderSearchQuery differs
+      } as: any; // cast, to: any if ShaderSearchQuery differs
 
       const response = await fetch('/api/shaders/unified', {
         method: 'POST',
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatExecutionTime(time: number): string {
-    if (time === 0 || time === undefined || time === null) return 'N/A';
+    if (time === 0 || time === undefined || time === null) return, 'N/A';
     return time < 1 ? `${(time * 1000).toFixed(1)}μs` : `${time.toFixed(2)}ms`;
   }
 
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
         relevanceScore: shader.relevanceScore,
         embeddingSimilarity: shader.embeddingSimilarity,
         performance: {
-          usageCount: shader?.metadata?.usageCount,
+         , usageCount: shader?.metadata?.usageCount,
           averageExecutionTime: shader?.metadata?.averageExecutionTime
         }
       })),
@@ -189,17 +189,17 @@ https://svelte.dev/e/js_parse_error -->
 
   // --- NEW: helpers to avoid TS errors and centralize optional access ---
   function getShaderType(shader: ShaderSearchResult) {
-    // Cast metadata to any before accessing legacy/variant fields like `platform`
+    // Cast metadata to: any before accessing legacy/variant fields like `platform`
     return (
-      ((shader as any).shaderType) ??
-      ((shader.metadata as any)?.platform) ??
+      ((shader, as: any).shaderType) ??
+      ((shader.metadata as: any)?.platform) ??
       shader.config?.type ??
       'unknown'
-    ) as string;
+    ) as: string;
   }
 
   function getWgslPreview(shader: ShaderSearchResult) {
-    return ((shader as any).wgslPreview as string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : '');
+    return ((shader as: any).wgslPreview as: string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : '');
   }
 </script>
 
@@ -354,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
           <span>
             {searchMetadata.totalResults} results in {searchMetadata.searchTime.toFixed(2)}ms
             {#if searchMetadata.breakdown}
-              • WebGPU: {searchMetadata.breakdown.webgpu} • WebGL: {searchMetadata.breakdown.webgl}
+              • WebGPU: {searchMetadata.breakdown.webgpu} •, WebGL: {searchMetadata.breakdown.webgl}
             {/if}
           </span>
           {#if searchResults.length > 0}
@@ -458,13 +458,13 @@ https://svelte.dev/e/js_parse_error -->
               <div, class="detail-grid">
                 <div><strong>Type:</strong> {selectedShader.config.type}</div>
                 <div><strong>Operation</strong> {selectedShader.metadata.operation}</div>
-                <div><strong>Usage Count:</strong> {selectedShader.metadata.usageCount}</div>
+                <div><strong>Usage, Count:</strong> {selectedShader.metadata.usageCount}</div>
                 <div>
                   <strong>Performance:</strong>
                   {formatExecutionTime(selectedShader.metadata.averageExecutionTime)}
                 </div>
                 <div><strong>Compiled:</strong> {selectedShader.metadata.compiledAt}</div>
-                <div><strong>Last Used:</strong> {selectedShader.metadata.lastUsed}</div>
+                <div><strong>Last, Used:</strong> {selectedShader.metadata.lastUsed}</div>
                 {#if selectedShader.relevanceScore}
                   <div><strong>Relevance:</strong> {formatRelevanceScore(selectedShader.relevanceScore)}</div>
                 {/if}
@@ -509,17 +509,17 @@ https://svelte.dev/e/js_parse_error -->
   .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
+   , padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   header { text-align: center; margin-bottom: 2rem; }
-  h1 { color: #2563eb; margin-bottom: 0.5rem; }
+  h1 {, color: #2563eb; margin-bottom: 0.5rem; }
 
   .stats-section, .search-section, .results-section {
     background: white;
     border-radius: 12px;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.06);
   }
@@ -550,18 +550,18 @@ https://svelte.dev/e/js_parse_error -->
   .tag-button.selected { background:#2563eb; color:white; border-color:#2563eb; }
 
   .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-  .results-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem; }
+  .results-grid {, display:grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem; }
 
   .shader-nier-bits-card {
     border:1px solid #e5e7eb;
     border-radius:8px;
     padding:1rem;
     cursor:pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+   , transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .shader-nier-bits-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+  .shader-nier-bits-card:hover {, transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
 
-  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
+  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0;, background: rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
   .modal { background:white; border-radius:12px; width:90%; max-width:1000px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; }
   .modal-header { display:flex; justify-content:space-between; align-items:center; padding:1rem; border-bottom:1px solid #e5e7eb; }
 
@@ -573,5 +573,5 @@ https://svelte.dev/e/js_parse_error -->
   .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px; cursor: pointer; margin-right:0.5rem; }
   .selected-tag[aria-pressed="true"] { background: #2563eb; color:white; border-color:#2563eb; }
   .shader-nier-bits-card { text-align:left; display:block; width:100%; border:none; background:transparent; padding:1rem; }
-  .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25); }
+  .shader-nier-bits-card:focus {, outline: 3px solid rgba(37,99,235,0.25); }
 </style>

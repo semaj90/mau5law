@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import type { Evidence } from '../types/api';
+import { writable } from, 'svelte/store';
+import type { Evidence } from, '../types/api';
 
 type EvidenceState = {
 	/* primary shape used by consumers */
@@ -10,7 +10,7 @@ type EvidenceState = {
 };
 
 const initialState: EvidenceState = {
-	evidence: [],
+, evidence: [],
 	isLoading: false,
 	error: null
 };
@@ -29,7 +29,7 @@ export const evidenceStore = {
 		update((s) => ({ ...s, evidence: [...(s.evidence || []), item] }));
 	},
 	removeById(id: string) {
-		update((s) => ({ ...s, evidence: (s.evidence || []).filter((e) => (e as any).id !== id) }));
+		update((s) => ({ ...s, evidence: (s.evidence || []).filter((e) => (e as: any).id !== id) }));
 	},
 	clear() {
 		set(initialState);

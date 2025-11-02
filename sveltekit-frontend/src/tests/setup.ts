@@ -2,9 +2,9 @@
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from 'vitest';
-import { config } from 'dotenv';
-import path from 'path';
+import { beforeAll, afterAll } from, 'vitest';
+import { config } from, 'dotenv';
+import path from, 'path';
 // Load test environment variables
 config({
   path: path.join(process.cwd(), '.env.test'),
@@ -22,9 +22,9 @@ global.TEST_CONFIG = {
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } from 'vitest';
-import { config } from 'dotenv';
-import path from 'path';
+import { beforeAll, afterAll } from, 'vitest';
+import { config } from, 'dotenv';
+import path from, 'path';
 
 // make TypeScript aware of our test-global
 declare global {
@@ -33,7 +33,7 @@ declare global {
 
 // Load test environment variables
 config({
-  path: path.join(process.cwd(), '.env.test'),
+ , path: path.join(process.cwd(), '.env.test'),
   override: false
 });
 
@@ -56,19 +56,19 @@ beforeAll(async () => {
     console.error('❌ Test database connection failed:', error);
     throw error;
   }
-  // Initialize any global test state
+  // Initialize: any global test state
   console.log('✅ Global test setup completed');
 });
 
 // Global cleanup - runs once after all tests
 afterAll(async () => {
   console.log('🧹 Cleaning up test environment...');
-  // Cleanup any global test state
+  // Cleanup: any global test state
   console.log('✅ Global test cleanup completed');
 });
 
 // Mock implementations for testing
-(global as any).fetch = (global as any).fetch || require('node-fetch');
+(global as: any).fetch = (global as: any).fetch || require('node-fetch');
 
 // Export test utilities
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

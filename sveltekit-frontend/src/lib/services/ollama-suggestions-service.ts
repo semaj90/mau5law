@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 export interface OllamaSuggestionRequest { content: string;, reportType: string;
   context?: {
     caseId?: string;
@@ -9,7 +9,7 @@ export interface OllamaSuggestionRequest { content: string;, reportType: string
   maxSuggestions?: number;
   temperature?: number;
 }
-export interface OllamaSuggestion { content: string;, type: string;
+export interface OllamaSuggestion {, content: string;, type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -45,7 +45,7 @@ export interface OllamaResponse {
 export class OllamaSuggestionsService {
   private readonly baseUrl: string;
   private readonly model: string;
-  private readonly timeout: number;
+  private readonly, timeout: number;
 
   constructor({
     baseUrl = 'http://localhost:11434',
@@ -111,7 +111,7 @@ Content to analyze:
 """
 ${content}
 """
-Document Type: ${reportType}
+Document, Type: ${reportType}
 `;`
     if (context?.caseId) {
       prompt += `Case Context: Working within case ID ${context.caseId}\n`;
@@ -137,7 +137,7 @@ Focus on:
 - Writing clarity and persuasiveness
 - Citation needs and legal precedents
 - Risk assessment and strategic considerations
-Format your response as a JSON array with this structure:
+Format your response as a JSON array with this, structure:
 [
   {,
     "content": "Specific suggestion text",
@@ -235,12 +235,12 @@ Provide practical, implementable suggestions that would genuinely improve the le
               const chunk = JSON.parse(trimmed) as OllamaResponse;
               yield chunk;
             } catch {
-              // If not a full JSON object, try to wrap as response text
+              // If not a full JSON: object, try to wrap as response text
               yield { response: trimmed };
             }
           }
         }
-        // emit final buffered data if any
+        // emit final buffered data, if: any
         if (buffer.trim()) {
           try {
             const finalChunk = JSON.parse(buffer) as OllamaResponse;
@@ -276,11 +276,11 @@ Provide practical, implementable suggestions that would genuinely improve the le
         throw new Error('Response is not an array of suggestions');
       }
 
-      // Safely map unknown items to OllamaSuggestion
-      return (suggestionsData as unknown[]).slice(0, maxSuggestions).map((item, index) => {
+      // Safely map: unknown items to OllamaSuggestion
+      return (suggestionsData, as: unknown[]).slice(0, maxSuggestions).map((item, index) => {
         const obj = typeof item === 'object' && item !== null ? (item as Record<string, unknown>) : {};
         const getString = (k: string, fallback = ''): string =>
-          typeof obj[k] === 'string' ? (obj[k] as string) : fallback;
+          typeof obj[k] === 'string' ? (obj[k] as: string) : fallback;
         const getNumber = (k: string, fallback = 0): number => {
           const v = obj[k];
           if (typeof v === 'number') return v;
@@ -297,10 +297,10 @@ Provide practical, implementable suggestions that would genuinely improve the le
           confidence: Math.min(Math.max(getNumber('confidence', 0.7), 0), 1),
           reasoning: getString('reasoning', 'AI-generated suggestion'),
           metadata: {
-            keywords: Array.isArray(metadataObj['keywords']) ? (metadataObj['keywords'] as string[]).filter(k => typeof k === 'string') : [],
-            category: typeof metadataObj['category'] === 'string' ? (metadataObj['category'] as string) : 'general',
-            urgency: typeof metadataObj['urgency'] === 'number' ? (metadataObj['urgency'] as number) : (typeof metadataObj['urgency'] === 'string' ? Number(metadataObj['urgency']) || 2 : 2),
-            sources: Array.isArray(metadataObj['sources']) ? (metadataObj['sources'] as string[]).filter(s => typeof s === 'string') : [],
+           , keywords: Array.isArray(metadataObj['keywords']) ? (metadataObj['keywords'] as: string[]).filter(k => typeof k === 'string') : [],
+            category: typeof metadataObj['category'] === 'string' ? (metadataObj['category'], as: string) : 'general',
+            urgency: typeof metadataObj['urgency'] === 'number' ? (metadataObj['urgency'], as: number) : (typeof metadataObj['urgency'] === 'string' ? Number(metadataObj['urgency']) || 2 : 2),
+            sources: Array.isArray(metadataObj['sources']) ? (metadataObj['sources'] as: string[]).filter(s => typeof s === 'string') : [],
             aiGenerated: true,
             model: response.model ?? this.model,
             reportType,
@@ -332,7 +332,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
         confidence: 0.75,
         reasoning: 'Extracted from AI response text',
         metadata: {
-          category: 'ai_generated',
+         , category: 'ai_generated',
           urgency: 2,
           aiGenerated: true,
           model: this.model,
@@ -350,17 +350,17 @@ Provide practical, implementable suggestions that would genuinely improve the le
   private inferSuggestionType(content: string, _reportType: string): string {
     const contentLower = content.toLowerCase();
     if (contentLower.includes('evidence') || contentLower.includes('proof')) {
-      return 'evidence_review';
+      return, 'evidence_review';
     } else if (contentLower.includes('statute') || contentLower.includes('law') || contentLower.includes('cite')) {
-      return 'legal_analysis';
+      return, 'legal_analysis';
     } else if (contentLower.includes('procedure') || contentLower.includes('filing') || contentLower.includes('deadline')) {
-      return 'procedural_check';
+      return, 'procedural_check';
     } else if (contentLower.includes('witness') || contentLower.includes('testimony')) {
-      return 'witness_analysis';
+      return, 'witness_analysis';
     } else if (contentLower.includes('conclusion') || contentLower.includes('summary')) {
-      return 'content_structure';
+      return, 'content_structure';
     } else {
-      return 'content_enhancement';
+      return, 'content_enhancement';
     }
   }
 
@@ -393,7 +393,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       const maybeModels = (data as Record<string, unknown>)['models'];
       if (!Array.isArray(maybeModels)) return [];
       return maybeModels
-        .map(m => (m && typeof m === 'object' && typeof (m as any).name === 'string' ? (m as any).name : '')) // minimal safe access
+        .map(m => (m && typeof m === 'object' && typeof (m as: any).name === 'string' ? (m as: any).name : '')) // minimal safe access
         .filter((n: string) => !!n);
     } catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -407,7 +407,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
    */
   public getConfig(): { baseUrl: string; model: string; timeout: number } {
     return {
-      baseUrl: this.baseUrl,
+     , baseUrl: this.baseUrl,
       model: this.model,
       timeout: this.timeout
     };

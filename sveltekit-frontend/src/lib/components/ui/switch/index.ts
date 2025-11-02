@@ -1,6 +1,6 @@
 // Switch Component Barrel Export
 // Note: Switch may not be available in bits-ui v2, using fallback approach
-// import { Switch } from "bits-ui"
+// import { Switch } from, "bits-ui"
 // Fallback implementation for missing Switch
 export const SwitchRoot = null; // Switch.Root
 export const SwitchThumb = null; // Switch.Thumb

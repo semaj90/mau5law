@@ -1,10 +1,10 @@
-import type { SearchResult } from '$lib/types';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import type { Schemas } from '@qdrant/js-client-rest';
-import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from '$env/static/private';
+import type { SearchResult } from, '$lib/types';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import type { Schemas } from, '@qdrant/js-client-rest';
+import { QDRANT_HOST, QDRANT_PORT, QDRANT_API_KEY } from, '$env/static/private';
 // Production Qdrant Service - Fixed vector dimensions and stub implementations
 export interface QdrantPoint { id: string;, vector: number[];
-  payload: { content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';
+  payload: {, content: string;, type: 'evidence' | 'case' | 'chat' | 'precedent';
     caseId?: string;
     evidenceId?: string;
     tags: string[];
@@ -14,11 +14,11 @@ export interface QdrantPoint { id: string;, vector: number[];
     aiSummaryScore?: number; // 0-100 case AI scoring
   };
 }
-export interface SearchResult { id: string;, score: number;
+export interface SearchResult {, id: string;, score: number;
   payload: QdrantPoint['payload'];
 }
 class QdrantService {
-  private client: QdrantClient;
+  private, client: QdrantClient;
   private collectionName = 'legal_vectors';
   private isInitialized = $state(false);
   constructor() {
@@ -70,7 +70,7 @@ class QdrantService {
     // Mock embedding for now - replace with actual VectorService
     const embedding = new Array(384).fill(0).map(() => Math.random());
     const point: Schemas['PointStruct'] = {
-      id: evidenceId,
+     , id: evidenceId,
       vector: embedding,
       payload: {
         content,
@@ -122,7 +122,7 @@ class QdrantService {
     try {
       // Mock embedding for now
       const queryEmbedding = new Array(384).fill(0).map(() => Math.random());
-      const filter: Schemas['Filter'] = { must: [{, key: 'type', match: { value: 'evidence' } }]
+      const filter: Schemas['Filter'] = {, must: [{, key: 'type', match: {, value: 'evidence' } }]
       };
       const searchResult = await this.client.search(this.collectionName, {
         vector: queryEmbedding,

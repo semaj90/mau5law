@@ -440,7 +440,7 @@
   </div>
 </div>
 <!-- Process Results Dialog -->
-<Dialog.Root open={showProcessDialog} openchange={(open) => showProcessDialog = open}>
+<Dialog open={showProcessDialog} openchange={(open) => showProcessDialog = open}>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-40" />
     <Dialog.Content
@@ -540,9 +540,9 @@
       </Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <!-- Search Results Dialog -->
-<Dialog.Root open={showSearchDialog} openchange={(open) => showSearchDialog = open}>
+<Dialog open={showSearchDialog} openchange={(open) => showSearchDialog = open}>
   <Dialog.Portal>
     <Dialog.Overlay class="fixed inset-0 bg-black/50 z-40" />
     <Dialog.Content
@@ -585,7 +585,7 @@
       </Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
   .animate-spin {

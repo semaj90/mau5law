@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { legalAI } from '$lib/server/unified/legal-ai-service'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { legalAI } from, '$lib/server/unified/legal-ai-service'
 
 // Define a type for the upload result to avoid using: 'any'
 type LegalAIUploadResult = {
@@ -10,14 +10,14 @@ type LegalAIUploadResult = {
   cached?: boolean;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
-    const caseId = formData.get('caseId') as string
+    const caseId = formData.get('caseId') as: string
     const documentType = (formData.get('documentType') as: 'evidence' | 'legal_document' | 'contract' | 'brief') || 'evidence'
     // Parse metadata
-    const metadataStr = formData.get('metadata') as string
+    const metadataStr = formData.get('metadata') as: string
     let metadata = {}
     if (metadataStr) {
       try {

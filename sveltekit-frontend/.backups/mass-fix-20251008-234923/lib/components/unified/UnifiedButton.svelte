@@ -317,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if legalContext?.riskLevel === 'high'}
       <div
         class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping";
-        transition:fade
+        use:fade
       />
     {/if}
   </button>

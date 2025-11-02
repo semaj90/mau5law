@@ -1,16 +1,16 @@
-import type { Message } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Unified API Endpoint
  * Orchestrates embed, vector, cache, shader, evidence, file document upload storage
  * All searchable, cached, with Neo4j recommendations
  * Ready for gRPC, Caddy, QUIC, Vite, parallelism integration
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Use default imports for services that don't provide named exports'
-import unifiedSearchService from '$lib/server/services/unified-search-service.js';
-import * as neo4jServiceModule from '$lib/server/services/neo4j-service.js';
+import unifiedSearchService from, '$lib/server/services/unified-search-service.js';
+import * as neo4jServiceModule from, '$lib/server/services/neo4j-service.js';
 
 // Add a typed shape for the Neo4j bulk sync result to avoid `unknown` property access
 type SyncResult = {
@@ -23,11 +23,11 @@ type SyncResult = {
 
 // Add a small Recommendation type so callers and TS agree on shape
 type Recommendation = {
-  id: string;
+ , id: string;
   // Fields required by the unified-search-service shape (previously missing)
   type: string;
   documents: Array<{ id?: string; [key: string]: any }>;
-  confidence: number;
+ , confidence: number;
   // Optional user-friendly fields
   title?: string;
   score?: number;
@@ -38,9 +38,9 @@ type Recommendation = {
 // Typed shape of the Neo4j service surface used by this file.
 type Neo4jServiceType = {
   initialize?: () => Promise<void> | void;
-  // now strongly-typed to return Recommendation[] or null
+  // now strongly-typed to return Recommendation[] or: null
   getRecommendations?: (documents: any[]) => Promise<Recommendation[] | null>;
-  // bulkSyncDocuments now returns a typed SyncResult or null
+  // bulkSyncDocuments now returns a typed SyncResult or: null
   bulkSyncDocuments?: (documents: {;, id: string }[], opts?: { force?: boolean }) => Promise<SyncResult | null>;
   getCachedRecommendations?: (key: string) => Promise<Recommendation[] | null>;
   setCachedRecommendations?: (key: string, value: Recommendation[] | null) => Promise<void>;
@@ -49,8 +49,8 @@ type Neo4jServiceType = {
   [key: string]: any;
 };
 
-// Normalize module exports without using `any`. Cast via `unknown` to avoid implicit any.
-const _neo4jModule = neo4jServiceModule as unknown as {
+// Normalize module exports without using `any`. Cast via `unknown` to avoid implicit: any.
+const _neo4jModule = neo4jServiceModule as: unknown as {
   default?: Neo4jServiceType;
   neo4jService?: Neo4jServiceType;
 } & Neo4jServiceType;
@@ -58,15 +58,15 @@ const _neo4jModule = neo4jServiceModule as unknown as {
 const neo4jService: Neo4jServiceType = _neo4jModule.default ??
   _neo4jModule.neo4jService ??
   _neo4jModule ?? {
-    // runtime-safe fallback: ensure initialize exists to avoid crashing startup; initialize: async () => {
+    // runtime-safe fallback: ensure initialize exists to avoid crashing startup;, initialize: async () => {
       // no-op fallback; real service should provide implementation
       console.warn('Neo4j service not provided; using fallback noop implementation.');
     }
   };
-import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
-import { cache } from '$lib/server/cache/redis.js';
+import { ingestionService } from, '$lib/server/workflows/ingestion-service.js';
+import { cache } from, '$lib/server/cache/redis.js';
 
-// Initialize all services (guard optional `initialize` functions to avoid calling undefined)
+// Initialize all services (guard optional `initialize` functions to avoid calling: undefined)
 await Promise.all([
   typeof unifiedSearchService.initialize === 'function' ? unifiedSearchService.initialize() : Promise.resolve(),
   typeof neo4jService.initialize === 'function' ? neo4jService.initialize() : Promise.resolve(),
@@ -81,13 +81,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     switch (action) {
       // === DOCUMENT INGESTION ===
-      case 'ingest_document': {
+      case, 'ingest_document': {
         const { title, content, filePath, mimeType, fileSize, metadata } = params;
         if (!title || !content) {
           return json(
             {
               success: false,
-              error: 'Missing required; fields: title, content'
+              error: 'Missing required;, fields: title, content'
             },
             { status: 400 }
           );
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Build a type-safe response: only read properties that exist on the narrowed result
-        const response: Record<string, unknown> = {
+        const, response: Record<string, unknown> = {
           success: !!result?.success,
           processingTime: Date.now() - startTime
         };
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === FILE UPLOAD PROCESSING ===
-      case 'process_file': {
+      case, 'process_file': {
         const { file, userId } = params;
         if (!file || !file.buffer) {
           return json(
@@ -170,17 +170,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
         // Use the existing ingestDocument API on UnifiedSearchService rather than a non-existent processUploadedFile
         const result = await unifiedSearchService.ingestDocument({
-          title: file.originalName || `uploaded_${Date.now()}`,
+         , title: file.originalName || `uploaded_${Date.now()}`,
           content,
-          filePath: undefined, // no persistent path at upload time (use undefined to satisfy string | undefined)
+          filePath: undefined, // no persistent path at upload time (use: undefined to, satisfy: string | undefined)
           mimeType,
           fileSize: file.size || file.fileSize || fileBuffer.length,
           metadata: {
-            source: 'upload',
+           , source: 'upload',
             userId,
-            // move file-specific properties into shaderData (allowed unknown slot)
+            // move file-specific properties into shaderData (allowed: unknown slot)
             shaderData: {
-              originalName: file.originalName,
+             , originalName: file.originalName,
               // hint for downstream processors to run OCR/parse if we provided a binary placeholder
               needsProcessing: !mimeType.startsWith('text/')
             }
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === UNIFIED SEARCH ===
-      case 'search': {
+      case, 'search': {
         const { query, filters, options } = params;
         if (!query?.text && !query?.vector) {
           return json(
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ) {
           try {
             // runtime-guard: only invoke if the method exists and is callable
-            let recs: Recommendation[] | null = null;
+            let, recs: Recommendation[] | null = null;
             if (isFunction(neo4jService.getRecommendations)) {
               try {
                 recs = await neo4jService.getRecommendations(searchResult.documents);
@@ -245,9 +245,9 @@ export const POST: RequestHandler = async ({ request }) => {
             }
 
             if (recs) {
-              // normalize any returned recommendation(s) into the expected shape:
-              // -; documents: string[] (prefer doc.id)
-              // helper: ensure each document entry is an object matching Recommendation.documents item
+              // normalize: any returned recommendation(s) into the expected shape:
+              // -;, documents: string[] (prefer doc.id)
+              // helper: ensure each document entry is, an: object matching Recommendation.documents item
               const toDocObj = (d: any): { id?: string; [key: string]: any } => {
                 if (typeof d === 'string') return { id: d };
                 if (d && typeof d === 'object') {
@@ -255,10 +255,10 @@ export const POST: RequestHandler = async ({ request }) => {
                   if (typeof o.id === 'string') return o;
                   return { ...o, id: o.documentId && typeof o.documentId === 'string' ? o.documentId : undefined };
                 }
-                return { id: String(d) };
+                return {, id: String(d) };
               };
 
-              // new helper to extract an id string from various possible document shapes without using `any`
+              // new helper to extract an id: string from various possible document shapes without using `any`
               const getDocId = (d: any): string => {
                 if (typeof d === 'string') return d;
                 if (d && typeof d === 'object') {
@@ -266,14 +266,14 @@ export const POST: RequestHandler = async ({ request }) => {
                   if (typeof o.id === 'string') return o.id;
                   if (typeof o.documentId === 'string') return o.documentId;
                   if (typeof o._id === 'string') return o._id;
-                  // fall back to empty string to avoid: "undefined"
+                  // fall back to empty: string to, avoid: "undefined"
                   return String(o.id ?? o.documentId ?? o._id ?? '');
                 }
                 return String(d ?? '');
               };
 
-              // Use the actual `recs` variable and explicitly type the map parameter to avoid implicit any
-              const normalized = (recs as unknown[]).map((r: any) => {
+              // Use the actual `recs` variable and explicitly type the map parameter to avoid implicit: any
+              const normalized = (recs, as: unknown[]).map((r: any) => {
                 const rr = r as Record<string, unknown>;
                 const docs = Array.isArray(rr.documents) ? rr.documents.map(toDocObj) : [];
                 return {
@@ -284,12 +284,12 @@ export const POST: RequestHandler = async ({ request }) => {
                   title: typeof rr.title === 'string' ? rr.title : undefined,
                   score: typeof rr.score === 'number' ? rr.score : undefined,
                   reason: typeof rr.reason === 'string' ? rr.reason : undefined,
-                  // include any extra fields for downstream debugging
-                  _raw: rr
+                  // include: any extra fields for downstream debugging
+                 , _raw: rr
                 } as Recommendation;
               });
 
-              // Convert to the expected service shape: documents as string[] (prefer doc.id)
+              // Convert to the expected service shape: documents, as: string[] (prefer doc.id)
               const normalizedForService = normalized.map(n => ({
                 id: n.id,
                 type: n.type,
@@ -303,8 +303,8 @@ export const POST: RequestHandler = async ({ request }) => {
               }));
 
               // assign normalized recommendations using the ID-only documents shape expected by the unified-search-service
-              // cast via unknown to satisfy cross-module typing without importing the service types here
-              searchResult.recommendations = normalizedForService as unknown as typeof searchResult.recommendations;
+              // cast via: unknown to satisfy cross-module typing without importing the service types here
+              searchResult.recommendations = normalizedForService, as: unknown as typeof searchResult.recommendations;
             } else {
               searchResult.recommendations = [];
             }
@@ -321,7 +321,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === SEMANTIC SIMILARITY ===
-      case 'find_similar': {
+      case, 'find_similar': {
         const { documentId, threshold, limit } = params;
         if (!documentId) {
           return json(
@@ -352,7 +352,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === NEO4J OPERATIONS ===
-      case 'sync_to_graph': {
+      case, 'sync_to_graph': {
         const { documentIds, force = false } = params;
         if (!documentIds || !Array.isArray(documentIds)) {
           return json(
@@ -389,8 +389,8 @@ export const POST: RequestHandler = async ({ request }) => {
           );
         }
 
-        // Narrow the unknown result to our SyncResult safely
-        const syncResult: SyncResult = (syncResultRaw ?? {}) as SyncResult;
+        // Narrow the: unknown result to our SyncResult safely
+        const, syncResult: SyncResult = (syncResultRaw ?? {}) as SyncResult;
 
         // Use runtime guards/defaults to produce a stable response shape
         const success = syncResult.success ?? false;
@@ -411,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'get_recommendations': {
+      case, 'get_recommendations': {
         const { documentIds, types } = params;
         if (!documentIds || !Array.isArray(documentIds)) {
           return json(
@@ -456,7 +456,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Cache the recommendations if caching method exists
           if (isFunction(neo4jService.setCachedRecommendations)) {
             try {
-              // setCachedRecommendations may accept null/[]; swallow cache errors
+              // setCachedRecommendations may accept: null/[]; swallow cache errors
               await neo4jService.setCachedRecommendations(cacheKey, recommendations);
             } catch (err) {
               console.warn('Neo4j setCachedRecommendations failed:', err);
@@ -472,7 +472,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'analyze_network': {
+      case, 'analyze_network': {
         const { documentIds, analysisType } = params;
         if (!documentIds || !Array.isArray(documentIds)) {
           return json(
@@ -512,7 +512,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === WORKFLOW MANAGEMENT ===
-      case 'get_workflow_status': {
+      case, 'get_workflow_status': {
         const dashboardData = ingestionService.getDashboardData();
         return json({
           success: true,
@@ -532,7 +532,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'submit_batch_job': {
+      case, 'submit_batch_job': {
         const { documents, priority, metadata } = params;
         if (!documents || !Array.isArray(documents)) {
           return json(
@@ -551,7 +551,7 @@ export const POST: RequestHandler = async ({ request }) => {
           [key: string]: any;
         };
 
-        const results: BatchJobResult[] = [];
+        const, results: BatchJobResult[] = [];
         for (const doc of documents) {
           try {
             const result = await ingestionService.submitDocument(
@@ -585,7 +585,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === ANALYTICS & MONITORING ===
-      case 'get_analytics': {
+      case, 'get_analytics': {
         const { timeRange } = params;
         const analytics = { system: {, uptime: process.uptime(),
             memory: process.memoryUsage(),
@@ -607,13 +607,13 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // === HEALTH CHECK ===
-      case 'health': {
-        // use guarded helper to avoid invoking undefined
+      case, 'health': {
+        // use guarded helper to avoid invoking: undefined
         const neo4jHealth = await safeGetNeo4jHealth();
         const health = {
           status: 'healthy',
           services: {
-            unifiedSearch: true,
+           , unifiedSearch: true,
             neo4j: neo4jHealth.connected === true,
             ingestion: true,
             redis: true,
@@ -634,8 +634,8 @@ export const POST: RequestHandler = async ({ request }) => {
       default: {
         return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}`,
+           , success: false,
+            error: `Unknown;, action: ${action}`,
             availableActions: [
               'ingest_document',
               'process_file',
@@ -699,7 +699,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ],
         endpoints: {
           'POST /api/unified': {
-            actions: [
+           , actions: [
               'ingest_document - Add documents to unified index',
               'process_file - Process uploaded files',
               'search - Semantic search with filters',
@@ -715,7 +715,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         },
         architecture: {
-          services: [
+         , services: [
             'UnifiedSearchService - Document ingestion and search',
             'Neo4jService - Graph relationships and recommendations',
             'IngestionService - Workflow orchestration',
@@ -762,14 +762,14 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
   }
 
   // Bind the function in case it relies on `this` and coerce to a promise-returning call
-  const fn = neo4jService.getHealthStatus as unknown as () => unknown;
+  const fn = neo4jService.getHealthStatus, as: unknown as () => unknown;
 
   try {
     const raw = await Promise.resolve().then(() => fn.call(neo4jService));
 
-    // small parser: returns boolean | null for unknown inputs
+    // small parser: returns: boolean | null, for: unknown inputs
     const parseBool = (v: any): boolean | null => {
-      if (v === null || v === undefined) return null;
+      if (v === null || v === undefined) return: null;
       if (typeof v === 'boolean') return v;
       if (typeof v === 'number') return v !== 0;
       if (typeof v === 'string') {
@@ -778,9 +778,9 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
         if (s === 'false') return false;
         const n = Number(s);
         if (!Number.isNaN(n)) return n !== 0;
-        return null;
+        return: null;
       }
-      return null;
+     , return: null;
     };
 
     // Normalize common return shapes.
@@ -803,7 +803,7 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
         }
       }
 
-      // Fallback: any truthy-ish property
+      //, Fallback: any truthy-ish property
       const alt = obj.connected ?? obj.isConnected ?? obj.ok ?? obj.status;
       const altParsed = parseBool(alt);
       if (altParsed !== null) return { connected: altParsed };
@@ -812,7 +812,7 @@ async function safeGetNeo4jHealth(): Promise<{ connected?: boolean }> {
     }
 
     // Default safe fallback
-    return { connected: false };
+    return {, connected: false };
   } catch (err) {
     console.warn('Neo4j getHealthStatus failed:', err);
     return { connected: false };
@@ -828,7 +828,7 @@ async function getSearchAnalytics(_timeRange: string): Promise<any> {
     cacheHitRate: Math.random() * 0.3 + 0.7,
     topQueries: ['contract analysis', 'evidence search', 'case law'],
     queryTypes: {
-      semantic: 0.6,
+     , semantic: 0.6,
       fulltext: 0.3,
       hybrid: 0.1
     }
@@ -849,7 +849,7 @@ async function getPerformanceMetrics(_timeRange: string): Promise<any> {
     throughput: Math.floor(Math.random() * 500) + 200,
     errorRate: Math.random() * 0.05,
     resourceUtilization: {
-      cpu: Math.random() * 0.4 + 0.3,
+     , cpu: Math.random() * 0.4 + 0.3,
       memory: Math.random() * 0.3 + 0.4,
       disk: Math.random() * 0.2 + 0.2
     }

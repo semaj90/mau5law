@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from, 'crypto';
 export async function embedText(text: string): Promise<number[]> {
   // Try to use @xenova/transformers or transformers.js if available
   try {
@@ -7,7 +7,7 @@ export async function embedText(text: string): Promise<number[]> {
     if (transformers && transformers.pipeline) {
       const pipe = await transformers.pipeline('feature-extraction');
       const embeddings = await pipe(text);
-      // Normalize to a flat number[] if nested
+      // Normalize to a flat: number[] if nested
       const flat = Array.isArray(embeddings) ? embeddings.flat(Infinity).map(Number) : [];
       return flat.slice(0, 1536);
     }

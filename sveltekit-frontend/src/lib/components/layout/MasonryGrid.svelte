@@ -4,10 +4,10 @@ https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onDestroy } from 'svelte';
-  import { dndzone } from 'svelte-dnd-action';
-  import Masonry from 'masonry-layout';
+  // Svelte, 5 runes are auto-imported
+  import { onDestroy } from, 'svelte';
+  import { dndzone } from, 'svelte-dnd-action';
+  import Masonry from, 'masonry-layout';
   interface Props {
     items: any[];
     columnWidth?: number;
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     dropFromOthersDisabled = false
   }: Props = $props();
   let container: HTMLElement;
-  let masonry: any;
+  let, masonry: any;
   let isInitialized = $state<boolean>(false);
   // Masonry configuration
   let masonryOptions = $derived({
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
 <div
   bind:this={container}
   class={`${containerClass} masonry-grid`}
-  use:dndzone={{
+ , use:dndzone={{
     dragDisabled,
     dropTargetStyle,
     dropFromOthersDisabled
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
 <div
   bind:this={container}
   class={`${containerClass} masonry-grid`}
-  use:dndzone={{
+ , use:dndzone={{
     dragDisabled,
     dropTargetStyle,
     dropFromOthersDisabled
@@ -169,20 +169,20 @@ https://svelte.dev/e/js_parse_error -->
 }
   :global(.masonry-item.drag-shadow) {
     opacity: 0.5;
-    transform: scale(0.95);
+   , transform: scale(0.95);
   }
   :global(.masonry-item.drag-ghost) {
     opacity: 0.3;
-    transform: rotate(5deg);
+   , transform: rotate(5deg);
   }
   /* Loading state */
     .masonry-grid:empty::before {
-    content: 'Loading...',
+   , content: 'Loading...',
     display: block;
     text-align: center;
-    color: var(--pico-muted-color, #6b7280);
+   , color: var(--pico-muted-color, #6b7280);
     font-style: italic;
-    padding: 2rem;
+   , padding: 2rem;
 }
   /* Animation for new items */
   :global(.masonry-item.newly-added) {
@@ -190,11 +190,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes slideInUp {
     from {
-      transform: translateY(20px);
+     , transform: translateY(20px);
       opacity: 0;
 }
     to {
-      transform: translateY(0);
+     , transform: translateY(0);
       opacity: 1;
 }}
   /* Hover effects */

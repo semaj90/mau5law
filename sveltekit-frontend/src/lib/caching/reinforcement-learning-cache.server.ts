@@ -3,9 +3,9 @@
  * This is a server-only module with: '.server.ts' extension.
  */
 interface LearningModel {
-  weights: Map<string, number>;
+ , weights: Map<string, number>;
   learningRate: number;
-  lastUpdate: number;
+ , lastUpdate: number;
 }
 class ReinforcementLearningCache {
   private cache = new Map<string, any>();
@@ -65,13 +65,13 @@ class ReinforcementLearningCache {
     const currentWeight = this.learningModel.weights.get(key) ?? 0.5;
     let newWeight = currentWeight;
     switch (action) {
-      case 'hit':
+      case, 'hit':
         newWeight = Math.min(1.0, currentWeight + this.learningModel.learningRate);
         break;
-      case 'miss':
+      case, 'miss':
         newWeight = Math.max(0.0, currentWeight - this.learningModel.learningRate);
         break;
-      case 'cached':
+      case, 'cached':
         newWeight = currentWeight + this.learningModel.learningRate * 0.5;
         break;
     }
@@ -93,7 +93,7 @@ class ReinforcementLearningCache {
    * Gets current cache hit ratio for monitoring
    */
   getHitRatio(): number {
-    return Math.round(this.hitRatio * 100) / 100; // Round to 2 decimal places
+    return Math.round(this.hitRatio * 100) / 100; // Round to, 2 decimal places
   }
   /**
    * Gets cache statistics
@@ -103,7 +103,7 @@ class ReinforcementLearningCache {
     lastUpdate: number;
   } {
     return {
-      size: this.cache.size,
+     , size: this.cache.size,
       hitRatio: this.hitRatio,
       modelWeights: this.learningModel?.weights.size ?? 0,
       lastUpdate: this.learningModel?.lastUpdate ?? 0

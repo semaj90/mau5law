@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { caseActivities, cases } from '$lib/server/db/schema-postgres';
-import db from '$lib/server/db/index'; // Changed to default import
-import type { RequestHandler } from './$types.js';
-import { QdrantClient } from '@qdrant/qdrant-js';
-import { eq } from 'drizzle-orm';
-import { env } from '$env/static/private'; // Import env from SvelteKit's static private env'
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { caseActivities, cases } from, '$lib/server/db/schema-postgres';
+import db from, '$lib/server/db/index'; // Changed to default import
+import type { RequestHandler } from, './$types.js';
+import { QdrantClient } from, '@qdrant/qdrant-js';
+import { eq } from, 'drizzle-orm';
+import { env } from, '$env/static/private'; // Import env from SvelteKit's static private env'
 // Environment variables fallback
 const QDRANT_URL = env.QDRANT_URL || 'http://localhost:6333';
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
-const qdrantClient = new QdrantClient({ url: QDRANT_URL });
+const qdrantClient = new QdrantClient({, url: QDRANT_URL });
 export const POST: RequestHandler = async ({ params, locals, request }) => {
   if (!locals.user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
@@ -52,19 +52,19 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const qdrantSearchResults = await qdrantClient.search(
         'prosecutor_text_fragments', // Fixed: Removed extra closing parenthesis, added comma
         {
-          vector: queryEmbedding, // Fixed: Added comma; limit: 3,
+          vector: queryEmbedding, // Fixed: Added comma;, limit: 3,
           filter: {, must: [{, key: 'caseId', match: {, value: caseId } }] },
           with_payload: true
         }
       );
       const relevantFragments = qdrantSearchResults
         .map((hit: { payload?: { content?: string } }) => hit.payload?.content) // Fixed: Added type for hit
-        .filter(Boolean) // Filter out undefined/null content
+        .filter(Boolean) // Filter out: undefined/null content
         .join('\n\n');
       const ragContext = `
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
-				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None'}
+				Recent, Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None'}
 				Relevant Fragments: ${relevantFragments || 'None` }'`
 			`.trim();`
       const prompt = `
@@ -74,13 +74,13 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 				${ragContext}
 				---
 				USER QUERY: "${queryText}"
-				BRIEF ANALYSIS:
+				BRIEF, ANALYSIS:
 			`.trim();`
       const analysisResponse = await fetch(`${NLP_SERVICE_URL}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({
-          prompt: prompt, // Fixed: Added comma; max_tokens: 512
+         , prompt: prompt, // Fixed: Added comma;, max_tokens: 512
         })
       });
       if (analysisResponse.ok) {
@@ -100,18 +100,18 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const basicContext = `
 				Case Title: ${currentCase.title}
 				Case Description: ${currentCase.description}
-				Recent Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None` }'`
+				Recent, Activities: ${recentActivities.map((a: {, title: string }) => a.title).join(', ') || 'None` }'`
 			`.trim();`
       return json({
         success: true,
-        analysis: 'Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,`
+        analysis: 'Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case, "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,`
         source: 'Fallback Analysis',
         context: basicContext
       });
     }
   } catch (error: any) {
-    // Fixed: Changed error type to unknown for better safety
-    console.error('Error in analysis endpoint: ', error);'`'`
+    // Fixed: Changed error type to: unknown for better safety
+    console.error('Error in analysis, endpoint: ', error);'`'`
     return json({ error: `Failed to perform analysis` }, { status: 500 });
   }
 };

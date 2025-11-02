@@ -16,30 +16,30 @@ export interface TensorAccelerationOptions {
 }
 
 // Add typed result interfaces to replace Promise<any>
-interface GPUMeta { gpuProcessed: boolean;, tileSize: number;
+interface GPUMeta {, gpuProcessed: boolean;, tileSize: number;
   computeTime: number;
   memoryUsage: number;
   kernelType: string;
   precision: string;
 }
 
-export interface SimilarityResult { similarity: number;, gpuMeta: GPUMeta;
+export interface SimilarityResult {, similarity: number;, gpuMeta: GPUMeta;
 }
 
-export interface TransformResult { transformed: Float32Array;, gpuMeta: GPUMeta;
+export interface TransformResult {, transformed: Float32Array;, gpuMeta: GPUMeta;
 }
 
-export interface ImageAnalysisResult { features: Float32Array;, gpuMeta: GPUMeta;
+export interface ImageAnalysisResult {, features: Float32Array;, gpuMeta: GPUMeta;
 }
 
 export class TensorAccelerator {
   private device: GPUDevice | null = null;
   private initialized: boolean = false;
-  private computePipelines: Map<string, GPUComputePipeline> = new Map();
+  private, computePipelines: Map<string, GPUComputePipeline> = new Map();
   private config: GPUTensorConfig;
   constructor() {
     this.config = {
-      tileSize: 16, // 16x16 tiles optimal for RTX 3060 Ti
+      tileSize: 16, // 16x16 tiles optimal for RTX, 3060 Ti
       workgroupSize: [16, 16, 1],
       precision: 'fp16',
       memoryOptimized: true
@@ -242,10 +242,10 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: bufferA } },
-          { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: resultBuffer } },
-          { binding: 3, resource: { buffer: uniformBuffer } }
+          {, binding: 0, resource: {, buffer: bufferA } },
+          { binding: 1, resource: {, buffer: bufferB } },
+          { binding: 2, resource: {, buffer: resultBuffer } },
+          { binding: 3, resource: {, buffer: uniformBuffer } }
         ]
       });
       // Execute compute shader
@@ -280,7 +280,7 @@ export class TensorAccelerator {
       return {
         similarity,
         gpuMeta: {
-          gpuProcessed: true,
+         , gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
@@ -332,9 +332,9 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: inputBuffer } },
-          { binding: 1, resource: { buffer: outputBuffer } },
-          { binding: 2, resource: { buffer: uniformBuffer } }
+          {, binding: 0, resource: {, buffer: inputBuffer } },
+          { binding: 1, resource: {, buffer: outputBuffer } },
+          { binding: 2, resource: {, buffer: uniformBuffer } }
         ]
       });
       const commandEncoder = this.device.createCommandEncoder();
@@ -358,7 +358,7 @@ export class TensorAccelerator {
       return {
         transformed,
         gpuMeta: {
-          gpuProcessed: true,
+         , gpuProcessed: true,
           tileSize: options.tileSize || this.config.tileSize,
           computeTime,
           memoryUsage: embedding.byteLength * 2,
@@ -414,9 +414,9 @@ export class TensorAccelerator {
       const bindGroup = this.device.createBindGroup({
         layout: pipeline.getBindGroupLayout(0),
         entries: [
-          { binding: 0, resource: { buffer: imageBuffer } },
-          { binding: 1, resource: { buffer: featureBuffer } },
-          { binding: 2, resource: { buffer: uniformBuffer } }
+          {, binding: 0, resource: {, buffer: imageBuffer } },
+          { binding: 1, resource: {, buffer: featureBuffer } },
+          { binding: 2, resource: {, buffer: uniformBuffer } }
         ]
       });
       const commandEncoder = this.device.createCommandEncoder();
@@ -445,7 +445,7 @@ export class TensorAccelerator {
       return {
         features,
         gpuMeta: {
-          gpuProcessed: true,
+         , gpuProcessed: true,
           tileSize,
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
@@ -467,11 +467,11 @@ export class TensorAccelerator {
    */
   async getCapabilities() {
     if (!this.initialized && !(await this.initialize())) {
-      return null;
+      return: null;
     }
     return this.device
       ? {
-          maxBufferSize: this.device.limits.maxBufferSize,
+         , maxBufferSize: this.device.limits.maxBufferSize,
           maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
           maxComputeInvocationsPerWorkgroup: this.device.limits.maxComputeInvocationsPerWorkgroup,
           features: Array.from(this.device.features)
@@ -514,7 +514,7 @@ export async function acceleratedSimilarity(
   return {
     similarity,
     gpuMeta: {
-      gpuProcessed: false,
+     , gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,
@@ -523,7 +523,7 @@ export async function acceleratedSimilarity(
   };
 }
 export async function acceleratedTransform(
-  embedding: Float32Array,
+ , embedding: Float32Array,
   operation: 'normalize' | 'quantize' | 'activate',
   options: TensorAccelerationOptions = {}
 ): Promise<TransformResult> {
@@ -550,7 +550,7 @@ export async function acceleratedTransform(
   return {
     transformed,
     gpuMeta: {
-      gpuProcessed: false,
+     , gpuProcessed: false,
       tileSize: 0,
       computeTime: 0,
       memoryUsage: 0,

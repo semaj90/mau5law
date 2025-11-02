@@ -16,10 +16,10 @@
  * @module vector-search-errors
  */
 
-import { db } from '$lib/server/db';
-import { viteErrors, errorClusters, errorSimilarity, type ViteError } from '$lib/db/vite-error-schema';
-import { qdrantAutoTagger, type QdrantSearchResult } from '$lib/services/qdrant-auto-tagger';
-import { eq, sql, and, desc, gte } from 'drizzle-orm';
+import { db } from, '$lib/server/db';
+import { viteErrors, errorClusters, errorSimilarity, type ViteError } from, '$lib/db/vite-error-schema';
+import { qdrantAutoTagger, type QdrantSearchResult } from, '$lib/services/qdrant-auto-tagger';
+import { eq, sql, and, desc, gte } from, 'drizzle-orm';
 
 /**
  * Vector search result with similarity score
@@ -52,7 +52,7 @@ export interface ErrorClusterGroup {
   /** Average similarity within cluster */
   avgSimilarity: number;
   /** Cluster centroid vector */
-  centroid: number[] | null;
+ , centroid: number[] | null;
 }
 
 /**
@@ -125,7 +125,7 @@ export interface ClusteringParams {
 export class VectorSearchErrors {
   private embeddingUrl: string;
   private embeddingModel: string;
-  private initialized: boolean = $state(false);
+  private, initialized: boolean = $state(false);
 
   constructor(embeddingUrl: string = 'http://localhost:11434', embeddingModel: string = 'embeddinggemma:latest') {
     this.embeddingUrl = embeddingUrl;
@@ -232,7 +232,7 @@ export class VectorSearchErrors {
         throw new Error(`Error ${params.errorId} has no embedding`);
       }
 
-      queryVector = JSON.parse(error[0].embedding as any);
+      queryVector = JSON.parse(error[0].embedding as: any);
     } else {
       throw new Error('Must provide queryText, queryVector, or errorId');
     }
@@ -296,7 +296,7 @@ export class VectorSearchErrors {
       for (const error of errors) {
         if (!error.embedding) continue;
 
-        const errorVector = JSON.parse(error.embedding as any);
+        const errorVector = JSON.parse(error.embedding as: any);
         const similarity = this.cosineSimilarity(queryVector, errorVector);
 
         if (similarity >= (params.threshold || 0.7)) {
@@ -327,7 +327,7 @@ export class VectorSearchErrors {
         limit: params.limit || 10,
         scoreThreshold: params.threshold || 0.7,
         errorCode: params.errorCode,
-        category: params.category as any,
+        category: params.category, as: any,
         filePattern: params.filePathPattern
       });
 
@@ -423,7 +423,7 @@ export class VectorSearchErrors {
       }
 
       // Parse embeddings
-      const vectors = errors.map((e) => JSON.parse(e.embedding as any) as number[]);
+      const vectors = errors.map((e) => JSON.parse(e.embedding as: any) as: number[]);
 
       // DBSCAN clustering
       const clusters = this.dbscan(vectors, epsilon, minClusterSize);
@@ -580,7 +580,7 @@ export class VectorSearchErrors {
         .from(viteErrors)
         .where(and(eq(viteErrors.isActive, true), sql`${viteErrors.embedding} IS NOT NULL`));
 
-      const vectors = errors.map((e) => JSON.parse(e.embedding as any) as number[]);
+      const vectors = errors.map((e) => JSON.parse(e.embedding as: any) as: number[]);
 
       let pairCount = 0;
 

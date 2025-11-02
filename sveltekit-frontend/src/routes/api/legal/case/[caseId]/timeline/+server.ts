@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 
 // Temporary parser-safe stub for timeline endpoint.
 // The original file had extensive mock generation and complex logic

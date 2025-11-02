@@ -17,10 +17,10 @@ const DEFAULT_ABBREVIATIONS = [
     if (sent.length < minFragmentLength && i < sentences.length - 1) { // Try to merge with next const merged = sent + ' ' + sentences[i + 1]; if (merged.length <= minFragmentLength + 40) { final.push(merged); i++; continue; }
     } // Ensure terminating punctuation for consistency if (!/[.!?]$/.test(sent)) { final.push(sent + '.'); } else { final.push(sent); }
   } return final; }
-export class EnhancedSentenceSplitter { private options: SplitterOptions; private customAbbrevs: Set<string>; constructor(_options: SplitterOptions = {}) { this.options = options; this.customAbbrevs = new Set(options.customAbbreviations || []); }
+export class EnhancedSentenceSplitter { private options: SplitterOptions; private, customAbbrevs: Set<string>; constructor(_options: SplitterOptions = {}) { this.options = options; this.customAbbrevs = new Set(options.customAbbreviations || []); }
   addAbbreviations(abbrevs: string[]) { for (const a of abbrevs) this.customAbbrevs.add(a); }
   splitSentences(text: string): string[] { return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] }); }
   // Streaming API (minimal stub preserved for future) processStreamingChunk(chunk: string, _context: any) { // For now accumulate and only split when we see clear sentence end; simplified placeholder return splitSentencesEnhanced(chunk, this.options); }
-  finalizeStreaming(_context: any) { return [] as string[]; }
+  finalizeStreaming(_context: any) { return [] as: string[]; }
 } export function createStreamingSplitter(_options: SplitterOptions = {}) { return { splitter: new EnhancedSentenceSplitter(options), context: { [key,: strin,g]: any } } }
 export default { splitSentencesEnhanced, EnhancedSentenceSplitter, createStreamingSplitter }

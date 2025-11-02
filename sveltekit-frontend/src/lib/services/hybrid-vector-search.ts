@@ -5,7 +5,7 @@
  * Architecture:
  * -; PostgreSQL: Primary storage with pgvector for persistence and ACID compliance
  * - Qdrant: High-performance GPU-accelerated search with WebTransport/QUIC streaming
- * - Sync Strategy: Write to both, read from Qdrant for performance
+ * - Sync, Strategy: Write to both, read from Qdrant for performance
  */
 
 import {
@@ -13,8 +13,8 @@ import {
   type EmbeddingRequest,
   type VectorSearchRequest,
   type VectorSearchResult
-} from './gemma-embeddings-service';
-import { qdrantClient, type QdrantSearchRequest, type QdrantPoint } from './qdrant-client';
+} from, './gemma-embeddings-service';
+import { qdrantClient, type QdrantSearchRequest, type QdrantPoint } from, './qdrant-client';
 
 export interface HybridSearchOptions {
   use_qdrant?: boolean; // Use Qdrant for search (default: true)
@@ -35,7 +35,7 @@ export interface HybridSearchStats { total_vectors_pgvector: number;, total_vec
  * Orchestrates between PostgreSQL pgvector and Qdrant for optimal performance
  */
 export class HybridVectorSearchService {
-  private options: Required<HybridSearchOptions>;
+  private, options: Required<HybridSearchOptions>;
 
   constructor(options: HybridSearchOptions = {}) {
     this.options = {
@@ -69,7 +69,7 @@ export class HybridVectorSearchService {
     success: boolean;
     embedding?: number[];
     text_hash?: string;
-    stored_in: string[];
+   , stored_in: string[];
     error?: string;
   }> {
     try {
@@ -90,10 +90,10 @@ export class HybridVectorSearchService {
       if (this.options.sync_to_qdrant && result.text_hash) {
         try {
           const qdrantPoint: QdrantPoint = {
-            id: result.text_hash,
+           , id: result.text_hash,
             vector: result.embedding,
             payload: {
-              content: request.text,
+             , content: request.text,
               document_type: request.document_type || 'unknown',
               metadata: request.metadata || {},
               model: result.model,
@@ -129,7 +129,7 @@ export class HybridVectorSearchService {
    * Batch generate and store embeddings
    */
   async batchGenerateAndStore(
-    texts: string[],
+   , texts: string[],
     options: {
       document_type?: string;
       metadata?: Record<string, any>;
@@ -137,10 +137,10 @@ export class HybridVectorSearchService {
     } = {}
   ): Promise<{ total: number;, successful: number;
     failed: number;
-    stored_in: string[];
+   , stored_in: string[];
   }> {
     const results = await gemmaEmbeddingsService.batchGenerateEmbeddings(texts, {
-      document_type: options.document_type as any,
+      document_type: options.document_type, as: any,
       metadata: options.metadata,
       model: options.model
     });
@@ -202,7 +202,7 @@ export class HybridVectorSearchService {
     if (this.options.use_qdrant) {
       try {
         const qdrantRequest: QdrantSearchRequest = {
-          query_vector: request.query_embedding,
+         , query_vector: request.query_embedding,
           limit: request.limit || 10,
           score_threshold: request.similarity_threshold || 0.7,
           with_payload: true,
@@ -333,8 +333,8 @@ export class HybridVectorSearchService {
   /**
    * Health check
    */
-  async healthCheck(): Promise<{ healthy: boolean;, services: { qdrant: boolean;, pgvector: boolean;
-      redis: boolean;
+  async healthCheck(): Promise<{ healthy: boolean;, services: {, qdrant: boolean;, pgvector: boolean;
+     , redis: boolean;
     };
   }> {
     const qdrantHealthy = await qdrantClient.healthCheck();
@@ -343,7 +343,7 @@ export class HybridVectorSearchService {
     return {
       healthy: qdrantHealthy || true, // Healthy if at least pgvector works
       services: {
-        qdrant: qdrantHealthy,
+       , qdrant: qdrantHealthy,
         pgvector: true, // Assume healthy if we got here
         redis: true, // Assume healthy if we got here
       }

@@ -1,14 +1,14 @@
-import { ServiceError } from './service-error';
+import { ServiceError } from, './service-error';
 
 export function mapErrorToHttp(err: any) {
   if (err instanceof ServiceError) {
     switch (err.code) {
-      case 'INVALID_INPUT':
-        return { status: 400, body: { error: err.message, code: err.code } };
-      case 'NOT_FOUND':
-        return { status: 404, body: { error: err.message, code: err.code } };
-      default: return { status: 500, body: { error: err.message, code: err.code } };
+      case, 'INVALID_INPUT':
+        return { status: 400, body: {, error: err.message, code: err.code } };
+      case, 'NOT_FOUND':
+        return { status: 404, body: {, error: err.message, code: err.code } };
+      default: return {, status: 500, body: {, error: err.message, code: err.code } };
     }
   }
-  return { status: 500, body: { error: 'Internal Server Error' } };
+  return {, status: 500, body: {, error: 'Internal Server Error' } };
 }

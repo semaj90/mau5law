@@ -1,10 +1,10 @@
 /**
  * Enhanced Inline Suggestion Service - corrected implementation
  */
-import { createActor } from "xstate";
-import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } from "$lib/machines";
-import { enhancedRAGStore } from "$lib/stores";
-import { debounce } from "$lib/utils";
+import { createActor } from, "xstate";
+import { aiProcessingMachine, goMicroserviceMachine /*, createAITask, aiTaskCreators */ } from, "$lib/machines";
+import { enhancedRAGStore } from, "$lib/stores";
+import { debounce } from, "$lib/utils";
 
 // --- Types ---
 export interface SuggestionContext { text: string;, cursorPosition: number;
@@ -15,7 +15,7 @@ export interface SuggestionContext { text: string;, cursorPosition: number;
   userId?: string;
 }
 
-export interface InlineSuggestion { id: string;, type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
+export interface InlineSuggestion {, id: string;, type: 'completion' | 'grammar' | 'legal_term' | 'case_reference' | 'citation';
   text: string;
   replacement?: string;
   confidence: number;
@@ -28,7 +28,7 @@ export interface InlineSuggestion { id: string;, type: 'completion' | 'grammar'
   };
 }
 
-export interface SuggestionOptions { enableAutoComplete: boolean;, enableGrammarCheck: boolean;
+export interface SuggestionOptions {, enableAutoComplete: boolean;, enableGrammarCheck: boolean;
   enableLegalTerms: boolean;
   enableCaseReferences: boolean;
   enableCitations: boolean;
@@ -39,7 +39,7 @@ export interface SuggestionOptions { enableAutoComplete: boolean;, enableGramma
 }
 
 export interface AITaskResult<T = unknown> {
-  success: boolean;
+ , success: boolean;
   taskId?: string;
   result?: T;
   error?: string;
@@ -65,13 +65,13 @@ class LRUMap<K, V> extends Map<K, V> {
 // --- Service implementation ---
 export class InlineSuggestionService {
   private aiActor: AIActor | null = null;
-  private goServiceActor: GoActor | null = null;
+  private, goServiceActor: GoActor | null = null;
   private isInitialized = $state(false);
   private pendingTasks = new LRUMap<string, Promise<AITaskResult>>();
   private abortedTaskIds = new Set<string>();
   private options: SuggestionOptions;
-  private defaultModel = (typeof process !== 'undefined' && (process as any)?.env?.VITE_LEGAL_AI_MODEL)
-    || (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_LEGAL_AI_MODEL)
+  private defaultModel = (typeof process !== 'undefined' && (process, as: any)?.env?.VITE_LEGAL_AI_MODEL)
+    || (typeof import.meta !== 'undefined' && (import.meta as: any).env?.VITE_LEGAL_AI_MODEL)
     || 'gemma3-legal';
 
   constructor(options?: Partial<SuggestionOptions>) {
@@ -188,7 +188,7 @@ export class InlineSuggestionService {
       return { success: false, error: 'ai actor not initialized' };
     }
 
-    // Minimal promise that resolves with: "not-implemented" after timeout or when aborted
+    // Minimal promise that resolves, with: "not-implemented" after timeout or when aborted
     return await new Promise<AITaskResult>((resolve) => {
       const onAbort = () => {
         resolve({ success: false, taskId: task?.id, error: 'aborted' });
@@ -305,7 +305,7 @@ export const applySuggestionToText = (
   text: string,
   suggestion: InlineSuggestion,
   cursorPosition: number
-): { newText: string; newCursorPosition: number } => {
+): { newText: string;, newCursorPosition: number } => {
   if (suggestion.type === 'completion') {
     const newText = text.slice(0, cursorPosition) + suggestion.text + text.slice(cursorPosition);
     return {
@@ -319,5 +319,5 @@ export const applySuggestionToText = (
       newCursorPosition: suggestion.range.start + suggestion.replacement.length
     };
   }
-  return { newText: text, newCursorPosition: cursorPosition };
+  return {, newText: text, newCursorPosition: cursorPosition };
 };

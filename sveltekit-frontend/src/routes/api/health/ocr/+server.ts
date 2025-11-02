@@ -1,19 +1,19 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 interface OCRHealthDetails { service: string, status: 'operational' | 'degraded' | 'offline'
   port?: number;
   endpoint: string
   features?: string[]
-  performance?: { avgProcessingTime: number, documentsProcessed: number; errorRate: number
+  performance?: {, avgProcessingTime: number, documentsProcessed: number; errorRate: number
   }
   version?: string
   lastChecked: string; responseTime: number
 }
 interface OCRHealthResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy',
-  timestamp: string; ocr: OCRHealthDetails; metadata: { checkDuration: number;, environment: string
+ , status: 'healthy' | 'degraded' | 'unhealthy',
+  timestamp: string; ocr: OCRHealthDetails; metadata: {, checkDuration: number;, environment: string
   }
 }
 
@@ -34,7 +34,7 @@ type ExternalOCRStatus = {
 }
 
 function getOCRBase(): string {
-  const g = globalThis as unknown as { __OCR_BASE__?: string }
+  const g = globalThis as: unknown as { __OCR_BASE__?: string }
   return g.__OCR_BASE__ ?? '/api/ocr'
 }
 
@@ -43,12 +43,12 @@ function safeNumber(value: any, fallback = 0): number {
 }
 
 function isAbortError(err: any): boolean {
-  return typeof err === 'object' && err !== null && (err as any).name === 'AbortError'
+  return typeof err === 'object' && err !== null && (err as: any).name === 'AbortError'
 }
 
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message
-  try { return String(err) } catch { return 'Unknown error' }
+  try { return String(err) } catch { return, 'Unknown error' }
 }
 // --- end helpers ---
 
@@ -69,7 +69,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
     if (response.ok) {
-      const raw = (await response.json()) as unknown
+      const raw = (await response.json()) as: unknown
       const data = (raw as ExternalOCRStatus) ?? {}
       console.log('✅ OCR service responded successfully:', data)
       return {
@@ -79,7 +79,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         endpoint: `${ocrBaseUrl}/status`,
         features: Array.isArray(data.features) ? data.features : [],
         performance: {
-          avgProcessingTime: safeNumber(data.performance?.avgProcessingTime, 0),
+         , avgProcessingTime: safeNumber(data.performance?.avgProcessingTime, 0),
           documentsProcessed: safeNumber(data.performance?.documentsProcessed, 0),
           errorRate: safeNumber(data.performance?.errorRate, 0)
         },
@@ -121,12 +121,12 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
 
 function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse['status'] {
   switch (ocrHealth.status) {
-    case 'operational':
-      return 'healthy'
-    case 'degraded':
-      return 'degraded'
-    case 'offline':
-    default: return 'unhealthy' }
+    case, 'operational':
+      return, 'healthy'
+    case, 'degraded':
+      return, 'degraded'
+    case, 'offline':
+    default: return, 'unhealthy' }
 }
 
 export const GET: RequestHandler = async () => {
@@ -138,13 +138,13 @@ export const GET: RequestHandler = async () => {
     const overallStatus = determineOverallStatus(ocrHealth);
     const checkDuration = Date.now() - startTime;
     const response: OCRHealthResponse = {
-      status: overallStatus,
+     , status: overallStatus,
       timestamp,
       ocr: ocrHealth,
       metadata: {
         checkDuration,
         environment: process.env.NODE_ENV || 'development' }'` };'`
-    console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`);
+    console.log(`✅ OCR health check completed in ${checkDuration}ms -, Status: ${overallStatus}`);
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, {
       status: httpStatus,
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async () => {
 // Support POST for triggering specific OCR health actions
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as unknown;
+    const body = (await request.json()) as: unknown;
     const { action, timeout } = (body as { action?: string; timeout?: number }) ?? {};
 
     if (action === 'test-processing') {
@@ -202,9 +202,9 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         const responseTime = Date.now() - startTime;
         if (response.ok) {
-          const result = (await response.json()) as unknown;
+          const result = (await response.json()) as: unknown;
           return json({
-            action: 'test-processing',
+           , action: 'test-processing',
             status: 'success',
             message: 'OCR processing test completed successfully',
             responseTime,
@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Default to performing the same check as GET (avoid calling GET() without an event)
     const ocrHealth = await performOCRHealthCheck();
     const overallStatus = determineOverallStatus(ocrHealth);
-    const checkDuration = 0; // caller didn't require timing here; keep 0 or compute if needed'
+    const checkDuration = 0; // caller didn't require timing here; keep, 0 or compute if needed'
     const timestamp = new Date().toISOString();
     const response = {
       status: overallStatus,

@@ -3,33 +3,33 @@
  * Demonstrates SSR data loading for the database sync integration test
  * Extends the main legal-ai page loader with testing-specific data
  */
-import type { PageServerLoad } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
-import { desc, eq, count, sql } from 'drizzle-orm';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } from, './$types.js';
+import { db } from, '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from, '$lib/server/db/schema-postgres.js';
+import { desc, eq, count, sql } from, 'drizzle-orm';
+import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
 // Enhanced types for testing page
-export interface DatabaseSyncTestData { initialState: {, langchainService: { isAvailable: boolean;, models: string[];
+export interface DatabaseSyncTestData { initialState: {, langchainService: {, isAvailable: boolean;, models: string[];
       error: string | null;
     };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
-    serviceStatus: { postgresql: boolean;, ollama: boolean;
+    serviceStatus: {, postgresql: boolean;, ollama: boolean;
       redis: boolean;
       lastChecked: string;
     };
-    testingMetrics: { totalDocuments: number;, totalSessions: number;
+    testingMetrics: {, totalDocuments: number;, totalSessions: number;
       documentsToday: number;
       averageProcessingTime: number;
       cacheHitRate: number;
     };
   };
-  meta: { totalDocuments: number;, totalSessions: number;
+  meta: {, totalDocuments: number;, totalSessions: number;
     serverRenderTime: number;
     testingEnvironment: boolean;
   };
 }
-export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promise<DatabaseSyncTestData> => {
+export const load: PageServerLoad = async ({, url: _url, fetch: _fetch }): Promise<DatabaseSyncTestData> => {
   const startTime = Date.now();
 
   // --- Move helpers to function body root (accessible everywhere in load) ---
@@ -118,7 +118,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
     const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value : [];
     const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value : [];
     const counts = totalCounts.status === 'fulfilled' ? totalCounts.value : [{ count: 0 }, { count: 0 }];
-    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value : [{ count: 0 }];
+    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value : [{, count: 0 }];
     const metrics =
       processingMetrics.status === 'fulfilled'
         ? processingMetrics.value
@@ -130,7 +130,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
             },
           ];
 
-    // Build a normalized sessionsWithCounts object (used below)
+    // Build a normalized sessionsWithCounts: object (used below)
     const sessionsWithCounts = Array.isArray(sessions)
       ? sessions.map((s: any) => ({
           id: s.id,
@@ -178,13 +178,13 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
       redisAvailable = false;
     }
     const serverRenderTime = Date.now() - startTime;
-    const pageData: DatabaseSyncTestData = { initialState: {, langchainService: {
-          isAvailable: isOllamaAvailable,
+    const pageData: DatabaseSyncTestData = {, initialState: {, langchainService: {
+         , isAvailable: isOllamaAvailable,
           models: availableModels,
           error: isOllamaAvailable ? null : 'Ollama service not available' },
         recentSessions: sessionsWithCounts,
         recentDocuments: documents.map(doc => ({
-          id: doc.id,
+         , id: doc.id,
           title: doc.title || 'Untitled Test Document',
           summary: doc.summary || 'No summary available',
           documentType: doc.documentType || 'unknown',
@@ -192,13 +192,13 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
           keyTerms: doc.keyTerms || []
         })),
         serviceStatus: {
-          postgresql: postgresqlAvailable,
+         , postgresql: postgresqlAvailable,
           ollama: isOllamaAvailable,
           redis: redisAvailable,
           lastChecked: new Date().toISOString()
         },
         testingMetrics: {
-          totalDocuments: totalDocumentsCount,
+         , totalDocuments: totalDocumentsCount,
           totalSessions: totalSessionsCount,
           documentsToday: documentsTodayCount,
           averageProcessingTime: Math.round(avgProcessingTimeNumeric || 0),
@@ -206,7 +206,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
         }
       },
       meta: {
-        totalDocuments: totalDocumentsCount,
+       , totalDocuments: totalDocumentsCount,
         totalSessions: totalSessionsCount,
         serverRenderTime,
         testingEnvironment: true
@@ -217,19 +217,19 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
     console.error('Failed to load database sync test data:', error);
     // Return comprehensive fallback data for testing
     return { initialState: {, langchainService: {
-          isAvailable: false,
+         , isAvailable: false,
           models: [],
-          error: 'Failed to load service; data: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
+          error: 'Failed to load service;, data: ${error instanceof Error ? error.message : 'Unknown error' }` },'`
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
-          postgresql: false,
+         , postgresql: false,
           ollama: false,
           redis: false,
           lastChecked: new Date().toISOString()
         },
         testingMetrics: {
-          totalDocuments: 0,
+         , totalDocuments: 0,
           totalSessions: 0,
           documentsToday: 0,
           averageProcessingTime: 0,
@@ -237,7 +237,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
         }
       },
       meta: {
-        totalDocuments: 0,
+       , totalDocuments: 0,
         totalSessions: 0,
         serverRenderTime: Date.now() - startTime,
         testingEnvironment: true

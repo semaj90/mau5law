@@ -1,8 +1,8 @@
-import { getOllamaEndpoint } from './get-ollama-endpoint';
+import { getOllamaEndpoint } from, './get-ollama-endpoint';
 
 // Enhanced Ollama Gemma3-Legal Service for Native Windows Integration
 // Optimized for gemma3-legal:latest model with Windows-native setup
-export interface OllamaResponse { model: string;, response: string;
+export interface OllamaResponse {, model: string;, response: string;
   done: boolean;
   total_duration?: number;
   load_duration?: number;
@@ -12,15 +12,15 @@ export interface OllamaResponse { model: string;, response: string;
   eval_duration?: number;
 }
 
-export interface OllamaStreamResponse { model: string;, created_at: string;
+export interface OllamaStreamResponse {, model: string;, created_at: string;
   response: string;
   done: boolean;
 }
 
-export interface OllamaModelInfo { name: string;, size: number;
+export interface OllamaModelInfo {, name: string;, size: number;
   digest: string;
   modified_at: string;
-  details: { format: string;, family: string;
+  details: {, format: string;, family: string;
     families?: string[];
     parameter_size: string;
     quantization_level: string;
@@ -32,7 +32,7 @@ export class Gemma3LegalService {
   private timeout: number;
   private retryAttempts: number;
   constructor(
-    options: {
+   , options: {
       baseUrl?: string;
       model?: string;
       timeout?: number;
@@ -67,7 +67,7 @@ export class Gemma3LegalService {
       if (!hasGemma3Legal) {
         return {
           status: 'model-missing',
-          message: 'gemma3-legal model not found. Please; run: ollama pull gemma3-legal:latest',
+          message: 'gemma3-legal model not found. Please;, run: ollama pull gemma3-legal:latest',
           models
         };
       }
@@ -85,7 +85,7 @@ export class Gemma3LegalService {
    * Generate legal AI response with enhanced prompting for legal accuracy
    */
   async generateLegalResponse(
-    prompt: string,
+   , prompt: string,
     options: {
       temperature?: number;
       max_tokens?: number;
@@ -98,11 +98,11 @@ export class Gemma3LegalService {
     const legalSystemPrompt = this.buildLegalSystemPrompt(options.legalContext || 'general');
     const enhancedPrompt = `${legalSystemPrompt}\n\nUser Query: ${prompt}`;
     const payload = {
-      model: this.model,
+     , model: this.model,
       prompt: enhancedPrompt,
       stream: options.stream || false,
       options: {
-        temperature: options.temperature || 0.3, // Lower for legal accuracy
+       , temperature: options.temperature || 0.3, // Lower for legal accuracy
         max_tokens: options.max_tokens || 4096,
         top_p: options.top_p || 0.9,
         frequency_penalty: 0.0,
@@ -130,11 +130,11 @@ export class Gemma3LegalService {
     const legalSystemPrompt = this.buildLegalSystemPrompt(options.legalContext || 'general');
     const enhancedPrompt = `${legalSystemPrompt}\n\nUser Query: ${prompt}`;
     const payload = {
-      model: this.model,
+     , model: this.model,
       prompt: enhancedPrompt,
       stream: true,
       options: {
-        temperature: options.temperature || 0.3,
+       , temperature: options.temperature || 0.3,
         max_tokens: options.max_tokens || 4096,
         num_predict: options.max_tokens || 4096,
         num_ctx: 8192,
@@ -222,12 +222,12 @@ export class Gemma3LegalService {
     const basePrompt = `You are a professional legal AI assistant trained on legal documents, case law, and legal principles. You provide accurate, helpful, and ethical legal information while maintaining appropriate disclaimers.`
 IMPORTANT: Your responses should be informative but always include appropriate disclaimers that this is not legal advice and users should consult with qualified attorneys for specific legal matters.`;`
     const contextPrompts = {
-      contract: `Focus on contract law, terms analysis, clause interpretation, and agreement structures. Consider enforceability, terms clarity, and standard practices.`,
+     , contract: `Focus on contract law, terms analysis, clause interpretation, and agreement structures. Consider enforceability, terms clarity, and standard practices.`,
       litigation: `Focus on litigation strategy, case law analysis, procedural requirements, and dispute resolution. Consider evidence, precedents, and court procedures.`,
       compliance: `Focus on regulatory compliance, policy analysis, risk assessment, and legal requirements. Consider industry standards and regulatory frameworks.`,
       research: `Focus on legal research methodology, case law analysis, statute interpretation, and comprehensive legal analysis. Provide detailed citations and reasoning.`,
       general: `Provide general legal information across various areas of law while maintaining accuracy and appropriate scope.` };
-    return `${basePrompt}\n\nContext Focus: ${contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general}`;
+    return `${basePrompt}\n\nContext, Focus: ${contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general}`;
   }
   private async makeRequest(endpoint: string, payload?: any): Promise<any> {
     let lastError: Error | null = null;

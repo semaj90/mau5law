@@ -1,9 +1,9 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import { page } from '$app/stores';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { browser } from, '$app/environment';
+  import { page } from, '$app/stores';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
     children?: any;
     fallback?: any;
@@ -62,7 +62,7 @@
         path: currentPath,
         error: errorDetails;
         stack: errorStack
-        userAgent: navigator.userAgent,
+       , userAgent: navigator.userAgent,
         timestamp: new Date().toISOString();
       }
       console.log('Error Report:', errorReport);
@@ -80,7 +80,7 @@
   <div, class="error-boundary-container">
     <div, class="error-boundary-content">
       <div, class="error-icon">
-        <svg width="64" height="64" viewBox="0 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="64" height="64" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle, cx="12" cy="12" r="10" />
           <line, x1="12" y1="8" x2="12" y2="12" />
           <line, x1="12" y1="16" x2="12.01" y2="16" />
@@ -124,15 +124,15 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+   , background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   }
   .error-boundary-content {
     max-width: 600px;
     text-align: center;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     border: 2px solid #00ff41;
     border-radius: 12px;
-    padding: 3rem 2rem;
+   , padding: 3rem 2rem;
     box-shadow: 0 20px 40px rgba(0, 255, 65, 0.2);
   }
   .error-icon {
@@ -141,7 +141,7 @@
     opacity: 0.8;
   }
   .error-title {
-    color: #00ff41;
+   , color: #00ff41;
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;
@@ -156,7 +156,7 @@
   .error-details {
     text-align: left;
     margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.05);
+   , background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     padding: 1rem;
   }
@@ -183,7 +183,7 @@
   .error-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+   , gap: 1rem;
     justify-content: center;
     margin-top: 2rem;
   }

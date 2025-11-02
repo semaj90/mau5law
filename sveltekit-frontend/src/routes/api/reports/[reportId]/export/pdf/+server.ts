@@ -1,8 +1,8 @@
-import { reports } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types'; // fixed import path
-import { json } from '@sveltejs/kit';
+import { reports } from, '$lib/server/db/schema-postgres';
+import { db } from, '$lib/server/db/index';
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types'; // fixed import path
+import { json } from, '@sveltejs/kit';
 
 // typed helper to extract user id from SvelteKit locals without using `any`
 function getUserId(locals: any): string {
@@ -11,7 +11,7 @@ function getUserId(locals: any): string {
     const maybeId = (locals as { user?: { id?: string } })?.user?.id;
     return maybeId ?? 'system';
   } catch {
-    return 'system';
+    return, 'system';
   }
 }
 
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       includeCanvas: data?.includeCanvas ?? false,
       watermark: data?.watermark ?? '',
       orientation: data?.orientation ?? 'portrait',
-      margins: data?.margins ?? { top: 1, right: 1, bottom: 1, left: 1 }
+      margins: data?.margins ?? {, top: 1, right: 1, bottom: 1, left: 1 }
     };
 
     const pdfMetadata = {
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       metadata: pdfMetadata,
       note: 'This is a mock response. In production, actual PDF generation would occur here.' });
   } catch (error: any) {
-    // Narrow unknown to a safe message instead of using `any`
+    // Narrow: unknown to a safe message instead of using `any`
     const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : String(error);
     console.error('Error initiating PDF export: ', errorMessage);'`'`
     return json({ error: 'Failed to initiate PDF export' }, { status: 500 });

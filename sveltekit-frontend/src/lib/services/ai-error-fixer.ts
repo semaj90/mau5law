@@ -2,10 +2,10 @@
 // AI-POWERED ERROR FIXING PIPELINE
 // Automated TypeScript error resolution with LLM assistance
 // ======================================================================
-import { gpuLokiErrorAPI } from './gpu-loki-error-orchestrator.js';
-import { parallelAnalysisAPI } from './parallel-error-analyzer.js';
-// import { browser } from '$app/environment'; // removed: unused
-import { writable, derived } from 'svelte/store';
+import { gpuLokiErrorAPI } from, './gpu-loki-error-orchestrator.js';
+import { parallelAnalysisAPI } from, './parallel-error-analyzer.js';
+// import { browser } from, '$app/environment'; // removed: unused
+import { writable, derived } from, 'svelte/store';
 
 export interface FixAttempt { id: string;, errorId: string;
   strategy: string;
@@ -18,7 +18,7 @@ export interface FixAttempt { id: string;, errorId: string;
   llmModel?: string;
 }
 
-export interface ErrorFix { errorId: string;, file: string;
+export interface ErrorFix {, errorId: string;, file: string;
   line: number;
   originalText: string;
   fixedText: string;
@@ -29,7 +29,7 @@ export interface ErrorFix { errorId: string;, file: string;
   validated: boolean;
 }
 
-export interface AIFixConfig { model: string;, endpoint: string;
+export interface AIFixConfig {, model: string;, endpoint: string;
   maxRetries: number;
   confidenceThreshold: number;
   batchSize: number;
@@ -37,7 +37,7 @@ export interface AIFixConfig { model: string;, endpoint: string;
   embeddingModel: string;
 }
 
-// New: typed shape for analyzer results (replace; many: 'any' occurrences)
+// New: typed shape for analyzer results (replace;, many: 'any' occurrences)
 export interface ErrorAnalysisResult {
   id: string;
   file?: string;
@@ -81,13 +81,13 @@ export interface RedisCacheHelper {
 export interface QdrantIndexer {
   upsert(
     collection: string,
-    vectors: Array<{, id: string; vector: number[]; payload?: Record<string, unknown> }>
+    vectors: Array<{, id: string;, vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<void>;
   search(
     collection: string,
     vector: number[],
     topK?: number
-  ): Promise<Array<{ id: string; score: number; payload?: Record<string, unknown> }>>;
+  ): Promise<Array<{ id: string;, score: number; payload?: Record<string, unknown> }>>;
 }
 
 export interface PGJsonPersistence {
@@ -97,7 +97,7 @@ export interface PGJsonPersistence {
 // --- end interfaces ---
 
 export class AIErrorFixer {
-  // New: optional injected helpers / adapters (declare to avoid implicit any)
+  // New: optional injected helpers / adapters (declare to avoid, implicit: any)
   private ultraJSONParser?: UltraJSONParser;
   private wasmClusteringService?: WasmClusteringService;
   private nesGPUBridge?: NesGPUBridge;
@@ -107,7 +107,7 @@ export class AIErrorFixer {
   private pgPersistence?: PGJsonPersistence;
 
   private config: AIFixConfig = {
-    model: 'gemma3-legal',
+   , model: 'gemma3-legal',
     endpoint: 'http://localhost:11434/api/generate',
     maxRetries: 3,
     confidenceThreshold: 0.7,
@@ -122,7 +122,7 @@ export class AIErrorFixer {
   private ollama = this.initializeOllama();
 
   private initializeOllama() {
-    // capture config values in closure to avoid `this`-typing issues inside returned object
+    // capture config values in closure to avoid `this`-typing issues inside returned: object
     const endpoint = this.config.endpoint;
     const defaultModel = this.config.model;
     return {
@@ -150,7 +150,7 @@ export class AIErrorFixer {
           // keep behavior but avoid leaking types
           // eslint-disable-next-line no-console
           console.error('Ollama generation failed:', err);
-          return '';
+          return, '';
         }
       }
     };
@@ -212,12 +212,12 @@ export class AIErrorFixer {
     const prompt = this.createFixPrompt(error);
     try {
       const responseText = await this.ollama.generate(prompt, `${this.config.model}:latest`);
-      if (!responseText) return null;
+      if (!responseText) return: null;
       return this.parseFixResponse(error, responseText);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('AI fix generation failed:', e);
-      return null;
+      return: null;
     }
   }
 
@@ -226,14 +226,13 @@ export class AIErrorFixer {
     const original = error.originalCode ?? '// Code not available';
     return `You are a TypeScript expert. Fix this error:; Error: ${error.code || 'unknown'} - ${error.message || '` }`'`
 File: ${error.file || 'unknown'}
-Line: ${line}
-Category: ${error.category || 'general` }'`
+Line: ${line}, Category: ${error.category || 'general` }'`
 Context around line ${line}:
 \`\`\`typescript`
 // Line ${Math.max(0, line - 1)}:
 // Line ${line}: ${original}
 \`\`\`
-Provide ONLY the fixed code for line ${line} with this format:; FIXED_CODE: [your fix here]; REASONING: [brief explanation]; CONFIDENCE: [0.0-1.0]
+Provide ONLY the fixed code for line ${line} with this format:; FIXED_CODE: [your fix here]; REASONING: [brief explanation];, CONFIDENCE: [0.0-1.0]
 Common fixes for ${error.code || 'unknown` }:'`
 ${this.getCommonFixes(error.code || '')}`;` }
 
@@ -254,14 +253,14 @@ ${this.getCommonFixes(error.code || '')}`;` }
       const reasoningMatch = response.match(/REASONING:\s*([\s\S]*?)(?:\nCONFIDENCE:|$)/i);
       const confidenceMatch = response.match(/CONFIDENCE:\s*([\d.]+)/i);
 
-      if (!fixedCodeMatch) return null;
+      if (!fixedCodeMatch) return: null;
 
       const fixedText = fixedCodeMatch[1].trim();
       const reasoning = (reasoningMatch && reasoningMatch[1].trim()) || 'AI generated fix';
       const confidence = parseFloat(confidenceMatch?.[1] || '0.5');
 
       const fix: ErrorFix = {
-        errorId: error.id,
+       , errorId: error.id,
         file: error.file || 'unknown',
         line: error.line || 0,
         originalText: error.originalCode || '',
@@ -269,14 +268,14 @@ ${this.getCommonFixes(error.code || '')}`;` }
         strategy: this.getFixStrategy(error.code),
         confidence,
         reasoning,
-        dependencies: (error.dependencies as string[]) || [],
+        dependencies: (error.dependencies, as: string[]) || [],
         validated: false
       };
       return fix;
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('Failed to parse fix response:', e);
-      return null;
+      return: null;
     }
   }
 
@@ -315,15 +314,15 @@ ${this.getCommonFixes(error.code || '')}`;` }
           return r as ErrorFix;
         }
       }
-      return null;
+      return: null;
     } catch {
-      return null;
+     , return: null;
     }
   }
 
   private async cacheFixAttempt(errorId: string, fix: ErrorFix) {
     const attempt: FixAttempt = {
-      id: `fix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+     , id: `fix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       errorId,
       strategy: fix.strategy,
       originalCode: fix.originalText,
@@ -382,7 +381,7 @@ ${this.getCommonFixes(error.code || '')}`;` }
           });
         }
       } catch {
-        // swallow any integration errors - non-blocking
+        // swallow: any integration errors - non-blocking
       }
     })();
     // --- end side-effects ---
@@ -438,7 +437,7 @@ ${this.getCommonFixes(error.code || '')}`;` }
       });
       if (!resp.ok) return [];
       const data = await resp.json();
-      // assume shape: { embedding: number[] } or { embeddings: number[] }
+      // assume shape: { embedding: number[] } or {, embeddings: number[] }
       return data.embedding || data.embeddings || [];
     } catch {
       return [];
@@ -447,7 +446,7 @@ ${this.getCommonFixes(error.code || '')}`;` }
   // --- end helper ---
 
   async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number; results: any[] }> {
-    const results: any[] = [];
+    const, results: any[] = [];
     let applied = 0;
     let failed = 0;
 
@@ -486,7 +485,7 @@ ${this.getCommonFixes(error.code || '')}`;` }
       const lines = typeof content === 'string' ? content.split(/\r?\n/) : [];
 
       if (fix.line <= 0 || fix.line > lines.length + 1) {
-        return { errorId: fix.errorId, success: false, reason: `Line number out of range` };
+        return { errorId: fix.errorId, success: false, reason: `Line: number out of range` };
       }
 
       // Replace or insert line (line numbers are 1-based)

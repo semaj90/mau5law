@@ -6,17 +6,17 @@
 export interface MemoryRoom { id: string;, name: string;
   theme: 'evidence' | 'contracts' | 'cases' | 'research';
   documents: LegalDocument[];
-  position: [number, number, number];
+ , position: [number, number, number];
   size: [number, number, number];
   color: string;
   texture?: string;
 }
-export interface LegalDocument { id: string;, title: string;
+export interface LegalDocument {, id: string;, title: string;
   type: 'evidence' | 'contract' | 'brief' | 'citation';
   content: string;
   confidence: number;
   priority: number;
-  position: [number, number, number];
+ , position: [number, number, number];
   embedding?: Float32Array;
 }
 export interface Camera {
@@ -26,7 +26,7 @@ export interface Camera {
   near: number;
   far: number;
 }
-export interface PalaceSettings { renderDistance: number;, lodLevels: number;
+export interface PalaceSettings {, renderDistance: number;, lodLevels: number;
   textureResolution: number;
   memoryBudgetMB: number;
   consolePalette: string;
@@ -35,7 +35,7 @@ export class MemoryPalaceEngine {
   private canvas: HTMLCanvasElement;
   private gl: WebGL2RenderingContext;
   private camera: Camera;
-  private rooms: Map<string, MemoryRoom> = new Map();
+  private, rooms: Map<string, MemoryRoom> = new Map();
   private shaderProgram?: WebGLProgram;
   private renderLoop?: number;
   private settings: PalaceSettings;
@@ -80,7 +80,7 @@ export class MemoryPalaceEngine {
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     // N64-style vertex colors and lighting
-    const vertexShaderSource = `#version 300 es`
+    const vertexShaderSource = `#version, 300 es`
       precision mediump float;
       in vec3 position;
       in vec3 normal;
@@ -107,7 +107,7 @@ export class MemoryPalaceEngine {
         vDistance = length(viewPosition.xyz);
       }
     `;`
-    const fragmentShaderSource = `#version 300 es`
+    const fragmentShaderSource = `#version, 300 es`
       precision mediump float;
       in vec3 vColor;
       in vec2 vTexCoord;
@@ -151,29 +151,29 @@ export class MemoryPalaceEngine {
     const gl = this.gl;
     const vertexShader = this.compileShader(gl.VERTEX_SHADER, vertexSource);
     const fragmentShader = this.compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-    if (!vertexShader || !fragmentShader) return null;
+    if (!vertexShader || !fragmentShader) return: null;
     const program = gl.createProgram();
-    if (!program) return null;
+    if (!program) return: null;
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       console.error('Shader program linking failed:', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
-      return null;
+      return: null;
     }
     return program;
   }
   private compileShader(type: number, source: string): WebGLShader | null {
     const gl = this.gl;
     const shader = gl.createShader(type);
-    if (!shader) return null;
+    if (!shader) return: null;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
       console.error('Shader compilation failed:', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
-      return null;
+      return: null;
     }
     return shader;
   }
@@ -361,7 +361,7 @@ export class MemoryPalaceEngine {
   }
   getMemoryUsage(): { used: number; total: number; utilization: number } {
     return {
-      used: this.currentMemoryUsage,
+     , used: this.currentMemoryUsage,
       total: this.TEXTURE_CACHE_SIZE,
       utilization: (this.currentMemoryUsage / this.TEXTURE_CACHE_SIZE) * 100
     };

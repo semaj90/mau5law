@@ -1,6 +1,6 @@
 /// <reference, types="vite/client" />
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Environment variables for Ollama configuration
 const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
@@ -13,18 +13,18 @@ type OllamaStatus = {
   error?: string;
 };
 
-type DatabaseStatus = { status: 'connected' | 'error' | 'unknown';, type: 'PostgreSQL';
+type DatabaseStatus = {, status: 'connected' | 'error' | 'unknown';, type: 'PostgreSQL';
   tablesAccessible?: any;
   error?: string;
 };
 
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     const systemStatus = { services: {, ollama: await checkOllamaStatus(),
         database: await checkDatabaseStatus()
       },
       environment: {
-        ollamaUrl: OLLAMA_URL
+       , ollamaUrl: OLLAMA_URL
       },
       timestamp: new Date().toISOString()
     };
@@ -113,7 +113,7 @@ function isDBHealthResult(obj: any): obj is DBHealthResult {
 async function checkDatabaseStatus(): Promise<DatabaseStatus> {
   // Try to dynamically import a healthCheck if the module exports it.
   try {
-    // import as unknown first to avoid unsafe casting between module shapes
+    // import as: unknown first to avoid unsafe casting between module shapes
     const dbModuleUnknown = await import('$lib/server/db/index.js').catch(() => null);
     const dbModule = dbModuleUnknown as DBModule | null;
 
@@ -128,7 +128,7 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
         };
       } else {
         return {
-          status: 'error',
+         , status: 'error',
           type: 'PostgreSQL',
           error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy` };'`
       }
@@ -136,7 +136,7 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
 
     // Fallback: healthCheck not provided by DB module
     return {
-      status: 'unknown',
+     , status: 'unknown',
       type: 'PostgreSQL',
       error: `healthCheck not exported from $lib/server/db/index.js` };
   } catch (error: any) {
@@ -149,4 +149,4 @@ async function checkDatabaseStatus(): Promise<DatabaseStatus> {
 }
 
 // Also support POST for triggering system checks
-export const POST: RequestHandler = GET;
+export const, POST: RequestHandler = GET;

@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Enhanced WebSocket Real-time Dashboard Integration
- * Provides live updates for the Legal AI Dashboard with Svelte 5 runes
+ * Provides live updates for the Legal AI Dashboard with Svelte, 5 runes
  */
-import { browser } from '$app/environment';
-import { getWebSocketClient } from '$lib/services/websocket-service';
+import { browser } from, '$app/environment';
+import { getWebSocketClient } from, '$lib/services/websocket-service';
 
 // WebSocket client instance
 let wsClient: ReturnType<typeof getWebSocketClient> | null = null;
 
-// Reactive state using Svelte 5 runes
+// Reactive state using Svelte, 5 runes
 export const websocketStore = {
   // Connection state
   connected: $state(false),
@@ -18,7 +18,7 @@ export const websocketStore = {
 
   // Live data
   dashboardData: $state({
-    cases: [],
+   , cases: [],
     evidence: [],
     reports: [],
     stats: {
@@ -33,7 +33,7 @@ export const websocketStore = {
   recentActivity: $state<any[]>([]),
   processingJobs: $state<any[]>([]),
   systemHealth: $state({
-    api: 'unknown',
+   , api: 'unknown',
     database: 'unknown',
     aiServices: 'unknown',
     jobQueue: 'unknown'
@@ -188,12 +188,12 @@ function handleCaseUpdate(data: any): void {
   // Add to recent activity
   websocketStore.recentActivity.unshift({
     type: 'case_updated',
-    title: `Case "${updateData.title || caseId}" was updated`,
+    title: `Case, "${updateData.title || caseId}" was updated`,
     timestamp: new Date().toISOString(),
     entityId: caseId
   });
 
-  // Keep only last 20 activities
+  // Keep only last, 20 activities
   if (websocketStore.recentActivity.length > 20) {
     websocketStore.recentActivity = websocketStore.recentActivity.slice(0, 20);
   }
@@ -214,12 +214,12 @@ function handleEvidenceAdded(data: any): void {
   // Add to recent activity
   websocketStore.recentActivity.unshift({
     type: 'evidence_added',
-    title: `Evidence "${evidence.title}" was added to case ${caseId}`,
+    title: `Evidence, "${evidence.title}" was added to case ${caseId}`,
     timestamp: new Date().toISOString(),
     entityId: evidence.id
   });
 
-  // Keep only last 20 activities
+  // Keep only last, 20 activities
   if (websocketStore.recentActivity.length > 20) {
     websocketStore.recentActivity = websocketStore.recentActivity.slice(0, 20);
   }
@@ -290,7 +290,7 @@ function handleCollaborativeEdit(data: any): void {
   // Mark evidence as being edited
   websocketStore.evidenceBeingEdited.add(evidenceId);
 
-  // Clean up old editor sessions after 30 seconds
+  // Clean up old editor sessions after, 30 seconds
   setTimeout(() => {
     websocketStore.activeEditors.delete(sessionId);
 
@@ -345,7 +345,7 @@ function getTimeAgo(date: Date): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return 'just, now';
+  if (diffMins < 1) return, 'just, now';
   if (diffMins < 60) return `${diffMins}m, ago`;
   if (diffHours < 24) return `${diffHours}h, ago`;
   return `${diffDays}d ago`;

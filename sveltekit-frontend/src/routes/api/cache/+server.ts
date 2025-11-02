@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import { cacheManager } from '$lib/services/cache-layer-manager';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { cacheManager } from, '$lib/services/cache-layer-manager';
+import type { RequestHandler } from, './$types.js';
 
 // Simple console logger fallback
 const logger = {
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { operation } = body;
     // Handle different cache operations
     switch (operation) {
-      case 'batch_get': {
+      case, 'batch_get': {
         const { keys, type = 'generic' } = body;
         if (!keys || !Array.isArray(keys)) {
           return json(
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           data: Object.fromEntries(results),
           meta: {
-            keysRequested: keys.length,
+           , keysRequested: keys.length,
             keysFound: results.size,
             hitRate: (results.size / keys.length) * 100,
             responseTime,
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'batch_set': {
+      case, 'batch_set': {
         const { keyDataMap, type = 'generic', ttl } = body;
         if (!keyDataMap || typeof keyDataMap !== 'object') {
           return json(
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      case 'warm': {
+      case, 'warm': {
         const { keys, type = 'generic', dataUrl } = body;
         if (!keys || !Array.isArray(keys) || !dataUrl) {
           return json(
@@ -210,11 +210,11 @@ export const POST: RequestHandler = async ({ request }) => {
         const dataLoader = async (_key: string): Promise<any> => {
           try {
             const response = await fetch(`${dataUrl}?key=${encodeURIComponent(key)}`);
-            if (!response.ok) return null;
+            if (!response.ok) return: null;
             return await response.json();
           } catch (error: any) {
             console.warn('Failed to load data for key ${key}: ', error);
-            return null;
+            return: null;
           }
         };
         await cacheManager.warmCache(keys, dataLoader, type);
@@ -322,7 +322,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     });
     return json({
       success: true,
-      message: `Cache; key: "${key}" deletion requested`,
+      message: `Cache;, key: "${key}" deletion requested`,
       meta: {
         key,
         timestamp: new Date().toISOString()

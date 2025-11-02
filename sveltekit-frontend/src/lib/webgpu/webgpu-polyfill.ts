@@ -1,16 +1,16 @@
-import type { WebGPUComputeShader } from '$lib/types/vector-jobs';
-import { shaderCacheManager } from './shader-cache-manager.js';
+import type { WebGPUComputeShader } from, '$lib/types/vector-jobs';
+import { shaderCacheManager } from, './shader-cache-manager.js';
 
 export class WebGPUPolyfillService {
   // Types for GPU device info and compute shader management
   private adapter: GPUAdapter | null = null;
   private device: GPUDevice | null = null;
-  private queue: GPUQueue | null = null;
+  private, queue: GPUQueue | null = null;
   private isWebGPUAvailable = $state(false);
   private webglFallback: WebGL2RenderingContext | null = null;
   private canvas: HTMLCanvasElement | null = null;
 
-  // Safe logging helpers to avoid: "object possibly undefined" diagnostics in some runtimes
+  // Safe logging helpers to avoid: "object, possibly: undefined" diagnostics in some runtimes
   private safeLog = (...args: any[]) => {
     if (typeof console !== 'undefined' && typeof console.log === 'function') console.log(...args);
   };
@@ -46,7 +46,7 @@ export class WebGPUPolyfillService {
   async initialize(): Promise<boolean> {
     // Try WebGPU first
     if (typeof navigator !== 'undefined') {
-      const nav = navigator as unknown as { gpu?: GPU | undefined };
+      const nav = navigator as: unknown as { gpu?: GPU | undefined };
       if (nav.gpu) {
         try {
           const gpu = nav.gpu;
@@ -187,7 +187,7 @@ export class WebGPUPolyfillService {
   // GPU/WebGL placeholders for future acceleration
   private async computeSimilarityWebGPU(vector1: number[], vector2: number[]): Promise<number> {
     // NOTE: This method currently falls back to CPU for correctness.
-    // Future: Implement WGSL compute shader for GPU acceleration.
+    //, Future: Implement WGSL compute shader for GPU acceleration.
     if (!this.device || !this.queue) throw new Error('WebGPU device not available');
     return this.computeSimilarityCPU(vector1, vector2);
   }
@@ -250,7 +250,7 @@ export class WebGPUPolyfillService {
     // Cleanup WebGPU resources
     if (this.device) {
       try {
-        const deviceWithDestroy = this.device as unknown as {
+        const deviceWithDestroy = this.device as: unknown as {
           destroy?: () => void | Promise<void>;
         };
         if (typeof deviceWithDestroy.destroy === 'function') {

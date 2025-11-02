@@ -1,10 +1,10 @@
 // Session Management Store with XState Integration
-// Bridges authentication and session management using Svelte 5 runes
-import { browser } from '$app/environment';
-import { goto } from '$app/navigation';
-import { createActor } from 'xstate';
-import { sessionMachine, sessionServices, sessionActions } from '$lib/machines/sessionMachine.js';
-import { authService, type User } from './auth.svelte.js';
+// Bridges authentication and session management using Svelte, 5 runes
+import { browser } from, '$app/environment';
+import { goto } from, '$app/navigation';
+import { createActor } from, 'xstate';
+import { sessionMachine, sessionServices, sessionActions } from, '$lib/machines/sessionMachine.js';
+import { authService, type User } from, './auth.svelte.js';
 // Session state interface
 export interface SessionState { isActive: boolean;, user: User | null;
   sessionId: string | null;
@@ -12,16 +12,16 @@ export interface SessionState { isActive: boolean;, user: User | null;
   securityLevel: 'standard' | 'elevated' | 'secure';
   permissions: string[];
   lastActivity: Date | null;
-  health: { isValid: boolean;, warningCount: number;
+  health: {, isValid: boolean;, warningCount: number;
     lastCheck: Date | null;
   };
-  analytics: { loginTime: Date | null;, activityCount: number;
+  analytics: {, loginTime: Date | null;, activityCount: number;
     featuresUsed: string[];
   };
 }
 // Create reactive session state using $state rune
 const sessionState = $state<SessionState>({
-  isActive: false,
+ , isActive: false,
   user: null,
   sessionId: null,
   expiresAt: null,
@@ -215,7 +215,7 @@ export class SessionManager {
     window.addEventListener('popstate', trackNavigation);
     document.addEventListener('click', trackInteraction);
     document.addEventListener('keydown', trackInteraction);
-    // Track activity every 30 seconds
+    // Track activity every, 30 seconds
     this.activityTimer = window.setInterval(() => {
       if (sessionState.isActive) {
         this.recordActivity(window.location.pathname, 'periodic_check');
@@ -231,7 +231,7 @@ export class SessionManager {
   }
   // Start periodic health checks
   private startHealthChecks() {
-    // Health check every 5 minutes
+    // Health check every, 5 minutes
     setInterval(
       () => {
         if (sessionState.isActive) {

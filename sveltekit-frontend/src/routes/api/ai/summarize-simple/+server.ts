@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { getOllamaEndpoint } from '$lib/server/endpoints';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { getOllamaEndpoint } from, '$lib/server/endpoints';
 
 /**
  * Legal Document Summarization API for VS Code Tasks
@@ -22,9 +22,9 @@ interface SummarizationRequest {
 	format?: 'summary' | 'bullets' | 'legal-brief';
 }
 
-interface OllamaGenerateResponse { model: string;, created_at: string;
+interface OllamaGenerateResponse {, model: string;, created_at: string;
 	response: string;
-	done: boolean;
+, done: boolean;
 	context?: number[];
 	total_duration?: number;
 	load_duration?: number;
@@ -40,14 +40,14 @@ const DEFAULT_MODEL = 'gemma3-legal:latest';
 
 // Format-specific prompt templates
 const FORMAT_TEMPLATES = {
-	summary: (text: string, maxLength: number) =>
+, summary: (text: string, maxLength: number) =>
 		`Summarize this legal document or error log in ${maxLength} tokens or less. Focus on key issues and patterns:\n\n${text}`,
 	bullets: (text: string, maxLength: number) =>
 		`Create a bullet-point summary (max ${maxLength} tokens) of this text. Extract:\n- Main issues or errors\n- Patterns and frequency\n- Severity levels\n- Recommended fixes\n\nText:\n${text}`,
 	'legal-brief': (text: string, maxLength: number) =>
 		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}` };'`'`
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
 	try {
 		const body: SummarizationRequest = await request.json();
 		const {
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async () => {
 			features: ['summarization', 'legal-brief', 'bullet-points'],
 			formats: Object.keys(FORMAT_TEMPLATES),
 			meta: {
-				timestamp: new Date().toISOString(),
+			, timestamp: new Date().toISOString(),
 				version: `1.0.0` }
 		});
 	} catch (err: unknown) {

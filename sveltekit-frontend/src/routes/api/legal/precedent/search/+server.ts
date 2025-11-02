@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 interface PrecedentSearchRequest {
   query?: string
   factPattern?: string
@@ -13,17 +13,17 @@ interface PrecedentSearchRequest {
   maxResults?: number
   sortBy?: 'similarity' | 'date' | 'citations' | 'authority'
 }
-interface PrecedentMatch { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string
+interface PrecedentMatch {, id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string
   judges?: string[];
-  similarityScore: number; factualSimilarity: number; legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'; keyFacts: string[]; legalHolding: string; reasoningChain: string[]; citationCount: number; recentCitations: number; distinguishingFactors: string[]; applicabilityScore: number; strengthIndicators: { factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number; temporalRelevance: number
+  similarityScore: number; factualSimilarity: number; legalSimilarity: number; precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHED' | 'OVERRULED'; keyFacts: string[]; legalHolding: string; reasoningChain: string[]; citationCount: number; recentCitations: number; distinguishingFactors: string[]; applicabilityScore: number; strengthIndicators: {, factualAlignment: number, legalPrinciples: number; jurisdictionalRelevance: number; temporalRelevance: number
   }
   relatedTopics: string[]; practiceAreas: string[]
   embedding?: number[]
 }
-interface CitationNetwork { caseId: string, citingCases: string[]; citedCases: string[]; authorityScore: number; influenceRank: number; networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: { depth: number, breadth: number; clusters: string[]
+interface CitationNetwork {, caseId: string, citingCases: string[]; citedCases: string[]; authorityScore: number; influenceRank: number; networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; citationGraph: {, depth: number, breadth: number; clusters: string[]
   }
 }
-interface LegalReasoningStep { stepNumber: number;, legalPrinciple: string;
+interface LegalReasoningStep {, stepNumber: number;, legalPrinciple: string;
   supportingCases: string[];
   factualBasis: string;
   logicalConnection: string;
@@ -32,12 +32,12 @@ interface LegalReasoningStep { stepNumber: number;, legalPrinciple: string;
   counterarguments: string[];
 }
 
-interface LegalReasoningChain { steps: LegalReasoningStep[];, overallCoherence: number;
+interface LegalReasoningChain {, steps: LegalReasoningStep[];, overallCoherence: number;
   logicalGaps: string[];
   alternativeTheories: string[];
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: PrecedentSearchRequest = await request.json();
     const { query, factPattern, jurisdiction, courtLevel, practiceArea } = searchRequest;
@@ -124,16 +124,16 @@ async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<
   }
   // Apply sorting
   switch (sortBy) {
-    case 'similarity':
+    case, 'similarity':
       mockMatches.sort((a, b) => b.similarityScore - a.similarityScore);
       break;
-    case 'date':
+    case, 'date':
       mockMatches.sort((a, b) => new Date(b.dateDecided).getTime() - new Date(a.dateDecided).getTime());
       break;
-    case 'citations':
+    case, 'citations':
       mockMatches.sort((a, b) => b.citationCount - a.citationCount);
       break;
-    case 'authority':
+    case, 'authority':
       mockMatches.sort(
         (a, b) =>
           (b.precedentialValue === 'BINDING' ? 1 : 0) - (a.precedentialValue === 'BINDING' ? 1 : 0) ||
@@ -157,7 +157,7 @@ async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<Citatio
     influenceRank: Math.floor(Math.random() * 1000) + 1,
     networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL',
     citationGraph: {
-      depth: Math.min(6, Math.floor(match.citationCount / 20)),
+     , depth: Math.min(6, Math.floor(match.citationCount / 20)),
       breadth: Math.min(15, Math.floor(match.citationCount / 10)),
       clusters: generateMockClusters(match.practiceAreas)
     }
@@ -209,7 +209,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
   ];
   const overallCoherence = steps.reduce((sum, step) => sum + step.strengthScore, 0) / steps.length;
   const logicalGaps = [
-    'Potential inconsistency between steps 2 and 3',
+    'Potential inconsistency between steps, 2 and 3',
     'Policy considerations may conflict with strict precedent application',
   ];
   const alternativeTheories = [
@@ -236,7 +236,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
     legalPrincipleAlignment: matches.some(m => m.legalSimilarity > 0.85) ? 'STRONG' : 'MODERATE',
     temporalRelevance: recentCount > matches.length * 0.6 ? 'HIGH' : 'MEDIUM',
     factors: {
-      bindingPrecedents: bindingCount,
+     , bindingPrecedents: bindingCount,
       persuasivePrecedents: persuasiveCount,
       averageSimilarity: avgSimilarity,
       recentAuthority: recentCount,
@@ -271,7 +271,7 @@ async function generateStrategicRecommendations(matches: PrecedentMatch[], reaso
       'Comprehensive citation network analysis',
     ].filter(Boolean),
     vulnerabilities: [
-      ...new Set(vulnerabilities.slice(0, 4)), // Remove duplicates, limit to 4
+      ...new Set(vulnerabilities.slice(0, 4)), // Remove duplicates, limit to, 4
       reasoningChain.logicalGaps.length > 0 ? 'Potential gaps in legal reasoning' : null,
     ].filter(Boolean),
     strategicRecommendations: [
@@ -293,7 +293,7 @@ async function generateStrategicRecommendations(matches: PrecedentMatch[], reaso
 function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchRequest): PrecedentMatch[] {
   const basePrecedents: Partial<PrecedentMatch>[] = [
     {
-      title: `${searchTerm} - Supreme Court Landmark Decision`,
+     , title: `${searchTerm} - Supreme Court Landmark Decision`,
       court: 'Supreme Court of the United States',
       jurisdiction: 'Federal',
       precedentialValue: 'BINDING',
@@ -354,7 +354,7 @@ function generateMockPrecedents(searchTerm: string, _request: PrecedentSearchReq
     distinguishingFactors: Math.random() > 0.7 ? generateMockDistinguishingFactors() : [],
     applicabilityScore: Math.random() * 0.3 + 0.65,
     strengthIndicators: {
-      factualAlignment: Math.floor(Math.random() * 30) + 70,
+     , factualAlignment: Math.floor(Math.random() * 30) + 70,
       legalPrinciples: Math.floor(Math.random() * 25) + 75,
       jurisdictionalRelevance: Math.floor(Math.random() * 35) + 65,
       temporalRelevance: Math.floor(Math.random() * 40) + 60

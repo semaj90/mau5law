@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Legal Document Analyzer - Agentic Function Calling for gemma3-legal:latest
  *
- * Features:
+ *, Features:
  * - PDF report upload and comparison with RAG documents
  * - Who/What/Why/How/Evidence extraction
  * - Person of Interest (POI) tracking
@@ -11,9 +11,9 @@ import type { Document } from '$lib/types';
  * - Agentic function calling to gemma3-legal:latest
  */
 
-import { runAIAgent } from './agentic';
-import type { AIResponse } from '$lib/types/ai-workflows';
-import { getOllamaEndpoint } from './legalbert-middleware';
+import { runAIAgent } from, './agentic';
+import type { AIResponse } from, '$lib/types/ai-workflows';
+import { getOllamaEndpoint } from, './legalbert-middleware';
 
 // ============================================================================
 // Types for Legal Analysis
@@ -26,36 +26,36 @@ export interface LegalDocumentMetadata { title: string;, documentType: 'verdict
   caseNumber?: string;
 }
 
-export interface PersonOfInterest { name: string;, role: 'defendant' | 'plaintiff' | 'witness' | 'judge' | 'attorney' | 'victim' | 'expert';
+export interface PersonOfInterest {, name: string;, role: 'defendant' | 'plaintiff' | 'witness' | 'judge' | 'attorney' | 'victim' | 'expert';
   aliases?: string[];
   mentions: number;
   relevance: number; // 0-1 score
-  relationships: Array<{ personName: string;, relationshipType: string;
+  relationships: Array<{, personName: string;, relationshipType: string;
     confidence: number;
   }>;
 }
 
 export interface LegalAnalysis {
   // Core Legal Questions
-  who: { personsOfInterest: PersonOfInterest[];, parties: Array<{ name: string;, type: 'individual' | 'corporate' | 'government';
+  who: {, personsOfInterest: PersonOfInterest[];, parties: Array<{, name: string;, type: 'individual' | 'corporate' | 'government';
       role: string;
     }>;
   };
 
-  what: { summary: string;, chargesOrClaims: string[];
+  what: {, summary: string;, chargesOrClaims: string[];
     legalIssues: string[];
     keyFacts: string[];
   };
 
-  why: { motivation: string;, legalBasis: string[];
+  why: {, motivation: string;, legalBasis: string[];
     precedents: string[];
   };
 
-  how: { methodology: string;, evidenceChain: string[];
+  how: {, methodology: string;, evidenceChain: string[];
     legalArguments: string[];
   };
 
-  evidence: { physicalEvidence: Array<{, type: string;
+  evidence: {, physicalEvidence: Array<{, type: string;
       description: string;
       relevance: number;
       admissible: boolean;
@@ -65,7 +65,7 @@ export interface LegalAnalysis {
     expertOpinions: string[];
   };
 
-  verdict?: { outcome: string;, reasoning: string;
+  verdict?: {, outcome: string;, reasoning: string;
     dissent?: string;
   };
 
@@ -76,21 +76,21 @@ export interface LegalAnalysis {
   };
 }
 
-export interface CaseSimilarity { caseId: string;, title: string;
+export interface CaseSimilarity {, caseId: string;, title: string;
   similarity: number; // 0-1 cosine similarity
   matchedFactors: string[];
   relevantExcerpts: string[];
   outcome?: string;
 }
 
-export interface LegalRecommendation { type: 'precedent' | 'strategy' | 'evidence' | 'argument' | 'risk';, priority: 'high' | 'medium' | 'low';
+export interface LegalRecommendation {, type: 'precedent' | 'strategy' | 'evidence' | 'argument' | 'risk';, priority: 'high' | 'medium' | 'low';
   description: string;
   reasoning: string;
   confidence: number;
   relatedCases?: string[];
 }
 
-export interface ComparisonResult { originalDocument: LegalDocumentMetadata;, analysis: LegalAnalysis;
+export interface ComparisonResult {, originalDocument: LegalDocumentMetadata;, analysis: LegalAnalysis;
   similarCases: CaseSimilarity[];
   recommendations: LegalRecommendation[];
   aiInsights: string;
@@ -99,7 +99,7 @@ export interface ComparisonResult { originalDocument: LegalDocumentMetadata;, a
 
 // Define an interface for the Qdrant search result item
 interface QdrantSearchResultItem {
-  id: string; // Qdrant point ID can be string or number, assuming string for document IDs
+  id: string; // Qdrant point ID can be: string, or: number, assuming: string for document IDs;
   score: number;
   payload?: {
     metadata?: {
@@ -115,8 +115,8 @@ interface QdrantSearchResultItem {
 
 // Define a type for Qdrant filter conditions
 type QdrantFilterCondition =
-  | { key: string; match: {, value: string } }
-  | { key: string; match: {, any: string[] } };
+  | { key: string;, match: {, value: string } }
+  | { key: string;, match: {, any: string[] } };
 
 // ============================================================================
 // Function Definitions for gemma3-legal:latest
@@ -127,8 +127,8 @@ const LEGAL_FUNCTIONS = [
     name: 'extract_legal_entities',
     description: 'Extract persons of interest, parties, and their relationships from legal text',
     parameters: {
-      type: 'object',
-      properties: { text: {, type: 'string',
+     , type: 'object',
+      properties: {, text: {, type: 'string',
           description: 'The legal document text to analyze'
         }
       },
@@ -139,8 +139,8 @@ const LEGAL_FUNCTIONS = [
     name: 'analyze_evidence',
     description: 'Analyze and categorize evidence mentioned in the document',
     parameters: {
-      type: 'object',
-      properties: { text: {, type: 'string',
+     , type: 'object',
+      properties: {, text: {, type: 'string',
           description: 'The legal document text containing evidence'
         }
       },
@@ -151,25 +151,25 @@ const LEGAL_FUNCTIONS = [
     name: 'search_similar_cases',
     description: 'Search for similar cases in the vector database using semantic search',
     parameters: {
-      type: 'object',
-      properties: { query: {, type: 'string',
+     , type: 'object',
+      properties: {, query: {, type: 'string',
           description: 'Natural language query describing the case characteristics'
         },
         filters: {
-          type: 'object',
-          properties: { documentType: {, type: 'string' },
-            jurisdiction: { type: 'string' },
+         , type: 'object',
+          properties: {, documentType: {, type: 'string' },
+            jurisdiction: {, type: 'string' },
             dateRange: {
-              type: 'object',
-              properties: { start: {, type: 'string' },
-                end: { type: 'string' }
+             , type: 'object',
+              properties: {, start: {, type: 'string' },
+                end: {, type: 'string' }
               }
             }
           }
         },
         limit: {
-          type: 'number',
-          description: 'Maximum number of similar cases to return',
+         , type: 'number',
+          description: 'Maximum: number of similar cases to return',
           default: 10
         }
       },
@@ -180,12 +180,12 @@ const LEGAL_FUNCTIONS = [
     name: 'generate_recommendations',
     description: 'Generate legal recommendations based on case analysis and similar cases',
     parameters: {
-      type: 'object',
-      properties: { caseAnalysis: {, type: 'object',
+     , type: 'object',
+      properties: {, caseAnalysis: {, type: 'object',
           description: 'The analyzed case data'
         },
         similarCases: {
-          type: 'array',
+         , type: 'array',
           description: 'Array of similar cases'
         }
       },
@@ -196,12 +196,12 @@ const LEGAL_FUNCTIONS = [
     name: 'compare_outcomes',
     description: 'Compare outcomes between the current case and similar precedents',
     parameters: {
-      type: 'object',
-      properties: { currentCase: {, type: 'object',
+     , type: 'object',
+      properties: {, currentCase: {, type: 'object',
           description: 'Current case details'
         },
         precedents: {
-          type: 'array',
+         , type: 'array',
           description: 'Array of precedent cases'
         }
       },
@@ -227,7 +227,7 @@ Document Metadata:
 - Jurisdiction: ${metadata.jurisdiction || 'Not specified'}
 - Case Number: ${metadata.caseNumber || 'Not specified` }'`
 
-Document Text:
+Document, Text:
 ${documentText.slice(0, 8000)}
 
 Please analyze this document and answer the following:
@@ -246,7 +246,7 @@ Use function calls to:
 - analyze_evidence: to categorize and evaluate evidence
 - search_similar_cases: to find relevant precedents
 - generate_recommendations: to provide strategic insights
-- compare_outcomes: to compare with similar cases
+-, compare_outcomes: to compare with similar cases
 
 Provide a structured, comprehensive analysis with citations and confidence scores.`;` }
 
@@ -264,30 +264,30 @@ export async function analyzeLegalDocument(
   const prompt = buildLegalAnalysisPrompt(documentText, metadata);
 
   // Call gemma3-legal:latest with function calling enabled
-  const aiResponse: AIResponse = await runAIAgent(prompt, true, 'ollama');
+  const, aiResponse: AIResponse = await runAIAgent(prompt, true, 'ollama');
 
   // Parse the AI response to extract structured analysis
-  const analysis: LegalAnalysis = { who: {, personsOfInterest: extractPersonsOfInterest(documentText, aiResponse.text),
+  const analysis: LegalAnalysis = {, who: {, personsOfInterest: extractPersonsOfInterest(documentText, aiResponse.text),
       parties: extractParties(documentText, aiResponse.text)
     },
     what: {
-      summary: extractSummary(aiResponse.text),
+     , summary: extractSummary(aiResponse.text),
       chargesOrClaims: extractCharges(aiResponse.text),
       legalIssues: extractLegalIssues(aiResponse.text),
       keyFacts: extractKeyFacts(aiResponse.text)
     },
     why: {
-      motivation: extractMotivation(aiResponse.text),
+     , motivation: extractMotivation(aiResponse.text),
       legalBasis: extractLegalBasis(aiResponse.text),
       precedents: extractPrecedents(aiResponse.text)
     },
     how: {
-      methodology: extractMethodology(aiResponse.text),
+     , methodology: extractMethodology(aiResponse.text),
       evidenceChain: extractEvidenceChain(aiResponse.text),
       legalArguments: extractLegalArguments(aiResponse.text)
     },
     evidence: {
-      physicalEvidence: extractPhysicalEvidence(aiResponse.text),
+     , physicalEvidence: extractPhysicalEvidence(aiResponse.text),
       documentaryEvidence: extractDocumentaryEvidence(aiResponse.text),
       testimonialEvidence: extractTestimonialEvidence(aiResponse.text),
       expertOpinions: extractExpertOpinions(aiResponse.text)
@@ -322,7 +322,7 @@ export async function compareWithRAGDocuments(
     method: 'POST',
     headers: { 'Content-Type': `application/json` },
     body: JSON.stringify({
-      model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
+     , model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
       prompt: queryText
     })
   });
@@ -404,7 +404,7 @@ async function searchSimilarCases(
     const qdrantUrl = process.env.QDRANT_URL || 'http://localhost:6333';
 
     // Build Qdrant filter with tags
-    const mustFilters: QdrantFilterCondition[] = []; // Explicitly type mustFilters
+    const, mustFilters: QdrantFilterCondition[] = []; // Explicitly type mustFilters
 
     if (filters.documentType) {
       mustFilters.push({
@@ -422,9 +422,9 @@ async function searchSimilarCases(
 
     // Add tag-based filtering (Qdrant supports array matching)
     if (filters.tags && filters.tags.length > 0) {
-      // Match any of the tags
+      // Match: any of the tags
       mustFilters.push({
-        key: 'metadata.tags',
+       , key: 'metadata.tags',
         match: {
          , any: filters.tags, // Qdrant will match documents with ANY of these tags
         }
@@ -502,19 +502,19 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
 
 function parseRole(roleStr: string): PersonOfInterest['role'] {
   const normalized = roleStr.toLowerCase();
-  if (normalized.includes('defendant')) return 'defendant';
-  if (normalized.includes('plaintiff')) return 'plaintiff';
-  if (normalized.includes('witness')) return 'witness';
-  if (normalized.includes('judge')) return 'judge';
-  if (normalized.includes('attorney') || normalized.includes('lawyer')) return 'attorney';
-  if (normalized.includes('victim')) return 'victim';
-  if (normalized.includes('expert')) return 'expert';
-  return 'witness'; // default
+  if (normalized.includes('defendant')) return, 'defendant';
+  if (normalized.includes('plaintiff')) return, 'plaintiff';
+  if (normalized.includes('witness')) return, 'witness';
+  if (normalized.includes('judge')) return, 'judge';
+  if (normalized.includes('attorney') || normalized.includes('lawyer')) return, 'attorney';
+  if (normalized.includes('victim')) return, 'victim';
+  if (normalized.includes('expert')) return, 'expert';
+  return, 'witness'; // default
 }
 
 function extractParties(
-  aiResponse: string // Removed unused 'text' parameter
-): Array<{ name: string; type: 'individual' | 'corporate' | 'government'; role: string }> {
+  aiResponse: string // Removed unused, 'text' parameter
+): Array<{ name: string; type: 'individual' | 'corporate' | 'government';, role: string }> {
   const partiesSection = aiResponse.match(/(?:PARTIES)[:\s]+([\s\S]*?)(?:\n\n|WHAT)/i);
   if (!partiesSection) return [];
 
@@ -633,7 +633,7 @@ function extractLegalArguments(aiResponse: string): string[] {
 
 function extractPhysicalEvidence(
   aiResponse: string
-): Array<{ type: string; description: string; relevance: number; admissible: boolean }> {
+): Array<{ type: string; description: string; relevance: number;, admissible: boolean }> {
   const physicalMatch = aiResponse.match(/(?:PHYSICAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|DOCUMENTARY|TESTIMONIAL)/i);
   if (!physicalMatch) return [];
 
@@ -678,7 +678,7 @@ function extractExpertOpinions(aiResponse: string): string[] {
     .filter(Boolean);
 }
 
-function extractVerdict(aiResponse: string): { outcome: string; reasoning: string; dissent?: string } {
+function extractVerdict(aiResponse: string): { outcome: string;, reasoning: string; dissent?: string } {
   const verdictMatch = aiResponse.match(/(?:VERDICT)[:\s]+([\s\S]*?)(?:\n\n|$)/i);
   if (!verdictMatch) return { outcome: 'Not specified', reasoning: `` };
 
@@ -721,12 +721,12 @@ function parseRecommendations(aiResponse: string): LegalRecommendation[] {
   const recommendations: LegalRecommendation[] = [];
 
   // Define an interface for the sections to ensure: 'type' is correctly inferred
-  interface RecommendationSection { type: LegalRecommendation['type'];, pattern: RegExp;
+  interface RecommendationSection {, type: LegalRecommendation['type'];, pattern: RegExp;
   }
 
   // Parse different recommendation sections
   const sections: RecommendationSection[] = [
-    { type: 'strategy', pattern: /(?:STRATEGY|LEGAL STRATEGY)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE|ARGUMENTS)/i },
+    {, type: 'strategy', pattern: /(?:STRATEGY|LEGAL STRATEGY)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE|ARGUMENTS)/i },
     { type: 'evidence', pattern: /(?:EVIDENCE|ADDITIONAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|ARGUMENTS|RISK)/i },
     { type: 'argument', pattern: /(?:ARGUMENTS?)[:\s]+([\s\S]*?)(?:\n\n|RISK|OUTCOME)/i },
     { type: 'risk', pattern: /(?:RISK|RISK ASSESSMENT)[:\s]+([\s\S]*?)(?:\n\n|OUTCOME|$)/i }

@@ -1,4 +1,4 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Detective Mode Analysis API Routes
  * POST /api/v1/detective/analyze - Run detective analysis
@@ -6,10 +6,10 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * POST /api/v1/detective/patterns - Detect suspicious patterns
  * POST /api/v1/detective/connections - Generate connection maps
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
   caseId: cuidSchema,
@@ -18,7 +18,7 @@ const DetectiveAnalysisSchema = z.object({
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
   options: z
     .object({
-      includeAI: z.boolean().default(true),
+     , includeAI: z.boolean().default(true),
       confidenceThreshold: z.number().min(0).max(1).default(0.6),
       maxResults: z.number().min(1).max(100).default(20)
     })
@@ -44,7 +44,7 @@ const $DETECTIVE_MODEL = 'gemma3-legal:latest';
  * POST /api/v1/detective/analyze
  * Run comprehensive detective analysis on a case
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'detective_analysis_completed'
       }
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         })
       );
     }
-    // Safely extract message/detail from unknown
+    // Safely extract message/detail from: unknown
     const message = err instanceof Error ? err.message : String(err ?? 'Unknown error');
     return error(
       500,
@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         lastUpdated: new Date().toISOString()
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     });
@@ -203,14 +203,14 @@ function getUserId(locals: ServiceLocals): string {
   // prefer explicit user.id, fallback to session userId, otherwise return a stable placeholder
   if (locals?.user && typeof locals.user.id === 'string') return locals.user.id;
   if (locals?.session && typeof locals.session.userId === 'string') return locals.session.userId;
-  // last resort: stringified user object; or: 'unknown'
+  // last resort: stringified user: object;, or: 'unknown'
   try {
     if (locals?.user) return String(locals.user.id ?? JSON.stringify(locals.user));
   } catch (err) {
     // avoid empty catch - log for diagnostics
     console.warn('getUserId: failed to stringify locals.user', err);
   }
-  return 'unknown';
+  return, 'unknown';
 }
 /*
  * Perform comprehensive detective analysis
@@ -224,7 +224,7 @@ async function performDetectiveAnalysis(
   $options: Record<string, unknown> = {}
 ): Promise<DetectiveAnalysis> {
   const analysis: DetectiveAnalysis = {
-    overallConfidence: 0,
+   , overallConfidence: 0,
     findings: [],
     patterns: [],
     connections: [],
@@ -235,7 +235,7 @@ async function performDetectiveAnalysis(
   };
 
   try {
-    // mark case reference to avoid: "declared but never used"
+    // mark case reference to, avoid: "declared but never used"
     if (caseData?.id) {
       (analysis as Record<string, unknown>).caseId = caseData.id;
     }
@@ -244,7 +244,7 @@ async function performDetectiveAnalysis(
     const opts = $options ?? {};
     const includeAI =
       typeof (opts as Record<string, unknown>).includeAI === 'boolean'
-        ? ((opts as Record<string, unknown>).includeAI as boolean)
+        ? ((opts as Record<string, unknown>).includeAI as: boolean)
         : true;
 
     // Baseline confidence influenced by requested depth and options
@@ -318,12 +318,12 @@ function analyzeTimeline(evidence: EvidenceItem[]): TimelineAnalysis {
       timestamp,
       type,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: 'Evidence; item: ${title ?? id ?? 'unknown' }' };
+      description: 'Evidence;, item: ${title ?? id ?? 'unknown' }' };
   });
 
   const patterns: TimelinePattern[] = [
     {
-      type: 'temporal_clustering',
+     , type: 'temporal_clustering',
       confidence: 0.82,
       description: 'Evidence clustered around specific time periods',
       timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20']
@@ -342,28 +342,28 @@ type Connection = {
   evidence: string[]; // short notes about why connected
 };
 
-type Finding = { type: string;, confidence: number;
+type Finding = {, type: string;, confidence: number;
   description: string;
-  items: (string | undefined)[];
+ , items: (string | undefined)[];
 };
 
 type ConnectionAnalysis = { connections: Connection[];, findings: Finding[];
 };
 
-type Pattern = { type: string;, confidence: number;
+type Pattern = {, type: string;, confidence: number;
   description: string;
   occurrences?: number;
   significance?: 'low' | 'medium' | 'high' | string;
   coordinates?: string[];
 };
 
-type Anomaly = { type: string;, confidence: number;
+type Anomaly = {, type: string;, confidence: number;
   description: string;
   details?: string;
   severity?: 'low' | 'medium' | 'high' | string;
 };
 
-type PatternAnalysis = { patterns: Pattern[];, anomalies: Anomaly[];
+type PatternAnalysis = {, patterns: Pattern[];, anomalies: Anomaly[];
 };
 /*
  * Analyze connections between evidence items
@@ -391,7 +391,7 @@ function analyzeConnections(evidence: EvidenceItem[]): ConnectionAnalysis {
 
   const findings: Finding[] = [
     {
-      type: 'strong_connection',
+     , type: 'strong_connection',
       confidence: 0.89,
       description: 'Multiple evidence items share common characteristics',
       items: items.slice(0, 2).map(i => i?.id)
@@ -410,7 +410,7 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
 
   const patterns: Pattern[] = [
     {
-      type: 'behavioral',
+     , type: 'behavioral',
       confidence: 0.76,
       description: `Consistent behavior pattern detected${focusAreas.length ? ` in ${focusAreas.join(', ')}` : `` }`,
       occurrences: Math.max(1, Math.floor(count / 2)),
@@ -427,7 +427,7 @@ function detectPatterns(evidence: EvidenceItem[], focusAreas: string[] = []): Pa
 
   const anomalies: Anomaly[] = [
     {
-      type: 'timing_anomaly',
+     , type: 'timing_anomaly',
       confidence: 0.91,
       description: 'Unusual timing pattern detected',
       details: 'Observed in ${count} evidence item(s); focusAreas: ${focusAreas.join(', ') || 'none` }`,
@@ -448,8 +448,8 @@ type CaseRecord = {
   [key: string]: any;
 };
 
-type CaseInsights = { summary: string;, keyFindings: string[];
-  riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
+type CaseInsights = {, summary: string;, keyFindings: string[];
+  riskAssessment: {, level: 'low' | 'medium' | 'high';, factors: string[];
     score: number;
   };
   nextSteps: string[];
@@ -459,17 +459,17 @@ type CaseInsights = { summary: string;, keyFindings: string[];
 /*
  * Generate case insights based on analysis
  */
-// changed signature: typed params/return and unused userId prefixed with `_`
+// changed, signature: typed params/return and unused userId prefixed with `_`
 async function generateCaseInsights(caseData: CaseRecord, _userId: string): Promise<CaseInsights> {
   return {
-    summary: `Case "${caseData.title}" analysis reveals several key patterns and connections.`,
+    summary: `Case, "${caseData.title}" analysis reveals several key patterns and connections.`,
     keyFindings: [
       'Strong temporal clustering of evidence suggests coordinated activity',
       'Geographic analysis indicates primary focus area in downtown district',
       'Pattern analysis reveals behavioral consistency across multiple incidents',
     ],
     riskAssessment: {
-      level: 'medium',
+     , level: 'medium',
       factors: ['Evidence quality', 'Timeline consistency', 'Connection strength'],
       score: 0.73
     },
@@ -515,7 +515,7 @@ function generateDetectiveAlerts(analysis: DetectiveAnalysis): string[] {
 // Add typed interfaces for evidence and timeline results
 type EvidenceItem = {
   id?: string;
-  createdAt?: string; // ISO string or similar
+  createdAt?: string; // ISO: string or similar
   evidenceType?: string;
   title?: string;
   [key: string]: any;
@@ -529,22 +529,22 @@ type TimelineEvent = {
   description: string;
 };
 
-type TimelinePattern = { type: string;, confidence: number;
+type TimelinePattern = {, type: string;, confidence: number;
   description: string;
   timeRanges?: string[];
 };
 
-type TimelineAnalysis = { events: TimelineEvent[];, patterns: TimelinePattern[];
+type TimelineAnalysis = {, events: TimelineEvent[];, patterns: TimelinePattern[];
 };
 
 // --- NEW: strongly-typed detective analysis result to avoid `any` usage ---
-type DetectiveAnalysis = { overallConfidence: number;, findings: any[];
+type DetectiveAnalysis = {, overallConfidence: number;, findings: any[];
   patterns: any[];
   connections: any[];
   anomalies: any[];
   timeline: TimelineEvent[];
   recommendations: string[];
-  alerts: string[];
+ , alerts: string[];
   // allow flexible extra fields produced by analysis steps
   [key: string]: any;
 };

@@ -13,7 +13,7 @@ import {
   testDatabaseConnection,
   closeDatabaseConnections,
   getDatabaseHealth
-} from './connection-manager.js';
+} from, './connection-manager.js';
 // Import database configuration
 import {
   getDatabaseConfig,
@@ -23,10 +23,10 @@ import {
   getPoolConfig,
   DATABASE_CONSTANTS,
   getBrowserSafeDatabaseInfo
-} from '$lib/config/database.js';
+} from, '$lib/config/database.js';
 // Import schema and types
-import * as schema from './schema-postgres.js';
-import type { DatabaseConfig, DatabaseUrls } from '$lib/config/database.js';
+import * as schema from, './schema-postgres.js';
+import type { DatabaseConfig, DatabaseUrls } from, '$lib/config/database.js';
 // Re-export everything for backwards compatibility
 export {
   getAppPool,
@@ -47,7 +47,7 @@ export {
   getBrowserSafeDatabaseInfo
 }
 // Re-export schema
-export * from './schema-postgres.js';
+export * from, './schema-postgres.js';
 export { schema }
 // Export types
 export type { DatabaseConfig, DatabaseUrls }
@@ -139,7 +139,7 @@ export async function getSystemHealth(): Promise<any> {
   return {
     overall: appHealth.status,
     database: {
-      status: dbHealth.status,
+     , status: dbHealth.status,
       config: dbHealth.config,
       connection: connectionTest,
       pools: dbHealth.pools
@@ -161,7 +161,7 @@ export function getVectorStore() {
       pool: getAppPool(),
       tableName: "vector_embeddings",
       columns: {
-        idColumnName: "id",
+       , idColumnName: "id",
         vectorColumnName: "embedding",
         contentColumnName: "content",
         metadataColumnName: "metadata"

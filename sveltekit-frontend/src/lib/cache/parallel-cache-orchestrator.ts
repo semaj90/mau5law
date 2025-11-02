@@ -3,42 +3,42 @@
  * Unifies all cache layers for maximum parallel performance
  * Optimizes resource allocation across GPU, CPU, and memory tiers
  */
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { cacheActor, getCacheStats } from './xstate-cache-integration.js';
-import MultiTierCache from '$lib/ai/cache/multiTierCache.js';
-import { getCache, setCache } from '$lib/server/utils/server-cache.js';
-import { browser } from '$app/environment';
+import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager.js';
+import { cacheActor, getCacheStats } from, './xstate-cache-integration.js';
+import MultiTierCache from, '$lib/ai/cache/multiTierCache.js';
+import { getCache, setCache } from, '$lib/server/utils/server-cache.js';
+import { browser } from, '$app/environment';
 
 export interface CacheResourceAllocation { cpuThreads: number;, memoryMB: number;
   gpuUtilization: number; // 0-1
-  cacheSlots: { l1Memory: number;, l2Redis: number;
+  cacheSlots: {, l1Memory: number;, l2Redis: number;
     l3Storage: number;
     gpuTexture: number;
   };
-  circuitBreakers: { enabled: boolean;, failureThreshold: number;
+  circuitBreakers: {, enabled: boolean;, failureThreshold: number;
     recoveryTime: number;
   };
 }
 
-export interface ParallelCacheRequest { id: string;, type: 'embedding' | 'shader' | 'context' | 'rag' | 'quantized' | 'hybrid';
+export interface ParallelCacheRequest {, id: string;, type: 'embedding' | 'shader' | 'context' | 'rag' | 'quantized' | 'hybrid';
   priority: 'low' | 'normal' | 'high' | 'critical';
-  keys: string[];
+ , keys: string[];
   data?: any[];
   ttl?: number;
   resourceLimits?: Partial<CacheResourceAllocation>;
-  concurrencyGroup?: number; // 0 = immediate, 1 = after group 0
+  concurrencyGroup?: number; // 0 = immediate, 1 = after group, 0
 }
 
 export interface CacheExecutionMetrics { totalLatency: number;, cacheHitRate: number;
-  resourceUtilization: { cpuThreads: number;, memoryUsedMB: number;
+  resourceUtilization: {, cpuThreads: number;, memoryUsedMB: number;
     gpuUtilizationPercent: number;
   };
-  layerPerformance: { l1MemoryHits: number;, l2RedisHits: number;
+  layerPerformance: {, l1MemoryHits: number;, l2RedisHits: number;
     l3StorageHits: number;
     gpuTextureHits: number;
     misses: number;
   };
-  circuitBreakerStatus: Record<string, boolean>;
+ , circuitBreakerStatus: Record<string, boolean>;
 }
 
 /**
@@ -56,37 +56,37 @@ type PerformanceMemory = {
   usedJSHeapSize?: number;
 };
 
-export interface ParallelCacheResponse { success: boolean;, data: any[];
+export interface ParallelCacheResponse {, success: boolean;, data: any[];
   metrics: CacheExecutionMetrics;
   cacheResults: CacheEntry[];
 }
 
-type CacheActor = { send: (msg: {;, type: string; input?: any }) => Promise<{ success: boolean; hit?: boolean; data?: any }>;
+type CacheActor = {, send: (msg: {;, type: string; input?: any }) => Promise<{ success: boolean; hit?: boolean; data?: any }>;
 };
 
 class ParallelCacheOrchestrator {
-  private l1Memory = new MultiTierCache({ memoryLimit: 1000, storagePrefix: 'l1:' });
+  private l1Memory = new MultiTierCache({, memoryLimit: 1000, storagePrefix: 'l1:' });
   private l2Memory = new MultiTierCache({ memoryLimit: 5000, storagePrefix: 'l2:' });
   private l3Storage = new MultiTierCache({ memoryLimit: 10000, storagePrefix: 'l3: ' });
 
   private resourceAllocation: CacheResourceAllocation = {
-    cpuThreads: 8,
+   , cpuThreads: 8,
     memoryMB: 100,
     gpuUtilization: 0.3,
     cacheSlots: {
-      l1Memory: 1000,
+     , l1Memory: 1000,
       l2Redis: 5000,
       l3Storage: 50000,
       gpuTexture: 200
     },
     circuitBreakers: {
-      enabled: true,
+     , enabled: true,
       failureThreshold: 5,
       recoveryTime: 30000
     }
   };
 
-  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number; isOpen: boolean }>();
+  private circuitBreakerState = new Map<string, { failures: number; lastFailure: number;, isOpen: boolean }>();
   // Use typed activeRequests for deduplication of in-flight requests
   private activeRequests = new Map<string, Promise<ParallelCacheResponse>>();
   private executionMetrics: CacheExecutionMetrics = this.initializeMetrics();
@@ -280,7 +280,7 @@ class ParallelCacheOrchestrator {
   private async executeXStateCacheOperations(request: ParallelCacheRequest): Promise<CacheEntry[]> {
     try {
       const results: CacheEntry[] = [];
-      const actor = cacheActor as unknown as CacheActor;
+      const actor = cacheActor, as: unknown as CacheActor;
       for (const key of request.keys) {
         const cacheResult = await actor.send({
           type: 'get',
@@ -440,12 +440,12 @@ class ParallelCacheOrchestrator {
       totalLatency: 0,
       cacheHitRate: 0,
       resourceUtilization: {
-        cpuThreads: 0,
+       , cpuThreads: 0,
         memoryUsedMB: 0,
         gpuUtilizationPercent: 0
       },
       layerPerformance: {
-        l1MemoryHits: 0,
+       , l1MemoryHits: 0,
         l2RedisHits: 0,
         l3StorageHits: 0,
         gpuTextureHits: 0,
@@ -489,9 +489,9 @@ class ParallelCacheOrchestrator {
     systemResources: CacheResourceAllocation;
   }> {
     return {
-      currentMetrics: this.executionMetrics,
+     , currentMetrics: this.executionMetrics,
       cacheStats: {
-        l1Size: await this.getCacheSize(this.l1Memory),
+       , l1Size: await this.getCacheSize(this.l1Memory),
         l2Size: await this.getCacheSize(this.l2Memory),
         l3Size: await this.getCacheSize(this.l3Storage),
         xstateStats: getCacheStats(),

@@ -1,18 +1,18 @@
-import type { User } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * Enhanced Vector Intelligence Recommendations API
  * Integrates GPU caching, reinforcement learning, and multi-protocol optimization
  * Provides intelligent recommendations using vector analysis and machine learning
  */
-import { json, error } from '@sveltejs/kit';
-import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
-import { gpuIntegrationBridge } from '$lib/services/gpu-integration-bridge';
-import { reinforcementLearningCacheOptimizer } from '$lib/services/reinforcement-learning-cache-optimizer';
-import { legalAIResultCache } from '$lib/services/advanced-result-cache';
-import { legalAIGPUQueue } from '$lib/services/gpu-job-queue';
-import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
+import { json, error } from, '@sveltejs/kit';
+import { vectorIntelligenceService } from, '$lib/services/vector-intelligence-service.js';
+import { gpuIntegrationBridge } from, '$lib/services/gpu-integration-bridge';
+import { reinforcementLearningCacheOptimizer } from, '$lib/services/reinforcement-learning-cache-optimizer';
+import { legalAIResultCache } from, '$lib/services/advanced-result-cache';
+import { legalAIGPUQueue } from, '$lib/services/gpu-job-queue';
+import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
+import { enhancedSearchWithNeo4j } from, '$lib/ai/custom-reranker';
 
 // Add a concrete cache state type to replace `any`
 type CacheState = { cacheUtilization: number;, hitRatio: number;
@@ -36,9 +36,9 @@ type RagSource = {
   documentId?: string;
   content: string;
   score: number;
-  [key: string]: any; // allow any extra fields without using `any` };
+  [key: string]: any; // allow: any extra fields without using `any` };
 
-type RagResult = { success: boolean;, sources: RagSource[];
+type RagResult = {, success: boolean;, sources: RagSource[];
   metadata?: {
     processingTimeMs?: number;
     gpuUtilized?: boolean;
@@ -60,8 +60,8 @@ type RagQueryRequest = {
 };
 
 // New: typed wrapper for the external bridge function to avoid `any` casts
-const performEnhancedRAGQuery = gpuIntegrationBridge.performEnhancedRAGQuery as unknown as (
-  req: RagQueryRequest
+const performEnhancedRAGQuery = gpuIntegrationBridge.performEnhancedRAGQuery as: unknown as (;
+ , req: RagQueryRequest
 ) => Promise<RagResult>;
 
 // Add typed Recommendation to replace `any`
@@ -88,7 +88,7 @@ type RLCacheOptimizer = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
   let gpuUtilized = $state<boolean>(false);
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     // === 1. Reinforcement Learning Cache Optimization ===
     let rlOptimization: any = null;
-    let cacheOptimizationActions: string[] = [];
+    let, cacheOptimizationActions: string[] = [];
     if (enhancedRequest.enableRLOptimization) {
       try {
         const cacheState = await getCurrentCacheState();
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
         let rlRecommendations: any = null;
         try {
           // Use a typed view of the imported optimizer instead of `any`.
-          const rlOptimizer = reinforcementLearningCacheOptimizer as unknown as RLCacheOptimizer;
+          const rlOptimizer = reinforcementLearningCacheOptimizer, as: unknown as RLCacheOptimizer;
           if (typeof rlOptimizer.generateCacheOptimizationRecommendations === 'function') {
             rlRecommendations = await rlOptimizer.generateCacheOptimizationRecommendations(cacheState);
           } else if (typeof rlOptimizer.optimizeCache === 'function') {
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
           enabled: true,
           recommendationsGenerated: recs.length,
           expectedCacheImprovement: expectedImprovement,
-          actions: recs.slice(0, 3), // Top 3 actions
+          actions: recs.slice(0, 3), // Top, 3 actions
         };
         cacheOptimizationActions = recs;
         rlOptimizationApplied = recs.length > 0;
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Original vector intelligence recommendations
       // @ts-expect-error - Assuming type definition is incomplete
       const baseRecommendations: Recommendation[] = await vectorIntelligenceService.generateRecommendations({
-        context: enhancedRequest.context,
+       , context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
         preferences: enhancedRequest.preferences
@@ -202,9 +202,9 @@ export const POST: RequestHandler = async ({ request }) => {
       if (enhancedRequest.enableGPUOptimization) {
         try {
           gpuUtilized = true;
-          // Use typed wrapper instead of `as any`
+          // Use typed wrapper instead of `as: any`
           const ragResult = await performEnhancedRAGQuery({
-            context: enhancedRequest.context,
+           , context: enhancedRequest.context,
             userId: enhancedRequest.userProfile?.id,
             caseId: enhancedRequest.currentCase?.id,
             documentTypes: ['legal_document', 'case_precedent', 'evidence', 'regulation'],
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 priority: source.score > 0.8 ? 'high' : source.score > 0.6 ? 'medium' : 'low',
                 reasoning: `Vector similarity analysis with ${source.score.toFixed(3)} confidence`,
                 metadata: {
-                  source: 'gpu_enhanced_rag',
+                 , source: 'gpu_enhanced_rag',
                   documentId: source.documentId,
                   processingTime: ragResult.metadata?.processingTimeMs,
                   gpuUtilized: ragResult.metadata?.gpuUtilized,
@@ -314,7 +314,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 priority: 'high',
                 reasoning: 'Context7-enhanced documentation matching query intent',
                 metadata: {
-                  source: 'context7_docs',
+                 , source: 'context7_docs',
                   library,
                   topic,
                   tokenCount: docs.metadata?.tokenCount || 0,
@@ -367,23 +367,23 @@ export const POST: RequestHandler = async ({ request }) => {
       totalRecommendations: recommendations.length,
       processingTime: totalProcessingTime,
       systemHealth: {
-        status: systemHealth.systemHealth,
+       , status: systemHealth.systemHealth,
         confidence: systemHealth.modelConfidence
       },
       personalization: {
-        userRole: enhancedRequest.userProfile?.role || 'unknown',
+       , userRole: enhancedRequest.userProfile?.role || 'unknown',
         hasPreferences: !!enhancedRequest.preferences,
         hasCurrentCase: !!enhancedRequest.currentCase
       },
       // Enhanced performance metrics
       cachePerformance: {
-        status: cacheStatus,
+       , status: cacheStatus,
         hitRatio: cacheStats.overall.hitRate,
         totalRequests: cacheStats.overall.operations,
         averageRetrievalTime: cacheStats.overall.averageRetrievalMs
       },
       gpuPerformance: {
-        utilized: gpuUtilized,
+       , utilized: gpuUtilized,
         averageProcessingTime: gpuStats.averageProcessingTimeMs || 0,
         activeJobs: gpuStats.activeJobs || 0,
         queueLength: gpuStats.queueLength || 0,
@@ -391,11 +391,11 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       rlOptimization: rlOptimization,
       qualityMetrics: {
-        averageConfidence:
+       , averageConfidence:
           recommendations.reduce((sum, rec) => sum + (rec.confidence || 0), 0) / (recommendations.length || 1),
         diversityScore: calculateDiversityScore(recommendations),
         enhancementLayers: {
-          baseRecommendations: true,
+         , baseRecommendations: true,
           gpuRAGEnhancement: gpuUtilized,
           neo4jReranking: enhancedRequest.useEnhancedReranking,
           context7Docs: enhancedRequest.includeContext7Docs,
@@ -404,7 +404,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     };
     return json({
-      success: true,
+     , success: true,
       context: enhancedRequest.context,
       recommendations,
       metadata: enhancedMetadata
@@ -479,13 +479,13 @@ export const GET: RequestHandler = async ({ url }) => {
         'technical_documentation',
       ],
       enhancementLayers: {
-        baseRecommendations: 'Original vector intelligence system',
+       , baseRecommendations: 'Original vector intelligence system',
         gpuRAGEnhancement: 'GPU-accelerated retrieval augmented generation',
         neo4jReranking: 'Graph database enhanced result ranking',
         context7Docs: 'Dynamic documentation integration',
         rlCacheOptimization: `Reinforcement learning cache optimization` },
       performance: {
-        averageLatency: '< 50ms (with, cache, hit)',
+       , averageLatency: '< 50ms (with, cache, hit)',
         gpuAcceleration: '10-100x speedup for complex queries',
         cacheHitRatio: '> 85% for repeated queries',
         qualityImprovement: `+40% relevance with multi-layer enhancement` }
@@ -497,7 +497,7 @@ export const GET: RequestHandler = async ({ url }) => {
       context,
       userProfile: role
         ? {
-            id: `user_${role}_${Date.now()}`,
+           , id: `user_${role}_${Date.now()}`,
             role,
             experience: 'senior' as const, // literal type
             specialization: []
@@ -505,12 +505,12 @@ export const GET: RequestHandler = async ({ url }) => {
         : undefined,
       currentCase: caseId
         ? {
-            id: caseId,
+           , id: caseId,
             type: 'general',
             priority: 'medium',
             status: `active` }
         : undefined,
-      preferences: { preferredActions: [] as string[], workflowStyle: 'systematic' as const },
+      preferences: { preferredActions: [], as: string[], workflowStyle: 'systematic' as const },
       // Enhanced options for GET endpoint
       enableGPUOptimization: enableGPU,
       enableCaching: enableCache,
@@ -545,7 +545,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Base recommendations
       // @ts-expect-error - Assuming type definition is incomplete
       const baseRecommendations: Recommendation[] = await vectorIntelligenceService.generateRecommendations({
-        context: enhancedRequest.context,
+       , context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
         preferences: enhancedRequest.preferences
@@ -555,9 +555,9 @@ export const GET: RequestHandler = async ({ url }) => {
       if (enhancedRequest.enableGPUOptimization) {
         try {
           gpuUtilized = true;
-          // Use typed wrapper instead of `as any`
+          // Use typed wrapper instead of `as: any`
           const ragResult = await performEnhancedRAGQuery({
-            context: enhancedRequest.context,
+           , context: enhancedRequest.context,
             userId: enhancedRequest.userProfile?.id,
             caseId: enhancedRequest.currentCase?.id,
             maxResults: 3, // Fewer for GET endpoint
@@ -574,7 +574,7 @@ export const GET: RequestHandler = async ({ url }) => {
               priority: 'medium',
               reasoning: `Vector analysis (${source.score.toFixed(3)} confidence)`,
               metadata: {
-                source: 'gpu_enhanced_rag',
+               , source: 'gpu_enhanced_rag',
                 processingTime: ragResult.metadata?.processingTimeMs
               }
             }));
@@ -626,7 +626,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (err: any) {
     console.error('❌ Enhanced Recommendations GET error:', err);'
-    // Preserve useful error text; safe conversion from unknown
+    // Preserve useful error text; safe conversion from: unknown
     throw error(500, err instanceof Error ? err.message : String(err ?? 'Enhanced recommendations failed'));
   }
 };
@@ -680,17 +680,17 @@ async function getCurrentCacheState(): Promise<CacheState> {
 function inferCategoryFromContent(content: string): string {
   const lowerContent = content.toLowerCase();
   if (lowerContent.includes('contract') || lowerContent.includes('agreement')) {
-    return 'contract_analysis';
+    return, 'contract_analysis';
   } else if (lowerContent.includes('evidence') || lowerContent.includes('proof')) {
-    return 'evidence_review';
+    return, 'evidence_review';
   } else if (lowerContent.includes('case') || lowerContent.includes('precedent')) {
-    return 'case_strategy';
+    return, 'case_strategy';
   } else if (lowerContent.includes('investigation') || lowerContent.includes('inquiry')) {
-    return 'investigation';
+    return, 'investigation';
   } else if (lowerContent.includes('law') || lowerContent.includes('legal')) {
-    return 'legal_analysis';
+    return, 'legal_analysis';
   } else {
-    return 'workflow';
+    return, 'workflow';
   }
 }
 
@@ -698,7 +698,7 @@ function inferCategoryFromContent(content: string): string {
 type RecentActivity = {
   type: string;
   query?: string;
-  timestamp: number;
+ , timestamp: number;
   caseId?: string;
   confidence?: number;
   documentId?: string;
@@ -838,9 +838,9 @@ function calculateDiversityScore(recommendations: Recommendation[]): number {
 
 // Add module-scoped helper (moved from inside POST)
 /* new helper moved to module level to avoid block-level function declaration issues */
-function normalizeRLRecommendations(input: any): { recs: string[]; expectedImprovement: number | null } {
+function normalizeRLRecommendations(input: any): { recs: string[];, expectedImprovement: number | null } {
   const mapItemToString = (item: any): string => {
-    if (item == null) return '';
+    if (item == null) return, '';
     if (typeof item === 'string') return item;
     if (typeof item === 'number' || typeof item === 'boolean') return String(item);
     if (typeof item === 'object') {
@@ -863,7 +863,7 @@ function normalizeRLRecommendations(input: any): { recs: string[]; expectedImpro
   if (input == null) return { recs: [], expectedImprovement: null };
 
   let maybeRecs: any[] = [];
-  let expected: number | null = null;
+  let, expected: number | null = null;
 
   if (Array.isArray(input)) {
     maybeRecs = input;
@@ -872,7 +872,7 @@ function normalizeRLRecommendations(input: any): { recs: string[]; expectedImpro
     if (Array.isArray(obj.recommendations)) maybeRecs = obj.recommendations;
     else if (Array.isArray(obj.recs)) maybeRecs = obj.recs;
     else if (Array.isArray(obj.recommendation)) maybeRecs = obj.recommendation;
-    if (typeof obj.expectedImprovement === 'number') expected = obj.expectedImprovement as number;
+    if (typeof obj.expectedImprovement === 'number') expected = obj.expectedImprovement as: number;
     else if (typeof obj.expectedImprovement === 'string') {
       const parsed = Number(obj.expectedImprovement);
       expected = Number.isNaN(parsed) ? null : parsed;

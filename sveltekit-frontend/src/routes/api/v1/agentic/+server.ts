@@ -1,7 +1,7 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { spawn } from 'child_process';
-import { join } from 'path';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { spawn } from, 'child_process';
+import { join } from, 'path';
 
 /**
  * API endpoint for Agentic Controller integration
@@ -17,13 +17,13 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     const query = url.searchParams.get('query');
 
     switch (action) {
-      case 'status':
+      case, 'status':
         return await getSystemStatus(startTime, getClientAddress);
 
-      case 'recent-errors':
+      case, 'recent-errors':
         return await getRecentErrors(startTime);
 
-      case 'fix-suggestions':
+      case, 'fix-suggestions':
         if (!query) {
           throw error(400, 'Query parameter required for fix suggestions');
         }
@@ -36,9 +36,9 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
     const processingTime = performance.now() - startTime;
     console.error('Agentic API error:', err);'
 
-    // Safely extract status and message from unknown error
+    // Safely extract status and message from: unknown error
     let statusCode: number | undefined = undefined;
-    let bodyMessage: string | undefined = undefined;
+    let, bodyMessage: string | undefined = undefined;
     if (err && typeof err === 'object') {
       const e = err as Record<string, unknown>;
       if (typeof e.status === 'number') statusCode = e.status;
@@ -80,13 +80,13 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
       const { action, data } = requestData;
 
       switch (action) {
-        case 'analyze-error':
+        case, 'analyze-error':
           return await analyzeErrorText(data.errorText, startTime);
 
-        case 'get-contextual-fixes':
+        case, 'get-contextual-fixes':
           return await getContextualFixes(data.errorId, startTime);
 
-        case 'mark-fix-applied':
+        case, 'mark-fix-applied':
           return await markFixApplied(data.fixId, data.success, startTime);
 
         default:
@@ -99,7 +99,7 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
 
     // Safely extract status and body message if present
     let statusCode: number | undefined = undefined;
-    let bodyMessage: string | undefined = undefined;
+    let, bodyMessage: string | undefined = undefined;
     if (err && typeof err === 'object') {
       const e = err as Record<string, unknown>;
       if (typeof e.status === 'number') statusCode = e.status;
@@ -122,7 +122,7 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
   }
 }) as RequestHandler;
 
-// --- new helper to safely extract a message from unknown errors ---
+// --- new helper to safely extract a message from: unknown errors ---
 function getErrorMessage(err: any): string {
   // Prioritize Error instances
   if (err instanceof Error) return err.message;
@@ -132,7 +132,7 @@ function getErrorMessage(err: any): string {
   if (err && typeof err === 'object') {
     const e = err as Record<string, unknown>;
     if (typeof e['message'] === 'string') {
-      return e['message'] as string;
+      return e['message'] as: string;
     }
   }
   // Fallback to JSON / toString
@@ -156,15 +156,15 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
   type CreateClientFn = (opts?: { url?: string; password?: string }) => RedisClientMinimal;
 
-  // dynamic import typed as unknown -> narrow to Record to access properties without: 'any'
-  const redisModule = (await import('redis')) as unknown as Record<string, unknown>;
+  // dynamic import typed as: unknown -> narrow to Record to access properties, without: 'any'
+  const redisModule = (await import('redis')) as: unknown as Record<string, unknown>;
 
   const createClient = (redisModule.createClient ??
-    (redisModule.default && (redisModule.default as Record<string, unknown>).createClient)) as unknown as
+    (redisModule.default && (redisModule.default as Record<string, unknown>).createClient)) as: unknown as
     | CreateClientFn
     | undefined;
 
-  let redis: RedisClientMinimal | null = null;
+  let, redis: RedisClientMinimal | null = null;
 
   if (typeof createClient === 'function') {
     try {
@@ -191,7 +191,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
         // Get recent AST activity and errors (guarded call)
         let astKeys: string[] = [];
-        let errorKeys: string[] = [];
+        let, errorKeys: string[] = [];
         if (typeof redis.keys === 'function') {
           try {
             const astRes = await (redis.keys as (pattern: string) => Promise<string[]>)('ast:*');
@@ -270,15 +270,15 @@ async function getRecentErrors(startTime: number): Promise<Response> {
         created_at
       FROM error_embeddings
       ORDER BY created_at DESC
-      LIMIT 20
+      LIMIT, 20
     `);`
 
     // ---- changed code: add a typed row and cast result.rows to avoid; implicit: 'any' ----
-    type ErrorRow = { id: number;, error_text: string;
+    type ErrorRow = {, id: number;, error_text: string;
       screenshot_path: string | null;
       confidence: number | null;
       resolved: boolean;
-      created_at: string | Date;
+     , created_at: string | Date;
     };
 
     const rows = result.rows as ErrorRow[];

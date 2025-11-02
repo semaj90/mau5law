@@ -4,8 +4,8 @@
  * Ultra-fast legal document ranking using WebGPU compute shaders
  * Stores 4x4 ranking matrices per document in GPU textures for blazing performance
  */
-import type { LegalDocument } from '$lib/types';
-import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+import type { LegalDocument } from, '$lib/types';
+import { webgpuPolyfill } from, '$lib/webgpu/webgpu-polyfill';
 // Ranking matrix dimensions (4x4 = 16 values per document)
 export const RANKING_MATRIX_SIZE = 4;
 export const RANKING_VALUES_PER_DOCUMENT = RANKING_MATRIX_SIZE * RANKING_MATRIX_SIZE;
@@ -26,12 +26,12 @@ export interface RankingMatrix { documentId: string;, matrix: Float32Array; // 
   timestamp: number;
   version: number;
 }
-export interface RankingStats { totalDocuments: number;, cacheHitRate: number;
+export interface RankingStats {, totalDocuments: number;, cacheHitRate: number;
   lastUpdateTime: number;
   gpuMemoryUsed: number;
   averageRankingTime: number;
 }
-export interface GPURankingConfig { batchSize: number;, textureWidth: number;
+export interface GPURankingConfig {, batchSize: number;, textureWidth: number;
   textureHeight: number;
   maxDocuments: number;
   enableCaching: boolean;
@@ -43,7 +43,7 @@ export class GPURankingMatrices {
   private rankingTexture: GPUTexture | null = null;
   private computePipeline: GPUComputePipeline | null = null;
   private bindGroupLayout: GPUBindGroupLayout | null = null;
-  private config: GPURankingConfig;
+  private, config: GPURankingConfig;
   private matrixCache = new Map<string, RankingMatrix>();
   private isInitialized = $state(false);
   constructor(config: Partial<GPURankingConfig> = {}) {
@@ -79,7 +79,7 @@ export class GPURankingMatrices {
   private async createRankingTexture(): Promise<void> {
     if (!this.device) throw new Error('GPU device not initialized');
     // Create RGBA32Float texture for ranking matrices
-    // Each pixel stores 4 ranking values, so 4 pixels = one 4x4 matrix
+    // Each pixel stores, 4 ranking values, so, 4 pixels = one 4x4 matrix
     this.rankingTexture = this.device.createTexture({ size: {, width: this.config.textureWidth,
         height: this.config.textureHeight,
         depthOrArrayLayers: 1
@@ -118,7 +118,7 @@ export class GPURankingMatrices {
     this.computePipeline = this.device.createComputePipeline({ layout: this.device.createPipelineLayout({, bindGroupLayouts: [this.bindGroupLayout]
       }),
       compute: {
-        module: shaderModule,
+       , module: shaderModule,
         entryPoint: 'main' }'` });'`
   }
   private generateRankingComputeShader(): string {
@@ -132,7 +132,7 @@ export class GPURankingMatrices {
         confidence: f32;
         weight: f32;
         metadata: f32;
-        reserved: f32;
+       , reserved: f32;
       }
       @group(0) @binding(0) var rankingTexture: texture_storage_2d<rgba32float, write>;
       @group(0) @binding(1) var<storage, read> documentRankings: array<DocumentRanking>;
@@ -158,7 +158,7 @@ export class GPURankingMatrices {
         // Map 4x4 matrix to 2x2 pixel grid (4 pixels, 4 RGBA values each)
   var pixelValue: vec4<f32>;
         switch (pixelIndex) {
-          case 0: { // Top-left pixel: relevance matrix row
+          case 0: { // Top-left, pixel: relevance matrix row
             pixelValue = vec4<f32>(
               ranking.relevance,     // [0,0] - relevance score
               ranking.confidence,    // [0,1] - relevance confidence
@@ -166,7 +166,7 @@ export class GPURankingMatrices {
               ranking.metadata       // [0,3] - relevance metadata
             );
           }
-          case 1: { // Top-right pixel: precedent matrix row
+          case 1: { // Top-right, pixel: precedent matrix row
             pixelValue = vec4<f32>(
               ranking.precedent,     // [1,0] - precedent score
               ranking.confidence,    // [1,1] - precedent confidence
@@ -174,7 +174,7 @@ export class GPURankingMatrices {
               ranking.metadata       // [1,3] - precedent metadata
             );
           }
-          case 2: { // Bottom-left pixel: recency matrix row
+          case 2: { // Bottom-left, pixel: recency matrix row
             pixelValue = vec4<f32>(
               ranking.recency,       // [2,0] - recency score
               ranking.confidence,    // [2,1] - recency confidence
@@ -182,7 +182,7 @@ export class GPURankingMatrices {
               ranking.metadata       // [2,3] - recency metadata
             );
           }
-          case 3: { // Bottom-right pixel: authority matrix row
+          case 3: { // Bottom-right, pixel: authority matrix row
             pixelValue = vec4<f32>(
               ranking.authority,     // [3,0] - authority score
               ranking.confidence,    // [3,1] - authority confidence
@@ -198,7 +198,7 @@ export class GPURankingMatrices {
           optimization === 'fast'
             ? '// Fast optimization: Direct write'
             : optimization === 'accurate'
-              ? `// Accurate optimization: Normalized values`
+              ? `// Accurate, optimization: Normalized values`
            pixelValue = normalize(pixelValue);`
               : `// Balanced optimization: Clamped values`
            pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` }'`
@@ -244,7 +244,7 @@ export class GPURankingMatrices {
         {
           binding: 1,
           resource: {
-            buffer: rankingBuffer
+           , buffer: rankingBuffer
           }
         },
       ]
@@ -288,17 +288,17 @@ export class GPURankingMatrices {
     const documentAge = now - new Date(document.created_at || now).getTime();
     const daysSinceCreated = documentAge / (1000 * 60 * 60 * 24);
     return {
-      // Relevance: Based on content match and keywords; relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
-      // Precedent: Legal authority and citation count; precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
+      // Relevance: Based on content match and keywords;, relevance: Math.min(1.0, (document.title?.length || 0) / 100 + (document.summary?.length || 0) / 1000),
+      // Precedent: Legal authority and citation count;, precedent: Math.min(1.0, Math.log10((document.id?.length || 1) + 1) / 2),
       // Recency: Time-based decay (newer = higher score),
       recency: Math.max(0.1, Math.exp(-daysSinceCreated / 365)),
-      // Authority: Source reliability and legal weight; authority: Math.min(
+      // Authority: Source reliability and legal weight;, authority: Math.min(
         1.0,
         0.5 + (document.status === 'active' ? 0.3 : 0.1) + (document.title?.includes('Supreme') ? 0.2 : 0.0)
       ),
-      // Confidence: How confident we are in this ranking; confidence: 0.8 + Math.random() * 0.2,
-      // Weight: Relative importance in ranking algorithm; weight: 0.7,
-      // Metadata: Additional scoring factors; metadata: Math.random() * 0.5 + 0.25
+      // Confidence: How confident we are in this ranking;, confidence: 0.8 + Math.random() * 0.2,
+      // Weight: Relative importance in ranking algorithm;, weight: 0.7,
+      // Metadata: Additional scoring factors;, metadata: Math.random() * 0.5 + 0.25
     };
   }
   async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix>> {
@@ -342,7 +342,7 @@ export class GPURankingMatrices {
     const textureMemory = this.config.textureWidth * this.config.textureHeight * 16; // RGBA32Float
     return {
       totalDocuments: this.matrixCache.size,
-      cacheHitRate: 0.85, // TODO: Track actual cache hits; lastUpdateTime: Date.now(),
+      cacheHitRate: 0.85, // TODO: Track actual cache hits;, lastUpdateTime: Date.now(),
       gpuMemoryUsed: textureMemory,
       averageRankingTime: 2.5, // TODO: Track actual ranking times
     };

@@ -1,4 +1,4 @@
-import { QdrantVectorService } from './qdrant-vector';
+import { QdrantVectorService } from, './qdrant-vector';
 // Minimal adapter that normalizes various Qdrant client method names.
 // It uses `any` and runtime checks so callers don't need to know the exact client API.'
 export async function upsertVector(
@@ -7,7 +7,7 @@ export async function upsertVector(
   payload: Record<string, unknown>,
   collection = 'legal_docs'
 ): Promise<any> {
-  const client: any = QdrantVectorService as any;
+  const client: any = QdrantVectorService, as: any;
   // common qdrant-js method shapes
   if (typeof client.upsert === 'function') {
     // older/newer SDK shapes can differ; try to match common param shapes
@@ -38,7 +38,7 @@ export async function searchVector(
   limit = 5,
   collection = 'legal_docs'
 ): Promise<any> {
-  const client: any = QdrantVectorService as any;
+  const client: any = QdrantVectorService, as: any;
   if (typeof client.search === 'function') {
     return await client.search({
       collection_name: collection,

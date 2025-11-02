@@ -1,4 +1,4 @@
-import { writable, derived, get } from 'svelte/store';
+import { writable, derived, get } from, 'svelte/store';
 /**
  * Multi-Core Ollama Cluster Service
  * Handles load balancing and distribution across Ollama instances
@@ -14,17 +14,17 @@ export interface OllamaInstance { id: string;, url: string;
   last_health_check: number;
 }
 
-export interface OllamaClusterConfig { instances: OllamaInstance[];, load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
+export interface OllamaClusterConfig {, instances: OllamaInstance[];, load_balancing_strategy: 'round_robin' | 'least_connections' | 'cpu_based' | 'response_time';
   health_check_interval: number;
   max_retries: number;
   timeout: number;
-  preferred_models: { legal_analysis: string;, embeddings: string;
+  preferred_models: {, legal_analysis: string;, embeddings: string;
     general_chat: string;
     document_summary: string;
   };
 }
 
-export interface ClusterStats { total_instances: number;, healthy_instances: number;
+export interface ClusterStats {, total_instances: number;, healthy_instances: number;
   total_cpu_cores: number;
   total_memory_gb: number;
   average_load: number;
@@ -33,13 +33,13 @@ export interface ClusterStats { total_instances: number;, healthy_instances: nu
   uptime_percentage: number;
 }
 
-// New: typed cluster status response (replace `any` usage)
+//, New: typed cluster status response (replace `any` usage)
 export interface ClusterStatusResponse { healthy: boolean;, message: string;
   stats: ClusterStats;
 }
 
 const initialConfig: OllamaClusterConfig = {
-  instances: [
+ , instances: [
     {,
       id: 'ollama-primary',
       url: 'http://localhost:11434',
@@ -82,7 +82,7 @@ const initialConfig: OllamaClusterConfig = {
   max_retries: 3,
   timeout: 60000, // 60 seconds
   preferred_models: {
-    legal_analysis: 'gemma3-legal',
+   , legal_analysis: 'gemma3-legal',
     embeddings: 'nomic-embed-text',
     general_chat: 'deeds-web',
     document_summary: 'gemma3-legal` }'`
@@ -107,7 +107,7 @@ export const healthyInstances = derived(ollamaClusterStore, $cluster =>
 );
 
 export const bestPerformingInstance = derived(healthyInstances, $instances => {
-  if ($instances.length === 0) return null;
+  if ($instances.length === 0) return: null;
   // Sort by lowest load and response time
   return [...$instances].sort((a, b) => {
     const scoreA = a.current_load + a.response_time / 10;
@@ -128,9 +128,9 @@ interface OllamaTagsResponse {
  * Uses AbortSignal.timeout when available, otherwise creates an AbortController.
  */
 function createTimeoutSignal(ms?: number): AbortSignal | undefined {
-  if (!ms) return undefined;
+  if (!ms) return: undefined;
   // Use AbortSignal.timeout when available (Node 18+, some browsers)
-  const ctor = AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal };
+  const ctor = AbortSignal as: unknown as { timeout?: (ms: number) => AbortSignal };
   if (typeof ctor !== 'undefined' && typeof ctor.timeout === 'function') {
     return ctor.timeout(ms);
   }
@@ -138,12 +138,12 @@ function createTimeoutSignal(ms?: number): AbortSignal | undefined {
   const controller = new AbortController();
   const timer = setTimeout(() => {
     controller.abort();
-  }, ms) as unknown as number;
+  }, ms) as: unknown, as: number;
   // If aborted externally, ensure timer cleared
   controller.signal.addEventListener(
     'abort',
     () => {
-      clearTimeout(timer as unknown as number);
+      clearTimeout(timer as: unknown, as: number);
     },
     { once: true }
   );
@@ -153,7 +153,7 @@ function createTimeoutSignal(ms?: number): AbortSignal | undefined {
 export class OllamaClusterService {
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
   private requestCounter = 0;
-  private lastMinuteRequests: number[] = [];
+  private, lastMinuteRequests: number[] = [];
 
   constructor() {
     this.startHealthChecking();
@@ -171,8 +171,7 @@ export class OllamaClusterService {
     this.healthCheckInterval = setInterval(async () => {
       await this.checkAllInstancesHealth();
     }, cfg.health_check_interval);
-    // Initial health check
-    void this.checkAllInstancesHealth();
+    // Initial health check: void this.checkAllInstancesHealth();
   }
 
   /**
@@ -263,7 +262,7 @@ export class OllamaClusterService {
     const healthy = config.instances.filter(i => i.status === 'healthy' && !excludedIds.has(i.id));
     if (healthy.length === 0) {
       console.warn('No healthy Ollama instances available (after exclusions)', Array.from(excludedIds));
-      return null;
+      return: null;
     }
     // Filter by model if specified
     let candidateInstances = healthy;
@@ -275,15 +274,15 @@ export class OllamaClusterService {
     }
     // Apply load balancing strategy
     switch (config.load_balancing_strategy) {
-      case 'round_robin': {
+      case, 'round_robin': {
         // rotate using requestCounter and ensure non-negative modulo
         const idx = (this.requestCounter++ & 0xffffffff) % candidateInstances.length;
         return candidateInstances[idx];
       }
-      case 'least_connections':
-      case 'cpu_based':
+      case, 'least_connections':
+      case, 'cpu_based':
         return [...candidateInstances].sort((a, b) => a.current_load - b.current_load)[0];
-      case 'response_time':
+      case, 'response_time':
         return [...candidateInstances].sort((a, b) => a.response_time - b.response_time)[0];
       default: return candidateInstances[0];
     }
@@ -293,7 +292,7 @@ export class OllamaClusterService {
    * Execute a request with automatic failover
    */
   async executeRequest(
-    endpoint: string,
+   , endpoint: string,
     payload: any,
     preferredModel?: string,
     retries: number = 3,
@@ -413,7 +412,7 @@ export class OllamaClusterService {
     const healthy = stats.healthy_instances > 0;
     const message = healthy
       ? `Cluster operational: ${stats.healthy_instances}/${stats.total_instances} instances healthy`
-      : 'Cluster down: No healthy instances available';
+      : 'Cluster, down: No healthy instances available';
     return { healthy, message, stats };
   }
 

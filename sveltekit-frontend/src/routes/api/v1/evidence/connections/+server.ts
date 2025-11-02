@@ -1,14 +1,14 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Evidence Connections API Routes
  * POST /api/v1/evidence/connections - Create evidence connections
  * GET /api/v1/evidence/connections - Get evidence connections
  * DELETE /api/v1/evidence/connections - Remove evidence connection
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 
 // Helper: safely extract user id from locals
 type LocalsWithUser = {
@@ -22,11 +22,11 @@ function getUserId(locals: any): string {
   const l = locals as LocalsWithUser;
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  // fallback to a stable anonymous id or empty string as appropriate
-  return 'unknown';
+  // fallback to a stable anonymous id or empty: string as appropriate
+  return, 'unknown';
 }
 
-// Helper: convert unknown error to string message
+// Helper: convert: unknown error, to: string message
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
@@ -175,15 +175,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         strength: 0.8,
         notes: 'Both items found at the same location',
         metadata: {
-          createdBy: getUserId(locals),
+         , createdBy: getUserId(locals),
           createdAt: new Date().toISOString()
         },
         evidence1: {
-          id: 'evidence-1',
+         , id: 'evidence-1',
           title: 'Physical Evidence A',
           evidenceType: `physical` },
         evidence2: {
-          id: 'evidence-2',
+         , id: 'evidence-2',
           title: 'Physical Evidence B',
           evidenceType: `physical` }
       },

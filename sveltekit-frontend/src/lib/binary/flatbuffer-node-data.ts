@@ -9,17 +9,17 @@
  * - NES memory architecture integration
  * - WebGPU texture upload optimization
  */
-import type { GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
+import type { GPUNodeDataFB } from, '../gpu/nes-gpu-memory-bridge.js';
 // Binary field offsets and sizes (bytes)
-const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic number
-    VERSION: 4, // 2 bytes - schema version
+const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic: number
+   , VERSION: 4, // 2 bytes - schema version
     NODE_COUNT: 6, // 4 bytes - number of nodes
     TIMESTAMP: 10, // 8 bytes - creation timestamp
     CHECKSUM: 18, // 4 bytes - data integrity checksum
     RESERVED: 22, // 10 bytes - future expansion
   },
   NODE: {
-    ID: 0, // 4 bytes - node ID (uint32)
+   , ID: 0, // 4 bytes - node ID (uint32)
     TYPE: 4, // 1 byte - document type code
     PRIORITY: 5, // 1 byte - NES priority (0-255)
     BANK_ID: 6, // 1 byte - memory bank reference
@@ -62,7 +62,7 @@ export class FlatBufferNodeSerializer {
   private static readonly CURRENT_VERSION = 1;
   // Performance tracking
   private static metrics = {
-    serializeTime: 0,
+   , serializeTime: 0,
     deserializeTime: 0,
     compressionRatio: 0,
     totalNodes: 0,
@@ -78,16 +78,16 @@ export class FlatBufferNodeSerializer {
    * Optimized for GPU texture upload and NES memory allocation
    */
   static async serializeNodes(
-    nodes: Array<{ id: number;, type: string;
+    nodes: Array<{, id: number;, type: string;
       priority: number;
       bankId?: number;
       compressed?: boolean;
       cached?: boolean;
       confidence: number;
       riskLevel: string;
-      position: {, x: number; y: number; z?: number };
+     , position: {, x: number;, y: number; z?: number };
       embedding?: Float32Array;
-      metadata?: Record<string, unknown>; // Changed from 'any'
+      metadata?: Record<string, unknown>; // Changed from, 'any'
     }>
   ): Promise<ArrayBuffer> {
     const startTime = performance.now();
@@ -177,7 +177,7 @@ export class FlatBufferNodeSerializer {
       this.addToCache(cacheKey, buffer);
       return buffer;
     } catch (error: any) {
-      // Changed from 'any'
+      // Changed from, 'any'
       console.error('❌ FlatBuffer serialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }
@@ -194,7 +194,7 @@ export class FlatBufferNodeSerializer {
       // Validate header
       const magic = view.getUint32(FLATBUFFER_SCHEMA.HEADER.MAGIC, true);
       if (magic !== this.MAGIC_NUMBER) {
-        throw new Error(`Invalid FlatBuffer magic number: 0x${magic.toString(16)}`);
+        throw new Error(`Invalid FlatBuffer magic: number: 0x${magic.toString(16)}`);
       }
       const version = view.getUint16(FLATBUFFER_SCHEMA.HEADER.VERSION, true);
       if (version !== this.CURRENT_VERSION) {
@@ -273,7 +273,7 @@ export class FlatBufferNodeSerializer {
         totalSize: buffer.byteLength
       };
     } catch (error: any) {
-      // Changed from 'any'
+      // Changed from, 'any'
       console.error('❌ FlatBuffer deserialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }
@@ -345,7 +345,7 @@ export class FlatBufferNodeSerializer {
       return buffer;
     }
     this.metrics.cacheMisses++;
-    return null;
+    return: null;
   }
   // Utility methods
   private static encodeDocumentType(type: string): number {
@@ -382,7 +382,7 @@ export class FlatBufferNodeSerializer {
     cacheSize: number;
     cacheHitRate: number;
     avgSerializeTime: number;
-    avgDeserializeTime: number;
+   , avgDeserializeTime: number;
   } {
     const cacheHitRate = this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses);
     return {

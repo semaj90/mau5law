@@ -2,10 +2,10 @@
  * Enhanced Health Check API
  * Includes migration status, service health, and system metrics
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
-import { env } from '$env/dynamic/private';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { DatabaseMigrator } from, '$lib/database/migrations/migration-system';
+import { env } from, '$env/dynamic/private';
 export const GET: RequestHandler = async ({ url }) => {
   const detailed = url.searchParams.get('detailed') === 'true';
   const checkMigrations = url.searchParams.get('migrations') !== 'false';
@@ -15,14 +15,14 @@ export const GET: RequestHandler = async ({ url }) => {
     uptime: process.uptime(),
     version: '1.0.0',
     services: {
-      api: 'healthy',
+     , api: 'healthy',
       database: 'unknown',
       migrations: 'unknown',
       backgroundJobs: 'unknown',
       aiServices: 'unknown'
     },
     metrics: {
-      memoryUsage: process.memoryUsage(),
+     , memoryUsage: process.memoryUsage(),
       nodeVersion: process.version,
       platform: process.platform
     }
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const migrationStatus = await migrator.getStatus();
         healthCheck.services.migrations = migrationStatus.systemHealthy ? 'healthy' : 'degraded';
         if (detailed) {
-          (healthCheck as any).migrationDetails = {
+          (healthCheck as: any).migrationDetails = {
             appliedMigrations: migrationStatus.appliedMigrations,
             pendingMigrations: migrationStatus.pendingMigrations,
             lastMigration: migrationStatus.lastMigration,
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const pendingJobs = parseInt(jobCount[0]?.count || '0');
         healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy';
         if (detailed) {
-          (healthCheck as any).backgroundJobsDetails = {
+          (healthCheck as: any).backgroundJobsDetails = {
             pendingJobs,
             threshold: 100,
             status: healthCheck.services.backgroundJobs
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const models = await response.json();
         healthCheck.services.aiServices = models.models?.length > 0 ? 'healthy' : 'degraded';
         if (detailed) {
-          (healthCheck as any).aiServicesDetails = {
+          (healthCheck as: any).aiServicesDetails = {
             modelsAvailable: models.models?.length || 0,
             models: models.models?.map((m: any) => m.name) || []
           };
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     // Add system load metrics if detailed
     if (detailed) {
-      (healthCheck as any).systemMetrics = {
+      (healthCheck as: any).systemMetrics = {
         loadAverage: process.loadavg ? process.loadavg() : null,
         freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
         cpuUsage: process.cpuUsage ? process.cpuUsage() : null
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'Unknown error',
         services: {
-          api: 'error',
+         , api: 'error',
           database: 'unknown',
           migrations: 'unknown',
           backgroundJobs: 'unknown',

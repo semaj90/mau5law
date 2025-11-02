@@ -5,9 +5,9 @@
  * This service provides the solid foundation that feeds real data
  * to the CHR-ROM pre-computation system for pattern generation
  */
-import type { LegalDocument, ProcessingResult, EntityExtraction } from '../types/legal.js';
-import { chrROMPrecomputation } from './chr-rom-precomputation.js';
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument, ProcessingResult, EntityExtraction } from, '../types/legal.js';
+import { chrROMPrecomputation } from, './chr-rom-precomputation.js';
+import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
 // Drizzle schema interfaces (based on your legal AI database structure)
 export interface DrizzleLegalDocument { id: string;, title: string;
   content: string;
@@ -21,7 +21,7 @@ export interface DrizzleLegalDocument { id: string;, title: string;
   updated_at: Date;
 }
 
-export interface DrizzleDocumentAnalysis { id: string;, document_id: string;
+export interface DrizzleDocumentAnalysis {, id: string;, document_id: string;
   analysis_type: 'risk_assessment' | 'entity_extraction' | 'classification' | 'summary';
   result: any; // JSONB field
   confidence_score: number;
@@ -29,7 +29,7 @@ export interface DrizzleDocumentAnalysis { id: string;, document_id: string;
   created_at: Date;
 }
 
-export interface DrizzleEntityExtraction { id: string;, document_id: string;
+export interface DrizzleEntityExtraction {, id: string;, document_id: string;
   entity_type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'contract_term';
   entity_value: string;
   confidence: number;
@@ -37,11 +37,11 @@ export interface DrizzleEntityExtraction { id: string;, document_id: string;
   position_end: number;
   created_at: Date;
 }
-export interface DrizzleDocumentEmbedding { id: string;, document_id: string;
+export interface DrizzleDocumentEmbedding {, id: string;, document_id: string;
   embedding_type: 'document' | 'chunk' | 'summary';
   embedding_vector: number[]; // Vector field
   chunk_index?: number;
-  created_at: Date;
+ , created_at: Date;
 }
 // CHR-ROM data transformation pipeline
 export class DrizzleCHRROMBridge {
@@ -75,7 +75,7 @@ export class DrizzleCHRROMBridge {
     //   .orderBy(desc(legal_documents.updated_at)
     const mockDocuments: DrizzleLegalDocument[] = [
       {
-        id: 'doc_001',
+       , id: 'doc_001',
         title: 'Software Development Agreement - TechCorp',
         content: 'This Software Development Agreement is entered into between...',
         document_type: 'agreement',
@@ -84,7 +84,7 @@ export class DrizzleCHRROMBridge {
         file_size: 245760,
         processing_status: 'completed',
         metadata: {
-          parties: ['TechCorp Inc.', 'DevStudio LLC'],
+         , parties: ['TechCorp Inc.', 'DevStudio LLC'],
           value: 150000,
           duration_months: 12,
           jurisdiction: 'Delaware' },'`'`
@@ -101,7 +101,7 @@ export class DrizzleCHRROMBridge {
         file_size: 128945,
         processing_status: 'completed',
         metadata: {
-          parties: ['Startup Ventures Inc.', 'Innovation Labs'],
+         , parties: ['Startup Ventures Inc.', 'Innovation Labs'],
           confidentiality_period: 24,
           jurisdiction: `California' },'`
         created_at: new Date('2024-01-16T09:15:00Z'),
@@ -117,7 +117,7 @@ export class DrizzleCHRROMBridge {
         file_size: 189345,
         processing_status: 'processing',
         metadata: {
-          property_address: '123 Business Ave, Suite 400',
+         , property_address: '123 Business Ave, Suite 400',
           monthly_rent: 8500,
           lease_term_months: 36,
           security_deposit: 17000
@@ -140,7 +140,7 @@ export class DrizzleCHRROMBridge {
     // For now, simulate periodic checks
     setInterval(() => {
       this.checkForUpdates();
-    }, 30000); // Check every 30 seconds
+    }, 30000); // Check every, 30 seconds
     console.log('👂 Change listeners setup for real-time CHR-ROM updates');
   }
   /**
@@ -167,7 +167,7 @@ export class DrizzleCHRROMBridge {
     const document = this.documentCache.get(docId);
     if (!document) {
       console.warn(`Document ${docId} not found in cache`);
-      return null;
+      return: null;
     }
     // Get analysis results
     const analyses = await this.getDocumentAnalyses(docId);
@@ -192,10 +192,10 @@ export class DrizzleCHRROMBridge {
         lastUpdated: document.updated_at
       },
       analysis: {
-        confidence: this.calculateOverallConfidence(analyses),
+       , confidence: this.calculateOverallConfidence(analyses),
         riskLevel: this.calculateRiskLevel(analyses),
         entities: entities.map(e => ({
-          type: e.entity_type,
+         , type: e.entity_type,
           value: e.entity_value,
           confidence: e.confidence
         })),
@@ -203,12 +203,12 @@ export class DrizzleCHRROMBridge {
         summaryAvailable: analyses.some(a => a.analysis_type === 'summary')
       },
       similarities: similarDocs.map(sim => ({
-        docId: sim.id,
+       , docId: sim.id,
         similarity: sim.similarity,
         title: sim.title
       })),
       embeddings: embeddings.map(emb => ({
-        type: emb.embedding_type,
+       , type: emb.embedding_type,
         vector: emb.embedding_vector,
         chunkIndex: emb.chunk_index
       }))
@@ -224,11 +224,11 @@ export class DrizzleCHRROMBridge {
     //   .where(eq(document_analyses.document_id, docId)
     const mockAnalyses: DrizzleDocumentAnalysis[] = [
       {
-        id: 'analysis_001',
+       , id: 'analysis_001',
         document_id: docId,
         analysis_type: 'risk_assessment',
         result: {
-          overall_risk: 0.3,
+         , overall_risk: 0.3,
           risk_factors: ['payment_terms', 'termination_clause'],
           recommendations: ['Review payment schedule', 'Clarify termination conditions']
         },
@@ -241,7 +241,7 @@ export class DrizzleCHRROMBridge {
         document_id: docId,
         analysis_type: 'entity_extraction',
         result: {
-          entities_found: 12,
+         , entities_found: 12,
           party_count: 2,
           date_references: 8,
           monetary_amounts: 3
@@ -291,14 +291,14 @@ export class DrizzleCHRROMBridge {
         id: 'embedding_001',
         document_id: docId,
         embedding_type: 'document',
-        embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5),
+        embedding_vector: Array.from({, length: 768 }, () => Math.random() - 0.5),
         created_at: new Date()
       },
       {
         id: 'embedding_002',
         document_id: docId,
         embedding_type: 'summary',
-        embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5),
+        embedding_vector: Array.from({, length: 768 }, () => Math.random() - 0.5),
         created_at: new Date()
       }
     ];
@@ -394,7 +394,7 @@ export class DrizzleCHRROMBridge {
    */
   async batchProcessDocuments(docIds: string[]): Promise<void> {
     console.log(`🔄 Batch processing ${docIds.length} documents for CHR-ROM patterns...`);
-    const batchSize = 5; // Process 5 documents at a time
+    const batchSize = 5; // Process, 5 documents at a time
     for (let i = 0; i < docIds.length; i += batchSize) {
       const batch = docIds.slice(i, i + batchSize);
       const batchPromises = batch.map(docId =>

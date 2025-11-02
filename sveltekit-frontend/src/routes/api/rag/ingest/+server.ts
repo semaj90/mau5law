@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Document } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /**
  * Batch Document Ingestion Pipeline
  * Connects RAG document upload → vector embeddings → pgvector storage
@@ -13,14 +13,14 @@ import { cuidSchema } from '$lib/server/z-schemas';
  * - Error recovery and graceful degradation
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { documentChunks, documents } from '$lib/server/db/enhanced-embedding-schema';
-import { createHash } from 'crypto';
-import { sql } from 'drizzle-orm';
-import { getOllamaEndpoint } from '$lib/utils/ollama-utils';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { z } from, 'zod';
+import { db } from, '$lib/server/db';
+import { documentChunks, documents } from, '$lib/server/db/enhanced-embedding-schema';
+import { createHash } from, 'crypto';
+import { sql } from, 'drizzle-orm';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-utils';
 
 // ===== SCHEMAS =====
 
@@ -35,8 +35,8 @@ const BatchIngestRequestSchema = z.object({
         tags: z.array(z.string()).optional()
       })
     )
-    .min(1, 'At least 1 document required')
-    .max(100, 'Max 100 documents per batch'),
+    .min(1, 'At least, 1 document required')
+    .max(100, 'Max, 100 documents per batch'),
   caseId: cuidSchema.optional(),
   uploadedBy: cuidSchema.default('00000000-0000-0000-0000-000000000000'),
   chunkSize: z.number().int().min(100).max(5000).default(1000),
@@ -48,7 +48,7 @@ type BatchIngestRequest = z.infer<typeof, BatchIngestRequestSchema>;
 interface IngestResult { documentId: string;, filename: string;
   chunksCount: number;
   embeddingsGenerated: number;
-  stored: boolean;
+ , stored: boolean;
   error?: string;
 }
 
@@ -67,10 +67,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
     });
     if (!res.ok) throw new Error(`Ollama responded ${res.status}`);
     const payload = await res.json();
-    return Array.isArray(payload.embedding) ? (payload.embedding as number[]) : [];
+    return Array.isArray(payload.embedding) ? (payload.embedding as: number[]) : [];
   } catch (err) {
     console.error('Embedding generation failed', err);
-    // return zero vector of length 768 for compatibility
+    // return zero vector of length, 768 for compatibility
     return Array(768).fill(0);
   }
 }
@@ -173,7 +173,7 @@ async function storeDocument(
       embedding: embeddings[idx],
       embeddingModel: 'embeddinggemma:latest',
       metadata: {
-        source: filename,
+       , source: filename,
         chunkIndex: idx,
         totalChunks: chunks.length
       }
@@ -201,7 +201,7 @@ async function storeDocument(
 
 // ===== MAIN HANDLER =====
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       results,
       metadata: {
-        chunkSize: params.chunkSize,
+       , chunkSize: params.chunkSize,
         chunkOverlap: params.chunkOverlap,
         embeddingModel: 'embeddinggemma:latest',
         indexType: `pgvector (HNSW)' }'`

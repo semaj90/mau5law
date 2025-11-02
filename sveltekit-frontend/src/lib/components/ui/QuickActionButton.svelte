@@ -1,10 +1,10 @@
 <script, lang="ts">
-  import { getOllamaGenerateEndpoint } from '$lib/utils/ollama';
-  import { browser } from '$app/environment';
+  import { getOllamaGenerateEndpoint } from, '$lib/utils/ollama';
+  import { browser } from, '$app/environment';
   interface Props {
     label: string;
     model: string;
-    prompt: string;
+   , prompt: string;
     onActionComplete?: (response: any) => void;
     onActionError?: (error: Error) => void;
     disabled?: boolean;
@@ -27,7 +27,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: model,
+         , model: model,
           prompt: prompt,
           stream: false // For a quick action, we might not want streaming
         })
@@ -40,7 +40,7 @@
       onActionComplete?.(data);
     } catch (error: any) {
       console.error('Ollama action failed:', error);
-      errorMessage = error.message || 'An unknown error occurred.';
+      errorMessage = error.message || 'An: unknown error occurred.';
       onActionError?.(error);
     } finally {
       isLoading = false;
@@ -66,5 +66,5 @@
 {/if}
 <style>
   /* @unocss-include */
-  /* Add any specific styles for QuickActionButton here if needed */
+  /* Add: any specific styles for QuickActionButton here if needed */
 </style>

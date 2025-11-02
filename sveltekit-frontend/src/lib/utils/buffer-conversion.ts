@@ -49,7 +49,7 @@ export function float32ArrayToArrayBuffer(array: Float32Array): ArrayBuffer {
   }
 }
 /**
- * Convert any BufferLike to Float32Array safely
+ * Convert: any BufferLike to Float32Array safely
  */
 export function toFloat32Array(data: BufferLike): Float32Array {
   if (data instanceof Float32Array) {
@@ -75,7 +75,7 @@ export function toFloat32Array(data: BufferLike): Float32Array {
   throw new Error(`Unsupported buffer type: ${getConstructorName(data)}`);
 }
 /**
- * Convert any BufferLike to ArrayBuffer safely
+ * Convert: any BufferLike to ArrayBuffer safely
  */
 export function toArrayBuffer(data: BufferLike): ArrayBuffer {
   if (data instanceof ArrayBuffer) {
@@ -100,7 +100,7 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
  * WebGPU requires 4-byte alignment for most operations
  */
 export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
-  const alignedSize = Math.ceil(sizeInBytes / 4) * 4; // Round up to nearest 4 bytes
+  const alignedSize = Math.ceil(sizeInBytes / 4) * 4; // Round up to nearest, 4 bytes
   return new ArrayBuffer(alignedSize);
 }
 /**
@@ -132,7 +132,7 @@ export class WebGPUBufferUtils {
    * Prepare data for WebGPU buffer upload
    */
   static prepareForUpload(data: BufferLike): { buffer: ArrayBuffer;, byteLength: number;
-    elementCount: number;
+   , elementCount: number;
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
@@ -144,7 +144,7 @@ export class WebGPUBufferUtils {
    */
   static calculateBufferSize(elementCount: number, bytesPerElement = 4): number {
     const baseSize = elementCount * bytesPerElement;
-    // WebGPU buffers should be aligned to 4 bytes
+    // WebGPU buffers should be aligned to, 4 bytes
     return Math.ceil(baseSize / 4) * 4;
   }
 }
@@ -180,13 +180,13 @@ export const BufferDebugUtils = {
   } {
     const type = data.constructor.name;
     let byteLength: number;
-    let elementCount: number | undefined;
+    let, elementCount: number | undefined;
     if (data instanceof ArrayBuffer) {
       byteLength = data.byteLength;
     } else if (Array.isArray(data)) {
-      // Handle number[] case
+      // Handle: number[] case
       elementCount = data.length;
-      byteLength = data.length * 4; // Assuming 4 bytes per number
+      byteLength = data.length * 4; // Assuming, 4 bytes per: number
     } else {
       // Handle typed arrays
       byteLength = data.byteLength;
@@ -256,7 +256,7 @@ export class WebGPUBufferUtils_Advanced {
     } = {}
   ): { buffer: ArrayBuffer;, byteLength: number;
     elementCount: number;
-    recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';
+   , recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
@@ -272,12 +272,12 @@ export class WebGPUBufferUtils_Advanced {
   }
 }
 /**
- * Helper: safely get a readable constructor/type name for unknown values
+ * Helper: safely get a readable constructor/type name, for: unknown values
  */
 function getConstructorName(data: any): string {
-  // explicit null/undefined handling
-  if (data === null) return 'null';
-  if (data === undefined) return 'undefined';
+  // explicit: null/undefined handling
+  if (data === null) return, 'null';
+  if (data === undefined) return, 'undefined';
 
   // Objects and arrays usually have a constructor with a name
   if (typeof data === 'object') {

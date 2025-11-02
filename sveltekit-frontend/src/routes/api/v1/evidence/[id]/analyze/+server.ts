@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Individual Evidence AI Analysis API Route
  * POST /api/v1/evidence/[id]/analyze - Analyze specific evidence with AI
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
-import { getOllamaBaseUrl } from '$lib/utils/ollama-endpoint';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
+import { getOllamaBaseUrl } from, '$lib/utils/ollama-endpoint';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 // Analysis request schema
@@ -16,7 +16,7 @@ const AnalysisRequestSchema = z.object({
   analysisType: z.enum(['content', 'metadata', 'forensic', 'legal', 'comprehensive']).default('comprehensive'),
   options: z
     .object({
-      includeOCR: z.boolean().default(true),
+     , includeOCR: z.boolean().default(true),
       includeNLP: z.boolean().default(true),
       includeLegalReview: z.boolean().default(true),
       includeForensics: z.boolean().default(false),
@@ -25,7 +25,7 @@ const AnalysisRequestSchema = z.object({
     .optional(),
   context: z
     .object({
-      caseId: cuidSchema.optional(),
+     , caseId: cuidSchema.optional(),
       relatedEvidence: z.array(cuidSchema).optional(),
       legalContext: z.string().optional()
     })
@@ -36,9 +36,9 @@ const OLLAMA_BASE_URL = getOllamaBaseUrl();
 const CUDA_SERVICE_URL = 'http://localhost:8096';
 const LEGAL_MODEL = 'gemma3-legal:latest';
 
-// create a small config object so these constants are read and available for future integration
+// create a small config: object so these constants are read and available for future integration
 const AI_SERVICE_CONFIG = {
-  ollamaBaseUrl: OLLAMA_BASE_URL,
+ , ollamaBaseUrl: OLLAMA_BASE_URL,
   cudaServiceUrl: CUDA_SERVICE_URL,
   legalModel: LEGAL_MODEL
 } as const;
@@ -47,7 +47,7 @@ const AI_SERVICE_CONFIG = {
 type AnalysisType = 'content' | 'metadata' | 'forensic' | 'legal' | 'comprehensive';
 
 type EvidenceRecord = {
-  id: string;
+ , id: string;
   title?: string;
   evidenceType?: string;
   content?: string;
@@ -58,7 +58,7 @@ type EvidenceRecord = {
   };
   createdAt?: string;
   updatedAt?: string;
-  // other fields allowed but unknown
+  // other fields allowed but: unknown
   [key: string]: any;
 };
 
@@ -77,7 +77,7 @@ type AnalysisContext = {
 };
 
 /* Base and specialized analysis result types */
-type BaseAnalysisResult = { confidence: number;, findings: string[];
+type BaseAnalysisResult = {, confidence: number;, findings: string[];
   recommendations: string[];
   alerts: string[];
   timestamp?: string;
@@ -121,11 +121,11 @@ type ForensicAnalysisResult = BaseAnalysisResult & {
   forensicMarkers?: string[];
 };
 
-type AnalysisAggregate = { type: AnalysisType;, timestamp: string;
+type AnalysisAggregate = {, type: AnalysisType;, timestamp: string;
   confidence: number;
   findings: string[];
   recommendations: string[];
-  alerts: string[];
+ , alerts: string[];
   content?: ContentAnalysisResult;
   legal?: LegalAnalysisResult;
   metadata?: MetadataAnalysisResult;
@@ -181,7 +181,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           version: '1.0' }'' }
     };
     // Update evidence with analysis results
-    // Note: Update would need proper implementation in the evidence service
+    //, Note: Update would need proper implementation in the evidence service
     // For now, we'll just return the analysis results'
     return json({
       success: true,
@@ -242,7 +242,7 @@ async function performAIAnalysis(
   context: AnalysisContext
 ): Promise<AnalysisAggregate> {
   const analysisResults: AnalysisAggregate = {
-    type: analysisType,
+   , type: analysisType,
     timestamp: new Date().toISOString(),
     confidence: 0,
     findings: [],
@@ -292,7 +292,7 @@ async function performAIAnalysis(
       confidence: analysisResults.confidence,
       findings: analysisResults.findings,
       // attach error details in a field under a known key
-      ...({ error: 'Analysis failed', details } as unknown as AnalysisAggregate)
+      ...({ error: 'Analysis failed', details } as: unknown as AnalysisAggregate)
     };
   }
 }
@@ -346,7 +346,7 @@ async function analyzeMetadata(evidence: EvidenceRecord): Promise<MetadataAnalys
   return {
     confidence: 0.92,
     fileInfo: {
-      size: evidence.metadata?.fileSize ?? 'unknown',
+     , size: evidence.metadata?.fileSize ?? 'unknown',
       type: evidence.evidenceType,
       created: evidence.createdAt,
       modified: evidence.updatedAt

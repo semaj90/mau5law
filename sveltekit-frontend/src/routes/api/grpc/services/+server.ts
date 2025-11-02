@@ -1,20 +1,19 @@
 /**
  * gRPC Client Service for Legal AI Platform
- * Enables high-performance communication with 37 Go microservices
+ * Enables high-performance communication with, 37 Go microservices
  * Integrates with existing Redis and XState infrastructure
  */
-import type { RequestHandler } from '@sveltejs/kit'
-import { json } from '@sveltejs/kit'
-import { logger } from '$lib/server/production-logger'
+import type { RequestHandler } from, '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
+import { logger } from, '$lib/server/production-logger'
 
 // gRPC Service Interface for Legal AI Platform
-interface GRPCServiceEndpoint { name: string, host: string; port: number; protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date; capabilities: string[]
+interface GRPCServiceEndpoint { name: string, host: string; port: number;, protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date;, capabilities: string[]
 }
 
 // Legal AI Platform Service Registry (matches Go implementation)
 const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
-  // Core AI Services
-  'legal-gateway': {
+  // Core AI Services, 'legal-gateway': {
     name: 'legal-gateway',
     host: 'localhost',
     port: 8080,
@@ -59,8 +58,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['cuda-kernels', 'gpu-computation', 'parallel-processing']
   },
-  // Legal Analysis Services
-  'legal-ai-inference': {
+  // Legal Analysis Services, 'legal-ai-inference': {
     name: 'legal-ai-inference',
     host: 'localhost',
     port: 8100,
@@ -105,8 +103,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['named-entity-recognition', 'legal-entities', 'relationship-extraction']
   },
-  // Vector & Embedding Services
-  'vector-search': {
+  // Vector & Embedding Services, 'vector-search': {
     name: 'vector-search',
     host: 'localhost',
     port: 8110,
@@ -124,8 +121,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['text-embeddings', 'document-embeddings', 'legal-embeddings']
   },
-  // Streaming & Real-time Services
-  'quic-streaming': {
+  // Streaming & Real-time Services, 'quic-streaming': {
     name: 'quic-streaming',
     host: 'localhost',
     port: 8130,
@@ -134,8 +130,7 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     lastHealthCheck: new Date(),
     capabilities: ['ultra-low-latency', 'quic-protocol', 'streaming-inference']
   },
-  // Authentication & Security
-  'auth-service': {
+  // Authentication & Security, 'auth-service': {
     name: 'auth-service',
     host: 'localhost',
     port: 8150,
@@ -167,8 +162,7 @@ class LegalAIGRPCClient {
   private startHealthChecking(): void {
     if (this.healthCheckInterval) return;
     this.healthCheckInterval = setInterval(() => {
-      // fire-and-forget; errors are logged per-service
-      void this.performHealthChecks();
+      // fire-and-forget; errors are logged per-service: void this.performHealthChecks();
     }, 30_000);
   }
 
@@ -289,7 +283,7 @@ class LegalAIGRPCClient {
     if (!res.ok) {
       throw new Error(`HTTP request failed: ${res.status} ${res.statusText}`);
     }
-    return (await res.json()) as unknown;
+    return (await res.json()) as: unknown;
   }
 
   /**

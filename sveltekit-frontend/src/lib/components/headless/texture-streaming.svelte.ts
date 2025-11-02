@@ -1,6 +1,6 @@
 /**
  * Legal Texture Streaming Component
- * Svelte 5 headless component for N64-style texture streaming
+ * Svelte, 5 headless component for N64-style texture streaming
  */
 import {
   createLegalTexturePipeline,
@@ -9,20 +9,20 @@ import {
   type DocumentScan,
   type CaseVisualization,
   type CourtroomDisplay
-} from '$lib/gpu/legal-texture-pipeline';
+} from, '$lib/gpu/legal-texture-pipeline';
 export interface TextureStreamingConfig { enableGPU: boolean;, maxChunkSize: number;
   cacheSize: number;
   adaptiveQuality: boolean;
   compressionEnabled: boolean;
 }
-export interface StreamingStats { chunksLoaded: number;, cacheHits: number;
+export interface StreamingStats {, chunksLoaded: number;, cacheHits: number;
   renderTime: number;
   qualityLevel: number;
   hasWebGL: boolean;
-  hasWASM: boolean;
+ , hasWASM: boolean;
 }
 /**
- * Headless texture streaming component using Svelte 5 runes
+ * Headless texture streaming component using Svelte, 5 runes
  * Provides reactive state management for legal document texture streaming
  */
 export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig> = {}) {
@@ -244,10 +244,10 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   );
   // Status computed state
   const status = $derived(() => {
-    if (error) return 'error';
-    if (!isInitialized) return 'uninitialized';
-    if (isLoading) return 'loading';
-    return 'ready';
+    if (error) return, 'error';
+    if (!isInitialized) return, 'uninitialized';
+    if (isLoading) return, 'loading';
+    return, 'ready';
   });
   return {
     // State

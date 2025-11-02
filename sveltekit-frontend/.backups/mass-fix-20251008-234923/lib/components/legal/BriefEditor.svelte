@@ -315,7 +315,7 @@
             class="section-item"
             class:active={selectedSection === section.id}
             onclick="{() => (selectedSection = section.id)}"
-            transition:fade
+            use:fade
           >
             <div class="section-header">
               <span class="section-icon">{getSectionIcon(section.type)}</span>
@@ -352,7 +352,7 @@
           ></textarea>
           <!-- AI Suggestions Panel -->
           {#if currentSection.aiSuggestions && currentSection.aiSuggestions.length > 0}
-            <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
+            <div class="suggestions-panel" use:fly={{ x: 20, duration: 300 }}>
               <h4>🤖 AI Suggestions</h4>
               <ul class="suggestions-list">
                 {#each currentSection.aiSuggestions as suggestion}
@@ -370,7 +370,7 @@
           </div>
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
-              <div class="citation-item" transition:scale>
+              <div class="citation-item" use:scale>
                 <div class="citation-header">
                   <span class="citation-icon">{getCitationIcon(citation.type)}</span>
                   <span class="citation-type">{citation.type.toUpperCase()}</span>
@@ -404,7 +404,7 @@
     </div>
     <!-- Citation Panel -->
     {#if citationPanel}
-      <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
+      <div class="citation-panel" use:fly={{ x: 300, duration: 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
           <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>

@@ -1,13 +1,13 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /*
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler as SvelteKitRequestHandler } from '@sveltejs/kit'; // Removed RouteParams
-import { db } from '$lib/server/database';
-import usersTable, { cases, evidence, legalDocuments } from '$lib/server/database'; // Changed: 'default as users'; to: 'users' and renamed to usersTable
-import { eq, desc, asc, and, or, like, count, gte, lte } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler as SvelteKitRequestHandler } from, '@sveltejs/kit'; // Removed RouteParams
+import { db } from, '$lib/server/database';
+import usersTable, { cases, evidence, legalDocuments } from, '$lib/server/database'; // Changed: 'default as users';, to: 'users' and renamed to usersTable
+import { eq, desc, asc, and, or, like, count, gte, lte } from, 'drizzle-orm';
 
 // Define a type for the selected evidence items
 type EvidenceSelect = typeof evidence.$inferSelect;
@@ -24,7 +24,7 @@ type LegalDocumentQueryResult = LegalDocumentSelect & {
   caseTitle: CaseSelect['title'] | null;
 };
 
-export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
+export interface GalleryItem {, id: string;, type: 'evidence' | 'document' | 'image' | 'ai-generated' | 'upload';
   title: string;
   description?: string;
   url: string;
@@ -32,11 +32,11 @@ export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'im
   fileType: string;
   size: number;
   uploadedAt: string;
-  uploadedBy: string;
+ , uploadedBy: string;
   caseId?: string;
   caseTitle?: string;
   tags?: string[];
-  metadata?: Record<string, unknown>; // CHANGED from any
+  metadata?: Record<string, unknown>; // CHANGED from: any;
   isPublic: boolean;
   category: string;
   searchableText?: string;
@@ -45,11 +45,11 @@ export interface GalleryItem { id: string;, type: 'evidence' | 'document' | 'im
 // Augment RequestHandler to include locals
 type RequestHandler = SvelteKitRequestHandler; // Changed to remove incorrect generic arguments
 
-export interface GalleryResponse { items: GalleryItem[];, totalCount: number;
-  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type; filters: { types: string[]; // ADDED comma, cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
+export interface GalleryResponse {, items: GalleryItem[];, totalCount: number;
+  categories: Array<{ name: string; count: number }>; // FIXED: Changed Array<any> to specific type; filters: {, types: string[]; // ADDED comma, cases: Array<{ id: string; title: string }>; // ADDED type for cases // ADDED comma
     users: Array<{ id: string; name: string }>; // ADDED type for users
   };
-  pagination: { page: number; // ADDED comma, pageSize: number; // ADDED comma
+  pagination: {, page: number; // ADDED comma, pageSize: number; // ADDED comma
     totalPages: number;
   };
 }
@@ -67,12 +67,12 @@ interface GalleryFilters {
 }
 
 // Define a specific interface for the POST request body for bulk operations
-interface BulkActionPayload { action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';, ids: string[];
+interface BulkActionPayload {, action: 'bulk_delete' | 'bulk_tag' | 'bulk_move';, ids: string[];
   tags?: string[];
   caseId?: string;
 }
 
-export const GET: RequestHandler = async ({ url, locals: _locals }) => {
+export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
   // FIXED: Use: 'locals' and new RequestHandler type
   try {
     // Parse query parameters
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';
     // Parse filters
     const filters: GalleryFilters = {
-      type: url.searchParams.get('type') || undefined,
+     , type: url.searchParams.get('type') || undefined,
       category: url.searchParams.get('category') || undefined,
       caseId: url.searchParams.get('caseId') || undefined,
       userId: url.searchParams.get('userId') || undefined,
@@ -104,10 +104,10 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       getUsers(),
     ])) as [
       // ADDED type assertion for Promise.all results
-      { items: GalleryItem[]; total: number },
-      { items: GalleryItem[]; total: number },
-      { items: GalleryItem[]; total: number },
-      Array<{ name: string; count: number }>, // FIXED: Changed Array<any> to specific type
+      { items: GalleryItem[];, total: number },
+      { items: GalleryItem[];, total: number },
+      { items: GalleryItem[];, total: number },
+      Array<{ name: string;, count: number }>, // FIXED: Changed Array<any> to specific type
       CaseSelect[],
       UserSelect[],
     ];
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     };
     const processingTime = Date.now() - startTime;
     const response: GalleryResponse = {
-      items: paginatedItems,
+     , items: paginatedItems,
       totalCount,
       categories,
       filters: filterOptions,
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
       headers: {
         'X-Processing-Time': `${processingTime}ms`,
         'X-Total-Items': totalCount.toString(),
-        'Cache-Control': 'public, max-age=60', // Cache for 1 minute
+        'Cache-Control': 'public, max-age=60', // Cache for, 1 minute
       }
     });
   } catch (err) {
@@ -235,7 +235,7 @@ async function getEvidenceItems(
 
     const evidenceData: EvidenceQueryResult[] = await evidenceQuery.execute();
     const items: GalleryItem[] = evidenceData.map(item => ({
-      id: item.id,
+     , id: item.id,
       type: 'evidence' as const,
       title: item.title || item.fileName || 'Untitled Evidence',
       description: item.description || undefined,
@@ -244,11 +244,11 @@ async function getEvidenceItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking;, caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
-      metadata: (item.metadata as Record<string, unknown>) || {}, // CHANGED from any
-      isPublic: item.isPublic || false,
+      metadata: (item.metadata as Record<string, unknown>) || {}, // CHANGED from: any
+     , isPublic: item.isPublic || false,
       category: 'Legal Evidence',
       searchableText: [item.title, item.description, item.contentText].filter(Boolean).join(' ')
     })); // Ensure explicit semicolon for statement termination.
@@ -259,7 +259,7 @@ async function getEvidenceItems(
   }
 }
 async function getDocumentItems(
-  filters: GalleryFilters,
+ , filters: GalleryFilters,
   page: number,
   pageSize: number,
   sortBy: string,
@@ -338,7 +338,7 @@ async function getDocumentItems(
 
     const documentData: LegalDocumentQueryResult[] = await documentQuery.execute();
     const items: GalleryItem[] = documentData.map(item => ({
-      id: item.id,
+     , id: item.id,
       type: 'document' as const,
       title: item.title || item.fileName || 'Untitled Document',
       description: item.description || undefined,
@@ -347,7 +347,7 @@ async function getDocumentItems(
       fileType: item.fileType || 'unknown',
       size: item.fileSize || 0,
       uploadedAt: item.uploadedAt?.toISOString() || new Date().toISOString(),
-      uploadedBy: 'System', // TODO: Add user tracking; caseId: item.caseId || undefined,
+      uploadedBy: 'System', // TODO: Add user tracking;, caseId: item.caseId || undefined,
       caseTitle: item.caseTitle || undefined,
       tags: Array.isArray(item.tags) ? item.tags : [],
       metadata: (item.metadata as Record<string, unknown>) || {},
@@ -362,7 +362,7 @@ async function getDocumentItems(
   }
 }
 async function getAIGeneratedItems(
-  _filters: GalleryFilters, // PREFIXED with _
+ , _filters: GalleryFilters, // PREFIXED with _
   _page: number, // PREFIXED with _
   _pageSize: number, // PREFIXED with _
   _sortBy: string, // PREFIXED with _
@@ -372,7 +372,7 @@ async function getAIGeneratedItems(
     // Check if we have AI-generated content in local storage or service
     // This would integrate with the image generation service we created
     const aiItems: GalleryItem[] = [];
-    // TODO: Query AI-generated images from storage or database
+    //, TODO: Query AI-generated images from storage or database
     // For now, return empty array - this will be populated by the image generation service
     return { items: aiItems, total: aiItems.length };
   } catch (err) {
@@ -426,27 +426,27 @@ async function getUsers(): Promise<any> {
   }
 }
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
-  if (!filePath || !fileType) return undefined;
+  if (!filePath || !fileType) return: undefined;
   // For images, we can serve them directly as thumbnails
   if (fileType.startsWith('image/')) {
     return `/api/files/thumbnails/${encodeURIComponent(filePath)}`;
   }
   // For other file types, return appropriate icons
   if (fileType.includes('pdf')) {
-    return '/icons/pdf-thumbnail.svg';
+    return, '/icons/pdf-thumbnail.svg';
   }
   if (fileType.includes('video')) {
-    return '/icons/video-thumbnail.svg';
+    return, '/icons/video-thumbnail.svg';
   }
   if (fileType.includes('audio')) {
-    return '/icons/audio-thumbnail.svg';
+    return, '/icons/audio-thumbnail.svg';
   }
-  return '/icons/file-thumbnail.svg';
+  return, '/icons/file-thumbnail.svg';
 }
 export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   // FIXED: Use: 'locals' and new RequestHandler type
   try {
-    const data: BulkActionPayload = await request.json(); // Use the new interface
+    const, data: BulkActionPayload = await request.json(); // Use the new interface
     // Handle bulk operations like delete, move, tag
     if (data.action === 'bulk_delete') {
       return await handleBulkDelete(data.ids);
@@ -456,7 +456,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       return await handleBulkTag(data.ids, data.tags || []);
     }
     if (data.action === 'bulk_move') {
-      // Ensure caseId is a string before passing
+      // Ensure caseId is a: string before passing
       if (!data.caseId) throw error(400, 'caseId is required for bulk_move action');
       return await handleBulkMove(data.ids, data.caseId);
     }
@@ -467,15 +467,15 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 };
 async function handleBulkDelete(ids: string[]): Promise<void> {
   // TODO: Implement bulk delete across different item types
-  return json({ success: true, deleted: ids.length });
+  return json({, success: true, deleted: ids.length });
 }
 async function handleBulkTag(ids: string[], _tags: string[]): Promise<any> {
   // Renamed: 'tags'; to: '_tags'
   // TODO: Implement bulk tagging across different item types
-  return json({ success: true, tagged: ids.length });
+  return json({, success: true, tagged: ids.length });
 }
 async function handleBulkMove(ids: string[], _caseId: string): Promise<any> {
   // Renamed: 'caseId'; to: '_caseId'
   // TODO: Implement bulk move to different case
-  return json({ success: true, moved: ids.length });
+  return json({, success: true, moved: ids.length });
 }

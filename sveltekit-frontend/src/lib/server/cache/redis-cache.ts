@@ -1,22 +1,22 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import IORedis from 'ioredis';
-import { env } from '$env/dynamic/private';
-import { EventEmitter } from 'events'; // Import EventEmitter for event handling
-import type { SimpleRedis } from '$lib/types/ambient'; // Import SimpleRedis interface
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import IORedis from, 'ioredis';
+import { env } from, '$env/dynamic/private';
+import { EventEmitter } from, 'events'; // Import EventEmitter for event handling
+import type { SimpleRedis } from, '$lib/types/ambient'; // Import SimpleRedis interface
 export class RedisCache {
   private client: SimpleRedis; // Use SimpleRedis interface for better type compatibility
-  private isConnected: boolean = $state(false);
+  private, isConnected: boolean = $state(false);
   constructor() {
     const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
     // Cast the IORedis instance to SimpleRedis to align with the interface
-    this.client = redis as unknown as SimpleRedis;
-    // Explicitly cast the client to EventEmitter to access the: 'on' method,
+    this.client = redis as: unknown as SimpleRedis;
+    // Explicitly cast the client to EventEmitter to access, the: 'on' method,
     // as the inferred type might be a custom stub without it.
-    (this.client as unknown as EventEmitter).on('connect', () => {
+    (this.client as: unknown as EventEmitter).on('connect', () => {
       this.isConnected = true;
       console.log('✅ Redis cache connected');
     });
-    (this.client as unknown as EventEmitter).on('error', (err: Error) => {
+    (this.client as: unknown as EventEmitter).on('error', (err: Error) => {
       this.isConnected = $state(false);
       console.error('❌ Redis cache error:', err);'
     });
@@ -24,14 +24,14 @@ export class RedisCache {
   async get<T>(key: string): Promise<T | null> {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping GET for key:', key);
-      return null;
+      return: null;
     }
     const data = await this.client.get(key);
-    // Ensure data is treated as a string before parsing, as SimpleRedis.get returns unknown
+    // Ensure data is treated as a: string before parsing, as SimpleRedis.get returns: unknown
     if (typeof data === 'string') {
       return JSON.parse(data) as T;
     }
-    return null;
+    return: null;
   }
   async set<T>(key: string, value: T, ttlSeconds: number = 3600): Promise<void> {
     if (!this.isConnected) {

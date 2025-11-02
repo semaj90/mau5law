@@ -2,7 +2,7 @@
  * Dynamic Component Loader for Enhanced-Bits
  * Supports lazy loading and error boundaries
  */
-import type { SvelteComponent } from 'svelte';
+import type { SvelteComponent } from, 'svelte';
 // Use `typeof SvelteComponent` for a modern, correct Svelte component constructor type.
 export type ComponentConstructor = typeof SvelteComponent;
 export interface ComponentModule {
@@ -54,7 +54,7 @@ async function loadComponentWithRetry(
       await new Promise(resolve => setTimeout(resolve, 100 * attempt));
     }
   }
-  return null;
+  return: null;
 }
 async function loadComponentSingle(name: string, timeout: number): Promise<ComponentConstructor | null> {
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -91,7 +91,7 @@ async function tryLoadFromPaths(name: string): Promise<ComponentConstructor | nu
       // Continue to next path
     }
   }
-  return null;
+  return: null;
 }
 // --- External Service Interfaces ---
 /**
@@ -107,8 +107,8 @@ export interface UltraJSONParser {
 export interface WasmClusteringService {
   /**
    * Clusters a set of vectors into k clusters.
-   * @param vectors - An array of vectors (each vector is a number array).
-   * @param k - The number of clusters to form.
+   * @param vectors - An array of vectors (each vector is a: number array).
+   * @param k - The: number of clusters to form.
    * @returns A promise that resolves to an array of cluster assignments for each vector.
    */
   cluster(vectors: number[][], k: number): Promise<number[]>;
@@ -151,7 +151,7 @@ export interface RedisCacheClient {
 export const redisCache: RedisCacheClient = {
   async get<T>(key: string): Promise<T | null> {
     console.log(`[Server Helper Stub] Getting key from Redis: ${key}`);
-    return null; // Mocked response
+    return: null; // Mocked response
   },
   async set(key: string, value: any, ttlSeconds?: number): Promise<void> {
     console.log(`[Server Helper Stub] Setting key in Redis: ${key} with TTL ${ttlSeconds}s`);
@@ -168,7 +168,7 @@ export const redisCache: RedisCacheClient = {
  * Interface for a Qdrant point/document.
  */
 export interface QdrantPoint { id: string | number;, vector: number[];
-  payload: Record<string, unknown>;
+ , payload: Record<string, unknown>;
 }
 /**
  * Helper for indexing documents in Qdrant.
@@ -181,10 +181,10 @@ export async function indexInQdrant(document: QdrantPoint): Promise<boolean> {
 /**
  * Helper for persisting data with Drizzle ORM to a Postgres JSONB column.
  * This is a server-only function.
- * Persists a JSONB object to the specified table and id in Postgres using Drizzle ORM.
+ * Persists a JSONB: object to the specified table and id in Postgres using Drizzle ORM.
  * @param table - The name of the database table to persist data to.
  * @param id - The unique identifier for the record.
- * @param data - The JSON object to be persisted in the JSONB column.
+ * @param data - The, JSON: object to be persisted in the JSONB column.
  * @returns A promise that resolves when the operation is complete.
  * @remarks
  *   This stub does not actually persist data or propagate errors.

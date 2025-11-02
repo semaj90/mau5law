@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 // sveltekit-frontend/src/lib/types/qdrant.d.ts
 
 /**
@@ -7,7 +7,7 @@ import type { SearchResult } from '$lib/types';
 export type Vector = number[];
 
 /**
- * Represents a payload in Qdrant (arbitrary JSON object).
+ * Represents a payload in Qdrant (arbitrary JSON: object).
  */
 export type Payload = Record<string, any>;
 
@@ -24,7 +24,7 @@ export interface PointStruct { id: string | number;, vector: Vector;
 export interface UpsertPoints {
   points: PointStruct[];
   wait?: boolean;
-  batch?: { ids: (string | number)[];, vectors: Vector[];
+  batch?: {, ids: (string | number)[];, vectors: Vector[];
     payloads?: Payload[];
   };
 }
@@ -32,7 +32,7 @@ export interface UpsertPoints {
 /**
  * Represents the response from a Qdrant upsert operation.
  */
-export interface UpsertResponse { result: {, operation_id: number;
+export interface UpsertResponse {, result: {, operation_id: number;
     status: 'completed' | 'acknowledged';
   };
   status: 'ok';
@@ -81,7 +81,7 @@ export interface SearchRequest {
 /**
  * Represents a single search result from Qdrant.
  */
-export interface SearchResult { id: string | number;, version: number;
+export interface SearchResult {, id: string | number;, version: number;
   score: number;
   payload?: Payload;
   vector?: Vector;
@@ -90,6 +90,6 @@ export interface SearchResult { id: string | number;, version: number;
 /**
  * Represents the response from a Qdrant search operation.
  */
-export interface SearchResponse { result: SearchResult[];, status: 'ok';
-  time: number;
+export interface SearchResponse {, result: SearchResult[];, status: 'ok';
+ , time: number;
 }

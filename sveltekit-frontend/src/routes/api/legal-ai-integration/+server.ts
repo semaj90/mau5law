@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import { legalAIIntegration } from '$lib/services/quic-legal-ai-integration.js'
-import type { RequestHandler } from './$types.js'
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import { legalAIIntegration } from, '$lib/services/quic-legal-ai-integration.js'
+import type { RequestHandler } from, './$types.js'
 
 // GET: System status and health
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   try {
     switch (action) {
-      case 'status': {
+      case, 'status': {
         const status = legalAIIntegration.getStatus();
         return json({
           success: true,
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'health': {
+      case, 'health': {
         const health = await legalAIIntegration.getSystemHealth();
         return json({
           success: true,
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'autosolve': {
+      case, 'autosolve': {
         const autosolveResult = await legalAIIntegration.runAutosolve();
         return json({
           success: true,
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
       default: return json({
-          success: true,
+         , success: true,
           data: {
            , message: 'QUIC-Enhanced Legal AI System',
             version: '1.0.0',
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 // POST: Process legal documents
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { content, options = {} } = body;
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Content is required and must be a string'
+          error: 'Content is required and must be, a: string'
         },
         { status: 400 }
       );
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 // PUT: Update integration configuration
-export const PUT: RequestHandler = async ({ request }) => {
+export const, PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { config } = body;

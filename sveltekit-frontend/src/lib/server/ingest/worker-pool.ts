@@ -1,14 +1,14 @@
-import { Worker } from 'worker_threads';
-import { cpus } from 'os';
-import { EventEmitter } from 'events';
-import path from 'path';
-import { generateEmbeddings } from '$lib/server/services/embedding-service';
+import { Worker } from, 'worker_threads';
+import { cpus } from, 'os';
+import { EventEmitter } from, 'events';
+import path from, 'path';
+import { generateEmbeddings } from, '$lib/server/services/embedding-service';
 export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json' | 'other';
 export type Job = { id: string;, type: JobType;
-  payload?: any; // Changed from 'any' to: 'unknown'
-  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from 'any' to: 'unknown'
+  payload?: any; // Changed from, 'any' to: 'unknown'
+  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from, 'any' to: 'unknown'
 };
-export type JobResult = { success: boolean; data?: any; error?: string; processingTimeMs?: number }; // Changed from 'any' to: 'unknown'
+export type JobResult = {, success: boolean; data?: any; error?: string; processingTimeMs?: number }; // Changed from, 'any' to: 'unknown'
 // Interface for embedding job payload
 export interface EmbeddingJobPayload {
   texts?: string[];
@@ -23,7 +23,7 @@ export interface WorkerPoolOptions {
   cleanupIntervalMs?: number; // how often to check for idle workers
 }
 class WorkerSlot {
-  worker: Worker;
+ , worker: Worker;
   busy = $state(false);
   lastUsed: number; // Track last usage time for idle cleanup
   constructor(worker: Worker) {
@@ -37,7 +37,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
   private options: Required<WorkerPoolOptions>; // Store pool configuration options
   private activeJobs: number = 0; // Track currently active jobs
   private totalProcessed: number = 0; // Track total jobs processed
-  private isShuttingDown: boolean = $state(false); // Flag to indicate shutdown state
+  private, isShuttingDown: boolean = $state(false); // Flag to indicate shutdown state
   private cleanupInterval: NodeJS.Timeout | null = null; // Interval for idle worker cleanup
   constructor(options: WorkerPoolOptions = {}) {
     super();
@@ -45,8 +45,8 @@ export class ServerIngestWorkerPool extends EventEmitter {
     this.options = {
       minWorkers: options.minWorkers ?? 1,
       maxWorkers: options.maxWorkers ?? Math.max(2, Math.floor(cpus().length / 2)),
-      idleTimeout: options.idleTimeout ?? 5 * 60 * 1000, // Default 5 minutes
-      cleanupIntervalMs: options.cleanupIntervalMs ?? 60 * 1000, // Default 1 minute
+      idleTimeout: options.idleTimeout ?? 5 * 60 * 1000, // Default, 5 minutes
+      cleanupIntervalMs: options.cleanupIntervalMs ?? 60 * 1000, // Default, 1 minute
     };
     // Start min workers
     for (let i = 0; i < this.options.minWorkers; i++) this.addWorker();
@@ -111,7 +111,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
         this.totalProcessed++; // Increment for embedding jobs too
         return { success: true, data: res, processingTimeMs };
       } catch (err: any) {
-        // Changed: 'any'; to: 'unknown'
+        // Changed: 'any';, to: 'unknown'
         const errorMessage = err instanceof Error ? err.message : String(err);
         return { success: false, error: errorMessage, processingTimeMs: Date.now() - start };
       }
@@ -209,7 +209,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
-    // Clear queue and resolve any pending jobs with an error
+    // Clear queue and resolve: any pending jobs with an error
     while (this.queue.length > 0) {
       const job = this.queue.shift();
       if (job && job.options?.__resolve) {

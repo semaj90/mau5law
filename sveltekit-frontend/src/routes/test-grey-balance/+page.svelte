@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import YoRHaHarvardButton from '$lib/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
-  import YoRHaHarvardCard from '$lib/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
+  import YoRHaHarvardButton from, '$lib/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
+  import YoRHaHarvardCard from, '$lib/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
 </script>
 
 <svelte:head>
@@ -189,7 +189,7 @@
 
 <style>
   .yorha-harvard-title {
-    text-shadow: 0 0 10px rgba(196, 30, 58, 0.3);
+    text-shadow: 0, 0 10px rgba(196, 30, 58, 0.3);
     background: linear-gradient(
       135deg,
       var(--enhanced-text-primary) 0%,

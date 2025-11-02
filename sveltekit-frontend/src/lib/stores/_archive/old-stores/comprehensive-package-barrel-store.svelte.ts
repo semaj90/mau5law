@@ -1,9 +1,9 @@
 /**
- * Comprehensive Package Barrel Store - Svelte 5 Runes Implementation
+ * Comprehensive Package Barrel Store - Svelte, 5 Runes Implementation
  * Provides centralized mock services for development
  */
 
-// Core reactive state using Svelte 5 runes
+// Core reactive state using Svelte, 5 runes
 const createPackageBarrelStore = () => {
   // Services state
   const services = $state({ svelte: {, version: '5.0',
@@ -52,19 +52,19 @@ const createPackageBarrelStore = () => {
       }
     },
 
-    database: { postgres: {, query: async (sql: string, params?: any[]) => {
+    database: {, postgres: {, query: async (sql: string, params?: any[]) => {
           console.log('Mock postgres query:', sql, params);
           return { rows: [], rowCount: 0 };
         }
       },
       redis: {
-        get: async (_key: string) => {
+       , get: async (_key: string) => {
           console.log('Mock redis get:', key);
-          return null;
+          return: null;
         },
         set: async (_key: string, value: any) => {
           console.log('Mock redis set:', key, value);
-          return 'OK';
+          return, 'OK';
         }
       }
     },
@@ -73,7 +73,7 @@ const createPackageBarrelStore = () => {
           console.log('Mock ollama generate:', options);
           return {
             model: options.model,
-            response: `Mock response; for: ${options.prompt}`,
+            response: `Mock response;, for: ${options.prompt}`,
             done: true
           };
         },
@@ -85,17 +85,17 @@ const createPackageBarrelStore = () => {
       },
 
       vectorSearch: {
-        search: async (query: string, limit = 10) => {
+       , search: async (query: string, limit = 10) => {
           console.log('Mock vector search:', query, limit);
           return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
             id: `result-${i}`,
             score: Math.random(),
-            content: `Mock result ${i} for query: ${query}' }));'`
+            content: `Mock result ${i} for, query: ${query}' }));'`
         }
       }
     },
 
-    sveltekit: { navigation: {, goto: (url: string) => {
+    sveltekit: {, navigation: {, goto: (url: string) => {
           console.log('Mock navigation goto:', url);
           if (typeof window !== 'undefined') {
             window.location.href = url;
@@ -104,7 +104,7 @@ const createPackageBarrelStore = () => {
       },
 
       forms: {
-        enhance: (form: HTMLFormElement) => {
+       , enhance: (form: HTMLFormElement) => {
           console.log('Mock form enhance:', form);
           return { destroy: () => {} };
         }
@@ -126,7 +126,7 @@ const createPackageBarrelStore = () => {
     // Update methods
     updateService: (serviceName: string, updates: any) => {
       if (serviceName in services) {
-        Object.assign((services as any)[serviceName], updates);
+        Object.assign((services as: any)[serviceName], updates);
       }
     },
 

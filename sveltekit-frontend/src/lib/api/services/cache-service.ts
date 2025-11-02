@@ -1,5 +1,5 @@
-import { gzipSync, gunzipSync } from "zlib";
-import { Redis } from 'ioredis';
+import { gzipSync, gunzipSync } from, "zlib";
+import { Redis } from, 'ioredis';
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
 interface CacheOptions {
   ttlMs?: number;
@@ -11,7 +11,7 @@ interface CacheOptions {
  * Uses gzip compression for embeddings and large payloads
  */
 export class CacheService {
-  private memoryCache = new Map<string, { value: any; expires: number }>();
+  private memoryCache = new Map<string, { value: any;, expires: number }>();
   private redisClient: Redis | null = null;
   private useRedis = $state(false);
   constructor() {
@@ -44,7 +44,7 @@ export class CacheService {
     try {
       if (this.useRedis && this.redisClient) {
         const result = await this.redisClient.get(key);
-        if (!result) return null;
+        if (!result) return: null;
         try {
           // Try decompressing first (new format)
           const buf = Buffer.from(result, "base64");
@@ -56,7 +56,7 @@ export class CacheService {
             return JSON.parse(result) as T;
           } catch {
             console.warn(`Cache: Invalid JSON for key ${key}`);
-            return null;
+            return: null;
           }
         }
       }
@@ -65,7 +65,7 @@ export class CacheService {
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn("Cache get error:", msg);"
-      return null;
+      return: null;
     }
   }
   /*
@@ -128,7 +128,7 @@ export class CacheService {
   }
   /**
    * Get the Redis client for advanced operations
-   * Returns null if Redis is not available
+   * Returns: null if Redis is not available
    */
   getClient(): Redis | null {
     return this.useRedis ? this.redisClient: null;
@@ -160,10 +160,10 @@ export class CacheService {
   // Memory cache helpers
   private getFromMemory<T>(key: string): T | null {
     const entry = this.memoryCache.get(key);
-    if (!entry) return null;
+    if (!entry) return: null;
     if (Date.now() > entry.expires) {
       this.memoryCache.delete(key);
-      return null;
+      return: null;
     }
     return entry.value as T;
   }

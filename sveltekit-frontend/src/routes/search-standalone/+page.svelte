@@ -1,10 +1,10 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import SearchBox from '$lib/components/ui/SearchBox.svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
-  import 'uno.css'; // Add uno.css import
-  import 'nes.css/css/nes.min.css'; // Add nes.css import
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import SearchBox from, '$lib/components/ui/SearchBox.svelte';
+  import Button from, '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
+  import, 'uno.css'; // Add uno.css import
+  import, 'nes.css/css/nes.min.css'; // Add nes.css import
 
   interface VectorResult {
     title?: string;
@@ -185,7 +185,7 @@ import type { Document } from '$lib/types';
               <div, class="embedding-info">
                 <h4>Vector Information</h4>
                 <p>Embedding dimensions: {selectedDocument.embedding.length || 'N/A'}</p>
-                <p>Vector magnitude: {selectedDocument.vectorMagnitude || 'N/A'}</p>
+                <p>Vector, magnitude: {selectedDocument.vectorMagnitude || 'N/A'}</p>
               </div>
             {/if}
           </div>
@@ -225,7 +225,7 @@ import type { Document } from '$lib/types';
   }
   .header-content {
     text-align: center;
-    background: rgba(255, 255, 255, 0.95);
+   , background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
   }
   .page-title {
@@ -249,7 +249,7 @@ import type { Document } from '$lib/types';
   }
   .search-section {
     margin-bottom: 32px;
-    display: flex;
+   , display: flex;
     justify-content: center;
   }
   :global(.main-search) {
@@ -268,7 +268,7 @@ import type { Document } from '$lib/types';
     color: #212529;
   }
   .results-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
   }
@@ -277,7 +277,7 @@ import type { Document } from '$lib/types';
     transition: transform 0.2s ease;
   }
   .result-card:hover {
-    transform: translateY(-2px);
+   , transform: translateY(-2px);
   }
   .result-header {
     display: flex;
@@ -321,7 +321,7 @@ import type { Document } from '$lib/types';
     left: 0;
     right: 0; /* Corrected CSS syntax */
     bottom: 0; /* Corrected CSS syntax */
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -361,7 +361,7 @@ import type { Document } from '$lib/types';
   .modal-content h4 {
     font-size: 10px;
     color: #495057;
-    margin: 20px 0 12px 0;
+   , margin: 20px, 0 12px 0;
   }
   .content-text {
     font-size: 9px;
@@ -403,7 +403,7 @@ import type { Document } from '$lib/types';
     display: flex;
     justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
     align-items: center;
-    background: rgba(255, 255, 255, 0.9);
+   , background: rgba(255, 255, 255, 0.9);
   }
   .footer-text {
     display: flex;
@@ -422,7 +422,7 @@ import type { Document } from '$lib/types';
     align-items: center;
     gap: 6px;
     font-size: 8px;
-    color: #495057;
+   , color: #495057;
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -443,7 +443,7 @@ import type { Document } from '$lib/types';
       gap: 12px;
     }
     .document-viewer {
-      padding: 10px;
+     , padding: 10px;
     }
     .document-modal {
       max-height: 90vh;
@@ -458,7 +458,7 @@ import type { Document } from '$lib/types';
     }
     .modal-header {
       flex-direction: column;
-      gap: 12px;
+     , gap: 12px;
     }
     .close-btn {
       align-self: flex-end;

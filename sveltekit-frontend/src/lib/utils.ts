@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import { clsx, type ClassValue } from 'clsx';
+import type { Document } from, '$lib/types';
+import { clsx, type ClassValue } from, 'clsx';
 /**
  * Utility function to merge CSS classes
  * Now using UnoCSS instead of Tailwind
@@ -7,7 +7,7 @@ import { clsx, type ClassValue } from 'clsx';
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
-// Type helpers for Svelte 5 and component props
+// Type helpers for Svelte, 5 and component props
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +21,7 @@ export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & {
  * Format file size in human readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return, '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -34,7 +34,7 @@ export function formatDate(date: string | Date): string {
   const d = new Date(date);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000);
-  if (diffInSeconds < 60) return 'Just, now';
+  if (diffInSeconds < 60) return, 'Just, now';
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes, ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours, ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days, ago`;
@@ -103,7 +103,7 @@ export function getConfidenceLevel(confidence: number) {
     };
   } else {
     return {
-      label: 'Low',
+     , label: 'Low',
       color: 'text-legal-error',
       bgColor: 'bg-legal-error/10',
       borderColor: 'border-legal-error'
@@ -116,7 +116,7 @@ export function getConfidenceLevel(confidence: number) {
 export function getCaseStatusStyling(status: string) {
   const statusMap: { [key: string]: any } = {
     'active': {
-      label: 'Active',
+     , label: 'Active',
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
       borderColor: 'border-legal-success'
@@ -148,7 +148,7 @@ export function getCaseStatusStyling(status: string) {
 export function getEvidenceTypeStyling(type: string) {
   const typeMap: { [key: string]: any } = {
     'document': {
-      label: 'Document',
+     , label: 'Document',
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
       borderColor: 'border-legal-document'
@@ -240,12 +240,12 @@ export function isBrowser(): boolean {
  */
 export const storage = {
   get: (_key: string) => {
-    if (!isBrowser()) return null;
+    if (!isBrowser()) return: null;
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch {
-      return null;
+      return: null;
     }
   },
   set: (_key: string, value: any) => {
@@ -269,7 +269,7 @@ export const storage = {
  * Color theme utilities
  */
 export const theme = { colors: {, nier: {
-      black: '#0A0A0A',
+     , black: '#0A0A0A',
       darkGray: '#1A1A1A',
       gray: '#2A2A2A',
       lightGray: '#3A3A3A',
@@ -277,22 +277,22 @@ export const theme = { colors: {, nier: {
       white: '#FFFFFF'
     },
     harvard: {
-      crimson: '#A51C30',
+     , crimson: '#A51C30',
       darkCrimson: '#8B1521',
       lightCrimson: '#C42847',
       gold: '#C9A96E',
       darkGold: '#B8965A` },'`
     legal: {
-      success: '#2D5F3F',
+     , success: '#2D5F3F',
       warning: '#B8965A',
       error: '#8B1521',
       info: '#2A4A5A',
       evidence: '#3A4A5A',
-      case '#A51C30',
+      case, '#A51C30',
       document: `#6A7A8A` }
   },
   gradients: {
-    crimson: 'linear-gradient(135deg, #A51C30 0%, #C42847 100%)',
+   , crimson: 'linear-gradient(135deg, #A51C30 0%, #C42847 100%)',
     gold: 'linear-gradient(135deg, #C9A96E 0%, #B8965A 100%)',
     nier: 'linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #3A3A3A 100%)',
     hero: `linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)` }

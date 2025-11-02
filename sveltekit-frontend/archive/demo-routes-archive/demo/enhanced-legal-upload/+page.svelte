@@ -327,7 +327,7 @@
 
 <!-- System Status Dialog -->
 {#if showSystemDialog}
-  <Dialog.Root open={showSystemDialog} onOpenChange={(open: boolean) => showSystemDialog = open}>
+  <Dialog open={showSystemDialog} onOpenChange={(open: boolean) => showSystemDialog = open}>
     <Dialog.Content class="system-status-dialog">
       <Dialog.Header>
         <Dialog.Title>🖥️ System Status</Dialog.Title>
@@ -396,12 +396,12 @@
         <button class="nes-btn" onclick={() => showSystemDialog = false}>Close</button>
       </Dialog.Footer>
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 {/if}
 
 <!-- Demo Configuration Dialog -->
 {#if showConfigDialog}
-  <Dialog.Root open={showConfigDialog} onOpenChange={(open: boolean) => showConfigDialog = open}>
+  <Dialog open={showConfigDialog} onOpenChange={(open: boolean) => showConfigDialog = open}>
     <Dialog.Content class="config-dialog">
       <Dialog.Header>
         <Dialog.Title>⚙️ Demo Configuration</Dialog.Title>
@@ -413,7 +413,7 @@
           <h4>User Settings</h4>
           <div class="form-field">
             <label for="expertise-select">Expertise Level</label>
-            <Select.Root bind:value={demoConfig.expertiseLevel}>
+            <Select bind:value={demoConfig.expertiseLevel}>
               <Select.Trigger id="expertise-select">
                 <Select.Value />
               </Select.Trigger>
@@ -423,7 +423,7 @@
                 <Select.Item value="senior">Senior Attorney</Select.Item>
                 <Select.Item value="partner">Partner</Select.Item>
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
         </div>
 
@@ -431,7 +431,7 @@
           <h4>Case Context</h4>
           <div class="form-field">
             <label for="practice-area-select">Practice Area</label>
-            <Select.Root bind:value={demoConfig.practiceArea}>
+            <Select bind:value={demoConfig.practiceArea}>
               <Select.Trigger id="practice-area-select">
                 <Select.Value />
               </Select.Trigger>
@@ -442,12 +442,12 @@
                 <Select.Item value="family">Family Law</Select.Item>
                 <Select.Item value="criminal">Criminal</Select.Item>
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
 
           <div class="form-field">
             <label for="urgency-select">Case Urgency</label>
-            <Select.Root bind:value={demoConfig.urgency}>
+            <Select bind:value={demoConfig.urgency}>
               <Select.Trigger id="urgency-select">
                 <Select.Value />
               </Select.Trigger>
@@ -457,7 +457,7 @@
                 <Select.Item value="high">High</Select.Item>
                 <Select.Item value="critical">Critical</Select.Item>
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
         </div>
 
@@ -465,7 +465,7 @@
           <h4>Interface Mode</h4>
           <div class="form-field">
             <label for="mode-select">Upload Mode</label>
-            <Select.Root bind:value={demoConfig.mode}>
+            <Select bind:value={demoConfig.mode}>
               <Select.Trigger id="mode-select">
                 <Select.Value />
               </Select.Trigger>
@@ -474,7 +474,7 @@
                 <Select.Item value="detective">Detective Mode</Select.Item>
                 <Select.Item value="evidence-board">Evidence Board</Select.Item>
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
         </div>
 
@@ -507,7 +507,7 @@
         </button>
       </Dialog.Footer>
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 {/if}
 
 <style>

@@ -3,7 +3,7 @@
  * Focus Mode Utility
  * Provides distraction-free writing experience by dimming non-essential UI elements
  */
-import { writable } from "svelte/store";
+import { writable } from, "svelte/store";
 export interface FocusSettings { dimOpacity: number;, transitionDuration: string;
   hideElements: string[];
   exemptElements: string[];
@@ -11,7 +11,7 @@ export interface FocusSettings { dimOpacity: number;, transitionDuration: strin
   enableZenMode: boolean;
 }
 export const defaultFocusSettings: FocusSettings = {
-  dimOpacity: 0.3,
+ , dimOpacity: 0.3,
   transitionDuration: "0.3s",
   hideElements: [
     ".toolbar",
@@ -31,7 +31,7 @@ export class FocusManager {
   private isActive = $state(false);
   private originalStyles: Map<Element, string> = new Map();
   private settings: FocusSettings;
-  private observer: MutationObserver | null = null;
+  private, observer: MutationObserver | null = null;
   constructor(settings: Partial<FocusSettings> = {}) {
     this.settings = { ...defaultFocusSettings, ...settings }
   }
@@ -271,7 +271,7 @@ export const focusModeStyles = `;`
     --focus-dim-opacity: 0.3;
     --focus-transition: opacity 0.3s ease;
   }
-  .focus-mode-active .focus-dim { opacity: var(--focus-dim-opacity);, transition: var(--focus-transition);
+  .focus-mode-active .focus-dim {, opacity: var(--focus-dim-opacity);, transition: var(--focus-transition);
   }
   .focus-mode-active .focus-dim: hover {
     opacity: 1;
@@ -279,7 +279,7 @@ export const focusModeStyles = `;`
   .focus-mode-active .focus-hide {
     display: none;
   }
-  .focus-mode-active .focus-exempt { opacity: 1 !important;, display: block !important;
+  .focus-mode-active .focus-exempt {, opacity: 1 !important;, display: block !important;
   }
   /* Zen mode styles */
   .focus-mode-active.zen-mode .toolbar,
@@ -294,18 +294,18 @@ export const focusModeStyles = `;`
   .focus-mode-active.zen-mode .sidebar: hover
   .focus-mode-active.zen-mode .status-bar: hover
   .focus-mode-active.zen-mode .header-actions:hover {
-    opacity: 1;
+   , opacity: 1;
     pointer-events: auto;
   }
   /* Focus indicators */
   .focus-mode-active .editor-content,
   .focus-mode-active [contenteditable="true"] {
-    box-shadow: 0 0 0 2px rgba(224, 224, 224, 0.2);
+    box-shadow: 0, 0 0 2px rgba(224, 224, 224, 0.2);
     border-radius: 8px;
   }
   /* Smooth animations */
   .focus-mode-transition {
-    transition: opacity 0.3s ease, transform 0.3s ease;
+   , transition: opacity 0.3s ease, transform 0.3s ease;
   }
 `;`
 // Utility functions for Svelte components
@@ -341,17 +341,17 @@ export const focusPresets = { minimal: {, dimOpacity: 0.7,
     hideElements: []
   },
   moderate: {
-    dimOpacity: 0.5,
+   , dimOpacity: 0.5,
     enableZenMode: false,
     hideElements: [".sidebar"]
   },
   intense: {
-    dimOpacity: 0.3,
+   , dimOpacity: 0.3,
     enableZenMode: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar"]
   },
   zen: {
-    dimOpacity: 0.1,
+   , dimOpacity: 0.1,
     enableZenMode: true,
     enableFullscreen: true,
     hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"]

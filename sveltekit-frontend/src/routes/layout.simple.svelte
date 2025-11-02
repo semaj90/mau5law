@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import '../app.css';
-  import type { Snippet } from 'svelte';
+  import, '../app.css';
+  import type { Snippet } from, 'svelte';
   interface Props {
      Snippet;
   }
@@ -28,6 +28,6 @@
     padding: 1rem;
   }
   main {
-    padding: 1rem;
+   , padding: 1rem;
   }
 </style>

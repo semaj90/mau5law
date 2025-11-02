@@ -2,18 +2,18 @@
  * EmbeddingGemma Service
  *
  * Provides:
- * - Text embedding generation using; embeddinggemma:latest
+ * - Text embedding generation using;, embeddinggemma:latest
  * - Batch embedding with caching
  * - Entity-specific embedding optimization
  * - Integration with PostgreSQL and Qdrant
  */
-import { createHash } from 'crypto';
-import { db } from '../db';
-import { contextualEmbeddings } from '../db/schema-postgres';
-import { eq, and } from 'drizzle-orm';
-import { qdrantVectorStore } from './qdrant-vector-store';
-import { cognitiveCache } from '../cache';
-import type { LegalEntity } from '$lib/types/sharedTypes';
+import { createHash } from, 'crypto';
+import { db } from, '../db';
+import { contextualEmbeddings } from, '../db/schema-postgres';
+import { eq, and } from, 'drizzle-orm';
+import { qdrantVectorStore } from, './qdrant-vector-store';
+import { cognitiveCache } from, '../cache';
+import type { LegalEntity } from, '$lib/types/sharedTypes';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const EMBEDDING_DIM = 768;
@@ -41,7 +41,7 @@ interface EmbeddingResult { embedding: number[];, dimensions: number;
 /**
  * Batch embedding result
  */
-interface BatchEmbeddingResult { embeddings: number[][];, dimensions: number;
+interface BatchEmbeddingResult {, embeddings: number[][];, dimensions: number;
   model: string;
   cachedCount: number;
   totalProcessingTime: number;
@@ -50,7 +50,7 @@ interface BatchEmbeddingResult { embeddings: number[][];, dimensions: number;
  * EmbeddingGemma Service Class
  */
 export class EmbeddingGemmaService {
-  private model: string;
+  private, model: string;
   constructor(model: string = DEFAULT_MODEL) {
     this.model = model;
   }
@@ -181,7 +181,7 @@ export class EmbeddingGemmaService {
     queryText: string,
     candidateTexts: string[],
     topK: number = 5
-  ): Promise<Array<{ text: string; score: number; index: number }>> {
+  ): Promise<Array<{ text: string; score: number;, index: number }>> {
     // Generate embeddings
     const queryResult = await this.embed(queryText);
     const candidateResults = await this.embedBatch(candidateTexts);
@@ -243,17 +243,17 @@ export class EmbeddingGemmaService {
         await cognitiveCache.storeJsonbDocument(redisKey, embedding, CACHE_TTL);
         return embedding;
       }
-      return null;
+      return: null;
     } catch (error) {
       console.error('Error reading cached embedding:', error);
-      return null;
+      return: null;
     }
   }
   /**
    * Cache embedding in PostgreSQL and Redis
    */
   private async cacheEmbedding(
-    textHash: string,
+   , textHash: string,
     text: string,
     embedding: number[],
     model: string,
@@ -308,7 +308,7 @@ export class EmbeddingGemmaService {
               value: entityValue,
               confidence: 1.0,
               span: {
-                start: 0,
+               , start: 0,
                 end: entityValue.length
               }
             },

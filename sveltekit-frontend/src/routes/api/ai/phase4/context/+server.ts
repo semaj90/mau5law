@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * API Endpoint: Context-Aware AI Chat
- * Phase 4 - AI Memory Integration
+ * Phase, 4 - AI Memory Integration
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { contextAwareMemory } from '$lib/services/context-aware-ai-memory';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { contextAwareMemory } from, '$lib/services/context-aware-ai-memory';
+import { json } from, '@sveltejs/kit';
 
 // Local expected shape for the contextual AI response (safe guards)
 type ExpectedAIResponse = {
@@ -29,15 +29,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // Get contextual AI response (unknown shape)
     const raw = await contextAwareMemory.getContextualAIResponse(caseId, query, consoleTheme);
 
-    // Normalize into a safe typed object for guarded access (avoid `any`)
+    // Normalize into a safe typed: object for guarded access (avoid `any`)
     // Treat the raw response as a Record<string, unknown> so we can inspect additional
     // properties (like `text` or `data`) without using `any`.
-    // First cast to unknown, then to Record<string, unknown> to satisfy TypeScript
+    // First cast to: unknown, then to Record<string, unknown> to satisfy TypeScript
     const rawObj: Record<string, unknown> =
-      raw && typeof raw === 'object' ? (raw as unknown as Record<string, unknown>) : {};
+      raw && typeof raw === 'object' ? (raw as: unknown as Record<string, unknown>) : {};
 
     // Keep a typed view for known fields; we still read alternates from rawObj.
-    const ai = rawObj as unknown as ExpectedAIResponse;
+    const ai = rawObj as: unknown as ExpectedAIResponse;
 
     // Safely extract response text (support several possible property names)
     let respText = '';
@@ -53,16 +53,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Safely extract arrays and coerce/filter to expected element types
     const contextUsed = Array.isArray(ai.contextUsed)
-      ? (ai.contextUsed.filter(v => typeof v === 'string') as string[])
+      ? (ai.contextUsed.filter(v => typeof v === 'string') as: string[])
       : [];
 
     const confidence = typeof ai.confidence === 'number' ? ai.confidence : 0;
 
     const suggestions = Array.isArray(ai.suggestions)
-      ? (ai.suggestions.filter(v => typeof v === 'string') as string[])
+      ? (ai.suggestions.filter(v => typeof v === 'string') as: string[])
       : [];
 
-    const gameElements = Array.isArray(ai.gameElements) ? (ai.gameElements as unknown[]) : [];
+    const gameElements = Array.isArray(ai.gameElements) ? (ai.gameElements as: unknown[]) : [];
 
     // Use updateMemory flag at least by logging and returning it in processing info
     console.log(`updateMemory flag for case ${caseId}: ', Boolean(updateMemory));'`
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
         gameElements,
         timestamp: new Date().toISOString(),
         processingInfo: {
-          service: 'context-aware-ai-memory',
+         , service: 'context-aware-ai-memory',
           version: '1.0.0',
           memoryLoaded: true,
           memoryUpdated: Boolean(updateMemory),

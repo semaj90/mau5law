@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /// <reference, types="vite/client" />
-import crypto from 'crypto';
-import { json, error } from '@sveltejs/kit';
+import crypto from, 'crypto';
+import { json, error } from, '@sveltejs/kit';
 // Archived non-essential handlers preserved for reference/reuse
 // Moved out of +server.ts to keep the active endpoint lean and focused.
-import { librarySyncService } from '$lib/services/library-sync-service';
-// TODO: Fix import - // Orphaned; content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
+import { librarySyncService } from, '$lib/services/library-sync-service';
+// TODO: Fix import - // Orphaned;, content: import { error, json  // Local copy of backend config and forwarder to keep this module self-contained
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || 'http://localhost:8000';
 const RAG_TIMEOUT = 30000;
 
@@ -45,7 +45,7 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
         agentType: 'rag',
         operation: '${options.method || 'GET` } ${endpoint}`,
         input: { endpoint, options: { ...options, signal: undefined } },
-        output: { error: errorText, status: response.status },
+        output: {, error: errorText, status: response.status },
         duration,
         success: false,
         error: `HTTP ${response.status}: ${errorText}' });'`
@@ -58,7 +58,7 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
       agentType: 'rag',
       operation: '${options.method || 'GET' } ${endpoint}`,'`
       input: { endpoint, options: { ...options, signal: undefined } },
-      output: { success: true, resultKeys: Object.keys(result || {}) },
+      output: {, success: true, resultKeys: Object.keys(result || {}) },
       duration,
       success: true
     });
@@ -72,7 +72,7 @@ async function forwardToRAGBackend(endpoint: string, options: RequestInit = {}):
       agentType: 'rag',
       operation: '${options.method || 'GET' } ${endpoint}`,'`
       input: { endpoint, options: { ...options, signal: undefined } },
-      output: { error: errorMessage(err) },
+      output: {, error: errorMessage(err) },
       duration,
       success: false,
       error: errorMessage(err)
@@ -89,9 +89,9 @@ export async function handleUpload(request: Request): Promise<Response> {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const title = formData.get('title') as string | null;
-    const documentType = formData.get('documentType') as string | null;
-    const caseId = formData.get('caseId') as string | null;
+    const title = formData.get('title') as: string | null;
+    const documentType = formData.get('documentType') as: string | null;
+    const caseId = formData.get('caseId') as: string | null;
     if (!file) {
       throw error(400, 'No file provided');
     }
@@ -194,10 +194,10 @@ export async function handleChat(request: Request): Promise<Response> {
 }
 
 type PGaiSummary = { summary: string;, key_points: string[];
-  entities: Record<string, string[]>;
+ , entities: Record<string, string[]>;
   legal_issues: string[];
   risk_level: 'low' | 'medium' | 'high';
-  recommended_actions: string[];
+ , recommended_actions: string[];
 };
 
 export async function handlePgaiProcess(request: Request): Promise<Response> {
@@ -233,7 +233,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
       })
     });
     const resultJson = (await response.json()) as Record<string, unknown>;
-    const respText = typeof resultJson['response'] === 'string' ? (resultJson['response'] as string) : undefined;
+    const respText = typeof resultJson['response'] === 'string' ? (resultJson['response'] as: string) : undefined;
 
     let parsedResult: PGaiSummary | string | Record<string, unknown>;
     if (typeof respText === 'string') {
@@ -244,7 +244,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
       }
     } else {
       parsedResult = {
-        summary: typeof resultJson['response'] === 'string' ? (resultJson['response'] as string) : '',
+        summary: typeof resultJson['response'] === 'string' ? (resultJson['response'], as: string) : '',
         key_points: [],
         entities: {},
         legal_issues: [],
@@ -254,7 +254,7 @@ export async function handlePgaiProcess(request: Request): Promise<Response> {
     }
 
     return json({
-      success: true,
+     , success: true,
       data: {
        , document_id: documentId,
         summary: parsedResult,
@@ -281,7 +281,7 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<Respon
         model,
         prompt: `${prompt}\n\nDocument, content: ${content.substring(0, 4000)}`,
         options: {
-          temperature: 0.2,
+         , temperature: 0.2,
           num_predict: 2000
         }
       })
@@ -308,7 +308,7 @@ export async function handlePgaiComparison(request: Request): Promise<Response> 
       headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
-        prompt: `Compare these two legal documents and provide a detailed; analysis:`
+        prompt: `Compare these two legal documents and provide a detailed;, analysis:`
 Document, 1: ${document1.substring(0, 2000)}
 Document 2: ${document2.substring(0, 2000)}
 Provide analysis covering:
@@ -317,7 +317,7 @@ Provide analysis covering:
 3. Risk assessment
 4. Recommendations`,`
         options: {
-          temperature: 0.3,
+         , temperature: 0.3,
           num_predict: 2500
         }
       })
@@ -347,7 +347,7 @@ export async function handlePgaiExtraction(request: Request): Promise<Response> 
         prompt: `${extractionPrompt}`
 Document, content: ${content.substring(0, 4000)}`,`
         options: {
-          temperature: 0.1,
+         , temperature: 0.1,
           num_predict: 1500
         }
       })

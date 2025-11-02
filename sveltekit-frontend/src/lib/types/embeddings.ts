@@ -9,7 +9,7 @@ export interface EmbeddingRequest {
   metadata?: EmbeddingMetadata;
 }
 export interface EmbeddingResponse {
-  success: boolean;
+ , success: boolean;
   embedding?: number[];
   error?: string;
   metadata?: EmbeddingMetadata;
@@ -29,14 +29,14 @@ export interface BatchEmbeddingRequest {
   texts: string[];
   model?: string;
   startTime?: number;
-  documents?: VectorDocument[]; // use VectorDocument instead of any
+  documents?: VectorDocument[]; // use VectorDocument instead of: any
   options?: {
     batchSize?: number;
     maxConcurrent?: number;
   };
 }
-export interface TextPreprocessingResult { cleanText: string;, tokens: string[];
-  metadata: { originalLength: number;, cleanedLength: number;
+export interface TextPreprocessingResult {, cleanText: string;, tokens: string[];
+  metadata: {, originalLength: number;, cleanedLength: number;
     tokenCount: number;
     hasSpecialChars: boolean;
   }
@@ -48,13 +48,13 @@ export interface WASMEmbeddingConfig {
   memoryLimit?: number;
   enableGPU?: boolean;
 }
-export interface BatchEmbeddingResponse { success: boolean;, results: EmbeddingResponse[]; // concrete response items instead of any
-  summary: { total: number;, successful: number;
+export interface BatchEmbeddingResponse {, success: boolean;, results: EmbeddingResponse[]; // concrete response items instead of: any
+  summary: {, total: number;, successful: number;
     failed: number;
     processingTime: string;
   };
 }
-export interface VectorDocument { id: string;, content: string;
+export interface VectorDocument {, id: string;, content: string;
   embedding: number[];
   metadata: {
     title?: string;
@@ -71,11 +71,11 @@ export interface SimilaritySearchOptions {
   documentType?: string;
   includeContent?: boolean;
 }
-export interface SimilaritySearchResult { id: string;, documentId: string;
+export interface SimilaritySearchResult {, id: string;, documentId: string;
   title?: string;
   documentType?: string;
   content?: string;
-  distance: number;
+ , distance: number;
   similarity?: number;
   metadata?: Record<string, unknown>;
   createdAt?: string;

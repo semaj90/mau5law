@@ -14,7 +14,7 @@
  * @module mcp-simd-parser
  */
 
-import type { MCPConfig } from '$lib/types/mcp-config';
+import type { MCPConfig } from, '$lib/types/mcp-config';
 
 /**
  * Structured error metadata extracted from diagnostics
@@ -22,9 +22,9 @@ import type { MCPConfig } from '$lib/types/mcp-config';
 export interface ErrorMetadata {
   /** Absolute file path where error occurred */
   filePath: string;
-  /** Line number (1-indexed) */
+  /**, Line: number (1-indexed) */
   line: number;
-  /** Column number (1-indexed) */
+  /**, Column: number (1-indexed) */
   column: number;
   /** Error code (e.g., TS2304, TS1005) */
   errorCode: string;
@@ -73,7 +73,7 @@ export interface ParsingMetrics {
   /** SIMD instructions executed */
   simdOpsCount: number;
   /** Memory usage in bytes */
-  memoryUsed: number;
+ , memoryUsed: number;
 }
 
 /**
@@ -113,7 +113,7 @@ export class MCPSIMDParser {
   private config: SIMDParserConfig;
   private mcpServerUrl: string;
   private metrics: ParsingMetrics;
-  private initialized: boolean = $state(false);
+  private, initialized: boolean = $state(false);
 
   constructor(config: Partial<SIMDParserConfig> = {}) {
     // Default configuration from mcp-multicore-config.json
@@ -129,7 +129,7 @@ export class MCPSIMDParser {
     this.mcpServerUrl = 'http://localhost:3000/mcp';
 
     this.metrics = {
-      totalErrors: 0,
+     , totalErrors: 0,
       parseTimeMs: 0,
       throughput: 0,
       coresUsed: 0,
@@ -174,7 +174,7 @@ export class MCPSIMDParser {
    *
    * @example
    * ```typescript`
-   * const buildLog = await execSync('npm run check:ultra-fast 2>&1').toString();
+   * const buildLog = await execSync('npm run, check:ultra-fast 2>&1').toString();
    * const errors = await parser.parseViteErrors(buildLog);
    * ```
    */
@@ -344,10 +344,10 @@ export class MCPSIMDParser {
    */
   private normalizeSeverity(severity?: string): 'error' | 'warning' | 'info' | 'hint' {
     const normalized = (severity || 'error').toLowerCase();
-    if (['error', 'err'].includes(normalized)) return 'error';
-    if (['warning', 'warn'].includes(normalized)) return 'warning';
-    if (['info', 'information'].includes(normalized)) return 'info';
-    return 'hint';
+    if (['error', 'err'].includes(normalized)) return, 'error';
+    if (['warning', 'warn'].includes(normalized)) return, 'warning';
+    if (['info', 'information'].includes(normalized)) return, 'info';
+    return, 'hint';
   }
 
   /**
@@ -360,25 +360,25 @@ export class MCPSIMDParser {
     const code = (error.code || '').toLowerCase();
 
     // TypeScript error codes
-    if (code.includes('ts1005') || message.includes('expected')) return 'syntax-error';
-    if (code.includes('ts2304') || message.includes('cannot find name')) return 'undefined-variable';
-    if (code.includes('ts2307') || message.includes('cannot find module')) return 'import-error';
-    if (code.includes('ts2322') || message.includes('not assignable')) return 'incompatible-types';
-    if (code.includes('ts7016') || message.includes('no declaration')) return 'missing-declaration';
+    if (code.includes('ts1005') || message.includes('expected')) return, 'syntax-error';
+    if (code.includes('ts2304') || message.includes('cannot find name')) return, 'undefined-variable';
+    if (code.includes('ts2307') || message.includes('cannot find module')) return, 'import-error';
+    if (code.includes('ts2322') || message.includes('not assignable')) return, 'incompatible-types';
+    if (code.includes('ts7016') || message.includes('no declaration')) return, 'missing-declaration';
 
     // Svelte-specific errors
-    if (message.includes('svelte') || error.file?.includes('.svelte')) return 'svelte-specific';
+    if (message.includes('svelte') || error.file?.includes('.svelte')) return, 'svelte-specific';
 
     // Build errors
-    if (message.includes('build') || message.includes('compile')) return 'build-error';
+    if (message.includes('build') || message.includes('compile')) return, 'build-error';
 
     // Module resolution
-    if (message.includes('resolve') || message.includes('module')) return 'module-resolution';
+    if (message.includes('resolve') || message.includes('module')) return, 'module-resolution';
 
     // Type errors
-    if (message.includes('type') || code.includes('ts2')) return 'type-error';
+    if (message.includes('type') || code.includes('ts2')) return, 'type-error';
 
-    return 'unknown';
+    return, 'unknown';
   }
 
   /**
@@ -391,12 +391,12 @@ export class MCPSIMDParser {
     const code = (error.code || '').toLowerCase();
     const file = (error.file || '').toLowerCase();
 
-    if (code.startsWith('ts') || message.includes('typescript')) return 'typescript';
-    if (file.includes('.svelte') || message.includes('svelte')) return 'svelte';
-    if (message.includes('vite') || message.includes('build')) return 'vite';
-    if (message.includes('eslint') || code.includes('eslint')) return 'eslint';
+    if (code.startsWith('ts') || message.includes('typescript')) return, 'typescript';
+    if (file.includes('.svelte') || message.includes('svelte')) return, 'svelte';
+    if (message.includes('vite') || message.includes('build')) return, 'vite';
+    if (message.includes('eslint') || code.includes('eslint')) return, 'eslint';
 
-    return 'custom';
+    return, 'custom';
   }
 
   /**
@@ -409,7 +409,7 @@ export class MCPSIMDParser {
 
     const errorPattern = /^(.+?)\((\d+),(\d+)\):\s*(error|warning)\s+([A-Z0-9]+):\s*(.+)$/gm;
     const errors: ErrorMetadata[] = [];
-    let match: RegExpExecArray | null;
+    let, match: RegExpExecArray | null;
 
     while ((match = errorPattern.exec(buildLog)) !== null) {
       errors.push({
@@ -464,7 +464,7 @@ export class MCPSIMDParser {
    *
    * @returns Server health status
    */
-  async healthCheck(): Promise<{ healthy: boolean; message: string }> {
+  async healthCheck(): Promise<{ healthy: boolean;, message: string }> {
     try {
       const response = await fetch(`${this.mcpServerUrl}/health`, {
         method: 'GET' });

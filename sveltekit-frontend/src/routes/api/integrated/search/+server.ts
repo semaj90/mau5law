@@ -1,16 +1,16 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Integrated Search Endpoint
  * Semantic search across pgvector + Qdrant with recommendations
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 import {
   initializeIntegratedRAG,
   searchSimilarDocuments,
   getDocumentRecommendations
-} from '$lib/server/services/integrated-rag-service';
+} from, '$lib/server/services/integrated-rag-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     let results: any[] = [];
-    let recommendations: any[] = [];
+    let, recommendations: any[] = [];
 
     // Text-based semantic search
     if (query) {
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunkIndex: r.metadata?.chunkIndex
       })),
       recommendations: recommendations.map(r => ({
-        filename: r.filename,
+       , filename: r.filename,
         similarity: Math.round(r.similarity * 100) / 100
       })),
       count: results.length + recommendations.length

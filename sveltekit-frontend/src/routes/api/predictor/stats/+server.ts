@@ -1,8 +1,8 @@
 // Predictor statistics and monitoring endpoint
 // Provides real-time metrics for Redis cache and prediction performance
-import { json } from '@sveltejs/kit'
-import { predictor } from '$lib/server/chrrom/predictor.js'
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit'
+import { predictor } from, '$lib/server/chrrom/predictor.js'
+import type { RequestHandler } from, './$types';
 
 interface PredictorStats { lastSync: number;, totalTransitions: number;
   uniqueActions: number;
@@ -12,7 +12,7 @@ interface PredictorStats { lastSync: number;, totalTransitions: number;
   [key: string]: any;
 }
 
-// New: typed shape for CUDA/SIMD service response (avoid `any`)
+//, New: typed shape for CUDA/SIMD service response (avoid `any`)
 type CudaStats = {
   simd_capabilities?: Record<string, unknown>;
   gpu_capabilities?: Record<string, unknown>;
@@ -32,7 +32,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await predictor.cleanup();
       // Note: This would restart the predictor instance
       return json({
-        success: true,
+       , success: true,
         message: 'Hard reset completed - all data cleared',
         resetType: 'hard',
         timestamp: Date.now()
@@ -100,13 +100,13 @@ export const GET: RequestHandler = async ({ url }) => {
         uniqueActions: stats.uniqueActions || 0,
         pendingUpdates: stats.pendingUpdates || 0,
         performance: {
-          transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
+         , transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
           uptimeMs: uptime,
           memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated)
         }
       },
       cache: {
-        enabled: !!stats.cacheEnabled,
+       , enabled: !!stats.cacheEnabled,
         connected: !!stats.redisConnected,
         lastSync: stats.lastSync || 0,
         syncAge: Date.now() - (stats.lastSync || Date.now()),
@@ -116,15 +116,15 @@ export const GET: RequestHandler = async ({ url }) => {
         cudaAvailable,
         simdCapabilities: cudaStats?.simd_capabilities ?? null,
         gpuCapabilities: cudaStats?.gpu_capabilities ?? null,
-        estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second as number) || 0
+        estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second, as: number) || 0
       },
       health: {
-        status: determineHealthStatus(stats, cudaAvailable),
+       , status: determineHealthStatus(stats, cudaAvailable),
         redisLatency: stats.redisConnected ? 'low' : 'n/a',
         predictionAccuracy: 'high',
         cacheHitRate: stats.redisConnected ? 'high' : `n/a` },
       integration: {
-        postgresqlReady: true,
+       , postgresqlReady: true,
         pgvectorEnabled: true,
         embeddinggemmaReady: cudaAvailable,
         simdAcceleration: !!(
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Failed to retrieve stats',
         timestamp: Date.now(),
         fallback: {
-          status: 'error',
+         , status: 'error',
           message: error instanceof Error ? error.message : `Unknown error` }
       },
       { status: 500 }
@@ -165,13 +165,13 @@ function determineHealthStatus(
   cudaAvailable: boolean
 ): 'excellent' | 'good' | 'degraded' | 'poor' {
   if (stats.redisConnected && cudaAvailable && (stats.totalTransitions || 0) > 0) {
-    return 'excellent';
+    return, 'excellent';
   }
   if (stats.redisConnected && (stats.totalTransitions || 0) > 0) {
-    return 'good';
+    return, 'good';
   }
   if (!stats.redisConnected && (stats.totalTransitions || 0) > 0) {
-    return 'degraded';
+    return, 'degraded';
   }
-  return 'poor';
+  return, 'poor';
 }

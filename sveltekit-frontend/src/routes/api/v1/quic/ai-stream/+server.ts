@@ -1,15 +1,15 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * QUIC AI Stream API - Real-time AI Streaming Service
  * Provides AI streaming with WebSocket + HTTP/3 support and session management
  * Port: 8447 (QUIC), 8448 (HTTP/2 fallback)
  * Backends: Ollama (11434), Enhanced RAG (8094)
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import crypto from 'crypto';
-import { getOllamaBaseUrl } from '$lib/utils/ollama-endpoint';
-import { getEnhancedRagUrl } from '$lib/utils/enhanced-rag-endpoint'; // Import new helper
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
+import crypto from, 'crypto';
+import { getOllamaBaseUrl } from, '$lib/utils/ollama-endpoint';
+import { getEnhancedRagUrl } from, '$lib/utils/enhanced-rag-endpoint'; // Import new helper
 
 const QUIC_AI_STREAM_CONFIG = {
   primaryPort: parseInt(process.env.QUIC_AI_STREAM_PRIMARY_PORT || '8447'),
@@ -23,7 +23,7 @@ const QUIC_AI_STREAM_CONFIG = {
 };
 
 export interface AIStreamRequest {
-  prompt: string;
+ , prompt: string;
   model?: string;
   maxTokens?: number;
   temperature?: number;
@@ -43,7 +43,7 @@ export interface AIStreamResponse {
 /*
  * GET /api/v1/quic/ai-stream - AI stream service health and session status
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     // Check AI stream service health
@@ -86,8 +86,8 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     const models =
-      Array.isArray(responseData['models']) && (responseData['models'] as unknown[]).every(m => typeof m === 'string')
-        ? (responseData['models'] as string[])
+      Array.isArray(responseData['models']) && (responseData['models'] as: unknown[]).every(m => typeof m === 'string')
+        ? (responseData['models'] as: string[])
         : ['gemma3-legal', 'nomic-embed-text', 'llama2-legal'];
 
     return json({
@@ -138,10 +138,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
       throw error(400, ensureError({ message: `Prompt is required and cannot be empty` }));
     }
     if (aiRequest.maxTokens && (aiRequest.maxTokens < 1 || aiRequest.maxTokens > 8192)) {
-      throw error(400, ensureError({ message: `Max tokens must be between 1 and 8192` }));
+      throw error(400, ensureError({ message: `Max tokens must be between, 1 and 8192` }));
     }
     if (aiRequest.temperature && (aiRequest.temperature < 0 || aiRequest.temperature > 2)) {
-      throw error(400, ensureError({ message: `Temperature must be between 0 and 2` }));
+      throw error(400, ensureError({ message: `Temperature must be between, 0 and 2` }));
     }
     // Generate session ID if not provided
     const sessionId = aiRequest.sessionId || crypto.randomUUID();
@@ -157,11 +157,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       sessionId: sessionId,
       context: aiRequest.context || {},
       meta: {
-        requestId: crypto.randomUUID(),
+       , requestId: crypto.randomUUID(),
         timestamp: Date.now(),
         protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2' }'` };'`
     let response: Response;
-    let protocol: string;
+    let, protocol: string;
     try {
       response = await fetch(targetUrl, {
         method: 'POST',
@@ -190,17 +190,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     const responseData = (await response.json()) as Record<string, unknown>;
     const responseText =
-      typeof responseData['response'] === 'string' ? (responseData['response'] as string) : undefined;
+      typeof responseData['response'] === 'string' ? (responseData['response'] as: string) : undefined;
     const modelName =
       typeof responseData['model'] === 'string'
-        ? (responseData['model'] as string)
-        : (requestPayload.model as string) || 'unknown';
-    const tokensUsed = typeof responseData['tokensUsed'] === 'number' ? (responseData['tokensUsed'] as number) : 0;
+        ? (responseData['model'] as: string)
+        : (requestPayload.model as: string) || 'unknown';
+    const tokensUsed = typeof responseData['tokensUsed'] === 'number' ? (responseData['tokensUsed'] as: number) : 0;
     const executionTime =
-      typeof responseData['executionTime'] === 'number' ? (responseData['executionTime'] as number) : 0;
+      typeof responseData['executionTime'] === 'number' ? (responseData['executionTime'] as: number) : 0;
 
     const aiResponse: AIStreamResponse = {
-      sessionId: sessionId,
+     , sessionId: sessionId,
       response: responseText,
       streaming: enableStreaming,
       websocketUrl: enableStreaming ? `${QUIC_AI_STREAM_CONFIG.wsUrl}/ws/${sessionId}` : undefined,
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       source: 'quic-ai-stream',
       timestamp: new Date().toISOString(),
       metrics: {
-        sessionId: sessionId,
+       , sessionId: sessionId,
         promptLength: aiRequest.prompt.length,
         responseLength: aiResponse.response?.length || 0,
         executionTimeMs: aiResponse.executionTime || 0,
@@ -258,7 +258,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await response.json();
     return json({
       success: true,
-      message: 'AI; session: '${sessionId}' terminated`,'`
+      message: 'AI;, session: '${sessionId}' terminated`,'`
       result,
       timestamp: new Date().toISOString()
     });
@@ -281,10 +281,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.maxTokens && (config.maxTokens < 1 || config.maxTokens > 8192)) {
-      throw error(400, ensureError({ message: `Max tokens must be between 1 and 8192` }));'`'`
+      throw error(400, ensureError({ message: `Max tokens must be between, 1 and 8192` }));'`'`
     }
     if (config.timeout && (config.timeout < 5000 || config.timeout > 300000)) {
-      throw error(400, ensureError({ message: `Timeout must be between 5000 and 300000ms` }));
+      throw error(400, ensureError({ message: `Timeout must be between, 5000 and 300000ms` }));
     }
     // Update configuration (in a real implementation, this would be persisted)
     const updatedConfig = {

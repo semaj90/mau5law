@@ -11,30 +11,30 @@ export type OllamaOptions = {
   // Add more options as needed per Ollama spec
   [key: string]: any;
 };
-export interface OllamaGenerateRequest { model: string;, prompt: string;
+export interface OllamaGenerateRequest {, model: string;, prompt: string;
   stream?: boolean;
   options?: OllamaOptions;
 }
-export interface OllamaGenerateResponse { model: string;, created_at: string;
+export interface OllamaGenerateResponse {, model: string;, created_at: string;
   response: string;
   done: boolean;
 }
-export interface OllamaChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
+export interface OllamaChatMessage {, role: 'system' | 'user' | 'assistant';, content: string;
 }
-export interface OllamaChatRequest { model: string;, messages: OllamaChatMessage[];
+export interface OllamaChatRequest {, model: string;, messages: OllamaChatMessage[];
   stream?: boolean;
   options?: OllamaOptions;
 }
-export interface OllamaChatResponseChunk { model: string;, created_at: string;
+export interface OllamaChatResponseChunk {, model: string;, created_at: string;
   message?: OllamaChatMessage;
   done: boolean;
 }
-export interface OllamaEmbeddingsRequest { model: string;, prompt: string;
+export interface OllamaEmbeddingsRequest {, model: string;, prompt: string;
 }
 export interface OllamaEmbeddingsResponse {
-  embedding: number[];
+ , embedding: number[];
 }
-import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
+import { getOllamaEndpoint } from, '$lib/services/get-ollama-endpoint';
 function getDefaultHost(): string {
   // Delegate host resolution to the centralized helper which prefers Vite env,
   // Node env and falls back to localhost. This keeps client/server behavior consistent.

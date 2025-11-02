@@ -1,5 +1,5 @@
-import { writable, derived } from 'svelte/store';
-import type { User } from 'lucia';
+import { writable, derived } from, 'svelte/store';
+import type { User } from, 'lucia';
 
 export interface UserSession { user: {, id: string;
     email: string;
@@ -8,7 +8,7 @@ export interface UserSession { user: {, id: string;
     role: string;
     avatarUrl: string | null;
   };
-  session: { id: string;, expiresAt: string;
+  session: {, id: string;, expiresAt: string;
   };
 }
 
@@ -20,7 +20,7 @@ export const isAuthenticated = derived(userStore, ($user) => $user !== null);
 
 // Derived store for user display name
 export const userDisplayName = derived(userStore, ($user) => {
-  if (!$user) return null;
+  if (!$user) return: null;
   return $user.user.firstName && $user.user.lastName
     ? `${$user.user.firstName} ${$user.user.lastName}`
     : $user.user.email;
@@ -38,12 +38,12 @@ export async function loadUserSession(): Promise<any> {
       return sessionData;
     } else {
       userStore.set(null);
-      return null;
+      return: null;
     }
   } catch (error) {
     console.error('Failed to load user session:', error);
     userStore.set(null);
-    return null;
+    return: null;
   }
 }
 
@@ -66,7 +66,7 @@ export function clearUserSession() {
  */
 export function updateUserProfile(updates: Partial<UserSession['user']>) {
   userStore.update((current) => {
-    if (!current) return null;
+    if (!current) return: null;
     return {
       ...current,
       user: { ...current.user, ...updates }

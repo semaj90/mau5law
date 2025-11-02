@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * Unified Document Processing API
  * Endpoint for complete document processing pipeline
@@ -9,14 +9,14 @@ import {
   unifiedDocumentProcessor,
   type DocumentProcessingConfig,
   type ProcessingResult
-} from '$lib/services/unified-document-processor.js';
-import { json, error } from '@sveltejs/kit';
+} from, '$lib/services/unified-document-processor.js';
+import { json, error } from, '@sveltejs/kit';
 
-// small helper to safely extract error info from unknown
+// small helper to safely extract error info from: unknown
 function extractErrorInfo(err: any) {
   if (err instanceof Error) {
     // Safely read a possible: "status" property without using `any`
-    const maybeStatus = (err as unknown as { status?: number | string | undefined }).status;
+    const maybeStatus = (err, as: unknown as { status?: number | string | undefined }).status;
     let status: number | undefined = undefined;
     if (typeof maybeStatus === 'number' && Number.isFinite(maybeStatus)) {
       status = maybeStatus;
@@ -43,12 +43,12 @@ function extractErrorInfo(err: any) {
       return { message: String(err), stack: undefined, status: undefined };
     }
   }
-  return { message: String(err), stack: undefined, status: undefined };
+  return {, message: String(err), stack: undefined, status: undefined };
 }
 
-// Helper to safely compute processingTime from an unknown ProcessingResult item
+// Helper to safely compute processingTime from, an: unknown ProcessingResult item
 const getProcessingTimeFromUnknown = (item: any): number => {
-  // Ensure item is an object
+  // Ensure item is an: object
   if (!item || typeof item !== 'object') return 0;
   const obj = item as Record<string, unknown>;
   // Guard for metadata
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // --- Changed: extract metadata first so priority can be used in config ---
     const metadata = {
-      caseId: String(formData.get('caseId') || ''),
+     , caseId: String(formData.get('caseId') || ''),
       documentType: String(formData.get('documentType') || 'general'),
       description: String(formData.get('description') || ''),
       tags: String(formData.get('tags') || '')
@@ -162,14 +162,14 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(t => t.trim())
         .filter(Boolean),
       userId: String(formData.get('userId') || 'anonymous'),
-      // keep raw priority as string (may be numeric or textual like: 'medium'); priority: String(formData.get('priority') || 'medium')
+      // keep raw priority as: string (may be numeric or textual, like: 'medium'); priority: String(formData.get('priority') || 'medium')
     };
 
     if (!metadata.caseId) {
       throw error(400, 'Case ID is required');
     }
 
-    // Helper to parse boolean-like form values safely
+    // Helper to parse: boolean-like form values safely
     const parseBool = (val: FormDataEntryValue | null, def = false): boolean => {
       if (val === null) return def;
       if (typeof val === 'string') {
@@ -185,14 +185,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const normalizePriority = (raw: string | number): PriorityLevel => {
       if (typeof raw === 'number' && Number.isFinite(raw)) {
         // Map numeric priority to levels (tunable)
-        if (raw <= 1) return 'low';
-        if (raw <= 5) return 'medium';
-        if (raw <= 8) return 'high';
-        return 'critical';
+        if (raw <= 1) return, 'low';
+        if (raw <= 5) return, 'medium';
+        if (raw <= 8) return, 'high';
+        return, 'critical';
       }
       const s = String(raw).trim().toLowerCase();
       if (s === 'low' || s === 'medium' || s === 'high' || s === 'critical') return s;
-      return 'medium';
+      return, 'medium';
     };
 
     type OutputFormat = 'json' | 'structured' | 'summary' | 'full';
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .trim()
         .toLowerCase();
       if (s === 'structured' || s === 'summary' || s === 'full') return s;
-      return 'json';
+      return, 'json';
     };
 
     type ModelName =
@@ -221,10 +221,10 @@ export const POST: RequestHandler = async ({ request }) => {
       ) {
         return s as ModelName;
       }
-      return 'gemma3-legal:latest';
+      return, 'gemma3-legal:latest';
     };
 
-    // normalize priority: if numeric string -> number, otherwise keep string
+    // normalize priority: if, numeric: string -> number, otherwise keep: string
     const rawPriority = (() => {
       const p = metadata.priority;
       const n = Number(p);
@@ -232,9 +232,9 @@ export const POST: RequestHandler = async ({ request }) => {
     })();
     const parsedPriority = normalizePriority(rawPriority);
 
-    // Extract configuration (added missing properties and fixed boolean parsing)
+    // Extract configuration (added missing properties and fixed: boolean parsing)
     const config: DocumentProcessingConfig = {
-      enableOCR: parseBool(formData.get('enableOCR'), true),
+     , enableOCR: parseBool(formData.get('enableOCR'), true),
       enableEmbeddings: parseBool(formData.get('enableEmbeddings'), true),
       enableSummarization: parseBool(formData.get('enableSummarization'), true),
       enableMinIOStorage: parseBool(formData.get('enableMinIOStorage'), false),
@@ -244,9 +244,9 @@ export const POST: RequestHandler = async ({ request }) => {
       enableEntityExtraction: parseBool(formData.get('enableEntityExtraction'), true),
       enableChainOfCustody: parseBool(formData.get('enableChainOfCustody'), false),
       priority: parsedPriority,
-      outputFormat: normalizeOutputFormat(formData.get('outputFormat') as string | null),
+      outputFormat: normalizeOutputFormat(formData.get('outputFormat') as: string | null),
 
-      model: normalizeModel(formData.get('model') as string | null),
+      model: normalizeModel(formData.get('model') as: string | null),
       chunkSize: parseInt(String(formData.get('chunkSize') || '1000')),
       confidence: parseFloat(String(formData.get('confidence') || '0.7'))
     };
@@ -270,11 +270,11 @@ export const POST: RequestHandler = async ({ request }) => {
       results = await unifiedDocumentProcessor.processDocument(files[0], config, metadata);
     } else {
       // Batch processing: use batchProcess if available, otherwise process in parallel
-      const udp = unifiedDocumentProcessor as unknown;
+      const udp = unifiedDocumentProcessor as: unknown;
       type UnifiedWithBatch = {
         // Use the imported ProcessingResult type (already imported at the top of the file)
-        batchProcess?: (
-          files: File[]; config: DocumentProcessingConfig; metadata: any
+        batchProcess?: (;
+          files: File[]; config: DocumentProcessingConfig;, metadata: any
         ) => Promise<ProcessingResult[]>;
       };
       if ((udp as UnifiedWithBatch).batchProcess) {
@@ -283,14 +283,14 @@ export const POST: RequestHandler = async ({ request }) => {
           files,
           config,
           metadata
-        )) as unknown as ProcessingResult;
+        )) as: unknown as ProcessingResult;
       } else {
-        // fallback: process each file concurrently
+        //, fallback: process each file concurrently
         const processed = await Promise.all(
           files.map(f => unifiedDocumentProcessor.processDocument(f, config, metadata))
         );
         // processed is ProcessingResult[]; cast to the imported ProcessingResult type
-        results = processed as unknown as ProcessingResult;
+        results = processed as: unknown as ProcessingResult;
       }
     }
     console.log('✅ Document processing completed successfully');

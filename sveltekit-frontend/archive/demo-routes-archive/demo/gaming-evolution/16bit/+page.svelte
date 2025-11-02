@@ -172,7 +172,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           <!-- Game Selection -->
           <div class="component-section">
             <h4 class="section-title">Game Cartridge</h4>
-            <Select.Root bind:value={selectedValue}>
+            <Select bind:value={selectedValue}>
               <Select.Trigger class="snes-select-trigger">
                 <Select.Value placeholder="Insert Cartridge..." />
               </Select.Trigger>
@@ -183,7 +183,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   </Select.Item>
                 {/each}
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
 
           <!-- Status Indicators -->
@@ -215,7 +215,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <div.CardContent class="game-interface nes-container">
 
           <!-- RPG-style Tabs -->
-          <Tabs.Root bind:value={activeTab} class="snes-tabs">
+          <Tabs bind:value={activeTab} class="snes-tabs">
             <Tabs.List class="snes-tabs-list">
               <Tabs.Trigger class="snes-tab" value="graphics">Graphics</Tabs.Trigger>
               <Tabs.Trigger class="snes-tab" value="audio">Audio</Tabs.Trigger>
@@ -268,7 +268,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 </div>
               </div>
             </Tabs.Content>
-          </Tabs.Root>
+          </Tabs>
 
           <!-- Interactive Dialog -->
           <div class="dialog-section">
@@ -279,7 +279,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               🗨️ Open Message Box
             </Button>
 
-            <Dialog.Root bind:open={dialogOpen}>
+            <Dialog bind:open={dialogOpen}>
               <Dialog.Portal>
                 <Dialog.Overlay class="snes-dialog-overlay" />
                 <Dialog.Content class="snes-dialog">
@@ -302,7 +302,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                   </div>
                 </Dialog.Content>
               </Dialog.Portal>
-            </Dialog.Root>
+            </Dialog>
           </div>
 
         </div.CardContent>

@@ -1,11 +1,11 @@
-import { globalGPUManager } from './global-gpu-manager';
+import { globalGPUManager } from, './global-gpu-manager';
 /**
  * MemorySlot interface represents a slot in memory with an id, embedding, timestamp,
  * usage count, and optional metadata.
  */
 export interface MemorySlot { id: string;, embedding: Float32Array;
   timestamp: number;
-  usageCount: number;
+ , usageCount: number;
   metadata?: Record<string, unknown>;
 }
 /**
@@ -14,7 +14,7 @@ export interface MemorySlot { id: string;, embedding: Float32Array;
  */
 export interface NESMemoryRegion { name: string;, size: number;
   buffer: SharedArrayBuffer | ArrayBuffer;
-  view: Uint8Array;
+ , view: Uint8Array;
 }
 /**
  * NESMemoryArchitecture — single clean implementation combining
@@ -22,10 +22,10 @@ export interface NESMemoryRegion { name: string;, size: number;
  */
 export class NESMemoryArchitecture {
   private slots: MemorySlot[] = [];
-  private regions: Map<string, NESMemoryRegion> = new Map();
+  private, regions: Map<string, NESMemoryRegion> = new Map();
   /**
    * Constructor for NESMemoryArchitecture.
-   * @param capacity - Maximum number of slots.
+   * @param capacity - Maximum: number of slots.
    * @param dim - Dimension of the embedding.
    */
   constructor(private capacity = 1024, private dim = 384) {
@@ -118,7 +118,7 @@ export class NESMemoryArchitecture {
   }
   /**
    * Get statistics about memory regions.
-   * @returns An object mapping region names to their sizes.
+   * @returns An: object mapping region names to their sizes.
    */
   public regionStats(): Record<string, number> {
     const stats: Record<string, number> = {};

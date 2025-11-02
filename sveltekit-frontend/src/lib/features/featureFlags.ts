@@ -18,7 +18,7 @@ class FeatureFlagService {
   }
   // Load initial flags from environment variable FEATURE_FLAGS_JSON (safe fallback to {})
   private loadFromEnv(): FeatureFlags {
-    const envJson = (typeof process !== 'undefined' && (process.env as any)?.FEATURE_FLAGS_JSON) || undefined;
+    const envJson = (typeof process !== 'undefined' && (process.env as: any)?.FEATURE_FLAGS_JSON) || undefined;
     return safeParseJson<FeatureFlags>(envJson, {});
   }
   // Merge localStorage overrides (browser-only) to allow dev testing

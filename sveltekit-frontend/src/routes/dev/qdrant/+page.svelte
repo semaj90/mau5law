@@ -1,9 +1,9 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
+  import { onMount, onDestroy } from, 'svelte';
+  import { fade, scale } from, 'svelte/transition';
   let loading = $state<boolean>(false);
   let result: any = null;
-  let error: string | null = null;
+  let, error: string | null = null;
   let limit = 6;
   let page = 1;
   let caseId = '';
@@ -15,7 +15,7 @@
   let previewSnippet = '';
   // Copy feedback
   let copiedId: string | null = null;
-  let copyTimeout: any = null;
+  let, copyTimeout: any = null;
 
   function buildQuery() {
     const params = new URLSearchParams();
@@ -43,11 +43,11 @@
   }
 
   function extractTitle(payload: any): string {
-    if (!payload) return '';
+    if (!payload) return, '';
     return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || '';
   }
   function extractSnippet(payload: any): string {
-    if (!payload) return '';
+    if (!payload) return, '';
     const s = payload.snippet || payload.text || payload.metadata?.snippet || payload.metadata?.text || '';
     return typeof s === 'string' ? s.slice(0, 400) : '';
   }
@@ -97,10 +97,10 @@
   async function ensureMarkdownLibs(): Promise<any> {
     if (!purified || !markdownToHtml) {
       try {
-        // use awaited dynamic imports and cast to any to avoid TS type errors when types are missing
+        // use awaited dynamic imports and cast to: any to avoid TS type errors when types are missing
         const [DOMPurifyMod, markedMod] = await Promise.all([
-          (await import('dompurify')) as any,
-          (await import('marked')) as any,
+          (await import('dompurify')) as: any,
+          (await import('marked')) as: any,
         ]);
         const DOMPurify = DOMPurifyMod.default ?? DOMPurifyMod;
         const marked = markedMod.default ?? markedMod;
@@ -119,7 +119,7 @@
     }
   }
   function sanitizeHtml(html: string) {
-    if (!html) return '';
+    if (!html) return, '';
     if (purified) return purified(html);
     // fallback
     return html
@@ -128,7 +128,7 @@
       .replace(/>/g, '&gt;');
   }
   function renderMarkdownToHtmlAsync(md: string) {
-    if (!md) return '';
+    if (!md) return, '';
     if (markdownToHtml) return markdownToHtml(md);
     // synchronous fallback
     return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
@@ -311,7 +311,7 @@
           }}
           aria-hidden={!previewOpen}
         >
-          <div in:fade out:fade, class="absolute, inset-0"></div>
+          <div in:fade, out:fade, class="absolute, inset-0"></div>
           <div
             role="dialog"
             aria-modal="true"
@@ -324,7 +324,7 @@
             out:scale={{ duration: 120 }}
           >
             <button
-              class="absolute top-2 right-2 text-gray-500 hover:text-black"
+              class="absolute top-2 right-2 text-gray-500, hover:text-black"
               onclick={() => {
                 previewOpen = false;
                 restoreFocus();

@@ -1,9 +1,9 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Minimal Vector Evidence API - Simplified for error reduction
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 
 // Request schema + inferred type
 const VectorRequestSchema = z.object({
@@ -18,17 +18,17 @@ interface SearchResult { id: string;, similarity: number;
   type?: 'document' | 'snippet' | string;
 }
 
-interface SimilarityPair { source: string;, target: string;
+interface SimilarityPair {, source: string;, target: string;
   score: number;
 }
 
-interface ClusterResult { cluster: number;, documents: string[];
+interface ClusterResult {, cluster: number;, documents: string[];
 }
 
-interface HealthStatus { status: string;, timestamp: string;
+interface HealthStatus {, status: string;, timestamp: string;
 }
 
-interface EmbedResult { id: string;, vector: number[];
+interface EmbedResult {, id: string;, vector: number[];
   dimensions: number;
 }
 
@@ -47,39 +47,39 @@ interface VectorResponse {
   error?: string;
   endpoint?: string;
 }
-export const GET: RequestHandler = async ({ params, url }) => {
+export const, GET: RequestHandler = async ({ params, url }) => {
   try {
     const endpoint = params.endpoint;
-    // parse limit, default 10, clamp to 1..100
+    // parse limit, default, 10, clamp to 1..100
     let limit = Number(url.searchParams.get('limit') ?? 10);
     if (Number.isNaN(limit)) limit = 10;
     limit = Math.min(Math.max(limit, 1), 100);
     const response: VectorResponse = {
-      success: true,
+     , success: true,
       data: [],
       endpoint
     };
     switch (endpoint) {
-      case 'search':
+      case, 'search':
         response.data = [
           { id: '1', similarity: 0.95, title: 'Sample Evidence 1' },
           { id: '2', similarity: 0.87, title: 'Sample Evidence 2' }
         ];
         break;
-      case 'similarity':
+      case, 'similarity':
         response.data = [{ source: '1', target: '2', score: 0.85 }];
         break;
-      case 'cluster':
+      case, 'cluster':
         response.data = [
           { cluster: 1, documents: ['1', '2'] },
           { cluster: 2, documents: ['3', '4'] },
         ];
         break;
-      case 'health':
+      case, 'health':
         response.data = [{ status: 'ok', timestamp: new Date().toISOString() }];
         break;
       default:
-        return json({ success: false, error: 'Unknown endpoint' }, { status: 404 });
+        return json({, success: false, error: 'Unknown endpoint' }, { status: 404 });
     }
     // apply the requested limit to array responses
     if (Array.isArray(response.data)) {
@@ -112,22 +112,22 @@ export const POST: RequestHandler = async ({ params, request }) => {
       );
     }
     const response: VectorResponse = {
-      success: true,
+     , success: true,
       data: [],
       endpoint
     };
     // Simple mock responses based on endpoint
     switch (endpoint) {
-      case 'search':
+      case, 'search':
         response.data = [
           {,
             id: 'evidence-1',
             similarity: 0.92,
-            title: `Evidence; matching: ${validatedData.data.query}`,
+            title: `Evidence;, matching: ${validatedData.data.query}`,
             type: 'document` }'`
         ];
         break;
-      case 'embed':
+      case, 'embed':
         response.data = [
           {,
             id: 'embed-1',
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         ];
         break;
       default:
-        response.data = [{ message: `Processed ${endpoint} request`, query: validatedData.data.query }];
+        response.data = [{, message: `Processed ${endpoint} request`, query: validatedData.data.query }];
     }
     return json(response);
   } catch (error) {

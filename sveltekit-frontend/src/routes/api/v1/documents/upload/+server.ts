@@ -1,17 +1,17 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { minioStorage } from '$lib/server/storage/minio';
-import { createId } from '@paralleldrive/cuid2';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { writeFile, unlink, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { db } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
-import { queueVectorEmbedding } from '$lib/server/services/background-job-queue';
-import { generateEmbeddings, as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
-import { queueDocumentProcessing, DocumentProcessingJobData } from '$lib/services/queue-service';
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { minioStorage } from, '$lib/server/storage/minio';
+import { createId } from, '@paralleldrive/cuid2';
+import { exec } from, 'child_process';
+import { promisify } from, 'util';
+import { writeFile, unlink, mkdir } from, 'fs/promises';
+import { join } from, 'path';
+import { tmpdir } from, 'os';
+import { db } from, '$lib/server/db';
+import { sql } from, 'drizzle-orm';
+import { queueVectorEmbedding } from, '$lib/server/services/background-job-queue';
+import { generateEmbeddings, as serverGenerateEmbeddings } from, '$lib/server/services/embedding-service';
+import { queueDocumentProcessing, DocumentProcessingJobData } from, '$lib/services/queue-service';
 
 const execAsync = promisify(exec);
 
@@ -37,8 +37,8 @@ interface UploadResponse { success: boolean;, documentId: string;
   chunks: number;
   processingTime: number;
   minioUrl?: string;
-  metadata: { bucket: string;, objectName: string;
-    contentType: string;
+  metadata: {, bucket: string;, objectName: string;
+   , contentType: string;
     extractedText?: number; // character count
     embedded?: boolean;
     indexed?: boolean;
@@ -58,7 +58,7 @@ export const POST = async ({ request, locals }) => {
       id: 'dev-user',
       email: 'dev@localhost',
       name: 'Dev User',
-      role: 'user', // changed from 'developer' to permitted role: 'user'
+      role: 'user', // changed from, 'developer' to permitted role: 'user'
     };
   }
   if (!user) {
@@ -74,7 +74,7 @@ export const POST = async ({ request, locals }) => {
   let formData: FormData;
   let file: File;
   let caseId: string | undefined;
-  let description: string | undefined;
+  let, description: string | undefined;
 
   try {
     formData = await request.formData();
@@ -179,7 +179,7 @@ export const POST = async ({ request, locals }) => {
     let embeddings: number[][] = [];
     let embeddingModel = 'none';
     try {
-      const result = await serverGenerateEmbeddings({ texts: chunks, model: `embeddinggemma:latest' });'`
+      const result = await serverGenerateEmbeddings({, texts: chunks, model: `embeddinggemma:latest' });'`
       embeddings = result.embeddings;
       embeddingModel = result.source || 'server-embedding-service';
       console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
@@ -266,12 +266,12 @@ export const POST = async ({ request, locals }) => {
     try {
       const jobData: DocumentProcessingJobData = {
         documentId,
-        content: extractedText || `[Stored at; minio://${minioResult.bucket}/${minioResult.objectName}]`,
+        content: extractedText || `[Stored at;, minio://${minioResult.bucket}/${minioResult.objectName}]`,
         documentType: 'legal',
         caseId: caseId ?? undefined,
         filePath: `minio://${minioResult.bucket}/${minioResult.objectName}`,
         options: {
-          extractEntities: true,
+         , extractEntities: true,
           generateSummary: true,
           assessRisk: false,
           generateEmbedding: false, // embedding job already queued
@@ -279,7 +279,7 @@ export const POST = async ({ request, locals }) => {
           useGemma3Legal: true
         }
       };
-      const { jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as { jobId: string;, estimated: number;
+      const {, jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as { jobId: string;, estimated: number;
       };
       console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
     } catch (procErr: any) {
@@ -306,7 +306,7 @@ export const POST = async ({ request, locals }) => {
 
     // 8. Return success response
     const response: UploadResponse = {
-      success: true,
+     , success: true,
       documentId,
       filename,
       size: fileSize,
@@ -314,7 +314,7 @@ export const POST = async ({ request, locals }) => {
       processingTime,
       minioUrl: minioResult.url,
       metadata: {
-        bucket: minioResult.bucket,
+       , bucket: minioResult.bucket,
         objectName: minioResult.objectName,
         contentType,
         extractedText: extractedText.length,
@@ -329,7 +329,7 @@ export const POST = async ({ request, locals }) => {
     console.error('❌ [Upload] Failed:', message);
 
     const response: UploadResponse = {
-      success: false,
+     , success: false,
       documentId: '',
       filename,
       size: fileSize,
@@ -337,7 +337,7 @@ export const POST = async ({ request, locals }) => {
       processingTime: Date.now() - startTime,
       error: message || 'Upload failed',
       metadata: {
-        bucket: '',
+       , bucket: '',
         objectName: '',
         contentType
       }
@@ -436,14 +436,14 @@ export const GET = async () => {
     ],
     authentication: 'Required (Lucia v3 session or DEV_BYPASS_AUTH)',
     fields: {
-      file: 'File (required)',
+     , file: 'File (required)',
       caseId: 'string (optional)',
       description: `string (optional)` },
-    example: { curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\`
-  -H "Cookie: legal_ai_session=..." \\
-  -F "file=@contract.pdf" \\
-  -F "caseId=case_123" \\
-  -F "description=Employment contract"' },`'`
+    example: {, curl: `curl -X POST, http://localhost:5173/api/v1/documents/upload \\`
+  -H, "Cookie: legal_ai_session=..." \\
+  -F, "file=@contract.pdf" \\
+  -F, "caseId=case_123" \\
+  -F, "description=Employment contract"' },`'`
     timestamp: new Date().toISOString()
   });
 };

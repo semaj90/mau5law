@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { cacheShader, getCachedShader } from '$lib/server/cache/redis';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import { cacheShader, getCachedShader } from, '$lib/server/cache/redis';
 export const GET: RequestHandler = async ({ params }) => {
   const id = params.id;
   if (!id) throw error(400, 'Missing shader id');

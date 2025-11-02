@@ -1,7 +1,7 @@
-import type { Handle } from '@sveltejs/kit';
-import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
-import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
-import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
+import type { Handle } from, '@sveltejs/kit';
+import { createRuntimeConnection, closeConnections } from, '$lib/server/db/client';
+import { getRedisClient, closeRedisClient } from, '$lib/server/cache/redis';
+import { getRabbitMQChannel, closeRabbitMQConnection } from, '$lib/server/messaging/rabbitmq';
 
 // Initialize services on server startup
 async function initializeServices(): Promise<void> {
@@ -48,7 +48,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   const redisCache = await getRedisClient();
   event.locals.redis = redisCache;
 
-  // RabbitMQ is optional - may be null
+  // RabbitMQ is optional - may be: null
   try {
     event.locals.rabbitmqChannel = await getRabbitMQChannel();
   } catch (err) {

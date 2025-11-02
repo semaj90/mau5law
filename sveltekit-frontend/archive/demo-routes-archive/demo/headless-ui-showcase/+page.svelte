@@ -327,7 +327,7 @@ addNotification('warning', 'Warning: Retro mode activated!')}
 <!-- Bits UI Dialog Implementation -->
 <!-- Styles moved to src/styles/global.css -->
 
-<Dialog.Root bind:open={isDialogOpen}>
+<Dialog bind:open={isDialogOpen}>
   <Dialog.Portal>
     <Dialog.Overlay
       class="fixed inset-0 z-50 bg-black/70"
@@ -379,5 +379,5 @@ addNotification('warning', 'Warning: Retro mode activated!')}
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 

@@ -15,7 +15,7 @@
  * @module qdrant-auto-tagger
  */
 
-import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
+import type { ErrorMetadata, ErrorCategory } from, '$lib/services/mcp-simd-parser';
 
 /**
  * Qdrant collection configuration for error storage
@@ -26,11 +26,11 @@ export interface QdrantErrorCollectionConfig {
   /** Vector dimensionality (768 for Gemma embeddings) */
   vectorSize: number;
   /** Distance metric */
-  distance: 'Cosine' | 'Euclid' | 'Dot';
+ , distance: 'Cosine' | 'Euclid' | 'Dot';
   /** Enable scalar quantization (4x compression) */
   quantization: boolean;
   /** Store vectors on disk */
-  onDisk: boolean;
+ , onDisk: boolean;
 }
 
 /**
@@ -43,7 +43,7 @@ export interface QdrantErrorPayload {
   errorCode: string;
   /** File path */
   filePath: string;
-  /** Line number */
+  /** Line: number */
   line: number;
   /** Error message */
   message: string;
@@ -54,13 +54,13 @@ export interface QdrantErrorPayload {
   /** Diagnostic source */
   source: 'typescript' | 'svelte' | 'vite' | 'eslint' | 'custom';
   /** Auto-generated classification tags */
-  tags: string[];
+ , tags: string[];
   /** File path pattern (for filtering) */
   filePattern: string;
   /** Error type family (grouped error codes) */
   errorFamily: string;
   /** Timestamp */
-  timestamp: string;
+ , timestamp: string;
   /** Additional metadata */
   metadata?: Record<string, any>;
 }
@@ -97,7 +97,7 @@ export interface HybridSearchParams {
  */
 export interface QdrantSearchResult {
   /** Point ID */
-  id: string | number;
+ , id: string | number;
   /** Similarity score (0-1) */
   score: number;
   /** Point payload */
@@ -109,11 +109,11 @@ export interface QdrantSearchResult {
  */
 interface TaggingRule {
   /** Rule name */
-  name: string;
+ , name: string;
   /** Pattern to match (regex or keyword) */
   pattern: RegExp | string;
   /** Tags to apply if match */
-  tags: string[];
+ , tags: string[];
   /** Priority (higher = applied first) */
   priority: number;
 }
@@ -134,7 +134,7 @@ interface TaggingRule {
  *
  * // Hybrid search: vector + filters
  * const results = await tagger.hybridSearch({
- *   queryVector: queryEmbedding,
+ *  , queryVector: queryEmbedding,
  *   tags: ['import-error', 'typescript'],
  *   severity: 'error',
  *   limit: 10
@@ -145,7 +145,7 @@ export class QdrantAutoTagger {
   private baseUrl: string;
   private collectionName: string;
   private taggingRules: TaggingRule[];
-  private initialized: boolean = $state(false);
+  private, initialized: boolean = $state(false);
 
   constructor(collectionName: string = 'vite_errors', baseUrl: string = 'http://localhost:6333') {
     this.baseUrl = baseUrl;
@@ -209,7 +209,7 @@ export class QdrantAutoTagger {
    */
   async initialize(config?: Partial<QdrantErrorCollectionConfig>): Promise<void> {
     const collectionConfig: QdrantErrorCollectionConfig = {
-      name: config?.name || this.collectionName,
+     , name: config?.name || this.collectionName,
       vectorSize: config?.vectorSize || 768,
       distance: config?.distance || 'Cosine',
       quantization: config?.quantization ?? true,
@@ -345,7 +345,7 @@ export class QdrantAutoTagger {
    */
   private extractFilePattern(filePath: string): string {
     const parts = filePath.split('/');
-    if (parts.length < 2) return '*';
+    if (parts.length < 2) return, '*';
 
     // Extract directory pattern
     const dir = parts.slice(-2, -1)[0]; // Second-to-last part
@@ -360,11 +360,11 @@ export class QdrantAutoTagger {
    * @private
    */
   private getErrorFamily(errorCode: string): string {
-    if (errorCode.startsWith('TS1')) return 'typescript-syntax';
-    if (errorCode.startsWith('TS2')) return 'typescript-types';
-    if (errorCode.startsWith('TS7')) return 'typescript-modules';
-    if (errorCode.startsWith('ESL')) return 'eslint';
-    return 'unknown';
+    if (errorCode.startsWith('TS1')) return, 'typescript-syntax';
+    if (errorCode.startsWith('TS2')) return, 'typescript-types';
+    if (errorCode.startsWith('TS7')) return, 'typescript-modules';
+    if (errorCode.startsWith('ESL')) return, 'eslint';
+    return, 'unknown';
   }
 
   /**
@@ -386,7 +386,7 @@ export class QdrantAutoTagger {
       id: crypto.randomUUID(),
       vector: embeddings[index],
       payload: {
-        errorId: crypto.randomUUID(),
+       , errorId: crypto.randomUUID(),
         errorCode: error.errorCode,
         filePath: error.filePath,
         line: error.line,
@@ -399,7 +399,7 @@ export class QdrantAutoTagger {
         errorFamily: this.getErrorFamily(error.errorCode),
         timestamp: error.timestamp.toISOString(),
         metadata: {
-          column: error.column,
+         , column: error.column,
           rawText: error.rawText
         }
       } as QdrantErrorPayload
@@ -542,7 +542,7 @@ export class QdrantAutoTagger {
    * Get collection statistics
    */
   async getStats(): Promise<{ totalErrors: number;, uniqueTags: number;
-    tags: string[];
+   , tags: string[];
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);

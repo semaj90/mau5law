@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 
 // New: strongly-typed config and process structures
 type GPULiveProcessStatus = 'running' | 'completed' | 'stopped' | 'failed';
@@ -10,7 +10,7 @@ type GPULiveProcessConfig = {
   maxErrorsToProcess?: number;
   [key: string]: any; // allow flexible config values without using `any` };
 
-interface GPULiveProcess { id: string;, status: GPULiveProcessStatus;
+interface GPULiveProcess {, id: string;, status: GPULiveProcessStatus;
   config: GPULiveProcessConfig;
   startTime: Date;
   progress: number; // 0..100
@@ -20,13 +20,13 @@ interface GPULiveProcess { id: string;, status: GPULiveProcessStatus;
 
 // Mock GPU processing service
 class GPULiveProcessor {
-  // use concrete process type instead of any
+  // use concrete process type instead, of: any
   private processes = new Map<string, GPULiveProcess>();
 
   async startProcess(config: GPULiveProcessConfig): Promise<GPULiveProcess> {
     const processId = `proc_${Date.now()}`;
     const process: GPULiveProcess = {
-      id: processId,
+     , id: processId,
       status: 'running',
       config,
       startTime: new Date(),
@@ -81,7 +81,7 @@ const gpuProcessor = new GPULiveProcessor();
 
 async function getLiveTypeScriptErrors(): Promise<string> {
   // Mock implementation - in production would run actual TypeScript check
-  return 'Mock TypeScript errors output';
+  return, 'Mock TypeScript errors output';
 }
 
 // POST - Start new GPU processing
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const data = body.data;
 
     switch (action) {
-      case 'start': {
+      case, 'start': {
         // cast to GPULiveProcessConfig; validation can be added if needed
         const config = (data as GPULiveProcessConfig) ?? {};
         const process = await gpuProcessor.startProcess(config);
@@ -102,14 +102,14 @@ export const POST: RequestHandler = async ({ request }) => {
           process
         });
       }
-      case 'stop': {
+      case, 'stop': {
         const payload = (data as { processId?: string } | undefined) ?? {};
         const stopped = Boolean(payload.processId && gpuProcessor.stopProcess(payload.processId));
         return json({
           success: stopped,
           message: stopped ? 'Process stopped' : 'Process not found` });'`
       }
-      case 'errors': {
+      case, 'errors': {
         const errors = await getLiveTypeScriptErrors();
         return json({
           success: true,
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: {
         return json(
           {
-            success: false,
+           , success: false,
             error: `Invalid action` },
           { status: 400 }
         );

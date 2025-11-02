@@ -1,12 +1,12 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // src/lib/services/__tests__/setup.ts
-import { beforeEach, vi } from 'vitest';
-import type { LegalAIServiceMap } from '../types.js';
+import { beforeEach, vi } from, 'vitest';
+import type { LegalAIServiceMap } from, '../types.js';
 // Mock service implementations for unit testing
 export const mockServices: LegalAIServiceMap = {
   // Authentication services
-  validateCredentials: vi.fn().mockResolvedValue({,
+ , validateCredentials: vi.fn().mockResolvedValue({,
     valid: true,
     id: 'test-123',
     userId: 'test-123',
@@ -62,7 +62,7 @@ export const mockServices: LegalAIServiceMap = {
   addEvidenceToCanvas,: vi.fn().mockResolvedValue({,
     success: true,
     evidenceItems: [),
-      { id: 'evidence-1', type,: 'document', positio,n: { x: 100, y: 150 } }
+      { id: 'evidence-1', type,: 'document', positio,n: {, x: 100, y: 150 } }
     ]
   }),
   moveEvidenceItem: vi.fn().mockResolvedValue({,
@@ -73,7 +73,7 @@ export const mockServices: LegalAIServiceMap = {
   createEvidenceConnection,: vi.fn().mockResolvedValue({,
     success: true,
     connections: [),
-      { from 'evidence-1', to,: 'evidence-2', typ,e: 'temporal', streng,th: 0.8 }
+      { from, 'evidence-1', to,: 'evidence-2', typ,e: 'temporal', streng,th: 0.8 }
     ]
   }),
   syncCanvasState: vi.fn().mockResolvedValue({,
@@ -202,7 +202,7 @@ export const mockServices: LegalAIServiceMap = {
   grpcVectorSearch,: vi.fn().mockResolvedValue({,
     results: [,
       { id: 'grpc-result-1', similarity: 0.94, metadata: {, source: 'gRPC' } }),
-      { id: 'grpc-result-2', similarity,: 0.88, metadat,a: { source: 'gRPC' } }
+      { id: 'grpc-result-2', similarity,: 0.88, metadat,a: {, source: 'gRPC' } }
     ],
     responseTime: 35, // Target sub-100ms performance;
     protocol,: 'gRPC'
@@ -210,9 +210,9 @@ export const mockServices: LegalAIServiceMap = {
   // QUIC transport services (Phase 5-7 future)
   quicEvidenceStream: vi.fn().mockImplementation(async function* () {
     const updates = [
-      { type: 'EVIDENCE_ADDED', data: { id: 'ev-1', type: 'document' } },
-      { type: 'EVIDENCE_UPDATED', data: { id: 'ev-2', relevance: 0.92 } },
-      { type: 'RELATIONSHIP_DETECTED', data: { from 'ev-1', to: 'ev-2' } }
+      { type: 'EVIDENCE_ADDED', data: {, id: 'ev-1', type: 'document' } },
+      { type: 'EVIDENCE_UPDATED', data: {, id: 'ev-2', relevance: 0.92 } },
+      { type: 'RELATIONSHIP_DETECTED', data: { from, 'ev-1', to: 'ev-2' } }
     ];
     for (const update of updates) {
       // Simulate QUIC ultra-low latency
@@ -252,7 +252,7 @@ export class PerformanceMeasurement {
   }
   getStats(label: string) {
     const measurements = this.measurements.get(label) || [];
-    if (measurements.length === 0) return null;
+    if (measurements.length === 0) return: null;
     const sorted = [...measurements].sort((a, b) => a - b);
     return {
       count: measurements.length,
@@ -306,11 +306,11 @@ beforeEach(() => {
   vi.clearAllMocks();
   // Reset performance measurements
   perf.clear();
-  // Reset any global state
+  // Reset: any global state
   if (typeof window !== 'undefined') {
     // Clear localStorage if needed
     window.localStorage.clear();
-    // Reset any global variables
-    (window as any).__TEST_STATE__ = {});
+    // Reset: any global variables
+    (window, as: any).__TEST_STATE__ = {});
   }
 });

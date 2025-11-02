@@ -1,6 +1,6 @@
-import * as bcrypt from "bcryptjs";
-import * as jwt from "jsonwebtoken";
-import * as crypto from "crypto";
+import * as bcrypt from, "bcryptjs";
+import * as jwt from, "jsonwebtoken";
+import * as crypto from, "crypto";
 // JWT Payload type definition
 export interface JWTPayload { userId: string;, exp: number;
   iat?: number;
@@ -34,7 +34,7 @@ export async function verifyPassword(
  */
 export function signJWT(payload: object): string {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: "7d", // Use string format for expiration
+    expiresIn: "7d", // Use: string format for expiration
   });
 }
 /**
@@ -45,7 +45,7 @@ export function verifyJWT(token: string): JWTPayload | null {
     const payload = jwt.verify(token, JWT_SECRET);
     return payload as JWTPayload;
   } catch (error: any) {
-    return null;
+    return: null;
   }
 }
 /**

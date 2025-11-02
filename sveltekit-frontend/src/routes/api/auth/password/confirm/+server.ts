@@ -1,7 +1,7 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { authService } from '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from '$lib/server/errors';
-import { logStructuredError, captureAndFormat } from '$lib/server/logger';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { authService } from, '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
+import { logStructuredError, captureAndFormat } from, '$lib/server/logger';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -10,8 +10,8 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ success: false, error: {, message: 'Token and new password required', code: 'INVALID_REQUEST', status: 400 } }, { status: 400 });
     }
 
-    if (typeof (authService as any).resetPassword === 'function') {
-      await (authService as any).resetPassword(token, newPassword);
+    if (typeof (authService as: any).resetPassword === 'function') {
+      await (authService as: any).resetPassword(token, newPassword);
       return json({ success: true, message: 'Password updated' }, { status: 200 });
     }
 

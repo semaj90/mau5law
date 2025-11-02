@@ -7,7 +7,7 @@
  *  POST /api/search-drizzle-pgvector - Search with Drizzle ORM
  *  GET  /api/search-drizzle-pgvector/health - Health check
  *
- * Features:
+ *, Features:
  *  ✅ Drizzle ORM type safety
  *  ✅ pgvector cosine distance search
  *  ✅ Ollama embedding generation
@@ -15,11 +15,11 @@
  *  ✅ Performance optimized
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { z } from, 'zod';
+import { db } from, '$lib/server/db';
+import { sql } from, 'drizzle-orm';
 
 // ===== SCHEMAS =====
 
@@ -38,7 +38,7 @@ interface VectorSearchResult {
   title?: string;
   description?: string;
   content?: string;
-  similarity: number;
+ , similarity: number;
   metadata?: Record<string, unknown>;
   evidenceType?: string;
   confidentialityLevel?: string;
@@ -49,8 +49,8 @@ interface VectorSearchResponse { results: VectorSearchResult[];, query: string;
   threshold: number;
   responseTime: number;
   timestamp: string;
-  metadata: { table: string;, modelUsed: string;
-    indexType: string;
+  metadata: {, table: string;, modelUsed: string;
+   , indexType: string;
   };
 }
 
@@ -103,7 +103,7 @@ async function searchEvidenceWithDrizzle(
       similarity: number;
       evidenceType: string;
       confidentialityLevel: string | null;
-      metadata: string | null;
+     , metadata: string | null;
     }>(
       sql`
         SELECT
@@ -146,7 +146,7 @@ async function searchDocumentsWithDrizzle(
 ): Promise<VectorSearchResult[]> {
   try {
     const results = await db.execute<{ id: string;, content: string | null;
-      similarity: number;
+     , similarity: number;
     }>(
       sql`
         SELECT
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Search based on table
     let results: VectorSearchResult[];
-    let searchTable: string;
+    let, searchTable: string;
 
     if (params.searchInTable === 'documents') {
       results = await searchDocumentsWithDrizzle(
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request }) => {
       responseTime,
       timestamp: new Date().toISOString(),
       metadata: {
-        table: searchTable,
+       , table: searchTable,
         modelUsed: 'embeddinggemma:latest',
         indexType: `pgvector (cosine distance)' }'`
     };
@@ -247,7 +247,7 @@ export const GET: RequestHandler = async () => {
   try {
     // Check pgvector availability
     const vectorTest = await db.execute(
-      sql`SELECT 1 WHERE: '[1,2,3]'::vector IS NOT NULL`
+      sql`SELECT, 1 WHERE: '[1,2,3]'::vector IS NOT NULL`
     );
 
     if (!vectorTest || vectorTest.length === 0) {

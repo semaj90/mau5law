@@ -1,5 +1,5 @@
 /**
- * Bits UI v2 Component Registry - Svelte 5 Compatible
+ * Bits UI v2 Component Registry - Svelte, 5 Compatible
  * Complete mapping of available components with legal AI use cases
  */
 export interface ComponentInfo { name: string;, package: 'bits-ui' | 'enhanced-bits-ui' | 'both';
@@ -15,7 +15,7 @@ export interface ComponentInfo { name: string;, package: 'bits-ui' | 'enhanced-
 export const BITS_UI_COMPONENTS: ComponentInfo[] = [
   // === ESSENTIAL NAVIGATION & INTERACTION ===
   {
-    name: 'Button',
+   , name: 'Button',
     package: 'bits-ui',
     svelte5Compatible: true,
     legalAIUseCase: ['case-actions', 'form-submission', 'evidence-upload', 'ai-queries'],

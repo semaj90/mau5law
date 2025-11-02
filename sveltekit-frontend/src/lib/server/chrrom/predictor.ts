@@ -1,14 +1,14 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 // Lightweight Markov-chain predictor for next-action precomputation (RNN-inspired)
 // Learns P(next|prev) from short user interaction sequences
 // Enhanced with Redis caching for persistence and performance
-import { env } from '$env/dynamic/private';
+import { env } from, '$env/dynamic/private';
 type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:indemnification'
-interface PredictionResult { action: Action;, p: number;
+interface PredictionResult {, action: Action;, p: number;
 }
 class MarkovPredictorWithRedis {
   // use a flexible type for the shared client to avoid typing mismatches
-  private redis: any;
+  private, redis: any;
   private localTransitions = new Map<Action, Map<Action, number>>();
   private localLastByUser = new Map<string, Action>();
   private syncBatchSize = 50;
@@ -20,7 +20,7 @@ class MarkovPredictorWithRedis {
     const redisPassword = env.REDIS_PASSWORD;
     const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
     const redisConfig: any = {
-      retryDelayOnFailover: 100,
+     , retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
       lazyConnect: true
     };
@@ -38,7 +38,7 @@ class MarkovPredictorWithRedis {
       this.cacheEnabled = $state(false);
     });
     // Periodic sync to Redis
-    setInterval(() => void this.syncToRedis(), 30000); // Sync every 30 seconds
+    setInterval(() => void this.syncToRedis(), 30000); // Sync every, 30 seconds
   }
   async record(userId: string, action: Action) {
     const prev = this.localLastByUser.get(userId);
@@ -73,7 +73,7 @@ class MarkovPredictorWithRedis {
         if (redisData && Object.keys(redisData).length > 0) {
           transitions = new Map<Action, number>();
           for (const [action, countStr] of Object.entries(redisData)) {
-            const n = parseInt(countStr as string, 10);
+            const n = parseInt(countStr as: string, 10);
             transitions.set(action as Action, isNaN(n) ? 0 : n);
           }
         }
@@ -181,7 +181,7 @@ class MarkovPredictorWithRedis {
     cacheEnabled: boolean;
     lastSync: number;
     pendingUpdates: number;
-    redisConnected: boolean;
+   , redisConnected: boolean;
   }> {
     let redisConnected = $state<boolean>(false);
     if (this.cacheEnabled) {

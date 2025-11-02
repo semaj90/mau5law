@@ -1,8 +1,8 @@
 // Minimal client helper to send text for embedding/tensorization and optional SW SIMD parse
 // and optional GPU tiling (WebGPU) post-processing on the embedding.
-// Inputs: text string; options { simdParse?: boolean; gpuTile?: boolean }
+// Inputs: text: string; options { simdParse?: boolean; gpuTile?: boolean }
 // Output: { embedding|tensor: number[]; tensorMeta?: any; gpuMeta?: any }
-let __gpuAccelerator: any | null = null;
+let, __gpuAccelerator: any | null = null;
 async function runGpuTile(embedding: number[]): Promise<any> {
   try {
     // Lazy import WebGPU accelerator and initialize once

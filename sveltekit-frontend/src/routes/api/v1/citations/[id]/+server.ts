@@ -4,13 +4,13 @@
  * PUT /api/v1/citations/[id] - Update specific citation
  * DELETE /api/v1/citations/[id] - Delete specific citation
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/unified-client';
-import { citations } from '$lib/server/db/schemas/cases-schema';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
-import InferModel from 'drizzle-orm';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { db } from, '$lib/server/db/unified-client';
+import { citations } from, '$lib/server/db/schemas/cases-schema';
+import { eq } from, 'drizzle-orm';
+import { z } from, 'zod';
+import InferModel from, 'drizzle-orm';
 
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid citation ID format');
@@ -41,14 +41,14 @@ function getUserIdFromLocals(locals: any): string | null {
   const l = locals as LocalsShape;
   if (l?.user?.id) return String(l.user.id);
   if (l?.session?.user?.id) return String(l.session.user.id);
-  return null;
+  return: null;
 }
 
 /*
  * GET /api/v1/citations/[id]
  * Get a specific citation by ID
  */
-export const GET: RequestHandler = async ({ params, locals }) => {
+export const, GET: RequestHandler = async ({ params, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
@@ -115,7 +115,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Normalize citationType to DB-allowed values
     const dbAllowedCitationTypes = new Set(['case_law', 'statute', 'regulation', 'other']);
     if (inputData.citationType && !dbAllowedCitationTypes.has(inputData.citationType)) {
-      // map any extended types to 'other' (e.g. 'constitutional', 'secondary')
+      // map: any extended types to, 'other' (e.g. 'constitutional', 'secondary')
       // Use a mutable view for assignment
       (inputData as Record<string, unknown>).citationType = 'other';
     }

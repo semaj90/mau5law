@@ -2,11 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  // import { Button } from 'bits-ui'; // removed unused Button import
-  import { fade } from 'svelte/transition';
-  import { createEventDispatcher } from 'svelte';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  // import { Button } from, 'bits-ui'; // removed unused Button import
+  import { fade } from, 'svelte/transition';
+  import { createEventDispatcher } from, 'svelte';
 
   interface KeyDate {
     date: string;
@@ -19,7 +19,7 @@ import type { Case } from '$lib/types';
     jurisdiction: string;
     priority: 'low' | 'medium' | 'high' | 'urgent';
     description: string;
-    key_dates: KeyDate[];
+   , key_dates: KeyDate[];
   }
 
   // export prop (safe default provided)
@@ -89,19 +89,19 @@ import type { Case } from '$lib/types';
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'low':
-        return 'bg-green-100 text-green-800 border-green-300';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'high':
-        return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'urgent':
-        return 'bg-red-100 text-red-800 border-red-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case, 'low':
+        return, 'bg-green-100 text-green-800 border-green-300';
+      case, 'medium':
+        return, 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case, 'high':
+        return, 'bg-orange-100 text-orange-800 border-orange-300';
+      case, 'urgent':
+        return, 'bg-red-100 text-red-800 border-red-300';
+      default: return, 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
   function getPriorityLabel(priority: string) {
-    if (!priority) return 'None';
+    if (!priority) return, 'None';
     return priority.charAt(0).toUpperCase() + priority.slice(1);
   }
 </script>
@@ -120,7 +120,7 @@ import type { Case } from '$lib/types';
         id="title"
         type="text"
         bind:value={formData.title}
-        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.title ? 'border-red-500' : ''}`}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.title ? 'border-red-500' : ''}`}
         placeholder="e.g., Smith vs. Jones Contract Dispute"
       />
       {#if validationErrors.title}
@@ -135,7 +135,7 @@ import type { Case } from '$lib/types';
         id="client_name"
         type="text"
         bind:value={formData.client_name}
-        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.client_name ? 'border-red-500' : ''}`}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.client_name ? 'border-red-500' : ''}`}
         placeholder="Enter client's full name"'
       />
       {#if validationErrors.client_name}
@@ -150,7 +150,7 @@ import type { Case } from '$lib/types';
         <select
           id="case_type"
           bind:value={formData.case_type}
-          class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.case_type ? 'border-red-500' : ''}`}
+          class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.case_type ? 'border-red-500' : ''}`}
         >
           <option, value="">Select case type</option>
           {#each Array.isArray(caseTypes) ? caseTypes : [] as type}
@@ -167,7 +167,7 @@ import type { Case } from '$lib/types';
         <select
           id="priority"
           bind:value={formData.priority}
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500"
         >
           <option, value="low">Low Priority</option>
           <option, value="medium">Medium Priority</option>
@@ -191,7 +191,7 @@ import type { Case } from '$lib/types';
       <select
         id="jurisdiction"
         bind:value={formData.jurisdiction}
-        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.jurisdiction ? 'border-red-500' : ''}`}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.jurisdiction ? 'border-red-500' : ''}`}
       >
         <option, value="">Select jurisdiction</option>
         {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
@@ -210,7 +210,7 @@ import type { Case } from '$lib/types';
         id="description"
         bind:value={formData.description}
         rows="4"
-        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${validationErrors.description ? 'border-red-500' : ''}`}
+        class={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500, focus:border-blue-500 ${validationErrors.description ? 'border-red-500' : ''}`}
         placeholder="Provide a detailed description of the case, including key issues, parties involved, and relevant background information..."
       ></textarea>
       {#if validationErrors.description}

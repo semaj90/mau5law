@@ -1,17 +1,17 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
-  // Svelte 5 runes are auto-imported
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import * as Dialog from '$lib/components/ui/Dialog.svelte';
-  import { uploadStore } from '$lib/stores/unified';
-  import { formatFileSize } from '$lib/utils/file-utils';
-  import AlertCircle from 'lucide-svelte/icons/alert-circle';
-  import CheckCircle from 'lucide-svelte/icons/check-circle';
-  import File from 'lucide-svelte/icons/file';
-  import Loader2 from 'lucide-svelte/icons/loader-2';
-  import Upload from 'lucide-svelte/icons/upload';
-  import X from 'lucide-svelte/icons/x';
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from, '$lib/components/ui/dialog';
+  // Svelte, 5 runes are auto-imported
+  import  Button  from, "$lib/components/ui/Button.svelte";
+  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
+  import { uploadStore } from, '$lib/stores/unified';
+  import { formatFileSize } from, '$lib/utils/file-utils';
+  import AlertCircle from, 'lucide-svelte/icons/alert-circle';
+  import CheckCircle from, 'lucide-svelte/icons/check-circle';
+  import File from, 'lucide-svelte/icons/file';
+  import Loader2 from, 'lucide-svelte/icons/loader-2';
+  import Upload from, 'lucide-svelte/icons/upload';
+  import X from, 'lucide-svelte/icons/x';
   interface Props {
     onViewEvidence?: (files: any[]) => void;
   }
@@ -50,7 +50,7 @@
     uploadStore.closeModal();
   }
 </script>
-<Dialog.Root open={isOpen} onOpenChange={(open) => !open && closeModal()}>
+<Dialog open={isOpen} onOpenChange={(open) => !open && closeModal()}>
   <Dialog.Content, class="max-w-3xl">
     <Dialog.Header>
       <Dialog.Title class="flex, items-center, gap-2">
@@ -184,5 +184,5 @@
       </div>
     </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 </Dialog>

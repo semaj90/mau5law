@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
-  import  Button  from "$lib/components/ui/button/Button.svelte";
+import type { Document } from, '$lib/types';
+  import { Upload, X, CheckCircle, AlertCircle } from, 'lucide-svelte';
+  import  Button  from, "$lib/components/ui/button/Button.svelte";
   interface UploadResult {
     success: boolean;
     message: string;
@@ -11,7 +11,7 @@ import type { Document } from '$lib/types';
       title: string;
       chunks: number;
       hasOCR: boolean;
-      embeddingModel: string;
+     , embeddingModel: string;
     };
     error?: string;
   }
@@ -152,7 +152,7 @@ import type { Document } from '$lib/types';
           type="text"
           bind:value={tags}
           placeholder="e.g., contract, evidence, legal"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500, focus:border-transparent text-sm"
         />
       </div>
     {/if}
@@ -163,7 +163,7 @@ import type { Document } from '$lib/types';
       <div class="space-y-1, text-sm, text-green-800">
         <p><strong>Filename:</strong> {uploadResult.document.filename}</p>
         <p><strong>Chunks:</strong> {uploadResult.document.chunks}</p>
-        <p><strong>Embedding Model:</strong> {uploadResult.document.embeddingModel}</p>
+        <p><strong>Embedding, Model:</strong> {uploadResult.document.embeddingModel}</p>
         {#if uploadResult.document.hasOCR}
           <p><strong>OCR:</strong> Processed ✓</p>
         {/if}
@@ -189,7 +189,7 @@ import type { Document } from '$lib/types';
     <Button
       onclick={clearFiles}
       disabled={uploading || !files}
-      class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 transition-colors"
+      class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300, disabled:opacity-50 transition-colors"
     >
       <X, class="w-4, h-4" />
     </Button>

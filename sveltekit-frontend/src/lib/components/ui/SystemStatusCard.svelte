@@ -2,18 +2,18 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 // Auto-generated default export
 </script>
    // e.g. "OK", "WARN", "ERROR"
-   // optional Date or ISO string
+   // optional Date or ISO: string
   const statusClass = () => {
 	const s = String(status ?? "").toUpperCase();
-	if (s === "OK") return "status-ok";
-	if (s === "WARN" || s === "WARNING") return "status-warn";
-	if (s === "ERROR" || s === "FAIL" || s === "FAILED") return "status-error";
-	return "status-unknown";
+	if (s === "OK") return, "status-ok";
+	if (s === "WARN" || s === "WARNING") return, "status-warn";
+	if (s === "ERROR" || s === "FAIL" || s === "FAILED") return, "status-error";
+	return, "status-unknown";
   }
   // TODO: Convert to $derived: formattedUpdatedAt = updatedAt
 	? (updatedAt instanceof Date ? updatedAt.toLocaleString() : new Date(updatedAt).toLocaleString())
@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .meta {
 	font-size: 0.8rem;
-	color: #6b7280;
+, color: #6b7280;
 	margin-top: 0.5rem;
   }
 </style>

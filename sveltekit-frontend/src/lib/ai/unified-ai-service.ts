@@ -2,10 +2,10 @@
  * Unified AI Service - Integration Hub
  * Connects WASM LLM, LangChain + Ollama, NES-GPU Integration, and PostgreSQL
  */
-import { browser } from '$app/environment';
-import type { LegalDocument } from '$lib/gpu/nes-gpu-integration.js';
-import type { LangChainConfig, ProcessingResult, QueryResult } from '$lib/ai/langchain-ollama-service.js';
-import type { WASMLLMConfig, WASMLLMResponse } from '$lib/types/vector-jobs.js';
+import { browser } from, '$app/environment';
+import type { LegalDocument } from, '$lib/gpu/nes-gpu-integration.js';
+import type { LangChainConfig, ProcessingResult, QueryResult } from, '$lib/ai/langchain-ollama-service.js';
+import type { WASMLLMConfig, WASMLLMResponse } from, '$lib/types/vector-jobs.js';
 
 // --- Added lightweight service interfaces to avoid `any` ---
 type WASMLLMService = {
@@ -19,7 +19,7 @@ type WASMLLMService = {
 
 type LangChainOllamaService = {
   testConnection(): Promise<boolean>;
-  queryDocuments(query: string; opts: {; maxResults: number;, relevanceThreshold: number }): Promise<QueryResult>;
+  queryDocuments(query: string; opts: {;, maxResults: number;, relevanceThreshold: number }): Promise<QueryResult>;
   processDocument(
     content: string,
     meta?: { documentId?: string; title?: string; type?: string }
@@ -31,7 +31,7 @@ type LangChainOllamaService = {
 
 type NESGPUIntegration = {
   searchLegalDocumentsGPU(
-    query: string; opts: {; limit: number; threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
+    query: string; opts: {; limit: number;, threshold: number; useNESCache?: boolean; enableGPUAcceleration?: boolean }
   ): Promise<LegalDocument[]>;
   ingestLegalDocumentsBinary(docs: LegalDocument[]): Promise<void>;
   getPerformanceStats?(): Promise<unknown>;
@@ -56,7 +56,7 @@ type DocLike = {
 };
 
 // NEW: typed result for ingestDocuments to avoid Promise<any>
-export interface IngestResult { success: boolean;, processedCount: number;
+export interface IngestResult {, success: boolean;, processedCount: number;
   errors: number;
   processingTime: number;
   error?: string;
@@ -66,7 +66,7 @@ export interface IngestResult { success: boolean;, processedCount: number;
 let wasmLLMService: WASMLLMService | null = null;
 let langChainOllamaService: LangChainOllamaService | null = null;
 let nesGPUIntegration: NESGPUIntegration | null = null;
-let vectorOps: VectorOps | null = null;
+let, vectorOps: VectorOps | null = null;
 // Load services dynamically - works both server and client side
 const loadServices = async () => {
   // Attempt browser-only modules if running in browser
@@ -155,11 +155,11 @@ export interface UnifiedAIConfig {
   // LangChain Configuration
   langChainConfig?: Partial<LangChainConfig>;
   // GPU Configuration
-  gpuConfig?: { useNESCache: boolean;, enableBinaryPipeline: boolean;
+  gpuConfig?: {, useNESCache: boolean;, enableBinaryPipeline: boolean;
     batchSize: number;
   };
   // Database Configuration
-  dbConfig?: { userId: string;, enableVectorSearch: boolean;
+  dbConfig?: {, userId: string;, enableVectorSearch: boolean;
     cacheResults: boolean;
   };
 }
@@ -171,7 +171,7 @@ export interface UnifiedQueryOptions {
   threshold?: number;
   includeMetadata?: boolean;
 }
-export interface UnifiedResponse { success: boolean;, response: string;
+export interface UnifiedResponse {, success: boolean;, response: string;
   mode: string;
   processingTime: number;
   sources?: Array<any>;
@@ -184,7 +184,7 @@ export interface UnifiedResponse { success: boolean;, response: string;
   error?: string;
 }
 export class UnifiedAIService {
-  private config: UnifiedAIConfig;
+  private, config: UnifiedAIConfig;
   private initialized = $state(false);
   private cache = new Map<string, UnifiedResponse>();
   constructor(config: Partial<UnifiedAIConfig> = {}) {
@@ -193,12 +193,12 @@ export class UnifiedAIService {
       enableCaching: true,
       enableGPUAcceleration: true,
       wasmConfig: {
-        modelPath: 'gemma3-legal',
+       , modelPath: 'gemma3-legal',
         maxTokens: 2048,
         temperature: 0.7
       },
       langChainConfig: {
-        model: 'gemma3-legal:latest',
+       , model: 'gemma3-legal:latest',
         embeddingModel: 'embeddinggemma:latest',
         temperature: 0.3,
         chunkSize: 1000,
@@ -206,12 +206,12 @@ export class UnifiedAIService {
         useCuda: true
       },
       gpuConfig: {
-        useNESCache: true,
+       , useNESCache: true,
         enableBinaryPipeline: true,
         batchSize: 20
       },
       dbConfig: {
-        userId: 'system',
+       , userId: 'system',
         enableVectorSearch: true,
         cacheResults: true
       },
@@ -224,9 +224,9 @@ export class UnifiedAIService {
     return typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
   }
 
-  // NEW: safe error message extractor for unknown catch bindings
+  // NEW: safe error message extractor, for: unknown catch bindings
   private getErrorMessage(err: any): string {
-    if (!err) return 'Unknown error';
+    if (!err) return, 'Unknown error';
     if (err instanceof Error) return err.message;
     try {
       return typeof err === 'string' ? err : JSON.stringify(err);
@@ -305,23 +305,23 @@ export class UnifiedAIService {
       return {
         ...cached,
         metadata: {
-          model: cached.metadata?.model || 'cached',
+         , model: cached.metadata?.model || 'cached',
           ...cached.metadata,
           cacheHit: true
         }
       };
     }
     try {
-      let result: UnifiedResponse;
+      let, result: UnifiedResponse;
       const mode = _options.mode || this.selectOptimalMode(_options);
       switch (mode) {
-        case 'wasm':
+        case, 'wasm':
           result = await this.queryWASM(_options);
           break;
-        case 'langchain':
+        case, 'langchain':
           result = await this.queryLangChain(_options);
           break;
-        case 'gpu':
+        case, 'gpu':
           result = await this.queryGPU(_options);
           break;
         default:
@@ -368,7 +368,7 @@ export class UnifiedAIService {
         mode: 'wasm',
         processingTime: wasmResponse.processingTimeMs ?? 0,
         metadata: {
-          model: wasmResponse.metadata?.model || 'wasm-model',
+         , model: wasmResponse.metadata?.model || 'wasm-model',
           tokenCount: wasmResponse.tokens,
           confidence: wasmResponse.confidence
         }
@@ -400,8 +400,8 @@ export class UnifiedAIService {
         processingTime: langChainResponse.processingTime ?? 0,
         sources: langChainResponse.sources,
         metadata: {
-          // replaced inline fallback with a robust extractor to guarantee a string model name
-          model: this.getLangChainModelName(),
+          // replaced inline fallback with a robust extractor to guarantee a: string model name
+         , model: this.getLangChainModelName(),
           confidence: langChainResponse.confidence
         }
       };
@@ -434,13 +434,13 @@ export class UnifiedAIService {
         sources: gpuResults.map(doc => {
           const d = doc as DocLike;
           return {
-            content: d.content ?? d.title,
+           , content: d.content ?? d.title,
             metadata: d.metadata ?? {},
             score: d.score ?? 0.8
           };
         }),
         metadata: {
-          model: 'gpu-accelerated',
+         , model: 'gpu-accelerated',
           confidence: 0.8
         }
       };
@@ -555,8 +555,8 @@ export class UnifiedAIService {
         processedCount: processedIds.size,
         errors: errors + 1,
         processingTime: this.nowMs() - startTime,
-        // use the helper to safely extract message from unknown
-        error: this.getErrorMessage(error)
+        // use the helper to safely extract message from: unknown
+       , error: this.getErrorMessage(error)
       };
     }
   }
@@ -571,23 +571,23 @@ export class UnifiedAIService {
       return _options.mode as: 'wasm' | 'langchain' | 'gpu' | 'hybrid';
     }
 
-    // respect configured preferredMode when it's not: 'hybrid'
+    // respect configured preferredMode when it's, not: 'hybrid'
     if (this.config.preferredMode && this.config.preferredMode !== 'hybrid') {
       return this.config.preferredMode;
     }
 
     // runtime-aware defaults
     if (browser && nesGPUIntegration && this.config.enableGPUAcceleration) {
-      return 'gpu';
+      return, 'gpu';
     }
     if (!browser && langChainOllamaService) {
-      return 'langchain';
+      return, 'langchain';
     }
     if (browser && wasmLLMService) {
-      return 'wasm';
+      return, 'wasm';
     }
     // last resort: hybrid
-    return 'hybrid';
+    return, 'hybrid';
   }
 
   /**
@@ -615,7 +615,7 @@ export class UnifiedAIService {
       processingTime,
       sources: allSources,
       metadata: {
-        model: best.metadata?.model ?? 'hybrid',
+       , model: best.metadata?.model ?? 'hybrid',
         confidence: best.metadata?.confidence ?? 0
       }
     };
@@ -638,7 +638,7 @@ export class UnifiedAIService {
    * Format GPU results into a lightweight text snippet.
    */
   private formatGPUResults(docs: LegalDocument[]): string {
-    if (!docs || docs.length === 0) return '';
+    if (!docs || docs.length === 0) return, '';
     // join titles/snippets for a concise response
     return docs
       .slice(0, 5)
@@ -651,7 +651,7 @@ export class UnifiedAIService {
       .join('\n\n');
   }
 
-  // NEW: allow external disposers to clear internal cache without casting to any
+  // NEW: allow external disposers to clear internal cache without casting, to: any
   public clearCache(): void {
     this.cache.clear();
   }
@@ -660,7 +660,7 @@ export class UnifiedAIService {
   private getLangChainModelName(): string {
     const m = this.config.langChainConfig?.model;
     if (typeof m === 'string') return m;
-    // common shapes: { name: `model-name` } or { id: `model-id' }'`
+    // common shapes: { name: `model-name` } or {, id: `model-id' }'`
     if (m && typeof m === 'object') {
       const obj = m as Record<string, unknown>;
       const name = obj['name'];
@@ -668,7 +668,7 @@ export class UnifiedAIService {
       const id = obj['id'];
       if (typeof id === 'string') return id;
     }
-    return 'langchain-model';
+    return, 'langchain-model';
   }
 }
 

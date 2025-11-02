@@ -2,9 +2,9 @@
  * Simple Redis Connection Test
  * Direct test of Redis connectivity without complex caching logic
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getRedisService } from '$lib/server/redis/redis-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { getRedisService } from, '$lib/server/redis/redis-service';
 
 export const GET: RequestHandler = async () => {
   try {

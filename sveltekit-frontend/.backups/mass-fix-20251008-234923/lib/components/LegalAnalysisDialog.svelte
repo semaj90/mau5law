@@ -72,7 +72,7 @@
     }
   }
 </script>
-<Dialog.Root {open} {onOpenChange}>
+<Dialog {open} {onOpenChange}>
   <Dialog.Trigger>
     <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +95,7 @@
       <!-- Case Selection -->
       <div class="space-y-3">
         <label class="text-sm font-medium text-gray-700">Select Case for Analysis</label>
-        <Select.Root bind:value={selectedCaseForAnalysis} disabled={loading.analysis}>
+        <Select bind:value={selectedCaseForAnalysis} disabled={loading.analysis}>
           <Select.Trigger class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             <Select.Value placeholder="Choose a case to analyze..." />
           </Select.Trigger>
@@ -120,7 +120,7 @@
               </Select.Item>
             {/each}
           </Select.Content>
-        </Select.Root>
+        </Select>
       </div>
       <!-- Analysis Progress -->
       {#if analysisStatus === 'analyzing'}
@@ -283,7 +283,7 @@ onOpenChange(false)}
         {/if}
     </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 <style>
   .legal-dialog {
     animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);

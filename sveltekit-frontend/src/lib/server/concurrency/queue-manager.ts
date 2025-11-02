@@ -1,15 +1,15 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /**
  * Concurrent Operation Queue Manager for Legal AI Platform
  * Handles background processing with proper concurrency control
- * Integrates with Superforms + Zod validation and SvelteKit 2
+ * Integrates with Superforms + Zod validation and SvelteKit, 2
  */
-import { transactionManager } from './transaction-manager.js';
-import { advisoryLocks, type LockType, type LockMode } from './advisory-locks.js';
-import { randomUUID } from 'crypto';
-import { z } from 'zod';
+import { transactionManager } from, './transaction-manager.js';
+import { advisoryLocks, type LockType, type LockMode } from, './advisory-locks.js';
+import { randomUUID } from, 'crypto';
+import { z } from, 'zod';
 // Zod schemas for type safety with Superforms
 export const QueueJobSchema = z.object({
   id: cuidSchema,
@@ -54,8 +54,8 @@ export class QueueManager {
   private processors = new Map<QueueJob['type'], JobProcessor>();
   private pendingJobs = new Map<string, QueueJob>();
   private processingJobs = new Map<string, QueueJob>();
-  private completedJobs = new Map<string, { job: QueueJob; result: any; completedAt: Date }>();
-  private failedJobs = new Map<string, { job: QueueJob; error: Error; failedAt: Date }>();
+  private completedJobs = new Map<string, { job: QueueJob; result: any;, completedAt: Date }>();
+  private failedJobs = new Map<string, { job: QueueJob; error: Error;, failedAt: Date }>();
   private isRunning = $state(false);
   private processingInterval: NodeJS.Timeout | null = null;
   private maxConcurrentJobs = 5;
@@ -176,7 +176,7 @@ export class QueueManager {
           timeout: job.timeout,
           userId: job.userId,
           sessionId: job.sessionId,
-          metadata: { jobId: job.id, jobType: job.type }
+          metadata: {, jobId: job.id, jobType: job.type }
         }
       );
       // Mark as completed
@@ -313,11 +313,11 @@ export class QueueManager {
    * Get job status
    */
   getJobStatus(jobId: string): 'pending' | 'processing' | 'completed' | 'failed' | 'not_found' {
-    if (this.pendingJobs.has(jobId)) return 'pending';
-    if (this.processingJobs.has(jobId)) return 'processing';
-    if (this.completedJobs.has(jobId)) return 'completed';
-    if (this.failedJobs.has(jobId)) return 'failed';
-    return 'not_found';
+    if (this.pendingJobs.has(jobId)) return, 'pending';
+    if (this.processingJobs.has(jobId)) return, 'processing';
+    if (this.completedJobs.has(jobId)) return, 'completed';
+    if (this.failedJobs.has(jobId)) return, 'failed';
+    return, 'not_found';
   }
   /**
    * Get job result
@@ -327,7 +327,7 @@ export class QueueManager {
     if (completed) return completed.result;
     const failed = this.failedJobs.get(jobId);
     if (failed) return { error: failed.error.message }
-    return null;
+   , return: null;
   }
   /**
    * Health check and cleanup

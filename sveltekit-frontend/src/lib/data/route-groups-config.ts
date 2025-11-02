@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
- * Route Groups Configuration for Phase 2 Consolidation
+ * Route Groups Configuration for Phase, 2 Consolidation
  * Organized route structure with proper categorization and theming
  */
 export interface RouteGroupDefinition { id: string;, label: string;
@@ -11,7 +11,7 @@ export interface RouteGroupDefinition { id: string;, label: string;
   theme: 'matrix' | 'cyberpunk' | 'amber' | 'retro';
   routes: RouteDefinition[];
 }
-export interface RouteDefinition { id: string;, label: string;
+export interface RouteDefinition {, id: string;, label: string;
   route: string;
   icon: string;
   description: string;
@@ -21,7 +21,7 @@ export interface RouteDefinition { id: string;, label: string;
 // New consolidated route groups
 export const routeGroups: RouteGroupDefinition[] = [
   {
-    id: 'legal',
+   , id: 'legal',
     label: 'Legal Operations',
     path: '/(legal)',
     icon: '⚖️',

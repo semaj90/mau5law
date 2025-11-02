@@ -489,7 +489,7 @@
       </svelte:component>
     {/if}
   <!-- Metadata Dialog -->
-  <Dialog.Root bind:open={showMetadata}>
+  <Dialog bind:open={showMetadata}>
     <Dialog.Content class="max-w-md">
       <Dialog.Header>
         <Dialog.Title>Document Metadata</Dialog.Title>
@@ -517,7 +517,7 @@
           </div>
           <div>
             <svelte:component this={LabelComponent} htmlFor="document-type">Document Type</svelte:component>
-            <Select.Root bind:value={metadataDraft.documentType}>
+            <Select bind:value={metadataDraft.documentType}>
               <Select.Trigger>
                 <Select.Value placeholder="Select type" />
               </Select.Trigger>
@@ -526,11 +526,11 @@
                   <Select.Item value={type.value}>{type.label}</Select.Item>
                 {/each}
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
           <div>
             <svelte:component this={LabelComponent} htmlFor="jurisdiction">Jurisdiction</svelte:component>
-            <Select.Root bind:value={metadataDraft.jurisdiction}>
+            <Select bind:value={metadataDraft.jurisdiction}>
               <Select.Trigger>
                 <Select.Value placeholder="Select jurisdiction" />
               </Select.Trigger>
@@ -539,7 +539,7 @@
                   <Select.Item value={jurisdiction.value}>{jurisdiction.label}</Select.Item>
                 {/each}
               </Select.Content>
-            </Select.Root>
+            </Select>
           </div>
           <div class="ai-options">
             <svelte:component this={LabelComponent}>AI Processing Options</svelte:component>
@@ -562,7 +562,7 @@
           </div>
         {/if}
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 </div>
 <style>
   .enhanced-document-uploader {

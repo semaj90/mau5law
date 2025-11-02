@@ -360,7 +360,7 @@
   </main>
 </div>
 <!-- Pattern Details Dialog -->
-<Dialog.Root bind:open={showPatternDetails}>
+<Dialog bind:open={showPatternDetails}>
   <!-- Use Portal + conditional pattern required by Bits UI v1 / Svelte 5 runes -->
   <Dialog.Portal forceMount>
     {#if showPatternDetails}
@@ -473,7 +473,7 @@
       </Dialog.Content>
     {/if}
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   .pattern-detection-interface {
     max-width: 1400px;

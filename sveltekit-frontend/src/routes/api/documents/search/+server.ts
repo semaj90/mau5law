@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Enhanced Document Search API with PostgreSQL + pgvector + Cognitive Cache
-import { db, getDatabaseHealth } from '$lib/server/db';
-import { legal_documents, evidence, cases } from '$lib/server/db/schema-postgres';
-import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
-import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
-import { generateEmbedding } from '$lib/server/services/embedding-service';
+import { db, getDatabaseHealth } from, '$lib/server/db';
+import { legal_documents, evidence, cases } from, '$lib/server/db/schema-postgres';
+import { cognitiveCacheManager } from, '$lib/services/cognitive-cache-integration';
+import { sql, eq, and, or, gte, lte } from, 'drizzle-orm';
+import { generateEmbedding } from, '$lib/server/services/embedding-service';
 // Ensure database is initialized
 const dbInitialized = false;
 export const POST: RequestHandler = async ({ request }) => {
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
       key: cacheKey,
       type: 'legal-data' as const,
       context: {
-        action: 'document-search',
+       , action: 'document-search',
         searchType,
         query: query?.substring(0, 50) || 'embedding-search',
         workflowStep: 'search-execution',
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Perform search based on type
     switch (searchType) {
-      case 'vector':
+      case, 'vector':
         if (queryEmbedding) {
           results = await vectorSearch(queryEmbedding, limit, threshold, filters);
           searchMethod = 'Vector Similarity';
@@ -72,15 +72,15 @@ export const POST: RequestHandler = async ({ request }) => {
           throw error(400, 'Embedding required for vector search');
         }
         break;
-      case 'keyword':
+      case, 'keyword':
         results = await keywordSearch(query, limit, filters);
         searchMethod = 'Full-text Search';
         break;
-      case 'hybrid':
+      case, 'hybrid':
         results = await hybridSearch(query, queryEmbedding, limit, threshold, filters);
         searchMethod = 'Hybrid (Vector + Keyword)';
         break;
-      case 'semantic':
+      case, 'semantic':
         if (queryEmbedding) {
           results = await semanticSearch(query, queryEmbedding, limit, threshold, filters);
           searchMethod = 'Semantic + Context';
@@ -371,7 +371,7 @@ function extractExcerpt(content: string, query: string): string {
       return sentence.trim().substring(0, 200) + '...';
     }
   }
-  // Fallback to first 200 characters
+  // Fallback to first, 200 characters
   return content.substring(0, 200) + '...';
 }
 // Calculate context relevance score
@@ -413,7 +413,7 @@ function calculateLegalRelevance(query: string, legalAnalysis: any): number {
 // Note: Document storage is handled by the dedicated /api/documents/upload endpoint
 // This search endpoint focuses on querying existing documents
 // Health check endpoint
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     // Get comprehensive database health status
     const dbHealth = await getDatabaseHealth();
@@ -460,7 +460,7 @@ export const GET: RequestHandler = async () => {
         embeddings: embeddingCount, // Added comma
         embeddingCoverage: documentCount > 0 ? ((embeddingCount / documentCount) * 100).toFixed(1) + '%' : `0%` },
       cache: {
-        cognitive: cacheStatus, // Added comma
+       , cognitive: cacheStatus, // Added comma
         type: `ML-driven cognitive cache` },
       timestamp: new Date().toISOString(),
       version: `3.0.0` });

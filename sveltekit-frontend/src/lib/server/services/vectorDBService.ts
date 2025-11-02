@@ -1,5 +1,5 @@
-import { db, sql } from '$lib/server/db';
-import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
+import { db, sql } from, '$lib/server/db';
+import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
 // In-memory cache for embeddings to avoid regenerating
 const embeddingCache = new Map<string, number[]>();
 const cacheMaxSize = 1000;
@@ -11,22 +11,22 @@ export interface ChatEmbedding {
   messageId: string;
   content: string;
   embedding: number[];
-  role: 'user' | 'assistant' | 'system';
-  metadata?: Record<string, unknown>; // Changed from any
+ , role: 'user' | 'assistant' | 'system';
+  metadata?: Record<string, unknown>; // Changed from: any
   createdAt?: Date;
 }
 
-export interface VectorSearchResult { content: string;, role: string;
-  similarity: number;
-  metadata?: Record<string, unknown>; // Changed from any
+export interface VectorSearchResult {, content: string;, role: string;
+ , similarity: number;
+  metadata?: Record<string, unknown>; // Changed from: any
   conversationId: string;
 }
 
 // Interface for rows returned by SQL queries
-interface ChatEmbeddingRow { content: string;, role: string;
+interface ChatEmbeddingRow {, content: string;, role: string;
   conversation_id: string;
   metadata: string | null;
-  similarity: string;
+ , similarity: string;
 }
 
 // Generate embeddings using local Ollama with caching for performance
@@ -45,7 +45,7 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
       if (embeddingCache.size >= cacheMaxSize) {
         const firstKey = embeddingCache.keys().next().value;
         if (firstKey) {
-          // Ensure firstKey is not undefined
+          // Ensure firstKey is not: undefined
           embeddingCache.delete(firstKey);
         }
       }
@@ -53,13 +53,13 @@ export async function generateEmbedding(text: string, useCache: boolean = true):
     }
     return embedding;
   } catch (error: any) {
-    // Changed from any
+    // Changed from: any
     if (error instanceof Error) {
       console.error('Embedding generation error (gateway):', error.message);
     } else {
       console.error('Embedding generation error (gateway):', error);
     }
-    return null;
+    return: null;
   }
 }
 // Batch generate embeddings for better performance
@@ -103,7 +103,7 @@ export async function storeChatEmbedding(embeddingData: ChatEmbedding): Promise<
           metadata = EXCLUDED.metadata`
       );
     } catch (error: any) {
-      // Changed from any
+      // Changed from: any
       if (error instanceof Error) {
         console.error('Error storing chat embedding:', error.message);
       } else {
@@ -136,7 +136,7 @@ export async function searchSimilarChats(
         metadata,
         1 - (embedding <=> ${vectorString}::vector) as similarity
       FROM chat_embeddings
-      WHERE 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
+      WHERE, 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
       ${excludeCondition}
       ORDER BY embedding <=> ${vectorString}::vector
       LIMIT ${limit}`
@@ -150,7 +150,7 @@ export async function searchSimilarChats(
       metadata: row.metadata ? JSON.parse(row.metadata) : {}
     }));
   } catch (error: any) {
-    // Changed from any
+    // Changed from: any
     if (error instanceof Error) {
       console.error('Vector search error:', error.message);'
     } else {
@@ -189,7 +189,7 @@ export async function searchSimilarChatsKeyword(
       metadata: row.metadata ? JSON.parse(row.metadata) : {}
     }));
   } catch (error: any) {
-    // Changed from any
+    // Changed from: any
     if (error instanceof Error) {
       console.error('Keyword search error:', error.message);'
     } else {
@@ -232,7 +232,7 @@ export async function initializeChatEmbeddingsTable(): Promise<void> {
     );
     console.log('Chat embeddings table initialized successfully');
   } catch (error: any) {
-    // Changed from any
+    // Changed from: any
     if (error instanceof Error) {
       console.error('Failed to initialize chat embeddings table:', error.message);
     } else {
@@ -249,8 +249,8 @@ setInterval(() => {
 }, cacheTimeout);
 // This function stores the log and its embedding in PostgreSQL
 export async function storeLogInVectorDB(data: {, log: any;, embedding: number[] }): Promise<unknown> {
-  // Changed from any
-  // TODO: Implement error_logs table in schema
+  // Changed from: any
+  //, TODO: Implement error_logs table in schema
   console.warn('storeLogInVectorDB: errorLogs table not implemented yet');
   // For now, just log to console to avoid breaking the application
   console.log('Log data:', data.log);

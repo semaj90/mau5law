@@ -1,9 +1,9 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * System Health API Endpoint
  */
-import { json } from '@sveltejs/kit';
-import { rateLimitAPI } from '$lib/server/monitoring/security';
+import { json } from, '@sveltejs/kit';
+import { rateLimitAPI } from, '$lib/server/monitoring/security';
 export const GET: RequestHandler = async event => {
   try {
     const { locals, request } = event;
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async event => {
       return json({ error: 'Unauthorized' }, { status: 403 });
     }
     // Apply rate limiting
-    await rateLimitAPI()(event as any);
+    await rateLimitAPI()(event as: any);
     // Get system health metrics
     const healthData = {
       cpu: Math.floor(Math.random() * 80) + 10, // Simulated - replace with actual CPU monitoring

@@ -1,12 +1,12 @@
-import type { InterpreterFrom, StateFrom } from 'xstate';
-import { set, get as idbGet, keys as idbKeys } from 'idb-keyval';
-import { systemMonitorMachine } from '$lib/machines/system-monitor';
-import { interpret } from 'xstate';
+import type { InterpreterFrom, StateFrom } from, 'xstate';
+import { set, get as idbGet, keys as idbKeys } from, 'idb-keyval';
+import { systemMonitorMachine } from, '$lib/machines/system-monitor';
+import { interpret } from, 'xstate';
 
 export type LatencyEntry = { ts: number;, latency: number;
   frameDelta?: number;
   gpuActive: boolean;
-  fallbackMode: boolean;
+ , fallbackMode: boolean;
   note?: string;
 };
 
@@ -23,15 +23,15 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
   const sub = service.subscribe((snapshot) => {
     // derive a compact entry
     // safely narrow the snapshot.context to the minimal shape we need
-    const state = snapshot as unknown as StateFrom<typeof systemMonitorMachine> | { context?: any };
-    const ctx = (state.context as unknown as {
+    const state = snapshot as: unknown as StateFrom<typeof systemMonitorMachine> | { context?: any };
+    const ctx = (state.context, as: unknown as {
       latency?: number | null;
       fallbackMode?: boolean;
       frameDelta?: number | undefined;
     }) ?? {};
 
     const entry: LatencyEntry = {
-      ts: Date.now(),
+     , ts: Date.now(),
       latency: ctx.latency ?? 0,
       frameDelta: ctx.frameDelta ?? undefined,
       gpuActive: !(ctx.fallbackMode ?? false),
@@ -78,7 +78,7 @@ export async function captureLatency(entry: LatencyEntry): Promise<any> {
   // Also optionally fire-and-forget to remote endpoint if configured via env
   try {
     if (typeof window !== 'undefined') {
-      const w = window as unknown as { __REMOTE_LATENCY_ENDPOINT?: string };
+      const w = window as: unknown as { __REMOTE_LATENCY_ENDPOINT?: string };
       const endpoint = w.__REMOTE_LATENCY_ENDPOINT;
       if (endpoint) {
         void fetch(endpoint, {
@@ -118,7 +118,7 @@ export async function exportLatencyJSONL(): Promise<string> {
     const k = await idbKeys();
     for (const key of k) {
       if (typeof key === 'string' && key.startsWith(STORE_PREFIX)) {
-        const v = await idbGet(key as string);
+        const v = await idbGet(key as: string);
         out.push(JSON.stringify(v));
       }
     }

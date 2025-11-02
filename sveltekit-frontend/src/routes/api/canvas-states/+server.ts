@@ -1,11 +1,11 @@
-import { canvasLayouts } from '$lib/server/db/schema-canvas';
-import type { RequestEvent } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { eq, and, like, desc, sql } from 'drizzle-orm';
-import { getUserId } from '$lib/server/auth/utils';
+import { canvasLayouts } from, '$lib/server/db/schema-canvas';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { eq, and, like, desc, sql } from, 'drizzle-orm';
+import { getUserId } from, '$lib/server/auth/utils';
 
-// Small helper to safely format unknown errors for logging
+// Small helper to safely format: unknown errors for logging
 function formatError(e: any): string {
   // Prefer Error message when available, otherwise stringify
   if (e instanceof Error) return e.stack ?? e.message;
@@ -106,11 +106,11 @@ export async function POST({ request, locals }: RequestEvent): Promise<Response>
       return json({ error: 'Name and layout data are required' }, { status: 400 });
     }
     const canvasStateData = {
-      caseId: (data.caseId as string) || null,
-      name: (data.name as string).trim(),
+      caseId: (data.caseId, as: string) || null,
+      name: (data.name, as: string).trim(),
       layoutData: data.layoutData,
-      description: (data.description as string) || null,
-      isDefault: (data.isDefault as boolean) || false,
+      description: (data.description, as: string) || null,
+      isDefault: (data.isDefault, as: boolean) || false,
       createdBy: getUserId(locals)
     };
     const [newCanvasState] = await db.insert(canvasLayouts).values(canvasStateData).returning();
@@ -137,7 +137,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, data.id as string))
+      .where(eq(canvasLayouts.id, data.id as: string))
       .limit(1);
     if (!existingCanvasState.length) {
       return json({ error: 'Canvas state not found' }, { status: 404 });
@@ -146,7 +146,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<Response> 
       updatedAt: new Date()
     };
     // Only update provided fields
-    if (data.name !== undefined) updateData.name = (data.name as string).trim();
+    if (data.name !== undefined) updateData.name = (data.name as: string).trim();
     if (data.layoutData !== undefined) updateData.layoutData = data.layoutData;
     if (data.description !== undefined) updateData.description = data.description;
     if (data.isDefault !== undefined) updateData.isDefault = data.isDefault;

@@ -49,7 +49,7 @@
 </button>
 <!-- AI Dialog -->
 {#if dialogOpen}
-  <Dialog.Root title="AI Assistant" open={dialogOpen} close={toggleDialog} airequest={handleAIRequest} />
+  <Dialog title="AI Assistant" open={dialogOpen} close={toggleDialog} airequest={handleAIRequest} />
 {/if}
 
 <style>

@@ -6,26 +6,26 @@
 export interface DimensionalArray { data: Float32Array | Float64Array | Int32Array;, shape: number[];
   dtype: 'float32' | 'float64' | 'int32';
   kernelSplices: KernelAttentionSlice[];
-  metadata: { created: number;, lastAccessed: number;
+  metadata: {, created: number;, lastAccessed: number;
     computationHash: string;
     attentionWeights: Float32Array;
   };
 }
-export interface KernelAttentionSlice { startIndex: number;, endIndex: number;
+export interface KernelAttentionSlice {, startIndex: number;, endIndex: number;
   attentionScore: number;
   recommendationVector: Float32Array;
   contextEmbedding: Float32Array;
 }
-export interface CacheEntry { id: string;, dimensionalArray: DimensionalArray;
+export interface CacheEntry {, id: string;, dimensionalArray: DimensionalArray;
   ttl: number;
   priority: 'high' | 'medium' | 'low';
-  userContext: { userId: string;, sessionId: string;
+  userContext: {, userId: string;, sessionId: string;
     behaviorPattern: string;
   };
 }
-export interface RecommendationResult { similar: DimensionalArray[];, suggestions: string[];
+export interface RecommendationResult {, similar: DimensionalArray[];, suggestions: string[];
   didYouMean: string[];
-  othersSearched: string[];
+ , othersSearched: string[];
 }
 export class DimensionalCacheEngine {
   private cache = new Map<string, CacheEntry>();
@@ -48,12 +48,12 @@ export class DimensionalCacheEngine {
     // Generate kernel attention slices
     const kernelSplices = this.generateKernelSlices(flatData, attention);
     const dimensionalArray: DimensionalArray = {
-      data: flatData,
+     , data: flatData,
       shape,
       dtype: 'float32',
       kernelSplices,
       metadata: {
-        created: Date.now(),
+       , created: Date.now(),
         lastAccessed: Date.now(),
         computationHash: this.generateHash(flatData, shape),
         attentionWeights: attention
@@ -65,15 +65,15 @@ export class DimensionalCacheEngine {
    * Cache dimensional array with intelligent eviction
    */
   async cacheDimensionalArray(
-    key: string,
+   , key: string,
     dimensionalArray: DimensionalArray,
-    userContext: { userId: string; sessionId: string; behaviorPattern: string }
+    userContext: { userId: string; sessionId: string;, behaviorPattern: string }
   ): Promise<void> {
     if (this.cache.size >= this.maxCacheSize) {
       this.evictEntry();
     }
     const entry: CacheEntry = {
-      id: key,
+     , id: key,
       dimensionalArray,
       ttl: Date.now() + this.defaultTTL,
       priority: this.calculatePriority(dimensionalArray, userContext),
@@ -145,7 +145,7 @@ export class DimensionalCacheEngine {
     const similar: DimensionalArray[] = [];
     const suggestions: string[] = [];
     const didYouMean: string[] = [];
-    const othersSearched: string[] = [];
+    const, othersSearched: string[] = [];
     // Find similar computations
     for (const computation of history) {
       const similarity = this.calculateSimilarity(currentContext, computation);
@@ -189,7 +189,7 @@ export class DimensionalCacheEngine {
     // Simplified cosine similarity
     const contextHash = this.generateHash(new Float32Array([context.length]), [1]);
     const compHash = computation.metadata.computationHash;
-    // Simple string similarity (replace with actual vector similarity)
+    // Simple: string similarity (replace with actual vector similarity)
     const longer = contextHash.length > compHash.length ? contextHash : compHash;
     const shorter = contextHash.length > compHash.length ? compHash : contextHash;
     const editDistance = this.getEditDistance(longer, shorter);
@@ -262,11 +262,11 @@ export class DimensionalCacheEngine {
       dimensionalArray.kernelSplices.reduce((sum, slice) => sum + slice.attentionScore, 0) /
       dimensionalArray.kernelSplices.length;
     if (avgAttentionScore > 0.8 || userContext.behaviorPattern === 'power_user') {
-      return 'high';
+      return, 'high';
     } else if (avgAttentionScore > 0.5) {
-      return 'medium';
+      return, 'medium';
     }
-    return 'low';
+    return, 'low';
   }
   /**
    * Evict cache entry based on strategy
@@ -305,7 +305,7 @@ export class DimensionalCacheEngine {
    */
   getStats(): { cacheSize: number;, hitRate: number;
     avgAttentionScore: number;
-    totalComputations: number;
+   , totalComputations: number;
   } {
     const totalAttentionScores = Array.from(this.cache.values())
       .flatMap(entry => entry.dimensionalArray.kernelSplices)

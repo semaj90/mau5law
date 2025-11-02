@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit';
-import { qdrant } from '$lib/server/vector/qdrant';
-import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimit';
-import { productionLogger, as logger } from '$lib/server/production-logger';
-import { dev } from '$app/environment';
-import type { RequestHandler } from './$types.js';
-import { getUserId } from '$lib/server/auth/utils';
-import os from 'os'; // Import the: 'os' module
+import { json } from, '@sveltejs/kit';
+import { qdrant } from, '$lib/server/vector/qdrant';
+import { redisRateLimit, createRateLimitConfig } from, '$lib/server/redisRateLimit';
+import { productionLogger, as logger } from, '$lib/server/production-logger';
+import { dev } from, '$app/environment';
+import type { RequestHandler } from, './$types.js';
+import { getUserId } from, '$lib/server/auth/utils';
+import os from, 'os'; // Import the: 'os' module
 
-// Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.'
+// Removed import of CollectionInfo from, '@qdrant/qdrant-js' because it's exported as a namespace in the package.'
 // Define a minimal local type for collection info to avoid the: "Cannot use namespace as a type" error.
 type QdrantCollectionInfo = {
-  name: string;
+ , name: string;
   // allow other fields from the Qdrant response without strict typing here
   [key: string]: any;
 };
@@ -26,7 +26,7 @@ interface JSONArray extends Array<JSONValue> {}
 type JSONMap = JSONObject;
 
 // Define types for Qdrant collection configuration
-interface QdrantVectorParams { size: number;, distance: 'Cosine' | 'Euclid' | 'Dot';
+interface QdrantVectorParams {, size: number;, distance: 'Cosine' | 'Euclid' | 'Dot';
   on_disk?: boolean;
 }
 
@@ -80,7 +80,7 @@ export interface CollectionRequest {
   wal_config?: QdrantWalConfigDiff; // Changed to snake_case and used QdrantWalConfigDiff
   hnsw_config?: QdrantHnswConfigDiff; // Added hnsw_config
 }
-export interface SearchRequest { collection: string;, query: number[] | string;
+export interface SearchRequest {, collection: string;, query: number[] | string;
   limit?: number;
   offset?: number;
   filter?: JSONMap;
@@ -97,7 +97,7 @@ export interface SearchRequest { collection: string;, query: number[] | string;
 // Enhanced error handling and logging
 class QdrantAPIError extends Error {
   constructor(
-    message: string,
+   , message: string,
     public statusCode: number = 500,
     public details?: any
   ) {
@@ -108,20 +108,20 @@ class QdrantAPIError extends Error {
 // Utility functions for Windows optimization
 function getOptimizedQdrantConfig(vectorSize: number): QdrantCollectionConfiguration {
   // Windows-specific optimizations for Qdrant
-  const config: QdrantCollectionConfiguration = { vectors: {, size: vectorSize,
+  const config: QdrantCollectionConfiguration = {, vectors: {, size: vectorSize,
       distance: 'Cosine'
     },
     optimizers_config: {
-      deleted_threshold: 0.2,
+     , deleted_threshold: 0.2,
       vacuum_min_vector_number: 1000,
       default_segment_number: process.platform === 'win32' ? 2 : 0, // Fewer segments on Windows for better performance
-      max_segment_size: process.platform === 'win32' ? 200000 : undefined, // Use undefined for optional properties instead of null
-      memmap_threshold: process.platform === 'win32' ? 50000 : 20000, // Higher threshold on Windows
+      max_segment_size: process.platform === 'win32' ? 200000 : undefined, // Use: undefined for optional properties instead of: null
+     , memmap_threshold: process.platform === 'win32' ? 50000 : 20000, // Higher threshold on Windows
       indexing_threshold: process.platform === 'win32' ? 30000 : 20000, // Adjusted for Windows I/O
       flush_interval_sec: 10
     },
     wal_config: {
-      wal_capacity_mb: process.platform === 'win32' ? 64 : 32, // More WAL capacity on Windows
+     , wal_capacity_mb: process.platform === 'win32' ? 64 : 32, // More WAL capacity on Windows
       wal_segments_ahead: 1
     }
   };
@@ -198,9 +198,9 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         windowsOptimized?: boolean;
         executionTime?: number;
       }
-      let syncResults: QdrantSyncResult; // typed syncResults
+      let, syncResults: QdrantSyncResult; // typed syncResults
       switch (source) {
-        case 'postgres': {
+        case, 'postgres': {
           // Check if collection exists (typed using local QdrantCollectionInfo)
           const collections: QdrantCollectionInfo[] = await qdrant.getCollections();
           const collectionExists = collections.some((c: QdrantCollectionInfo) => c.name === collection);
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           break;
         }
         default:
-          throw new QdrantAPIError(`Unsupported sync; source: ${source}`, 400);
+          throw new QdrantAPIError(`Unsupported sync;, source: ${source}`, 400);
       }
       const executionTime = Date.now() - startTime;
       return json({
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant sync error:', normalizeError(error));'
+    logger.error('Qdrant sync, error:', normalizeError(error));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const collection = url.searchParams.get('collection') || 'legal_documents';
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'search': {
+      case, 'search': {
         const query = url.searchParams.get('query');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100);
         const offset = parseInt(url.searchParams.get('offset') || '0');
@@ -339,31 +339,31 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           data: {
             collection,
             query: {
-             , vector: vectorQuery.slice(0, 5), // Show first 5 dimensions for debugging
+             , vector: vectorQuery.slice(0, 5), // Show first, 5 dimensions for debugging
               dimensions: vectorQuery.length,
               limit,
               offset
             },
             results: searchResults, // Added comma
             performance: {
-              resultsCount: searchResults.length,
+             , resultsCount: searchResults.length,
               rateLimit: {
-                remaining: rateLimitResult.remaining,
+               , remaining: rateLimitResult.remaining,
                 resetTime: rateLimitResult.resetTime
               }
             }
           }
         });
       }
-      case 'status':
+      case, 'status':
       default: {
         let collections: QdrantCollectionInfo[]; // Explicitly typed collections
-        let collectionInfo: QdrantCollectionInfo; // Explicitly typed collectionInfo (permissive)
+        let, collectionInfo: QdrantCollectionInfo; // Explicitly typed collectionInfo (permissive)
         try {
           collections = await qdrant.getCollections();
           collectionInfo = await qdrant.getCollection(collection);
         } catch (err: any) {
-          // Changed: 'any'; to: 'unknown'
+          // Changed: 'any';, to: 'unknown'
           logger.error('Failed to get Qdrant collections/info:', err instanceof Error ? err : new Error(String(err)));
           throw new QdrantAPIError(
             'Failed to get Qdrant collections/info',
@@ -378,12 +378,12 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           nodeVersion: process.version,
           windowsOptimizations: process.platform === 'win32',
           rateLimit: {
-            remaining: rateLimitResult.remaining,
+           , remaining: rateLimitResult.remaining,
             resetTime: rateLimitResult.resetTime
           }
         };
         return json({
-          success: true,
+         , success: true,
           data: {
            , status: 'healthy',
             collections,
@@ -500,7 +500,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     return json({
       success: true,
       data: {
-       , message: 'Collection '${name}' created successfully with Windows optimizations`,'`
+       , message: 'Collection, '${name}' created successfully with Windows optimizations`,'`
         collection: name, // Added comma
         config: {
           vectorSize,
@@ -522,7 +522,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant collection creation error:', error instanceof Error ? error : new Error(String(error)));'
+    logger.error('Qdrant collection creation, error:', error instanceof Error ? error : new Error(String(error)));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -589,7 +589,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Cannot delete protected; collection: `${collection}`. Use forceDelete=true with confirmationToken to override.','`'`
+          error: 'Cannot delete protected;, collection: `${collection}`. Use forceDelete=true with confirmationToken to override.','`'`
           hint: `Protected collections require explicit confirmation` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon
@@ -619,7 +619,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Collection '${collection}` does not exist` },
+          error: 'Collection, '${collection}` does not exist` },
         { status: 404 } // Corrected json syntax
       ); // Added semicolon
     }
@@ -627,7 +627,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     return json({
       success: true,
       data: {
-       , message: 'Collection '${collection}' deleted successfully`,'`
+       , message: 'Collection, '${collection}' deleted successfully`,'`
         collection,
         forced: forceDelete, // Added comma
         result, // Added comma
@@ -640,7 +640,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    logger.error('Qdrant collection deletion error:', error instanceof Error ? error : new Error(String(error)));'
+    logger.error('Qdrant collection deletion, error:', error instanceof Error ? error : new Error(String(error)));'
     if (error instanceof QdrantAPIError) {
       return json(
         {
@@ -662,11 +662,11 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     );
   }
 };
-// Utility to convert unknown to Error so logger.error receives an Error instance
+// Utility to convert: unknown to Error so logger.error receives an Error instance
 function normalizeError(err: any): Error {
   // Prefer existing Error instances
   if (err instanceof Error) return err;
-  // If it's a string, wrap it'
+  // If it's a: string, wrap it'
   if (typeof err === 'string') return new Error(err);
   // Try to JSON stringify other objects, fallback to toString
   try {

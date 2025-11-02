@@ -3,12 +3,12 @@
  * This is a placeholder that you can replace with your real auth system
  * once authentication is fully built out
  */
-import { citationsManager, type AuthUser } from './citations-manager.js';
+import { citationsManager, type AuthUser } from, './citations-manager.js';
 export class AuthDemo {
   private static instance: AuthDemo;
   private demoUsers: AuthUser[] = [
     {
-      id: 'user-1',
+     , id: 'user-1',
       email: 'attorney@lawfirm.com',
       name: 'Sarah Attorney',
       role: 'attorney',
@@ -22,9 +22,9 @@ export class AuthDemo {
       isAuthenticated: true
     }
   ];
-  private currentUser: AuthUser | null = null;
+  private, currentUser: AuthUser | null = null;
   constructor() {
-    // Load any persisted demo user
+    // Load: any persisted demo user
     this.loadDemoUser();
   }
   static getInstance(): AuthDemo {
@@ -65,7 +65,7 @@ export class AuthDemo {
     password?: string;
   }): Promise<AuthUser | null> {
     const newUser: AuthUser = {
-      id: `user-${Date.now()}`,
+     , id: `user-${Date.now()}`,
       email: userData.email,
       name: userData.name,
       role: userData.role,

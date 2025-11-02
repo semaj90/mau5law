@@ -1,20 +1,20 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * src/lib/server/auth.ts
- * Production-Grade Lucia v3 Authentication with SvelteKit 2 + Drizzle ORM
+ * Production-Grade Lucia v3 Authentication with SvelteKit, 2 + Drizzle ORM
  * Integrates with PostgreSQL, MinIO S3, and Docker microservices
  * Includes structured error handling with custom error classes
  */
 
-import { Lucia } from 'lucia';
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import bcrypt from 'bcryptjs';
-import { eq } from 'drizzle-orm';
-import type { RequestEvent } from '@sveltejs/kit';
-import type { Session, User } from 'lucia';
+import { Lucia } from, 'lucia';
+import { DrizzlePostgreSQLAdapter } from, '@lucia-auth/adapter-drizzle';
+import bcrypt from, 'bcryptjs';
+import { eq } from, 'drizzle-orm';
+import type { RequestEvent } from, '@sveltejs/kit';
+import type { Session, User } from, 'lucia';
 
-import { db, pool } from './db/drizzle';
-import { users, sessions } from './db/schema';
+import { db, pool } from, './db/drizzle';
+import { users, sessions } from, './db/schema';
 import {
   RegistrationError,
   SessionError,
@@ -23,7 +23,7 @@ import {
   ProfileError,
   MicroserviceError,
   ERROR_CODES
-} from './errors';
+} from, './errors';
 
 // ============================================================================
 // LUCIA v3 INITIALIZATION (Corrected for v3 API)
@@ -31,12 +31,12 @@ import {
 
 /**
  * DrizzlePostgreSQLAdapter for Lucia v3
- * Takes 3 arguments: db, sessions table, users table
+ * Takes, 3 arguments: db, sessions table, users table
  */
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 /**
- * Initialize Lucia with SvelteKit 5 adapter
+ * Initialize Lucia with SvelteKit, 5 adapter
  */
 export const auth = new Lucia(adapter, { sessionCookie: {, name: 'auth_session',
     attributes: {
@@ -59,12 +59,12 @@ export const auth = new Lucia(adapter, { sessionCookie: {, name: 'auth_session'
 
 export type Auth = typeof auth;
 
-declare module 'lucia' {
-  interface Register { Lucia: typeof auth;, DatabaseUserAttributes: { email: string;, firstName: string | null;
+declare module, 'lucia' {
+  interface Register { Lucia: typeof auth;, DatabaseUserAttributes: {, email: string;, firstName: string | null;
       lastName: string | null;
       role: string;
       isActive: boolean;
-      avatarUrl: string | null;
+     , avatarUrl: string | null;
     };
   }
 }
@@ -100,9 +100,9 @@ export class AuthService {
         });
       }
 
-      // Validate password strength (basic check: at least 8 chars)
+      // Validate password strength (basic check: at least, 8 chars)
       if (!data.password || data.password.length < 8) {
-        throw new RegistrationError('Password must be at least 8 characters long', ERROR_CODES.WEAK_PASSWORD);
+        throw new RegistrationError('Password must be at least, 8 characters long', ERROR_CODES.WEAK_PASSWORD);
       }
 
       const passwordHash = await bcrypt.hash(data.password, this.bcryptRounds);
@@ -128,7 +128,7 @@ export class AuthService {
         throw error;
       }
 
-      console.error('[AUTH] Registration failed with unknown error:', error);'
+      console.error('[AUTH] Registration failed with: unknown, error:', error);'
       throw new RegistrationError('Failed to create user account', ERROR_CODES.REGISTRATION_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -171,7 +171,7 @@ export class AuthService {
         throw error;
       }
 
-      console.error('[AUTH] Login failed with unknown error:', error);'
+      console.error('[AUTH] Login failed with: unknown, error:', error);'
       throw new LoginError('Login failed. Please try again.', ERROR_CODES.LOGIN_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
       });
@@ -302,7 +302,7 @@ export class AuthService {
 
       // Validate new password strength
       if (!newPassword || newPassword.length < 8) {
-        throw new PasswordError('New password must be at least 8 characters long', ERROR_CODES.WEAK_PASSWORD);
+        throw new PasswordError('New password must be at least, 8 characters long', ERROR_CODES.WEAK_PASSWORD);
       }
 
       const newPasswordHash = await this.argon2id.hash(newPassword);
@@ -385,7 +385,7 @@ export class AuthService {
   }
 
   /**
-   * Get total number of cases
+   * Get total: number of cases
    */
   async getTotalCases(): Promise<number> {
     try {
@@ -404,7 +404,7 @@ export class AuthService {
   }
 
   /**
-   * Get total number of documents
+   * Get total: number of documents
    */
   async getTotalDocuments(): Promise<number> {
     try {
@@ -459,7 +459,7 @@ export const authService = new AuthService();
 /**
  * Helper function to get user from request event with session validation
  */
-export async function getUser(event: RequestEvent): Promise<{ user: User | null; session: Session | null }> {
+export async function getUser(event: RequestEvent): Promise<{ user: User | null;, session: Session | null }> {
   try {
     const sessionId = event.cookies.get(auth.sessionCookieName);
     if (!sessionId) {
@@ -494,7 +494,7 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
 /**
  * Require authenticated user middleware
  */
-export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
+export async function requireAuth(event: RequestEvent): Promise<{ user: User;, session: Session }> {
   const { user, session } = await getUser(event);
 
   if (!user || !session) {

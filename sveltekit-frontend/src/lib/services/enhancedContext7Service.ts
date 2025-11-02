@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { LegalEntities } from './legalRAGEngine.js';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { LegalEntities } from, './legalRAGEngine.js';
 /**
  * Enhanced Context7 Service with Legal AI Integration
  * Connects to Context7 MCP Server and provides legal-specific functionality
@@ -8,14 +8,14 @@ import type { LegalEntities } from './legalRAGEngine.js';
 
 export interface LegalAnalysisResult { riskLevel: 'Low' | 'Medium' | 'High';, riskScore: number;
   keyFindings: string[];
-  complianceStatus: { gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';, contractLaw: 'Requires Review' | 'N/A';
+  complianceStatus: {, gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';, contractLaw: 'Requires Review' | 'N/A';
     liability: 'High Priority Review Needed' | 'Standard Processing';
   };
   recommendedActions: string[];
   integrationNotes: string[];
 }
 
-export interface ComplianceReport { framework: string;, evidenceCount: number;
+export interface ComplianceReport {, framework: string;, evidenceCount: number;
   regulationCount: number;
   complianceScore: number;
   status: 'Compliant' | 'Partially Compliant' | 'Non-Compliant';
@@ -24,7 +24,7 @@ export interface ComplianceReport { framework: string;, evidenceCount: number;
 }
 
 export interface LegalPrecedent {
-  case string;
+  case: string;
   relevance: string;
   year: string;
   jurisdiction: string;
@@ -32,7 +32,7 @@ export interface LegalPrecedent {
 }
 
 export class EnhancedContext7Service {
-  private mcpEndpoint: string;
+  private, mcpEndpoint: string;
   private apiKey?: string;
 
   constructor(mcpEndpoint?: string, apiKey?: string) {
@@ -136,7 +136,7 @@ export class EnhancedContext7Service {
   async analyzeStack(component: string, context = 'legal-ai'): Promise<string> {
     try {
       const response = await this.callMCPTool('analyze-stack', { component, context });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 stack analysis failed:', msg);
@@ -150,7 +150,7 @@ export class EnhancedContext7Service {
   async generateBestPractices(area: string): Promise<string> {
     try {
       const response = await this.callMCPTool('generate-best-practices', { area });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 best practices generation failed:', msg);
@@ -164,7 +164,7 @@ export class EnhancedContext7Service {
   async suggestIntegration(feature: string, requirements?: string): Promise<string> {
     try {
       const response = await this.callMCPTool('suggest-integration', { feature, requirements });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 integration suggestion failed:', msg);
@@ -192,7 +192,7 @@ export class EnhancedContext7Service {
       const orchestrationResult = {
         analysis,
         complianceScore: 85,
-        riskAssessment: { level: 'Medium', score: 60 },
+        riskAssessment: {, level: 'Medium', score: 60 },
         precedentMatches
       };
       return orchestrationResult;
@@ -266,7 +266,7 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as string)
+          ? ((response as Record<string, unknown>).text as: string)
           : '';
     const riskScoreParsed = parseInt(this.extractValue(text, 'Risk Score', '60'), 10);
     const riskScore = Number.isNaN(riskScoreParsed) ? 60 : riskScoreParsed;
@@ -285,7 +285,7 @@ export class EnhancedContext7Service {
       riskScore,
       keyFindings: this.extractList(text, 'Key Findings'),
       complianceStatus: {
-        gdpr: normalizeCompliance(this.extractValue(text, 'GDPR Compliance', 'Not Applicable'), 'Not Applicable') as
+       , gdpr: normalizeCompliance(this.extractValue(text, 'GDPR Compliance', 'Not Applicable'), 'Not Applicable') as
           | 'Compliant'
           | 'Under Review'
           | 'Not Applicable',
@@ -309,7 +309,7 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as string)
+          ? ((response as Record<string, unknown>).text as: string)
           : '';
     const score = parseInt(this.extractValue(text, 'Compliance Score', '75'), 10) || 75;
     return {
@@ -331,7 +331,7 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as string)
+          ? ((response as Record<string, unknown>).text as: string)
           : '';
     if (!text) return [];
     const sections = text.split('###').slice(1);
@@ -362,7 +362,7 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as string)
+          ? ((response as Record<string, unknown>).text as: string)
           : '';
     return {
       parties: this.extractEntityList(text, 'Parties'),
@@ -458,8 +458,8 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language' 
   }
 
   private simulateComplianceReport(args: Record<string, unknown>): any {
-    const evidence = Array.isArray(args?.evidence) ? (args.evidence as unknown[]) : [];
-    const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]) : [];
+    const evidence = Array.isArray(args?.evidence) ? (args.evidence as: unknown[]) : [];
+    const regulations = Array.isArray(args?.regulations) ? (args.regulations as: unknown[]) : [];
     const score = Math.min(100, evidence.length * 10 + 50);
     return {
       text: `# Compliance Report`

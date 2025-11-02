@@ -1,9 +1,9 @@
 // lib/stores/ai.ts
 // Global AI Summary Store using XState v5, with memoization and streaming support
-import { setup, createActor, assign, fromPromise } from "$lib/utils/xstate";
-import { writable } from "svelte/store";
+import { setup, createActor, assign, fromPromise } from, "$lib/utils/xstate";
+import { writable } from, "svelte/store";
 // Memoization cache (in-memory, can be replaced with Redis for persistence)
-const summaryCache = new Map<string, { summary: string; sources: any[] }>();
+const summaryCache = new Map<string, { summary: string;, sources: any[] }>();
 // Define context and events interfaces
 export interface AIContext { summary: string;, error: string;
   loading: boolean;
@@ -17,7 +17,7 @@ export interface AIContext { summary: string;, error: string;
   sources: any[];
 }
 type AIEvent =
-  | { type: 'SUMMARIZE';, caseId: string;
+  | {, type: 'SUMMARIZE';, caseId: string;
       evidence: any[];
       userId: string;
       model: string;
@@ -26,7 +26,7 @@ type AIEvent =
   | { type: 'RETRY' }
   | { type: 'RESET' };
 export const aiGlobalMachine = setup({
-  types: {} as {, context: AIContext;, events: AIEvent;
+ , types: {} as {, context: AIContext;, events: AIEvent;
   },
   actions: {
    , setContext: assign(({ event }) => {
@@ -44,8 +44,8 @@ export const aiGlobalMachine = setup({
       };
     }),
     setSuccess: assign(({ event }) => {
-      if ((event as any).type === 'xstate.done.actor.summarizeEvidence') {
-        const data = (event as any).output;
+      if ((event as: any).type === 'xstate.done.actor.summarizeEvidence') {
+        const data = (event as: any).output;
         return {
           summary: data?.summary || '',
           sources: data?.sources || [],
@@ -57,21 +57,21 @@ export const aiGlobalMachine = setup({
       return {};
     }),
     setError: assign(({ event }) => {
-      if ((event as any).type === 'xstate.error.actor.summarizeEvidence') {
+      if ((event as: any).type === 'xstate.error.actor.summarizeEvidence') {
         return {
-          error: ((event as any).error as Error)?.message || 'Error generating summary.',
+          error: ((event, as: any).error as Error)?.message || 'Error generating summary.',
           loading: false
         };
       }
       return {};
     }),
-    setSaving: assign({ saving: true, error: '' }),
-    setSaveSuccess: assign({ saving: false }),
+    setSaving: assign({, saving: true, error: '' }),
+    setSaveSuccess: assign({, saving: false }),
     setSaveError: assign(({ event }) => ({
       saving: false,
-      error: ((event as any).error as Error)?.message || 'Failed to save summary.' }))'` },'`
+      error: ((event, as: any).error as Error)?.message || 'Failed to save summary.' }))'` },'`
   actors: {
-    summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
+    summarizeEvidence: fromPromise(async ({ input }: {, input: AIContext }) => {
       // Memoization: check cache first
       if (summaryCache.has(input.cacheKey)) {
         return summaryCache.get(input.cacheKey)!;
@@ -101,7 +101,7 @@ export const aiGlobalMachine = setup({
       summaryCache.set(input.cacheKey, result);
       return result;
     }),
-    saveSummary: fromPromise(async ({ input }: { input: AIContext }) => {
+    saveSummary: fromPromise(async ({ input }: {, input: AIContext }) => {
       if (!input.summary || !input.caseId) {
         throw new Error('No summary or caseId to save.');
       }
@@ -141,42 +141,42 @@ export const aiGlobalMachine = setup({
     summarizing: {, invoke: {, src: 'summarizeEvidence',
         input: ({ context }) => context,
         onDone: {
-          target: 'success',
+         , target: 'success',
           actions: 'setSuccess'
         },
         onError: {
-          target: 'failure',
+         , target: 'failure',
           actions: 'setError'
         }
       }
     },
-    success: { on: {, SUMMARIZE: {
-          target: 'summarizing',
+    success: {, on: {, SUMMARIZE: {
+         , target: 'summarizing',
           actions: 'setContext'
         },
         RESET: 'idle',
         SAVE_SUMMARY: {
-          target: 'saving',
+         , target: 'saving',
           actions: 'setSaving'
         }
       }
     },
-    failure: { on: {, SUMMARIZE: {
-          target: 'summarizing',
+    failure: {, on: {, SUMMARIZE: {
+         , target: 'summarizing',
           actions: 'setContext'
         },
         RETRY: 'summarizing',
         RESET: 'idle'
       }
     },
-    saving: { invoke: {, src: 'saveSummary',
+    saving: {, invoke: {, src: 'saveSummary',
         input: ({ context }) => context,
         onDone: {
-          target: 'success',
+         , target: 'success',
           actions: 'setSaveSuccess'
         },
         onError: {
-          target: 'success',
+         , target: 'success',
           actions: 'setSaveError' }'` }'`
     }
   }
@@ -195,10 +195,10 @@ function hashEvidence(evidence: any[]): string {
       hash = (hash << 5) - hash + char;
       hash |= 0; // Convert to 32bit integer
     }
-    return "h" + hash.toString(16);
+    return, "h" + hash.toString(16);
   } catch {
     // Fallback for environments without btoa or robust crypto
-    return "e" + Date.now();
+    return, "e" + Date.now();
   }
 }
 // Create and export the actor

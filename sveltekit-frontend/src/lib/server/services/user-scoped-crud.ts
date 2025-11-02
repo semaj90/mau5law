@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { cuidSchema } from '$lib/server/z-schemas';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /**
  * User-Scoped CRUD Service
  * Provides database operations scoped to authenticated users
  */
-import { z } from 'zod';
-import { db } from '$lib/server/db';
-import { cases, legalDocuments, evidence } from '$lib/server/db/schema';
-import { eq, and, desc, asc, count } from 'drizzle-orm';
-import { createId } from '@paralleldrive/cuid2';
+import { z } from, 'zod';
+import { db } from, '$lib/server/db';
+import { cases, legalDocuments, evidence } from, '$lib/server/db/schema';
+import { eq, and, desc, asc, count } from, 'drizzle-orm';
+import { createId } from, '@paralleldrive/cuid2';
 
 // Zod schemas for validation
 export const CreateCaseSchema = z.object({
@@ -32,7 +32,7 @@ export interface ListOptions { page: number;, limit: number;
   priority?: string;
 }
 
-export interface ListResult<T> { items: T[];, pagination: { page: number;, limit: number;
+export interface ListResult<T> {, items: T[];, pagination: {, page: number;, limit: number;
     totalPages: number;
     totalCount: number;
     hasNext: boolean;
@@ -44,26 +44,26 @@ export interface ListResult<T> { items: T[];, pagination: { page: number;, lim
  * Cases CRUD Service
  */
 export class CasesCRUDService {
-  constructor(private userId: string) {}
+  constructor(private, userId: string) {}
 
   async list(options: ListOptions): Promise<ListResult<any>> {
     const { page, limit, sortBy, sortOrder, status, priority } = options;
     const offset = (page - 1) * limit;
 
     // Build where conditions
-    const whereConditions: any[] = [eq((cases as any).userId, this.userId)];
-    if (status) whereConditions.push(eq((cases as any).status, status));
-    if (priority) whereConditions.push(eq((cases as any).priority, priority));
+    const whereConditions: any[] = [eq((cases, as: any).userId, this.userId)];
+    if (status) whereConditions.push(eq((cases as: any).status, status));
+    if (priority) whereConditions.push(eq((cases as: any).priority, priority));
 
     // Map sort field names to actual columns (adjust to your schema field names)
     const sortMap: Record<string, any> = {
-      title: (cases as any).title,
-      created_at: (cases as any).createdAt ?? (cases as any).created_at,
-      updated_at: (cases as any).updatedAt ?? (cases as any).updated_at,
-      status: (cases as any).status,
-      priority: (cases as any).priority
+      title: (cases, as: any).title,
+      created_at: (cases, as: any).createdAt ?? (cases as: any).created_at,
+      updated_at: (cases, as: any).updatedAt ?? (cases as: any).updated_at,
+      status: (cases, as: any).status,
+      priority: (cases, as: any).priority
     };
-    const orderByField = sortMap[sortBy] ?? (cases as any).updatedAt;
+    const orderByField = sortMap[sortBy] ?? (cases as: any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
 
     // Get total count
@@ -100,7 +100,7 @@ export class CasesCRUDService {
     const [caseData] = await db
       .select()
       .from(cases)
-      .where(and(eq((cases as any).id, id), eq((cases as any).userId, this.userId)))
+      .where(and(eq((cases as: any).id, id), eq((cases as: any).userId, this.userId)))
       .limit(1);
 
     if (!caseData) {
@@ -143,7 +143,7 @@ export class CasesCRUDService {
         ...data,
         updatedAt: now
       })
-      .where(and(eq((cases as any).id, id), eq((cases as any).userId, this.userId)))
+      .where(and(eq((cases as: any).id, id), eq((cases as: any).userId, this.userId)))
       .returning();
 
     return updatedCase;
@@ -152,7 +152,7 @@ export class CasesCRUDService {
   async delete(id: string): Promise<void> {
     // Verify ownership
     await this.getById(id);
-    await db.delete(cases).where(and(eq((cases as any).id, id), eq((cases as any).userId, this.userId)));
+    await db.delete(cases).where(and(eq((cases as: any).id, id), eq((cases as: any).userId, this.userId)));
   }
 }
 
@@ -193,11 +193,11 @@ export class EvidenceCRUDService {
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {
-      title: (evidence as any).title,
-      created_at: (evidence as any).createdAt ?? (evidence as any).created_at,
-      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at
+      title: (evidence, as: any).title,
+      created_at: (evidence, as: any).createdAt ?? (evidence as: any).created_at,
+      updated_at: (evidence, as: any).updatedAt ?? (evidence as: any).updated_at
     };
-    const orderByField = sortMap[sortBy] ?? (evidence as any).updatedAt;
+    const orderByField = sortMap[sortBy] ?? (evidence as: any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
 
     const [totalRow] = await db.select({ count: count() }).from(evidence);
@@ -214,11 +214,11 @@ export class EvidenceCRUDService {
     const offset = (page - 1) * limit;
 
     const sortMap: Record<string, any> = {
-      title: (evidence as any).title,
-      created_at: (evidence as any).createdAt ?? (evidence as any).created_at,
-      updated_at: (evidence as any).updatedAt ?? (evidence as any).updated_at
+      title: (evidence, as: any).title,
+      created_at: (evidence, as: any).createdAt ?? (evidence as: any).created_at,
+      updated_at: (evidence, as: any).updatedAt ?? (evidence as: any).updated_at
     };
-    const orderByField = sortMap[sortBy] ?? (evidence as any).updatedAt;
+    const orderByField = sortMap[sortBy] ?? (evidence as: any).updatedAt;
     const orderBy = sortOrder === 'asc' ? asc(orderByField) : desc(orderByField);
 
     // Ownership check via case id (best-effort; will throw if not accessible)
@@ -232,14 +232,14 @@ export class EvidenceCRUDService {
     const [totalRow] = await db
       .select({ count: count() })
       .from(evidence)
-      .where(eq((evidence as any).caseId, caseId));
+      .where(eq((evidence as: any).caseId, caseId));
     const total = Number(totalRow?.count ?? 0);
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     const data = await db
       .select()
       .from(evidence)
-      .where(eq((evidence as any).caseId, caseId))
+      .where(eq((evidence as: any).caseId, caseId))
       .orderBy(orderBy)
       .limit(limit)
       .offset(offset);
@@ -256,7 +256,7 @@ export class EvidenceCRUDService {
     const rows = await db
       .select()
       .from(evidence)
-      .where(eq((evidence as any).id, id))
+      .where(eq((evidence as: any).id, id))
       .limit(1);
     const row = rows[0];
     if (!row) throw new Error(`Evidence with ID ${id} not found`);
@@ -296,9 +296,9 @@ export class EvidenceCRUDService {
         confidentialityLevel: data.confidentialityLevel ?? null,
         isAdmissible: data.isAdmissible ?? null
       })
-      .returning({ id: (evidence as any).id });
+      .returning({ id: (evidence, as: any).id });
 
-    return row?.id as string;
+    return row?.id as: string;
   }
 
   async update(data: UpdateEvidenceData): Promise<any> {
@@ -307,7 +307,7 @@ export class EvidenceCRUDService {
     // Ensure exists (and ownership best-effort)
     await this.getById(id);
 
-    const updateData: { [key: string]: any } = { updatedAt: now };
+    const updateData: { [key: string]: any } = {, updatedAt: now };
 
     const keys = [
       'title',
@@ -327,13 +327,13 @@ export class EvidenceCRUDService {
       'caseId',
     ];
     for (const key of keys) {
-      if ((data as any)[key] !== undefined) updateData[key] = (data as any)[key];
+      if ((data as: any)[key] !== undefined) updateData[key] = (data as: any)[key];
     }
 
     const [row] = await db
       .update(evidence)
       .set(updateData)
-      .where(eq((evidence as any).id, id))
+      .where(eq((evidence as: any).id, id))
       .returning();
 
     return row;
@@ -341,6 +341,6 @@ export class EvidenceCRUDService {
 
   async delete(id: string): Promise<void> {
     await this.getById(id);
-    await db.delete(evidence).where(eq((evidence as any).id, id));
+    await db.delete(evidence).where(eq((evidence as: any).id, id));
   }
 }

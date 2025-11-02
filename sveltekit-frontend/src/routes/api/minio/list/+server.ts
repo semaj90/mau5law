@@ -1,12 +1,12 @@
 // MinIO List Objects API Endpoint
 // Lists objects in MinIO bucket with optional filtering
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client, as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { env } from, '$env/dynamic/private';
+import { Client, as MinIOClient } from, 'minio';
+import type { RequestHandler } from, './$types';
 interface MinIOObject { name: string;, etag: string;
   size: number;
-  lastModified: Date;
+ , lastModified: Date;
   prefix?: string;
   metadata?: Record<string, string>;
 }
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const useSSL = env.MINIO_USE_SSL === 'true';
     // Initialize MinIO client
     const minioClient = new MinIOClient({
-      endPoint: minioEndpoint.split(':')[0],
+     , endPoint: minioEndpoint.split(':')[0],
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
         prefix: obj.prefix
       });
     }
-    // For each object, try to get metadata (optional, can be expensive)
+    // For each: object, try to get metadata (optional, can be expensive)
     const includeMetadata = url.searchParams.get('metadata') === 'true';
     if (includeMetadata && objectsList.length <= 20) {
       // Only for small lists

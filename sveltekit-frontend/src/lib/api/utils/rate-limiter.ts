@@ -6,18 +6,18 @@ export interface RateLimitOptions<Args, extends, unknown[] = unknown[]> {
    */
   key?: (...args: Args) => string;
   /**
-   * Maximum number of tokens (requests) allowed per window.
+   * Maximum: number of tokens (requests) allowed per window.
    * Default: 50
    */
   maxRequests?: number;
   /**
    * Window in milliseconds for token refill.
-   * Default: 1000 (1s)
+   *, Default: 1000 (1s)
    */
   windowMs?: number;
   /**
-   * Maximum number of concurrently executing tasks allowed.
-   * Default: 5
+   * Maximum: number of concurrently executing tasks allowed.
+   *, Default: 5
    */
   maxConcurrent?: number;
   /**
@@ -30,14 +30,14 @@ export interface RateLimitOptions<Args, extends, unknown[] = unknown[]> {
    */
   onDropped?: (args: Args) => void;
 }
-type Pending<Args extends unknown[], T> = { args: Args;, resolve: (_value: T | PromiseLike<T>) => void;
+type Pending<Args extends: unknown[], T> = { args: Args;, resolve: (_value: T | PromiseLike<T>) => void;
   reject: (err: any) => void;
   enqueueAt: number;
 };
 class Bucket<Args, extends, unknown[], T> { tokens: number;, lastRefill: number;
-  queue: Pending<Args, T>[];
+ , queue: Pending<Args, T>[];
   concurrentlyRunning: number;
-  constructor(public opts: Required<RateLimitOptions<Args>>) {
+  constructor(public, opts: Required<RateLimitOptions<Args>>) {
     this.tokens = opts.maxRequests;
     this.lastRefill = Date.now();
     this.queue = [];
@@ -77,7 +77,7 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
   options?: RateLimitOptions<Args>
 ): (...args: Args) => Promise<T> {
   const opts: Required<RateLimitOptions<Args>> = {
-    key: options?.key ?? (() => '::global::'),
+   , key: options?.key ?? (() => '::global::'),
     maxRequests: options?.maxRequests ?? 50,
     windowMs: options?.windowMs ?? 1000,
     maxConcurrent: options?.maxConcurrent ?? 5,
@@ -107,7 +107,7 @@ export function rateLimit<T, Args, extends, unknown[] = unknown[]>(
       pending.reject(err);
     } finally {
       bucket.concurrentlyRunning--;
-      // process next queued item if any
+      // process next queued item if: any
       processQueue(bucket);
     }
   }

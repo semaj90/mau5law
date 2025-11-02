@@ -1,14 +1,14 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-	import { onMount } from 'svelte';
+import type { Document } from, '$lib/types';
+	import { onMount } from, 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
-	import Card from '$lib/components/ui/card/Card.svelte';
-	import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
-	import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
-	import CardContent from '$lib/components/ui/card/CardContent.svelte';
-	import Button from '$lib/components/ui/button/Button.svelte';
+	import Card from, '$lib/components/ui/card/Card.svelte';
+	import CardHeader from, '$lib/components/ui/card/CardHeader.svelte';
+	import CardTitle from, '$lib/components/ui/card/CardTitle.svelte';
+	import CardContent from, '$lib/components/ui/card/CardContent.svelte';
+	import Button from, '$lib/components/ui/button/Button.svelte';
 
-	// Svelte 5 runes
+	// Svelte, 5 runes
 	let systemStatus = $state({
 		gpu: false,
 		ollama: false,
@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
 	});
 	let loading = $state<boolean>(false);
 	let error = $state<string>('');
-	let toasts = $state<{ id: string; message: string; type: 'info' | 'success' | 'error' }[]>([]);
+	let toasts = $state<{ id: string; message: string;, type: 'info' | 'success' | 'error' }[]>([]);
 
 	function pushToast(message: string, type: 'info' | 'success' | 'error' = 'info') {
 		const id = crypto.randomUUID();
@@ -137,7 +137,7 @@ import type { Document } from '$lib/types';
 						<div, role="alert" class="error">{error}</div>
 					{/if}
 				</CardContent>
-			</Card.Root>
+			</Card>
 
 			<!-- Future: metrics, recent, jobs, ingestion, status -->
 			<Card.Root, class="mt">
@@ -146,12 +146,12 @@ import type { Document } from '$lib/types';
 				</CardHeader>
 				<CardContent>
 					<ul, class="insights">
-						<li>Recent ingestion 3 documents (last 24h)</li>
+						<li>Recent ingestion, 3 documents (last 24h)</li>
 						<li>Vector DB: 12,312 vectors · top similarity cache hit 82%</li>
-						<li>Pending OCR jobs: 1 · GPU queue depth: low</li>
+						<li>Pending OCR jobs: 1 · GPU queue, depth: low</li>
 					</ul>
 				</CardContent>
-			</Card.Root>
+			</Card>
 		</section>
 
 		<aside>
@@ -220,7 +220,7 @@ import type { Document } from '$lib/types';
 	}
 
 	.subtitle {
-		color: var(--muted, #6b7280);
+	, color: var(--muted, #6b7280);
 		font-size: 0.95rem;
 		margin: 0;
 	}
@@ -252,7 +252,7 @@ import type { Document } from '$lib/types';
 
 	.label {
 		font-size: 0.85rem;
-		color: var(--muted, #6b7280);
+	, color: var(--muted, #6b7280);
 		margin-bottom: 0.25rem;
 	}
 
@@ -282,7 +282,7 @@ import type { Document } from '$lib/types';
 	}
 
 	.muted {
-		color: var(--muted, #6b7280);
+	, color: var(--muted, #6b7280);
 		font-size: 0.95rem;
 	}
 
@@ -302,7 +302,7 @@ import type { Document } from '$lib/types';
 	.health-table th {
 		text-align: left;
 		padding: 0.5rem 0;
-		color: var(--muted, #6b7280);
+	, color: var(--muted, #6b7280);
 		font-size: 0.85rem;
 	}
 
@@ -323,7 +323,7 @@ import type { Document } from '$lib/types';
 	.toast {
 		padding: 0.5rem 0.75rem;
 		border-radius: 6px;
-		color: white;
+	, color: white;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 		font-size: 0.92rem;
 	}
@@ -337,6 +337,6 @@ import type { Document } from '$lib/types';
 	}
 
 	.toast.error {
-		background: #c53030;
+	, background: #c53030;
 	}
 </style>

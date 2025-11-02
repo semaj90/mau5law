@@ -2,8 +2,8 @@
  * YoRHa 3D Modal Component
  * Dialog/popup component with advanced styling and YoRHa aesthetic
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from, '../YoRHaUI3D.js';
 export interface YoRHaModal3DOptions extends Omit<YoRHaStyle, 'variant'> {
   title?: string;
   variant?: 'default' | 'alert' | 'confirm' | 'fullscreen' | 'terminal';
@@ -24,7 +24,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   private closeButtonMesh?: THREE.Group; // Changed from THREE.Mesh to THREE.Group
   private contentContainer: THREE.Group;
   private glitchEffect?: THREE.Group;
-  private options: YoRHaModal3DOptions;
+  private, options: YoRHaModal3DOptions;
   private isOpen = $state(false);
   private animationProgress = 0;
   constructor(options: YoRHaModal3DOptions = {}) {
@@ -40,7 +40,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       borderColor: options.borderColor || YORHA_COLORS.primary.black,
       borderWidth: options.borderWidth || 0.03,
       shadow: {
-        enabled: true,
+       , enabled: true,
         color: YORHA_COLORS.primary.black,
         blur: 1.0,
         intensity: 0.8,
@@ -50,7 +50,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       // Initial state (hidden)
       opacity: 0,
       transform: {
-        scale: new THREE.Vector3(0.8, 0.8, 0.8)
+       , scale: new THREE.Vector3(0.8, 0.8, 0.8)
       }
     });
     this.options = options;
@@ -113,21 +113,21 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const backdropGeometry = new THREE.PlaneGeometry(20, 15);
     let backdropMaterial: THREE.Material;
     switch (this.options.backdrop) {
-      case 'blur':
+      case, 'blur':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.white,
           transparent: true,
           opacity: 0.2
         });
         break;
-      case 'dark':
+      case, 'dark':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
           opacity: 0.7
         });
         break;
-      case 'transparent':
+      case, 'transparent':
         backdropMaterial = new THREE.MeshBasicMaterial({
           color: YORHA_COLORS.primary.black,
           transparent: true,
@@ -136,7 +136,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         break;
       default:
         backdropMaterial = new THREE.MeshBasicMaterial({
-          color: YORHA_COLORS.primary.black,
+         , color: YORHA_COLORS.primary.black,
           transparent: true,
           opacity: 0.5
         });
@@ -235,7 +235,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         });
       }
     };
-    this.closeButtonMesh = buttonGroup; // Removed: 'as any'
+    this.closeButtonMesh = buttonGroup; // Removed: 'as: any'
     this.add(buttonGroup);
   }
   private createFooter(): void {
@@ -293,43 +293,43 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         borderRadius: 0.1
       },
       alert: {
-        backgroundColor: YORHA_COLORS.status.warning,
+       , backgroundColor: YORHA_COLORS.status.warning,
         borderColor: YORHA_COLORS.status.error,
         borderWidth: 0.04,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.status.error,
           intensity: 0.4
         }
       },
       confirm: {
-        backgroundColor: YORHA_COLORS.primary.white,
+       , backgroundColor: YORHA_COLORS.primary.white,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.03,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.3
         }
       },
       fullscreen: {
-        backgroundColor: YORHA_COLORS.primary.black,
+       , backgroundColor: YORHA_COLORS.primary.black,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.05,
         opacity: 0.95
       },
       terminal: {
-        backgroundColor: YORHA_COLORS.primary.black,
+       , backgroundColor: YORHA_COLORS.primary.black,
         borderColor: YORHA_COLORS.accent.gold,
         borderWidth: 0.04,
         textColor: YORHA_COLORS.accent.gold,
         glow: {
-          enabled: true,
+         , enabled: true,
           color: YORHA_COLORS.accent.gold,
           intensity: 0.5
         },
         animation: {
-          type: 'scan' as const,
+         , type: 'scan' as const,
           duration: 1000,
           loop: true
         }
@@ -451,7 +451,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   private easeOutBack(t: number): number {
     const c1 = 1.70158;
     const c3 = c1 + 1;
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+    return, 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
   }
   private easeInBack(t: number): number {
     const c1 = 1.70158;

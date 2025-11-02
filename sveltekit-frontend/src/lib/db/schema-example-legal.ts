@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Drizzle ORM Schema Example - Legal AI Platform
  *
@@ -22,9 +22,9 @@ import {
   real,
   index,
   primaryKey
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
-import { vector } from 'drizzle-orm/pg-core';
+} from, 'drizzle-orm/pg-core';
+import { sql } from, 'drizzle-orm';
+import { vector } from, 'drizzle-orm/pg-core';
 // ==================================================
 // Type Definitions for JSONB Fields
 // ==================================================
@@ -32,27 +32,27 @@ export interface LegalMetadata {
   case { id: string;, caseNumber: string;
     jurisdiction: string;
     courtLevel: 'district' | 'appellate' | 'supreme';
-    parties: Array<{ role: 'plaintiff' | 'defendant' | 'witness' | 'expert';, name: string;
+    parties: Array<{, role: 'plaintiff' | 'defendant' | 'witness' | 'expert';, name: string;
       type: 'individual' | 'corporation' | 'government';
     }>;
     datesFiled: string[];
     status: 'active' | 'closed' | 'pending' | 'appealed';
   };
-  classification: { documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';, practiceArea: string[];
+  classification: {, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'motion' | 'order';, practiceArea: string[];
     confidenceLevel: number; // 0-1
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     priority: number; // 1-10
   };
-  processing: { extractedEntities: Array<{, type: string;
+  processing: {, extractedEntities: Array<{, type: string;
       value: string;
       confidence: number;
     }>;
     keyTerms: string[];
-    sentiment: number; // -1 to 1
+   , sentiment: number; // -1 to, 1
     complexity: number; // 0-1
     language: string;
   };
-  aiAnalysis: { summary: string;, keyPoints: string[];
+  aiAnalysis: {, summary: string;, keyPoints: string[];
     recommendations: string[];
     relatedCases: string[];
     confidence: number;
@@ -60,13 +60,13 @@ export interface LegalMetadata {
     timestamp: string;
   };
 }
-export interface ChainOfCustody { entries: Array<{, timestamp: string;
+export interface ChainOfCustody {, entries: Array<{, timestamp: string;
     action: 'uploaded' | 'modified' | 'accessed' | 'shared' | 'deleted';
     userId: string;
     userName: string;
     ipAddress: string;
     details: string;
-    hash: string; // SHA-256 hash for integrity
+   , hash: string; // SHA-256 hash for integrity
   }>;
 }
 // ==================================================
@@ -186,7 +186,7 @@ export const vectorSearchCache = pgTable(
     // Search results (cached)
     results: jsonb('results').$type<Array<{ documentId: string;, score: number;
       title: string;
-      snippet: string;
+     , snippet: string;
     }>>().notNull(),
     // Metadata
     resultCount: integer('result_count').notNull(),

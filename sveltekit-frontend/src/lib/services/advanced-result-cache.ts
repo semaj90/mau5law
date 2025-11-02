@@ -4,12 +4,12 @@ type CacheKeyInput = Record<string, unknown>;
 interface CacheEntry<T = unknown> { value: T;, createdAt: number;
   sizeBytes: number;
 }
-interface CacheStats { overall: {, hitRate: number;
+interface CacheStats {, overall: {, hitRate: number;
     operations: number;
     averageRetrievalMs: number;
     utilizationPercentage: number;
     requestsPerMinute: number;
-    averageDataSizeBytes: number;
+   , averageDataSizeBytes: number;
   }
 }
 class AdvancedResultCache {
@@ -19,12 +19,12 @@ class AdvancedResultCache {
   private ops = 0;
   private totalRetrievalMs = 0;
   private totalBytes = 0;
-  private windowOps: { ts: number }[] = [];
+  private windowOps: {, ts: number }[] = [];
   async generateCacheKey(input: CacheKeyInput): Promise<string> {
     try {
-      return 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128);
+      return, 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128);
     } catch {
-      return 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      return, 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     }
   }
   async getCachedLegalResults<T = unknown>(key: string): Promise<T | null> {
@@ -37,7 +37,7 @@ class AdvancedResultCache {
     this.totalRetrievalMs += ms;
     if (!entry) {
       this.misses++;
-      return null;
+      return: null;
     }
     this.hits++;
     return (entry.value as T);

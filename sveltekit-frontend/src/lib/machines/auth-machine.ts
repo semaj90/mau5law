@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import { setup, assign, createActor, fromPromise, type DoneActorEvent } from 'xstate';
+import type { User } from, '$lib/types';
+import { setup, assign, createActor, fromPromise, type DoneActorEvent } from, 'xstate';
 // Define User and Session types for clarity and reuse
 export type User = {
   id?: string;
@@ -22,7 +22,7 @@ type AuthenticateActorOutput = { user: User;, session: Session;
   requiresTwoFactor?: boolean;
 };
 // Authentication context interface
-export interface AuthContext { user: User | null;, session: Session | null;
+export interface AuthContext {, user: User | null;, session: Session | null;
   error?: string;
   isLoading: boolean;
   deviceInfo?: {
@@ -44,29 +44,29 @@ export type AuthEvent =
   | { type: 'START_LOGIN'; data: LoginData }
   | { type: 'START_REGISTRATION'; data: RegistrationData }
   | { type: 'LOGIN_SUCCESS'; data: { user: User; session: Session } }
-  | { type: 'LOGIN_FAILURE'; data: {, error: string } }
-  | { type: 'REGISTRATION_SUCCESS'; data: {, user: User } }
-  | { type: 'REGISTRATION_FAILURE'; data: {, error: string } }
+  | { type: 'LOGIN_FAILURE';, data: {, error: string } }
+  | { type: 'REGISTRATION_SUCCESS';, data: {, user: User } }
+  | { type: 'REGISTRATION_FAILURE';, data: {, error: string } }
   | { type: 'LOGOUT' }
   | { type: 'SESSION_EXPIRED' }
   | { type: 'REQUIRE_TWO_FACTOR' }
-  | { type: 'TWO_FACTOR_SUCCESS'; data: {, session: Session } }
-  | { type: 'TWO_FACTOR_FAILURE'; data: {, error: string } }
+  | { type: 'TWO_FACTOR_SUCCESS';, data: {, session: Session } }
+  | { type: 'TWO_FACTOR_FAILURE';, data: {, error: string } }
   | { type: 'VERIFY_EMAIL' }
   | { type: 'EMAIL_VERIFIED' }
-  | { type: 'RESET_PASSWORD'; data: {, email: string } }
+  | { type: 'RESET_PASSWORD';, data: {, email: string } }
   | { type: 'PASSWORD_RESET_SENT' }
   | { type: 'ACCOUNT_LOCKED' }
   | { type: 'UNLOCK_ACCOUNT' }
   | { type: 'UPDATE_PROFILE'; data: Partial<User> }
   | { type: 'PROFILE_UPDATED' }
   | { type: 'RETRY' };
-export interface LoginData { email: string;, password: string;
+export interface LoginData {, email: string;, password: string;
   rememberMe?: boolean;
   twoFactorCode?: string;
   deviceInfo?: any;
 }
-export interface RegistrationData { email: string;, firstName: string;
+export interface RegistrationData {, email: string;, firstName: string;
   lastName: string;
   password: string;
   role: string;
@@ -77,7 +77,7 @@ export interface RegistrationData { email: string;, firstName: string;
   deviceInfo?: any;
 }
 const initialContext: AuthContext = {
-  user: null,
+ , user: null,
   session: null,
   error: undefined,
   isLoading: false,
@@ -90,27 +90,27 @@ const initialContext: AuthContext = {
   registrationData: undefined
 };
 // Helper functions for inline guards
-const isMaxAttemptsReached = ({ context }: { context: AuthContext }) => {
+const isMaxAttemptsReached = ({ context }: {, context: AuthContext }) => {
   return context.loginAttempts >= context.maxLoginAttempts;
 };
 const isAccountLocked = ({ context }: { context: AuthContext }) => {
   return context.lockoutUntil ? new Date() < context.lockoutUntil : false;
 };
 export const authMachine = setup({
-  types: {} as { context: AuthContext;, events: AuthEvent;
+  types: {} as {, context: AuthContext;, events: AuthEvent;
   },
-  // Removed runtime `types` block: keeping TypeScript interfaces above for static typing.; actions: {, setLoading: assign({, isLoading: () => true,
+  // Removed runtime `types` block: keeping TypeScript interfaces above for static typing.;, actions: {, setLoading: assign({, isLoading: () => true,
       error: () => undefined
     }),
     clearLoading: assign({
-      isLoading: () => false
+     , isLoading: () => false
     }),
     setError: assign({
-      error: ({ event }) => (event as { data?: { error: string } }).data?.error || 'An error occurred',
+     , error: ({ event }) => (event as { data?: { error: string } }).data?.error || 'An error occurred',
       isLoading: () => false
     }),
     setUser: assign({
-      user: ({ event, context }) => {
+     , user: ({ event, context }) => {
         const payload = ('output' in event ? event.output : 'data' in event ? event.data : null) as {
           user?: User;
         } | null;
@@ -129,40 +129,40 @@ export const authMachine = setup({
       loginAttempts: () => 0
     }),
     clearUser: assign({
-      user: () => null,
+     , user: () => null,
       session: () => null,
       error: () => undefined
     }),
     incrementLoginAttempts: assign({
-      loginAttempts: ({ context }) => context.loginAttempts + 1,
+     , loginAttempts: ({ context }) => context.loginAttempts + 1,
       lastLoginAttempt: () => new Date()
     }),
     resetLoginAttempts: assign({
-      loginAttempts: () => 0,
+     , loginAttempts: () => 0,
       lastLoginAttempt: () => undefined
     }),
     setLockout: assign({
-      lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+     , lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
       loginAttempts: () => 0
     }),
     clearLockout: assign({
-      lockoutUntil: () => undefined
+     , lockoutUntil: () => undefined
     }),
     setTwoFactorRequired: assign({
-      twoFactorRequired: () => true
+     , twoFactorRequired: () => true
     }),
     clearTwoFactor: assign({
-      twoFactorRequired: () => false
+     , twoFactorRequired: () => false
     }),
     setRegistrationData: assign({
-      registrationData: ({ event }) => (event as { data: RegistrationData }).data
+     , registrationData: ({ event }) => (event as { data: RegistrationData }).data
     }),
     clearRegistrationData: assign({
-      registrationData: () => undefined
+     , registrationData: () => undefined
     })
   },
   guards: {
-    isMaxAttemptsReached: ({ context }) => {
+   , isMaxAttemptsReached: ({ context }) => {
       return context.loginAttempts >= context.maxLoginAttempts;
     },
     isAccountLocked: ({ context }) => {
@@ -170,7 +170,7 @@ export const authMachine = setup({
     }
   },
   actors: {
-    authenticate: fromPromise(async ({ input }: { input: LoginData }) => {
+    authenticate: fromPromise(async ({ input }: {, input: LoginData }) => {
       // Mock authentication - replace with actual service call
       await new Promise(resolve => setTimeout(resolve, 1500));
       // Simulate occasional failures for testing
@@ -187,14 +187,14 @@ export const authMachine = setup({
             permissions: ['read:cases', 'write:cases', 'ai:query']
           },
           session: {
-            id: 'session_123',
+           , id: 'session_123',
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
             fresh: false, // Session is not fresh until 2FA is complete
           },
           requiresTwoFactor: true
         };
       }
-      return { user: {, id: '1',
+      return {, user: {, id: '1',
           email: input.email,
           firstName: 'Legal',
           lastName: 'Professional',
@@ -202,13 +202,13 @@ export const authMachine = setup({
           permissions: ['read:cases', 'write:cases', 'ai:query']
         },
         session: {
-          id: 'session_123',
+         , id: 'session_123',
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
           fresh: true
         }
       };
     }),
-    register: fromPromise(async ({ input }: { input: RegistrationData }) => {
+    register: fromPromise(async ({ input }: {, input: RegistrationData }) => {
       // Mock registration
       await new Promise(resolve => setTimeout(resolve, 2000));
       return { user: {, id: '2',
@@ -226,7 +226,7 @@ export const authMachine = setup({
       await new Promise(resolve => setTimeout(resolve, 500));
       return { success: true };
     }),
-    resetPassword: fromPromise(async ({ input: _input }: {, input: {, email: string } }) => {
+    resetPassword: fromPromise(async ({, input: _input }: {, input: {, email: string } }) => {
       // Mock password reset
       await new Promise(resolve => setTimeout(resolve, 1000));
       return { success: true };
@@ -244,9 +244,9 @@ export const authMachine = setup({
       }
     },
     authenticating: {
-      entry: 'setLoading',
+     , entry: 'setLoading',
       invoke: {
-        src: 'authenticate',
+       , src: 'authenticate',
         input: ({ event }) => (event as { data: LoginData }).data,
         onDone: [
           {,
@@ -272,106 +272,106 @@ export const authMachine = setup({
         ]
       }
     },
-    requiresTwoFactor: { on: {, TWO_FACTOR_SUCCESS: {
-          target: 'authenticated',
+    requiresTwoFactor: {, on: {, TWO_FACTOR_SUCCESS: {
+         , target: 'authenticated',
           actions: ['setUser', 'clearTwoFactor', 'resetLoginAttempts']
         },
         TWO_FACTOR_FAILURE: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['setError', 'clearTwoFactor']
         }
       }
     },
     authenticated: {
-      entry: 'clearLoading',
+     , entry: 'clearLoading',
       on: {
-        LOGOUT: 'loggingOut',
+       , LOGOUT: 'loggingOut',
         SESSION_EXPIRED: 'idle',
         UPDATE_PROFILE: 'updatingProfile'
       }
     },
     loggingOut: {
-      entry: 'setLoading',
+     , entry: 'setLoading',
       invoke: {
-        src: 'logout',
+       , src: 'logout',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['clearUser', 'clearLoading']
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['clearUser', 'setError']
         }
       }
     },
     registering: {
-      entry: ['setLoading', 'setRegistrationData'],
+     , entry: ['setLoading', 'setRegistrationData'],
       invoke: {
-        src: 'register',
+       , src: 'register',
         input: ({ event }) => (event as { data: RegistrationData }).data,
         onDone: {
-          target: 'registrationSuccess',
+         , target: 'registrationSuccess',
           actions: ['setUser', 'clearRegistrationData']
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: ['setError', 'clearRegistrationData']
         }
       }
     },
-    registrationSuccess: { on: {, EMAIL_VERIFIED: 'authenticated',
+    registrationSuccess: {, on: {, EMAIL_VERIFIED: 'authenticated',
         VERIFY_EMAIL: 'verifyingEmail'
       },
       after: {
-        5000: 'authenticated', // Auto-advance after 5 seconds
+       , 5000: 'authenticated', // Auto-advance after, 5 seconds
       }
     },
     verifyingEmail: {
-      entry: 'setLoading',
+     , entry: 'setLoading',
       after: {
         2000: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: 'clearLoading'
         }
       }
     },
     resettingPassword: {
-      entry: 'setLoading',
+     , entry: 'setLoading',
       invoke: {
-        src: 'resetPassword',
+       , src: 'resetPassword',
         input: ({ event }) => ({ email: (event as {, data: {, email: string } }).data.email }),
         onDone: {
-          target: 'passwordResetSent',
+         , target: 'passwordResetSent',
           actions: 'clearLoading'
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: 'setError` }'`
       }
     },
     passwordResetSent: {
       after: {
-        3000: `idle` }
+       , 3000: `idle` }
     },
     locked: {
-      entry: 'setLockout',
-      on: { UNLOCK_ACCOUNT: {, target: 'idle',
+     , entry: 'setLockout',
+      on: {, UNLOCK_ACCOUNT: {, target: 'idle',
           actions: ['clearLockout', 'resetLoginAttempts']
         }
       },
       after: {
         900000: {
           // 15 minutes
-          target: 'idle',
+         , target: 'idle',
           actions: ['clearLockout', 'resetLoginAttempts']
         }
       }
     },
     updatingProfile: {
-      entry: 'setLoading',
+     , entry: 'setLoading',
       after: {
         1500: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: `clearLoading` }
       }
     }

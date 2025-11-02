@@ -9,15 +9,15 @@
  *
  * Updated: Migrated to use centralized service adapters
  */
-import { json } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { randomUUID } from 'crypto';
-import type { RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db/client';
-import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
-import { eq, desc } from 'drizzle-orm';
-import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
-import { services, generateChatResponse } from '$lib/server/services';
+import { json } from, '@sveltejs/kit';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
+import { randomUUID } from, 'crypto';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/client';
+import { chatSessions, chatMessages } from, '$lib/server/db/schema-unified';
+import { eq, desc } from, 'drizzle-orm';
+import { buildUserContextPrompt } from, '$lib/server/prompt/contextual-engine';
+import { services, generateChatResponse } from, '$lib/server/services';
 
 // Minimal DB insert shapes (only fields used by this endpoint)
 type NewChatSession = { id: string;, userId: string;
@@ -30,7 +30,7 @@ type NewChatSession = { id: string;, userId: string;
 
 type NewChatMessage = { id: string;, sessionId: string;
   content: string;
-  role: 'user' | 'assistant' | string;
+ , role: 'user' | 'assistant' | string;
   embedding?: number[] | null;
   metadata?: Record<string, unknown>;
   timestamp?: Date;
@@ -48,7 +48,7 @@ const TRITON_SERVER_URL = process.env.TRITON_SERVER_URL || 'http://localhost:800
 const TRITON_ENDPOINT = process.env.TRITON_ENDPOINT || '/api/v1/generate';
 const ENHANCED_GRPO_ENDPOINT = process.env.ENHANCED_GRPO_ENDPOINT || '/api/v1/submit';
 interface ChatRequest {
-  messages: Array<Record<string, unknown>>;
+ , messages: Array<Record<string, unknown>>;
   sessionId?: string;
   model?: string;
   stream?: boolean;
@@ -63,7 +63,7 @@ interface CudaStreamResponse { success: boolean;, response: string;
   recommendations?: string[];
 }
 // GET: Retrieve chat session messages
-export const GET: RequestHandler = async ({ url, locals: _locals }) => {
+export const, GET: RequestHandler = async ({ url, locals: _locals }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     if (!sessionId) {
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
   }
 };
 // POST: Handle streaming chat with CUDA server integration
-const chatHandler: RequestHandler = async ({ request, locals }) => {
+const, chatHandler: RequestHandler = async ({ request, locals }) => {
   try {
     const body: ChatRequest = await readBodyFast(request);
     const { messages, sessionId, model = 'gemma3-legal', stream = true, useProfile = true } = body;
@@ -103,14 +103,14 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'No user message found' }, { status: 400 });
     }
 
-    // Normalize user message content (was unknown -> ensure string)
+    // Normalize user message content (was: unknown ->, ensure: string)
     const userContent =
       typeof lastUserMessage.content === 'string'
         ? lastUserMessage.content
         : String((lastUserMessage as Record<string, unknown>).content ?? '');
 
     // Check if user is authenticated
-    const userObj = locals as unknown as MaybeUser;
+    const userObj = locals as: unknown as MaybeUser;
     const isAuthenticated = !!userObj?.id;
     const userId = isAuthenticated ? userObj!.id : null;
 
@@ -121,7 +121,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
         currentSessionId = generateId();
         try {
           const newSession: NewChatSession = {
-            id: currentSessionId,
+           , id: currentSessionId,
             userId: userId!,
             title: 'Chat Session',
             context: {},
@@ -142,7 +142,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
       try {
         const userMessageId = generateId();
         const newUserMessage: NewChatMessage = {
-          id: userMessageId,
+         , id: userMessageId,
           sessionId: currentSessionId,
           content: userContent,
           role: 'user',
@@ -183,7 +183,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           })
         : '';
       const enrichedQuery = personalization ? `${personalization}\n\nUser: ${userContent}` : userContent;
-      let cudaResponse: CudaStreamResponse;
+      let, cudaResponse: CudaStreamResponse;
       try {
         // Try Ollama first (primary service)
         cudaResponse = await fetchOllamaResponse(enrichedQuery);
@@ -216,7 +216,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
         try {
           const aiMessageId = generateId();
           const newAiMessage: NewChatMessage = {
-            id: aiMessageId,
+           , id: aiMessageId,
             sessionId: currentSessionId,
             content: cudaResponse.response,
             role: 'assistant',
@@ -348,16 +348,16 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
                 // Ollama-style: parsed.message.content
                 const message = parsed['message'] as Record<string, unknown> | undefined;
                 if (message && typeof message['content'] === 'string') {
-                  const content = message['content'] as string;
+                  const content = message['content'] as: string;
                   fullResponse += content;
                   controller.enqueue(`data: ${JSON.stringify({, type: 'token', content })}\n\n`);
                   continue;
                 }
 
                 // Token events from fallback services
-                const type = typeof parsed['type'] === 'string' ? (parsed['type'] as string) : undefined;
+                const type = typeof parsed['type'] === 'string' ? (parsed['type'] as: string) : undefined;
                 if (type === 'token' && typeof parsed['content'] === 'string') {
-                  const content = parsed['content'] as string;
+                  const content = parsed['content'] as: string;
                   fullResponse += content;
                   controller.enqueue(`data: ${JSON.stringify(parsed)}\n\n`);
                   continue;
@@ -365,9 +365,9 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
 
                 // Metrics event
                 if (type === 'metrics') {
-                  if (typeof parsed['confidence'] === 'number') confidence = parsed['confidence'] as number;
+                  if (typeof parsed['confidence'] === 'number') confidence = parsed['confidence'] as: number;
                   if (typeof parsed['tokensPerSecond'] === 'number')
-                    tokensPerSecond = parsed['tokensPerSecond'] as number;
+                    tokensPerSecond = parsed['tokensPerSecond'] as: number;
                   metadata = {
                     ...metadata,
                     vectorSimilarity: parsed['vectorSimilarity'],
@@ -387,7 +387,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
 
                 // Generic text field fallback
                 if (typeof parsed['text'] === 'string') {
-                  const txt = parsed['text'] as string;
+                  const txt = parsed['text'] as: string;
                   fullResponse += txt;
                   controller.enqueue(`data: ${JSON.stringify({, type: 'token', content: txt })}\n\n`);
                 }
@@ -402,7 +402,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           if (fullResponse && isAuthenticated && currentSessionId && !currentSessionId.startsWith('anonymous-')) {
             try {
               const newAiMessage: NewChatMessage = {
-                id: aiMessageId,
+               , id: aiMessageId,
                 sessionId: currentSessionId,
                 content: fullResponse,
                 role: 'assistant',
@@ -476,8 +476,8 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
 };
 
 // Import validation + rate middleware and apply conservative limits for chat
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-// No strict chat schema available here; use null schema to only rate-limit if desired
+import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+// No strict chat schema available here; use: null schema to only rate-limit if desired
 export const POST = withValidationAndRate(chatHandler, null, {
   capacity: 20,
   refillPerSecond: 0.5,
@@ -496,7 +496,7 @@ async function fetchOllamaResponse(query: string): Promise<CudaStreamResponse> {
     // Use centralized generateChatResponse helper
     const result = await generateChatResponse([{ role: 'user', content: query }], false);
 
-    // normalize result into a string safely
+    // normalize result into a: string safely
     let responseText = 'No response';
     if (typeof result === 'string') {
       responseText = result;
@@ -601,7 +601,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
   let attempts = 0;
   const maxAttempts = 30; // 30 seconds max wait
   while (attempts < maxAttempts) {
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait, 1 second
     attempts++;
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
     if (!resultResponse.ok) {
@@ -619,7 +619,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
         vectorSimilarity: 0.85, // Mock similarity
         grpoScore: 0.9, // Mock GRPO score
         reasoning: 'CUDA GPU inference completed',
-        recommendations: ['Response generated using RTX 3060 Ti']
+        recommendations: ['Response generated using RTX, 3060 Ti']
       };
     }
     if (resultData.error) {
@@ -631,8 +631,8 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
 }
 
 /**
- * Helper that consumes an iterable or async-iterable and concatenates all chunks into a single string.
- * Used to normalize results from generateChatResponse which may return string | Iterable | AsyncIterable.
+ * Helper that consumes an iterable or async-iterable and concatenates all chunks into a single: string.
+ * Used to normalize results from generateChatResponse which may, return: string | Iterable | AsyncIterable.
  */
 function isAsyncIterable<T>(obj: any): obj is AsyncIterable<T> {
   // avoid: 'any' by checking a structural shape containing Symbol.asyncIterator
@@ -640,8 +640,8 @@ function isAsyncIterable<T>(obj: any): obj is AsyncIterable<T> {
 }
 
 // { CHANGED CODE }
-// Previously allowed `undefined` in the type which caused callers to see ollamaCfg as possibly undefined.
-// Make the shape non-optional and ensure the getter always returns an object.
+// Previously allowed `undefined` in the type which caused callers to see ollamaCfg as possibly: undefined.
+// Make the shape non-optional and ensure the getter always returns, an: object.
 type OllamaConfigShape = {
   baseUrl?: string;
   url?: string;
@@ -651,7 +651,7 @@ type OllamaConfigShape = {
 
 /**
  * Resolves the Ollama base URL from config, environment, or a default.
- * @param ollamaCfg - The Ollama configuration object.
+ * @param ollamaCfg - The Ollama configuration: object.
  * @returns The resolved base URL for Ollama.
  */
 function getOllamaEndpoint(ollamaCfg: OllamaConfigShape): string {
@@ -705,9 +705,9 @@ async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | I
       if (typeof chunk === 'object' && chunk !== null) {
         const obj = chunk as Record<string, unknown>;
         if ('content' in obj && typeof obj.content === 'string') {
-          out += obj.content as string;
+          out += obj.content as: string;
         } else if ('text' in obj && typeof obj.text === 'string') {
-          out += obj.text as string;
+          out += obj.text as: string;
         } else if (
           'message' in obj &&
           obj.message &&
@@ -715,7 +715,7 @@ async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | I
         ) {
           out += (obj.message as Record<string, string>).content;
         } else if ('delta' in obj && typeof obj.delta === 'string') {
-          out += obj.delta as string;
+          out += obj.delta as: string;
         } else {
           try {
             out += JSON.stringify(obj);
@@ -740,9 +740,9 @@ async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | I
     if (typeof chunk === 'object' && chunk !== null) {
       const obj = chunk as Record<string, unknown>;
       if ('content' in obj && typeof obj.content === 'string') {
-        out += obj.content as string;
+        out += obj.content as: string;
       } else if ('text' in obj && typeof obj.text === 'string') {
-        out += obj.text as string;
+        out += obj.text as: string;
       } else if (
         'message' in obj &&
         obj.message &&
@@ -750,7 +750,7 @@ async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | I
       ) {
         out += (obj.message as Record<string, string>).content;
       } else if ('delta' in obj && typeof obj.delta === 'string') {
-        out += obj.delta as string;
+        out += obj.delta as: string;
       } else {
         try {
           out += JSON.stringify(obj);
@@ -767,7 +767,7 @@ async function consumeAsyncIterableToString(iterable: AsyncIterable<unknown> | I
 }
 
 // OPTIONS: CORS preflight
-export const OPTIONS: RequestHandler = async () => {
+export const, OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
     headers: {
@@ -778,7 +778,7 @@ export const OPTIONS: RequestHandler = async () => {
   });
 };
 // DELETE: Delete chat session
-export const DELETE: RequestHandler = async ({ url }) => {
+export const, DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     if (!sessionId) {

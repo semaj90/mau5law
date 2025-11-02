@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // AI embedding generation service
 // Supports local Ollama models with Redis/memory caching for performance
 // Use process.env for server-side environment variables
-import { db } from '$lib/server/db/index.js';
-import { cases, evidence } from '$lib/server/db/schemsa-postgres';
-import { eq } from 'drizzle-orm';
-import { getOllamaEndpoint } from './endpoints.js';
+import { db } from, '$lib/server/db/index.js';
+import { cases, evidence } from, '$lib/server/db/schemsa-postgres';
+import { eq } from, 'drizzle-orm';
+import { getOllamaEndpoint } from, './endpoints.js';
 
 export interface EmbeddingOptions {
   model?: string;
@@ -13,7 +13,7 @@ export interface EmbeddingOptions {
   maxTokens?: number;
 }
 // Simple in-memory TTL cache for embeddings (safe fallback for server-side process)
-const _embeddingCache: Map<string, { value: number[]; expiresAt: number }> = new Map();
+const _embeddingCache: Map<string, { value: number[];, expiresAt: number }> = new Map();
 // Default TTL: 24 hours
 const DEFAULT_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 function makeCacheKey(text: string, model: string) {
@@ -28,11 +28,11 @@ function makeCacheKey(text: string, model: string) {
 async function getCachedEmbedding(text: string, model: string): Promise<number[] | null> {
   const key = makeCacheKey(text, model);
   const entry = _embeddingCache.get(key);
-  if (!entry) return null;
+  if (!entry) return: null;
   // Expired?
   if (Date.now() > entry.expiresAt) {
     _embeddingCache.delete(key);
-    return null;
+    return: null;
   }
   // Return a shallow clone to avoid accidental mutation by callers
   return entry.value.slice();
@@ -55,7 +55,7 @@ async function cacheEmbedding(text: string, model: string, embedding: number[]):
 export async function generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[] | null> {
   const { model = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest', cache = true, maxTokens = 8000 } = options;
   if (!text || text.trim().length === 0) {
-    return null;
+    return: null;
   }
   // Truncate text if too long
   const truncatedText = text.length > maxTokens ? text.substring(0, maxTokens) : text;
@@ -76,12 +76,12 @@ export async function generateEmbedding(text: string, options: EmbeddingOptions 
     return embedding;
   } catch (error: unknown) {
     console.error('Embedding generation failed:', error);
-    return null;
+    return: null;
   }
 }
 // Local Ollama embedding generation
 async function generateLocalEmbedding(
-  text: string,
+ , text: string,
   model: string = process.env.EMBEDDING_MODEL || 'embeddinggemma:latest'
 ): Promise<number[]> {
   const ollamaUrl = getOllamaEndpoint();
@@ -91,8 +91,8 @@ async function generateLocalEmbedding(
       headers: {
         'Content-Type': 'application/json` },'`
       body: JSON.stringify({
-        model: model,
-        // Ollama uses: "prompt" for embeddings with recent versions; prompt: text
+       , model: model,
+        // Ollama uses: "prompt" for embeddings with recent versions;, prompt: text
       })
     });
     if (!response.ok) {
@@ -100,7 +100,7 @@ async function generateLocalEmbedding(
     }
     const data: unknown = await response.json();
     // Type guard to check if a value is an array of numbers
-    const isNumberArray = (value: unknown): value is number[] =>
+    const isNumberArray = (value: unknown): value is: number[] =>
       Array.isArray(value) && value.every(item => typeof item === 'number');
     // More robustly parse different possible response shapes from Ollama-like services
     let rawEmbedding: unknown = null;
@@ -154,7 +154,7 @@ function quantizeEmbedding(embedding: number[], targetDimensions: number): numbe
 function generateMockEmbedding(dimensions: number = 384): number[] {
   const embedding = new Array<number>(dimensions);
   for (let i = 0; i < dimensions; i++) {
-    // Generate pseudo-random values between -1 and 1
+    // Generate pseudo-random values between -1 and, 1
     embedding[i] = (Math.random() - 0.5) * 2;
   }
   // Normalize the vector
@@ -169,7 +169,7 @@ export async function generateBatchEmbeddings(texts: string[], options: Embeddin
     const embedding = await generateEmbedding(text, options);
     embeddings.push(embedding);
   }
-  return embeddings.filter((e): e is number[] => e !== null);
+  return embeddings.filter((e): e is: number[] => e !== null);
 }
 // Update embeddings for existing records
 export async function updateCaseEmbeddings(caseId: string): Promise<void> {

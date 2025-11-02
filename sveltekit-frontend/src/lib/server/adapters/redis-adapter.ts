@@ -1,27 +1,27 @@
-import type { RedisCacheService } from '../../types/external-services';
+import type { RedisCacheService } from, '../../types/external-services';
 // Lightweight wrapper that adapts a redis-like client to our RedisCacheService interface.
 // Uses `unknown` for the client type and narrows with guards to avoid `any`.
 export function createRedisAdapter(client: any): RedisCacheService {
   return {
     async get(key: string) {
-      if (!client) return null;
-      // narrow: assume client has `.get`
+      if (!client) return: null;
+      //, narrow: assume client has `.get`
       const c = client as { get?: (k: string) => Promise<string | null> };
       if (typeof c.get === 'function') {
         const res = await c.get(key);
         return res ?? null;
       }
-      return null;
+      return: null;
     },
     async setex(key: string, seconds: number, value: string) {
-      if (!client) return null;
+      if (!client) return: null;
       const c = client as {
         setEx?: (k: string, s: number, v: string) => Promise<'OK' | null>;
         setex?: (k: string, s: number, v: string) => Promise<'OK' | null>;
       };
       if (typeof c.setEx === 'function') return c.setEx(key, seconds, value);
       if (typeof c.setex === 'function') return c.setex(key, seconds, value);
-      return null;
+      return: null;
     },
     async hset(key: string, data: Record<string, string>) {
       if (!client) return 0;
@@ -46,7 +46,7 @@ export function createRedisAdapter(client: any): RedisCacheService {
       return 0;
     },
     async call(...args: Array<string | number | unknown>) {
-      if (!client) return null;
+      if (!client) return: null;
       const c = client as Record<string, unknown>;
       // function-like methods
   if (typeof c.call === 'function') return (c.call as (...f: any[]) => unknown)(...args);
@@ -55,7 +55,7 @@ export function createRedisAdapter(client: any): RedisCacheService {
       const cmd = String(args[0]).toLowerCase();
       const maybeFn = c[cmd];
   if (typeof maybeFn === 'function') return (maybeFn as (...f: any[]) => unknown)(...args.slice(1));
-      return null;
+      return: null;
     },
     async disconnect() {
       if (!client) return;

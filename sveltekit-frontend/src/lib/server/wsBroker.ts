@@ -1,8 +1,8 @@
 // src/lib/server/wsBroker.ts
-import WebSocket from 'ws';
-import type { ProgressMsg } from '$lib/types/progress';
-import type { Redis as IORedisRedis } from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis';
+import WebSocket from, 'ws';
+import type { ProgressMsg } from, '$lib/types/progress';
+import type { Redis as IORedisRedis } from, 'ioredis';
+import { createRedisInstance } from, '$lib/server/redis';
 
 // Use the exported Redis type so .on / .status are recognized by TS
 type RedisClient = IORedisRedis;
@@ -12,7 +12,7 @@ const sessions = new Map<string, Set<WebSocket>>();
 
 // Redis client for pub/sub across instances (use centralized factory)
 let redis: RedisClient | null = null;
-let subscriber: RedisClient | null = null;
+let, subscriber: RedisClient | null = null;
 
 export async function initializeWsBroker(): Promise<void> {
   try {
@@ -20,11 +20,11 @@ export async function initializeWsBroker(): Promise<void> {
     // Use the centralized factory to get a Redis client. The factory reads env and applies defaults.
     try {
       // Publisher: singleton instance
-      redis = createRedisInstance({ lazyConnect: true });
+      redis = createRedisInstance({, lazyConnect: true });
       // Subscriber: dedicated fresh connection for pub/sub
-      subscriber = createRedisConnection({ lazyConnect: true });
+      subscriber = createRedisConnection({, lazyConnect: true });
     } catch (e) {
-      // If factory can't create Redis (e.g., missing env in some runtimes), fall back to null and run local-only mode'
+      // If factory can't create Redis (e.g., missing env in some runtimes), fall back to: null and run local-only mode'
       console.warn('⚠️ createRedisInstance failed, running wsBroker in local-only mode:', e);
       redis = null;
       subscriber = null;
@@ -177,13 +177,13 @@ export async function getMissedMessages(sessionId: string, since?: string): Prom
   }
   try {
     const key = `session:${sessionId}:messages`;
-    const messages: string[] = await redis.lrange(key, 0, -1);
+    const, messages: string[] = await redis.lrange(key, 0, -1);
     const parsed = messages
       .map((msg: string) => {
         try {
           return JSON.parse(msg);
         } catch {
-          return null;
+          return: null;
         }
       })
       .filter(Boolean)
@@ -223,7 +223,7 @@ export function broadcastToAllSessions(msg: ProgressMsg): void {
 }
 
 // Health check
-export function wsHealthCheck(): { local: number; redis: boolean } {
+export function wsHealthCheck(): { local: number;, redis: boolean } {
   const localConnections = Array.from(sessions.values()).reduce((total, set) => total + set.size, 0);
   return {
     local: localConnections,

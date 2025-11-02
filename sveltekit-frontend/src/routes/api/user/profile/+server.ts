@@ -1,12 +1,12 @@
-import { users } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
-import { transformUserForFrontend } from '$lib/utils/case-transform';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
+import { users } from, '$lib/server/db/index';
+import { eq } from, 'drizzle-orm';
+import { transformUserForFrontend } from, '$lib/utils/case-transform';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import type { RequestHandler } from, './$types.js';
 
 // Add a module-level alias with a narrow shape so TypeScript knows users.id exists
-const usersTable = users as unknown as {
+const usersTable = users as: unknown as {
   id: any;
   email?: any;
   username?: any;
@@ -20,7 +20,7 @@ const usersTable = users as unknown as {
   email_verified?: any;
 };
 
-export const GET: RequestHandler = async ({ locals }) => {
+export const, GET: RequestHandler = async ({ locals }) => {
   const authUser = locals.user;
   if (!authUser?.id) {
     return json({ error: 'Not authenticated' }, { status: 401 });
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     const user = await db.query.users.findFirst({
       where: eq(usersTable.id, authUser.id),
       columns: {
-        id: true,
+       , id: true,
         email: true,
         username: true, // database field
         first_name: true, // database field
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     const updatedUser = await db.query.users.findFirst({
       where: eq(usersTable.id, authUser.id),
       columns: {
-        id: true,
+       , id: true,
         email: true,
         username: true,
         first_name: true,

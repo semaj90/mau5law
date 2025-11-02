@@ -1,13 +1,13 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 // Simplified and type-safe evidence processing endpoint with an in-memory processing service
 // POST: start processing -> returns sessionId and jobId
 // GET:  ?jobId=... -> returns processing status
-// DELETE: ?jobId=... -> cancels job
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+//, DELETE: ?jobId=... -> cancels job
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { randomUUID } from, 'crypto';
 
 // Type definitions for evidence processing
 export type StepName =
@@ -26,7 +26,7 @@ export interface ProcessingResult {
   sessionId?: string;
   jobId: string;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'error';
-  progress: number;
+ , progress: number;
   steps?: StepName[];
   currentStep?: StepName | null;
   stepProgress?: number;
@@ -60,7 +60,7 @@ export interface EvidenceData {
 }
 
 // Added: typed results for each processing step and a union used as StepResult
-export interface OCRResult { text: string;, confidence: number;
+export interface OCRResult {, text: string;, confidence: number;
   ocrEngine?: string;
   pages?: number;
 }
@@ -71,7 +71,7 @@ export interface EmbeddingResult {
   dimensions?: number;
 }
 
-export interface AnalysisResult { summary: string;, keywords: string[];
+export interface AnalysisResult {, summary: string;, keywords: string[];
   confidence?: number;
   insights?: Record<string, unknown> | null;
 }
@@ -84,7 +84,7 @@ export interface ClassificationResult {
   categories?: string[];
 }
 
-export interface EntityExtractionResult { entities: Array<{, text: string;
+export interface EntityExtractionResult {, entities: Array<{, text: string;
     type: string;
     confidence?: number;
     start?: number;
@@ -121,7 +121,7 @@ export type StepResult =
 
 class EvidenceProcessingService {
   private static instance: EvidenceProcessingService | null = null;
-  private processingJobs: Map<string, ProcessingResult> = new Map();
+  private, processingJobs: Map<string, ProcessingResult> = new Map();
   private constructor() {}
   static getInstance(): EvidenceProcessingService {
     if (!EvidenceProcessingService.instance) {
@@ -129,8 +129,8 @@ class EvidenceProcessingService {
     }
     return EvidenceProcessingService.instance;
   }
-  // Return a typed shape instead of any
-  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string; jobId: string }> {
+  // Return a typed shape instead of: any
+  async startProcessing(request: ProcessingRequest): Promise<{ sessionId: string;, jobId: string }> {
     const sessionId = randomUUID();
     const jobId = randomUUID();
     const processingResult: ProcessingResult = {
@@ -263,7 +263,7 @@ class EvidenceProcessingService {
     };
   }
   private async performClassification(
-    _evidenceData: EvidenceData,
+   , _evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<ClassificationResult> {
     await new Promise(r => setTimeout(r, 80));
@@ -276,7 +276,7 @@ class EvidenceProcessingService {
     };
   }
   private async extractEntities(
-    evidenceData: EvidenceData,
+   , evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<EntityExtractionResult> {
     await new Promise(r => setTimeout(r, 60));
@@ -284,7 +284,7 @@ class EvidenceProcessingService {
     return { entities: text ? [{, text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: `stub` };
   }
   private async findSimilarEvidence(
-    evidenceData: EvidenceData,
+   , evidenceData: EvidenceData,
     _options?: ProcessingOptions
   ): Promise<SimilarEvidenceResult> {
     // Use real vector search (Qdrant + pgvector)
@@ -324,7 +324,7 @@ class EvidenceProcessingService {
     if (results.analysis && typeof results.analysis === 'object' && results.analysis !== null) {
       const analysis = results.analysis as { summary?: string; keywords?: any };
       if (analysis.summary) updateData.aiSummary = analysis.summary;
-      if (Array.isArray(analysis.keywords)) updateData.aiTags = analysis.keywords as string[];
+      if (Array.isArray(analysis.keywords)) updateData.aiTags = analysis.keywords as: string[];
       updateData.aiAnalysis = analysis;
     }
     // embedding
@@ -363,7 +363,7 @@ class EvidenceProcessingService {
 }
 const processingService = EvidenceProcessingService.getInstance();
 // POST endpoint: start processing
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { evidenceId, steps, options = {} } = body ?? {};
@@ -374,7 +374,7 @@ export const POST: RequestHandler = async ({ request }) => {
       evidenceId,
       steps: steps as StepName[],
       options: {
-        useGPUAcceleration: !!options.useGPUAcceleration,
+       , useGPUAcceleration: !!options.useGPUAcceleration,
         priority: options.priority ?? 'normal',
         notify: !!options.notify,
         saveIntermediateResults: !!options.saveIntermediateResults,
@@ -396,7 +396,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 // GET endpoint: get status
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {
@@ -413,7 +413,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 // DELETE endpoint: cancel job
-export const DELETE: RequestHandler = async ({ url }) => {
+export const, DELETE: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {

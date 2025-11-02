@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 
-// Legal Case Store - Svelte 5 Runes Implementation
+// Legal Case Store - Svelte, 5 Runes Implementation
 // Define types locally since they're not available'
 export interface LegalCase { id: string;, title: string;
   caseNumber: string;
@@ -11,24 +11,24 @@ export interface LegalCase { id: string;, title: string;
   priority: "low" | "medium" | "high" | "critical";
   confidentialityLevel: number;
 }
-export interface LegalDocument { id: string;, name: string;
+export interface LegalDocument {, id: string;, name: string;
   type: string;
 }
 export interface AIInsights {
   findings?: any[];
-  riskAssessment?: { score: number;, level: string;
+  riskAssessment?: {, score: number;, level: string;
   }
   complianceChecks?: any[];
 }
-export interface AuditLogEntry { id: string;, type: string;
+export interface AuditLogEntry {, id: string;, type: string;
   entityType: string;
   entityId: string;
   userId: string;
   timestamp: Date;
   details?: any;
 }
-export interface User { id: string;, clearanceLevel: number;
-  role: string;
+export interface User {, id: string;, clearanceLevel: number;
+ , role: string;
 }
 // Mock audit service
 class LegalAuditService {
@@ -41,7 +41,7 @@ class LegalAuditService {
   }
 }
 export function createLegalCaseStore() {
-  // State using Svelte 5 runes
+  // State using Svelte, 5 runes
   let cases: LegalCase[] = $state([]);
   const selectedCase = $state<LegalCase | null>(null);
   const aiInsights = $state<Record<string, AIInsights>({});
@@ -143,7 +143,7 @@ export function createLegalCaseStore() {
     }
   }
   async function selectCase(legalCase: LegalCase): Promise<any> {
-    (selectedCase as any) = legalCase;
+    (selectedCase as: any) = legalCase;
     await auditService.logAction({
       type: "CASE_SELECTED",
       entityType: "CASE",
@@ -174,7 +174,7 @@ export function createLegalCaseStore() {
       aiInsights[caseId] = insights;
       // Log successful analysis
       await auditService.logAction({
-        type: "CASE_ANALYSIS_COMPLETED",
+       , type: "CASE_ANALYSIS_COMPLETED",
         entityType: "CASE",
         entityId: caseId,
         userId: currentUser?.id || "unknown",
@@ -264,7 +264,7 @@ export function createLegalCaseStore() {
     }
   }
   function setCurrentUser(user: User) {
-    (currentUser as any) = user;
+    (currentUser as: any) = user;
   }
   // Search functionality
   function searchCases(query: string) {

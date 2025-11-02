@@ -1,5 +1,5 @@
-import type { Message } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Production Service Endpoints Configuration
  * 
@@ -14,7 +14,7 @@ const IS_DOCKER = process.env.DOCKER === 'true' || process.env.RUNNING_IN_DOCKER
 // Base URLs
 const getEnv = (key: string, fallback: string) => {
   if (IS_BROWSER) {
-    return (import.meta.env as any)[`VITE_${key}`] || (import.meta.env as any)[key] || fallback;
+    return (import.meta.env as: any)[`VITE_${key}`] || (import.meta.env as: any)[key] || fallback;
   }
   return process.env[key] || fallback;
 };
@@ -25,14 +25,14 @@ const getEnv = (key: string, fallback: string) => {
 export const ENDPOINTS = {
   // Database
   postgres: {
-    url: getEnv('DATABASE_URL', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'),
+   , url: getEnv('DATABASE_URL', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'),
     host: IS_DOCKER ? 'postgres' : 'localhost',
     port: IS_DOCKER ? 5432 : 5434
   },
   
   // Cache & Search
   redis: {
-    url: getEnv('REDIS_URL', 'redis://localhost:6379'),
+   , url: getEnv('REDIS_URL', 'redis://localhost:6379'),
     host: IS_DOCKER ? 'redis' : 'localhost',
     port: 6379,
     password: getEnv('REDIS_PASSWORD', '')
@@ -40,7 +40,7 @@ export const ENDPOINTS = {
   
   // Vector Database
   qdrant: {
-    url: getEnv('QDRANT_URL', 'http://localhost:6333'),
+   , url: getEnv('QDRANT_URL', 'http://localhost:6333'),
     host: IS_DOCKER ? 'qdrant' : 'localhost',
     httpPort: 6333,
     grpcPort: 6334
@@ -48,11 +48,11 @@ export const ENDPOINTS = {
   
   // AI Services
   ollama: {
-    url: getEnv('OLLAMA_URL', 'http://localhost:11434'),
+   , url: getEnv('OLLAMA_URL', 'http://localhost:11434'),
     host: IS_DOCKER ? 'host.docker.internal' : 'localhost',
     port: 11434,
     models: {
-      chat: getEnv('OLLAMA_MODEL', 'gemma3-legal:latest'),
+     , chat: getEnv('OLLAMA_MODEL', 'gemma3-legal:latest'),
       embedding: getEnv('EMBEDDING_MODEL', 'embeddinggemma:latest'),
       summary: getEnv('OLLAMA_MODEL_SUMMARY', 'gemma3-legal:latest')
     }
@@ -60,7 +60,7 @@ export const ENDPOINTS = {
   
   // Storage
   minio: {
-    url: getEnv('MINIO_ENDPOINT', 'http://localhost:9000'),
+   , url: getEnv('MINIO_ENDPOINT', 'http://localhost:9000'),
     host: IS_DOCKER ? 'minio' : 'localhost',
     apiPort: 9000,
     consolePort: 9001,
@@ -71,7 +71,7 @@ export const ENDPOINTS = {
   
   // Message Queue
   rabbitmq: {
-    url: getEnv('RABBITMQ_URL', 'amqp://legal_admin:123456@localhost:5672'),
+   , url: getEnv('RABBITMQ_URL', 'amqp://legal_admin:123456@localhost:5672'),
     host: IS_DOCKER ? 'rabbitmq' : 'localhost',
     amqpPort: 5672,
     managementPort: 15672,
@@ -81,7 +81,7 @@ export const ENDPOINTS = {
   
   // Graph Database
   neo4j: {
-    uri: getEnv('NEO4J_URI', 'bolt://localhost:7687'),
+   , uri: getEnv('NEO4J_URI', 'bolt://localhost:7687'),
     host: IS_DOCKER ? 'neo4j' : 'localhost',
     boltPort: 7687,
     httpPort: 7474,
@@ -91,29 +91,29 @@ export const ENDPOINTS = {
   
   // Application Services
   ragOrchestrator: {
-    url: IS_DOCKER ? 'http://rag-orchestrator:8000' : 'http://localhost:8004',
+   , url: IS_DOCKER ? 'http://rag-orchestrator:8000' : 'http://localhost:8004',
     port: IS_DOCKER ? 8000 : 8004
   },
   
   fastapiEmbed: {
-    url: IS_DOCKER ? 'http://fastapi-embed:8000' : 'http://localhost:8000',
+   , url: IS_DOCKER ? 'http://fastapi-embed:8000' : 'http://localhost:8000',
     port: 8000
   },
   
   langextract: {
-    url: IS_DOCKER ? 'http://langextract:8090' : 'http://localhost:8090',
+   , url: IS_DOCKER ? 'http://langextract:8090' : 'http://localhost:8090',
     port: 8090
   },
   
   triton: {
-    url: IS_DOCKER ? 'http://triton:8000' : 'http://localhost:8002',
+   , url: IS_DOCKER ? 'http://triton:8000' : 'http://localhost:8002',
     port: IS_DOCKER ? 8000 : 8002,
     metricsPort: IS_DOCKER ? 8002 : 8003
   },
   
   // QUIC Server
   quic: {
-    url: 'http://localhost:8095',
+   , url: 'http://localhost:8095',
     port: 8095,
     udpPorts: [4433, 4434]
   }
@@ -125,41 +125,41 @@ export const ENDPOINTS = {
 export const API_ROUTES = {
   // Contextual AI
   contextual: {
-    state: '/api/contextual/state',
+   , state: '/api/contextual/state',
     predictions: '/api/contextual/predictions',
     chat: '/api/contextual/chat'
   },
   
   // RAG System
   rag: {
-    query: '/api/rag/query',
+   , query: '/api/rag/query',
     index: '/api/rag/index',
     search: '/api/rag/search'
   },
   
   // Document Processing
   documents: {
-    upload: '/api/documents/upload',
+   , upload: '/api/documents/upload',
     analyze: '/api/documents/analyze',
     embed: '/api/documents/embed'
   },
   
   // Vector Search
   vector: {
-    search: '/api/vector/search',
+   , search: '/api/vector/search',
     similar: '/api/vector/similar',
     index: `/api/vector/index` },'`'`
   
   // AI Services
   ai: {
-    chat: '/api/ai/chat',
+   , chat: '/api/ai/chat',
     generate: '/api/ai/generate',
     summarize: '/api/ai/summarize',
     analyze: `/api/ai/analyze` },
   
   // Health Checks
   health: {
-    all: '/api/health/status',
+   , all: '/api/health/status',
     ollama: '/api/health/ollama',
     database: '/api/health/database',
     redis: '/api/health/redis',
@@ -184,22 +184,22 @@ export function buildServiceUrl(service: keyof typeof ENDPOINTS, path: string = 
  */
 export function getHealthEndpoint(service: keyof typeof ENDPOINTS): string {
   switch (service) {
-    case 'ollama':
+    case, 'ollama':
       return `${ENDPOINTS.ollama.url}/api/tags`;
-    case 'qdrant':
+    case, 'qdrant':
       return `${ENDPOINTS.qdrant.url}/health`;
-    case 'minio':
+    case, 'minio':
       return `${ENDPOINTS.minio.url}/minio/health/live`;
-    case 'rabbitmq':
+    case, 'rabbitmq':
       return `${ENDPOINTS.rabbitmq.host}:${ENDPOINTS.rabbitmq.managementPort}/api/overview`;
-    case 'neo4j':
+    case, 'neo4j':
       return `${ENDPOINTS.neo4j.host}:${ENDPOINTS.neo4j.httpPort}`;
-    case 'ragOrchestrator':
-    case 'fastapiEmbed':
-    case 'langextract':
-      return `${(ENDPOINTS[service] as any).url}/health`;
+    case, 'ragOrchestrator':
+    case, 'fastapiEmbed':
+    case, 'langextract':
+      return `${(ENDPOINTS[service] as: any).url}/health`;
     default:
-      return `${(ENDPOINTS[service] as any).url}/health`;
+      return `${(ENDPOINTS[service], as: any).url}/health`;
   }
 }
 

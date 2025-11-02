@@ -4,7 +4,7 @@
 </svelte:head>
 
 <script, lang="ts">
-  import { onMount } from 'svelte'
+  import { onMount } from, 'svelte'
 
   type RegistryServer = {
     name: string
@@ -20,7 +20,7 @@
   let loading = false
   let result: any = null
   let error: string | null = null
-  let servers: RegistryServer[] = []
+  let, servers: RegistryServer[] = []
 
   async function loadServers(): Promise<any> {
     try {
@@ -99,7 +99,7 @@
     </label>
 
     <button
-      class="w-fit rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+      class="w-fit rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed, disabled:bg-blue-300"
       onclick={fetchMcp}
       disabled={loading}
     >

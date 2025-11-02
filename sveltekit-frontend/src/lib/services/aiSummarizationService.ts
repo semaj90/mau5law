@@ -1,5 +1,5 @@
 // Minimal clean stub for AISummarizationService to unblock parsing and typechecking
-import { dev } from '$app/environment';
+import { dev } from, '$app/environment';
 
 // Local minimal EvidenceItem stub to avoid namespace/import issues.
 // Keep this lightweight; replace with the project's canonical type when available.'
@@ -13,7 +13,7 @@ export interface CaseData { id: string;, title: string;
   description?: string | null;
   evidence?: EvidenceItem[];
 }
-export interface AISummaryReport { id: string;, caseId: string;
+export interface AISummaryReport {, id: string;, caseId: string;
   reportType: string;
   title: string;
   content: string;
@@ -21,11 +21,11 @@ export interface AISummaryReport { id: string;, caseId: string;
 }
 
 export class AISummarizationService {
-  private baseUrl: string;
+  private, baseUrl: string;
   private modelName = 'gemma3-legal';
 
   constructor() {
-    this.baseUrl = dev ? 'http://localhost:11434' : (import.meta.env.OLLAMA_URL as string) || 'http://localhost:11434';
+    this.baseUrl = dev ? 'http://localhost:11434' : (import.meta.env.OLLAMA_URL, as: string) || 'http://localhost:11434';
   }
 
   public async generateCaseSummaryReport(caseData: CaseData): Promise<AISummaryReport> {

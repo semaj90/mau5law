@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Enhanced RAG Pipeline - Legal AI Platform
  *
@@ -21,17 +21,17 @@ import type { Document } from '$lib/types';
  * @version 4.2.0
  * @lastModified 2025-01-20
  */
-import crypto from 'crypto';
-import Redis from 'ioredis';
-import postgres, { type Notice } from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { sql, eq } from 'drizzle-orm';
-import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
-import type { Runnable } from '@langchain/core/runnables';
-import * as schema from '$lib/server/db/schema-postgres';
-import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config.js';
+import crypto from, 'crypto';
+import Redis from, 'ioredis';
+import postgres, { type Notice } from, 'postgres';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { sql, eq } from, 'drizzle-orm';
+import { PromptTemplate } from, '@langchain/core/prompts';
+import { RunnableSequence } from, '@langchain/core/runnables';
+import { StringOutputParser } from, '@langchain/core/output_parsers';
+import type { Runnable } from, '@langchain/core/runnables';
+import * as schema from, '$lib/server/db/schema-postgres';
+import { OLLAMA_CONFIG } from, '$lib/services/providers/ollama/config.js';
 // ===== CONFIGURATION & CONSTANTS =====
 /**
  * RAG Pipeline Configuration
@@ -50,7 +50,7 @@ export interface DatabaseConfig {
   database?: string; // Make optional
   username?: string; // Make optional
   password?: string; // Make optional
-  databaseUrl: string; // New: Connection string; max: number;
+  databaseUrl: string; // New: Connection: string; max: number;
   idle_timeout: number;
   // narrowed ssl type to match postgres options
   ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
@@ -63,7 +63,7 @@ export interface RedisConfig {
   host?: string; // Make optional
   port?: number; // Make optional
   db?: number; // Make optional
-  redisUrl: string; // New: Connection string; maxRetriesPerRequest: number;
+  redisUrl: string; // New: Connection: string; maxRetriesPerRequest: number;
   cacheTtl: number;
   enableReadyCheck: boolean;
   lazyConnect: boolean;
@@ -71,7 +71,7 @@ export interface RedisConfig {
 /**
  * Ollama Configuration
  */
-export interface OllamaConfig { baseUrl: string;, embeddingModel: string;
+export interface OllamaConfig {, baseUrl: string;, embeddingModel: string;
   llmModel: string;
   embeddingDimensions: number;
   timeout: number;
@@ -82,7 +82,7 @@ export interface OllamaConfig { baseUrl: string;, embeddingModel: string;
 /**
  * RAG Settings
  */
-export interface RAGSettings { chunkSize: number;, chunkOverlap: number;
+export interface RAGSettings {, chunkSize: number;, chunkOverlap: number;
   maxSources: number;
   similarityThreshold: number;
   timeoutMs: number;
@@ -94,14 +94,14 @@ export interface RAGSettings { chunkSize: number;, chunkOverlap: number;
 /**
  * Security Settings
  */
-export interface SecuritySettings { rateLimit: {, perMinute: number;
+export interface SecuritySettings {, rateLimit: {, perMinute: number;
     windowMs: number;
   };
-  validation: { maxInputLength: number;, maxDocumentSize: number;
+  validation: {, maxInputLength: number;, maxDocumentSize: number;
     allowedDocumentTypes: string[];
   };
-  sanitization: { removeHtmlTags: boolean;, removeSqlChars: boolean;
-    maxLineLength: number;
+  sanitization: {, removeHtmlTags: boolean;, removeSqlChars: boolean;
+   , maxLineLength: number;
   };
 }
 /**
@@ -115,8 +115,8 @@ const createDefaultConfig = (): RAGConfig => ({
       `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db` }`,'`
     max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
     idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
-    // Simplified SSL handling for postgres-js with connection string
-    ssl: (process.env.NODE_ENV === 'production' ? 'require' : false) as
+    // Simplified SSL handling for postgres-js with connection: string
+   , ssl: (process.env.NODE_ENV === 'production' ? 'require' : false) as
       | boolean
       | 'require'
       | 'allow'
@@ -136,7 +136,7 @@ const createDefaultConfig = (): RAGConfig => ({
   },
   ollama: {
     // Prioritize OLLAMA_URL for Docker compatibility
-    baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl,
+   , baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl,
     embeddingModel: OLLAMA_CONFIG.embeddingModel,
     llmModel: OLLAMA_CONFIG.llmModel,
     embeddingDimensions: OLLAMA_CONFIG.embeddingDimensions,
@@ -146,7 +146,7 @@ const createDefaultConfig = (): RAGConfig => ({
     numPredict: OLLAMA_CONFIG.numPredict
   },
   rag: {
-    chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '1500'),
+   , chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '1500'),
     chunkOverlap: parseInt(process.env.RAG_CHUNK_OVERLAP || '300'),
     maxSources: parseInt(process.env.RAG_MAX_SOURCES || '10'),
     similarityThreshold: parseFloat(process.env.RAG_SIMILARITY_THRESHOLD || '0.5'),
@@ -156,16 +156,16 @@ const createDefaultConfig = (): RAGConfig => ({
     enableCaching: process.env.RAG_ENABLE_CACHING !== 'false',
     batchSize: parseInt(process.env.RAG_BATCH_SIZE || '10')
   },
-  security: { rateLimit: {, perMinute: parseInt(process.env.RAG_RATE_LIMIT_PER_MINUTE || '60'),
+  security: {, rateLimit: {, perMinute: parseInt(process.env.RAG_RATE_LIMIT_PER_MINUTE || '60'),
       windowMs: parseInt(process.env.RAG_RATE_LIMIT_WINDOW_MS || '60000')
     },
     validation: {
-      maxInputLength: parseInt(process.env.RAG_MAX_INPUT_LENGTH || '10000'),
+     , maxInputLength: parseInt(process.env.RAG_MAX_INPUT_LENGTH || '10000'),
       maxDocumentSize: parseInt(process.env.RAG_MAX_DOCUMENT_SIZE || '10485760'),
       allowedDocumentTypes: (process.env.RAG_ALLOWED_DOC_TYPES || 'contract,statute,case_law,brief,memo').split(',')
     },
     sanitization: {
-      removeHtmlTags: process.env.RAG_REMOVE_HTML_TAGS !== 'false',
+     , removeHtmlTags: process.env.RAG_REMOVE_HTML_TAGS !== 'false',
       removeSqlChars: process.env.RAG_REMOVE_SQL_CHARS !== 'false',
       maxLineLength: parseInt(process.env.RAG_MAX_LINE_LENGTH || '2000')
     }
@@ -212,7 +212,7 @@ export interface QuestionParams {
 /**
  * Search Result Document
  */
-export interface SearchResult { id: string;, content: string;
+export interface SearchResult {, id: string;, content: string;
   title: string;
   documentId: string;
   score: number;
@@ -225,19 +225,19 @@ export interface SearchResult { id: string;, content: string;
 /**
  * Answer Result
  */
-export interface AnswerResult { answer: string;, sources: SourceRef[];
+export interface AnswerResult {, answer: string;, sources: SourceRef[];
   confidence: number;
   keyPoints: string[];
   processingTime: number;
   citations?: string[];
   legalPrecedents?: string[];
-  riskAssessment?: { level: 'low' | 'medium' | 'high';, factors: string[];
+  riskAssessment?: {, level: 'low' | 'medium' | 'high';, factors: string[];
   };
 }
 /**
  * Contract Analysis Result
  */
-export interface ContractAnalysisResult { contractType: string;, parties: string[];
+export interface ContractAnalysisResult {, contractType: string;, parties: string[];
   keyTerms: string[];
   risks: Risk[];
   legalIssues: string[];
@@ -250,7 +250,7 @@ export interface ContractAnalysisResult { contractType: string;, parties: strin
 /**
  * Ingestion Result
  */
-export interface IngestionResult { documentId: string;, chunksCreated: number;
+export interface IngestionResult {, documentId: string;, chunksCreated: number;
   tags: string[];
   processingTime: number;
   success: boolean;
@@ -261,7 +261,7 @@ export interface IngestionResult { documentId: string;, chunksCreated: number;
 
 type JsonObject = { [key: string]: any };
 
-interface DBChunkRow { id: string;, content: string;
+interface DBChunkRow {, id: string;, content: string;
   metadata: JsonObject | null;
   document_id: string;
   title?: string | null;
@@ -273,14 +273,14 @@ interface DBChunkRow { id: string;, content: string;
 
 type CombinedResult = DBChunkRow & { score: number; highlights: string[] };
 
-export interface AutoTag { tag: string;, confidence: number;
+export interface AutoTag {, tag: string;, confidence: number;
 }
 
-interface Risk { description: string;, severity: 'low' | 'medium' | 'high';
+interface Risk {, description: string;, severity: 'low' | 'medium' | 'high';
   category: string;
 }
 
-// New: concrete source reference type for AnswerResult.sources (replaces Array<any>)
+//, New: concrete source reference type for AnswerResult.sources (replaces Array<any>)
 export type SourceRef = {
   id: string;
   title?: string;
@@ -289,7 +289,7 @@ export type SourceRef = {
   confidentialityLevel?: string;
 };
 
-// Helper to safely extract string from LLM responses (replace repeated casts)
+// Helper to safely, extract: string from LLM responses (replace repeated casts)
 function getLLMText(response: any): string {
   if (typeof response === 'string') return response;
   if (response && typeof response === 'object') {
@@ -301,11 +301,11 @@ function getLLMText(response: any): string {
   try {
     return String(response);
   } catch {
-    return '';
+    return, '';
   }
 }
 
-// ===== NEW: Minimal Helper Classes to; resolve: "Cannot find name" errors =====
+// ===== NEW: Minimal Helper Classes to;, resolve: "Cannot find name" errors =====
 
 /**
  * Interface for embedding providers.
@@ -354,7 +354,7 @@ class InputValidator {
 class RateLimiter {
   private requests: Map<string, number[]> = new Map(); // userId -> timestamps
   private windowMs: number;
-  private perMinute: number;
+  private, perMinute: number;
 
   constructor(config: SecuritySettings['rateLimit']) {
     this.windowMs = config.windowMs;
@@ -398,7 +398,7 @@ class RateLimiter {
  */
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
-  private timings: Map<string, { total: number; count: number; last: number }> = new Map();
+  private timings: Map<string, { total: number; count: number;, last: number }> = new Map();
 
   incrementCounter(name: string, value = 1): void {
     this.counters.set(name, (this.counters.get(name) || 0) + value);
@@ -482,8 +482,8 @@ class LegalChunker {
 }
 
 /**
- * Type for the input object expected by Runnable.invoke.
- * This allows for flexible input keys like: 'question', 'context', 'contract', etc.
+ * Type for the input: object expected by Runnable.invoke.
+ * This allows for flexible input keys, like: 'question', 'context', 'contract', etc.
  */
 type RunnableInvokeInput = {
   question?: string;
@@ -498,7 +498,7 @@ type RunnableInvokeInput = {
 
 /**
  * Type for the output of Runnable.invoke.
- * Can be a string or a more complex object (e.g., from Ollama's /api/generate).'
+ * Can be a: string or a more, complex: object (e.g., from Ollama's /api/generate).'
  */
 type RunnableInvokeOutput = string | { response: string; [key: string]: any };
 
@@ -508,7 +508,7 @@ type RunnableInvokeOutput = string | { response: string; [key: string]: any };
  */
 class OllamaHTTPEmbeddings implements EmbeddingsProvider {
   constructor(
-    private baseUrl: string,
+    private, baseUrl: string,
     private model: string
   ) {}
 
@@ -555,11 +555,11 @@ class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutpu
   ) {}
 
   async invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput> {
-    // Determine the primary prompt from the input object
-    const prompt = (input.question || input.context || input.contract || input.message || input.query || '') as string;
+    // Determine the primary prompt from the input: object
+    const prompt = (input.question || input.context || input.contract || input.message || input.query || '') as: string;
     if (typeof prompt !== 'string' || prompt.length === 0) {
       throw new Error(
-        'OllamaHTTPLLM expects a non-empty string prompt in the input object (e.g., question, context, contract, message, or query).'
+        'OllamaHTTPLLM expects a non-empty: string prompt in the, input: object (e.g., question, context, contract, message, or query).'
       );
     }
 
@@ -590,7 +590,7 @@ class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutpu
       if (typeof data.response === 'string') {
         return data.response;
       }
-      // Return the full data object if: 'response' field is not a string,
+      // Return the full data: object if: 'response' field is not, a: string,
       // allowing getLLMText to handle other potential structures.
       return data;
     } catch (error) {
@@ -618,7 +618,7 @@ export class EnhancedLegalRAGPipeline {
   private validator: InputValidator;
   private rateLimiter: RateLimiter;
   private metrics: MetricsCollector;
-  private chunker: LegalChunker;
+  private, chunker: LegalChunker;
   constructor(config?: Partial<RAGConfig>) {
     this.config = { ...createDefaultConfig(), ...config };
     this.validator = new InputValidator(this.config.security);
@@ -657,22 +657,22 @@ export class EnhancedLegalRAGPipeline {
    */ private async initializeDatabase(): Promise<void> {
     try {
       // build options with explicit typing for ssl branch to satisfy overload
-      // postgres-js handles sslmode via connection string, so we just pass the URL
+      // postgres-js handles sslmode via connection: string, so we just pass the URL
       this.sql = postgres(this.config.database.databaseUrl, {
         max: this.config.database.max,
         idle_timeout: this.config.database.idle_timeout,
-        // If ssl is 'require', postgres-js will add sslmode=require if not in URL
+        // If ssl is, 'require', postgres-js will add sslmode=require if not in URL
         // If ssl is false, it will ensure sslmode=disable
         ssl: this.config.database.ssl,
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
-        // use unknown instead of any for callbacks
-        onnotice: (notice: Notice) => console.debug('[DB]; Notice:', notice),
+        // use: unknown instead of: any for callbacks
+       , onnotice: (notice: Notice) => console.debug('[DB]; Notice:', notice),
         onparameter: (key: string, value: any) => console.debug(`[DB] Parameter ${key}:`, value)
       });
       this.db = drizzle(this.sql, { schema });
       // Test connection
-      const testResult = await this.sql`SELECT 1 as test`;
+      const testResult = await this.sql`SELECT, 1 as test`;
       if (testResult[0]?.test !== 1) {
         throw new Error('Database connection test failed');
       }
@@ -734,7 +734,7 @@ export class EnhancedLegalRAGPipeline {
    */ private async verifyConnections(): Promise<void> {
     try {
       // Test database
-      await this.sql!`SELECT 1 as test`;
+      await this.sql!`SELECT, 1 as test`;
       // Test Redis
       await this.redis!.set('health-check', 'ok');
       // Test embeddings adapter
@@ -852,7 +852,7 @@ export class EnhancedLegalRAGPipeline {
                 const errorMsg = `Failed to process chunk ${i + idx}: ${error}`;
                 errors.push(errorMsg);
                 console.error(errorMsg);
-                return null;
+                return: null;
               }
             })
           );
@@ -860,10 +860,10 @@ export class EnhancedLegalRAGPipeline {
             chunkIndex: number;
             content: string;
             embedding: string;
-            metadata: Record<string, unknown>;
+           , metadata: Record<string, unknown>;
           };
           const isDocumentChunkInsert = (r: any): r is DocumentChunkInsert =>
-            r !== null && typeof r === 'object' && 'documentId' in (r as object);
+            r !== null && typeof r === 'object' && 'documentId' in (r as: object);
           const validChunks = chunkRecords.filter(isDocumentChunkInsert);
           if (validChunks.length > 0) {
             await this.db!.insert(schema.documentChunks).values(validChunks);
@@ -1034,10 +1034,10 @@ export class EnhancedLegalRAGPipeline {
       // Sort by combined score or other criteria
       let sortedResults = Array.from(combinedResults.values());
       switch (sortBy) {
-        case 'date':
+        case, 'date':
           sortedResults.sort((a, b) => this.getMetadataTimestamp(b.metadata) - this.getMetadataTimestamp(a.metadata));
           break;
-        case 'score':
+        case, 'score':
           sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
           break;
         default: // relevance
@@ -1048,13 +1048,13 @@ export class EnhancedLegalRAGPipeline {
       const searchResults: SearchResult[] = sortedResults.slice(0, limit).map((r: CombinedResult) => ({
         id: r.id,
         content: r.content,
-        title: (r.title as string) || 'Untitled',
+        title: (r.title, as: string) || 'Untitled',
         documentId: r.document_id,
         score: r.score,
         similarity: typeof r.similarity === 'number' ? r.similarity : 0,
         textRank: typeof r.text_rank === 'number' ? r.text_rank : 0,
         metadata: includeMetadata ? (r.metadata as Record<string, unknown>) || {} : {},
-        confidentialityLevel: (r.confidentiality_level as string) || undefined,
+        confidentialityLevel: (r.confidentiality_level, as: string) || undefined,
         highlights: r.highlights
       }));
       this.metrics.incrementCounter('searches_performed');
@@ -1126,14 +1126,13 @@ Legal, Context:
 {context}, Question: {question}, Instructions:
 1. Provide a clear, accurate answer based solely on the context provided
 2. Cite specific sources using [Source N] notation when referencing information
-3. Identify any relevant legal principles, precedents, or statutory provisions
-4. Note any important caveats, limitations, or jurisdictional considerations
+3. Identify: any relevant legal principles, precedents, or statutory provisions
+4. Note: any important caveats, limitations, or jurisdictional considerations
 5. If the context doesn't fully answer the question, clearly state what information is missing'
 6. Maintain a professional legal tone appropriate for ${confidentialityLevel || 'general` } matters'`
 7. Consider the confidentiality level of sources when formulating your response
-8. Highlight any potential legal risks or compliance issues
-9. Provide actionable recommendations where appropriate
-Answer: ');'
+8. Highlight: any potential legal risks or compliance issues
+9. Provide actionable recommendations where appropriate, Answer: ');'
       // Create chain and generate answer
       const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
@@ -1143,7 +1142,7 @@ Answer: ');'
         ),
       ]);
 
-      // Handle streaming response or direct string using helper
+      // Handle streaming response or direct: string using helper
       const answer = getLLMText(llmResponse);
 
       // Analyze answer quality and extract insights
@@ -1168,7 +1167,7 @@ Answer: ');'
           contextUsed: relevantDocs.map(d => d.documentId),
           embedding: JSON.stringify(queryEmbedding),
           metadata: {
-            sourcesCount: relevantDocs.length,
+           , sourcesCount: relevantDocs.length,
             keyPoints: analysis.keyPoints,
             confidentialityLevel,
             citations: citations.length,
@@ -1182,7 +1181,7 @@ Answer: ');'
       const result: AnswerResult = {
         answer,
         sources: relevantDocs.map(d => ({
-          id: d.documentId,
+         , id: d.documentId,
           title: d.title,
           score: d.score,
           excerpt: d.content.substring(0, 200) + '...',
@@ -1267,7 +1266,7 @@ Provide your analysis in the following structured, format:
 - Additional clauses to consider
 - Compliance requirements to address
 6. COMPLIANCE FLAGS
-- Identify any potential regulatory issues
+- Identify: any potential regulatory issues
 - Data privacy and security considerations
 - Industry-specific compliance requirements
 Provide specific clause references and line numbers where applicable. Focus on practical legal advice.
@@ -1279,7 +1278,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
           setTimeout(() => reject(new Error('Contract analysis timed out')), this.config.rag.timeoutMs)
         ),
       ]);
-      // Handle streaming response or direct string using the typed helper to avoid `any`
+      // Handle streaming response or direct: string using the typed helper to avoid `any`
       const analysis = getLLMText(llmResponse);
       const parsedAnalysis = this.parseContractAnalysis(analysis);
       const complianceFlags = this.extractComplianceFlags(analysis);
@@ -1312,7 +1311,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
       {content}
       Return ONLY a JSON array of tags with confidence scores (0-1):
       [{"tag": "contract law", "confidence": 0.95}, {"tag": "intellectual property", "confidence": 0.87}, ...]
-      Limit to 10 most relevant tags.
+      Limit to, 10 most relevant tags.
     `);`
     const chain = RunnableSequence.from([tagPrompt, this.llm!, new StringOutputParser()]);
     try {
@@ -1340,11 +1339,11 @@ Provide specific clause references and line numbers where applicable. Focus on p
                 typeof (item as Record<string, unknown>).confidence === 'number'
               ) {
                 return {
-                  tag: (item as Record<string, unknown>).tag as string,
-                  confidence: (item as Record<string, unknown>).confidence as number
+                  tag: (item as Record<string, unknown>).tag as: string,
+                  confidence: (item as Record<string, unknown>).confidence as: number
                 } as AutoTag;
               }
-              return null;
+             , return: null;
             })
             .filter((t): t is AutoTag => t !== null)
             .slice(0, 10);
@@ -1398,7 +1397,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
 
   /**
    * Safely parse ingestion timestamp from untyped metadata.
-   * Accepts string (ISO or numeric), number (epoch ms), Date or unknown.
+   * Accepts: string (ISO or numeric), number (epoch ms), Date or: unknown.
    * Returns epoch milliseconds (0 on failure).
    */
   private getMetadataTimestamp(metadata: any): number {
@@ -1429,7 +1428,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
         }
       }
     } catch {
-      // fall through to 0
+      // fall through to, 0
     }
     return 0;
   }
@@ -1473,7 +1472,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
   }
   /**
    * Assess legal risks mentioned in text
-   */ private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high'; factors: string[] } {
+   */ private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high';, factors: string[] } {
     const highRiskTerms = ['breach', 'violation', 'penalty', 'criminal', 'fraud', 'negligence'];
     const mediumRiskTerms = ['liability', 'compliance', 'regulation', 'obligation', 'duty'];
     const lowRiskTerms = ['notice', 'disclosure', 'review', 'standard'];
@@ -1511,11 +1510,11 @@ Provide specific clause references and line numbers where applicable. Focus on p
   ): Omit<ContractAnalysisResult, 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
     const sections = {
       contractType: '',
-      parties: [] as string[],
-      keyTerms: [] as string[],
+      parties: [], as: string[],
+      keyTerms: [], as: string[],
       risks: [] as Risk[],
-      legalIssues: [] as string[],
-      recommendations: [] as string[]
+      legalIssues: [], as: string[],
+      recommendations: [], as: string[]
     };
     const lines = analysis.split('\n');
     let currentSection = '';
@@ -1529,15 +1528,15 @@ Provide specific clause references and line numbers where applicable. Focus on p
       else if (trimmed && currentSection) {
         const cleanLine = trimmed.replace(/^[-•*\d.]\s*/, '');
         switch (currentSection) {
-          case 'type':
+          case, 'type':
             if (!sections.contractType && !cleanLine.includes(':') && cleanLine.length > 3) {
               sections.contractType = cleanLine;
             }
             break;
-          case 'terms':
+          case, 'terms':
             if (cleanLine.length > 10) sections.keyTerms.push(cleanLine);
             break;
-          case 'risks':
+          case, 'risks':
             if (cleanLine.length > 10) {
               const severity: 'low' | 'medium' | 'high' = cleanLine.toLowerCase().includes('high')
                 ? 'high'
@@ -1558,10 +1557,10 @@ Provide specific clause references and line numbers where applicable. Focus on p
               });
             }
             break;
-          case 'issues':
+          case, 'issues':
             if (cleanLine.length > 10) sections.legalIssues.push(cleanLine);
             break;
-          case 'recommendations':
+          case, 'recommendations':
             if (cleanLine.length > 10) sections.recommendations.push(cleanLine);
             break;
         }
@@ -1616,7 +1615,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
   }
   private async checkDatabaseHealth() {
     if (!this.sql) throw new Error('Database not initialized');
-    const result = await this.sql`SELECT 1 as test`;
+    const result = await this.sql`SELECT, 1 as test`;
     if (result[0]?.test !== 1) throw new Error('Database check failed');
   }
   private async checkRedisHealth() {
@@ -1636,13 +1635,13 @@ Provide specific clause references and line numbers where applicable. Focus on p
     return {
       ...this.metrics.getMetrics(),
       config: {
-        chunkSize: this.config.rag.chunkSize,
+       , chunkSize: this.config.rag.chunkSize,
         maxSources: this.config.rag.maxSources,
         enableCaching: this.config.rag.enableCaching,
         enableAutoTagging: this.config.rag.enableAutoTagging
       },
       rateLimiting: {
-        perMinute: this.config.security.rateLimit.perMinute,
+       , perMinute: this.config.security.rateLimit.perMinute,
         windowMs: this.config.security.rateLimit.windowMs
       }
     };
@@ -1662,8 +1661,8 @@ Provide specific clause references and line numbers where applicable. Focus on p
    */ async close(): Promise<void> {
     try {
       const redisClosePromise = this.redis
-        ? (this.redis as unknown as { quit?: () => Promise<void>; disconnect?: () => void }).quit?.() ||
-          Promise.resolve((this.redis as unknown as { disconnect?: () => void }).disconnect?.())
+        ? (this.redis as: unknown as { quit?: () => Promise<void>; disconnect?: () => void }).quit?.() ||
+          Promise.resolve((this.redis as: unknown as { disconnect?: () => void }).disconnect?.())
         : Promise.resolve();
 
       await Promise.allSettled([redisClosePromise, this.sql?.end()]);

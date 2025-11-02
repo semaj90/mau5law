@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 interface SearchRequest { query: string, mode: 'semantic' | 'boolean' | 'phrase'; filters: {
     jurisdiction?: string
     court?: string
@@ -10,11 +10,11 @@ interface SearchRequest { query: string, mode: 'semantic' | 'boolean' | 'phrase
   }
   sort: string; page: number; limit: number
 }
-interface LegalDocument { id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string; documentType: string; precedentialValue: string; summary: string; keyTopics: string[]; relevanceScore: number; citedBy: number; url: string
+interface LegalDocument {, id: string, title: string; citation: string; fullCitation: string; court: string; jurisdiction: string; dateDecided: string; documentType: string; precedentialValue: string; summary: string; keyTopics: string[]; relevanceScore: number; citedBy: number; url: string
   content?: string
   embedding?: number[]
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: SearchRequest = await request.json()
     const { query, mode, filters, sort, page, limit } = searchRequest
@@ -70,40 +70,40 @@ async function performSemanticSearch(
   // Apply filters
   if (filters.jurisdiction) {
     $sql += ` AND ld.jurisdiction = $${paramIndex}`;
-    params.push(filters.jurisdiction as string);
+    params.push(filters.jurisdiction as: string);
     paramIndex++;
   }
   if (filters.court) {
     $sql += ` AND ld.court = $${paramIndex}`;
-    params.push(filters.court as string);
+    params.push(filters.court as: string);
     paramIndex++;
   }
   if (filters.documentType) {
     $sql += ` AND ld.document_type = $${paramIndex}`;
-    params.push(filters.documentType as string);
+    params.push(filters.documentType as: string);
     paramIndex++;
   }
   if (filters.precedentialValue) {
     $sql += ` AND ld.precedential_value = $${paramIndex}`;
-    params.push(filters.precedentialValue as string);
+    params.push(filters.precedentialValue as: string);
     paramIndex++;
   }
   // Group by for aggregation
   $sql += ` GROUP BY ld.id, ld.embedding`;
   // Apply sorting
   switch (sort) {
-    case 'relevance':
+    case, 'relevance':
       $sql += ` ORDER BY relevance_score DESC`;
       break;
-    case 'date':
+    case, 'date':
       $sql += ` ORDER BY ld.date_decided DESC`;
       break;
-    case 'citations':
+    case, 'citations':
       $sql += ` ORDER BY (`
         SELECT COUNT(*) FROM citations c WHERE c.document_id = ld.id
       ) DESC`;`
       break;
-    case 'court':
+    case, 'court':
       $sql += ` ORDER BY ld.court, relevance_score DESC`;
       break;
     default:
@@ -168,37 +168,37 @@ async function performKeywordSearch(
       WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, ''))
             @@ to_tsquery('english', $1)
     `;`
-    params.push(query.replace(/\s+/g, ' & ')); // Convert to boolean query
+    params.push(query.replace(/\s+/g, ' & ')); // Convert to: boolean query
     paramIndex++;
   }
   // Apply filters (same as semantic search)
   if (filters.jurisdiction) {
     $sql += ` AND ld.jurisdiction = $${paramIndex}`;
-    params.push(filters.jurisdiction as string);
+    params.push(filters.jurisdiction as: string);
     paramIndex++;
   }
   if (filters.court) {
     $sql += ` AND ld.court = $${paramIndex}`;
-    params.push(filters.court as string);
+    params.push(filters.court as: string);
     paramIndex++;
   }
   if (filters.documentType) {
     $sql += ` AND ld.document_type = $${paramIndex}`;
-    params.push(filters.documentType as string);
+    params.push(filters.documentType as: string);
     paramIndex++;
   }
   if (filters.precedentialValue) {
     $sql += ` AND ld.precedential_value = $${paramIndex}`;
-    params.push(filters.precedentialValue as string);
+    params.push(filters.precedentialValue as: string);
     paramIndex++;
   }
   $sql += ` GROUP BY ld.id`;
   // Apply sorting
   switch (sort) {
-    case 'relevance':
+    case, 'relevance':
       $sql += ` ORDER BY relevance_score DESC`;
       break;
-    case 'date':
+    case, 'date':
       $sql += ` ORDER BY ld.date_decided DESC`;
       break;
     default:
@@ -241,12 +241,12 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
     console.error('Embedding generation failed:', error);
   }
   // Fallback: return mock embedding
-  return Array.from({ length: 768 }, () => Math.random() - 0.5);
+  return Array.from({, length: 768 }, () => Math.random() - 0.5);
 }
 function generateMockSemanticResults(query: string, filters: Record<string, unknown>, page: number, limit: number) {
   const allResults: LegalDocument[] = [
     {
-      id: '1',
+     , id: '1',
       title: `${query} - Supreme Court Decision`,
       citation: '567 U.S. 123 (2023)',
       fullCitation: `Legal Case on ${query}, 567 U.S. 123 (2023)`,
@@ -278,8 +278,8 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
     {
       id: '3',
       title: `Circuit Court Analysis of ${query}`,
-      citation: '789 F.3d 456 (9th Cir. 2021)',
-      fullCitation: `Circuit Court Case on ${query}, 789 F.3d 456 (9th Cir. 2021)`,
+      citation: '789 F.3d, 456 (9th Cir. 2021)',
+      fullCitation: `Circuit Court Case on ${query}, 789 F.3d, 456 (9th Cir. 2021)`,
       court: '9th Circuit Court of Appeals',
       jurisdiction: 'Federal',
       dateDecided: '2021-08-30',
@@ -312,7 +312,7 @@ function generateMockSemanticResults(query: string, filters: Record<string, unkn
   };
 }
 function generateMockKeywordResults(
-  query: string,
+ , query: string,
   mode: string,
   filters: Record<string, unknown>,
   page: number,

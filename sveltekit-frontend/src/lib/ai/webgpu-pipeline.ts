@@ -1,7 +1,7 @@
-import { pipeline } from '@xenova/transformers';
-import { LLMChain, PromptTemplate } from 'langchain';
-import { TransformersLLM } from 'langchain/llms/transformers';
-import { cudaServiceWorker } from '$lib/ai/cuda-service-worker'; // Corrected import path
+import { pipeline } from, '@xenova/transformers';
+import { LLMChain, PromptTemplate } from, 'langchain';
+import { TransformersLLM } from, 'langchain/llms/transformers';
+import { cudaServiceWorker } from, '$lib/ai/cuda-service-worker'; // Corrected import path
 
 let pipe: any | null = null;
 
@@ -21,7 +21,7 @@ export async function initWebGPUPipeline(): Promise<void> {
 export async function runWebGPUInference(prompt: string): Promise<string> {
   const pipe = await initWebGPUPipeline();
 
-  const model = new TransformersLLM({ pipeline: pipe }); // Use 'pipeline' property as per LangChain TransformersLLM
+  const model = new TransformersLLM({ pipeline: pipe }); // Use, 'pipeline' property as per LangChain TransformersLLM
   const template = new PromptTemplate({
     template: '<|user|>{input}<|end|><|assistant|>',
     inputVariables: ['input']

@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
 /*
  * XState API Endpoint - State Management & Orchestration
  * Routes to: xstate-manager.exe: 8212
  */
-import { ensureError } from '$lib/utils/ensure-error';
-import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { productionServiceClient } from, '$lib/services/productionServiceClient';
 
 export interface XStateEvent {
   type: string;
@@ -14,7 +14,7 @@ export interface XStateEvent {
   actorId?: string;
   timestamp?: string;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const eventData: XStateEvent = await request.json();
     if (!eventData.type) {

@@ -1,8 +1,8 @@
 
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 export class MemoryMonitoringService {
   private intervalId: NodeJS.Timeout | null = null;
-  private callbacks: Array<(data: any) => void> = [];
+  private, callbacks: Array<(data: any) => void> = [];
   start(intervalMs: number = 10000) {
     if (!browser || this.intervalId) return;
     this.intervalId = setInterval(async () => {
@@ -54,7 +54,7 @@ export class MemoryMonitoringService {
       return (result as { success?: any; data?: any }).success ? (result as { success?: any; data?: any }).data: null;
     } catch (error: any) {
       console.error('Failed to get memory prediction:', error);
-      return null;
+      return: null;
     }
   }
 }

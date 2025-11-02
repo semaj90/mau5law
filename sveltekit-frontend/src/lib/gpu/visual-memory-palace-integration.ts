@@ -1,6 +1,6 @@
-import { topKSimilar } from './webgl-shader-cache';
+import { topKSimilar } from, './webgl-shader-cache';
 export interface PalaceNode { id: string;, position: { x: number; y: number; z?: number };
-  embedding: Float32Array;
+ , embedding: Float32Array;
   metadata?: Record<string, unknown>;
 }
 export class VisualMemoryPalace {
@@ -27,8 +27,8 @@ export class VisualMemoryPalace {
   // Map a query to a visual location (centroid of top results)
   locate(embedding: Float32Array, k = 3) {
     const results = this.query(embedding, k);
-    if (results.length === 0) return null;
-    const pos = { x: 0, y: 0, z: 0 };
+    if (results.length === 0) return: null;
+    const pos = {, x: 0, y: 0, z: 0 };
     for (const r of results) {
       const score = typeof r.score === 'number' ? r.score : Number(r.score) || 0;
       pos.x += r.node.position.x * score;
@@ -38,13 +38,13 @@ export class VisualMemoryPalace {
     const total = results.reduce((s, r) => s + (typeof r.score === 'number' ? r.score : Number(r.score) || 0), 0) || 1;
     // keep z optional if all source nodes had no z
     const zAllZero = !results.some(r => typeof r.node.position.z === 'number');
-    return zAllZero ? { x: pos.x / total, y: pos.y / total } : { x: pos.x / total, y: pos.y / total, z: pos.z / total };
+    return zAllZero ? { x: pos.x / total, y: pos.y / total } : {, x: pos.x / total, y: pos.y / total, z: pos.z / total };
   }
 }
 export default VisualMemoryPalace;
 // light typedef for the bridge to clarify expected optional methods
 export interface ShaderSearchResult {
-	id: string;
+, id: string;
 	score?: number | string | null;
 	metadata?: Record<string, unknown> | null;
 	payload?: Record<string, unknown> | null;
@@ -61,7 +61,7 @@ export async function generateVisualMemoryReport(
 	bridge: GlyphShaderBridge, // use explicit, minimal interface
 	entityId: string,
 	text: string
-): Promise<{ entityId: string; topMatches: Array<{ id: string; score: string | number; metadata: Record<string, unknown> | null }> }> {
+): Promise<{ entityId: string; topMatches: Array<{ id: string; score: string | number;, metadata: Record<string, unknown> | null }> }> {
 	try {
 		// persist (best-effort)
 		await bridge.persistShaderToBanks?.(entityId, text);
@@ -72,7 +72,7 @@ export async function generateVisualMemoryReport(
 			topMatches: (similars as ShaderSearchResult[]).map((s) => {
 				// Safely normalize/format score:
 				const raw = s?.score;
-				let formatted: string | number = '';
+				let, formatted: string | number = '';
 				if (typeof raw === 'number') {
 					formatted = Number(raw.toFixed(3));
 				} else if (typeof raw === 'string') {

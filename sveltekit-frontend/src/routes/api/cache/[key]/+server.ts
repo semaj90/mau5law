@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 /**
  * Individual cache key API endpoint for headless UI cache sync
  * GET /api/cache/[key] - Get specific cache entry
@@ -8,28 +8,28 @@ import type { RequestHandler } from './$types.js'
 type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
 type JsonObject = { [key: string]: JsonValue };
 
-interface CacheEntry { value: JsonValue;, timestamp: number;
+interface CacheEntry {, value: JsonValue;, timestamp: number;
   ttl: number;
   version: string;
 }
 
-// Add: dynamic env lookup for Docker/Redis URL (used later when replacing mock with real Redis)
-import { env } from '$env/dynamic/private';
+//, Add: dynamic env lookup for Docker/Redis URL (used later when replacing mock with real Redis)
+import { env } from, '$env/dynamic/private';
 const $DOCKER_REDIS_URL = env.REDIS_URL ?? env.DOCKER_HOST_URL ?? 'redis://:redis@localhost:6379/0';
 // Use it once so the value is not flagged as unused and so it's visible in logs for future real-Redis integration'
-console.debug('[Cache API] configured Redis URL:', $DOCKER_REDIS_URL);
+console.debug('[Cache API] configured Redis, URL:', $DOCKER_REDIS_URL);
 
 // Mock cache implementation - would integrate with actual Redis in production
 const mockCache = new Map<string, CacheEntry>();
 
-// Helper to safely parse an unknown error into a string message
+// Helper to safely parse an: unknown error into, a: string message
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err) || String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 

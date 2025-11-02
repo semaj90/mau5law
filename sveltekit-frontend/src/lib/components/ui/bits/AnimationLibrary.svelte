@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
-  import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
-  import { createEventDispatcher } from 'svelte';
+  import { fade, fly, scale, slide, blur, draw } from, 'svelte/transition';
+  import { quintOut, elasticOut, backOut, bounceOut } from, 'svelte/easing';
+  import { createEventDispatcher } from, 'svelte';
   interface AnimationConfig {
     type: 'fade' | 'fly' | 'scale' | 'slide' | 'blur' | 'draw' | 'gaming' | 'legal';
     duration?: number;
@@ -37,7 +37,7 @@
     reduceMotion = false
   }: EnhancedAnimationLibraryProps = $props();
   // Typed dispatcher avoids deprecated createEventDispatcher signature
-  const dispatch = createEventDispatcher<{ motionPreferenceChange: { reduced: boolean } }>();
+  const dispatch = createEventDispatcher<{ motionPreferenceChange: {, reduced: boolean } }>();
   // Check for user's motion preferences'
   let prefersReducedMotion = $state<boolean>(false);
   $effect(() => {
@@ -58,7 +58,7 @@
     fadeIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: fade, // Fixed semicolon to comma
       config: {
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+       , duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
       }
@@ -66,7 +66,7 @@
     slideUp: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
       config: {
-        y: config.y ?? 20,
+       , y: config.y ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -75,7 +75,7 @@
     slideDown: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
       config: {
-        y: config.y ?? -20,
+       , y: config.y ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -84,7 +84,7 @@
     slideLeft: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
       config: {
-        x: config.x ?? 20,
+       , x: config.x ?? 20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -93,7 +93,7 @@
     slideRight: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
       config: {
-        x: config.x ?? -20,
+       , x: config.x ?? -20,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -102,7 +102,7 @@
     scaleIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
       config: {
-        start: config.start ?? 0.8,
+       , start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
         delay: config.delay ?? 0,
         easing: config.easing ?? globalEasing, // Fixed syntax
@@ -111,7 +111,7 @@
     elastic: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
       config: {
-        start: config.start ?? 0.8,
+       , start: config.start ?? 0.8,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 600), // Fixed syntax
         delay: config.delay ?? 0,
         easing: elasticOut, // Fixed semicolon to comma
@@ -120,7 +120,7 @@
     bounce: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
       config: {
-        y: config.y ?? -10,
+       , y: config.y ?? -10,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 400), // Fixed syntax
         delay: config.delay ?? 0,
         easing: bounceOut, // Fixed semicolon to comma
@@ -131,16 +131,16 @@
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return {
-          duration: config.duration ?? 500, // Fixed syntax
+         , duration: config.duration ?? 500, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             transform: translateX(${t < 0.5 ? Math.random() * 10 - 5 : 0}px) scale(${0.8 + t * 0.2});
             opacity: ${t};
-            filter: hue-rotate(${Math.random() * 2 - 1 * 180}deg) contrast(${1 + (Math.random() * 2 - 1) * 0.5});
+           , filter: hue-rotate(${Math.random() * 2 - 1 * 180}deg) contrast(${1 + (Math.random() * 2 - 1) * 0.5});
             text-shadow:
-              ${(Math.random() * 2 - 1) * 2}px 0 #00ff41,
-              ${-(Math.random() * 2 - 1) * 2}px 0 #ff0040,
-              0 0 ${t * 10}px #00ff41;
+              ${(Math.random() * 2 - 1) * 2}px, 0 #00ff41,
+              ${-(Math.random() * 2 - 1) * 2}px, 0 #ff0040,
+              0, 0 ${t * 10}px #00ff41;
           `
         }
       },
@@ -150,15 +150,15 @@
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return {
-          duration: config.duration ?? 800, // Fixed syntax
+         , duration: config.duration ?? 800, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
-            transform: scale(${0.95 + t * 0.05});
+           , transform: scale(${0.95 + t * 0.05});
             box-shadow:
-              0 0 ${t * 20}px rgba(0, 255, 65, ${t * 0.6}),
-              0 0 ${t * 40}px rgba(0, 255, 65, ${t * 0.3}),
-              inset 0 0 ${t * 10}px rgba(0, 255, 65, ${t * 0.1});
+              0, 0 ${t * 20}px rgba(0, 255, 65, ${t * 0.6}),
+              0, 0 ${t * 40}px rgba(0, 255, 65, ${t * 0.3}),
+              inset, 0 0 ${t * 10}px rgba(0, 255, 65, ${t * 0.1});
             border-color: rgba(0, 255, 65, ${t});
           `
         }
@@ -169,13 +169,13 @@
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return {
-          duration: config.duration ?? 400, // Fixed syntax
+         , duration: config.duration ?? 400, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
-            transform: scale(${0.9 + t * 0.1});
+           , transform: scale(${0.9 + t * 0.1});
             image-rendering: pixelated;
-            filter: contrast(${1 + (1 - t)}) brightness(${0.8 + t * 0.2});
+           , filter: contrast(${1 + (1 - t)}) brightness(${0.8 + t * 0.2});
           `
         }
       },
@@ -186,11 +186,11 @@
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return {
-          duration: config.duration ?? 200, // Fixed syntax
+         , duration: config.duration ?? 200, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
-            transform: translateY(${(1 - t) * 5}px);
+           , transform: translateY(${(1 - t) * 5}px);
             filter: blur(${(1 - t) * 1}px);
           `
         }
@@ -201,11 +201,11 @@
       transition: (node: Element, params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return {
-          duration: config.duration ?? 300, // Fixed syntax
+         , duration: config.duration ?? 300, // Fixed syntax
           delay: config.delay ?? 0,
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
-            transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
+           , transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
             box-shadow: 0 ${t * 4}px ${t * 16}px rgba(0, 0, 0, ${t * 0.1});
           `
         }
@@ -215,7 +215,7 @@
     subtleScale: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
       config: {
-        start: 0.98,
+       , start: 0.98,
         duration: prefersReducedMotion ? 0 : (config.duration ?? 150), // Fixed syntax
         delay: config.delay ?? 0,
         easing: quintOut, // Fixed semicolon to comma
@@ -235,26 +235,26 @@
   export function getThemeAnimation(animationType: string, themeOverride?: string): any {
     const currentTheme = themeOverride || theme; // Fixed typo: them -> theme
     switch (currentTheme) {
-      case 'gaming':
+      case, 'gaming':
         switch (animationType) {
-          case 'enter': return animations.glitchIn();
-          case 'hover': return animations.neonGlow();
-          case 'focus': return animations.pixelate();
+          case, 'enter': return animations.glitchIn();
+          case, 'hover': return animations.neonGlow();
+          case, 'focus': return animations.pixelate();
           default: return animations.fadeIn();
         }
-      case 'legal':
+      case, 'legal':
         switch (animationType) {
-          case 'enter': return animations.professionalFade();
-          case 'slide': return animations.documentSlide();
-          case 'scale': return animations.subtleScale();
+          case, 'enter': return animations.professionalFade();
+          case, 'slide': return animations.documentSlide();
+          case, 'scale': return animations.subtleScale();
           default: return animations.fadeIn();
         }
       default:
         switch (animationType) {
-          case 'enter': return animations.fadeIn();
-          case 'slide': return animations.slideUp();
-          case 'scale': return animations.scaleIn();
-          case 'elastic': return animations.elastic();
+          case, 'enter': return animations.fadeIn();
+          case, 'slide': return animations.slideUp();
+          case, 'scale': return animations.scaleIn();
+          case, 'elastic': return animations.elastic();
           default: return animations.fadeIn();
         }
     }
@@ -265,7 +265,7 @@
 
 <!-- Animation library doesn't render anything, it's a, utility, component -->
 <!-- Use a slot for children content instead of, expecting, a `children` prop -->
-<!-- Replaced Svelte 5 {@render} (caused parse error) with standard slot, for, compatibility -->
+<!-- Replaced Svelte, 5 {@render} (caused parse error) with standard slot, for, compatibility -->
 <slot />
 
 <style>
@@ -301,69 +301,69 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
   @keyframes enhanced-slide-up {
     from {
       opacity: 0;
-      transform: translateY(20px);
+     , transform: translateY(20px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+     , transform: translateY(0);
     }
   }
   @keyframes enhanced-scale-in {
     from {
       opacity: 0;
-      transform: scale(0.8);
+     , transform: scale(0.8);
     }
     to {
       opacity: 1;
-      transform: scale(1);
+     , transform: scale(1);
     }
   }
   @keyframes enhanced-gaming-glitch {
     0% {
       opacity: 0.95;
-      transform: translateX(-1px) scale(0.995);
+     , transform: translateX(-1px) scale(0.995);
       filter: hue-rotate(-20deg) contrast(0.95);
       text-shadow: none;
     }
     20% {
       opacity: 0.9;
-      transform: translateX(-2px) scale(0.99);
+     , transform: translateX(-2px) scale(0.99);
       filter: hue-rotate(-90deg) contrast(0.8);
       text-shadow:
-        -2px 0 #00ff41,
-        2px 0 #ff0040,
-        0 0 5px #00ff41;
+        -2px, 0 #00ff41,
+        2px, 0 #ff0040,
+        0, 0 5px #00ff41;
     }
     40% {
       opacity: 0.85;
-      transform: translateX(1px) scale(1.005);
+     , transform: translateX(1px) scale(1.005);
       filter: hue-rotate(60deg) contrast(1.1);
       text-shadow:
-        2px 0 #00ff41,
-        -2px 0 #ff0040,
-        0 0 8px #00ff41;
+        2px, 0 #00ff41,
+        -2px, 0 #ff0040,
+        0, 0 8px #00ff41;
     }
     60% {
       opacity: 0.9;
-      transform: translateX(-1px) scale(1.0);
+     , transform: translateX(-1px) scale(1.0);
       filter: hue-rotate(-30deg) contrast(1.05);
       text-shadow:
-        -1px 0 #00ff41,
-        1px 0 #ff0040,
-        0 0 6px #00ff41;
+        -1px, 0 #00ff41,
+        1px, 0 #ff0040,
+        0, 0 6px #00ff41;
     }
     80% {
       opacity: 0.95;
-      transform: translateX(2px) scale(1.01);
+     , transform: translateX(2px) scale(1.01);
       filter: hue-rotate(30deg) contrast(1.15);
       text-shadow:
-        2px 0 #00ff41,
-        -2px 0 #ff0040,
-        0 0 10px #00ff41;
+        2px, 0 #00ff41,
+        -2px, 0 #ff0040,
+        0, 0 10px #00ff41;
     }
     100% {
       opacity: 1;
-      transform: translateX(0) scale(1);
+     , transform: translateX(0) scale(1);
       filter: hue-rotate(0deg) contrast(1);
       text-shadow: none;
     }
@@ -371,12 +371,12 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
   @keyframes enhanced-legal-professional {
     from {
       opacity: 0;
-      transform: translateY(5px);
+     , transform: translateY(5px);
       filter: blur(1px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+     , transform: translateY(0);
       filter: blur(0);
     }
   }
@@ -390,7 +390,7 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
       animation: none !important;
     }
   }
-/* Stagger animation: support */
+/* Stagger, animation: support */
   :global([data-stagger-delay]) {
     animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms));
   }

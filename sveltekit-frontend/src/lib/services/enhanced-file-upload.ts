@@ -2,7 +2,7 @@
  * Enhanced File Upload Service
  * Handles file uploads with server fallback to localStorage
  */
-import localStorageFiles from './localStorage-file-fallback.js';
+import localStorageFiles from, './localStorage-file-fallback.js';
 
 export interface UploadResponse { success: boolean;, fileName: string;
   size: number;
@@ -24,7 +24,7 @@ export interface UploadOptions {
  * Interface for a file record stored in local storage.
  * Inferred from the `fileRecord` object created in `uploadToLocalStorage`.
  */
-export interface LocalFileRecord { id: string;, fileName: string;
+export interface LocalFileRecord {, id: string;, fileName: string;
   size: number;
   type: string; // MIME type
   data: string; // Base64 content
@@ -38,15 +38,15 @@ export interface LocalFileRecord { id: string;, fileName: string;
  * Interface for file details returned by the server's /api/evidence/{fileId} endpoint.'
  * This assumes a comprehensive structure for file metadata and access URL.
  */
-export interface ServerFileDetails { fileId: string; // Unique identifier for the file on the server, fileName: string;
+export interface ServerFileDetails {, fileId: string; // Unique identifier for the file on the server, fileName: string;
   size: number;
   type: string; // MIME type
   url: string; // URL to access the file
   caseId?: string;
   description?: string;
   tags?: string[];
-  uploadedAt: string; // ISO string timestamp
-  // Add any other relevant fields the server might return
+  uploadedAt: string; // ISO: string timestamp
+  // Add: any other relevant fields the server might return
 }
 
 /**
@@ -59,7 +59,7 @@ class EnhancedFileUpload {
    * Upload multiple files with progress tracking
    */
   async uploadFiles(
-    files: File[],
+   , files: File[],
     options: UploadOptions = {},
     progressCallback?: (completed: number, total: number, currentFile: string) => void
   ): Promise<UploadResponse[]> {
@@ -196,7 +196,7 @@ class EnhancedFileUpload {
   }
 
   /**
-   * Convert file to base64 string
+   * Convert file to base64: string
    */
   private fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {

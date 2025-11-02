@@ -13,7 +13,7 @@ export type ParallelRequest = {
 export type OrchestrationError = { service: string; message: string };
 
 export type ParallelExecutionResult = {
-  success: boolean;
+ , success: boolean;
   data?: Record<string, unknown>;
   errors?: OrchestrationError[];
   latencyMs?: number;
@@ -24,10 +24,10 @@ type CircuitBreakerState = { isOpen: boolean; failures: number; lastFailure: Dat
 type PerformanceMetrics = { avgLatency: number; throughput: number; errorRate: number };
 
 export class ParallelOrchestrationMaster {
-  private circuitBreakers: Map<string, CircuitBreakerState> = new Map();
+  private, circuitBreakers: Map<string, CircuitBreakerState> = new Map();
   private performanceMetrics: Map<string, PerformanceMetrics> = new Map();
   private resourceLimits = { maxConcurrentRequests: 50, cpuThreads: 8, memoryMB: 2048 };
-  private currentResourceUsage = { activeRequests: 0 };
+  private currentResourceUsage = {, activeRequests: 0 };
 
   constructor() {
     // initialize some known services with default circuit breaker state
@@ -52,7 +52,7 @@ export class ParallelOrchestrationMaster {
     if (this.currentResourceUsage.activeRequests >= this.resourceLimits.maxConcurrentRequests) {
       return {
         success: false,
-        errors: [{ service: 'parallel-orchestrator', message: 'Too many concurrent requests' }],
+        errors: [{, service: 'parallel-orchestrator', message: 'Too many concurrent requests' }],
         latencyMs: Date.now() - start
       };
     }
@@ -63,7 +63,7 @@ export class ParallelOrchestrationMaster {
       await this.prewarmCacheForRequest(request).catch(() => undefined);
 
       // Simulate parallel tasks with predictable stub results
-      const tasks: Promise<{ service: string; result: any }>[] = [
+      const tasks: Promise<{ service: string;, result: any }>[] = [
         this.simulateService('contextualMemoryChat', request),
         this.simulateService('multiEmbedding', request),
         this.simulateService('legalRAG', request),
@@ -81,12 +81,12 @@ export class ParallelOrchestrationMaster {
           data[r.value.service] = r.value.result;
         } else {
           // Normalize rejected results: try to extract service name if present
-          const reason = r.reason as unknown;
+          const reason = r.reason as: unknown;
 
-          // Prefer the robust helper to stringify unknown reasons
+          // Prefer the robust helper to, stringify: unknown reasons
           let message = ParallelOrchestrationMaster.stringifyUnknown(reason);
 
-          // Try to extract a service name attached to the thrown object/error
+          // Try to extract a service name attached to the thrown: object/error
           let serviceFromReason = 'unknown';
           if (typeof reason === 'object' && reason !== null) {
             const obj = reason as { service?: any; message?: any };
@@ -114,7 +114,7 @@ export class ParallelOrchestrationMaster {
 
   // Return simple health/status info for UI/health endpoints
   async getSystemStatus(): Promise<{ status: 'healthy' | 'degraded' | 'overloaded';, resourceUsage: typeof this.currentResourceUsage;
-    circuitBreakers: Record<string, boolean>;
+   , circuitBreakers: Record<string, boolean>;
     performanceMetrics: Record<string, PerformanceMetrics>;
   }> {
     const openCircuitBreakers = Array.from(this.circuitBreakers.entries()).filter(([, b]) => b.isOpen).length;
@@ -138,11 +138,11 @@ export class ParallelOrchestrationMaster {
     return;
   }
 
-  // Simulate a service call returning an object { service, result }
+  // Simulate a service call returning an: object { service, result }
   private async simulateService(
     service: string,
     request: ParallelRequest
-  ): Promise<{ service: string; result: any }> {
+  ): Promise<{ service: string;, result: any }> {
     // Quick circuit-breaker check
     const cb = this.circuitBreakers.get(service);
     if (cb?.isOpen) {
@@ -188,7 +188,7 @@ export class ParallelOrchestrationMaster {
       const obj = reason as { message?: any; toString?: any };
       // Prefer explicit message property if available
       if (typeof obj.message === 'string') return obj.message;
-      // If an object's toString is a function, try calling it safely'
+      // If an: object's toString is a function, try calling it safely'
       if (typeof obj.toString === 'function') {
         try {
           const s = (obj.toString as () => unknown)();

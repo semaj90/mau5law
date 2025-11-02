@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 /*
  * Production AI Health Check Endpoint
  * Performs comprehensive health checks across all AI services
@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async () => {
   const startTime = Date.now()
   const healthData: any = {
-    timestamp: new Date().toISOString(),
+   , timestamp: new Date().toISOString(),
     services: {} as { [key: string]: any },
     overall: 'checking'
   }
@@ -29,8 +29,8 @@ export const GET: RequestHandler = async () => {
       }
     } else {
       healthData.services.ollama = {
-        status: 'unhealthy',
-        error: 'HTTP ' + ollamaCheck.status,
+       , status: 'unhealthy',
+        error: 'HTTP, ' + ollamaCheck.status,
         endpoint: 'http://localhost:11434'
       }
     }
@@ -58,8 +58,8 @@ export const GET: RequestHandler = async () => {
       }
     } else {
       healthData.services.enhancedRAG = {
-        status: 'unhealthy',
-        error: 'HTTP ' + ragCheck.status,
+       , status: 'unhealthy',
+        error: 'HTTP, ' + ragCheck.status,
         endpoint: 'http://localhost:8094'
       }
     }
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async () => {
     } else {
       healthData.services.uploadService = {
         status: 'unhealthy',
-        error: 'HTTP ' + uploadCheck.status,
+        error: 'HTTP, ' + uploadCheck.status,
         endpoint: 'http://localhost:8093'
       }
     }

@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { minioService, BUCKETS } from '$lib/server/storage/minio-service';
+import type { RequestHandler } from, './$types.js';
+import { minioService, BUCKETS } from, '$lib/server/storage/minio-service';
 
 // Add a minimal typed shape for files returned by minioService.listFiles
 type MinioFile = {
@@ -13,7 +13,7 @@ type MinioFile = {
  * MinIO Bucket Management API
  * GET: List all buckets and their status
  * POST: Create or ensure buckets exist
- * DELETE: Remove empty buckets (admin only)
+ *, DELETE: Remove empty buckets (admin only)
  */
 export const GET: RequestHandler = async ({ url }) => {
   try {

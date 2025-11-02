@@ -1,16 +1,16 @@
-import type { RequestHandler } from './$types.js'
-import { db, sql } from '$lib/server/db'
-import { json, error } from '@sveltejs/kit'
-import { generateEmbedding } from '$lib/server/services/vectorDBService';
+import type { RequestHandler } from, './$types.js'
+import { db, sql } from, '$lib/server/db'
+import { json, error } from, '@sveltejs/kit'
+import { generateEmbedding } from, '$lib/server/services/vectorDBService';
 
 // Define types for better code quality and to remove: 'any'
-interface SimilarChunk { id: string | null;, chunk_text: string;
+interface SimilarChunk {, id: string | null;, chunk_text: string;
   chunk_sequence: number;
   evidence_id: string | null;
   embedding: number[] | null;
   similarity: number;
   role: string | null;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
 }
 
 interface OllamaGenerateResponse {
@@ -33,8 +33,7 @@ async function generateRAGResponse(query: string, context: SimilarChunk[]): Prom
     const prompt = `Based on the following legal context, provide a comprehensive response to the query.`
 Context:
 ${contextText}
-Query: ${query}
-Response: ';'
+Query: ${query}, Response: ';'
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },'`'`
@@ -82,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
             role,
             metadata
         FROM chat_embeddings
-        WHERE 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}) > ${threshold}
+        WHERE, 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}) > ${threshold}
         ORDER BY similarity DESC
         LIMIT ${limit}
     `)`
@@ -96,9 +95,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const enhancedResults = similarChunks.map(chunk => ({
       id: chunk.id,
       content: chunk.chunk_text,
-      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
+      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to, 3 decimal places
       entityInfo: {
-        type: 'chat_conversation',
+       , type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
         source: 'chat_embeddings' }'` }));'`
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err) {
     console.error('Vector search error:', err);'
-    const message = err instanceof Error ? err.message : 'An unknown error occurred';
+    const message = err instanceof Error ? err.message : 'An: unknown error occurred';
     return error(500, `Search failed: ${message}`);
   }
 };

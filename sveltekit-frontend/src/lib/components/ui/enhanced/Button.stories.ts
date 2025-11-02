@@ -1,26 +1,26 @@
-import type { Case } from '$lib/types';
-import type { Meta, StoryObj } from '@storybook/svelte';
-import Button from './Button.svelte.js';
+import type { Case } from, '$lib/types';
+import type { Meta, StoryObj } from, '@storybook/svelte';
+import Button from, './Button.svelte.js';
 const meta = {
   title: 'UI/Enhanced/Button',
   component: Button,
   parameters: {
-    layout: 'centered',
-    docs: { description: {, component: 'Enhanced button component with multiple variants and states for the Legal AI Platform'
+   , layout: 'centered',
+    docs: {, description: {, component: 'Enhanced button component with multiple variants and states for the Legal AI Platform'
       }
     }
   },
-  argTypes: { variant: {, control: { type: 'select' },
+  argTypes: {, variant: {, control: {, type: 'select' },
       options: ['default', 'legal', 'evidence', 'case', 'destructive', 'ghost', 'outline']
     },
-    size: { control: {, type: 'select' },
+    size: {, control: {, type: 'select' },
       options: ['sm', 'default', 'lg', 'xl']
     },
-    disabled: { control: {, type: 'boolean' }
+    disabled: {, control: {, type: 'boolean' }
     },
-    loading: { control: {, type: 'boolean' }
+    loading: {, control: {, type: 'boolean' }
     },
-    fullWidth: { control: {, type: 'boolean' },
+    fullWidth: {, control: {, type: 'boolean' },
       description: 'Make button full width'
     }
   },
@@ -29,109 +29,109 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof, meta>;
 export const Default: Story = {
-  args: {
+ , args: {
      'Button',
     variant: 'default'
   }
 };
 export const Legal: Story = {
-  args: {
+ , args: {
      'Legal Action',
     variant: 'legal'
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Legal-themed button variant for law-related actions'
       }
     }
   }
 };
 export const Evidence: Story = {
-  args: {
+ , args: {
      'Add Evidence',
     variant: 'evidence'
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Evidence-themed button for evidence management'
       }
     }
   }
 };
 export const case Story = {
-  args: {
+ , args: {
      'Create Case',
     variant: 'case'
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Case-themed button for case management'
       }
     }
   }
 };
 export const Loading: Story = {
-  args: {
+ , args: {
      'Processing...',
     loading: true
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Button with loading state and spinner'
       }
     }
   }
 };
 export const Disabled: Story = {
-  args: {
+ , args: {
      'Disabled',
     disabled: true
   }
 };
 export const Large: Story = {
-  args: {
+ , args: {
      'Large Button',
     size: 'lg'
   }
 };
 export const ExtraLarge: Story = {
-  args: {
+ , args: {
      'Extra Large',
     size: 'xl'
   }
 };
 export const Small: Story = {
-  args: {
+ , args: {
      'Small',
     size: 'sm'
   }
 };
 export const Outline: Story = {
-  args: {
+ , args: {
      'Outline',
     variant: 'outline'
   }
 };
 export const Ghost: Story = {
-  args: {
+ , args: {
      'Ghost',
     variant: 'ghost'
   }
 };
 export const Destructive: Story = {
-  args: {
+ , args: {
      'Delete',
     variant: 'destructive'
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Destructive button for dangerous actions'
       }
     }
   }
 };
 export const FullWidth: Story = {
-  args: {
+ , args: {
      'Full Width Button',
     fullWidth: true
   },
-  parameters: { docs: {, description: {
-        story: 'Button that takes full width of container'
+  parameters: {, docs: {, description: {
+       , story: 'Button that takes full width of container'
       }
     }
   }

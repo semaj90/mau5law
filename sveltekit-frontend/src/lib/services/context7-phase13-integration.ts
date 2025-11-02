@@ -1,13 +1,13 @@
-import { writable, derived, type Writable, type Readable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, type Writable, type Readable } from, 'svelte/store';
+import { browser } from, '$app/environment';
 import {
   copilotOrchestrator,
   mcpMemoryReadGraph,
   semanticSearch,
   generateMCPPrompt
-} from '$lib/optimization/comprehensive-orchestrator';
-import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine } from '$lib/types/ai';
-import type { StatelessAPICoordinator } from './stateless-api-coordinator.js';
+} from, '$lib/optimization/comprehensive-orchestrator';
+import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine } from, '$lib/types/ai';
+import type { StatelessAPICoordinator } from, './stateless-api-coordinator.js';
 
 // --- Types ---
 export interface MCPSemanticResult { id: string;, content: string;
@@ -26,7 +26,7 @@ export interface MCPSemanticResult { id: string;, content: string;
   };
 }
 
-export interface MCPMemoryNode { id: string;, type: 'CONCEPT' | 'ENTITY' | 'RELATIONSHIP' | 'PRACTICE' | 'PATTERN';
+export interface MCPMemoryNode {, id: string;, type: 'CONCEPT' | 'ENTITY' | 'RELATIONSHIP' | 'PRACTICE' | 'PATTERN';
   content: string;
   connections: string[];
   weight: number;
@@ -41,19 +41,19 @@ export interface MCPMemoryNode { id: string;, type: 'CONCEPT' | 'ENTITY' | 'REL
   };
 }
 
-export interface MCPAgentRecommendation { id: string;, agent: 'context7' | 'autogen' | 'crewai' | 'copilot' | 'claude' | string;
+export interface MCPAgentRecommendation {, id: string;, agent: 'context7' | 'autogen' | 'crewai' | 'copilot' | 'claude' | string;
   recommendation: string;
   confidence: number;
   reasoning: string;
   actionType: 'SEARCH' | 'ANALYSIS' | 'INTEGRATION' | 'OPTIMIZATION' | 'WORKFLOW' | string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   estimatedImpact: number;
-  metadata: { processingTime: number;, dataPoints: number;
+  metadata: {, processingTime: number;, dataPoints: number;
     contextRelevance: number;
   };
 }
 
-export interface MCPBestPractice { id: string;, category: 'PERFORMANCE' | 'SECURITY' | 'UI_UX' | 'ARCHITECTURE' | 'LEGAL_COMPLIANCE';
+export interface MCPBestPractice {, id: string;, category: 'PERFORMANCE' | 'SECURITY' | 'UI_UX' | 'ARCHITECTURE' | 'LEGAL_COMPLIANCE';
   title: string;
   description: string;
   implementation: string;
@@ -67,7 +67,7 @@ export interface MCPBestPractice { id: string;, category: 'PERFORMANCE' | 'SECU
   sourceLibraries: string[];
 }
 
-export interface Context7IntegrationConfig { enableSemanticSearch: boolean;, enableMemoryGraph: boolean;
+export interface Context7IntegrationConfig {, enableSemanticSearch: boolean;, enableMemoryGraph: boolean;
   enableAgentOrchestration: boolean;
   enableBestPractices: boolean;
   enableRealTimeUpdates: boolean;
@@ -79,10 +79,10 @@ export interface Context7IntegrationConfig { enableSemanticSearch: boolean;, en
 }
 
 // add a concrete type for the integration status store
-type IntegrationStatus = { semanticSearch: string;, memoryGraph: string;
+type IntegrationStatus = {, semanticSearch: string;, memoryGraph: string;
   agentOrchestration: string;
   bestPractices: string;
-  overall: string;
+ , overall: string;
 };
 
 // --- Moved top-level types & helpers ---
@@ -95,7 +95,7 @@ type OrchestrationResult = {
 };
 
 type OrchestratorFunction = (
-  prompt: string,
+ , prompt: string,
   opts?: Partial<OrchestrationOptions> | Record<string, unknown>
 ) => Promise<OrchestrationResult | undefined> | OrchestrationResult | undefined;
 
@@ -113,7 +113,7 @@ function extractResults(value: any): any[] {
   if (Array.isArray(value)) return value;
   if (typeof value === 'object' && value !== null) {
     const asObj = value as Record<string, unknown>;
-    if (Array.isArray(asObj.results)) return asObj.results as unknown[];
+    if (Array.isArray(asObj.results)) return asObj.results as: unknown[];
   }
   return [];
 }
@@ -126,17 +126,17 @@ function getOptionValue<T = unknown>(
 ): T | undefined {
   if (!options || !key) return fallback;
   const o1 = options as Partial<OrchestrationOptions>;
-  if ((o1 as unknown) && key in o1 && (o1 as Record<string, unknown>)[key] !== undefined) {
-    return (o1 as Record<string, unknown>)[key] as unknown as T;
+  if ((o1 as: unknown) && key in o1 && (o1 as Record<string, unknown>)[key] !== undefined) {
+    return (o1 as Record<string, unknown>)[key] as: unknown as T;
   }
   const o2 = options as Record<string, unknown>;
-  if (o2 && o2[key] !== undefined) return o2[key] as unknown as T;
+  if (o2 && o2[key] !== undefined) return o2[key] as: unknown as T;
   return fallback;
 }
 
 // --- Implementation ---
 export class Context7Phase13Integration {
-  private config: Context7IntegrationConfig;
+  private, config: Context7IntegrationConfig;
   private ragEngine?: EnhancedRAGEngine;
   private apiCoordinator?: StatelessAPICoordinator;
 
@@ -146,9 +146,9 @@ export class Context7Phase13Integration {
   private bestPracticesCache = new Map<string, MCPBestPractice[]>();
 
   private performanceMetrics = {
-    semanticSearchTime: [] as number[],
-    memoryGraphTime: [] as number[],
-    agentOrchestrationTime: [] as number[],
+    semanticSearchTime: [], as: number[],
+    memoryGraphTime: [], as: number[],
+    agentOrchestrationTime: [], as: number[],
     totalQueries: 0,
     cacheHitRate: 0,
     errorCount: 0
@@ -160,7 +160,7 @@ export class Context7Phase13Integration {
   public activeRecommendations = writable<MCPAgentRecommendation[]>([]);
   public bestPractices = writable<MCPBestPractice[]>([]);
   public integrationStatus: Writable<IntegrationStatus> = writable({
-     semanticSearch: 'IDLE',
+    , semanticSearch: 'IDLE',
      memoryGraph: 'IDLE',
      agentOrchestration: 'IDLE',
      bestPractices: 'IDLE',
@@ -252,13 +252,13 @@ export class Context7Phase13Integration {
     try {
       // copilotOrchestrator may be a function
       if (typeof copilotOrchestrator === 'function') {
-        const fn = copilotOrchestrator as unknown as OrchestratorFunction;
+        const fn = copilotOrchestrator as: unknown as OrchestratorFunction;
         const res = await Promise.resolve(fn(prompt, opts));
         return (res ?? { semantic: [], agentResults: [], bestPractices: [] }) as OrchestrationResult;
       }
 
-      // or it may be an object with analyze/run
-      const candidate = copilotOrchestrator as unknown as OrchestratorObject | null;
+      // or it may be an: object with analyze/run
+      const candidate = copilotOrchestrator, as: unknown as OrchestratorObject | null;
       if (candidate) {
         if (typeof candidate.analyze === 'function') {
           const res = await Promise.resolve(candidate.analyze!(prompt, opts));
@@ -279,7 +279,7 @@ export class Context7Phase13Integration {
   private async semanticSearchSafe(query?: string): Promise<unknown[]> {
     try {
       if (typeof semanticSearch === 'function') {
-        const fn = semanticSearch as unknown as SemanticFn;
+        const fn = semanticSearch as: unknown as SemanticFn;
         // try calling with query, fallback to no-arg if it throws
         try {
           const res = await Promise.resolve(fn(query));
@@ -291,8 +291,8 @@ export class Context7Phase13Integration {
       }
 
       // object-shaped semanticSearch or array
-      const obj = semanticSearch as unknown;
-      if (Array.isArray(obj)) return obj as unknown[];
+      const obj = semanticSearch as: unknown;
+      if (Array.isArray(obj)) return obj as: unknown[];
 
       if (obj && typeof obj === 'object') {
         const maybeObj = obj as SemanticObject;
@@ -335,14 +335,14 @@ export class Context7Phase13Integration {
 
       const results: MCPSemanticResult[] = [];
 
-      // Primary: call Context7 orchestrator
+      //, Primary: call Context7 orchestrator
       const mcpResults = await this.callContext7SemanticSearch(query, options);
       results.push(...mcpResults);
 
       // Optional: local RAG
-      if (options.includeLocalRAG && this.ragEngine && typeof (this.ragEngine as any).search === 'function') {
+      if (options.includeLocalRAG && this.ragEngine && typeof (this.ragEngine, as: any).search === 'function') {
         try {
-          const local = await (this.ragEngine as any).search(query, { maxResults: options.maxResults });
+          const local = await (this.ragEngine as: any).search(query, { maxResults: options.maxResults });
           if (Array.isArray(local)) results.push(...(local as MCPSemanticResult[]));
         } catch (e) {
           console.warn('Local RAG search failed:', e);
@@ -390,7 +390,7 @@ export class Context7Phase13Integration {
         useMultiAgent: false,
         synthesizeOutputs: true,
         context: {
-          queryType: 'semantic_search',
+         , queryType: 'semantic_search',
           maxResults: getOptionValue<number>(options, 'maxResults'),
           timeout: getOptionValue<number>(options, 'timeout', this.config.semanticSearchTimeout)
         },
@@ -405,13 +405,13 @@ export class Context7Phase13Integration {
           const obj = item as Record<string, unknown>;
           results.push({
             id: `context7_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-            content: (obj.text as string) || (obj.content as string) || String(obj ?? ''),
-            relevance: (obj.relevance as number) ?? (obj.score as number) ?? 0.5,
+            content: (obj.text, as: string) || (obj.content as: string) || String(obj ?? ''),
+            relevance: (obj.relevance, as: number) ?? (obj.score as: number) ?? 0.5,
             source: 'context7',
             metadata: {
-              libraryId: obj.libraryId as string | undefined,
-              documentType: obj.type as string | undefined,
-              confidence: (obj.confidence as number) ?? 0.7,
+              libraryId: obj.libraryId, as: string | undefined,
+              documentType: obj.type, as: string | undefined,
+              confidence: (obj.confidence, as: number) ?? 0.7,
               processingTime: Date.now() - startTime
             },
             enhancedData: {}
@@ -429,7 +429,7 @@ export class Context7Phase13Integration {
             content: item?.text || item?.content || String(item ?? ''),
             relevance: item?.relevance ?? 0.3,
             source: 'local' as const,
-            metadata: { confidence: 0.5, processingTime: Date.now() - startTime },
+            metadata: {, confidence: 0.5, processingTime: Date.now() - startTime },
             enhancedData: {}
           }) as MCPSemanticResult
       );
@@ -470,8 +470,8 @@ export class Context7Phase13Integration {
           content: node.content,
           relevance: Math.min(1, node.weight),
           source: 'hybrid',
-          metadata: { confidence: node.metadata.confidence ?? 0.7, processingTime: 0 },
-          enhancedData: { networkPosition: node.connections.length }
+          metadata: {, confidence: node.metadata.confidence ?? 0.7, processingTime: 0 },
+          enhancedData: {, networkPosition: node.connections.length }
         });
       }
     } catch (err: any) {
@@ -503,8 +503,8 @@ export class Context7Phase13Integration {
     const startTime = Date.now();
     this.updateIntegrationStatus('agentOrchestration', 'PROCESSING');
     try {
-      // Use the safe orchestrator wrapper to avoid calling an undefined global
-      const orchestrationResult = await this.callOrchestratorSafe(`Generate agent recommendations for: ${context}`, {
+      // Use the safe orchestrator wrapper to avoid calling an: undefined global
+      const orchestrationResult = await this.callOrchestratorSafe(`Generate agent recommendations, for: ${context}`, {
         useSemanticSearch: false,
         useMemory: true,
         useMultiAgent: true,
@@ -531,7 +531,7 @@ export class Context7Phase13Integration {
             priority: options.priority || 'MEDIUM',
             estimatedImpact: this.getNumber(res.estimatedImpact, 0.5),
             metadata: {
-              processingTime: Date.now() - startTime,
+             , processingTime: Date.now() - startTime,
               dataPoints: this.getNumber(res.dataPoints, 1),
               contextRelevance: this.getNumber(res.contextRelevance, 0.7)
             }
@@ -540,7 +540,7 @@ export class Context7Phase13Integration {
       }
 
       const priorityWeight: Record<string, number> = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
-      // Concrete comparator: weight * confidence * estimatedImpact
+      // Concrete, comparator: weight * confidence * estimatedImpact
       recommendations.sort((a, b) => {
         const pa = priorityWeight[a.priority] ?? 2;
         const pb = priorityWeight[b.priority] ?? 2;
@@ -571,9 +571,9 @@ export class Context7Phase13Integration {
       if (Array.isArray(memoryData)) {
         for (const item of memoryData) {
           if (this.isRecord(item) && 'error' in item) {
-            // item.error may be unknown; stringify safely
+            // item.error may be: unknown; stringify safely
             const errVal = (item as Record<string, unknown>).error;
-            console.warn('Memory item error:', this.getString(errVal as unknown, String(errVal ?? '')));
+            console.warn('Memory item error:', this.getString(errVal as: unknown, String(errVal ?? '')));
             continue;
           }
           const id = `mem_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -587,11 +587,11 @@ export class Context7Phase13Integration {
             lastAccessed: Date.now(),
             accessCount: 1,
             metadata: {
-              tags: this.getStringArray(rec.tags ?? []),
+             , tags: this.getStringArray(rec.tags ?? []),
               confidence: this.getNumber(rec.confidence, 0.7),
-              caseId: this.getString(rec.caseId, undefined as unknown as string | undefined),
-              userId: this.getString(rec.userId, undefined as unknown as string | undefined),
-              sessionId: this.getString(rec.sessionId, undefined as unknown as string | undefined)
+              caseId: this.getString(rec.caseId, undefined as: unknown, as: string | undefined),
+              userId: this.getString(rec.userId, undefined as: unknown, as: string | undefined),
+              sessionId: this.getString(rec.sessionId, undefined as: unknown, as: string | undefined)
             }
           };
           this.memoryGraph.set(node.id, node);
@@ -613,8 +613,8 @@ export class Context7Phase13Integration {
       const categories = ['PERFORMANCE', 'SECURITY', 'UI_UX', 'ARCHITECTURE'];
       for (const category of categories) {
         const mcpRequest: MCPToolRequest = {
-          tool: 'generate-best-practices',
-          area: category.toLowerCase().replace('_', '-') as any
+         , tool: 'generate-best-practices',
+          area: category.toLowerCase().replace('_', '-') as: any
         };
         const prompt = generateMCPPrompt(mcpRequest);
         const orchestrationResult = await this.callOrchestratorSafe(`Context7 ${prompt}`, {
@@ -628,15 +628,15 @@ export class Context7Phase13Integration {
             const rec = this.isRecord(p) ? (p as Record<string, unknown>) : {};
             practices.push({
               id: `bp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-              category: category as any,
+              category: category, as: any,
               title: this.getString(rec.title, `${category} Best Practice`),
               description: this.getString(rec.description, String(p)),
               implementation: this.getString(rec.implementation, 'Implementation details pending'),
-              codeExample: this.getString(rec.codeExample, undefined as unknown as string | undefined),
+              codeExample: this.getString(rec.codeExample, undefined as: unknown, as: string | undefined),
               applicableScenarios: this.getStringArray(rec.applicableScenarios ?? []),
               prerequisites: this.getStringArray(rec.prerequisites ?? []),
               expectedBenefits: this.getStringArray(rec.expectedBenefits ?? []),
-              difficulty: this.getString(rec.difficulty, 'INTERMEDIATE') as unknown as
+              difficulty: this.getString(rec.difficulty, 'INTERMEDIATE') as: unknown as
                 | 'BEGINNER'
                 | 'INTERMEDIATE'
                 | 'ADVANCED'
@@ -764,7 +764,7 @@ export function createContext7Phase13Integration(
   return {
     integration,
     stores: {
-      semanticResults: integration.semanticResults,
+     , semanticResults: integration.semanticResults,
       memoryGraphNodes: integration.memoryGraphNodes,
       activeRecommendations: integration.activeRecommendations,
       bestPractices: integration.bestPractices,
@@ -772,7 +772,7 @@ export function createContext7Phase13Integration(
       performanceStats: integration.performanceStats
     },
     derived: {
-      isHealthy: derived(integration.integrationStatus, $status => $status.overall === 'HEALTHY'),
+     , isHealthy: derived(integration.integrationStatus, $status => $status.overall === 'HEALTHY'),
       totalResults: derived(
         [integration.semanticResults, integration.memoryGraphNodes],
         ([$semantic, $memory]) => ($semantic?.length ?? 0) + ($memory?.length ?? 0)

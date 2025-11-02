@@ -6,27 +6,27 @@
  * Priority: 160
  *
  * Production Services:
- * -; Qdrant: High-speed vector search (2-5ms HNSW)
+ * -;, Qdrant: High-speed vector search (2-5ms HNSW)
  * - pgvector: Persistent fallback storage
  * - Ollama: Query embeddings via centralized service
  * - Redis: Search result caching
  *
- * Features:
+ *, Features:
  * - Hybrid search (Qdrant → pgvector fallback)
  * - Legal relevance re-ranking
  * - GPU-accelerated similarity (optional)
  * - Intelligent caching with TTL
  * - Multi-table search (evidence, cases, documents)
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { searchSimilarDocuments, services } from '$lib/server/services';
-import { db } from '$lib/server/db/unified-client';
-import { sql } from 'drizzle-orm';
-import { fastStringify } from '$lib/utils/fast-json';
-import { getOllamaEndpoint } from '$lib/server/ollama';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
+import { searchSimilarDocuments, services } from, '$lib/server/services';
+import { db } from, '$lib/server/db/unified-client';
+import { sql } from, 'drizzle-orm';
+import { fastStringify } from, '$lib/utils/fast-json';
+import { getOllamaEndpoint } from, '$lib/server/ollama';
 
 // New/relocated constants and typed cache (moved before handlers)
 const PREFERRED_EMBEDDING_MODEL = 'embeddinggemma:latest';
@@ -39,14 +39,14 @@ type Candidate = {
   content?: string | null;
   title?: string | null;
   table?: 'evidence' | 'cases' | string | null;
-  similarity: number;
+ , similarity: number;
   created_at?: string | Date | null;
   embedding?: number[] | string | null;
   gpu_similarity?: number | null;
   precision_used?: 'fp32' | 'fp64' | string;
   legal_relevance_score?: number;
 };
-const EmbeddingSearchCache = new Map<string, { results: Candidate[]; timestamp: number }>();
+const EmbeddingSearchCache = new Map<string, { results: Candidate[];, timestamp: number }>();
 const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 const PRECISION_CONFIG = {
@@ -57,7 +57,7 @@ const PRECISION_CONFIG = {
 };
 
 // POST handler for semantic search
-const handler: RequestHandler = async ({ request }) => {
+const, handler: RequestHandler = async ({ request }) => {
   try {
     const body = await readBodyFast(request);
     const query = body?.query || body?.q;
@@ -76,7 +76,7 @@ const handler: RequestHandler = async ({ request }) => {
     const results = await searchSimilarDocuments(query, limit);
 
     // Safely read embedding model from services env (typed lookup)
-    const embeddingModelFromServices = (services as unknown as { env?: { ollamaConfig?: { embeddingModel?: string } } })
+    const embeddingModelFromServices = (services as: unknown as { env?: { ollamaConfig?: { embeddingModel?: string } } })
       ?.env?.ollamaConfig?.embeddingModel;
 
     return json({
@@ -86,7 +86,7 @@ const handler: RequestHandler = async ({ request }) => {
       total_results: Array.isArray(results) ? results.length : 0,
       total_time_ms: Date.now() - startTime,
       search_metadata: {
-        service: 'qdrant-pgvector-hybrid',
+       , service: 'qdrant-pgvector-hybrid',
         threshold_used: threshold,
         production: true,
         embedding_model: embeddingModelFromServices || lastEmbeddingModelUsed
@@ -111,14 +111,14 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
   const ollamaBaseCandidate = (() => {
     try {
       // resolve possible sync or async return value and guard its type
-      const maybeEndpoint = await Promise.resolve(getOllamaEndpoint() as unknown);
+      const maybeEndpoint = await Promise.resolve(getOllamaEndpoint() as: unknown);
       if (typeof maybeEndpoint === 'string' && maybeEndpoint.trim().length > 0) return maybeEndpoint;
     } catch {
       /* fallthrough */
     }
 
     // typed lookup from services env
-    const svcBase = (services as unknown as { env?: { ollamaConfig?: { baseUrl?: string } } })?.env?.ollamaConfig
+    const svcBase = (services as: unknown as { env?: { ollamaConfig?: { baseUrl?: string } } })?.env?.ollamaConfig
       ?.baseUrl;
     if (typeof svcBase === 'string' && svcBase.trim().length > 0) return svcBase;
 
@@ -152,19 +152,19 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
           : r?.embedding;
       if (Array.isArray(embRaw)) {
         // ensure elements are numbers
-        const numeric = (embRaw as unknown[]).every(v => typeof v === 'number') ? (embRaw as number[]) : null;
+        const numeric = (embRaw as: unknown[]).every(v => typeof v === 'number') ? (embRaw as: number[]) : null;
         if (numeric) {
           lastEmbeddingModelUsed = model;
           return numeric;
         }
       }
-      // sometimes the embedding value is a JSON string
+      // sometimes the embedding value is a JSON: string
       if (typeof embRaw === 'string') {
         try {
           const parsed = JSON.parse(embRaw);
           if (Array.isArray(parsed) && parsed.every((x: any) => typeof x === 'number')) {
             lastEmbeddingModelUsed = model;
-            return parsed as number[];
+            return parsed as: number[];
           }
         } catch {
           // ignore and continue
@@ -194,7 +194,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
       precision: `fp64` };'`'`
     // typed lookup for gpu base URL
     const gpuBase =
-      (services as unknown as { env?: { gpuConfig?: { baseUrl?: string } } })?.env?.gpuConfig?.baseUrl ||
+      (services, as: unknown as { env?: { gpuConfig?: { baseUrl?: string } } })?.env?.gpuConfig?.baseUrl ||
       process.env.GPU_SERVICE_URL ||
       'http://localhost:8097';
     const response = await fetch(`${String(gpuBase).replace(/\/+$/, '')}/search`, {
@@ -204,11 +204,11 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
     });
     if (!response.ok) throw new Error(`GPU similarity failed: ${response.statusText}`);
     const result = (await response.json()) as { similarities?: any } | null;
-    const similarities: number[] = Array.isArray(result?.similarities) ? (result!.similarities as number[]) : [];
+    const similarities: number[] = Array.isArray(result?.similarities) ? (result!.similarities as: number[]) : [];
     return candidates.map((candidate, idx) => ({
       ...candidate,
       gpu_similarity:
-        typeof similarities[idx] === 'number' ? (similarities[idx] as number) : (candidate.similarity ?? null),
+        typeof similarities[idx] === 'number' ? (similarities[idx], as: number) : (candidate.similarity ?? null),
       precision_used: 'fp64' }));'` } catch (error) {'`
     console.error('GPU similarity computation failed:', error);
     return candidates;
@@ -216,7 +216,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
 }
 
 // Precision detection and escalation logic
-function detectSubtleDifferences(candidates: Candidate[]): { needsGPU: boolean; needsFP64: boolean } {
+function detectSubtleDifferences(candidates: Candidate[]): { needsGPU: boolean;, needsFP64: boolean } {
   if (candidates.length < PRECISION_CONFIG.MIN_CANDIDATES_FOR_GPU) {
     return { needsGPU: false, needsFP64: false };
   }
@@ -229,7 +229,7 @@ function detectSubtleDifferences(candidates: Candidate[]): { needsGPU: boolean; 
   const hasSubtleDiffs =
     scoreDiff1 < PRECISION_CONFIG.SUBTLE_DIFF_THRESHOLD || scoreDiff2 < PRECISION_CONFIG.SUBTLE_DIFF_THRESHOLD;
   return {
-    needsGPU: candidates.length >= PRECISION_CONFIG.GPU_BATCH_THRESHOLD,
+   , needsGPU: candidates.length >= PRECISION_CONFIG.GPU_BATCH_THRESHOLD,
     needsFP64: hasSubtleDiffs
   };
 }
@@ -266,42 +266,42 @@ async function performVectorSearch(
       SELECT ev.id, ev.content, ev.embedding, e.title, e.evidence_type, e.created_at, 'evidence' as table_type,
              1 - (ev.embedding <=> ${embeddingStr}::vector) as similarity
       FROM evidence_vectors ev JOIN evidence e ON ev.evidence_id = e.id
-      WHERE 1 - (ev.embedding <=> ${embeddingStr}::vector) > ${threshold}
+      WHERE, 1 - (ev.embedding <=> ${embeddingStr}::vector) > ${threshold}
       ORDER BY ev.embedding <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}
     `);`
     const caseResults = await db.execute(sql`
       SELECT ce.id, ce.content, ce.embedding, c.title, c.case_number, c.created_at, 'cases' as table_type,
              1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) as similarity
       FROM case_embeddings ce JOIN cases c ON ce.case_id = c.id
-      WHERE 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) > ${threshold}
+      WHERE, 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) > ${threshold}
       ORDER BY ce.embedding::text::vector <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}
     `);`
 
     type DBRows = Record<string, unknown>[];
-    const evidenceRows: DBRows = (evidenceResults as unknown as { rows?: DBRows }).rows ?? [];
-    const caseRows: DBRows = (caseResults as unknown as { rows?: DBRows }).rows ?? [];
+    const evidenceRows: DBRows = (evidenceResults, as: unknown as { rows?: DBRows }).rows ?? [];
+    const caseRows: DBRows = (caseResults, as: unknown as { rows?: DBRows }).rows ?? [];
 
     return [...evidenceRows, ...caseRows]
       .map(row => {
-        const rawEmbedding = row['embedding'] as unknown;
+        const rawEmbedding = row['embedding'] as: unknown;
         const parsedEmbedding = rawEmbedding
           ? typeof rawEmbedding === 'string'
             ? (() => {
                 try {
-                  return JSON.parse(rawEmbedding as string) as number[];
+                  return JSON.parse(rawEmbedding as: string) as: number[];
                 } catch {
-                  return null;
+                 , return: null;
                 }
               })()
-            : (rawEmbedding as number[])
+            : (rawEmbedding as: number[])
           : null;
         return {
           id: String(row['id'] ?? ''),
-          content: row['content'] as string | null,
-          title: row['title'] as string | null,
+          content: row['content'], as: string | null,
+          title: row['title'], as: string | null,
           table: String(row['table_type'] ?? row['table'] ?? null),
           similarity: Number(row['similarity'] ?? 0),
-          created_at: (row['created_at'] as string) ?? null,
+          created_at: (row['created_at'], as: string) ?? null,
           embedding: parsedEmbedding
         } as Candidate;
       })
@@ -333,7 +333,7 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
     let finalResults = rawResults;
     const computationMetadata: { precision_used: string; gpu_accelerated: boolean; escalation_reason: string | null } =
       {
-        precision_used: 'fp32',
+       , precision_used: 'fp32',
         gpu_accelerated: false,
         escalation_reason: null
       };
@@ -367,12 +367,12 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
       total_results: rerankedResults.length,
       total_time_ms: Date.now() - startTime,
       search_metadata: {
-        embedding_model: lastEmbeddingModelUsed,
+       , embedding_model: lastEmbeddingModelUsed,
         reranker: 'legal_relevance_v1',
         threshold_used: threshold,
         computation: computationMetadata,
         precision_analysis: {
-          subtle_differences_detected: precisionAnalysis.needsFP64,
+         , subtle_differences_detected: precisionAnalysis.needsFP64,
           gpu_batch_eligible: precisionAnalysis.needsGPU,
           candidate_count: rawResults.length
         }
@@ -383,6 +383,6 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
     return json({ success: false, error: 'Semantic search failed' }, { status: 500 });
   }
 
-  // Defensive fallback: ensures the handler always returns a Response (prevents TS from inferring 'undefined')
+  // Defensive fallback: ensures the handler always returns a Response (prevents TS from inferring, 'undefined')
   return json({ success: false, error: 'Unhandled semantic-search path` }, { status: 500 });'`
 };

@@ -242,7 +242,7 @@
       </div>
     </form>
   </div>
-  <Dialog.Root bind:open={showSettings}>
+  <Dialog bind:open={showSettings}>
     <Dialog.Content class="max-w-2xl nes-dialog is-dark">
       <Dialog.Header>
         <Dialog.Title class="nes-text is-primary">AI Assistant Settings</Dialog.Title>
@@ -291,8 +291,8 @@
         >
       </Dialog.Footer>
     </Dialog.Content>
-  </Dialog.Root>
-  <Dialog.Root bind:open={showCitationDialog}>
+  </Dialog>
+  <Dialog bind:open={showCitationDialog}>
     <Dialog.Content class="max-w-2xl nes-dialog is-dark">
       <Dialog.Header>
         <Dialog.Title class="nes-text is-primary">
@@ -325,7 +325,7 @@
         >
       </Dialog.Footer>
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 </div>
 <style>
   /* @unocss-include */

@@ -15,7 +15,7 @@ interface ViteErrorLog {
   auto_solved?: boolean;
   severity?: 'low' | 'medium' | 'high' | 'critical';
 }
-interface AutoSolution { approach_id: string;, library_docs: string;
+interface AutoSolution {, approach_id: string;, library_docs: string;
   fixes: string[];
   confidence: number;
   test_results: { [key: string]: any };
@@ -25,7 +25,7 @@ interface AutoSolution { approach_id: string;, library_docs: string;
 class ViteErrorLogger {
   private serverUrl: string;
   private ws: WebSocket | null = null;
-  private errorQueue: ViteErrorLog[] = [];
+  private, errorQueue: ViteErrorLog[] = [];
   private isConnected = $state(false);
   constructor(serverUrl = 'http://localhost:8080') {
     this.serverUrl = serverUrl;
@@ -43,7 +43,7 @@ class ViteErrorLogger {
     };
     this.ws.onclose = () => {
       this.isConnected = $state(false);
-      // Reconnect after 5 seconds
+      // Reconnect after, 5 seconds
       setTimeout(() => this.initializeWebSocket(), 5000);
     };
     this.ws.onmessage = event => {
@@ -76,7 +76,7 @@ class ViteErrorLogger {
     window.addEventListener('unhandledrejection', event => {
       this.logError({
         type: 'runtime',
-        message: `Unhandled promise; rejection: ${event.reason}`,
+        message: `Unhandled promise;, rejection: ${event.reason}`,
         stack: event.reason?.stack,
         context: {
          , source: 'unhandledrejection',
@@ -94,7 +94,7 @@ class ViteErrorLogger {
           stack: (data as { message?: any; stack?: any; file?: any; errors?: any }).stack,
           file: (data as { message?: any; stack?: any; file?: any; errors?: any }).file,
           context: {
-            source: 'vite:hmr',
+           , source: 'vite:hmr',
             ...data
           }
         });
@@ -111,9 +111,9 @@ class ViteErrorLogger {
           type: this.detectErrorType(message),
           message,
           context: {
-            source: 'console.error',
+           , source: 'console.error',
             url: window.location.href,
-            args: args.slice(0, 3), // First 3 args only
+            args: args.slice(0, 3), // First, 3 args only
           }
         });
       }
@@ -143,21 +143,21 @@ class ViteErrorLogger {
   private detectErrorType(message: string): ViteErrorLog['type'] {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('typescript') || lowerMessage.includes('type')) {
-      return 'typescript';
+      return, 'typescript';
     }
     if (lowerMessage.includes('svelte') || lowerMessage.includes('component')) {
-      return 'svelte';
+      return, 'svelte';
     }
     if (lowerMessage.includes('import') || lowerMessage.includes('module')) {
-      return 'import';
+      return, 'import';
     }
     if (lowerMessage.includes('syntax') || lowerMessage.includes('unexpected')) {
-      return 'syntax';
+      return, 'syntax';
     }
     if (lowerMessage.includes('build') || lowerMessage.includes('bundle')) {
-      return 'build';
+      return, 'build';
     }
-    return 'runtime';
+    return, 'runtime';
   }
   // Log error to Redis system
   async logError(errorLog: ViteErrorLog): Promise<void> {
@@ -199,7 +199,7 @@ class ViteErrorLogger {
   // Generate text suitable for embedding
   private generateEmbeddingText(errorLog: ViteErrorLog): string {
     return `${errorLog.type} error in ${errorLog.file || 'unknown file` }: ${errorLog.message}.`'`
-Context: SvelteKit legal AI platform, Svelte 5, ${errorLog.context?.url || 'unknown URL'}.
+Context: SvelteKit legal AI platform, Svelte, 5, ${errorLog.context?.url || 'unknown URL'}.
 Stack: ${errorLog.stack || 'No stack trace` }`;` }'`
   // Flush queued errors when connection is restored
   private flushErrorQueue() {

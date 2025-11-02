@@ -1,5 +1,5 @@
 // Note service implementation
-import { apiFetch } from '../clients/api-client.js';
+import { apiFetch } from, '../clients/api-client.js';
 export interface Note { id: string;, title: string;
   content?: string;
   createdAt?: string;

@@ -42,7 +42,7 @@
   }
 </script>
 
-<Dialog.Root bind:open openchange={handleOpenChange}>
+<Dialog bind:open openchange={handleOpenChange}>
   <Dialog.Trigger>
     {@render children.trigger()}
   </Dialog.Trigger>
@@ -89,5 +89,5 @@
       {/if}
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 ;

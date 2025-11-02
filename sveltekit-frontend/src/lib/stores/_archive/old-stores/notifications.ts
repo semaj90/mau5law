@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import { writable } from 'svelte/store';
+import type { Case } from, '$lib/types';
+import { writable } from, 'svelte/store';
 export interface Notification { id: string;, type: 'info' | 'success' | 'warning' | 'error' | 'system';
   title?: string;
-  message: string;
+ , message: string;
   duration?: number;
   persistent?: boolean;
   closable?: boolean;

@@ -1,7 +1,7 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { createClient } from 'redis';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { createClient } from, 'redis';
 const redis = redis;
 redis.connect().catch(() => {
   /* ignore for dev */

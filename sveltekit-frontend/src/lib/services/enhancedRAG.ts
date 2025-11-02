@@ -1,11 +1,11 @@
-import type { SearchResult } from '$lib/types';
-import { writable, type Writable, get } from 'svelte/store';
-import type { LLMProvider } from '$lib/types/llm';
+import type { SearchResult } from, '$lib/types';
+import { writable, type Writable, get } from, 'svelte/store';
+import type { LLMProvider } from, '$lib/types/llm';
 
 export interface SearchResult { id: string;, score: number;
   payload: { content: string };
 }
-export interface QueryIntent { type: string;, confidence: number;
+export interface QueryIntent {, type: string;, confidence: number;
   entities: string[];
 }
 export interface QueryContext {
@@ -13,15 +13,15 @@ export interface QueryContext {
   sessionId?: string;
   previousQueries?: string[];
 }
-export interface RAGQuery { id: string;, originalQuery: string;
+export interface RAGQuery {, id: string;, originalQuery: string;
   expandedQueries: string[];
   intent: QueryIntent;
   context: QueryContext;
   timestamp: number;
 }
-export interface RAGResponse { queryId: string;, synthesizedAnswer: string;
+export interface RAGResponse {, queryId: string;, synthesizedAnswer: string;
   sources: SearchResult[];
-  confidence: number;
+ , confidence: number;
 }
 
 export class EnhancedRAGSystem {
@@ -31,8 +31,8 @@ export class EnhancedRAGSystem {
   public ragResponse$: Writable<RAGResponse | null> = writable(null);
   public processing$: Writable<boolean> = writable(false);
 
-  // Accept a partial provider so simple object literals can be used as stubs
-  constructor(private llmProvider: Partial<LLMProvider> = {} as Partial<LLMProvider>) {}
+  // Accept a partial provider so simple: object literals can be used as stubs
+  constructor(private, llmProvider: Partial<LLMProvider> = {} as Partial<LLMProvider>) {}
 
   public async queryRAG(
     _originalQuery: string,
@@ -41,7 +41,7 @@ export class EnhancedRAGSystem {
   ): Promise<RAGResponse> {
     this.processing$.set(true);
     const resp: RAGResponse = {
-      queryId: `stub_${Date.now()}`,
+     , queryId: `stub_${Date.now()}`,
       synthesizedAnswer: '(stub)',
       sources: [],
       confidence: 0
@@ -65,9 +65,9 @@ const _ollamaStub = {
   name: 'Ollama Local',
   type: 'ollama',
   endpoint: 'http://localhost:11434',
-  models: [] as string[],
-  capabilities: [] as string[],
-  status: 'online` } as unknown as Partial<LLMProvider>;'`
+  models: [], as: string[],
+  capabilities: [], as: string[],
+  status: 'online` }, as: unknown as Partial<LLMProvider>;'`
 
 export const enhancedRAG = new EnhancedRAGSystem(_ollamaStub);
 

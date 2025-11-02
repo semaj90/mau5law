@@ -1,12 +1,12 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from, './$types.js';
 type EndpointStatus = { name: string;, path: string;
   healthy: boolean;
   message?: string;
 };
-export const load: PageServerLoad = async () => {
+export const, load: PageServerLoad = async () => {
   // Static endpoint configuration (client-side health checks to avoid CORS)
   const endpoints: EndpointStatus[] = [
-    { name: 'Node API Service', path: 'http://localhost:3005/healthz', healthy: true, message: 'Backend verified' },
+    {, name: 'Node API Service', path: 'http://localhost:3005/healthz', healthy: true, message: 'Backend verified' },
     { name: 'Cluster Manager', path: 'http://localhost:3000/status', healthy: true, message: '4 workers online' },
     {
       name: 'Go Upload Service',
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async () => {
     { name: 'QUIC Gateway', path: 'http://localhost:8101', healthy: true, message: 'HTTP/3 enabled' },
     { name: 'AI Streaming', path: '/api/v1/ai', healthy: true, message: 'Ready for requests' },
     { name: 'Enhanced RAG Demo', path: '/demo/enhanced-rag-semantic', healthy: true, message: 'Available' },
-    { name: 'GPU Worker', path: 'http://localhost:8094', healthy: true, message: 'RTX 3060 Ti active' }
+    { name: 'GPU Worker', path: 'http://localhost:8094', healthy: true, message: 'RTX, 3060 Ti active' }
   ];
   return { endpoints };
 };

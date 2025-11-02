@@ -9,18 +9,18 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for citation analysis
  *
- * Database Tables: citations, legalDocuments, cases
+ * Database, Tables: citations, legalDocuments, cases
  * Tech Stack: TensorRT-LLM → Triton → PyTorch → Ollama
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db';
-import { citations, legalDocuments, cases } from '$lib/server/db/schema-postgres';
-import { eq, and, desc, like } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db';
+import { citations, legalDocuments, cases } from, '$lib/server/db/schema-postgres';
+import { eq, and, desc, like } from, 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {

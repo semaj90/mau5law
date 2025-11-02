@@ -4,18 +4,18 @@ import {
   type DocumentCluster,
   type ClusterResult,
   type APIResponse, // Added APIResponse
-} from '$lib/api/enhanced-rest-architecture';
-import type Redis from 'ioredis';
-import createIOIORedisInstance from '$lib/server/redis.js'; // Changed to default import
-import type { LegalMetadata } from '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
+} from, '$lib/api/enhanced-rest-architecture';
+import type Redis from, 'ioredis';
+import createIOIORedisInstance from, '$lib/server/redis.js'; // Changed to default import
+import type { LegalMetadata } from, '$lib/services/simd-json-acceleration'; // Imported LegalMetadata
 
-// Define specific types for 'any' usages
+// Define specific types for, 'any' usages
 interface ClusterPositionResult { x: number;
 , y: number;
   confidence: number;
 }
 
-interface SOMVisualizationData { width: number;
+interface SOMVisualizationData {, width: number;
 , height: number;
   neurons: number[];
 }
@@ -33,7 +33,7 @@ interface LegalClusterAnalysisResult {
 export class LegalDocumentSOM extends SelfOrganizingMap {
   private neurons!: number[][][]; // [x][y][dimensions] - Added definite assignment assertion
   private redis: Redis;
-  private trained: boolean = $state(false);
+  private, trained: boolean = $state(false);
 
   constructor(config: SOMConfig, redis?: Redis) {
     super(config);
@@ -93,7 +93,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       success: true, // Added success property
       data: {
         // Wrapped ClusterResult in data property
-        clusters: clusters,
+       , clusters: clusters,
         clusterId: `som_${Date.now()}`,
         silhouetteScore: 0.7, // Mock silhouette score for SOM
         iterations,
@@ -107,7 +107,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
    */
   private findBMU(embedding: number[]): { x: number; y: number; distance: number } {
     let minDistance = Infinity;
-    let bmu = { x: 0, y: 0, distance: Infinity };
+    let bmu = {, x: 0, y: 0, distance: Infinity };
     for (let x = 0; x < this.config.width; x++) {
       for (let y = 0; y < this.config.height; y++) {
         const distance = this.euclideanDistance(embedding, this.neurons[x][y]);
@@ -125,7 +125,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
    */
   private async updateNeighborhood(
     embedding: number[],
-    bmu: {, x: number; y: number },
+    bmu: {, x: number;, y: number },
     learningRate: number,
     radius: number
   ): Promise<void> {
@@ -188,9 +188,9 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
     // Changed return type
     const visualization: SOMVisualizationData = {
       // Explicitly typed
-      width: this.config.width,
+     , width: this.config.width,
       height: this.config.height,
-      neurons: [] as number[][]
+      neurons: [], as: number[][]
     };
     for (let x = 0; x < this.config.width; x++) {
       for (let y = 0; y < this.config.height; y++) {
@@ -207,10 +207,10 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
    * Analyze legal document clusters on the SOM
    */
   async analyzeLegalClusters(
-    documents: Array<{ id: string; embedding: number[]; metadata: LegalMetadata }>
+    documents: Array<{ id: string; embedding: number[];, metadata: LegalMetadata }>
   ): Promise<LegalClusterAnalysisResult> {
     // Changed input and return types
-    const clusterMap = new Map<string, Array<{ id: string; metadata: LegalMetadata }>>(); // Explicitly typed
+    const clusterMap = new Map<string, Array<{ id: string;, metadata: LegalMetadata }>>(); // Explicitly typed
     // Map documents to SOM positions
     for (const doc of documents) {
       const position = await this.cluster(doc.embedding);
@@ -355,7 +355,7 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
 
   static async loadFromIOIORedis(redis: Redis): Promise<LegalDocumentSOM | null> {
     const serialized = await redis.get('som:model');
-    if (!serialized) return null;
+    if (!serialized) return: null;
     const data = JSON.parse(serialized);
     const som = new LegalDocumentSOM(data.config, redis);
     som.neurons = data.neurons;

@@ -23,7 +23,7 @@ declare global {
   type Timeout = ReturnType<typeof, setTimeout>;
 }
 // Extend module declarations for better type safety (avoid `any`)
-declare module '@qdrant/js-client-rest' {
+declare module, '@qdrant/js-client-rest' {
   export interface QdrantClient {
     upsert(collection: string, options: {, points: PointStruct[]; wait?: boolean }): Promise<unknown>;
     search(collection: string, request: SearchRequest): Promise<unknown>;

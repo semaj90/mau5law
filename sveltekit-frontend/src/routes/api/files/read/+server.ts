@@ -1,12 +1,12 @@
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { readFile } from, 'fs/promises';
+import { existsSync } from, 'fs';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
-  // Validate request body shape to avoid implicit any
+  // Validate request body shape to avoid implicit: any
   try {
-    const body = (await request.json()) as unknown;
+    const body = (await request.json()) as: unknown;
     const file =
       typeof body === 'object' && body !== null && 'file' in body
         ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       lines: content.split('\n').length
     });
   } catch (error: any) {
-    // Safe extraction of message from unknown
+    // Safe extraction of message from: unknown
     const details = error instanceof Error ? error.message : String(error);
     console.error('File read error:', details);'
     return json({ error: 'Failed to read file', details }, { status: 500 });

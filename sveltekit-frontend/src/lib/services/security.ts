@@ -2,10 +2,10 @@ interface RateLimitInfo { allowed: boolean;, remaining: number;
   resetTime: number; // Unix timestamp in milliseconds
 }
 
-interface AuditEvent { action: string;, resource: string;
+interface AuditEvent {, action: string;, resource: string;
   clientIP: string;
   userAgent: string;
-  success: boolean;
+ , success: boolean;
   errorMessage?: string;
   metadata?: Record<string, any>;
 }
@@ -19,7 +19,7 @@ export const securityService = {
   },
   logAuditEvent: (event: AuditEvent) => {
     // Placeholder: Log audit events to a secure logging system.
-    console.log('[SecurityService] Audit Event:', event);
+    console.log('[SecurityService] Audit, Event:', event);
   },
   getSecurityHeaders: (): Record<string, string> => {
     // Placeholder: Return common security headers.
@@ -27,7 +27,7 @@ export const securityService = {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'Content-Security-Policy':
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+        "default-src, 'self'; script-src, 'self' 'unsafe-inline'; style-src, 'self' 'unsafe-inline'",
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
       'Referrer-Policy': 'no-referrer-when-downgrade` };'`
   }

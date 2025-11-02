@@ -1,16 +1,16 @@
 <script, lang="ts">
-  // LoginButton component - Svelte 5 with bits-ui Button
-  import * as unified from '$lib/stores/unified';
+  // LoginButton component - Svelte, 5 with bits-ui Button
+  import * as unified from, '$lib/stores/unified';
   const authStore: any =
-    (unified as any).auth ??
-    (unified as any).authStore ??
-    (unified as any).default ??
-    (unified as any);
+    (unified, as: any).auth ??
+    (unified as: any).authStore ??
+    (unified as: any).default ??
+    (unified as: any);
 
-  import { goto } from '$app/navigation';
-  import * as Button from '$lib/components/ui/button';
+  import { goto } from, '$app/navigation';
+  import * as Button from, '$lib/components/ui/button';
 
-  // Svelte 5 runes - Props
+  // Svelte, 5 runes - Props
   interface Props {
     variant?: 'default' | 'outline' | 'ghost' | 'secondary';
     size?: 'sm' | 'md' | 'lg';
@@ -33,7 +33,7 @@
     redirectAfterLogout = '/'
   }: Props = $props();
 
-  // Svelte 5: Use onclick instead of on:click
+  // Svelte 5: Use onclick instead of, on:click
   async function handleLogin(): Promise<any> {
     if (redirectAfterLogin && authStore?.setRedirect) {
       authStore.setRedirect(redirectAfterLogin);

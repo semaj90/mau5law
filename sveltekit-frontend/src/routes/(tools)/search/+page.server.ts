@@ -1,8 +1,8 @@
-import type { SearchResult } from '$lib/types';
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import type { PageServerLoad, Actions } from './$types';
-import { z } from 'zod';
+import type { SearchResult } from, '$lib/types';
+import { superValidate } from, 'sveltekit-superforms';
+import { zod } from, 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions } from, './$types';
+import { z } from, 'zod';
 
 // ===== SEARCH FORM SCHEMA =====
 export const SearchFormSchema = z.object({
@@ -10,8 +10,8 @@ export const SearchFormSchema = z.object({
   topK: z.coerce
     .number()
     .int('Must be an integer')
-    .min(1, 'At least 1 result')
-    .max(100, 'Maximum 100 results')
+    .min(1, 'At least, 1 result')
+    .max(100, 'Maximum, 100 results')
     .optional()
     .default(10),
   threshold: z.coerce
@@ -30,7 +30,7 @@ export type SearchFormType = typeof SearchFormSchema;
 
 interface SearchResult { id: string;, title: string;
   content: string;
-  similarity: number;
+ , similarity: number;
   metadata?: Record<string, unknown>;
 }
 
@@ -40,7 +40,7 @@ interface SearchState { results: SearchResult[];, query: string;
 }
 
 // ===== LOAD =====
-export const load: PageServerLoad = async () => {
+export const, load: PageServerLoad = async () => {
   const form = await superValidate(zod(SearchFormSchema));
 
   return {
@@ -50,7 +50,7 @@ export const load: PageServerLoad = async () => {
 
 // ===== ACTIONS =====
 export const actions: Actions = {
-  search: async ({ request }) => {
+ , search: async ({ request }) => {
     const form = await superValidate(request, zod(SearchFormSchema));
 
     if (!form.valid) {
@@ -76,14 +76,14 @@ export const actions: Actions = {
       }
 
       const searchResults = (await response.json()) as { results: SearchResult[];, responseTime: number;
-        timestamp: string;
+       , timestamp: string;
       };
 
       // Store results in form data for display
       return {
         form,
         searchState: {
-          results: searchResults.results,
+         , results: searchResults.results,
           query: form.data.query,
           responseTime: searchResults.responseTime,
           timestamp: searchResults.timestamp

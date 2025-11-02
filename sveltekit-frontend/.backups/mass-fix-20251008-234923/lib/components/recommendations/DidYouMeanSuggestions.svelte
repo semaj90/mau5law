@@ -226,7 +226,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   </div>
   <!-- Error Display -->
   {#if error}
-    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
+    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" use:fade>
       <p class="text-sm text-red-800 dark:text-red-200">
         <span class="font-medium">Error:</span> {error}
       </p>

@@ -3,13 +3,13 @@
  * Advanced anti-aliasing techniques for smooth, high-quality 3D UI components
  * Implements MSAA, FXAA, SMAA, and TAA for production-quality rendering
  */
-import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS } from './YoRHaUI3D.js';
-import type { YoRHaStyle } from './YoRHaUI3D.js';
+import * as THREE from, 'three';
+import { YoRHa3DComponent, YORHA_COLORS } from, './YoRHaUI3D.js';
+import type { YoRHaStyle } from, './YoRHaUI3D.js';
 // Anti-aliasing configuration types
 export interface AntiAliasingConfig {
   type: 'none' | 'msaa' | 'fxaa' | 'smaa' | 'taa' | 'auto';
-  samples?: number; // For MSAA: 2, 4, 8, 16
+  samples?: number; // For, MSAA: 2, 4, 8, 16
   quality?: 'low' | 'medium' | 'high' | 'ultra';
   edgeThreshold?: number; // For edge detection (0.1 - 0.3)
   subpixelQuality?: number; // For FXAA (0.5 - 1.0)
@@ -40,7 +40,7 @@ class MSAARenderTarget {
   private renderTarget: THREE.WebGLRenderTarget;
   private scene: THREE.Scene;
   private camera: THREE.Camera;
-  private samples: number;
+  private, samples: number;
   constructor(width: number, height: number, samples: number = 4) {
     this.samples = samples;
     // Note: WebGLMultisampleRenderTarget has been removed in Three.js 0.169
@@ -64,11 +64,11 @@ class MSAARenderTarget {
   }
 }
 // FXAA Post-processing Shader
-const FXAAShader = { uniforms: {, tDiffuse: { value: null },
-    resolution: { value: new THREE.Vector2() },
-    qualityPreset: { value: 12 }, // 10-39 range
-    edgeThreshold: { value: 0.166 },
-    edgeThresholdMin: { value: 0.0833 }
+const FXAAShader = { uniforms: {, tDiffuse: {, value: null },
+    resolution: {, value: new THREE.Vector2() },
+    qualityPreset: {, value: 12 }, // 10-39 range
+    edgeThreshold: {, value: 0.166 },
+    edgeThresholdMin: {, value: 0.0833 }
   },
   vertexShader: `
     varying vec2 vUv;
@@ -85,7 +85,7 @@ const FXAAShader = { uniforms: {, tDiffuse: { value: null },
     uniform float edgeThreshold;
     uniform float edgeThresholdMin;
     varying vec2 vUv;
-    #define FXAA_QUALITY_PS 12
+    #define FXAA_QUALITY_PS, 12
     #define FXAA_QUALITY_P0 1.0
     #define FXAA_QUALITY_P1 1.5
     #define FXAA_QUALITY_P2 2.0
@@ -139,19 +139,19 @@ const FXAAShader = { uniforms: {, tDiffuse: { value: null },
   `
 }
 // Enhanced Temporal Anti-Aliasing (TAA) Shader
-export const TAAShader = { uniforms: {, tDiffuse: { value: null },
-    tPrevious: { value: null },
-    projectionMatrix: { value: new THREE.Matrix4() },
-    inverseProjectionMatrix: { value: new THREE.Matrix4() },
-    previousProjectionMatrix: { value: new THREE.Matrix4() },
-    cameraMatrix: { value: new THREE.Matrix4() },
-    previousCameraMatrix: { value: new THREE.Matrix4() },
-    resolution: { value: new THREE.Vector2() },
-    alpha: { value: 0.9 },
-    jitterOffset: { value: new THREE.Vector2() },
-    velocityScale: { value: 1.0 },
-    feedbackMin: { value: 0.88 },
-    feedbackMax: { value: 0.97 }
+export const TAAShader = { uniforms: {, tDiffuse: {, value: null },
+    tPrevious: {, value: null },
+    projectionMatrix: {, value: new THREE.Matrix4() },
+    inverseProjectionMatrix: {, value: new THREE.Matrix4() },
+    previousProjectionMatrix: {, value: new THREE.Matrix4() },
+    cameraMatrix: {, value: new THREE.Matrix4() },
+    previousCameraMatrix: {, value: new THREE.Matrix4() },
+    resolution: {, value: new THREE.Vector2() },
+    alpha: {, value: 0.9 },
+    jitterOffset: {, value: new THREE.Vector2() },
+    velocityScale: {, value: 1.0 },
+    feedbackMin: {, value: 0.88 },
+    feedbackMax: {, value: 0.97 }
   },
   vertexShader: `
     varying vec2 vUv;
@@ -231,15 +231,15 @@ export const TAAShader = { uniforms: {, tDiffuse: { value: null },
   `
 }
 // Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader
-export const SMAAShader = { uniforms: {, tDiffuse: { value: null },
-    tArea: { value: null },
-    tSearch: { value: null },
-    resolution: { value: new THREE.Vector2() },
-    threshold: { value: 0.1 },
-    maxSearchSteps: { value: 16 },
-    maxSearchStepsDiag: { value: 8 },
-    cornerRounding: { value: 25 },
-    localContrastAdaptationFactor: { value: 2.0 }
+export const SMAAShader = { uniforms: {, tDiffuse: {, value: null },
+    tArea: {, value: null },
+    tSearch: {, value: null },
+    resolution: {, value: new THREE.Vector2() },
+    threshold: {, value: 0.1 },
+    maxSearchSteps: {, value: 16 },
+    maxSearchStepsDiag: {, value: 8 },
+    cornerRounding: {, value: 25 },
+    localContrastAdaptationFactor: {, value: 2.0 }
   },
   vertexShader: `
     varying vec2 vUv;
@@ -329,12 +329,12 @@ export const SMAAShader = { uniforms: {, tDiffuse: { value: null },
     }
   ` }`
 // Enhanced Anti-Aliasing Shader for geometry
-const EnhancedAAShader = { uniforms: {, baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
-    edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
-    edgeWidth: { value: 0.02 },
-    aaStrength: { value: 1.0 },
-    supersampleFactor: { value: 2.0 },
-    time: { value: 0 }
+const EnhancedAAShader = { uniforms: {, baseColor: {, value: new THREE.Color(YORHA_COLORS.primary.beige) },
+    edgeColor: {, value: new THREE.Color(YORHA_COLORS.primary.black) },
+    edgeWidth: {, value: 0.02 },
+    aaStrength: {, value: 1.0 },
+    supersampleFactor: {, value: 2.0 },
+    time: {, value: 0 }
   },
   vertexShader: `
     varying vec3 vPosition;
@@ -447,7 +447,7 @@ class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];
   private currentIndex: number = 0;
   private jitterPattern: THREE.Vector2[] = [];
-  private frameCount: number = 0;
+  private, frameCount: number = 0;
   constructor(width: number, height: number, samples: number = 8) {
     // Initialize history buffers
     for (let i = 0; i < 2; i++) {
@@ -503,7 +503,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   protected msaaManager: MSAARenderTarget | null = null;
   protected fxaaPass: THREE.ShaderMaterial | null = null;
   protected taaManager: TAAManager | null = null;
-  protected enhancedMaterial: THREE.ShaderMaterial | null = null;
+  protected, enhancedMaterial: THREE.ShaderMaterial | null = null;
   constructor(style: YoRHaAAStyle = {}) {
     super(style);
     this.aaConfig = this.mergeDefaultAAConfig(style.antiAliasing || {});
@@ -527,19 +527,19 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   private initializeAntiAliasing(): void {
     if (!this.aaConfig.enabled) return;
     switch (this.aaConfig.type) {
-      case 'msaa':
+      case, 'msaa':
         this.initializeMSAA();
         break;
-      case 'fxaa':
+      case, 'fxaa':
         this.initializeFXAA();
         break;
-      case 'smaa':
+      case, 'smaa':
         this.initializeSMAA();
         break;
-      case 'taa':
+      case, 'taa':
         this.initializeTAA();
         break;
-      case 'auto':
+      case, 'auto':
         this.initializeAutoAA();
         break;
     }
@@ -678,7 +678,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     const qualityLevels = ['ultra', 'high', 'medium', 'low'];
     const currentIndex = qualityLevels.indexOf(this.aaConfig.quality || 'high');
     if (currentIndex < qualityLevels.length - 1) {
-      this.aaConfig.quality = qualityLevels[currentIndex + 1] as any;
+      this.aaConfig.quality = qualityLevels[currentIndex + 1] as: any;
       this.updateQualitySettings();
     }
   }
@@ -686,7 +686,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     const qualityLevels = ['low', 'medium', 'high', 'ultra'];
     const currentIndex = qualityLevels.indexOf(this.aaConfig.quality || 'high');
     if (currentIndex > 0) {
-      this.aaConfig.quality = qualityLevels[currentIndex - 1] as any;
+      this.aaConfig.quality = qualityLevels[currentIndex - 1] as: any;
       this.updateQualitySettings();
     }
   }
@@ -748,7 +748,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     memoryUsage: number;
   } {
     return {
-      type: this.aaConfig.type,
+     , type: this.aaConfig.type,
       quality: this.aaConfig.quality || 'high',
       samples: this.aaConfig.samples || 0,
       estimatedFPS: this.estimateFPS(),
@@ -777,16 +777,16 @@ export const AntiAliasingUtils = {
   detectOptimalAAType(): AntiAliasingConfig['type'] {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-    if (!gl) return 'none';
+    if (!gl) return, 'none';
     const renderer = gl.getParameter(gl.RENDERER);
     const vendor = gl.getParameter(gl.VENDOR);
     // Simple heuristics based on GPU vendor/type
     if (renderer.includes('NVIDIA') && renderer.includes('RTX')) {
-      return 'taa';
+      return, 'taa';
     } else if (renderer.includes('AMD') || renderer.includes('Radeon')) {
-      return 'msaa';
+      return, 'msaa';
     } else {
-      return 'fxaa';
+      return, 'fxaa';
     }
   },
   getRecommendedSettings(targetFPS: number = 60): AntiAliasingConfig {
@@ -810,14 +810,14 @@ export const AntiAliasingUtils = {
         performanceTarget: 60
       },
       balanced: {
-        type: 'auto' as const,
+       , type: 'auto' as const,
         quality: 'high' as const,
         samples: 4,
         adaptiveQuality: true,
         performanceTarget: 60
       },
       quality: {
-        type: 'taa' as const,
+       , type: 'taa' as const,
         quality: 'ultra' as const,
         samples: 8,
         adaptiveQuality: false,
@@ -825,7 +825,7 @@ export const AntiAliasingUtils = {
       }
     }
     return {
-      enabled: true,
+     , enabled: true,
       edgeThreshold: 0.166,
       subpixelQuality: 0.75,
       temporalSamples: 8,

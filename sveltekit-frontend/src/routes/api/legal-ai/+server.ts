@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types'
-import { tensorrtService } from '$lib/server/tensorrt-service'
-import { db } from '$lib/server/db'
-import { sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types'
+import { tensorrtService } from, '$lib/server/tensorrt-service'
+import { db } from, '$lib/server/db'
+import { sql } from, 'drizzle-orm';
 export const POST: RequestHandler = async ({ request, url: _url }) => {
   try {
     const { prompt, context, max_tokens = 256, temperature = 0.3, use_vector_search = true } = await request.json();
@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       return json(
         {
           success: false,
-          error: 'Prompt is required and must be a string'
+          error: 'Prompt is required and must be, a: string'
         },
         { status: 400 }
       );
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             FROM legal_documents
             WHERE embedding IS NOT NULL
             ORDER BY embedding <-> ${prompt_embedding}
-            LIMIT 5
+            LIMIT, 5
           `);`
           console.log(`📚 Found ${Array.isArray(similar_documents) ? similar_documents.length : 0} similar documents`);
         } catch (vector_error) {
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     );
   }
 };
-export const GET: RequestHandler = async ({ url: _url }) => {
+export const GET: RequestHandler = async ({, url: _url }) => {
   try {
     const limit = parseInt(_url.searchParams.get('limit') || '10');
     const offset = parseInt(_url.searchParams.get('offset') || '0');

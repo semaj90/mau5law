@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * AI Summary Save Endpoint
  * Saves legal AI analysis results to PostgreSQL with audit trail
  */
-import { json } from '@sveltejs/kit';
-import { getUser } from '$lib/server/auth';
-import { db } from '$lib/server/db';
-import { cases, aiAnalyses } from '$lib/server/db/schema-unified';
-import { eq } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import { getUser } from, '$lib/server/auth';
+import { db } from, '$lib/server/db';
+import { cases, aiAnalyses } from, '$lib/server/db/schema-unified';
+import { eq } from, 'drizzle-orm';
 
 export type SourceReference = {
   id?: string;
@@ -37,13 +37,13 @@ export const POST: RequestHandler = async event => {
     const { request } = event;
 
     // Parse request body early so we can inspect metadata for fallback behavior
-    const body: SaveSummaryRequest = await request.json();
-    // ensure metadata is typed (avoid implicit any)
+    const, body: SaveSummaryRequest = await request.json();
+    // ensure metadata is typed (avoid implicit: any)
     const { caseId, summary, metadata = {} as Metadata } = body;
 
     // Authentication check - allow conditional anonymous fallback if requested
     const { user } = await getUser(event);
-    let effectiveUser = user as { id: string; role: string; legalSpecialties?: string[] } | null;
+    let effectiveUser = user as { id: string;, role: string; legalSpecialties?: string[] } | null;
     if (!effectiveUser) {
       // Allow fallback if metadata.allowAnonymous === true or ?allowAnon=true in query params
       const url = new URL(request.url);
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async event => {
       analysisId: analysisRecord[0].id,
       message: `Summary saved successfully` });
   } catch (error: any) {
-    // Normalize unknown error to a safe string/message
+    // Normalize: unknown error to a, safe: string/message
     const normalizedErrorMessage =
       error instanceof Error
         ? error.message

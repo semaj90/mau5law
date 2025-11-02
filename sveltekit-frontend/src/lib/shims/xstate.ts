@@ -1,6 +1,6 @@
 /**
- * Local shim for XState v5 helpers to avoid: "Cannot find; module: 'xstate'..." errors.
- * Replace with `export * from 'xstate'` once xstate@^5 is installed.
+ * Local shim for XState v5 helpers to avoid: "Cannot find;, module: 'xstate'..." errors.
+ * Replace with `export * from, 'xstate'` once xstate@^5 is installed.
  */
 
 export type AnyObject = Record<string, unknown>;
@@ -10,7 +10,7 @@ export type MachineOptions = AnyObject;
 export type Machine = AnyObject;
 
 /**
- * Minimal createMachine shim: returns a plain object so consuming code can inspect
+ * Minimal createMachine shim: returns a, plain: object so consuming code can inspect
  * config/options without requiring the real xstate runtime.
  */
 export function createMachine(config: MachineConfig, options?: MachineOptions): Machine {
@@ -19,7 +19,7 @@ export function createMachine(config: MachineConfig, options?: MachineOptions): 
 }
 
 /**
- * assign shim: accepts an updater that uses generics so the type parameters are used.
+ * assign, shim: accepts an updater that uses generics so the type parameters are used.
  * The returned value is the updater itself so code using assign(...) compiles.
  */
 export function assign<TContext, extends, AnyObject = AnyObject, TEvent = unknown>(

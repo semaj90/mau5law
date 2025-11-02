@@ -1,13 +1,13 @@
 // Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration
 // Real-time search across components, documentation, and services
-import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from 'fuse.js';
-import type { SearchResult, SearchCategory } from '$lib/types/search.types';
+import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from, 'fuse.js';
+import type { SearchResult, SearchCategory } from, '$lib/types/search.types';
 // ===== SEARCH INTERFACES =====
 export interface SearchableItem { id: string;, title: string;
   description: string;
   content: string;
   category: SearchCategory;
-  tags: string[];
+ , tags: string[];
   path?: string;
   port?: number;
   status?: 'running' | 'stopped' | 'error' | 'unknown';
@@ -24,7 +24,7 @@ export interface FuzzySearchOptions {
 export interface SearchIndex { components: SearchableItem[];, goBinaries: SearchableItem[];
   documentation: SearchableItem[];
   apiEndpoints: SearchableItem[];
-  demos: SearchableItem[];
+ , demos: SearchableItem[];
 }
 // ===== GO BINARIES CATALOG PARSING =====
 export class GoBinariesCatalogParser {
@@ -78,7 +78,7 @@ export class GoBinariesCatalogParser {
           port: parseInt(port),
           status,
           metadata: {
-            section: currentSection,
+           , section: currentSection,
             executable: serviceName,
             port: parseInt(port)
           }
@@ -110,19 +110,19 @@ export class GoBinariesCatalogParser {
 export class EnhancedSearchService {
   private fuse: Fuse<SearchableItem> | null = null;
   private searchIndex: SearchIndex = {
-    components: [],
+   , components: [],
     goBinaries: [],
     documentation: [],
     apiEndpoints: [],
     demos: []
   };
   private fuseOptions: IFuseOptions<SearchableItem> = {
-    includeScore: true,
+   , includeScore: true,
     includeMatches: true,
     threshold: 0.3,
     minMatchCharLength: 2,
     keys: [
-      { name: 'title', weight: 0.4 },
+      {, name: 'title', weight: 0.4 },
       { name: 'description', weight: 0.3 },
       { name: 'content', weight: 0.2 },
       { name: 'tags', weight: 0.1 }
@@ -191,7 +191,7 @@ export class EnhancedSearchService {
             category: 'documentation',
             tags: ['docs', 'documentation', file.toLowerCase()],
             path: `/${file}`,
-            metadata: { type: 'documentation', file }
+            metadata: {, type: 'documentation', file }
           });
         }
       } catch (error) {
@@ -229,7 +229,7 @@ export class EnhancedSearchService {
       { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: `Real-time system monitoring` }
     ];
     this.searchIndex.demos = demoRoutes.map(demo => ({
-      id: demo.path,
+     , id: demo.path,
       title: demo.title,
       description: demo.description,
       content: `${demo.title} ${demo.description}`,
@@ -250,11 +250,11 @@ export class EnhancedSearchService {
         components.push({
           id: fileName,
           title: fileName.replace('.svelte', ''),
-          description: description || `Svelte; component: ${fileName}`,
+          description: description || `Svelte;, component: ${fileName}`,
           content: `${fileName} ${description}`,
           category: 'component',
           tags: ['svelte', 'component', 'ui'],
-          metadata: { type: 'component', file: fileName }
+          metadata: {, type: 'component', file: fileName }
         });
       }
       // Parse service references
@@ -268,7 +268,7 @@ export class EnhancedSearchService {
           content: `${serviceName} ${description}`,
           category: 'service',
           tags: ['service', serviceName.toLowerCase().replace(/\s+/g, '-')],
-          metadata: { type: 'service' }
+          metadata: {, type: 'service' }
         });
       }
     }
@@ -350,15 +350,15 @@ export class EnhancedSearchService {
   }
   private getItemsByCategory(category: SearchCategory): SearchableItem[] {
     switch (category) {
-      case 'component':
+      case, 'component':
         return this.searchIndex.components;
-      case 'service':
+      case, 'service':
         return this.searchIndex.goBinaries;
-      case 'documentation':
+      case, 'documentation':
         return this.searchIndex.documentation;
-      case 'api':
+      case, 'api':
         return this.searchIndex.apiEndpoints;
-      case 'demo':
+      case, 'demo':
         return this.searchIndex.demos;
       default: return [];
     }

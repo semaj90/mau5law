@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { criminals } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { criminals } from, '$lib/server/db/schema-postgres';
+import { db } from, '$lib/server/db/index';
+import type { RequestHandler } from, './$types.js';
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
@@ -57,19 +57,19 @@ export const GET: RequestHandler = async ({ locals, url }) => {
             : sortBy === 'status'
               ? criminals.status
               : criminals.createdAt; // Default to createdAt
-    finalQuery = finalQuery.orderBy(sortOrder === 'asc' ? orderColumn : desc(orderColumn)) as any;
+    finalQuery = finalQuery.orderBy(sortOrder === 'asc' ? orderColumn : desc(orderColumn)) as: any;
     // Add pagination
-    finalQuery = finalQuery.limit(limit).offset(offset) as any;
+    finalQuery = finalQuery.limit(limit).offset(offset) as: any;
     const criminalResults = await finalQuery;
     // Get total count for pagination
-    let countQuery = db.select({ count: sql<number>`count(*)` }).from(criminals);'`'`
+    let countQuery = db.select({, count: sql<number>`count(*)` }).from(criminals);'`'`
     if (filters.length > 0) {
-      countQuery = countQuery.where(and(...filters)) as any;
+      countQuery = countQuery.where(and(...filters)) as: any;
     }
     const totalCountResult = await countQuery;
     const totalCount = totalCountResult[0]?.count || 0;
     return json({
-      criminals: criminalResults,
+     , criminals: criminalResults,
       totalCount,
       hasMore: offset + limit < totalCount,
       pagination: {

@@ -1,16 +1,16 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { productionServiceClient, services } from '$lib/services/productionServiceClient.js';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { productionServiceClient, services } from, '$lib/services/productionServiceClient.js';
 export interface AuthFlowTestResult { step: string;, success: boolean;
   duration: number;
   data?: any;
   error?: string;
 }
-export interface TestSuite { testId: string;, timestamp: string;
+export interface TestSuite {, testId: string;, timestamp: string;
   totalDuration: number;
   overallSuccess: boolean;
   results: AuthFlowTestResult[];
-  systemHealth: { authentication: boolean;, sessionManagement: boolean;
+  systemHealth: {, authentication: boolean;, sessionManagement: boolean;
     aiAssistant: boolean;
     productionServices: boolean;
     gpuAcceleration: boolean;
@@ -23,7 +23,7 @@ type AuthenticatedUser = {
 };
 
 type AuthData = {
-  user: AuthenticatedUser;
+ , user: AuthenticatedUser;
   sessionCookie?: string | null;
 };
 
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     overallSuccess: false,
     results: [],
     systemHealth: {
-      authentication: false,
+     , authentication: false,
       sessionManagement: false,
       aiAssistant: false,
       productionServices: false,
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const msg = 'Authentication result did not contain valid auth data for session management';
         console.error('❌', msg);
         const sessionFailure: AuthFlowTestResult = {
-          step: 'session_management',
+         , step: 'session_management',
           success: false,
           duration: 0,
           error: msg
@@ -166,7 +166,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       success: true,
       duration: Date.now() - stepStart,
       data: {
-        user: loginData.user,
+       , user: loginData.user,
         sessionCookie: loginResponse.headers.get('set-cookie')
       }
     };
@@ -198,7 +198,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
     };
     // Test session health
     const sessionHealth = {
-      isValid: true,
+     , isValid: true,
       warningCount: 0,
       lastCheck: new Date()
     };
@@ -208,7 +208,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
       success: true,
       duration: Date.now() - stepStart,
       data: {
-        validation: sessionValidation,
+       , validation: sessionValidation,
         health: sessionHealth
       }
     };
@@ -225,7 +225,7 @@ async function testSessionManagement(authData: AuthData): Promise<AuthFlowTestRe
 }
 // Add type guards to avoid `any` casts
 function hasCheckAllServicesHealth(
-  obj: any
+ , obj: any
 ): obj is { checkAllServicesHealth: () => Promise<Record<string, unknown>> } {
   return (
     typeof obj === 'object' &&
@@ -252,7 +252,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     console.log('🚀 Testing production services...');
     // Test service health (defensive: support multiple client shapes)
     const client: any = productionServiceClient;
-    const serviceHealth: Record<string, unknown> = hasCheckAllServicesHealth(client)
+    const, serviceHealth: Record<string, unknown> = hasCheckAllServicesHealth(client)
       ? await client.checkAllServicesHealth()
       : hasGetAllServicesHealth(client)
         ? await client.getAllServicesHealth()
@@ -309,7 +309,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       throw new Error('No Ollama instances are healthy');
     }
     // Test AI query
-    const aiQuery = 'Explain XState integration with Svelte 5 for legal AI applications';
+    const aiQuery = 'Explain XState integration with Svelte, 5 for legal AI applications';
     const aiResponse = await services.queryRAG(aiQuery, {
       model: 'gemma3-legal',
       temperature: 0.7,
@@ -320,7 +320,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: true,
       duration: Date.now() - stepStart,
-      data: { ollamaHealth: {, primary:
+      data: {, ollamaHealth: {, primary:
             ollamaHealthChecks[0].status === 'fulfilled' &&
             (ollamaHealthChecks[0] as PromiseFulfilledResult<Response>).value?.ok === true,
           secondary:
@@ -353,7 +353,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
     // Test GPU availability (simulated - in real implementation would check actual GPU)
     const gpuInfo = {
       available: true,
-      model: 'RTX 3060 Ti',
+      model: 'RTX, 3060 Ti',
       memory: '8GB VRAM',
       utilization: `45%' };'`
     // Test GPU-accelerated query

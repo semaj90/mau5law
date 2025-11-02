@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
-  import  Button  from "$lib/components/ui/button/Button.svelte";
+import type { Document } from, '$lib/types';
+  import { FileText, Trash2, Eye, Clock } from, 'lucide-svelte';
+  import  Button  from, "$lib/components/ui/button/Button.svelte";
   interface Document {
     id: string;
     filename: string;
@@ -17,14 +17,14 @@ import type { Document } from '$lib/types';
     };
   }
   interface Props {
-    document: Document;
+   , document: Document;
     onView?: (doc: Document) => void;
     onDelete?: (docId: string) => void;
   }
   let { document, onView, onDelete }: Props = $props();
   let deleting = $state<boolean>(false);
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -43,7 +43,7 @@ import type { Document } from '$lib/types';
       }
       return `${hours}h ago`;
     }
-    if (days === 1) return 'Yesterday';
+    if (days === 1) return, 'Yesterday';
     if (days < 7) return `${days}d, ago`;
     return date.toLocaleDateString();
   }
@@ -66,7 +66,7 @@ import type { Document } from '$lib/types';
     }
   }
 </script>
-<div class="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300, transition-all, duration-200">
+<div class="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg, hover:border-blue-300, transition-all, duration-200">
   <!-- Card Header, with, Icon -->
   <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4, border-b, border-gray-200">
     <div class="flex items-start, justify-between, gap-3">
@@ -131,7 +131,7 @@ import type { Document } from '$lib/types';
     <Button
       onclick={handleDelete}
       disabled={deleting}
-      class="flex items-center justify-center px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 transition-colors"
+      class="flex items-center justify-center px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700, disabled:opacity-50 transition-colors"
     >
       <Trash2, class="w-4, h-4" />
     </Button>

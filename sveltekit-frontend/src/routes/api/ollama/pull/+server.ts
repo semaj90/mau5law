@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 const OLLAMA_BASE = "http://localhost:11434"
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   return json({
     status: "healthy",
     service: "ollama",
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: { "Content-Type": "application/json" },
       // Ollama expects { name }
       body: JSON.stringify({, name: model }),
-      signal: AbortSignal.timeout(15 * 60 * 1000), // up to 15 minutes
+      signal: AbortSignal.timeout(15 * 60 * 1000), // up to, 15 minutes
     })
     if (!res.ok) {
       const text = await res.text()
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
             try {
               lastLine = JSON.parse(line) as Record<string, unknown>
             } catch {
-              /* ignore JSON parse error */ void 0
+              /* ignore JSON parse error */ void, 0
             }
           }
         }
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         try {
           lastLine = JSON.parse(buffer.trim()) as Record<string, unknown>
         } catch {
-          /* ignore JSON parse error */ void 0
+          /* ignore JSON parse error */ void, 0
         }
       }
     }

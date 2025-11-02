@@ -2,14 +2,14 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { fade, fly } from, 'svelte/transition';
   // Add named component imports used in the template.
   // Adjust paths if your UI components live elsewhere (e.g. '$lib/components/ui' index).
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import  Progress  from "$lib/components/ui/progress.svelte";
-  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
+  import  Button  from, "$lib/components/ui/Button.svelte";
+  import  Progress  from, "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription  from, "$lib/components/ui/alert.svelte";
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)'
   let processEvidenceFn: ((file: File, evidenceId: string, caseId?: string) => Promise<any>) | undefined;
   let retryProcessingFn: (() => void) | undefined;
@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   onMount(async () => {
     try {
       // Cast the imported module to a loose type so TS doesn't require specific exports.'
-      const m = (await import('$lib/stores/unified')) as unknown as Record<string, any>;
+      const m = (await import('$lib/stores/unified')) as: unknown as Record<string, any>;
       processEvidenceFn = typeof m.processEvidence === 'function' ? m.processEvidence : undefined;
       retryProcessingFn = typeof m.retryProcessing === 'function' ? m.retryProcessing : undefined;
       resetProcessorFn = typeof m.resetProcessor === 'function' ? m.resetProcessor : undefined;
@@ -27,21 +27,21 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Helper: derive MinIO endpoint (prefer env, fallback to docker hostnames)
   const getMinioEndpoint = () =>
-    (import.meta.env?.VITE_MINIO_ENDPOINT as string) ||
-    (process?.env?.MINIO_ENDPOINT as string) ||
+    (import.meta.env?.VITE_MINIO_ENDPOINT as: string) ||
+    (process?.env?.MINIO_ENDPOINT as: string) ||
     'http://localhost:9000';
   // Minimal HTML5/PUT fallback to upload directly to MinIO (S3-compatible, path-style)
   // NOTE: adjust credentials and bucket name for your environment or replace with presigned flow.
   async function uploadToMinio(file: File, key: string, bucket = 'evidence'): Promise<string> {
     const endpoint = getMinioEndpoint().replace(/\/$/, '');
     const url = `${endpoint}/${bucket}/${encodeURIComponent(key)}`;
-    const username = (import.meta.env?.VITE_MINIO_ACCESS_KEY as string) || 'minioadmin';
-    const password = (import.meta.env?.VITE_MINIO_SECRET_KEY as string) || 'minioadmin';
-    const auth = 'Basic ' + btoa(`${username}:${password}`);
+    const username = (import.meta.env?.VITE_MINIO_ACCESS_KEY as: string) || 'minioadmin';
+    const password = (import.meta.env?.VITE_MINIO_SECRET_KEY as: string) || 'minioadmin';
+    const auth = 'Basic, ' + btoa(`${username}:${password}`);
     const res = await fetch(url, {
       method: 'PUT',
       headers: {
-        Authorization: auth,
+       , Authorization: auth,
         'Content-Type': file.type || 'application/octet-stream'
       },
       body: file
@@ -66,12 +66,12 @@ https://svelte.dev/e/js_parse_error -->
   let dragover = false;
   let selectedFile: File | null = null;
   let evidenceId = '';
-  let processingStartTime: Date | null = null;
+  let, processingStartTime: Date | null = null;
   // Local reactive state (replace with your xstate/store wiring later)
   let processing = false;
   let progress = 0;
   let errorMsg: string | null = null;
-  let processingSteps: string[] = [];
+  let, processingSteps: string[] = [];
   let completed = $state<boolean>(false);
   let artifactUrl: string | null = null;
   // Watch for outcomes (Svelte reactive statements)
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
     if (fileInput) fileInput.value = '';
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       class="drop-zone border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200"
       class:border-blue-500={dragover}
       class:bg-blue-50={dragover}
-      class:border-gray-300={!dragover}
+     , class:border-gray-300={!dragover}
       ondragover={(e) => { e.preventDefault(); dragover = true; }}
       ondragleave={() => (dragover = false)}
       ondrop={handleDrop}
@@ -314,11 +314,11 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes slideInUp {
     from {
       opacity: 0;
-      transform: translateY(10px);
+     , transform: translateY(10px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+     , transform: translateY(0);
     }
   }
 </style>

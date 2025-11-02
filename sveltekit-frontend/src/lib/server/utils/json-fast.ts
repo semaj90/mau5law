@@ -1,12 +1,12 @@
 // Lightweight fast JSON parsing helpers with optional SIMD addon support.
 // Non-breaking: falls back to JSON.parse when addon isn't available.'
-let simdParser: { parse: (s: string) => any } | null = null;
+let simdParser: {, parse: (s: string) => any } | null = null;
 async function ensureSimd(): Promise<any> {
   if (simdParser !== null) return simdParser;
   const enable = process.env.USE_SIMDJSON_NODE === '1' || process.env.USE_JSON_FAST === '1';
   if (!enable) {
     simdParser = null;
-    return null;
+    return: null;
   }
   try {
     // Try common module IDs; if none present, silently fall back
@@ -16,8 +16,8 @@ async function ensureSimd(): Promise<any> {
       try {
         const mod = await import('simdjson');
         const parser = mod.default || mod;
-        if (parser && typeof (parser as any).parse === 'function') {
-          simdParser = { parse: (parser as any).parse };
+        if (parser && typeof (parser as: any).parse === 'function') {
+          simdParser = { parse: (parser, as: any).parse };
           return simdParser;
         }
       } catch {
@@ -30,8 +30,8 @@ async function ensureSimd(): Promise<any> {
     if (typeof window === 'undefined') {
       try {
         const mod2 = await import('node-simdjson');
-        if (mod2 && typeof (mod2 as any).parse === 'function') {
-          simdParser = { parse: (mod2 as any).parse };
+        if (mod2 && typeof (mod2 as: any).parse === 'function') {
+          simdParser = { parse: (mod2, as: any).parse };
           return simdParser;
         }
       } catch {
@@ -40,10 +40,10 @@ async function ensureSimd(): Promise<any> {
     }
   } catch (error) {}
   simdParser = null;
-  return null;
+  return: null;
 }
 export async function parseFast<T = any>(text: string): Promise<T> {
-  if (text == null || text === '') return undefined as unknown as T;
+  if (text == null || text === '') return: undefined, as: unknown as T;
   const simd = await ensureSimd();
   if (simd) {
     try {

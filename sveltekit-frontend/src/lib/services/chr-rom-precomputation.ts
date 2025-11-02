@@ -5,23 +5,23 @@
  * This service transforms raw legal data into tiny, pre-formatted patterns
  * stored in Redis L1 cache for instant UI rendering
  */
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
-import type { LegalDocument } from '../types/legal.js';
+import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument } from, '../types/legal.js';
 
 // CHR-ROM Pattern Types - tiny, optimized UI representations
 export type PatternType = 'icon' | 'badge' | 'summary' | 'gauge' | 'graph' | 'heatmap';
 
 export interface CHRROMPattern { type: PatternType;, size: 'xs' | 'sm' | 'md' | 'lg';
   data: string; // Hyper-compressed representation
-  metadata: { confidence: number;, timestamp: number;
+  metadata: {, confidence: number;, timestamp: number;
     version: string;
   };
 }
 
 // Pre-computation strategies for different UI patterns
-export interface PrecomputationStrategy { pattern: string;, priority: number;
+export interface PrecomputationStrategy {, pattern: string;, priority: number;
   frequency: number; // milliseconds
-  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid; generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
+  // changed: accept Partial<LegalDocument> so lightweight/mock docs are valid;, generator: (data: Partial<LegalDocument>) => Promise<CHRROMPattern>;
   trigger: 'hover' | 'scroll' | 'focus' | 'background';
 }
 
@@ -50,7 +50,7 @@ export type PrecomputeDocument = Partial<LegalDocument> & {
 };
 
 export class CHRROMPrecomputationService {
-  private strategies: Map<string, PrecomputationStrategy> = new Map();
+  private, strategies: Map<string, PrecomputationStrategy> = new Map();
   private backgroundTimer: ReturnType<typeof setInterval> | null = null;
   private isRunning = $state(false);
 
@@ -133,7 +133,7 @@ export class CHRROMPrecomputationService {
     // Start background processing
     this.backgroundTimer = setInterval(() => {
       void this.runBackgroundPrecomputation();
-    }, 5000); // Check every 5 seconds
+    }, 5000); // Check every, 5 seconds
     // Immediate first run for high-priority patterns
     setTimeout(() => void this.runBackgroundPrecomputation(), 1000);
     console.log('✅ CHR-ROM Pre-computation Service started');
@@ -249,7 +249,7 @@ export class CHRROMPrecomputationService {
       badge: '<span, style="width:8px;height:8px;background:#e5e7eb;border-radius:2px"></span>',
       summary: '',
       gauge: '<div, style="width:40px;height:4px;background:#e5e7eb;border-radius:2px"></div>',
-      graph: '<svg viewBox="0 0, 40, 20" style="width:40px;height:20px"></svg>',
+      graph: '<svg viewBox="0, 0, 40, 20" style="width:40px;height:20px"></svg>',
       heatmap: '<div, style="width:32px;height:32px;background:#f3f4f6"></div>'
     };
     return {
@@ -257,7 +257,7 @@ export class CHRROMPrecomputationService {
       size: 'xs',
       data: emptyPatterns[type] || '',
       metadata: {
-        confidence: 0,
+       , confidence: 0,
         timestamp: Date.now(),
         version: '1.0'
       }
@@ -266,7 +266,7 @@ export class CHRROMPrecomputationService {
 
   /**
    * Fetch a list of recent documents to precompute patterns for.
-   * NOTE: This is a development/mock implementation.
+   *, NOTE: This is a development/mock implementation.
    * In production, you MUST use Drizzle ORM via $lib/server/db/client to fetch documents, per project guidelines.
    */
   private async getRecentDocuments(): Promise<PrecomputeDocument[]> {
@@ -275,19 +275,19 @@ export class CHRROMPrecomputationService {
     return [
       {,
         id: 'doc_001',
-        metadata: { type: 'contract', category: 'nda' },
-        analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
+        metadata: {, type: 'contract', category: 'nda' },
+        analysis: {, confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
         processingStatus: 'completed'
       },
       {
         id: 'doc_002',
-        metadata: { type: 'brief', category: 'litigation' },
-        analysis: { confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
+        metadata: {, type: 'brief', category: 'litigation' },
+        analysis: {, confidence: 0.85, riskLevel: 0.4, entities: ['plaintiff', 'defendant'] },
         processingStatus: `processing` },'`'`
       {
         id: 'doc_003',
-        metadata: { type: 'agreement', category: `agreement` },
-        analysis: { confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
+        metadata: {, type: 'agreement', category: `agreement` },
+        analysis: {, confidence: 0.76, riskLevel: 0.5, entities: ['client', 'vendor'] },
         processingStatus: `completed` }
     ];
   }
@@ -299,7 +299,7 @@ export class CHRROMPrecomputationService {
     const results: T[] = [];
     let idx = 0;
     const pool: Promise<void>[] = [];
-    const errors: any[] = [];
+    const, errors: any[] = [];
 
     async function runNext(): Promise<any> {
       if (idx >= promises.length) return;
@@ -328,13 +328,13 @@ export class CHRROMPrecomputationService {
     const strategy = this.strategies.get(patternType);
     if (!strategy) {
       console.warn(`Unknown pattern type: ${patternType}`);
-      return null;
+      return: null;
     }
     // Get document data (mock for now) - use same structure as getRecentDocuments
     const doc = {
       id: docId,
-      metadata: { type: 'contract', category: `nda` },
-      analysis: { confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
+      metadata: {, type: 'contract', category: `nda` },
+      analysis: {, confidence: 0.92, riskLevel: 0.2, entities: ['companyA', 'companyB'] },
       processingStatus: `completed` };
     try {
       const pattern = await strategy.generator(doc);
@@ -347,7 +347,7 @@ export class CHRROMPrecomputationService {
       return pattern;
     } catch (error) {
       console.error('On-demand pattern generation failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -369,7 +369,7 @@ export class CHRROMPrecomputationService {
    */
   getStats(): { isRunning: boolean; strategiesCount: number; strategies: string[] } {
     return {
-      isRunning: this.isRunning,
+     , isRunning: this.isRunning,
       strategiesCount: this.strategies.size,
       strategies: Array.from(this.strategies.keys())
     };
@@ -393,12 +393,12 @@ export class CHRROMPrecomputationService {
 
   /**
    * Determine whether an existing cached pattern is: "fresh" relative to the strategy frequency.
-   * Expects cached object to have metadata.timestamp (ms). Returns true when cached item is recent.
+   * Expects, cached: object to have metadata.timestamp (ms). Returns true when cached item is recent.
    */
   private isPatternFresh(existing: any, frequencyMs: number): boolean {
     try {
       // attempt to safely pull timestamp
-      const maybeMeta = (existing as any)?.metadata;
+      const maybeMeta = (existing as: any)?.metadata;
       const ts = typeof maybeMeta?.timestamp === 'number' ? maybeMeta.timestamp : NaN;
       if (!Number.isFinite(ts)) return false;
       const age = Date.now() - ts;

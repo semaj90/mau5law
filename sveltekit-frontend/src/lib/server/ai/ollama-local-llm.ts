@@ -1,14 +1,14 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
-import { logger } from './logger.js';
+import { logger } from, './logger.js';
 export type JsonObject = Record<string, unknown>;
 export interface OllamaModel { name: string;, size: string;
   digest: string;
   modified: string;
 }
-export interface OllamaGenerateOptions { model: string;, prompt: string;
+export interface OllamaGenerateOptions {, model: string;, prompt: string;
   system?: string;
   template?: string;
   context?: number[];
@@ -26,7 +26,7 @@ export interface OllamaGenerateOptions { model: string;, prompt: string;
     repeat_penalty?: number;
   };
 }
-export interface OllamaResponse { model: string;, created_at: string;
+export interface OllamaResponse {, model: string;, created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -38,9 +38,9 @@ export interface OllamaResponse { model: string;, created_at: string;
   eval_duration?: number;
 }
 // Define specific interfaces for chat messages and responses
-export interface OllamaChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
+export interface OllamaChatMessage {, role: 'user' | 'assistant' | 'system';, content: string;
 }
-export interface OllamaChatResponse { model: string;, created_at: string;
+export interface OllamaChatResponse {, model: string;, created_at: string;
   message: OllamaChatMessage;
   done: boolean;
   total_duration?: number;
@@ -53,8 +53,8 @@ export interface OllamaChatResponse { model: string;, created_at: string;
 class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
-  private availableModels: Map<string, OllamaModel> = new Map();
-  private modelCache: Map<string, { loaded: boolean; lastUsed: number }> = new Map();
+  private, availableModels: Map<string, OllamaModel> = new Map();
+  private modelCache: Map<string, { loaded: boolean;, lastUsed: number }> = new Map();
   constructor(baseUrl: string = 'http://localhost:11434') {
     this.baseUrl = baseUrl;
     this.initialize();
@@ -138,10 +138,10 @@ You provide accurate legal information while clearly distinguishing between lega
 You cite sources appropriately and acknowledge the limitations of AI-generated legal analysis."""
 # Adjust parameters for legal text
 PARAMETER temperature 0.3
-PARAMETER top_k 40
+PARAMETER top_k, 40
 PARAMETER top_p 0.9
 PARAMETER repeat_penalty 1.1
-PARAMETER num_ctx 4096
+PARAMETER num_ctx, 4096
 # Legal-specific template
 TEMPLATE: """{{ if .System }}<|system|>"
 {{ .System }}<|end|>
@@ -177,7 +177,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
     }
     // Default to legal model if available
     if (this.availableModels.has('gemma3-legal')) {
-      return 'gemma3-legal';
+      return, 'gemma3-legal';
     }
     // Fallback to first available model
     const firstModel = this.availableModels.keys().next().value;
@@ -213,14 +213,14 @@ TEMPLATE: """{{ if .System }}<|system|>"
       return result;
     } catch (error: any) {
       logger.error('[OllamaLLM] Generation failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
    * Stream generation with progressive updates
    */
   async generateStream(
-    options: OllamaGenerateOptions,
+   , options: OllamaGenerateOptions,
     onToken: (token: string) => void,
     onComplete: (response: string) => void
   ): Promise<void> {
@@ -293,11 +293,11 @@ TEMPLATE: """{{ if .System }}<|system|>"
         const errorText = await response.text();
         throw new Error(`Embedding generation failed: ${response.statusText} - ${errorText}`);
       }
-      const result: { embedding: number[] } = await response.json(); // Type assertion for result
+      const result: {, embedding: number[] } = await response.json(); // Type assertion for result
       return result.embedding;
     } catch (error: any) {
       logger.error('[OllamaLLM] Embedding generation failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -322,14 +322,14 @@ TEMPLATE: """{{ if .System }}<|system|>"
       return result.message?.content || null;
     } catch (error: any) {
       logger.error('[OllamaLLM] Chat completion failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
    * Process legal document with specialized prompting
    */
   async processLegalDocument(
-    document: string,
+   , document: string,
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
     options?: { format?: 'json' }'`'`
   ): Promise<string | JsonObject | null> {
@@ -337,22 +337,22 @@ TEMPLATE: """{{ if .System }}<|system|>"
       let prompt = '';
       let systemPrompt = 'You are a legal document analysis expert.';
       switch (task) {
-        case 'summarize':
+        case, 'summarize':
           prompt = `Provide a comprehensive legal summary of the following document, highlighting key legal points, parties involved, and conclusions:\n\n${document}`;
           break;
-        case 'extract':
+        case, 'extract':
           prompt = `Extract the following information from this legal document:\n- Case citations\n- Statute references\n- Legal entities and parties\n- Key dates\n- Monetary amounts\n- Legal holdings or decisions\nDocument:\n${document}`;
           break;
-        case 'analyze':
+        case, 'analyze':
           prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;'
           systemPrompt += ' Focus on legal reasoning and precedential value.';
           break;
-        case 'classify':
+        case, 'classify':
           prompt = `Classify this legal document:\n- Document type (contract, pleading, opinion, statute, etc.)\n- Area of law (criminal, civil, contract, tort, etc.)\n- Jurisdiction\n- Key legal concepts\nDocument:\n${document}`;
           break;
       }
       const result = await this.generate({
-        model: this.defaultModel,
+       , model: this.defaultModel,
         prompt,
         system: systemPrompt,
         options: {
@@ -375,7 +375,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
     } catch (error: any) {
       logger.error('[OllamaLLM] Legal document processing failed:', error);
     }
-    return null;
+    return: null;
   }
 }
 export default OllamaLocalLLM;

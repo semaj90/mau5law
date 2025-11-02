@@ -7,17 +7,17 @@
  * - Redis for state persistence and caching
  * - Gemma3 LLM for agentic reasoning
  */
-import { hmmStateMachine } from './hmm-state-machine';
-import { getRedisClient, cognitiveCache } from '$lib/server/cache';
+import { hmmStateMachine } from, './hmm-state-machine';
+import { getRedisClient, cognitiveCache } from, '$lib/server/cache';
 import type {
   ContextualState,
   ConversationTurn,
   NextStepPrediction,
   LegalEntity,
   HMMState
-} from '$lib/types/sharedTypes';
+} from, '$lib/types/sharedTypes';
 const CONTEXT_TTL_SECONDS = 3600; // 1 hour
-const MAX_HISTORY_LENGTH = 50; // Keep last 50 conversation turns
+const MAX_HISTORY_LENGTH = 50; // Keep last, 50 conversation turns
 /**
  * Contextual Understanding Service
  * Manages conversation state, entity extraction, and next-step predictions
@@ -46,7 +46,7 @@ export class ContextualUnderstandingService {
       currentIntent: 'greeting',
       extractedEntities: [],
       hmmState: {
-        currentState: 0, // GREETING
+       , currentState: 0, // GREETING
         transitionProb: 1.0,
         emissionProb: 0,
         pattern: [],
@@ -76,7 +76,7 @@ export class ContextualUnderstandingService {
     const currentState = await this.getContextualState(sessionId, userId);
     // Create new conversation turn
     const newTurn: ConversationTurn = {
-      timestamp: Date.now(),
+     , timestamp: Date.now(),
       userMessage,
       agentResponse,
       intent,
@@ -219,7 +219,7 @@ export class ContextualUnderstandingService {
     // 1. Number of conversation turns (more turns = higher confidence)
     // 2. HMM transition probability
     // 3. Pattern consistency
-    const turnFactor = Math.min(history.length / 10, 1.0); // Max at 10 turns
+    const turnFactor = Math.min(history.length / 10, 1.0); // Max at, 10 turns
     const transitionFactor = hmmState.transitionProb;
     const patternFactor = hmmState.pattern.length > 0 ? 0.8 : 0.5;
     const confidence = (turnFactor * 0.4) + (transitionFactor * 0.4) + (patternFactor * 0.2);
@@ -256,7 +256,7 @@ export class ContextualUnderstandingService {
   async getSessionStats(sessionId: string, userId: string): Promise<{ totalTurns: number;, uniqueEntities: number;
     averageConfidence: number;
     currentState: string;
-    patternFrequency: number;
+   , patternFrequency: number;
   }> {
     const state = await this.getContextualState(sessionId, userId);
     const averageConfidence = state.conversationHistory.length > 0

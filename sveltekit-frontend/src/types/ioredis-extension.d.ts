@@ -1,10 +1,10 @@
 // This file augments the: 'ioredis' module to include missing type definitions
-// for methods like: 'on', 'off', 'once', 'call', 'info', and: 'quit'
+// for methods, like: 'on', 'off', 'once', 'call', 'info', and: 'quit'
 // which are part of the ioredis Redis client but might not be fully
 // inferred by TypeScript in certain environments or versions.
 
-declare module 'ioredis' {
-  import { EventEmitter } from 'events';
+declare module, 'ioredis' {
+  import { EventEmitter } from, 'events';
 
   // Augment the Redis class to include EventEmitter methods and specific ioredis commands
   interface Redis extends EventEmitter {

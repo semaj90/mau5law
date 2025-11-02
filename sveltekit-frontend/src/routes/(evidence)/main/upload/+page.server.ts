@@ -2,22 +2,22 @@
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema
  */
-import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import crypto from 'node:crypto';
+import { fail, redirect } from, '@sveltejs/kit';
+import { superValidate } from, 'sveltekit-superforms/server';
+import { zod } from, 'sveltekit-superforms/adapters';
+import { writeFile, mkdir } from, 'fs/promises';
+import { existsSync } from, 'fs';
+import path from, 'path';
+import crypto from, 'node:crypto';
 import {
   evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
   validateFileType
-} from '$lib/schemas/evidence-upload.js';
-import { db, cases, evidence, helpers } from '$lib/server/db';
-import type { PageServerLoad, Actions } from './$types.js';
-import { getUserId } from '$lib/server/auth/utils';
+} from, '$lib/schemas/evidence-upload.js';
+import { db, cases, evidence, helpers } from, '$lib/server/db';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { getUserId } from, '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         status: cases.status
       })
       .from(cases)
-      .where(helpers.eq(cases.status, 'active') as any)
+      .where(helpers.eq(cases.status, 'active') as: any)
       .orderBy(cases.created_at);
     return {
       form,
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 };
 export const actions: Actions = {
-  upload: async ({ request, locals }) => {
+ , upload: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, zod(evidenceUploadSchema));
     if (!form.valid) {
@@ -72,7 +72,7 @@ export const actions: Actions = {
       });
     }
     // Determine evidence type from file if not specified
-    let evidenceType = form.data.evidence_type as any;
+    let evidenceType = form.data.evidence_type as: any;
     if (evidenceType === 'UNKNOWN' || !evidenceType) {
       evidenceType = getFileTypeFromMime(file.type);
     }
@@ -91,7 +91,7 @@ export const actions: Actions = {
         const caseRecord = await db
           .select()
           .from(cases)
-          .where(helpers.eq(cases.id, form.data.case_id) as any)
+          .where(helpers.eq(cases.id, form.data.case_id) as: any)
           .limit(1);
         if (caseRecord.length === 0) {
           return fail(400, {
@@ -149,18 +149,18 @@ export const actions: Actions = {
       }
       // Generate rich metadata based on file type
       let metadata: any = {
-        kind: evidenceType,
+       , kind: evidenceType,
         uploadedAt: new Date().toISOString(),
         fileSize: file.size,
         processingOptions: {
-          enableAiAnalysis: form.data.enableAiAnalysis,
+         , enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
           enableSummarization: form.data.enableSummarization
         }
       };
       switch (evidenceType) {
-        case 'PDF':
+        case, 'PDF':
           metadata = {
             ...metadata,
             kind: 'PDF',
@@ -173,29 +173,29 @@ export const actions: Actions = {
             ocrConfidence: ocrResult?.averageConfidence
           };
           break;
-        case 'IMAGE':
+        case, 'IMAGE':
           metadata = {
             ...metadata,
             kind: 'IMAGE',
-            resolution: { width: 0, height: 0 }, // Would be extracted with sharp,
+            resolution: {, width: 0, height: 0 }, // Would be extracted with sharp,
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
             ocrConfidence: ocrResult?.averageConfidence
           };
           break;
-        case 'VIDEO':
+        case, 'VIDEO':
           metadata = {
             kind: 'VIDEO',
             durationSeconds: 0, // Would be extracted with ffprobe,
-            resolution: { width: 0, height: 0 },
+            resolution: {, width: 0, height: 0 },
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
             uploadedAt: new Date().toISOString()
           };
           break;
-        case 'AUDIO':
+        case, 'AUDIO':
           metadata = {
             kind: 'AUDIO',
             durationSeconds: 0, // Would be extracted with ffprobe,
@@ -206,7 +206,7 @@ export const actions: Actions = {
             uploadedAt: new Date().toISOString()
           };
           break;
-        case 'TEXT':
+        case, 'TEXT':
           // For text files, we can read the content
           const textContent = fileBuffer.toString('utf-8');
           metadata = {
@@ -220,7 +220,7 @@ export const actions: Actions = {
           break;
         default:
           metadata = {
-            kind: 'UNKNOWN',
+           , kind: 'UNKNOWN',
             fileSize: file.size,
             uploadedAt: new Date().toISOString()
           };
@@ -233,7 +233,7 @@ export const actions: Actions = {
           uploader_id: getUserId(locals) || 'anonymous', // Assuming user session is available,
           title: form.data.title,
           description: form.data.description || null,
-          evidence_type: evidenceType as any,
+          evidence_type: evidenceType, as: any,
           file_url: fileUrl,
           storage_key: storageKey,
           file_hash: `sha256:${fileHash}`,
@@ -250,7 +250,7 @@ export const actions: Actions = {
             chainOfCustody: form.data.chainOfCustody || [],
             ocrResult: ocrResult
               ? {
-                  extractedText: ocrResult.text,
+                 , extractedText: ocrResult.text,
                   confidence: ocrResult.averageConfidence,
                   legalConcepts: ocrResult.legalConcepts,
                   citations: ocrResult.citations,
@@ -287,7 +287,7 @@ export const actions: Actions = {
             metadata = {
               ...metadata,
               goServiceProcessing: {
-                embeddings: goResult.embeddings,
+               , embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
                 processedAt: new Date().toISOString()
               }

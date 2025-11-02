@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import { db } from, '$lib/server/db';
+import { users } from, '$lib/server/db/schema-postgres';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Add a narrow local type for the insert payload to avoid relying on a missing export
 type NewUserInsert = { email: string;, name: string;
@@ -15,7 +15,7 @@ type NewUserInsert = { email: string;, name: string;
   updated_at: Date;
 };
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check if user is authenticated and has admin role
     if (!locals.user || locals.user.role !== 'admin') {
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Map frontend fields to DB column names (adjust as needed for your schema)
     const newUser: NewUserInsert = {
-      email: userData.email,
+     , email: userData.email,
       name: userData.name,
       first_name: userData.firstName || '',
       last_name: userData.lastName || '',
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       {,
         description: 'Create a prosecutor',
         body: {
-          email: 'prosecutor@example.com',
+         , email: 'prosecutor@example.com',
           name: 'John Prosecutor',
           role: 'prosecutor'
         }
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       {
         description: 'Create a detective',
         body: {
-          email: 'detective@example.com',
+         , email: 'detective@example.com',
           name: 'Sarah Detective',
           role: 'detective',
           password: 'customPassword123'
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ locals }) => {
       {
         description: 'Create an analyst',
         body: {
-          email: 'analyst@example.com',
+         , email: 'analyst@example.com',
           name: 'Mike Analyst',
           firstName: 'Mike',
           lastName: 'Analyst',

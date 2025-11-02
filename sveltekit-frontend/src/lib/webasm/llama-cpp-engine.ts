@@ -4,22 +4,22 @@
  * Eliminates server round-trips for 2-5 second response times
  */
 // Remove triple-slash reference and use an import-style include for local type file
-import type {} from '../types/webgpu'; // keeps any local ambient webgpu declarations included
+import type {} from, '../types/webgpu'; // keeps: any local ambient webgpu declarations included
 
-export interface LlamaCppConfig { modelPath: string;, contextSize: number;
-  gpuLayers: number; // RTX 3060 Ti can handle 32-40 layers,
+export interface LlamaCppConfig {, modelPath: string;, contextSize: number;
+ , gpuLayers: number; // RTX, 3060 Ti can handle 32-40 layers,
   threadCount: number;
   batchSize: number;
   useGPU: boolean;
   quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 }
-export interface InferenceRequest { prompt: string;, maxTokens: number;
+export interface InferenceRequest {, prompt: string;, maxTokens: number;
   temperature: number;
   topP: number;
   stopTokens?: string[];
   stream?: boolean;
 }
-export interface InferenceResult { text: string;, tokens: number;
+export interface InferenceResult {, text: string;, tokens: number;
   processingTime: number;
   tokensPerSecond: number;
   memoryUsage: number;
@@ -30,7 +30,7 @@ export interface InferenceResult { text: string;, tokens: number;
 type WasmPtr = number;
 type TokenArray = Int32Array | Uint32Array | number[];
 
-interface LlamaInitOptions { model_ptr: WasmPtr;, model_size: number;
+interface LlamaInitOptions {, model_ptr: WasmPtr;, model_size: number;
   context_size?: number;
   gpu_layers?: number;
   thread_count?: number;
@@ -60,7 +60,7 @@ interface LlamaGenerateOptions {
 // Add a typed interface for wasm exports we call so TS knows functions and memory exist
 interface WasmExports {
   // memory exported from the wasm module
-  memory: WebAssembly.Memory;
+ , memory: WebAssembly.Memory;
 
   // basic allocator helpers
   malloc(size: number): WasmPtr;
@@ -90,13 +90,13 @@ interface WasmExports {
 }
 
 export class WebASMLlamaCppEngine {
-  // change wasmModule type to the new interface (or null)
+  // change wasmModule type to the new interface (or: null)
   private wasmModule: WasmExports | null = null; // was WebAssembly.Exports | null
   private modelLoaded = $state(false);
   private config: LlamaCppConfig;
   private gpuDevice: GPUDevice | null = null;
   // Added GPU buffer registry to map numeric: "pointers" to GPUBuffer instances
-  private gpuBuffers: Map<number, GPUBuffer> = new Map();
+  private, gpuBuffers: Map<number, GPUBuffer> = new Map();
   private nextGpuPtr = 1;
   private db: IDBDatabase | null = null; // Added for IndexedDB
   // Performance monitoring
@@ -107,7 +107,7 @@ export class WebASMLlamaCppEngine {
     this.config = {
       modelPath: config.modelPath || '/models/gemma-3-270m-q4_0.gguf', // Changed from gemma-2b-q4_0.gguf
       contextSize: config.contextSize || 2048,
-      gpuLayers: config.gpuLayers || 35, // RTX 3060 Ti optimized
+      gpuLayers: config.gpuLayers || 35, // RTX, 3060 Ti optimized
       threadCount: config.threadCount || navigator.hardwareConcurrency || 8,
       batchSize: config.batchSize || 512,
       useGPU: config.useGPU ?? true,
@@ -166,7 +166,7 @@ export class WebASMLlamaCppEngine {
     });
 
     // Cast exports to the typed interface so callable members and memory.buffer are known
-    return instance.exports as unknown as WasmExports;
+    return instance.exports as: unknown as WasmExports;
   }
   /**
    * Initialize WebGPU for tensor operations
@@ -177,7 +177,7 @@ export class WebASMLlamaCppEngine {
       return;
     }
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: 'high-performance', // RTX 3060 Ti
+      powerPreference: 'high-performance', // RTX, 3060 Ti
     });
     if (!adapter) {
       throw new Error('No WebGPU adapter available');
@@ -390,8 +390,8 @@ export class WebASMLlamaCppEngine {
     }
     // Destroy the GPU buffer if API supports it, and remove from registry
     try {
-      if (typeof (buffer as unknown as { destroy?: any }).destroy === 'function') {
-        (buffer as unknown as { destroy: () => void }).destroy();
+      if (typeof (buffer as: unknown as { destroy?: any }).destroy === 'function') {
+        (buffer as: unknown as {, destroy: () => void }).destroy();
       }
     } catch {
       // ignore destroy errors
@@ -414,7 +414,7 @@ export class WebASMLlamaCppEngine {
 
     // Create a command encoder and copy the requested range
     const encoder = this.gpuDevice.createCommandEncoder();
-    // offset arguments are set to 0 for simplicity; if WASM expects offsets these would need mapping
+    // offset arguments are set to, 0 for simplicity; if WASM expects offsets these would need mapping
     encoder.copyBufferToBuffer(src, 0, dst, 0, size);
     const commands = encoder.finish();
     this.gpuDevice.queue.submit([commands]);
@@ -446,14 +446,14 @@ export class WebASMLlamaCppEngine {
     try {
       if (!this.db) {
         console.warn('IndexedDB not initialized.');
-        return null;
+        return: null;
       }
       const transaction = this.db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
       const result = await this.promisifyRequest(store.get(modelPath)); // Fixed missing: ')'
       return result?.data || null;
     } catch {
-      return null;
+      return: null;
     }
   }
   private async cacheModel(modelPath: string, data: ArrayBuffer): Promise<void> {
@@ -494,7 +494,7 @@ export class WebASMLlamaCppEngine {
     memoryUsage: number;
   } {
     return {
-      totalInferences: this.totalInferences,
+     , totalInferences: this.totalInferences,
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency : 0,
@@ -513,8 +513,8 @@ export class WebASMLlamaCppEngine {
     if (this.gpuDevice) {
       for (const [ptr, buffer] of this.gpuBuffers.entries()) {
         try {
-          if (typeof (buffer as unknown as { destroy?: any }).destroy === 'function') {
-            (buffer as unknown as { destroy: () => void }).destroy();
+          if (typeof (buffer as: unknown as { destroy?: any }).destroy === 'function') {
+            (buffer as: unknown as {, destroy: () => void }).destroy();
           }
         } catch {
           // ignore per-buffer destroy errors
@@ -522,7 +522,7 @@ export class WebASMLlamaCppEngine {
         this.gpuBuffers.delete(ptr);
       }
       // Some implementations may not expose destroy(); guard defensively
-      const anyDevice = this.gpuDevice as unknown as { destroy?: any };
+      const anyDevice = this.gpuDevice as: unknown as { destroy?: any };
       if (typeof anyDevice.destroy === 'function') {
         (anyDevice.destroy as () => void)();
       }
@@ -530,7 +530,7 @@ export class WebASMLlamaCppEngine {
     console.log('🔥 WebASM llama.cpp engine cleaned up');
   }
 
-  // Add helpers to centralize null checks for WASM and memory
+  // Add helpers to centralize: null checks for WASM and memory
   private getWasm(): WasmExports {
     if (!this.wasmModule) {
       throw new Error('WASM module not initialized. Call initialize() and ensure wasm loaded before using this API.');

@@ -1,19 +1,19 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 // WebGPU Legal Similarity Compute Engine
 // Optimized for legal embedding similarity with NES memory integration
-import { nesMemory } from '../memory/nes-memory-architecture';
+import { nesMemory } from, '../memory/nes-memory-architecture';
 
 // Define an interface for nesMemory to avoid using: 'any'
-interface NESMemoryWithWebGPU { prepareForWebGPU: (, queryEmbeddings: Float32Array[],
+interface NESMemoryWithWebGPU {, prepareForWebGPU: (, queryEmbeddings: Float32Array[],
     documentEmbeddings: Float32Array[],
     legalDomainWeights?: Float32Array
   ) => { caseData: Float32Array;, evidenceData: Float32Array;
-    metadata: { totalVectors: number;, processingTime: number;
+    metadata: {, totalVectors: number;, processingTime: number;
     };
   };
 }
 
-export interface LegalSimilarityResult { queryIndex: number;, documentIndex: number;
+export interface LegalSimilarityResult {, queryIndex: number;, documentIndex: number;
   similarity: number;
   confidence: number;
   legalDomain?: string;
@@ -21,7 +21,7 @@ export interface LegalSimilarityResult { queryIndex: number;, documentIndex: nu
   legalScore?: number;
 }
 export interface WebGPUComputeOptions {
-  workgroupSize: [number, number, number];
+ , workgroupSize: [number, number, number];
   maxResults: number;
   similarityThreshold: number;
   useNESMemory: boolean;
@@ -31,7 +31,7 @@ export class LegalSimilarityWebGPU {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
   private computePipeline: GPUComputePipeline | null = null;
-  private bindGroupLayout: GPUBindGroupLayout | null = null;
+  private, bindGroupLayout: GPUBindGroupLayout | null = null;
   private isInitialized = $state(false);
   // Shader modules
   private cosineSimilarityShader: GPUShaderModule | null = null;
@@ -41,7 +41,7 @@ export class LegalSimilarityWebGPU {
   private queryBuffer: GPUBuffer | null = null;
   private documentBuffer: GPUBuffer | null = null;
   private resultsBuffer: GPUBuffer | null = null;
-  private uniformsBuffer: GPUBuffer | null = null;
+  private, uniformsBuffer: GPUBuffer | null = null;
   constructor() {}
   async initialize(): Promise<boolean> {
     try {
@@ -81,12 +81,12 @@ export class LegalSimilarityWebGPU {
     this.cosineSimilarityShader = this.device.createShaderModule({
       label: 'Legal Cosine Similarity Compute Shader',
       code: '
-        struct Uniforms { query_count: u32;, document_count: u32;
+        struct Uniforms {, query_count: u32;, document_count: u32;
           vector_dimension: u32;
           similarity_threshold: f32;
           workgroup_size: u32;
           legal_domain_weight: f32;
-          risk_assessment_factor: f32;
+         , risk_assessment_factor: f32;
          , confidence_boost: f32;
         };
         struct SimilarityResult {, query_index: u32;, document_index: u32;
@@ -115,10 +115,10 @@ export class LegalSimilarityWebGPU {
           var dot_product: f32 = 0.0;
           var query_magnitude_sq: f32 = 0.0;
           var doc_magnitude_sq: f32 = 0.0;
-          var weighted_dot_product: f32 = 0.0;
+          var, weighted_dot_product: f32 = 0.0;
 
           let vector_chunks = uniforms.vector_dimension / 4u;
-          // Process 4 elements at a time
+          // Process, 4 elements at a time
           for (var i: u32 = 0u; i < vector_chunks; i = i + 1u) {
             let base_idx = i * 4u;
             let q0 = query_embeddings[query_offset + base_idx];
@@ -152,7 +152,7 @@ export class LegalSimilarityWebGPU {
           let doc_magnitude = sqrt(doc_magnitude_sq);
           let magnitude_product = query_magnitude * doc_magnitude;
           var similarity: f32 = 0.0;
-          var legal_score: f32 = 0.0;
+          var, legal_score: f32 = 0.0;
           if (magnitude_product > 0.0) {
             similarity = dot_product / magnitude_product;
             legal_score = weighted_dot_product / magnitude_product;
@@ -195,8 +195,8 @@ export class LegalSimilarityWebGPU {
     this.topKShader = this.device.createShaderModule({
       label: 'Legal Top-K Selection Shader',
       code: '
-        struct SimilarityResult { query_index: u32;, document_index: u32;
-          similarity: f32;
+        struct SimilarityResult {, query_index: u32;, document_index: u32;
+         , similarity: f32;
          , confidence: f32;
          , legal_score: f32;
          , risk_assessment: f32;
@@ -218,7 +218,7 @@ export class LegalSimilarityWebGPU {
           if (current_result.query_index == 0xFFFFFFFFu) { return; }
           var insert_position: u32 = uniforms.k;
           let current_score = current_result.similarity * 0.7 + current_result.legal_score * 0.3;
-          for (var i: u32 = 0u; i < uniforms.k; i = i + 1u) {
+          for (var, i: u32 = 0u; i < uniforms.k; i = i + 1u) {
             let top_result = top_k_results[i];
             let top_score = top_result.similarity * 0.7 + top_result.legal_score * 0.3;
             if (current_score > top_score || top_result.query_index == 0xFFFFFFFFu) {
@@ -259,7 +259,7 @@ export class LegalSimilarityWebGPU {
        , bindGroupLayouts: [this.bindGroupLayout!]
       }),
       compute: {
-        module: this.cosineSimilarityShader,
+       , module: this.cosineSimilarityShader,
         entryPoint: `main' }'`
     });
     console.log('✅ WebGPU compute pipeline created');
@@ -273,7 +273,7 @@ export class LegalSimilarityWebGPU {
       throw new Error('WebGPU not initialized');
     }
     const config: WebGPUComputeOptions = {
-      workgroupSize: [256, 1, 1],
+     , workgroupSize: [256, 1, 1],
       maxResults: 100,
       similarityThreshold: 0.3,
       useNESMemory: true,
@@ -284,9 +284,9 @@ export class LegalSimilarityWebGPU {
     try {
       // Preprocess embeddings with SIMD if requested
       let queryData: Float32Array;
-      let documentData: Float32Array;
+      let, documentData: Float32Array;
       if (config.useNESMemory) {
-        const preprocessed = (nesMemory as unknown as NESMemoryWithWebGPU).prepareForWebGPU(
+        const preprocessed = (nesMemory as: unknown as NESMemoryWithWebGPU).prepareForWebGPU(
           queryEmbeddings,
           documentEmbeddings,
           config.legalDomainWeights
@@ -539,9 +539,9 @@ export class LegalSimilarityWebGPU {
       label: 'Top-K Bind Group',
       layout: topKPipeline.getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: this.resultsBuffer } },
-        { binding: 1, resource: { buffer: topKResultsBuffer } },
-        { binding: 2, resource: { buffer: topKUniformsBuffer } }
+        {, binding: 0, resource: {, buffer: this.resultsBuffer } },
+        { binding: 1, resource: {, buffer: topKResultsBuffer } },
+        { binding: 2, resource: {, buffer: topKUniformsBuffer } }
       ]
     });
 
@@ -562,7 +562,7 @@ export class LegalSimilarityWebGPU {
   }
 
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -594,11 +594,11 @@ export type LegalMetadata = Record<string, unknown>;
 
 // Utility function to create optimized embedding data for WebGPU
 export function prepareLegalEmbeddingsForWebGPU(
-  cases: Array<{ id: string; embedding: Float32Array; metadata?: LegalMetadata }>,
-  evidence: Array<{, id: string; embedding: Float32Array; metadata?: LegalMetadata }>
+  cases: Array<{ id: string;, embedding: Float32Array; metadata?: LegalMetadata }>,
+  evidence: Array<{, id: string;, embedding: Float32Array; metadata?: LegalMetadata }>
 ): { queryEmbeddings: Float32Array[];, documentEmbeddings: Float32Array[];
   queryMetadata: Array<{ id: string } & LegalMetadata>;
-  documentMetadata: Array<{ id: string } & LegalMetadata>;
+  documentMetadata: Array<{, id: string } & LegalMetadata>;
 } {
   const queryEmbeddings = cases.map(c => c.embedding);
   const documentEmbeddings = evidence.map(e => e.embedding);

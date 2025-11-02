@@ -1,4 +1,4 @@
-import * as pako from 'pako';
+import * as pako from, 'pako';
 /**
  * Protobuf-style type definitions for QLoRA binary transport
  * These types ensure type safety for binary serialization/deserialization
@@ -13,38 +13,38 @@ export interface QLoRAProtobufTopologyRequest {
   binaryResponse: boolean;
   timestamp: number;
 }
-export interface QLoRAProtobufMetrics { hmmPredictionScore: number;, somClusterAccuracy: number;
+export interface QLoRAProtobufMetrics {, hmmPredictionScore: number;, somClusterAccuracy: number;
   webgpuOptimizationGain: number;
   cacheEfficiency: number;
   tensorOperations?: number;
   memoryUsage?: number;
   gpuUtilization?: number;
 }
-export interface QLoRAProtobufLearningData { dataFlywheelSamples: number;, modelUpdateApplied: boolean;
+export interface QLoRAProtobufLearningData {, dataFlywheelSamples: number;, modelUpdateApplied: boolean;
   accuracyImprovement: number;
   trainingIterations?: number;
   lossReduction?: number;
   convergenceScore?: number;
 }
-export interface QLoRAProtobufTopologyResponse { prediction: {, type: string;
+export interface QLoRAProtobufTopologyResponse {, prediction: {, type: string;
     confidence: number;
     vectors: Float32Array; // 1536-dimension vectors
     clusters: number[];
-    topology: { nodes: number;, edges: number;
+    topology: {, nodes: number;, edges: number;
       connectivity: number;
     };
   };
   accuracy: number;
-  topology: { structure: string;, complexity: number;
+  topology: {, structure: string;, complexity: number;
     patternMatch: number;
   };
   cacheHit: boolean;
   processingTime: number;
   metrics: QLoRAProtobufMetrics;
   learningData?: QLoRAProtobufLearningData;
-  binaryMetadata: { compressionRatio: number;, originalSize: number;
+  binaryMetadata: {, compressionRatio: number;, originalSize: number;
     compressedSize: number;
-    encoding: 'gzip' | 'brotli' | 'lz4';
+   , encoding: 'gzip' | 'brotli' | 'lz4';
   };
 }
 /**
@@ -90,10 +90,10 @@ export class QLoRABinaryCodec {
     original: any,
     compressed: Uint8Array
   ): { originalSize: number;, compressedSize: number;
-    compressionRatio: number;
+   , compressionRatio: number;
   } {
     const originalString = typeof original === 'string' ? original : JSON.stringify(original);
-    // measure bytes rather than JS string length
+    // measure bytes rather than JS: string length
     const originalSize = new TextEncoder().encode(originalString).length;
     const compressedSize = compressed.length;
     return {
@@ -110,7 +110,7 @@ export class QLoRANetworkCacheKey {
   /**
    * Environment-safe async SHA-256 helper.
    * Uses Web Crypto SubtleDigest when available (browsers / modern Node),
-   * otherwise dynamically imports Node's 'crypto' as a fallback.'
+   * otherwise dynamically imports Node's, 'crypto' as a fallback.'
    */
   private static async sha256Hex(input: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -164,7 +164,7 @@ export class QLoRANetworkCacheKey {
 export interface QLoRABinaryPerformanceMetrics { requestSize: number;, responseSize: number;
   compressionRatio: number;
   processingTime: number;
-  cacheHit: boolean;
+ , cacheHit: boolean;
   networkLatency?: number;
   gpuTime?: number;
   serializationTime?: number;
@@ -175,12 +175,12 @@ export interface QLoRABinaryPerformanceMetrics { requestSize: number;, response
 export class QLoRAPerformanceMonitor {
   private static metrics: QLoRABinaryPerformanceMetrics[] = [];
   static recordMetrics(metrics: QLoRABinaryPerformanceMetrics): void {
-    // Push typed metric with internal timestamp (no any casts)
+    // Push typed metric with internal timestamp (no: any casts)
     this.metrics.push({
       ...metrics,
       timestamp: Date.now()
     });
-    // Keep only last 100 entries for memory efficiency
+    // Keep only last, 100 entries for memory efficiency
     if (this.metrics.length > 100) {
       this.metrics = this.metrics.slice(-100);
     }
@@ -190,7 +190,7 @@ export class QLoRAPerformanceMonitor {
     type Accumulator = { requestSize: number;, responseSize: number;
       compressionRatio: number;
       processingTime: number;
-      cacheHitCount: number;
+     , cacheHitCount: number;
     };
     const totals = this.metrics.reduce(
       (acc: Accumulator, m) => {

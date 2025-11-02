@@ -259,7 +259,7 @@
                     absolute top-full left-0 mt-1 rounded-lg border shadow-lg z-30 min-w-48
                     ${themeClasses[theme].dropdown}
                   `}
-                  transition:fly={{ y: -10, duration: 200 }}
+                  use:fly={{ y: -10, duration: 200 }}
                 >
                   {#each action.options || [] as option}
                     <button

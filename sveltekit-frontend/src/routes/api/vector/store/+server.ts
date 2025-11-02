@@ -2,15 +2,15 @@
  * @endpoint  POST /api/vector/store
  * @desc      Generate embedding + persist to Postgres (pgvector) + Qdrant + Redis cache
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { storeDocumentWithEmbedding } from '$lib/server/services/vector-operations';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { storeDocumentWithEmbedding } from, '$lib/server/services/vector-operations';
 // ServiceError handled via http-error-mapper
-import { mapErrorToHttp } from '$lib/server/utils/http-error-mapper';
-import { StorePayload } from '$lib/server/utils/vector-schemas';
-import { randomUUID } from 'node:crypto';
+import { mapErrorToHttp } from, '$lib/server/utils/http-error-mapper';
+import { StorePayload } from, '$lib/server/utils/vector-schemas';
+import { randomUUID } from, 'node:crypto';
 
-import { withValidationAndRate, schemaFor } from '$lib/server/middleware/validate-and-rate';
+import { withValidationAndRate, schemaFor } from, '$lib/server/middleware/validate-and-rate';
 
 const handler: RequestHandler = async ({ request }) => {
   try {

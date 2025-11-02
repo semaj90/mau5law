@@ -2,8 +2,8 @@
  * Semantic Search Service
  * Integrates with vector search database and AI embeddings
  */
-import { vectorSearch, getVectorSearchStats } from '$lib/server/db/vector-search.js';
-import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
+import { vectorSearch, getVectorSearchStats } from, '$lib/server/db/vector-search.js';
+import type { VectorSearchOptions, VectorSearchResult } from, '$lib/types/vector-search.js';
 export interface SemanticSearchOptions extends VectorSearchOptions {
   semanticExpansion?: boolean;
   queryRewriting?: boolean;
@@ -22,10 +22,10 @@ export interface SemanticSearchResult {
     similarity: number;
     score: number;
   }>;
-  analytics: { searchStrategy: string;, queryComplexity: string;
+  analytics: {, searchStrategy: string;, queryComplexity: string;
     semanticConcepts: string[];
     cacheHit: boolean;
-    processingTime: number;
+   , processingTime: number;
   }
   suggestions?: string[];
 }
@@ -49,7 +49,7 @@ class SemanticSearchService {
       return {
         results: vectorResult.results,
         analytics: {
-          searchStrategy: vectorResult.searchStrategy,
+         , searchStrategy: vectorResult.searchStrategy,
           queryComplexity: this.analyzeQueryComplexity(query),
           semanticConcepts: this.extractSemanticConcepts(query),
           cacheHit: false,
@@ -75,9 +75,9 @@ class SemanticSearchService {
    */
   private analyzeQueryComplexity(query: string): string {
     const wordCount = query.trim().split(/\s+/).length;
-    if (wordCount <= 3) return 'simple';
-    if (wordCount <= 10) return 'medium';
-    return 'complex';
+    if (wordCount <= 3) return, 'simple';
+    if (wordCount <= 10) return, 'medium';
+    return, 'complex';
   }
   /**
    * Extract semantic concepts from query

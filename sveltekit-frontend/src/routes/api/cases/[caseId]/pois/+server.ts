@@ -1,9 +1,9 @@
 
-import { json } from '@sveltejs/kit'
-import { personsOfInterest } from "$lib/server/db/schema-postgres"
-import { db } from "$lib/server/db/connection"
-import { eq } from "drizzle-orm"
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import { personsOfInterest } from, "$lib/server/db/schema-postgres"
+import { db } from, "$lib/server/db/connection"
+import { eq } from, "drizzle-orm"
+import type { RequestHandler } from, './$types.js'
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
   try {
     const caseId = params.caseId
     const data = await request.json()
-    // Remove posX/posY, use position object if needed
+    // Remove posX/posY, use position: object if needed
     const [poi] = await db
       .insert(personsOfInterest)
       .values({

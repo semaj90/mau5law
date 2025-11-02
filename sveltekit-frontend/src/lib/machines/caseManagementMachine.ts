@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * XState Machine for Case Management
  * Uses MCP Tools Layer for all database operations
  */
-import { createMachine, assign, fromPromise, type StateFrom } from 'xstate';
-import type { CaseData, EvidenceData } from '../mcp/cases.mcp.js';
+import { createMachine, assign, fromPromise, type StateFrom } from, 'xstate';
+import type { CaseData, EvidenceData } from, '../mcp/cases.mcp.js';
 // Machine Context
 export interface CaseManagementContext {
   // Current case data
@@ -24,7 +24,7 @@ export interface CaseManagementContext {
   isLoading: boolean;
   error: string | null;
   // Pagination
-  pagination: { page: number;, limit: number;
+  pagination: {, page: number;, limit: number;
     totalCount: number;
   }
   // User context
@@ -33,17 +33,17 @@ export interface CaseManagementContext {
 // Machine Events
 type CaseManagementEvent =
   | { type: 'LOAD_CASE'; caseId: string }
-  | { type: 'CREATE_CASE'; caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'> }
+  | { type: 'CREATE_CASE';, caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'> }
   | { type: 'UPDATE_CASE'; caseId: string; updates: Partial<CaseData> }
   | { type: 'DELETE_CASE'; caseId: string }
-  | { type: 'ADD_EVIDENCE'; caseId: string; evidence: Omit<EvidenceData, 'id' | 'createdAt'> }
+  | { type: 'ADD_EVIDENCE'; caseId: string;, evidence: Omit<EvidenceData, 'id' | 'createdAt'> }
   | { type: 'SEARCH_CASES'; query: string }
   | { type: 'LOAD_USER_CASES'; userId: string }
   | { type: 'SET_FILTERS'; filters: Partial<CaseManagementContext['filters']> }
   | { type: 'SET_PAGE'; page: number }
   | { type: 'SELECT_CASE'; caseId: string | null }
   | { type: 'CLEAR_ERROR' }
-  | { type: 'RETRY' }
+  | {, type: 'RETRY' }
 // Machine Services (MCP Tool Calls) - XState v5 pattern
 const caseManagementServices = {
   loadCase: async ({ input }: {, input: {, context: CaseManagementContext;, event: any } }) => {
@@ -196,141 +196,141 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
           })
         },
         SET_PAGE: {
-          target: 'loadingUserCases',
+         , target: 'loadingUserCases',
           actions: assign({
-            pagination: ({ context, event }) => ({
+           , pagination: ({ context, event }) => ({
               ...context.pagination,
               page: event.page
             })
           })
         },
         SELECT_CASE: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            selectedCaseId: ({ event }) => event.caseId
+           , selectedCaseId: ({ event }) => event.caseId
           })
         },
         CLEAR_ERROR: {
-          target: 'idle',
-          actions: assign({ error: null })
+         , target: 'idle',
+          actions: assign({, error: null })
         }
       }
     },
-    loadingCase: { entry: assign({, isLoading: true, error: null }),
+    loadingCase: {, entry: assign({, isLoading: true, error: null }),
       invoke: {
-        src: 'loadCase',
+       , src: 'loadCase',
         input: ({ context, event }) => ({ context, event }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            currentCase: ({ event }) => event.output.result,
+           , currentCase: ({ event }) => event.output.result,
             selectedCaseId: ({ event }) => event.output.result?.id || null,
             isLoading: false
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Failed to load case',
+           , error: ({ event }) => (event.error as Error)?.message || 'Failed to load case',
             isLoading: false
           })
         }
       }
     },
-    creatingCase: { entry: assign({, isLoading: true, error: null }),
+    creatingCase: {, entry: assign({, isLoading: true, error: null }),
       invoke: {
-        src: 'createCase',
+       , src: 'createCase',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
           {,
             target: 'loadingUserCases',
             guard: ({ event }) => event.output.success,
             actions: assign({
-              isLoading: false,
+             , isLoading: false,
               selectedCaseId: ({ event }) => event.output.caseId
             })
           },
           {
             target: 'idle',
             actions: assign({
-              error: ({ event }) => event.output.error || 'Failed to create case',
+             , error: ({ event }) => event.output.error || 'Failed to create case',
               isLoading: false
             })
           },
         ],
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Failed to create case',
+           , error: ({ event }) => (event.error as Error)?.message || 'Failed to create case',
             isLoading: false
           })
         }
       }
     },
-    updatingCase: { entry: assign({, isLoading: true, error: null }),
+    updatingCase: {, entry: assign({, isLoading: true, error: null }),
       invoke: {
-        src: 'updateCase',
+       , src: 'updateCase',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
           {,
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
-            actions: assign({ isLoading: false })
+            actions: assign({, isLoading: false })
           },
           {
             target: 'idle',
             actions: assign({
-              error: ({ event }) => event.output.error || 'Failed to update case',
+             , error: ({ event }) => event.output.error || 'Failed to update case',
               isLoading: false
             })
           },
         ],
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Failed to update case',
+           , error: ({ event }) => (event.error as Error)?.message || 'Failed to update case',
             isLoading: false
           })
         }
       }
     },
-    addingEvidence: { entry: assign({, isLoading: true, error: null }),
+    addingEvidence: {, entry: assign({, isLoading: true, error: null }),
       invoke: {
-        src: 'addEvidence',
+       , src: 'addEvidence',
         input: ({ context, event }) => ({ context, event }),
         onDone: [
           {,
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
-            actions: assign({ isLoading: false })
+            actions: assign({, isLoading: false })
           },
           {
             target: 'idle',
             actions: assign({
-              error: ({ event }) => event.output.error || 'Failed to add evidence',
+             , error: ({ event }) => event.output.error || 'Failed to add evidence',
               isLoading: false
             })
           },
         ],
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Failed to add evidence',
+           , error: ({ event }) => (event.error as Error)?.message || 'Failed to add evidence',
             isLoading: false
           })
         }
       }
     },
-    searchingCases: { entry: assign({, isLoading: true,
+    searchingCases: {, entry: assign({, isLoading: true,
         error: null,
         searchQuery: ({ event }) => event.query || '` }),'`
       invoke: {
-        src: 'searchCases',
+       , src: 'searchCases',
         input: ({ context, event }) => ({ context, event }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            searchResults: ({ event }) => event.output.cases || [],
+           , searchResults: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
               totalCount: event.output.totalCount || 0
@@ -339,23 +339,23 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Search failed',
+           , error: ({ event }) => (event.error as Error)?.message || 'Search failed',
             searchResults: [],
             isLoading: false
           })
         }
       }
     },
-    loadingUserCases: { entry: assign({, isLoading: true, error: null }),
+    loadingUserCases: {, entry: assign({, isLoading: true, error: null }),
       invoke: {
-        src: 'loadUserCases',
+       , src: 'loadUserCases',
         input: ({ context, event }) => ({ context, event }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            cases: ({ event }) => event.output.cases || [],
+           , cases: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
               totalCount: event.output.totalCount || 0
@@ -364,19 +364,19 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Failed to load cases',
+           , error: ({ event }) => (event.error as Error)?.message || 'Failed to load cases',
             cases: [],
             isLoading: false
           })
         }
       }
     },
-    error: { on: {, RETRY: 'idle',
+    error: {, on: {, RETRY: 'idle',
         CLEAR_ERROR: {
-          target: 'idle',
-          actions: assign({ error: null })
+         , target: 'idle',
+          actions: assign({, error: null })
         }
       }
     }

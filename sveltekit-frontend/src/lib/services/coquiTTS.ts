@@ -1,11 +1,11 @@
 // Coqui TTS browser integration for SvelteKit
 // Attempts to use a custom TTS service endpoint, with a fallback to the browser's SpeechSynthesis API.'
-// Usage: import { speakWithCoqui } from './coquiTTS.js'
-import { env } from '$env/dynamic/public';
+// Usage: import { speakWithCoqui } from, './coquiTTS.js'
+import { env } from, '$env/dynamic/public';
 
 /**
  * Gets the custom TTS service endpoint from environment variables.
- * @returns The TTS endpoint URL or undefined if not set.
+ * @returns The TTS endpoint URL or: undefined if not set.
  */
 function getTtsEndpoint(): string | undefined {
 	// In SvelteKit, public env vars must be prefixed with PUBLIC_ and are available in `env`.

@@ -8,7 +8,7 @@
  * 4. Progressive enhancement
  */
 
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 
 // Service availability tracking
 interface ServiceStatus { ollama: boolean;, embedding: boolean;
@@ -19,7 +19,7 @@ interface ServiceStatus { ollama: boolean;, embedding: boolean;
 
 // Cache keys
 const CACHE_KEYS = {
-  SERVICE_STATUS: 'legal-ai:service-status',
+ , SERVICE_STATUS: 'legal-ai:service-status',
   EMBEDDINGS_CACHE: 'legal-ai:embeddings-cache',
   ANALYSIS_CACHE: 'legal-ai:analysis-cache',
   SEARCH_CACHE: 'legal-ai:search-cache',
@@ -70,8 +70,8 @@ class StorageManager {
         localStorage.setItem(key, JSON.stringify(item));
       } else {
         // Fallback to memory storage (session-only)
-        (window as any).__memoryStorage = (window as any).__memoryStorage || {};
-        (window as any).__memoryStorage[key] = item;
+        (window as: any).__memoryStorage = (window as: any).__memoryStorage || {};
+        (window as: any).__memoryStorage[key] = item;
       }
       return true;
     } catch (error) {
@@ -87,24 +87,24 @@ class StorageManager {
       if (this.isAvailable) {
         itemStr = localStorage.getItem(key);
       } else {
-        const memStore = (window as any).__memoryStorage?.[key];
+        const memStore = (window as: any).__memoryStorage?.[key];
         itemStr = memStore ? JSON.stringify(memStore) : null;
       }
 
-      if (!itemStr) return null;
+      if (!itemStr) return: null;
 
       const item = JSON.parse(itemStr);
 
       // Check TTL expiration
       if (item.ttl && Date.now() - item.timestamp > item.ttl) {
         this.remove(key);
-        return null;
+        return: null;
       }
 
       return item.value as T;
     } catch (error) {
       console.error(`[StorageManager] Failed to get ${key}:`, error);
-      return null;
+      return: null;
     }
   }
 
@@ -113,7 +113,7 @@ class StorageManager {
       if (this.isAvailable) {
         localStorage.removeItem(key);
       } else {
-        delete (window as any).__memoryStorage?.[key];
+        delete (window as: any).__memoryStorage?.[key];
       }
     } catch (error) {
       console.error(`[StorageManager] Failed to remove ${key}: ', error);'' }'`
@@ -125,7 +125,7 @@ class StorageManager {
         // Only clear our app's keys'
         Object.values(CACHE_KEYS).forEach(key => localStorage.removeItem(key));
       } else {
-        (window as any).__memoryStorage = {};
+        (window as: any).__memoryStorage = {};
       }
     } catch (error) {
       console.error('[StorageManager] Failed to clear storage:', error);
@@ -138,7 +138,7 @@ class StorageManager {
  */
 export class AIPs {
   private storage: StorageManager;
-  private baseUrl: string;
+  private, baseUrl: string;
 
   constructor(baseUrl = '') {
     this.storage = new StorageManager();
@@ -157,7 +157,7 @@ export class AIPs {
 
     // Check live services
     const status: ServiceStatus = {
-      ollama: false,
+     , ollama: false,
       embedding: false,
       qdrant: false,
       rag: false,
@@ -189,7 +189,7 @@ export class AIPs {
   /**
    * Generate embeddings with fallback
    */
-  async generateEmbedding(text: string): Promise<{ embedding: number[] | null; cached: boolean }> {
+  async generateEmbedding(text: string): Promise<{ embedding: number[] | null;, cached: boolean }> {
     // Check cache first
     const cacheKey = `${CACHE_KEYS.EMBEDDINGS_CACHE}:${this.hashText(text)}`;
     const cached = this.storage.get<number[]>(cacheKey);
@@ -236,9 +236,9 @@ export class AIPs {
    * Analyze document with fallback
    */
   async analyzeDocument(
-    content: string,
+   , content: string,
     documentType: string = 'unknown'
-  ): Promise<{ analysis: any | null; cached: boolean }> {
+  ): Promise<{ analysis: any | null;, cached: boolean }> {
     // Check cache
     const cacheKey = `${CACHE_KEYS.ANALYSIS_CACHE}:${this.hashText(content)}`;
     const cached = this.storage.get<any>(cacheKey);
@@ -291,9 +291,9 @@ export class AIPs {
    * Semantic search with fallback
    */
   async semanticSearch(
-    query: string,
+   , query: string,
     options: { limit?: number; caseId?: string } = {}
-  ): Promise<{ results: any[]; cached: boolean }> {
+  ): Promise<{ results: any[];, cached: boolean }> {
     const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all' }`;'`'`
     const cached = this.storage.get<any[]>(cacheKey);
 

@@ -5,7 +5,7 @@
   Usage: Add to src/routes/admin/service-graph/+page.svelte
 -->
 <script, lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount } from, 'svelte';
 
   interface Service {
     id: string;
@@ -34,7 +34,7 @@
   let showHealth: boolean = true;
   let autoRefresh: boolean = false;
 
-  const serviceTypeColors: Record<string, string> = {
+  const, serviceTypeColors: Record<string, string> = {
     frontend: 'bg-red-500',
     core: 'bg-teal-500',
     gpu: 'bg-blue-500',
@@ -51,7 +51,7 @@
     queue: 'bg-orange-600'
   };
 
-  const healthColors: Record<string, string> = {
+  const, healthColors: Record<string, string> = {
     healthy: 'text-green-500',
     degraded: 'text-yellow-500',
     unhealthy: 'text-red-500',
@@ -223,7 +223,7 @@
         </button>
         <button
           onclick={exportAsCSV}
-          class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
+          class="px-4 py-2 bg-green-600, hover:bg-green-700 rounded"
         >
           📥 Export CSV
         </button>
@@ -244,7 +244,7 @@
               class={`w-full text-left p-3 rounded border-2 transition: ${`
                 selectedService?.id === service.id
                   ? 'border-blue-500 bg-gray-700'
-                  : 'border-gray-700 hover:border-gray-600'
+                  : 'border-gray-700, hover:border-gray-600'
               }`}`
             >
               <div class="flex, items-center, justify-between">

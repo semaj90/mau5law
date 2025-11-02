@@ -1,7 +1,7 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // Case Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from './auth-service.js';
+import { getAuthHeaders } from, './auth-service.js';
 export interface LegalCase { id: string;, title: string;
   description?: string;
   status: 'active' | 'closed' | 'pending' | 'archived';
@@ -20,7 +20,7 @@ export interface LegalCase { id: string;, title: string;
   metadata?: { [key: string]: any };
 }
 
-export interface CaseDocument { id: string;, caseId: string;
+export interface CaseDocument {, id: string;, caseId: string;
   filename: string;
   type: 'contract' | 'evidence' | 'brief' | 'correspondence' | 'other';
   uploadedAt: string;
@@ -68,10 +68,10 @@ export interface UpdateCaseData {
   metadata?: { [key: string]: any };
 }
 
-export interface CaseListResponse { cases: LegalCase[];, total: number;
+export interface CaseListResponse {, cases: LegalCase[];, total: number;
   limit: number;
   offset: number;
-  hasMore: boolean;
+ , hasMore: boolean;
 }
 // Core Case Management Functions
 export async function listCases(options: CaseListOptions = {}): Promise<CaseListResponse> {

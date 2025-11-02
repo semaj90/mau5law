@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -10,14 +10,14 @@ import type { Document } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: minimal
- * - Memory Bank: SAVE_RAM (Nintendo-style)
+ * - Memory, Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 /**
  * Minimal, dependency-safe implementation:
  * - Tries optional $lib/services/aiAutoTagging if present, otherwise falls back to a heuristic tagger
@@ -25,17 +25,17 @@ import { json } from '@sveltejs/kit';
  */
 type AutoTagResult = { tags: string[];, entities: string[];
   summary: string;
-  confidence: number;
+ , confidence: number;
 };
 const memoryStore = new Map<
   string,
   { id: string;, tags: string[];
     summary: string;
     embedding: number[] | null;
-    updatedAt: string;
+   , updatedAt: string;
   }
 >();
-type AutoTagDocument = (params: {, documentId: string; content: string;, documentType: string }) => Promise<{
+type AutoTagDocument = (params: {, documentId: string;, content: string;, documentType: string }) => Promise<{
   tags?: string[];
   entities?: (string | { text?: string })[];
   summary?: string;
@@ -71,8 +71,8 @@ export const POST: RequestHandler = async ({ request }) => {
     let result: AutoTagResult | null = null;
     // Try optional real service if available
     try {
-      const mod: OptionalAutoTaggingModule | null = await import('$lib/services/aiAutoTagging')
-        .then(m => m as unknown as OptionalAutoTaggingModule)
+      const, mod: OptionalAutoTaggingModule | null = await import('$lib/services/aiAutoTagging')
+        .then(m => m as: unknown as OptionalAutoTaggingModule)
         .catch(() => null);
       const autoTag = mod?.default?.autoTagDocument;
       if (autoTag) {

@@ -1,6 +1,6 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import { createClient } from 'redis';
-import type { RedisClientType } from 'redis';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { createClient } from, 'redis';
+import type { RedisClientType } from, 'redis';
 
 export interface CacheLayer { name: string;, priority: number;
   avgResponseTime: number;
@@ -8,14 +8,14 @@ export interface CacheLayer { name: string;, priority: number;
   enabled: boolean;
 }
 export class CacheLayerManager {
-  private layers: Map<string, CacheLayer> = new Map();
+  private, layers: Map<string, CacheLayer> = new Map();
   constructor() {
     this.initializeLayers();
   }
   private initializeLayers() {
     const layerConfigs: CacheLayer[] = [
       {
-        name: 'memory',
+       , name: 'memory',
         priority: 1,
         avgResponseTime: 1,
         hitRate: 0.9,
@@ -67,7 +67,7 @@ export class CacheLayerManager {
       } catch (error: any) {
         console.warn(`Cache layer ${layer.name} failed: ', String(error));'` }
     }
-    return null;
+    return: null;
   }
 
   /**
@@ -178,31 +178,31 @@ export class CacheLayerManager {
 
   private async getFromLayer(layerName: string, key: string): Promise<unknown> {
     switch (layerName) {
-      case 'memory':
+      case, 'memory':
         return this.getFromMemory(key);
-      case 'redis':
+      case, 'redis':
         return this.getFromRedis(key);
-      case 'qdrant':
+      case, 'qdrant':
         return this.getFromQdrant(key);
-      case 'postgres':
+      case, 'postgres':
         return this.getFromPostgres(key);
-      case 'neo4j':
+      case, 'neo4j':
         return this.getFromNeo4j(key);
-      default: return null;
+      default: return: null;
     }
   }
 
   private async setInLayer(layerName: string, key: string, data: any, ttl?: number): Promise<void> {
     switch (layerName) {
-      case 'memory':
+      case, 'memory':
         return this.setInMemory(key, data, ttl);
-      case 'redis':
+      case, 'redis':
         return this.setInRedis(key, data, ttl);
-      case 'qdrant':
+      case, 'qdrant':
         return this.setInQdrant(key, data);
-      case 'postgres':
+      case, 'postgres':
         return this.setInPostgres(key, data);
-      case 'neo4j':
+      case, 'neo4j':
         return this.setInNeo4j(key, data);
       default: return;
     }
@@ -213,10 +213,10 @@ export class CacheLayerManager {
 
   private async getFromMemory(key: string): Promise<unknown> {
     const item = this.memoryCache.get(key);
-    if (!item) return null;
+    if (!item) return: null;
     if (item.expires && Date.now() > item.expires) {
       this.memoryCache.delete(key);
-      return null;
+      return: null;
     }
     return item.data;
   }
@@ -226,35 +226,35 @@ export class CacheLayerManager {
     this.memoryCache.set(key, { data, expires });
   }
 
-  // Safe redis client connector to avoid: "possibly undefined" invocation on createClient
+  // Safe redis client connector to avoid: "possibly: undefined" invocation on createClient
   private async createConnectedRedisClient(): Promise<RedisClientType | null> {
     if (typeof createClient !== 'function') {
       console.warn('redis.createClient is not available');
-      return null;
+      return: null;
     }
     try {
       const url = process.env.REDIS_URL ?? 'redis://localhost:6379';
       const client = redis as RedisClientType;
-      // client.connect may throw; propagate as null on failure
+      // client.connect may throw; propagate, as: null on failure
       await client.connect();
       return client;
     } catch (err: any) {
       console.warn('Failed to create/connect redis client:', String(err));
-      return null;
+      return: null;
     }
   }
 
   private async getFromRedis(key: string): Promise<unknown> {
     const client = await this.createConnectedRedisClient();
-    if (!client) return null;
+    if (!client) return: null;
     try {
       const raw = await client.get(key);
       await client.disconnect();
-      if (!raw) return null;
+      if (!raw) return: null;
       try {
         return JSON.parse(raw);
       } catch {
-        // if parsing fails, return raw string
+        // if parsing fails, return raw: string
         return raw;
       }
     } catch (error: any) {
@@ -264,7 +264,7 @@ export class CacheLayerManager {
       } catch {
         /* ignore */
       }
-      return null;
+      return: null;
     }
   }
 
@@ -304,7 +304,7 @@ export class CacheLayerManager {
       return json?.result?.[0]?.payload?.data ?? null;
     } catch (error: any) {
       console.warn('Qdrant get error:', String(error));'
-      return null;
+      return: null;
     }
   }
 
@@ -326,7 +326,7 @@ export class CacheLayerManager {
             {,
              , id: Date.now().toString(),
               vector: new Array(384).fill(0.0),
-              payload: { cache_key: key, data, timestamp: Date.now() }
+              payload: {, cache_key: key, data, timestamp: Date.now() }
             },
           ]
         })
@@ -337,7 +337,7 @@ export class CacheLayerManager {
 
   private async getFromPostgres(_key: string): Promise<unknown> {
     // Placeholder for PostgreSQL implementation
-    return null;
+    return: null;
   }
   private async setInPostgres(_key: string, _data: any): Promise<void> {
     // Placeholder for PostgreSQL implementation
@@ -345,7 +345,7 @@ export class CacheLayerManager {
 
   private async getFromNeo4j(_key: string): Promise<unknown> {
     // Placeholder for Neo4j implementation
-    return null;
+    return: null;
   }
   private async setInNeo4j(_key: string, _data: any): Promise<void> {
     // Placeholder for Neo4j implementation

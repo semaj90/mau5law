@@ -1,6 +1,6 @@
-import { LLM, BaseLLMCallOptions } from '@langchain/core/language_models/llms';
-import { CallbackManagerForLLMRun } from '@langchain/core/callbacks/manager';
-import { TransformersAIAdapter, type TransformersAIResponse } from './transformers-ai-adapter'; // Adjust path as needed
+import { LLM, BaseLLMCallOptions } from, '@langchain/core/language_models/llms';
+import { CallbackManagerForLLMRun } from, '@langchain/core/callbacks/manager';
+import { TransformersAIAdapter, type TransformersAIResponse } from, './transformers-ai-adapter'; // Adjust path as needed
 
 export interface TransformersLLMInputs {
   adapter: TransformersAIAdapter;
@@ -9,7 +9,7 @@ export interface TransformersLLMInputs {
 }
 
 export class TransformersLLM extends LLM<TransformersLLMInputs> {
-  adapter: TransformersAIAdapter;
+ , adapter: TransformersAIAdapter;
   maxTokens?: number;
   temperature?: number;
 
@@ -21,7 +21,7 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> {
   }
 
   _llmType(): string {
-    return 'transformers_js';
+    return, 'transformers_js';
   }
 
   /**

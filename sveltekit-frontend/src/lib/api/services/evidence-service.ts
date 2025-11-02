@@ -1,5 +1,5 @@
 // Evidence Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from './auth-service.js';
+import { getAuthHeaders } from, './auth-service.js';
 export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;
@@ -7,7 +7,7 @@ export interface Evidence { id: string;, caseId: string;
   category: 'favorable' | 'unfavorable' | 'neutral' | 'unknown';
   source: string;
   acquiredDate: string;
-  relevanceScore: number; // 0-1,
+ , relevanceScore: number; // 0-1,
   authenticityVerified: boolean;
   chainOfCustody: ChainOfCustodyEntry[];
   tags: string[];
@@ -20,7 +20,7 @@ export interface Evidence { id: string;, caseId: string;
   lastModifiedBy: string;
 }
 
-export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
+export interface ChainOfCustodyEntry {, id: string;, evidenceId: string;
   timestamp: string;
   action: 'acquired' | 'transferred' | 'examined' | 'sealed' | 'unsealed' | 'copied' | 'stored';
   performedBy: string;
@@ -30,12 +30,12 @@ export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   digitalSignature?: string;
 }
 
-export interface EvidenceAttachment { id: string;, evidenceId: string;
+export interface EvidenceAttachment {, id: string;, evidenceId: string;
   filename: string;
   originalFilename: string;
   mimeType: string;
   size: number;
-  hash: string; // SHA-256 hash for integrity verification,
+ , hash: string; // SHA-256 hash for integrity verification,
   uploadedAt: string;
   uploadedBy: string;
   processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
@@ -43,14 +43,14 @@ export interface EvidenceAttachment { id: string;, evidenceId: string;
   aiAnalysisCompleted: boolean;
 }
 
-export interface EvidenceAnalysis { id: string;, evidenceId: string;
+export interface EvidenceAnalysis {, id: string;, evidenceId: string;
   summary: string;
   keyFindings: string[];
   legalSignificance: string;
   potentialImpact: 'low' | 'medium' | 'high' | 'critical';
   relatedCases: string[];
   suggestedActions: string[];
-  confidenceScore: number; // 0-1,
+ , confidenceScore: number; // 0-1,
   analysisDate: string;
   analyzedBy: 'ai' | 'human' | 'hybrid';
   reviewStatus: 'pending' | 'reviewed' | 'approved' | 'rejected';
@@ -70,7 +70,7 @@ export interface EvidenceListOptions {
   search?: string;
 }
 
-export interface CreateEvidenceData { caseId: string;, title: string;
+export interface CreateEvidenceData {, caseId: string;, title: string;
   description?: string;
   type: Evidence['type'];
   source: string;
@@ -90,10 +90,10 @@ export interface UpdateEvidenceData {
   metadata?: { [key: string]: any };
 }
 
-export interface EvidenceListResponse { evidence: Evidence[];, total: number;
+export interface EvidenceListResponse {, evidence: Evidence[];, total: number;
   limit: number;
   offset: number;
-  hasMore: boolean;
+ , hasMore: boolean;
 }
 // Core Evidence Management Functions
 export async function listEvidence(options: EvidenceListOptions = {}): Promise<EvidenceListResponse> {
@@ -152,7 +152,7 @@ export async function getEvidenceById(evidenceId: string): Promise<Evidence> {
     }
     const evidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence access
-    console.log(`Fetched evidence: ${evidence.title} (${evidenceId})`);
+    console.log(`Fetched, evidence: ${evidence.title} (${evidenceId})`);
     return evidence;
   } catch (error: any) {
     console.error('Evidence fetch error:', error);'
@@ -175,7 +175,7 @@ export async function createEvidence(evidenceData: CreateEvidenceData): Promise<
     }
     const newEvidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence creation
-    console.log(`Created new evidence: ${newEvidence.title} (${newEvidence.id})`);
+    console.log(`Created new, evidence: ${newEvidence.title} (${newEvidence.id})`);
     return newEvidence;
   } catch (error: any) {
     console.error('Evidence creation error:', error);'
@@ -198,7 +198,7 @@ export async function updateEvidence(evidenceId: string, updates: UpdateEvidence
     }
     const updatedEvidence: Evidence = await response.json();
     // TODO: Add audit logging for evidence updates
-    console.log(`Updated evidence: ${updatedEvidence.title} (${evidenceId})`);
+    console.log(`Updated, evidence: ${updatedEvidence.title} (${evidenceId})`);
     return updatedEvidence;
   } catch (error: any) {
     console.error('Evidence update error:', error);'
@@ -306,7 +306,7 @@ export async function getEvidenceAnalysis(evidenceId: string): Promise<EvidenceA
       }
     });
     if (response.status === 404) {
-      return null; // No analysis available yet
+      return: null; // No analysis available yet
     }
     if (!response.ok) {
       const error = await response.json();

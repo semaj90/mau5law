@@ -1,23 +1,23 @@
 // Custom Design Integration System for Enhanced-Bits
 // SSR-Safe design token management and custom styling
-import type { CustomDesignTokens, CustomComponentConfig } from './index';
+import type { CustomDesignTokens, CustomComponentConfig } from, './index';
 // ======================================================================
 // DESIGN SYSTEM INTEGRATION
 // ======================================================================
 export interface DesignSystem { name: string;, tokens: CustomDesignTokens;
-  cssVariables: Record<string, string>;
+ , cssVariables: Record<string, string>;
   components: Record<string, CustomComponentConfig>;
   animations: AnimationConfig;
   breakpoints: BreakpointConfig;
 }
-export interface AnimationConfig { duration: {, fast: string;
+export interface AnimationConfig {, duration: {, fast: string;
     normal: string;
     slow: string;
   }
-  easing: { easeIn: string;, easeOut: string;
+  easing: {, easeIn: string;, easeOut: string;
     easeInOut: string;
   }
-  transitions: Record<string, string>;
+ , transitions: Record<string, string>;
 }
 export interface BreakpointConfig { sm: string;, md: string;
   lg: string;
@@ -28,8 +28,8 @@ export interface BreakpointConfig { sm: string;, md: string;
 // PRE-BUILT DESIGN SYSTEMS
 // ======================================================================
 export const NESDesignSystem: DesignSystem = {
-  name: 'NES Legal AI',
-  tokens: { colors: {, primary: '#00ff41',      // Matrix green
+ , name: 'NES Legal AI',
+  tokens: {, colors: {, primary: '#00ff41',      // Matrix green
       secondary: '#ff6b35',    // Orange accent
       evidence: '#ffd700',     // Gold for evidence
       ai: '#9d4edd',          // Purple for AI
@@ -38,16 +38,16 @@ export const NESDesignSystem: DesignSystem = {
       error: '#d00000',       // Red error
     },
     spacing: {
-      xs: '0.25rem',
+     , xs: '0.25rem',
       sm: '0.5rem',
       md: '1rem',
       lg: '1.5rem',
       xl: '3rem'
     },
     typography: {
-      fontFamily: '"Courier New", monospace',
+     , fontFamily: '"Courier New", monospace',
       fontSize: {
-        xs: '0.75rem',
+       , xs: '0.75rem',
         sm: '0.875rem',
         base: '1rem',
         lg: '1.125rem',
@@ -55,13 +55,13 @@ export const NESDesignSystem: DesignSystem = {
         '2xl': '1.5rem'
       },
       lineHeight: {
-        tight: '1.25',
+       , tight: '1.25',
         normal: '1.5',
         relaxed: '1.75'
       }
     },
     nes: {
-      pixelSize: '2px',
+     , pixelSize: '2px',
       borderWidth: '4px',
       shadowDepth: '4px'
     }
@@ -76,17 +76,17 @@ export const NESDesignSystem: DesignSystem = {
     '--nes-font-family': '"Courier New", monospace'
   },
   components: {},
-  animations: { duration: {, fast: '150ms',
+  animations: {, duration: {, fast: '150ms',
       normal: '300ms',
       slow: '500ms'
     },
     easing: {
-      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+     , easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
       easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
       easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
     },
     transitions: {
-      all: 'all 150ms ease-in-out',
+     , all: 'all 150ms ease-in-out',
       colors: 'color 150ms ease-in-out, background-color 150ms ease-in-out, border-color 150ms ease-in-out',
       opacity: 'opacity 150ms ease-in-out',
       shadow: 'box-shadow 150ms ease-in-out',
@@ -94,7 +94,7 @@ export const NESDesignSystem: DesignSystem = {
     }
   },
   breakpoints: {
-    sm: '640px',
+   , sm: '640px',
     md: '768px',
     lg: '1024px',
     xl: '1280px',
@@ -102,8 +102,8 @@ export const NESDesignSystem: DesignSystem = {
   }
 }
 export const MinimalDesignSystem: DesignSystem = {
-  name: 'Minimal Clean',
-  tokens: { colors: {, primary: '#3b82f6',
+ , name: 'Minimal Clean',
+  tokens: {, colors: {, primary: '#3b82f6',
       secondary: '#64748b',
       evidence: '#f59e0b',
       ai: '#8b5cf6',
@@ -112,16 +112,16 @@ export const MinimalDesignSystem: DesignSystem = {
       error: '#ef4444'
     },
     spacing: {
-      xs: '0.125rem',
+     , xs: '0.125rem',
       sm: '0.25rem',
       md: '0.5rem',
       lg: '1rem',
       xl: '2rem'
     },
     typography: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+     , fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       fontSize: {
-        xs: '0.75rem',
+       , xs: '0.75rem',
         sm: '0.875rem',
         base: '1rem',
         lg: '1.125rem',
@@ -129,13 +129,13 @@ export const MinimalDesignSystem: DesignSystem = {
         '2xl': '1.5rem'
       },
       lineHeight: {
-        tight: '1.25',
+       , tight: '1.25',
         normal: '1.5',
         relaxed: '1.75'
       }
     },
     nes: {
-      pixelSize: '1px',
+     , pixelSize: '1px',
       borderWidth: '1px',
       shadowDepth: '2px'
     }
@@ -145,22 +145,22 @@ export const MinimalDesignSystem: DesignSystem = {
     '--minimal-bg': '#ffffff',
     '--minimal-border': '#e5e7eb',
     '--minimal-text': '#111827',
-    '--minimal-shadow': '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+    '--minimal-shadow': '0 1px 3px, 0 rgba(0, 0, 0, 0.1)',
     '--minimal-border-radius': '0.5rem',
     '--minimal-font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
   },
   components: {},
-  animations: { duration: {, fast: '100ms',
+  animations: {, duration: {, fast: '100ms',
       normal: '200ms',
       slow: '300ms'
     },
     easing: {
-      easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+     , easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
       easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
       easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)'
     },
     transitions: {
-      all: 'all 200ms ease-in-out',
+     , all: 'all 200ms ease-in-out',
       colors: 'color 200ms ease-in-out, background-color 200ms ease-in-out',
       opacity: 'opacity 200ms ease-in-out',
       shadow: 'box-shadow 200ms ease-in-out',
@@ -168,7 +168,7 @@ export const MinimalDesignSystem: DesignSystem = {
     }
   },
   breakpoints: {
-    sm: '640px',
+   , sm: '640px',
     md: '768px',
     lg: '1024px',
     xl: '1280px',
@@ -190,15 +190,15 @@ export function createDesignSystem(
   const baseSystem = options.baseSystem || NESDesignSystem;
 
   // Safely extract possible typography overrides without using `any`
-  const typographyOverride = (customTokens.typography as unknown as TypographyOverride) ?? {};
+  const typographyOverride = (customTokens.typography as: unknown as TypographyOverride) ?? {};
   // Safely extract cssVariables and components overrides
-  const cssVarsOverride = (customTokens as unknown as { cssVariables?: CssVariablesOverride }).cssVariables ?? {};
-  const componentsOverride = (customTokens as unknown as { components?: ComponentsOverride }).components ?? {};
+  const cssVarsOverride = (customTokens as: unknown as { cssVariables?: CssVariablesOverride }).cssVariables ?? {};
+  const componentsOverride = (customTokens as: unknown as { components?: ComponentsOverride }).components ?? {};
 
   return {
     name,
     tokens: {
-      colors: { ...baseSystem.tokens.colors, ...(customTokens.colors ?? {}) },
+     , colors: { ...baseSystem.tokens.colors, ...(customTokens.colors ?? {}) },
       spacing: { ...baseSystem.tokens.spacing, ...(customTokens.spacing ?? {}) },
       typography: {
         ...baseSystem.tokens.typography,
@@ -265,10 +265,10 @@ export function createComponentVariant(
       boxShadow: 'var(--nes-shadow, 4px 4px 0px rgba(0, 0, 0, 0.8))',
       imageRendering: `pixelated` },
     minimal: {
-      border: 'var(--minimal-border-width, 1px) solid var(--minimal-border, #e5e7eb)',
+     , border: 'var(--minimal-border-width, 1px) solid var(--minimal-border, #e5e7eb)',
       fontFamily: 'var(--minimal-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
       borderRadius: 'var(--minimal-border-radius, 0.5rem)',
-      boxShadow: `var(--minimal-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.1))` },
+      boxShadow: `var(--minimal-shadow, 0 1px 3px, 0 rgba(0, 0, 0, 0.1))` },
     custom: {}
   }
   return {
@@ -307,7 +307,7 @@ export function createAccessibleColorPalette(baseColor: string): {
   300: string; 400: string;
   500: string; 600: string;
   700: string; 800: string;
-  900: string;
+ , 900: string;
 } {
   // This is a simplified implementation
   // In production, you'd want a more sophisticated color generation algorithm'
@@ -327,7 +327,7 @@ export function validateAccessibility(designSystem: DesignSystem): { isValid: bo
   errors: string[];
 } {
   const warnings: string[] = [];
-  const errors: string[] = [];
+  const, errors: string[] = [];
   // Check contrast ratios (simplified)
   const { colors } = designSystem.tokens;
   // Check if colors are distinguishable
@@ -349,7 +349,7 @@ export function validateAccessibility(designSystem: DesignSystem): { isValid: bo
 // SSR-SAFE THEME PROVIDER
 // ======================================================================
 export interface ThemeContext { designSystem: DesignSystem;, isDarkMode: boolean;
-  toggleDarkMode: () => void;
+ , toggleDarkMode: () => void;
   applyCustomTheme: (tokens: Partial<CustomDesignTokens>) => void;
 }
 export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem): ThemeContext {

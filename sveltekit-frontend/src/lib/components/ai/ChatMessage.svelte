@@ -1,18 +1,18 @@
 <script, lang="ts">
-import type { Message } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { Message } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   interface Props {
     message: any;
   }
-  // receive props via Svelte 5 rune
+  // receive props via Svelte, 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import { chatActions } from '$lib/stores/chat'; // adjusted store path
-  import { notifications } from '$lib/stores/unified';
-  import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
-  import '../chat/chat-message.css';
-  // reactive derived values - correct Svelte 5 usage
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import { chatActions } from, '$lib/stores/chat'; // adjusted store path
+  import { notifications } from, '$lib/stores/unified';
+  import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from, 'lucide-svelte';
+  import, '../chat/chat-message.css';
+  // reactive derived values - correct Svelte, 5 usage
   let isUser = $derived.by(() => message?.role === 'user' || message?.type === 'user');
   let isAssistant = $derived.by(() => message?.role === 'assistant' || message?.type === 'assistant');
   let emotionalTone = $derived.by(() => message?.metadata?.emotionalTone ?? null);
@@ -21,14 +21,14 @@ import type { Message } from '$lib/types';
     if (!message?.content) return;
     navigator.clipboard.writeText(message.content).then(
       () => {
-        (notifications as any)?.add?.({
+        (notifications as: any)?.add?.({
           type: 'success',
           title: 'Copied',
           message: 'Message copied to clipboard'
         });
       },
       () => {
-        (notifications as any)?.add?.({
+        (notifications as: any)?.add?.({
           type: 'error',
           title: 'Copy failed',
           message: 'Could not copy message'
@@ -45,20 +45,20 @@ import type { Message } from '$lib/types';
   }
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
-      case 'encouraging': return 'text-green-600';
-      case 'supportive': return 'text-blue-600';
-      case 'enthusiastic': return 'text-purple-600';
-      case 'thoughtful': return 'text-indigo-600';
-      case 'professional': return 'text-gray-600';
-      default: return 'text-gray-500';
+      case, 'encouraging': return, 'text-green-600';
+      case, 'supportive': return, 'text-blue-600';
+      case, 'enthusiastic': return, 'text-purple-600';
+      case, 'thoughtful': return, 'text-indigo-600';
+      case, 'professional': return, 'text-gray-600';
+      default: return, 'text-gray-500';
     }
   }
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
-      case 'encouraging': return ThumbsUp;
-      case 'supportive': return Heart;
-      case 'enthusiastic': return Star;
-      default: return null;
+      case, 'encouraging': return ThumbsUp;
+      case, 'supportive': return Heart;
+      case, 'enthusiastic': return Star;
+      default: return: null;
     }
   }
 </script>
@@ -69,7 +69,7 @@ import type { Message } from '$lib/types';
       <Bot class="w-8 h-8, nes-text, is-primary" />
     {/if}
   <div class="message-content-wrapper flex, flex-col, max-w-[70%]">
-    <div class="message-bubble, nes-container, p-3" class:is-dark={isUser} class:is-rounded={isUser}>
+    <div class="message-bubble, nes-container, p-3" class:is-dark={isUser}, class:is-rounded={isUser}>
       <!-- Proactive, Indicator -->
       {#if isProactive}
         <div class="flex items-center gap-1 text-xs, text-gray-400, mb-1">
@@ -91,7 +91,7 @@ import type { Message } from '$lib/types';
         {/if}
     </div>
     <!-- Message Actions, and, Timestamp -->
-    <div class="flex items-center gap-2 mt-1, text-xs, text-gray-500" class:justify-end={isUser} class:justify-start={!isUser}>
+    <div class="flex items-center gap-2 mt-1, text-xs, text-gray-500" class:justify-end={isUser}, class:justify-start={!isUser}>
       <span, class="timestamp">
         {formatTime(message.timestamp)}
       </span>
@@ -125,9 +125,9 @@ import type { Message } from '$lib/types';
     </div>
     <!-- Metadata (for, AI, messages) -->
     {#if isAssistant && message.metadata}
-      <div class="message-metadata text-xs, text-gray-500, mt-1" class:text-right={isUser} class:text-left={!isUser}>
+      <div class="message-metadata text-xs, text-gray-500, mt-1" class:text-right={isUser}, class:text-left={!isUser}>
         {#if message.metadata.model}
-          <div class="flex, items-center, gap-1" class:justify-end={isUser} class:justify-start={!isUser}>
+          <div class="flex, items-center, gap-1" class:justify-end={isUser}, class:justify-start={!isUser}>
             <span>Model: {message.metadata.model}</span>
             {#if message.metadata.latency}
               <span>• {message.metadata.latency}ms</span>
@@ -152,7 +152,7 @@ import type { Message } from '$lib/types';
   :global(.message-content p) {
     margin-bottom: 0.5rem;
   }
-  :global(.message-content p:last-child) {
+  :global(.message-content, p:last-child) {
     margin-bottom: 0; /* Corrected comma to semicolon */
   }
   :global(.message-content ul, .message-content ol) {
@@ -172,12 +172,12 @@ import type { Message } from '$lib/types';
   :global(.message-content blockquote) {
     border-left: 3px solid rgba(0, 0, 0, 0.2);
     padding-left: 1rem;
-    margin: 0.5rem 0;
+   , margin: 0.5rem 0;
     font-style: italic;
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
     font-weight: 600;
-    margin: 0.75rem 0 0.5rem 0;
+   , margin: 0.75rem, 0 0.5rem 0;
   }
   :global(.message-content h1) {
     font-size: 1.25em;

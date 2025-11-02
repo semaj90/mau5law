@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js'
-import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js'
-import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { glyphDiffusionService, type GlyphRequest } from, '$lib/services/glyph-diffusion-service.js'
+import { PNGEmbedExtractor, type LegalAIMetadata } from, '$lib/services/png-embed-extractor.js'
+import { grpmoOrchestrator, type ExtendedThinkingStage } from, '$lib/server/db/vector-operations.js'
 /*
  * Glyph Generation API
  *
@@ -47,13 +47,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Build glyphRequest (unchanged shape)
     const glyphRequest: GlyphRequest = {
-      evidence_id: (body as any).evidence_id,
-      prompt: (body as any).prompt || 'Legal evidence visualization',
-      style: (body as any).style || 'detective',
-      dimensions: (body as any).dimensions || [512, 512],
-      seed: (body as any).seed,
-      conditioning_tensors: (body as any).conditioning_tensors,
-      neural_sprite_config: (body as any).neural_sprite_config
+      evidence_id: (body, as: any).evidence_id,
+      prompt: (body, as: any).prompt || 'Legal evidence visualization',
+      style: (body, as: any).style || 'detective',
+      dimensions: (body, as: any).dimensions || [512, 512],
+      seed: (body, as: any).seed,
+      conditioning_tensors: (body, as: any).conditioning_tensors,
+      neural_sprite_config: (body, as: any).neural_sprite_config
     };
 
     // Validate request
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid style. Must be one; of: ${validStyles.join(', `)}` },
+          error: 'Invalid style. Must be one;, of: ${validStyles.join(', `)}` },
         { status: 400 }
       );
     }
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // typed result
     let result: GlyphResult = {};
     // change: make grpmoMetadata permissive so downstream property access is allowed
-    let grpmoMetadata: { [k: string]: any } | null = null;
+    let, grpmoMetadata: { [k: string]: any } | null = null;
 
     if (hasExtendedThinking && grpmoContext) {
       // GRPMO-Enhanced generation with extended thinking
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ...glyphRequest,
         prompt: enhancePromptWithGRPMO(glyphRequest.prompt, grpmoContext),
         conditioning_tensors: [
-          ...((glyphRequest.conditioning_tensors as string[]) || []),
+          ...((glyphRequest.conditioning_tensors, as: string[]) || []),
           ...extractConditioningFromGRPMO(grpmoContext),
         ]
       } as GlyphRequest)) as GlyphResult;
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
             created_at: new Date().toISOString(),
             evidence_id: glyphRequest.evidence_id.toString(),
             analysis_results: {
-              confidence: hasExtendedThinking ? 0.98 : 0.95,
+             , confidence: hasExtendedThinking ? 0.98 : 0.95,
               classifications: [
                 `${glyphRequest.style}_glyph`,
                 'legal_evidence_visualization',
@@ -194,9 +194,9 @@ export const POST: RequestHandler = async ({ request }) => {
                   : []),
               ],
               risk_assessment: 'low',
-              summary: '${hasExtendedThinking ? 'GRPMO-enhanced ' : '' }AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}` },'`
+              summary: '${hasExtendedThinking ? 'GRPMO-enhanced, ' : '' }AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}` },'`
             neural_sprite_data: {
-              compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
+             , compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
               tensor_urls: (result.tensor_ids ?? []).map(id => `/api/tensors/${id}`),
               predictive_frames: result.neural_sprite_results?.predictive_frames ?? []
             }
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request }) => {
           let cacheLayersUsed = 0;
           if (hasExtendedThinking && grpmoContext) {
             if (Array.isArray(grpmoMetadata?.thinking_stages)) {
-              thinkingStagesCount = (grpmoMetadata!.thinking_stages as unknown[]).length;
+              thinkingStagesCount = (grpmoMetadata!.thinking_stages as: unknown[]).length;
             }
             cacheLayersUsed = Object.entries(grpmoContext.cache_performance || {}).filter(
               entry => (entry[1] ?? 0) > 0
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
               duration_ms: Math.floor(genTime * 0.1),
               success: true,
               metadata: {
-                prompt: glyphRequest.prompt,
+               , prompt: glyphRequest.prompt,
                 grpmo_enhanced: hasExtendedThinking
               }
             },
@@ -243,14 +243,14 @@ export const POST: RequestHandler = async ({ request }) => {
               step: 'style_conditioning',
               duration_ms: Math.floor(genTime * 0.1),
               success: true,
-              metadata: { style: glyphRequest.style }
+              metadata: {, style: glyphRequest.style }
             },
             {
               step: 'diffusion_generation',
               duration_ms: Math.floor(genTime * (hasExtendedThinking ? 0.5 : 0.6)),
               success: true,
               metadata: {
-                cache_hits: cacheHits,
+               , cache_hits: cacheHits,
                 tensor_count: (result.tensor_ids ?? []).length,
                 grpmo_conditioning: hasExtendedThinking
               }
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
               duration_ms: Math.floor(genTime * 0.2),
               success: true,
               metadata: {
-                compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
+               , compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
                 predictive_frames_generated: (result.neural_sprite_results?.predictive_frames ?? []).length
               }
             },
@@ -330,7 +330,7 @@ function enhancePromptWithGRPMO(originalPrompt: string, grpmoContext: GRPMOConte
   const similarKeywords = similar
     .slice(0, 3)
     .map(r => r.metadata?.keywords?.[0])
-    .filter(Boolean) as string[];
+    .filter(Boolean) as: string[];
 
   if (similarKeywords.length === 0) return originalPrompt;
   return `${originalPrompt} (contextual themes: ${similarKeywords.join(', ')})`;
@@ -368,7 +368,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       features: {
-        tensor_caching: true,
+       , tensor_caching: true,
         png_embedding: true,
         gpu_acceleration: true,
         neural_sprite_compression: true,
@@ -380,18 +380,18 @@ export const GET: RequestHandler = async () => {
         styles: ['detective', 'corporate', 'forensic', 'legal']
       },
       grpmo_capabilities: {
-        extended_thinking: 'Multi-stage AI reasoning with hot/warm/cold caching',
+       , extended_thinking: 'Multi-stage AI reasoning with hot/warm/cold caching',
         reinforcement_learning: 'PPO-based optimization of generation quality',
         contextual_enhancement: 'Similar content integration for improved results',
         cache_orchestration: `Intelligent cache layer management for performance` },'`'`
       neural_sprite_capabilities: {
-        tensor_compression: 'AI-powered compression with configurable ratios',
+       , tensor_compression: 'AI-powered compression with configurable ratios',
         predictive_frames: 'Generate 0-10 interpolated animation frames',
         ui_layout_compression: 'Demo compression of UI layout states',
         metadata_embedding: 'Legal AI metadata embedded in PNG files' }
     };
     return json({
-      success: true,
+     , success: true,
       data: stats
     });
   } catch (error) {
@@ -406,7 +406,7 @@ export const GET: RequestHandler = async () => {
 
 // Add safe runtime wrapper for glyph generation (tries common method names)
 async function generateGlyphFromService(service: any, req: GlyphRequest): Promise<GlyphResult> {
-  const s: any = service as any;
+  const s: any = service, as: any;
   if (typeof s.generateGlyph === 'function') {
     return (await s.generateGlyph(req)) as GlyphResult;
   }

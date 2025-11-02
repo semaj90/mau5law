@@ -1,13 +1,13 @@
 <!-- Test page for Simple File Upload with, RAG, integration -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import SimpleFileUpload from, '$lib/components/ai/SimpleFileUpload.svelte';
   interface ServiceStatus { healthy: boolean; [key: string]: any }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: any }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }
 
-  // make these Svelte 5 reactive state variables so assignments trigger updates
+  // make these Svelte, 5 reactive state variables so assignments trigger updates
   let uploadResults = $state<UploadResult[]>([]);
   let systemStatus = $state<SystemStatus>({});
 
@@ -59,7 +59,7 @@ import type { Document } from '$lib/types';
           return fetchStatus(attempt + 1);
         } else {
           console.error('Giving up fetching system status:', err);
-          return null;
+          return: null;
         }
       }
     }
@@ -171,7 +171,7 @@ import type { Document } from '$lib/types';
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
               <p class="text-sm, text-gray-600, mb-1">
                 Size: {(
-                  // ensure: 'size' is numeric for the division to satisfy TypeScript
+                  //, ensure: 'size' is numeric for the division to satisfy TypeScript
                   (Number((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size) / 1024)
                 ).toFixed(1)} KB
               </p>
@@ -202,11 +202,11 @@ import type { Document } from '$lib/types';
   <div class="mt-8 p-4, bg-gray-50, rounded-lg">
     <h2 class="text-lg, font-semibold, mb-2">Debug Information</h2>
     <div, class="text-sm, space-y-1">
-      <p><strong>PostgreSQL:</strong> localhost:5432 (Native Windows)</p>
-      <p><strong>Redis:</strong> localhost:6379 (Native Windows)</p>
-      <p><strong>Qdrant:</strong> localhost:6333 (Native Windows)</p>
+      <p><strong>PostgreSQL:</strong>, localhost:5432 (Native Windows)</p>
+      <p><strong>Redis:</strong>, localhost:6379 (Native Windows)</p>
+      <p><strong>Qdrant:</strong>, localhost:6333 (Native Windows)</p>
       <p><strong>Frontend:</strong> http://localhost:5173</p>
-      <p><strong>Ollama:</strong> http://localhost:11434 (Native Windows)</p>
+      <p><strong>Ollama:</strong>, http://localhost:11434 (Native Windows)</p>
       <p><strong>Features:</strong> OCR, Embeddings, Vector Search, Local File Storage</p>
     </div>
   </div>
@@ -216,5 +216,5 @@ import type { Document } from '$lib/types';
   Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
-  Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
+ , Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->

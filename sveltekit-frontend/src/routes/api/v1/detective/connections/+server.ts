@@ -1,6 +1,6 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 
 // Connection mapping request schema (defaults applied)
 const ConnectionMappingSchema = z.object({
@@ -10,7 +10,7 @@ const ConnectionMappingSchema = z.object({
   maxDepth: z.number().min(1).max(5).default(3),
   options: z
     .object({
-      includeWeakConnections: z.boolean().default(false),
+     , includeWeakConnections: z.boolean().default(false),
       includePredictedConnections: z.boolean().default(true),
       clusterSimilar: z.boolean().default(true),
       timeWindow: z.string().optional(),
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         subtype: it.evidenceType,
         size: 14 + i * 2,
         color: getNodeColor('evidence'),
-        metadata: { originalId: it.id, createdAt: it.createdAt, evidenceType: it.evidenceType },
+        metadata: {, originalId: it.id, createdAt: it.createdAt, evidenceType: it.evidenceType },
         position: generateRandomPosition()
       })),
       {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         subtype: 'subject',
         size: 22,
         color: getNodeColor('person'),
-        metadata: { mentions: 3 },
+        metadata: {, mentions: 3 },
         position: generateRandomPosition()
       },
       {
@@ -103,11 +103,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       nodes,
       edges,
       clusters,
-      statistics: { totalNodes: nodes.length, totalEdges: edges.length }
+      statistics: {, totalNodes: nodes.length, totalEdges: edges.length }
     };
 
     return json({
-      success: true,
+     , success: true,
       data: {
        , caseId: caseId ?? null,
         connectionMap,
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           analysisTime: new Date().toISOString()
         }
       },
-      meta: { action: 'connection_map_stub', timestamp: new Date().toISOString() }
+      meta: {, action: 'connection_map_stub', timestamp: new Date().toISOString() }
     });
   } catch (err: any) {
     console.error('Detective connections POST error: ', err);'
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async () => {
 
 // Add a narrow node type to avoid `any` and make intent explicit
 type DetectiveNode = { id: string;, label: string;
-  type: string;
+ , type: string;
   subtype?: string;
   size?: number;
   color?: string;
@@ -147,17 +147,17 @@ type DetectiveNode = { id: string;, label: string;
   position?: { x: number; y: number };
 };
 
-// New explicit edge type (replace previous any[] usage)
+// New explicit edge type (replace, previous: any[] usage)
 type DetectiveEdge = { id: string;, source: string;
   target: string;
   weight: number;
   type: string;
   label: string;
   color: string;
-  metadata?: { strength: number } | Record<string, unknown>;
+  metadata?: {, strength: number } | Record<string, unknown>;
 };
 
-// New explicit cluster type (used instead of any[])
+// New explicit cluster type (used instead of: any[])
 type DetectiveCluster = { id: string;, label: string;
   nodes: string[];
   color?: string;
@@ -165,7 +165,7 @@ type DetectiveCluster = { id: string;, label: string;
 };
 
 function generateConnections(
-  nodes: DetectiveNode[],
+ , nodes: DetectiveNode[],
   connectionStrength: number,
   opts: {, includeWeakConnections: boolean }
 ): DetectiveEdge[] {
@@ -218,20 +218,20 @@ function generateClustersSync(nodes: DetectiveNode[]): DetectiveCluster[] {
 }
 
 function determineConnectionType(n1: DetectiveNode, n2: DetectiveNode): string {
-  if (n1.type === 'evidence' && n2.type === 'evidence') return 'evidence_related';
-  if (n1.type === 'person' && n2.type === 'person') return 'person_related';
+  if (n1.type === 'evidence' && n2.type === 'evidence') return, 'evidence_related';
+  if (n1.type === 'person' && n2.type === 'person') return, 'person_related';
   if ((n1.type === 'evidence' && n2.type === 'person') || (n2.type === 'evidence' && n1.type === 'person'))
-    return 'person_evidence';
+    return, 'person_evidence';
   if ((n1.type === 'location' && n2.type === 'evidence') || (n2.type === 'location' && n1.type === 'evidence'))
-    return 'location_evidence';
-  return 'general';
+    return, 'location_evidence';
+  return, 'general';
 }
 
 function generateConnectionLabel(_n1: DetectiveNode, _n2: DetectiveNode, strength: number): string {
-  if (strength > 0.8) return 'Strong';
-  if (strength > 0.6) return 'Moderate';
-  if (strength > 0.4) return 'Weak';
-  return 'Predicted';
+  if (strength > 0.8) return, 'Strong';
+  if (strength > 0.6) return, 'Moderate';
+  if (strength > 0.4) return, 'Weak';
+  return, 'Predicted';
 }
 
 function getNodeColor(type: string): string {
@@ -246,10 +246,10 @@ function getNodeColor(type: string): string {
 }
 
 function getEdgeColor(strength: number): string {
-  if (strength > 0.8) return '#059669';
-  if (strength > 0.6) return '#D97706';
-  if (strength > 0.4) return '#DC2626';
-  return '#9CA3AF';
+  if (strength > 0.8) return, '#059669';
+  if (strength > 0.6) return, '#D97706';
+  if (strength > 0.4) return, '#DC2626';
+  return, '#9CA3AF';
 }
 
 function getClusterColor(index: number): string {
@@ -258,5 +258,5 @@ function getClusterColor(index: number): string {
 }
 
 function generateRandomPosition(): { x: number; y: number } {
-  return { x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
+  return {, x: Math.random() * 800 - 400, y: Math.random() * 600 - 300 };
 }

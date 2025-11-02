@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import MCPToolsDemo from '$lib/components/dev/MCPToolsDemo.svelte';
+  import MCPToolsDemo from, '$lib/components/dev/MCPToolsDemo.svelte';
 </script>
 
 <svelte:head>
@@ -54,7 +54,7 @@
         <h4 class="font-medium, text-blue-900, mb-2">Available Tools</h4>
         <div class="grid grid-cols-1 md:grid-cols-2, gap-4, text-sm">
           <div>
-            <strong>analyze-stack:</strong> Context-aware analysis for any stack component
+            <strong>analyze-stack:</strong> Context-aware analysis, for: any stack component
           </div>
           <div>
             <strong>generate-best-practices:</strong> Security, performance, and UI/UX guidelines

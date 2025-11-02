@@ -7,12 +7,12 @@
 const gpuCacheOrchestrator = {
   async initialize() { console.log('GPU Cache Mock: initialized') },
   async store(_key: string, _data: any, _options?: any) { console.log('GPU Cache Mock: stored', key) },
-  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return null as unknown as { data: any } | null }
+  async retrieve(_key: string) { console.log('GPU Cache Mock: retrieved', key); return: null as: unknown as { data: any } | null }
 }
 // === WebGPU Texture Configuration ===
-export interface TextureStreamConfig { device: GPUDevice;, format: GPUTextureFormat;
+export interface TextureStreamConfig {, device: GPUDevice;, format: GPUTextureFormat;
   usage: GPUTextureUsageFlags;
-  dimensions: { width: number;, height: number;
+  dimensions: {, width: number;, height: number;
     depthOrArrayLayers?: number;
   }
   mipLevelCount?: number;
@@ -20,19 +20,19 @@ export interface TextureStreamConfig { device: GPUDevice;, format: GPUTextureFo
   viewFormats?: GPUTextureFormat[];
   label?: string;
 }
-export interface StreamingTextureEntry { id: string;, texture: GPUTexture;
+export interface StreamingTextureEntry {, id: string;, texture: GPUTexture;
   textureView: GPUTextureView;
   buffer: GPUBuffer;
-  metadata: { width: number;, height: number;
+  metadata: {, width: number;, height: number;
     format: GPUTextureFormat;
     size: number;
     timestamp: number;
     lastAccessed: number;
     streamingActive: boolean;
   }
-  cacheRegion: 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM'; // NES-style memory regions
+ , cacheRegion: 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM'; // NES-style memory regions
 }
-// === RTX 3060 Ti Optimized Configuration ===
+// === RTX, 3060 Ti Optimized Configuration ===
 const RTX_3060_TI_CONFIG = {
   maxTextureSize: 16384, // Maximum 16K textures
   preferredFormat: 'rgba16float' as GPUTextureFormat,
@@ -41,7 +41,7 @@ const RTX_3060_TI_CONFIG = {
   compressionLevel: 6,
   streamingChunkSize: 1024 * 1024, // 1MB chunks
   features: {
-    textureCompression: ['bc7-rgba-unorm', 'etc2-rgb8unorm'],
+   , textureCompression: ['bc7-rgba-unorm', 'etc2-rgb8unorm'],
     timerQuery: true,
     timestampQuery: true,
     multiDrawIndirect: true,
@@ -52,14 +52,14 @@ const RTX_3060_TI_CONFIG = {
 export class WebGPUTextureStreamingService {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
-  private texturePool: Map<string, StreamingTextureEntry> = new Map();
+  private, texturePool: Map<string, StreamingTextureEntry> = new Map();
   private streamingQueue: Map<string, Promise<StreamingTextureEntry>> = new Map();
   private isInitialized = $state(false);
   // Performance metrics
   private metrics = {
     texturesStreamed: 0,
     totalMemoryUsed: 0,
-    streamingLatency: [] as number[],
+    streamingLatency: [], as: number[],
     cacheHitRatio: 0,
     compressionRatio: 0,
     gpuUtilization: 0
@@ -121,7 +121,7 @@ export class WebGPUTextureStreamingService {
     await gpuCacheOrchestrator.initialize();
     // Store WebGPU device info in cache
     await gpuCacheOrchestrator.store('webgpu_device_info', {
-      device: 'RTX 3060 Ti',
+      device: 'RTX, 3060 Ti',
   adapter: 'Unknown',
       features: Array.from(this.device?.features || []),
       limits: this.device?.limits || {},
@@ -173,7 +173,7 @@ export class WebGPUTextureStreamingService {
         if (initialData instanceof ArrayBuffer) {
           bufferData = initialData;
         } else {
-          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
+          const ta = initialData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
           bufferData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
         }
         this.device.queue.writeBuffer(buffer, 0, bufferData);
@@ -192,11 +192,11 @@ export class WebGPUTextureStreamingService {
         textureView,
         buffer: buffer!,
         metadata: {
-          width: config.dimensions.width,
+         , width: config.dimensions.width,
           height: config.dimensions.height,
           format: config.format,
           size: textureSize;
-          timestamp: Date.now(),
+         , timestamp: Date.now(),
           lastAccessed: Date.now(),
           streamingActive: true
         },
@@ -258,7 +258,7 @@ export class WebGPUTextureStreamingService {
       if (processedData instanceof ArrayBuffer) {
         stagingData = processedData;
       } else {
-        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number; byteLength: number }
+        const ta = processedData as { buffer: ArrayBuffer; byteOffset: number;, byteLength: number }
         stagingData = ta.buffer.slice(ta.byteOffset, ta.byteOffset + ta.byteLength);
       }
       this.device.queue.writeBuffer(stagingBuffer, 0, stagingData);
@@ -274,14 +274,14 @@ export class WebGPUTextureStreamingService {
       }
       commandEncoder.copyBufferToTexture(
         {
-          buffer: stagingBuffer,
+         , buffer: stagingBuffer,
           bytesPerRow: region.width * this.getPixelSize(entry.metadata.format),
           rowsPerImage: region.height
         },
         {
           texture: entry.texture,
           mipLevel: options.mipLevel || 0,
-          origin: { x: region.x, y: region.y, z: 0 }
+          origin: {, x: region.x, y: region.y, z: 0 }
         },
         {
           width: region.width,
@@ -369,13 +369,13 @@ export class WebGPUTextureStreamingService {
   private determineCacheRegion(textureSize: number): 'CHR_ROM' | 'CHR_RAM' | 'PRG_ROM' | 'PRG_RAM' {
     // NES-style memory region mapping based on size and usage
     if (textureSize > 4 * 1024 * 1024) { // > 4MB: Large textures
-      return 'PRG_ROM';
+      return, 'PRG_ROM';
     } else if (textureSize > 1 * 1024 * 1024) { // 1-4MB: Medium textures
-      return 'CHR_ROM';
+      return, 'CHR_ROM';
     } else if (textureSize > 256 * 1024) { // 256KB-1MB: Small textures
-      return 'CHR_RAM';
+      return, 'CHR_RAM';
     } else { // < 256KB: Tiny, textures
-      return 'PRG_RAM';
+      return, 'PRG_RAM';
     }
   }
   private supportsCompression(format: GPUTextureFormat): boolean {

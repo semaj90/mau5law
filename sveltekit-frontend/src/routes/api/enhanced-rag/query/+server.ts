@@ -1,13 +1,13 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { enhancedRAGService } from '$lib/services/enhanced-rag-integration.js';
-import { dev } from '$app/environment';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { enhancedRAGService } from, '$lib/services/enhanced-rag-integration.js';
+import { dev } from, '$app/environment';
 const QuerySchema = z.object({
   query: z.string().min(1).max(2000),
   options: z
     .object({
-      maxResults: z.number().min(1).max(50).optional().default(10),
+     , maxResults: z.number().min(1).max(50).optional().default(10),
       includeGraph: z.boolean().optional().default(true),
       streamResponse: z.boolean().optional().default(false),
       confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)

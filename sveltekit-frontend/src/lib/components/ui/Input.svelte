@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Message } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import type { HTMLInputAttributes } from 'svelte/elements';
+import type { Message } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import type { HTMLInputAttributes } from, 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'size' | 'disabled' | 'required' | 'readonly'> {
     label?: string;
     error?: string | null;
@@ -82,8 +82,8 @@ import type { Message } from '$lib/types';
   const labelClasses = $derived(
     [
       'text-sm font-medium transition-colors',
-      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
-      required ? "after:content-['*'] after:ml-1 after:text-red-500" : '',
+      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-700, dark:text-gray-300',
+      required ? "after:content-['*'] after:ml-1, after:text-red-500" : '',
     ]
       .filter(Boolean)
       .join(' ')
@@ -92,9 +92,9 @@ import type { Message } from '$lib/types';
   const inputClasses = $derived(
     [
       'block w-full rounded-md border transition-all duration-200',
-      'focus:outline-none focus:ring-2 focus:ring-offset-1',
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      'placeholder:text-gray-400 dark:placeholder:text-gray-500',
+      'focus:outline-none focus:ring-2, focus:ring-offset-1',
+      'disabled:opacity-50, disabled:cursor-not-allowed',
+      'placeholder:text-gray-400, dark:placeholder:text-gray-500',
       // Size classes
       size === 'sm' ? 'px-3 py-1.5 text-sm' : '',
       size === 'md' ? 'px-3 py-2 text-base' : '',
@@ -112,7 +112,7 @@ import type { Message } from '$lib/types';
         ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:text-red-100'
         : success
           ? 'border-green-300 text-green-900 focus:border-green-500 focus:ring-green-500 dark:border-green-600 dark:text-green-100'
-          : 'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-100',
+          : 'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600, dark:text-gray-100',
     ]
       .filter(Boolean)
       .join(' ')
@@ -128,7 +128,7 @@ import type { Message } from '$lib/types';
   const hintClasses = $derived(
     [
       'text-xs transition-colors',
-      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400',
+      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500, dark:text-gray-400',
     ].join(' ')
   );
 </script>
@@ -152,7 +152,7 @@ import type { Message } from '$lib/types';
         bind:this={inputElement}
         id={inputId}
         class={inputClasses}
-        bind:value
+       , bind:value
         {disabled}
         {readonly}
         {required}
@@ -171,7 +171,7 @@ import type { Message } from '$lib/types';
         bind:this={inputElement}
         id={inputId}
         class={inputClasses}
-        bind:value
+       , bind:value
         {disabled}
         {readonly}
         {required}
@@ -190,7 +190,7 @@ import type { Message } from '$lib/types';
         bind:this={inputElement}
         id={inputId}
         class={inputClasses}
-        bind:value
+       , bind:value
         {disabled}
         {readonly}
         {required}

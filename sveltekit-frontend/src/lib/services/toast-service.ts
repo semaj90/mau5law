@@ -1,20 +1,20 @@
 // Toast Service - Simple notification system
 // Provides user-friendly notifications for errors and success messages
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable } from, 'svelte/store';
+import { browser } from, '$app/environment';
 
 export interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
-  timestamp: Date;
+ , timestamp: Date;
 }
 class ToastService {
   private toasts = writable<Toast[]>([]);
   private nextId = 1;
   constructor() {
     if (browser) {
-      // Auto-cleanup old toasts every 30 seconds
+      // Auto-cleanup old toasts every, 30 seconds
       setInterval(() => {
         this.cleanup();
       }, 30000);
@@ -39,7 +39,7 @@ class ToastService {
   }
   private addToast(type: Toast['type'], title: string, message?: string, duration?: number) {
     const toast: Toast = {
-      id: `toast-${this.nextId++}`,
+     , id: `toast-${this.nextId++}`,
       type,
       title,
       message,

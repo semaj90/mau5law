@@ -15,12 +15,12 @@
  * - Real-time WebSocket streaming for AI analysis
  * - Better type safety and error handling
  *
- * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
+ *, Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  *
- * This route will be removed in 30 days.
+ * This route will be removed in, 30 days.
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from, '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   return json({

@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import '../app.css';
+  import, '../app.css';
   const { children } = $props();
 </script>
 
@@ -31,7 +31,7 @@
   }
   .app-main {
     background: #1a1a1a;
-    padding: 1rem;
+   , padding: 1rem;
     border-radius: 0.5rem;
   }
 </style>

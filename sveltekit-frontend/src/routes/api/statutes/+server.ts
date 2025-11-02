@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Mock statutes data - replace with actual database query
@@ -30,8 +30,8 @@ export const GET: RequestHandler = async () => {
         title: 'Fraud - Wire Fraud',
         code: '18 USC 1343',
         description:
-          'Whoever, having devised or intending to devise any scheme or artifice to defraud, transmits or causes to be transmitted by means of wire communication.',
-        penalty: 'Fine or imprisonment not more than 20 years, or both',
+          'Whoever, having devised or intending to devise: any scheme or artifice to defraud, transmits or causes to be transmitted by means of wire communication.',
+        penalty: 'Fine or imprisonment not more than, 20 years, or both',
         category: 'Fraud',
         updatedAt: new Date(Date.now() - 172800000).toISOString()
       },

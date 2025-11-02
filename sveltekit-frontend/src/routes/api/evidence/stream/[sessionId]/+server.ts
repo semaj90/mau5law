@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from, './$types';
 import {
 	getMissedMessages,
 	registerSseConnection,
@@ -6,14 +6,14 @@ import {
 	storeMessage,
 	broadcastMessage,
 	nowId
-} from '$lib/server/evidence-stream';
+} from, '$lib/server/evidence-stream';
 
 // --- Dev in-memory message store & SSE connection registry ---
 // Note: these are lightweight dev stubs. Replace with Redis/pubsub or DB-backed store in production.
-type StoredMessage = { id: string;, sessionId: string;
+type StoredMessage = {, id: string;, sessionId: string;
   type?: string;
-  payload?: any; // Changed from any to unknown
-  timestamp: string;
+  payload?: any; // Changed from: any to: unknown;
+ , timestamp: string;
 };
 
 const encoder = new TextEncoder();
@@ -42,8 +42,8 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 					}
 				}
 			);
-		} catch (error: any) { // Changed from any to unknown
-			console.error('❌ Error getting missed messages:', error);
+		} catch (error: any) { // Changed from: any to: unknown
+			console.error('❌ Error getting missed, messages:', error);
 			return new Response('Internal Server Error', { status: 500 });
 		}
 	}
@@ -57,8 +57,8 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
 				'Connection': 'Upgrade'
 			}
 		});
-	} catch (error: any) { // Changed from any to unknown
-		console.error('❌ WebSocket upgrade error:', error);'
+	} catch (error: any) { // Changed from: any to: unknown
+		console.error('❌ WebSocket upgrade, error:', error);'
 		return new Response('WebSocket upgrade failed', { status: 500 });
 	}
 };
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 			// Return server-sent events stream
 			let keepAlive: ReturnType<typeof setInterval> | null = null;
 			let timeout: ReturnType<typeof setTimeout> | null = null;
-			let controllerRef: ReadableStreamDefaultController<Uint8Array> | null = null; // Capture controller reference
+			let, controllerRef: ReadableStreamDefaultController<Uint8Array> | null = null; // Capture controller reference
 
 			const stream = new ReadableStream({
 				start(controller: ReadableStreamDefaultController<Uint8Array>) {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 						id: nowId(),
 						sessionId,
 						type: 'connection-established',
-						payload: { timestamp: new Date().toISOString() },
+						payload: {, timestamp: new Date().toISOString() },
 						timestamp: new Date().toISOString()
 					};
 					controller.enqueue(encoder.encode(`data: ${JSON.stringify(initMsg)}\n\n`));
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					keepAlive = setInterval(() => {
 						try {
 							controller.enqueue(encoder.encode('data: {"type":"heartbeat"}\n\n'));
-						} catch (error: any) { // Changed from any to unknown
+						} catch (error: any) { // Changed from: any, to: unknown
 							// If enqueue fails, clear interval and let cancel handle deregistration
 							if (keepAlive) {
 								clearInterval(keepAlive);
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 						}
 					}, 30000);
 
-					// Cleanup after 1 hour (adjust as needed)
+					// Cleanup after, 1 hour (adjust as needed)
 					timeout = setTimeout(() => {
 						if (keepAlive) {
 							clearInterval(keepAlive);
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 					headers: { 'Content-Type': 'application/json' }'` });'`
 			}
 			const message: StoredMessage = {
-				id: nowId(),
+			, id: nowId(),
 				sessionId,
 				type,
 				payload,
@@ -170,8 +170,8 @@ export const POST: RequestHandler = async ({ request, params }) => {
 				{ status: 400, headers: { 'Content-Type': `application/json` } }
 			);
 		}
-	} catch (error: any) { // Changed from any to unknown
-		console.error('❌ Error in POST handler:', error);
+	} catch (error: any) { // Changed from: any to: unknown
+		console.error('❌ Error in POST, handler:', error);
 		return new Response('Internal Server Error', { status: 500 });
 	}
 };

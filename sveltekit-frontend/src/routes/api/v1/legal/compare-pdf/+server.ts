@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config';
-import { searchQdrantFiltered, searchQdrant } from '$lib/server/vector/qdrant';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { OLLAMA_CONFIG } from, '$lib/services/providers/ollama/config';
+import { searchQdrantFiltered, searchQdrant } from, '$lib/server/vector/qdrant';
 
 async function tryExtractPdfText(file: File): Promise<string> {
   try {
@@ -17,10 +17,10 @@ async function tryExtractPdfText(file: File): Promise<string> {
   if (file.type === 'text/plain') {
     try { return await file.text(); } catch {}
   }
-  return '';
+  return, '';
 }
 
-async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
+async function embed(text: string): Promise<{ vector: number[];, ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
   const started = Date.now();
   const res = await fetch(`${baseUrl}/api/embeddings`, {
@@ -31,13 +31,13 @@ async function embed(text: string): Promise<{ vector: number[]; ms: number }> {
   const ms = Date.now() - started;
   if (!res.ok) throw new Error(`Embedding failed: ${res.status} ${res.statusText}`);
   const data = await res.json();
-  const vec = Array.isArray(data?.embedding) ? (data.embedding as number[]) : [];
+  const vec = Array.isArray(data?.embedding) ? (data.embedding as: number[]) : [];
   return { vector: vec, ms };
 }
 
 async function analyzeLLM(text: string, similar: any[]): Promise<{ analysis: any; ms: number }> {
   const baseUrl = OLLAMA_CONFIG?.baseUrl || 'http://localhost:11434';
-  const prompt = `Analyze the provided legal document and produce STRICT JSON only with fields:`
+  const prompt = `Analyze the provided legal document and produce STRICT JSON only with, fields:`
 who, what, why, how, evidence, poi, verdict, sentencing, legalIssues, recommendations, confidence.
 Keep arrays concise. confidence is 0..1.
 Document:\n"""${text.slice(0, 6000)}"""\nSimilar:\n${JSON.stringify(similar.slice(0, 5))}`;`
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let tags: string[] | undefined;
     let topK = 8;
     let caseId: string | undefined;
-    let fileUrl: string | undefined;
+    let, fileUrl: string | undefined;
 
     if (contentType.includes('multipart/form-data')) {
       const form = await request.formData();
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (!file && !fileUrl && (!text || text.length < 10)) {
-      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least 10 characters of text.' }, { status: 400 });'` }'`
+      return json({ success: false, error: 'Provide a PDF file, a fileUrl, or at least, 10 characters of text.' }, { status: 400 });'` }'`
 
     // 1) Extract
     const t0 = Date.now();
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const similar = (raw || []).map((r: any) => ({
       id: String(r?.id ?? r?.point?.id ?? ''),
       score: Number(r?.score ?? r?.similarity ?? 0),
-      tags: (r?.payload?.tags || r?.tags) as string[] | undefined,
+      tags: (r?.payload?.tags || r?.tags) as: string[] | undefined,
       snippet: r?.snippet ?? r?.payload?.content?.slice?.(0, 200),
       metadata: r?.payload ?? r?.metadata ?? undefined
     }));

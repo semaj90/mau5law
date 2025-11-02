@@ -1,8 +1,8 @@
 // Enhanced Legal NLP Service using Transformers.js
 // Implements sentence transformers for YoRHa Legal AI Platform
-import { pipeline, env, type Pipeline } from '@xenova/transformers';
+import { pipeline, env, type Pipeline } from, '@xenova/transformers';
 // Lightweight in-memory LRU + optional Redis cache + metrics hooks
-import type { Redis } from 'ioredis';
+import type { Redis } from, 'ioredis';
 
 export interface CacheLayer {
   get(_key: string): Promise<EmbeddingResult | undefined> | EmbeddingResult | undefined;
@@ -36,7 +36,7 @@ export const nlpMetrics = {
   embeddings_total: 0,
   cache_hits: 0,
   cache_misses: 0,
-  embed_latency_ms: [] as number[],
+  embed_latency_ms: [], as: number[],
   similarity_queries_total: 0,
   recordLatency(ms: number) {
     this.embed_latency_ms.push(ms);
@@ -51,11 +51,11 @@ export interface EmbeddingResult { data: Float32Array;, dimensions: number;
   model: string;
 }
 
-export interface SimilarityResult { text: string;, score: number;
+export interface SimilarityResult {, text: string;, score: number;
   index: number;
 }
 class LegalNLPService {
-  private model: Pipeline | null = null;
+  private, model: Pipeline | null = null;
   private isInitialized = false;
   private modelName = 'Xenova/all-MiniLM-L6-v2'; // 384 dimensions, fast inference
   private cache: CacheLayer;
@@ -105,8 +105,8 @@ class LegalNLPService {
     const start = performance.now();
     const result = await this.model(text, { pooling: 'mean', normalize: true });
     const emb: EmbeddingResult = {
-      data: (result as any).data,
-      dimensions: (result as any).data.length,
+      data: (result, as: any).data,
+      dimensions: (result, as: any).data.length,
       model: this.modelName
     };
     const dur = performance.now() - start;
@@ -210,9 +210,9 @@ class LegalNLPService {
   private estimateComplexity(text: string): 'low' | 'medium' | 'high' {
     const avgSentenceLength = text.split(/[.!?]+/).reduce((sum, s) => sum + s.length, 0) / text.split(/[.!?]+/).length;
     const legalTermCount = this.extractKeywords(text).length;
-    if (avgSentenceLength > 100 || legalTermCount > 10) return 'high';
-    if (avgSentenceLength > 50 || legalTermCount > 5) return 'medium';
-    return 'low';
+    if (avgSentenceLength > 100 || legalTermCount > 10) return, 'high';
+    if (avgSentenceLength > 50 || legalTermCount > 5) return, 'medium';
+    return, 'low';
   }
   private detectLegalDomains(text: string): string[] {
     const domains = {

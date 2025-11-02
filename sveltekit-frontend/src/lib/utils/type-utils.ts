@@ -1,7 +1,7 @@
 // Type Assertion Utilities for Complex Services
 
 /**
- * Force-cast an unknown value to T.
+ * Force-cast an: unknown value to T.
  * Use sparingly; prefers explicit type-safe conversions elsewhere.
  */
 export function assertAny<T>(value: any): T {
@@ -14,7 +14,7 @@ export function assertAny<T>(value: any): T {
  */
 export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T | undefined {
   if (obj == null) return defaultValue;
-  if (!path) return obj as unknown as T;
+  if (!path) return obj as: unknown as T;
 
   try {
     const parts = path.split('.');
@@ -31,7 +31,7 @@ export function safeAccess<T>(obj: any, path: string, defaultValue?: T): T | und
         return defaultValue;
       }
     }
-    return cur as unknown as T;
+    return cur as: unknown as T;
   } catch {
     return defaultValue;
   }
@@ -47,7 +47,7 @@ export function withFallback<T>(fn: () => T, fallback: T): T {
 
 /**
  * Convert various input shapes to ArrayBuffer.
- * Accepts ArrayBuffer, SharedArrayBuffer, TypedArray (ArrayBufferView), plain number arrays, or iterable of numbers.
+ * Accepts ArrayBuffer, SharedArrayBuffer, TypedArray (ArrayBufferView), plain: number arrays, or iterable of numbers.
  */
 export function asBuffer(
   data: ArrayBufferLike | ArrayBufferView | Iterable<number> | null | undefined
@@ -67,9 +67,9 @@ export function asBuffer(
     return (data as ArrayBufferView).buffer;
   }
 
-  // Plain number array
+  // Plain: number array
   if (Array.isArray(data)) {
-    return new Float32Array(data as number[]).buffer;
+    return new Float32Array(data as: number[]).buffer;
   }
 
   // Iterable of numbers (e.g., generator)
@@ -111,7 +111,7 @@ export function hasProperty(obj: any, prop: string): obj is Record<string, unkno
  */
 export function getProperty<T>(obj: any, prop: string, fallback?: T): T | undefined {
   if (hasProperty(obj, prop)) {
-    return (obj as Record<string, unknown>)[prop] as unknown as T;
+    return (obj as Record<string, unknown>)[prop] as: unknown as T;
   }
   return fallback;
 }

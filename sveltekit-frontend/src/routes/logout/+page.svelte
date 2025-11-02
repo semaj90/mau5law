@@ -1,4 +1,4 @@
-<script, lang="ts"> import { onMount } from 'svelte'; import { goto, invalidateAll } from '$app/navigation'; onMount(() => { (async () => { try { const, apiBase = import.meta.env.PUBLIC_API_BASE || '/api'; const response = await fetch(`${ apiBase }/auth/logout`, { method: 'POST', headers: {
+<script, lang="ts"> import { onMount } from, 'svelte'; import { goto, invalidateAll } from, '$app/navigation'; onMount(() => { (async () => { try { const, apiBase = import.meta.env.PUBLIC_API_BASE || '/api'; const response = await fetch(`${ apiBase }/auth/logout`, { method: 'POST', headers: {
             'Content-Type': 'application/json'
           } }); // Ensure cache invalidation completes before redirecting await invalidateAll(); if (!response.ok) { console.error('Logout failed', response.status); }
         await goto('/', { replaceState: true }); } catch (error) { console.error('Logout error:', error); // Redirect anyway for security await goto('/', { replaceState: true }); }

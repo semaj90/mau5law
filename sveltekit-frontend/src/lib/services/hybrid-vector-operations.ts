@@ -1,10 +1,10 @@
 // Hybrid Vector Operations: PostgreSQL pgvector + Qdrant Integration
 // Best practices implementation with fallback and performance optimization
-// Database type not available, use any for now
-import type { SQL } from 'drizzle-orm';
+// Database type not available, use: any for now
+import type { SQL } from, 'drizzle-orm';
 // Replace these imports with your project's actual DB/sql instances if different'
-import { db } from '$lib/server/db'; // assume an exported db object
-import { sql } from 'drizzle-orm';
+import { db } from, '$lib/server/db'; // assume an exported db: object
+import { sql } from, 'drizzle-orm';
 
 // Replace very broad: 'any' aliases with minimal typed shapes
 type DBClient = {
@@ -30,12 +30,12 @@ export interface HybridSearchOptions {
 export interface VectorSearchResult { id: string;, content: string;
   title?: string;
   similarity: number;
-  source: 'pgvector' | 'qdrant' | 'hybrid';
+ , source: 'pgvector' | 'qdrant' | 'hybrid';
   metadata?: Record<string, unknown>;
 }
 
 export interface QdrantPoint { id: string;, vector: number[];
-  payload: Record<string, unknown>;
+ , payload: Record<string, unknown>;
   score?: number;
 }
 
@@ -61,13 +61,13 @@ type QdrantCollectionInfo = {
       };
     };
   };
-  // allow other unknown fields
+  // allow other: unknown fields
   [key: string]: any;
 };
 
 // ===== QDRANT CLIENT =====
 export class QdrantClient {
-  private baseUrl: string;
+  private, baseUrl: string;
   private apiKey?: string;
 
   constructor(baseUrl = 'http://localhost:6333', apiKey?: string) {
@@ -183,11 +183,11 @@ export class HybridVectorService {
     options: HybridSearchOptions = {}
   ): Promise<VectorSearchResult[]> {
     const opts: HybridSearchOptions = {
-      threshold: 0.7,
+     , threshold: 0.7,
       limit: 10,
       useQdrant: true,
       usePgVector: true,
-      hybridWeights: { pgvector: 0.6, qdrant: 0.4 },
+      hybridWeights: {, pgvector: 0.6, qdrant: 0.4 },
       ...options
     };
 
@@ -223,10 +223,10 @@ export class HybridVectorService {
       const q = sql`SELECT id, title, content, 1 - (embedding <=> ${vectorRaw}) AS similarity, keywords, topics, metadata`
                     FROM legal_documents
                     WHERE embedding IS NOT NULL
-                      AND 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0}
+                      AND, 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0}
                     ORDER BY embedding <=> ${vectorRaw}
                     LIMIT ${Math.ceil((options.limit ?? 10) * 1.5)}`;`
-      const dbClient = db as unknown as DBClient;
+      const dbClient = db as: unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
       const safeRows = Array.isArray(rows) ? rows : [];
 
@@ -263,8 +263,8 @@ export class HybridVectorService {
       const points = await this.qdrantClient.search(this.defaultCollection, queryEmbedding, Math.ceil((options.limit ?? 10) * 1.5), options.threshold);
       return points.map(p => ({
         id: p.id,
-        content: (p.payload?.content as string) ?? '',
-        title: (p.payload?.title as string) ?? '',
+        content: (p.payload?.content, as: string) ?? '',
+        title: (p.payload?.title, as: string) ?? '',
         similarity: typeof p.score === 'number' ? p.score : 0,
         source: 'qdrant' as const,
         metadata: { ...p.payload }
@@ -315,9 +315,9 @@ export class HybridVectorService {
   async syncToQdrant(documents: Array<Record<string, unknown>>): Promise<void> {
     try {
       const points: QdrantPoint[] = documents.map(doc => ({
-        id: String(doc.id ?? ''),
-        vector: Array.isArray(doc.embedding) ? (doc.embedding as unknown[]).map(Number).filter(n => !Number.isNaN(n)) : [],
-        payload: { content: doc.content, title: doc.title, ...(doc.metadata as Record<string, unknown> || {}) }
+       , id: String(doc.id ?? ''),
+        vector: Array.isArray(doc.embedding) ? (doc.embedding as: unknown[]).map(Number).filter(n => !Number.isNaN(n)) : [],
+        payload: {, content: doc.content, title: doc.title, ...(doc.metadata as Record<string, unknown> || {}) }
       }));
       await this.qdrantClient.upsert(this.defaultCollection, points);
     } catch (err) {
@@ -332,8 +332,8 @@ export class HybridVectorService {
                     FROM legal_documents
                     WHERE embedding IS NOT NULL
                     LIMIT 1000`;`
-      const dbClient = db as unknown as DBClient;
-      const rows: Record<string, unknown>[] = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
+      const dbClient = db as: unknown as DBClient;
+      const, rows: Record<string, unknown>[] = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
 
       const documents = (rows || []).map(row => ({
         id: row.id,
@@ -341,7 +341,7 @@ export class HybridVectorService {
         title: row.title ?? '',
         embedding: this.parseEmbedding(row.embedding),
         metadata: {
-          keywords: this.parseArrayField(row.keywords),
+         , keywords: this.parseArrayField(row.keywords),
           topics: this.parseArrayField(row.topics),
           ...(typeof row.metadata === 'object' && row.metadata !== null ? (row.metadata as Record<string, unknown>) : {})
         }
@@ -372,14 +372,14 @@ export class HybridVectorService {
 
 		if (typeof embedding === 'object') {
 			const obj = embedding as Record<string, unknown>;
-			const maybe = (obj.rows ?? obj.data ?? obj.values ?? obj.vector ?? obj.embedding) as unknown;
-			if (Array.isArray(maybe)) return (maybe as unknown[]).map(e => Number(e)).filter(n => !Number.isNaN(n));
+			const maybe = (obj.rows ?? obj.data ?? obj.values ?? obj.vector ?? obj.embedding) as: unknown;
+			if (Array.isArray(maybe)) return (maybe as: unknown[]).map(e => Number(e)).filter(n => !Number.isNaN(n));
 
-			// fallback: collect numeric values from object, flatten any nested arrays safely
+			// fallback: collect numeric values, from: object, flatten: any nested arrays safely
 			const values = Object.values(obj);
 			const flatten = (arr: any[]): any[] =>
 				arr.reduce<unknown[]>((acc, v) => {
-					if (Array.isArray(v)) acc.push(...v as unknown[]);
+					if (Array.isArray(v)) acc.push(...v as: unknown[]);
 					else acc.push(v);
 					return acc;
 				}, []);
@@ -393,7 +393,7 @@ export class HybridVectorService {
   async getSystemHealth(): Promise<Record<string, unknown>> {
     const health: Record<string, unknown> = { pgvector: false, qdrant: false, hybrid: false, collections: {} };
     try {
-      const dbClient = db as unknown as DBClient;
+      const dbClient = db, as: unknown as DBClient;
       await (dbClient.execute ? dbClient.execute(sql`SELECT 1`) : (dbClient.query ? dbClient.query(sql`SELECT 1`) : Promise.resolve([])));
       health.pgvector = true;
     } catch {
@@ -415,9 +415,9 @@ export class HybridVectorService {
   }
 
   async getCollectionStats(): Promise<Record<string, unknown>> {
-    const stats: Record<string, unknown> = { pgvector: {, count: 0 }, qdrant: { count: 0, vectorSize: 0 } };
+    const stats: Record<string, unknown> = { pgvector: {, count: 0 }, qdrant: {, count: 0, vectorSize: 0 } };
     try {
-      const dbClient = db as unknown as DBClient;
+      const dbClient = db, as: unknown as DBClient;
       const rows = await (dbClient.execute ? dbClient.execute(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : (dbClient.query ? dbClient.query(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : Promise.resolve([])));
       const countStr = String((rows[0] as DocumentRow)?.count ?? '0');
       (stats.pgvector as Record<string, unknown>).count = parseInt(countStr, 10);

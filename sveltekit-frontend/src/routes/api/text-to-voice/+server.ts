@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 const ENABLE_TTS = String(process.env.ENABLE_TTS || 'false').toLowerCase() === 'true';
 const TTS_SERVICE_URL = process.env.TTS_SERVICE_URL || 'http://localhost:8098';
 
-// Simple placeholder TTS: generate a short WAV (PCM16) with a sine tone whose duration is derived from text length.
+// Simple placeholder, TTS: generate a short WAV (PCM16) with a sine tone whose duration is derived from text length.
 function synthesizePlaceholderWavBase64(text: string): string {
   const sampleRate = 22050;
   const numChannels = 1;
@@ -35,7 +35,7 @@ function synthesizePlaceholderWavBase64(text: string): string {
   buffer.writeUInt32LE(36 + dataSize, 4);
   buffer.write('WAVE', 8);
 
-  buffer.write('fmt ', 12);
+  buffer.write('fmt, ', 12);
   buffer.writeUInt32LE(16, 16);
   buffer.writeUInt16LE(1, 20);
   buffer.writeUInt16LE(numChannels, 22);

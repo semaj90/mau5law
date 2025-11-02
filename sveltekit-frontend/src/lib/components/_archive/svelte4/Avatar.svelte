@@ -1,11 +1,11 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc;
 https://svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, once -->
+<!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
 <script, lang="ts">
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 
-  import { onMount } from 'svelte';
-  import { avatarStore } from '../stores/avatarStore';
+  import { onMount } from, 'svelte';
+  import { avatarStore } from, '../stores/avatarStore';
 
   const { size } = $props<{ size: 'small' | 'medium' | 'large' }>()
   const { clickable } = $props<{ clickable: boolean }>()
@@ -83,7 +83,7 @@ import type { User } from '$lib/types';
 <div, class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
   <div
     class="avatar"
-    style="width: {avatarSize}; height: {avatarSize};"
+    style="width: {avatarSize};, height: {avatarSize};"
     onclick={handleAvatarClick}
     onkeydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -113,8 +113,8 @@ import type { User } from '$lib/types';
 
     {#if clickable}
       <div, class="upload-icon" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0, 0, 1-2-2v-4" />
+        <svg width="24" height="24" viewBox="0, 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2, 2, 0, 0 1-2 2H5a2, 2, 0, 0, 1-2-2v-4" />
           <polyline points="7,10, 12,15, 17,10" />
           <line, x1="12" y1="15" x2="12" y2="3" />
         </svg>
@@ -171,7 +171,7 @@ import type { User } from '$lib/types';
   .clickable .avatar:hover {
     border-color: #3b82f6;
     cursor: pointer;
-    transform: scale(1.05);
+   , transform: scale(1.05);
   }
 
   .drag-over .avatar {
@@ -198,7 +198,7 @@ import type { User } from '$lib/types';
 
   @keyframes spin {
     0% {
-      transform: rotate(0deg);
+     , transform: rotate(0deg);
     }
     100% {
       transform: rotate(360deg);
@@ -207,17 +207,17 @@ import type { User } from '$lib/types';
 
   .upload-overlay {
     position: absolute;
-    inset: 0,
+   , inset: 0,
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
+   , background: rgba(0, 0, 0, 0.4);
     color: white;
   }
 
   .upload-controls {
     display: flex;
-    gap: 8px;
+   , gap: 8px;
     flex-wrap: wrap;
   }
 
@@ -234,7 +234,7 @@ import type { User } from '$lib/types';
 
   .upload-btn {
     background: #3b82f6;
-    color: white;
+   , color: white;
   }
 
   .upload-btn:hover:not(:disabled) {
@@ -269,7 +269,7 @@ import type { User } from '$lib/types';
     cursor: pointer;
     font-size: 18px;
     line-height: 1;
-    padding: 0;
+   , padding: 0;
     margin-left: 8px;
   }
 </style>

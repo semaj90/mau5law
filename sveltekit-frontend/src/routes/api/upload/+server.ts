@@ -1,6 +1,6 @@
-import { json, error } from '@sveltejs/kit';
-import { auth } from '$lib/server/auth';
-import { uploadMinioObject } from '$lib/server/services/minio';
+import { json, error } from, '@sveltejs/kit';
+import { auth } from, '$lib/server/auth';
+import { uploadMinioObject } from, '$lib/server/services/minio';
 
 // Ensure upload directory exists
 const UPLOAD_DIR = './uploads';

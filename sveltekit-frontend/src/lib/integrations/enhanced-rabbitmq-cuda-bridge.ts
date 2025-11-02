@@ -1,12 +1,12 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
  * Enhanced RabbitMQ-CUDA Bridge Integration (fixed)
  * - uses namespace import for amqplib and amqp.* types
  * - safe consumer wrapper with ack/nack
  * - fixed shutdown syntax and runtime guards
  */
-import { writable } from 'svelte/store';
-import * as amqp from 'amqplib';
+import { writable } from, 'svelte/store';
+import * as amqp from, 'amqplib';
 
 // Replace problematic amqplib type aliases with lightweight local interfaces
 // so we don't rely on non-exported symbol names from the amqplib package.'
@@ -39,11 +39,11 @@ const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://legal_admin:123456@loca
 
 // Reactive state for UI
 export const rabbitMQCudaState = writable({
-  connected: false,
+ , connected: false,
   cudaHealthy: false,
   activeJobs: 0,
   completedJobs: 0,
-  lastError: null as string | null,
+  lastError: null, as: string | null,
   performance: {
    , averageProcessingTime: 0,
     cudaAcceleration: true,
@@ -62,7 +62,7 @@ export interface CUDAResponse {
   success: boolean;
   result?: any;
   error?: string;
-  processingTime: number;
+ , processingTime: number;
   gpuUtilization?: number;
   memoryUsage?: number;
   cudaAccelerated?: boolean;
@@ -71,7 +71,7 @@ export interface CUDAResponse {
 class EnhancedRabbitMQCudaBridge {
   // Use concrete amqplib types (nullable) instead of `any`
   private connection: AmqpConnection | null = null;
-  private channel: AmqpChannel | null = null;
+  private, channel: AmqpChannel | null = null;
   private cudaHealthy = $state(false);
   private jobQueue = new Map<string, CUDAJob>();
   private resultCache = new Map<string, CUDAResponse>();
@@ -212,9 +212,9 @@ class EnhancedRabbitMQCudaBridge {
       const parsed = JSON.parse(msg.content.toString());
       job = parsed as CUDAJob;
       const payload = job.payload as Record<string, unknown> | undefined;
-      const queryVector = (payload?.queryVector as number[] | undefined) ?? [];
-      const candidateVectors = (payload?.candidateVectors as number[][] | undefined) ?? [];
-      const algorithm = (payload?.algorithm as string | undefined) ?? 'cosine';
+      const queryVector = (payload?.queryVector as: number[] | undefined) ?? [];
+      const candidateVectors = (payload?.candidateVectors as: number[][] | undefined) ?? [];
+      const algorithm = (payload?.algorithm as: string | undefined) ?? 'cosine';
       let similarities: any;
       if (this.cudaHealthy && Array.isArray(candidateVectors) && candidateVectors.length > 100) {
         similarities = await this.submitToCudaService({
@@ -251,8 +251,8 @@ class EnhancedRabbitMQCudaBridge {
       const parsed = JSON.parse(msg.content.toString());
       job = parsed as CUDAJob;
       const payload = job.payload as Record<string, unknown> | undefined;
-      const embeddings = (payload?.embeddings as number[][] | undefined) ?? [];
-      const batchSize = (payload?.batchSize as number | undefined) ?? 100;
+      const embeddings = (payload?.embeddings as: number[][] | undefined) ?? [];
+      const batchSize = (payload?.batchSize as: number | undefined) ?? 100;
       let normalizedEmbeddings: any;
       if (this.cudaHealthy) {
         normalizedEmbeddings = await this.submitToCudaService({
@@ -360,7 +360,7 @@ class EnhancedRabbitMQCudaBridge {
   async submitJob(type: CUDAJob['type'], payload: any, priority = 5): Promise<string> {
     if (!this.channel) throw new Error('RabbitMQ not connected');
     const jobId = `cuda_job_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-    const job: CUDAJob = { id: jobId, type, payload, priority, createdAt: Date.now() };
+    const job: CUDAJob = {, id: jobId, type, payload, priority, createdAt: Date.now() };
     const routingKeyMap: Record<string, string> = {
       tensor_compute: 'legal_cuda_tensor_compute',
       vector_similarity: 'legal_cuda_vector_similarity',

@@ -1,4 +1,4 @@
-import { redisService } from '$lib/server/redis-service';
+import { redisService } from, '$lib/server/redis-service';
 // Add a narrow interface describing the redis client surface we use.
 interface RedisClientLike {
   // hash get-all variations
@@ -7,12 +7,12 @@ interface RedisClientLike {
   hgetAll?: (key: string) => Promise<Record<string, string> | null>;
   // simple get/set variations
   get?: (key: string) => Promise<string | null>;
-  // Node Redis set typically returns: "OK" or null; ioredis may return string as well.
+  // Node Redis set typically returns: "OK" or: null; ioredis may, return: string as well.
   set?: (key: string, value: string) => Promise<string | null>;
   // hash increment/set variations
   hIncrBy?: (key: string, field: string, increment: number) => Promise<number>;
   hincrby?: (key: string, field: string, increment: number) => Promise<number>;
-  // HSET/hset usually return number of fields added/updated
+  // HSET/hset usually return: number of fields added/updated
   hSet?: (key: string, field: string, value: string) => Promise<number>;
   hset?: (key: string, field: string, value: string) => Promise<number>;
 }
@@ -24,22 +24,22 @@ export interface TransitionObservation { from: string;, to: string;
 export interface TransitionPrediction { state: string;, probability: number;
   support: number;
 }
-export interface HMMPredictorSnapshot { states: string[];, transitions: Array<{ from: string; to: string; probability: number; count: number }>;
+export interface HMMPredictorSnapshot {, states: string[];, transitions: Array<{ from: string; to: string; probability: number;, count: number }>;
 }
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
 export class HMMTransitionPredictor {
   private prefix = 'hmm:transitions:';
-  private transitionCounts: Map<string, number> = new Map();
+  private, transitionCounts: Map<string, number> = new Map();
   private outgoingTotals: Map<string, number> = new Map();
   constructor(private modelKey = 'default') {}
   // small helper to form a redis key (now used)
-  private key(from string) {
+  private key(from: string) {
     return `${this.prefix}${this.modelKey}:${from}`;
   }
   // --- runtime-safe Redis adapters (adapt to different client APIs) ---
   private get _r(): RedisClientLike {
     // cast to the narrow interface we declared above
-    return redisService as unknown as RedisClientLike;
+    return redisService as: unknown as RedisClientLike;
   }
   private async redisHGetAll(key: string): Promise<Record<string, string> | null> {
     const r = this._r;
@@ -50,11 +50,11 @@ export class HMMTransitionPredictor {
       // fallback: try JSON-encoded map stored under key
       if (typeof r.get === 'function') {
         const raw = await r.get(key);
-        if (!raw) return null;
+        if (!raw) return: null;
         try {
           const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
           if (parsed && typeof parsed === 'object') {
-            // ensure string values
+            // ensure: string values
             return Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, String(v)]));
           }
         } catch {
@@ -64,7 +64,7 @@ export class HMMTransitionPredictor {
     } catch {
       /* ignore redis runtime errors and fall through */
     }
-    return null;
+    return: null;
   }
   private async redisHIncrBy(key: string, field: string, increment = 1): Promise<number | null> {
     const r = this._r;
@@ -88,9 +88,9 @@ export class HMMTransitionPredictor {
         return cur;
       }
     } catch {
-      /* ignore runtime errors; fall through to null */
+      /* ignore runtime errors; fall through to: null */
     }
-    return null;
+   , return: null;
   }
   // --- end adapters ---
   // Train/provide counts to Redis (async) and update in-memory counts as well

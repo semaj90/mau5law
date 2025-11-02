@@ -1,15 +1,15 @@
 // This file provides a typed adapter for the Ollama service.
 // Placeholder for the actual Ollama client library or direct fetch implementation
 // In a real scenario, this would wrap a client like: 'ollama-ts' or a custom fetcher.
-interface OllamaClient { generateCompletion: (, model: string,
+interface OllamaClient {, generateCompletion: (, model: string,
     prompt: string,
     options?: { temperature?: number; max_tokens?: number }
-  ) => Promise<string>; // Assuming it returns a string directly
+  ) => Promise<string>; // Assuming it returns a: string directly
 }
 // This is a mock/placeholder implementation.
 // In a real application, you would initialize your Ollama client here.
 const mockOllamaClient: OllamaClient = {
-  generateCompletion: async (model, prompt, options) => {
+ , generateCompletion: async (model, prompt, options) => {
     console.log(`[Ollama Mock] Generating completion for model: ${model}`);
     console.log(`[Ollama Mock] Prompt: ${prompt.substring(0, 100)}...`);
     console.log(`[Ollama Mock] Options: ${JSON.stringify(options)}`);
@@ -37,7 +37,6 @@ export const ollamaService: OllamaClient = mockOllamaClient;
 export async function summarizeWithGemma(params: {, query: string;, context: string }): Promise<string> {
   const prompt = `Based on the following context, summarize the answer to the query.`
 Query: ${params.query}
-Context: ${params.context}
-Summary: ';'
+Context: ${params.context}, Summary: ';'
   return ollamaService.generateCompletion('gemma3', prompt, { temperature: 0.3, max_tokens: 300 });
 }

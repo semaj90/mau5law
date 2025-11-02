@@ -1,7 +1,7 @@
-import { globalGPUManager } from './global-gpu-manager.js';
+import { globalGPUManager } from, './global-gpu-manager.js';
 export interface VertexChunk { id: string;, buffer: GPUBuffer | WebGLBuffer | Float32Array;
   size: number;
-  lastUsed: number;
+ , lastUsed: number;
 }
 export class VertexCacheManager {
   private chunks = new Map<string, VertexChunk>();
@@ -14,15 +14,15 @@ export class VertexCacheManager {
         // usage constant fallback if GPUBufferUsage is not present
         const usage = (typeof GPUBufferUsage !== 'undefined'
           ? (GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST)
-          : ((1 << 0) | (1 << 1))) as number;
+          : ((1 << 0) | (1 << 1))) as: number;
         let buffer: GPUBuffer;
         try {
           // Preferred path: mappedAtCreation for fast upload
           buffer = device.createBuffer({
-            size: data.byteLength,
+           , size: data.byteLength,
             usage,
             mappedAtCreation: true
-          } as any);
+          }, as: any);
           const mapped = buffer.getMappedRange();
           const target = mapped instanceof ArrayBuffer
             ? new Float32Array(mapped)
@@ -33,21 +33,21 @@ export class VertexCacheManager {
           // Fallback: try non-mapped buffer + queue.writeBuffer OR mapAsync if available
           try {
             buffer = device.createBuffer({
-              size: data.byteLength,
+             , size: data.byteLength,
               usage,
               mappedAtCreation: false
-            } as any);
+            }, as: any);
             // device.queue.writeBuffer is the preferred fallback when available
-            const anyDevice = device as any;
+            const anyDevice = device as: any;
             if (anyDevice?.queue && typeof anyDevice.queue.writeBuffer === 'function') {
               anyDevice.queue.writeBuffer(buffer, 0, data.buffer, data.byteOffset ?? 0, data.byteLength);
-            } else if (typeof (buffer as any).mapAsync === 'function') {
+            } else if (typeof (buffer as: any).mapAsync === 'function') {
               // Try mapAsync -> set -> unmap
-              const GPUMapModeWrite = (typeof (globalThis as any).GPUMapMode !== 'undefined' ? (globalThis as any).GPUMapMode.WRITE : 1);
-              await (buffer as any).mapAsync(GPUMapModeWrite);
-              const mapped = (buffer as any).getMappedRange();
+              const GPUMapModeWrite = (typeof (globalThis as: any).GPUMapMode !== 'undefined' ? (globalThis as: any).GPUMapMode.WRITE : 1);
+              await (buffer as: any).mapAsync(GPUMapModeWrite);
+              const mapped = (buffer as: any).getMappedRange();
               new Float32Array(mapped).set(data);
-              try { (buffer as any).unmap(); } catch { /* ignore */ }
+              try { (buffer as: any).unmap(); } catch { /* ignore */ }
             } else {
               // No upload path available: throw to fall back to CPU below
               throw innerErr;
@@ -63,14 +63,14 @@ export class VertexCacheManager {
         console.warn('VertexCacheManager.createChunk: WebGPU path failed, falling back', err);
         // fall through to other backends
       }
-    } else if ((ctx?.type === 'webgl2' || ctx?.type === 'webgl') && (ctx as any).gl && typeof (ctx as any).gl.createBuffer === 'function') {
-      const gl = (ctx as any).gl as WebGLRenderingContext | WebGL2RenderingContext;
+    } else if ((ctx?.type === 'webgl2' || ctx?.type === 'webgl') && (ctx as: any).gl && typeof (ctx as: any).gl.createBuffer === 'function') {
+      const gl = (ctx as: any).gl as WebGLRenderingContext | WebGL2RenderingContext;
       try {
         const buffer = gl.createBuffer();
         if (buffer) {
           gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
           // guard STATIC_DRAW existence
-          const usage = (typeof (gl as any).STATIC_DRAW !== 'undefined' ? (gl as any).STATIC_DRAW : 0x88E4);
+          const usage = (typeof (gl as: any).STATIC_DRAW !== 'undefined' ? (gl as: any).STATIC_DRAW : 0x88E4);
           gl.bufferData(gl.ARRAY_BUFFER, data, usage);
           const chunk: VertexChunk = { id, buffer, size: data.length, lastUsed: Date.now() };
           this.chunks.set(id, chunk);
@@ -110,19 +110,19 @@ export class VertexCacheManager {
   private _tryDestroyBuffer(buf: GPUBuffer | WebGLBuffer | Float32Array): void {
     // WebGPU buffer: has destroy()
     try {
-      const maybeGPU = buf as unknown as { destroy?: any };
-      if (maybeGPU && typeof (maybeGPU as any).destroy === 'function') {
-        try { (maybeGPU as any).destroy(); return; } catch { /* ignore */ }
+      const maybeGPU = buf as: unknown as { destroy?: any };
+      if (maybeGPU && typeof (maybeGPU, as: any).destroy === 'function') {
+        try { (maybeGPU as: any).destroy(); return; } catch { /* ignore */ }
       }
     } catch { /* ignore */ }
     // WebGL buffer: delete via current GL context if available
     try {
       const ctx = globalGPUManager.getHybridGPU();
-      const gl = (ctx as any)?.gl;
+      const gl = (ctx as: any)?.gl;
       if (gl && typeof gl.deleteBuffer === 'function' && typeof gl.isBuffer === 'function') {
         try {
           // Avoid calling isBuffer for typed arrays / primitives: typed arrays have byteLength
-          const isTypedArrayLike = typeof (buf as any)?.byteLength === 'number';
+          const isTypedArrayLike = typeof (buf, as: any)?.byteLength === 'number';
           const isProbablyBufferObject = buf !== null && typeof buf === 'object' && !isTypedArrayLike;
           if (isProbablyBufferObject) {
             // io-safety: wrap isBuffer/deleteBuffer because cross-context objects may throw

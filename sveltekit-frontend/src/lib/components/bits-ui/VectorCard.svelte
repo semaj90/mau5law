@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
   const { r } = $props<{ r: any }>()
 </script>
 <div, class="vector-card">
@@ -11,5 +11,5 @@ import type { Document } from '$lib/types';
 .vector-card{ padding:.5rem; border:1px solid #e5e7eb; border-radius:6px; margin-bottom:.5rem }
 .title{ font-weight:600 }
 .snippet{ color:#6b7280; font-size:.9rem }
-.meta{ font-size:.8rem; color:#9ca3af }
+.meta{ font-size:.8rem;, color:#9ca3af }
 </style>

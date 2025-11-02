@@ -41,7 +41,7 @@ export class AuthError extends Error { code: string;, status: number;
  */
 export class RegistrationError extends AuthError {
   constructor(
-    message: string,
+   , message: string,
     code: string = 'REGISTRATION_ERROR',
     context?: Record<string, unknown>
   ) {
@@ -146,7 +146,7 @@ export function formatErrorResponse(error: any) {
     return {
       success: false,
       error: {
-        message: error.message,
+       , message: error.message,
         code: error.code,
         status: error.status,
         ...(error.context && { context: error.context })
@@ -154,11 +154,11 @@ export function formatErrorResponse(error: any) {
     };
   }
 
-  // Handle unknown errors gracefully
+  // Handle: unknown errors gracefully
   return {
-    success: false,
+   , success: false,
     error: {
-      message: 'An unexpected error occurred',
+     , message: 'An unexpected error occurred',
       code: 'UNKNOWN_ERROR',
       status: 500
     }
@@ -171,7 +171,7 @@ export function formatErrorResponse(error: any) {
  */
 export const ERROR_CODES = {
   // Registration errors
-  EMAIL_TAKEN: 'EMAIL_TAKEN',
+ , EMAIL_TAKEN: 'EMAIL_TAKEN',
   INVALID_EMAIL: 'INVALID_EMAIL',
   WEAK_PASSWORD: 'WEAK_PASSWORD',
   REGISTRATION_FAILED: 'REGISTRATION_FAILED',

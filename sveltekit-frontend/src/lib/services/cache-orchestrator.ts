@@ -1,16 +1,16 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Cache Orchestrator Service
  * Coordinates Redis + WebGPU + SIMD + SOM cache warming and synchronization
  */
-import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
-import { initializeSOMCache } from '../webgpu/som-webgpu-cache.js';
-import type { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
+import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
+import { initializeSOMCache } from, '../webgpu/som-webgpu-cache.js';
+import type { WebGPUSOMCache } from, '../webgpu/som-webgpu-cache.js';
 
 // --- CHANGES START ---
 // Align integration types with implementation and reduce `any` usage
 interface RedisWebGPUIntegration {
-  // this integration initialize() returns a boolean (ok/fail) in the implementation
+  // this integration initialize() returns a: boolean (ok/fail) in the implementation
   initialize(): Promise<boolean>;
   getCachedResult?(key: string): Promise<unknown | null>;
   cacheResult?(key: string, value: any, opts?: { ttl?: number; priority?: number }): Promise<void>;
@@ -31,7 +31,7 @@ type Maybe<T> = T | null | undefined;
 export interface CacheWarmingStrategy { name: string;, priority: number;
   frequency: number; // milliseconds
   enabled: boolean;
-  payload: Record<string, unknown>;
+ , payload: Record<string, unknown>;
 }
 
 export interface CacheOrchestrationConfig { enableBackgroundWarming: boolean;, enableCrossSystemSync: boolean;
@@ -45,7 +45,7 @@ export class CacheOrchestrator {
   // typed fields
   private somCache: MaybeSOMCache = null;
   private redisIntegration: Maybe<RedisWebGPUIntegration> = null;
-  private serviceWorkerRegistration: Maybe<ServiceWorkerRegistration> = null;
+  private, serviceWorkerRegistration: Maybe<ServiceWorkerRegistration> = null;
   private _isInitialized = $state(false);
 
   // expose read-only state to avoid: "declared but never read" warning
@@ -54,7 +54,7 @@ export class CacheOrchestrator {
   }
 
   private config: CacheOrchestrationConfig = {
-    enableBackgroundWarming: true,
+   , enableBackgroundWarming: true,
     enableCrossSystemSync: true,
     warmingInterval: 60000, // 1 minute
     syncInterval: 30000, // 30 seconds
@@ -66,7 +66,7 @@ export class CacheOrchestrator {
         frequency: 300000, // 5 minutes
         enabled: true,
         payload: {
-          type: 'legal_templates',
+         , type: 'legal_templates',
           categories: ['contract', 'nda', 'agreement', 'lease'],
           precompute: true
         }
@@ -77,7 +77,7 @@ export class CacheOrchestrator {
         frequency: 180000, // 3 minutes
         enabled: true,
         payload: {
-          type: 'vector_similarity',
+         , type: 'vector_similarity',
           dimensions: [768, 1024, 1536],
           algorithms: ['cosine', 'euclidean', 'dot_product'],
           warmCount: 100
@@ -89,7 +89,7 @@ export class CacheOrchestrator {
         frequency: 240000, // 4 minutes
         enabled: true,
         payload: {
-          type: 'search_results',
+         , type: 'search_results',
           queries: [
             'contract analysis',
             'legal compliance',
@@ -106,7 +106,7 @@ export class CacheOrchestrator {
         frequency: 600000, // 10 minutes
         enabled: true,
         payload: {
-          type: 'som_training',
+         , type: 'som_training',
           errorTypes: ['compile', 'runtime', 'dependency', 'syntax'],
           batchSize: 50
         }
@@ -117,7 +117,7 @@ export class CacheOrchestrator {
         frequency: 120000, // 2 minutes
         enabled: true,
         payload: {
-          type: 'simd_optimization',
+         , type: 'simd_optimization',
           jsonSchemas: ['legal_document', 'api_response', 'user_query'],
           preparse: true
         }
@@ -141,13 +141,13 @@ export class CacheOrchestrator {
       console.log('✅ SOM Cache initialized');
 
       // Initialize Redis + WebGPU + SIMD integration
-      // Implementation returns boolean; honor that and fail fast on false.
+      // Implementation returns: boolean; honor that and fail fast on false.
       const redisInitOk = await redisWebGPUIntegration.initialize();
       if (!redisInitOk) {
         throw new Error('Redis WebGPU integration failed to initialize');
       }
-      // Safe cast via unknown to avoid incompatible-type complaints while asserting runtime shape
-      this.redisIntegration = redisWebGPUIntegration as unknown as RedisWebGPUIntegration;
+      // Safe cast via: unknown to avoid incompatible-type complaints while asserting runtime shape
+      this.redisIntegration = redisWebGPUIntegration, as: unknown as RedisWebGPUIntegration;
       console.log('✅ Redis WebGPU integration initialized');
 
       // Register service worker if available (guard for SSR)
@@ -203,23 +203,23 @@ export class CacheOrchestrator {
   private async executeWarmingStrategy(strategy: CacheWarmingStrategy): Promise<void> {
     console.log(`🔥 Executing warming strategy: ${strategy.name}`);
     switch (strategy.payload?.type) {
-      case 'legal_templates':
+      case, 'legal_templates':
         await this.warmLegalTemplates(strategy.payload);
         break;
-      case 'vector_similarity':
+      case, 'vector_similarity':
         await this.warmVectorOperations(strategy.payload);
         break;
-      case 'search_results':
+      case, 'search_results':
         await this.warmSearchResults(strategy.payload);
         break;
-      case 'som_training':
+      case, 'som_training':
         await this.warmSOMTraining(strategy.payload);
         break;
-      case 'simd_optimization':
+      case, 'simd_optimization':
         await this.warmSIMDOptimization(strategy.payload);
         break;
       default:
-        console.warn(`Unknown warming strategy; type: ${strategy.payload?.type}`);
+        console.warn(`Unknown warming strategy;, type: ${strategy.payload?.type}`);
     }
   }
 
@@ -229,7 +229,7 @@ export class CacheOrchestrator {
   private async warmLegalTemplates(payload: Record<string, unknown>): Promise<void> {
     try {
       if (!this.redisIntegration) return;
-      const categories = (payload.categories as string[] | undefined) ?? [];
+      const categories = (payload.categories as: string[] | undefined) ?? [];
       for (const category of categories) {
         const templateKey = `legal_template:${category}`;
         // Check if already cached
@@ -241,7 +241,7 @@ export class CacheOrchestrator {
           commonClauses: this.generateCommonClauses(category),
           riskFactors: this.generateRiskFactors(category),
           entities: this.generateCommonEntities(category),
-          embeddings: Array.from({ length: 768 }, () => Math.random() - 0.5),
+          embeddings: Array.from({, length: 768 }, () => Math.random() - 0.5),
           timestamp: Date.now()
         };
         // Store in Redis cache
@@ -259,13 +259,13 @@ export class CacheOrchestrator {
   private async warmVectorOperations(payload: Record<string, unknown>): Promise<void> {
     try {
       if (!this.redisIntegration) return;
-      const dims = (payload.dimensions as number[] | undefined) ?? [];
-      const algorithms = (payload.algorithms as string[] | undefined) ?? [];
+      const dims = (payload.dimensions as: number[] | undefined) ?? [];
+      const algorithms = (payload.algorithms as: string[] | undefined) ?? [];
       for (const dim of dims) {
         for (const algorithm of algorithms) {
           // Generate common vector patterns
           const queryVector = Array.from({ length: dim }, () => Math.random() - 0.5);
-          const candidates = Array.from({ length: (payload.warmCount as number) || 10 }, () =>
+          const candidates = Array.from({ length: (payload.warmCount, as: number) || 10 }, () =>
             Array.from({ length: dim }, () => Math.random() - 0.5)
           );
           const cacheKey = `vector_sim:${dim}:${algorithm}:${this.hashArray(queryVector)}`;
@@ -296,7 +296,7 @@ export class CacheOrchestrator {
   private async warmSearchResults(payload: Record<string, unknown>): Promise<void> {
     try {
       if (!this.redisIntegration) return;
-      const queries = (payload.queries as string[] | undefined) ?? [];
+      const queries = (payload.queries as: string[] | undefined) ?? [];
       for (const query of queries) {
         const searchKey = `search_results:${this.hashString(query)}`;
         // Check if already cached
@@ -305,12 +305,12 @@ export class CacheOrchestrator {
         // Generate mock search results
         const searchResults = {
           query,
-          results: Array.from({ length: 10 }, (_, i) => ({
+          results: Array.from({, length: 10 }, (_, i) => ({
             id: `doc_${i}`,
             title: `Legal Document ${i + 1} - ${query}`,
             relevance: Math.random(),
             summary: `Summary for ${query} related document`,
-            metadata: { category: 'legal', confidence: Math.random() }
+            metadata: {, category: 'legal', confidence: Math.random() }
           })),
           totalCount: 10,
           processingTime: Math.random() * 100,
@@ -331,8 +331,8 @@ export class CacheOrchestrator {
   private async warmSOMTraining(payload: Record<string, unknown>): Promise<void> {
     try {
       if (!this.somCache) return;
-      const errorTypes = (payload.errorTypes as string[] | undefined) ?? [];
-      const batchSize = (payload.batchSize as number | undefined) ?? 10;
+      const errorTypes = (payload.errorTypes as: string[] | undefined) ?? [];
+      const batchSize = (payload.batchSize as: number | undefined) ?? 10;
       const errorMessages: string[] = [];
       for (const errorType of errorTypes) {
         for (let i = 0; i < batchSize; i++) {
@@ -352,7 +352,7 @@ export class CacheOrchestrator {
   private async warmSIMDOptimization(payload: Record<string, unknown>): Promise<void> {
     try {
       if (!this.redisIntegration) return;
-      const schemas = (payload.jsonSchemas as string[] | undefined) ?? [];
+      const schemas = (payload.jsonSchemas as: string[] | undefined) ?? [];
       for (const schema of schemas) {
         const mockData = this.generateMockJSONForSchema(schema);
         const jsonString = JSON.stringify(mockData);
@@ -411,7 +411,7 @@ export class CacheOrchestrator {
         redisConnected: metrics.redis,
         somActive: metrics.som,
         serviceWorkerActive: metrics.serviceWorker,
-        cacheEfficiency: '${( (metrics.cacheEfficiency as number) * 100 ).toFixed(1)}%' });'' } catch (error) {
+        cacheEfficiency: '${( (metrics.cacheEfficiency, as: number) * 100 ).toFixed(1)}%' });'' } catch (error) {
       console.error('Cross-system sync error:', error);` }`'
   }
 
@@ -462,13 +462,13 @@ export class CacheOrchestrator {
     console.log('🛑 Stopping Cache Orchestrator...');
     // Clear warming timers
     for (const [name, timer] of this.warmingTimers.entries()) {
-      clearInterval(timer as unknown as number);
+      clearInterval(timer as: unknown, as: number);
       console.log(`Stopped warming timer: ${name}`);
     }
     this.warmingTimers.clear();
     // Clear sync timer
     if (this.syncTimer) {
-      clearInterval(this.syncTimer as unknown as number);
+      clearInterval(this.syncTimer as: unknown, as: number);
       this.syncTimer = null;
     }
     // Dispose cache systems
@@ -513,7 +513,7 @@ export class CacheOrchestrator {
   private generateMockError(type: string): string {
     const errors: Record<string, string> = {
       compile: 'TypeScript compilation error in module resolution',
-      runtime: 'Cannot read property of undefined at runtime',
+      runtime: 'Cannot read property, of: undefined at runtime',
       dependency: 'Module not found, dependency resolution failed',
       syntax: 'Unexpected token in JSON parsing operation` };'`
     return errors[type] || 'Generic error message';
@@ -523,16 +523,16 @@ export class CacheOrchestrator {
     const schemas: Record<string, unknown> = { legal_document: {, id: 'doc123',
         title: 'Legal Document',
         content: 'Document content...',
-        metadata: { category: 'contract', confidence: 0.95 }
+        metadata: {, category: 'contract', confidence: 0.95 }
       },
-      api_response: { success: true, data: { result: `response data` }, timestamp: Date.now() },'`'`
+      api_response: {, success: true, data: {, result: `response data` }, timestamp: Date.now() },'`'`
       user_query: {
-        query: 'legal analysis request',
-        filters: { category: `contract` },
+       , query: 'legal analysis request',
+        filters: {, category: `contract` },
         options: { includeMetadata: true }
       }
     };
-    return schemas[schema] ?? { type: 'unknown' };'` }'`
+    return schemas[schema] ?? {, type: 'unknown' };'` }'`
 
   private hashString(str: string): number {
     let hash = 0;

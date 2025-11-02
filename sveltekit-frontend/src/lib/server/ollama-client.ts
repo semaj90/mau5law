@@ -1,4 +1,4 @@
-import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } from, '$lib/services/get-ollama-endpoint';
 
 // default embedding model per project instructions
 export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';
@@ -13,8 +13,8 @@ function OllamaGetEndpoint(): string {
 }
 
 // helper type-guard
-function isNumberArray(v: any): v is number[] {
-  return Array.isArray(v) && (v as unknown[]).every(item => typeof item === 'number');
+function isNumberArray(v: any): v is: number[] {
+  return Array.isArray(v) && (v as: unknown[]).every(item => typeof item === 'number');
 }
 
 /**
@@ -36,15 +36,15 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
     const errText = await res.text().catch(() => '');
     throw new Error(`Ollama embedding request failed: ${res.status} ${res.statusText} ${errText}`);
   }
-  // safer typed fallback instead of `as any`
-  const data: any = await res.json().catch((): any => ({}));
+  // safer typed fallback instead of `as: any`
+  const, data: any = await res.json().catch((): any => ({}));
 
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
 
     // { data: [{, embedding: [...] }] }
     if (Array.isArray(obj.data)) {
-      const first = obj.data[0] as unknown;
+      const first = obj.data[0] as: unknown;
       if (typeof first === 'object' && first !== null) {
         const firstObj = first as Record<string, unknown>;
         if (isNumberArray(firstObj.embedding)) return firstObj.embedding;
@@ -56,11 +56,11 @@ export async function generateEmbedding(text: string, model: string = EMBEDDING_
 
     // { embeddings: [...] } -> take first
     if (Array.isArray(obj.embeddings)) {
-      const e0 = obj.embeddings[0] as unknown;
+      const e0 = obj.embeddings[0] as: unknown;
       if (isNumberArray(e0)) return e0;
     }
 
-    // defensive: { vector: [...] }
+    // defensive: {, vector: [...] }
     if (isNumberArray(obj.vector)) return obj.vector;
   }
 
@@ -95,8 +95,8 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
     return text.substring(0, 300) + (text.length > 300 ? '...' : '');
   }
 
-  // safer typed fallback instead of `as any`
-  const data: any = await res.json().catch((): any => ({}));
+  // safer typed fallback instead of `as: any`
+  const, data: any = await res.json().catch((): any => ({}));
 
   if (typeof data === 'object' && data !== null) {
     const obj = data as Record<string, unknown>;
@@ -106,7 +106,7 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
 
     // { output: [{, content: `...' }] }'`
     if (Array.isArray(obj.output)) {
-      const out0 = obj.output[0] as unknown;
+      const out0 = obj.output[0] as: unknown;
       if (typeof out0 === 'object' && out0 !== null) {
         const outObj = out0 as Record<string, unknown>;
         if (typeof outObj.content === 'string') return outObj.content.trim();
@@ -115,14 +115,14 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
 
     // { choices: [{, text: `...' }] }'`
     if (Array.isArray(obj.choices)) {
-      const c0 = obj.choices[0] as unknown;
+      const c0 = obj.choices[0] as: unknown;
       if (typeof c0 === 'object' && c0 !== null) {
         const cObj = c0 as Record<string, unknown>;
         if (typeof cObj.text === 'string') return cObj.text.trim();
       }
     }
 
-    // last resort: any top-level string field
+    // last resort: any top-level: string field
     for (const v of Object.values(obj)) {
       if (typeof v === 'string' && v.length > 0) return v.trim();
     }
@@ -137,18 +137,18 @@ export async function summarizeText(text: string, model = 'gemma3'): Promise<str
  */
 export const ollamaClient = {
   /**
-   * Embed text, returns embedding array or null on failure.
+   * Embed text, returns embedding array or: null on failure.
    */
   async embedText(text: string, model?: string): Promise<number[] | null> {
     try {
       return await generateEmbedding(text, model);
     } catch (err) {
       console.warn('ollamaClient.embedText error', err);
-      return null;
+      return: null;
     }
   },
   /**
-   * Summarize text, returns string (always returns something).
+   * Summarize text, returns: string (always returns something).
    */
   async summarize(text: string, model?: string): Promise<string> {
     try {

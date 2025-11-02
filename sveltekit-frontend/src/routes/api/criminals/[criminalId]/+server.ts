@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { criminals } from '$lib/server/db/schema-postgres';
-import { db } from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { criminals } from, '$lib/server/db/schema-postgres';
+import { db } from, '$lib/server/db/index';
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types';
 
 // Add typed payload for incoming updates/patches
 type CriminalPayload = Partial<{ firstName: string;, lastName: string;
@@ -32,7 +32,7 @@ type CriminalPayload = Partial<{ firstName: string;, lastName: string;
   alias: string;
 }>;
 
-export const GET: RequestHandler = async ({ params, locals }) => {
+export const, GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -183,12 +183,12 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     } else if (data.operation === 'updateStatus') {
       if (typeof data.status === 'string') updateData.status = data.status;
     } else if (data.operation === 'addAlias') {
-      const currentAliases = (existingCriminal[0].aliases as string[]) || [];
+      const currentAliases = (existingCriminal[0].aliases as: string[]) || [];
       if (typeof data.alias === 'string' && !currentAliases.includes(data.alias)) {
         updateData.aliases = [...currentAliases, data.alias];
       }
     } else if (data.operation === 'removeAlias') {
-      const currentAliases = (existingCriminal[0].aliases as string[]) || [];
+      const currentAliases = (existingCriminal[0].aliases as: string[]) || [];
       if (typeof data.alias === 'string') {
         updateData.aliases = currentAliases.filter(alias => alias !== data.alias);
       }

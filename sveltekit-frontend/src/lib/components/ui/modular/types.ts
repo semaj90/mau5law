@@ -1,6 +1,6 @@
 // TypeScript type definitions for modular UI components
-import type { Snippet } from 'svelte';
-import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
+import type { Snippet } from, 'svelte';
+import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from, 'svelte/elements';
 // Base component props
 export interface BaseProps {
   children?: Snippet;
@@ -112,7 +112,7 @@ export interface UploadFile { id: string;, file: File;
   size: number;
   type: string;
   progress?: number;
-  status: 'pending' | 'uploading' | 'completed' | 'error';
+ , status: 'pending' | 'uploading' | 'completed' | 'error';
   error?: string;
   preview?: string;
 }

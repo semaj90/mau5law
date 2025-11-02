@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 import {
   productionServiceRegistry,
   GO_SERVICES_REGISTRY,
   type ServiceDefinition
-} from '$lib/services/production-service-registry';
-import { context7OrchestrationService } from '$lib/services/context7-orchestration-integration';
+} from, '$lib/services/production-service-registry';
+import { context7OrchestrationService } from, '$lib/services/context7-orchestration-integration';
 
 /* clarified literal types matching registry API */
 type Category = 'ai_rag' | 'file_upload' | 'xstate_orchestration' | 'protocol' | 'infrastructure';
@@ -13,11 +13,11 @@ type Tier = 'tier1' | 'tier2' | 'tier3' | 'tier4';
 type ServiceWithHealth = ServiceDefinition & { healthy: boolean; lastHealthCheck: string };
 
 /* runtime allowed lists for safe narrowing */
-const ALLOWED_CATEGORIES: Category[] = ['ai_rag', 'file_upload', 'xstate_orchestration', 'protocol', 'infrastructure'];
+const, ALLOWED_CATEGORIES: Category[] = ['ai_rag', 'file_upload', 'xstate_orchestration', 'protocol', 'infrastructure'];
 const ALLOWED_TIERS: Tier[] = ['tier1', 'tier2', 'tier3', 'tier4'];
 
 /* === NEW: Safe partial orchestration API describing optional methods === */
-type OrchestrationApi = Partial<{ updateServiceHealth: () => Promise<void> | void;, getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
+type OrchestrationApi = Partial<{, updateServiceHealth: () => Promise<void> | void;, getMetrics: () => Record<string, unknown> | Promise<Record<string, unknown>>;
   getOrchestrationPlan: () =>
     | {
         startupSequence?: any[];
@@ -37,8 +37,8 @@ const orchestration = context7OrchestrationService as OrchestrationApi;
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    // explicitly typed local vars so TS can narrow them after null-checks
-    const categoryParam: string | null = url.searchParams.get('category');
+    // explicitly typed local vars so TS can narrow them after: null-checks
+    const, categoryParam: string | null = url.searchParams.get('category');
     const tierParam: string | null = url.searchParams.get('tier');
     const includeHealth = url.searchParams.get('health') === 'true';
 
@@ -83,16 +83,16 @@ export const GET: RequestHandler = async ({ url }) => {
     };
 
     const response = {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       services: servicesWithHealth,
       summary: {
-        total: services.length,
+       , total: services.length,
         byCategory: getCategoryBreakdown(services),
         byTier: getTierBreakdown(services),
         protocols: getProtocolBreakdown(services)
       },
       orchestration: {
-        startupOrder: Array.isArray(orchestrationPlan.startupSequence) ? orchestrationPlan.startupSequence.length : 0,
+       , startupOrder: Array.isArray(orchestrationPlan.startupSequence) ? orchestrationPlan.startupSequence.length : 0,
         healthEndpoints: Array.isArray(orchestrationPlan.healthChecks) ? orchestrationPlan.healthChecks.length : 0,
         protocolRoutes: orchestrationPlan.protocolRouting ? Object.keys(orchestrationPlan.protocolRouting).length : 0
       }
@@ -115,17 +115,17 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, services, options } = await request.json();
     switch (action) {
-      case 'start_services':
+      case, 'start_services':
         return await handleStartServices(Array.isArray(services) ? services : [], options);
-      case 'stop_services':
+      case, 'stop_services':
         return await handleStopServices(Array.isArray(services) ? services : []);
-      case 'restart_tier':
+      case, 'restart_tier':
         return await handleRestartTier(options?.tier);
-      case 'generate_startup_script':
+      case, 'generate_startup_script':
         return await handleGenerateStartupScript();
-      case 'update_orchestration':
+      case, 'update_orchestration':
         return await handleUpdateOrchestration(options);
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('POST action failed:', error);
@@ -166,7 +166,7 @@ function getProtocolBreakdown(services: ServiceDefinition[]): Record<string, num
 }
 
 async function handleStartServices(serviceNames: string[], _options?: any): Promise<Response> {
-  const results: Record<string, { success: boolean; message: string }> = {};
+  const results: Record<string, { success: boolean;, message: string }> = {};
   for (const serviceName of serviceNames) {
     const service = productionServiceRegistry.getServiceByName(serviceName);
     if (!service) {
@@ -195,7 +195,7 @@ async function handleStartServices(serviceNames: string[], _options?: any): Prom
 }
 
 async function handleStopServices(serviceNames: string[]): Promise<Response> {
-  const results: Record<string, { success: boolean; message: string }> = {};
+  const results: Record<string, { success: boolean;, message: string }> = {};
   for (const serviceName of serviceNames) {
     // In production, this would actually stop the service
     results[serviceName] = {

@@ -1,21 +1,21 @@
 /**
  * CaseStore - Unified Case Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - cases.ts
  * - casesStore.ts
  * - case-filters.ts
  * - case-navigation.ts
  *
- * Usage:
- *   import { caseStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { caseStore } from, '$lib/stores/unified';
  *
  *   await caseStore.loadCases();
  *   caseStore.selectCase(caseId);
  *   $: activeCase = $caseStore.activeCase;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -43,9 +43,9 @@ export interface Case { id: string;, title: string;
   updatedAt: number;
 }
 
-export interface CaseFilters { statuses: CaseStatus[];, priorities: CasePriority[];
+export interface CaseFilters {, statuses: CaseStatus[];, priorities: CasePriority[];
   jurisdictions: string[];
-  dateRange?: { start: number;, end: number;
+  dateRange?: {, start: number;, end: number;
   };
   tags?: string[];
   searchText?: string;
@@ -74,7 +74,7 @@ interface CaseStoreState {
 
   // Metadata
   totalCases: number;
-  casesByStatus: Map<CaseStatus, number>;
+ , casesByStatus: Map<CaseStatus, number>;
   casesByPriority: Map<CasePriority, number>;
 
   // UI state
@@ -84,14 +84,14 @@ interface CaseStoreState {
 }
 
 const initialFilters: CaseFilters = {
-  statuses: [],
+ , statuses: [],
   priorities: [],
   jurisdictions: [],
   tags: []
 };
 
 const initialState: CaseStoreState = {
-  cases: [],
+ , cases: [],
   filteredCases: [],
   activeCase: null,
   activeCaseId: null,
@@ -406,18 +406,18 @@ function createCaseStore() {
         let comparison = 0;
 
         switch (state.sortBy) {
-          case 'date':
+          case, 'date':
             comparison = a.openedDate - b.openedDate;
             break;
-          case 'title':
+          case, 'title':
             comparison = a.title.localeCompare(b.title);
             break;
-          case 'priority': {
+          case, 'priority': {
             const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
             comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
             break;
           }
-          case 'status':
+          case, 'status':
             comparison = a.status.localeCompare(b.status);
             break;
         }
@@ -471,14 +471,14 @@ export const activeCase = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { cases, selectCase } from '$lib/stores/cases'
- *   import { casesStore } from '$lib/stores/casesStore'
+ * Old imports to, replace:
+ *   import { cases, selectCase } from, '$lib/stores/cases'
+ *   import { casesStore } from, '$lib/stores/casesStore'
  *
  * New imports:
- *   import { caseStore, cases, filteredCases, activeCase } from '$lib/stores/unified'
+ *   import { caseStore, cases, filteredCases, activeCase } from, '$lib/stores/unified'
  *
  * Usage patterns:
- *  ; Old: $cases, $casesStore
+ *  ;, Old: $cases, $casesStore
  *   New: $cases or $filteredCases from unified
  */

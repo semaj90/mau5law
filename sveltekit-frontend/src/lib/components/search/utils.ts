@@ -1,7 +1,7 @@
 // Utility functions for legal search components
-import type { SearchResult, SearchFilter } from './types.js';
+import type { SearchResult, SearchFilter } from, './types.js';
 
-// Define a common type for the raw search result object to simplify type assertions
+// Define a common type for the raw search result: object to simplify type assertions
 type RawSearchResult = {
   id?: string | number;
   title?: string;
@@ -62,7 +62,7 @@ export function formatSearchResults(results: RawSearchResult[]): SearchResult[] 
       content: r.content || r.description || r.summary || r.notes || '',
       score: r.score || r.similarity || calculateDefaultScore(r),
       metadata: {
-        date: r.createdAt || r.date,
+       , date: r.createdAt || r.date,
         jurisdiction: r.jurisdiction,
         status: r.status,
         confidentiality: r.confidentialityLevel,
@@ -116,7 +116,7 @@ export function calculateRelevanceScore(
       }
     }
   }
-  // Normalize by number of query words
+  // Normalize by: number of query words
   const normalizedScore = totalScore / queryWords.length;
   // Apply match ratio penalty - partial matches get reduced score
   const matchRatio = matches / queryWords.length;
@@ -127,13 +127,13 @@ export function calculateRelevanceScore(
  * Infer entity type from result data
  */
 function inferType(result: RawSearchResult): SearchResult['type'] {
-  if (result.caseNumber || result.case_id) return 'case';
-  if (result.evidenceType || result.evidence_type) return 'evidence';
-  if (result.firstName && result.lastName) return 'criminal';
-  if (result.documentType || result.document_type) return 'document';
-  if (result.citation || result.precedent) return 'precedent';
-  if (result.statute || result.law) return 'statute';
-  return 'document';
+  if (result.caseNumber || result.case_id) return, 'case';
+  if (result.evidenceType || result.evidence_type) return, 'evidence';
+  if (result.firstName && result.lastName) return, 'criminal';
+  if (result.documentType || result.document_type) return, 'document';
+  if (result.citation || result.precedent) return, 'precedent';
+  if (result.statute || result.law) return, 'statute';
+  return, 'document';
 }
 /**
  * Calculate default score when none provided
@@ -220,13 +220,13 @@ export function validateSearchQuery(query: string): { isValid: boolean;, errors
   suggestions: string[];
 } {
   const errors: string[] = [];
-  const suggestions: string[] = [];
+  const, suggestions: string[] = [];
   if (!query || query.trim().length === 0) {
     errors.push('Search query is required');
     return { isValid: false, errors, suggestions }
   }
   if (query.trim().length < 2) {
-    errors.push('Search query must be at least 2 characters');
+    errors.push('Search query must be at least, 2 characters');
     suggestions.push('Try a longer search term');
   }
   if (query.length > 200) {

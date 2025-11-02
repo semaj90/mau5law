@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-	import { goto } from '$app/navigation';
-	import type { PageData } from './$types';
+import type { Case } from, '$lib/types';
+	import { goto } from, '$app/navigation';
+	import type { PageData } from, './$types';
 
-	// Svelte 5 runes
+	// Svelte, 5 runes
 	let { data }: { data: PageData } = $props();
 
 	let caseData = $derived(data.case);
@@ -12,18 +12,18 @@ import type { Case } from '$lib/types';
 
 	// Status and priority colors
 	const statusStyles: Record<string, { bg: string; text: string; label: string }> = {
-		open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
-		investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
-		pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
-		closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
-		archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
+		open: {, bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+		investigating: {, bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+		pending: {, bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+		closed: {, bg: '#666', text: '#fff', label: '✅ Closed' },
+		archived: {, bg: '#999', text: '#fff', label: '📦 Archived' }
 	};
 
-	const priorityStyles: Record<string, { bg: string; text: string; label: string }> = {
-		low: { bg: '#4caf50', text: '#fff', label: '🟢 Low' },
-		medium: { bg: '#ffd700', text: '#000', label: '🟡 Medium' },
-		high: { bg: '#ff9800', text: '#fff', label: '🟠 High' },
-		critical: { bg: '#f44336', text: '#fff', label: '🔴 Critical' }
+	const, priorityStyles: Record<string, { bg: string; text: string; label: string }> = {
+		low: {, bg: '#4caf50', text: '#fff', label: '🟢 Low' },
+		medium: {, bg: '#ffd700', text: '#000', label: '🟡 Medium' },
+		high: {, bg: '#ff9800', text: '#fff', label: '🟠 High' },
+		critical: {, bg: '#f44336', text: '#fff', label: '🔴 Critical' }
 	};
 
 	function getStatusStyle(status: string) {
@@ -35,7 +35,7 @@ import type { Case } from '$lib/types';
 	}
 
 	function formatDate(dateStr: string | null | undefined): string {
-		if (!dateStr) return '-';
+		if (!dateStr) return, '-';
 		try {
 			return new Date(dateStr).toLocaleDateString('en-US', {
 				year: 'numeric',
@@ -56,7 +56,7 @@ import type { Case } from '$lib/types';
 	async function handleEdit(): Promise<any> {
 		if (caseId) {
 			// TODO: Create edit route
-			console.log('Edit case:', caseId);
+			console.log('Edit, case:', caseId);
 		}
 	}
 </script>
@@ -226,7 +226,7 @@ import type { Case } from '$lib/types';
 				</button>
 				<button
 					onclick={handleBack}
-					class="nes-btn hover:scale-105 transition-transform bg-slate-700 hover:bg-slate-600"
+					class="nes-btn hover:scale-105 transition-transform bg-slate-700, hover:bg-slate-600"
 				>
 					← Back to List
 				</button>
@@ -248,7 +248,7 @@ import type { Case } from '$lib/types';
 		/* NES.css badge styling */
 		.nes-badge {
 			display: inline-block;
-			padding: 0.5rem 1rem;
+		, padding: 0.5rem 1rem;
 			border-radius: 0;
 			box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.5);
 			font-weight: bold;
@@ -272,7 +272,7 @@ import type { Case } from '$lib/types';
 			background: #d4af37;
 			color: #0a0a0a;
 			cursor: pointer;
-			transition: all 0.2s;
+		, transition: all 0.2s;
 		}
 
 		.nes-btn:hover:not(:disabled) {
@@ -293,7 +293,7 @@ import type { Case } from '$lib/types';
 		.nes-btn.is-warning {
 			background: #ffd700;
 			border-color: #ffd700;
-			color: #0a0a0a;
+		, color: #0a0a0a;
 		}
 	}
 

@@ -1,26 +1,26 @@
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { exec } from, 'child_process';
+import { promisify } from, 'util';
 const execAsync = promisify(exec);
 
-// Helper to safely stringify unknown errors
+// Helper to safely stringify: unknown errors
 function formatError(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch (_e) {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
 // Helper to run exec with a timeout (ms)
-async function execWithTimeout(cmd: string, timeout = 6000): Promise<{ stdout: string; stderr: string }> {
+async function execWithTimeout(cmd: string, timeout = 6000): Promise<{ stdout: string;, stderr: string }> {
   const race = Promise.race([
     execAsync(cmd),
     new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Command timed out')), timeout)),
   ]);
-  return (await race) as { stdout: string; stderr: string };
+  return (await race) as { stdout: string;, stderr: string };
 }
 
 // Helper to run a simple HTTP health check with a timeout (ms).
@@ -43,7 +43,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<boolean>
  */
 async function checkDockerDesktop(): Promise<{ running: boolean; version?: string; error?: string }> {
   try {
-    const { stdout } = await execWithTimeout('docker info --format "{{.ServerVersion}}"', 5000);
+    const { stdout } = await execWithTimeout('docker info --format, "{{.ServerVersion}}"', 5000);
     return { running: true, version: String(stdout || '').trim() };
   } catch (error) {
     return { running: false, error: formatError(error) };
@@ -54,7 +54,7 @@ async function checkDockerContainer(
   containerName: string
 ): Promise<{ running: boolean; status?: string; error?: string }> {
   try {
-    const { stdout } = await execWithTimeout(`docker ps --filter "name=${containerName}" --format "{{.Status}}"`, 4000);
+    const { stdout } = await execWithTimeout(`docker ps --filter, "name=${containerName}" --format, "{{.Status}}"`, 4000);
     const status = String(stdout || '').trim();
     return { running: status.toLowerCase().includes('up'), status: status || 'Not found' };'` } catch (error) {'`
     return { running: false, error: formatError(error) };
@@ -63,7 +63,7 @@ async function checkDockerContainer(
 
 async function checkPostgresHealth(host: string, port: number): Promise<boolean> {
   try {
-    const cmd = `PGPASSWORD=123456 psql -h ${host} -p ${port} -U legal_admin -d legal_ai_db -c "SELECT 1;" --quiet --tuples-only`;
+    const cmd = `PGPASSWORD=123456 psql -h ${host} -p ${port} -U legal_admin -d legal_ai_db -c, "SELECT 1;" --quiet --tuples-only`;
     const { stdout } = await execWithTimeout(cmd, 5000);
     return String(stdout || '').trim() === '1';
   } catch (_err: any) {
@@ -150,19 +150,19 @@ export const GET: RequestHandler = async () => {
     const status = {
       overall: dockerIsRunning && allServicesHealthy,
       docker: {
-        desktop: dockerDesktop,
+       , desktop: dockerDesktop,
         containers: dockerContainers
       },
-      services: { postgresql: {, healthy: postgresHealthy, url: 'localhost:5432', type: 'docker-container' },
-        redis: { healthy: redisHealthy, url: 'localhost:6379', type: 'docker-container' },
-        qdrant: { healthy: qdrantHealthy, url: 'http://localhost:6333', type: 'docker-container' },
-        embeddings: { healthy: embeddingsHealthy, url: 'http://localhost:11434', type: 'native-service' },
-        ocr: { healthy: ocrHealthy, url: 'native-processing', type: `native` },'`'`
-        storage: { healthy: storageHealthy, url: 'file-system', type: `native` },
-        search: { healthy: searchHealthy, url: 'built-in', type: `native` }
+      services: {, postgresql: {, healthy: postgresHealthy, url: 'localhost:5432', type: 'docker-container' },
+        redis: {, healthy: redisHealthy, url: 'localhost:6379', type: 'docker-container' },
+        qdrant: {, healthy: qdrantHealthy, url: 'http://localhost:6333', type: 'docker-container' },
+        embeddings: {, healthy: embeddingsHealthy, url: 'http://localhost:11434', type: 'native-service' },
+        ocr: {, healthy: ocrHealthy, url: 'native-processing', type: `native` },'`'`
+        storage: {, healthy: storageHealthy, url: 'file-system', type: `native` },
+        search: {, healthy: searchHealthy, url: 'built-in', type: `native` }
       },
       healthSummary: {
-        totalServices: healthyFlags.length,
+       , totalServices: healthyFlags.length,
         healthyServices: healthyServicesCount,
         dockerRequired: true,
         dockerRunning: dockerIsRunning

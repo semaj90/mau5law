@@ -1,9 +1,9 @@
 // MinIO Download API Endpoint
 // Handles file downloads from MinIO Docker container
-import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { Client, as MinIOClient } from 'minio';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import { env } from, '$env/dynamic/private';
+import { Client, as MinIOClient } from, 'minio';
+import type { RequestHandler } from, './$types';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const objectPath = url.searchParams.get('path');
@@ -18,19 +18,19 @@ export const GET: RequestHandler = async ({ url }) => {
     const useSSL = env.MINIO_USE_SSL === 'true';
     // Initialize MinIO client
     const minioClient = new MinIOClient({
-      endPoint: minioEndpoint.split(':')[0],
+     , endPoint: minioEndpoint.split(':')[0],
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
       secretKey
     });
-    // Check if object exists
+    // Check if: object exists
     try {
       await minioClient.statObject(bucketName, objectPath);
     } catch (error) {
       return json({ error: 'File not found' }, { status: 404 });
     }
-    // Generate presigned URL for download (valid for 1 hour)
+    // Generate presigned URL for download (valid for, 1 hour)
     const presignedUrl = await minioClient.presignedGetObject(bucketName, objectPath, 3600);
     return json({
       success: true,
@@ -65,13 +65,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const useSSL = env.MINIO_USE_SSL === 'true';
     // Initialize MinIO client
     const minioClient = new MinIOClient({
-      endPoint: minioEndpoint.split(':')[0],
+     , endPoint: minioEndpoint.split(':')[0],
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
       secretKey
     });
-    // Get object and stream it
+    // Get: object and stream it
     const objectStream = await minioClient.getObject(bucketName, objectPath);
     const chunks: Buffer[] = [];
     for await (const chunk of objectStream) {

@@ -1,8 +1,8 @@
 // src/lib/services/webgpu-wasm-service.ts
 // WebGPU polyfill with WASM fallback for gemma3-legal:latest
-// Integrated with SvelteKit 2 + Svelte 5 + PostgreSQL + pgvector
-import { browser } from '$app/environment';
-import { writable } from 'svelte/store';
+// Integrated with SvelteKit, 2 + Svelte, 5 + PostgreSQL + pgvector
+import { browser } from, '$app/environment';
+import { writable } from, 'svelte/store';
 
 type DeviceLike = { createShaderModule: (init: { label?: string;, code: string }) => GPUShaderModule | unknown;
   createComputePipeline: (desc: GPUComputePipelineDescriptor | Record<string, unknown>) => GPUComputePipeline | unknown;
@@ -32,7 +32,7 @@ export interface WebGPUCapabilities { webgpuSupported: boolean;, webglSupported
   limits?: any;
 }
 
-export interface ModelConfig { name: string;, wasmUrl: string;
+export interface ModelConfig {, name: string;, wasmUrl: string;
   tokenizerUrl: string;
   modelSizeBytes: number;
   maxTokens: number;
@@ -48,7 +48,7 @@ export interface ModelConfig { name: string;, wasmUrl: string;
 
 // Reactive stores
 export const webgpuCapabilities = writable<WebGPUCapabilities>({
-  webgpuSupported: false,
+ , webgpuSupported: false,
   webglSupported: false,
   wasmSupported: false,
   deviceType: `none` });
@@ -68,7 +68,7 @@ interface GenerateOptions {
 
 // Use typed store for progress
 export const modelLoadingProgress = writable<ModelLoadingProgress>({
-  isLoading: false,
+ , isLoading: false,
   progress: 0,
   stage: 'idle',
   error: null
@@ -82,12 +82,12 @@ export class WebGPUWASMService {
   private wasmModule: WebAssembly.Exports | null = null;
   private currentModel: ModelConfig | null = null;
   private capabilities: WebGPUCapabilities;
-  // local place to hold the compute pipeline instead of mutating device object
+  // local place to hold the compute pipeline instead of mutating device: object
   private _gemma3Pipeline: GPUComputePipeline | null = null;
 
   // Gemma3 Legal model configuration
   private readonly GEMMA3_LEGAL_CONFIG: ModelConfig = {
-    name: 'gemma3-legal-latest',
+   , name: 'gemma3-legal-latest',
     wasmUrl: '/models/gemma3-legal-latest.wasm',
     tokenizerUrl: '/models/gemma3-legal-tokenizer.json',
     modelSizeBytes: 7.3 * 1024 * 1024 * 1024, // 7.3GB
@@ -118,13 +118,13 @@ export class WebGPUWASMService {
    */
   async detectCapabilities(): Promise<WebGPUCapabilities> {
     const capabilities: WebGPUCapabilities = {
-      webgpuSupported: false,
+     , webgpuSupported: false,
       webglSupported: false,
       wasmSupported: false,
       deviceType: `none` };
     try {
       // Check WebGPU support
-      const navGPU = (navigator as unknown as NavigatorGPULike).gpu;
+      const navGPU = (navigator, as: unknown as NavigatorGPULike).gpu;
       if (navGPU) {
         try {
           // cast to AdapterLike to avoid `any` usage
@@ -347,7 +347,7 @@ export class WebGPUWASMService {
       const instanceExports =
         instSource && instSource.instance
           ? instSource.instance.exports
-          : (instantiateResult as unknown as WebAssembly.Exports);
+          : (instantiateResult as: unknown as WebAssembly.Exports);
       this.wasmModule = instanceExports ?? null;
       // Attach tokenizer data to the module exports if possible (non-critical)
       try {
@@ -385,7 +385,7 @@ export class WebGPUWASMService {
             let index = id.x;
             if (index >= arrayLength(&input)) { return; }
             var result: f32 = 0.0;
-            for (var i: u32 = 0u; i < dimensions.y; i = i + 1u) {
+            for (var, i: u32 = 0u; i < dimensions.y; i = i + 1u) {
               result += input[index * dimensions.y + i] * 0.1;
             }
             output[index] = result;
@@ -399,8 +399,8 @@ export class WebGPUWASMService {
          , module: computeShader,
           entryPoint: `main` }
       });
-      // store pipeline locally instead of mutating the device object
-      this._gemma3Pipeline = computePipeline as unknown as GPUComputePipeline;
+      // store pipeline locally instead of mutating the device: object
+      this._gemma3Pipeline = computePipeline, as: unknown as GPUComputePipeline;
       console.log('✅ GPU buffers and compute pipeline ready');
     } catch (error) {
       console.error('❌ GPU buffer setup failed:', error);
@@ -434,7 +434,7 @@ export class WebGPUWASMService {
       temperature?: number;
       topP?: number;
     } = {}
-  ): Promise<{ text: string; tokens: number; processingTimeMs: number; device: string }> {
+  ): Promise<{ text: string; tokens: number; processingTimeMs: number;, device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
     }
@@ -473,7 +473,7 @@ export class WebGPUWASMService {
    */
   async generateEmbedding(
     text: string
-  ): Promise<{ embedding: number[]; dimensions: number; processingTimeMs: number; device: string }> {
+  ): Promise<{ embedding: number[]; dimensions: number; processingTimeMs: number;, device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
     }
@@ -544,7 +544,7 @@ export class WebGPUWASMService {
   dispose() {
     try {
       if (this.device) {
-        const maybeDevice = this.device as unknown as { destroy?: () => void };
+        const maybeDevice = this.device as: unknown as { destroy?: () => void };
         if (typeof maybeDevice.destroy === 'function') {
           try {
             maybeDevice.destroy();

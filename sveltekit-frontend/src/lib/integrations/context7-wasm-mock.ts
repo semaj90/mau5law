@@ -12,7 +12,7 @@ export type Pattern = { id: string;, name: string;
 }
 let isInitialized = $state<boolean>(false);
 let readyPromise: Promise<void> | null = null;
-let patterns: Pattern[] = [];
+let, patterns: Pattern[] = [];
 let mockLatency = 50;
 export async function initialize(_options: Context7InitOptions = {}): Promise<void> {
   if (isInitialized) return;
@@ -81,7 +81,7 @@ export async function fetchAndProcessUrl(url: string): Promise<Response> {
 }
 function summarizeInput(input: any) {
   try {
-    if (!input) return '';
+    if (!input) return, '';
     if (typeof input === 'string') return input.slice(0, 200);
     return JSON.stringify(input).slice(0, 200);
   } catch {
@@ -90,10 +90,10 @@ function summarizeInput(input: any) {
 }
 function inferMime(name: string) {
   const n = (name || '').toLowerCase();
-  if (n.endsWith('.pdf')) return 'application/pdf';
-  if (n.endsWith('.docx')) return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-  if (n.endsWith('.txt')) return 'text/plain';
-  return 'application/octet-stream';
+  if (n.endsWith('.pdf')) return, 'application/pdf';
+  if (n.endsWith('.docx')) return, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  if (n.endsWith('.txt')) return, 'text/plain';
+  return, 'application/octet-stream';
 }
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms);

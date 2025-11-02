@@ -1,12 +1,12 @@
-import type { SearchResult } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { requireAuth } from '$lib/server/auth-helpers';
-import { getDb } from '$lib/server/db';
-import { sql } from 'drizzle-orm';
-import { legalDocumentsJsonb } from '../../../drizzle/schema';
-import { z } from 'zod';
-import { generateEmbedding } from '$lib/services/gemma-embedding-service';
+import type { SearchResult } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { requireAuth } from, '$lib/server/auth-helpers';
+import { getDb } from, '$lib/server/db';
+import { sql } from, 'drizzle-orm';
+import { legalDocumentsJsonb } from, '../../../drizzle/schema';
+import { z } from, 'zod';
+import { generateEmbedding } from, '$lib/services/gemma-embedding-service';
 
 // Request validation schema
 const pgvectorSearchSchema = z.object({
@@ -15,7 +15,7 @@ const pgvectorSearchSchema = z.object({
   threshold: z.number().min(0).max(1).default(0.5),
   filters: z
     .object({
-      documentType: z.string().optional(),
+     , documentType: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional(),
       riskLevel: z.enum(['low', 'medium', 'high', 'critical']).optional()
@@ -28,7 +28,7 @@ type SearchRequest = z.infer<typeof, pgvectorSearchSchema>;
 
 interface SearchResult { id: string;, title: string;
   content: string;
-  metadata: Record<string, any>;
+ , metadata: Record<string, any>;
   similarity: number;
   processingTimeMs: number;
 }
@@ -37,10 +37,10 @@ interface SearchResult { id: string;, title: string;
  * POST /api/search-pgvector-optimized
  * Ultra-fast semantic search using PostgreSQL pgvector extension
  *
- * Performance: 15-30ms response time (vs 100-150ms Python fallback)
+ *, Performance: 15-30ms response time (vs 100-150ms Python fallback)
  * Vector index: HNSW for legalDocumentsJsonb.contentEmbedding
  */
-export const POST: RequestHandler = async event => {
+export const, POST: RequestHandler = async event => {
   const startTime = performance.now();
   const { request } = event;
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async event => {
     // Convert to similarity score: 1 - distance
     const results = await db
       .select({
-        id: legalDocumentsJsonb.id,
+       , id: legalDocumentsJsonb.id,
         title: legalDocumentsJsonb.title,
         content: legalDocumentsJsonb.content,
         metadata: legalDocumentsJsonb.metadata,
@@ -126,18 +126,18 @@ export const POST: RequestHandler = async event => {
         processingTimeMs: totalTime
       })),
       stats: {
-        totalResults: results.length,
+       , totalResults: results.length,
         limit,
         threshold,
         timings: {
-          embeddingGenerationMs: Math.round(embeddingTime),
+         , embeddingGenerationMs: Math.round(embeddingTime),
           pgvectorSearchMs: Math.round(searchTime),
           totalMs: Math.round(totalTime)
         },
         filters: filters ? Object.keys(filters).length : 0
       },
       metadata: {
-        userId: auth.user.id,
+       , userId: auth.user.id,
         timestamp: new Date().toISOString(),
         embeddingModel: 'gemma:384',
         indexType: `HNSW` }
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async event => {
     const db = getDb();
 
     // Quick health check: count documents
-    const count = await db.select({ count: sql<number>`count(*)` }).from(legalDocumentsJsonb);'`'`
+    const count = await db.select({, count: sql<number>`count(*)` }).from(legalDocumentsJsonb);'`'`
 
     return json({
       success: true,
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async event => {
         indexType: 'HNSW (m=16, ef=64)',
         vectorOperator: `<=> (cosine distance)` },
       features: {
-        metadataFiltering: true,
+       , metadataFiltering: true,
         thresholdControl: true,
         limitControl: true,
         embeddingSelection: true

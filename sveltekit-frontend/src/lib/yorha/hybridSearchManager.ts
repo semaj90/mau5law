@@ -1,8 +1,8 @@
-import { ensureLocalIndex, addOrUpdateDocuments } from './localSearch.js';
-import type { LocalLegalDoc } from './localSearch.js';
+import { ensureLocalIndex, addOrUpdateDocuments } from, './localSearch.js';
+import type { LocalLegalDoc } from, './localSearch.js';
 
 let lokiDb: any = null;
-let lokiCollection: any = null;
+let, lokiCollection: any = null;
 let lastRefresh = 0;
 let refreshing = $state<boolean>(false);
 

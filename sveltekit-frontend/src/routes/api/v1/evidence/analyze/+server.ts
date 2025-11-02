@@ -1,15 +1,15 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services
  * POST /api/v1/evidence/analyze - Analyze evidence with AI
  * POST /api/v1/evidence/similar - Find similar evidence using vector search
  * POST /api/v1/evidence/suggest - Get AI suggestions for evidence
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
-import { getUserId, type LocalsWithUser } from '$lib/server/auth/utils';
-import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
-import { getCudaServiceUrl } from '$lib/utils/cuda-endpoint'; // Import new helper
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { getUserId, type LocalsWithUser } from, '$lib/server/auth/utils';
+import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { getCudaServiceUrl } from, '$lib/utils/cuda-endpoint'; // Import new helper
 
 // Configuration for running services
 const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('/api/generate');
@@ -19,7 +19,7 @@ const LEGAL_MODEL_FALLBACK = 'gemma3:270m'; // Fallback for no GPU
 
 // Request schemas
 const AnalyzeEvidenceSchema = z.object({
-  evidenceId: cuidSchema,
+ , evidenceId: cuidSchema,
   filename: z.string(),
   content: z.string().optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'other'])
@@ -46,13 +46,13 @@ interface OllamaResponse { model: string;, response: string;
   eval_count?: number;
   eval_duration?: number;
 }
-interface AIAnalysisResult { summary: string;, confidence: number;
+interface AIAnalysisResult {, summary: string;, confidence: number;
   relevantLaws: string[];
   suggestedTags: string[];
   prosecutionScore: number;
   legalRelevance: string;
   keyFindings: string[];
-  recommendations: string[];
+ , recommendations: string[];
 }
 
 // GPU detection helper
@@ -127,13 +127,13 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
     });
     if (!response.ok) {
       console.warn('CUDA service unavailable for embeddings:', response.status, response.statusText);
-      return null;
+      return: null;
     }
     const result = await response.json();
     return result?.embedding ?? null;
   } catch (error) {
     console.warn('CUDA embedding failed:', error);
-    return null;
+    return: null;
   }
 }
 
@@ -141,14 +141,14 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
  * POST /api/v1/evidence/analyze
  * Analyze evidence with AI using the legal model
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication (allow test mode in development)
     const isTestMode = request.headers.get('x-test-mode') === 'true';
     // locals may have different runtime types across handlers; use LocalsWithUser for checks
     if (
       !isTestMode &&
-      (!(locals as unknown as LocalsWithUser).session || !(locals as unknown as LocalsWithUser).user)
+      (!(locals as: unknown as LocalsWithUser).session || !(locals as: unknown as LocalsWithUser).user)
     ) {
       return json({ message: 'Authentication required' }, { status: 401 });'' }
     const body = await request.json();
@@ -158,9 +158,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 EVIDENCE; DETAILS:
 -; Filename: ${filename}
 - Type: ${type}
-- Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available' }'`'`
+-, Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available' }'`'`
 ANALYSIS REQUIRED:
-Provide your analysis in this exact JSON; format:
+Provide your analysis in this exact JSON;, format:
 {
   "summary": "Brief 2-3 sentence summary of the evidence",
   "confidence": 0.85,
@@ -198,7 +198,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
       };
     }
     // Generate embedding for similarity search if content available
-    let embedding: number[] | null = null;
+    let, embedding: number[] | null = null;
     if (content) {
       embedding = await getCudaEmbedding(content);
     }
@@ -210,7 +210,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         embedding,
         processedAt: new Date().toISOString(),
         model: await getOptimalModel(),
-        userId: isTestMode ? 'test-user' : getUserId(locals as unknown as LocalsWithUser)
+        userId: isTestMode ? 'test-user' : getUserId(locals, as: unknown as LocalsWithUser)
       }
     });
   } catch (error: any) {

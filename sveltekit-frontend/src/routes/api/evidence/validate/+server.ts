@@ -1,15 +1,15 @@
-import { evidence } from '$lib/server/db/schema-postgres';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types';
-import { eq } from 'drizzle-orm';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import type { RequestHandler } from, './$types';
+import { eq } from, 'drizzle-orm';
 
 // Add small type definitions to remove implicit anys and tighten parsing
 type Validation = {
   evidenceId: string;
   eventId?: string | null;
   userId: string;
-  valid: boolean;
+ , valid: boolean;
   feedback?: string | null;
   corrections?: Record<string, unknown> | null;
   timestamp: string;
@@ -30,7 +30,7 @@ type AIAnalysis = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   const user = locals.user;
   if (!user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Parse existing AI analysis safely
     let aiAnalysis: AIAnalysis = {};
     try {
-      const raw = (evidenceRecord.aiAnalysis as string) ?? '{}';
+      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{}';
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
     } catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     let aiAnalysis: AIAnalysis = {};
     try {
-      const raw = (evidenceRecord.aiAnalysis as string) ?? '{}';
+      const raw = (evidenceRecord.aiAnalysis, as: string) ?? '{}';
       aiAnalysis = JSON.parse(raw) as AIAnalysis;
     } catch (err: any) {
       console.warn('Failed to parse AI analysis JSON', err);

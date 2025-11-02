@@ -1,10 +1,10 @@
 // Enhanced Authentication Store with Role-Based Access Control
 // Manages user authentication state, permissions, and session management
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, get } from, 'svelte/store';
+import { browser } from, '$app/environment';
 /* Replace static import (may not exist at build time) with dynamic public env */
-import { env, as PUBLIC_ENV } from '$env/dynamic/public';
-import type { UserRole, Permission } from './roles.js';
+import { env, as PUBLIC_ENV } from, '$env/dynamic/public';
+import type { UserRole, Permission } from, './roles.js';
 
 // Add a minimal ServerUser shape to satisfy Partial<ServerUser>
 interface ServerUser { id: string;, email: string;
@@ -15,7 +15,7 @@ interface ServerUser { id: string;, email: string;
   lastName?: string;
 }
 
-export interface AuthUser extends Partial<ServerUser> { id: string;, email: string;
+export interface AuthUser extends Partial<ServerUser> {, id: string;, email: string;
   role: UserRole;
   name?: string;
   firstName?: string;
@@ -24,11 +24,11 @@ export interface AuthUser extends Partial<ServerUser> { id: string;, email: str
   avatarUrl?: string;
   emailVerified?: boolean;
 }
-export interface AuthSession { id: string;, userId: string;
-  // expiresAt may come from the server as an ISO string; accept string or Date and normalize when used
+export interface AuthSession {, id: string;, userId: string;
+  // expiresAt may come from the server as an ISO: string; accept: string or Date and normalize when used
   expiresAt: string | Date;
 }
-export interface AuthState { user: AuthUser | null;, session: AuthSession | null;
+export interface AuthState {, user: AuthUser | null;, session: AuthSession | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   permissions: Permission[];
@@ -48,7 +48,7 @@ type ApiResponse = {
 
 // Initial auth state
 const initialState: AuthState = {
-  user: null,
+ , user: null,
   session: null,
   isLoading: true,
   isAuthenticated: false,
@@ -65,7 +65,7 @@ export const userPermissions = derived(authState, $auth => $auth.permissions);
 export const isLoading = derived(authState, $auth => $auth.isLoading);
 // Session management constants
 const SESSION_CHECK_INTERVAL = 60000; // Check session every minute
-const SESSION_WARNING_TIME = 5 * 60 * 1000; // Warn 5 minutes before expiration
+const SESSION_WARNING_TIME = 5 * 60 * 1000; // Warn, 5 minutes before expiration
 const ACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes of inactivity
 // Production-ready Docker Desktop endpoints (use host.docker.internal from containers)
 export const DockerEndpoints = {
@@ -78,7 +78,7 @@ export const DockerEndpoints = {
 };
 
 /* Derive PUBLIC_API_BASE from dynamic env at runtime; keep existing fallback */
-const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE as string | undefined) ?? undefined;
+const PUBLIC_API_BASE = (PUBLIC_ENV?.PUBLIC_API_BASE, as: string | undefined) ?? undefined;
 const API_BASE = PUBLIC_API_BASE || 'http://localhost:5173';
 export function buildApiUrl(path: string) {
   if (!path.startsWith('/')) path = `/${path}`;
@@ -99,7 +99,7 @@ const AccessControl = {
       admin: ['manage_users', 'manage_content', 'read'],
       editor: ['edit', 'read'],
       viewer: ['read']
-    } as unknown as Record<UserRole, Permission[]>;
+    }, as: unknown as Record<UserRole, Permission[]>;
     return rolePermissionMap[role] ?? [];
   },
 
@@ -115,7 +115,7 @@ const AccessControl = {
 
     const perms = this.getRolePermissions(role);
     // wildcard grants everything
-    if (perms.includes('*' as unknown as Permission)) return true;
+    if (perms.includes('*' as: unknown as Permission)) return true;
     // owner override: if the user is the resource owner, allow
     if (resourceOwnerId && userId && resourceOwnerId === userId) return true;
     // explicit permission match
@@ -124,17 +124,17 @@ const AccessControl = {
 };
 
 export class AuthStore {
-  // Use ReturnType<typeof setInterval> | ReturnType<typeof setTimeout> to avoid Node timeout vs number mismatch
+  // Use ReturnType<typeof setInterval> | ReturnType<typeof setTimeout> to avoid Node timeout vs: number mismatch
   private static sessionCheckInterval: ReturnType<typeof setInterval> | null = null;
   private static activityTimeout: ReturnType<typeof setTimeout> | null = null;
-  private static activityHandler: ((e?: any) => void) | null = null;
+  private static, activityHandler: ((e?: any) => void) | null = null;
   private static visibilityHandler: ((e?: any) => void) | null = null;
   private static listenersRegistered = $state(false);
 
   // Helper to parse API responses without using `any`
   private static async parseApiResponse(response: Response): Promise<ApiResponse> {
     try {
-      const raw = (await response.json()) as unknown;
+      const raw = (await response.json()) as: unknown;
       return raw as ApiResponse;
     } catch (err: any) {
       return {};
@@ -186,7 +186,7 @@ export class AuthStore {
         return { success: true };
       } else {
         return {
-          success: false,
+         , success: false,
           error: result.error || 'Login failed',
           requiresMFA: result.requiresMFA
         };
@@ -223,7 +223,7 @@ export class AuthStore {
         }
         return { success: true, requiresVerification: result.requiresVerification };
       } else {
-        return { success: false, error: result.error || 'Registration failed' };
+        return {, success: false, error: result.error || 'Registration failed' };
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -289,7 +289,7 @@ export class AuthStore {
         body: JSON.stringify(updates),
         credentials: 'include'
       });
-      const raw = (await response.json()) as unknown;
+      const raw = (await response.json()) as: unknown;
       const result = raw as { success?: boolean; user?: AuthUser; error?: string };
       if (response.ok && result.success) {
         // Update local user data
@@ -299,7 +299,7 @@ export class AuthStore {
         }));
         return { success: true };
       } else {
-        return { success: false, error: result.error || 'Profile update failed' };
+        return {, success: false, error: result.error || 'Profile update failed' };
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -311,7 +311,7 @@ export class AuthStore {
    * Change user password
    */
   static async changePassword(
-    currentPassword: string,
+   , currentPassword: string,
     newPassword: string
   ): Promise<{ success: boolean; error?: string | undefined }> {
     try {
@@ -332,7 +332,7 @@ export class AuthStore {
     }
   }
   /**
-   * Private: Update auth state with user and session data
+   *, Private: Update auth state with user and session data
    */
   private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
     // Get user permissions based on role - use local AccessControl helper

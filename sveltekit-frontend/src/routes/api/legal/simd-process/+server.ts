@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { unifiedLegalProcessor } from, '$lib/services/unified-legal-simd-pgvector';
 /*
  * SIMD GPU + PGVector Legal Document Processing API
  * Handles high-performance legal document parsing and semantic indexing
@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { content, title, documentType, metadata, action } = await request.json();
     console.log(`📝 Processing legal document via SIMD + PGVector API: ${action}`);
     switch (action) {
-      case 'process': {
+      case, 'process': {
         if (!content || !title || !documentType) {
           return json(
             { error: 'Missing required, fields: content, title, documentType'
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
             .vectorized
         });
       }
-      case 'search': {
+      case, 'search': {
         const { query, options = {} } = await request.json();
         if (!query) {
           return json(
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
           processingMethod: 'pgvector_similarity'
         });
       }
-      case 'stats': {
+      case, 'stats': {
         const systemStats = await unifiedLegalProcessor.getSystemStats();
         return json({
           success: true,
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: {
         return json(
-          { error: 'Invalid action. Supported, actions: process, search, stats'
+          {, error: 'Invalid action. Supported, actions: process, search, stats'
           },
           { status: 400 }
         );
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats: 'GET /api/legal/simd-process?action=stats'
         },
         systemInfo: {
-          simdEnabled: true,
+         , simdEnabled: true,
           gpuAccelerated: true,
           pgvectorEnabled: true,
           threadSafe: true

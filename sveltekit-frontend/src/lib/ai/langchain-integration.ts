@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * LangChain RAG Integration for Legal AI
  * Connects LangChain Ollama service to API endpoints
  */
-import { LangChainOllamaService } from './langchain-ollama-service';
+import { LangChainOllamaService } from, './langchain-ollama-service';
 // Initialize singleton LangChain service
 let langChainServiceInstance: LangChainOllamaService | null = null;
 export function getLangChainService(): LangChainOllamaService {
@@ -22,12 +22,12 @@ export function getLangChainService(): LangChainOllamaService {
 // Type helpers for RAG results
 export interface LegalRAGResult { answer: string;, confidence: number;
   processingTime: number;
-  sources: Array<{ title: string;, content: string;
+  sources: Array<{, title: string;, content: string;
     score: number;
   }>;
 }
-export interface RAGDocument { pageContent: string;, metadata: { title: string;, type: string;
-    score: number;
+export interface RAGDocument {, pageContent: string;, metadata: {, title: string;, type: string;
+   , score: number;
   };
 }
 /**
@@ -42,7 +42,7 @@ export async function queryWithLangChain(query: string, documents: RAGDocument[]
       confidence: result.confidence || 0.9,
       processingTime: result.processingTime,
       sources: documents.map(doc => ({
-        title: doc.metadata.title,
+       , title: doc.metadata.title,
         content: doc.pageContent.substring(0, 200),
         score: doc.metadata.score
       }))
@@ -59,7 +59,7 @@ export async function processDocumentWithLangChain(
   content: string,
   documentId: string
 ): Promise<{ chunksCreated: number;, embeddings: number[][];
-  processingTime: number;
+ , processingTime: number;
 }> {
   const service = getLangChainService();
   try {

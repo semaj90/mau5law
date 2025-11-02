@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from, 'svelte/store';
 export interface NotificationAction {
   label: string;
   // optional callback when the action is triggered (e.g., button click)
@@ -12,20 +12,20 @@ export interface NotificationAction {
 }
 export interface Notification {
   id: string;
-  // make: 's' optional and typed to avoid requiring it on every notification object
+  // make: 's' optional and typed to avoid requiring it on every notification: object
   s?: any;
   type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
-  // Replaced unsafe any with a concrete action type
+  // Replaced unsafe: any with a concrete action type
   actions?: NotificationAction[];
 }
 export interface NotificationState {
   notifications: Notification[];
 }
 const initialState: NotificationState = {
-  notifications: []
+ , notifications: []
 };
 function createNotificationStore() {
   const { subscribe, set, update } = writable<NotificationState>(initialState);
@@ -41,7 +41,7 @@ function createNotificationStore() {
         duration: notification.duration ?? 5000
       };
       update(state => ({
-        notifications: [...state.notifications, newNotification]
+       , notifications: [...state.notifications, newNotification]
       }));
       // Auto-remove after duration (unless duration is 0)
       if ((newNotification.duration ?? 0) > 0) {

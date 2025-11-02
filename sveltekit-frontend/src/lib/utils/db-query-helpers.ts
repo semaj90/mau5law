@@ -1,8 +1,8 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // Fixed database query utilities with proper field mappings
-import { sql, asc, desc, eq, and, or, like } from '$lib/server/db/utils';
-// Removed invalid type imports from '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.'
+import { sql, asc, desc, eq, and, or, like } from, '$lib/server/db/utils';
+// Removed invalid type imports from, '$lib/server/db/utils' which doesn't export `SQL` or `PgColumn`.'
 // Provide local type aliases instead so this file compiles without pulling in other modules.
 type SQL = ReturnType<typeof, sql>;
 // { changed code }
@@ -11,7 +11,7 @@ type PgColumn = SQL | string | Record<string, unknown>;
 export const fieldMap = {
   // User fields
   user: {
-    createdAt: 'created_at',
+   , createdAt: 'created_at',
     updatedAt: 'updated_at',
     emailVerified: 'email_verified',
     hashedPassword: 'hashed_password',
@@ -38,7 +38,7 @@ export const fieldMap = {
     closedAt: `closed_at` },
   // Evidence fields;
   evidence: {
-    caseId: 'case_id',
+   , caseId: 'case_id',
     criminalId: 'criminal_id',
     evidenceType: 'evidence_type',
     fileType: 'file_type',

@@ -1,8 +1,8 @@
 // src/lib/machines/__tests__/auth-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup.js';
-import type { AuthMachineState, LegalAIContext, LegalAIEvent } from '../../services/types.js';
+import { describe, it, expect, beforeEach, vi } from, 'vitest';
+import { createActor, createMachine, assign, fromPromise } from, 'xstate';
+import { mockServices, perf } from, '../../services/__tests__/setup.js';
+import type { AuthMachineState, LegalAIContext, LegalAIEvent } from, '../../services/types.js';
 // XState v5 compatible auth machine for testing Phase 5-7 performance optimization
 const authMachine = createMachine({
   id: 'authMachine',
@@ -23,22 +23,22 @@ const authMachine = createMachine({
           const startTime = performance.now();
           const result = await mockServices.validateCredentials(input.credentials);
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }
+          return { ...result, performanceMetrics: {, responseTime: duration, protocol: 'HTTP' } }
         }),
         input: ({ event }) => ({ credentials: event.credentials }),
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: assign({
-            user: ({ event }) => event.output,
+           , user: ({ event }) => event.output,
             authToken: ({ event }) => event.output.token,
-            error: undefined; retryCount: 0,
+            error: undefined;, retryCount: 0,
             performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) => {
+           , error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
                 ? String((err as Error).message)
@@ -49,43 +49,43 @@ const authMachine = createMachine({
         }
       }
     },
-    authenticated: { on: {, LOGOUT: 'idle',
+    authenticated: {, on: {, LOGOUT: 'idle',
         TOKEN_EXPIRED: 'refreshingToken'
       },
       after: {
-        3600000: 'refreshingToken' // Auto-refresh after 1 hour
+       , 3600000: 'refreshingToken' // Auto-refresh after, 1 hour
       }
     },
-    refreshingToken: { invoke: {, src: fromPromise(async () => {
+    refreshingToken: {, invoke: {, src: fromPromise(async () => {
           const startTime = performance.now();
           const result = await mockServices.refreshAuthToken();
           const duration = performance.now() - startTime;
-          return { ...result, performanceMetrics: { responseTime: duration, protocol: 'HTTP' } }
+          return { ...result, performanceMetrics: {, responseTime: duration, protocol: 'HTTP' } }
         }),
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: assign({
-            authToken: ({ event }) => event.output.token,
+           , authToken: ({ event }) => event.output.token,
             error: undefined,
             performanceMetrics: ({ event }) => event.output.performanceMetrics
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: ({ event }) => {
+           , error: ({ event }) => {
               const err = event.error;
               return err && typeof err === 'object' && 'message' in err
                 ? String((err as Error).message)
                 : String(err || 'Unknown error');
             },
-            user: undefined; authToken: undefined
+            user: undefined;, authToken: undefined
           })
         }
       }
     },
-    error: { on: {, LOGIN: {
-          target: 'authenticating',
+    error: {, on: {, LOGIN: {
+         , target: 'authenticating',
           guard: ({ context }) => context.retryCount < 3
         }
       }
@@ -104,8 +104,8 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       const authActor = createActor(authMachine);
       authActor.start();
       // Verify initial state
-      expect((authActor.getSnapshot() as any).value).toBe('idle');
-      expect((authActor.getSnapshot() as any).context.user).toBeUndefined();
+      expect((authActor.getSnapshot() as: any).value).toBe('idle');
+      expect((authActor.getSnapshot() as: any).context.user).toBeUndefined();
       // Send login event
       authActor.send({
         type: 'LOGIN',
@@ -155,7 +155,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       authActor.stop();
     });
     it('should handle authentication failure with retry logic', async () => {
-      // Mock failure for first 2 attempts, success on 3rd
+      // Mock failure for first, 2 attempts, success on 3rd
       let attemptCount = 0;
       mockServices.validateCredentials.mockImplementation(async () => {
         attemptCount++;
@@ -172,7 +172,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: {, email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
-      expect((authActor.getSnapshot() as any).value).toBe('error');
+      expect((authActor.getSnapshot() as: any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(1);
       // Second attempt - should fail
       authActor.send({
@@ -180,7 +180,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: {, email: 'test@example.com', password: 'wrong' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
-      expect((authActor.getSnapshot() as any).value).toBe('error');
+      expect((authActor.getSnapshot() as: any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(2);
       // Third attempt - should succeed
       authActor.send({
@@ -188,7 +188,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: {, email: 'test@example.com', password: 'correct' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
-      expect((authActor.getSnapshot() as any).value).toBe('authenticated');
+      expect((authActor.getSnapshot() as: any).value).toBe('authenticated');
       expect(authActor.getSnapshot().context.authToken).toBe('success-token');
       authActor.stop();
     });
@@ -203,7 +203,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: {, email: 'test@example.com', password: 'password' }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
-      expect((authActor.getSnapshot() as any).value).toBe('authenticated');
+      expect((authActor.getSnapshot() as: any).value).toBe('authenticated');
       // Simulate token expiration (important for gRPC streams)
       authActor.send({ type: 'TOKEN_EXPIRED' });
       await new Promise(resolve => setTimeout(resolve, 100);

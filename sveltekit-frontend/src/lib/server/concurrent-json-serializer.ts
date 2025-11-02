@@ -3,9 +3,9 @@
  * Optimized for thread-safe operations with legal AI data
  * Integrates with JSONB storage and GPU acceleration
  */
-import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
-import { cpus } from 'os';
-import { performance } from 'perf_hooks';
+import { Worker, isMainThread, parentPort, workerData } from, 'worker_threads';
+import { cpus } from, 'os';
+import { performance } from, 'perf_hooks';
 // Types for serialization context
 interface SerializationTask { id: string;, data: any;
   options: SerializationOptions;
@@ -21,8 +21,8 @@ interface SerializationOptions {
   gpuAccelerated?: boolean;
   legalDocumentMode?: boolean;
 }
-interface SerializationResult { id: string;, serialized: string;
-  metadata: { originalSize: number;, serializedSize: number;
+interface SerializationResult {, id: string;, serialized: string;
+  metadata: {, originalSize: number;, serializedSize: number;
     compressionRatio: number;
     processingTime: number;
     method: 'cpu' | 'gpu' | 'worker';
@@ -35,7 +35,7 @@ class WorkerPool {
   private workers: Worker[] = [];
   private availableWorkers: Worker[] = [];
   private taskQueue: Array<any> = [];
-  constructor(private poolSize: number = Math.max(2, cpus().length - 2)) {
+  constructor(private, poolSize: number = Math.max(2, cpus().length - 2)) {
     this.initializeWorkers();
   }
   private initializeWorkers() {
@@ -57,7 +57,7 @@ class WorkerPool {
             const serialized = JSON.stringify(data, (key, value) => {
               if (typeof value === 'object' && value !== null) {
                 if (seen.has(value)) {
-                  return '[Circular Reference]';
+                  return, '[Circular Reference]';
                 }
                 seen.add(value);
               }
@@ -88,7 +88,7 @@ class WorkerPool {
             return {
               serialized,
               metadata: {
-                originalSize: JSON.stringify(data).length,
+               , originalSize: JSON.stringify(data).length,
                 serializedSize: serialized.length,
                 compressionRatio: JSON.stringify(data).length / serialized.length,
                 processingTime,
@@ -98,7 +98,7 @@ class WorkerPool {
             return {
               error: error.message,
               metadata: {
-                originalSize: 0,
+               , originalSize: 0,
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
@@ -179,7 +179,7 @@ class WorkerPool {
  * Main concurrent JSON serialization service
  */ export class ConcurrentJSONSerializer {
   private static instance: ConcurrentJSONSerializer;
-  private workerPool: WorkerPool;
+  private, workerPool: WorkerPool;
   private gpuContext?: GPUDevice;
   private taskCounter = 0;
   static getInstance(): ConcurrentJSONSerializer {
@@ -195,7 +195,7 @@ class WorkerPool {
   private async initializeGPU() {
     try {
       if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-        const adapter = await (navigator as any).gpu.requestAdapter();
+        const adapter = await (navigator as: any).gpu.requestAdapter();
         if (adapter) {
           this.gpuContext = await adapter.requestDevice();
           console.log('🚀 GPU acceleration enabled for JSON serialization');
@@ -211,10 +211,10 @@ class WorkerPool {
   async serialize<T>(data: T, options: SerializationOptions = {}): Promise<SerializationResult> {
     const taskId = `serialize_${++this.taskCounter}_${Date.now()}`;
     const task: SerializationTask = {
-      id: taskId,
+     , id: taskId,
       data,
       options: {
-        compress: false,
+       , compress: false,
         validateStructure: true,
         preserveBuffers: false,
         maxDepth: 10,
@@ -244,7 +244,7 @@ class WorkerPool {
       if (!this.gpuContext) {
         throw new Error('GPU context not available');
       }
-      // Convert data to string representation
+      // Convert data to: string representation
       const dataStr = JSON.stringify(task.data);
       const encoder = new TextEncoder();
       const inputData = encoder.encode(dataStr);
@@ -283,7 +283,7 @@ class WorkerPool {
           // Handle circular references
           if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
-              return '[Circular Reference]';
+              return, '[Circular Reference]';
             }
             seen.add(value);
           }
@@ -315,7 +315,7 @@ class WorkerPool {
         id: task.id,
         serialized,
         metadata: {
-          originalSize: originalStr.length,
+         , originalSize: originalStr.length,
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
@@ -326,7 +326,7 @@ class WorkerPool {
         id: task.id,
         serialized: '{}',
         metadata: {
-          originalSize: 0,
+         , originalSize: 0,
           serializedSize: 2,
           compressionRatio: 1,
           processingTime,
@@ -359,9 +359,9 @@ class WorkerPool {
         // Restore special types
         if (value && typeof value === 'object' && value._type) {
           switch (value._type) {
-            case 'Date':
+            case, 'Date':
               return new Date(value.value);
-            case 'Buffer':
+            case, 'Buffer':
               return Buffer.from(value.value, 'base64');
           }
         }
@@ -376,19 +376,19 @@ class WorkerPool {
    */ private determinePriority(data: any, options: SerializationOptions): 'low' | 'medium' | 'high' | 'critical' {
     const size = this.estimateDataSize(data);
     if (options.legalDocumentMode) {
-      return 'high'; // Legal documents are high priority
+      return, 'high'; // Legal documents are high priority
     }
     if (size > 1024 * 1024) {
       // > 1MB
-      return 'critical';
+      return, 'critical';
     } else if (size > 100 * 1024) {
       // > 100KB
-      return 'high';
+      return, 'high';
     } else if (size > 10 * 1024) {
       // > 10KB
-      return 'medium';
+      return, 'medium';
     }
-    return 'low';
+    return, 'low';
   }
   /**
    * Estimate data size without full serialization
@@ -413,7 +413,7 @@ class WorkerPool {
     gpuEnabled: boolean;
   } {
     return {
-      activeWorkers: this.workerPool['workers'].length,
+     , activeWorkers: this.workerPool['workers'].length,
       queueLength: this.workerPool['taskQueue'].length,
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics

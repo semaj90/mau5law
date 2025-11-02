@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Development interface layout with debugging-focused styling
-  import NavBar from '$lib/components/layout/NavBar.svelte';
-  import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
+  import NavBar from, '$lib/components/layout/NavBar.svelte';
+  import Sidebar from, '$lib/components/layout/Sidebar.svelte';
+  import { applyConsolePalette, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
 
   let { children, data }: {  any; data: any } = $props();
 
@@ -43,7 +43,7 @@
 <style>
   .dev-layout {
     min-height: 100vh;
-    background: var(--surface-primary, #0a0a0a);
+   , background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #cc99ff);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
@@ -55,7 +55,7 @@
 
   .dev-sidebar {
     width: 280px;
-    background: var(--surface-secondary, #111111);
+   , background: var(--surface-secondary, #111111);
     border-right: 1px solid var(--border-primary, #cc99ff);
   }
 
@@ -73,7 +73,7 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
+   , bottom: 0;
     background-image:
       linear-gradient(rgba(204, 153, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(204, 153, 255, 0.05) 1px, transparent 1px);
@@ -94,7 +94,7 @@
     top: 70px;
     right: 20px;
     font-size: 0.75rem;
-    color: var(--text-secondary, #ff6600);
+   , color: var(--text-secondary, #ff6600);
     opacity: 0.6;
     pointer-events: none;
     z-index: 1000;
@@ -107,7 +107,7 @@
 
     .dev-sidebar {
       width: 100%;
-      height: auto;
+     , height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #cc99ff);
     }

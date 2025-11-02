@@ -1,6 +1,6 @@
 // XState Machine for Session Management with Production Services Integration
-import { createMachine, assign } from 'xstate';
-import type { User } from '../stores/auth.svelte.js';
+import { createMachine, assign } from, 'xstate';
+import type { User } from, '../stores/auth.svelte.js';
 // Session context interface
 export interface SessionContext { user: User | null;, sessionId: string | null;
   expiresAt: Date | null;
@@ -9,10 +9,10 @@ export interface SessionContext { user: User | null;, sessionId: string | null;
   permissions: string[];
   currentRoute: string;
   deviceFingerprint?: string;
-  sessionHealth: { isValid: boolean;, warningCount: number;
+  sessionHealth: {, isValid: boolean;, warningCount: number;
     lastHealthCheck: Date | null;
   };
-  analyticsData: { loginTime: Date | null;, activityCount: number;
+  analyticsData: {, loginTime: Date | null;, activityCount: number;
     featuresUsed: string[];
   };
 }
@@ -29,7 +29,7 @@ type SessionEvent =
   | { type: 'ELEVATE_SECURITY'; reason: string }
   | { type: 'HEALTH_CHECK' };
 // Define expected return types for services
-interface AuthenticationResult { expiresAt: string;, permissions: string[];
+interface AuthenticationResult {, expiresAt: string;, permissions: string[];
   valid: boolean;
 }
 interface RefreshSessionResult {
@@ -48,7 +48,7 @@ interface PerformHealthCheckResult {
   healthy: boolean;
 }
 export const sessionMachine = createMachine({
-  id: 'sessionManager',
+ , id: 'sessionManager',
   initial: 'unauthenticated',
   context: {
    , user: null,
@@ -75,16 +75,16 @@ export const sessionMachine = createMachine({
         }
       }
     },
-    authenticating: { invoke: {, src: 'performAuthentication',
+    authenticating: {, invoke: {, src: 'performAuthentication',
         input: ({ event }) => {
           const authEvent = event as Extract<SessionEvent, { type: 'AUTHENTICATE' }>;
           return {
-            user: authEvent.user,
+           , user: authEvent.user,
             sessionId: authEvent.sessionId
           };
         },
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: assign(({ context, event }) => {
             const authResult = event.output as AuthenticationResult;
             return {
@@ -107,7 +107,7 @@ export const sessionMachine = createMachine({
       }
     },
     authenticated: {
-      initial: 'active',
+     , initial: 'active',
       entry: ['logSessionStart'],
       on: {
         // Target top-level sibling states using absolute machine id to avoid
@@ -117,28 +117,28 @@ export const sessionMachine = createMachine({
         SECURITY_CHECK: '.security_validation',
         HEALTH_CHECK: '.health_checking'
       },
-      states: { active: {, on: { ACTIVITY: {, actions: ['recordActivity', 'updateLastActivity']
+      states: {, active: {, on: {, ACTIVITY: {, actions: ['recordActivity', 'updateLastActivity']
             },
             REFRESH_SESSION: 'refreshing',
             EXTEND_SESSION: 'extending',
             PERMISSION_CHECK: 'checking_permissions',
             ELEVATE_SECURITY: 'elevating_security'
           },
-          // Automatic session timeout check every 5 minutes
+          // Automatic session timeout check every, 5 minutes
           after: {
             300000: {
-              target: 'checking_timeout',
+             , target: 'checking_timeout',
               actions: ['checkSessionTimeout']
             }
           }
         },
-        refreshing: { invoke: {, src: 'refreshSession',
+        refreshing: {, invoke: {, src: 'refreshSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               user: context.user
             }),
             onDone: {
-              target: 'active',
+             , target: 'active',
               actions: assign(({ context, event }) => {
                 const refreshResult = event.output as RefreshSessionResult;
                 return {
@@ -154,13 +154,13 @@ export const sessionMachine = createMachine({
             onError: '#sessionManager.expired'
           }
         },
-        extending: { invoke: {, src: 'extendSession',
+        extending: {, invoke: {, src: 'extendSession',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               requestedDuration: 3600000, // 1 hour
             }),
             onDone: {
-              target: 'active',
+             , target: 'active',
               actions: assign(({ event }) => {
                 const extendResult = event.output as ExtendSessionResult;
                 return {
@@ -171,11 +171,11 @@ export const sessionMachine = createMachine({
             onError: 'active'
           }
         },
-        checking_permissions: { invoke: {, src: 'validatePermissions',
+        checking_permissions: {, invoke: {, src: 'validatePermissions',
             input: ({ context, event }) => {
               const permissionEvent = event as Extract<SessionEvent, { type: 'PERMISSION_CHECK' }>;
               return {
-                user: context.user,
+               , user: context.user,
                 permission: permissionEvent.permission,
                 securityLevel: context.securityLevel
               };
@@ -186,20 +186,20 @@ export const sessionMachine = createMachine({
         },
         permission_denied: {
           after: {
-            2000: 'active'
+           , 2000: 'active'
           }
         },
-        elevating_security: { invoke: {, src: 'elevateSecurityLevel',
+        elevating_security: {, invoke: {, src: 'elevateSecurityLevel',
             input: ({ context, event }) => {
               const elevateEvent = event as Extract<SessionEvent, { type: 'ELEVATE_SECURITY' }>;
               return {
-                sessionId: context.sessionId,
+               , sessionId: context.sessionId,
                 reason: elevateEvent.reason,
                 currentLevel: context.securityLevel
               };
             },
             onDone: {
-              target: 'active',
+             , target: 'active',
               actions: assign(({ event }) => {
                 const elevateResult = event.output as ElevateSecurityLevelResult;
                 return {
@@ -210,7 +210,7 @@ export const sessionMachine = createMachine({
             onError: 'active'
           }
         },
-        checking_timeout: { invoke: {, src: 'checkSessionValidity',
+        checking_timeout: {, invoke: {, src: 'checkSessionValidity',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               expiresAt: context.expiresAt,
@@ -220,14 +220,14 @@ export const sessionMachine = createMachine({
             onError: '#sessionManager.expired'
           }
         },
-        security_validation: { invoke: {, src: 'performSecurityCheck',
+        security_validation: {, invoke: {, src: 'performSecurityCheck',
             input: ({ context }) => ({
               user: context.user,
               deviceFingerprint: context.deviceFingerprint,
               sessionHealth: context.sessionHealth
             }),
             onDone: {
-              target: 'active',
+             , target: 'active',
               actions: assign(({ context, event }) => {
                 const securityCheckResult = event.output as PerformSecurityCheckResult;
                 return {
@@ -240,7 +240,7 @@ export const sessionMachine = createMachine({
               })
             },
             onError: {
-              target: 'security_compromised',
+             , target: 'security_compromised',
               actions: assign(({ context }) => ({
                 sessionHealth: {
                   ...context.sessionHealth,
@@ -252,19 +252,19 @@ export const sessionMachine = createMachine({
           }
         },
         security_compromised: {
-          entry: ['alertSecurityBreach'],
+         , entry: ['alertSecurityBreach'],
           after: {
             // After a delay, move to the top-level logging_out state
             5000: '#sessionManager.logging_out'
           }
         },
-        health_checking: { invoke: {, src: 'performHealthCheck',
+        health_checking: {, invoke: {, src: 'performHealthCheck',
             input: ({ context }) => ({
               sessionId: context.sessionId,
               analyticsData: context.analyticsData
             }),
             onDone: {
-              target: 'active',
+             , target: 'active',
               actions: assign(({ context, event }) => {
                 const healthCheckResult = event.output as PerformHealthCheckResult;
                 return {
@@ -281,7 +281,7 @@ export const sessionMachine = createMachine({
         }
       }
     },
-    logging_out: { invoke: {, src: 'performLogout',
+    logging_out: {, invoke: {, src: 'performLogout',
         input: ({ context }) => ({
           sessionId: context.sessionId,
           user: context.user,
@@ -291,29 +291,29 @@ export const sessionMachine = createMachine({
         onError: 'unauthenticated` }'`
     },
     expired: {
-      entry: ['logSessionExpired'],
+     , entry: ['logSessionExpired'],
       after: {
-        3000: `unauthenticated` }
+       , 3000: `unauthenticated` }
     }
   }
 });
 // Action implementations
 export const sessionActions = {
   clearSessionData: () => {
-    // Clear any local session data
+    // Clear: any local session data
     if (typeof window !== 'undefined') {
       localStorage.removeItem('sessionHealth');
       sessionStorage.removeItem('currentRoute');
     }
   },
-  logSessionStart: ({ context }: { context: SessionContext }) => {
+  logSessionStart: ({ context }: {, context: SessionContext }) => {
     console.log('Session started for user:', context.user?.email);
     if (typeof window !== 'undefined') {
       localStorage.setItem('sessionStartTime', Date.now().toString());
     }
   },
   recordActivity: ({
-    context: _context,
+   , context: _context,
     event
   }: { context: SessionContext;, event: Extract<SessionEvent, { type: `ACTIVITY` }>;
   }) => {
@@ -326,24 +326,24 @@ export const sessionActions = {
     console.log('User activity: ', activity);'`'`
   },
   updateLastActivity: assign({
-    lastActivity: () => new Date(),
+   , lastActivity: () => new Date(),
     currentRoute: ({ event }) => (event as Extract<SessionEvent, { type: `ACTIVITY` }>).route,
     analyticsData: ({ context }) => ({
       ...context.analyticsData,
       activityCount: context.analyticsData.activityCount + 1
     })
   }),
-  checkSessionTimeout: ({ context }: { context: SessionContext }) => {
+  checkSessionTimeout: ({ context }: {, context: SessionContext }) => {
     const now = new Date();
     if (context.expiresAt && now > context.expiresAt) {
       console.warn('Session expired due to timeout');
     }
   },
-  alertSecurityBreach: ({ context }: { context: SessionContext }) => {
+  alertSecurityBreach: ({ context }: {, context: SessionContext }) => {
     console.error('Security breach detected for session:', context.sessionId);
     // Could trigger notifications, alerts, etc.
   },
-  logSessionExpired: ({ context }: { context: SessionContext }) => {
+  logSessionExpired: ({ context }: {, context: SessionContext }) => {
     console.log('Session expired for user:', context.user?.email);
   }
 };
@@ -367,10 +367,10 @@ function authenticateAssign({
     currentRoute: '/',
     securityLevel: 'standard',
     // Some User shapes use `role: string`, others use `roles?: string[]`.
-    // Pick a role defensively to avoid undefined access during migration.
+    // Pick a role defensively to avoid: undefined access during migration.
     permissions: getUserPermissions(
-      (event.user as any).role ??
-        (Array.isArray((event.user as any).roles) ? (event.user as any).roles[0] : undefined) ??
+      (event.user, as: any).role ??
+        (Array.isArray((event.user as: any).roles) ? (event.user as: any).roles[0] : undefined) ??
         'viewer'
     ), // Use the helper function here
     sessionHealth: {

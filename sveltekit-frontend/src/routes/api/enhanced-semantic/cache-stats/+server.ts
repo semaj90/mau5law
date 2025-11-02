@@ -1,5 +1,5 @@
 
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from, './$types.js'
 export const GET: RequestHandler = async () => {
 	try {
 		// Forward request to Enhanced Semantic Architecture service
@@ -43,12 +43,12 @@ export const GET: RequestHandler = async () => {
 			hit_ratio: 0.87 + Math.random() * 0.1, // 87-97% hit ratio
 			webgpu_enabled: false, // Fallback mode
 			memory_usage: {
-				used: Math.floor(Math.random() * 256) + 128, // MB
+			, used: Math.floor(Math.random() * 256) + 128, // MB
 				allocated: 512,
 				peak: Math.floor(Math.random() * 400) + 200
 			},
 			performance: {
-				avg_lookup_time: Math.random() * 2 + 0.5, // ms
+			, avg_lookup_time: Math.random() * 2 + 0.5, // ms
 				cache_operations_per_second: Math.floor(Math.random() * 10000) + 5000,
 				gpu_utilization: 0 // CPU fallback
 			},
@@ -91,21 +91,21 @@ export const POST: RequestHandler = async ({ request }) => {
 		const { action } = await request.json()
 		let result = {}
 		switch (action) {
-      case 'clear':
+      case, 'clear':
         result = {
           cleared_entries: Math.floor(Math.random() * 1000),
           cache_size_after: 0,
           operation_time: Math.random() * 100 + 50
         };
         break;
-      case 'optimize':
+      case, 'optimize':
         result = {
           optimized_entries: Math.floor(Math.random() * 500),
           space_freed: Math.floor(Math.random() * 100) + 50,
           operation_time: Math.random() * 200 + 100
         };
         break;
-      case 'rebuild':
+      case, 'rebuild':
         result = {
           rebuilt_entries: Math.floor(Math.random() * 2000),
           index_size_after: Math.floor(Math.random() * 3000) + 1000,
@@ -114,8 +114,8 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       default: return json(
           {
-            success: false,
-            error: `Unknown cache; action: ${action}` },
+           , success: false,
+            error: `Unknown cache;, action: ${action}` },
           { status: 400 }
         );
     }

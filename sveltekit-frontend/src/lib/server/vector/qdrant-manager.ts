@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import { QdrantClient } from '@qdrant/js-client-rest';
-// import type { PointStruct, SearchRequest } from '@qdrant/js-client-rest'; // Commented out due to namespace issues
-import { analytics } from '../database/connection.js';
+import type { Document } from, '$lib/types';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+// import type { PointStruct, SearchRequest } from, '@qdrant/js-client-rest'; // Commented out due to namespace issues
+import { analytics } from, '../database/connection.js';
 // Enhanced Qdrant integration for legal AI platform
 export class QdrantManager {
   private client: InstanceType<typeof, QdrantClient>;
@@ -20,28 +20,28 @@ export class QdrantManager {
     const collectionConfigs = [
       {,
         name: this.collections.documents,
-        vectors: { content: {, size: 1536, distance: 'Cosine' }, // OpenAI embeddings
-          summary: { size: 768, distance: 'Cosine' }, // Sentence transformers
+        vectors: {, content: {, size: 1536, distance: 'Cosine' }, // OpenAI embeddings
+          summary: {, size: 768, distance: 'Cosine' }, // Sentence transformers
         }
       },
       {
         name: this.collections.cases,
-        vectors: { description: {, size: 1536, distance: 'Cosine' }
+        vectors: {, description: {, size: 1536, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.evidence,
-        vectors: { content: {, size: 1536, distance: 'Cosine' }
+        vectors: {, content: {, size: 1536, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.chat_history,
-        vectors: { message: {, size: 768, distance: 'Cosine' }
+        vectors: {, message: {, size: 768, distance: 'Cosine' }
         }
       },
       {
         name: this.collections.embeddings_cache,
-        vectors: { embedding: {, size: 1536, distance: 'Cosine' }
+        vectors: {, embedding: {, size: 1536, distance: 'Cosine' }
         }
       }
     ];
@@ -64,7 +64,7 @@ export class QdrantManager {
   }) {
     const startTime = Date.now();
     try {
-      const searchRequest: any = { vector: {, name: 'content',
+      const searchRequest: any = {, vector: {, name: 'content',
           vector: params.queryEmbedding
         },
         limit: params.limit || 10,
@@ -99,7 +99,7 @@ export class QdrantManager {
           payload: (result as { id?: any; score?: any; payload?: any }).payload
         })),
         metadata: {
-          query: params.query,
+         , query: params.query,
           collection: params.collection,
           response_time_ms: responseTime,
           total_results: results.length
@@ -115,7 +115,7 @@ export class QdrantManager {
     sessionId?: string;
     limit?: number;
   }) {
-    const filters: any = { must: [{, key: 'user_id', match: { value: params.userId } }]
+    const filters: any = {, must: [{, key: 'user_id', match: {, value: params.userId } }]
     }
     if (params.sessionId) {
       filters.must.push({
@@ -123,7 +123,7 @@ export class QdrantManager {
         match: {, value: params.sessionId }
       });
     }
-    const searchRequest: any = { vector: {, name: 'message',
+    const searchRequest: any = {, vector: {, name: 'message',
         vector: params.userEmbedding
       },
       limit: params.limit || 5,
@@ -168,11 +168,11 @@ export class QdrantManager {
     const point: any = { // Changed from PointStruct,
       id: document.id,
       vector: {
-        content: document.contentEmbedding,
+       , content: document.contentEmbedding,
         ...(document.summaryEmbedding && { summary: document.summaryEmbedding })
       },
       payload: {
-        title: document.title,
+       , title: document.title,
         content_preview: document.content.substring(0, 500),
         document_type: document.metadata.document_type,
         case_id: document.metadata.case_id,
@@ -187,12 +187,12 @@ export class QdrantManager {
   async findRelatedEvidence(evidenceId: string, embedding: number[], limit = 5) {
     const searchRequest: any = { // Changed from SearchRequest,
       vector: {
-        name: 'content',
+       , name: 'content',
         vector: embedding
       },
       limit: limit + 1, // +1 to exclude self
       score_threshold: 0.75,
-      filter: { must_not: [{, key: 'evidence_id', match: { value: evidenceId } }]
+      filter: {, must_not: [{, key: 'evidence_id', match: {, value: evidenceId } }]
       },
       with_payload: true
     }
@@ -212,10 +212,10 @@ export class QdrantManager {
     const point: any = { // Changed from PointStruct,
       id: key,
       vector: {
-        embedding: embedding
+       , embedding: embedding
       },
       payload: {
-        cache_key: key,
+       , cache_key: key,
         cached_at: Date.now(),
         expires_at: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
         ...metadata
@@ -232,14 +232,14 @@ export class QdrantManager {
         limit: 1,
         filter: {
           must: [
-            { key: 'cache_key', match: { value: key } },
-            { key: 'expires_at', range: { gt: Date.now() } }
+            {, key: 'cache_key', match: {, value: key } },
+            { key: 'expires_at', range: {, gt: Date.now() } }
           ]
         }
       });
       return results.length > 0 ? results[0] : null;
     } catch {
-      return null;
+      return: null;
     }
   }
   // Collection management
@@ -256,7 +256,7 @@ export class QdrantManager {
       }
     } catch (error: any) {
       console.error(`Failed to get collection info for ${collection}: ', error);'`
-      return null;
+      return: null;
     }
   }
   async healthCheck() {
@@ -298,12 +298,12 @@ export class QdrantManager {
     return { must: conditions }
   }
   private calculateRelationshipStrength(
-    score: number;
+   , score: number;
   ): 'weak' | 'moderate' | 'strong' | 'very_strong' {
-    if (score >= 0.9) return 'very_strong';
-    if (score >= 0.8) return 'strong';
-    if (score >= 0.7) return 'moderate';
-    return 'weak';
+    if (score >= 0.9) return, 'very_strong';
+    if (score >= 0.8) return, 'strong';
+    if (score >= 0.7) return, 'moderate';
+    return, 'weak';
   }
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];

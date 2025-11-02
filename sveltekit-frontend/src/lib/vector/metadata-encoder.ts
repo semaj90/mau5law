@@ -3,8 +3,8 @@
  * Production-grade vector encoding with adaptive scaling and GPU acceleration
  * Integrates with Nintendo memory architecture and ShaderBundle system
  */
-import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus';
-import { validateVectorDimensions, adaptiveScalingDecision } from '$lib/gpu/types';
+import { telemetryBus, measureAsync } from, '$lib/telemetry/event-bus';
+import { validateVectorDimensions, adaptiveScalingDecision } from, '$lib/gpu/types';
 
 export interface VectorMetadata { id: string;, originalDimensions: number;
   encodedDimensions: number;
@@ -16,13 +16,13 @@ export interface VectorMetadata { id: string;, originalDimensions: number;
   gpuAccelerated: boolean;
 }
 
-export interface EncodingBatch { vectors: Float32Array[];, metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
+export interface EncodingBatch {, vectors: Float32Array[];, metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
   totalSize: number;
 }
 
-export interface AdaptiveEncodingResult { encoded: VectorMetadata[];, scalingApplied: boolean;
+export interface AdaptiveEncodingResult {, encoded: VectorMetadata[];, scalingApplied: boolean;
   recommendedConfig: Partial<VectorEncodingConfig>; // Updated
-  metrics: { totalTime: number;, avgCompressionRatio: number;
+  metrics: {, totalTime: number;, avgCompressionRatio: number;
     gpuUtilization: number;
     memoryEfficiency: number;
   };
@@ -38,10 +38,10 @@ export interface AdaptiveEncodingResult { encoded: VectorMetadata[];, scalingAp
 type VectorDimensions = number;
 type QuantizationLevel = 'int8' | 'int4' | 'binary';
 
-interface VectorEncodingConfig { dimensions: VectorDimensions;, quantization: QuantizationLevel;
+interface VectorEncodingConfig {, dimensions: VectorDimensions;, quantization: QuantizationLevel;
   compressionTarget: number;
   adaptiveDimensions: boolean;
-  batchSize: number;
+ , batchSize: number;
 }
 
 interface HybridGPUContext {
@@ -56,7 +56,7 @@ interface ShaderBundle { name: string;, backend: string;
 
 type AdaptiveScalingMode = 'balanced' | 'performance' | 'memory';
 
-interface GPUPerformanceMetrics { renderTime: number;, memoryUsage: number;
+interface GPUPerformanceMetrics {, renderTime: number;, memoryUsage: number;
   gpuUtilization: number;
   temperature: number;
   powerConsumption: number;
@@ -71,7 +71,7 @@ export class VectorMetadataEncoder {
   private gpuContext?: HybridGPUContext;
   private shaderBundle?: ShaderBundle;
   private adaptiveMode: AdaptiveScalingMode = 'balanced';
-  private performanceHistory: GPUPerformanceMetrics[] = [];
+  private, performanceHistory: GPUPerformanceMetrics[] = [];
   private readonly maxHistorySize = 100;
 
   constructor(config: Partial<VectorEncodingConfig> = {}, gpuContext?: HybridGPUContext) {
@@ -223,15 +223,15 @@ export class VectorMetadataEncoder {
   }
 
   getPerformanceMetrics(): { currentConfig: VectorEncodingConfig; // Updated, recentPerformance: GPUPerformanceMetrics[];
-    memoryUsage: { l1GpuUsage: number;, l2RamUsage: number;
+    memoryUsage: {, l1GpuUsage: number;, l2RamUsage: number;
       totalVectors: number;
     };
   } {
     return {
-      currentConfig: { ...this.config },
+     , currentConfig: { ...this.config },
       recentPerformance: [...this.performanceHistory.slice(-10)],
       memoryUsage: {
-        l1GpuUsage: this.estimateGPUMemoryUsage(),
+       , l1GpuUsage: this.estimateGPUMemoryUsage(),
         l2RamUsage: this.estimateRAMUsage(),
         totalVectors: this.performanceHistory.length
       }
@@ -320,18 +320,18 @@ export class VectorMetadataEncoder {
     config: VectorEncodingConfig // Updated
   ): Float32Array | Int8Array | Uint8Array {
     switch (config.quantization) {
-      case 'int8':
+      case, 'int8':
         return this.quantizeToInt8(vector);
-      case 'int4':
+      case, 'int4':
         return this.quantizeToInt4(vector);
-      case 'binary':
+      case, 'binary':
         return this.quantizeToBinary(vector);
       default: return vector; // No quantization
     }
   }
 
   private async encodeBatchGPU(
-    vectors: Float32Array[],
+   , vectors: Float32Array[],
     metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>,
     config: VectorEncodingConfig // Updated
   ): Promise<VectorMetadata[]> {
@@ -376,11 +376,11 @@ export class VectorMetadataEncoder {
 
   private decodeVectorCPU(metadata: VectorMetadata): Float32Array {
     switch (metadata.quantization) {
-      case 'int8':
+      case, 'int8':
         return this.dequantizeFromInt8(metadata.encoding as Int8Array, metadata.encodedDimensions);
-      case 'int4':
+      case, 'int4':
         return this.dequantizeFromInt4(metadata.encoding as Uint8Array, metadata.encodedDimensions);
-      case 'binary':
+      case, 'binary':
         return this.dequantizeFromBinary(metadata.encoding as Uint8Array, metadata.encodedDimensions);
       default: return metadata.encoding as Float32Array;
     }
@@ -564,7 +564,7 @@ export class VectorMetadataEncoder {
     return this.performanceHistory.length * 1024; // Rough estimate
   }
 
-  // Define a type for the metrics object used in generateRecommendedConfig
+  // Define a type for the metrics: object used in generateRecommendedConfig
   private generateRecommendedConfig(metrics: {, avgCompressionRatio: number;, memoryEfficiency: number;
   }): Partial<VectorEncodingConfig> {
     // Updated

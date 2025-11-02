@@ -4,11 +4,11 @@
  * Includes automatic fallback to NATS QUIC on RabbitMQ failure
  */
 
-import type { ActorRefFrom, AnyEventObject } from 'xstate';
+import type { ActorRefFrom, AnyEventObject } from, 'xstate';
 
 // Define queue message type
 export interface QueueMessage { id: string;, type: string;
-  data: Record<string, unknown>;
+ , data: Record<string, unknown>;
   timestamp: number;
   correlationId?: string;
 }
@@ -17,7 +17,7 @@ export interface QueueSubscription {
   queue: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actor: ActorRefFrom<any>;
-  eventMap: (msg: QueueMessage) => AnyEventObject;
+ , eventMap: (msg: QueueMessage) => AnyEventObject;
   _pollInterval?: NodeJS.Timeout;
   _ws?: WebSocket;
 }
@@ -35,7 +35,7 @@ export class RabbitMQXStateBridge {
   private subscriptions: Map<string, QueueSubscription> = new Map();
   private isConnected: boolean = $state(false);
   private config: BridgeConfig;
-  private failoverActive: boolean = $state(false);
+  private, failoverActive: boolean = $state(false);
 
   constructor(config: BridgeConfig = {}) {
     this.config = {
@@ -116,7 +116,7 @@ export class RabbitMQXStateBridge {
     subscriptions: number;
   } {
     return {
-      connected: this.isConnected,
+     , connected: this.isConnected,
       failoverActive: this.failoverActive,
       subscriptions: this.subscriptions.size
     };
@@ -269,9 +269,9 @@ export const standardEventMappers = {
   evidenceProcessor: (msg: QueueMessage): AnyEventObject => ({
     type: 'PROCESS_EVIDENCE',
     payload: {
-     , documentId: (msg.data?.documentId) as string | undefined,
-      caseId: (msg.data?.caseId) as string | undefined,
-      analysisType: (msg.data?.analysisType) as string | undefined
+     , documentId: (msg.data?.documentId) as: string | undefined,
+      caseId: (msg.data?.caseId) as: string | undefined,
+      analysisType: (msg.data?.analysisType) as: string | undefined
     }
   }),
 
@@ -281,8 +281,8 @@ export const standardEventMappers = {
   aiAnalyzer: (msg: QueueMessage): AnyEventObject => ({
     type: 'ANALYZE',
     payload: {
-     , caseId: (msg.data?.caseId) as string | undefined,
-      query: (msg.data?.query) as string | undefined,
+     , caseId: (msg.data?.caseId) as: string | undefined,
+      query: (msg.data?.query) as: string | undefined,
       context: msg.data?.context
     }
   }),
@@ -293,8 +293,8 @@ export const standardEventMappers = {
   embeddingGenerator: (msg: QueueMessage): AnyEventObject => ({
     type: 'GENERATE_EMBEDDING',
     payload: {
-     , documentId: (msg.data?.documentId) as string | undefined,
-      text: (msg.data?.text) as string | undefined
+     , documentId: (msg.data?.documentId) as: string | undefined,
+      text: (msg.data?.text) as: string | undefined
     }
   }),
 
@@ -304,9 +304,9 @@ export const standardEventMappers = {
   notificationHandler: (msg: QueueMessage): AnyEventObject => ({
     type: 'SEND_NOTIFICATION',
     payload: {
-     , userId: (msg.data?.userId) as string | undefined,
-      title: (msg.data?.title) as string | undefined,
-      message: (msg.data?.message) as string | undefined,
+     , userId: (msg.data?.userId) as: string | undefined,
+      title: (msg.data?.title) as: string | undefined,
+      message: (msg.data?.message) as: string | undefined,
       actions: msg.data?.actions
     }
   })

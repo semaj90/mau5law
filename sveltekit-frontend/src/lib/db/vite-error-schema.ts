@@ -13,10 +13,10 @@
  *
  * @module vite-error-schema
  */
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle-orm';
-import { sql } from 'drizzle-orm';
-import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
+import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle-orm';
+import { sql } from, 'drizzle-orm';
+import type { ErrorMetadata, ErrorCategory } from, '$lib/services/mcp-simd-parser';
 /**
  * Vite/TypeScript errors with embeddings
  *
@@ -38,9 +38,9 @@ export const viteErrors = pgTable('vite_errors', {
   errorCode: text('error_code').notNull(),
   /** Absolute file path where error occurred */
   filePath: text('file_path').notNull(),
-  /** Line number (1-indexed) */
+  /** Line: number (1-indexed) */
   line: integer('line').notNull(),
-  /** Column number (1-indexed) */
+  /** Column: number (1-indexed) */
   column: integer('column').notNull(),
   /** Human-readable error message */
   message: text('message').notNull(),
@@ -83,7 +83,7 @@ export interface ErrorMetadataJSON {
   stackTrace?: string[];
   /** Build context */
   buildContext?: { command: string;, duration: number;
-    exitCode: number;
+   , exitCode: number;
   };
   /** Similar error IDs */
   similarErrors?: string[];
@@ -173,14 +173,14 @@ export const errorHistory = pgTable('error_history', {
   errorsByCategory: jsonb('errors_by_category').$type<Record<string, number>>(),
   /** Error count by source */
   errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
-  /** Top 10 error codes */
-  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
-  /** Top 10 affected files */
-  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
+  /** Top, 10 error codes */
+  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string;, count: number }>>(),
+  /** Top, 10 affected files */
+  topFiles: jsonb('top_files').$type<Array<{ path: string;, count: number }>>(),
   /** Build metadata */
   buildMetadata: jsonb('build_metadata').$type<{ command: string;, duration: number;
     exitCode: number;
-    timestamp: string;
+   , timestamp: string;
   }>(),
   /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()

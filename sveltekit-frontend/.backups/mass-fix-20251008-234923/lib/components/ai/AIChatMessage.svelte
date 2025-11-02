@@ -135,7 +135,7 @@
           Sources ({message.sources.length})
         </button>
         {#if isSourcesExpanded}
-          <div class="sources-list" transition:slide={{ duration: 200 }}>
+          <div class="sources-list" use:slide={{ duration: 200 }}>
             {#each message.sources as source (source.id)}
               <div class="source-item">
                 <div class="source-header">
@@ -175,7 +175,7 @@
           Details
         </button>
         {#if isMetadataExpanded}
-          <div class="metadata-content" transition:slide={{ duration: 200 }}>
+          <div class="metadata-content" use:slide={{ duration: 200 }}>
             <div class="metadata-item">
               <span class="label">Model:</span>
               <span class="value">{message.metadata.model}</span>

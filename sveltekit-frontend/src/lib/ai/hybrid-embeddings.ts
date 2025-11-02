@@ -14,8 +14,8 @@
  *   const embedder = new HybridEmbeddings();
  *   const vector = await embedder.embed('text'); // Auto-selects best option
  */
-import { BrowserEmbeddings } from './browser-embeddings';
-import type { EmbeddingOptions } from './browser-embeddings';
+import { BrowserEmbeddings } from, './browser-embeddings';
+import type { EmbeddingOptions } from, './browser-embeddings';
 export type EmbeddingStrategy = 'ollama' | 'browser' | 'auto';
 export interface HybridEmbeddingOptions extends EmbeddingOptions {
   strategy?: EmbeddingStrategy;
@@ -31,7 +31,7 @@ export class HybridEmbeddings {
   private ollamaBaseUrl: string;
   private ollamaAvailable: boolean | null = null;
   constructor(
-    ollamaBaseUrl: string = '/api/embeddings/ollama' // SvelteKit API proxy
+   , ollamaBaseUrl: string = '/api/embeddings/ollama' // SvelteKit API proxy
   ) {
     this.browserEmbedder = new BrowserEmbeddings();
     this.ollamaBaseUrl = ollamaBaseUrl;
@@ -105,7 +105,7 @@ export class HybridEmbeddings {
       try {
         const embedding = await this.embedOllama(text, options.timeoutMs || 5000);
         return {
-          embedding: embedding as number[],
+          embedding: embedding, as: number[],
           strategy: 'ollama',
           duration: performance.now() - startTime,
           model: 'embeddinggemma:latest' };'' } catch (error) {
@@ -115,7 +115,7 @@ export class HybridEmbeddings {
     // Fallback to browser
     const embedding = await this.embedBrowser(text, options);
     return {
-      embedding: embedding as number[],
+      embedding: embedding, as: number[],
       strategy: 'browser',
       duration: performance.now() - startTime,
       model: `Xenova/all-MiniLM-L6-v2' };'`
@@ -124,7 +124,7 @@ export class HybridEmbeddings {
    * Embed using Ollama via API proxy
    */
   private async embedOllama(
-    text: string | string[],
+   , text: string | string[],
     timeoutMs: number = 5000
   ): Promise<number[] | number[][]> {
     const controller = new AbortController();
@@ -182,7 +182,7 @@ export class HybridEmbeddings {
       this.embed(text1, options),
       this.embed(text2, options)
     ]);
-    return this.cosineSimilarity(emb1 as number[], emb2 as number[]);
+    return this.cosineSimilarity(emb1 as: number[], emb2 as: number[]);
   }
   /**
    * Find most similar documents to query
@@ -192,10 +192,10 @@ export class HybridEmbeddings {
     documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5,
     options: HybridEmbeddingOptions = {}
-  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
-    const queryEmbedding = await this.embed(query, options) as number[];
+  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+    const queryEmbedding = await this.embed(query, options) as: number[];
     const docTexts = documents.map(d => d.text);
-    const docEmbeddings = await this.embed(docTexts, options) as number[][];
+    const docEmbeddings = await this.embed(docTexts, options) as: number[][];
     const results = documents.map((doc, idx) => ({
       ...doc,
       score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
@@ -225,7 +225,7 @@ export class HybridEmbeddings {
    * Get current strategy status
    */
   async getStatus(): Promise<{ ollama: boolean;, browser: boolean;
-    recommended: EmbeddingStrategy;
+   , recommended: EmbeddingStrategy;
   }> {
     const ollamaAvailable = await this.checkOllamaAvailability();
     const browserAvailable = this.browserEmbedder !== null;
@@ -248,10 +248,10 @@ export const hybridEmbeddings = new HybridEmbeddings();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte component:
+ * // In a Svelte, component:
  * <script, lang="ts">
- *   import { hybridEmbeddings } from '$lib/ai/hybrid-embeddings';
- *   import { onMount } from 'svelte';
+ *   import { hybridEmbeddings } from, '$lib/ai/hybrid-embeddings';
+ *   import { onMount } from, 'svelte';
  *
  *   onMount(async () => {
  *     await hybridEmbeddings.initialize();

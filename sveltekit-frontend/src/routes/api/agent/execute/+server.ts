@@ -1,6 +1,6 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { DiffPatchApplicator } from '$lib/services/diff-patch-applicator';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { DiffPatchApplicator } from, '$lib/services/diff-patch-applicator';
 
 // In production, this would integrate with the actual agentic system
 const activeTasks = new Map();
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'running',
       progress: 0,
       steps: [
-        { id: 'analyze', name: 'Analyzing codebase structure', status: 'pending' },
+        {, id: 'analyze', name: 'Analyzing codebase structure', status: 'pending' },
         { id: 'generate', name: 'Generating code changes', status: 'pending' },
         { id: 'patch', name: 'Creating diff patches', status: 'pending' },
         { id: 'validate', name: 'Validating changes', status: 'pending' },
@@ -61,14 +61,14 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = {
       success: true,
       execution: {
-        executionId: `exec-${taskId}-${Date.now()}`,
+       , executionId: `exec-${taskId}-${Date.now()}`,
         taskId,
         agentId,
         status: 'started',
         estimatedDuration: 30000, // 30 seconds for demo
         message: `Agent ${agentId} started working on task ${taskId}' },'`
       capabilities: {
-        ragEnabled: true,
+       , ragEnabled: true,
         gemma3Model: 'gemma3:legal-latest',
         tensorrtAccelerated: true,
         pgvectorIntegration: true,

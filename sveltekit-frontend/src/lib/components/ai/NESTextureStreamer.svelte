@@ -1,14 +1,14 @@
 <!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onDestroy } from 'svelte';
-  import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import  SSRWebGPULoader_  from "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
-  const SSRWebGPULoader = SSRWebGPULoader_ as any;
-  import { fade, scale, slide } from 'svelte/transition';
-  // Svelte 5 props
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onDestroy } from, 'svelte';
+  import { N64LODManager } from, '$lib/services/n64-lod-manager';
+  import  SSRWebGPULoader_  from, "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
+  const SSRWebGPULoader = SSRWebGPULoader_ as: any;
+  import { fade, scale, slide } from, 'svelte/transition';
+  // Svelte, 5 props
   let {
     documentId,
     readingMode = 'preview',
@@ -51,7 +51,7 @@ import type { Document } from '$lib/types';
     const distance = Math.abs(scrollPosition - 500); // Distance from center
     // note: ensure comma after pageDistance
     return lodManager.calculateDocumentLOD?.({
-      pageDistance: distance,
+     , pageDistance: distance,
       readingMode,
       documentImportance,
       userInteraction: userInteracting
@@ -65,7 +65,7 @@ import type { Document } from '$lib/types';
       2: 'Low Detail (16x16)',
       3: 'Minimal Detail (8x8)'
     };
-    return descriptions[currentLOD as number] ?? 'Unknown';
+    return descriptions[currentLOD as: number] ?? 'Unknown';
   });
   $effect(() => {
     (async () => {
@@ -210,7 +210,7 @@ import type { Document } from '$lib/types';
   }
   // Convert ArrayBuffer texture to displayable format
   function getTextureDisplayData(): string {
-    if (!currentTexture) return '';
+    if (!currentTexture) return, '';
     // For demo purposes, create a visual representation of CHR-ROM data
     const view = new Uint8Array(currentTexture);
     const pixels: number[] = [];
@@ -266,28 +266,28 @@ import type { Document } from '$lib/types';
           class="lod-button {currentLOD === 0 ? 'active' : ''}"
           disabled={isStreaming}
         >
-          LOD 0
+          LOD, 0
         </button>
         <button
           onclick={() => streamSpecificLOD(1)}
           class="lod-button {currentLOD === 1 ? 'active' : ''}"
           disabled={isStreaming}
         >
-          LOD 1
+          LOD, 1
         </button>
         <button
           onclick={() => streamSpecificLOD(2)}
           class="lod-button {currentLOD === 2 ? 'active' : ''}"
           disabled={isStreaming}
         >
-          LOD 2
+          LOD, 2
         </button>
         <button
           onclick={() => streamSpecificLOD(3)}
           class="lod-button {currentLOD === 3 ? 'active' : ''}"
           disabled={isStreaming}
         >
-          LOD 3
+          LOD, 3
         </button>
       </div>
         <div, class="zoom-controls">
@@ -342,7 +342,7 @@ import type { Document } from '$lib/types';
           <div, class="stat-group">
             <h5>Performance</h5>
             <p>FPS: {frameRate}</p>
-            <p>Load Time: {loadTime.toFixed(1)}ms</p>
+            <p>Load, Time: {loadTime.toFixed(1)}ms</p>
             <p>Scroll Speed: {scrollSpeed.toFixed(1)}px/ms</p>
           </div>
           <div, class="stat-group">
@@ -365,7 +365,7 @@ import type { Document } from '$lib/types';
 <style>
   .nes-texture-streamer {
     background: #0f0f0f;
-    color: #ffffff;
+   , color: #ffffff;
     font-family: 'Perfect DOS VGA 437', 'JetBrains Mono', monospace;
     border: 2px solid #333;
     border-radius: 4px;
@@ -387,7 +387,7 @@ import type { Document } from '$lib/types';
     gap: 0.5rem;
   }
   .document-info h3 {
-    margin: 0;
+   , margin: 0;
     font-size: 1rem;
   }
   .mode-badge,
@@ -463,7 +463,7 @@ import type { Document } from '$lib/types';
     position: relative;
     height: 400px;
     overflow: auto;
-    background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px;
+   , background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px;
   }
   .streaming-overlay {
     position: absolute;
@@ -471,7 +471,7 @@ import type { Document } from '$lib/types';
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+   , background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -511,7 +511,7 @@ import type { Document } from '$lib/types';
     position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(0, 0, 0, 0.7);
+   , background: rgba(0, 0, 0, 0.7);
     padding: 0.5rem;
     border-radius: 4px;
   }
@@ -547,11 +547,11 @@ import type { Document } from '$lib/types';
     padding: 1rem;
   }
   .debug-panel h4 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     color: #22c55e;
   }
   .debug-stats {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
   }
@@ -562,7 +562,7 @@ import type { Document } from '$lib/types';
     border: 1px solid #333;
   }
   .stat-group h5 {
-    margin: 0 0 0.5rem 0;
+   , margin: 0, 0 0.5rem 0;
     color: #f59e0b;
     font-size: 0.875rem;
   }
@@ -581,7 +581,7 @@ import type { Document } from '$lib/types';
   }
   .memory-usage {
     height: 100%;
-    background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+   , background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     transition: width: 0.3s ease;
   }
   /* NES-style scrollbar */
@@ -597,7 +597,7 @@ import type { Document } from '$lib/types';
     border: 1px solid #666;
   }
   .texture-viewer::-webkit-scrollbar-thumb:hover {
-    background: #666;
+   , background: #666;
   }
   @media (max-width: 768px) {
     .controls-header {

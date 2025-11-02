@@ -1,5 +1,5 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Define types for Ollama API responses
 interface OllamaModel {
@@ -15,7 +15,7 @@ interface OllamaTagsResponse {
 interface AIConnectionResponse { success: boolean;, model: string;
   availableModels: string[];
   status: string;
-  timestamp: string;
+ , timestamp: string;
   error?: string; // Include error for consistency with project's error handling pattern'
 }
 
@@ -29,7 +29,7 @@ async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, time
     clearTimeout(id);
   }
 } // Missing: '}' added here
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const { model } = await request.json();
     // Check if Ollama is running
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const modelList = availableModels.models?.map(m => m.name) || [];
     // Verify requested model exists
     if (model && !modelList.includes(model)) {
-      throw error(404, `Model '${model}' not found. Available models: ${modelList.join(', ')}`);
+      throw error(404, `Model, '${model}' not found. Available models: ${modelList.join(', ')}`);
     }
     // Test the model with a simple request
     if (model) {

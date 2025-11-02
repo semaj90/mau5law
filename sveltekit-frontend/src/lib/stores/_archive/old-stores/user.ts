@@ -1,9 +1,9 @@
 // Global user authentication store
-import type { User as UserType } from '$lib/types/user';
-import { writable } from 'svelte/store';
+import type { User as UserType } from, '$lib/types/user';
+import { writable } from, 'svelte/store';
 
 // 1. User Class Model
-// Provides a structured, typed object for user data with default values.
+// Provides a structured, typed: object for user data with default values.
 export class User implements Partial<UserType> {
   id = '';
   email = '';
@@ -11,7 +11,7 @@ export class User implements Partial<UserType> {
   firstName?: string;
   lastName?: string;
   avatarUrl?: string;
-  role: 'prosecutor' | 'investigator' | 'admin' | 'user' = 'user';
+ , role: 'prosecutor' | 'investigator' | 'admin' | 'user' = 'user';
   isActive = $state(false);
   emailVerified?: Date | null;
   createdAt?: Date;
@@ -56,7 +56,7 @@ const createUserStore = () => {
       set(new User()); // Reset to Guest user
     },
     // Update a specific property of the user
-    updateUser: (; props: Partial<UserType> & {
+    updateUser: (;, props: Partial<UserType> & {
         isAuthenticated?: boolean;
         isLoggedIn?: boolean;
         displayName?: string;

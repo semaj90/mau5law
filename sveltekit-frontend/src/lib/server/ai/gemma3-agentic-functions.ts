@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
-import { caseScoringService } from '../services/CaseScoringService';
-import { cognitiveCache } from './cache'; // Keep this import
-import { embeddingGemma } from './embeddinggemma-service'; // Direct embeddingGemma import
-import { VectorSearchService } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
-import { getOllamaEndpoint } from '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { caseScoringService } from, '../services/CaseScoringService';
+import { cognitiveCache } from, './cache'; // Keep this import
+import { embeddingGemma } from, './embeddinggemma-service'; // Direct embeddingGemma import
+import { VectorSearchService } from, '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+import { getOllamaEndpoint } from, '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
 
 // Helper for structured logging
 function logError(context: string, error: unknown, details?: Record<string, unknown>) {
@@ -28,7 +28,7 @@ export async function embed(text: string): Promise<number[]> {
 }
 
 // Import the canonical CaseScoringRequest type
-import type { CaseScoringRequest as BaseCaseScoringRequest } from '$lib/types/scoring';
+import type { CaseScoringRequest as BaseCaseScoringRequest } from, '$lib/types/scoring';
 
 // Define an extended type for specific scoring requests in this agent
 export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
@@ -47,8 +47,8 @@ export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
   evidenceCount?: number;
 };
 
-interface CaseScoringServiceResult { score: number;, explanation: string;
-  // Add other properties returned by scoreCase if any
+interface CaseScoringServiceResult {, score: number;, explanation: string;
+  // Add other properties returned by scoreCase if: any
 }
 
 // Define the final output type for the agentic scoring result
@@ -60,22 +60,22 @@ export interface AgenticScoringResult extends CaseScoringServiceResult {
  * Local LLMRequest type matching the fields used in this file
  */
 type LLMRequest = {
-  prompt: string;
+ , prompt: string;
   model?: string;
   temperature?: number;
   maxTokens?: number;
 };
 
 const OLLAMA_URL = getOllamaEndpoint(); // Use getOllamaEndpoint() instead of hardcoded Ollama URLs.
-const WHISPER_URL = process.env.WHISPER_URL || 'http://localhost:8090'; // Assuming Whisper service runs on 8090
-const PIPER_URL = process.env.PIPER_URL || 'http://localhost:8091'; // Assuming Piper TTS service runs on 8091
+const WHISPER_URL = process.env.WHISPER_URL || 'http://localhost:8090'; // Assuming Whisper service runs on, 8090
+const PIPER_URL = process.env.PIPER_URL || 'http://localhost:8091'; // Assuming Piper TTS service runs on, 8091
 const SUMMARIZATION_MODEL = 'gemma3:legal-latest';
 const DEFAULT_MODEL = 'gemma3:latest'; // Added: Define DEFAULT_MODEL
 
 /**
  * Helper function to summarize text using Gemma3.
  * This is extracted from the original agenticFunctions.summarize_text.handler
- * to resolve the: 'Cannot find name summarizeWithGemma' error.
+ * to resolve, the: 'Cannot find name summarizeWithGemma' error.
  */
 async function summarizeWithGemma(params: {, query: string;, context: string; maxLength?: number }): Promise<string> {
   const cacheKey = `summary:${params.query}`;
@@ -106,7 +106,7 @@ async function summarizeWithGemma(params: {, query: string;, context: string; ma
     return summary;
   } catch (error) {
     console.error('Summarization failed:', error);
-    return 'Summary generation failed.';
+    return, 'Summary generation failed.';
   }
 }
 
@@ -126,7 +126,7 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
   await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
   return out;
 }
-// removed unused import import { transcribeBuffer } from './voice/recognizer';
+// removed unused import import { transcribeBuffer } from, './voice/recognizer';
 
 /**
  * 🤖 Gemma3 Multimodal Agentic Functions Orchestrator
@@ -146,17 +146,17 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
  * - Next-step predictions
  */
 
-import { contextualUnderstanding } from './contextual-understanding-service';
-import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from '$lib/types/sharedTypes';
+import { contextualUnderstanding } from, './contextual-understanding-service';
+import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } from, '$lib/types/sharedTypes';
 
 /**
  * Define the expected structure of an item returned by enhancedVectorSearchService.hybridSearch
  */
 export interface VectorSearchResultItem { id: string;, content: string;
-  score: number; // e.g., similarity score or relevance score
+ , score: number; // e.g., similarity score or relevance score
   meta?: Record<string, unknown>; // Additional metadata from the document
   embedding?: number[]; // Optional: the embedding of the retrieved chunk
-  // Add any other properties that the hybridSearch method might return
+  //, Add: any other properties that the hybridSearch method might return
   // For example, if it returns a: 'documentId'; or: 'title' directly
   documentId?: string;
   title?: string;
@@ -166,7 +166,7 @@ export interface VectorSearchResultItem { id: string;, content: string;
 /**
  * Represents a document record used in retrieval and reranking.
  */
-export interface DocumentRecord { id: string;, content: string;
+export interface DocumentRecord {, id: string;, content: string;
   score?: number;
   meta?: Record<string, unknown>;
   embedding?: number[];
@@ -183,7 +183,7 @@ export interface AgentTaskResult {
   usedDocs: DocumentRecord[];
   confidence: number;
   processingTime: number;
-  steps: Array<{ name: string;, duration: number;
+  steps: Array<{, name: string;, duration: number;
     cached: boolean;
   }>;
 }
@@ -198,12 +198,12 @@ type AgenticFunctionResult =
   | string
   | DocumentRecord[]
   | AgenticScoringResult
-  | unknown; // For get_session_stats and any future functions with unknown return types
+  | unknown; // For get_session_stats and: any future functions with: unknown return types
 
 /**
  * Define the structure for a parsed function call
  */
-interface ParsedFunctionCall { name: string;, parameters: Record<string, unknown>;
+interface ParsedFunctionCall {, name: string;, parameters: Record<string, unknown>;
   result: AgenticFunctionResult;
 }
 
@@ -215,14 +215,14 @@ export const agenticFunctions = {
    * Get contextual state for current session
    */
   get_contextual_state: {
-    description: 'Retrieve current conversation context including history, entities, and HMM state',
+   , description: 'Retrieve current conversation context including history, entities, and HMM state',
     parameters: {
-      type: 'object',
-      properties: { sessionId: {, type: 'string',
+     , type: 'object',
+      properties: {, sessionId: {, type: 'string',
           description: 'Current session ID'
         },
         userId: {
-          type: 'string',
+         , type: 'string',
           description: 'Current user ID'
         }
       },
@@ -237,14 +237,14 @@ export const agenticFunctions = {
    * Get next-step predictions based on conversation flow
    */
   predict_next_steps: {
-    description: 'Get AI-predicted next actions based on conversation patterns and HMM state',
+   , description: 'Get AI-predicted next actions based on conversation patterns and HMM state',
     parameters: {
-      type: 'object',
-      properties: { sessionId: {, type: 'string',
+     , type: 'object',
+      properties: {, sessionId: {, type: 'string',
           description: 'Current session ID'
         },
         userId: {
-          type: 'string',
+         , type: 'string',
           description: 'Current user ID'
         }
       },
@@ -259,10 +259,10 @@ export const agenticFunctions = {
    * Extract legal entities from text
    */
   extract_legal_entities: {
-    description: 'Extract legal entities (parties, dates, case numbers, statutes) from text',
+   , description: 'Extract legal entities (parties, dates, case numbers, statutes) from text',
     parameters: {
-      type: 'object',
-      properties: { text: {, type: 'string',
+     , type: 'object',
+      properties: {, text: {, type: 'string',
           description: 'Text to extract entities from'
         }
       },
@@ -277,19 +277,19 @@ export const agenticFunctions = {
    * Get conversation summary for context injection
    */
   get_conversation_summary: {
-    description: 'Get summary of recent conversation turns for context',
+   , description: 'Get summary of recent conversation turns for context',
     parameters: {
-      type: 'object',
-      properties: { sessionId: {, type: 'string',
+     , type: 'object',
+      properties: {, sessionId: {, type: 'string',
           description: 'Current session ID'
         },
         userId: {
-          type: 'string',
+         , type: 'string',
           description: 'Current user ID'
         },
         maxTurns: {
-          type: 'number',
-          description: 'Maximum number of turns to include (default: 5)'
+         , type: 'number',
+          description: 'Maximum: number of turns to include (default: 5)'
         }
       },
       required: ['sessionId', 'userId']
@@ -303,14 +303,14 @@ export const agenticFunctions = {
    * Get session statistics
    */
   get_session_stats: {
-    description: 'Get analytics and statistics for current conversation session',
+   , description: 'Get analytics and statistics for current conversation session',
     parameters: {
-      type: 'object',
-      properties: { sessionId: {, type: 'string',
+     , type: 'object',
+      properties: {, sessionId: {, type: 'string',
           description: 'Current session ID'
         },
         userId: {
-          type: 'string',
+         , type: 'string',
           description: 'Current user ID' }'` },'`
       required: ['sessionId', 'userId']
     },
@@ -323,13 +323,13 @@ export const agenticFunctions = {
    * 🎙️ Voice-to-text transcription
    */
   voice_to_text: {
-    description: 'Transcribe audio to text using Whisper.cpp or WebGPU fallback',
+   , description: 'Transcribe audio to text using Whisper.cpp or WebGPU fallback',
     parameters: {
-      type: 'object',
-      properties: { audioPath: {, type: 'string',
+     , type: 'object',
+      properties: {, audioPath: {, type: 'string',
           description: `Path to audio file` },
         sessionId: {
-          type: 'string',
+         , type: 'string',
           description: `Session ID for caching` }
       },
       required: ['audioPath']
@@ -358,7 +358,7 @@ export const agenticFunctions = {
         return transcript;
       } catch (error) {
         logError('Voice-to-text failed', error, { audioPath: params.audioPath });
-        return ''; // Return empty string on failure
+        return, ''; // Return empty: string on failure
       }
     }
   },
@@ -367,23 +367,23 @@ export const agenticFunctions = {
    * 🧠 RAG vector retrieval
    */
   retrieve_relevant_docs: {
-    description: 'Retrieve relevant documents using Qdrant + pgvector hybrid search',
+   , description: 'Retrieve relevant documents using Qdrant + pgvector hybrid search',
     parameters: {
-      type: 'object',
-      properties: { query: {, type: 'string',
+     , type: 'object',
+      properties: {, query: {, type: 'string',
           description: 'Search query'
         },
         topK: {
-          type: 'number',
+         , type: 'number',
           description: 'Number of documents to retrieve (default: 8)'
         },
         sessionId: {
-          type: 'string',
+         , type: 'string',
           description: 'Session ID for context filtering'
         },
         // Add a filter for document type if needed
         documentType: {
-          type: 'string',
+         , type: 'string',
           description: 'Optional filter for document type (e.g., "case", "statute")'
         }
       },
@@ -434,16 +434,16 @@ export const agenticFunctions = {
    * ⚖️ Rerank documents with MMR
    */
   rerank_documents: {
-    description: 'Rerank documents using Maximal Marginal Relevance for diversity',
+   , description: 'Rerank documents using Maximal Marginal Relevance for diversity',
     parameters: {
-      type: 'object',
-      properties: { query: {, type: 'string',
+     , type: 'object',
+      properties: {, query: {, type: 'string',
           description: `Original search query` },'`'`
         documents: {
-          type: 'array',
+         , type: 'array',
           description: `Documents to rerank` },
         lambda: {
-          type: 'number',
+         , type: 'number',
           description: `MMR lambda parameter (0-1, default: 0.7)` }
       },
       required: ['query', 'documents']
@@ -471,18 +471,18 @@ export const agenticFunctions = {
    * 🧾 Summarize with Gemma3
    */
   summarize_text: {
-    description: 'Generate summary using Gemma3 legal model',
+   , description: 'Generate summary using Gemma3 legal model',
     parameters: {
-      type: 'object',
-      properties: { query: {, type: 'string',
+     , type: 'object',
+      properties: {, query: {, type: 'string',
           description: 'User query'
         },
         context: {
-          type: 'string',
+         , type: 'string',
           description: 'Context to summarize'
         },
         maxLength: {
-          type: 'number',
+         , type: 'number',
           description: 'Max summary length (default: 500)' }'` },'`
       required: ['query', 'context']
     },
@@ -496,13 +496,13 @@ export const agenticFunctions = {
    * 🔊 Text-to-speech synthesis
    */
   text_to_speech: {
-    description: 'Convert text to speech using Piper TTS',
+   , description: 'Convert text to speech using Piper TTS',
     parameters: {
-      type: 'object',
-      properties: { text: {, type: 'string',
+     , type: 'object',
+      properties: {, text: {, type: 'string',
           description: `Text to speak` },
         voice: {
-          type: 'string',
+         , type: 'string',
           description: `Voice model (default: en_US-lessac-medium)` }
       },
       required: ['text']
@@ -525,7 +525,7 @@ export const agenticFunctions = {
         return data.audioPath || '';
       } catch (error) {
         logError('Text-to-speech failed', error, { text: params.text });
-        return ''; // Return empty string on failure
+        return, ''; // Return empty: string on failure
       }
     }
   },
@@ -534,21 +534,21 @@ export const agenticFunctions = {
    * Legal case scoring and summarization
    */
   score_and_summarize_case: {
-    description: 'Score a legal case and provide a summary of strengths and weaknesses',
+   , description: 'Score a legal case and provide a summary of strengths and weaknesses',
     parameters: {
-      type: 'object',
-      properties: { caseId: {, type: 'string',
+     , type: 'object',
+      properties: {, caseId: {, type: 'string',
           description: 'Unique identifier for the legal case'
         },
         // Add other properties from ExtendedCaseScoringRequest if they are to be passed via function call
-        jurisdiction: { type: 'string', description: 'Jurisdiction of the case' },
-        caseType: { type: 'string', enum: ['civil', 'criminal', 'family', 'other'], description: 'Type of case' },
-        parties: { type: 'array', items: { type: 'string' }, description: 'Parties involved in the case' },
-        filedDate: { type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' },
-        evidenceCount: { type: 'number', description: 'Number of pieces of evidence' },
-        userId: { type: 'string', description: `User ID associated with the case` },'`'`
-        title: { type: 'string', description: `Title of the case` },
-        description: { type: 'string', description: `Description of the case` }
+        jurisdiction: {, type: 'string', description: 'Jurisdiction of the case' },
+        caseType: {, type: 'string', enum: ['civil', 'criminal', 'family', 'other'], description: 'Type of case' },
+        parties: {, type: 'array', items: {, type: 'string' }, description: 'Parties involved in the case' },
+        filedDate: {, type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' },
+        evidenceCount: {, type: 'number', description: 'Number of pieces of evidence' },
+        userId: {, type: 'string', description: `User ID associated with the case` },'`'`
+        title: {, type: 'string', description: `Title of the case` },
+        description: {, type: 'string', description: `Description of the case` }
       },
       required: ['caseId', 'userId', 'title', 'description'], // Ensure required fields from BaseCaseScoringRequest are here
     },
@@ -621,7 +621,7 @@ async function mmrRerank(
     }
 
     // Corrected: The; duplicated: 'if' block was removed.
-    // This: 'if' statement correctly follows; the: 'for' loop.
+    // This: 'if' statement correctly follows;, the: 'for' loop.
     if (bestIdx >= 0) {
       selected.push(remaining[bestIdx]);
       remaining.splice(bestIdx, 1);
@@ -715,7 +715,7 @@ export class AgenticGemma3Client {
     parts.push(`Confidence Level: ${(contextualState.confidence * 100).toFixed(1)}%`);
     parts.push('');
 
-    // Recent context (last 3 turns)
+    // Recent context (last, 3 turns)
     if (contextualState.conversationHistory.length > 0) {
       parts.push('Recent Context:');
       const recentTurns = contextualState.conversationHistory.slice(-3);
@@ -806,7 +806,7 @@ export class AgenticGemma3Client {
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
     const calls: ParsedFunctionCall[] = []; // Use ParsedFunctionCall[]
 
-    let match: RegExpExecArray | null; // Explicitly type match
+    let, match: RegExpExecArray | null; // Explicitly type match
     while ((match = functionCallRegex.exec(text)) !== null) {
       const functionName = match[1];
       const paramsStr = match[2];
@@ -852,20 +852,20 @@ export class AgenticGemma3Client {
   private extractIntent(message: string): string {
     const messageLower = message.toLowerCase();
 
-    if (messageLower.includes('hello') || messageLower.includes('hi')) return 'greeting';
-    if (messageLower.includes('case') || messageLower.includes('matter')) return 'case_inquiry';
-    if (messageLower.includes('document') || messageLower.includes('contract')) return 'document_analysis';
-    if (messageLower.includes('research') || messageLower.includes('precedent')) return 'legal_research';
-    if (messageLower.includes('risk')) return 'risk_assessment';
-    if (messageLower.includes('recommend')) return 'recommendation';
-    if (messageLower.includes('thank') || messageLower.includes('bye')) return 'conclusion';
+    if (messageLower.includes('hello') || messageLower.includes('hi')) return, 'greeting';
+    if (messageLower.includes('case') || messageLower.includes('matter')) return, 'case_inquiry';
+    if (messageLower.includes('document') || messageLower.includes('contract')) return, 'document_analysis';
+    if (messageLower.includes('research') || messageLower.includes('precedent')) return, 'legal_research';
+    if (messageLower.includes('risk')) return, 'risk_assessment';
+    if (messageLower.includes('recommend')) return, 'recommendation';
+    if (messageLower.includes('thank') || messageLower.includes('bye')) return, 'conclusion';
 
-    return 'general_query';
+    return, 'general_query';
   }
 
   /**
    * Maps HMM state numbers to human-readable state names for legal conversation flows.
-   * @param state - The contextual state containing the current HMM state number.
+   * @param state - The contextual state containing the current HMM state: number.
    * @returns The human-readable state name corresponding to the HMM state.
    */
   private getStateDescription(state: ContextualState): string {
@@ -877,13 +877,13 @@ export class AgenticGemma3Client {
       4: 'Risk Assessment',
       5: 'Recommendation',
       6: 'Follow-up',
-      7: `Conclusion` }; // <-- fixed: close, object, literal
+      7: `Conclusion` }; // <--, fixed: close, object, literal
 
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
 
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
-      return 'Unknown';
+      return, 'Unknown';
     }
 
     return stateNames[current] || 'Unknown';

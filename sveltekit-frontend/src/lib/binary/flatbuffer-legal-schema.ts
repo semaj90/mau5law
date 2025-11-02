@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * FlatBuffers Schema for Legal Documents
  * Ultra-fast binary serialization eliminating JSON bottlenecks
@@ -22,25 +22,25 @@ export enum RiskLevel {
 export const LEGAL_DOCUMENT_BINARY_SIZE = 2048; // 2KB per document
 export interface LegalDocumentBinaryLayout {
   // Header (32 bytes)
-  magic: number;           // 4 bytes - magic number for validation,
+  magic: number;           // 4 bytes -, magic: number for validation,
   version: number;         // 4 bytes - schema version
-  documentId: number;      // 4 bytes - hashed document ID,
+ , documentId: number;      // 4 bytes - hashed document ID,
   size: number;           // 4 bytes - total document size
-  checksum: number;       // 4 bytes - CRC32 checksum,
+ , checksum: number;       // 4 bytes - CRC32 checksum,
   flags: number;          // 4 bytes - bit flags for features
-  timestamp: bigint;      // 8 bytes - creation timestamp
+ , timestamp: bigint;      // 8 bytes - creation timestamp
   // Core Fields (32 bytes)
   documentType: DocumentType;    // 1 byte,
   riskLevel: RiskLevel;         // 1 byte
-  priority: number;             // 1 byte (0-255),
+ , priority: number;             // 1 byte (0-255),
   confidenceLevel: number;      // 1 byte (0-255, scaled from 0.0-1.0)
   bankId: number;              // 1 byte - NES memory bank ID,
   padding1: ArrayBuffer;       // 3 bytes padding
-  lastAccessed: bigint;        // 8 bytes,
+ , lastAccessed: bigint;        // 8 bytes,
   caseId: number;             // 4 bytes - hashed case ID
-  userId: number;             // 4 bytes - hashed user ID,
+ , userId: number;             // 4 bytes - hashed user ID,
   jurisdictionCode: number;    // 4 bytes - jurisdiction hash
-  padding2: ArrayBuffer;       // 4 bytes padding
+ , padding2: ArrayBuffer;       // 4 bytes padding
   // Position & Matrix (80 bytes)
   position: Float32Array;      // 12 bytes - x,y,z position for graph layout
   rankingMatrix: Float32Array; // 64 bytes - 4x4 ranking matrix,
@@ -50,44 +50,44 @@ export interface LegalDocumentBinaryLayout {
   // Content Hashes (32 bytes)
   titleHash: number;          // 4 bytes - title content hash,
   contentHash: number;        // 4 bytes - main content hash
-  metadataHash: number;       // 4 bytes - metadata hash,
+ , metadataHash: number;       // 4 bytes - metadata hash,
   tagsHash: number;           // 4 bytes - tags hash
-  summaryHash: number;        // 4 bytes - summary hash,
+ , summaryHash: number;        // 4 bytes - summary hash,
   analysisHash: number;       // 4 bytes - AI analysis hash
-  padding4: ArrayBuffer;      // 8 bytes padding
+ , padding4: ArrayBuffer;      // 8 bytes padding
   // Variable Length Data Offsets (32 bytes)
   titleOffset: number;        // 4 bytes,
   titleLength: number;        // 4 bytes
-  contentOffset: number;      // 4 bytes,
+ , contentOffset: number;      // 4 bytes,
   contentLength: number;      // 4 bytes
-  metadataOffset: number;     // 4 bytes,
+ , metadataOffset: number;     // 4 bytes,
   metadataLength: number;     // 4 bytes
-  tagsOffset: number;         // 4 bytes,
+ , tagsOffset: number;         // 4 bytes,
   tagsLength: number;         // 4 bytes
   // Graph Adjacency (64 bytes)
   adjacentNodes: Uint32Array; // 16 nodes * 4 bytes = 64 bytes
   // Performance Metrics (32 bytes)
   accessCount: number;        // 4 bytes,
   cacheHits: number;         // 4 bytes
-  lastQueryTime: number;     // 4 bytes - milliseconds,
+ , lastQueryTime: number;     // 4 bytes - milliseconds,
   avgProcessingTime: number; // 4 bytes - milliseconds
-  gpuAccelerationUsed: number; // 1 byte boolean,
-  wasmAccelerationUsed: number; // 1 byte boolean
-  compressionRatio: number;   // 2 bytes - fixed point (divide by 100),
+  gpuAccelerationUsed: number; // 1, byte: boolean,
+  wasmAccelerationUsed: number; // 1 byte: boolean
+ , compressionRatio: number;   // 2 bytes - fixed point (divide by 100),
   padding5: ArrayBuffer;      // 16 bytes padding
   // Legal Specific Fields (64 bytes)
   practiceArea: number;       // 4 bytes - practice area enum,
   courtLevel: number;         // 4 bytes - court level enum
-  partyCount: number;         // 4 bytes - number of parties,
+ , partyCount: number;         // 4 bytes - number of parties,
   citationCount: number;      // 4 bytes - number of citations
-  evidenceType: number;       // 4 bytes - evidence type enum,
+ , evidenceType: number;       // 4 bytes - evidence type enum,
   documentClass: number;      // 4 bytes - document classification
-  riskFactors: number;        // 4 bytes - bit flags for risk factors,
+ , riskFactors: number;        // 4 bytes - bit flags for risk factors,
   complianceFlags: number;    // 4 bytes - compliance bit flags
-  datesFiled: Float64Array;   // 16 bytes - 2 dates (filed, modified)
+ , datesFiled: Float64Array;   // 16 bytes - 2 dates (filed, modified)
   confidentialityLevel: number; // 4 bytes - confidentiality enum,
   retentionPeriod: number;    // 4 bytes - retention period in days
-  padding6: ArrayBuffer;      // 12 bytes padding
+ , padding6: ArrayBuffer;      // 12 bytes padding
   // Reserved for Future Use (128 bytes)
   reserved: ArrayBuffer;      // 128 bytes for schema evolution
 }
@@ -174,7 +174,7 @@ export class LegalDocumentBinarySerializer {
     view.setUint32(offset, this.stringToHash(document.aiAnalysis || ''), true);
     offset += 4;
     offset += 8; // padding
-    // Variable Length Data Offsets (set to 0 for now - would implement full text storage)
+    // Variable Length Data Offsets (set to, 0 for now - would implement full text storage)
     for (let i = 0; i < 8; i++) {
       view.setUint32(offset, 0, true);
       offset += 4;
@@ -310,7 +310,7 @@ export class LegalDocumentBinarySerializer {
       lastAccessed: Number(lastAccessed),
       size,
       metadata: {
-        caseId: caseId.toString(),
+       , caseId: caseId.toString(),
         userId: userId.toString(),
         position,
         vectorEmbedding: embedding,

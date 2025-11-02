@@ -13,7 +13,7 @@
  * QUERY PARAMETERS:
  * -; action: upload | search | analyze | synthesize | stream | status
  *
- * ARCHITECTURE:
+ *, ARCHITECTURE:
  * TypeScript SvelteKit ↔ Python FastAPI (AI/ML) ↔ PostgreSQL/Redis/Qdrant
  *
  * REPLACES (with TODO migration comments):
@@ -24,11 +24,11 @@
  * - /api/search/evidence
  */
 
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { evidence } from '$lib/server/db/schema-postgres';
-import { eq, and, or, ilike, desc } from 'drizzle-orm';
-import { randomUUID } from 'node:crypto';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { eq, and, or, ilike, desc } from, 'drizzle-orm';
+import { randomUUID } from, 'node:crypto';
 
 // ======================
 // PYTHON AI BACKEND CLIENT
@@ -37,12 +37,12 @@ import { randomUUID } from 'node:crypto';
 const PYTHON_AI_BASE_URL = 'http://localhost:8000';
 const PYTHON_WS_URL = 'ws://localhost:8000/ws';
 
-interface UploadResponse { success: boolean;, file_id: string;
+interface UploadResponse {, success: boolean;, file_id: string;
   message: string;
 }
 
 interface SearchResponse {
-  results: Array<Record<string, unknown>>;
+ , results: Array<Record<string, unknown>>;
   suggestions: Array<Record<string, unknown>>;
 }
 
@@ -51,8 +51,8 @@ interface WorkflowStatus { stage: string;, progress: number;
   message?: string;
 }
 
-interface AnalysisResponse { file_id: string;, analysis: string;
-  tags: string[];
+interface AnalysisResponse {, file_id: string;, analysis: string;
+ , tags: string[];
 }
 
 interface PythonAIClient {
@@ -147,7 +147,7 @@ interface CreateEvidenceData { caseId: string;, title: string;
   fileName?: string;
   fileSize?: number;
   mimeType?: string;
-  userId: string;
+ , userId: string;
   aiProcessingId?: string;
 }
 
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const action = url.searchParams.get('action') || 'list';
 
     switch (action) {
-      case 'list': {
+      case, 'list': {
         const caseId = url.searchParams.get('caseId');
         const evidenceType = url.searchParams.get('type');
         const search = url.searchParams.get('search');
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      case 'search': {
+      case, 'search': {
         const query = url.searchParams.get('q') || url.searchParams.get('query');
         const userId = locals.user?.id || 'anonymous';
         const useVector = url.searchParams.get('vector') !== 'false';
@@ -331,7 +331,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      case 'status': {
+      case, 'status': {
         const fileId = url.searchParams.get('fileId');
         if (!fileId) {
           return json({ error: 'fileId required' }, { status: 400 });
@@ -350,7 +350,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }, { status: 503 });
       }
 
-      case 'health': {
+      case, 'health': {
         const pythonHealthy = await pythonAI.healthCheck();
 
         return json({
@@ -373,7 +373,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
       }
 
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (err) {
     console.error('Evidence API GET error:', err);'
@@ -425,7 +425,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const evidenceRecord = await tsService.createEvidence({
         caseId,
         title: file.name,
-        description: `AI processing; started: ${result.file_id}`,
+        description: `AI processing;, started: ${result.file_id}`,
         evidenceType: 'document',
         fileName: file.name,
         fileSize: file.size,

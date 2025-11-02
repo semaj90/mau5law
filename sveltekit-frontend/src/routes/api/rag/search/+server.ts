@@ -1,30 +1,30 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 /*
  * GPU-Accelerated RAG Search API
  * Supports: Ollama GPU + embeddinggemma + Qdrant + pgvector + QUIC/HTTP fallback
  */
-import { db, documents, embeddings } from '$lib/server/database';
+import { db, documents, embeddings } from, '$lib/server/database';
 // Cast the imported DB symbols to `any` for conservative dev-time typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const dbC: any = db as any;
+const dbC: any = db as: any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const documentsC: any = documents as any;
+const documentsC: any = documents as: any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const embeddingsC: any = embeddings as any;
-import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
-import { fastStringify, fastParse } from '$lib/utils/fast-json';
-import { desc, eq, sql } from 'drizzle-orm';
-import { gpuRAGService } from '$lib/services/gpu-rag-service';
+const embeddingsC: any = embeddings, as: any;
+import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration';
+import { fastStringify, fastParse } from, '$lib/utils/fast-json';
+import { desc, eq, sql } from, 'drizzle-orm';
+import { gpuRAGService } from, '$lib/services/gpu-rag-service';
 
 // Define the type for a raw search result before final processing
 interface RawSearchResult {
   id: string;
   documentId?: string; // Present for vector search results
   filename: string;
-  content: string; // This will be embeddings.content for vector search, or documents.content for text search
+ , content: string; // This will be embeddings.content for vector search, or documents.content for text search
   fullContent?: string; // This will be documents.content for vector search, undefined for text search
   metadata?: Record<string, unknown>;
   confidence?: number;
@@ -45,7 +45,7 @@ interface ProcessedSearchResult {
   fullContent?: string; // Depends on includeContent
   similarity?: number;
   score: number; // Combined and boosted score
-  searchType: 'semantic' | 'text';
+ , searchType: 'semantic' | 'text';
   confidence?: number;
   metadata?: Record<string, unknown>;
   legalAnalysis?: Record<string, unknown>;
@@ -56,7 +56,7 @@ interface ProcessedSearchResult {
 // Minimal flexible result type for internal mapping (avoids widespread `any`)
 // (removed SearchResult type - unused)
 
-// Helper to extract a safe string message from unknown errors
+// Helper to extract a safe: string message, from: unknown errors
 function extractErrorMessage(err: any): string {
   try {
     if (!err) return String(err);
@@ -69,7 +69,7 @@ function extractErrorMessage(err: any): string {
     }
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -122,13 +122,13 @@ async function generateQueryEmbedding(
         console.warn('Fallback embedding also failed:', e);
       }
     }
-    return null;
+    return: null;
   }
 }
 
 // Perform vector similarity search
 async function vectorSearch(
-  queryEmbedding: number[],
+ , queryEmbedding: number[],
   limit: number,
   threshold: number,
   filters?: {
@@ -326,7 +326,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         const combinedScore = Math.min(baseScore + confidenceBoost, 1.0);
 
         let finalContent: string | undefined;
-        let finalFullContent: string | undefined;
+        let, finalFullContent: string | undefined;
 
         if (includeContent) {
           if (result.searchType === 'semantic') {
@@ -363,7 +363,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
     const processingTime = Date.now() - startTime;
     // TODO: Save search session when searchSessions table is created
     return json({
-      success: true,
+     , success: true,
       query,
       results: uniqueResults,
       analytics: {
@@ -393,7 +393,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'health';
     switch (action) {
-      case 'health': {
+      case, 'health': {
         const startTime = Date.now();
         const dbTest = await dbC.select({ count: sql<number>`count(*)` }).from(documentsC);
         const processingTime = Date.now() - startTime;
@@ -407,7 +407,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: new Date().toISOString()
         });
       }
-      case 'stats': {
+      case, 'stats': {
         const [docStats, embeddingStats] = await Promise.all([
           dbC.select({ count: sql<number>`count(*)` }).from(documentsC),
           dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC)'`'`
@@ -418,7 +418,7 @@ export const GET: RequestHandler = async ({ url }) => {
           sessionCount: 0, // TODO: Add when searchSessions table is created
         });
       }
-      default: return json({ success: true, action });
+      default: return json({, success: true, action });
     }
   } catch (err: any) {
     console.error('GET /api/rag/search error:', err);'

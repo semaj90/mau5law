@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProvider.svelte"; import  ThemeToggle  from "./ThemeToggle.svelte"; import  Sidebar  from "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from "./DocumentCard.svelte"; // Changed to named import import  Button  from "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
+import type { Case } from, '$lib/types'; import  ThemeProvider  from, "./ThemeProvider.svelte"; import  ThemeToggle  from, "./ThemeToggle.svelte"; import  Sidebar  from, "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from, "./DocumentCard.svelte"; // Changed to named import import  Button  from, "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
   let { theme = 'default'
   }: SidebarDemoProps = $props(); let currentPage = $state<string>('dashboard'); // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused // Sample navigation items const navigationItems = [ {, id: 'dashboard', label: 'Dashboard', icon: '📊', // Fixed syntax badge: '3'
     }, {
@@ -21,19 +21,19 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
       title: 'Case Law Research - Precedents', fileType: 'citation' as const, fileSize: '654 KB', lastModified: '2024-01-12', tags: ['research', 'precedent', 'analysis'], confidentialityLevel: 'internal' as const }
   ]; function handleSidebarItemClick(_event: CustomEvent) { currentPage = _event.detail.item.id; // Fixed typo console.log('Navigation to:', _event.detail.item.label); // Fixed typo }
   function handleHomeClick() { currentPage = 'home'; console.log('Navigation to: Home'); }
-  function getPageContent(page: string) { switch (page) { case 'home': return { title: '🏠 Home Dashboard', description: 'Welcome to your legal workspace', // Fixed syntax }
-      case 'dashboard': return { title: '📊 Analytics Dashboard', description: 'Overview of your legal practice metrics', // Fixed syntax }
-      case 'documents': return { title: '📄 Document Library', description: 'Manage all your legal documents', // Fixed syntax }
-      case 'contracts': return { title: '📋 Contracts', description: 'Contract management and analysis', // Fixed syntax }
-      case 'evidence': return { title: '🔍 Evidence Management', description: 'Digital evidence and discovery tools', // Fixed syntax }
-      case 'briefs': return { title: '⚖️ Legal Briefs', description: 'Brief writing and case preparation', // Fixed syntax }
-      case 'cases': return { title: '📚 Case Management', description: 'Track and manage your legal cases', // Fixed syntax }
-      case 'clients': return { title: '👥 Client Portal', description: 'Client information and communication', // Fixed syntax }
-      case 'calendar': return { title: '📅 Legal Calendar', description: 'Court dates, deadlines, and appointments', // Fixed syntax }
-      case 'reports': return { title: '📈 Reports & Analytics', description: 'Generate insights from your legal data', // Fixed syntax }
-      case 'ai-assistant': return { title: '🤖 AI Legal Assistant', description: 'AI-powered legal research and analysis', // Fixed syntax }
-      case 'settings': return { title: '⚙️ System Settings', description: 'Configure your legal workspace', // Fixed syntax }
-      default: return { title: '📄 Page Not Found', description: 'The requested page could not be found', // Fixed syntax }
+  function getPageContent(page: string) { switch (page) { case, 'home': return { title: '🏠 Home Dashboard', description: 'Welcome to your legal workspace', // Fixed syntax }
+      case, 'dashboard': return { title: '📊 Analytics Dashboard', description: 'Overview of your legal practice metrics', // Fixed syntax }
+      case, 'documents': return { title: '📄 Document Library', description: 'Manage all your legal documents', // Fixed syntax }
+      case, 'contracts': return { title: '📋 Contracts', description: 'Contract management and analysis', // Fixed syntax }
+      case, 'evidence': return { title: '🔍 Evidence Management', description: 'Digital evidence and discovery tools', // Fixed syntax }
+      case, 'briefs': return { title: '⚖️ Legal Briefs', description: 'Brief writing and case preparation', // Fixed syntax }
+      case, 'cases': return { title: '📚 Case Management', description: 'Track and manage your legal cases', // Fixed syntax }
+      case, 'clients': return { title: '👥 Client Portal', description: 'Client information and communication', // Fixed syntax }
+      case, 'calendar': return { title: '📅 Legal Calendar', description: 'Court dates, deadlines, and appointments', // Fixed syntax }
+      case, 'reports': return { title: '📈 Reports & Analytics', description: 'Generate insights from your legal data', // Fixed syntax }
+      case, 'ai-assistant': return { title: '🤖 AI Legal Assistant', description: 'AI-powered legal research and analysis', // Fixed syntax }
+      case, 'settings': return { title: '⚙️ System Settings', description: 'Configure your legal workspace', // Fixed syntax }
+      default: return {, title: '📄 Page Not Found', description: 'The requested page could not be found', // Fixed syntax }
     } }
   const pageContent = $derived(getPageContent(currentPage)); </script> <ThemeProvider, defaultTheme="light" enableSystem={ true }> <div class={` min-h-screen transition-colors, bg-[var(--enhanced-bits-bg)] text-[var(--enhanced-bits-text)] `} >
     <!-- Sidebar --> <Sidebar { theme } items={ navigationItems } homeIcon="🏠"
@@ -44,7 +44,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
       onHomeClick={ handleHomeClick } onitemClick={ handleSidebarItemClick } /> <!-- Main, Content, Area --> <div class="ml-16 transition-all, duration-300, ease-out"> <!-- Top, Header --> <header class={` sticky top-0 z-30 border-b p-4 bg-[var(--enhanced-bits-surface)] border-[var(--enhanced-bits-border)] backdrop-blur-sm, bg-opacity-95 `} >
         <div class="flex, items-center, justify-between"> <div> <h1 class={` text-2xl font-bold ${theme === 'gaming' ? 'text-green-400, font-mono': ''} `} >
               {pageContent.title} </h1> <p class={` text-sm mt-1 ${theme === 'gaming' ? 'text-green-400/70, font-mono': 'text-[var(--enhanced-bits-text-muted)]'} `} >
-              {pageContent.description} </p> </div> <div class="flex items-center, space-x-4"> <ThemeToggle { theme } variant="button" showLabel={ false } /> <Button, variant="primary" size="sm">New Document</Button> <!-- Removed { theme } prop --> </div> </div> </header> <!-- Page, Content --> <main, class="p-6"> {#if currentPage === 'home' || currentPage === 'dashboard'} <!-- Dashboard, Grid --> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6, mb-8"> <!-- Stats, Cards --> <div class={` p-6 rounded-lg border ${ theme === 'gaming'`
+              {pageContent.description} </p> </div> <div class="flex items-center, space-x-4"> <ThemeToggle { theme } variant="button" showLabel={ false } /> <Button, variant="primary" size="sm">New Document</Button> <!-- Removed { theme } prop --> </div> </div> </header> <!-- Page, Content --> <main, class="p-6"> {#if currentPage === 'home' || currentPage === 'dashboard'} <!-- Dashboard, Grid --> <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3 gap-6, mb-8"> <!-- Stats, Cards --> <div class={` p-6 rounded-lg border ${ theme === 'gaming'`
                   ? 'border-green-400/30 bg-green-400/5': 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
               } `} >`
               <div class="flex, items-center, justify-between"> <div> <p class={` text-sm, font-medium ${theme === 'gaming' ? 'text-green-400': 'text-[var(--enhanced-bits-text-muted)]'} `} >
@@ -63,7 +63,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
                     Deadlines </p> <p class={` text-3xl, font-bold ${theme === 'gaming' ? 'text-green-400': ''} `} >
                     3 </p> </div> <div class={` text-3xl ${theme === 'gaming' ? 'filter, drop-shadow-[0_0_8px_currentColor]': ''} `} >
                   ⏰ </div> </div> </div> {/if} {#if currentPage === 'documents' || currentPage === 'contracts' || currentPage === 'evidence' || currentPage === 'briefs'} <!-- Documents, Grid --> <div, class="mb-6"> <h2 class={` text-xl font-semibold mb-4 ${theme === 'gaming' ? 'text-green-400': ''} `} >
-              Recent Documents </h2> <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3, xl:grid-cols-4, gap-6"> {#each Array.isArray(sampleDocuments) ? sampleDocuments: [] as doc} <DocumentCard, title={doc.title} fileType={doc.fileType} fileSize={doc.fileSize} lastModified={doc.lastModified} tags={doc.tags} confidentialityLevel={doc.confidentialityLevel} { theme } size="md"
+              Recent Documents </h2> <div class="grid grid-cols-1 sm:grid-cols-2, lg:grid-cols-3, xl:grid-cols-4, gap-6"> {#each Array.isArray(sampleDocuments) ? sampleDocuments: [] as doc} <DocumentCard, title={doc.title} fileType={doc.fileType} fileSize={doc.fileSize} lastModified={doc.lastModified} tags={doc.tags} confidentialityLevel={doc.confidentialityLevel} { theme } size="md"
                   onDownload={() => console.log('Download:', doc.title)} onEdit={() => console.log('Edit:', doc.title)} onDelete={() => console.log('Delete:', doc.title)} /> {/each} </div> </div> {:else} <!-- Generic, page, content --> <div class={` p-12 text-center rounded-lg border-2, border-dashed ${ theme === 'gaming'`
                 ? 'border-green-400/30 bg-green-400/5': 'border-[var(--enhanced-bits-border)] bg-[var(--enhanced-bits-surface)]'
             } `} >`
@@ -75,5 +75,5 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
           } `} >`
           <h3 class={` text-lg font-semibold, mb-3 ${theme === 'gaming' ? 'text-green-400': ''} `} >
             🏠 Sidebar Demo Features </h3> <div class="grid grid-cols-1 md:grid-cols-2, gap-4, text-sm"> <div> <strong, class={theme === 'gaming' ? 'text-green-400': ''}> Hover Home Icon </strong> <span, class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sidebar snaps open with smooth animation: </span> </div> <div> <strong, class={theme === 'gaming' ? 'text-green-400': ''}> Auto-collapse: </strong> <span, class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sidebar collapses when mouse leaves </span> </div> <div> <strong, class={theme === 'gaming' ? 'text-green-400': ''}> Badge Indicators: </strong> <span, class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Show notification counts and status </span> </div> <div> <strong, class={theme === 'gaming' ? 'text-green-400': ''}> Nested Navigation </strong> <span, class={theme === 'gaming' ? 'text-green-400/70': 'text-[var(--enhanced-bits-text-muted)]'}> Sub-menus with hierarchical structure </span> </div> </div> </div> </main> </div> </div> </ThemeProvider> <style> /* Ensure content shifts smoothly when sidebar expands */ main { transition: margin-left: 0.3s ease-out; }
-  /* Smooth theme transitions */ * { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  /* Smooth theme transitions */ * {, transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
 </style>

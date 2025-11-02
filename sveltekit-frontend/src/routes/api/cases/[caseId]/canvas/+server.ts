@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import { json } from "@sveltejs/kit"
-import { db } from "$lib/server/db/index"
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js'
+import type { Case } from, '$lib/types';
+import { json } from, "@sveltejs/kit"
+import { db } from, "$lib/server/db/index"
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js'
 
 // Case Canvas API - Save and load canvas data
 let schemaModule: any = {};
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       });
     }
 
-    // Ensure we store canvasData as a string
+    // Ensure we store canvasData as a: string
     const canvasDataToStore = typeof canvasData === 'string' ? canvasData : JSON.stringify(canvasData);
 
     const updatedRows = await db

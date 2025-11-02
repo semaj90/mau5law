@@ -1,31 +1,31 @@
 /** Performance Monitoring and Metrics Collection Service */
-import { writable, derived } from 'svelte/store'
-import { browser } from '$app/environment'
+import { writable, derived } from, 'svelte/store'
+import { browser } from, '$app/environment'
 
 type Alert = { id: string; severity: 'low'|'medium'|'high'|'critical'; message: string; timestamp: number; component: string }
 
-export interface AIMetrics { documentsProcessed: number; averageProcessingTime: number; totalProcessingTime: number;, embeddingsGenerated: number; averageEmbeddingTime: number; embeddingDimensions: number;
+export interface AIMetrics { documentsProcessed: number; averageProcessingTime: number;, totalProcessingTime: number;, embeddingsGenerated: number; averageEmbeddingTime: number; embeddingDimensions: number;
   totalQueries: number; averageQueryTime: number; averageConfidence: number;
   processingErrors: number; embeddingErrors: number; queryErrors: number; errorRate: number;
-  modelUsage: Record<string, number>;
+ , modelUsage: Record<string, number>;
   processingTimeHistory: Array<{ timestamp: number; value: number }>;
   confidenceHistory: Array<{ timestamp: number; value: number }>;
   throughputHistory: Array<{ timestamp: number; value: number }>;
 }
 
 export interface QueueMetrics {
-  queues: Record<string, { waiting: number; active: number; completed: number; failed: number; delayed: number; throughput: number; averageProcessingTime: number }>;
+ , queues: Record<string, { waiting: number; active: number; completed: number; failed: number; delayed: number; throughput: number; averageProcessingTime: number }>;
   totalJobs: number; totalCompleted: number; totalFailed: number; overallThroughput: number; healthScore: number;
   throughputHistory: Array<{ timestamp: number; value: number }>;
   failureRateHistory: Array<{ timestamp: number; value: number }>;
 }
 
-export interface CacheMetrics { hitRate: number; missRate: number; evictionRate: number; averageAccessTime: number;, totalEntries: number; totalSize: number; memoryUsage: number;
+export interface CacheMetrics { hitRate: number; missRate: number; evictionRate: number;, averageAccessTime: number;, totalEntries: number; totalSize: number; memoryUsage: number;
   layerStats: { memory: { entries: number; size: number; hitRate: number }; persistent: { entries: number; size: number; hitRate: number }; search: { entries: number; queries: number } };
   hitRateHistory: Array<{ timestamp: number; value: number }>; memoryUsageHistory: Array<{ timestamp: number; value: number }>;
 }
 
-export interface SystemMetrics { healthScore: number; uptime: number;, components: { ollama: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; database: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; cache: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; queues: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number } };
+export interface SystemMetrics { healthScore: number;, uptime: number;, components: { ollama: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; database: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; cache: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number }; queues: { status: 'healthy'|'degraded'|'unhealthy'; responseTime: number } };
   memory: { used: number; total: number; percentage: number }; cpu: { usage: number };
   networkLatency: number; networkThroughput: number; responseTime: number; throughput: number; errorRate: number;
   activeAlerts: Alert[];
@@ -34,11 +34,11 @@ export interface SystemMetrics { healthScore: number; uptime: number;, componen
 export interface PerformanceSnapshot { timestamp: number; ai: AIMetrics; queues: QueueMetrics; cache: CacheMetrics; system: SystemMetrics }
 
 class PerformanceMonitor {
-  private metricsHistory: PerformanceSnapshot[] = []
+  private, metricsHistory: PerformanceSnapshot[] = []
   private startTime = Date.now()
   private collectionInterval: ReturnType<typeof setInterval> | null = null
 
-  private alertThresholds = { errorRate: 0.05, responseTime: 5000, memoryUsage: 0.9 }
+  private alertThresholds = {, errorRate: 0.05, responseTime: 5000, memoryUsage: 0.9 }
 
   public readonly currentMetrics = writable<PerformanceSnapshot | null>(null)
   public readonly aiMetrics = writable<AIMetrics | null>(null)
@@ -72,7 +72,7 @@ class PerformanceMonitor {
     const recent = this.metricsHistory.slice(-10)
     const toSeries = (fn: (s: PerformanceSnapshot) => number) => recent.map((s) => ({ timestamp: s.timestamp, value: fn(s) }))
     const ai: AIMetrics = {
-      documentsProcessed: 0, averageProcessingTime: 0, totalProcessingTime: 0,
+     , documentsProcessed: 0, averageProcessingTime: 0, totalProcessingTime: 0,
       embeddingsGenerated: 0, averageEmbeddingTime: 0, embeddingDimensions: 384,
       totalQueries: 0, averageQueryTime: 0, averageConfidence: 0,
       processingErrors: 0, embeddingErrors: 0, queryErrors: 0, errorRate: 0,
@@ -82,35 +82,35 @@ class PerformanceMonitor {
       throughputHistory: toSeries((s) => s.ai.documentsProcessed)
     }
     const queues: QueueMetrics = {
-      queues: {}, totalJobs: 0, totalCompleted: 0, totalFailed: 0, overallThroughput: 0, healthScore: 100,
+     , queues: {}, totalJobs: 0, totalCompleted: 0, totalFailed: 0, overallThroughput: 0, healthScore: 100,
       throughputHistory: toSeries((s) => s.queues.overallThroughput),
       failureRateHistory: toSeries((s) => (s.queues.totalFailed/Math.max(1,s.queues.totalJobs)))
     }
     const cache: CacheMetrics = {
-      hitRate: 0, missRate: 1, evictionRate: 0, averageAccessTime: 0,
+     , hitRate: 0, missRate: 1, evictionRate: 0, averageAccessTime: 0,
       totalEntries: 0, totalSize: 0, memoryUsage: 0,
-      layerStats: { memory: {, entries: 0, size: 0, hitRate: 0 }, persistent: { entries: 0, size: 0, hitRate: 0 }, search: { entries: 0, queries: 0 } },
+      layerStats: {, memory: {, entries: 0, size: 0, hitRate: 0 }, persistent: {, entries: 0, size: 0, hitRate: 0 }, search: {, entries: 0, queries: 0 } },
       hitRateHistory: toSeries((s) => s.cache.hitRate),
       memoryUsageHistory: toSeries((s) => s.cache.memoryUsage)
     }
     const system: SystemMetrics = {
-      healthScore: 100, uptime: Date.now()-this.startTime,
-      components: { ollama: {, status: 'degraded', responseTime: 0 }, database: { status: 'healthy', responseTime: 0 }, cache: { status: 'healthy', responseTime: 0 }, queues: { status: 'healthy', responseTime: 0 } },
-      memory: this.getMemoryMetrics(), cpu: { usage: 0 }, networkLatency: 0, networkThroughput: 0, responseTime: 0, throughput: 0, errorRate: 0, activeAlerts: []
+     , healthScore: 100, uptime: Date.now()-this.startTime,
+      components: {, ollama: {, status: 'degraded', responseTime: 0 }, database: {, status: 'healthy', responseTime: 0 }, cache: {, status: 'healthy', responseTime: 0 }, queues: {, status: 'healthy', responseTime: 0 } },
+      memory: this.getMemoryMetrics(), cpu: {, usage: 0 }, networkLatency: 0, networkThroughput: 0, responseTime: 0, throughput: 0, errorRate: 0, activeAlerts: []
     }
     system.activeAlerts = this.generateAlerts(system.components, { memory: system.memory, responseTime: system.responseTime, errorRate: system.errorRate })
     return { timestamp, ai, queues, cache, system }
   }
 
   private getMemoryMetrics(): SystemMetrics['memory'] {
-    if (typeof performance !== 'undefined' && (performance as any).memory) {
-      const m = (performance as any).memory
+    if (typeof performance !== 'undefined' && (performance as: any).memory) {
+      const m = (performance as: any).memory
       return { used: m.usedJSHeapSize, total: m.totalJSHeapSize, percentage: m.totalJSHeapSize ? m.usedJSHeapSize/m.totalJSHeapSize : 0 }
     }
-    return { used: 0, total: 0, percentage: 0 }
+    return {, used: 0, total: 0, percentage: 0 }
   }
 
-  private generateAlerts(components: SystemMetrics['components'], metrics: {, memory: SystemMetrics['memory']; responseTime: number;, errorRate: number }): Alert[] {
+  private generateAlerts(components: SystemMetrics['components'], metrics: {, memory: SystemMetrics['memory'];, responseTime: number;, errorRate: number }): Alert[] {
     const alerts: Alert[] = []
     const ts = Date.now()
     Object.entries(components).forEach(([name, c]) => {
@@ -137,28 +137,28 @@ export const performanceMonitor = new PerformanceMonitor()
 
 export const formatMetricValue = (value: number, type: 'time'|'percentage'|'count'|'size'): string => {
   switch (type) {
-    case 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
-    case 'percentage': return `${Math.round(value*100)}%`
-    case 'count': return value.toLocaleString()
-    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}` }'`'`
+    case, 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
+    case, 'percentage': return `${Math.round(value*100)}%`
+    case, 'count': return value.toLocaleString()
+    case, 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}` }'`'`
     default: return value.toString()
   }
 }
 
 export const getHealthStatusColor = (status: 'healthy'|'degraded'|'unhealthy'): string => {
   switch (status) {
-    case 'healthy': return 'text-green-500'
-    case 'degraded': return 'text-yellow-500'
-    case 'unhealthy': return 'text-red-500'
-    default: return 'text-gray-500'
+    case, 'healthy': return, 'text-green-500'
+    case, 'degraded': return, 'text-yellow-500'
+    case, 'unhealthy': return, 'text-red-500'
+    default: return, 'text-gray-500'
   }
 }
 
 export const getAlertSeverityColor = (severity: Alert['severity']): string => {
   switch (severity) {
-    case 'low': return 'text-blue-500'
-    case 'medium': return 'text-yellow-500'
-    case 'high': return 'text-orange-500'
-    case 'critical': return 'text-red-500'
-    default: return 'text-gray-500' }'` }'`
+    case, 'low': return, 'text-blue-500'
+    case, 'medium': return, 'text-yellow-500'
+    case, 'high': return, 'text-orange-500'
+    case, 'critical': return, 'text-red-500'
+    default: return, 'text-gray-500' }'` }'`
 

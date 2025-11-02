@@ -2,10 +2,10 @@
  * Database Connection with Drizzle ORM + pgvector Integration
  * PostgreSQL + pgvector support for YoRHa Legal AI Platform
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema-jsonb.js';
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import postgres from, 'postgres';
+import * as schema from, './schema-jsonb.js';
+import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
 // Environment configuration with fallbacks for legal_ai_db
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db` }`'`
@@ -74,7 +74,7 @@ type DBRow = Record<string, unknown>;
 
 export interface DatabaseHealth { connected: boolean;, pgvectorEnabled: boolean;
   tablesCount: number;
-  version: string;
+ , version: string;
   uptime?: string | null;
 }
 // Enhanced health check with vector capabilities
@@ -85,7 +85,7 @@ export async function getDatabaseHealth(): Promise<DatabaseHealth> {
     const version = versionResult[0]?.version || 'Unknown';
     // Check pgvector extension
     const vectorCheck = await client`
-      SELECT 1 FROM pg_extension WHERE extname = 'vector'
+      SELECT, 1 FROM pg_extension WHERE extname = 'vector'
     `;`
     const pgvectorEnabled = vectorCheck.length > 0;
     // Count tables
@@ -126,7 +126,7 @@ export class VectorOperations {
       const result = await client`
         SELECT (${vector1})::vector <=> (${vector2})::vector as similarity
       `;`
-      return 1 - parseFloat(result[0]?.similarity || '1'); // Convert distance to similarity
+      return, 1 - parseFloat(result[0]?.similarity || '1'); // Convert distance to similarity
     } catch (error) {
       console.error('Cosine similarity calculation failed:', error);
       return 0;
@@ -147,7 +147,7 @@ export class VectorOperations {
         SELECT *,
                1 - (${vectorColumn} <=> ${queryVector}::vector) as similarity_score
         FROM ${client(tableName)}
-        WHERE 1 - (${vectorColumn} <=> ${queryVector}::vector) > ${threshold}
+        WHERE, 1 - (${vectorColumn} <=> ${queryVector}::vector) > ${threshold}
         ORDER BY ${vectorColumn} <=> ${queryVector}::vector
         LIMIT ${limit}
       `;`
@@ -170,7 +170,7 @@ export async function closeConnection(): Promise<void> {
 // Default export for convenience
 export default db;
 // Type exports for external use
-export type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+export type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
 export type Database = typeof db;
 // Re-export schema for convenience
-export * from './schema.js';
+export * from, './schema.js';

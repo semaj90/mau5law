@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /** Shared, portable types used by client and server */
 
 /** High-level data categories cached and synced across layers */
@@ -17,8 +17,8 @@ export interface BaseMetadata {
   [key: string]: any;
 }
 
-/** Generic stored object format used by RAG pipelines */
-export interface RAGObject { id: string;, type: DataType;
+/** Generic stored: object format used by RAG pipelines */
+export interface RAGObject {, id: string;, type: DataType;
   title: string;
   content: string;
   embedding?: EmbeddingVector;
@@ -49,7 +49,7 @@ export interface LegalDocument {
 export interface CUDAMemoryRegion {
   id?: string;
   bankId?: number;
-  size: number;
+ , size: number;
   mapped?: boolean;
   devicePtr?: bigint | number; // simulated pointer in some contexts
   createdAt?: number;
@@ -63,11 +63,11 @@ export interface CUDAMemoryRegion {
  * Minimal NES memory stats shape referenced by GPU sync logic.
  * Updated to include totalRAM/totalCHR since synchronization code uses both used/total values.
  */
-export interface NESMemoryStats { usedPRG: number;, totalPRG: number;
+export interface NESMemoryStats {, usedPRG: number;, totalPRG: number;
   usedRAM: number;
   totalRAM: number;
   usedCHR: number;
-  totalCHR: number;
+ , totalCHR: number;
 }
 
 /**
@@ -102,7 +102,7 @@ export interface SearchResult {
 
 export interface SearchResponse {
   searchId?: string;
-  results: SearchResult[];
+ , results: SearchResult[];
   total?: number;
   tookMs?: number;
 }

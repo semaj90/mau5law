@@ -3,14 +3,14 @@ Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
-  import  Card  from "$lib/components/ui/enhanced-bits/Card.svelte";
-  import  CardHeader  from "$lib/components/ui/enhanced-bits/CardHeader.svelte";
-  import  CardTitle  from "$lib/components/ui/enhanced-bits/CardTitle.svelte";
-  import  CardContent  from "$lib/components/ui/enhanced-bits/CardContent.svelte";
-  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
-  import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from 'lucide-svelte';
+  // Svelte, 5 runes are auto-imported
+  import  Button  from, "$lib/components/ui/enhanced-bits/Button.svelte";
+  import  Card  from, "$lib/components/ui/enhanced-bits/Card.svelte";
+  import  CardHeader  from, "$lib/components/ui/enhanced-bits/CardHeader.svelte";
+  import  CardTitle  from, "$lib/components/ui/enhanced-bits/CardTitle.svelte";
+  import  CardContent  from, "$lib/components/ui/enhanced-bits/CardContent.svelte";
+  import  Textarea  from, "$lib/components/ui/textarea/Textarea.svelte";
+  import { Eye, MapPin, MessageCircle, Send, UserCheck, Users } from, 'lucide-svelte';
   // --- Type Definitions ---
   interface Position {
     x: number;
@@ -36,7 +36,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     sessionId: string;
     participants: Participant[];
     chatHistory: ChatMessage[];
-    annotations: Annotation[];
+   , annotations: Annotation[];
   }
   // Props
   interface Props {
@@ -60,7 +60,7 @@ Real-time collaboration interface for multiple investigators working on evidence
   $effect(() => {
     collaborationSession = initialCollaborationSession;
   });
-  // Local state (Svelte 5 runes)
+  // Local state (Svelte, 5 runes)
   let newMessage = $state<string>('');
   let newAnnotation = $state<string>('');
   let showAnnotationInput = $state<boolean>(false);
@@ -97,7 +97,7 @@ Real-time collaboration interface for multiple investigators working on evidence
   });
   function handleWebSocketMessage(data: any) {
     switch (data?.type) {
-      case 'chat-message':
+      case, 'chat-message':
         if (collaborationSession) {
           collaborationSession = {
             ...collaborationSession,
@@ -105,7 +105,7 @@ Real-time collaboration interface for multiple investigators working on evidence
           };
         }
         break;
-      case 'user-typing':
+      case, 'user-typing':
         if (data.userId !== userId) {
           typingUsers = [...typingUsers.filter(u => u !== data.userId), data.userId];
           setTimeout(() => {
@@ -113,7 +113,7 @@ Real-time collaboration interface for multiple investigators working on evidence
           }, 3000);
         }
         break;
-      case 'annotation-added':
+      case, 'annotation-added':
         if (collaborationSession) {
           collaborationSession = {
             ...collaborationSession,
@@ -187,18 +187,18 @@ Real-time collaboration interface for multiple investigators working on evidence
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return 'just, now';
+    if (diffMins < 1) return, 'just, now';
     if (diffMins < 60) return `${diffMins}m, ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h, ago`;
     return date.toLocaleDateString();
   }
   function getRoleColor(role: string) {
     switch (role) {
-      case 'investigator': return 'bg-blue-100 text-blue-800';
-      case 'supervisor': return 'bg-purple-100 text-purple-800';
-      case 'analyst': return 'bg-green-100 text-green-800';
-      case 'legal': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case, 'investigator': return, 'bg-blue-100 text-blue-800';
+      case, 'supervisor': return, 'bg-purple-100 text-purple-800';
+      case, 'analyst': return, 'bg-green-100 text-green-800';
+      case, 'legal': return, 'bg-orange-100 text-orange-800';
+      default: return, 'bg-gray-100 text-gray-800';
     }
   }
   function isCurrentUser(participantUserId: string) {
@@ -433,10 +433,10 @@ Real-time collaboration interface for multiple investigators working on evidence
     animation: typing 1.4s infinite;
     margin: 0 1px;
   }
-  .typing-indicator span:nth-child(2) {
+  .typing-indicator, span:nth-child(2) {
     animation-delay: 0.2s;
   }
-  .typing-indicator span:nth-child(3) {
+  .typing-indicator, span:nth-child(3) {
     animation-delay: 0.4s;
   }
   @keyframes typing {
@@ -445,7 +445,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       opacity: 0.4;
     }
     30% {
-      transform: translateY(-8px);
+     , transform: translateY(-8px);
       opacity: 1;
     }
   }
@@ -462,6 +462,6 @@ Real-time collaboration interface for multiple investigators working on evidence
     border-radius: 2px;
   }
   .collaboration-panel::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+   , background: #a8a8a8;
   }
 </style>

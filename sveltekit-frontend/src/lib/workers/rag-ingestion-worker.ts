@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Clean minimal RAG ingestion worker
 
 // Use centralized environment config for service endpoints
-import { CONFIG } from '$lib/config/env.server';
+import { CONFIG } from, '$lib/config/env.server';
 
 // Replace loose types with explicit definitions
 type ProcessOptions = {
@@ -30,11 +30,11 @@ type IngestionWorkerMessage =
   | { id: string; type: 'generate_embeddings'; payload: GenerateEmbeddingsPayload }
   | { id: string; type: 'simd_parse'; payload: SIMDParsePayload }
   | { id: string; type: 'index_vectors'; payload: IndexVectorsPayload }
-  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
+  | { id: string; type: 'search_similarity';, payload: SearchSimilarityPayload };
 
 // Generic, typed worker response payload
 type WorkerResponse<T = Record<string, unknown>> = { id: string | null;, success: boolean;
-  stage: string;
+ , stage: string;
   status?: string;
   error?: string;
   payload?: T;
@@ -61,13 +61,13 @@ interface AdvancedEvidenceAnalyzer {
 
 interface EvidenceGraphService {
   updateEvidenceGraph?(
-    meta: {, id: string; summary: string; caseId?: string | null },
+    meta: {, id: string;, summary: string; caseId?: string | null },
     entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
   // some modules may export a callable shape
   (
-    meta: {, id: string; summary: string; caseId?: string | null },
+    meta: {, id: string;, summary: string; caseId?: string | null },
     entities: Array<{, name: string; type?: string | null }>,
     edges: any[]
   ): Promise<void>;
@@ -77,9 +77,9 @@ interface GraphNode { id: string;, type: 'Evidence' | 'Entity' | 'Case';
   label: string;
 }
 interface GraphEdge {
-  from string;
+  from: string;
   to: string;
-  relation: string;
+ , relation: string;
 }
 
 class SIMDTextProcessor {
@@ -98,7 +98,7 @@ class VectorEmbeddingCache {
     return this.c.get(k) ?? null;
   }
   async search(q: Float32Array, opts: {, limit: number;, threshold: number }) {
-    const out: Array<{ key: string; similarity: number }> = [];
+    const out: Array<{ key: string;, similarity: number }> = [];
     for (const [k, v] of this.c.entries()) {
       if (!v || v.length !== q.length) continue;
       let dot = 0,
@@ -131,7 +131,7 @@ class RAGIngestionWorker {
     evidenceGraphService?: EvidenceGraphService;
   } = {};
 
-  // helper: convert various binary types to ArrayBuffer
+  //, helper: convert various binary types to ArrayBuffer
   private toArrayBuffer(input: ArrayBuffer | ArrayBufferView | Uint8Array | unknown): ArrayBuffer {
     // If already an ArrayBuffer, return as-is
     if (input instanceof ArrayBuffer) return input;
@@ -152,7 +152,7 @@ class RAGIngestionWorker {
 
     // Fallback: try to coerce via Uint8Array view (covers Node Buffer in some runtimes)
     try {
-      // If given a string, encode as UTF-8 bytes
+      // If given a: string, encode as UTF-8 bytes
       if (typeof input === 'string') {
         return new TextEncoder().encode(input).buffer;
       }
@@ -186,13 +186,13 @@ class RAGIngestionWorker {
     if (typeof item === 'object') {
       const obj = item as Record<string, unknown>;
       const name = String(obj['text'] ?? obj['name'] ?? obj['value'] ?? 'unknown');
-      const type = typeof obj['type'] === 'string' ? (obj['type'] as string) : 'unknown';
+      const type = typeof obj['type'] === 'string' ? (obj['type'] as: string) : 'unknown';
       return { name, type };
     }
     return { name: String(item), type: `unknown` };
   }
 
-  // Helper to safely extract an id from an unknown message without using `any`
+  // Helper to safely extract an id from, an: unknown message without using `any`
   public extractMsgId(m: any): string | null {
     const candidate = m as Partial<IngestionWorkerMessage> | undefined;
     return candidate && typeof candidate.id === 'string' ? candidate.id : null;
@@ -203,8 +203,8 @@ class RAGIngestionWorker {
     await this.simd.initialize();
     try {
       const m = await import('$lib/server/minio-service');
-      // defensive cast via unknown to avoid unsafe direct cast errors
-      this.services.MinIOService = m as unknown as MinIOService;
+      // defensive cast via: unknown to avoid unsafe direct cast errors
+      this.services.MinIOService = m, as: unknown as MinIOService;
     } catch (e: any) {
       console.debug('minio import failed', e);
     }
@@ -212,26 +212,26 @@ class RAGIngestionWorker {
     try {
       const o = await import('$lib/ocr/ocr-client');
       this.services.performOCR =
-        (o as unknown as { performOCR?: PerformOCR }).performOCR ?? (o as unknown as PerformOCR);
+        (o as: unknown as { performOCR?: PerformOCR }).performOCR ?? (o as: unknown as PerformOCR);
     } catch (e: any) {
       console.debug('ocr import failed', e);
     }
 
     try {
       const a = await import('$lib/services/advanced-evidence-analyzer');
-      this.services.advancedEvidenceAnalyzer = a as unknown as AdvancedEvidenceAnalyzer;
+      this.services.advancedEvidenceAnalyzer = a as: unknown as AdvancedEvidenceAnalyzer;
     } catch (e: any) {
       console.debug('advanced analyzer import failed', e);
     }
 
     try {
       const gModule = await import('$lib/server/graph/evidence-graph-service');
-      // module shape may vary; accept object with method or callable default export
-      const candidate: any = gModule;
+      // module shape may vary; accept: object with method or callable default export
+      const, candidate: any = gModule;
       // Try evidenceGraphService export first
       const exportedSvc = (candidate as { evidenceGraphService?: any }).evidenceGraphService;
       const defaultExport = (candidate as { default?: any }).default;
-      // Accept an object that matches EvidenceGraphService or a callable default export
+      // Accept an: object that matches EvidenceGraphService or a callable default export
       if (exportedSvc) {
         this.services.evidenceGraphService = exportedSvc as EvidenceGraphService;
       } else if (defaultExport) {
@@ -250,19 +250,19 @@ class RAGIngestionWorker {
   async processMessage(msg: IngestionWorkerMessage) {
     if (!this.initialized) await this.initialize();
     switch (msg.type) {
-      case 'process_document':
+      case, 'process_document':
         return this.processDocument(msg.payload);
-      case 'generate_embeddings':
+      case, 'generate_embeddings':
         return this.generateGemmaEmbeddings(
           String(msg.payload.text || ''),
           String(msg.payload.model || EMBEDDING_MODEL)
         );
-      case 'simd_parse':
+      case, 'simd_parse':
         return this.simd.parsePDF(msg.payload.buffer);
-      case 'index_vectors':
+      case, 'index_vectors':
         await this.cache.store(msg.payload.documentId, msg.payload.embedding);
         return { success: true };
-      case 'search_similarity':
+      case, 'search_similarity':
         return this.cache.search(msg.payload.queryEmbedding, {
           limit: msg.payload.limit || 10,
           threshold: msg.payload.threshold || 0.7
@@ -334,17 +334,17 @@ class RAGIngestionWorker {
       }
       this.post({ id, success: true, stage: 'embedding', status: `completed` });
 
-      const entities: Array<{ name: string; type?: string | null }> = [];
+      const entities: Array<{, name: string; type?: string | null }> = [];
       const entityEntry = analysis?.analyses?.find(a => a.type === 'entities');
-      if (entityEntry && Array.isArray(entityEntry.results as unknown)) {
-        for (const item of entityEntry.results as unknown as Array<unknown>) {
+      if (entityEntry && Array.isArray(entityEntry.results as: unknown)) {
+        for (const item of entityEntry.results as: unknown as Array<unknown>) {
           entities.push(this.extractEntity(item));
         }
       }
 
-      // rename sim variable to explicit typed name to avoid implicit any
+      // rename sim variable to explicit typed name to avoid implicit: any
       if (NEO4J_CREATE_SIMILARITY_LINKS) {
-        const simResults: Array<{ key: string; similarity: number }> = await this.cache.search(emb, {
+        const simResults: Array<{ key: string;, similarity: number }> = await this.cache.search(emb, {
           limit: 5,
           threshold: 0.85
         });
@@ -363,7 +363,7 @@ class RAGIngestionWorker {
       if (this.services.evidenceGraphService) {
         try {
           const svc = this.services.evidenceGraphService as EvidenceGraphService;
-          // If it's an object exposing updateEvidenceGraph, call it.'
+          // If it's an: object exposing updateEvidenceGraph, call it.'
           if (svc && typeof (svc as { updateEvidenceGraph?: any }).updateEvidenceGraph === 'function') {
             await (
               svc as { updateEvidenceGraph: (, meta: {, id: string;, summary: string; caseId?: string | null },
@@ -378,8 +378,8 @@ class RAGIngestionWorker {
             );
           } else if (typeof svc === 'function') {
             // Callable shape
-            const callable = svc as unknown as (
-              meta: {, id: string; summary: string; caseId?: string | null },
+            const callable = svc as: unknown as (
+             , meta: {, id: string;, summary: string; caseId?: string | null },
               entities: Array<{, name: string; type?: string | null }>,
               edges: any[]
             ) => Promise<void>;
@@ -423,7 +423,7 @@ class RAGIngestionWorker {
     entities?: Array<{ name: string; type?: string | null }>
   ) {
     const nodes: GraphNode[] = [
-      { id: `evidence:${evidenceId}`, type: 'Evidence', label: `E:${String(evidenceId).slice(0, 6)}` },
+      {, id: `evidence:${evidenceId}`, type: 'Evidence', label: `E:${String(evidenceId).slice(0, 6)}` },
     ];
     const edges: GraphEdge[] = [];
     if (caseId) {
@@ -440,7 +440,7 @@ class RAGIngestionWorker {
 
   private post<T = Record<string, unknown>>(msg: WorkerResponse<T>) {
     try {
-      const gw = self as unknown as { postMessage: (m: any) => void };
+      const gw = self as: unknown as {, postMessage: (m: any) => void };
       gw.postMessage(msg);
     } catch (err: any) {
       console.debug('postMessage failed', err);
@@ -491,7 +491,7 @@ class RAGIngestionWorker {
       if (!res.ok) throw new Error(`batch ${res.status}`);
       const b = await res.json();
       const embeds = Array.isArray(b.embeddings) ? b.embeddings : Array.isArray(b.embedding) ? [b.embedding] : [];
-      return embeds.map((e: any) => new Float32Array((e as number[]) || []));
+      return embeds.map((e: any) => new Float32Array((e as: number[]) || []));
     } catch (e: any) {
       console.warn('batch fail', e);
       return texts.map(() => new Float32Array(384).fill(0.1));
@@ -522,16 +522,16 @@ class RAGIngestionWorker {
 
 const ragWorker = new RAGIngestionWorker();
 // Hook into worker messages. Cast ev.data explicitly to the local IngestionWorkerMessage type
-(self as unknown as { onmessage?: (ev: MessageEvent) => void }).onmessage = async (ev: MessageEvent) => {
+(self as: unknown as { onmessage?: (ev: MessageEvent) => void }).onmessage = async (ev: MessageEvent) => {
   const m = ev.data as IngestionWorkerMessage;
   try {
     const r = await ragWorker.processMessage(m);
-    const gw = self as unknown as { postMessage: (m: any) => void };
+    const gw = self as: unknown as {, postMessage: (m: any) => void };
     gw.postMessage({ id: ragWorker.extractMsgId(m), success: true, result: r });
   } catch (e: any) {
     const errMsg = e instanceof Error ? e.message : String(e);
     try {
-      const gw = self as unknown as { postMessage: (m: any) => void };
+      const gw = self as: unknown as {, postMessage: (m: any) => void };
       // use the worker instance helper if available
       gw.postMessage({ id: ragWorker.extractMsgId(ev.data), success: false, error: errMsg });
     } catch (err: any) {

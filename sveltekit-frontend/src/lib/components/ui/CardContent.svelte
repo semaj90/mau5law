@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from, 'svelte';
   interface Props {
     class?: string;
     children?: Snippet;
@@ -22,7 +22,7 @@
   padding: 1rem;
   box-sizing: border-box;
   /* Prevent layout shift during hydration */
-  contain: layout style;
+ , contain: layout style;
 }
 /* Improve spacing between child elements */
 .card-content-ssr > * + * {
@@ -59,7 +59,7 @@
 }
 /* Focus management for keyboard navigation */
 .card-content-ssr:focus-within {
-  outline: 2px solid #3b82f6;
+ , outline: 2px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 0.5rem;
 }

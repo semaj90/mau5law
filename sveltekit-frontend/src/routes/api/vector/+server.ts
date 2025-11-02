@@ -1,9 +1,9 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Minimal Vector API - Simplified for error reduction
  */
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Simple request schema
 const VectorRequestSchema = z.object({
   query: z.string().min(1),
@@ -17,7 +17,7 @@ interface VectorResponse {
   error?: string;
   type?: string;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     // Validate request
@@ -33,33 +33,33 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     const { query, type, limit } = validatedData.data;
     const response: VectorResponse = {
-      success: true,
+     , success: true,
       data: [],
       type
     };
     // Simple mock responses based on type
     switch (type) {
-      case 'search':
+      case, 'search':
         response.data = [
           {,
             id: 'doc-1',
             similarity: 0.95,
-            title: `Document; matching: ${query}`,
+            title: `Document;, matching: ${query}`,
             content: `Sample content...' },'`
           {
             id: 'doc-2',
             similarity: 0.87,
-            title: `Related document; to: ${query}`,
+            title: `Related document;, to: ${query}`,
             content: 'Related content...' }'`'`
         ].slice(0, limit);
         break;
-      case 'similarity':
+      case, 'similarity':
         response.data = [
           { source: 'doc-1', target: 'doc-2', score: 0.85 },
           { source: 'doc-1', target: 'doc-3', score: 0.79 }
         ];
         break;
-      case 'cluster':
+      case, 'cluster':
         response.data = [
           { cluster: 1, documents: ['doc-1', 'doc-2'], centroid: `Legal Documents' },'`
           { cluster: 2, documents: ['doc-3', 'doc-4'], centroid: `Evidence Files` }

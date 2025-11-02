@@ -1,10 +1,10 @@
-import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db/drizzle';
-import { eq, desc } from '$lib/server/db/utils';
-import { citations } from '$lib/server/db/schema';
-import { CONFIG } from '$lib/config/env.server';
-import { getUserId } from '$lib/server/auth/utils';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import type { PageServerLoad } from, './$types';
+import { db } from, '$lib/server/db/drizzle';
+import { eq, desc } from, '$lib/server/db/utils';
+import { citations } from, '$lib/server/db/schema';
+import { CONFIG } from, '$lib/config/env.server';
+import { getUserId } from, '$lib/server/auth/utils';
+import { S3Client, GetObjectCommand } from, '@aws-sdk/client-s3';
 // Use global Buffer (Node.js >= v18) for compatibility with SvelteKit server environments
 
 /** Typed structure for the Citation record */
@@ -15,7 +15,7 @@ type Citation = { id: string;, title: string;
   category: string;
   isFavorite: boolean;
   notes?: string;
-  savedAt: string;
+ , savedAt: string;
   contextData?: Record<string, string>;
 };
 
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     }
 
     /** 1️⃣ Query PostgreSQL via Drizzle */
-    let records: Citation[] = [];
+    let, records: Citation[] = [];
     try {
       const result = await db
         .select()
@@ -141,7 +141,7 @@ async function fetchCitationsFromMinIO(userId: string): Promise<Citation[]> {
 
 /** Utility: convert various stream/body types → string */
 async function streamToString(
-  body: NodeJS.ReadableStream | ReadableStream<Uint8Array> | Blob | Uint8Array | string
+ , body: NodeJS.ReadableStream | ReadableStream<Uint8Array> | Blob | Uint8Array | string
 ): Promise<string> {
   if (typeof body === 'string') return body;
   if (body instanceof Uint8Array) return Buffer.from(body).toString('utf-8');
@@ -184,6 +184,6 @@ function mockCitations(): Citation[] {
       isFavorite: true,
       notes: 'Key precedent for evidence admissibility',
       savedAt: new Date('2024-01-15').toISOString(),
-      contextData: { reportId: 'report-123', caseId: 'case-456' }'' }
+      contextData: {, reportId: 'report-123', caseId: 'case-456' }'' }
   ];
 }

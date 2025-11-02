@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { Driver } from 'neo4j-driver-core';
+import type { Document } from, '$lib/types';
+import type { Driver } from, 'neo4j-driver-core';
 // Self-Organizing Map (SOM) Enhanced RAG System
-// Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
-export interface SOMNode { id: string;, weights: number[];
+// Implements dimensionality reduction, k-means clustering, and: boolean storage for legal AI
+export interface SOMNode {, id: string;, weights: number[];
   position: { x: number; y: number };
   cluster: number;
   activation: number;
@@ -14,22 +14,22 @@ export interface SOMNode { id: string;, weights: number[];
     priority: number;
   };
 }
-export interface SOMConfig { mapWidth: number;, mapHeight: number;
+export interface SOMConfig {, mapWidth: number;, mapHeight: number;
   dimensions: number;
   learningRate: number;
   neighborhoodRadius: number;
   maxEpochs: number;
   clusterCount: number;
 }
-export interface BooleanCluster { id: string;, centroid: number[];
+export interface BooleanCluster {, id: string;, centroid: number[];
   documents: string[];
-  boolean_pattern: boolean[][]; // 2x2 boolean matrix
-  metadata: { cluster_size: number;, avg_confidence: number;
+  boolean_pattern: boolean[][]; // 2x2: boolean matrix
+  metadata: {, cluster_size: number;, avg_confidence: number;
     dominant_legal_type: string;
     creation_timestamp: number;
   };
 }
-export interface DocumentEmbedding { id: string;, content: string;
+export interface DocumentEmbedding {, id: string;, content: string;
   embedding: number[];
   metadata: {
     case_id?: string;
@@ -42,7 +42,7 @@ export interface DocumentEmbedding { id: string;, content: string;
 export class SelfOrganizingMapRAG {
   private som!: SOMNode[][];
   private config: SOMConfig;
-  private clusters: Map<number, BooleanCluster> = new Map();
+  private, clusters: Map<number, BooleanCluster> = new Map();
   private documentEmbeddings: Map<string, DocumentEmbedding> = new Map();
   private neo4jConnection: Driver | undefined; // Neo4j driver instance
   constructor(config: SOMConfig, neo4jDriver?: Driver) {
@@ -66,7 +66,7 @@ export class SelfOrganizingMapRAG {
           activation: 0,
           documents: [],
           legalContext: {
-            confidence: 0,
+           , confidence: 0,
             priority: 0
           }
         };
@@ -79,7 +79,7 @@ export class SelfOrganizingMapRAG {
   private generateRandomWeights(): number[] {
     const weights = [];
     for (let i = 0; i < this.config.dimensions; i++) {
-      weights.push(Math.random() * 2 - 1); // Random between -1 and 1
+      weights.push(Math.random() * 2 - 1); // Random between -1 and, 1
     }
     return this.normalizeVector(weights);
   }
@@ -114,7 +114,7 @@ export class SelfOrganizingMapRAG {
     }
     // Perform k-means clustering on trained SOM
     await this.performKMeansClustering();
-    // Generate boolean patterns for clusters
+    // Generate: boolean patterns for clusters
     this.generateBooleanPatterns();
     console.log('✅ SOM training completed');
   }
@@ -251,7 +251,7 @@ export class SelfOrganizingMapRAG {
       const clusterNodes = nodes.filter(node => node.cluster === i);
       const clusterDocuments: string[] = [];
       let totalConfidence = 0;
-      const evidenceTypes: string[] = [];
+      const, evidenceTypes: string[] = [];
       clusterNodes.forEach(node => {
         clusterDocuments.push(...node.documents);
         totalConfidence += node.legalContext.confidence;
@@ -280,12 +280,12 @@ export class SelfOrganizingMapRAG {
     console.log(`✅ K-means clustering completed: ${this.config.clusterCount} clusters`);
   }
   /**
-   * Generate 2x2 boolean patterns for clusters using RapidJSON format
+   * Generate 2x2: boolean patterns for clusters using RapidJSON format
    */
   private generateBooleanPatterns(): void {
     this.clusters.forEach(cluster => {
-      // Generate boolean pattern based on cluster characteristics
-      const pattern: boolean[][] = [
+      // Generate: boolean pattern based on cluster characteristics
+      const, pattern: boolean[][] = [
         [false, false],
         [false, false],
       ];
@@ -309,12 +309,12 @@ export class SelfOrganizingMapRAG {
     });
   }
   /**
-   * Enhanced retrieval using SOM and boolean patterns
+   * Enhanced retrieval using SOM and: boolean patterns
    */
   async semanticSearch(query: string, queryEmbedding: number[], limit: number = 10): Promise<DocumentEmbedding[]> {
     console.log(`🔍 Performing SOM-enhanced semantic search...`);
     // Find best matching SOM nodes
-    const candidateNodes: Array<{ node: SOMNode; distance: number }> = [];
+    const candidateNodes: Array<{ node: SOMNode;, distance: number }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
         const node = this.som[x][y];
@@ -330,8 +330,8 @@ export class SelfOrganizingMapRAG {
     topNodes.forEach(({ node }) => {
       node.documents.forEach(docId => candidateDocuments.add(docId));
     });
-    // Score documents using boolean patterns and legal context
-    const scoredDocuments: Array<{ doc: DocumentEmbedding; score: number }> = [];
+    // Score documents using: boolean patterns and legal context
+    const scoredDocuments: Array<{ doc: DocumentEmbedding;, score: number }> = [];
     candidateDocuments.forEach(docId => {
       const doc = this.documentEmbeddings.get(docId);
       if (!doc) return;
@@ -438,15 +438,15 @@ export class SelfOrganizingMapRAG {
     return shuffled;
   }
   private getMostFrequent(array: string[]): string | null {
-    if (array.length === 0) return null;
-    const frequency: Record<string, number> = {};
+    if (array.length === 0) return: null;
+    const, frequency: Record<string, number> = {};
     array.forEach(item => {
       frequency[item] = (frequency[item] || 0) + 1;
     });
     return Object.keys(frequency).reduce((a, b) => (frequency[a] > frequency[b] ? a : b));
   }
   private calculateBooleanBoost(pattern: boolean[][]): number {
-    // Convert 2x2 boolean pattern to numeric boost
+    // Convert 2x2: boolean pattern to numeric boost
     let boost = 0;
     if (pattern[0][0]) boost += 0.3; // High confidence
     if (pattern[0][1]) boost += 0.4; // Critical evidence
@@ -466,7 +466,7 @@ export class SelfOrganizingMapRAG {
     boost += evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
     // Confidence boost
     boost += metadata.confidence * 0.3;
-    // Recency boost (documents from last 30 days)
+    // Recency boost (documents from last, 30 days)
     const daysSinceCreation = (Date.now() - metadata.timestamp) / (24 * 60 * 60 * 1000);
     if (daysSinceCreation < 30) {
       boost += ((30 - daysSinceCreation) / 30) * 0.2;
@@ -481,7 +481,7 @@ export class SelfOrganizingMapRAG {
       som_config: this.config,
       clusters: Array.from(this.clusters.values()),
       map_dimensions: {
-        width: this.config.mapWidth,
+       , width: this.config.mapWidth,
         height: this.config.mapHeight
       },
       total_documents: this.documentEmbeddings.size,
@@ -498,11 +498,11 @@ export class SelfOrganizingMapRAG {
     documents: number;
     evidenceType: string;
   }> {
-    const vizData: Array<{ id: string;, position: { x: number; y: number };
+    const vizData: Array<{, id: string;, position: { x: number; y: number };
       cluster: number;
       confidence: number;
       documents: number;
-      evidenceType: string;
+     , evidenceType: string;
     }> = [];
     for (let x = 0; x < this.config.mapWidth; x++) {
       for (let y = 0; y < this.config.mapHeight; y++) {
@@ -524,11 +524,11 @@ export class SelfOrganizingMapRAG {
   async trainIncremental(embedding: number[], document: DocumentEmbedding): Promise<void> {
     console.log(`🧠 Training SOM incrementally with new document...`);
     const docEmbedding: DocumentEmbedding = {
-      id: document.id,
+     , id: document.id,
       content: document.content,
       embedding: embedding,
       metadata: {
-        case_id: document.metadata?.case_id,
+       , case_id: document.metadata?.case_id,
         evidence_type: document.metadata?.evidence_type,
         legal_category: document.metadata?.legal_category,
         confidence: 0.8,
@@ -579,7 +579,7 @@ export class SelfOrganizingMapRAG {
     console.log('🔧 Optimizing SOM clusters...');
     // Re-run k-means clustering with current data
     await this.performKMeansClustering();
-    // Regenerate boolean patterns
+    // Regenerate: boolean patterns
     this.generateBooleanPatterns();
     console.log('✅ Cluster optimization completed');
   }
@@ -644,7 +644,7 @@ export class SelfOrganizingMapRAG {
 // Export factory function for easy instantiation
 export function createSOMRAGSystem(config: Partial<SOMConfig> = {}): SelfOrganizingMapRAG {
   const defaultConfig: SOMConfig = {
-    mapWidth: 20,
+   , mapWidth: 20,
     mapHeight: 20,
     dimensions: 384, // Common embedding dimension
     learningRate: 0.1,

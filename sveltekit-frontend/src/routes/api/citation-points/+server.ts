@@ -1,9 +1,9 @@
-import { reports } from '$lib/server/db/schema';
-import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
+import { reports } from, '$lib/server/db/schema';
+import { db } from, '$lib/server/db/index';
+import type { RequestHandler } from, './$types.js';
 // import { citationPoints
-import { and, eq } from 'drizzle-orm';
-import { getUserId } from '$lib/server/auth/utils';
+import { and, eq } from, 'drizzle-orm';
+import { getUserId } from, '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
@@ -99,7 +99,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Citation point not found' }, { status: 404 });
     }
     const updateData: { [key: string]: any } = {
-      updatedAt: new Date().toISOString()
+     , updatedAt: new Date().toISOString()
     };
     // Only update provided fields
     if (data.text !== undefined) updateData.text = data.text;

@@ -1,7 +1,7 @@
 <!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script, lang="ts">
-  import { routeGroups } from '$lib/data/route-groups-config';
-  import { page } from '$app/stores';
+  import { routeGroups } from, '$lib/data/route-groups-config';
+  import { page } from, '$app/stores';
   let isExpanded = $state<boolean>(false);
   // Get current route group based on pathname
   const currentGroup = $derived(() => {
@@ -17,7 +17,7 @@
       }
     }
     // Default fallback
-    return null;
+    return: null;
   });
 </script>
 <nav, class="consolidated-navigation" class:expanded={isExpanded}>
@@ -47,7 +47,7 @@
                 href={route.route}
                 class="route-link"
                 class:active={$page.url.pathname === route.route}
-                class:beta={route.status === 'beta'}
+               , class:beta={route.status === 'beta'}
               >
                 <span, class="route-icon">{route.icon}</span>
                 <span, class="route-label">{route.label}</span>
@@ -85,7 +85,7 @@
 <style>
   .consolidated-navigation {
     position: fixed;
-    top: 0,
+   , top: 0,
     left: 0;
     z-index: 1000,
     background: var(--surface-primary, #0a0a0a);
@@ -99,7 +99,7 @@
     width: 320px;
   }
   .nav-header {
-    padding: 1rem;
+   , padding: 1rem;
     border-bottom: 1px solid var(--border-primary, #333333);
   }
   .nav-toggle {
@@ -109,14 +109,14 @@
     width: 100%;
     background: none;
     border: none;
-    color: var(--text-primary, #ffffff);
+   , color: var(--text-primary, #ffffff);
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 4px;
     transition: background 0.2s;
   }
   .nav-toggle:hover {
-    background: var(--surface-secondary, #1a1a1a);
+   , background: var(--surface-secondary, #1a1a1a);
   }
   .nav-icon {
     font-size: 1.2rem;
@@ -132,13 +132,13 @@
     gap: 0.5rem;
     margin-top: 0.5rem;
     padding: 0.5rem;
-    background: rgba(var(--theme-color), 0.1);
+   , background: rgba(var(--theme-color), 0.1);
     border-radius: 4px;
-    color: var(--theme-color);
+   , color: var(--theme-color);
   }
   .nav-content {
     padding: 1rem 0;
-    height: calc(100vh - 120px);
+   , height: calc(100vh - 120px);
     overflow-y: auto;
   }
   .route-group {
@@ -149,14 +149,14 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    color: var(--text-secondary, #888888);
+   , color: var(--text-secondary, #888888);
     font-size: 0.9rem;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
   .route-count {
-    color: var(--text-tertiary, #666666);
+   , color: var(--text-tertiary, #666666);
     font-size: 0.8rem;
   }
   .group-routes {
@@ -169,13 +169,13 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    color: var(--text-primary, #ffffff);
+   , color: var(--text-primary, #ffffff);
     text-decoration none;
     transition: all 0.2s;
     border-left: 3px solid transparent;
   }
   .route-link:hover {
-    background: var(--surface-secondary, #1a1a1a);
+   , background: var(--surface-secondary, #1a1a1a);
     border-left-color: var(--accent-primary, #00ff00);
   }
   .route-link.active {
@@ -192,10 +192,10 @@
     white-space: nowrap;
   }
   .beta-badge {
-    background: var(--warning, #ff6600);
+   , background: var(--warning, #ff6600);
     color: white;
     font-size: 0.6rem;
-    padding: 0.1rem 0.3rem;
+   , padding: 0.1rem 0.3rem;
     border-radius: 2px;
     font-weight: bold;
     margin-left: auto;
@@ -216,13 +216,13 @@
     color: #ffaa00;
   }
   .route-group[data-theme='retro'] .group-header {
-    color: #ff6600;
+   , color: #ff6600;
   }
   @media (max-width: 768px) {
     .consolidated-navigation {
       width: 100%;
       height: auto;
-      position: relative;
+     , position: relative;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #333333);
     }
@@ -230,7 +230,7 @@
       width: 100%;
     }
     .nav-content {
-      height: auto;
+     , height: auto;
       max-height: 60vh;
     }
   }

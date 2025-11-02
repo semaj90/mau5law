@@ -1,7 +1,7 @@
 <!-- Evidence Management Layout - Legal AI, Evidence, Processing -->
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import type { Snippet } from, 'svelte';
+  import { page } from, '$app/stores';
 
   interface Props {
     data?: any;
@@ -79,7 +79,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--nier-bg-primary, #0a0a0a);
+   , background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
@@ -104,12 +104,12 @@
   .evidence-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--nier-accent-warm, #d4af37);
+   , color: var(--nier-accent-warm, #d4af37);
     margin: 0;
   }
 
   .evidence-badge {
-    background: var(--nier-accent-warm, #d4af37);
+   , background: var(--nier-accent-warm, #d4af37);
     color: var(--nier-bg-primary, #0a0a0a);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -128,10 +128,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--nier-border-primary, #333);
+   , border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--nier-text-secondary, #d0d0d0);
+   , color: var(--nier-text-secondary, #d0d0d0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.25s ease;
   }
@@ -159,7 +159,7 @@
   .evidence-content {
     flex: 1;
     overflow-y: auto;
-    background: var(--nier-bg-primary, #0a0a0a);
+   , background: var(--nier-bg-primary, #0a0a0a);
   }
 
   .evidence-container {
@@ -172,13 +172,13 @@
   .evidence-placeholder {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--nier-bg-secondary, #1a1a1a);
+   , background: var(--nier-bg-secondary, #1a1a1a);
     border: 2px dashed var(--nier-border-muted, #444);
     border-radius: 1rem;
   }
 
   .evidence-placeholder h2 {
-    color: var(--nier-accent-warm, #d4af37);
+   , color: var(--nier-accent-warm, #d4af37);
     margin-bottom: 1rem;
   }
 
@@ -202,7 +202,7 @@
     align-items: center;
     gap: 1rem;
     font-size: 0.9rem;
-    color: var(--nier-text-muted, #999);
+   , color: var(--nier-text-muted, #999);
   }
 
   .evidence-current strong {
@@ -217,10 +217,10 @@
 
   .evidence-main-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--nier-border-primary, #333);
+   , border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--nier-text-primary, #f0f0f0);
+   , color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.2s ease;
     font-size: 0.9rem;
@@ -252,16 +252,16 @@
   }
 
   .evidence-content::-webkit-scrollbar-track {
-    background: var(--nier-bg-tertiary, #2a2a2a);
+   , background: var(--nier-bg-tertiary, #2a2a2a);
   }
 
   .evidence-content::-webkit-scrollbar-thumb {
-    background: var(--nier-accent-warm, #d4af37);
+   , background: var(--nier-accent-warm, #d4af37);
     border-radius: 4px;
   }
 
   .evidence-content::-webkit-scrollbar-thumb:hover {
-    background: var(--nier-accent-cool, #87ceeb);
+   , background: var(--nier-accent-cool, #87ceeb);
   }
 </style>
 

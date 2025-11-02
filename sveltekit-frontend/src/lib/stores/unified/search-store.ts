@@ -1,21 +1,21 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * SearchStore - Unified Search & Filtering
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - search-store.ts
  * - command-search.ts
  * - vector-search.ts
  * - search-filters.ts
  *
- * Usage:
- *   import { searchStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { searchStore } from, '$lib/stores/unified';
  *
- *   await searchStore.search('statute 42 USC');
+ *   await searchStore.search('statute, 42 USC');
  *   $: results = $searchStore.results;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -26,7 +26,7 @@ export type SearchMode = 'full-text' | 'vector' | 'hybrid';
 export interface SearchResult { id: string;, type: SearchScope;
   title: string;
   description?: string;
-  score: number;
+ , score: number;
   metadata?: Record<string, unknown>;
   url?: string;
 }
@@ -42,7 +42,7 @@ export interface SearchFilters {
   status?: string;
 }
 
-export interface SavedSearch { id: string;, name: string;
+export interface SavedSearch {, id: string;, name: string;
   query: string;
   filters: SearchFilters;
   scope: SearchScope[];
@@ -61,7 +61,7 @@ interface SearchStoreState {
 
   // Results
   results: SearchResult[];
-  resultsByType: Map<SearchScope, SearchResult[]>;
+ , resultsByType: Map<SearchScope, SearchResult[]>;
   totalResults: number;
 
   // Filtering
@@ -70,7 +70,7 @@ interface SearchStoreState {
 
   // Performance
   searchTime: number;
-  cachedResults: Map<string, SearchResult[]>;
+ , cachedResults: Map<string, SearchResult[]>;
   lastSearchQuery: string;
 
   // Saved searches
@@ -83,7 +83,7 @@ interface SearchStoreState {
 }
 
 const initialState: SearchStoreState = {
-  query: '',
+ , query: '',
   searchMode: 'hybrid',
   searchScope: ['all'],
   results: [],
@@ -287,7 +287,7 @@ function createSearchStore() {
       let state = { query: '', filters: {}, scope: [] as SearchScope[], mode: 'hybrid' as SearchMode };
       subscribe(s => {
         state = {
-          query: s.query,
+         , query: s.query,
           filters: s.filters,
           scope: s.searchScope,
           mode: s.searchMode
@@ -357,7 +357,7 @@ function createSearchStore() {
      * Export search results
      */
     async exportResults(format: 'csv' | 'json' | 'pdf') {
-      const state: { results: SearchResult[] } = { results: [] };
+      const state: { results: SearchResult[] } = {, results: [] };
       subscribe(s => {
         state.results = s.results;
       })();
@@ -408,13 +408,13 @@ function createSearchStore() {
 
     _filterResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
       return results.filter(r => {
-        if (filters.caseIds?.length && !filters.caseIds.includes(r.metadata?.caseId as string)) {
+        if (filters.caseIds?.length && !filters.caseIds.includes(r.metadata?.caseId as: string)) {
           return false;
         }
         if (filters.entityTypes?.length && !filters.entityTypes.includes(r.type)) {
           return false;
         }
-        if (filters.tags?.length && !filters.tags.some(t => (r.metadata?.tags as string[])?.includes(t))) {
+        if (filters.tags?.length && !filters.tags.some(t => (r.metadata?.tags as: string[])?.includes(t))) {
           return false;
         }
         return true;
@@ -465,10 +465,10 @@ export const activeFilters = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { search, vectorSearch } from '$lib/stores/search-store'
- *   import { commandSearch } from '$lib/stores/command-search'
+ * Old imports to, replace:
+ *   import { search, vectorSearch } from, '$lib/stores/search-store'
+ *   import { commandSearch } from, '$lib/stores/command-search'
  *
  * New imports:
- *   import { searchStore, searchResults, isSearching, activeFilters } from '$lib/stores/unified'
+ *   import { searchStore, searchResults, isSearching, activeFilters } from, '$lib/stores/unified'
  */

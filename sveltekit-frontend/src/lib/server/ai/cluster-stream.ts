@@ -1,20 +1,20 @@
-import type { TransitionPrediction } from './hmm-transition-predictor';
+import type { TransitionPrediction } from, './hmm-transition-predictor';
 type RawClusterEvent = { type: string; timestamp: number; payload: any };
 export type ClusterEvent =
-  | { type: 'som_bitmap';, userId: string;
+  | {, type: 'som_bitmap';, userId: string;
       checksum: string;
       palette: string;
-      metadata: Record<string, unknown>;
+     , metadata: Record<string, unknown>;
       svg?: string;
       heatmapSample?: number[];
       timestamp: number;
     }
-  | { type: 'hmm_predictions';, predictions: TransitionPrediction[];
+  | {, type: 'hmm_predictions';, predictions: TransitionPrediction[];
       context?: Record<string, unknown> | null;
       timestamp: number;
     }
-  | { type: 'cluster_assignment';, clusterId: string;
-      neighbors: string[];
+  | {, type: 'cluster_assignment';, clusterId: string;
+     , neighbors: string[];
       metadata?: Record<string, unknown>;
       timestamp: number;
     };

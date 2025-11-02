@@ -1,8 +1,8 @@
 // Advanced Recommendation Engine with Temporal Scoring and Multi-factor Ranking
 // Integrates with PostgreSQL + pgvector for semantic search and user preference learning
-import { db } from '$lib/db/connection';
-import { aiResponses, recommendationScores, grpoFeedback, similarityCache } from '$lib/db/enhanced-ai-schema';
-import { eq, desc, and, gte, sql, inArray } from 'drizzle-orm';
+import { db } from, '$lib/db/connection';
+import { aiResponses, recommendationScores, grpoFeedback, similarityCache } from, '$lib/db/enhanced-ai-schema';
+import { eq, desc, and, gte, sql, inArray } from, 'drizzle-orm';
 
 // Recommendation types and interfaces
 export interface RecommendationRequest {
@@ -18,12 +18,12 @@ export interface RecommendationRequest {
   algorithmPreference?: 'semantic' | 'collaborative' | 'hybrid' | 'temporal';
 }
 
-export interface RecommendationResult { id: string;, score: number;
+export interface RecommendationResult {, id: string;, score: number;
   confidence: number;
   title: string;
   snippet: string;
   fullResponse: string;
-  metadata: { semanticSimilarity: number;, temporalScore: number;
+  metadata: {, semanticSimilarity: number;, temporalScore: number;
     contextRelevance: number;
     userPreference: number;
     usageScore: number;
@@ -32,21 +32,21 @@ export interface RecommendationResult { id: string;, score: number;
     createdAt: Date;
     lastAccessed: Date;
   };
-  reasoning: { algorithm: string;, factors: Array<any>;
+  reasoning: {, algorithm: string;, factors: Array<any>;
     explanation: string;
   };
 }
 
-export interface PersonalizedProfile { userId: string;, preferences: { legalDomains: Array<{ domain: string; affinity: number }>;
+export interface PersonalizedProfile {, userId: string;, preferences: { legalDomains: Array<{ domain: string; affinity: number }>;
     responseStyles: Array<any>;
     averageRatings: { [domain: string]: number };
     commonQueries: string[];
   };
-  learningHistory: { totalInteractions: number;, avgSessionTime: number;
+  learningHistory: {, totalInteractions: number;, avgSessionTime: number;
     topCategories: string[];
     improvementAreas: string[];
   };
-  recommendationSettings: { algorithm: string;, temporalWeight: number;
+  recommendationSettings: {, algorithm: string;, temporalWeight: number;
     semanticWeight: number;
     personalWeight: number;
   };
@@ -55,7 +55,7 @@ export interface PersonalizedProfile { userId: string;, preferences: { legalDom
 // Main recommendation engine class
 export class LegalRecommendationEngine {
   private static readonly SCORING_WEIGHTS = {
-    SEMANTIC: 0.35,
+   , SEMANTIC: 0.35,
     TEMPORAL: 0.20,
     CONTEXT: 0.15,
     USER_PREFERENCE: 0.20,
@@ -63,7 +63,7 @@ export class LegalRecommendationEngine {
   } as const;
 
   private static readonly TEMPORAL_CONFIG = {
-    HALF_LIFE_DAYS: 30,
+   , HALF_LIFE_DAYS: 30,
     MIN_SCORE: 0.05,
     MAX_SCORE: 1.0,
     BOOST_RECENT_HOURS: 24
@@ -83,16 +83,16 @@ export class LegalRecommendationEngine {
       // Execute recommendation algorithm
       let results: RecommendationResult[] = [];
       switch (request.algorithmPreference || 'hybrid') {
-        case 'semantic':
+        case, 'semantic':
           results = await this.semanticRecommendations(queryEmbedding, request);
           break;
-        case 'collaborative':
+        case, 'collaborative':
           results = await this.collaborativeRecommendations(request, userProfile);
           break;
-        case 'temporal':
+        case, 'temporal':
           results = await this.temporalRecommendations(queryEmbedding, request);
           break;
-        case 'hybrid':
+        case, 'hybrid':
         default:
           results = await this.hybridRecommendations(queryEmbedding, request, userProfile);
           break;
@@ -255,13 +255,13 @@ export class LegalRecommendationEngine {
       `;`
       const res = await db.execute(userStatsQ);
       const rows = execRows(res);
-      if (!rows || rows.length === 0) return null;
+      if (!rows || rows.length === 0) return: null;
       const legalDomains = rows.map((row: any) => ({
-        domain: row.legal_domain as string,
-        affinity: ((row.avg_rating as number) || 0) / 5
+        domain: row.legal_domain, as: string,
+        affinity: ((row.avg_rating, as: number) || 0) / 5
       }));
       const averageRatings = rows.reduce((acc: any, row: any) => {
-        acc[row.legal_domain as string] = row.avg_rating as number;
+        acc[row.legal_domain as: string] = row.avg_rating, as: number;
         return acc;
       }, {});
       const totalInteractions = rows.reduce((sum: number, row: any) => sum + (row.interaction_count || 0), 0);
@@ -280,7 +280,7 @@ export class LegalRecommendationEngine {
           improvementAreas: []
         },
         recommendationSettings: {
-          algorithm: 'hybrid',
+         , algorithm: 'hybrid',
           temporalWeight: 0.2,
           semanticWeight: 0.35,
           personalWeight: 0.2
@@ -288,7 +288,7 @@ export class LegalRecommendationEngine {
       };
     } catch (error) {
       console.warn('Failed to get user profile:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -339,7 +339,7 @@ export class LegalRecommendationEngine {
       snippet,
       fullResponse: response,
       metadata: {
-        semanticSimilarity: scores.semanticScore ?? 0,
+       , semanticSimilarity: scores.semanticScore ?? 0,
         temporalScore: scores.temporalScore ?? 0,
         contextRelevance: scores.contextScore ?? 0,
         userPreference: scores.userPreferenceScore ?? 0.5,
@@ -354,7 +354,7 @@ export class LegalRecommendationEngine {
         factors: Object.entries(scores).map(([name, value]) => ({
           name,
           value,
-          weight: (this.SCORING_WEIGHTS as any)[name.toUpperCase()] ?? 0.1
+          weight: (this.SCORING_WEIGHTS, as: any)[name.toUpperCase()] ?? 0.1
         })),
         explanation: this.generateExplanation(algorithm, scores)
       }
@@ -420,7 +420,7 @@ export class LegalRecommendationEngine {
   }
 
   private static ensureDiversity<T, extends { metadata: { [k: string]: any } }>(
-    items: T[],
+   , items: T[],
     field: string
   ): T[] {
     const domainCounts = new Map<string, number>();
@@ -489,5 +489,5 @@ export class LegalRecommendationEngine {
 
 // Safe helper to normalize db.execute results to an array of rows
 function execRows(results: any): any[] {
-  return Array.isArray(results) ? results : (results && (results as any).rows) || [];
+  return Array.isArray(results) ? results : (results && (results as: any).rows) || [];
 }

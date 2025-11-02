@@ -57,7 +57,7 @@
     onclick={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
-    transition:fade={{ duration: 200 }}
+    use:fade={{ duration: 200 }}
   >
     <div
       class="modal-content {sizeClasses}"

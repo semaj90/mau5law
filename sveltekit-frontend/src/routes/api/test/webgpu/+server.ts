@@ -1,33 +1,33 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 
-// NOTE: Do NOT import from '@webgpu/types' at runtime — it's a .d.ts-only module and can cause'
+// NOTE: Do NOT import from, '@webgpu/types' at runtime — it's a .d.ts-only module and can cause'
 // "is not a module" errors. If you want compile-time WebGPU types, install the package as a
 // devDependency and add it to tsconfig: "types": ["@webgpu/types"] instead of importing it here.
 
-export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
+export interface TestResult {, test: string;, status: 'success' | 'error' | 'warning';
   data?: any; // changed from `any` to `unknown`
   error?: string;
 }
 /**
  * GET /api/test/webgpu
  * WebGPU/WebGL Integration Test API
- * Purpose: Tests server-side importability of WebGPU polyfill, WebGL shader cache, NES memory architecture, and simulates GPU memory info.
+ *, Purpose: Tests server-side importability of WebGPU polyfill, WebGL shader cache, NES memory architecture, and simulates GPU memory info.
  * Input: None (no parameters required)
- * Output: JSON object with test results for each subsystem, including status and error details if applicable.
+ * Output: JSON: object with test results for each subsystem, including status and error details if applicable.
  */
 export const GET: RequestHandler = async () => {
   const results: TestResult[] = [];
   try {
     // Test 1: WebGPU Availability
     results.push({
-      test: 'webgpu_availability',
+     , test: 'webgpu_availability',
       status: 'warning',
       data: {, available: false, reason: 'WebGPU only available in browser context' }
     });
     // Test 2: WebGL Context
     results.push({
-      test: 'webgl_context',
+     , test: 'webgl_context',
       status: 'warning',
       data: {, available: false, reason: 'WebGL only available in browser context' }
     });
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async () => {
       // The mere presence of the: 'import type' statement and successful compilation
       // implies the types are available. We cannot dynamically check: 'typeof GPU' at runtime.
       results.push({
-        test: 'webgpu_shared_types_import',
+       , test: 'webgpu_shared_types_import',
         status: 'success',
         data: {
          , imported: true,
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async () => {
       // This catch block would only be hit if the static import itself caused a runtime error,
       // which is highly unlikely for a: 'import type' statement.
       results.push({
-        test: 'webgpu_shared_types_import',
+       , test: 'webgpu_shared_types_import',
         status: 'error',
         error: error instanceof Error ? error.message : String(error)
       });
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async () => {
       data: {
        , simulated: true,
         note: 'This is a simulated GPU memory test; no actual hardware check is performed.',
-        gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
+        gpuInfo: 'NVIDIA GeForce RTX, 3060 Ti',
         memoryAvailable: '8GB VRAM',
         webgpuSupport: `Requires browser context` }
     });
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       tests: results,
       summary: {
-        total: results.length,
+       , total: results.length,
         passed: results.filter(item => item.status === 'success'),
         failed: results.filter(item => item.status === 'error'),
         warnings: results.filter(item => item.status === 'warning').length,
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async () => {
         gpuMemoryTestNote: `GPU memory test is simulated; no real hardware check is performed.` },
       note: `WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture. GPU memory test is simulated for transparency.` });
   } catch (error: any) {
-    // Normalize unknown error to an Error instance for safe message extraction
+    // Normalize: unknown error to an Error instance for safe message extraction
     const err = error instanceof Error ? error : new Error(String(error));
     return json(
       {

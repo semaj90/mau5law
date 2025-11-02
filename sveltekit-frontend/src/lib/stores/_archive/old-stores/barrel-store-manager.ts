@@ -1,20 +1,20 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * TypeScript Barrel Store Pattern Implementation
  * Provides centralized, type-safe state management with performance optimizations
  */
-import { writable, derived, readable, type Writable, type Readable } from 'svelte/store';
+import { writable, derived, readable, type Writable, type Readable } from, 'svelte/store';
 
 // SSR-safe storage utilities (adapted from ai-store.ts)
 const SSR_SAFE_STORAGE = {
   getItem: (key: string): string | null => {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === 'undefined') return: null;
     try {
       return localStorage.getItem(key);
     } catch {
-      return null;
+      return: null;
     }
   },
   setItem: (key: string, value: string): void => {
@@ -42,7 +42,7 @@ export interface StoreMetadata { id: string;, version: string;
   cacheable: boolean;
   ttl?: number;
 }
-export interface BarrelStoreEntry<T = any> { store: Writable<T> | Readable<T>;, metadata: StoreMetadata;
+export interface BarrelStoreEntry<T = any> {, store: Writable<T> | Readable<T>;, metadata: StoreMetadata;
   validator?: (_value: T) => boolean;
   serializer?: { serialize: (_value: T) => string;, deserialize: (_value: string) => T;
   };
@@ -105,12 +105,12 @@ export class BarrelStoreManager {
       ttl: cacheable ? ttl : undefined
     };
 
-    const entry: BarrelStoreEntry<T> = {
+    const, entry: BarrelStoreEntry<T> = {
       store,
       metadata,
       validator,
       serializer: {
-        serialize: (_value: T) => JSON.stringify(_value),
+       , serialize: (_value: T) => JSON.stringify(_value),
         deserialize: (_value: string) => JSON.parse(_value)
       }
     };
@@ -166,7 +166,7 @@ export class BarrelStoreManager {
   }
 
   getAllStores(): { [key: string]: any } {
-    const allStores: { [key: string]: any } = {};
+    const, allStores: { [key: string]: any } = {};
     for (const [id, entry] of this.stores) {
       allStores[id] = entry.store;
     }
@@ -177,7 +177,7 @@ export class BarrelStoreManager {
   }
 
   async exportStores(): Promise<{ [key: string]: any }> {
-    const exportsObj: { [key: string]: any } = {};
+    const, exportsObj: { [key: string]: any } = {};
     for (const [id, entry] of this.stores) {
       const currentValue = await this.getCurrentValue(entry.store);
       exportsObj[id] = {
@@ -307,14 +307,14 @@ export const barrelStore = new BarrelStoreManager();
 export const legalAIStores = {
   // Case management
   currentCase: barrelStore.createStore<any>({
-    id: 'legal-ai-current-case',
+   , id: 'legal-ai-current-case',
     initialValue: null,
     persistent: true,
     cacheable: true
   }),
   // Document processing
   documentQueue: barrelStore.createStore<any>({
-    id: 'legal-ai-document-queue',
+   , id: 'legal-ai-document-queue',
     initialValue: [],
     persistent: true,
     cacheable: true
@@ -329,7 +329,7 @@ export const legalAIStores = {
   }),
   // User preferences
   userPreferences: barrelStore.createStore<any>({
-    id: 'legal-ai-user-preferences',
+   , id: 'legal-ai-user-preferences',
     initialValue: {
      , theme: 'dark',
       aiModel: 'gemma3-legal',
@@ -343,7 +343,7 @@ export const legalAIStores = {
   }),
   // Application state
   appState: barrelStore.createStore<any>({
-    id: 'legal-ai-app-state',
+   , id: 'legal-ai-app-state',
     initialValue: {
      , loading: false,
       error: null,
@@ -354,7 +354,7 @@ export const legalAIStores = {
   }),
   // OCR processing state
   ocrState: barrelStore.createStore<any>({
-    id: 'legal-ai-ocr-state',
+   , id: 'legal-ai-ocr-state',
     initialValue: {
      , processing: false,
       progress: 0,

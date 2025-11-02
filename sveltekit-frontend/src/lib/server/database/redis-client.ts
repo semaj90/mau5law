@@ -2,21 +2,21 @@
  * Redis Client Configuration
  * Provides connection management for Redis caching and orchestration
  */
-import Redis from 'ioredis';
-import dotenv from 'dotenv';
-import createRedisConnection from '$lib/server/redis'; // Fix: createRedisConnection is the default export
+import Redis from, 'ioredis';
+import dotenv from, 'dotenv';
+import createRedisConnection from, '$lib/server/redis'; // Fix: createRedisConnection is the default export
 dotenv.config();
 export interface RedisConfig { host: string;, port: number;
   password?: string;
   db: number;
   retryDelayOnFailover: number;
   maxRetriesPerRequest: number;
-  lazyConnect: boolean;
+ , lazyConnect: boolean;
 }
 // Use REDIS_URL if provided, otherwise fallback to individual config
 // Default Redis configuration
 const defaultConfig: RedisConfig = {
-  host: process.env.REDIS_HOST || 'localhost',
+ , host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD,
   db: 0,
@@ -39,7 +39,7 @@ interface MinimalRedisClient {
 }
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
-let redis: IORedisClient | null = null; // This is the module's managed shared instance'
+let, redis: IORedisClient | null = null; // This is the module's managed shared instance'
 let isConnected = $state<boolean>(false);
 /**
  * Get Redis client instance
@@ -63,14 +63,14 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
       console.log('🔴 Redis connection closed');
     });
     // test ping - returns: 'PONG' on success
-    await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
-    redis = instance as unknown as IORedisClient; // Assign to the module's shared instance'
+    await (instance, as: unknown as { ping?: () => Promise<string> }).ping?.();
+    redis = instance as: unknown as IORedisClient; // Assign to the module's shared instance'
     return redis;
   } catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
     redis = null;
     isConnected = false;
-    return null;
+    return: null;
   }
 }
 /**
@@ -110,7 +110,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
   if (Object.keys(customConfig).length === 0) {
     // If no custom config, return the module's managed: 'redis' instance (if available)'
     // or create a new one with default config.
-    return redis || (createRedisConnection() as unknown as IORedisClient);
+    return redis || (createRedisConnection() as: unknown as IORedisClient);
   }
   const config = { ...defaultConfig, ...customConfig };
   const client = new Redis({
@@ -120,7 +120,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
     db: config.db,
     maxRetriesPerRequest: 3,
     retryStrategy: (times: number) => Math.min(times * 100, 2000)
-  }) as unknown as IORedisClient;
+  }) as: unknown as IORedisClient;
   client.on('error', (error: Error) => {
     console.warn('🔴 Redis client error:', error?.message ?? String(error));'
   });

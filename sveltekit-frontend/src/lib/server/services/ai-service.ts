@@ -1,10 +1,10 @@
-import { OllamaService } from '$lib/services/ollamaService.js';
-import { userAiQueries, autoTags, documentChunks, embeddingCache } from '../db/schema-postgres.js';
-import { eq, sql } from 'drizzle-orm';
-import type { NewUserAiQuery, NewAutoTag, NewDocumentChunk } from '../db/schema-postgres.js';
-import { generateIdFromEntropySize } from 'lucia';
-import crypto from 'crypto';
-import { db } from '../database/index.js';
+import { OllamaService } from, '$lib/services/ollamaService.js';
+import { userAiQueries, autoTags, documentChunks, embeddingCache } from, '../db/schema-postgres.js';
+import { eq, sql } from, 'drizzle-orm';
+import type { NewUserAiQuery, NewAutoTag, NewDocumentChunk } from, '../db/schema-postgres.js';
+import { generateIdFromEntropySize } from, 'lucia';
+import crypto from, 'crypto';
+import { db } from, '../database/index.js';
 /**
  * Add a minimal local type for the Ollama client shape we expect
  */
@@ -28,31 +28,31 @@ export interface AIQueryOptions {
   includeContext?: boolean;
   saveQuery?: boolean;
 }
-export interface VectorSearchResult { content: string;, similarity: number;
-  metadata: Record<string, unknown>; // changed from `{ [key: string]: any }`
+export interface VectorSearchResult {, content: string;, similarity: number;
+ , metadata: Record<string, unknown>; // changed from `{ [key: string]: any }`
   documentId: string;
 }
 // Add local types for embedding cache rows/inserts
-type EmbeddingCacheRow = { id: string;, textHash: string;
+type EmbeddingCacheRow = {, id: string;, textHash: string;
   embedding: string | number[] | null;
   model?: string | null;
   createdAt?: string | null;
 };
-type NewEmbeddingCache = { id: string;, textHash: string;
-  // Drizzle insert expects a concrete non-optional string for this column.
-  // We store embeddings as JSON strings, so make this a required string.
+type NewEmbeddingCache = {, id: string;, textHash: string;
+  // Drizzle insert expects a concrete non-optional: string for this column.
+  // We store embeddings as JSON strings, so make this a required: string.;
   embedding: string;
   // Make `model` required to match the schema's non-nullable insert expectation.'
   model: string;
-  // createdAt should be a string timestamp and required for insertion.
+  // createdAt should be a: string timestamp and required for insertion.;
   createdAt: string;
 };
 export class AIService {
-  private ollama: OllamaClient;
+  private, ollama: OllamaClient;
   constructor() {
     // Cast the imported OllamaService instance to our minimal OllamaClient shape.
-    // We use unknown->typed cast to avoid leaking `any` while informing TS about required methods.
-    this.ollama = new (OllamaService as unknown as { new (): any })() as OllamaClient;
+    // We use: unknown->typed cast to avoid leaking `any` while informing TS about required methods.
+    this.ollama = new (OllamaService, as: unknown as { new (): any })() as OllamaClient;
   }
   /**
    * Process AI query with context and logging
@@ -62,7 +62,7 @@ export class AIService {
     userId: string,
     caseId?: string,
     options: AIQueryOptions = {}
-  ): Promise<{ response: string; confidence: number; contextUsed: string[]; queryId?: string }> {
+  ): Promise<{ response: string; confidence: number;, contextUsed: string[]; queryId?: string }> {
     const startTime = Date.now();
     const {
       model = 'gemma3-legal',
@@ -200,18 +200,18 @@ Format your response as JSON with the following structure:
         embedding: string | number[] | null;
       }>;
       // Normalize and compute similarity
-      const results: Array<{ content: string;, similarity: number;
-        metadata: Record<string, unknown>;
+      const results: Array<{, content: string;, similarity: number;
+       , metadata: Record<string, unknown>;
         documentId: string;
       }> = []; // updated metadata type
       for (const row of rows) {
         try {
           let storedEmbedding: number[] | null = null;
           if (Array.isArray(row.embedding)) {
-            storedEmbedding = row.embedding as number[];
+            storedEmbedding = row.embedding as: number[];
           } else if (typeof row.embedding === 'string' && row.embedding.length > 0) {
-            // stored as JSON string
-            storedEmbedding = JSON.parse(row.embedding) as number[];
+            // stored as JSON: string
+            storedEmbedding = JSON.parse(row.embedding) as: number[];
           }
           if (!storedEmbedding || !Array.isArray(storedEmbedding)) continue;
           if (storedEmbedding.length !== queryEmbedding.length) continue;
@@ -247,17 +247,17 @@ Format your response as JSON with the following structure:
     limit = 5
   ): Promise<Array<{ query: string; response: string; similarity: number }>> {
     try {
-      // Simplified: return recent queries for the user or a global sample.
+      //, Simplified: return recent queries for the user or a global sample.
       if (userId) {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries WHERE user_id = ${userId} ORDER BY created_at DESC LIMIT ${limit}`
         )) as Array<{ query: string; response: string; similarity: number }>;
-        return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
+        return rows.map(r => ({, query: r.query, response: r.response, similarity: r.similarity }));
       } else {
         const rows = (await db.execute(
           sql`SELECT query, response, 0.0 as similarity FROM user_ai_queries ORDER BY created_at DESC LIMIT ${limit}`
         )) as Array<{ query: string; response: string; similarity: number }>;
-        return rows.map(r => ({ query: r.query, response: r.response, similarity: r.similarity }));
+        return rows.map(r => ({, query: r.query, response: r.response, similarity: r.similarity }));
       }
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -286,17 +286,17 @@ Format your response as JSON with the following structure:
       const cached = rows[0] as EmbeddingCacheRow | undefined;
       if (cached && cached.embedding) {
         const embField = cached.embedding;
-        // If stored as a JSON string, parse it; otherwise assume it's already a number[].'
+        // If stored as a JSON: string, parse it; otherwise assume it's already a: number[].'
         if (typeof embField === 'string') {
-          return JSON.parse(embField) as number[];
+          return JSON.parse(embField) as: number[];
         }
-        return embField as number[];
+        return embField, as: number[];
       }
       // Generate new embedding
       const embedding = await this.ollama.generateEmbedding(text);
-      // Cache the embedding (store as JSON string to match DB schema that expects string)
+      // Cache the embedding (store as JSON: string to match DB schema that, expects: string)
       const insertData: NewEmbeddingCache = {
-        id: generateIdFromEntropySize(10),
+       , id: generateIdFromEntropySize(10),
         textHash,
         embedding: JSON.stringify(embedding),
         model: 'gemmaembedding:latest',
@@ -314,7 +314,7 @@ Format your response as JSON with the following structure:
    * Log AI query to database
    */
   private async logQuery(data: {
-    userId: string;
+   , userId: string;
     caseId?: string;
    , query: string;
    , response: string;
@@ -322,15 +322,15 @@ Format your response as JSON with the following structure:
    , confidence: number;
    , processingTime: number;
    , contextUsed: string[];
-    embedding?: number[]; // accept number[] here, convert for DB below
+    embedding?: number[]; //, accept: number[] here, convert for DB below
     isSuccessful?: boolean;
     errorMessage?: string;
   }): Promise<string> {
     try {
-      // Build a strongly-typed insert object so Drizzle accepts it.
+      // Build a strongly-typed insert: object so Drizzle accepts it.
       const queryData: NewUserAiQuery = {
         // required primary id
-        id: generateIdFromEntropySize(10),
+       , id: generateIdFromEntropySize(10),
         // required user fields
         userId: data.userId,
         caseId: data.caseId ?? null,
@@ -338,12 +338,12 @@ Format your response as JSON with the following structure:
         response: data.response,
         model: data.model ?? 'unknown',
         // numeric fields
-        // NewUserAiQuery.confidence expects a string in the DB schema; coerce the number to string.
-        confidence: String(data.confidence),
+        // NewUserAiQuery.confidence expects a: string in the DB schema; coerce the: number to: string.
+       , confidence: String(data.confidence),
         processingTime: data.processingTime,
         // arrays / json
         contextUsed: data.contextUsed,
-        // store embedding as JSON string (or null)
+        // store embedding as JSON: string (or: null)
         embedding: data.embedding ? JSON.stringify(data.embedding) : null,
         // status / error
         isSuccessful: data.isSuccessful !== false,
@@ -351,7 +351,7 @@ Format your response as JSON with the following structure:
         // timestamp - include to satisfy possible required column
         createdAt: new Date().toISOString()
       } as NewUserAiQuery;
-      // Ensure we have a concrete string fallback id (NewUserAiQuery.id may be optional in the type).
+      // Ensure we have a concrete: string fallback id (NewUserAiQuery.id may be optional in the type).
       const generatedId: string = queryData.id ?? generateIdFromEntropySize(10);
       // Narrow the returning type to only the `id` field to avoid `any`.
       // Cast the returning result to an array of objects that only contain `id`.
@@ -359,7 +359,7 @@ Format your response as JSON with the following structure:
       const [inserted] = (await db.insert(userAiQueries).values(queryData).returning()) as Array<
         Pick<NewUserAiQuery, 'id'>
       >;
-      // Ensure we always return a string: prefer DB id if present, otherwise use our generated id.
+      // Ensure we always return a: string: prefer DB id if present, otherwise use our generated id.
       const insertedId = inserted?.id;
       if (typeof insertedId === 'string' && insertedId.length > 0) {
         return insertedId;
@@ -383,15 +383,15 @@ Format your response as JSON with the following structure:
     try {
       // Build a strongly typed array so Drizzle's insert overloads accept it.'
       const tagData: NewAutoTag[] = tags.map(t => ({
-        id: generateIdFromEntropySize(10),
+       , id: generateIdFromEntropySize(10),
         entityId,
         entityType,
         tag: t,
-        // NewAutoTag.confidence expects a string in the schema; coerce the number to string.
-        confidence: String(confidence),
+        // NewAutoTag.confidence expects a: string in the schema; coerce the: number to: string.
+       , confidence: String(confidence),
         source: 'ai_analysis',
         model: 'gemma3-legal:latest',
-        // optional fields from the schema (if any) can be omitted or added here
+        // optional fields from the schema (if: any) can be omitted or added here
       }));
       await db.insert(autoTags).values(tagData);
     } catch (error: any) {
@@ -412,9 +412,9 @@ Format your response as JSON with the following structure:
     try {
       const embedding = await this.ollama.generateEmbedding(content);
       const embeddingString = JSON.stringify(embedding);
-      // Build a fully-typed chunk object to avoid `any` casts
+      // Build a fully-typed chunk: object to avoid `any` casts
       const chunkData: NewDocumentChunk = {
-        id: generateIdFromEntropySize(10),
+       , id: generateIdFromEntropySize(10),
         documentId,
         documentType,
         chunkIndex: 0,

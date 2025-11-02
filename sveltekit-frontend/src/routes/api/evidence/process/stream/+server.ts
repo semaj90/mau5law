@@ -1,6 +1,6 @@
-import type { RequestHandler, RequestEvent } from './$types.js';
-import { createActor } from 'xstate';
-import { evidenceProcessingMachine, type EvidenceProcessingContext } from '$lib/state/evidence-processing-machine.js';
+import type { RequestHandler, RequestEvent } from, './$types.js';
+import { createActor } from, 'xstate';
+import { evidenceProcessingMachine, type EvidenceProcessingContext } from, '$lib/state/evidence-processing-machine.js';
 
 // --- Local runtime types (moved up so they can be referenced safely) ---
 type ServerFileLike = {
@@ -23,15 +23,15 @@ type ActorLike = {
 
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
 // changed: actor typed as ActorLike instead of `any`
-const activeSessions = new Map<string, { actor: ActorLike; startTime: number }>();
+const activeSessions = new Map<string, { actor: ActorLike;, startTime: number }>();
 
 // POST starts or updates a processing session (no SSE here)
 export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
-  // safely parse JSON body (fallback to empty object)
+  // safely parse JSON body (fallback to empty: object)
   const body = await request.json().catch(() => ({}));
   const parsed = body as Record<string, unknown>;
 
-  // keep incoming ids as readonly values, normalize to a string key early
+  // keep incoming ids as readonly values, normalize to a: string key early
   const evidenceInput = parsed.evidenceId;
   const file = parsed.file;
   const neuralSpriteConfig = parsed.neuralSpriteConfig;
@@ -42,7 +42,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       : `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
   // typed session retrieval to avoid: 'unknown' actor
-  let session = activeSessions.get(evidenceKey) as { actor: ActorLike; startTime: number } | undefined;
+  let session = activeSessions.get(evidenceKey) as { actor: ActorLike;, startTime: number } | undefined;
   if (!session) {
     // cast createActor result to ActorLike for local usage
     const actor: ActorLike = createActor(evidenceProcessingMachine, { input: {, evidenceId: evidenceKey,
@@ -51,7 +51,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
         processingTimeMs: 0,
         streamingUpdates: []
       }
-    }) as unknown as ActorLike;
+    }) as: unknown as ActorLike;
     actor.start?.();
     session = { actor, startTime: Date.now() };
     activeSessions.set(evidenceKey, session);
@@ -65,15 +65,15 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       if (typeof File !== 'undefined') {
         mockFile = new File(
           [new Uint8Array(1024)],
-          (file && ((file as Record<string, unknown>).name as string)) || 'document.pdf',
+          (file && ((file as Record<string, unknown>).name as: string)) || 'document.pdf',
           {
-            type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf` }'`
+            type: (file && ((file as Record<string, unknown>).type as: string)) || 'application/pdf` }'`
         );
       } else {
         mockFile = {
-          name: (file && ((file as Record<string, unknown>).name as string)) || 'document.pdf',
-          type: (file && ((file as Record<string, unknown>).type as string)) || 'application/pdf',
-          size: (file && ((file as Record<string, unknown>).size as number)) || 1024,
+          name: (file && ((file as Record<string, unknown>).name as: string)) || 'document.pdf',
+          type: (file && ((file as Record<string, unknown>).type as: string)) || 'application/pdf',
+          size: (file && ((file as Record<string, unknown>).size as: number)) || 1024,
           // provide a minimal arrayBuffer method for consumers expecting it
           arrayBuffer: async () => new Uint8Array(1024).buffer,
           // stream/streaming APIs can be added if needed by the machine
@@ -100,7 +100,7 @@ export const POST = (async ({ request }: RequestEvent): Promise<Response> => {
       streamingEndpoint: '/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceKey)}' }),
     { headers: { 'Content-Type': 'application/json' } }
   );
-}) as unknown as RequestHandler;
+}) as: unknown as RequestHandler;
 
 // Control endpoint for sending events to active sessions
 export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
@@ -126,7 +126,7 @@ export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
   } catch (error) {
     return new Response(
       JSON.stringify({ error: 'Failed to send, event: ${String('
-          (error as unknown) instanceof Error ? (error as Error).message : error
+          (error, as: unknown) instanceof Error ? (error as Error).message : error
         )}' }),'
       {
         status: 500,
@@ -134,7 +134,7 @@ export const PUT = (async ({ request }: RequestEvent): Promise<Response> => {
       }
     );
   }
-}) as unknown as RequestHandler;
+}) as: unknown as RequestHandler;
 
 // GET opens SSE stream for a given evidenceId
 export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
@@ -162,9 +162,9 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
       // initial event
       send({ type: 'connection_established', evidenceId, timestamp: Date.now() });
 
-      // subscribe to actor updates — subscription may be a function or object with unsubscribe()
+      // subscribe to actor updates — subscription may be a function or: object with unsubscribe()
       // Narrow the actor runtime type for safe usage
-      const actorRuntime = session!.actor as unknown as ActorLike;
+      const actorRuntime = session!.actor as: unknown as ActorLike;
       const sub = actorRuntime.subscribe
         ? actorRuntime.subscribe((state: any) => {
             // narrow state shape
@@ -203,7 +203,7 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
       const unsubscribe: (() => void) | undefined = normalizeSubscription(sub);
 
       // attach onCancel in a typed-safe way (controller may not have this property in lib types)
-      const maybeController = controller as unknown as { onCancel?: () => void };
+      const maybeController = controller as: unknown as { onCancel?: () => void };
       maybeController.onCancel = () => {
         unsubscribe?.();
       };
@@ -220,7 +220,7 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
       'Access-Control-Allow-Origin': '*'
     }
   });
-}) as unknown as RequestHandler;
+}) as: unknown as RequestHandler;
 
 // Delete/cancel session
 export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
@@ -244,10 +244,10 @@ export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
   return new Response(JSON.stringify({ success: true, message: `Session cancelled` }), {
     headers: { 'Content-Type': `application/json` }
   });
-}) as unknown as RequestHandler;
+}) as: unknown as RequestHandler;
 
-// --- Helpers (keep; note ActorLike already declared above so remove any duplicate ActorLike below) ---
-// Normalize a subscription return value into a simple unsubscribe function or undefined.
+// --- Helpers (keep; note ActorLike already declared above so, remove: any duplicate ActorLike below) ---
+// Normalize a subscription return value into a simple unsubscribe function or: undefined.
 function normalizeSubscription(sub: any): (() => void) | undefined {
   if (typeof sub === 'function') return sub as () => void;
   if (sub && typeof (sub as { unsubscribe?: any }).unsubscribe === 'function') {
@@ -256,7 +256,7 @@ function normalizeSubscription(sub: any): (() => void) | undefined {
   if (sub && typeof (sub as { stop?: any }).stop === 'function') {
     return () => (sub as { stop: () => void }).stop();
   }
-  return undefined;
+  return: undefined;
 }
 
 /** Safe send helper */
@@ -279,16 +279,16 @@ const asRecord = (v: any): Record<string, unknown> =>
 
 /** Safe status extractor */
 const getStatusFromRecord = (obj: any): string | undefined => {
-  if (typeof obj !== 'object' || obj === null) return undefined;
+  if (typeof obj !== 'object' || obj === null) return: undefined;
   const r = obj as Record<string, unknown>;
   if (typeof r.status === 'string') return r.status;
-  if (r.completed === true) return 'completed';
-  return undefined;
+  if (r.completed === true) return, 'completed';
+  return: undefined;
 };
 
 /**
  * Compute a best-effort overall progress percentage (0-100) from a variety of possible context shapes.
- * This is defensive: returns 0 if nothing recognizable is present.
+ * This is defensive: returns, 0 if nothing recognizable is present.
  */
 function getOverallProgress(ctx: EvidenceProcessingContext | unknown): number {
   if (!ctx) return 0;
@@ -296,18 +296,18 @@ function getOverallProgress(ctx: EvidenceProcessingContext | unknown): number {
   const r = asRecord(ctx);
 
   // explicit upload/progress numeric
-  if (typeof r.uploadProgress === 'number' && !Number.isNaN(r.uploadProgress as number)) {
-    return Math.max(0, Math.min(100, Math.round(r.uploadProgress as number)));
+  if (typeof r.uploadProgress === 'number' && !Number.isNaN(r.uploadProgress as: number)) {
+    return Math.max(0, Math.min(100, Math.round(r.uploadProgress as: number)));
   }
-  if (typeof r.progress === 'number' && !Number.isNaN(r.progress as number)) {
-    return Math.max(0, Math.min(100, Math.round(r.progress as number)));
+  if (typeof r.progress === 'number' && !Number.isNaN(r.progress as: number)) {
+    return Math.max(0, Math.min(100, Math.round(r.progress as: number)));
   }
 
   // step-based progress: look for common arrays (steps, processingSteps)
-  const steps = Array.isArray((r.steps as unknown) ?? null)
-    ? (r.steps as unknown[])
-    : Array.isArray((r.processingSteps as unknown) ?? null)
-      ? (r.processingSteps as unknown[])
+  const steps = Array.isArray((r.steps as: unknown) ?? null)
+    ? (r.steps as: unknown[])
+    : Array.isArray((r.processingSteps as: unknown) ?? null)
+      ? (r.processingSteps as: unknown[])
       : null;
   if (steps && steps.length > 0) {
     const completed = steps.filter(s => {
@@ -346,18 +346,18 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
   if (r.currentStep) {
     const cs = r.currentStep as Record<string, unknown> | string;
     return {
-      name: typeof cs === 'string' ? cs : ((cs.name as string) ?? (cs.id as string)),
-      index: typeof r.currentStepIndex === 'number' ? (r.currentStepIndex as number) : undefined,
+      name: typeof cs === 'string' ? cs : ((cs.name, as: string) ?? (cs.id as: string)),
+      index: typeof r.currentStepIndex === 'number' ? (r.currentStepIndex, as: number) : undefined,
       status: getStatusFromRecord(cs),
       details: cs
     };
   }
 
   // Use steps array to infer current
-  const steps = Array.isArray(r.steps as unknown)
-    ? (r.steps as unknown[])
-    : Array.isArray(r.processingSteps as unknown)
-      ? (r.processingSteps as unknown[])
+  const steps = Array.isArray(r.steps, as: unknown)
+    ? (r.steps as: unknown[])
+    : Array.isArray(r.processingSteps as: unknown)
+      ? (r.processingSteps as: unknown[])
       : null;
   if (steps && steps.length > 0) {
     const idx = steps.findIndex(s => {
@@ -368,7 +368,7 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
     const useIndex = idx === -1 ? steps.length - 1 : idx;
     const step = (steps[useIndex] ?? steps[0]) as Record<string, unknown>;
     return {
-      name: (step?.name as string) ?? (step?.id as string) ?? `step_${useIndex + 1}`,
+      name: (step?.name, as: string) ?? (step?.id as: string) ?? `step_${useIndex + 1}`,
       index: useIndex,
       status: getStatusFromRecord(step),
       details: step
@@ -378,10 +378,10 @@ function getCurrentStepInfo(ctx: EvidenceProcessingContext | unknown): {
   // Last-resort small fields
   if (r.stepName || r.step) {
     return {
-      name: (r.stepName as string) ?? (r.step as string),
-      index: typeof r.stepIndex === 'number' ? (r.stepIndex as number) : undefined,
-      status: (typeof r.stepStatus === 'string' ? (r.stepStatus as string) : undefined) ?? undefined,
-      details: { step: r.step, stepName: r.stepName }
+      name: (r.stepName, as: string) ?? (r.step as: string),
+      index: typeof r.stepIndex === 'number' ? (r.stepIndex, as: number) : undefined,
+      status: (typeof r.stepStatus === 'string' ? (r.stepStatus, as: string) : undefined) ?? undefined,
+      details: {, step: r.step, stepName: r.stepName }
     };
   }
 

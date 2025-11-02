@@ -2,14 +2,14 @@
  * Gallery Download API - File Download Handler
  * Handles secure file downloads with access control and logging
  */
-import { error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { readFile, stat } from 'fs/promises'
-import { existsSync } from 'fs'
-import path from 'path'
-import { db } from '$lib/server/database'
-import { evidence, cases } from '$lib/server/db/schema'
-import { eq } from 'drizzle-orm'
+import { error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { readFile, stat } from, 'fs/promises'
+import { existsSync } from, 'fs'
+import path from, 'path'
+import { db } from, '$lib/server/database'
+import { evidence, cases } from, '$lib/server/db/schema'
+import { eq } from, 'drizzle-orm'
 
 interface DownloadLog {
   itemId: string
@@ -31,10 +31,10 @@ type EvidenceItem = {
   uploadedAt?: string | Date
 }
 
-export const GET: RequestHandler = async ({ params, request, locals, url }) => {
+export const, GET: RequestHandler = async ({ params, request, locals, url }) => {
   try {
     const itemId = params.id;
-    const downloadType = (url.searchParams.get('type') || 'download') as 'download' | 'view';
+    const downloadType = (url.searchParams.get('type') || 'download') as, 'download' | 'view';
     const inline = url.searchParams.get('inline') === 'true';
     if (!itemId) {
       throw error(400, 'Item ID is required');
@@ -54,8 +54,8 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     // normalize typed item
     const item = Array.isArray(itemQuery)
-      ? (itemQuery[0] as unknown as EvidenceItem)
-      : (itemQuery as unknown as EvidenceItem);
+      ? (itemQuery[0] as: unknown as EvidenceItem)
+      : (itemQuery as: unknown as EvidenceItem);
 
     // Check access permissions
     if (!item.isPublic) {
@@ -188,18 +188,18 @@ function handleRangeRequest(
 }
 
 // Replace broken parseRangeHeader with a correct implementation
-function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
+function parseRangeHeader(range: string, fileSize: number): Array<{ start: number;, end: number }> | null {
   try {
-    if (!range || !range.startsWith('bytes=')) return null;
+    if (!range || !range.startsWith('bytes=')) return: null;
     const ranges = range
       .slice(6)
       .split(',')
       .map(r => r.trim());
-    const parsed: Array<{ start: number; end: number }> = [];
+    const parsed: Array<{ start: number;, end: number }> = [];
     for (const r of ranges) {
       const [startStr, endStr] = r.split('-');
       let start: number;
-      let end: number;
+      let, end: number;
       if (startStr === '') {
         const suffixLen = parseInt(endStr || '0', 10);
         if (isNaN(suffixLen)) continue;
@@ -220,7 +220,7 @@ function parseRangeHeader(range: string, fileSize: number): Array<{ start: numbe
     }
     return parsed.length > 0 ? parsed : null;
   } catch {
-    return null;
+    return: null;
   }
 }
 async function logDownload(log: DownloadLog): Promise<any> {
@@ -246,22 +246,22 @@ function getClientIP(request: Request): string {
   if (realIP) {
     return realIP.trim();
   }
-  return 'unknown';
+  return, 'unknown';
 }
 function getUserId(locals?: any): string | undefined {
   // Safe cast to Record to avoid `any`
   const l = locals as Record<string, unknown> | undefined;
-  if (!l) return undefined;
+  if (!l) return: undefined;
   const user = l['user'] as { id?: string } | undefined;
   // Avoid optional chaining to prevent parser issues in older/strict toolchains
   if (user && typeof user.id === 'string') {
     return user.id;
   }
-  return undefined;
+  return: undefined;
 }
 
 // HEAD request for file metadata without downloading
-export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
+export const, HEAD: RequestHandler = async ({ params, locals: _locals }) => {
   try {
     const itemId = params.id
     if (!itemId) {
@@ -273,8 +273,8 @@ export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
       throw error(404, 'File not found');
     }
     const item = Array.isArray(itemQuery)
-      ? (itemQuery[0] as unknown as EvidenceItem)
-      : (itemQuery as unknown as EvidenceItem);
+      ? (itemQuery[0] as: unknown as EvidenceItem)
+      : (itemQuery as: unknown as EvidenceItem);
     if (item.filePath) {
       const fullPath = path.join(process.cwd(), 'static', item.filePath);
       if (!existsSync(fullPath)) {

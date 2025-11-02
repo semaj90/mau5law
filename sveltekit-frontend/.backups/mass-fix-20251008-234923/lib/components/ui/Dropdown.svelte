@@ -79,7 +79,7 @@
       onclick={(e) => e.stopPropagation()}
       onkeydown={(e) => { if (e.key === 'Escape') close(); }}
       style="position: absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
-      transition:fly={{ y: -6, duration: 140 }}
+      use:fly={{ y: -6, duration: 140 }}
     >
       {@render children()}
     </div>

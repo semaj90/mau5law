@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-// NOTE: Dependencies may need to be; installed: npm install fast-glob axios
-// import fg from 'fast-glob'
-// import axios from 'axios'
-import type { RequestHandler } from './$types.js';
-const GO_FILE_PROCESSOR_URL = 'http://localhost:8081/process-files'; // Assuming Go service runs on 8081
+import { json } from, '@sveltejs/kit';
+// NOTE: Dependencies may need to be;, installed: npm install fast-glob axios
+// import fg from, 'fast-glob'
+// import axios from, 'axios'
+import type { RequestHandler } from, './$types.js';
+const GO_FILE_PROCESSOR_URL = 'http://localhost:8081/process-files'; // Assuming Go service runs on, 8081
 export async function POST({ request }): Promise<any> {
   try {
     const { directoryPath } = await request.json();
@@ -16,7 +16,7 @@ export async function POST({ request }): Promise<any> {
     const files = [`${directoryPath}/example1.txt`, `${directoryPath}/example2.txt`]; // Mock files
     console.log(`Mock found ${files.length} files. Would delegate to Go microservice...`);
     // TODO: Implement actual HTTP client for Go microservice communication
-    const goResponse = { status: 200, data: { processed: files.length, success: true } }; // Mock response
+    const goResponse = {, status: 200, data: {, processed: files.length, success: true } }; // Mock response
     if (goResponse.status === 200) {
       console.log('Go microservice successfully processed files.');
       return json(

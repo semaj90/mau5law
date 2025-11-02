@@ -2,7 +2,7 @@
 /**
  * Simple test for the compiled WASM vector operations module
  */
-import { vectorWasm } from './vector-wasm-wrapper.js';
+import { vectorWasm } from, './vector-wasm-wrapper.js';
 export async function testWasmModule(): Promise<boolean> {
   try {
     console.log('[WASM Test] Starting WebAssembly module tests...');
@@ -26,7 +26,7 @@ export async function testWasmModule(): Promise<boolean> {
     const embedding = await vectorWasm.generateHashEmbedding(text, 64);
     console.log(`[WASM Test] Generated embedding of dimension ${embedding.length}`);
     if (embedding.length !== 64) {
-      throw new Error(`Expected embedding dimension 64, got ${embedding.length}`);
+      throw new Error(`Expected embedding dimension, 64, got ${embedding.length}`);
     }
     // Check that embedding is normalized (magnitude should be ~1)
     const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);

@@ -3,9 +3,9 @@
  * Advanced neural pattern recognition for legal document prediction
  * Combines HMM state transitions with SOM spatial clustering
  */
-import { LegalDocumentSOM } from './som-clustering.js';
-import type { SOMConfig } from '$lib/api/enhanced-rest-architecture';
-import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
+import { LegalDocumentSOM } from, './som-clustering.js';
+import type { SOMConfig } from, '$lib/api/enhanced-rest-architecture';
+import { reinforcementLearningCache } from, '$lib/caching/reinforcement-learning-cache';
 
 export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
   bitmapHeight: number;
@@ -15,13 +15,13 @@ export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
   somIntegration: boolean;
 }
 
-export interface HMMState { id: number;, name: string;
+export interface HMMState {, id: number;, name: string;
   somPosition?: { x: number; y: number };
   bitmap: Uint8Array; // Bitmap representation of state
   legalContext: string[];
 }
 
-export interface BitmapObservation { bitmap: Uint8Array;, intensity: number;
+export interface BitmapObservation {, bitmap: Uint8Array;, intensity: number;
   timestamp: number;
   documentType?: string;
   confidence?: number;
@@ -36,7 +36,7 @@ export class BitmapHiddenMarkovSOM {
   private observationHistory: BitmapObservation[] = [];
 
   constructor(
-    private config: BitmapHMMConfig,
+    private, config: BitmapHMMConfig,
     somConfig?: SOMConfig
   ) {
     this.initializeStates();
@@ -201,13 +201,13 @@ export class BitmapHiddenMarkovSOM {
           case 4: // Regulations - uniform distribution
             probability = 1.0;
             break;
-          case 5: // Discovery - random patterns
+          case, 5: // Discovery - random patterns
             probability = Math.random();
             break;
           case 6: // Verdicts - binary patterns
             probability = intensity > 0.5 ? 0.9 : 0.1;
             break;
-          case 7: // Appeals - complex patterns
+          case, 7: // Appeals - complex patterns
             probability = Math.abs(Math.sin(intensity * Math.PI * 4));
             break;
         }
@@ -451,7 +451,7 @@ export class BitmapHiddenMarkovSOM {
     const currentState = statePath[statePath.length - 1];
 
     const predictedBitmaps: Uint8Array[] = [];
-    const predictedPath: number[] = [];
+    const, predictedPath: number[] = [];
     let confidence = 1.0;
     let state = currentState;
 
@@ -647,7 +647,7 @@ export class BitmapHiddenMarkovSOM {
   async generateVisualization(): Promise<{ states: Array<any>;, transitions: Array<any>;
   }> {
     const states = this.states.map(state => ({
-      id: state.id,
+     , id: state.id,
       name: state.name,
       somPosition: state.somPosition,
       transitionWeights: Array.from(

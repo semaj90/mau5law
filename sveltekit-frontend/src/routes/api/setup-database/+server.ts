@@ -2,9 +2,9 @@
  * Database Setup API Endpoint
  * Initializes all required tables, indexes, and sample data for the unified vector system
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { setupDatabase, checkDatabaseHealth, getDatabaseStats } from '$lib/server/db/setup-database';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { setupDatabase, checkDatabaseHealth, getDatabaseStats } from, '$lib/server/db/setup-database';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action } = body || {};
 
     switch (action) {
-      case 'add-sample-documents':
+      case, 'add-sample-documents':
         // Add additional sample documents for testing
         return json(
           {
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case 'rebuild-indexes':
+      case, 'rebuild-indexes':
         // Rebuild database indexes
         return json(
           {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case 'clear-cache':
+      case, 'clear-cache':
         // Clear embedding and vector caches
         return json(
           {
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { status: 501 }
         );
-      case 'init':
+      case, 'init':
         // Example: run setupDatabase if requested
         try {
           await setupDatabase();
@@ -67,8 +67,8 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       default: return json(
           {
-            success: false,
-            error: 'Unknown action.; Available: add-sample-documents, rebuild-indexes, clear-cache, init',
+           , success: false,
+            error: 'Unknown action.;, Available: add-sample-documents, rebuild-indexes, clear-cache, init',
             availableActions: ['add-sample-documents', 'rebuild-indexes', 'clear-cache', 'init']
           },
           { status: 400 }

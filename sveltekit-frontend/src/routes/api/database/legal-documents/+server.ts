@@ -1,20 +1,20 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
-import { json } from '@sveltejs';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/database';
+import { json } from, '@sveltejs';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/database';
 import {
   Document as documents,
   Case as cases,
   User as users,
   UserSession as userSessions,
   Embedding as embeddings
-} from '$lib/server/database/schema';
-import { nanoid } from 'nanoid';
-import { eq } from 'drizzle-orm';
+} from, '$lib/server/database/schema';
+import { nanoid } from, 'nanoid';
+import { eq } from, 'drizzle-orm';
 
 interface UploadResult {
   success?: boolean;
@@ -42,7 +42,7 @@ interface UploadResult {
   };
 }
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     const session = await locals.getSession();
     if (!session) {
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId: session.userId,
         textContent: result.metadata?.textContent || '',
         aiAnalysis: {
-          summary: result.aiInsights?.summary || '',
+         , summary: result.aiInsights?.summary || '',
           entities: result.aiInsights?.keyEntities || [],
           suggestedTags: result.aiInsights?.suggestedTags || [],
           confidenceScore: result.aiInsights?.confidenceScore || 0,
@@ -127,11 +127,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .set({
           lastActivity: new Date(),
           metadata: {
-            uploadStats: {
+           , uploadStats: {
               totalUploads,
               successRate,
               lastUploadDate: new Date().toISOString(),
-              recentDocuments: documentIds.slice(-5), // Keep last 5 document IDs
+              recentDocuments: documentIds.slice(-5), // Keep last, 5 document IDs
             }
           }
         })
@@ -192,7 +192,7 @@ async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
           embedding: embeddingResult.embedding,
           content: textContent.slice(0, 2000),
           metadata: {
-            model: 'mxbai-embed-large',
+           , model: 'mxbai-embed-large',
             createdAt: new Date().toISOString(),
             documentType: docData.fileType,
             caseId: docData.caseId

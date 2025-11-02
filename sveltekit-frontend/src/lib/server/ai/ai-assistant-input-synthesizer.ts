@@ -1,21 +1,21 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 // lib/server/ai/ai-assistant-input-synthesizer.ts
 // Comprehensive AI Assistant Input Synthesizer integrating all enhanced components
-import { logger } from './logger.js';
-import { enhancedRAGPipeline } from './rag-pipeline-enhanced.js';
-import Redis from 'ioredis'; // Import ioredis
-import { createClient } from '@qdrant/js-client-rest'; // Import Qdrant client
-import { MMR, crossEncoderRerank, embedTextServer } from '$lib/server/ai-utils'; // Import new AI utilities
-import type { Candidate, RerankRequest } from '$lib/types'; // Import new types
-import type { EmbeddingItem, SearchResult } from '$lib/types/sharedTypes'; // Import shared types
-import { parallelVectorSearch, cosineSimilarity } from '$lib/utils/fastSearch'; // Import fast search utilities
+import { logger } from, './logger.js';
+import { enhancedRAGPipeline } from, './rag-pipeline-enhanced.js';
+import Redis from, 'ioredis'; // Import ioredis
+import { createClient } from, '@qdrant/js-client-rest'; // Import Qdrant client
+import { MMR, crossEncoderRerank, embedTextServer } from, '$lib/server/ai-utils'; // Import new AI utilities
+import type { Candidate, RerankRequest } from, '$lib/types'; // Import new types
+import type { EmbeddingItem, SearchResult } from, '$lib/types/sharedTypes'; // Import shared types
+import { parallelVectorSearch, cosineSimilarity } from, '$lib/utils/fastSearch'; // Import fast search utilities
 
 // Initialize Redis and Qdrant clients
 const redisConfig: any = {
-  lazyConnect: true,
+ , lazyConnect: true,
   maxRetriesPerRequest: 3,
   enableOfflineQueue: false
 };
@@ -102,8 +102,8 @@ type AnalysisEntity = { text: string;, type: string;
 type AnalysisConcept = { concept: string } | string;
 
 // New application-level types
-type Document = { id: string;, title: string;
-  content: string;
+type Document = {, id: string;, title: string;
+ , content: string;
   type?: string;
   metadata?: Record<string, unknown>;
 };
@@ -134,7 +134,7 @@ type SourceItem = {
   id?: string;
   title?: string;
   content: string;
-  relevanceScore: number;
+ , relevanceScore: number;
   diversityScore?: number;
   rerankedScore?: number;
   type?: string;
@@ -144,7 +144,7 @@ type SourceItem = {
 export interface SynthesizerAnalysisResult { confidence: number;, categories: string[];
   summary:;
     | string
-    | { abstractive: string;, extractive: string;
+    | {, abstractive: string;, extractive: string;
         keyPoints: string[];
       };
   entities?: AnalysisEntity[];
@@ -164,11 +164,11 @@ export interface RetrievalOptions {
 /**
  * Internal retrieval result structure used before further processing/ranking.
  */
-interface RetrievalResult { sources: SourceItem[];, summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
+interface RetrievalResult {, sources: SourceItem[];, summary: { abstractive: string; extractive: string[]; keyPoints: string[] };
   totalSources: number;
-  searchStrategies: string[];
+ , searchStrategies: string[];
 }
-import { generateEmbedding } from './embeddings-simple.js';
+import { generateEmbedding } from, './embeddings-simple.js';
 // Input types for the synthesizer
 export interface SynthesizerInput {
   query: string;
@@ -196,35 +196,35 @@ export interface SynthesizerInput {
   };
 }
 // Synthesized output structure
-export interface SynthesizedOutput { processedQuery: {, original: string;
+export interface SynthesizedOutput {, processedQuery: {, original: string;
     enhanced: string;
     intent: string;
     entities: AnalysisEntity[];
     legalConcepts: string[];
     complexity: number;
   };
-  retrievedContext: { sources: SourceItem[];, summary: { abstractive: string;, extractive: string[];
+  retrievedContext: {, sources: SourceItem[];, summary: {, abstractive: string;, extractive: string[];
       keyPoints: string[];
     };
     totalSources: number;
     searchStrategies: string[];
   };
-  enhancedPrompt: { systemPrompt: string;, contextPrompt: string;
+  enhancedPrompt: {, systemPrompt: string;, contextPrompt: string;
     queryPrompt: string;
     instructions: string[];
     constraints: string[];
   };
-  metadata: { processingTime: number;, confidence: number;
+  metadata: {, processingTime: number;, confidence: number;
     strategies: string[];
     qualityScore: number;
     recommendations: string[];
   };
 }
 // Quality assessment metrics
-export interface QualityMetrics { contextRelevance: number;, sourceAuthority: number;
+export interface QualityMetrics {, contextRelevance: number;, sourceAuthority: number;
   conceptCoverage: number;
   informationCompleteness: number;
-  responseReadiness: number;
+ , responseReadiness: number;
 }
 
 // Placeholder for GPU inference, using embedTextServer as a proxy
@@ -285,7 +285,7 @@ async function serverRerank(request: RerankRequest): Promise<Candidate[]> {
   const reranked = await crossEncoderRerank(query, mmrResults);
 
   // Cache results
-  await redis.set(cacheKey, JSON.stringify(reranked), 'EX', 60 * 5); // Cache for 5 minutes
+  await redis.set(cacheKey, JSON.stringify(reranked), 'EX', 60 * 5); // Cache for, 5 minutes
   logger.debug(`[Synthesizer] Cache set for serverRerank: ${cacheKey}`);
 
   return reranked;
@@ -294,7 +294,7 @@ async function serverRerank(request: RerankRequest): Promise<Candidate[]> {
 // Optional: WebGPU fallback stub for client inference
 export async function webgpuRerankFallback(query: string, candidates: Candidate[]): Promise<Candidate[]> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\server\ai\ai-assistant-input-synthesizer.ts
-  // Stub: Implement WebGPU tensor ops later if offline fallback needed
+  //, Stub: Implement WebGPU tensor ops later if offline fallback needed
   logger.warn('WebGPU rerank fallback not implemented, returning input order.');
   // For now, simulate a simple rerank based on a heuristic
   const reranked = candidates.map(c => {
@@ -314,7 +314,7 @@ export class AIAssistantInputSynthesizer {
   private requestCount = 0;
   private processingStats = new Map<string, number>();
 
-  // small helper to convert unknown errors to strings
+  // small helper to convert: unknown errors to strings
   private formatError(error: any): string {
     return error instanceof Error ? error.message : String(error);
   }
@@ -392,7 +392,7 @@ export class AIAssistantInputSynthesizer {
    * Step 1: Analyze and enhance the input query
    */
   private async analyzeAndEnhanceQuery(
-    query: string,
+   , query: string,
     context?: SynthesizerInput['context']
   ): Promise<SynthesizedOutput['processedQuery']> {
     try {
@@ -432,7 +432,7 @@ export class AIAssistantInputSynthesizer {
    * Step 2: Multi-strategy retrieval using all available sources
    */
   private async performMultiStrategyRetrieval(
-    processedQuery: SynthesizedOutput['processedQuery'],
+   , processedQuery: SynthesizedOutput['processedQuery'],
     context?: SynthesizerInput['context'],
     options?: RetrievalOptions
   ): Promise<RetrievalResult> {
@@ -448,13 +448,13 @@ export class AIAssistantInputSynthesizer {
     };
     const effectiveOptions = { ...defaults, ...options };
     const retrievalResults: RetrievalResult = {
-      sources: [],
-      summary: { abstractive: '', extractive: [], keyPoints: [] },
+     , sources: [],
+      summary: {, abstractive: '', extractive: [], keyPoints: [] },
       totalSources: 0,
       searchStrategies: []
     };
     try {
-      // Strategy 1: RAG Pipeline Search
+      // Strategy, 1: RAG Pipeline Search
       if (effectiveOptions.enableRAG) {
         try {
           const ragResults = (await enhancedRAGPipeline.hybridSearch({
@@ -506,7 +506,7 @@ export class AIAssistantInputSynthesizer {
               rerankedScore: 0.5,
               type: searchResult.category === 'case_law' ? 'case' : 'document',
               metadata: {
-                jurisdiction: searchResult.jurisdiction ?? undefined,
+               , jurisdiction: searchResult.jurisdiction ?? undefined,
                 category: searchResult.category ?? undefined,
                 searchType: searchResult.searchType ?? undefined,
                 confidence: Number(searchResult.confidence ?? 0)
@@ -554,7 +554,7 @@ export class AIAssistantInputSynthesizer {
    * Step 3: Process and rank retrieved content
    */
   private async processAndRankContent(
-    retrievedContext: RetrievalResult,
+   , retrievedContext: RetrievalResult,
     processedQuery: SynthesizedOutput['processedQuery'],
     options: { enableMMR?: boolean; enableCrossEncoder?: boolean; maxSources?: number; diversityLambda?: number }
   ): Promise<SynthesizedOutput['retrievedContext']> {
@@ -563,7 +563,7 @@ export class AIAssistantInputSynthesizer {
 
       // Convert SourceItem to Candidate for reranking functions
       const candidates: Candidate[] = sources.map(s => ({
-        id: s.id || `temp-${Math.random()}`,
+       , id: s.id || `temp-${Math.random()}`,
         text: s.content,
         relevanceScore: s.relevanceScore,
         metadata: s.metadata
@@ -615,7 +615,7 @@ export class AIAssistantInputSynthesizer {
    * Step 4: Construct enhanced prompt for AI assistant
    */
   private async constructEnhancedPrompt(
-    processedQuery: SynthesizedOutput['processedQuery'],
+   , processedQuery: SynthesizedOutput['processedQuery'],
     retrievedContext: SynthesizedOutput['retrievedContext'],
     context?: SynthesizerInput['context']
   ): Promise<SynthesizedOutput['enhancedPrompt']> {
@@ -647,7 +647,7 @@ export class AIAssistantInputSynthesizer {
    * Step 5: Assess overall quality of synthesized input
    */
   private async assessQuality(
-    processedQuery: SynthesizedOutput['processedQuery'],
+   , processedQuery: SynthesizedOutput['processedQuery'],
     retrievedContext: SynthesizedOutput['retrievedContext'],
     enhancedPrompt: SynthesizedOutput['enhancedPrompt']
   ): Promise<QualityMetrics> {
@@ -678,7 +678,7 @@ export class AIAssistantInputSynthesizer {
 
   // === HELPER METHODS (Consolidated and Deduplicated) ===
   private async verifyComponents(): Promise<void> {
-    const checks: Array<{ name: string; check: () => Promise<unknown> }> = [
+    const checks: Array<{ name: string;, check: () => Promise<unknown> }> = [
       { name: 'LegalBERT', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'RAG Pipeline', check: () => Promise.resolve({ status: 'healthy' }) },
       { name: 'Legal Search', check: () => Promise.resolve({ status: `healthy` }) },'`'`
@@ -712,22 +712,22 @@ export class AIAssistantInputSynthesizer {
   private async extractIntent(query: string, analysis: SynthesizerAnalysisResult): Promise<string> {
     const queryLower = query.toLowerCase();
     if (queryLower.includes('how to') || queryLower.includes('how do')) {
-      return 'procedural_guidance';
+      return, 'procedural_guidance';
     } else if (queryLower.includes('what is') || queryLower.includes('define')) {
-      return 'definition_request';
+      return, 'definition_request';
     } else if (queryLower.includes('case') || (analysis.entities ?? []).some(e => e.type === 'CASE_CITATION')) {
-      return 'case_analysis';
+      return, 'case_analysis';
     } else if (
       queryLower.includes('contract') ||
       (analysis.concepts ?? []).some(c => (typeof c === 'string' ? c === 'contract' : c.concept === 'contract'))
     ) {
-      return 'contract_analysis';
+      return, 'contract_analysis';
     } else if (queryLower.includes('statute') || (analysis.entities ?? []).some(e => e.type === 'STATUTE')) {
-      return 'statute_interpretation';
+      return, 'statute_interpretation';
     } else if (queryLower.includes('precedent') || queryLower.includes('ruling')) {
-      return 'precedent_search';
+      return, 'precedent_search';
     } else {
-      return 'general_legal_query';
+      return, 'general_legal_query';
     }
   }
 
@@ -760,7 +760,7 @@ export class AIAssistantInputSynthesizer {
   private async generateComprehensiveSummary(
     sources: SourceItem[],
     processedQuery: SynthesizedOutput['processedQuery']
-  ): Promise<{ abstractive: string; extractive: string[]; keyPoints: string[] }> {
+  ): Promise<{ abstractive: string; extractive: string[];, keyPoints: string[] }> {
     if (sources.length === 0) {
       return { abstractive: 'No relevant information found.', extractive: [], keyPoints: [] };
     }
@@ -810,7 +810,7 @@ export class AIAssistantInputSynthesizer {
   ): string {
     const role = 'You are an expert legal assistant.';
     const jurisdiction = context?.documents?.[0]?.metadata?.['jurisdiction'] ?? 'general';
-    return `${role} Jurisdiction: ${jurisdiction}. Focus: ${processedQuery.intent}`;
+    return `${role} Jurisdiction: ${jurisdiction}., Focus: ${processedQuery.intent}`;
   }
 
   private buildContextPrompt(retrievedContext: SynthesizedOutput['retrievedContext']): string {
@@ -829,7 +829,7 @@ export class AIAssistantInputSynthesizer {
   }
 
   private buildInstructions(
-    processedQuery: SynthesizedOutput['processedQuery'],
+   , processedQuery: SynthesizedOutput['processedQuery'],
     context?: SynthesizerInput['context']
   ): string[] {
     const instructions = [
@@ -861,7 +861,7 @@ export class AIAssistantInputSynthesizer {
 
   private assessSourceAuthority(retrievedContext: SynthesizedOutput['retrievedContext']): number {
     if (!retrievedContext?.sources?.length) return 0.0;
-    // heuristic: if titles; contain: "Report"; or: "Opinion"; or: "Statute" bump authority
+    // heuristic: if titles; contain: "Report"; or: "Opinion";, or: "Statute" bump authority
     const score =
       retrievedContext.sources.reduce((acc, s) => {
         const t = (s.title ?? '').toLowerCase();
@@ -900,7 +900,7 @@ export class AIAssistantInputSynthesizer {
 
   private getUsedStrategies(options: Partial<RetrievalOptions>): string[] {
     // Fixed: 'any' type
-    const s: string[] = [];
+    const, s: string[] = [];
     if (options.enableRAG) s.push('rag_hybrid');
     if (options.enableLegalBERT) s.push('legal_bert');
     if (options.enableMMR) s.push('mmr');

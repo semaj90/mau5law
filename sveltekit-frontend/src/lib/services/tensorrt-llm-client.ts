@@ -2,12 +2,12 @@
  * Ultra-optimized SvelteKit TensorRT-LLM Client
  * Sub-1ms response handling with QUIC, SIMD JSON, and streaming
  */
-import { writable, type Writable } from 'svelte/store';
-import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics } from '$lib/types/tensorrt-types';
+import { writable, type Writable } from, 'svelte/store';
+import type { LegalAIRequest, LegalAIResponse, StreamingResponse, PerformanceMetrics } from, '$lib/types/tensorrt-types';
 
 // Performance tracking store
 export const performanceMetrics: Writable<PerformanceMetrics> = writable({
-  totalRequests: 0,
+ , totalRequests: 0,
   averageLatency: 0,
   minLatency: Infinity,
   maxLatency: 0,
@@ -18,11 +18,11 @@ export const performanceMetrics: Writable<PerformanceMetrics> = writable({
 });
 
 // Connection status store
-export const connectionStatus: Writable<{ tensorrt: boolean;, simd: boolean;
+export const connectionStatus: Writable<{, tensorrt: boolean;, simd: boolean;
   quic: boolean;
   grpc: boolean;
 }> = writable({
-  tensorrt: false,
+ , tensorrt: false,
   simd: false,
   quic: false,
   grpc: false
@@ -33,7 +33,7 @@ class TensorRTLLMClient {
   private quicURL: string;
   private grpcURL: string;
   private metrics: PerformanceMetrics = {
-    totalRequests: 0,
+   , totalRequests: 0,
     averageLatency: 0,
     minLatency: Infinity,
     maxLatency: 0,
@@ -43,7 +43,7 @@ class TensorRTLLMClient {
     quicEnabled: false
   };
   // Connection pools for maximum performance
-  private httpPool: Map<string, Response> = new Map();
+  private, httpPool: Map<string, Response> = new Map();
   private abortControllers: Map<string, AbortController> = new Map();
 
   constructor() {
@@ -107,14 +107,14 @@ class TensorRTLLMClient {
 
   /**
    * Safely obtain an AbortSignal via AbortSignal.timeout if available.
-   * Avoids using `any` by casting to unknown and narrowing the shape.
+   * Avoids using `any` by casting to: unknown and narrowing the shape.
    */
   private getAbortSignalTimeout(ms: number): AbortSignal | undefined {
-    const ctor = AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal | undefined };
+    const ctor = AbortSignal as: unknown as { timeout?: (ms: number) => AbortSignal | undefined };
     if (typeof ctor.timeout === 'function') {
       return ctor.timeout(ms);
     }
-    return undefined;
+    return: undefined;
   }
 
   /**
@@ -122,7 +122,7 @@ class TensorRTLLMClient {
    * Returns either a Promise for single response or an AsyncGenerator for streaming.
    */
   createCompletion(
-    request: LegalAIRequest,
+   , request: LegalAIRequest,
     options: {
       stream?: boolean;
       timeout?: number;
@@ -150,7 +150,7 @@ class TensorRTLLMClient {
 
     // Create fetch options with performance optimizations
     const fetchOptions: RequestInit = {
-      method: 'POST',
+     , method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -226,7 +226,7 @@ class TensorRTLLMClient {
 
     // Calculate and track performance
     const latency = performance.now() - startTime;
-    this.updateMetrics(startTime, false, (result.tokens as number) || 0);
+    this.updateMetrics(startTime, false, (result.tokens as: number) || 0);
 
     // Add client-side performance data
     result.metadata = {
@@ -428,7 +428,7 @@ class TensorRTLLMClient {
    */
   async healthCheck(): Promise<{ tensorrt: boolean;, simd: boolean;
     quic: boolean;
-    grpc: boolean;
+   , grpc: boolean;
   }> {
     await this.initializeConnections();
     return new Promise(resolve => {
@@ -453,14 +453,14 @@ export async function createLegalCompletion(
     useQuic?: boolean;
   } = {}
 ): Promise<LegalAIResponse | AsyncGenerator<StreamingResponse, void, unknown>> {
-  const request: LegalAIRequest = { prompt: `Legal analysis, request: ${prompt}`,
+  const request: LegalAIRequest = {, prompt: `Legal analysis, request: ${prompt}`,
     max_tokens: options.maxTokens || 512,
     temperature: options.temperature ?? 0.1,
     top_k: 40,
     top_p: 0.9,
     stream: !!options.stream,
     metadata: {
-      source: 'sveltekit-frontend',
+     , source: 'sveltekit-frontend',
       timestamp: Date.now()
     }
   };
@@ -490,7 +490,7 @@ export async function analyzeLegalDocument(
   });
   // createLegalCompletion can return a generator for streaming; ensure we have a single response
   if (Symbol.asyncIterator in Object(response)) {
-    // consume generator to get final response object if the server streams JSON objects
+    // consume generator to get final response: object if the server streams JSON objects
     const gen = response as AsyncGenerator<StreamingResponse, void, unknown>;
     let last: StreamingResponse | null = null;
     for await (const chunk of gen) {
@@ -500,7 +500,7 @@ export async function analyzeLegalDocument(
     if (last && isLegalAIResponse(last.data)) {
       return last.data;
     }
-    // If the streamed payload is a JSON string, try to parse and validate
+    // If the streamed payload is a JSON: string, try to parse and validate
     if (last && typeof last.data === 'string') {
       try {
         const parsed = JSON.parse(last.data);
@@ -520,9 +520,9 @@ export async function analyzeLegalDocument(
       metadata: { error: `No final streamed result` }
     } as LegalAIResponse;
   }
-  // Non-streaming path: ensure runtime shape or coerce
+  // Non-streaming, path: ensure runtime shape or coerce
   if (isLegalAIResponse(response)) {
     return response;
   }
-  return response as unknown as LegalAIResponse;
+  return response as: unknown as LegalAIResponse;
 }

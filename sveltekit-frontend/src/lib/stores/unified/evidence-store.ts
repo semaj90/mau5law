@@ -1,21 +1,21 @@
 /**
  * EvidenceStore - Unified Evidence Management
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - evidence.ts
  * - evidenceStore.ts
  * - evidence-upload.ts
  * - evidence-analysis.ts
  * - chain-of-custody.ts
  *
- * Usage:
- *   import { evidenceStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { evidenceStore } from, '$lib/stores/unified';
  *
  *   await evidenceStore.uploadEvidence(file, metadata);
  *   $: evidence = $evidenceStore.evidence;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -41,7 +41,7 @@ export interface EvidenceFile { id: string;, name: string;
   caseId: string;
   hash: string;
   uploadedBy: string;
-  uploadedAt: number;
+ , uploadedAt: number;
   tags?: string[];
   description?: string;
   metadata?: Record<string, unknown>;
@@ -56,7 +56,7 @@ export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   notes?: string;
 }
 
-export interface AnalysisResult { id: string;, evidenceId: string;
+export interface AnalysisResult {, id: string;, evidenceId: string;
   analysisType: string;
   status: AnalysisStatus;
   result?: any;
@@ -78,18 +78,18 @@ interface EvidenceStoreState {
   selectedEvidenceId: string | null;
 
   // Upload state
-  uploadProgress: Map<string, number>;
+ , uploadProgress: Map<string, number>;
   uploadingFiles: File[];
   uploadQueue: File[];
   isUploading: boolean;
 
   // Analysis state
-  analysisResults: Map<string, AnalysisResult>;
+ , analysisResults: Map<string, AnalysisResult>;
   analysisStatus: Map<string, AnalysisStatus>;
   isAnalyzing: boolean;
 
   // Chain of custody
-  chainOfCustody: Map<string, ChainOfCustodyEntry[]>;
+ , chainOfCustody: Map<string, ChainOfCustodyEntry[]>;
 
   // Filtering
   typeFilter: EvidenceType[];
@@ -104,7 +104,7 @@ interface EvidenceStoreState {
 }
 
 const initialState: EvidenceStoreState = {
-  evidence: [],
+ , evidence: [],
   filteredEvidence: [],
   activeCaseId: null,
   selectedEvidenceId: null,
@@ -172,7 +172,7 @@ function createEvidenceStore() {
      */
     async uploadEvidence(
       file: File,
-      metadata: {, caseId: string; type: EvidenceType; tags?: string[]; description?: string }
+      metadata: {, caseId: string;, type: EvidenceType; tags?: string[]; description?: string }
     ) {
       const fileId = `ev-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -477,10 +477,10 @@ export const filteredEvidence = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { evidence, uploadEvidence  } from '$lib/stores/unified'
- *   import { evidenceStore  } from '$lib/stores/unified'
+ * Old imports to, replace:
+ *   import { evidence, uploadEvidence  } from, '$lib/stores/unified'
+ *   import { evidenceStore  } from, '$lib/stores/unified'
  *
  * New imports:
- *   import { evidenceStore, evidence, filteredEvidence } from '$lib/stores/unified'
+ *   import { evidenceStore, evidence, filteredEvidence } from, '$lib/stores/unified'
  */

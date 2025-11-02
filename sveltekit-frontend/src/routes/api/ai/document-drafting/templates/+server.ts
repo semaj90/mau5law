@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,9 +11,9 @@ import type { Document } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: minimal
- * - Memory Bank: SAVE_RAM (Nintendo-style)
+ * - Memory, Bank: SAVE_RAM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
@@ -21,9 +21,9 @@ import type { Document } from '$lib/types';
  * Document Templates API
  * GET /api/ai/document-drafting/templates - Get available document templates
  */
-import { json } from '@sveltejs/kit'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from, './$types.js'
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentType = url.searchParams.get('type')
@@ -56,8 +56,8 @@ For the foregoing reasons, Defendant respectfully requests that this Honorable C
 Respectfully submitted,
 {{ATTORNEY_SIGNATURE}}`,`
         variables: [
-          { name: 'DISTRICT', type: 'text', required: true, description: 'Court district' },
-          { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
+          {, name: 'DISTRICT', type: 'text', required: true, description: 'Court district' },
+          { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case: number' },
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'CASE_CONTEXT', type: 'textarea', required: true, description: 'Case context and summary' },
           { name: 'FACTUAL_BACKGROUND', type: 'textarea', required: true, description: 'Factual background` },'`
@@ -87,10 +87,10 @@ The United States of America, by and through its attorney, {{PROSECUTOR_NAME}}, 
 {{WAIVER_PROVISIONS}}
 5. BREACH PROVISIONS
 {{BREACH_TERMS}}
-AGREED TO AND ACCEPTED:
+AGREED TO AND, ACCEPTED:
 {{SIGNATURE_BLOCK}}`,`
         variables: [
-          { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
+          {, name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case: number' },
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'PROSECUTOR_NAME', type: 'text', required: true, description: 'Prosecutor name' },
           { name: 'DEFENSE_ATTORNEY', type: 'text', required: true, description: 'Defense attorney name' },
@@ -112,10 +112,9 @@ AGREED TO AND ACCEPTED:
         content: `DISCOVERY REQUEST,`
 TO: {{PROSECUTOR_NAME}}
 from {{DEFENSE_ATTORNEY}}
-RE: {{CASE_TITLE}}
-DATE: {{DATE}}
-Pursuant to Federal Rule of Criminal Procedure 16 and Brady v. Maryland, the defense hereby requests the following discovery:
-I. RULE 16 MATERIALS
+RE: {{CASE_TITLE}}, DATE: {{DATE}}
+Pursuant to Federal Rule of Criminal Procedure, 16 and Brady v. Maryland, the defense hereby requests the following discovery:
+I. RULE, 16 MATERIALS
 {{RULE_16_REQUESTS}}
 II. BRADY MATERIALS
 {{BRADY_REQUESTS}}
@@ -125,15 +124,15 @@ IV. EXPERT WITNESS MATERIALS
 {{EXPERT_REQUESTS}}
 V. ELECTRONIC EVIDENCE
 {{ELECTRONIC_REQUESTS}}
-Please provide the requested materials within 30 days of this request.
+Please provide the requested materials within, 30 days of this request.
 Respectfully submitted,
 {{ATTORNEY_SIGNATURE}}`,`
         variables: [
-          { name: 'PROSECUTOR_NAME', type: 'text', required: true, description: 'Prosecutor name' },
+          {, name: 'PROSECUTOR_NAME', type: 'text', required: true, description: 'Prosecutor name' },
           { name: 'DEFENSE_ATTORNEY', type: 'text', required: true, description: 'Defense attorney name' },
           { name: 'CASE_TITLE', type: 'text', required: true, description: 'Case title' },
           { name: 'DATE', type: 'date', required: true, description: 'Request date' },
-          { name: 'RULE_16_REQUESTS', type: 'textarea', required: true, description: 'Rule 16 discovery requests' },
+          { name: 'RULE_16_REQUESTS', type: 'textarea', required: true, description: 'Rule, 16 discovery requests' },
           { name: 'BRADY_REQUESTS', type: 'textarea', required: true, description: 'Brady material requests' },
           { name: 'GIGLIO_REQUESTS', type: 'textarea', required: false, description: 'Giglio material requests` },'`
           { name: 'EXPERT_REQUESTS', type: 'textarea', required: false, description: `Expert witness materials` },
@@ -165,7 +164,7 @@ V. CONCLUSION
 {{CONCLUSION}}
 Thank you for your attention.`,`
         variables: [
-          { name: 'CASE_TITLE', type: 'text', required: true, description: 'Case title' },
+          {, name: 'CASE_TITLE', type: 'text', required: true, description: 'Case title' },
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'INTRODUCTION', type: 'textarea', required: true, description: 'Opening introduction' },
           { name: 'CASE_THEME', type: 'textarea', required: true, description: 'Central case theme' },
@@ -185,7 +184,7 @@ Thank you for your attention.`,`
         content: `SENTENCING MEMORANDUM`
 Case No. {{CASE_NUMBER}}
 United States v. {{DEFENDANT_NAME}}
-TO THE HONORABLE COURT:
+TO THE HONORABLE, COURT:
 Defense respectfully submits this sentencing memorandum on behalf of {{DEFENDANT_NAME}}.
 I. INTRODUCTION
 {{INTRODUCTION}}
@@ -204,7 +203,7 @@ VII. CONCLUSION
 Respectfully submitted,
 {{ATTORNEY_SIGNATURE}}`,`
         variables: [
-          { name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case number' },
+          {, name: 'CASE_NUMBER', type: 'text', required: true, description: 'Case: number' },
           { name: 'DEFENDANT_NAME', type: 'text', required: true, description: 'Defendant name' },
           { name: 'INTRODUCTION', type: 'textarea', required: true, description: 'Introduction and summary' },
           { name: 'OFFENSE_CONDUCT', type: 'textarea', required: true, description: 'Offense conduct description' },

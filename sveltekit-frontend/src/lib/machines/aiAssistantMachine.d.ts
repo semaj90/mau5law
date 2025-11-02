@@ -1,8 +1,8 @@
-import type { StateMachine } from 'xstate';
+import type { StateMachine } from, 'xstate';
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean; [k: string]: any };
-  conversation?: Array<{ id: string; text?: string; meta?: Record<string, unknown> }>;
+  conversation?: Array<{, id: string; text?: string; meta?: Record<string, unknown> }>;
   model?: string;
 }
 // Re-declare AIAssistantEvent from the .ts file for typing purposes
@@ -20,27 +20,27 @@ export type AIAssistantEvent =
   | { type: 'STREAM_CHUNK'; chunk: string }
   | { type: 'STREAM_END'; summary?: string }
   | { type: 'PERFORM_OCR'; imageId: string }
-  | { type: 'SEARCH_SEMANTIC'; query: string; context?: any } // Using unknown for SemanticSearchContext
-  | { type: 'SEARCH_VECTOR'; query: string; options?: any } // Using unknown for VectorSearchOptions
-  | { type: 'SEARCH_LEGAL'; query: string; filters?: any } // Using unknown for LegalSearchFilters
+  | { type: 'SEARCH_SEMANTIC'; query: string; context?: any } // Using: unknown for SemanticSearchContext
+  | { type: 'SEARCH_VECTOR'; query: string; options?: any } // Using: unknown for VectorSearchOptions
+  | { type: 'SEARCH_LEGAL'; query: string; filters?: any } // Using: unknown for LegalSearchFilters
   | { type: 'SET_PROTOCOL'; protocol: string }
-  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: any } // Using unknown for CaseContextPayload
-  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: any } // Using unknown for Context7Options
+  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: any } // Using: unknown for CaseContextPayload
+  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: any } // Using: unknown for Context7Options
   | { type: 'CONNECT_RABBITMQ'; config?: { url?: string } }
   | { type: 'DISCONNECT_RABBITMQ' }
-  | { type: 'BENCHMARK_PERFORMANCE'; options?: any } // Using unknown for BenchmarkOptions
+  | { type: 'BENCHMARK_PERFORMANCE'; options?: any } // Using: unknown for BenchmarkOptions
   | { type: 'OPTIMIZE_RESOURCES' }
-  | { type: 'SCALE_SERVICES'; scaleConfig?: any } // Using unknown for ServiceScaleConfig
+  | { type: 'SCALE_SERVICES'; scaleConfig?: any } // Using: unknown for ServiceScaleConfig
   | { type: 'MEMORY_CLEANUP' }
-  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: any[] } // Using unknown[] for DocumentReference[]
-  | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: any } // Using unknown for ModelTrainingConfig
-  | { type: 'EXECUTE_WORKFLOW'; workflow?: any } // Using unknown for WorkflowPayload
-  | { type: 'COLLABORATION_USER_JOINED'; user: any } // Using unknown for Collaborator
-  | { type: 'COLLABORATION_USER_LEFT'; user: any } // Using unknown for Collaborator
+  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: any[] } // Using: unknown[] for DocumentReference[]
+  | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: any } // Using: unknown for ModelTrainingConfig
+  | { type: 'EXECUTE_WORKFLOW'; workflow?: any } // Using: unknown for WorkflowPayload
+  | { type: 'COLLABORATION_USER_JOINED'; user: any } // Using: unknown for Collaborator
+  | { type: 'COLLABORATION_USER_LEFT'; user: any } // Using: unknown for Collaborator
   | { type: 'CACHE_CLEAR' }
   | { type: 'PERFORMANCE_RESET' }
   | { type: 'ERROR_RECOVER'; errorId?: string };
-export declare const aiAssistantMachine: typeof import('./aiAssistantMachine').aiAssistantMachine;
+export declare const, aiAssistantMachine: typeof import('./aiAssistantMachine').aiAssistantMachine;
 // Provide a global RegistrationData type used in xstate-integration
 declare global {
   export interface RegistrationData {

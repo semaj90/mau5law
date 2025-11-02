@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { ollamaService } from '$lib/server/ai/ollama-service';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { ollamaService } from, '$lib/server/ai/ollama-service';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       : [];
     return new Response(
       JSON.stringify({
-        text:
+       , text:
           (result as { response?: any; text?: any }).response || (result as { response?: any; text?: any }).text || '',
         model: result?.model || 'gemma:legal',
         qualityScore: 0.82,

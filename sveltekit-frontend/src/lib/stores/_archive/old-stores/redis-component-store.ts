@@ -2,10 +2,10 @@
  * Redis-backed component state store for Enhanced-Bits
  * Provides persistent state management with automatic caching
  */
-import { writable, type Writable } from 'svelte/store';
-import type { RedisClientType } from 'redis';
+import { writable, type Writable } from, 'svelte/store';
+import type { RedisClientType } from, 'redis';
 interface ComponentState { id: string;, data: any;
-  timestamp: number;
+ , timestamp: number;
   ttl?: number;
 }
 interface CacheOptions {
@@ -112,7 +112,7 @@ class RedisComponentStore {
     const mergedOptions = { ...this.options, ...options };
     const serializer = mergedOptions.serialize || JSON.stringify;
     const state: ComponentState = {
-      id: key,
+     , id: key,
       data,
       timestamp: Date.now(),
       ttl: mergedOptions.ttl
@@ -197,8 +197,8 @@ class RedisComponentStore {
 }
 // Create singleton instance
 export const redisComponentStore = new RedisComponentStore({
-  keyPrefix: 'enhanced-bits',
-  ttl: 3600, // Default 1 hour TTL
+ , keyPrefix: 'enhanced-bits',
+  ttl: 3600, // Default, 1 hour TTL
 });
 // Export helper functions for easy use in components
 export function createRedisBackedState<T>(_key: string, initialValue: T, ttl?: number) {

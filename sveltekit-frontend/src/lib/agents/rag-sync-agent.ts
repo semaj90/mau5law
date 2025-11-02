@@ -1,5 +1,5 @@
-import { browser } from '$app/environment'
-import { indexedDBService } from '$lib/services/indexeddb-service'
+import { browser } from, '$app/environment'
+import { indexedDBService } from, '$lib/services/indexeddb-service'
 /**
  * Client-side background agent that periodically finds pending documents
  * in IndexedDB and sends them to the server sync endpoint for embedding & storage.
@@ -9,7 +9,7 @@ import { indexedDBService } from '$lib/services/indexeddb-service'
 const DEFAULT_INTERVAL = 30_000 // 30s
 export class RAGSyncAgent {
   private timer: number | null = null
-  private intervalMs: number
+  private, intervalMs: number
   constructor(intervalMs = DEFAULT_INTERVAL) {
     this.intervalMs = intervalMs
   }

@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
-import type { ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager';
+import type { ShaderSearchQuery } from, '$lib/webgpu/shader-cache-manager';
 // GET endpoint - Get shader search capabilities info
 export const GET: RequestHandler = async () => {
   try {
@@ -12,16 +12,16 @@ export const GET: RequestHandler = async () => {
       stats,
       methods: ['GET', 'POST'],
       searchOptions: {
-        text: 'string (optional) - Semantic text search',
+       , text: 'string (optional) - Semantic text search',
         operation: 'string (optional) - Filter by shader operation',
         tags: 'string[] (optional) - Filter by tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or: "recent"',
         limit: 'number (optional) - Maximum results to return (default: 20)'
       },
       responseFormat: {
-        shaders: 'ShaderSearchResult[] - Array of matching shaders',
+       , shaders: 'ShaderSearchResult[] - Array of matching shaders',
         metadata: {
-          totalResults: 'number - Total matching shaders',
+         , totalResults: 'number - Total matching shaders',
           searchTime: 'number - Search execution time in ms',
           query: 'object - Original search query'
         }
@@ -29,15 +29,15 @@ export const GET: RequestHandler = async () => {
       examples: [
         {,
           description: 'Search for vector similarity shaders',
-          query: { text: 'vector similarity', operation: 'vector_similarity' }
+          query: {, text: 'vector similarity', operation: 'vector_similarity' }
         },
         {
           description: 'Find high-performance embedding shaders',
-          query: { operation: 'embedding', sortBy: 'performance' }
+          query: {, operation: 'embedding', sortBy: 'performance' }
         },
         {
           description: 'Search by tags',
-          query: { tags: ['optimization', 'tensor'], limit: 10 }
+          query: {, tags: ['optimization', 'tensor'], limit: 10 }
         },
       ]
     };
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json(
         {
-          error: 'limit must be between 1 and 100'
+          error: 'limit must be between, 1 and 100'
         },
         { status: 400 }
       );
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
         wgslPreview: shader.wgsl.length > 500 ? shader.wgsl.substring(0, 500) + '...' : shader.wgsl
       })),
       metadata: {
-        totalResults: results.length,
+       , totalResults: results.length,
         searchTime,
         query: query,
         timestamp: new Date().toISOString()

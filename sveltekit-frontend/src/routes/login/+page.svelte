@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte 5 runes are auto-imported import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { loginSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true, taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null; </script> {#if registrationSuccess} <div, class="success-banner"> { registrationSuccess } </div> {/if} {#if $message} <div, class="error-message"> {$message} </div> {/if} <form, method="POST" use:enhance> <div, class="form-field"> <input, name="email"
+<script, lang="ts"> // Svelte, 5 runes are auto-imported import { superForm } from, 'sveltekit-superforms'; import { zodClient } from, 'sveltekit-superforms/adapters'; import { loginSchema } from, '$lib/schemas/auth'; import type { PageData } from, './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true, taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null; </script> {#if registrationSuccess} <div, class="success-banner"> { registrationSuccess } </div> {/if} {#if $message} <div, class="error-message"> {$message} </div> {/if} <form, method="POST" use:enhance> <div, class="form-field"> <input, name="email"
       type="email"
       placeholder="Email"
       bind:value={$form.email} aria-invalid={$errors.email ? 'true': undefined} required /> {#if $errors.email} <span, class="field-error">{$errors.email}</span> {/if} </div> <div, class="form-field"> <input, name="password"
@@ -16,5 +16,5 @@
   button { background: #007bff; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; }
   button:hover { background: #0056b3; }
   .demo-login { background: #6c757d; margin-left: 0.5rem; }
-  .demo-login:hover { background: #5a6268; }
+  .demo-login:hover {, background: #5a6268; }
 </style>

@@ -8,8 +8,8 @@ export type UploadResult = {
   size?: number;
   message?: string;
 };
-export type FileState = { file: File;, status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
-  progress: number; // 0-100
+export type FileState = {, file: File;, status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
+ , progress: number; // 0-100
   attempts?: number;
   error?: string | null;
   result?: UploadResult | null;
@@ -24,7 +24,7 @@ export interface UploadManagerOptions {
 }
 export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] = [];
   active = 0;
-  opts: Required<UploadManagerOptions>;
+ , opts: Required<UploadManagerOptions>;
   constructor(opts?: UploadManagerOptions) {
     this.opts = Object.assign(
       {
@@ -109,7 +109,7 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
         }
       }
     } catch (e: any) {
-      // Narrow unknown to a message string safely without using `any`
+      // Narrow: unknown to a, message: string safely without using `any`
       const message = e instanceof Error ? e.message : String(e ?? 'Unknown error');
       state.error = message;
       state.status = 'error';

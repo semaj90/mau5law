@@ -4,7 +4,7 @@ export function parseSIMD<T>(json: string): T | null {
     // In a real scenario, this would use a highly optimized SIMD-enabled JSON parser library
     return JSON.parse(json) as T;
   } catch {
-    return null;
+    return: null;
   }
 }
 
@@ -40,7 +40,7 @@ export async function parallelVectorSearch(
   queryVector: number[],
   topK = 10,
   workers = 4 // In a Node.js environment, this would use worker_threads
-): Promise<{ index: number; score: number }[]> {
+): Promise<{ index: number;, score: number }[]> {
   if (vectors.length === 0 || queryVector.length === 0) return [];
 
   // For browser/Node.js environments without explicit worker_threads,
@@ -53,7 +53,7 @@ export async function parallelVectorSearch(
 
   const results = await Promise.all(
     chunks.map((chunk, chunkIndex) =>
-      new Promise<{ index: number; score: number }[]>(resolve => {
+      new Promise<{ index: number;, score: number }[]>(resolve => {
         const chunkResults = chunk.map((vec, idx) => ({
           index: chunkIndex * chunkSize + idx, // Calculate original index
           score: cosineSimilarity(vec, queryVector)

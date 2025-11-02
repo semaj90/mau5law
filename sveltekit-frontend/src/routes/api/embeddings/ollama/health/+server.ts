@@ -4,9 +4,9 @@
  * GET /api/embeddings/ollama/health
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getOllamaEndpoint } from '$lib/server/ollama';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getOllamaEndpoint } from, '$lib/server/ollama';
 
 // default fallback
 const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';

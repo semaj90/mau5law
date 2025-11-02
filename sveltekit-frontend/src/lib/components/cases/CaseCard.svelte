@@ -1,8 +1,8 @@
 
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  import * as ContextMenu from 'bits-ui';
-  import { fly, scale } from 'svelte/transition';
+import type { Case } from, '$lib/types';
+  import * as ContextMenu from, 'bits-ui';
+  import { fly, scale } from, 'svelte/transition';
   import {
     FileText,
     Users,
@@ -15,15 +15,15 @@ import type { Case } from '$lib/types';
     AlertTriangle,
     Clock,
     CheckCircle
-  } from 'lucide-svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import * as Card from '$lib/components/ui/Card.svelte';
-  import  Badge  from "$lib/components/ui/badge.svelte";
+  } from, 'lucide-svelte';
+  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import * as Card from, '$lib/components/ui/Card.svelte';
+  import  Badge  from, "$lib/components/ui/badge.svelte";
   interface CaseData {
     id: string;
     title: string
     description?: string;
-    status: 'active' | 'pending' | 'closed' | 'archived',
+   , status: 'active' | 'pending' | 'closed' | 'archived',
     priority: 'critical' | 'high' | 'medium' | 'low';
     created: Date | string
     updated?: Date | string
@@ -40,7 +40,7 @@ import type { Case } from '$lib/types';
     progress?: number
   }
   interface Props {
-    caseItem: CaseData
+   , caseItem: CaseData
     onView?: (id: string) => void
     onEdit?: (id: string) => void
     onArchive?: (id: string) => void
@@ -203,7 +203,7 @@ import type { Case } from '$lib/types';
 {#if $open}
   <div
     class="nier-panel p-2 min-w-[200px] z-50"
-    transitionscale={{ duration 200, start: 0.95 }}
+    transitionscale={{ duration, 200, start: 0.95 }}
   >
     <Button
       onclick={() => onView(caseData.id)}
@@ -258,6 +258,6 @@ import type { Case } from '$lib/types';
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

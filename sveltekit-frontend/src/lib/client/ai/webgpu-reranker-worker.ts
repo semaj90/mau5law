@@ -6,7 +6,7 @@ struct VecBuffer {
   data: array<f32>;
 };
 struct Meta {
-  length: u32;
+ , length: u32;
 };
 @group(0) @binding(0) var<storage, read> queryVec : VecBuffer;
 @group(0) @binding(1) var<storage, read> candidateVecs : VecBuffer;
@@ -38,7 +38,7 @@ const FALLBACK_EMBED_DIM = 256;
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
 const GPU_BUFFER_USAGE = {
-  MAP_READ: 1 << 0,
+ , MAP_READ: 1 << 0,
   MAP_WRITE: 1 << 1,
   COPY_SRC: 1 << 2,
   COPY_DST: 1 << 3,
@@ -47,10 +47,10 @@ const GPU_BUFFER_USAGE = {
   UNIFORM: 1 << 6,
   STORAGE: 1 << 7
 } as const;
-const GPU_MAP_MODE = { READ: 1 } as const;
+const GPU_MAP_MODE = {, READ: 1 } as const;
 // Minimal local WebGPU interface shapes to satisfy TS without pulling lib.dom types
 type GPUAdapterLike = { requestDevice?: () => Promise<GPUDeviceLike | undefined> };
-type GPUDeviceLike = { createBuffer: (desc: any) => unknown;, queue: { writeBuffer: (b: any; o: number;, data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
+type GPUDeviceLike = { createBuffer: (desc: any) => unknown;, queue: { writeBuffer: (b: any;, o: number;, data: any, off?: number, len?: number) => void; submit: (cmds: any[]) => void };
   createShaderModule: (opts: any) => unknown;
   createComputePipeline: (opts: any) => unknown;
   getBindGroupLayout?: (idx: number) => unknown;
@@ -114,21 +114,21 @@ async function fetchEmbeddings(
     const payload = await response.json();
     const arrays: number[][] | undefined =
       payload?.data?.embeddings ?? payload?.embeddings ?? (Array.isArray(payload?.data) ? payload.data : undefined);
-    if (!arrays || !Array.isArray(arrays[0])) return null;
+    if (!arrays || !Array.isArray(arrays[0])) return: null;
     return arrays.map((arr: number[]) => Float32Array.from(arr));
   } catch (err) {
     // don't leak raw error objects to UI from worker'
     console.warn('Failed to fetch embeddings from server, using local fallback:', String(err));
-    return null;
+    return: null;
   }
 }
 type RerankOptions = { model?: string; headers?: Record<string, string> } | undefined;
 self.addEventListener('message', async (event: MessageEvent) => {
-  const { query, suggestions, options } = event.data as { query: string; suggestions: Suggestion[]; options?: RerankOptions };
+  const { query, suggestions, options } = event.data as { query: string;, suggestions: Suggestion[]; options?: RerankOptions };
   const labels = suggestions.map((s) => s.label ?? s.text ?? '');
   const combinedInputs = [query, ...labels];
   let queryVec: Float32Array | null = null;
-  let candidateVecs: Float32Array[] | null = null;
+  let, candidateVecs: Float32Array[] | null = null;
   try {
       const remoteEmbeddings = await fetchEmbeddings(combinedInputs, options?.model, options?.headers);
     if (remoteEmbeddings && remoteEmbeddings.length === combinedInputs.length) {
@@ -141,14 +141,14 @@ self.addEventListener('message', async (event: MessageEvent) => {
     }
     // Guard for WebGPU availability
       interface NavigatorGPU { gpu?: { requestAdapter?: () => Promise<unknown>; requestDevice?: () => Promise<unknown> } }
-    const hasGPU = typeof navigator !== 'undefined' && ('gpu' in (navigator as unknown as NavigatorGPU));
+    const hasGPU = typeof navigator !== 'undefined' && ('gpu' in (navigator as: unknown as NavigatorGPU));
     if (!hasGPU) {
       self.postMessage({ data: cpuRerank(queryVec, candidateVecs, suggestions) });
       return;
     }
-  const adapter = await (navigator as unknown as NavigatorGPU).gpu?.requestAdapter?.();
+  const adapter = await (navigator as: unknown as NavigatorGPU).gpu?.requestAdapter?.();
     // adapter is provided by the runtime WebGPU implementation; cast to local minimal type
-    const adapterLike = adapter as unknown as GPUAdapterLike | undefined;
+    const adapterLike = adapter as: unknown as GPUAdapterLike | undefined;
     const device = (await adapterLike?.requestDevice?.()) as GPUDeviceLike | undefined;
     if (!device) {
       throw new Error('WebGPU device unavailable');
@@ -192,35 +192,35 @@ self.addEventListener('message', async (event: MessageEvent) => {
     device.queue.writeBuffer(metaBuffer, 0, new Uint32Array([dim]));
     const module = device.createShaderModule({ code: RERANKER_WGSL });
     const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main' } });'`'`
-    // some runtimes/types are not present in TS build; cast pipeline to any for these calls
+    // some runtimes/types are not present in TS build; cast pipeline to: any for these calls
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    const bindGroup = device.createBindGroup({ layout: (pipeline as unknown as {, getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),
+    const bindGroup = device.createBindGroup({ layout: (pipeline, as: unknown as {, getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),
       entries: [
-        { binding: 0, resource: { buffer: queryBuffer } },
-        { binding: 1, resource: { buffer: candidatesBuffer } },
-        { binding: 2, resource: { buffer: scoresBuffer } },
-        { binding: 3, resource: { buffer: metaBuffer } }
+        {, binding: 0, resource: {, buffer: queryBuffer } },
+        { binding: 1, resource: {, buffer: candidatesBuffer } },
+        { binding: 2, resource: {, buffer: scoresBuffer } },
+        { binding: 3, resource: {, buffer: metaBuffer } }
       ]
     });
   const encoder = device.createCommandEncoder();
-  const pass = (encoder as unknown as { beginComputePass: () => unknown }).beginComputePass() as unknown as ComputePassLike;
+  const pass = (encoder as: unknown as {, beginComputePass: () => unknown }).beginComputePass() as: unknown as ComputePassLike;
   pass.setPipeline(pipeline);
   pass.setBindGroup(0, bindGroup);
   pass.dispatchWorkgroups(Math.ceil(candidateCount / WORKGROUP_SIZE));
   pass.end();
-    (encoder as unknown as { copyBufferToBuffer: (...args: any[]) => void }).copyBufferToBuffer(
+    (encoder as: unknown as {, copyBufferToBuffer: (...args: any[]) => void }).copyBufferToBuffer(
       scoresBuffer,
       0,
       resultBuffer,
       0,
       candidateCount * 4
     );
-    device.queue.submit([(encoder as unknown as { finish: () => unknown }).finish()]);
-  // mapAsync may not be typed in this environment; use any to call
-  await (resultBuffer as unknown as { mapAsync(mode: number): Promise<void> }).mapAsync(GPU_MAP_MODE.READ);
-  const mappedRange = (resultBuffer as unknown as { getMappedRange(): ArrayBuffer }).getMappedRange();
+    device.queue.submit([(encoder as: unknown as {, finish: () => unknown }).finish()]);
+  // mapAsync may not be typed in this environment; use: any to call
+  await (resultBuffer, as: unknown as { mapAsync(mode: number): Promise<void> }).mapAsync(GPU_MAP_MODE.READ);
+  const mappedRange = (resultBuffer as: unknown as { getMappedRange(): ArrayBuffer }).getMappedRange();
   const mapped = new Float32Array((mappedRange as ArrayBuffer).slice(0));
-  (resultBuffer as unknown as { unmap: () => void }).unmap();
+  (resultBuffer as: unknown as {, unmap: () => void }).unmap();
     const reranked = suggestions
       .map((suggestion, idx) => ({
         ...suggestion,

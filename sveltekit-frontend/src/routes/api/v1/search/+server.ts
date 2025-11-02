@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import { orchestrator } from '$lib/services/unified-legal-orchestrator';
-import { qdrant } from '$lib/server/vector/qdrant-manager';
-import { db, vectorSearch } from '$lib/server/database/connection';
-import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { orchestrator } from, '$lib/services/unified-legal-orchestrator';
+import { qdrant } from, '$lib/server/vector/qdrant-manager';
+import { db, vectorSearch } from, '$lib/server/database/connection';
+import { natsQuicSearchService } from, '$lib/server/search/nats-quic-search-service';
+import type { RequestHandler } from, './$types.js';
 
 type OrchestratorResponse = {
   _metadata?: {
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
         priority: 'normal' as const
       },
       performance_requirements: {
-        max_latency_ms: 2000,
+       , max_latency_ms: 2000,
         accuracy_threshold: threshold
       }
     };
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '10');
   try {
     switch (action) {
-      case 'history':
+      case, 'history':
         if (!user_id) {
           return json({ error: 'user_id required for search history' }, { status: 400 });
         }
@@ -133,20 +133,20 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: { history }
         });
-      case 'suggestions':
+      case, 'suggestions':
         const query = url.searchParams.get('query') || '';
         const suggestions = await getSearchSuggestions(query);
         return json({
           success: true,
           data: { suggestions }
         });
-      case 'trending':
+      case, 'trending':
         const trending = await getTrendingSearches(limit);
         return json({
           success: true,
           data: { trending }
         });
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Search GET error:', error);'
@@ -175,7 +175,7 @@ async function estimateDatasetSize(collections: string[], filters: any): Promise
     // Quick estimate of how much data we'll be searching'
     let totalSize = 0;
     for (const collection of collections) {
-      const info = await qdrant.getCollectionInfo(collection as any);
+      const info = await qdrant.getCollectionInfo(collection as: any);
       if (info) {
         totalSize += info.vectors_count;
       }
@@ -204,7 +204,7 @@ async function performHybridSearch(
         qdrant.hybridSearch({
           query,
           queryEmbedding,
-          collection: collection as any,
+          collection: collection, as: any,
           filters,
           limit: Math.ceil(limit / collections.length),
           scoreThreshold: threshold
@@ -237,7 +237,7 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
     // Add filters
     for (const [key, value] of Object.entries(filters)) {
       if (key === 'case_id') {
-        conditions.push(eq(documentsTable.case_id, value as string));
+        conditions.push(eq(documentsTable.case_id, value as: string));
       }
       // Add more filter conditions as needed
     }
@@ -300,7 +300,7 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
   return {
     results: combinedResults,
     metadata: {
-      hybrid: true,
+     , hybrid: true,
       sources_combined: results.length,
       total_results: combinedResults.length
     }

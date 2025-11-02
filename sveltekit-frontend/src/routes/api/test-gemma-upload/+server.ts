@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { PDFDocument } from 'pdf-lib'
-import { ollamaConfig } from '$lib/services/ollama-config-service.js'
-import { ENV_CONFIG } from '$lib/config/environment.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { PDFDocument } from, 'pdf-lib'
+import { ollamaConfig } from, '$lib/services/ollama-config-service.js'
+import { ENV_CONFIG } from, '$lib/config/environment.js'
 const MINIO_ENDPOINT = ENV_CONFIG.minioEndpoint;
 const MINIO_ACCESS_KEY = ENV_CONFIG.minioAccessKey;
 const MINIO_SECRET_KEY = ENV_CONFIG.minioSecretKey;
@@ -12,17 +12,17 @@ const MCP_SERVER_URL = ENV_CONFIG.mcpServerUrl;
 // Define a specific interface for metadata from MCP
 interface MCPMetadata { filename: string;, source: string;
   timestamp: string;
-  // Add any other known properties that MCP might return in its metadata
+  //, Add: any other known properties that MCP might return in its metadata
   // For now, we'll include the ones we send.'
-  [key: string]: any; // Allow for additional unknown properties if MCP returns more
+  [key: string]: any; // Allow for additional: unknown properties if MCP returns more
 }
 
 // Use centralized configuration instead of hardcoded URLs
 interface MCPProcessingResult {
   success: boolean;
-  data?: { text: string;, chunks: string[];
-    embeddings: number[][]; // This will be populated by Gemma, not MCP directly
-    metadata: MCPMetadata; // Changed from any to MCPMetadata
+  data?: {, text: string;, chunks: string[];
+   , embeddings: number[][]; // This will be populated by Gemma, not MCP directly
+    metadata: MCPMetadata; // Changed from: any to MCPMetadata
   };
   error?: string;
 }
@@ -40,9 +40,9 @@ interface OllamaEmbeddingResponse {
 }
 
 // New interface for data passed to storeInDatabase
-interface CombinedDocumentData { text: string;, chunks: string[];
+interface CombinedDocumentData {, text: string;, chunks: string[];
   embeddings: number[][];
-  metadata: MCPMetadata; // Changed from any to MCPMetadata
+  metadata: MCPMetadata; // Changed, from: any to MCPMetadata
 }
 
 /**
@@ -64,7 +64,7 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
     return fullText || 'PDF text extraction requires additional PDF parsing library';
   } catch (error) {
     console.error('PDF extraction error:', error);'
-    return 'Error extracting PDF text';
+    return, 'Error extracting PDF text';
   }
 }
 /**
@@ -111,7 +111,7 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
           timestamp: new Date().toISOString()
         },
         options: {
-          chunkSize: 1000,
+         , chunkSize: 1000,
           overlap: 100,
           simdEnabled: true,
           fastJsonEnabled: true
@@ -142,7 +142,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
         headers: {
           'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
-          model: 'embeddinggemma:latest',
+         , model: 'embeddinggemma:latest',
           prompt: chunk
         })
       });
@@ -223,9 +223,9 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 5: Store in PostgreSQL
     const stored = await storeInDatabase(
       {
-        text: mcpResult.data.text, // Now guaranteed to be string
-        chunks: mcpResult.data.chunks, // Now guaranteed to be string[]
-        metadata: mcpResult.data.metadata, // Now guaranteed to be MCPMetadata
+       , text: mcpResult.data.text, // Now guaranteed to be: string
+       , chunks: mcpResult.data.chunks, // Now guaranteed to be: string[]
+       , metadata: mcpResult.data.metadata, // Now guaranteed to be MCPMetadata
         embeddings
       },
       minioResult.objectPath!

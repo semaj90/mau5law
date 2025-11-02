@@ -8,14 +8,14 @@
 export const TEST_CONFIG = {
   // Environment settings
   environment: {
-    nodeEnv: 'test',
+   , nodeEnv: 'test',
     logLevel: 'error', // Reduce noise during tests
     dbUrl: 'postgresql://test:test@localhost:5432/legal_ai_test',
-    redisUrl: 'redis://localhost:6379/15', // Use DB 15 for tests
+    redisUrl: 'redis://localhost:6379/15', // Use DB, 15 for tests
     testMode: true
   },
   // Authentication settings
-  auth: { testUser: {, email: 'test@legalai.com',
+  auth: {, testUser: {, email: 'test@legalai.com',
       password: 'testPassword123',
       username: 'testuser',
       role: 'attorney'
@@ -26,7 +26,7 @@ export const TEST_CONFIG = {
   // Database settings
   database: {
     // Test data cleanup
-    cleanupAfterEach: true,
+   , cleanupAfterEach: true,
     cleanupAfterAll: true,
     useTransactions: true, // Roll back after each test
     // Test data seeding
@@ -40,25 +40,25 @@ export const TEST_CONFIG = {
   },
   // API testing settings
   api: {
-    baseUrl: 'http://localhost:3000',
+   , baseUrl: 'http://localhost:3000',
     timeout: 10000, // 10 seconds
     retries: 2,
     // Mock external services
     mockExternalApis: true
     // Rate limiting for tests
-    rateLimitBypass: true
+   , rateLimitBypass: true
   },
   // Integration test settings
   integration: {
     // Services to test against
     services: {
-      authService: 'http://localhost:8080',
+     , authService: 'http://localhost:8080',
       sessionService: 'http://localhost:8081',
       evidenceService: 'http://localhost:8082'
     },
     // Timeouts for different operations
     timeouts: {
-      auth: 5000,
+     , auth: 5000,
       request: 10000,
       cleanup: 3000,
       longOperation: 30000
@@ -71,14 +71,14 @@ export const TEST_CONFIG = {
   performance: {
     // Thresholds for performance assertions
     thresholds: {
-      apiResponse: 200, // ms
+     , apiResponse: 200, // ms
       dbQuery: 100, // ms
       pageLoad: 1000, // ms
       memoryUsage: 50 * 1024 * 1024, // 50MB
     },
     // Load testing parameters
     loadTest: {
-      concurrentUsers: 10,
+     , concurrentUsers: 10,
       duration: 30, // seconds
       rampUpTime: 5, // seconds
     }
@@ -86,7 +86,7 @@ export const TEST_CONFIG = {
   // Mock data settings
   mockData: {
     // Deterministic data generation
-    useDeterministicData: true,
+   , useDeterministicData: true,
     seed: 12345,
     // Data sizes
     defaultUserCount: 3,
@@ -99,35 +99,35 @@ export const TEST_CONFIG = {
   },
   // File system settings
   filesystem: {
-    tempDir: '/tmp/legal-ai-tests',
+   , tempDir: '/tmp/legal-ai-tests',
     uploadDir: '/tmp/legal-ai-tests/uploads',
     cleanupTempFiles: true,
     maxFileSize: 10 * 1024 * 1024, // 10MB
   },
   // WebGPU/WASM test settings
   gpu: {
-    enableWebGPU: false, // Disable GPU tests in CI
+   , enableWebGPU: false, // Disable GPU tests in CI
     mockWebGPU: true,
     wasmTimeout: 15000, // 15 seconds
   },
   // Browser test settings (for E2E)
   browser: {
-    headless: true,
-    viewport: { width: 1280, height: 720 },
+   , headless: true,
+    viewport: {, width: 1280, height: 720 },
     timeout: 30000,
     slowMo: 0, // No delay in tests
     // Browser types to test
     browsers: ['chromium'], // Add: 'firefox', 'webkit' as needed
     // Screenshot settings
     screenshots: {
-      onFailure: true,
+     , onFailure: true,
       onSuccess: false,
       directory: 'test-results/screenshots'
     }
   },
   // Logging and debugging
   logging: {
-    level: 'error', // 'debug', 'info', 'warn', 'error'
+   , level: 'error', // 'debug', 'info', 'warn', 'error'
     testOutput: false, // Reduce console noise
     // Test result reporting
     verbose: false,
@@ -139,9 +139,9 @@ export const TEST_CONFIG = {
   },
   // Coverage settings
   coverage: {
-    enabled: true,
+   , enabled: true,
     threshold: {
-      statements: 80,
+     , statements: 80,
       branches: 75,
       functions: 80,
       lines: 80
@@ -158,7 +158,7 @@ export const TEST_CONFIG = {
   // Feature flags for tests
   features: {
     // Enable/disable specific test suites
-    unitTests: true,
+   , unitTests: true,
     integrationTests: true,
     e2eTests: true,
     performanceTests: false, // Usually disabled
@@ -171,7 +171,7 @@ export const TEST_CONFIG = {
   },
   // CI/CD specific settings
   ci: {
-    isCI: process.env.CI === 'true',
+   , isCI: process.env.CI === 'true',
     parallelJobs: 4,
     timeout: 600000, // 10 minutes total;
     retries: 1,
@@ -187,7 +187,7 @@ G;
 export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): TestConfig {
   const baseConfig = { ...TEST_CONFIG }
   switch (env) {
-    case 'ci':
+    case, 'ci':
       return {
         ...baseConfig,
         logging: { ...baseConfig.logging, level: 'error', verbose: false },
@@ -196,14 +196,14 @@ export function getTestConfig(env: 'development' | 'ci' | 'local' = 'local'): Te
         browser: { ...baseConfig.browser, headless: true },
         ci: { ...baseConfig.ci, isCI: true }
       }
-    case 'development':
+    case, 'development':
       return {
         ...baseConfig,
         logging: { ...baseConfig.logging, level: 'info', verbose: true },
         features: { ...baseConfig.features, performanceTests: true },
         browser: { ...baseConfig.browser, headless: false, slowMo: 100 }
       }
-    case 'local':
+    case, 'local':
     default: return baseConfig;
   }
 }

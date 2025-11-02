@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
-import type { RequestEvent } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { documentMetadata } from '$lib/server/db/schema-unified';
-import { eq } from 'drizzle-orm';
-import type { InferInsertModel } from 'drizzle-orm/pg-core'; // Import InferInsertModel from pg-core
+import type { Document } from, '$lib/types';
+import type { RequestEvent } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { documentMetadata } from, '$lib/server/db/schema-unified';
+import { eq } from, 'drizzle-orm';
+import type { InferInsertModel } from, 'drizzle-orm/pg-core'; // Import InferInsertModel from pg-core
 
 // Define a type for the document updates
 type DocumentUpdate = Partial<InferInsertModel<typeof, documentMetadata>>;
@@ -27,7 +27,7 @@ export async function GET({ params }: RequestEvent): Promise<Response> {
       document: document[0]
     });
   } catch (error: any) {
-    // Changed 'any' to 'unknown'
+    // Changed, 'any' to, 'unknown'
     console.error('Error fetching document:', error);
     return json({ success: false, error: 'Failed to fetch document' }, { status: 500 });
   }
@@ -43,7 +43,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<Response> 
     const { title, content, documentType, status, citations, tags, metadata } = body;
     // Update in real database (no mock fallback)
     const updates: DocumentUpdate = {
-      // Changed 'any' to 'DocumentUpdate'
+      // Changed, 'any' to, 'DocumentUpdate'
       updatedAt: new Date()
     };
     if (title !== undefined) updates.originalFilename = title;
@@ -69,7 +69,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<Response> 
       document: updatedDocument[0]
     });
   } catch (error: any) {
-    // Changed 'any' to 'unknown'
+    // Changed, 'any' to, 'unknown'
     console.error('Error updating document:', error);
     return json({ success: false, error: 'Failed to update document' }, { status: 500 });
   }
@@ -91,7 +91,7 @@ export async function DELETE({ params }: RequestEvent): Promise<Response> {
       message: 'Document deleted successfully'
     });
   } catch (error: any) {
-    // Changed 'any' to 'unknown'
+    // Changed, 'any' to, 'unknown'
     console.error('Error deleting document:', error);
     return json({ success: false, error: 'Failed to delete document' }, { status: 500 });
   }

@@ -24,7 +24,7 @@ interface BatchEmbeddingRequest {
   model?: string;
 }
 // WASM module interface
-interface WASMEmbeddings { memory: WebAssembly.Memory;, preprocess_text: (textPtr: number, textLen: number) => number;
+interface WASMEmbeddings {, memory: WebAssembly.Memory;, preprocess_text: (textPtr: number, textLen: number) => number;
   generate_embeddings: (preprocessedPtr: number, modelPtr: number) => number;
   get_embedding_dim: () => number;
   cleanup: (ptr: number) => void;
@@ -61,7 +61,7 @@ class EmbeddingsWorker {
 
       const wasmModule = await WebAssembly.instantiate(wasmBytes, imports);
       // Cast via `unknown` to satisfy TypeScript when Exports doesn't fully overlap.'
-      this.wasmModule = wasmModule.instance.exports as unknown as WASMEmbeddings;
+      this.wasmModule = wasmModule.instance.exports as: unknown as WASMEmbeddings;
       // Runtime sanity checks to catch mismatched/partial exports early.
       if (
         !this.wasmModule ||
@@ -83,7 +83,7 @@ class EmbeddingsWorker {
       throw error;
     }
   }
-  private copyStringToWasm(text: string): { ptr: number; length: number } {
+  private copyStringToWasm(text: string): { ptr: number;, length: number } {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
     const encoder = new TextEncoder();
     const bytes = encoder.encode(text);
@@ -142,9 +142,9 @@ class EmbeddingsWorker {
     return results;
   }
   async preprocessTextForVector(text: string): Promise<{ cleanText: string;, tokens: string[];
-    metadata: { originalLength: number;, cleanedLength: number;
+    metadata: {, originalLength: number;, cleanedLength: number;
       tokenCount: number;
-      hasSpecialChars: boolean;
+     , hasSpecialChars: boolean;
     };
   }> {
     if (!this.isInitialized || !this.wasmModule) {
@@ -168,7 +168,7 @@ class EmbeddingsWorker {
         cleanText,
         tokens,
         metadata: {
-          originalLength: text.length,
+         , originalLength: text.length,
           cleanedLength: cleanText.length,
           tokenCount: tokens.length,
           hasSpecialChars: /[^\w\s]/.test(text)
@@ -188,7 +188,7 @@ type WorkerIncomingMessage =
   | { type: 'initialize'; id?: string }
   | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest }
   | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest }
-  | { type: 'preprocess_text'; id?: string; data: {, text: string; startTime?: number } }
+  | { type: 'preprocess_text'; id?: string;, data: {, text: string; startTime?: number } }
   | { type: 'ping'; id?: string };
 
 // Outgoing message shapes
@@ -202,13 +202,13 @@ type WorkerOutgoingMessage =
     }
   | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
   | { type: 'pong'; timestamp: number }
-  | { type: 'error'; id?: string; error: string };
+  | { type: 'error'; id?: string;, error: string };
 
 self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessage>) => {
   const msg = event.data;
   try {
     switch (msg.type) {
-      case 'initialize':
+      case, 'initialize':
         await embeddingsWorker.initialize();
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'initialized',
@@ -216,12 +216,12 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           success: true
         } as WorkerOutgoingMessage);
         break;
-      case 'generate_embedding': {
+      case, 'generate_embedding': {
         const req = msg.data;
         if (!req || typeof req.text !== 'string') throw new Error('Invalid generate_embedding request');
         const embedding = await embeddingsWorker.generateEmbedding(req.text);
         const response: EmbeddingResponse = {
-          success: true,
+         , success: true,
           embedding: Array.from(embedding),
           processingTime: performance.now() - (req.startTime ?? performance.now())
         };
@@ -232,7 +232,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'generate_batch_embeddings': {
+      case, 'generate_batch_embeddings': {
         const req = msg.data;
         if (!req || !Array.isArray(req.texts)) throw new Error('Invalid generate_batch_embeddings request');
         const embeddings = await embeddingsWorker.generateBatchEmbeddings(req.texts);
@@ -249,7 +249,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'preprocess_text': {
+      case, 'preprocess_text': {
         const text = msg.data?.text;
         if (typeof text !== 'string') throw new Error('Invalid preprocess_text request');
         const preprocessResult = await embeddingsWorker.preprocessTextForVector(text);
@@ -260,7 +260,7 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
         } as WorkerOutgoingMessage);
         break;
       }
-      case 'ping':
+      case, 'ping':
         (self as DedicatedWorkerGlobalScope).postMessage({
           type: 'pong',
           timestamp: Date.now()
@@ -269,14 +269,14 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
       default: {
         // Exhaustive check - will error at compile time if a branch is missing
         const _exhaustiveCheck: never = msg as never;
-        throw new Error(`Unhandled message type: ${JSON.stringify(_exhaustiveCheck)}`);
+        throw new Error(`Unhandled message, type: ${JSON.stringify(_exhaustiveCheck)}`);
       }
     }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     console.error('❌ Worker error:', errorMessage);'
     // msg may not always have an id; extract gracefully
-    const maybeId = msg && typeof (msg as any).id === 'string' ? (msg as any).id : undefined;
+    const maybeId = msg && typeof (msg as: any).id === 'string' ? (msg as: any).id : undefined;
     (self as DedicatedWorkerGlobalScope).postMessage({
       type: 'error',
       id: maybeId,

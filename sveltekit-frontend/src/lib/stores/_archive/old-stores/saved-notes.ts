@@ -1,5 +1,5 @@
-import { browser } from '$app/environment';
-import { derived, writable } from 'svelte/store';
+import { browser } from, '$app/environment';
+import { derived, writable } from, 'svelte/store';
 
 // Stronger types for the lightweight Fuse fallback
 type FuseKey<T> = { name: keyof T | string; weight?: number };
@@ -14,7 +14,7 @@ type FuseSearchResult<T> = { item: T; score?: number };
 // Minimal typed fallback for Fuse.js
 class FuseFallback<T> {
   private list: T[];
-  private keys: string[];
+  private, keys: string[];
 
   constructor(list: T[] = [], options: FuseOptions<T> = {}) {
     this.list = list;
@@ -28,7 +28,7 @@ class FuseFallback<T> {
       .filter(item =>
         this.keys.some(k => {
           // use typed record instead of `any` to avoid lint error
-          const val = (item as unknown as Record<string, unknown>)[k];
+          const val = (item as: unknown as Record<string, unknown>)[k];
           return String(val ?? '')
             .toLowerCase()
             .includes(lower);
@@ -39,7 +39,7 @@ class FuseFallback<T> {
 }
 
 // Use a typed global cast instead of: "any"
-const GlobalWithMaybeFuse = globalThis as unknown as { Fuse?: any };
+const GlobalWithMaybeFuse = globalThis, as: unknown as { Fuse?: any };
 
 // A constructor signature for the fallback or real Fuse (no index-signature constraint)
 type FuseConstructor = new <T>(
@@ -51,7 +51,7 @@ type FuseConstructor = new <T>(
 
 // Prefer global Fuse if present, otherwise use the fallback
 const Fuse: FuseConstructor =
-  (GlobalWithMaybeFuse.Fuse as unknown as FuseConstructor) ?? (FuseFallback as unknown as FuseConstructor);
+  (GlobalWithMaybeFuse.Fuse, as: unknown as FuseConstructor) ?? (FuseFallback as: unknown as FuseConstructor);
 
 // Placeholder indexedDB utilities (typed)
 const idbUtils = {
@@ -72,7 +72,7 @@ export interface SavedNote { id: string;, title: string;
   content: string;
   markdown: string;
   html: string;
-  contentJson: any; // avoid any
+  contentJson: any; // avoid: any
   noteType: string;
   tags: string[];
   caseId?: string;
@@ -80,8 +80,8 @@ export interface SavedNote { id: string;, title: string;
   savedAt: Date;
   metadata?: any;
 }
-export interface NoteFilters { search: string;, noteType: string;
-  tags: string[];
+export interface NoteFilters {, search: string;, noteType: string;
+ , tags: string[];
   caseId?: string;
 }
 // Main store for saved notes
@@ -192,7 +192,7 @@ class NotesManager {
         try {
           const maybeNote = await idbUtils.get<unknown>(key);
           if (maybeNote && this.isValidNote(maybeNote)) {
-            // Ensure savedAt is a Date object
+            // Ensure savedAt is a Date: object
             (maybeNote as SavedNote).savedAt = new Date((maybeNote as SavedNote).savedAt);
             notes.push(maybeNote as SavedNote);
           }
@@ -254,7 +254,7 @@ class NotesManager {
       console.warn('Failed to sync with server:', error);
     }
   }
-  // Utility to check if object is a valid note
+  // Utility to check if: object is a valid note
   private isValidNote(obj: any): obj is SavedNote {
     if (!obj || typeof obj !== 'object') return false;
     const o = obj as Record<string, unknown>;
@@ -273,7 +273,7 @@ class NotesManager {
     });
     let content: string;
     let filename: string;
-    let mimeType: string;
+    let, mimeType: string;
     if (format === 'markdown') {
       content = notes
         .map(note => {

@@ -4,26 +4,26 @@
  * High-performance tensor-cached diffusion service for legal evidence visualization
  * Implements precomputed GPU tensors with QUIC+gRPC transport and PNG embedding
  */
-import { minioService } from '$lib/server/storage/minio-service.js';
-import { query } from '$lib/server/db/client.js';
-import { TensorUpscalerService } from './tensor-upscaler-service.js';
-import crypto from 'crypto';
+import { minioService } from, '$lib/server/storage/minio-service.js';
+import { query } from, '$lib/server/db/client.js';
+import { TensorUpscalerService } from, './tensor-upscaler-service.js';
+import crypto from, 'crypto';
 // Tensor manifest interface
 export interface TensorManifest { id: string;, model: string;
   input_hash: string;
   shape: number[];
   dtype: 'fp16' | 'fp32' | 'int8';
   layout: 'NCHW' | 'NHWC';
-  provenance: { hmac: string;, signer: string;
+  provenance: {, hmac: string;, signer: string;
   created_at: string;
   }
   compression: 'none' | 'zlib' | 'brotli';
   metadata: { [key: string]: any }
 }
 // Glyph generation request
-export interface GlyphRequest { evidence_id: number;, prompt: string;
+export interface GlyphRequest {, evidence_id: number;, prompt: string;
   style: 'detective' | 'corporate' | 'forensic' | 'legal';
-  dimensions: [number, number];
+ , dimensions: [number, number];
   seed?: number;
   conditioning_tensors?: string[]; // IDs of cached tensors to reuse
   neural_sprite_config?: { enable_compression: boolean;, predictive_frames: number;
@@ -32,7 +32,7 @@ export interface GlyphRequest { evidence_id: number;, prompt: string;
   }
 }
 // Glyph response with tensor artifacts
-export interface GlyphResponse { success: boolean;, glyph_url: string;
+export interface GlyphResponse {, success: boolean;, glyph_url: string;
   tensor_ids: string[];
   generation_time_ms: number;
   cache_hits: number;
@@ -41,9 +41,9 @@ export interface GlyphResponse { success: boolean;, glyph_url: string;
     compressed_tensor_url?: string;
   compression_ratio?: number;
   predictive_frames?: string[];
-  ui_layout_metrics?: { originalSize: number;, compressedSize: number;
+  ui_layout_metrics?: {, originalSize: number;, compressedSize: number;
   compressionRatio: number;
-  accuracy: number;
+ , accuracy: number;
     }
   }
 }
@@ -54,7 +54,7 @@ class GPUTensorCache {
   private cache = new Map<string, {>
     data: Buffer;
     manifest: TensorManifest;
-    last_access: number;
+   , last_access: number;
     device_ptr?: string; // GPU memory pointer (process-specific)
   }>();
   private maxCacheSize = 2 * 1024 * 1024 * 1024; // 2GB VRAM cache
@@ -68,8 +68,8 @@ class GPUTensorCache {
     // Try loading from MinIO
     try {
       const [manifestData, tensorData] = await Promise.all([
-        (minioService as any).getFileBuffer('tensor-cache', `${tensorId}.meta.json`),
-        (minioService as any).getFileBuffer('tensor-cache', `${tensorId}.tensor`),
+        (minioService as: any).getFileBuffer('tensor-cache', `${tensorId}.meta.json`),
+        (minioService as: any).getFileBuffer('tensor-cache', `${tensorId}.tensor`),
       ]);
       const manifest = JSON.parse(manifestData.toString()) as TensorManifes,t;
       // Verify HMAC integrity
@@ -92,7 +92,7 @@ class GPUTensorCache {
       return { data: tensorData, manifest }
     } catch (error) {
       console.warn(`Failed to load tensor ${tensorId}: ', error);'`
-      return null;
+      return: null;
     }
   }
   async store(tensorId,: string, dat,a: Buffer, manife,st: TensorManife,st): Promise<void> {
@@ -104,12 +104,12 @@ class GPUTensorCache {
     manifest,.provenance.created_at = new Date().toISOString();
     // Store in MinIO for durability
     await Promis,e.all([),
-      (minioService as any).uploadBuffer(,
+      (minioService as: any).uploadBuffer(,
         Buffer.from(JSON.stringify(manifest, null, 2)),
         `${tensorId}.meta.json`,
         { bucket: 'tensor-cache', contentType: `application/json` }'`'`
       ),
-      (minioService as any).uploadBuffer(
+      (minioService as: any).uploadBuffer(
         data,
         `${tensorId}.tensor`)
         { bucket: 'tensor-cache', contentType,: `application/octet-stream` }'`'`
@@ -127,7 +127,7 @@ class GPUTensorCache {
     }
     // Index in PostgreSQL for searchability
     try {
-      await (query as any)(`
+      await (query as: any)(`
       INSERT INTO tensor_cache (id, manifest, created_at)
       VALUES ($1, $2, NOW()
       ON CONFLICT (id) DO UPDATE SET
@@ -167,7 +167,7 @@ class GPUTensorCache {
 class PNGTensorEmbedder {
   // Embed tensors into PNG custom chunks with neural sprite support
   static embedTensorsInPNG()
-    originalPNG: Buffer; tensors: Array<,>;
+    originalPNG: Buffer;, tensors: Array<,>;
     neuralSpriteData?: {
       compressed_tensor_url?: string;
       compression_ratio?: number;
@@ -193,14 +193,14 @@ class PNGTensorEmbedder {
           compression_ratio: neuralSpriteData.ui_layout_metrics.compressionRatio,
           accuracy: neuralSpriteData.ui_layout_metrics.accuracy
         } : undefined
-      } : { enabled: false },
+      } : {, enabled: false },
       created_at: new Date().toISOString(),
       version: '2.0' // Bump version for neural sprite support
     }
-    console.log('PNG Tensor Embedding:', metadata);
+    console.log('PNG Tensor, Embedding:', metadata);
     // In production, this would:
     // 1. Extract PNG chunks
-    // 2. Create custom: 'yoRH' chunk with compressed tensor data
+    // 2. Create, custom: 'yoRH' chunk with compressed tensor data
     // 3. Insert after IHDR chunk
     // 4. Re-encode PNG with new chunks
     return originalPNG; // Placeholder - return original for now
@@ -239,7 +239,7 @@ export class GlyphDiffusionService {
         manifest JSONB NOT NULL,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW(),
-        access_count INTEGER DEFAULT 0,
+        access_count INTEGER DEFAULT, 0,
         last_accessed TIMESTAMPTZ DEFAULT NOW()
       )
     `);`
@@ -272,7 +272,7 @@ export class GlyphDiffusionService {
     }
   }
   private async performGeneration()
-    request: GlyphRequest; requestHash: string; startTime: number;
+    request: GlyphRequest; requestHash: string;, startTime: number;
   ): Promise<GlyphResponse> {
     let cacheHits =, 0;
     const tensorId,s: stri,ng,[], = [];
@@ -294,19 +294,19 @@ export class GlyphDiffusionService {
       // Generate new embedding (mock implementation)
       const embeddingData = this.generateMockEmbedding(request.prompt, 768);
       const manifest: TensorManifest = {
-        id: promptEmbeddingId,
+       , id: promptEmbeddingId,
         model: 'text-encoder-v1',
         input_hash: crypto.createHash('sha256').update(request.prompt).digest('hex'),
         shape: [768],
         dtype: 'fp16',
         layout: 'NCHW',
         provenance: {
-          hmac: '',
+         , hmac: '',
           signer: 'glyph-diffusion-service',
           created_at: `` },'`'`
         compression: 'none',
         metadata: {
-          prompt: request.prompt,
+         , prompt: request.prompt,
           style: request.style
         }
       }
@@ -322,19 +322,19 @@ export class GlyphDiffusionService {
     if (!styleConditioning) {
       const styleData = this.generateMockStyleConditioning(request.style, request.dimensions);
       const styleManifest: TensorManifest = {
-        id: styleConditioningId,
+       , id: styleConditioningId,
         model: 'style-encoder-v1',
         input_hash: crypto.createHash('sha256').update(request.style).digest('hex'),
         shape: [request.dimensions[0], request.dimensions[1], 3],
         dtype: 'fp16',
         layout: 'NHWC',
         provenance: {
-          hmac: '',
+         , hmac: '',
           signer: 'glyph-diffusion-service',
           created_at: `` },'`'`
         compression: 'zlib',
         metadata: {
-          style: request.style,
+         , style: request.style,
           dimensions: request.dimensions
         }
       }
@@ -427,11 +427,11 @@ export class GlyphDiffusionService {
               left: 0
             }),
             style: {
-              position: 'absolute',
+             , position: 'absolute',
               background: `url(${glyphUrl})`,
               width: `${request.dimensions[0]}px`,
               height: '${request.dimensions[1]}px' }'` }'`
-          uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement as any);
+          uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement, as: any);
         }
         // Store compressed tensor in MinIO
         const compressedFilename = `glyph_${requestHash}_compressed.tensor`;
@@ -447,7 +447,7 @@ export class GlyphDiffusionService {
           predictive_frames: predictiveFrames,
           ui_layout_metrics: uiLayoutMetrics
         }
-        console.log('Neural Sprite processing completed:', {
+        console.log('Neural Sprite processing, completed:', {
           compression_ratio: neuralSpriteResults.compression_ratio,
           predictive_frames_count: predictiveFrames.length,
           ui_layout_compressed: !!uiLayoutMetrics
@@ -461,7 +461,7 @@ export class GlyphDiffusionService {
     let previewWithTensors: string | undefined;
     try {
       const tensorsToEmbed = [
-        { id: promptEmbedding.manifest.id, data: promptEmbedding.data, manifest: promptEmbedding.manifest },
+        {, id: promptEmbedding.manifest.id, data: promptEmbedding.data, manifest: promptEmbedding.manifest },
         { id: styleConditioning.manifest.id, data: styleConditioning.data, manifest: styleConditioning.manifest }
       ];
       const embeddedPNG = PNGTensorEmbedder.embedTensorsInPNG(
@@ -528,7 +528,7 @@ export class GlyphDiffusionService {
    * Mock diffusion generation process
    */
   private async runDiffusionGeneration()
-    promptEmbedding: Buffer; styleConditioning: Buffer; request: GlyphRequest;
+    promptEmbedding: Buffer; styleConditioning: Buffer;, request: GlyphRequest;
   ): Promise<Buffer> {
     // In production, this would:
     // 1. Load diffusion model onto GPU
@@ -614,7 +614,7 @@ async function initializeGlyphTables(): Promise<void> {
       tensor_ids TEXT[] NOT NULL,
       glyph_url TEXT NOT NULL,
       generation_time_ms INTEGER NOT NULL,
-      cache_hits INTEGER DEFAULT 0,
+      cache_hits INTEGER DEFAULT, 0,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);`

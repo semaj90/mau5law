@@ -1,9 +1,9 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
 // WebSocket Server for Live Evidence Processing Updates
 // Broadcasts XState workflow updates to connected clients with Redis caching
 
-import { WebSocketServer, WebSocket } from 'ws';
-import type { EvidenceActor, WSMessage, WorkflowContext } from '$lib/types/evidence';
+import { WebSocketServer, WebSocket } from, 'ws';
+import type { EvidenceActor, WSMessage, WorkflowContext } from, '$lib/types/evidence';
 
 // Simple Redis client stub (replace with actual implementation)
 interface SimpleRedis {
@@ -19,7 +19,7 @@ function createClient(_config: {, url: string;, password: string }): SimpleRedis
     isOpen: false,
     async connect() { this.isOpen = true; },
     async setEx() {},
-    async get() { return null; },
+    async get() { return: null; },
     async quit() { this.isOpen = false; }
   };
 }
@@ -34,14 +34,14 @@ interface ConnectedClient {
 
 class EvidenceWebSocketServer {
   private wss: WebSocketServer;
-  private clients: Map<WebSocket, ConnectedClient> = new Map();
+  private, clients: Map<WebSocket, ConnectedClient> = new Map();
   private redis: SimpleRedis;
-  private workflowActors: Map<string, EvidenceActor> = new Map();
+  private, workflowActors: Map<string, EvidenceActor> = new Map();
 
   constructor() {
     this.wss = new WebSocketServer({ port: WS_PORT });
     const redisConfig: any = {
-      url: 'redis://localhost:6379'
+     , url: 'redis://localhost:6379'
     };
 
     // Only add password if explicitly set
@@ -113,21 +113,21 @@ class EvidenceWebSocketServer {
     if (!client) return;
 
     switch (message.type) {
-      case 'SUBSCRIBE_FILE':
+      case, 'SUBSCRIBE_FILE':
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.add(message.fileId);
           console.log(`[WS] 📂 Client subscribed to fileId: ${message.fileId}`);
         }
         break;
 
-      case 'UNSUBSCRIBE_FILE':
+      case, 'UNSUBSCRIBE_FILE':
         if (typeof message.fileId === 'string') {
           client.subscribedFileIds.delete(message.fileId);
           console.log(`[WS] 📂 Client unsubscribed from fileId: ${message.fileId}`);
         }
         break;
 
-      case 'PING':
+      case, 'PING':
         ws.send(JSON.stringify({ type: 'PONG', timestamp: Date.now() }));
         break;
     }
@@ -155,13 +155,13 @@ class EvidenceWebSocketServer {
   // Broadcast workflow update to subscribed clients
   private async broadcastWorkflowUpdate(fileId: string, context: WorkflowContext) {
     const message: WSMessage = {
-      type: 'PROCESSING_UPDATE',
+     , type: 'PROCESSING_UPDATE',
       fileId,
       stage: context.stage,
       progress: context.progress
     };
 
-    // Cache in Redis for 5 minutes
+    // Cache in Redis for, 5 minutes
     if (this.redis.isOpen) {
       await this.redis.setEx(
         `ws:update:${fileId}`,
@@ -181,7 +181,7 @@ class EvidenceWebSocketServer {
   // Broadcast analysis completion
   public async broadcastAnalysisComplete(fileId: string, result: Record<string, unknown>) {
     const message: WSMessage = {
-      type: 'ANALYSIS_COMPLETE',
+     , type: 'ANALYSIS_COMPLETE',
       fileId,
       // @ts-expect-error - Dynamic result shape varies
       result
@@ -209,7 +209,7 @@ class EvidenceWebSocketServer {
   // Broadcast error
   public async broadcastError(fileId: string, error: string) {
     const message: WSMessage = {
-      type: 'ERROR',
+     , type: 'ERROR',
       fileId,
       error
     };
@@ -243,7 +243,7 @@ class EvidenceWebSocketServer {
       `ws:error:${fileId}`
     ];
 
-    const messages: WSMessage[] = [];
+    const, messages: WSMessage[] = [];
     for (const key of keys) {
       const cached = await this.redis.get(key);
       if (cached) {

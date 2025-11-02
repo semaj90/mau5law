@@ -4,7 +4,7 @@ export const redisService: any = {};
  * Handles connection pooling, reconnection, and distributed caching
  * Integrates Redis Stack with JSON, Search, and TimeSeries modules
  */
-import IORedis, { type Redis as IORedisClass } from 'ioredis';
+import IORedis, { type Redis as IORedisClass } from, 'ioredis';
 
 // Define IORedisPipeline type by accessing the Pipeline type from the IORedisClass
 type IORedisPipeline = IORedisClass['Pipeline'];
@@ -14,7 +14,7 @@ type IORedisPipeline = IORedisClass['Pipeline'];
 // adds the: 'call' method for Redis Stack commands, and explicitly defines: 'set' overloads.
 interface AugmentedIORedisClient extends IORedisClass {
   exists(key: string | string[]): Promise<number>;
-  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from 'any' to: 'unknown'
+  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from, 'any' to: 'unknown'
   // Explicitly add the set overloads if they are not being picked up correctly by default types
   set(key: string, value: string | number): Promise<'OK' | null>;
   set(key: string, value: string | number, expiryMode: 'EX', ttl: number): Promise<'OK' | null>;
@@ -46,8 +46,8 @@ interface RedisConfig { host: string;, port: number;
   family: number;
   keyPrefix?: string;
 }
-interface RedisConnectionPool { primary: AugmentedIORedisClient; // Use augmented type, subscriber: AugmentedIORedisClient; // Use augmented type
-  publisher: AugmentedIORedisClient; // Use augmented type
+interface RedisConnectionPool {, primary: AugmentedIORedisClient; // Use augmented type, subscriber: AugmentedIORedisClient; // Use augmented type
+ , publisher: AugmentedIORedisClient; // Use augmented type
 }
 
 // New interfaces for better type safety
@@ -62,7 +62,7 @@ interface CachedEmbedding {
   dimension: number;
 }
 
-interface CachedSearch { query: string;, results: any[];
+interface CachedSearch {, query: string;, results: any[];
   cached_at: string;
   result_count: number;
 }
@@ -75,7 +75,7 @@ class RedisService {
   private reconnectDelay = 1000;
   private initialized = false;
   private config: RedisConfig = {
-    host: process.env.REDIS_HOST || 'localhost',
+   , host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
     password: process.env.REDIS_PASSWORD,
     db: parseInt(process.env.REDIS_DB || '0'),
@@ -107,18 +107,18 @@ class RedisService {
           ...this.config,
           lazyConnect: false,
           connectionName: 'legal-ai-primary'
-        }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
+        }) as: unknown as AugmentedIORedisClient, // Cast to: unknown first, then to augmented type
         // Separate connection for pub/sub operations
         subscriber: new IORedis({
           ...this.config,
           lazyConnect: false,
           connectionName: 'legal-ai-subscriber'
-        }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
+        }) as: unknown as AugmentedIORedisClient, // Cast to: unknown first, then to augmented type
         publisher: new IORedis({
           ...this.config,
           lazyConnect: false,
           connectionName: 'legal-ai-publisher'
-        }) as unknown as AugmentedIORedisClient, // Cast to unknown first, then to augmented type
+        }) as: unknown as AugmentedIORedisClient, // Cast to: unknown first, then to augmented type
       };
       // Set up event handlers
       this.setupEventHandlers(this.pool.primary, 'primary');
@@ -132,7 +132,7 @@ class RedisService {
       this.reconnectAttempts = 0;
       console.log('✅ [RedisService] Connection pool initialized successfully');
       // Global Redis client for backward compatibility
-      (globalThis as unknown as { __REDIS: AugmentedIORedisClient }).__REDIS = this.pool.primary;
+      (globalThis as: unknown as {, __REDIS: AugmentedIORedisClient }).__REDIS = this.pool.primary;
       return true;
     } catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
@@ -215,7 +215,7 @@ class RedisService {
    * Get Redis client for operations
    */
   getClient(): AugmentedIORedisClient | null {
-    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists'; and: 'call' are recognized
+    // Cast the primary client to AugmentedIORedisClient to ensure: 'exists';, and: 'call' are recognized
     return (this.pool?.primary as AugmentedIORedisClient) || null;
   }
   /**
@@ -247,7 +247,7 @@ class RedisService {
   } {
     // const client = this.pool?.primary; // Removed unused variable
     return {
-      connected: this.isConnected,
+     , connected: this.isConnected,
       status: this.isConnected ? 'connected' : 'disconnected',
       reconnectAttempts: this.reconnectAttempts,
       config: {
@@ -261,7 +261,7 @@ class RedisService {
    */
   async getRedisInfo(): Promise<RedisInfo | null> {
     if (!this.pool?.primary || !this.isHealthy()) {
-      return null;
+      return: null;
     }
     try {
       const info = await this.pool.primary.info();
@@ -282,7 +282,7 @@ class RedisService {
       return result;
     } catch (error) {
       console.error('[RedisService] Failed to get Redis info:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -329,10 +329,10 @@ class RedisService {
   }
   async get<T = unknown>(key: string): Promise<T | null> {
     const client = this.getClient();
-    if (!client) return null;
+    if (!client) return: null;
     try {
       const value = await client.get(key);
-      if (!value) return null;
+      if (!value) return: null;
       try {
         return JSON.parse(value) as T;
       } catch {
@@ -340,7 +340,7 @@ class RedisService {
       }
     } catch (error) {
       console.error(`[RedisService] Failed to get ${key}:`, error);
-      return null;
+      return: null;
     }
   }
   async del(key: string): Promise<boolean> {
@@ -381,12 +381,12 @@ class RedisService {
    */
   async hget(key: string, field: string): Promise<string | null> {
     const client = this.getClient();
-    if (!client) return null;
+    if (!client) return: null;
     try {
       return await client.hget(key, field);
     } catch (error) {
       console.error(`[RedisService] Failed to hget ${key} ${field}:`, error);
-      return null;
+      return: null;
     }
   }
   async hset(key: string, field: string, value: string): Promise<boolean> {
@@ -433,12 +433,12 @@ class RedisService {
   }
   async pipeline(): Promise<IORedisPipeline | null> {
     const client = this.getClient();
-    if (!client) return null;
+    if (!client) return: null;
     try {
       return client.pipeline();
     } catch (error) {
       console.error(`[RedisService] Failed to create pipeline:`, error);
-      return null;
+      return: null;
     }
   }
   /**

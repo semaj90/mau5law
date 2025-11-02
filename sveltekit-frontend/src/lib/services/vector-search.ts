@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
-import { db } from "$lib/server/database";
+import type { Document } from, '$lib/types';
+import { db } from, "$lib/server/database";
 import {
   legalDocuments as documents,
   embeddingCache
-} from "$lib/db/schema";
-import { eq, sql } from "drizzle-orm";
-import crypto from "crypto";
+} from, "$lib/db/schema";
+import { eq, sql } from, "drizzle-orm";
+import crypto from, "crypto";
 export interface VectorSearchOptions {
   threshold?: number;
   limit?: number;
@@ -21,12 +21,12 @@ export interface VectorSearchResult { id: string;, content: string;
   keywords?: string[];
   createdAt: Date;
 }
-export interface EmbeddingCacheEntry { textHash: string;, embedding: number[];
+export interface EmbeddingCacheEntry {, textHash: string;, embedding: number[];
   model: string;
   dimensions: number;
 }
 export class VectorSearchService {
-  private static instance: VectorSearchService;
+  private static, instance: VectorSearchService;
   public static getInstance(): VectorSearchService {
     if (!VectorSearchService.instance) {
       VectorSearchService.instance = new VectorSearchService();
@@ -57,10 +57,10 @@ export class VectorSearchService {
       .where(eq(embeddingCache.textHash, textHash))
       .limit(1);
     if (cached.length > 0) {
-      return cached[0].embedding as number[];
+      return cached[0].embedding as: number[];
     }
     // Generate new embedding
-    let embedding: number[];
+    let, embedding: number[];
     try {
       if (model.startsWith("ollama-")) {
         embedding = await this.generateOllamaEmbedding(
@@ -214,7 +214,7 @@ export class VectorSearchService {
       await db
         .update(documents)
         .set({
-          embedding: embedding as any, // Drizzle will handle vector type conversion
+          embedding: embedding, as: any, // Drizzle will handle vector type conversion
           summary: metadata.summary,
           keywords: metadata.keywords,
           updatedAt: new Date()
@@ -279,7 +279,7 @@ export class VectorSearchService {
     let context = "";
     let currentLength = 0;
     const usedSources: VectorSearchResult[] = [];
-    const relevanceScores: number[] = [];
+    const, relevanceScores: number[] = [];
     for (const result of topResults) {
       const resultText = `Document: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).filename || "Unknown"}\nContent: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).content}\nSummary: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).summary || "No summary"}\n\n`;
       if (currentLength + resultText.length <= maxContext) {

@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Production-Ready Sora & Moogle Integration
  * Native Windows deployment with existing stack compatibility
  */
-import { browser } from '$app/environment';
-import { writable, type Writable } from 'svelte/store';
+import { browser } from, '$app/environment';
+import { writable, type Writable } from, 'svelte/store';
 // Production-compatible types without external dependencies
 export interface SoraGraphNode { id: string;, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
   properties: { [key: string]: any };
@@ -13,13 +13,13 @@ export interface SoraGraphNode { id: string;, type: 'document' | 'entity' | 'co
   score?: number;
   depth?: number;
 }
-export interface SoraGraphEdge { id: string;, source: string;
+export interface SoraGraphEdge {, id: string;, source: string;
   target: string;
   type: 'cites' | 'contains' | 'related' | 'similar' | 'references' | 'contradicts';
   weight: number;
   properties: { [key: string]: any };
 }
-export interface SoraTraversalPath { nodes: SoraGraphNode[];, edges: SoraGraphEdge[];
+export interface SoraTraversalPath {, nodes: SoraGraphNode[];, edges: SoraGraphEdge[];
   totalScore: number;
   pathLength: number;
   semanticCoherence: number;
@@ -29,23 +29,23 @@ export interface MoogleVisualizationOutput {
   imageData?: ImageData;
   base64?: string;
   svg?: string;
-  metadata: { nodePositions: Array<any>;, bounds: { minX: number; maxX: number; minY: number; maxY: number };
+  metadata: {, nodePositions: Array<any>;, bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
     nodeCount: number;
     edgeCount: number;
   };
 }
-export interface SoraTraversalOptions { maxDepth: number;, maxNodes: number;
+export interface SoraTraversalOptions {, maxDepth: number;, maxNodes: number;
   scoreThreshold: number;
   traversalStrategy: 'breadth-first' | 'depth-first' | 'best-first' | 'reinforcement';
   semanticFiltering: boolean;
   useGPUAcceleration: boolean;
-  reinforcementLearning: { enabled: boolean;, explorationRate: number;
+  reinforcementLearning: {, enabled: boolean;, explorationRate: number;
     learningRate: number;
     discountFactor: number;
   };
 }
-export interface MoogleVisualizationConfig { width: number;, height: number;
+export interface MoogleVisualizationConfig {, width: number;, height: number;
   backgroundColor: string;
   nodeSize: { min: number; max: number };
   edgeThickness: { min: number; max: number };
@@ -59,7 +59,7 @@ export interface MoogleVisualizationConfig { width: number;, height: number;
  * Production Sora Graph Traversal Service
  */
 export class ProductionSoraService {
-  private cache: Map<string, SoraTraversalPath[]> = new Map();
+  private, cache: Map<string, SoraTraversalPath[]> = new Map();
   private isInitialized = $state(false);
   constructor() {
     if (browser) {
@@ -83,14 +83,14 @@ export class ProductionSoraService {
   ): Promise<SoraTraversalPath[]> {
     await this.initialize();
     const config: SoraTraversalOptions = {
-      maxDepth: 5,
+     , maxDepth: 5,
       maxNodes: 100,
       scoreThreshold: 0.6,
       traversalStrategy: 'best-first',
       semanticFiltering: true,
       useGPUAcceleration: false, // Disabled for production safety
       reinforcementLearning: {
-        enabled: false, // Disabled for production simplicity
+       , enabled: false, // Disabled for production simplicity
         explorationRate: 0.1,
         learningRate: 0.01,
         discountFactor: 0.95
@@ -120,14 +120,14 @@ export class ProductionSoraService {
   ): Promise<SoraTraversalPath[]> {
     // Mock traversal for production - replace with actual Neo4j queries
     const mockNode: SoraGraphNode = {
-      id: startNodeId,
+     , id: startNodeId,
       type: 'document',
-      properties: { title: `Document ${startNodeId}`, content: query },
+      properties: {, title: `Document ${startNodeId}`, content: query },
       score: 0.85,
-      coordinates: { x: 0, y: 0, z: 0 }
+      coordinates: {, x: 0, y: 0, z: 0 }
     };
     const mockPath: SoraTraversalPath = {
-      nodes: [mockNode],
+     , nodes: [mockNode],
       edges: [],
       totalScore: 0.85,
       pathLength: 1,
@@ -140,7 +140,7 @@ export class ProductionSoraService {
   }
   public getCacheStats(): { size: number; keys: string[] } {
     return {
-      size: this.cache.size,
+     , size: this.cache.size,
       keys: Array.from(this.cache.keys())
     };
   }
@@ -151,7 +151,7 @@ export class ProductionSoraService {
 export class ProductionMoogleService {
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
-  private cache: Map<string, MoogleVisualizationOutput> = new Map();
+  private, cache: Map<string, MoogleVisualizationOutput> = new Map();
   constructor() {
     if (browser) {
       this.initialize();
@@ -171,11 +171,11 @@ export class ProductionMoogleService {
     config: Partial<MoogleVisualizationConfig> = {}
   ): Promise<MoogleVisualizationOutput> {
     const fullConfig: MoogleVisualizationConfig = {
-      width: 800,
+     , width: 800,
       height: 600,
       backgroundColor: '#0f1419',
-      nodeSize: { min: 8, max: 32 },
-      edgeThickness: { min: 1, max: 6 },
+      nodeSize: {, min: 8, max: 32 },
+      edgeThickness: {, min: 1, max: 6 },
       colorScheme: 'legal',
       layout: 'force-directed',
       useWebGL: false, // Disabled for compatibility
@@ -237,7 +237,7 @@ export class ProductionMoogleService {
       base64,
       svg,
       metadata: {
-        nodePositions: positions,
+       , nodePositions: positions,
         bounds,
         renderTime: performance.now() - startTime,
         nodeCount: allNodes.size,
@@ -246,11 +246,11 @@ export class ProductionMoogleService {
     };
   }
   private calculateNodePositions(
-    nodes: Map<string, SoraGraphNode>,
+   , nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Map<string, { x: number; y: number }> {
-    const positions = new Map<string, { x: number; y: number }>();
+  ): Map<string, { x: number;, y: number }> {
+    const positions = new Map<string, { x: number;, y: number }>();
     // Simple circular layout for production
     const centerX = config.width / 2;
     const centerY = config.height / 2;
@@ -267,7 +267,7 @@ export class ProductionMoogleService {
   }
   private renderEdges(
     edges: Map<string, SoraGraphEdge>,
-    positions: Map<string, { x: number; y: number }>,
+    positions: Map<string, { x: number;, y: number }>,
     config: MoogleVisualizationConfig
   ): void {
     if (!this.context) return;
@@ -288,7 +288,7 @@ export class ProductionMoogleService {
   }
   private renderNodes(
     nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number; y: number }>,
+    positions: Map<string, { x: number;, y: number }>,
     config: MoogleVisualizationConfig
   ): void {
     if (!this.context) return;
@@ -313,12 +313,12 @@ export class ProductionMoogleService {
       this.context!.stroke();
     });
   }
-  private calculateBounds(positions: Array<any>): { minX: number; maxX: number; minY: number; maxY: number } {
+  private calculateBounds(positions: Array<any>): { minX: number; maxX: number; minY: number;, maxY: number } {
     if (positions.length === 0) {
       return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
     }
     return {
-      minX: Math.min(...positions.map(p => p.x)),
+     , minX: Math.min(...positions.map(p => p.x)),
       maxX: Math.max(...positions.map(p => p.x)),
       minY: Math.min(...positions.map(p => p.y)),
       maxY: Math.max(...positions.map(p => p.y))
@@ -326,7 +326,7 @@ export class ProductionMoogleService {
   }
   private generateSVG(
     nodes: Map<string, SoraGraphNode>,
-    positions: Map<string, { x: number; y: number }>,
+    positions: Map<string, { x: number;, y: number }>,
     config: MoogleVisualizationConfig
   ): string {
     let svg = `<svg, width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`;
@@ -344,7 +344,7 @@ export class ProductionMoogleService {
   }
   private createErrorVisualization(config: MoogleVisualizationConfig): MoogleVisualizationOutput {
     return { metadata: {, nodePositions: [],
-        bounds: { minX: 0, maxX: config.width, minY: 0, maxY: config.height },
+        bounds: {, minX: 0, maxX: config.width, minY: 0, maxY: config.height },
         renderTime: 0,
         nodeCount: 0,
         edgeCount: 0
@@ -356,7 +356,7 @@ export class ProductionMoogleService {
   }
   public getCacheStats(): { size: number; memoryUsage: number } {
     return {
-      size: this.cache.size,
+     , size: this.cache.size,
       memoryUsage: this.cache.size * 1024, // Estimated
     };
   }
@@ -369,13 +369,13 @@ export const soraStore = writable({
   isInitialized: false,
   currentPaths: [] as SoraTraversalPath[],
   isLoading: false,
-  error: null as string | null
+  error: null, as: string | null
 });
 export const moogleStore = writable({
   isInitialized: false,
   currentVisualization: null as MoogleVisualizationOutput | null,
   isRendering: false,
-  error: null as string | null
+  error: null, as: string | null
 });
 // Helper functions for integration with existing stack
 export async function performLegalGraphQuery(

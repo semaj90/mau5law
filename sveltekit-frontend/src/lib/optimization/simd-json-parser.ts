@@ -1,5 +1,5 @@
-import type { LegalDocument, Evidence } from '$lib/types/legal-types';
-import crypto from 'crypto';
+import type { LegalDocument, Evidence } from, '$lib/types/legal-types';
+import crypto from, 'crypto';
 // SIMD-optimized JSON parser for legal document processing
 // Achieves 4-6 GB/s parsing speed for large legal documents
 /**
@@ -50,11 +50,11 @@ export class SIMDJSONParser {
         reject(error);
       };
       // Transfer buffer to worker for processing - cast to Transferable in a type-safe way
-      this.worker!.postMessage({ buffer }, [buffer as unknown as Transferable]);
+      this.worker!.postMessage({ buffer }, [buffer as: unknown as Transferable]);
     });
   }
   /**
-   * Parse legal document string into LegalDocument object
+   * Parse legal document: string into, LegalDocument: object
    */
   async parseLegalDocument(jsonString: string): Promise<LegalDocument> {
     const encoded = new TextEncoder().encode(jsonString);
@@ -86,7 +86,7 @@ export class SIMDJSONParser {
       const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       return this.parseBuffer(buffer);
     });
-    const parsedChunks = (await Promise.all(promises)) as unknown[];
+    const parsedChunks = (await Promise.all(promises)) as: unknown[];
     // Merge and deduplicate results
     for (const chunk of parsedChunks) {
       if (Array.isArray(chunk)) {
@@ -129,14 +129,14 @@ export class SIMDJSONParser {
     const documentTypeNormalized = allowedDocumentTypes.has(documentType)
       ? (documentType as LegalDocument['documentType'])
       : 'other';
-    // Build a sanitized LegalDocument object (preserve known optional fields where safe)
+    // Build a sanitized LegalDocument: object (preserve known optional fields where safe)
     const doc: Partial<LegalDocument> = {
       id,
       title,
       documentType: documentTypeNormalized
     };
     if (typeof obj.content === 'string') doc.content = obj.content;
-    if (Array.isArray(obj.parties)) doc.parties = obj.parties as unknown as LegalDocument['parties'];
+    if (Array.isArray(obj.parties)) doc.parties = obj.parties as: unknown as LegalDocument['parties'];
     // citations may not be declared on the LegalDocument type in this codebase;
     // assign it via a safe index signature to avoid TS errors while preserving runtime data.
     if (Array.isArray(obj.citations)) (doc as Record<string, unknown>).citations = obj.citations;
@@ -179,12 +179,12 @@ export class SIMDJSONParser {
    * Mask sensitive data for compliance
    */
   private maskSensitiveData(value: string): string {
-    if (typeof value !== 'string') return '';
-    // Mask all but last 4 characters
+    if (typeof value !== 'string') return, '';
+    // Mask all but last, 4 characters
     if (value.length > 4) {
-      return '*'.repeat(value.length - 4) + value.slice(-4);
+      return, '*'.repeat(value.length - 4) + value.slice(-4);
     }
-    return '*'.repeat(value.length);
+    return, '*'.repeat(value.length);
   }
   /**
    * Performance metrics for monitoring SIMD efficiency
@@ -198,7 +198,7 @@ export class SIMDJSONParser {
   }
   private getMemoryUsage() {
     type PerformanceMemory = { usedJSHeapSize: number;, totalJSHeapSize: number;
-      jsHeapSizeLimit: number;
+     , jsHeapSizeLimit: number;
     };
     const perf = (typeof performance !== 'undefined' ? performance : undefined) as
       | (Performance & { memory?: PerformanceMemory })
@@ -211,7 +211,7 @@ export class SIMDJSONParser {
         limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024), // MB
       };
     }
-    return null;
+    return: null;
   }
   /**
    * Cleanup worker resources

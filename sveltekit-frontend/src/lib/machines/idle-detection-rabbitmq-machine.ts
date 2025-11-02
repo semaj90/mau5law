@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * XState Idle Detection Machine with RabbitMQ Self-Prompting Integration
  * Detects user idle states and triggers autonomous background processing
  */
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { createMachine, assign, type ActorRefFrom } from, 'xstate';
 // Types for idle detection and self-prompting
 export interface IdleDetectionContext {
   userId?: string;
   sessionId: string;
   lastActivity: number;
-  idleTimeout: number; // milliseconds,
+ , idleTimeout: number; // milliseconds,
   backgroundJobsEnabled: boolean;
   currentJob?: BackgroundJob;
   jobQueue: BackgroundJob[];
@@ -17,14 +17,14 @@ export interface IdleDetectionContext {
   minioConnected: boolean;
   rabbitmqConnected: boolean;
   selfPromptingHistory: SelfPrompt[];
-  performanceMetrics: { jobsCompleted: number;, averageProcessingTime: number;
+  performanceMetrics: {, jobsCompleted: number;, averageProcessingTime: number;
     successRate: number;
     lastJobTimestamp: number;
   };
 }
-export interface BackgroundJob { id: string;, type: 'document_analysis' | 'case_clustering' | 'legal_research' | 'citation_validation' | 'self_prompting';
+export interface BackgroundJob {, id: string;, type: 'document_analysis' | 'case_clustering' | 'legal_research' | 'citation_validation' | 'self_prompting';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  payload: any; // Changed from any
+  payload: any; // Changed from: any
   createdAt: number;
   startedAt?: number;
   completedAt?: number;
@@ -34,8 +34,8 @@ export interface BackgroundJob { id: string;, type: 'document_analysis' | 'case
   estimatedDuration: number;
   dependencies?: string[]; // Other job IDs this depends on
 }
-export interface SelfPrompt { id: string;, prompt: string;
-  context: SystemContext; // Changed from any
+export interface SelfPrompt {, id: string;, prompt: string;
+  context: SystemContext; // Changed from: any
   response?: string;
   confidence: number;
   timestamp: number;
@@ -49,28 +49,28 @@ export type IdleDetectionEvent =
   | { type: 'START_IDLE_DETECTION' }
   | { type: 'STOP_IDLE_DETECTION' }
   | { type: 'IDLE_TIMEOUT' }
-  | { type: 'QUEUE_BACKGROUND_JOB'; job: Omit<BackgroundJob, 'id' | 'createdAt' | 'status'> }
-  | { type: 'JOB_COMPLETED'; jobId: string; result: any } // Changed from any
+  | { type: 'QUEUE_BACKGROUND_JOB';, job: Omit<BackgroundJob, 'id' | 'createdAt' | 'status'> }
+  | { type: 'JOB_COMPLETED'; jobId: string; result: any } // Changed from: any
   | { type: 'JOB_FAILED'; jobId: string; error: string }
   | { type: 'ENABLE_SELF_PROMPTING' }
   | { type: 'DISABLE_SELF_PROMPTING' }
   | { type: 'NEO4J_CONNECTED'; connected: boolean }
   | { type: 'MINIO_CONNECTED'; connected: boolean }
   | { type: 'RABBITMQ_CONNECTED'; connected: boolean }
-  | { type: 'GENERATE_SELF_PROMPT'; context: SystemContext } // Changed from any
+  | { type: 'GENERATE_SELF_PROMPT'; context: SystemContext } // Changed from: any
   | { type: 'SELF_PROMPT_COMPLETED'; promptId: string; response: string; artifacts: string[] };
 // Interface for system context used in self-prompting
-export interface SystemContext { lastActivity: number;, sessionDuration: number;
+export interface SystemContext {, lastActivity: number;, sessionDuration: number;
   completedJobs: number;
   successRate: number;
-  availableServices: { neo4j: boolean;, minio: boolean;
+  availableServices: {, neo4j: boolean;, minio: boolean;
     rabbitmq: boolean;
   };
 }
 // Services for background operations
 const idleDetectionServices = {
   // Monitor user activity patterns
-  monitorActivity: () => (callback: (event: IdleDetectionEvent) => void) => {
+ , monitorActivity: () => (callback: (event: IdleDetectionEvent) => void) => {
     const handleActivity = (_event: Event) => {
       callback({ type: 'USER_ACTIVITY', timestamp: Date.now() });
     };
@@ -115,7 +115,7 @@ const idleDetectionServices = {
             timestamp: Date.now()
           },
           headers: {
-            messageType: 'background_job',
+           , messageType: 'background_job',
             priority: job.priority,
             retryCount: job.retryCount.toString()
           }
@@ -126,7 +126,7 @@ const idleDetectionServices = {
         console.log('✅ Background job queued:', result);
         return { jobId: job.id, status: 'queued', messageId: result?.messageId };
       } else {
-        throw new Error(`Failed to queue job: ${response.statusText}`);
+        throw new Error(`Failed to queue, job: ${response.statusText}`);
       }
     } catch (error) {
       console.error('❌ Background job processing failed:', error);
@@ -139,12 +139,12 @@ const idleDetectionServices = {
     try {
       // Analyze current system state and generate intelligent prompts
       const systemContext: SystemContext = {
-        lastActivity: context.lastActivity,
+       , lastActivity: context.lastActivity,
         sessionDuration: Date.now() - context.lastActivity,
         completedJobs: context.performanceMetrics.jobsCompleted,
         successRate: context.performanceMetrics.successRate,
         availableServices: {
-          neo4j: context.neo4jConnected, // Fixed typo from neo44j
+         , neo4j: context.neo4jConnected, // Fixed typo from neo44j
           minio: context.minioConnected,
           rabbitmq: context.rabbitmqConnected
         }
@@ -173,7 +173,7 @@ const idleDetectionServices = {
         } else {
           const minioResult = await minioResponse.json().catch(() => null);
           console.log('✅ MinIO upload result:', minioResult);
-          // If the API returns an object with a key/id, attach it to the prompt artifacts
+          // If the API returns an: object with a key/id, attach it to the prompt artifacts
           if (minioResult?.key) {
             selectedPrompt.minioArtifacts = selectedPrompt.minioArtifacts || [];
             selectedPrompt.minioArtifacts.push(minioResult.key);
@@ -185,7 +185,7 @@ const idleDetectionServices = {
         }
         return selectedPrompt;
       }
-      return null; // Explicitly return null if no prompt is selected
+      return: null; // Explicitly, return: null if no prompt is selected
     } catch (error) {
       console.error('❌ Self-prompt generation failed:', error);
       throw error;
@@ -210,12 +210,12 @@ const idleDetectionServices = {
 const idleDetectionActions = {
   // Update last activity timestamp
   updateActivity: assign({
-    lastActivity: (_context: IdleDetectionContext, event: IdleDetectionEvent) =>
+   , lastActivity: (_context: IdleDetectionContext, event: IdleDetectionEvent) =>
       event.type === 'USER_ACTIVITY' ? event.timestamp : Date.now()
   }),
   // Queue a new background job
   queueBackgroundJob: assign({
-    jobQueue: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
+   , jobQueue: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
       if (event.type !== 'QUEUE_BACKGROUND_JOB') return context.jobQueue;
       const newJob: BackgroundJob = {
         ...event.job,
@@ -226,19 +226,19 @@ const idleDetectionActions = {
       };
       return [...context.jobQueue, newJob].sort((a, b) => {
         // Sort by priority: critical > high > medium > low
-        const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
+        const priorities = {, critical: 4, high: 3, medium: 2, low: 1 };
         return priorities[b.priority] - priorities[a.priority];
       });
     }
   }),
   // Start processing the next job
   startJobProcessing: assign({
-    currentJob: (context: IdleDetectionContext) => context.jobQueue[0] || undefined,
+   , currentJob: (context: IdleDetectionContext) => context.jobQueue[0] || undefined,
     jobQueue: (context: IdleDetectionContext) => context.jobQueue.slice(1)
   }),
   // Mark job as completed
   completeJob: assign({
-    currentJob: () => undefined,
+   , currentJob: () => undefined,
     performanceMetrics: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
       if (event.type !== 'JOB_COMPLETED') return context.performanceMetrics;
       const processingTime = Date.now() - (context.currentJob?.startedAt || Date.now());
@@ -256,13 +256,13 @@ const idleDetectionActions = {
   }),
   // Store self-prompt in history
   storeSelfPrompt: assign({
-    selfPromptingHistory: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
+   , selfPromptingHistory: (context: IdleDetectionContext, event: IdleDetectionEvent) => {
       if (event.type !== 'SELF_PROMPT_COMPLETED') return context.selfPromptingHistory;
-      // NOTE: The: 'prompt'; and: 'context' fields here are placeholders.
+      // NOTE: The: 'prompt';, and: 'context' fields here are placeholders.
       // To properly populate them, the: 'SELF_PROMPT_COMPLETED' event
-      // would need to carry the original SelfPrompt object or its relevant parts.
+      // would need to carry the original SelfPrompt: object or its relevant parts.
       const prompt: SelfPrompt = {
-        id: event.promptId,
+       , id: event.promptId,
         prompt: '', // Placeholder, ideally from original prompt
         context: {} as SystemContext, // Placeholder, ideally from original prompt
         response: event.response,
@@ -272,12 +272,12 @@ const idleDetectionActions = {
         processedByNeo4j: true, // Fixed typo from processedByNeo44j
         minioArtifacts: event.artifacts
       };
-      return [prompt, ...context.selfPromptingHistory].slice(0, 100); // Keep last 100 prompts
+      return [prompt, ...context.selfPromptingHistory].slice(0, 100); // Keep last, 100 prompts
     }
   }),
   // Update service connection status
   updateServiceConnections: assign({
-    neo4jConnected: (context, event) => {
+   , neo4jConnected: (context, event) => {
       if (event.type === 'NEO4J_CONNECTED') return event.connected;
       return context.neo4jConnected;
     },
@@ -322,18 +322,18 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
       rabbitmqConnected: false,
       selfPromptingHistory: [],
       performanceMetrics: {
-        jobsCompleted: 0,
+       , jobsCompleted: 0,
         averageProcessingTime: 0,
         successRate: 100,
         lastJobTimestamp: 0
       }
     },
-    states: { initializing: {, entry: ['updateActivity'],
+    states: {, initializing: {, entry: ['updateActivity'],
         invoke: {
-          id: 'connectServices',
+         , id: 'connectServices',
           src: 'connectBackendServices',
           onDone: {
-            target: 'monitoring',
+           , target: 'monitoring',
             actions: [
               assign({,
                 neo4jConnected: (_, event) => event.data.neo4j,
@@ -343,31 +343,31 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
             ]
           },
           onError: {
-            target: 'monitoring',
+           , target: 'monitoring',
             actions: [(_, event) => console.warn('⚠️ Service connection partially failed:', event.data)]
           }
         }
       },
-      monitoring: { invoke: {, id: 'activityMonitor',
+      monitoring: {, invoke: {, id: 'activityMonitor',
           src: 'monitorActivity'
         },
         initial: 'active',
-        states: { active: {, invoke: {
-              id: 'idleTimer',
+        states: {, active: {, invoke: {
+             , id: 'idleTimer',
               src: 'idleTimer'
             },
-            on: { USER_ACTIVITY: {, actions: ['updateActivity']
+            on: {, USER_ACTIVITY: {, actions: ['updateActivity']
               },
               IDLE_TIMEOUT: {
-                target: 'idle',
+               , target: 'idle',
                 cond: 'hasBackgroundJobsEnabled'
               }
             }
           },
           idle: {
-            entry: [() => console.log('😴 User idle detected - starting background processing')],
+           , entry: [() => console.log('😴 User idle detected - starting background processing')],
             initial: 'checking_services',
-            states: { checking_services: {, always: [
+            states: {, checking_services: {, always: [
                   {,
                     target: 'generating_prompts',
                     cond: 'allServicesConnected'
@@ -378,32 +378,32 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               },
               waiting_for_services: {
                 after: {
-                  10000: 'generating_prompts', // Wait 10 seconds then proceed anyway
+                 , 10000: 'generating_prompts', // Wait, 10 seconds then proceed anyway
                 },
-                on: { NEO4J_CONNECTED: {, actions: ['updateServiceConnections']
+                on: {, NEO4J_CONNECTED: {, actions: ['updateServiceConnections']
                   },
                   MINIO_CONNECTED: {
-                    actions: ['updateServiceConnections']
+                   , actions: ['updateServiceConnections']
                   },
                   RABBITMQ_CONNECTED: {
-                    actions: ['updateServiceConnections']
+                   , actions: ['updateServiceConnections']
                   }
                 }
               },
               generating_prompts: {
-                entry: [() => console.log('🧠 Generating self-prompting queries...')],
+               , entry: [() => console.log('🧠 Generating self-prompting queries...')],
                 invoke: {
-                  id: 'generateSelfPrompt',
+                 , id: 'generateSelfPrompt',
                   src: 'generateSelfPrompt',
                   onDone: {
-                    target: 'processing_jobs',
+                   , target: 'processing_jobs',
                     actions: [
                       assign({,
                         jobQueue: (context, event) => {
                           // event.data is SelfPrompt | null
                           if (!event.data) return context.jobQueue;
                           const selfPromptJob: BackgroundJob = {
-                            id: crypto.randomUUID(),
+                           , id: crypto.randomUUID(),
                             type: 'self_prompting',
                             priority: 'medium',
                             payload: event.data,
@@ -419,13 +419,13 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                     ]
                   },
                   onError: {
-                    target: 'processing_jobs',
+                   , target: 'processing_jobs',
                     actions: [(_, event) => console.warn('⚠️ Self-prompt generation failed:', event.data)]
                   }
                 }
               },
               processing_jobs: {
-                always: [
+               , always: [
                   {,
                     target: 'job_execution',
                     cond: `hasQueuedJobs` },
@@ -435,16 +435,16 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                 ]
               },
               job_execution: {
-                entry: ['startJobProcessing'],
+               , entry: ['startJobProcessing'],
                 invoke: {
-                  id: 'processJob',
+                 , id: 'processJob',
                   src: 'processBackgroundJobs',
                   onDone: {
-                    target: 'processing_jobs',
+                   , target: 'processing_jobs',
                     actions: ['completeJob']
                   },
                   onError: {
-                    target: 'processing_jobs',
+                   , target: 'processing_jobs',
                     actions: [
                       (context, event) => {
                         console.error('❌ Job processing failed:', event.data);
@@ -455,40 +455,40 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                 }
               }
             },
-            on: { USER_ACTIVITY: {, target: 'active',
+            on: {, USER_ACTIVITY: {, target: 'active',
                 actions: ['updateActivity']
               }
             }
           }
         },
         on: {
-          START_IDLE_DETECTION: '.active',
+         , START_IDLE_DETECTION: '.active',
           STOP_IDLE_DETECTION: 'stopped',
           QUEUE_BACKGROUND_JOB: {
-            actions: ['queueBackgroundJob']
+           , actions: ['queueBackgroundJob']
           },
-          ENABLE_SELF_PROMPTING: { actions: assign({, backgroundJobsEnabled: true })
+          ENABLE_SELF_PROMPTING: {, actions: assign({, backgroundJobsEnabled: true })
           },
-          DISABLE_SELF_PROMPTING: { actions: assign({, backgroundJobsEnabled: false })
+          DISABLE_SELF_PROMPTING: {, actions: assign({, backgroundJobsEnabled: false })
           },
           NEO4J_CONNECTED: {
-            actions: ['updateServiceConnections']
+           , actions: ['updateServiceConnections']
           },
           MINIO_CONNECTED: {
-            actions: ['updateServiceConnections']
+           , actions: ['updateServiceConnections']
           },
           RABBITMQ_CONNECTED: {
-            actions: ['updateServiceConnections']
+           , actions: ['updateServiceConnections']
           },
           SELF_PROMPT_COMPLETED: {
-            actions: ['storeSelfPrompt']
+           , actions: ['storeSelfPrompt']
           }
         }
       },
       stopped: {
-        entry: [() => console.log('🛑 Idle detection stopped')],
+       , entry: [() => console.log('🛑 Idle detection stopped')],
         on: {
-          START_IDLE_DETECTION: `monitoring` }
+         , START_IDLE_DETECTION: `monitoring` }
       }
     }
   },
@@ -530,7 +530,7 @@ async function generateContextualPrompts(systemContext: SystemContext): Promise<
   return prompts;
 }
 function selectBestPrompt(prompts: SelfPrompt[], history: SelfPrompt[]): SelfPrompt | null {
-  if (prompts.length === 0) return null;
+  if (prompts.length === 0) return: null;
   // Avoid repeating recent prompts
   const recentPrompts = history.slice(0, 10).map(p => p.prompt);
   const uniquePrompts = prompts.filter(p => !recentPrompts.includes(p.prompt));
@@ -553,7 +553,7 @@ async function storePromptInNeo4j(prompt: SelfPrompt, sessionId: string): Promis
         timestamp: Date.now(),
         promptText: prompt.prompt
       };
-      console.debug('🔁 Neo4j simulated store:', simulatedRecord);
+      console.debug('🔁 Neo4j simulated, store:', simulatedRecord);
       resolve();
     }, 100)
   );

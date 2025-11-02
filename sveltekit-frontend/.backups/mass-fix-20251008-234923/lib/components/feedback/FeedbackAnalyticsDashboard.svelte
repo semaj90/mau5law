@@ -199,7 +199,7 @@ https://svelte.dev/e/component_invalid_directive -->
     </div>
   </header>
   {#if error}
-    <div class="error-banner" transition:fade>
+    <div class="error-banner" use:fade>
       <AlertCircle class="w-5 h-5" />
       <div>
         <h3 class="font-semibold">Error Loading Analytics</h3>

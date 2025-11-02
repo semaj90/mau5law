@@ -3,18 +3,18 @@
  * Redis List-based chat history management with CHR-ROM pattern caching
  * Integrates with your Gemma embedding service and NES memory architecture
  */
-import { redis } from '$lib/server/database/redis-client';
-import { chrRomCacheReader } from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
-import { generateEmbedding } from '$lib/services/embedding-generator';
-import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } from '$lib/config/legal-priorities';
-import { createHash } from 'crypto';
+import { redis } from, '$lib/server/database/redis-client';
+import { chrRomCacheReader } from, '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry } from, '$lib/registry/texture-component-registry';
+import { generateEmbedding } from, '$lib/services/embedding-generator';
+import { calculateDocumentPriority, selectMemoryBank, type LegalCategory } from, '$lib/config/legal-priorities';
+import { createHash } from, 'crypto';
 
 // Chat configuration constants
 const HISTORY_KEY_PREFIX = 'legal_chat_history:';
 const CONTEXT_KEY_PREFIX = 'legal_chat_context:';
 const SUMMARY_KEY_PREFIX = 'legal_chat_summary:';
-const MAX_HISTORY_LENGTH = 100;     // Keep last 100 messages per conversation
+const MAX_HISTORY_LENGTH = 100;     // Keep last, 100 messages per conversation
 const INACTIVE_TTL_SECONDS = 7200;  // 2 hours of inactivity
 const CONTEXT_TTL_SECONDS = 3600;   // 1 hour for context cache
 const SUMMARY_TTL_SECONDS = 86400;  // 24 hours for conversation summaries
@@ -45,12 +45,12 @@ export interface ConversationContext {
   legalEntities: string[];
 }
 
-export interface ChatMemoryStats { totalConversations: number;, activeConversations: number;
+export interface ChatMemoryStats {, totalConversations: number;, activeConversations: number;
   totalMessages: number;
   cacheHitRate: number;
   avgResponseTime: number;
   memoryUsage: number;
-  topLegalCategories: Record<string, number>;
+ , topLegalCategories: Record<string, number>;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface ChatMemoryStats { totalConversations: number;, activeConversat
  */
 export class LegalChatMemoryService {
   private stats: ChatMemoryStats = {
-    totalConversations: 0,
+   , totalConversations: 0,
     activeConversations: 0,
     totalMessages: 0,
     cacheHitRate: 0,
@@ -81,7 +81,7 @@ export class LegalChatMemoryService {
     });
 
     // Start periodic cleanup
-    setInterval(() => this.performCleanup(), 300_000); // Every 5 minutes
+    setInterval(() => this.performCleanup(), 300_000); // Every, 5 minutes
   }
 
   /**
@@ -178,10 +178,10 @@ export class LegalChatMemoryService {
       if (contextData) {
         return JSON.parse(contextData) as ConversationContext;
       }
-      return null;
+      return: null;
     } catch (error) {
       console.error('🎮 Failed to retrieve conversation context:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -221,11 +221,11 @@ export class LegalChatMemoryService {
         sessionId,
         messageCount: messages.length,
         timespan: {
-          start: messages[0]?.timestamp,
+         , start: messages[0]?.timestamp,
           end: messages[messages.length - 1]?.timestamp
         },
         legalContext: {
-          caseIds: Array.from(caseIds),
+         , caseIds: Array.from(caseIds),
           categories: Array.from(categories),
           entities: Array.from(legalEntities).slice(0, 10)
         },
@@ -240,7 +240,7 @@ export class LegalChatMemoryService {
       return serialized;
     } catch (error) {
       console.error('🎮 Failed to generate conversation summary:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -291,7 +291,7 @@ export class LegalChatMemoryService {
         const mockDocument = {
           id: sessionId,
           type: 'correspondence' as const,
-          category: (context?.legalCategory as string) ?? 'corporate',
+          category: (context?.legalCategory, as: string) ?? 'corporate',
           urgency: 'medium' as const,
           complexity: 'moderate' as const,
           activeReview: true,
@@ -326,7 +326,7 @@ export class LegalChatMemoryService {
       // Extract entities from message content (simple keyword extraction)
       if (message.role === 'user') {
         const entities = this.extractLegalEntities(message.content);
-        conversationContext.legalEntities = Array.from(new Set([...(conversationContext.legalEntities || []), ...entities])).slice(0, 20); // Keep top 20 entities
+        conversationContext.legalEntities = Array.from(new Set([...(conversationContext.legalEntities || []), ...entities])).slice(0, 20); // Keep top, 20 entities
       }
 
       // Save updated context
@@ -345,10 +345,10 @@ export class LegalChatMemoryService {
       if (pattern && pattern.data) {
         return JSON.parse(String(pattern.data)) as ChatMessage[];
       }
-      return null;
+      return: null;
     } catch (error) {
       console.warn('🎮 CHR-ROM chat history check failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -390,7 +390,7 @@ export class LegalChatMemoryService {
     // Generate simple flow indicator
     const color = role === 'user' ? '#3cbcfc' : role === 'assistant' ? '#00d800' : '#fc9838';
     const width = Math.min(48, Math.max(8, Math.floor(messageLength / 20)));
-    return `<div style="width: ${width}px; height: 4px; background: ${color}; margin: 1px, 0; border: 1px, solid #000;"></div>`;
+    return `<div style="width: ${width}px; height: 4px; background: ${color};, margin: 1px, 0; border: 1px, solid #000;"></div>`;
   }
 
   /**
@@ -406,7 +406,7 @@ export class LegalChatMemoryService {
       intellectual_property: '#8800ff',
       employment: '#00ff88` };'`
     const color = colors[category] ?? '#888888';
-    return `<div, style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence}; border: 1px, solid #000;"></div>`;
+    return `<div, style="width: 16px; height: 16px; background: ${color}; opacity: ${confidence};, border: 1px, solid #000;"></div>`;
   }
 
   /**

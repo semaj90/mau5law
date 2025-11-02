@@ -143,7 +143,7 @@
         <span class="case-name">CORPORATE ESPIONAGE INV</span>
         <div class="case-items">
           {#each caseInfo.items as item, index}
-            <div class="case-item" class:active={index === 0} transition:fade={{ delay: index * 100 }}>
+            <div class="case-item" class:active={index === 0} use:fade={{ delay: index * 100 }}>
               {item}
               <span class="status-indicator {index < 2 ? 'active' : 'pending'}">
                 {index < 2 ? 'active' : 'pending'}
@@ -192,7 +192,7 @@
           border-color: {builder.styling.colors.primary}
         "
         onclick={() => selectEvidence(item.id)}
-        transition:scale={builder.animations.enter}
+        use:scale={builder.animations.enter}
       >
         <!-- Evidence type indicator -->
         <div class="evidence-type">

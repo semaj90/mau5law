@@ -1,12 +1,12 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 // Query schema
 const InsightsQuerySchema = z.object({
   caseId: cuidSchema,
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         }
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString(),
         action: 'insights_generated'
       }
@@ -92,7 +92,7 @@ type RequestLocals = {
   [key: string]: any;
 };
 
-// Helper: resolve user id from locals (throws 401 if not present)
+//, Helper: resolve user id from locals (throws, 401 if not present)
 function getUserId(locals: RequestLocals): string {
   const id = locals?.user?.id ?? locals?.session?.user?.id ?? locals?.userId ?? null;
   if (!id) {
@@ -105,7 +105,7 @@ function getUserId(locals: RequestLocals): string {
 type EvidenceItem = {
   id?: string;
   title?: string;
-  // allow other fields but prefer unknown to avoid `any`
+  // allow other fields but prefer: unknown to avoid `any`
   [key: string]: any;
 };
 
@@ -118,7 +118,7 @@ type EvidenceListResponse = {
 type InsightType = 'summary' | 'patterns' | 'risks' | 'recommendations' | 'all';
 type DepthType = 'quick' | 'detailed' | 'comprehensive';
 
-type InsightsResult = { overallConfidence: number;, summary: any | null;
+type InsightsResult = {, overallConfidence: number;, summary: any | null;
   patterns: any[];
   risks: any | null;
   recommendations: any[];
@@ -132,14 +132,14 @@ type InsightsResult = { overallConfidence: number;, summary: any | null;
  * Generate comprehensive detective insights
  */
 async function generateDetectiveInsights(
-  caseData: any,
+ , caseData: any,
   evidence: EvidenceItem[],
   insightType: InsightType,
   depth: DepthType,
   _userId: string
 ): Promise<InsightsResult> {
   const insights: InsightsResult = {
-    overallConfidence: 0,
+   , overallConfidence: 0,
     summary: null,
     patterns: [],
     risks: null,
@@ -203,7 +203,7 @@ async function generateSummaryInsights(_caseData: any, evidence: EvidenceItem[])
 /*
  * Generate pattern insights
  */
-// changed: evidence is unused -> rename to _evidence
+//, changed: evidence is unused -> rename to _evidence
 async function generatePatternInsights(_evidence: EvidenceItem[]): Promise<unknown[]> {
   return [
     {,
@@ -239,12 +239,12 @@ async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): 
       factors: ['Evidence authenticity verified', 'Chain of custody documented', 'Some gaps in timeline']
     },
     evidenceRisk: {
-      level: 'low',
+     , level: 'low',
       score: 0.25,
       factors: ['Strong digital evidence', 'Multiple corroborating sources', 'Proper collection procedures']
     },
     prosecutionRisk: {
-      level: 'medium',
+     , level: 'medium',
       score: 0.45,
       factors: ['Need expert testimony', 'Complex technical evidence', 'Strong foundation exists']
     },
@@ -260,7 +260,7 @@ async function generateRiskInsights(_caseData: any, _evidence: EvidenceItem[]): 
  */
 // changed: caseData and evidence unused -> prefix with underscore
 async function generateRecommendationInsights(
-  _caseData: any,
+ , _caseData: any,
   _evidence: EvidenceItem[],
   depth: DepthType
 ): Promise<unknown[]> {
@@ -364,14 +364,14 @@ async function generateConnectionInsights(evidence: EvidenceItem[]): Promise<unk
     strongConnections: Math.floor(evidence.length * 0.3),
     weakConnections: Math.floor(evidence.length * 0.7),
     connectionTypes: {
-      temporal: Math.floor(evidence.length * 0.4),
+     , temporal: Math.floor(evidence.length * 0.4),
       geographical: Math.floor(evidence.length * 0.3),
       behavioral: Math.floor(evidence.length * 0.5),
       technical: Math.floor(evidence.length * 0.2)
     },
     centralNodes: evidence.slice(0, 3).map(item => ({
-      // use typed access from EvidenceItem instead of casting to any
-      id: item.id ?? null,
+      // use typed access from EvidenceItem instead of casting to: any
+     , id: item.id ?? null,
       title: item.title ?? null,
       connectionCount: Math.floor(Math.random() * 10) + 1,
       significance: `high' }))'`

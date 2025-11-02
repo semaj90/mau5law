@@ -3,9 +3,9 @@ Enhanced-Bits Label Component
 NES-styled label with legal AI theming
 -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
+  // Svelte, 5 runes are auto-imported
+	import type { Snippet } from, 'svelte';
+  import { cn } from, '$lib/utils';
   interface LabelProps {
     for?: string;
     required?: boolean;
@@ -46,7 +46,7 @@ NES-styled label with legal AI theming
     font-family: 'Courier New', monospace;
   }
   .bits-label:hover {
-    color: rgb(59, 130, 246);
+   , color: rgb(59, 130, 246);
   }
 /* NES-style text shadow for retro effect */ {}
   .bits-label {
@@ -60,13 +60,13 @@ NES-styled label with legal AI theming
     content: '';
     position: absolute;
     bottom: -2px;
-    left: 0,
+   , left: 0,
     width: 0;
     height: 2px;
-    background: linear-gradient(45deg, #00ff9f, #00b4ff);
+   , background: linear-gradient(45deg, #00ff9f, #00b4ff);
     transition: width: 0.3s ease;
   }
   .bits-label:hover::before {
-    width: 100%;
+   , width: 100%;
   }
 </style>

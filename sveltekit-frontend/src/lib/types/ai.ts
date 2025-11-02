@@ -1,4 +1,4 @@
-import type { AIResponse } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
 export interface AIResponse {
   confidence?: number;
   keyTerms?: string[];
@@ -7,8 +7,8 @@ export interface AIResponse {
   legalRisk?: string;
   [key: string]: any;
 }
-export interface VectorSearchResult { id: string;, content: string;
-  score: number;
+export interface VectorSearchResult {, id: string;, content: string;
+ , score: number;
   metadata?: Record<string, unknown>;
   source?: { type: string;, name: string;
     url: string;
@@ -20,7 +20,7 @@ export interface SemanticEntity {
   id?: string;
   text: string;
   type: string;
-  confidence: number;
+ , confidence: number;
   start?: number;
   end?: number;
   metadata?: Record<string, unknown>;
@@ -30,7 +30,7 @@ export interface OrchestrationOptions { enabled: boolean;, priority: 'low' | 'm
   timeout?: number;
   retries?: number;
 }
-export interface MCPToolRequest { tool: string;, args: Record<string, unknown>;
+export interface MCPToolRequest {, tool: string;, args: Record<string, unknown>;
   context?: Record<string, unknown>;
 }
 export interface EnhancedRAGEngine {
@@ -39,7 +39,7 @@ export interface EnhancedRAGEngine {
   analyze: (content: string) => Promise<SemanticEntity[]>;
 }
 // Chat related types for AI Assistant
-import type { ChatMessage as ApiChatMessage } from './api-contracts.js';
+import type { ChatMessage as ApiChatMessage } from, './api-contracts.js';
 export interface ChatRequest {
   message: string;
   model?: string;
@@ -51,10 +51,10 @@ export interface ChatRequest {
     previousMessages?: ApiChatMessage[]; // use shared type
   };
 }
-export interface ChatResponse { response: string;, model: string;
+export interface ChatResponse {, response: string;, model: string;
   timestamp: string;
   conversationId?: string;
-  performance: { duration: number;, tokens: number;
+  performance: {, duration: number;, tokens: number;
     promptTokens: number;
     responseTokens: number;
     tokensPerSecond: number;
@@ -63,8 +63,8 @@ export interface ChatResponse { response: string;, model: string;
   relatedCases?: string[];
   vectorSearchResults?: VectorSearchResult[];
 }
-export interface SystemStatus { gpu: boolean;, ollama: boolean;
+export interface SystemStatus {, gpu: boolean;, ollama: boolean;
   enhancedRAG: boolean;
   postgres: boolean;
-  neo4j: boolean;
+ , neo4j: boolean;
 }

@@ -3,7 +3,7 @@
  *
  * Allows browser to call Ollama gemma3:270m through API proxy
  *
- * Usage:
+ *, Usage:
  *   const ollama = new OllamaClient();
  *   const response = await ollama.generate('Summarize this contract...');
  */
@@ -26,7 +26,7 @@ export class OllamaClient {
   private baseUrl: string;
   private defaultModel: string;
   constructor(
-    baseUrl: string = '/api/ollama',
+   , baseUrl: string = '/api/ollama',
     defaultModel: string = 'gemma3:270m'
   ) {
     this.baseUrl = baseUrl;
@@ -36,7 +36,7 @@ export class OllamaClient {
    * Generate text using Ollama gemma3:270m
    */
   async generate(
-    prompt: string,
+   , prompt: string,
     options: GenerateOptions = {}
   ): Promise<GenerateResponse> {
     const {
@@ -77,7 +77,7 @@ export class OllamaClient {
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{, role: 'user' | 'assistant' | 'system'; content: string }>,
+    messages: Array<{, role: 'user' | 'assistant' | 'system';, content: string }>,
     options: GenerateOptions = {}
   ): Promise<string> {
     // Build prompt from messages
@@ -99,7 +99,7 @@ export class OllamaClient {
    * Check if Ollama is available
    */
   async healthCheck(): Promise<{ status: string;, gemma3_270m_available: boolean;
-    available_models: string[];
+   , available_models: string[];
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
@@ -161,10 +161,10 @@ export const ollamaClient = new OllamaClient();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte component:
+ * // In a Svelte, component:
  * <script, lang="ts">
-import type { User } from '$lib/types';
- *   import { ollamaClient } from '$lib/ai/ollama-client';
+import type { User } from, '$lib/types';
+ *   import { ollamaClient } from, '$lib/ai/ollama-client';
  *
  *   let response = $state<string>('');
  *
@@ -180,7 +180,7 @@ import type { User } from '$lib/types';
  * </script>
  *
  * <button, onclick={() => ask('Explain contract law')}>
- *   Ask Gemma 3 270M
+ *   Ask Gemma, 3 270M
  * </button>
  *
  * <p>{response}</p>

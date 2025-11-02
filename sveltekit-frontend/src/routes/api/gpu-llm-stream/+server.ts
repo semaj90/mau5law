@@ -2,9 +2,9 @@
  * SvelteKit API endpoint for GPU-accelerated LLM streaming
  * Handles chunked responses and VRAM management
  */
-import type { RequestHandler } from './$types.js'
-import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline'
-import { error } from '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { GPULLMStreamingPipeline } from, '$lib/services/gpu-llm-streaming-pipeline'
+import { error } from, '@sveltejs/kit'
 
 // Add a local StreamConfig type with explicit fields instead of `any`
 type StreamConfig = {
@@ -12,7 +12,7 @@ type StreamConfig = {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
-  // allow other vendor-specific settings but keep them typed as unknown
+  // allow other vendor-specific settings but keep them typed as: unknown
   [key: string]: any;
 };
 
@@ -36,7 +36,7 @@ async function getPipeline(): Promise<LocalPipeline> {
   }
   return pipeline;
 }
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     // narrow the runtime JSON shape so `config` is typed as StreamConfig
     const body = (await request.json()) as { prompt?: string; config?: StreamConfig };
@@ -47,11 +47,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const llmPipeline = await getPipeline();
     // Default configuration
     const streamConfig: StreamConfig = {
-      modelPath: (config.modelPath as string) || '/models/gemma-3b',
-      maxTokens: (config.maxTokens as number) || 2048,
-      temperature: (config.temperature as number) || 0.7,
-      topP: (config.topP as number) || 0.9,
-      // spread any other unknown keys through (keeps typing safe)
+      modelPath: (config.modelPath, as: string) || '/models/gemma-3b',
+      maxTokens: (config.maxTokens, as: number) || 2048,
+      temperature: (config.temperature, as: number) || 0.7,
+      topP: (config.topP, as: number) || 0.9,
+      // spread: any, other: unknown keys through (keeps typing safe)
       ...config
     };
     // Create a ReadableStream for chunked response
@@ -107,16 +107,16 @@ export const GET: RequestHandler = async () => {
     const stats = {
       status: 'ready',
       gpu: {
-        available: typeof navigator !== 'undefined' && 'gpu' in navigator,
+       , available: typeof navigator !== 'undefined' && 'gpu' in navigator,
         webgpu: typeof GPUAdapter !== 'undefined` },'`
       memory: {
         // Server-side memory info
-        heapUsed: process.memoryUsage().heapUsed,
+       , heapUsed: process.memoryUsage().heapUsed,
         heapTotal: process.memoryUsage().heapTotal,
         external: process.memoryUsage().external
       },
       simd: {
-        workers: 4, // Number of SIMD workers
+       , workers: 4, // Number of SIMD workers
         supported: true
       }
     };

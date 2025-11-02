@@ -1,18 +1,18 @@
 /**
  * MinIO Object Storage Integration - Production-ready File Storage
  *
- * S3-compatible object storage for legal documents, evidence files,
+ * S3-compatible: object storage for legal documents, evidence files,
  * and multimodal data with streaming uploads, presigned URLs, and versioning.
  */
 
-import * as Minio from 'minio';
+import * as Minio from, 'minio';
 
 interface MinIOConfig {
   endPoint: string;
   port?: number;
   useSSL?: boolean;
   accessKey: string;
-  secretKey: string;
+ , secretKey: string;
   region?: string;
 }
 
@@ -29,7 +29,7 @@ interface PresignedUrlOptions {
 
 class MinIOStorageService {
   private client: Minio.Client;
-  private config: Required<MinIOConfig>;
+  private, config: Required<MinIOConfig>;
 
   constructor(config: Partial<MinIOConfig> = {}) {
     this.config = {
@@ -42,7 +42,7 @@ class MinIOStorageService {
     };
 
     this.client = new Minio.Client({
-      endPoint: this.config.endPoint,
+     , endPoint: this.config.endPoint,
       port: this.config.port,
       useSSL: this.config.useSSL,
       accessKey: this.config.accessKey,
@@ -59,7 +59,7 @@ class MinIOStorageService {
 
     if (!exists) {
       await this.client.makeBucket(bucketName, region || this.config.region);
-      console.log(`Bucket '${bucketName}' created successfully`);
+      console.log(`Bucket, '${bucketName}' created successfully`);
     }
   }
 
@@ -97,7 +97,7 @@ class MinIOStorageService {
    * Upload file from stream
    */
   async uploadStream(
-    bucketName: string,
+   , bucketName: string,
     objectName: string,
     stream: NodeJS.ReadableStream,
     size: number,
@@ -204,11 +204,11 @@ class MinIOStorageService {
     bucketName: string,
     prefix?: string,
     recursive: boolean = false
-  ): Promise<Array<{ name: string; size: number; etag: string; lastModified: Date }>> {
+  ): Promise<Array<{ name: string; size: number; etag: string;, lastModified: Date }>> {
     const stream = this.client.listObjects(bucketName, prefix, recursive);
 
     return new Promise((resolve, reject) => {
-      const objects: Array<{ name: string; size: number; etag: string; lastModified: Date }> = [];
+      const objects: Array<{ name: string; size: number; etag: string;, lastModified: Date }> = [];
 
       stream.on('data', (obj) => {
         if (obj.name) {
@@ -245,7 +245,7 @@ class MinIOStorageService {
    * Get file metadata
    */
   async getFileMeta(bucketName: string, objectName: string): Promise<{ size: number;, etag: string;
-    lastModified: Date;
+   , lastModified: Date;
     contentType?: string;
     metadata?: Record<string, string>;
   }> {
@@ -264,7 +264,7 @@ class MinIOStorageService {
    * Copy file within MinIO
    */
   async copyFile(
-    sourceBucket: string,
+   , sourceBucket: string,
     sourceObject: string,
     destBucket: string,
     destObject: string
@@ -311,7 +311,7 @@ class MinIOStorageService {
 }
 
 // Singleton instance
-let minioInstance: MinIOStorageService | null = null;
+let, minioInstance: MinIOStorageService | null = null;
 
 export function getMinIOStorage(config?: Partial<MinIOConfig>): MinIOStorageService {
   if (!minioInstance || config) {

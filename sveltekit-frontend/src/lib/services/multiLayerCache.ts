@@ -1,19 +1,19 @@
-import crypto from 'crypto';
-import Loki from 'lokijs';
-import Fuse from 'fuse.js'; // Removed FuseResult from here
-import { browser } from '$app/environment';
-import type { SearchResult } from './aiPipeline.js';
+import crypto from, 'crypto';
+import Loki from, 'lokijs';
+import Fuse from, 'fuse.js'; // Removed FuseResult from here
+import { browser } from, '$app/environment';
+import type { SearchResult } from, './aiPipeline.js';
 
 // Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
 type Collection<T, extends, object> = {
   // basic collection properties/methods used by this file
   data: T[];
   name?: string;
-  // Loki insert may return the inserted document or undefined
+  // Loki insert may return the inserted document, or: undefined
   insert(item: T): T | undefined;
   add?(items: T[]): void;
   find(query?: Record<string, unknown>): T[];
-  // findOne returns an item or undefined (make required so callers can call it)
+  // findOne returns an item or: undefined (make required so callers can call it)
   findOne(query?: Record<string, unknown>): T | undefined;
   remove(item: T): void;
   clear(): void;
@@ -37,7 +37,7 @@ interface SearchableValue {
 }
 
 // Define the structure for items stored in the search index
-interface SearchIndexEntry { id: string;, type: CacheEntry['metadata']['type'];
+interface SearchIndexEntry {, id: string;, type: CacheEntry['metadata']['type'];
   userId?: string;
   content: string;
   title?: string;
@@ -46,9 +46,9 @@ interface SearchIndexEntry { id: string;, type: CacheEntry['metadata']['type'];
   tags?: string[];
 }
 
-export interface CacheEntry { id: string;, key: string;
+export interface CacheEntry {, id: string;, key: string;
   value: CacheValue; // Use the defined CacheValue type
-  metadata: { type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';, createdAt: Date;
+  metadata: {, type: 'query' | 'document' | 'embedding' | 'search' | 'recommendation';, createdAt: Date;
     lastAccessed: Date;
     accessCount: number;
     ttl: number; // Time to live in seconds
@@ -57,7 +57,7 @@ export interface CacheEntry { id: string;, key: string;
     tags?: string[];
   };
 }
-export interface CacheStats { totalEntries: number;, totalSize: number;
+export interface CacheStats {, totalEntries: number;, totalSize: number;
   hitRate: number;
   evictionCount: number;
   avgAccessTime: number;
@@ -67,7 +67,7 @@ export interface CacheStats { totalEntries: number;, totalSize: number;
   };
 }
 export interface FuseSearchOptions {
-  keys: string[];
+ , keys: string[];
   threshold?: number;
   limit?: number;
   includeScore?: boolean;
@@ -93,7 +93,7 @@ export class MultiLayerCache {
   private persistentDb: Loki | null = null;
   private cacheCollection: Collection<CacheEntry>; // Collection<CacheEntry>
   private searchCollection: Collection<SearchIndexEntry>; // Collection<SearchIndexEntry>
-  private fuseInstances: Map<string, Fuse<SearchIndexEntry>> = new Map();
+  private, fuseInstances: Map<string, Fuse<SearchIndexEntry>> = new Map();
   // Cache statistics
   private stats = {
     hits: 0,
@@ -115,10 +115,10 @@ export class MultiLayerCache {
       indices: ['key'],
       ttl: this.defaultTTL * 1000,
       ttlInterval: 60000, // Check every minute
-    }) as unknown as Collection<CacheEntry>;
+    }) as: unknown as Collection<CacheEntry>;
     this.searchCollection = this.memoryDb.addCollection('searchIndex', {
       indices: ['type', 'userId']
-    }) as unknown as Collection<SearchIndexEntry>;
+    }) as: unknown as Collection<SearchIndexEntry>;
     // Initialize persistent storage if in browser
     if (browser) {
       this.initPersistentStorage();
@@ -135,13 +135,13 @@ export class MultiLayerCache {
         adapter: new LokiIndexedAdapter('multiLayerCache'),
         autoload: true,
         autosave: true,
-        autosaveInterval: 10000, // Save every 10 seconds
+        autosaveInterval: 10000, // Save every, 10 seconds
       });
 
       // Wait for Loki to finish loading the database. Avoid: 'any' by defining a minimal typed shape.
       type LokiWithLoad = { loadDatabase(opts: any;, callback: () => void): void };
       await new Promise<void>(resolve => {
-        (this.persistentDb as unknown as LokiWithLoad).loadDatabase({}, () => resolve());
+        (this.persistentDb as: unknown as LokiWithLoad).loadDatabase({}, () => resolve());
       });
     } catch (error: any) {
       console.error('Failed to initialize persistent storage:', error);
@@ -165,11 +165,11 @@ export class MultiLayerCache {
     try {
       const size = this.calculateSize(value);
       const entry: CacheEntry = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         key,
         value,
         metadata: {
-          type: options.type,
+         , type: options.type,
           createdAt: new Date(),
           lastAccessed: new Date(),
           accessCount: 0,
@@ -242,7 +242,7 @@ export class MultiLayerCache {
         }
       }
       this.stats.misses++;
-      return null;
+      return: null;
     } finally {
       this.stats.totalAccessTime += Date.now() - startTime;
       this.stats.accessCount++;
@@ -280,10 +280,10 @@ export class MultiLayerCache {
       this.fuseInstances.set(fuseKey, fuse);
     }
     // Perform search and assert typed results
-    const results = fuse.search(query).slice(0, options.limit || 10) as unknown as IFuseResult<SearchIndexEntry>[];
+    const results = fuse.search(query).slice(0, options.limit || 10) as: unknown as IFuseResult<SearchIndexEntry>[];
     return results.map(result => ({
       // Use IFuseResult
-      item: result.item as T,
+     , item: result.item as T,
       score: result.score ?? undefined
     }));
   }
@@ -296,16 +296,16 @@ export class MultiLayerCache {
       type?: string;
       userId?: string;
       tags?: string[];
-      dateRange?: { start: Date; end: Date };
+      dateRange?: { start: Date;, end: Date };
     }
   ): Promise<SearchResult[]> {
     // Build Loki query
-    // Define a type for Loki.js queries on SearchIndexEntry that allows dot-notation string keys
+    // Define a type for Loki.js queries on SearchIndexEntry that allows dot-notation: string keys
     type LokiQueryForSearchIndexEntry = Partial<SearchIndexEntry> & {
       'metadata.createdAt'?: LokiCondition<Date>;
     };
 
-    const lokiQuery: LokiQueryForSearchIndexEntry = { type: `document' };'`
+    const lokiQuery: LokiQueryForSearchIndexEntry = {, type: `document' };'`
     if (filters?.userId) {
       lokiQuery['userId'] = filters.userId;
     }
@@ -325,7 +325,7 @@ export class MultiLayerCache {
       minMatchCharLength: 3
     });
     // Narrow the type of search results so subsequent callbacks accept item as SearchIndexEntry
-    const searchResults = fuse.search(query) as unknown as IFuseResult<SearchIndexEntry>[];
+    const searchResults = fuse.search(query) as: unknown as IFuseResult<SearchIndexEntry>[];
     // Filter by tags if specified
     let filteredResults = searchResults;
     if (filters?.tags && filters.tags.length > 0) {
@@ -398,17 +398,17 @@ export class MultiLayerCache {
       hitRate,
       evictionCount: this.stats.evictions,
       avgAccessTime,
-      layerStats: { memory: {, entries: memoryEntries,
+      layerStats: {, memory: {, entries: memoryEntries,
           size: memorySize,
           hitRate
         },
         persistent: {
-          entries: 0, // Would need to count from persistent DB
+         , entries: 0, // Would need to count from persistent DB
           size: 0,
           hitRate: 0
         },
         search: {
-          entries: searchEntries,
+         , entries: searchEntries,
           queries: this.fuseInstances.size
         }
       }
@@ -532,12 +532,12 @@ export class MultiLayerCache {
       throw new Error('Persistent storage not initialized');
     }
     // Cast Loki's getCollection/addCollection results to the local Collection type'
-    let collection = this.persistentDb.getCollection(`cache_${type}`) as unknown as Collection<CacheEntry> | null;
+    let collection = this.persistentDb.getCollection(`cache_${type}`) as: unknown as Collection<CacheEntry> | null;
     if (!collection) {
       collection = this.persistentDb.addCollection(`cache_${type}`, {
         indices: ['key'],
         ttl: this.defaultTTL * 1000 * 10, // 10x TTL for persistent
-      }) as unknown as Collection<CacheEntry>;
+      }) as: unknown as Collection<CacheEntry>;
     }
     return collection;
   }
@@ -550,7 +550,7 @@ export class MultiLayerCache {
         // Clean up expired entries (Loki handles TTL automatically)
         // Clean up orphaned Fuse instances
         if (this.fuseInstances.size > 10) {
-          // Keep only the 10 most recently used
+          // Keep only the, 10 most recently used
           const entries = Array.from(this.fuseInstances.entries());
           entries.slice(10).forEach(([key]) => {
             this.fuseInstances.delete(key);
@@ -564,7 +564,7 @@ export class MultiLayerCache {
 class LokiIndexedAdapter {
   private db: IDBDatabase | null = null;
 
-  constructor(private dbName: string) {}
+  constructor(private, dbName: string) {}
 
   private async getDb(): Promise<IDBDatabase> {
     if (this.db) {
@@ -574,7 +574,7 @@ class LokiIndexedAdapter {
     return this.db;
   }
 
-  // Accept: 'opts' as unknown to match how Loki may call the adapter
+  // Accept: 'opts', as: unknown to match how Loki may call the adapter
   async loadDatabase(opts: any, callback: (data: string | null) => void): Promise<void> {
     try {
       const db = await this.getDb();

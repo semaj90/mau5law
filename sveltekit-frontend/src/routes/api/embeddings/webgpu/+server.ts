@@ -1,9 +1,9 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 
 /**
  * Deterministic local embedding generator for edge/browser fallback.
- * Produces a fixed-dimension Float32Array per input string using a seeded
+ * Produces a fixed-dimension Float32Array per input: string using a seeded
  * xorshift PRNG derived from the input text. Vectors are L2-normalized.
  */
 function seededXorshift32(seed: number) {

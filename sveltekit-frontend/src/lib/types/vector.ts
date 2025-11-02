@@ -1,5 +1,5 @@
-import type { AIResponse } from '$lib/types';
-import type { SearchResult } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
+import type { SearchResult } from, '$lib/types';
 // Vector search types and interfaces
 export interface SearchResult { id: string;, score: number;
   payload?: any;
@@ -15,28 +15,28 @@ export interface EmbeddingOptions {
   cache?: boolean;
   maxTokens?: number;
 }
-export interface VectorPoint { id: string;, vector: number[];
+export interface VectorPoint {, id: string;, vector: number[];
   payload?: { [key: string]: any };
 }
-export interface QdrantSearchParams { collection_name: string;, vector: number[];
+export interface QdrantSearchParams {, collection_name: string;, vector: number[];
   limit?: number;
   score_threshold?: number;
   with_payload?: boolean;
   with_vectors?: boolean;
 }
-export interface QdrantSearchResult { id: string;, score: number;
+export interface QdrantSearchResult {, id: string;, score: number;
   payload?: { [key: string]: any };
   vector?: number[];
 }
-export interface QdrantResponse { result: QdrantSearchResult[];, status: string;
+export interface QdrantResponse {, result: QdrantSearchResult[];, status: string;
   time: number;
 }
 // AI service types
-export interface AIResponse { content: string;, model: string;
+export interface AIResponse {, content: string;, model: string;
   tokens?: number;
   embedding?: number[];
 }
-export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
+export interface ChatMessage {, role: 'system' | 'user' | 'assistant';, content: string;
   timestamp?: Date;
 }
 export interface LLMOptions {

@@ -1,16 +1,16 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * Production Logging API Endpoint
  * Handles client-side error logging and monitoring for the Legal AI Platform
  */
-import { json, error } from '@sveltejs/kit';
-import crypto from 'crypto';
+import { json, error } from, '@sveltejs/kit';
+import crypto from, 'crypto';
 
 // Log levels
 type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
 export interface LogEntry { level: LogLevel;, message: string;
-  timestamp: string;
+ , timestamp: string;
   // Replace `any` with explicit safe types
   error?: Error | string | Record<string, unknown>;
   context?: Record<string, unknown>;
@@ -21,8 +21,8 @@ export interface LogEntry { level: LogLevel;, message: string;
   url?: string;
   clientAddress?: string;
 }
-export interface LogBatch { logs: LogEntry[];, clientInfo: { userAgent: string;, url: string;
-    timestamp: string;
+export interface LogBatch { logs: LogEntry[];, clientInfo: {, userAgent: string;, url: string;
+   , timestamp: string;
   };
 }
 // In-memory log storage (in production, this would go to a proper logging service)
@@ -59,7 +59,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
   // - CloudWatch
   // - Custom logging infrastructure
   try {
-    // Example: Forward to Sentry or similar service
+    //, Example: Forward to Sentry or similar service
     if (import.meta.env.SENTRY_DSN && entry.level === 'error') {
       // Sentry integration would go here
       console.log('Forwarding error to Sentry:', entry);
@@ -75,7 +75,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
       });
     }
   } catch (err: any) {
-    // Normalize unknown error for safe logging
+    // Normalize: unknown error for safe logging
     const errMsg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
     console.error('Failed to forward log to external service:', errMsg);
   }
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     }
     throw error(400, 'Invalid log format. Expected single entry or batch.');
   } catch (err: any) {
-    // Normalize unknown error for safe logging
+    // Normalize: unknown error for safe logging
     const errMsg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
     console.error('Logging endpoint error:', errMsg);'
     throw error(500, 'Failed to process log entry');
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const authHeader = request.headers.get('authorization');
     if (
       !authHeader ||
-      !authHeader.startsWith('Bearer ') ||
+      !authHeader.startsWith('Bearer, ') ||
       authHeader.split(' ')[1] !== import.meta.env.ADMIN_API_KEY
     ) {
       throw error(401, 'Unauthorized');

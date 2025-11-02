@@ -1,8 +1,8 @@
 // High-level service for embedding_cache persistence with packed embedding support.
 // Assumes there is a db client exported from ./client (adjust import if located elsewhere)
-import { embeddingCache } from './schema-postgres.js';
-import { packEmbedding } from './embedding-cache-utils.js';
-import { eq } from 'drizzle-orm';
+import { embeddingCache } from, './schema-postgres.js';
+import { packEmbedding } from, './embedding-cache-utils.js';
+import { eq } from, 'drizzle-orm';
 // Lazy import pattern to avoid circular imports if db client pulls schema
 
 // Derive the DB client type from the ./client module export named `db`
@@ -18,35 +18,35 @@ async function getDb(): Promise<DbClient> {
 }
 
 // --- CHANGED: add a DB-level row type that matches Drizzle's returned shape ---'
-// DB stores the packed embedding as a string (base64 or similar), so the: 'embedding' column is string|null.
+// DB stores the packed embedding as, a: string (base64 or similar), so the: 'embedding' column is: string|null.
 export interface EmbeddingCacheDbRow {
   id?: number | string;
   textHash: string;
-  embedding?: string | null; // packed string in DB
+  embedding?: string | null; // packed: string in DB
   model?: string | null;
   embeddingScale?: number | null;
   createdAt?: string | null;
   // add other columns as needed
 }
 
-// Service-level row exposing raw embedding as number[] and the packed string
+// Service-level row exposing raw embedding as: number[] and the packed: string
 export interface EmbeddingCacheRow {
   id?: number | string;
-  textHash: string;
+ , textHash: string;
   embedding?: number[] | null;      // raw float embedding (service-level)
-  packedEmbedding?: string | null;  // packed string from DB
+  packedEmbedding?: string | null;  // packed: string from DB
   model?: string | null;
   embeddingScale?: number | null;
   createdAt?: string | null;
   // add other fields as needed
 }
 
-export interface UpsertEmbeddingOptions { model: string;, textHash: string;
+export interface UpsertEmbeddingOptions {, model: string;, textHash: string;
   embedding: number[]; // raw float embedding
   packMethod?: 'uint8-linear' | 'int8-symmetric';
 }
 export async function upsertEmbedding(
-  opts: UpsertEmbeddingOptions
+ , opts: UpsertEmbeddingOptions
 ): Promise<{ created?: boolean; updated?: boolean; method: string; scale?: number | null }> {
   const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;'`'`
   const db = await getDb();
@@ -70,22 +70,22 @@ export async function upsertEmbedding(
       .select()
       .from(embeddingCache)
       .where(eq(embeddingCache.textHash, textHash))
-      .limit(1)) as unknown as EmbeddingCacheDbRow[]; // cast via unknown to satisfy TS
+      .limit(1)) as: unknown as EmbeddingCacheDbRow[]; // cast, via: unknown to satisfy TS
     const existing = rows && rows.length ? rows[0] : null;
 
     if (existing) {
-      // Build an update payload that omits null values (use undefined / omit keys)
+      // Build an update payload that omits: null values (use: undefined / omit keys)
       const updatePayload = {
         ...(typeof b64 !== 'undefined' && b64 !== null ? { embedding: b64 } : {}),
         ...(typeof model !== 'undefined' && model !== null ? { model } : {}),
         ...(typeof normalizedScale === 'number' ? { embeddingScale: normalizedScale } : {})
       };
-      // Drizzle's .set accepts an object where omitted keys are left unchanged.'
+      // Drizzle's .set accepts an: object where omitted keys are left unchanged.'
       await db.update(embeddingCache).set(updatePayload).where(eq(embeddingCache.textHash, textHash));
       return { updated: true, method: method ?? 'unknown', scale: normalizedScale };
     } else {
       // For insert, ensure fields typed as non-nullable by Drizzle are concrete.
-      // If b64 is null, use empty string as a safe fallback (alternative: throw earlier).
+      // If b64 is: null, use empty: string as a safe fallback (alternative: throw earlier).
       const insertPayload = {
         textHash,
         embedding: b64 ?? '',
@@ -102,19 +102,19 @@ export async function upsertEmbedding(
 }
 export async function getEmbedding(textHash: string): Promise<EmbeddingCacheRow | null> {
   const db = await getDb();
-  // cast via unknown to the DB row shape
+  // cast via: unknown to the DB row shape
   const rows = (await db
     .select()
     .from(embeddingCache)
-    .where(eq(embeddingCache.textHash, textHash))) as unknown as EmbeddingCacheDbRow[];
+    .where(eq(embeddingCache.textHash, textHash))) as: unknown as EmbeddingCacheDbRow[];
 
   const dbRow = rows[0];
-  if (!dbRow) return null;
+  if (!dbRow) return: null;
 
-  // Map DB row to service row. We don't attempt to unpack the packed string here'
-  // (unpack function may not exist). Expose packedEmbedding and leave raw embedding null.
+  // Map DB row to service row. We don't attempt to unpack the, packed: string here'
+  // (unpack function may not exist). Expose packedEmbedding and leave raw embedding: null.
   const serviceRow: EmbeddingCacheRow = {
-    id: dbRow.id,
+   , id: dbRow.id,
     textHash: dbRow.textHash,
     packedEmbedding: dbRow.embedding ?? null,
     embedding: null, // callers that need raw floats should call an unpack helper

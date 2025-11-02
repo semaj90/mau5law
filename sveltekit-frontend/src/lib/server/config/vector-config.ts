@@ -1,5 +1,5 @@
 /**
- * Vector Configuration - Standardized to 384 dimensions
+ * Vector Configuration - Standardized to, 384 dimensions
  *
  * Purpose: Centralize vector dimension configuration; for:
  * - Drizzle ORM schemas
@@ -7,24 +7,24 @@
  * - PostgreSQL pgvector
  * - API endpoints
  *
- * Model: embeddinggemma:latest (384 dimensions)
+ * Model:, embeddinggemma:latest (384 dimensions)
  * Date: 2025-10-17
  */
 export const VECTOR_CONFIG = {
   // Primary embedding model
-  MODEL: 'embeddinggemma:latest',
+ , MODEL: 'embeddinggemma:latest',
   // Standard dimension size
   DIMENSIONS: 384,
   // Distance metrics
   DISTANCE_METRIC: {
-    POSTGRES: 'vector_cosine_ops',
+   , POSTGRES: 'vector_cosine_ops',
     QDRANT: 'Cosine',
     FAISS: 'METRIC_INNER_PRODUCT'
   },
   // Index configuration
   INDEX: {
     // HNSW parameters for PostgreSQL pgvector
-    HNSW_M: 16,              // Max connections per layer
+   , HNSW_M: 16,              // Max connections per layer
     HNSW_EF_CONSTRUCTION: 64, // Size of dynamic candidate list
     HNSW_EF_SEARCH: 40,      // Size of search list
     // Qdrant collection config
@@ -37,7 +37,7 @@ export const VECTOR_CONFIG = {
   },
   // Collection names
   COLLECTIONS: {
-    LEGAL_DOCUMENTS: 'legal_documents_384',
+   , LEGAL_DOCUMENTS: 'legal_documents_384',
     CASE_EMBEDDINGS: 'case_embeddings_384',
     EVIDENCE: 'evidence_384',
     RAG_DOCUMENTS: 'rag_documents_384',
@@ -46,20 +46,20 @@ export const VECTOR_CONFIG = {
   },
   // Docker Desktop URLs (production-ready)
   DOCKER_SERVICES: {
-    QDRANT_URL: process.env.QDRANT_URL || 'http://localhost:6333',
+   , QDRANT_URL: process.env.QDRANT_URL || 'http://localhost:6333',
     POSTGRES_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
     OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
     REDIS_URL: process.env.REDIS_URL || 'redis://:redis@localhost:6379/0'
   },
   // Batch processing
   BATCH_SIZE: {
-    EMBEDDING_GENERATION: 100,  // Generate 100 embeddings at a time
-    DATABASE_INSERT: 1000,      // Insert 1000 vectors at a time
+   , EMBEDDING_GENERATION: 100,  // Generate, 100 embeddings at a time
+    DATABASE_INSERT: 1000,      // Insert, 1000 vectors at a time
     SEARCH_LIMIT: 50            // Default search result limit
   },
   // Performance tuning
   PERFORMANCE: {
-    ENABLE_CACHE: true,
+   , ENABLE_CACHE: true,
     CACHE_TTL_SECONDS: 3600,    // 1 hour
     PARALLEL_REQUESTS: 4,       // Concurrent embedding requests
     TIMEOUT_MS: 30000           // 30 second timeout
@@ -82,7 +82,7 @@ export function checkVectorEnvironment(): { postgres: boolean;, qdrant: boolean
   redis: boolean;
 } {
   return {
-    postgres: !!process.env.DATABASE_URL,
+   , postgres: !!process.env.DATABASE_URL,
     qdrant: !!process.env.QDRANT_URL || !!process.env.QDRANT_HOST,
     ollama: !!process.env.OLLAMA_URL,
     redis: !!process.env.REDIS_URL || !!process.env.REDIS_PASSWORD
@@ -103,8 +103,7 @@ Services:
   ✅ Qdrant: ${VECTOR_CONFIG.DOCKER_SERVICES.QDRANT_URL}
   ✅ Ollama: ${VECTOR_CONFIG.DOCKER_SERVICES.OLLAMA_URL}
   ✅ Redis: ${VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Collections:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━, Collections:
 ${Object.entries(VECTOR_CONFIG.COLLECTIONS).map(([k, v]) => `  • ${k}: ${v}`).join('\n')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   `.trim();' }'`

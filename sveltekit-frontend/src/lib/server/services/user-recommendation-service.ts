@@ -1,10 +1,10 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // User Recommendation Service with PostgreSQL Integration
 // Predictive Analytics & Self-Prompting AI Chat History
-import { db } from '../db/index.js';
-import { userAiQueries, ragMessages, ragSessions } from '../db/schema-postgres.js';
-import { eq, and, sql, count, desc } from 'drizzle-orm';
+import { db } from, '../db/index.js';
+import { userAiQueries, ragMessages, ragSessions } from, '../db/schema-postgres.js';
+import { eq, and, sql, count, desc } from, 'drizzle-orm';
 
 // User behavior pattern interfaces
 export interface UserPattern { userId: string;, commonQueries: string[];
@@ -12,22 +12,22 @@ export interface UserPattern { userId: string;, commonQueries: string[];
   preferredTopics: string[];
   queryComplexity: 'simple' | 'moderate' | 'complex';
   usageFrequency: 'low' | 'medium' | 'high';
-  timePatterns: { mostActiveHours: number[];, averageSessionLength: number;
+  timePatterns: {, mostActiveHours: number[];, averageSessionLength: number;
     queriesPerSession: number;
   };
 }
-export interface RecommendationResult { type: 'query' | 'case' | 'document' | 'legal_precedent';, content: string;
+export interface RecommendationResult {, type: 'query' | 'case' | 'document' | 'legal_precedent';, content: string;
   confidence: number;
   reasoning: string;
   relatedItems: string[];
 }
 
-export interface ChatAnalytics { totalQueries: number;, successRate: number;
+export interface ChatAnalytics {, totalQueries: number;, successRate: number;
   averageProcessingTime: number;
   topTopics: Array<{ topic: string; count: number }>;
 
   userSatisfaction: number;
-  improvementSuggestions: string[];
+ , improvementSuggestions: string[];
 }
 export class UserRecommendationService {
   // ===== CHAT HISTORY & ANALYTICS =====
@@ -62,7 +62,7 @@ export class UserRecommendationService {
           errorMessage: params.errorMessage || null,
           processingTime: params.processingTimeMs || null,
           tokensUsed: params.tokensUsed || null,
-          model: (params.metadata?.model as string) || 'unknown'
+          model: (params.metadata?.model, as: string) || 'unknown'
         })
         .returning({ id: userAiQueries.id });
       const queryId = insertedQuery.id;
@@ -111,7 +111,7 @@ export class UserRecommendationService {
           userId: params.userId,
           title: params.sessionName || `Session ${new Date().toISOString()}`,
           isActive: true,
-          metadata: params.caseId ? { caseId: params.caseId } : {}
+          metadata: params.caseId ? {, caseId: params.caseId } : {}
         })
         .returning({ id: ragSessions.id });
       return insertedSession.id;
@@ -138,9 +138,9 @@ export class UserRecommendationService {
         frequentCases: queryStats.frequentCases,
         preferredTopics: topicAnalysis.topics,
         queryComplexity: queryStats.complexity,
-        usageFrequency: sessionStats.frequency; as: 'high' | 'low' | 'medium',
+        usageFrequency: sessionStats.frequency;, as: 'high' | 'low' | 'medium',
         timePatterns: {
-          mostActiveHours: sessionStats.activeHours,
+         , mostActiveHours: sessionStats.activeHours,
           averageSessionLength: sessionStats.avgSessionLength,
           queriesPerSession: sessionStats.avgQueriesPerSession
         }
@@ -188,7 +188,7 @@ export class UserRecommendationService {
       const [stats] = await db
         .select({
           totalQueries: count(userAiQueries.id),
-          successfulQueries: sql<number>`COUNT(CASE WHEN is_successful = true THEN 1 END)`,
+          successfulQueries: sql<number>`COUNT(CASE WHEN is_successful = true THEN, 1 END)`,
           avgProcessingTime: sql<number>`AVG(processing_time_ms)`,
           totalTokens: sql<number>`SUM(tokens_used)' })'`
         .from(userAiQueries)
@@ -331,9 +331,9 @@ export class UserRecommendationService {
   }
   private assessQueryComplexity(queries: string[]): 'simple' | 'moderate' | 'complex' {
     const avgLength = queries.reduce((sum, q) => sum + q.length, 0) / queries.length;
-    if (avgLength < 50) return 'simple';
-    if (avgLength < 150) return 'moderate';
-    return 'complex';
+    if (avgLength < 50) return, 'simple';
+    if (avgLength < 150) return, 'moderate';
+    return, 'complex';
   }
   private extractActiveHours(sessions: {, startedAt: Date | string | null }[]): number[] {
     const hourCounts = new Map<number, number>();

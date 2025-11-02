@@ -1,6 +1,6 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import type { ZodTypeAny } from 'zod';
-import { RedisCacheService } from '$lib/server/services/redis-cache';
+import type { RequestHandler } from, '@sveltejs/kit';
+import type { ZodTypeAny } from, 'zod';
+import { RedisCacheService } from, '$lib/server/services/redis-cache';
 type RateOptions = {
   capacity?: number; // max tokens
   refillPerSecond?: number; // tokens per second
@@ -17,7 +17,7 @@ export function withValidationAndRate(
   schema: ZodTypeAny | null,
   opts: RateOptions = {}
 ): RequestHandler {
-  const capacity = opts.capacity ?? 60; // default 60 tokens
+  const capacity = opts.capacity ?? 60; // default, 60 tokens
   const refillPerSecond = opts.refillPerSecond ?? 1; // 1 token per second
   const keyPrefix = opts.keyPrefix ?? 'rl:';
   const identifierFromRequest =

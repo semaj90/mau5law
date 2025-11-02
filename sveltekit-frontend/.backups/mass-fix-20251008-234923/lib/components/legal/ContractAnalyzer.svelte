@@ -220,7 +220,7 @@
               class="clause-card"
               class:selected={selectedClause === clause.id}
               onclick="{() => selectClause(clause.id)}"
-              transition:scale={contractBuilder.animations.enter}
+              use:scale={contractBuilder.animations.enter}
               style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
             >
               <div class="clause-header">
@@ -250,7 +250,7 @@
                   </div>
                 </div>
                 {#if clause.recommendations && selectedClause === clause.id}
-                  <div class="recommendations" transition:fly={{ y: 20, duration: 300 }}>
+                  <div class="recommendations" use:fly={{ y: 20, duration: 300 }}>
                     <h4>🔍 AI Recommendations:</h4>
                     <ul>
                       {#each clause.recommendations as recommendation}
@@ -261,7 +261,7 @@
                 {/if}
               </div>
               {#if selectedClause === clause.id}
-                <div class="clause-actions" transition:fade>
+                <div class="clause-actions" use:fade>
                   <Button size="sm">✏️ Edit</Button>
                   <Button size="sm" variant="outline">💬 Comment</Button>
                   <Button size="sm" variant="outline">🔍 Deep Analysis</Button>

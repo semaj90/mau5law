@@ -5,9 +5,9 @@
  * This integration layer connects the revolutionary Bitmap HMM-SOM predictor
  * with real legal workflows, enabling seamless, predictive user experiences.
  */
-import { HybridGemmaBitmapEngine } from './hybrid-gemma-bitmap-engine.js';
-import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap-engine.js';
-import { createRedisInstance } from '$lib/server/redis.js';
+import { HybridGemmaBitmapEngine } from, './hybrid-gemma-bitmap-engine.js';
+import type { LegalContext, HybridPredictionResult } from, './hybrid-gemma-bitmap-engine.js';
+import { createRedisInstance } from, '$lib/server/redis.js';
 // --- new: small adapter type covering the methods we use from Redis clients ---
 type RedisSetReturn = 'OK' | null;
 interface RedisLike {
@@ -21,7 +21,7 @@ interface RedisLike {
   // fall back generic index signature for other minor calls (if needed)
   [key: string]: any;
 }
-// --- MOVED: AssetData must be top-level (cannot declare interface inside a class) ---
+// ---, MOVED: AssetData must be top-level (cannot declare interface inside a class) ---
 interface AssetData { assetType: string;, sessionId: string;
   generatedAt: string;
   workflowStage: string;
@@ -34,12 +34,12 @@ export interface LegalWorkflowStage {
   substage?: string;
   priority: number;
   expectedAssets: string[];
-  nextStages: Array<{ stage: string;, probability: number;
+  nextStages: Array<{, stage: string;, probability: number;
     timeEstimate: number;
   }>;
 }
 // Legal document types with specialized handling
-export interface LegalDocumentProfile { type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence' | 'motion' | 'discovery';, domain: 'corporate' | 'litigation' | 'criminal' | 'family' | 'intellectual_property' | 'real_estate';
+export interface LegalDocumentProfile {, type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence' | 'motion' | 'discovery';, domain: 'corporate' | 'litigation' | 'criminal' | 'family' | 'intellectual_property' | 'real_estate';
   complexity: 'simple' | 'moderate' | 'complex' | 'highly_complex';
   urgency: 'routine' | 'priority' | 'urgent' | 'emergency';
   requiredAssets: string[];
@@ -47,7 +47,7 @@ export interface LegalDocumentProfile { type: 'contract' | 'case_law' | 'statute
 }
 // Asset preloading strategies for different legal contexts
 export interface AssetPreloadingStrategy {
-  immediate: string[]; // Load instantly (< 100ms),
+ , immediate: string[]; // Load instantly (< 100ms),
   background: string[]; // Load in background (< 2s)
   predictive: string[]; // Predict and cache (< 5s),
   ondemand: string[]; // Load when explicitly requested
@@ -55,7 +55,7 @@ export interface AssetPreloadingStrategy {
 export class LegalWorkflowOrchestrator {
   private hybridEngine: HybridGemmaBitmapEngine;
   private redis: RedisLike;
-  private workflowProfiles: Map<string, LegalWorkflowStage> = new Map();
+  private, workflowProfiles: Map<string, LegalWorkflowStage> = new Map();
   private documentProfiles: Map<string, LegalDocumentProfile> = new Map();
   constructor(hybridEngine?: HybridGemmaBitmapEngine, redis?: RedisLike) {
     this.hybridEngine = hybridEngine || new HybridGemmaBitmapEngine();
@@ -68,11 +68,11 @@ export class LegalWorkflowOrchestrator {
    * Main orchestration method: predict workflow needs and preload assets
    */
   async orchestrateWorkflow(
-    currentContext: LegalContext,
+   , currentContext: LegalContext,
     userQuery?: string
   ): Promise<{ prediction: HybridPredictionResult;, workflowGuidance: WorkflowGuidance;
     preloadingStrategy: AssetPreloadingStrategy;
-    nextSteps: NextStepRecommendation[];
+   , nextSteps: NextStepRecommendation[];
   }> {
     // Get hybrid prediction combining semantic + behavioral intelligence
     const prediction = userQuery
@@ -128,7 +128,7 @@ export class LegalWorkflowOrchestrator {
     prediction: HybridPredictionResult
   ): AssetPreloadingStrategy {
     const strategy: AssetPreloadingStrategy = {
-      immediate: [],
+     , immediate: [],
       background: [],
       predictive: [],
       ondemand: []
@@ -248,7 +248,7 @@ export class LegalWorkflowOrchestrator {
           priority: 100,
           expectedAssets: ['intake_forms', 'client_portal', 'document_upload', 'basic_templates'],
           nextStages: [
-            { stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
+            {, stage: 'analysis', probability: 0.8, timeEstimate: 300000 },
             { stage: 'research', probability: 0.15, timeEstimate: 600000 },
             { stage: 'drafting', probability: 0.05, timeEstimate: 900000 }
           ]
@@ -261,7 +261,7 @@ export class LegalWorkflowOrchestrator {
           priority: 90,
           expectedAssets: ['document_viewer', 'annotation_tools', 'evidence_canvas', 'timeline_creator'],
           nextStages: [
-            { stage: 'research', probability: 0.6, timeEstimate: 240000 },
+            {, stage: 'research', probability: 0.6, timeEstimate: 240000 },
             { stage: 'drafting', probability: 0.3, timeEstimate: 480000 },
             { stage: 'review', probability: 0.1, timeEstimate: 180000 }
           ]
@@ -274,7 +274,7 @@ export class LegalWorkflowOrchestrator {
           priority: 85,
           expectedAssets: ['legal_database', 'case_search', 'citation_tools', 'research_notes'],
           nextStages: [
-            { stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
+            {, stage: 'drafting', probability: 0.7, timeEstimate: 360000 },
             { stage: 'analysis', probability: 0.2, timeEstimate: 240000 },
             { stage: 'review', probability: 0.1, timeEstimate: 300000 }
           ]
@@ -287,7 +287,7 @@ export class LegalWorkflowOrchestrator {
           priority: 80,
           expectedAssets: ['text_editor', 'template_library', 'citation_helper', 'style_guide'],
           nextStages: [
-            { stage: 'review', probability: 0.8, timeEstimate: 180000 },
+            {, stage: 'review', probability: 0.8, timeEstimate: 180000 },
             { stage: 'research', probability: 0.15, timeEstimate: 300000 },
             { stage: 'filing', probability: 0.05, timeEstimate: 120000 }
           ]
@@ -300,7 +300,7 @@ export class LegalWorkflowOrchestrator {
           priority: 75,
           expectedAssets: ['review_tools', 'collaboration_suite', 'version_control', 'approval_workflow'],
           nextStages: [
-            { stage: 'filing', probability: 0.6, timeEstimate: 120000 },
+            {, stage: 'filing', probability: 0.6, timeEstimate: 120000 },
             { stage: 'drafting', probability: 0.3, timeEstimate: 240000 },
             { stage: 'analysis', probability: 0.1, timeEstimate: 180000 }
           ]
@@ -313,7 +313,7 @@ export class LegalWorkflowOrchestrator {
           priority: 70,
           expectedAssets: ['filing_system', 'court_integration', 'deadline_tracker', 'confirmation_tools'],
           nextStages: [
-            { stage: 'intake', probability: 0.4, timeEstimate: 600000 },
+            {, stage: 'intake', probability: 0.4, timeEstimate: 600000 },
             { stage: 'analysis', probability: 0.3, timeEstimate: 300000 },
             { stage: 'review', probability: 0.3, timeEstimate: 240000 }
           ]
@@ -374,7 +374,7 @@ export class LegalWorkflowOrchestrator {
     return `${stage} workflow for ${docType} in ${domain} legal domain`;
   }
   private generateStageAdvice(stage: LegalWorkflowStage | undefined, _context: LegalContext): string {
-    if (!stage) return 'Continue with current workflow';
+    if (!stage) return, 'Continue with current workflow';
     return `Focus on ${stage.expectedAssets.slice(0, 2).join(' and: ')} for optimal ${stage.stage} workflow efficiency`;
   }
   private generateNextStagePreparation(
@@ -382,13 +382,13 @@ export class LegalWorkflowOrchestrator {
     _prediction: HybridPredictionResult
   ): string {
     if (!currentStage || currentStage.nextStages.length === 0) {
-      return 'Prepare for workflow continuation based on case requirements';
+      return, 'Prepare for workflow continuation based on case requirements';
     }
     const nextStage = currentStage.nextStages[0];
     return `Prepare for ${nextStage.stage} transition with ${(nextStage.probability * 100).toFixed(0)}% likelihood`;
   }
   private generateDocumentGuidance(profile: LegalDocumentProfile | null, _context: LegalContext): string {
-    if (!profile) return 'Apply general document handling best practices';
+    if (!profile) return, 'Apply general document handling best practices';
     return `${profile.complexity} ${profile.type} requires ${profile.requiredAssets.slice(0, 2).join(' and: ')}`;
   }
   private generateEfficiencyTips(context: LegalContext, prediction: HybridPredictionResult): string[] {
@@ -432,13 +432,13 @@ export class LegalWorkflowOrchestrator {
   private getDocumentProfile(type: string, domain: string): LegalDocumentProfile | null {
     return this.documentProfiles.get(`${type}:${domain}`) || null;
   }
-  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[]; recommended: string[] } {
+  private getWorkflowSpecificAssets(context: LegalContext): { essential: string[];, recommended: string[] } {
     const stage = this.workflowProfiles.get(context.workflowStage);
     if (!stage) {
       return { essential: [], recommended: [] };
     }
     return {
-      essential: stage.expectedAssets.slice(0, 2),
+     , essential: stage.expectedAssets.slice(0, 2),
       recommended: stage.expectedAssets.slice(2)
     };
   }
@@ -456,13 +456,13 @@ export class LegalWorkflowOrchestrator {
     };
     // Add specific data based on asset type
     switch (assetType) {
-      case 'document_viewer':
-        return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
-      case 'evidence_canvas':
-        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };'`'`
-      case 'legal_database':
+      case, 'document_viewer':
+        return { ...baseData, viewerConfig: {, mode: 'legal', annotations: true } };
+      case, 'evidence_canvas':
+        return { ...baseData, canvasConfig: {, collaboration: true, version: '2.0' } };'`'`
+      case, 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
-      default: return baseData;
+     , default: return baseData;
     }
   }
   private async recordWorkflowTransition(context: LegalContext, prediction: HybridPredictionResult): Promise<void> {
@@ -475,10 +475,10 @@ export class LegalWorkflowOrchestrator {
     // prefer camelCase list ops (node-redis v4); fall back to older names if necessary
     if (typeof this.redis.lPush === 'function') {
       await this.redis.lPush('workflow:transitions', JSON.stringify(transitionData));
-      await this.redis.lTrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
+      await this.redis.lTrim('workflow:transitions', 0, 999); // Keep last, 1000 transitions
     } else if (typeof this.redis.lpush === 'function') {
       await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData));
-      await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
+      await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last, 1000 transitions
     } else {
       // best-effort fallback: prepend a simple set + index key (non-list) so we don't throw at runtime'
       const fallbackKey = `workflow:transitions:fallback:${Date.now()}`;
@@ -495,9 +495,9 @@ interface WorkflowGuidance { currentStageAdvice: string;, nextStagePreparation:
   riskAlerts: string[];
   qualityChecklist: string[];
 }
-interface NextStepRecommendation { type: 'workflow_progression' | 'behavioral_prediction' | 'semantic_insight';, action: string;
+interface NextStepRecommendation {, type: 'workflow_progression' | 'behavioral_prediction' | 'semantic_insight';, action: string;
   priority: number;
   timeEstimate: number;
   reasoning: string;
-  assets: string[];
+ , assets: string[];
 }

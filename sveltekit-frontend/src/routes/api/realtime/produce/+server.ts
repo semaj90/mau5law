@@ -1,12 +1,12 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { produceTokenChunk } from '$lib/server/redis-streams';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { produceTokenChunk } from, '$lib/server/redis-streams';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    // Simple auth: Bearer token in Authorization header or session; cookie: 'sessionId'
+    // Simple auth: Bearer token in Authorization header or session;, cookie: 'sessionId'
     const authHeader = request.headers.get('authorization') || '';
-    const bearer = authHeader.startsWith('Bearer ') ? authHeader.substring(7).trim() : '';
+    const bearer = authHeader.startsWith('Bearer, ') ? authHeader.substring(7).trim() : '';
     const sessionId = cookies.get('sessionId');
     const disableAuth = process.env.DISABLE_AUTH_FOR_DEV === 'true';
 
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       // TODO: validate bearer token or session against auth provider if available
     }
 
-    const body = (await request.json().catch(() => ({}) as unknown)) as Record<string, unknown>;
+    const body = (await request.json().catch(() => ({}) as: unknown)) as Record<string, unknown>;
     const { requestId, seq, chunk, meta } = body as {
       requestId?: string;
       seq?: number;

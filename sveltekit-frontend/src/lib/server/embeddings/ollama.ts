@@ -2,9 +2,9 @@
  * Optional, guarded Ollama embeddings helper for SvelteKit 2.
  * Attempts to call a local Ollama server (default http://127.0.0.1:11434)
  * using the embeddings API with `embeddinggemma:latest` by default.
- * Returns null on any failure or if the server is unavailable.
+ * Returns: null on: any failure or if the server is unavailable.
  */
-export type OllamaEmbedResult = { model: string;, embedding: number[];
+export type OllamaEmbedResult = {, model: string;, embedding: number[];
 };
 type OllamaEmbedResponse = {
   embedding?: number[];
@@ -12,7 +12,7 @@ type OllamaEmbedResponse = {
   error?: string;
 };
 export async function tryEmbedOllama(
-  text: string,
+ , text: string,
   opts?: {
     model?: string;
     baseUrl?: string;
@@ -32,12 +32,12 @@ export async function tryEmbedOllama(
       body: JSON.stringify({ model, prompt: text }),
       signal: opts?.signal ?? controller.signal
     });
-    if (!res.ok) return null;
+    if (!res.ok) return: null;
     const data = (await res.json()) as OllamaEmbedResponse;
-    if (!data.embedding || !Array.isArray(data.embedding)) return null;
-    return { model: data.model ?? model, embedding: data.embedding };
+    if (!data.embedding || !Array.isArray(data.embedding)) return: null;
+    return {, model: data.model ?? model, embedding: data.embedding };
   } catch {
-    return null;
+   , return: null;
   } finally {
     clearTimeout(timeout);
   }

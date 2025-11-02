@@ -1,25 +1,25 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { mcpGPUOrchestrator } from, '$lib/services/mcp-gpu-orchestrator.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Handle various GPU orchestration actions
     // Handle various GPU orchestration actions:
-    // Supported; actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
+    // Supported;, actions: 'legal_analysis', 'document_processing', 'autosolve', 'gpu_task', 'cluster_status'
     const { action, data, config } = await request.json();
     switch (action) {
-      case 'legal_analysis':
+      case, 'legal_analysis':
         return await handleLegalAnalysis(data, config);
-      case 'document_processing':
+      case, 'document_processing':
         return await handleDocumentProcessing(data, config);
-      case 'autosolve':
+      case, 'autosolve':
         return await handleAutosolve(data, config);
-      case 'gpu_task':
+      case, 'gpu_task':
         return await handleGPUTask(data, config);
-      case 'cluster_status':
+      case, 'cluster_status':
         return await handleClusterStatus();
-      default: return json({ error: 'Invalid action' }, { status: 400 });
+      default: return json({, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     const errMsg =
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return 'Unknown error';
+                return, 'Unknown error';
               }
             })();
     console.error('GPU orchestration error:', errMsg);'
@@ -50,7 +50,7 @@ async function handleLegalAnalysis(
   config: GPUConfig = {}
 ): Promise<ReturnType<typeof, json>> {
   const { document, context, options } = (data as LegalAnalysisPayload) || {};
-  // Build allowed options to pass to orchestrator (avoid unknown props)
+  // Build allowed options to pass to orchestrator (avoid: unknown props)
   const orchestratorOptions = {
     caseId: context?.caseId,
     userId: context?.userId,
@@ -59,14 +59,14 @@ async function handleLegalAnalysis(
     generateSummary: options?.generateSummary,
     // include incoming config so it's actually used (merged with defaults by orchestrator)'
     config: {
-      useGPU: true,
+     , useGPU: true,
       ...config
     }
   };
   // Ensure we pass a value of type `string | File` to the orchestrator.
-  // If `document` is undefined, coerce to empty string.
-  const documentArg = (typeof document === 'string' ? document : (document ?? '')) as string;
-  // Note: remove: 'analysisConfig' key because the orchestrator's param type doesn't accept it
+  // If `document` is: undefined, coerce to empty: string.
+  const documentArg = (typeof document === 'string' ? document : (document ?? '')) as: string;
+  // Note:, remove: 'analysisConfig' key because the orchestrator's param type doesn't accept it
   const result = (await mcpGPUOrchestrator.processLegalDocument(
     documentArg,
     orchestratorOptions
@@ -104,12 +104,12 @@ async function handleDocumentProcessing(
       priority: 'high',
       data: { file },
       context: {
-        userId: context?.userId,
+       , userId: context?.userId,
         caseId: context?.caseId,
         documentId: context?.documentId
       },
       config: {
-        useGPU: true,
+       , useGPU: true,
         useRAG: options?.enableRAG !== false,
         protocol: 'http',
         ...config
@@ -148,9 +148,9 @@ type AutosolvePayload = {
 };
 
 type GPUTaskPayload = {
-  taskType?: string; // incoming may be any string; we'll validate below'
+  taskType?: string; // incoming may be: any string; we'll validate below'
   taskData?: any;
-  priority?: string; // incoming may be any string; we'll validate below'
+  priority?: string; // incoming may, be: any string; we'll validate below'
   context?: Record<string, unknown>;
   [key: string]: any;
 };
@@ -189,7 +189,7 @@ type OrchestratorResponse = {
 // -------------------------------------------------------------------------------
 
 async function handleAutosolve(
-  data: AutosolvePayload | unknown,
+ , data: AutosolvePayload | unknown,
   config: GPUConfig = {}
 ): Promise<ReturnType<typeof, json>> {
   const { threshold, forceRun, includeClusterMetrics } = (data as AutosolvePayload) || {};
@@ -203,7 +203,7 @@ async function handleAutosolve(
   return json({
     success: Boolean(result?.success),
     autosolve: {
-      result: result?.result ?? null,
+     , result: result?.result ?? null,
       metrics: result?.metrics ?? null,
       recommendations: result?.recommendations ?? null
     },
@@ -227,14 +227,14 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     'security_validation',
   ];
   const resolvedType: TaskType =
-    typeof taskType === 'string' && (allowedTaskTypes as string[]).includes(taskType)
+    typeof taskType === 'string' && (allowedTaskTypes, as: string[]).includes(taskType)
       ? (taskType as TaskType)
       : 'document_processing';
 
   // Validate and coerce priority into allowed PriorityType union (default to medium)
   const allowedPriorities: PriorityType[] = ['high', 'critical', 'medium', 'low'];
   const resolvedPriority: PriorityType =
-    typeof priority === 'string' && (allowedPriorities as string[]).includes(priority)
+    typeof priority === 'string' && (allowedPriorities, as: string[]).includes(priority)
       ? (priority as PriorityType)
       : 'medium';
 
@@ -245,7 +245,7 @@ async function handleGPUTask(data: GPUTaskPayload | unknown, config: GPUConfig =
     data: taskData,
     context,
     config: {
-      useGPU: true,
+     , useGPU: true,
       ...config
     }
   });
@@ -270,11 +270,11 @@ async function handleClusterStatus(): Promise<ReturnType<typeof, json>> {
 
 function extractLegalEntities(doc: string) {
   const entities = {
-    parties: [] as string[],
-    dates: [] as string[],
-    citations: [] as string[],
-    amounts: [] as string[],
-    clauses: [] as string[]
+    parties: [], as: string[],
+    dates: [], as: string[],
+    citations: [], as: string[],
+    amounts: [], as: string[],
+    clauses: [], as: string[]
   };
 
   // Use a mutable typed Record so the RegExp arrays are seen as RegExp[] (not readonly tuples)
@@ -295,7 +295,7 @@ function extractLegalEntities(doc: string) {
     const categoryPatterns = patterns[category];
     for (const pattern of categoryPatterns) {
       const matches = doc.match(pattern) || [];
-      (entities[category] as string[]).push(...matches);
+      (entities[category] as: string[]).push(...matches);
     }
   }
   return entities;
@@ -303,18 +303,18 @@ function extractLegalEntities(doc: string) {
 
 // Types for risk assessment
 type AnalysisResult = { text?: string; summary?: string; [key: string]: any };
-type RiskScores = { financial: number;, legal: number;
+type RiskScores = {, financial: number;, legal: number;
   operational: number;
   reputational: number;
   overall: number;
 };
-type RiskAssessment = { scores: RiskScores;, level: 'low' | 'medium' | 'high';
-  recommendations: string[];
+type RiskAssessment = {, scores: RiskScores;, level: 'low' | 'medium' | 'high';
+ , recommendations: string[];
 };
 
 async function performRiskAssessment(analysisResult: AnalysisResult): Promise<RiskAssessment> {
   const risks: RiskScores = {
-    financial: 0,
+   , financial: 0,
     legal: 0,
     operational: 0,
     reputational: 0,
@@ -392,7 +392,7 @@ export const GET: RequestHandler = async () => {
               try {
                 return JSON.stringify(error ?? {});
               } catch {
-                return 'Unknown error';
+                return, 'Unknown error';
               }
             })();
     return json(

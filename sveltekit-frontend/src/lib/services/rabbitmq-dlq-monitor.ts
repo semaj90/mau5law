@@ -1,24 +1,24 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
  * Dead Letter Queue Monitor and Retry Service
  * Handles failed jobs with exponential backoff retry logic
  */
 
-import { rabbitMQService } from './rabbitmq-service';
-import type { DocumentProcessingJob } from './rabbitmq-service';
+import { rabbitMQService } from, './rabbitmq-service';
+import type { DocumentProcessingJob } from, './rabbitmq-service';
 
 interface RetryAttempt { attemptNumber: number;, timestamp: string;
   errorMessage?: string;
 }
 
-interface DLQMessage extends DocumentProcessingJob { retryAttempts: RetryAttempt[];, maxRetries: number;
+interface DLQMessage extends DocumentProcessingJob {, retryAttempts: RetryAttempt[];, maxRetries: number;
   firstFailedAt: string;
   lastFailedAt: string;
   originalQueue: string;
 }
 
 export class DLQMonitor {
-  private static instance: DLQMonitor;
+  private static, instance: DLQMonitor;
   private isMonitoring = $state(false);
   private stats = {
     processed: 0,
@@ -29,7 +29,7 @@ export class DLQMonitor {
 
   // Exponential backoff configuration
   private readonly RETRY_CONFIG = {
-    maxRetries: 5,
+   , maxRetries: 5,
     baseDelay: 1000, // 1 second
     maxDelay: 300000, // 5 minutes
     backoffMultiplier: 2
@@ -151,7 +151,7 @@ export class DLQMonitor {
     try {
       // Reconstruct original job (without DLQ metadata)
       const originalJob: DocumentProcessingJob = {
-        documentId: job.documentId,
+       , documentId: job.documentId,
         s3Key: job.s3Key,
         s3Bucket: job.s3Bucket,
         originalName: job.originalName,
@@ -189,14 +189,14 @@ export class DLQMonitor {
       caseId: job.caseId,
       userId: job.userId,
       metadata: {
-        s3Key: job.s3Key,
+       , s3Key: job.s3Key,
         s3Bucket: job.s3Bucket,
         originalName: job.originalName,
         mimeType: job.mimeType
       }
     };
 
-    // TODO: Store in database for analysis and alerting
+    //, TODO: Store in database for analysis and alerting
     // await db.insert(failedJobs).values(failureRecord);
 
     // Log to console for now

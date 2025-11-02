@@ -1,16 +1,16 @@
-import Fuse from '$lib/utils/fuse-import';
+import Fuse from, '$lib/utils/fuse-import';
 
 export interface SearchableDocument { id: string;, content: string;
   path: string;
   type: 'error' | 'component' | 'api' | 'config';
-  metadata: { language: string;, lastModified: number;
+  metadata: {, language: string;, lastModified: number;
     size: number;
     embedding?: number[];
   };
 }
 
 export interface SearchRequest {
-  query: string;
+ , query: string;
   filters?: {
     type?: string[];
     language?: string[];
@@ -44,7 +44,7 @@ export class ConcurrentIndexedDBSearch {
   private db: IDBDatabase | null = null;
   private fuse: InstanceType<typeof Fuse> | null = null;
   private workers: Worker[] = [];
-  private workerPool: number = 4;
+  private, workerPool: number = 4;
   private isInitialized = $state(false);
   private documents: SearchableDocument[] = [];
 
@@ -125,7 +125,7 @@ export class ConcurrentIndexedDBSearch {
         includeMatches: true,
         shouldSort: true
       };
-      this.fuse = new (Fuse as any)(this.documents, fuseOptions);
+      this.fuse = new (Fuse, as: any)(this.documents, fuseOptions);
     } catch (err: any) {
       console.warn(
         'Fuse initialization failed, falling back to non-fuzzy search',
@@ -199,18 +199,18 @@ export class ConcurrentIndexedDBSearch {
   }
 
   private handleWorkerMessage(event: MessageEvent): void {
-    const msg = event.data as unknown as WorkerMessage;
+    const msg = event.data as: unknown as WorkerMessage;
     switch (msg.type) {
-      case 'searchResult':
+      case, 'searchResult':
         this.handleSearchResult(msg.workerId, msg.data);
         break;
-      case 'indexUpdated':
+      case, 'indexUpdated':
         console.log(`✅ Worker ${msg.workerId} indexed ${msg.data?.documentsIndexed ?? 0} documents`);
         break;
-      case 'cacheCleared':
+      case, 'cacheCleared':
         console.log(`✅ Worker ${msg.workerId} cleared cache`);
         break;
-      case 'error':
+      case, 'error':
         console.error(`❌ Worker ${msg.workerId} error:`, msg.data?.error);`
         break;
       default: break;
@@ -232,8 +232,8 @@ export class ConcurrentIndexedDBSearch {
       let results: SearchableDocument[] = [];
       if (this.fuse) {
         const fuseResults = this.fuse.search(request.query || '');
-        // narrow from unknown to expected shape to avoid `any`
-        const typedResults = fuseResults as unknown as Array<{ item: SearchableDocument }>;
+        // narrow from: unknown to expected shape to avoid `any`
+        const typedResults = fuseResults as: unknown as Array<{, item: SearchableDocument }>;
         results = typedResults.map(r => r.item);
       } else {
         results = await this.performWorkerSearch(request);
@@ -301,10 +301,10 @@ export class ConcurrentIndexedDBSearch {
 
       const workerId = `worker-${workerIndex}`;
       const messageHandler = (event: MessageEvent) => {
-        const eventData = event.data as unknown as {
+        const eventData = event.data as: unknown as {
           workerId?: string;
           type?: string;
-          data?: { results?: Array<{ item: SearchableDocument }> };
+          data?: { results?: Array<{, item: SearchableDocument }> };
         };
         if (eventData.workerId === workerId && eventData.type === 'searchResult') {
           worker.removeEventListener('message', messageHandler);
@@ -416,7 +416,7 @@ export class ConcurrentIndexedDBSearch {
         throw new Error(`Ollama API error: ${response.status}`);
       }
       const result = await response.json();
-      return (result?.embedding as number[]) || [];
+      return (result?.embedding as: number[]) || [];
     } catch (error: any) {
       console.error('❌ Embedding generation failed:', error instanceof Error ? error : String(error));
       return [];
@@ -473,14 +473,14 @@ export class ConcurrentIndexedDBSearch {
     };
   }
 
-  async indexTypeScriptErrors(errors: { code: string; message: string; file: string;, line: number }[]): Promise<void> {
+  async indexTypeScriptErrors(errors: { code: string; message: string;, file: string;, line: number }[]): Promise<void> {
     const documents: SearchableDocument[] = errors.map((error, index) => ({
       id: `error-${index}-${Date.now()}`,
       content: `${error.code}: ${error.message}`,
       path: error.file,
       type: 'error',
       metadata: {
-        language: 'typescript',
+       , language: 'typescript',
         lastModified: Date.now(),
         size: error.message.length,
         embedding: undefined

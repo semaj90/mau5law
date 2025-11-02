@@ -1,8 +1,7 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface ComponentFallbackProps {
     class?: string;
     id?: string;
@@ -55,11 +54,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   :global(.bits-ui-fallback.variant-ghost) {
     border: none;
-    background: transparent;
+   , background: transparent;
   }
   :global(.bits-ui-fallback.size-sm) {
     font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
+   , padding: 0.25rem 0.5rem;
   }
   :global(.bits-ui-fallback.disabled) {
     opacity: 0.5;
@@ -67,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 /* Button-like fallback */ :global(.bits-ui-fallback[role="button"]) {
     cursor: pointer;
-    padding: 0.5rem 1rem;
+   , padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     transition all 0.2s ease;
   }

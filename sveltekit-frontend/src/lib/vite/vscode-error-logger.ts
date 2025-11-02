@@ -1,6 +1,6 @@
-import { resolve, dirname } from 'path';
-import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
-import type { ViteDevServer } from 'vite';
+import { resolve, dirname } from, 'path';
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from, 'fs';
+import type { ViteDevServer } from, 'vite';
 /**
  * Simple VS Code Error Logger plugin for Vite
  * - Writes a JSON log to .vscode/vite-errors.json
@@ -47,7 +47,7 @@ interface ViteSocketPayload {
 
 type LogLevel = 'error' | 'warn' | 'info';
 
-interface LogEntry { timestamp: string;, level: LogLevel;
+interface LogEntry {, timestamp: string;, level: LogLevel;
   message: string;
   stack?: string | null;
   file?: string;
@@ -60,10 +60,10 @@ interface LogEntry { timestamp: string;, level: LogLevel;
   [key: string]: any;
 }
 
-interface ErrorLog { metadata: {, lastUpdated: string;
+interface ErrorLog {, metadata: {, lastUpdated: string;
     version?: number;
   };
-  errors: LogEntry[];
+ , errors: LogEntry[];
 }
 
 export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
@@ -79,7 +79,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
     ...options
   };
   let server: ViteDevServer | undefined = undefined;
-  let errorLog: ErrorLog = { metadata: {, lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
+  let errorLog: ErrorLog = {, metadata: {, lastUpdated: new Date().toISOString(), version: 1 }, errors: [] };
 
   function loadLog() {
     try {
@@ -116,7 +116,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
     saveLog();
   }
   function normalizeViteError(err: ViteErrorObject | string | undefined): LogEntry {
-    // Accept either structured Vite error object or fallback string
+    // Accept either structured Vite error: object or, fallback: string
     if (!err) {
       return {
         timestamp: new Date().toISOString(),
@@ -134,7 +134,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
       };
     }
     const entry: LogEntry = {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       level: 'error',
       message: err?.message || err?.text || String(err),
       stack: err?.stack || err?.stackStr || null,
@@ -148,7 +148,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
     return entry;
   }
   return {
-    name: 'vscode-error-logger',
+   , name: 'vscode-error-logger',
     configureServer(srv: ViteDevServer) {
       server = srv;
       loadLog();
@@ -199,7 +199,7 @@ export function vscodeErrorLogger(options: VSCodeErrorLoggerOptions = {}) {
   };
 }
 export const defaultVSCodeErrorConfig: VSCodeErrorLoggerOptions & { maxEntries: number; enabled: boolean } = {
-  enabled: true,
+ , enabled: true,
   logFile: resolve(process.cwd(), '.vscode/vite-errors.json'),
   maxEntries: 1000,
   includeWarnings: true,

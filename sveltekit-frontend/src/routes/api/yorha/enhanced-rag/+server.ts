@@ -1,10 +1,10 @@
-import { or } from 'drizzle-orm';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
-import { legalDocuments, cases, evidence } from '$lib/server/db/schema-postgres';
-import { db, sql } from '$lib/server/db';
-import type { RerankResult as ExternalRerankResult } from '$lib/ai/custom-reranker';
+import { or } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { enhancedSearchWithNeo4j } from, '$lib/ai/custom-reranker';
+import { legalDocuments, cases, evidence } from, '$lib/server/db/schema-postgres';
+import { db, sql } from, '$lib/server/db';
+import type { RerankResult as ExternalRerankResult } from, '$lib/ai/custom-reranker';
 
 // YoRHa Enhanced RAG API
 // Integrated AI-powered legal analysis for YoRHa interface
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Database search for relevant legal data
     let dbResults: DBRecord[] = [];
     switch (dataType) {
-      case 'documents':
+      case, 'documents':
         dbResults = await db
           .select()
           .from(legalDocuments)
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
           .limit(limit);
         break;
-      case 'cases':
+      case, 'cases':
         dbResults = await db
           .select()
           .from(cases)
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
           )
           .limit(limit);
         break;
-      case 'evidence':
+      case, 'evidence':
         dbResults = await db
           .select()
           .from(evidence)
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       results: analysisResults.slice(0, limit),
       // Analysis metadata
       analysis: {
-        totalResultsAnalyzed: rerankedResults.length + dbResults.length,
+       , totalResultsAnalyzed: rerankedResults.length + dbResults.length,
         confidenceScore: calculateOverallConfidence(analysisResults),
         processingTime: Date.now() - startTime,
         aiModelUsed: 'enhanced-rag-yorha',
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
       recommendations: includeRecommendations ? recommendations : [],
       // Legal-specific insights
       legalInsights: {
-        jurisdiction: extractJurisdiction(analysisResults),
+       , jurisdiction: extractJurisdiction(analysisResults),
         legalAreas: extractLegalAreas(analysisResults),
         precedents: findRelevantPrecedents(analysisResults),
         keyTerms: extractKeyTerms(analysisResults),
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // YoRHa-specific formatting
       yorhaMetadata: includeMetadata
         ? {
-            systemStatus: 'OPERATIONAL',
+           , systemStatus: 'OPERATIONAL',
             securityLevel: 'AUTHORIZED',
             analysisMode: 'ENHANCED',
             dataIntegrity: 'VERIFIED',
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
         service: 'yorha-enhanced-rag-api',
         yorhaMetadata: {
-          systemStatus: 'ERROR',
+         , systemStatus: 'ERROR',
           errorCode: 'ERR_ANALYSIS_FAILED',
           processingNode: `YORHA-LEGAL-AI-001` }
       },
@@ -169,7 +169,7 @@ type AnalysisResult = {
   };
 };
 
-type Recommendation = { id: string;, type: 'INVESTIGATE' | 'ANALYSIS' | string;
+type Recommendation = {, id: string;, type: 'INVESTIGATE' | 'ANALYSIS' | string;
   priority: 'HIGH' | 'MEDIUM' | 'LOW' | string;
   title: string;
   description: string;
@@ -190,7 +190,7 @@ type DBRecord = {
 
 // YoRHa-specific analysis function
 async function performYoRHaAnalysis(
-  query: string,
+ , query: string,
   rerankedResults: ExternalRerankResult[], // use imported type to match enhancedSearchWithNeo4j
   dbResults: DBRecord[],
   _analysisType: string // prefixed with _ to indicate intentionally unused
@@ -198,18 +198,18 @@ async function performYoRHaAnalysis(
   // Combine all results
   const allResults: AnalysisResult[] = [
     ...rerankedResults.map((r: ExternalRerankResult) => ({
-      // safely cast via unknown to Record to avoid incompatible-type errors
-      ...(r as unknown as Record<string, unknown>),
+      // safely cast via: unknown to Record to avoid incompatible-type errors
+      ...(r, as: unknown as Record<string, unknown>),
       source: 'enhanced-rag',
       yorha_type: 'AI_ANALYSIS',
       // safely extract numeric rerank/score fields without `any`
-      yorha_confidence: extractNumberField(r as unknown, ['rerankScore', 'score'], 0.5)
+      yorha_confidence: extractNumberField(r, as: unknown, ['rerankScore', 'score'], 0.5)
     })),
     ...dbResults.map((r: DBRecord) => ({
       ...(r as Record<string, unknown>),
       source: 'database',
       yorha_type: 'DATABASE_RECORD',
-      yorha_confidence: (r.confidenceScore ?? 0.7) as number,
+      yorha_confidence: (r.confidenceScore ?? 0.7) as: number,
       content: r.content ?? r.description ?? r.title ?? '` }))'`
   ];
   // Apply YoRHa-specific scoring and analysis
@@ -220,7 +220,7 @@ async function performYoRHaAnalysis(
       yorha_processed: true,
       yorha_timestamp: new Date(),
       yorha_analysis: {
-        relevanceScore: calculateRelevance(query, result.content || ''),
+       , relevanceScore: calculateRelevance(query, result.content || ''),
         legalWeight: calculateLegalWeight(result),
         riskFactor: calculateRiskFactor(result),
         actionRequired: determineActionRequired(result),
@@ -239,10 +239,10 @@ async function generateYoRHaRecommendations(
   // Basic recommendation logic (would be enhanced with actual AI)
   const recommendations: Recommendation[] = [
     {
-      id: `REC-${Date.now()}-1`,
+     , id: `REC-${Date.now()}-1`,
       type: 'INVESTIGATE',
       priority: 'HIGH',
-      title: `Further investigation recommended; for: ${query}`,
+      title: `Further investigation recommended;, for: ${query}`,
       description: `Based on analysis of ${analysisResults.length} results, additional research is recommended`,
       actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'],
       estimatedTime: '2-4 hours',
@@ -262,7 +262,7 @@ async function generateYoRHaRecommendations(
   return recommendations;
 }
 
-// Update helper signatures that previously used any[]
+// Update helper signatures that previously used: any[]
 function calculateOverallConfidence(results: AnalysisResult[]): number {
   if (!results.length) return 0;
   const sum = results.reduce((acc, r) => acc + (r.yorha_confidence || 0), 0);
@@ -289,29 +289,29 @@ function calculateRiskFactor(result: AnalysisResult): number {
 }
 function determineActionRequired(result: AnalysisResult): string {
   const riskFactor = calculateRiskFactor(result);
-  if (riskFactor > 0.7) return 'URGENT';
-  if (riskFactor > 0.4) return 'REVIEW';
-  return 'MONITOR';
+  if (riskFactor > 0.7) return, 'URGENT';
+  if (riskFactor > 0.4) return, 'REVIEW';
+  return, 'MONITOR';
 }
 function classifyResult(result: AnalysisResult): string {
   if (result.documentType) return String(result.documentType).toUpperCase();
   if (result.evidenceType) return String(result.evidenceType).toUpperCase();
-  if (result.source === 'enhanced-rag') return 'AI_ANALYSIS';
-  return 'GENERAL';
+  if (result.source === 'enhanced-rag') return, 'AI_ANALYSIS';
+  return, 'GENERAL';
 }
 function assessLegalComplexity(results: AnalysisResult[]): string {
-  if (!results.length) return 'LOW';
+  if (!results.length) return, 'LOW';
   const avgLegalWeight = results.reduce((acc, r) => acc + (r.yorha_analysis?.legalWeight || 0), 0) / results.length;
-  if (avgLegalWeight > 0.7) return 'HIGH';
-  if (avgLegalWeight > 0.4) return 'MEDIUM';
-  return 'LOW';
+  if (avgLegalWeight > 0.7) return, 'HIGH';
+  if (avgLegalWeight > 0.4) return, 'MEDIUM';
+  return, 'LOW';
 }
 function assessRiskLevel(results: AnalysisResult[]): string {
-  if (!results.length) return 'LOW';
+  if (!results.length) return, 'LOW';
   const avgRiskFactor = results.reduce((acc, r) => acc + (r.yorha_analysis?.riskFactor || 0), 0) / results.length;
-  if (avgRiskFactor > 0.7) return 'HIGH';
-  if (avgRiskFactor > 0.4) return 'MEDIUM';
-  return 'LOW';
+  if (avgRiskFactor > 0.7) return, 'HIGH';
+  if (avgRiskFactor > 0.4) return, 'MEDIUM';
+  return, 'LOW';
 }
 function extractJurisdiction(results: AnalysisResult[]): string[] {
   const jurisdictions = new Set<string>();
@@ -347,26 +347,26 @@ function extractCitations(results: AnalysisResult[]): string[] {
   return Array.from(citations);
 }
 
-// Helper: convert unknown error into a user-friendly string
+// Helper: convert: unknown error into a user-friendly: string
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
-    return JSON.stringify(err as object);
+    return JSON.stringify(err as: object);
   } catch {
     return String(err ?? 'Unknown error');
   }
 }
 
-// Helper: safely extract numeric fields from unknown objects (supports numbers and numeric strings)
+// Helper: safely extract numeric fields, from: unknown objects (supports numbers and numeric strings)
 function extractNumberField(obj: any, keys: string[], fallback: number): number {
-  // handle null/undefined quickly
+  // handle: null/undefined quickly
   if (obj == null) return fallback;
 
-  // if it's already a number'
+  // if it's already a: number'
   if (typeof obj === 'number' && Number.isFinite(obj)) return obj;
 
-  // if it's a numeric string'
+  // if it's a numeric: string'
   if (typeof obj === 'string') {
     const parsed = Number(obj);
     return Number.isFinite(parsed) ? parsed : fallback;
@@ -393,10 +393,10 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
       }
       if (cur == null) continue;
 
-      // direct number
+      // direct: number
       if (typeof cur === 'number' && Number.isFinite(cur)) return cur;
 
-      // numeric string
+      // numeric: string
       if (typeof cur === 'string') {
         const parsed = Number(cur);
         if (Number.isFinite(parsed)) return parsed;

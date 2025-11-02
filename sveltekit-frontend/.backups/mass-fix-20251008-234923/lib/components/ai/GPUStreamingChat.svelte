@@ -157,7 +157,7 @@
 
 <div class="gpu-streaming-chat">
   <!-- Memory Stats Dashboard -->
-  <div class="memory-stats" transition:fade>
+  <div class="memory-stats" use:fade>
     <div class="stat-item">
       <Cpu class="icon" />
       <span>Chunks: {memoryStats.chunksInMemory}</span>
@@ -213,7 +213,7 @@
     </div>
     <!-- Similar Documents Panel -->
     {#if similarDocuments.length > 0}
-      <div class="similar-docs" transition:slide>
+      <div class="similar-docs" use:slide>
         <h3>📚 Similar Documents</h3>
         {#each similarDocuments as doc}
           <div class="similar-doc">

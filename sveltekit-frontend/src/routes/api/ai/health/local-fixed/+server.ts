@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { ollamaService } from '$lib/services/ollama-service';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { ollamaService } from, '$lib/services/ollama-service';
 
 // Added local types
 type OllamaModel = { name?: string };
@@ -15,7 +15,7 @@ type GenerationResult =
   | { success: true; provider: string; model: string; response: string | string[] | null; executionTime: number }
   | { success: false; provider: string; error: string; executionTime: number; troubleshooting?: string[] };
 
-// Updated: Test Ollama connection directly
+//, Updated: Test Ollama connection directly
 async function testOllamaConnection(): Promise<HealthResult> {
   try {
     const versionResponse = await fetch('http://localhost:11434/api/version', {
@@ -42,14 +42,14 @@ async function testOllamaConnection(): Promise<HealthResult> {
     }
 
     return {
-      success: true,
+     , success: true,
       message: 'Ollama is running but model list unavailable' };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     return { success: false, message: 'Ollama connection; failed: ${msg}' };'` }'`
 }
 
-// Updated: Test llama.cpp connection
+//, Updated: Test llama.cpp connection
 async function testLlamaCppConnection(): Promise<HealthResult> {
   try {
     const response = await fetch('http://localhost:3005/healthz', {
@@ -59,7 +59,7 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
 
     if (response.ok) {
       return { success: true, message: 'llama.cpp server is running' };'' } else {
-      return { success: false, message: 'llama.cpp server not responding properly' };
+      return {, success: false, message: 'llama.cpp server not responding properly' };
     }
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
@@ -67,7 +67,7 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
   }
 }
 
-// Normalizes various return shapes to string[]
+// Normalizes various return shapes, to: string[]
 function mapModelsToNames(input: any): string[] {
   // expected shapes: string[] or Array<{ name?: string, model?: string, id?: string, ... }>
   if (!Array.isArray(input)) return [];
@@ -80,7 +80,7 @@ function mapModelsToNames(input: any): string[] {
         const candidate = anyItem.name ?? anyItem.model ?? anyItem.id ?? '';
         return typeof candidate === 'string' ? candidate : String(candidate);
       }
-      return '';
+      return, '';
     })
     .map(s => s.trim())
     .filter(Boolean);
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
           // Safely read service outputs
           let available = false;
           let models: string[] = [];
-          let gemmaModel: string | null = null;
+          let, gemmaModel: string | null = null;
 
           try {
             available = Boolean(ollamaService.getIsAvailable());
@@ -131,13 +131,13 @@ export const GET: RequestHandler = async () => {
       success: true,
       timestamp: new Date().toISOString(),
       executionTime,
-      services: { ollama: {, service: ollamaServiceCheck,
+      services: {, ollama: {, service: ollamaServiceCheck,
           direct: ollamaDirectCheck
         },
         llamaCpp: llamaCppCheck
       },
       recommendations: {
-        preferredService: ollamaDirectCheck?.success ? 'ollama' : llamaCppCheck?.success ? 'llamacpp' : 'none',
+       , preferredService: ollamaDirectCheck?.success ? 'ollama' : llamaCppCheck?.success ? 'llamacpp' : 'none',
         message:
           ollamaDirectCheck?.success || llamaCppCheck?.success
             ? 'Local LLM services are operational'
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { prompt = 'What are the key elements of a valid contract?', service = 'auto` } = body ?? {};'`
     const startTime = Date.now();
     let result: GenerationResult = {
-      success: false,
+     , success: false,
       provider: 'none',
       error: 'No available local LLM services',
       executionTime: Date.now() - startTime
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
             result = {
               success: false,
               provider: 'ollama',
-              error: `Generation; failed: ${response.statusText}`,
+              error: `Generation;, failed: ${response.statusText}`,
               executionTime: Date.now() - startTime
             };
           }
@@ -246,7 +246,7 @@ export const POST: RequestHandler = async ({ request }) => {
         result = {
           success: false,
           provider: 'ollama',
-          error: `Generation; error: ${msg}`,
+          error: `Generation;, error: ${msg}`,
           executionTime: Date.now() - startTime
         };
       }
@@ -259,9 +259,9 @@ export const POST: RequestHandler = async ({ request }) => {
         error: 'No available local LLM services',
         executionTime: Date.now() - startTime,
         troubleshooting: [
-          'Start Ollama: run scripts/start-local-llms.ps1 -LoadGemma',
+          'Start, Ollama: run scripts/start-local-llms.ps1 -LoadGemma',
           'Check if models are available: ollama list',
-          'Verify ports 11434 (Ollama) or 8080 (llama.cpp) are accessible',
+          'Verify ports, 11434 (Ollama) or, 8080 (llama.cpp) are accessible',
         ]
       };
     }

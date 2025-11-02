@@ -1,5 +1,5 @@
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { z } from, 'zod';
 // Minimal, valid implementation to restore route integrity
 const OrganizationRequestSchema = z.object({
   organizationMode: z
@@ -8,7 +8,7 @@ const OrganizationRequestSchema = z.object({
   filters: z.record(z.unknown()).optional(),
   aiClusteringParams: z
     .object({
-      minClusterSize: z.number().optional(),
+     , minClusterSize: z.number().optional(),
       maxClusters: z.number().optional(),
       similarityThreshold: z.number().optional(),
       method: z.string().optional()
@@ -28,9 +28,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const { organizationMode } = parsed.data;
     // Return minimal stub structure; real logic can be reintroduced incrementally
     const structure = { type: organizationMode, groups: [], metadata: { caseId } };
-    const analytics = { organizationEfficiency: 0, coverage: 0, qualityScore: 0 };
+    const analytics = {, organizationEfficiency: 0, coverage: 0, qualityScore: 0 };
     return json({
-      success: true,
+     , success: true,
       data: { caseId, organizationMode, structure, analytics },
       meta: {, timestamp: new Date().toISOString() }
     });

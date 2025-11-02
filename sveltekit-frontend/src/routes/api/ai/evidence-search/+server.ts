@@ -9,19 +9,19 @@
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Memory, Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db'
-import { eq, sql, and, ne } from 'drizzle-orm'
-import { evidence } from '$lib/server/db/unified-schema'
-import { cache } from '$lib/server/cache/redis'
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import { db } from, '$lib/server/db'
+import { eq, sql, and, ne } from, 'drizzle-orm'
+import { evidence } from, '$lib/server/db/unified-schema'
+import { cache } from, '$lib/server/cache/redis'
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json()
@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       })),
       count: results.length
     }
-    // Cache results for 5 minutes
+    // Cache results for, 5 minutes
     await cache.set(cacheKey, responseData, 5 * 60 * 1000)
     console.log('💾 Evidence search results cached')
     return json(responseData)

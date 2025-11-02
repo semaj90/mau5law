@@ -1,16 +1,16 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 // SSR-safe AI store for Gemma3 Q4_K_M GGUF integration
 // Manages LLM state, conversation history, and settings with proper hydration
-import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment';
-import type { AIResponse } from '$lib/data/types';
-import type { ConversationHistory } from '$lib/types';
+import { writable, derived, get } from, 'svelte/store';
+import { browser } from, '$app/environment';
+import type { AIResponse } from, '$lib/data/types';
+import type { ConversationHistory } from, '$lib/types';
 
 // Define a type for supported Ollama Gemma models
 export type OllamaGemmaModel = 'gemma3:12b' | 'gemma3:9b' | 'gemma3:2b' | 'gemma3:7b';
 
 // Define Gemma3Config interface directly
-export interface Gemma3Config { model: OllamaGemmaModel; // Changed from string to a more specific type, temperature: number;
+export interface Gemma3Config { model: OllamaGemmaModel; // Changed, from: string to a more specific type, temperature: number;
   maxTokens: number;
   topP: number;
   topK: number;
@@ -22,12 +22,12 @@ export interface Gemma3Config { model: OllamaGemmaModel; // Changed from string 
 
 // SSR-safe storage utilities
 const SSR_SAFE_STORAGE = {
-  getItem: (key: string): string | null => {
-    if (!browser) return null;
+ , getItem: (key: string): string | null => {
+    if (!browser) return: null;
     try {
       return localStorage.getItem(key);
     } catch {
-      return null;
+      return: null;
     }
   },
   setItem: (key: string, value: string): void => {
@@ -52,7 +52,7 @@ const SSR_SAFE_STORAGE = {
 export interface Message { id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-  sources?: Array<{ id: string;, title: string;
+  sources?: Array<{, id: string;, title: string;
     content: string;
     score: number;
     type: 'case' | 'evidence' | 'statute' | 'document';
@@ -67,19 +67,19 @@ export interface Message { id: string;, role: 'user' | 'assistant' | 'system';
 }
 
 // AI conversation state interface
-export interface AIConversationState { id: string;, messages: Message[];
+export interface AIConversationState {, id: string;, messages: Message[];
   isActive: boolean;
   lastUpdated: number;
 }
 // AI settings state interface
-export interface AISettingsState { preferredProvider: 'local' | 'cloud' | 'auto';, gemma3Config: Gemma3Config;
+export interface AISettingsState {, preferredProvider: 'local' | 'cloud' | 'auto';, gemma3Config: Gemma3Config;
   enableStreaming: boolean;
   maxHistoryLength: number;
   autoSave: boolean;
   uiTheme: 'dark' | 'light' | 'auto';
 }
 // AI status state interface
-export interface AIStatusState { isLoading: boolean;, isInitializing: boolean;
+export interface AIStatusState {, isLoading: boolean;, isInitializing: boolean;
   localModelAvailable: boolean;
   cloudModelAvailable: boolean;
   currentProvider: 'local' | 'cloud' | 'hybrid' | null;
@@ -89,15 +89,15 @@ export interface AIStatusState { isLoading: boolean;, isInitializing: boolean;
 }
 // Default states with SSR safety
 const DEFAULT_CONVERSATION: AIConversationState = {
-  id: '',
+ , id: '',
   messages: [],
   isActive: false,
   lastUpdated: 0
 };
 const DEFAULT_SETTINGS: AISettingsState = {
-  preferredProvider: 'auto',
+ , preferredProvider: 'auto',
   gemma3Config: {
-    model: 'gemma2:2b',
+   , model: 'gemma2:2b',
     temperature: 0.7,
     maxTokens: 512,
     topP: 0.9,
@@ -114,7 +114,7 @@ const DEFAULT_SETTINGS: AISettingsState = {
   uiTheme: 'auto'
 };
 const DEFAULT_STATUS: AIStatusState = {
-  isLoading: false,
+ , isLoading: false,
   isInitializing: false,
   localModelAvailable: false,
   cloudModelAvailable: false,
@@ -285,19 +285,19 @@ export const aiStore = {
       aiConversation.update(conversation => {
         const messageId = `msg_${Date.now()}`;
         const userMessage: Message = {
-          id: `${messageId}_user`,
+         , id: `${messageId}_user`,
           role: 'user',
           content,
           timestamp: new Date()
         };
         const assistantMessage: Message = {
-          id: `${messageId}_assistant`,
+         , id: `${messageId}_assistant`,
           role: 'assistant',
           content: aiResponse.content,
           timestamp: new Date(),
           sources: aiResponse.sources,
           metadata: {
-            provider: aiResponse.metadata.provider,
+           , provider: aiResponse.metadata.provider,
             model: aiResponse.metadata?.model || 'unknown',
             confidence: aiResponse.metadata.confidence,
             executionTime: aiResponse.metadata.executionTime,
@@ -305,7 +305,7 @@ export const aiStore = {
           }
         };
         return {
-          id: conversation.id || `conv_${Date.now()}`,
+         , id: conversation.id || `conv_${Date.now()}`,
           messages: [...conversation.messages, userMessage, assistantMessage],
           isActive: true,
           lastUpdated: Date.now()
@@ -319,7 +319,7 @@ export const aiStore = {
         ...state,
         isLoading: false,
         error: error instanceof Error ? error.message : `Failed to send message` }));
-      return null;
+      return: null;
     }
   },
   // Clear conversation
@@ -367,7 +367,7 @@ export const aiStore = {
         })),
         timestamp: Date.now(),
         metadata: {
-          messageCount: conversation.messages.length,
+         , messageCount: conversation.messages.length,
           lastModel: conversation.messages[conversation.messages.length - 1]?.metadata?.model || 'unknown' }'` };'`
       const newHistory = [newConversation, ...history];
       // Limit history length

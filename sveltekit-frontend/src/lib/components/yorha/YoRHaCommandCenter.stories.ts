@@ -1,21 +1,21 @@
-import type { Case } from '$lib/types';
-import type { Meta, StoryObj } from '@storybook/svelte';
-import { within, userEvent, expect } from '@storybook/test';
-import YoRHaCommandCenter from './YoRHaCommandCenter.svelte.js';
+import type { Case } from, '$lib/types';
+import type { Meta, StoryObj } from, '@storybook/svelte';
+import { within, userEvent, expect } from, '@storybook/test';
+import YoRHaCommandCenter from, './YoRHaCommandCenter.svelte.js';
 const meta = {
   title: 'YoRHa/CommandCenter',
   component: YoRHaCommandCenter,
   parameters: {
-    layout: 'fullscreen',
-    docs: { description: {, component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations'
+   , layout: 'fullscreen',
+    docs: {, description: {, component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations'
       }
     }
   },
   tags: ['autodocs'],
-  argTypes: { systemData: {, control: 'object',
+  argTypes: {, systemData: {, control: 'object',
       description: 'System metrics and status data',
-      table: { type: {, summary: 'SystemData' },
-        defaultValue: { summary: 'Default system data with zeros' }
+      table: {, type: {, summary: 'SystemData' },
+        defaultValue: {, summary: 'Default system data with zeros' }
       }
     }
   }
@@ -23,8 +23,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof, meta>;
 // Default story with baseline system data
-export const Default: Story = { args: {, systemData: {
-      activeCases: 12,
+export const Default: Story = {, args: {, systemData: {
+     , activeCases: 12,
       evidenceItems: 45,
       personsOfInterest: 8,
       aiQueries: 156,
@@ -36,8 +36,8 @@ export const Default: Story = { args: {, systemData: {
   }
 };
 // High load scenario
-export const HighLoad: Story = { args: {, systemData: {
-      activeCases: 89,
+export const HighLoad: Story = {, args: {, systemData: {
+     , activeCases: 89,
       evidenceItems: 234,
       personsOfInterest: 34,
       aiQueries: 1245,
@@ -47,15 +47,15 @@ export const HighLoad: Story = { args: {, systemData: {
       networkLatency: 125
     }
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Command Center under high system load - shows warning indicators'
       }
     }
   }
 };
 // Critical system state
-export const Critical: Story = { args: {, systemData: {
-      activeCases: 156,
+export const Critical: Story = {, args: {, systemData: {
+     , activeCases: 156,
       evidenceItems: 567,
       personsOfInterest: 67,
       aiQueries: 3456,
@@ -65,15 +65,15 @@ export const Critical: Story = { args: {, systemData: {
       networkLatency: 250
     }
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Critical system state - all metrics in red zone'
       }
     }
   }
 };
 // Low activity scenario
-export const LowActivity: Story = { args: {, systemData: {
-      activeCases: 3,
+export const LowActivity: Story = {, args: {, systemData: {
+     , activeCases: 3,
       evidenceItems: 12,
       personsOfInterest: 2,
       aiQueries: 28,
@@ -83,15 +83,15 @@ export const LowActivity: Story = { args: {, systemData: {
       networkLatency: 18
     }
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Low activity scenario - minimal system usage'
       }
     }
   }
 };
 // Empty state
-export const EmptyState: Story = { args: {, systemData: {
-      activeCases: 0,
+export const EmptyState: Story = {, args: {, systemData: {
+     , activeCases: 0,
       evidenceItems: 0,
       personsOfInterest: 0,
       aiQueries: 0,
@@ -101,15 +101,15 @@ export const EmptyState: Story = { args: {, systemData: {
       networkLatency: 12
     }
   },
-  parameters: { docs: {, description: {
+  parameters: {, docs: {, description: {
         story: 'Empty state - fresh system with no active cases or data'
       }
     }
   }
 };
 // Interactive demo with actions
-export const Interactive: Story = { args: {, systemData: {
-      activeCases: 25,
+export const Interactive: Story = {, args: {, systemData: {
+     , activeCases: 25,
       evidenceItems: 89,
       personsOfInterest: 15,
       aiQueries: 456,
@@ -119,8 +119,8 @@ export const Interactive: Story = { args: {, systemData: {
       networkLatency: 38
     }
   },
-  parameters: { docs: {, description: {
-        story: 'Interactive demo - test all quick actions and modal interactions'
+  parameters: {, docs: {, description: {
+       , story: 'Interactive demo - test all quick actions and modal interactions'
       }
     }
   },

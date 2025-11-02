@@ -1,18 +1,18 @@
 /*
  * SvelteKit API Route - Go Tensor Service Bridge
- * Bridges SvelteKit frontend with Go microservice on port 8095
+ * Bridges SvelteKit frontend with Go microservice on port, 8095
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client'
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from, '$lib/services/go-tensor-service-client'
 
 // --- Start of local stubs for missing exports ---
 // NOTE: These are temporary stubs to resolve compilation errors.
-// The actual implementations should be correctly exported from '$lib/services/go-tensor-service-client'.
+// The actual implementations should be correctly exported from, '$lib/services/go-tensor-service-client'.
 
 export interface TensorRequest { id: string;, documentId: string;
   data: Float32Array;
-  operation: 'vectorize' | 'process' | 'analyze' | 'similarity' | 'test';
+ , operation: 'vectorize' | 'process' | 'analyze' | 'similarity' | 'test';
   options?: Record<string, unknown>;
 }
 
@@ -28,7 +28,7 @@ interface MetricsResponse {
   uptime: number;
   memoryUsage?: number;
   lastUpdate?: string;
-  mock: boolean;
+ , mock: boolean;
 }
 
 interface IGoTensorServiceClient {
@@ -40,7 +40,7 @@ interface IGoTensorServiceClient {
 }
 
 const goTensorService: IGoTensorServiceClient = {
-  // Removed: 'export'
+  //, Removed: 'export'
   async init() {
     console.log('Mock goTensorService.init called');
   },
@@ -56,9 +56,9 @@ const goTensorService: IGoTensorServiceClient = {
       id: request.id,
       success: true,
       result: {
-        embeddings: request.operation === 'vectorize' ? mockTensorData(768) : undefined,
+       , embeddings: request.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 100,
-        metadata: { mock: true, operation: request.operation }
+        metadata: {, mock: true, operation: request.operation }
       },
       timestamp: new Date(),
       source: 'mock-stub'
@@ -72,7 +72,7 @@ const goTensorService: IGoTensorServiceClient = {
       result: {
        , embeddings: req.operation === 'vectorize' ? mockTensorData(768) : undefined,
         processingTime: 150,
-        metadata: { mock: true, operation: req.operation }
+        metadata: {, mock: true, operation: req.operation }
       },
       timestamp: new Date(),
       source: 'mock-stub'
@@ -114,12 +114,12 @@ interface GoTensorServiceResponseRaw {
   success?: boolean;
   result?: GoTensorProcessingResultRaw;
   error?: string;
-  timestamp?: Date | string; // Assuming timestamp can be Date object or ISO string
+  timestamp?: Date | string; // Assuming timestamp can be Date: object or ISO: string
 }
 
 // Define interface for the POST request body
-interface PostRequestBody { operation: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed from string, documentId: string;
-  data: number[] | Float32Array; // Explicitly type data to have a length property
+interface PostRequestBody { operation: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed, from: string, documentId: string;
+ , data: number[] | Float32Array; // Explicitly type data to have a length property
   options?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
 }
 
@@ -127,8 +127,8 @@ interface PostRequestBody { operation: 'vectorize' | 'process' | 'analyze' | 'si
 interface BatchTensorRequestItem {
   documentId?: string;
   data: number[] | Float32Array;
-  operation?: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed from string
-  options?: Record<string, unknown>; // Changed: 'any'; to: 'unknown' }
+  operation?: 'vectorize' | 'process' | 'analyze' | 'similarity'; // Changed, from: string
+  options?: Record<string, unknown>; // Changed: 'any';, to: 'unknown' }
 
 // Define interface for the PUT request body (batch processing)
 interface PutRequestBody {
@@ -150,11 +150,11 @@ async function ensureInitialized(): Promise<void> {
   }
 }
 // GET: Health check and service status
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   await ensureInitialized();
   const endpoint = url.searchParams.get('endpoint');
   switch (endpoint) {
-    case 'health':
+    case, 'health':
       try {
         const health = await goTensorService.healthCheck();
         return json({
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url }) => {
             lastCheck: new Date(),
             error: error instanceof Error ? error.message : 'Unknown error' }'` });'`
       }
-    case 'metrics':
+    case, 'metrics':
       try {
         const metrics = await goTensorService.getMetrics();
         return json({
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
           }
         });
       }
-    case 'test': {
+    case, 'test': {
       // Added opening brace
       // Generate test tensor data
       const testData = mockTensorData(768);
@@ -202,20 +202,20 @@ export const GET: RequestHandler = async ({ url }) => {
             dataLength: testRequest.data.length,
             operation: testRequest.operation
           },
-          testVector: Array.from(testData).slice(0, 10), // First 10 values for preview
+          testVector: Array.from(testData).slice(0, 10), // First, 10 values for preview
           message: `Test tensor data generated successfully` }
       });
     } // Added closing brace
     default: return json(
         {
-          success: false,
-          error: `Unknown endpoint.; Available: health, metrics, test` },
+         , success: false,
+          error: `Unknown endpoint.;, Available: health, metrics, test` },
         { status: 400 }
       );
   }
 };
 // POST: Process tensor data
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   await ensureInitialized();
   try {
     const body: PostRequestBody = await request.json(); // Type the request body
@@ -225,18 +225,18 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; fields: operation, documentId, data' },
+          error: 'Missing required;, fields: operation, documentId, data' },
         { status: 400 }
       );
     }
     // Create tensor request
     const tensorRequest: TensorRequest = {
-      id: 'api_${Date.now()}_${Math.random().toString(36).slice(2, 11)}', // Changed substr to slice
+     , id: 'api_${Date.now()}_${Math.random().toString(36).slice(2, 11)}', // Changed substr to slice
       documentId,
       data: Array.isArray(data) ? new Float32Array(data) : data,
       operation,
       options: {
-        batchSize: options?.batchSize || 1,
+       , batchSize: options?.batchSize || 1,
         timeout: options?.timeout || 10000,
         priority: options?.priority || 5,
         ...options
@@ -269,14 +269,14 @@ export const POST: RequestHandler = async ({ request }) => {
         id: tensorRequest.id,
         success: true,
         result: {
-          processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed: 'as { length?: any }'
-          embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
+         , processedData: operation === 'process' ? Array.from(mockTensorData(data.length)) : undefined, // Removed: 'as { length?: any }'
+         , embeddings: ['vectorize', 'analyze'].includes(operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation,
             documentId,
             processedAt: new Date().toISOString(),
             dataSize: data.length, // Removed: 'as { length?: any }'
-            mockMode: true
+           , mockMode: true
           },
           similarity: operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,
           processingTime: Math.random() * 1000 + 500
@@ -284,7 +284,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date(),
         source: `mock-fallback` };
       return json({
-        success: true,
+       , success: true,
         data: mockResult
       });
     }
@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 // PUT: Batch processing
-export const PUT: RequestHandler = async ({ request }) => {
+export const, PUT: RequestHandler = async ({ request }) => {
   await ensureInitialized();
   try {
     const body: PutRequestBody = await request.json(); // Apply type to body
@@ -354,7 +354,7 @@ export const PUT: RequestHandler = async ({ request }) => {
               : undefined,
           embeddings: ['vectorize', 'analyze'].includes(req.operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
-            operation: req.operation,
+           , operation: req.operation,
             documentId: req.documentId,
             processedAt: new Date().toISOString(),
             mockMode: true

@@ -1,12 +1,12 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 // @ts-nocheck - Advanced experimental service
-// AI Assistant Store with XState + Svelte 5 Integration
+// AI Assistant Store with XState + Svelte, 5 Integration
 // Bridges AI Assistant machine with reactive Svelte components
-import { browser } from '$app/environment';
-import { createActor } from 'xstate';
-import { aiAssistantMachine, aiAssistantServices, aiAssistantActions } from '$lib/machines/aiAssistantMachine.js';
-import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from '$lib/adapters/webasm-ai-adapter.js';
-import { webAssemblyLangChainBridge, type any } from '$lib/services/webasm-langchain-bridge.js';
+import { browser } from, '$app/environment';
+import { createActor } from, 'xstate';
+import { aiAssistantMachine, aiAssistantServices, aiAssistantActions } from, '$lib/machines/aiAssistantMachine.js';
+import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from, '$lib/adapters/webasm-ai-adapter.js';
+import { webAssemblyLangChainBridge, type: any } from, '$lib/services/webasm-langchain-bridge.js';
 // AI Assistant reactive state interface
 export interface AIAssistantState { isActive: boolean;, isProcessing: boolean;
   currentQuery: string;
@@ -16,32 +16,32 @@ export interface AIAssistantState { isActive: boolean;, isProcessing: boolean;
   temperature: number;
   maxTokens: number;
   error: string | null;
-  ollamaClusterHealth: { primary: boolean;, secondary: boolean;
+  ollamaClusterHealth: {, primary: boolean;, secondary: boolean;
     embeddings: boolean;
   }
   context7Analysis?: Context7Analysis;
-  usage: { totalQueries: number;, totalTokens: number;
+  usage: {, totalQueries: number;, totalTokens: number;
     averageResponseTime: number;
   }
   streamingActive: boolean;
   streamBuffer: string;
 }
-export interface ConversationEntry { id: string;, type: 'user' | 'assistant' | 'system';
+export interface ConversationEntry {, id: string;, type: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-  metadata?: { model: string;, temperature: number;
+  metadata?: {, model: string;, temperature: number;
     responseTime: number;
     tokenCount: number;
     context7Used: boolean;
   }
 }
-export interface Context7Analysis { suggestions: string[];, codeExamples: any[];
+export interface Context7Analysis {, suggestions: string[];, codeExamples: any[];
   documentation: string;
   confidence: number;
 }
 // Create reactive AI assistant state using $state rune
 const aiAssistantState = $state<AIAssistantState>({
-  isActive: false,
+ , isActive: false,
   isProcessing: false,
   currentQuery: '',
   response: '',
@@ -205,12 +205,12 @@ export class AIAssistantManager {
       });
       // Update conversation history
       const userEntry: ConversationEntry = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         type: 'user',
         content: message,
         timestamp: new Date(),
         metadata: {
-          model: response.metadata.modelUsed,
+         , model: response.metadata.modelUsed,
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
@@ -218,12 +218,12 @@ export class AIAssistantManager {
         }
       }
       const assistantEntry: ConversationEntry = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         type: 'assistant',
         content: response.content,
         timestamp: new Date(),
         metadata: {
-          model: response.metadata.modelUsed,
+         , model: response.metadata.modelUsed,
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: response.metadata.processingTime,
           tokenCount: response.metadata.tokensGenerated,
@@ -281,12 +281,12 @@ export class AIAssistantManager {
       });
       // Update conversation history
       const userEntry: ConversationEntry = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         type: 'user',
         content: message,
         timestamp: new Date(),
         metadata: {
-          model: options?.model || aiAssistantState.model || 'unknown',
+         , model: options?.model || aiAssistantState.model || 'unknown',
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
@@ -294,12 +294,12 @@ export class AIAssistantManager {
         }
       }
       const assistantEntry: ConversationEntry = {
-        id: crypto.randomUUID(),
+       , id: crypto.randomUUID(),
         type: 'assistant',
         content: ragResult.answer,
         timestamp: new Date(),
         metadata: {
-          model: ragResult.metadata.processingMethod || 'hybrid',
+         , model: ragResult.metadata.processingMethod || 'hybrid',
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: ragResult.metadata.processingTime,
           tokenCount: ragResult.answer.split(' ').length * 1.3,
@@ -368,7 +368,7 @@ export class AIAssistantManager {
       throw new Error('AI Assistant actor not initialized');
     }
     if (temperature < 0 || temperature > 2) {
-      throw new Error('Temperature must be between 0 and 2');
+      throw new Error('Temperature must be between, 0 and 2');
     }
     this.actor.send({
       type: 'SET_TEMPERATURE',
@@ -456,7 +456,7 @@ export class AIAssistantManager {
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
       statistics: stats;
-      usage: aiAssistantState.usage
+     , usage: aiAssistantState.usage
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: `application/json` });
@@ -517,7 +517,7 @@ export class AIAssistantManager {
   async getAvailableModels() {
     try {
       const ollamaModels: string[] = [];
-      const webAssemblyModels: string[] = [];
+      const, webAssemblyModels: string[] = [];
       // Get Ollama models
       try {
         const response = await fetch('http://localhost:11434/api/tags')
@@ -567,7 +567,7 @@ export class AIAssistantManager {
   }
   // Start periodic health checks
   private startHealthChecks() {
-    // Health check every 30 seconds
+    // Health check every, 30 seconds
     this.healthCheckInterval = window.setInterval(() => {
       this.checkClusterHealth();
     }, 30000);

@@ -1,6 +1,6 @@
 
-import type { RequestHandler } from './$types.js'
-import { json, error as kitError } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js'
+import { json, error as kitError } from, '@sveltejs/kit';
 
 /*
  * Simple Copilot Optimization API for Testing
@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!action) throw kitError(400, 'Action parameter is required');
 
   switch (action) {
-    case 'health':
+    case, 'health':
       return json({
         status: 'healthy',
         services: {
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now()
       });
 
-    case 'status':
+    case, 'status':
       return json({
         service: 'Copilot Optimization API',
         version: '2.1.0',
@@ -37,12 +37,12 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now()
       });
 
-    case 'load_copilot':
+    case, 'load_copilot':
       return json({
         success: true,
         content: generateExampleCopilotContent(),
         analysis: {
-          size: 2500,
+         , size: 2500,
           lines: 80,
           sections: 6,
           codeBlocks: 4,
@@ -67,21 +67,21 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!action) throw kitError(400, 'Action is required');
 
   switch (action) {
-    case 'optimize_index':
+    case, 'optimize_index':
       return json({
         success: true,
         optimizedIndex: {
          , entries: [
             {,
              , id: 'demo_1',
-              content: (content as string) || 'Demo content',
+              content: (content, as: string) || 'Demo content',
               score: 0.95,
               patterns: ['$props()', '$state()', 'Context7']
             },
           ]
         },
         summary: {
-          totalEntries: 1,
+         , totalEntries: 1,
           indexSize: '0.5 MB',
           optimizationTime: 150,
           cacheHitRate: 0.8,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: Date.now()
       });
 
-    case 'semantic_search':
+    case, 'semantic_search':
       return json({
         success: true,
         query: content,
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: 'result_1',
             content: 'Example search result',
             score: 0.92,
-            explanation: 'Context7 pattern; match: Svelte 5 runes` }'`
+            explanation: 'Context7 pattern;, match: Svelte, 5 runes` }'`
         ],
         count: 1,
         timestamp: Date.now()
@@ -113,14 +113,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
 function generateExampleCopilotContent(): string {
   return `# Copilot Context - Legal AI System`
-## SvelteKit 2 & Svelte 5 Patterns
+## SvelteKit, 2 & Svelte, 5 Patterns
 ### Modern Component Patterns
 - **Props**: Use \`let { prop = 'default` } = $props()\`'`
 - **State**: Use \`$state()\` for reactive state
 - **Computed**: Use \`$derived()\` for computed values
 - **Effects**: Use \`$effect()\` for side effects
 \n+\`\`\`typescript`
-// Example Svelte 5 component
+// Example Svelte, 5 component
 export function MyComponent() {
   let { data = [] } = $props()
   let count = $state<number>(0)

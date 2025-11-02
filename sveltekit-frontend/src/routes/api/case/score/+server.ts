@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { caseScoringService } from '$lib/server/services/CaseScoringService';
-import { cognitiveCache } from '$lib/server/ai/cache';
-import { runLegalCaseScoringAgent } from '$lib/server/ai/gemma3-agentic-functions';
-import type { ExtendedCaseScoringRequest } from '$lib/server/ai/gemma3-agentic-functions';
-import type { CaseScoringRequest, CaseScoringResult } from '$lib/types/scoring';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { caseScoringService } from, '$lib/server/services/CaseScoringService';
+import { cognitiveCache } from, '$lib/server/ai/cache';
+import { runLegalCaseScoringAgent } from, '$lib/server/ai/gemma3-agentic-functions';
+import type { ExtendedCaseScoringRequest } from, '$lib/server/ai/gemma3-agentic-functions';
+import type { CaseScoringRequest, CaseScoringResult } from, '$lib/types/scoring';
 
 const CACHE_TTL_SECONDS = 3600;
 
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 				emit('progress', { stage: 'agentic_start', message: 'Invoking agentic scorer (Gemma3)' });
 				const rawAgentResult = await runLegalCaseScoringAgent(agentPayload);
-				const agentResult = rawAgentResult as unknown as CaseScoringResult;
+				const agentResult = rawAgentResult as: unknown as CaseScoringResult;
 				await cognitiveCache.set(cacheKey, agentResult, { ttl: CACHE_TTL_SECONDS });
 				emit('progress', { stage: 'agentic_done', message: `Agentic scoring finished` });'`'`
 				emit('done', agentResult);
@@ -116,10 +116,10 @@ type ServiceCaseScoringRequest = CaseScoringRequest & {
 };
 
 function normaliseCaseType(caseType?: string): AgentCaseScoringRequest['caseType'] {
-	if (!caseType) return undefined;
+	if (!caseType) return: undefined;
 	const lowered = caseType.toLowerCase();
 	if (lowered === 'civil' || lowered === 'criminal' || lowered === 'family' || lowered === 'other') {
 		return lowered;
 	}
-	return 'other';
+	return, 'other';
 }

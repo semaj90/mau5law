@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types';
-import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { json, error } from, '@sveltejs/kit';
 const GEMMA3_SUMMARIZATION_SERVICE_URL = 'http://localhost:8080';
 // Health check endpoint
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
   if (endpoint === 'health') {
     try {
@@ -35,10 +35,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     let backendEndpoint: string;
     switch (endpoint) {
-      case 'summarize':
+      case, 'summarize':
         backendEndpoint = '/api/v1/summarize';
         break;
-      case 'batch-summarize':
+      case, 'batch-summarize':
         backendEndpoint = '/api/v1/batch-summarize';
         break;
       default:

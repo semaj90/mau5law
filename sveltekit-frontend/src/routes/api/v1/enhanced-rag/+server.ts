@@ -1,12 +1,12 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
 /*
  * Enhanced RAG API - Direct Integration with Go Microservices
  * Provides seamless integration with Enhanced RAG Go service (port 8094)
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
-import { testVectorOperations, hybridSearch, generateSampleEmbedding } from '$lib/server/db/vector-operations.js';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { testVectorOperations, hybridSearch, generateSampleEmbedding } from, '$lib/server/db/vector-operations.js';
 
 const ENHANCED_RAG_CONFIG = {
   baseUrl: import.meta.env.ENHANCED_RAG_URL || 'http://localhost:8094',
@@ -14,7 +14,7 @@ const ENHANCED_RAG_CONFIG = {
   timeout: 30000,
   retries: 2,
   models: {
-    primary: 'gemma3-legal',
+   , primary: 'gemma3-legal',
     embedding: 'nomic-embed-text',
     fallback: 'llama2-legal'
   }
@@ -30,7 +30,7 @@ export interface EnhancedRAGRequest {
   useVectorSearch?: boolean;
   includeMetadata?: boolean;
 }
-export interface EnhancedRAGResponse { answer: string;, confidence: number;
+export interface EnhancedRAGResponse {, answer: string;, confidence: number;
   sources: Array<any>;
   model: string;
   executionTime: number;
@@ -39,7 +39,7 @@ export interface EnhancedRAGResponse { answer: string;, confidence: number;
 /*
  * GET /api/v1/enhanced-rag - Enhanced RAG service health and capabilities
  */
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const includeModels = url.searchParams.get('models') === 'true';
     const checkVector = url.searchParams.get('vector') === 'true';
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     };
     let ragResponse: Response;
     let responseData: any;
-    let vectorResults: any[] | null = null;
+    let, vectorResults: any[] | null = null;
     try {
       // Try Enhanced RAG service first
       ragResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/api/rag`, {
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             answer: `Based on vector similarity search, found ${vectorResults.length} relevant documents. (Fallback used while Enhanced RAG unavailable)`,
             confidence: 0.6,
             sources: vectorResults.map(result => ({
-              id: (result as { id?: any }).id,
+             , id: (result as { id?: any }).id,
               content: (result as { content?: any }).content,
               score: (result as { score?: any }).score,
               metadata: (result as { metadata?: any }).metadata
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
     const enhancedResponse: EnhancedRAGResponse = {
-      answer: responseData.answer || responseData.response,
+     , answer: responseData.answer || responseData.response,
       confidence: responseData.confidence || 0.8,
       sources: responseData.sources || [],
       model: responseData?.model || enhancedRequest?.model || 'unknown',
@@ -226,12 +226,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       vectorResults: vectorResults || undefined
     };
     return json({
-      success: true,
+     , success: true,
       data: enhancedResponse,
       source: responseData.fallback ? 'vector-fallback' : 'enhanced-rag',
       timestamp: new Date().toISOString(),
       metrics: {
-        queryLength: ragRequest.query.length,
+       , queryLength: ragRequest.query.length,
         sourcesFound: enhancedResponse.sources.length,
         executionTimeMs: enhancedResponse.executionTime,
         confidence: enhancedResponse.confidence,
@@ -252,7 +252,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const metadata = formData.get('metadata')
-      ? JSON.parse(formData.get('metadata') as string)
+      ? JSON.parse(formData.get('metadata') as: string)
       : ({} as Record<string, any>);
     if (!file) {
       throw error(400, 'File is required');
@@ -308,7 +308,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const result = await deleteResponse.json();
     return json({
       success: true,
-      message: 'Document '${documentId}' removed from RAG index`,'`
+      message: 'Document, '${documentId}' removed from RAG index`,'`
       result,
       timestamp: new Date().toISOString()
     });

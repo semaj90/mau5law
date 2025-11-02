@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 // Browser detection
 const browser = typeof window !== 'undefined';
 
@@ -13,7 +13,7 @@ export interface QUICGatewayConfig { baseURL: string;, http3Port: number;
 }
 
 // Request Configuration
-export interface QUICRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';, endpoint: string;
+export interface QUICRequest {, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';, endpoint: string;
   data?: any;
   headers?: Record<string, string>;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
@@ -37,42 +37,42 @@ export interface QUICResponse<T = any> {
 }
 
 // Connection Status
-export interface QUICConnectionStatus { connected: boolean;, protocol: string;
+export interface QUICConnectionStatus {, connected: boolean;, protocol: string;
   latency: number;
   throughput: number;
   errorRate: number;
-  connectionPool: { active: number;, idle: number;
+  connectionPool: {, active: number;, idle: number;
     total: number;
   };
-  capabilities: { http3: boolean;, zeroRTT: boolean;
+  capabilities: {, http3: boolean;, zeroRTT: boolean;
     streaming: boolean;
     multiplexing: boolean;
   };
 }
 
 // Performance Metrics
-export interface QUICPerformanceMetrics { requestsTotal: number;, requestsPerSecond: number;
+export interface QUICPerformanceMetrics {, requestsTotal: number;, requestsPerSecond: number;
   averageLatency: number;
   throughputMbps: number;
   cacheHitRate: number;
-  protocolDistribution: { http3: number;, http2: number;
+  protocolDistribution: {, http3: number;, http2: number;
     http1: number;
   };
-  errorTypes: Record<string, number>;
+ , errorTypes: Record<string, number>;
   bandwidthSaved: number;
 }
 
 // New: Interface for streaming legal processing data
 export interface StreamProcessingData {
-  status: 'processing' | 'completed' | 'failed';
+ , status: 'processing' | 'completed' | 'failed';
   progress?: number;
   message?: string;
   result?: Record<string, unknown>; // Or a more specific type if known
 }
 
 // New: Interface for health status data
-export interface HealthStatusData { status: 'ok' | 'degraded' | 'unhealthy';, message: string;
-  timestamp: string;
+export interface HealthStatusData {, status: 'ok' | 'degraded' | 'unhealthy';, message: string;
+ , timestamp: string;
   details?: Record<string, unknown>;
   protocol?: 'HTTP/3' | 'HTTP/2' | 'HTTP/1.1';
 }
@@ -82,12 +82,12 @@ export interface HealthStatusData { status: 'ok' | 'degraded' | 'unhealthy';, m
  */
 export class QUICGatewayClient {
   private config: QUICGatewayConfig;
-  private connectionPool: Map<string, WebTransport> = new Map();
-  private requestCache: Map<string, { response: QUICResponse<unknown>; timestamp: number }> = new Map();
-  private performanceData: Array<{ timestamp: number;, responseTime: number;
+  private, connectionPool: Map<string, WebTransport> = new Map();
+  private requestCache: Map<string, { response: QUICResponse<unknown>;, timestamp: number }> = new Map();
+  private performanceData: Array<{, timestamp: number;, responseTime: number;
     success: boolean;
     protocol: string;
-    fromCache: boolean;
+   , fromCache: boolean;
   }> = [];
   private isInitialized = $state(false);
   private reconnectAttempts = 0;
@@ -203,7 +203,7 @@ export class QUICGatewayClient {
           protocol: (data && data.protocol) || 'HTTP/3',
           latency: responseTime,
           capabilities: {
-            http3: (data && data.protocol) === 'HTTP/3',
+           , http3: (data && data.protocol) === 'HTTP/3',
             zeroRTT: this.config.enableZeroRTT,
             streaming: this.config.enableStreaming,
             multiplexing: true
@@ -264,7 +264,7 @@ export class QUICGatewayClient {
     // All attempts failed
     const responseTime = performance.now() - startTime;
     const failureResponse: QUICResponse<T> = {
-      success: false,
+     , success: false,
       error: lastError?.message || 'Request failed',
       statusCode: 0,
       responseTime,
@@ -298,7 +298,7 @@ export class QUICGatewayClient {
 
     try {
       const fetchOptions: RequestInit = {
-        method: request.method,
+       , method: request.method,
         headers,
         signal: controller.signal,
         body: request.method === 'GET' ? undefined : JSON.stringify(request.data ?? {})
@@ -314,7 +314,7 @@ export class QUICGatewayClient {
         const text = await raw.text();
         data = text ? JSON.parse(text) : undefined;
       } catch {
-        // keep data undefined on parse error
+        // keep data: undefined on parse error
       }
 
       return {
@@ -376,8 +376,8 @@ export class QUICGatewayClient {
    */
   private detectProtocol(response: Response): 'HTTP/3' | 'HTTP/2' | 'HTTP/1.1' {
     const altSvc = response.headers.get('alt-svc') || response.headers.get('Alt-Svc');
-    if (altSvc && altSvc.includes('h3')) return 'HTTP/3';
-    return 'HTTP/2';
+    if (altSvc && altSvc.includes('h3')) return, 'HTTP/3';
+    return, 'HTTP/2';
   }
 
   /**
@@ -417,7 +417,7 @@ export class QUICGatewayClient {
       // 5 minutes TTL
       return cached.response as QUICResponse<T>; // Assert to T
     }
-    return null;
+    return: null;
   }
 
   /**
@@ -465,7 +465,7 @@ export class QUICGatewayClient {
       averageLatency,
       cacheHitRate: (cachedCount / totalRequests) * 100,
       protocolDistribution: {
-        http3: dist.http3 || 0,
+       , http3: dist.http3 || 0,
         http2: dist.http2 || 0,
         http1: dist.http11 || 0
       }

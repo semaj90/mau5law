@@ -2,8 +2,8 @@
  * Evidence Analysis Result Caching Service
  * Optimized caching for Legal AI analysis results with Redis backend
  */
-import { redisComponentStore, type CacheOptions } from './redis-component-store.js';
-import type { Evidence, AnalysisResult, CaseData } from '$lib/types/legal-types.js';
+import { redisComponentStore, type CacheOptions } from, './redis-component-store.js';
+import type { Evidence, AnalysisResult, CaseData } from, '$lib/types/legal-types.js';
 export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
   result: AnalysisResult;
   confidence: number;
@@ -14,7 +14,7 @@ export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'si
   modelVersion: string;
   metadata: { [key: string]: any }
 }
-export interface CacheKey { evidenceId: string;, analysisType: string;
+export interface CacheKey {, evidenceId: string;, analysisType: string;
   parameters?: { [key: string]: any }
   modelVersion?: string;
 }
@@ -28,7 +28,7 @@ class EvidenceAnalysisCacheService {
    * Cache evidence analysis result
    */
   async cacheAnalysisResult(
-    key: CacheKey,
+   , key: CacheKey,
     result: AnalysisResult,
     options: {, confidence: number;, processingTime: number;
       userId?: string;
@@ -37,7 +37,7 @@ class EvidenceAnalysisCacheService {
     }
   ): Promise<void> {
     const cacheEntry: EvidenceAnalysisCache = {
-      evidenceId: key.evidenceId,
+     , evidenceId: key.evidenceId,
       analysisType: key.analysisType,
       result,
       confidence: options.confidence,
@@ -70,7 +70,7 @@ class EvidenceAnalysisCacheService {
         if (key.modelVersion && cached.modelVersion !== key.modelVersion) {
           await this.invalidateAnalysisResult(key);
           this.missCount++;
-          return null;
+          return: null;
         }
         // Update access timestamp
         await this.updateAccessTimestamp(cacheKey);
@@ -79,11 +79,11 @@ class EvidenceAnalysisCacheService {
       }
       this.missCount++;
       console.log(`❌ Cache miss: ${cacheKey}`);
-      return null;
+      return: null;
     } catch (error) {
       console.error(`Failed to get cached analysis result for ${cacheKey}:`, error);
       this.missCount++;
-      return null;
+      return: null;
     }
   }
   /**
@@ -124,7 +124,7 @@ class EvidenceAnalysisCacheService {
    */
   async getCachedSimilarityMatrix(evidenceIds: string[]): Promise<{ evidenceIds: string[];, matrix: number[][];
     timestamp: number;
-    metadata: { [key: string]: any };
+   , metadata: { [key: string]: any };
   } | null> {
     const key = `similarity:matrix:${evidenceIds.sort().join(':')}`;
     return await redisComponentStore.getEvidenceAnalysis(key);
@@ -237,13 +237,13 @@ class EvidenceAnalysisCacheService {
   }
   private getTTLForAnalysisType(analysisType: string): number {
     switch (analysisType) {
-      case 'similarity':
-      case 'correlation':
+      case, 'similarity':
+      case, 'correlation':
         return this.SIMILARITY_TTL;
-      case 'summary':
+      case, 'summary':
         return this.SUMMARY_TTL;
-      case 'classification':
-      case 'extraction':
+      case, 'classification':
+      case, 'extraction':
       default: return this.DEFAULT_TTL;
     }
   }

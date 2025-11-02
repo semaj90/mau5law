@@ -1,23 +1,23 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // Database CRUD Test API
 // Tests PostgreSQL, pgvector, and Drizzle ORM integration
-import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db/index';
-import { users, cases, reports, evidence, criminals, personsOfInterest } from '$lib/server/db/unified-schema';
-import { sql } from 'drizzle-orm';
+import { json } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db/index';
+import { users, cases, reports, evidence, criminals, personsOfInterest } from, '$lib/server/db/unified-schema';
+import { sql } from, 'drizzle-orm';
 
 export interface TestResult { test: string;, status: 'success' | 'error';
   data?: any;
   error?: string;
 }
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
   const results: TestResult[] = [];
   try {
-    // Test 1: Database Connection
+    // Test, 1: Database Connection
     if (testType === 'all' || testType === 'connection') {
       try {
-        const connectionTest = await db.execute(sql`SELECT 'Database Connected' as status, version() as version`);
+        const connectionTest = await db.execute(sql`SELECT, 'Database Connected' as status, version() as version`);
         results.push({
           test: 'database_connection',
           status: 'success',
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Test 4: Reports CRUD
     if (testType === 'all' || testType === 'reports') {
       try {
-        // select full rows to avoid referencing createdAt property that may not exist on the table object
+        // select full rows to avoid referencing createdAt property that may not exist on the table: object
         const reportsList = await db.select().from(reports).limit(5);
         results.push({
           test: 'reports_read',
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (testType === 'all' || testType === 'vector') {
       try {
         const vectorTest = await db.execute(
-          sql`SELECT 'pgvector extension available' as status WHERE EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'vector')`
+          sql`SELECT, 'pgvector extension available' as status WHERE EXISTS (SELECT, 1 FROM pg_extension WHERE extname = 'vector')`
         );
         results.push({
           test: 'pgvector_extension',
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       tests: results,
       summary: {
-        total: results.length,
+       , total: results.length,
         passed: results.filter(item => item.status === 'success').length,
         failed: results.filter(item => item.status === 'error').length
       }

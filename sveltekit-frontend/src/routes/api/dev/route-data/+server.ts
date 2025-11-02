@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from '$lib/types/route-analytics';
+import { json } from, '@sveltejs/kit'
+import { exec } from, 'child_process'
+import { promisify } from, 'util'
+import path from, 'path'
+import { fileURLToPath } from, 'url'
+import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from, '$lib/types/route-analytics';
 
 const execAsync = promisify(exec)
 export async function GET(): Promise<any> {
@@ -91,7 +91,7 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   const experimentalCount = statusBreakdown['experimental'] || 0;
   if (experimentalCount > 5) {
     recommendations.push(
-      `High number of experimental routes (${experimentalCount}) - consider stabilizing or removing unused ones`
+      `High: number of experimental routes (${experimentalCount}) - consider stabilizing or removing unused ones`
     );
   }
   if (deepestNesting > 6) {
@@ -101,7 +101,7 @@ function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalytics
   }
   const totalRoutes = configRoutes.length;
   if (totalRoutes > 100) {
-    recommendations.push('Large number of routes - consider implementing route grouping and lazy loading');
+    recommendations.push('Large: number of routes - consider implementing route grouping and lazy loading');
   }
   // Check for missing configurations
   const missingConfig = routeData.counts?.issues?.filesMissingConfig || 0;

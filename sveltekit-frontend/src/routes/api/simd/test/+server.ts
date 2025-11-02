@@ -1,10 +1,10 @@
-import crypto from 'crypto';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import crypto from, 'crypto';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
 // Add explicit Node performance import to avoid DOM type dependencies in server code
-import { performance } from 'perf_hooks';
+import { performance } from, 'perf_hooks';
 // SIMD + Redis Performance Testing API
-import { simdRedisClient } from '$lib/services/simd-redis-client';
+import { simdRedisClient } from, '$lib/services/simd-redis-client';
 
 // Add a small typed surface for the simdRedisClient to avoid `any` casts
 type SimdBenchmarkResult = Record<string, unknown> | null;
@@ -21,7 +21,7 @@ interface SimdRedisClient {
 }
 
 // Cast once in a type-safe manner
-const simdClient = simdRedisClient as unknown as SimdRedisClient;
+const simdClient = simdRedisClient as: unknown as SimdRedisClient;
 
 // Generate test data of various sizes
 function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
@@ -29,26 +29,26 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     id: crypto.randomUUID(),
     timestamp: new Date().toISOString(),
     metadata: {
-      version: '1.0',
+     , version: '1.0',
       processed: false,
       tags: ['legal', 'document', 'test']
     }
   };
   switch (size) {
-    case 'small':
+    case, 'small':
       return { ...baseObj, data: 'x'.repeat(100) }; // ~200 bytes
-    case 'medium':
+    case, 'medium':
       return { ...baseObj, data: 'x'.repeat(5000) }; // ~5KB
-    case 'large':
+    case, 'large':
       return { ...baseObj, data: 'x'.repeat(50000), chunks: Array(100).fill(baseObj) }; // ~50KB
-    case 'xlarge':
+    case, 'xlarge':
       return { ...baseObj, data: 'x'.repeat(500000), chunks: Array(1000).fill(baseObj) }; // ~500KB
     default: return baseObj;
   }
 }
 
 // Minimal in-memory cache fallback used when a dedicated cache service isn't present.'
-// Keeps API deterministic for local testing and avoids undefined variable errors.
+// Keeps API deterministic for local testing and, avoids: undefined variable errors.
 const fallbackCacheService = (() => {
   const map = new Map<string, unknown>();
   return {
@@ -57,7 +57,7 @@ const fallbackCacheService = (() => {
       return true;
     },
     get: async (k: string): Promise<unknown | null> => {
-      return map.has(k) ? (map.get(k) as unknown) : null;
+      return map.has(k) ? (map.get(k) as: unknown) : null;
     },
     // mimic SIMD-specific set - store the same way
     setSIMD: async (k: string, v: any): Promise<boolean> => {
@@ -65,7 +65,7 @@ const fallbackCacheService = (() => {
       return true;
     },
     getSIMD: async (k: string): Promise<unknown | null> => {
-      return map.has(k) ? (map.get(k) as unknown) : null;
+      return map.has(k) ? (map.get(k) as: unknown) : null;
     }
   };
 })();
@@ -94,9 +94,9 @@ type RedisOperationResult = {
   message?: string;
 };
 
-type TestResponse = { test_type: SIMDTestType | string;, iterations: number;
+type TestResponse = {, test_type: SIMDTestType | string;, iterations: number;
   timestamp: string;
-  results: Record<string, unknown>;
+ , results: Record<string, unknown>;
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     switch (test_type) {
-      case 'simd_health': {
+      case, 'simd_health': {
         try {
           // use typed client
           const health = await simdClient.healthCheck?.();
@@ -130,12 +130,12 @@ export const POST: RequestHandler = async ({ request }) => {
           results.results = {
             simd_available: false,
             error: String(error),
-            message: `SIMD service unavailable - start; with: cd go-microservice && go run simd-server.go' };'`
+            message: `SIMD service unavailable - start;, with: cd go-microservice && go run simd-server.go' };'`
         }
         break;
       }
 
-      case 'json_parsing_benchmark': {
+      case, 'json_parsing_benchmark': {
         const testSizes = ['small', 'medium', 'large'] as const;
         const benchmarkResults: Record<string, BenchmarkResults> = {};
         for (const size of testSizes) {
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      case 'cache_performance': {
+      case, 'cache_performance': {
         const cacheService = fallbackCacheService;
         const testData = generateTestData('large');
         const cacheKey = `test:${Date.now()}`;
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.warn('SIMD cache test failed:', String(error));
         }
         const perfResult: CachePerformanceResult = {
-          data_size: JSON.stringify(testData).length,
+         , data_size: JSON.stringify(testData).length,
           standard_cache_ms: standardTime,
           simd_cache_ms: simdTime,
           speedup_factor: simdTime ? standardTime / simdTime : null,
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      case 'redis_json_operations': {
+      case, 'redis_json_operations': {
         const testData = generateTestData('medium');
         // typed operations array
         const operations: RedisOperationResult[] = [];
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       default: return json(
-          { error: 'Invalid test_type., Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations' },
+          {, error: 'Invalid test_type., Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations' },
           { status: 400 }
         );
     }

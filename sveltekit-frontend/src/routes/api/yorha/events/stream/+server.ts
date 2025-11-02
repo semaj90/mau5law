@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 
 const DEFAULT_INTERVAL = 3000;
 
@@ -7,27 +7,27 @@ interface HelloData {
   message: string;
 }
 
-interface SystemMetricsData { cpu: number;, memMB: number;
+interface SystemMetricsData {, cpu: number;, memMB: number;
   vectorQueriesPerMin: number;
   gpuQueueDepth: number;
   timestamp: number;
 }
 
-interface HelloEnvelope { type: 'sse_hello';, data: HelloData;
+interface HelloEnvelope {, type: 'sse_hello';, data: HelloData;
   ts: string;
 }
 
-interface SystemMetricsEnvelope { type: 'system_metrics';, data: SystemMetricsData;
+interface SystemMetricsEnvelope {, type: 'system_metrics';, data: SystemMetricsData;
   ts: string;
 }
 
 type StreamMetricEnvelope = HelloEnvelope | SystemMetricsEnvelope;
 
-export const GET: RequestHandler = ({ url }) => {
+export const, GET: RequestHandler = ({ url }) => {
   const intervalMs = Number(url.searchParams.get('interval') || DEFAULT_INTERVAL);
 
   let intervalId: ReturnType<typeof setInterval> | undefined;
-  let keepAliveId: ReturnType<typeof setInterval> | undefined;
+  let, keepAliveId: ReturnType<typeof setInterval> | undefined;
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {

@@ -1,12 +1,12 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
-<!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
+<!-- import  ErrorBoundary, from, "$lib/components/ErrorBoundary.svelte"; -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   interface Props {
     text?: string;
     onsummary?: () => void;
   }
-  // Receive props (Svelte 5 runes)
+  // Receive props (Svelte, 5 runes)
   let { text = '', onsummary }: Props = $props();
   // reactive state
   let summary = $state<string>('');
@@ -30,7 +30,7 @@
       const res = await fetch('/api/ai/ollama-gemma3', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: `Summarize: ${input}` }),
+        body: JSON.stringify({, prompt: `Summarize: ${input}` }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -59,7 +59,7 @@
         if (e instanceof Error) {
           errorMessage = e.message;
         } else {
-          errorMessage = 'An unknown error occurred.';
+          errorMessage = 'An: unknown error occurred.';
         }
       }
     } finally {

@@ -274,7 +274,7 @@ await runInitialTests();
     </div.Content>
   </div.Root>
   <!-- Main Testing Interface -->
-  <Tabs.Root bind:value={currentTab}>
+  <Tabs bind:value={currentTab}>
     <Tabs.List class="grid w-full grid-cols-4">
       <Tabs.Trigger value="auth">Authentication</Tabs.Trigger>
       <Tabs.Trigger value="gpu">GPU Testing</Tabs.Trigger>
@@ -498,5 +498,5 @@ await runInitialTests();
         </div.Content>
       </div.Root>
     </Tabs.Content>
-  </Tabs.Root>
+  </Tabs>
 </div>;

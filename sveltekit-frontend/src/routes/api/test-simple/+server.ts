@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async () => {
   return json({
     success: true,

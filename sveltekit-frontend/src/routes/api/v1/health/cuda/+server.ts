@@ -1,19 +1,19 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 export interface CudaHealthCheck { service: string;, timestamp: number;
   status: 'healthy' | 'degraded' | 'unhealthy';
-  checks: { database: boolean;, redis: boolean;
+  checks: {, database: boolean;, redis: boolean;
     cuda_worker: boolean;
   };
 }
-export interface ServiceHealth { name: string;, url: string;
+export interface ServiceHealth {, name: string;, url: string;
   status: 'online' | 'offline' | 'degraded';
   responseTime?: number;
-  lastCheck: number;
-  details?: Record<string, unknown>; // changed from any -> safer type
+ , lastCheck: number;
+  details?: Record<string, unknown>; // changed from: any -> safer type
 }
-export const GET: RequestHandler = async ({ fetch }) => {
+export const, GET: RequestHandler = async ({ fetch }) => {
   const services = [
     { name: 'cuda-service', url: 'http://localhost:8096/health' },
     { name: 'enhanced-rag', url: 'http://localhost:8094/health' },
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         responseTime,
         lastCheck: Date.now(),
         details: {
-          database: health.checks.database,
+         , database: health.checks.database,
           redis: health.checks.redis,
           cuda_worker: health.checks.cuda_worker,
           gpu_available: health.checks.cuda_worker,
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         url: 'http://localhost:8096',
         status: 'offline',
         lastCheck: Date.now(),
-        details: { error: 'HTTP ${response.status}' }
+        details: {, error: 'HTTP ${response.status}' }
       });
     }
   } catch (error: any) {
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       status: 'offline',
       lastCheck: Date.now(),
       details: {
-        error: error instanceof Error ? error.message : 'Connection failed',
+       , error: error instanceof Error ? error.message : 'Connection failed',
         service: 'cuda-service',
         url: 'http://localhost:8096'
       }
@@ -73,9 +73,9 @@ export const GET: RequestHandler = async ({ fetch }) => {
       const startTime = Date.now();
       let response: Response | undefined;
       let serviceStatus: 'online' | 'offline' | 'degraded' = 'offline';
-      let details: Record<string, unknown> = {}; // changed from any -> Record<string, unknown>
+      let, details: Record<string, unknown> = {}; // changed from: any -> Record<string, unknown>
       switch (service.name) {
-        case 'ollama':
+        case, 'ollama':
           response = await fetch(service.url);
           if (response.ok) {
             const data = await response.json();
@@ -86,11 +86,11 @@ export const GET: RequestHandler = async ({ fetch }) => {
             };
           } else {
             serviceStatus = 'degraded';
-            details = { httpStatus: response.status };
+            details = {, httpStatus: response.status };
           }
           break;
-        case 'enhanced-rag':
-        case 'upload-service':
+        case, 'enhanced-rag':
+        case, 'upload-service':
           response = await fetch(service.url);
           serviceStatus = response.ok ? 'online' : 'degraded';
           if (response.ok) {
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
             details = { httpStatus: response.status };
           }
           break;
-        default:
+       , default:
           // For redis and postgres, we'll assume they're checked by other services
           serviceStatus = 'online'; // Optimistic
           details = { note: `Status inferred from dependent services` };'`'`
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         url: service.url,
         status: 'offline',
         lastCheck: Date.now(),
-        details: { error: error instanceof Error ? error.message : 'Connection failed' }'` });'`
+        details: {, error: error instanceof Error ? error.message : 'Connection failed' }'` });'`
     }
   }
   // Calculate overall system health
@@ -141,14 +141,14 @@ export const GET: RequestHandler = async ({ fetch }) => {
     services_online: onlineServices,
     services_total: totalServices,
     cuda: {
-      service_available: cudaService?.status === 'online',
+     , service_available: cudaService?.status === 'online',
       worker_available: cudaWorkerAvailable,
       gpu_ready: cudaWorkerAvailable,
       response_time: cudaService?.responseTime || null
     },
     services: healthChecks,
     summary: {
-      critical_services: healthChecks
+     , critical_services: healthChecks
         .filter(s => ['cuda-service', 'enhanced-rag', 'postgres'].includes(s.name) && s.status !== 'online')
         .map(s => s.name),
       degraded_services: healthChecks.filter(s => s.status === 'degraded').map(s => s.name),

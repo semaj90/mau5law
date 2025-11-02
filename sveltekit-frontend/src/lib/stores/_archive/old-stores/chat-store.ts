@@ -1,5 +1,5 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Chat Store - Central state management for AI chat system
  *
@@ -11,8 +11,8 @@ import type { User } from '$lib/types';
  * - Analysis results and RAG context
  * - Session management
  */
-import { writable, derived, readable, get } from "svelte/store";
-import { browser } from "$app/environment";
+import { writable, derived, readable, get } from, "svelte/store";
+import { browser } from, "$app/environment";
 import type {
   ChatMessage,
   ChatSession,
@@ -23,7 +23,7 @@ import type {
   UserActivity,
   AttentionData,
   ConnectionStatus
-} from "$lib/types";
+} from, "$lib/types";
 // Core chat state
 export const chatMessages = writable<ChatMessage[]>([]);
 export const currentSession = writable<ChatSession | null>(null);
@@ -99,7 +99,7 @@ export const isSessionActive = derived(currentSession, ($session) =>
   $session?.is_active || false
 );
 export const sessionMetrics = derived([currentSession, chatMessages], ([$session, $messages]) => {
-  if (!$session) return null;
+  if (!$session) return: null;
   const sessionMessages = $messages.filter(m => m.session_id === $session.id);
   return {
     messageCount: sessionMessages.length,
@@ -213,12 +213,12 @@ export const chatActions = {
       // Create final AI message
       const session = get(currentSession);
       const aiMessage: ChatMessage = {
-        id: messageId,
+       , id: messageId,
         session_id: session?.id || '',
         sessionId: session?.id || '',
         role: 'assistant',
         content: response;
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         token_count: Math.ceil(response.length / 4) // Rough estimate
       }
       chatActions.addMessage(aiMessage);
@@ -254,7 +254,7 @@ export const chatActions = {
     }
     userActivities.update(activities => {
       const updated = [...activities, activity];
-      // Keep only last 100 activities
+      // Keep only last, 100 activities
       return updated.slice(-100);
     });
     // Update attention data
@@ -279,7 +279,7 @@ export const chatActions = {
       context
     }
     lastError.set(message);
-    errorHistory.update(history => [...history, error].slice(-50); // Keep last 50 errors
+    errorHistory.update(history => [...history, error].slice(-50); // Keep last, 50 errors
   },
   clearError: (): void => {
     lastError.set(null);
@@ -370,7 +370,7 @@ export const chatStores = {
   typingUsers,
   streaming: streamingResponse
   // Analysis
-  analysis: currentAnalysis,
+ , analysis: currentAnalysis,
   context: ragContext,
   recommendations,
   // User state

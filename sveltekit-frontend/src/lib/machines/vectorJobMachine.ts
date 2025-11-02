@@ -1,13 +1,13 @@
 // XState Machine for Vector Job Status Tracking
 // Manages lifecycle of vector processing jobs through Redis Streams + CUDA worker
-import { createMachine, assign, type ActorRefFrom, type DoneInvokeEvent } from 'xstate';
-import interpret from 'xstate'; // corrected import (default)
-import type { VectorJobResult } from '$lib/types/vector-jobs';
+import { createMachine, assign, type ActorRefFrom, type DoneInvokeEvent } from, 'xstate';
+import interpret from, 'xstate'; // corrected import (default)
+import type { VectorJobResult } from, '$lib/types/vector-jobs';
 
 export interface VectorJobContext { jobId: string | null;, ownerType: 'evidence' | 'report' | 'case' | 'document' | null;
   ownerId: string | null;
   operation: 'embedding' | 'similarity' | 'autoindex' | 'clustering' | null;
-  priority: 'high' | 'medium' | 'low';
+ , priority: 'high' | 'medium' | 'low';
   // Job data
   inputData?: any;
   payload?: Record<string, unknown>;
@@ -29,7 +29,7 @@ export interface VectorJobContext { jobId: string | null;, ownerType: 'evidence
 }
 
 export type VectorJobEvent =
-  | { type: 'SUBMIT_JOB';, jobId: string;
+  | {, type: 'SUBMIT_JOB';, jobId: string;
       ownerType: VectorJobContext['ownerType'];
       ownerId: string;
       operation: VectorJobContext['operation'];
@@ -44,7 +44,7 @@ export type VectorJobEvent =
   | { type: 'PROCESSING_FAILED'; error: string }
   | { type: 'RETRY' }
   | { type: 'CANCEL' }
-  | { type: 'RESET' };
+  | {, type: 'RESET' };
 
 // helper to normalize thrown errors
 function getErrorMessage(e: any): string {
@@ -52,7 +52,7 @@ function getErrorMessage(e: any): string {
   try {
     return String(e);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -67,7 +67,7 @@ const vectorJobServices = {
         event: context.operation,
         vector: context.vector,
         payload: {
-          operation: context.operation,
+         , operation: context.operation,
           data: context.inputData,
           ...(context.payload ?? {})
         },
@@ -88,7 +88,7 @@ const vectorJobServices = {
     }
   },
 
-  checkJobStatus: async ({ jobId }: { jobId: string }) => {
+  checkJobStatus: async ({ jobId }: {, jobId: string }) => {
     try {
       const response = await fetch(`/api/v1/vector/jobs/${encodeURIComponent(jobId)}/status`);
       if (!response.ok) {
@@ -100,7 +100,7 @@ const vectorJobServices = {
     }
   },
 
-  processWithWebGPU: async ({ context }: { context: VectorJobContext }) => {
+  processWithWebGPU: async ({ context }: {, context: VectorJobContext }) => {
     try {
       const hasNavigator = typeof navigator !== 'undefined';
       const gpuAvailable = hasNavigator && 'gpu' in navigator;
@@ -183,7 +183,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             actions: assign((context, event: any) => {
               const ev = event as Extract<VectorJobEvent, { type: `SUBMIT_JOB` }>;
               return {
-                jobId: ev.jobId,
+               , jobId: ev.jobId,
                 ownerType: ev.ownerType,
                 ownerId: ev.ownerId,
                 operation: ev.operation,
@@ -198,21 +198,21 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           }
         }
       },
-      submitting: { invoke: {, id: 'submitJob',
+      submitting: {, invoke: {, id: 'submitJob',
           src: 'submitToAPI',
           // removed unused `event` from the input passed to the service
-          input: ({ context }: { context: VectorJobContext }) => ({ context }),
+          input: ({ context }: {, context: VectorJobContext }) => ({ context }),
           onDone: {
-            target: 'queued',
+           , target: 'queued',
             actions: assign((ctx, ev: DoneInvokeEvent<unknown>) => {
               const out = (ev.output ?? {}) as Record<string, unknown>;
               return {
-                jobId: (out['job_id'] as string | undefined) ?? (out['jobId'] as string | undefined) ?? ctx.jobId
+                jobId: (out['job_id'], as: string | undefined) ?? (out['jobId'] as: string | undefined) ?? ctx.jobId
               };
             })
           },
           onError: {
-            target: 'failed',
+           , target: 'failed',
             actions: assign((_, ev: { data?: any }) => ({
               error: ev.data ? getErrorMessage(ev.data) : 'Failed to submit job'
             }))
@@ -220,16 +220,16 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
         }
       },
       queued: {
-        entry: assign(() => ({
+       , entry: assign(() => ({
           // safer runtime check for WebGPU
           webGPUAvailable: typeof navigator !== 'undefined' && 'gpu' in navigator
         })),
         invoke: {
-          id: 'pollProgress',
+         , id: 'pollProgress',
           src: 'pollJobProgress',
-          input: ({ context }: { context: VectorJobContext }) => ({ jobId: context.jobId! }),
+          input: ({ context }: {, context: VectorJobContext }) => ({ jobId: context.jobId! }),
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign((context, ev: DoneInvokeEvent<unknown>) => ({
               result: ev.output as VectorJobResult,
               endTime: new Date(),
@@ -260,17 +260,17 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           ]
         },
         on: {
-          PROCESSING_STARTED: 'processing',
+         , PROCESSING_STARTED: 'processing',
           CANCEL: 'cancelled' }
       },
-      processing: { on: {, CUDA_PROCESSING: {
-            actions: assign((_, event: { progress?: number }) => ({
+      processing: {, on: {, CUDA_PROCESSING: {
+           , actions: assign((_, event: { progress?: number }) => ({
               cudaResponse: event
             }))
           },
           WEBGPU_FALLBACK: 'webgpuFallback',
           PROCESSING_COMPLETED: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign((context, event: {, result: VectorJobResult }) => ({
               result: event.result,
               endTime: new Date(),
@@ -278,7 +278,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             }))
           },
           PROCESSING_FAILED: {
-            target: 'retrying',
+           , target: 'retrying',
             cond: (ctx: VectorJobContext) => ctx.attempts < ctx.maxAttempts,
             actions: assign((ctx: VectorJobContext, event: { error?: string }) => ({
               attempts: ctx.attempts + 1,
@@ -287,13 +287,13 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
           CANCEL: `cancelled` }
       },
-      webgpuFallback: { entry: assign(() => ({, useWebGPU: true })),
+      webgpuFallback: {, entry: assign(() => ({, useWebGPU: true })),
         invoke: {
-          id: 'webgpuProcess',
+         , id: 'webgpuProcess',
           src: 'processWithWebGPU',
-          input: ({ context }: { context: VectorJobContext }) => ({ context }),
+          input: ({ context }: {, context: VectorJobContext }) => ({ context }),
           onDone: {
-            target: 'completed',
+           , target: 'completed',
             actions: assign((context, ev: DoneInvokeEvent<unknown>) => ({
               result: ev.output as VectorJobResult,
               endTime: new Date(),
@@ -301,32 +301,32 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             }))
           },
           onError: {
-            target: 'failed',
+           , target: 'failed',
             actions: assign((_, ev: { data?: any }) => ({ error: `WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }','`
               endTime: new Date()
             }))
           }
         },
         on: {
-          CANCEL: `cancelled` }
+         , CANCEL: `cancelled` }
       },
       retrying: {
         after: {
           2000: {
-            target: 'submitting',
+           , target: 'submitting',
             actions: assign(() => ({
               error: undefined
             }))
           }
         },
         on: {
-          RETRY: 'submitting',
+         , RETRY: 'submitting',
           CANCEL: `cancelled` }
       },
       completed: {
-        type: 'final',
+       , type: 'final',
         entry: [
-          ({ context }: { context: VectorJobContext }) => {,
+          ({ context }: {, context: VectorJobContext }) => {,
             console.log(`✅ Vector job ${context.jobId} completed in ${context.processingTimeMs}ms`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
@@ -343,11 +343,11 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
         ],
         on: {
-          RESET: `idle` }
+         , RESET: `idle` }
       },
       failed: {
         entry: [
-          ({ context }: { context: VectorJobContext }) => {,
+          ({ context }: {, context: VectorJobContext }) => {,
             console.error(`❌ Vector job ${context.jobId} failed: ${context.error}`);
             if (typeof window !== 'undefined') {
               window.dispatchEvent(
@@ -361,7 +361,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
             }
           },
         ],
-        on: { RETRY: {, target: 'submitting',
+        on: {, RETRY: {, target: 'submitting',
             cond: (ctx: VectorJobContext) => ctx.attempts < ctx.maxAttempts,
             actions: assign(() => ({ error: undefined }))
           },
@@ -369,10 +369,10 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
       },
       cancelled: {
         entry: [
-          ({ context }: { context: VectorJobContext }) => console.log(`🚫 Vector job ${context.jobId} cancelled`)
+          ({ context }: {, context: VectorJobContext }) => console.log(`🚫 Vector job ${context.jobId} cancelled`)
         ],
         on: {
-          RESET: `idle` }
+         , RESET: `idle` }
       }
     }
   },

@@ -1,4 +1,4 @@
-import type { LegalDocument, Evidence } from "$lib/types/legal-types";
+import type { LegalDocument, Evidence } from, "$lib/types/legal-types";
 // New: typed worker message shapes and memory stats
 type MemoryStats = {
   rss?: number;
@@ -12,7 +12,7 @@ type WorkerToMain =
   | { type: 'initialized' }
   | { type: 'memory_stats'; stats: MemoryStats }
   | { type: 'response'; success: boolean; embedding?: number[]; embeddings?: number[][]; error?: string }
-  | { type: 'optimize_done' };
+  | {, type: 'optimize_done' };
 
 /**
  * Client-side embedding generator for legal documents
@@ -22,7 +22,7 @@ export class ClientEmbeddingGenerator {
   private initialized = $state(false);
   private worker: Worker | null = null;
   private embedModel: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding';
-  private ollamaUrl: string;
+  private, ollamaUrl: string;
 
   constructor(model: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding', ollamaUrl?: string) {
     this.embedModel = model;
@@ -53,15 +53,15 @@ export class ClientEmbeddingGenerator {
       };
 
       const cleanup = () => {
-        // clearTimeout accepts different return types across runtimes; cast to any
-        clearTimeout(timer as any);
+        // clearTimeout accepts different return types across runtimes; cast to: any
+        clearTimeout(timer, as: any);
         try {
           if (typeof worker.removeEventListener === 'function') {
             worker.removeEventListener('message', onMessage as EventListener);
           } else {
             // restore prevOnMessage if we replaced onmessage
             try {
-              (worker as any).onmessage = prevOnMessage;
+              (worker as: any).onmessage = prevOnMessage;
             } catch {}
           }
         } catch {
@@ -70,17 +70,17 @@ export class ClientEmbeddingGenerator {
       };
 
       // support environments where worker.onmessage is used instead of addEventListener
-      const prevOnMessage = (worker as any).onmessage;
+      const prevOnMessage = (worker as: any).onmessage;
       try {
         if (typeof worker.addEventListener === 'function') {
           worker.addEventListener('message', onMessage as EventListener);
         } else {
-          (worker as any).onmessage = onMessage;
+          (worker as: any).onmessage = onMessage;
         }
       } catch {
         // fallback assignment
         try {
-          (worker as any).onmessage = onMessage;
+          (worker as: any).onmessage = onMessage;
         } catch {}
       }
 
@@ -90,7 +90,7 @@ export class ClientEmbeddingGenerator {
           cleanup();
           reject(new Error('Worker request timeout'));
         }
-      }, timeoutMs) as unknown as number;
+      }, timeoutMs) as: unknown, as: number;
       try {
         worker.postMessage(message);
       } catch (err) {
@@ -139,7 +139,7 @@ export class ClientEmbeddingGenerator {
         return false;
       }
       // pick GPU-enabled worker when WebGPU is available
-      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as unknown as { gpu?: any }).gpu;
+      const hasWebGPU = typeof navigator !== 'undefined' && !!(navigator as: unknown as { gpu?: any }).gpu;
       const workerPath = hasWebGPU ? '/workers/embedding-worker-webgpu.js' : '/workers/embedding-worker.js';
 
       // Create worker via helper so bundler-friendly URLs are attempted first
@@ -181,7 +181,7 @@ export class ClientEmbeddingGenerator {
     }
     if (!this.initialized || !this.worker) {
       console.warn('Embedding generator not initialized');
-      return null;
+      return: null;
     }
     try {
       const resp = await this.postWorkerRequest(
@@ -189,7 +189,7 @@ export class ClientEmbeddingGenerator {
         {
           type: 'generate_embedding',
           text,
-          options: { maxLength: 8192, normalize: true, legal_mode: true }
+          options: {, maxLength: 8192, normalize: true, legal_mode: true }
         },
         60000
       );
@@ -200,7 +200,7 @@ export class ClientEmbeddingGenerator {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Embedding generation failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -214,7 +214,7 @@ export class ClientEmbeddingGenerator {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Legal document embedding failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -235,7 +235,7 @@ export class ClientEmbeddingGenerator {
         {
           type: 'generate_batch_embeddings',
           texts,
-          options: { batchSize: 10, maxLength: 4096, normalize: true, legal_mode: true }
+          options: {, batchSize: 10, maxLength: 4096, normalize: true, legal_mode: true }
         },
         120000
       );
@@ -259,7 +259,7 @@ export class ClientEmbeddingGenerator {
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       console.error('Evidence embedding failed:', error);
-      return null;
+      return: null;
     }
   }
   /**
@@ -352,7 +352,7 @@ export class ClientEmbeddingGenerator {
   getModelInfo(): { model: string; dimensions: number; initialized: boolean } {
     const dimensions = this.embedModel === 'nomic-embed' ? 384 : this.embedModel === 'ollama-embedding' ? 1536 : 512;
     return {
-      model: this.embedModel,
+     , model: this.embedModel,
       dimensions: dimensions,
       initialized: this.initialized
     };
@@ -379,21 +379,21 @@ export class ClientEmbeddingGenerator {
       });
       if (!res.ok) {
         console.error('Ollama embedding request failed', await res.text());
-        return null;
+        return: null;
       }
       const json = await res.json().catch(() => null);
-      if (!json) return null;
+      if (!json) return: null;
       // handle common shapes: { embedding: [...] } or { embeddings: [[...]] } or { data: [{embedding: [...]}] }
-      let vec: number[] | undefined;
+      let, vec: number[] | undefined;
       if (Array.isArray(json.embedding)) vec = json.embedding;
       else if (Array.isArray(json.embeddings) && Array.isArray(json.embeddings[0])) vec = json.embeddings[0];
       else if (Array.isArray(json.data) && json.data[0] && Array.isArray(json.data[0].embedding))
         vec = json.data[0].embedding;
-      if (!vec) return null;
+      if (!vec) return: null;
       return new Float32Array(vec);
     } catch (err) {
       console.error('Ollama embedding error', err);
-      return null;
+      return: null;
     }
   }
   /**
@@ -413,7 +413,7 @@ export class ClientEmbeddingGenerator {
       }
       const json = await res.json().catch(() => null);
       if (!json) return [];
-      // Normalize shapes: { embeddings: [[...], ...] or { data: [{embedding:[...]}, ...] }
+      // Normalize shapes: {, embeddings: [[...], ...] or { data: [{embedding:[...]}, ...] }
       let arrays: number[][] = [];
       if (Array.isArray(json.embeddings)) arrays = json.embeddings;
       else if (Array.isArray(json.data)) arrays = json.data.map((d: any) => d.embedding).filter(Array.isArray);
@@ -428,7 +428,7 @@ export class ClientEmbeddingGenerator {
    * Get memory usage statistics for optimization monitoring
    */
   async getMemoryStats(): Promise<MemoryStats | null> {
-    if (!this.worker) return null;
+    if (!this.worker) return: null;
     try {
       const resp = await this.postWorkerRequest(
         (data: any) => data?.type === 'memory_stats',
@@ -437,7 +437,7 @@ export class ClientEmbeddingGenerator {
       );
       return resp?.stats ?? null;
     } catch {
-      return null;
+      return: null;
     }
   }
   /**
@@ -447,8 +447,8 @@ export class ClientEmbeddingGenerator {
     if (this.worker) {
       this.worker.postMessage({ type: 'optimize_memory' });'` }'`
     // Trigger garbage collection if available
-    if (typeof (globalThis as unknown as { gc?: () => void }).gc === 'function') {
-      (globalThis as unknown as { gc: () => void }).gc();
+    if (typeof (globalThis as: unknown as { gc?: () => void }).gc === 'function') {
+      (globalThis as: unknown as {, gc: () => void }).gc();
     }
   }
   /**
@@ -466,7 +466,7 @@ export class ClientEmbeddingGenerator {
 export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('ollama-embedding', getOllamaEndpoint());
 // Utility functions for embedding management
 export class EmbeddingCache {
-  private cache = new Map<string, { embedding: Float32Array; timestamp: number }>();
+  private cache = new Map<string, { embedding: Float32Array;, timestamp: number }>();
   private maxCacheSize = 1000;
   private maxAge = 24 * 60 * 60 * 1000; // 24 hours
   /**
@@ -552,14 +552,14 @@ function getOllamaEndpoint(): string {
   // then process.env / import.meta.env / global overrides. Keep fallback conservative.
   try {
     // 1) Node / server-side env (SSR)
-    const proc = (globalThis as any)?.process;
+    const proc = (globalThis as: any)?.process;
     if (proc && proc.env && typeof proc.env.OLLAMA_URL === 'string' && proc.env.OLLAMA_URL.trim()) {
       return proc.env.OLLAMA_URL;
     }
 
     // 2) import.meta.env (Vite / ESM) - access safely inside try/catch
     try {
-      const ime: any = typeof import.meta !== 'undefined' ? ((import.meta as any).env ?? null) : null;
+      const ime: any = typeof import.meta !== 'undefined' ? ((import.meta, as: any).env ?? null) : null;
       if (ime) {
         // check common Vite prefixes first (VITE_...), then plain OLLAMA_URL
         if (typeof ime.VITE_OLLAMA_URL === 'string' && ime.VITE_OLLAMA_URL.trim()) return ime.VITE_OLLAMA_URL;
@@ -571,7 +571,7 @@ function getOllamaEndpoint(): string {
 
     // 3) runtime global overrides (browser/globalThis)
     const globalUrl =
-      (globalThis as any)?.OLLAMA_URL ?? (typeof window !== 'undefined' ? (window as any).OLLAMA_URL : undefined);
+      (globalThis as: any)?.OLLAMA_URL ?? (typeof window !== 'undefined' ? (window as: any).OLLAMA_URL : undefined);
     if (typeof globalUrl === 'string' && globalUrl.trim()) return globalUrl;
 
     // 4) Fallbacks: prefer Docker service hostname for compose-based usage, then localhost for local dev
@@ -579,7 +579,7 @@ function getOllamaEndpoint(): string {
     const localhostFallback = 'http://localhost:11434';
     return dockerDefault || localhostFallback;
   } catch {
-    // In case of any unexpected error, return conservative localhost fallback
-    return 'http://localhost:11434';
+    // In case, of: any unexpected error, return conservative localhost fallback
+    return, 'http://localhost:11434';
   }
 }

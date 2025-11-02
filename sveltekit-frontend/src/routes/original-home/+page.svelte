@@ -2,13 +2,13 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import Typewriter from '$lib/components/Typewriter.svelte';
-  import UploadArea from '$lib/components/UploadArea.svelte';
-  import { browser } from '$app/environment';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import Typewriter from, '$lib/components/Typewriter.svelte';
+  import UploadArea from, '$lib/components/UploadArea.svelte';
+  import { browser } from, '$app/environment';
   let recentCases: any[] = $state([]);
   let heroText = $state<string>('Advanced Legal Case Management');
   $effect(() => {
@@ -85,12 +85,12 @@ import type { Document } from '$lib/types';
       <!-- AI, Search -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              d="M21 21l-6-6m2-5a7, 7 0 11-14, 0, 7, 7, 0, 0114 0z"
             />
           </svg>
         </div>
@@ -109,12 +109,12 @@ import type { Document } from '$lib/types';
       <!-- Quick, Upload -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+              d="M7 16a4, 4 0 01-.88-7.903A5, 5 0 1115.9 6L16 6a5, 5, 0, 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             />
           </svg>
         </div>
@@ -125,12 +125,12 @@ import type { Document } from '$lib/types';
       <!-- Case, Analytics -->
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              d="M9 19v-6a2, 2 0 00-2-2H5a2, 2 0 00-2 2v6a2, 2, 0, 002 2h2a2, 2 0 002-2zm0 0V9a2, 2 0 012-2h2a2, 2, 0, 012 2v10m-6 0a2, 2, 0, 002 2h2a2, 2 0 002-2m0 0V5a2, 2 0 012-2h2a2, 2, 0, 012 2v4a2, 2 0 01-2 2h-2a2, 2 0 01-2-2z"
             />
           </svg>
         </div>
@@ -177,12 +177,12 @@ import type { Document } from '$lib/types';
     <div, class="space-y-4">
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246, 5 7.5 5S4.168 5.477, 3 6.253v13C4.168 18.477 5.754, 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754, 5 16.5 5c1.746, 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246, 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
             />
           </svg>
         </div>
@@ -191,12 +191,12 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              d="M9 12l2, 2 4-4m6 2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
             />
           </svg>
         </div>
@@ -205,7 +205,7 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13, 10V3L4, 14h7v7l9-11h-7z" />
           </svg>
         </div>
@@ -214,12 +214,12 @@ import type { Document } from '$lib/types';
       </div>
       <div, class="space-y-4">
         <div, class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              d="M12 15v2m-6 4h12a2, 2 0 002-2v-6a2, 2 0 00-2-2H6a2, 2 0 00-2 2v6a2, 2, 0, 002 2zm10-10V7a4, 4 0 00-8 0v4h8z"
             />
           </svg>
         </div>
@@ -243,6 +243,6 @@ import type { Document } from '$lib/types';
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

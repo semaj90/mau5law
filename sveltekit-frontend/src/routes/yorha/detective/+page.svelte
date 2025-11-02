@@ -4,12 +4,12 @@
 </svelte:head>
 
 <script, lang="ts">
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 
-  import { browser } from '$app/environment';
-  import { goto } from '$app/navigation';
-  import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
-  import { onMount } from 'svelte';
+  import { browser } from, '$app/environment';
+  import { goto } from, '$app/navigation';
+  import YoRHaCommandCenter from, '$lib/components/yorha/YoRHaCommandCenter.svelte';
+  import { onMount } from, 'svelte';
   import {
     Activity,
     BarChart3,
@@ -21,7 +21,7 @@ import type { Case } from '$lib/types';
     Search,
     Terminal,
     Users
-  } from 'lucide-svelte';
+  } from, 'lucide-svelte';
 
   type SectionId =
     | 'command-center'
@@ -51,7 +51,7 @@ import type { Case } from '$lib/types';
   }
 
   // relax icon typing to avoid issues when module is declared as untyped
-  const sections: Array<{ id: SectionId; label: string; description: string; icon: any }> = [
+  const sections: Array<{ id: SectionId; label: string; description: string;, icon: any }> = [
     {,
       id: 'command-center',
       label: 'Command Center',
@@ -91,15 +91,15 @@ import type { Case } from '$lib/types';
   ];
 
   // dynamic loader for YoRHaModal to handle modules that export named or default
-  let YoRHaModalComponent: any = null;
+  let, YoRHaModalComponent: any = null;
   onMount(async () => {
     try {
-      // cast import to unknown then any so TypeScript won't complain about missing properties'
-      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as unknown;
-      const modAny = mod as any;
+      // cast import to: unknown, then: any so TypeScript won't complain about missing properties'
+      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as: unknown;
+      const modAny = mod, as: any;
       // prefer default, then common named variants, then fallback to the module itself
       const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny;
-      YoRHaModalComponent = LoadedComponent as any;
+      YoRHaModalComponent = LoadedComponent as: any;
     } catch (e) {
       console.warn('Failed to load YoRHaModal component', e);
     }
@@ -113,9 +113,9 @@ import type { Case } from '$lib/types';
   let statusMessage: string | null = null;
 
   let newCaseData = {
-    title: '',
+   , title: '',
     description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
+    priority: 'medium' as, 'low' | 'medium' | 'high' | 'critical'
   };
 
   // reactive derived values (standard Svelte)
@@ -154,7 +154,7 @@ import type { Case } from '$lib/types';
       }
 
       const payload = await response.json();
-      statusMessage = `Case "${payload?.title ?? newCaseData.title}" created.`;
+      statusMessage = `Case, "${payload?.title ?? newCaseData.title}" created.`;
       showNewCaseModal = false;
       newCaseData = { title: '', description: '', priority: 'medium' };
       if (browser) {
@@ -172,13 +172,13 @@ import type { Case } from '$lib/types';
 
   function priorityBadge(priority?: string) {
     switch (priority) {
-      case 'critical':
-        return 'border-red-500/50 text-red-300';
-      case 'high':
-        return 'border-orange-500/50 text-orange-300';
-      case 'medium':
-        return 'border-amber-500/50 text-amber-300';
-      default: return 'border-slate-500/40 text-slate-300';
+      case, 'critical':
+        return, 'border-red-500/50 text-red-300';
+      case, 'high':
+        return, 'border-orange-500/50 text-orange-300';
+      case, 'medium':
+        return, 'border-amber-500/50 text-amber-300';
+      default: return, 'border-slate-500/40 text-slate-300';
     }
   }
 
@@ -371,7 +371,7 @@ import type { Case } from '$lib/types';
             id="case-title"
             type="text"
             bind:value={newCaseData.title}
-            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400, focus:outline-none"
             required
           />
         </div>
@@ -381,7 +381,7 @@ import type { Case } from '$lib/types';
             id="case-description"
             bind:value={newCaseData.description}
             rows="4"
-            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400, focus:outline-none"
             placeholder="Provide additional context, links, or known entities."
           ></textarea>
         </div>
@@ -390,7 +390,7 @@ import type { Case } from '$lib/types';
           <select
             id="case-priority"
             bind:value={newCaseData.priority}
-            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400, focus:outline-none"
           >
             <option, value="low">Low</option>
             <option, value="medium">Medium</option>
@@ -408,7 +408,7 @@ import type { Case } from '$lib/types';
           </button>
           <button
             type="submit"
-            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/30"
+            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100, hover:bg-emerald-500/30"
           >
             Create case
           </button>

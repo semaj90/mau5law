@@ -4,7 +4,7 @@
  * Manages WebGPU-CUDA bridge service worker for AI processing tasks
  * Provides high-level interface for legal AI operations
  */
-import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
+import type { Case, Evidence, Citation } from, '$lib/server/db/schemas/cases-schema.js';
 
 interface AIProcessingTask { id: string;, type: 'legal-analysis' | 'evidence-review' | 'citation-verification' | 'pattern-detection' | 'document-processing';
   data: any;
@@ -13,7 +13,7 @@ interface AIProcessingTask { id: string;, type: 'legal-analysis' | 'evidence-re
   detectiveMode?: boolean;
 }
 
-interface AIProcessingResult { taskId: string;, success: boolean;
+interface AIProcessingResult {, taskId: string;, success: boolean;
   result?: any;
   error?: string;
   processingTime: number;
@@ -21,15 +21,15 @@ interface AIProcessingResult { taskId: string;, success: boolean;
   confidence?: number;
 }
 
-interface ServiceWorkerStatus { isActive: boolean;, webgpuSupported: boolean;
+interface ServiceWorkerStatus {, isActive: boolean;, webgpuSupported: boolean;
   isInitialized: boolean;
   queueLength: number;
-  deviceInfo?: { vendor: string;, architecture: string;
+  deviceInfo?: {, vendor: string;, architecture: string;
   };
 }
 
 export class WebGPUAIService {
-  private worker: Worker | null = null;
+  private, worker: Worker | null = null;
   private isInitialized = $state(false);
   private pendingTasks = new Map<
     string,
@@ -75,24 +75,24 @@ export class WebGPUAIService {
   private handleWorkerMessage(data: any): void {
     const { type, requestId, taskId } = data || {};
     switch (type) {
-      case 'init-complete':
+      case, 'init-complete':
         this.isInitialized = Boolean(data?.success);
         this.emit('initialization-complete', { success: this.isInitialized, status: data?.status, requestId });
         break;
-      case 'task-queued':
+      case, 'task-queued':
         this.emit('task-queued', { taskId: data?.taskId, requestId });
         break;
-      case 'task-complete':
+      case, 'task-complete':
         this.handleTaskComplete(data);
         break;
-      case 'task-error':
+      case, 'task-error':
         this.handleTaskError(data);
         break;
-      case 'status-response':
+      case, 'status-response':
         this.emit('status-update', { status: data?.status, requestId });
         break;
       default:
-        console.warn('⚠️ Unknown worker message; type:', type);
+        console.warn('⚠️ Unknown worker message;, type:', type);
     }
   }
 
@@ -147,10 +147,10 @@ export class WebGPUAIService {
     } = {}
   ): Promise<AIProcessingResult> {
     const task: AIProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'legal-analysis',
       data: {
-        content: documentContent,
+       , content: documentContent,
         analysisType: options.analysisType || 'basic',
         detectiveMode: options.detectiveMode || false
       },
@@ -171,7 +171,7 @@ export class WebGPUAIService {
     } = {}
   ): Promise<AIProcessingResult> {
     const task: AIProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'evidence-review',
       data: {
         evidence,
@@ -180,7 +180,7 @@ export class WebGPUAIService {
         detectiveMode: options.detectiveMode || false
       },
       priority: options.priority || 'medium',
-      caseId: (evidence as any)?.caseId,
+      caseId: (evidence, as: any)?.caseId,
       detectiveMode: options.detectiveMode
     };
     return this.processTask(task);
@@ -194,7 +194,7 @@ export class WebGPUAIService {
     } = {}
   ): Promise<AIProcessingResult> {
     const task: AIProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'citation-verification',
       data: {
         citations,
@@ -218,7 +218,7 @@ export class WebGPUAIService {
     } = {}
   ): Promise<AIProcessingResult> {
     const task: AIProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'pattern-detection',
       data: {
         ...data,
@@ -242,7 +242,7 @@ export class WebGPUAIService {
     } = {}
   ): Promise<AIProcessingResult> {
     const task: AIProcessingTask = {
-      id: this.generateTaskId(),
+     , id: this.generateTaskId(),
       type: 'document-processing',
       data: {
         document,
@@ -345,7 +345,7 @@ export class WebGPUAIService {
           type: 'process',
           requestId: this.generateRequestId(),
           payload: {
-            id: task.id,
+           , id: task.id,
             type: this.mapTaskTypeToWorkerType(task.type),
             data: this.prepareTaskData(task),
             config: this.buildTaskConfig(task),
@@ -363,38 +363,38 @@ export class WebGPUAIService {
 
   private mapTaskTypeToWorkerType(taskType: AIProcessingTask['type']): string {
     switch (taskType) {
-      case 'legal-analysis':
-      case 'evidence-review':
-      case 'pattern-detection':
-        return 'inference';
-      case 'citation-verification':
-        return 'embedding';
-      case 'document-processing':
-        return 'image-processing';
-      default: return 'inference';
+      case, 'legal-analysis':
+      case, 'evidence-review':
+      case, 'pattern-detection':
+        return, 'inference';
+      case, 'citation-verification':
+        return, 'embedding';
+      case, 'document-processing':
+        return, 'image-processing';
+      default: return, 'inference';
     }
   }
 
   private prepareTaskData(task: AIProcessingTask): any {
     switch (task.type) {
-      case 'legal-analysis': {
+      case, 'legal-analysis': {
         const encoded = new TextEncoder().encode(String(task.data.content ?? ''));
         // Return a tight ArrayBuffer slice containing just the bytes
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case 'evidence-review': {
+      case, 'evidence-review': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.evidence ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case 'citation-verification': {
+      case, 'citation-verification': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data.citations ?? []));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case 'pattern-detection': {
+      case, 'pattern-detection': {
         const encoded = new TextEncoder().encode(JSON.stringify(task.data ?? {}));
         return encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       }
-      case 'document-processing':
+      case, 'document-processing':
         return task.data.document instanceof ArrayBuffer
           ? task.data.document
           : task.data.document instanceof Uint8Array
@@ -416,40 +416,40 @@ export class WebGPUAIService {
     };
 
     switch (task.type) {
-      case 'legal-analysis':
+      case, 'legal-analysis':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: 'Analyze this legal document with ${task.data.analysisType || 'basic` } analysis level`,'`'`
           temperature: 0.3
         };
-      case 'evidence-review':
+      case, 'evidence-review':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: 'Review this evidence for admissibility, chain of custody, and relevance',
           temperature: 0.2
         };
-      case 'citation-verification':
+      case, 'citation-verification':
         return {
           ...baseConfig,
           model: 'nomic-embed-text',
           text: JSON.stringify(task.data.citations || [])
         };
-      case 'pattern-detection':
+      case, 'pattern-detection':
         return {
           ...baseConfig,
           model: 'gemma3-legal',
           prompt: 'Detect patterns and anomalies using ${task.data.analysisDepth || 'surface` } analysis`,'`'`
           temperature: 0.1
         };
-      case 'document-processing':
+      case, 'document-processing':
         return {
           ...baseConfig,
           extractText: task.data.extractText,
           analyzeContent: task.data.analyzeContent
         };
-      default: return baseConfig;
+     , default: return baseConfig;
     }
   }
 

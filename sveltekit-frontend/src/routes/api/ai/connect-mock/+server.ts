@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 /*
  * Production AI Connection Endpoint
- * Connects to actual Ollama service running on port 11434
+ * Connects to actual Ollama service running on port, 11434
  * Validates model availability and establishes connection
  */
 export const POST: RequestHandler = async ({ request }) => {
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
           fallback: true,
           message: 'AI services unavailable - using development mode',
           details: {
-            ollama: (ollamaError as Error).message,
+           , ollama: (ollamaError as Error).message,
             enhancedRAG: (ragError as Error).message
           }
         });

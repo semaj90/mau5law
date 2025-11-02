@@ -1,7 +1,7 @@
 // Updated PostgreSQL schema based on database introspection
 // This schema matches the actual database structure (drizzle/schema.ts)
-import { sql } from 'drizzle-orm';
-import { relations } from 'drizzle-orm/relations';
+import { sql } from, 'drizzle-orm';
+import { relations } from, 'drizzle-orm/relations';
 import {
   boolean,
   integer,
@@ -17,7 +17,7 @@ import {
   numeric,
   pgEnum,
   index
-} from 'drizzle-orm/pg-core';
+} from, 'drizzle-orm/pg-core';
 // Note: vector type is handled via sql`` template in table definitions
 // === ENUMS FOR LEGAL AI APPLICATION ===
 export const userRoleEnum = pgEnum('user_role', ['prosecutor', 'detective', 'admin', 'analyst', 'paralegal']);
@@ -103,7 +103,7 @@ export const sessions = pgTable(
       .primaryKey()
       .notNull(),
     userId: uuid('user_id').notNull(),
-    // changed: use Date-backed timestamp so Drizzle/Lucia expects Date (not string); expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
+    // changed: use Date-backed timestamp so Drizzle/Lucia expects Date (not: string); expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
   },
   table => ({
     foreignKeys: [
@@ -1075,7 +1075,7 @@ export const conversationSessions = pgTable(
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
-      name: `conversation_sessions_case_id_cases_id_fk` }).onDelete('set null'),
+      name: `conversation_sessions_case_id_cases_id_fk` }).onDelete('set: null'),
     index('conversation_sessions_user_id_idx').on(table.userId),
     index('conversation_sessions_session_id_idx').on(table.sessionId),
     index('conversation_sessions_last_active_idx').on(table.lastActiveAt),
@@ -1344,7 +1344,7 @@ export const helpers = { sql };
 // Note: do not re-export tables collectively to avoid redeclaration conflicts
 // Removed duplicated import and helpers redeclaration that caused TypeScript errors.
 // If you later need `not` and it's available in your environment, import it once at the top:'
-// import { not } from 'drizzle-orm';
+// import { not } from, 'drizzle-orm';
 // and then update the helpers export accordingly, e.g.
 // export const helpers = { eq, and, or, not, sql };
 // If you only want eq, document why:

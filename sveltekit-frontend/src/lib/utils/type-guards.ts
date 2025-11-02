@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // @ts-nocheck - Emergency TypeScript error suppression
 // ---
 // TYPE GUARD UTILITIES
@@ -13,19 +13,19 @@ import type {
   WorkerMessage,
   WorkerMessageType,
   AITaskType
-} from '$lib/types';
+} from, '$lib/types';
 // Define missing types locally
 type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 interface Evidence { id: string;, type: string;
   content: string;
   metadata?: { [key: string]: any }
 }
-interface User { id: string;, email: string;
+interface User {, id: string;, email: string;
   name: string;
   role?: string;
 }
-interface LegalCase { id: string;, title: string;
-  status: string;
+interface LegalCase {, id: string;, title: string;
+ , status: string;
   description?: string;
 }
 type NotificationType = 'info' | 'warning' | 'error' | 'success';
@@ -35,7 +35,7 @@ export function isAPIResponse<any>(_value: any): value is APIResponse<any> {
     typeof value === 'object' &&
     value !== null &&
     'success' in value &&
-    typeof (value as any).success === 'boolean'
+    typeof (value as: any).success === 'boolean'
   );
 }
 export function isServiceStatus(_value: any): value is ServiceStatus {
@@ -62,13 +62,13 @@ export function isAITask(_value: any): value is AITask {
     'prompt' in value &&
     'timestamp' in value &&
     'priority' in value &&
-    typeof (value as any).taskId === 'string' &&
-    isAITaskType((value as any).type) &&
-    typeof (value as any).providerId === 'string' &&
-    typeof (value as any).model === 'string' &&
-    typeof (value as any).prompt === 'string' &&
-    typeof (value as any).timestamp === 'number' &&
-    ['low', 'medium', 'high'].includes((value as any).priority)
+    typeof (value as: any).taskId === 'string' &&
+    isAITaskType((value as: any).type) &&
+    typeof (value as: any).providerId === 'string' &&
+    typeof (value as: any).model === 'string' &&
+    typeof (value as: any).prompt === 'string' &&
+    typeof (value as: any).timestamp === 'number' &&
+    ['low', 'medium', 'high'].includes((value as: any).priority)
   );
 }
 export function isWorkerStatus(_value: any): value is WorkerStatus {
@@ -85,10 +85,10 @@ export function isWorkerStatus(_value: any): value is WorkerStatus {
     'errors' in value &&
     'performance' in value &&
     'lastActivity' in value &&
-    ['idle', 'processing', 'error'].includes((value as any).status) &&
-    typeof (value as any).activeRequests === 'number' &&
-    typeof (value as any).queueLength === 'number' &&
-    Array.isArray((value as any).providers)
+    ['idle', 'processing', 'error'].includes((value as: any).status) &&
+    typeof (value as: any).activeRequests === 'number' &&
+    typeof (value as: any).queueLength === 'number' &&
+    Array.isArray((value as: any).providers)
   );
 }
 export function isWorkerMessage(_value: any): value is WorkerMessage {
@@ -96,7 +96,7 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
     typeof value === 'object' &&
     value !== null &&
     'type' in value &&
-    isWorkerMessageType((value as any).type)
+    isWorkerMessageType((value as: any).type)
   );
 }
 // --- Legal Domain Type Guards ---
@@ -114,11 +114,11 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     'updatedAt' in value &&
 //     'userId' in value &&
 //     'metadata' in value &&
-//     typeof (value as any).id === 'string' &&
-//     typeof (value as any).title === 'string' &&
-//     typeof (value as any).description === 'string' &&
-//     ['low', 'medium', 'high', 'critical'].includes((value as any).priority) &&
-//     ['open', 'in_progress', 'closed', 'archived'].includes((value as any).status)
+//     typeof (value as: any).id === 'string' &&
+//     typeof (value as: any).title === 'string' &&
+//     typeof (value as: any).description === 'string' &&
+//     ['low', 'medium', 'high', 'critical'].includes((value as: any).priority) &&
+//     ['open', 'in_progress', 'closed', 'archived'].includes((value as: any).status)
 //   )
 // }
 // TODO: Uncomment when Evidence type is available
@@ -133,11 +133,11 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     'type' in value &&
 //     'uploadedAt' in value &&
 //     'metadata' in value &&
-//     typeof (value as any).id === 'string' &&
-//     typeof (value as any).caseId === 'string' &&
-//     typeof (value as any).title === 'string' &&
-//     typeof (value as any).description === 'string' &&
-//     ['document', 'image', 'video', 'audio', 'other'].includes((value as any).type)
+//     typeof (value as: any).id === 'string' &&
+//     typeof (value as: any).caseId === 'string' &&
+//     typeof (value as: any).title === 'string' &&
+//     typeof (value as: any).description === 'string' &&
+//     ['document', 'image', 'video', 'audio', 'other'].includes((value as: any).type)
 //   )
 // }
 // --- Authentication Type Guards ---
@@ -151,10 +151,10 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     'role' in value &&
 //     'permissions' in value &&
 //     'createdAt' in value &&
-//     typeof (value as any).id === 'string' &&
-//     typeof (value as any).email === 'string' &&
-//     ['user', 'admin', 'attorney', 'paralegal'].includes((value as any).role) &&
-//     Array.isArray((value as any).permissions)
+//     typeof (value as: any).id === 'string' &&
+//     typeof (value as: any).email === 'string' &&
+//     ['user', 'admin', 'attorney', 'paralegal'].includes((value as: any).role) &&
+//     Array.isArray((value as: any).permissions)
 //   )
 // }
 // --- UI Type Guards ---
@@ -173,27 +173,27 @@ export function isWorkerMessage(_value: any): value is WorkerMessage {
 //     'title' in value &&
 //     'message' in value &&
 //     'timestamp' in value &&
-//     typeof (value as any).id === 'string' &&
-//     isNotificationType((value as any).type) &&
-//     typeof (value as any).title === 'string' &&
-//     typeof (value as any).message === 'string' &&
-//     typeof (value as any).timestamp === 'number'
+//     typeof (value as: any).id === 'string' &&
+//     isNotificationType((value as: any).type) &&
+//     typeof (value as: any).title === 'string' &&
+//     typeof (value as: any).message === 'string' &&
+//     typeof (value as: any).timestamp === 'number'
 //   )
 // }
 // --- Utility Type Guards ---
-export function isString(_value: any): value is string {
+export function isString(_value: any): value is: string {
   return typeof value === 'string';
 }
-export function isNumber(_value: any): value is number {
+export function isNumber(_value: any): value is: number {
   return typeof value === 'number' && !isNaN(value);
 }
-export function isBoolean(_value: any): value is boolean {
+export function isBoolean(_value: any): value is: boolean {
   return typeof value === 'boolean';
 }
 export function isObject(_value: any): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
-export function isArray(_value: any): value is unknown[] {
+export function isArray(_value: any): value is: unknown[] {
   return Array.isArray(value);
 }
 export function isRecord(_value: any): value is { [key: string]: any } {
@@ -210,7 +210,7 @@ export function discriminateWorkerMessage(message: WorkerMessage): { isAITask: b
     isAITask: false,
     isWorkerStatus: false,
     isAPIResponse: false
-  } as any;
+  }, as: any;
   if (message.payload) {
     if (isAITask(message.payload)) {
       (result as { isAITask?: any; aiTask?: any; isWorkerStatus?: any; workerStatus?: any; isAPIResponse?: any; apiResponse?: any }).isAITask = true;

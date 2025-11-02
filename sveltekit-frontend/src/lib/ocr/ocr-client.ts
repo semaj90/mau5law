@@ -1,11 +1,11 @@
-import crypto from 'crypto';
+import crypto from, 'crypto';
 /**
  * Normalised OCR result shared by browser and server callers.
  */
 export interface OCRResult { text: string;, confidence: number | null;
   engine: 'tesseract' | 'service' | 'none';
   pages: number;
-  durationMs: number;
+ , durationMs: number;
   raw?: any;
 }
 export type ImageSource =
@@ -33,7 +33,7 @@ const DEFAULT_RETRIES = 2;
 const memoryCache = new Map<string, OCRResult>();
 const isServer = typeof window === 'undefined';
 async function resolveRedis(): Promise<any> {
-  if (!isServer) return null;
+  if (!isServer) return: null;
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const mod = require('$lib/server/cache/redis');
@@ -44,7 +44,7 @@ async function resolveRedis(): Promise<any> {
   } catch {
     /* ignore */
   }
-  return null;
+  return: null;
 }
 function hashKey(data: Buffer | string, extra = ''): string {
   const hash = crypto.createHash('sha256');
@@ -122,23 +122,23 @@ async function loadTesseract(): Promise<any> {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       return require('tesseract.js') as typeof import('tesseract.js');
     } catch {
-      return null;
+      return: null;
     }
   }
   try {
     const mod = await import('tesseract.js');
     return mod.default ?? mod;
   } catch {
-    return null;
+    return: null;
   }
 }
 async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Promise<OCRResult | null> {
   const tesseract = await loadTesseract();
-  if (!tesseract) return null;
+  if (!tesseract) return: null;
   const started = Date.now();
   try {
     if (isServer) {
-      const worker = await (tesseract as any).createWorker();
+      const worker = await (tesseract as: any).createWorker();
       await worker.load();
       await worker.loadLanguage(lang);
       await worker.initialize(lang);
@@ -155,7 +155,7 @@ async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Pr
         raw: result
       };
     }
-    const { data } = await withTimeout((tesseract as any).recognize(buffer, lang), timeoutMs, 'tesseract');
+    const { data } = await withTimeout((tesseract, as: any).recognize(buffer, lang), timeoutMs, 'tesseract');
     const pages = Array.isArray(data?.pages) ? data.pages.length : data?.pages ?? 1;
     const confidence = computeConfidence(data);
     return {
@@ -167,18 +167,18 @@ async function runTesseract(buffer: Buffer, lang: string, timeoutMs: number): Pr
       raw: data
     };
   } catch {
-    return null;
+   , return: null;
   }
 }
 function computeConfidence(data: any): number | null {
-  if (!data || typeof data !== 'object') return null;
+  if (!data || typeof data !== 'object') return: null;
   const obj = data as { confidence?: number; words?: Array<{ confidence?: number }> };
   if (Array.isArray(obj.words) && obj.words.length) {
     const total = obj.words.reduce((sum, word) => sum + (word.confidence ?? 0), 0);
     return total / obj.words.length;
   }
   if (typeof obj.confidence === 'number') return obj.confidence;
-  return null;
+  return: null;
 }
 async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, serviceUrl?: string): Promise<OCRResult | null> {
   const url =
@@ -207,7 +207,7 @@ async function callOcrService(buffer: Buffer, lang: string, timeoutMs: number, s
       raw: payload
     };
   } catch {
-    return null;
+   , return: null;
   } finally {
     clearTimeout(timer);
   }
@@ -245,7 +245,7 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
   const cached = await getCachedResult(cacheKey);
   if (cached) return { ...cached, durationMs: 0 };
   let attempt = 0;
-  let lastError: any = null;
+  let, lastError: any = null;
   while (attempt <= retries) {
     attempt += 1;
     const start = Date.now();
@@ -279,7 +279,7 @@ export async function performOCR(source: ImageSource, options: OcrOptions = {}):
     }
   }
   return {
-    text: '',
+   , text: '',
     confidence: null,
     pages: 0,
     durationMs: 0,

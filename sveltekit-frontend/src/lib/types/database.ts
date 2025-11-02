@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Database API response types
  * Comprehensive types for all db.query() operations and responses
@@ -22,7 +22,7 @@ export type { DatabaseHealthResponse as HealthCheck };
 // CORE ENTITY TYPES
 // ============================================================================
 
-export interface User { id: string;, email: string;
+export interface User {, id: string;, email: string;
   name: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -35,7 +35,7 @@ export interface User { id: string;, email: string;
 
 // NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
 // Update imports/usages to use `DBCase` instead of `Case`.
-export interface DBCase { id: string;, title: string;
+export interface DBCase {, id: string;, title: string;
   description: string | null;
   createdBy: string;
   createdAt: Date;
@@ -56,7 +56,7 @@ export interface CaseMetadata {
 
 // NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
 // Update imports/usages to use `DBEvidence` instead of `Evidence`.
-export interface DBEvidence { id: string;, caseId: string;
+export interface DBEvidence {, id: string;, caseId: string;
   title: string;
   description: string | null;
   evidenceType: string;
@@ -98,19 +98,19 @@ export interface EvidenceMetadata {
   [key: string]: any;
 }
 
-export interface ChainOfCustodyRecord { timestamp: string;, handler: string;
+export interface ChainOfCustodyRecord {, timestamp: string;, handler: string;
   action: string;
   location?: string;
   notes?: string;
 }
 
-export interface Document { id: string;, userId: string;
+export interface Document {, id: string;, userId: string;
   content: string | null;
   embedding: number[] | null;
   createdAt: Date;
 }
 
-export interface ChatMessage { id: string;, userId: string;
+export interface ChatMessage {, id: string;, userId: string;
   content: string;
   timestamp: Date;
   sessionId: string;
@@ -126,8 +126,8 @@ export interface ChatMessageMetadata {
   [key: string]: any;
 }
 
-export interface AnalysisResult { analysisId: string;, evidenceId: string;
-  results: Record<string, unknown>;
+export interface AnalysisResult {, analysisId: string;, evidenceId: string;
+ , results: Record<string, unknown>;
   analysisTypes: string[];
   confidence: number;
   processingTime: number;
@@ -154,7 +154,7 @@ export interface ListQueryResult<T> {
   timestamp: string;
 }
 
-export interface PaginationInfo { page: number;, pageSize: number;
+export interface PaginationInfo {, page: number;, pageSize: number;
   total: number;
   pages: number;
   hasMore: boolean;
@@ -175,7 +175,7 @@ export interface UpdateQueryResult<T> {
   timestamp: string;
 }
 
-export interface DeleteQueryResult { success: boolean;, deleted: boolean;
+export interface DeleteQueryResult {, success: boolean;, deleted: boolean;
   error?: string;
   timestamp: string;
 }
@@ -209,9 +209,9 @@ export interface AnalysisResultListResult extends ListQueryResult<AnalysisResult
 
 // NOTE: Renamed to avoid duplicate identifier collisions across the workspace.
 // Update imports/usages to use `DBVectorSearchResult`.
-export interface DBVectorSearchResult { id: string;, title: string;
+export interface DBVectorSearchResult {, id: string;, title: string;
   content: string;
-  similarity: number;
+ , similarity: number;
   embedding?: number[];
   metadata?: Record<string, unknown>;
 }
@@ -230,16 +230,16 @@ export interface VectorSearchQueryResult {
 // BATCH OPERATION TYPES
 // ============================================================================
 
-export interface BatchQueryResult<T> { success: boolean;, results: Array<{ id: string; success: boolean; data?: T; error?: string }>;
+export interface BatchQueryResult<T> {, success: boolean;, results: Array<{ id: string; success: boolean; data?: T; error?: string }>;
   successCount: number;
   failureCount: number;
   error?: string;
   timestamp: string;
 }
 
-export interface Transaction { id: string;, status: 'pending' | 'committed' | 'rolled_back';
-  operations: Array<{ type: 'insert' | 'update' | 'delete';, table: string;
-    data: Record<string, unknown>;
+export interface Transaction {, id: string;, status: 'pending' | 'committed' | 'rolled_back';
+  operations: Array<{, type: 'insert' | 'update' | 'delete';, table: string;
+   , data: Record<string, unknown>;
   }>;
   createdAt: Date;
   completedAt?: Date;

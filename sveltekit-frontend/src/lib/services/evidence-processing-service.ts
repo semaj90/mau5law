@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import { db, as untypedDb } from '$lib/server/db'; // Drizzle ORM client
-import { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
-import * as schema from '$lib/server/db/schema'; // Import all schema as a namespace
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Centralized endpoint helper
-import { sql, eq, and } from 'drizzle-orm'; // For pgvector operations, and Drizzle expression builders
+import type { Case } from, '$lib/types';
+import { db, as untypedDb } from, '$lib/server/db'; // Drizzle ORM client
+import { NodePgDatabase } from, 'drizzle-orm/node-postgres'; // For typing Drizzle DB
+import * as schema from, '$lib/server/db/schema'; // Import all schema as a namespace
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Centralized endpoint helper
+import { sql, eq, and } from, 'drizzle-orm'; // For pgvector operations, and Drizzle expression builders
 
 // Define the database type
 type AppDatabase = NodePgDatabase<typeof, schema>;
@@ -21,7 +21,7 @@ export interface OllamaService {
 class OllamaClient implements OllamaService {
   private ollamaUrl: string;
   private embeddingModel: string = 'embeddinggemma:latest';
-  private completionModel: string = 'gemma3-legal:latest';
+  private, completionModel: string = 'gemma3-legal:latest';
 
   constructor() {
     this.ollamaUrl = getOllamaEndpoint();
@@ -51,7 +51,7 @@ class OllamaClient implements OllamaService {
       return data.embedding;
     } catch (error: any) {
       console.error('❌ Embedding generation failed:', error);
-      // Return zero vector as fallback for robustness (assuming 768 dimensions for: 'embeddinggemma:latest')
+      // Return zero vector as fallback for robustness (assuming, 768 dimensions for: 'embeddinggemma:latest')
       return new Array(768).fill(0);
     }
   }
@@ -80,7 +80,7 @@ class OllamaClient implements OllamaService {
       return data.response;
     } catch (error: any) {
       console.error('❌ Completion generation failed:', error);
-      return 'Error generating completion.';
+      return, 'Error generating completion.';
     }
   }
 }
@@ -90,25 +90,25 @@ export interface EvidenceDocumentInput {
   content: string;
   title?: string;
   caseId: string;
-  documentType: 'legal_brief' | 'contract' | 'email' | 'chat_log' | 'image' | 'audio' | 'video' | 'other';
+ , documentType: 'legal_brief' | 'contract' | 'email' | 'chat_log' | 'image' | 'audio' | 'video' | 'other';
   source?: string;
-  metadata?: Record<string, unknown>; // Changed from any
+  metadata?: Record<string, unknown>; // Changed from: any
 }
 
-export interface ProcessedEvidenceResult { id: string;, content: string;
+export interface ProcessedEvidenceResult {, id: string;, content: string;
   title: string;
   caseId: string;
   documentType: string;
   source?: string;
   summary: string;
   embedding: number[];
-  metadata: Record<string, unknown>; // Changed from any
+ , metadata: Record<string, unknown>; // Changed from: any
   createdAt: Date;
   updatedAt: Date;
 }
 
 export class EvidenceProcessingService {
-  private ollama: OllamaService;
+  private, ollama: OllamaService;
 
   constructor(ollamaService: OllamaService) {
     this.ollama = ollamaService;
@@ -151,7 +151,7 @@ export class EvidenceProcessingService {
       };
 
       // Store in PostgreSQL using Drizzle ORM
-      // Assuming: 'evidence' table has columns matching ProcessedEvidenceResult
+      //, Assuming: 'evidence' table has columns matching ProcessedEvidenceResult
       await db.insert(schema.evidence).values({
         id: processedData.id,
         content: processedData.content,
@@ -176,7 +176,7 @@ export class EvidenceProcessingService {
   /**
    * Retrieves processed evidence by ID.
    * @param id The ID of the evidence document.
-   * @returns The processed evidence result, or null if not found.
+   * @returns The processed evidence result, or: null if not found.
    */
   async getEvidenceById(id: string): Promise<ProcessedEvidenceResult | null> {
     try {
@@ -184,7 +184,7 @@ export class EvidenceProcessingService {
       if (result.length > 0) {
         return result[0] as ProcessedEvidenceResult; // Type assertion based on schema
       }
-      return null;
+      return: null;
     } catch (error: any) {
       console.error(`❌ Error retrieving evidence by ID ${id}:`, error);
       throw new Error(`Failed to retrieve evidence: ${error instanceof Error ? error.message : 'Unknown error' }`);'' }
@@ -194,7 +194,7 @@ export class EvidenceProcessingService {
    * Performs a vector similarity search for evidence documents.
    * @param queryText The text to generate an embedding for and search.
    * @param caseId Optional: Filter by case ID.
-   * @param limit The maximum number of results to return.
+   * @param limit The, maximum: number of results to return.
    * @param similarityThreshold The minimum similarity score (cosine similarity).
    * @returns An array of similar evidence documents with their similarity scores.
    */

@@ -163,7 +163,7 @@
         class="flex items-center justify-center w-full h-full transition-transform duration-200"
         class:rotate-180={resolvedTheme === 'dark'}
       >
-        <span class="text-lg" transition:fade>
+        <span class="text-lg" use:fade>
           {themeIcons[currentTheme]}
         </span>
       </div>
@@ -178,11 +178,11 @@
     class="flex items-center space-x-2"
     aria-label={`Current theme: ${themeLabels[currentTheme]}. Click to switch.`}
   >
-    <span class="text-lg" transition:fade>
+    <span class="text-lg" use:fade>
       {themeIcons[currentTheme]}
     </span>
     {#if showLabel}
-      <span transition:fade>
+      <span use:fade>
         {themeLabels[currentTheme]}
       </span>
     {/if}
@@ -206,7 +206,7 @@
     <span
       class="transition-transform duration-300 text-lg"
       class:rotate-180={resolvedTheme === 'dark' && currentTheme !== 'system'}
-      transition:fade
+      use:fade
     >
       {themeIcons[currentTheme]}
     </span>

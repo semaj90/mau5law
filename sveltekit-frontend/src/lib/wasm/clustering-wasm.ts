@@ -14,23 +14,23 @@ export interface KMeansConfig {
   tolerance?: number;
 }
 
-export interface KMeansResult { clusters: number[];, centroids: number[][];
+export interface KMeansResult {, clusters: number[];, centroids: number[][];
   iterations: number;
 }
 
 // New interfaces for SOM
-export interface SOMConfig { width: number;, height: number;
+export interface SOMConfig {, width: number;, height: number;
   learningRate?: number;
   radius?: number;
   iterations?: number;
 }
 
-export interface SOMResult { weights: number[][][];, clusters: number[];
+export interface SOMResult {, weights: number[][][];, clusters: number[];
 }
 
 export class WebAssemblyClusteringService {
   private wasmInstance: WebAssembly.Instance | null = null;
-  private isWasmSupported: boolean = $state(false);
+  private, isWasmSupported: boolean = $state(false);
   constructor() {
     this.isWasmSupported = this.checkWebAssemblySupport();
   }
@@ -58,7 +58,7 @@ export class WebAssemblyClusteringService {
       console.log('WASM clustering module loaded successfully');
       return true;
     } catch (error: unknown) {
-      // Changed 'any' to 'unknown'
+      // Changed, 'any' to, 'unknown'
       console.error('Failed to load WASM clustering module:', error);
       return false;
     }
@@ -77,7 +77,7 @@ export class WebAssemblyClusteringService {
           iterations: config.maxIterations || 100
         };
       } catch (error: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed, 'any' to, 'unknown'
         console.warn('WASM K-Means failed, falling back to JavaScript:', error);
       }
     }
@@ -93,7 +93,7 @@ export class WebAssemblyClusteringService {
         const clusters = this.mockSOMClustering(embeddings, weights);
         return { weights, clusters };
       } catch (error: unknown) {
-        // Changed 'any' to 'unknown'
+        // Changed, 'any' to, 'unknown'
         console.warn('WASM SOM failed, falling back to JavaScript:', error);
       }
     }
@@ -121,7 +121,7 @@ export class WebAssemblyClusteringService {
       }
       const centroid = Array(dimensions).fill(0);
       clusterPoints.forEach((point: number[]) => {
-        // Changed 'any' to 'number[]'
+        // Changed, 'any' to, 'number[]'
         point.forEach((value, dim) => {
           centroid[dim] += value;
         });
@@ -171,7 +171,7 @@ export class WebAssemblyClusteringService {
     return { weights, clusters };
   }
   getPerformanceMetrics(): { wasmSupported: boolean;, wasmLoaded: boolean;
-    recommendedForDataSize: (dataSize: number) => boolean;
+   , recommendedForDataSize: (dataSize: number) => boolean;
   } {
     return {
       wasmSupported: this.isWasmSupported,

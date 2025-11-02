@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { parallelVectorSearch } from '$lib/utils/fastSearch';
-import { synthesizeNextSteps } from '$lib/server/ai/synthesizer';
+import { describe, it, expect } from, 'vitest';
+import { parallelVectorSearch } from, '$lib/utils/fastSearch';
+import { synthesizeNextSteps } from, '$lib/server/ai/synthesizer';
 
 describe('fastSearch.parallelVectorSearch', () => {
   it('returns topK closest vectors', async () => {
@@ -19,7 +19,7 @@ describe('fastSearch.parallelVectorSearch', () => {
 
 describe('synthesizer.synthesizeNextSteps', () => {
   it('returns LLMOutput for results', async () => {
-    const out = await synthesizeNextSteps('test query', [{ id: '1', score: 0.9, snippet: 'sample', source: 'x' } as any]);
+    const out = await synthesizeNextSteps('test query', [{ id: '1', score: 0.9, snippet: 'sample', source: 'x' }, as: any]);
     expect(out.text).toContain('SYNTHESIS');
   });
 });

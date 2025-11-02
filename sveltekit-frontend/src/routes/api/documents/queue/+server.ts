@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { randomUUID } from 'crypto';
-import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabbitmq-service';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { randomUUID } from, 'crypto';
+import { rabbitMQService, createDocumentProcessingJob } from, '$lib/services/rabbitmq-service';
 
 /**
  * RabbitMQ Document Processing Queue API
@@ -10,7 +10,7 @@ import { rabbitMQService, createDocumentProcessingJob } from '$lib/services/rabb
  * Use this endpoint for async document processing workflows:
  * - Upload → Queue job → Background workers process → XState manages state → WebSocket notifies frontend
  *
- * Example Request:
+ * Example, Request:
  * ```json`
  * {
  *   "s3Key": "documents/2024/case-123/evidence.pdf",
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
  * }
  * ```
  */
-export const GET: RequestHandler = async () => {
+export const, GET: RequestHandler = async () => {
   try {
     const health = await rabbitMQService.healthCheck();
 

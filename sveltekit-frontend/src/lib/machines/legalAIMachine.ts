@@ -1,6 +1,6 @@
-import type { Case } from '$lib/types';
-import { setup, assign, createActor, fromPromise } from 'xstate';
-import { writable } from 'svelte/store';
+import type { Case } from, '$lib/types';
+import { setup, assign, createActor, fromPromise } from, 'xstate';
+import { writable } from, 'svelte/store';
 // Legal AI Application State Machine - XState v5
 export interface Case { id: string;, title: string;
   status: string;
@@ -8,42 +8,42 @@ export interface Case { id: string;, title: string;
   category: string;
   [key: string]: any;
 }
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   type: string;
   description?: string;
   fileUrl?: string;
   metadata?: { [key: string]: any };
   [key: string]: any;
 }
-export interface LegalAIContext { user: {, id: string | null;
+export interface LegalAIContext {, user: {, id: string | null;
     email: string | null;
     role: string | null;
     permissions: string[];
     isAuthenticated: boolean;
   };
-  cases: { items: Case[];, currentCase: Case | null;
-    filters: { search: string;, status: string;
+  cases: {, items: Case[];, currentCase: Case | null;
+    filters: {, search: string;, status: string;
       priority: string;
       category: string;
     };
-    pagination: { page: number;, limit: number;
+    pagination: {, page: number;, limit: number;
       total: number;
     };
     loading: boolean;
     error: string | null;
   };
-  ai: { isProcessing: boolean;, currentQuery: string;
+  ai: {, isProcessing: boolean;, currentQuery: string;
     lastResponse: any;
     error: string | null;
-    models: { primary: string;, embedding: string;
+    models: {, primary: string;, embedding: string;
       available: string[];
     };
   };
-  system: { connected: boolean;, services: { database: boolean;, redis: boolean;
+  system: {, connected: boolean;, services: {, database: boolean;, redis: boolean;
       ollama: boolean;
       gpu: boolean;
     };
-    metrics: { errorCount: number;, performanceScore: number;
+    metrics: {, errorCount: number;, performanceScore: number;
       uptime: number;
     };
   };
@@ -58,23 +58,23 @@ export type LegalAIEvent =
   | { type: 'CASES.SEARCH'; query: string }
   | { type: 'AI.QUERY'; prompt: string; context?: any }
   | { type: 'SYSTEM.CHECK_STATUS' };
-const initialContext: LegalAIContext = { user: {, id: null,
+const initialContext: LegalAIContext = {, user: {, id: null,
     email: null,
     role: null,
     permissions: [],
     isAuthenticated: false
   },
   cases: {
-    items: [],
+   , items: [],
     currentCase: null,
     filters: {
-      search: '',
+     , search: '',
       status: 'all',
       priority: 'all',
       category: 'all'
     },
     pagination: {
-      page: 1,
+     , page: 1,
       limit: 10,
       total: 0
     },
@@ -82,26 +82,26 @@ const initialContext: LegalAIContext = { user: {, id: null,
     error: null
   },
   ai: {
-    isProcessing: false,
+   , isProcessing: false,
     currentQuery: '',
     lastResponse: null,
     error: null,
     models: {
-      primary: 'gemma3-legal',
+     , primary: 'gemma3-legal',
       embedding: 'nomic-embed-text',
       available: ['gemma3-legal', 'gpt4-legal', 'llama2-legal']
     }
   },
   system: {
-    connected: false,
+   , connected: false,
     services: {
-      database: false,
+     , database: false,
       redis: false,
       ollama: false,
       gpu: false
     },
     metrics: {
-      errorCount: 0,
+     , errorCount: 0,
       performanceScore: 0,
       uptime: 0
     }
@@ -109,21 +109,21 @@ const initialContext: LegalAIContext = { user: {, id: null,
 };
 export const legalAIMachine = setup({
   // Avoid runtime-only `types` block to keep esbuild happy — TypeScript interfaces above provide static types.
-  actions: {, updateSystem: assign({, system: ({ event }) => (event as any).output || {}
+ , actions: {, updateSystem: assign({, system: ({ event }) => (event as: any).output || {}
     }),
     setSystemError: assign({
-      system: ({ context }) => ({
+     , system: ({ context }) => ({
         ...context.system,
         connected: false
       })
     }),
     setUser: assign({
-      user: ({ event }) => ({
-        ...(event as any).output,
+     , user: ({ event }) => ({
+        ...(event as: any).output,
         isAuthenticated: true
       })
     }),
-    clearUser: assign({ user: () => ({, id: null,
+    clearUser: assign({, user: () => ({, id: null,
         email: null,
         role: null,
         permissions: [],
@@ -131,48 +131,48 @@ export const legalAIMachine = setup({
       })
     }),
     setCasesItems: assign({
-      cases: ({ context, event }) => ({
+     , cases: ({ context, event }) => ({
         ...context.cases,
-        items: (event as any).output || [],
+        items: (event, as: any).output || [],
         loading: false
       })
     }),
     setCurrentCase: assign({
-      cases: ({ context, event }) => ({
+     , cases: ({ context, event }) => ({
         ...context.cases,
-        currentCase: (event as any).case || context.cases.currentCase
+        currentCase: (event, as: any).case || context.cases.currentCase
       })
     }),
     setAIResponse: assign({
-      ai: ({ context, event }) => ({
+     , ai: ({ context, event }) => ({
         ...context.ai,
-        lastResponse: (event as any).output,
+        lastResponse: (event, as: any).output,
         isProcessing: false
       })
     }),
     setAIError: assign({
-      ai: ({ context, event }) => ({
+     , ai: ({ context, event }) => ({
         ...context.ai,
-        error: (event as any).error || 'AI processing failed' })'` }),'`
+        error: (event, as: any).error || 'AI processing failed' })'` }),'`
     startAIProcessing: assign({
-      ai: ({ context, event }) => ({
+     , ai: ({ context, event }) => ({
         ...context.ai,
-        currentQuery: (event as any).prompt || '',
+        currentQuery: (event, as: any).prompt || '',
         isProcessing: true
       })
     })
   },
   actors: {
-    checkSystemStatus: fromPromise(async () => {
+   , checkSystemStatus: fromPromise(async () => {
       // Mock system status check
       await new Promise(resolve => setTimeout(resolve, 1000));
       return {
         connected: true,
-        services: { database: true, redis: true, ollama: true, gpu: true },
-        metrics: { errorCount: 0, performanceScore: 95, uptime: Date.now() }
+        services: {, database: true, redis: true, ollama: true, gpu: true },
+        metrics: {, errorCount: 0, performanceScore: 95, uptime: Date.now() }
       };
     }),
-    authenticateUser: fromPromise(async ({ input }: { input: any }) => {
+    authenticateUser: fromPromise(async ({ input }: {, input: any }) => {
       // Mock authentication
       await new Promise(resolve => setTimeout(resolve, 1500));
       return {
@@ -182,7 +182,7 @@ export const legalAIMachine = setup({
         permissions: ['read:cases', 'write:cases', 'ai:query']
       };
     }),
-    loadCases: fromPromise(async ({ input }: { input: any }) => {
+    loadCases: fromPromise(async ({ input }: {, input: any }) => {
       // Mock case loading
       await new Promise(resolve => setTimeout(resolve, 1000));
       return [
@@ -190,7 +190,7 @@ export const legalAIMachine = setup({
         { id: '2', title: 'Contract Dispute', status: 'pending', priority: 'medium', category: `civil` }
       ];
     }),
-    processAIQuery: fromPromise(async ({ input }: { input: any }) => {
+    processAIQuery: fromPromise(async ({ input }: {, input: any }) => {
       // Mock AI processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       return { response: `AI analysis, for: "${input.prompt}"`,
@@ -227,20 +227,20 @@ export const legalAIMachine = setup({
       }
     },
     authenticating: {, invoke: {, src: 'authenticateUser',
-        input: ({ event }) => ({ credentials: (event as any).credentials }),
+        input: ({ event }) => ({ credentials: (event, as: any).credentials }),
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: 'setUser'
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: 'clearUser'
         }
       }
     },
     authenticated: {
-      initial: 'ready',
-      states: { ready: {, on: {
+     , initial: 'ready',
+      states: {, ready: {, on: {
             'CASES.LOAD': '#legalAI.loadingCases',
             'AI.QUERY': '#legalAI.processingAI',
             'AUTH.LOGOUT': '#legalAI.idle'
@@ -248,47 +248,47 @@ export const legalAIMachine = setup({
         }
       }
     },
-    loadingCases: { invoke: {, src: 'loadCases',
+    loadingCases: {, invoke: {, src: 'loadCases',
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: 'setCasesItems'
         },
         onError: {
-          target: 'authenticated'
+         , target: 'authenticated'
         }
       }
     },
     processingAI: {
-      entry: 'startAIProcessing',
+     , entry: 'startAIProcessing',
       invoke: {
-        src: 'processAIQuery',
-        input: ({ event }) => ({ prompt: (event as any).prompt }),
+       , src: 'processAIQuery',
+        input: ({ event }) => ({ prompt: (event, as: any).prompt }),
         onDone: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: 'setAIResponse'
         },
         onError: {
-          target: 'authenticated',
+         , target: 'authenticated',
           actions: 'setAIError'
         }
       }
     },
     error: {
-      on: {
+     , on: {
         'SYSTEM.CHECK_STATUS': `initializing` }'`'`
     },
     // Placeholder states
     registering: {
       after: {
-        1000: `idle` }
+       , 1000: `idle` }
     },
     creatingCase: {
       after: {
-        1000: `authenticated` }
+       , 1000: `authenticated` }
     },
     checkingStatus: {
       after: {
-        500: `idle` }
+       , 500: `idle` }
     }
   }
 });

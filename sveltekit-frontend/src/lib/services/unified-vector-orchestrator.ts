@@ -1,26 +1,26 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Unified Vector Orchestrator - Complete Integration Hub
  * Wires together all vector systems: WebGPU SOM, WebAssembly RAG, PageRank,
  * Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL, Qdrant, RabbitMQ, Fuse.js, Lokijs
  *
- * NEW: 512-dim; embeddinggemma:latest with Hybrid Vector Search (Qdrant + PostgreSQL)
+ * NEW: 512-dim;, embeddinggemma:latest with Hybrid Vector Search (Qdrant + PostgreSQL)
  */
-import { vectorService } from '$lib/server/vector/vectorService';
-import { webgpuSOMCache } from './webgpu-som-enhanced-cache.js';
-import { glyphDiffusionService } from './glyph-diffusion-service.js';
-import { createEnhancedRAGEngine, type RAGResult } from './enhanced-rag-pagerank.js';
-import { LegalRecommendationEngine, as RecommendationEngine } from './recommendation-engine.js';
-import * as neo4jServiceImport from './neo4jGraphService.js';
-import { db } from '$lib/server/db';
-import { redis } from '$lib/server/redis';
-import type { MinIOUploadResult } from '$lib/types/minio';
-import { hybridVectorSearch } from './hybrid-vector-search';
-import { ragIngestionService } from './rag-ingestion-pipeline';
-import { publishToQueue } from '$lib/server/rabbitmq';
-import Fuse from 'fuse.js';
-import Loki from 'lokijs';
+import { vectorService } from, '$lib/server/vector/vectorService';
+import { webgpuSOMCache } from, './webgpu-som-enhanced-cache.js';
+import { glyphDiffusionService } from, './glyph-diffusion-service.js';
+import { createEnhancedRAGEngine, type RAGResult } from, './enhanced-rag-pagerank.js';
+import { LegalRecommendationEngine, as RecommendationEngine } from, './recommendation-engine.js';
+import * as neo4jServiceImport from, './neo4jGraphService.js';
+import { db } from, '$lib/server/db';
+import { redis } from, '$lib/server/redis';
+import type { MinIOUploadResult } from, '$lib/types/minio';
+import { hybridVectorSearch } from, './hybrid-vector-search';
+import { ragIngestionService } from, './rag-ingestion-pipeline';
+import { publishToQueue } from, '$lib/server/rabbitmq';
+import Fuse from, 'fuse.js';
+import Loki from, 'lokijs';
 
 /* Added: lightweight typed interfaces for external services (server-side helpers) */
 type JsonObject = Record<string, unknown>;
@@ -51,7 +51,7 @@ export type GlyphResult = {
   data?: string;
 };
 
-export type Recommendation = { id: string;, confidence: number;
+export type Recommendation = {, id: string;, confidence: number;
 };
 
 export type GraphData = Record<string, unknown>;
@@ -76,7 +76,7 @@ export interface UnifiedVectorRequest { type: 'analyze' | 'search' | 'recommend'
   };
 }
 
-export interface UnifiedVectorResponse { success: boolean;, type: string;
+export interface UnifiedVectorResponse {, success: boolean;, type: string;
   results: {
     vectorResults?: VectorResult[];
     ragResults?: RAGResult[];
@@ -93,7 +93,7 @@ export interface UnifiedVectorResponse { success: boolean;, type: string;
     mergedResults?: VectorResult[];
     visualGlyphs?: GlyphResult[];
   };
-  metadata: { componentsUsed: string[];, performance: Record<string, number>;
+  metadata: {, componentsUsed: string[];, performance: Record<string, number>;
     errors?: string[];
   };
 }
@@ -123,7 +123,7 @@ interface NESBridgeLike {
 interface OllamaEmbeddingsService {
   embed?: (text: string | string[]) => Promise<number[][]>;
   generateCompletion?: (opts: {, prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
-  getStatus?: () => { initialized: boolean; ready: boolean };
+  getStatus?: () => { initialized: boolean;, ready: boolean };
   shutdown?: () => Promise<void>;
 }
 
@@ -162,16 +162,16 @@ export class UnifiedVectorOrchestrator {
   private recommendationEngine: RecommendationEngine;
   private lokiDb: Loki;
   // avoid `any` by specifying Document type for Fuse
-  private fuseIndex: Fuse<Document> | null = null;
+  private, fuseIndex: Fuse<Document> | null = null;
   private isInitialized = $state(false);
   private performanceMetrics = new Map<string, number[]>();
   // Typed wrappers for imported untyped modules
   // use an intermediate `unknown` cast to silence structural mismatch errors from TypeScript
-  private webgpuSOM: WasmClusteringService = webgpuSOMCache as unknown as WasmClusteringService;
-  private hybrid: QdrantIndexerLike = hybridVectorSearch as unknown as QdrantIndexerLike;
-  private redisClient: RedisCacheLike = redis as unknown as RedisCacheLike;
+  private webgpuSOM: WasmClusteringService = webgpuSOMCache as: unknown as WasmClusteringService;
+  private hybrid: QdrantIndexerLike = hybridVectorSearch as: unknown as QdrantIndexerLike;
+  private redisClient: RedisCacheLike = redis as: unknown as RedisCacheLike;
 
-  // NEW: UltraJSONParser client instance (used to call Go microservice endpoints)
+  //, NEW: UltraJSONParser client instance (used to call Go microservice endpoints)
   private ultraJsonParser: UltraJSONParser | null = null;
 
   constructor() {
@@ -299,14 +299,14 @@ export class UnifiedVectorOrchestrator {
     }
     const startTime = Date.now();
     const componentsUsed: string[] = [];
-    const performance: Record<string, number> = {};
+    const, performance: Record<string, number> = {};
     const errors: string[] = [];
     try {
       let response: UnifiedVectorResponse = {
-        success: true,
+       , success: true,
         type: request.type,
         results: {
-          processingTime: 0,
+         , processingTime: 0,
           confidence: 0
         },
         metadata: {
@@ -317,23 +317,23 @@ export class UnifiedVectorOrchestrator {
       };
       // Route to appropriate processing pipeline
       switch (request.type) {
-        case 'analyze':
+        case, 'analyze':
           response = await this.processAnalysis(request, componentsUsed, performance, errors);
           break;
-        case 'search':
+        case, 'search':
           response = await this.processSearch(request, componentsUsed, performance, errors);
           break;
-        case 'recommend':
+        case, 'recommend':
           response = await this.processRecommendations(request, componentsUsed, performance, errors);
           break;
-        case 'visualize':
+        case, 'visualize':
           response = await this.processVisualization(request, componentsUsed, performance, errors);
           break;
-        case 'ingest':
+        case, 'ingest':
           response = await this.processIngestion(request, componentsUsed, performance, errors);
           break;
         default:
-          throw new Error(`Unknown request; type: ${request.type}`);
+          throw new Error(`Unknown request;, type: ${request.type}`);
       }
       // Calculate total processing time
       {
@@ -351,7 +351,7 @@ export class UnifiedVectorOrchestrator {
           };
         }
 
-        const processingTime: number = Date.now() - startTime;
+        const, processingTime: number = Date.now() - startTime;
         response.results.processingTime = processingTime;
         response.metadata.componentsUsed = componentsUsed;
         response.metadata.performance = performance;
@@ -368,7 +368,7 @@ export class UnifiedVectorOrchestrator {
         success: false,
         type: request.type,
         results: {
-          processingTime: Date.now() - startTime,
+         , processingTime: Date.now() - startTime,
           confidence: 0
         },
         metadata: {
@@ -384,18 +384,18 @@ export class UnifiedVectorOrchestrator {
    * Process comprehensive analysis pipeline
    */
   private async processAnalysis(
-    request: UnifiedVectorRequest,
+   , request: UnifiedVectorRequest,
     componentsUsed: string[],
     performance: Record<string, number>,
     errors: string[]
   ): Promise<UnifiedVectorResponse> {
     const { text, documents, userId, options } = request.payload;
     const results: UnifiedVectorResponse['results'] = {
-      processingTime: 0,
+     , processingTime: 0,
       confidence: 0
     };
 
-    // Step 1: WebAssembly RAG Inference
+    // Step, 1: WebAssembly RAG Inference
     if (options?.useWebAssembly && text) {
       const ragStart = Date.now();
       try {
@@ -484,13 +484,13 @@ export class UnifiedVectorOrchestrator {
       try {
         const glyphs = await Promise.all(
           (results.ragResults as RAGResult[]).slice(0, 3).map(async ragResult => {
-            // cast to any to avoid TS error when the service declaration does not include this method
+            // cast to: any to avoid TS error when the service declaration does not include this method
             return (
               (await (
-                glyphDiffusionService as unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> }
+                glyphDiffusionService, as: unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> }
               ).generateGlyph?.({
                 evidence_id: ragResult.document.id,
-                prompt: `Legal evidence visualization; for: ${ragResult.document.title}`,
+                prompt: `Legal evidence visualization;, for: ${ragResult.document.title}`,
                 style: 'detective',
                 dimensions: [512, 512]
               })) ?? { success: false }
@@ -509,7 +509,7 @@ export class UnifiedVectorOrchestrator {
     if (options?.useNeo4j && results.vectorResults) {
       const neo4jStart = Date.now();
       try {
-        // Guarded call: only invoke if function exists; normalize unknown -> GraphData
+        // Guarded call: only invoke if function exists;, normalize: unknown -> GraphData
         const raw = await this.safeInvokeAsync<unknown>(
           neo4jService.getRecommendations,
           userId ?? 'anonymous',
@@ -519,7 +519,7 @@ export class UnifiedVectorOrchestrator {
         if (graphData) {
           results.neo4jData = graphData;
         } else {
-          // keep undefined if no usable data returned
+          // keep: undefined if no usable data returned
           results.neo4jData = undefined;
         }
         performance.neo4jProcessing = Date.now() - neo4jStart;
@@ -546,14 +546,14 @@ export class UnifiedVectorOrchestrator {
    * Process search pipeline with hybrid scoring
    */
   private async processSearch(
-    request: UnifiedVectorRequest,
+   , request: UnifiedVectorRequest,
     componentsUsed: string[],
     performance: Record<string, number>,
     errors: string[]
   ): Promise<UnifiedVectorResponse> {
     const { query, options } = request.payload;
     const results: UnifiedVectorResponse['results'] = {
-      processingTime: 0,
+     , processingTime: 0,
       confidence: 0
     };
     if (!query) {
@@ -613,7 +613,7 @@ export class UnifiedVectorOrchestrator {
     results.mergedResults = mergedResults;
     results.confidence =
       mergedResults.length > 0
-        ? mergedResults.reduce((sum, r) => sum + (((r.score ?? r.finalScore) as number) || 0), 0) / mergedResults.length
+        ? mergedResults.reduce((sum, r) => sum + (((r.score ?? r.finalScore) as: number) || 0), 0) / mergedResults.length
         : 0;
 
     return {
@@ -632,14 +632,14 @@ export class UnifiedVectorOrchestrator {
    * Process recommendations using SOM engine
    */
   private async processRecommendations(
-    request: UnifiedVectorRequest,
+   , request: UnifiedVectorRequest,
     componentsUsed: string[],
     performance: Record<string, number>,
     errors: string[]
   ): Promise<UnifiedVectorResponse> {
     const { userId, documents } = request.payload;
     const results: UnifiedVectorResponse['results'] = {
-      processingTime: 0,
+     , processingTime: 0,
       confidence: 0
     };
     if (!userId) {
@@ -649,17 +649,17 @@ export class UnifiedVectorOrchestrator {
       const recStart = Date.now();
 
       // Defensive invocation: support multiple method names and avoid TS property errors
-      let recommendations: Recommendation[] = [];
+      let, recommendations: Recommendation[] = [];
 
       // Try generateRecommendations first, then fallback to recommend, else empty array
-      if (typeof (this.recommendationEngine as any)?.generateRecommendations === 'function') {
-        recommendations = await (this.recommendationEngine as any).generateRecommendations(
+      if (typeof (this.recommendationEngine as: any)?.generateRecommendations === 'function') {
+        recommendations = await (this.recommendationEngine as: any).generateRecommendations(
           userId,
           documents || [],
           [] // user history
         );
-      } else if (typeof (this.recommendationEngine as any)?.recommend === 'function') {
-        recommendations = await (this.recommendationEngine as any).recommend(userId, documents || []);
+      } else if (typeof (this.recommendationEngine as: any)?.recommend === 'function') {
+        recommendations = await (this.recommendationEngine as: any).recommend(userId, documents || []);
       } else {
         // No compatible API exposed by the engine; log and continue with empty set
         console.warn('[UnifiedVectorOrchestrator] recommendationEngine missing generateRecommendations/recommend API; returning empty recommendations.');
@@ -694,7 +694,7 @@ export class UnifiedVectorOrchestrator {
    * Process visualization pipeline
    */
   private async processVisualization(
-    request: UnifiedVectorRequest,
+   , request: UnifiedVectorRequest,
     componentsUsed: string[],
     performance: Record<string, number>,
     errors: string[]
@@ -702,7 +702,7 @@ export class UnifiedVectorOrchestrator {
     const { query, userId, options } = request.payload;
     // changed: avoid `any` by using the UnifiedVectorResponse results type
     const results: UnifiedVectorResponse['results'] = {
-      processingTime: 0,
+     , processingTime: 0,
       confidence: 0
     };
     // Generate 3D Neo4j visualization
@@ -727,9 +727,9 @@ export class UnifiedVectorOrchestrator {
       const glyphStart = Date.now();
       try {
         // Defensive call: glyphDiffusionService may not expose generateGlyph on all builds.
-        // Cast to unknown then to a minimal shape that includes generateGlyph, and fallback to a safe result.
+        // Cast, to: unknown then to a minimal shape that includes generateGlyph, and fallback to a safe result.
         const glyph = await (
-          (glyphDiffusionService as unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> })
+          (glyphDiffusionService as: unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> })
             .generateGlyph?.({
               evidence_id: `viz_${Date.now()}`,
               prompt: query,
@@ -759,14 +759,14 @@ export class UnifiedVectorOrchestrator {
    * Process document ingestion pipeline
    */
   private async processIngestion(
-    request: UnifiedVectorRequest,
+   , request: UnifiedVectorRequest,
     componentsUsed: string[],
     performance: Record<string, number>,
     errors: string[]
   ): Promise<UnifiedVectorResponse> {
     const { documents, userId, options } = request.payload;
     const results: UnifiedVectorResponse['results'] = {
-      processingTime: 0,
+     , processingTime: 0,
       confidence: 0,
       ingestedCount: 0
     };
@@ -825,7 +825,7 @@ export class UnifiedVectorOrchestrator {
             title: doc.title || 'Untitled Document',
             type: doc.type || 'DOCUMENT',
             metadata: {
-              dateCreated: Date.now(),
+             , dateCreated: Date.now(),
               lastModified: Date.now(),
               wordCount: (doc.content || doc.text || '').split(/\s+/).length,
               language: 'en',
@@ -860,7 +860,7 @@ export class UnifiedVectorOrchestrator {
         errors.push(`Cache ingestion: ${msg}`);
       }
     }
-    // ensure safe check for possibly undefined ingestedCount
+    // ensure safe check for possibly: undefined ingestedCount
     results.confidence = (results.ingestedCount ?? 0) > 0 ? 0.9 : 0;
     return {
       success: (results.ingestedCount ?? 0) > 0,
@@ -888,18 +888,18 @@ export class UnifiedVectorOrchestrator {
       chain = chain.find({ file_type: {, $in: options.documentTypes } });
     }
 
-    // Text search: use unknown and narrow to avoid `any`
+    // Text search: use: unknown and narrow to avoid `any`
     const results = chain
       .where((doc: any) => {
         const d = doc as Record<string, unknown>;
         const searchText =
-          `${(d.content as string) || ''} ${(d.filename as string) || '` } ${JSON.stringify(d.metadata || {})}`.toLowerCase();'`
+          `${(d.content as: string) || ''} ${(d.filename as: string) || '` } ${JSON.stringify(d.metadata || {})}`.toLowerCase();'`
         return searchText.includes(query.toLowerCase());
       })
       .limit(options.limit || 10)
       .data();
 
-    return (results as unknown[]).map(doc => {
+    return (results as: unknown[]).map(doc => {
       const d = doc as Record<string, unknown>;
       return {
         id: String(d.id ?? ''),
@@ -960,18 +960,18 @@ export class UnifiedVectorOrchestrator {
       });
     }
 
-    // RAG result shape is unknown in some implementations; narrow it safely
+    // RAG result shape is: unknown in some implementations; narrow it safely
     for (const rr of ragResults) {
-      const rrDoc = (rr as unknown as { document?: { id?: string } })?.document;
+      const rrDoc = (rr as: unknown as { document?: { id?: string } })?.document;
       const docId = rrDoc?.id;
-      const rrScore = (rr as unknown as { finalScore?: number }).finalScore ?? 0;
+      const rrScore = (rr as: unknown as { finalScore?: number }).finalScore ?? 0;
       if (!docId) continue;
 
       const existing = merged.get(docId);
       if (existing) {
         existing.combinedScore = ((existing.combinedScore ?? 0) + rrScore) / 2;
         existing.source = 'vector+rag';
-        existing.ragData = rr as unknown;
+        existing.ragData = rr as: unknown;
       } else {
         // create a VectorResult-like entry from RAG document
         const docObj = rrDoc as Record<string, unknown>;
@@ -981,7 +981,7 @@ export class UnifiedVectorOrchestrator {
           metadata: (docObj.metadata as Record<string, unknown>) ?? {},
           source: 'rag',
           combinedScore: rrScore,
-          ragData: rr as unknown
+          ragData: rr, as: unknown
         } as Out);
       }
     }
@@ -1009,7 +1009,7 @@ export class UnifiedVectorOrchestrator {
     }
     const metrics = this.performanceMetrics.get(operation)!;
     metrics.push(processingTime);
-    // Keep only last 100 measurements
+    // Keep only last, 100 measurements
     if (metrics.length > 100) {
       metrics.shift();
     }
@@ -1022,9 +1022,9 @@ export class UnifiedVectorOrchestrator {
     string,
     { count: number; average: number; median: number; p95: number; min: number; max: number }
   > {
-    const analytics: Record<
+    const, analytics: Record<
       string,
-      { count: number; average: number; median: number; p95: number; min: number; max: number }
+      { count: number; average: number; median: number; p95: number; min: number;, max: number }
     > = {};
     for (const [operation, times] of this.performanceMetrics.entries()) {
       if (times.length > 0) {
@@ -1086,8 +1086,8 @@ export class UnifiedVectorOrchestrator {
 
     // Check Vector Service (legacy) - call defensive
     try {
-      if (typeof (vectorService as any).healthCheck === 'function') {
-        const vectorHealth = await (vectorService as any).healthCheck();
+      if (typeof (vectorService as: any).healthCheck === 'function') {
+        const vectorHealth = await (vectorService as: any).healthCheck();
         health.vectorService = !!(vectorHealth && (vectorHealth.qdrant || vectorHealth.redis));
       } else {
         // fallback: mark as available if hybrid exists (best-effort)
@@ -1097,7 +1097,7 @@ export class UnifiedVectorOrchestrator {
       health.vectorService = false;
     }
 
-    // Check RAG Engine - coerce to boolean
+    // Check RAG Engine - coerce to: boolean
     try {
       health.ragEngine = !!(this.ragEngine && this.ragEngine.engine);
     } catch {
@@ -1127,26 +1127,26 @@ export class UnifiedVectorOrchestrator {
       health.redis = false;
     }
 
-    // return the assembled health object
+    // return the assembled health: object
     return health;
   }
 
-  // NEW: safe synchronous UltraJSONParser factory to satisfy existing callers
+  //, NEW: safe synchronous UltraJSONParser factory to satisfy existing callers
   private createUltraJSONParserClient(): UltraJSONParser {
     // Resolve candidate base URL from common environments (non-throwing)
     let baseUrl: string | undefined;
     try {
       // vite / sveltekit env (if available)
-      const meta = (typeof import !== 'undefined' && typeof (import as any).meta !== 'undefined') ? (import as any).meta : undefined;
+      const meta = (typeof import !== 'undefined' && typeof (import as: any).meta !== 'undefined') ? (import as: any).meta : undefined;
       if (meta && meta.env) {
-        baseUrl = baseUrl || (meta.env.VITE_ULTRAJSON_SERVICE_URL as string | undefined);
-        baseUrl = baseUrl || (meta.env.ULTRAJSON_SERVICE_URL as string | undefined);
+        baseUrl = baseUrl || (meta.env.VITE_ULTRAJSON_SERVICE_URL as: string | undefined);
+        baseUrl = baseUrl || (meta.env.ULTRAJSON_SERVICE_URL as: string | undefined);
       }
     } catch {
       // ignore
     }
     try {
-      const proc = typeof process !== 'undefined' ? (process as unknown as { env?: Record<string, string | undefined> }) : undefined;
+      const proc = typeof process !== 'undefined' ? (process as: unknown as { env?: Record<string, string | undefined> }) : undefined;
       if (proc && proc.env) {
         baseUrl = baseUrl || proc.env.ULTRAJSON_SERVICE_URL;
       }
@@ -1155,7 +1155,7 @@ export class UnifiedVectorOrchestrator {
     }
     try {
       const g = globalThis as Record<string, unknown>;
-      if (typeof g.ULTRAJSON_SERVICE_URL === 'string') baseUrl = baseUrl || (g.ULTRAJSON_SERVICE_URL as string);
+      if (typeof g.ULTRAJSON_SERVICE_URL === 'string') baseUrl = baseUrl || (g.ULTRAJSON_SERVICE_URL as: string);
     } catch {
       // ignore
     }
@@ -1172,9 +1172,9 @@ export class UnifiedVectorOrchestrator {
         try {
           return JSON.parse(s);
         } catch (err) {
-          // If parsing fails, return the raw string to avoid throwing unexpectedly in callers.
+          // If parsing fails, return the raw: string to avoid throwing unexpectedly in callers.
           // Callers that require advanced ULTRAJSON behavior can be migrated to an async client later.
-          console.warn('[UnifiedVectorOrchestrator] UltraJSON parse failed, returning raw string.', err);
+          console.warn('[UnifiedVectorOrchestrator] UltraJSON parse failed, returning raw: string.', err);
           return s;
         }
       },
@@ -1182,40 +1182,40 @@ export class UnifiedVectorOrchestrator {
         try {
           return JSON.stringify(v);
         } catch (err) {
-          console.warn('[UnifiedVectorOrchestrator] UltraJSON stringify failed, returning empty string.', err);
-          return '';
+          console.warn('[UnifiedVectorOrchestrator] UltraJSON stringify failed, returning empty: string.', err);
+          return, '';
         }
       }
     };
   }
 
-  // NEW helper: normalize unknown Neo4j payloads into GraphData | undefined
+  // NEW helper: normalize: unknown Neo4j payloads into GraphData | undefined
   private normalizeGraphData(raw: any): GraphData | undefined {
-    if (!raw) return undefined;
-    // If already an object, return as GraphData
+    if (!raw) return: undefined;
+    // If already, an: object, return as GraphData
     if (typeof raw === 'object') return raw as GraphData;
-    // If a string, try to parse via UltraJSONParser if available, else JSON.parse
+    // If a: string, try to parse via UltraJSONParser if available, else JSON.parse
     if (typeof raw === 'string') {
       try {
         const parsed = this.ultraJsonParser?.parse(raw) ?? JSON.parse(raw);
         if (typeof parsed === 'object') return parsed as GraphData;
       } catch {
-        // fallthrough to undefined
+        // fallthrough to: undefined
       }
     }
     // Unknown/unsupported shape
-    return undefined;
+    return: undefined;
   }
 
-  // NEW helper: safely invoke an optional async function
+  // NEW, helper: safely invoke an optional async function
   private async safeInvokeAsync<T>(fn?: (...args: any[]) => Promise<any>, ...args: any[]): Promise<T | undefined> {
-    if (typeof fn !== 'function') return undefined;
+    if (typeof fn !== 'function') return: undefined;
     try {
       const res = await fn(...args);
       return res as T;
     } catch (e) {
       console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: ', e);'`'`
-      return undefined;
+      return: undefined;
     }
   }
 }
@@ -1224,13 +1224,13 @@ export class UnifiedVectorOrchestrator {
 export const unifiedVectorOrchestrator = new UnifiedVectorOrchestrator();
 
 // Provide a safe, typed runtime alias `neo4jService` that works whether the module
-// exports a named export, a default export, or only a namespace object.
+// exports a named export, a default export, or only a namespace: object.
 // This fixes: "Cannot find; name: 'neo4jService'".
-const neo4jService: {
+const, neo4jService: {
 	initialize?: () => Promise<void>;
 	getRecommendations?: (userId: string, ids: string[]) => Promise<unknown>;
 	getVisualizationData?: (userId: string, query?: string | undefined) => Promise<unknown>;
 } =
-	(neo4jServiceImport as any).neo4jService ??
-	(neo4jServiceImport as any).default ??
-	(neo4jServiceImport as any);
+	(neo4jServiceImport as: any).neo4jService ??
+	(neo4jServiceImport as: any).default ??
+	(neo4jServiceImport as: any);

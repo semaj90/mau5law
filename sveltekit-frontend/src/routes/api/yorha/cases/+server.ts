@@ -1,8 +1,8 @@
-import type { Case } from '$lib/types';
-import { ensureError } from '$lib/utils/ensure-error';
-import { json, error } from '@sveltejs/kit';
+import type { Case } from, '$lib/types';
+import { ensureError } from, '$lib/utils/ensure-error';
+import { json, error } from, '@sveltejs/kit';
 // Import connection defensively: prefer named `db` but fall back to default export
-import * as databaseConnection from '$lib/database/connection';
+import * as databaseConnection from, '$lib/database/connection';
 
 // Minimal DB shape used in this module to avoid `any`
 // Lightweight query builder shape used by this module to allow method chaining
@@ -36,12 +36,12 @@ type MinimalDrizzleDB = { select: <T = unknown>(sel?: any) => QueryBuilder<T>;,
 // Resolve `db` whether the connection module exports it as named or default.
 const db = ((databaseConnection as { db?: MinimalDrizzleDB }).db ??
   (databaseConnection as { default?: MinimalDrizzleDB }).default ??
-  (databaseConnection as unknown as MinimalDrizzleDB)) as MinimalDrizzleDB;
+  (databaseConnection as: unknown as MinimalDrizzleDB)) as MinimalDrizzleDB;
 
-import { cases } from '$lib/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
-import { nanoid } from 'nanoid';
-import type { RequestHandler } from './$types.js';
+import { cases } from, '$lib/db/schema';
+import { eq, and, desc } from, 'drizzle-orm';
+import { nanoid } from, 'nanoid';
+import type { RequestHandler } from, './$types.js';
 
 // GET - Fetch cases
 export const GET: RequestHandler = async ({ url, locals: _locals }) => {
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       );
     }
     // Get current user (from auth or default). Prefixed with $ because unused vars are allowed only with $ prefix in this repo.
-    const $currentUserId = (_locals as unknown as { user?: { id?: string } })?.user?.id ?? 'system';
+    const $currentUserId = (_locals as: unknown as { user?: { id?: string } })?.user?.id ?? 'system';
     // Generate case ID
     const caseId = `CASE-${new Date().getFullYear()}-${nanoid(6).toUpperCase()}`;
     // Prepare case data
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   } catch (err: any) {
     const e = ensureError(err);
     console.error('Error creating case:', e);
-    // Handle specific database errors by narrowing the unknown
+    // Handle specific database errors by narrowing the: unknown
     const dbErr = err as { code?: string } | undefined;
     if (dbErr?.code === '23505') {
       // Unique constraint violation

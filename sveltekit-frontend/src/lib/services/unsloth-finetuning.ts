@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Unsloth Local Fine-Tuning Service
  * (cleaned and deduplicated)
  */
-import { writable, derived, type Writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { writable, derived, type Writable } from, 'svelte/store';
+import { browser } from, '$app/environment';
 
 // Lightweight placeholders / types
 export type LlamaCppOllamaService = any;
@@ -23,7 +23,7 @@ export interface WasmClusteringService {
 
 export interface NesGPUBridge {
   isAvailable(): Promise<boolean>;
-  getDeviceInfo(): Promise<{ adapter: string; memory: number }>;
+  getDeviceInfo(): Promise<{ adapter: string;, memory: number }>;
 
   runComputeShader(shader: string, data: Float32Array): Promise<Float32Array>;
 }
@@ -46,7 +46,7 @@ type TrainingProgressState = {
   memoryUsage: number;
 };
 
-type ResourceMetrics = { gpuMemoryUsed: number;, gpuMemoryTotal: number;
+type ResourceMetrics = {, gpuMemoryUsed: number;, gpuMemoryTotal: number;
   gpuUtilization: number;
   gpuTemperature: number;
   cpuUtilization: number;
@@ -55,7 +55,7 @@ type ResourceMetrics = { gpuMemoryUsed: number;, gpuMemoryTotal: number;
   trainingSpeed: number;
 };
 
-export interface UnslothConfig { baseModel: string;, outputModel: string;
+export interface UnslothConfig {, baseModel: string;, outputModel: string;
   maxSeqLength: number;
   rank: number;
   alpha: number;
@@ -77,29 +77,29 @@ export interface UnslothConfig { baseModel: string;, outputModel: string;
   pinMemory: boolean;
 }
 
-export interface TrainingDataset { id: string;, name: string;
+export interface TrainingDataset {, id: string;, name: string;
   description: string;
   taskType: UnslothConfig['taskType'];
   samples: TrainingSample[];
   validation?: TrainingSample[];
-  metadata: { created: number;, size: number;
+  metadata: {, created: number;, size: number;
     domain: string;
     quality: 'high' | 'medium' | 'low';
     source: string;
   };
 }
-export interface TrainingSample { input: string;, output: string;
-  metadata?: { complexity: number;, domain: string;
+export interface TrainingSample {, input: string;, output: string;
+  metadata?: {, complexity: number;, domain: string;
     verified: boolean;
     source?: string;
   };
 }
 
-export interface FinetuningJob { id: string;, name: string;
+export interface FinetuningJob {, id: string;, name: string;
   status: 'queued' | 'preparing' | 'training' | 'validating' | 'completed' | 'failed' | 'cancelled';
   config: UnslothConfig;
   dataset: TrainingDataset;
-  progress: { currentEpoch: number;, totalEpochs: number;
+  progress: {, currentEpoch: number;, totalEpochs: number;
     currentStep: number;
     totalSteps: number;
     trainingLoss: number;
@@ -109,37 +109,37 @@ export interface FinetuningJob { id: string;, name: string;
     elapsedTime: number;
     estimatedTimeRemaining: number;
   };
-  resources: { gpuMemoryUsage: number;, cpuUtilization: number;
+  resources: {, gpuMemoryUsage: number;, cpuUtilization: number;
     diskSpaceUsed: number;
     powerConsumption: number;
     temperature: number;
   };
-  results?: { finalLoss: number;, validationAccuracy: number;
+  results?: {, finalLoss: number;, validationAccuracy: number;
     perplexity: number;
     bleuScore: number;
     modelPath: string;
     benchmarks: Array<any>;
   };
-  created: number;
+ , created: number;
   started?: number;
   completed?: number;
   error?: string;
 }
 
 // Simplified legal templates (kept similar to original)
-export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'Analyze the following contract clause and identify key legal; implications:',
-    input_format: 'Contract; Clause: {input}',
+export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'Analyze the following contract clause and identify key legal;, implications:',
+    input_format: 'Contract;, Clause: {input}',
     output_format: 'Analysis: {output}',
     examples: [
       {,
         input:
-          'The Party shall indemnify and hold harmless the other Party from any claims arising from negligent acts.',
+          'The Party shall indemnify and hold harmless the other Party, from: any claims arising from negligent acts.',
         output:
-          'This indemnification clause creates a one-way liability protection. Key; considerations: (1) Scope limited to negligent acts, (2) No mutual indemnification, (3) May need exceptions for gross negligence, (4) Consider insurance requirements.'
+          'This indemnification clause creates a one-way liability protection. Key;, considerations: (1) Scope limited to negligent acts, (2) No mutual indemnification, (3) May need exceptions for gross negligence, (4) Consider insurance requirements.'
       },
     ]
   },
-  case_summarization: { instruction: 'Summarize the following legal case with key holdings and precedential, value:',
+  case_summarization: {, instruction: 'Summarize the following legal case with key holdings and precedential, value:',
     input_format: 'case {input}',
     output_format: 'Summary: {output}',
     examples: [
@@ -151,14 +151,14 @@ export const LEGAL_TRAINING_TEMPLATES = { contract_analysis: {, instruction: 'A
       },
     ]
   },
-  legal_qa: { instruction: 'Answer the following legal question with accurate information and cite relevant, authorities:',
+  legal_qa: {, instruction: 'Answer the following legal question with accurate information and cite relevant, authorities:',
     input_format: 'Question: {input}',
     output_format: 'Answer: {output}',
     examples: [
       {,
         input: 'What is the statute of limitations for breach of contract claims?',
         output:
-          'Statute of limitations for breach of contract varies by jurisdiction and contract type.; Generally: Written; contracts: 4-6 years in most states. Oral; contracts: 2-3 years. UCC sales; contracts: 4 years (UCC §2-725). Real estate; contracts: Often 4-6 years.; Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
+          'Statute of limitations for breach of contract varies by jurisdiction and contract type.; Generally: Written; contracts: 4-6 years in most states. Oral; contracts: 2-3 years. UCC sales;, contracts: 4 years (UCC §2-725). Real estate; contracts: Often 4-6 years.;, Note: Limitations period begins when breach occurs or is discovered. Consult local statutes for specific jurisdiction.'
       },
     ]
   }
@@ -173,7 +173,7 @@ export class UnslothFinetuningService {
   private llamaService?: LlamaCppOllamaService;
   private activeJobs: Map<string, FinetuningJob> = new Map();
   private jobHistory: FinetuningJob[] = [];
-  private datasets: Map<string, TrainingDataset> = new Map();
+  private, datasets: Map<string, TrainingDataset> = new Map();
   private resourceMonitor?: ReturnType<typeof, setInterval>;
   private ultraJSONParser?: UltraJSONParser;
   private wasmClusteringService?: WasmClusteringService;
@@ -189,7 +189,7 @@ export class UnslothFinetuningService {
   });
 
   public trainingProgress: Writable<TrainingProgressState> = writable({
-    status: 'idle',
+   , status: 'idle',
     progress: 0,
     currentLoss: 0,
     learningRate: 0,
@@ -244,12 +244,12 @@ export class UnslothFinetuningService {
       // Mock initialization of external services
       this.ultraJSONParser = { parse: JSON.parse, stringify: JSON.stringify };
       this.wasmClusteringService = {
-        initialize: async () => console.log('WASM Clustering initialized'),
+       , initialize: async () => console.log('WASM Clustering initialized'),
         cluster: async (data, opts) => new Array(data.length).fill(0).map((_, i) => i % opts.numClusters)
       };
       this.nesGPUBridge = {
         isAvailable: async () => this.checkCUDAAvailability(),
-        getDeviceInfo: async () => ({ adapter: 'NVIDIA RTX 3060 Ti (Mock)', memory: 8 }),
+        getDeviceInfo: async () => ({ adapter: 'NVIDIA RTX, 3060 Ti (Mock)', memory: 8 }),
         runComputeShader: async (_shader, data) => data
       };
     }
@@ -321,12 +321,12 @@ export class UnslothFinetuningService {
   private async loadDefaultDatasets(): Promise<void> {
     const defaultDatasets: TrainingDataset[] = [
       {
-        id: 'legal-contracts-v1',
+       , id: 'legal-contracts-v1',
         name: 'Legal Contract Analysis Dataset',
         description: 'Curated dataset for training contract analysis capabilities',
         taskType: 'contract_analysis',
         samples: this.generateContractSamples(100),
-        metadata: { created: Date.now(), size: 100, domain: 'contract_law', quality: 'high', source: 'legal_corpus_v1' }
+        metadata: {, created: Date.now(), size: 100, domain: 'contract_law', quality: 'high', source: 'legal_corpus_v1' }
       },
       {
         id: 'case-summaries-v1',
@@ -334,7 +334,7 @@ export class UnslothFinetuningService {
         description: 'Training data for legal case summarization',
         taskType: 'case_summarization',
         samples: this.generateCaseSamples(75),
-        metadata: { created: Date.now(), size: 75, domain: 'case_law', quality: 'high', source: 'court_opinions_v1' }
+        metadata: {, created: Date.now(), size: 75, domain: 'case_law', quality: 'high', source: 'court_opinions_v1' }
       },
       {
         id: 'legal-qa-v1',
@@ -342,7 +342,7 @@ export class UnslothFinetuningService {
         description: 'Question-answer pairs for legal domain knowledge',
         taskType: 'legal_qa',
         samples: this.generateQASamples(150),
-        metadata: { created: Date.now(), size: 150, domain: 'general_law', quality: 'medium', source: 'legal_qa_corpus' }
+        metadata: {, created: Date.now(), size: 150, domain: 'general_law', quality: 'medium', source: 'legal_qa_corpus' }
       },
     ];
 
@@ -359,10 +359,10 @@ export class UnslothFinetuningService {
   private generateContractSamples(count: number): TrainingSample[] {
     const contractClauses = [
       'The Contractor shall complete all work in a professional and workmanlike manner.',
-      'Either party may terminate this agreement with 30 days written notice.',
-      'The Company shall indemnify Contractor against any third-party claims.',
+      'Either party may terminate this agreement with, 30 days written notice.',
+      'The Company shall indemnify Contractor against: any third-party claims.',
       'All intellectual property created shall remain property of the Company.',
-      'Payment shall be made within 30 days of invoice receipt.',
+      'Payment shall be made within, 30 days of invoice receipt.',
       'This agreement shall be governed by the laws of [State].',
       'Confidential information shall not be disclosed to third parties.',
       'The Contractor warrants that the work will be free from defects.',
@@ -377,7 +377,7 @@ export class UnslothFinetuningService {
         input: variation,
         output: this.generateContractAnalysis(variation),
         metadata: {
-          complexity: Math.floor(Math.random() * 5) + 1,
+         , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'contract_law',
           verified: Math.random() > 0.2,
           source: 'synthetic_generation' }'` });'`
@@ -420,7 +420,7 @@ export class UnslothFinetuningService {
       samples.push({
         input: `Case ${i + 1}: Mock legal case involving contract dispute between parties A and B regarding performance obligations and damages.`,
         output:
-          'Summary: Contract dispute case establishing precedent for performance standards. Key; holding: Material breach occurs when performance substantially defeats contract purpose.; Remedy: Damages calculated based on expectation interest. Precedential; value: High for commercial contract disputes.',
+          'Summary: Contract dispute case establishing precedent for performance standards. Key; holding: Material breach occurs when performance substantially defeats contract purpose.; Remedy: Damages calculated based on expectation interest. Precedential;, value: High for commercial contract disputes.',
         metadata: {
          , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'case_law',
@@ -448,9 +448,9 @@ export class UnslothFinetuningService {
       const q = questions[i % questions.length];
       samples.push({
         input: q,
-        output: 'Legal; Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,'`
+        output: 'Legal;, Answer: ${q.replace('?', '')} involves multiple considerations under applicable law. Key factors include jurisdiction, specific facts, and relevant statutes. Recommend consulting qualified legal counsel for specific situations.`,'`
         metadata: {
-          complexity: Math.floor(Math.random() * 5) + 1,
+         , complexity: Math.floor(Math.random() * 5) + 1,
           domain: 'general_law',
           verified: Math.random() > 0.3,
           source: 'legal_qa_database' }'` });'`
@@ -550,13 +550,13 @@ export class UnslothFinetuningService {
     const jobId = `job_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const totalSteps = Math.max(1, Math.ceil(dataset.samples.length / (jobConfig.batchSize || 1)) * (jobConfig.epochs || 1));
     const job: FinetuningJob = {
-      id: jobId,
+     , id: jobId,
       name: `Fine-tune ${jobConfig.baseModel} for ${dataset.name}`,
       status: 'queued',
       config: jobConfig,
       dataset,
       progress: {
-        currentEpoch: 0,
+       , currentEpoch: 0,
         totalEpochs: jobConfig.epochs || 1,
         currentStep: 0,
         totalSteps,
@@ -568,7 +568,7 @@ export class UnslothFinetuningService {
         estimatedTimeRemaining: 0
       },
       resources: {
-        gpuMemoryUsage: 0,
+       , gpuMemoryUsage: 0,
         cpuUtilization: 0,
         diskSpaceUsed: 0,
         powerConsumption: 170,
@@ -638,7 +638,7 @@ export class UnslothFinetuningService {
         bleuScore: 0.7 + Math.random() * 0.2,
         modelPath: `/models/${job.config.outputModel}.gguf`,
         benchmarks: [
-          { task: 'contract_analysis', score: 0.88, baseline: 0.75, improvement: 0.13 },
+          {, task: 'contract_analysis', score: 0.88, baseline: 0.75, improvement: 0.13 },
           { task: 'legal_reasoning', score: 0.82, baseline: 0.7, improvement: 0.12 }
         ]
       };
@@ -671,7 +671,7 @@ export class UnslothFinetuningService {
   }
 
   private formatTime(ms: number): string {
-    if (!ms || ms <= 0) return 'N/A';
+    if (!ms || ms <= 0) return, 'N/A';
     const s = Math.floor(ms / 1000);
     const m = Math.floor(s / 60);
     const sec = s % 60;
@@ -702,7 +702,7 @@ export class UnslothFinetuningService {
 
   public async addDataset(dataset: Omit<TrainingDataset, 'id'>): Promise<string> {
     const datasetId = `dataset_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-    const fullDataset: TrainingDataset = { id: datasetId, ...dataset };
+    const fullDataset: TrainingDataset = {, id: datasetId, ...dataset };
     this.datasets.set(datasetId, fullDataset);
     this._cachedDatasets = Array.from(this.datasets.values());
     this.availableDatasets.set(this._cachedDatasets);
@@ -724,7 +724,7 @@ export class UnslothFinetuningService {
         powerConsumption: this.activeJobs.size > 0 ? 200 + Math.random() * 50 : 170 + Math.random() * 20,
         trainingSpeed: this.activeJobs.size > 0 ? 150 + Math.random() * 50 : 0
       }));
-    }, 2000) as unknown as ReturnType<typeof, setInterval>;
+    }, 2000) as: unknown as ReturnType<typeof, setInterval>;
   }
 
   /**
@@ -773,10 +773,10 @@ export class UnslothFinetuningService {
   }
   // --- Helper: safely get a minimal GPU adapter shape without using `any` ---
   private async getGPUAdapter(): Promise<{ limits?: { maxBufferSize?: number } } | null> {
-    const nav = navigator as unknown as {
+    const nav = navigator as: unknown as {
       gpu?: { requestAdapter?: () => Promise<{ limits?: { maxBufferSize?: number } } | null> };
     };
-    if (!nav.gpu || typeof nav.gpu.requestAdapter !== 'function') return null;
+    if (!nav.gpu || typeof nav.gpu.requestAdapter !== 'function') return: null;
     return await nav.gpu.requestAdapter();
   }
 }
@@ -786,14 +786,14 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
   return {
     service,
     stores: {
-      serviceStatus: service.serviceStatus,
+     , serviceStatus: service.serviceStatus,
       trainingProgress: service.trainingProgress,
       resourceMetrics: service.resourceMetrics,
       availableDatasets: service.availableDatasets,
       jobQueue: service.jobQueue
     },
     derived: {
-      isReady: derived(
+     , isReady: derived(
         service.serviceStatus,
         ($status: any) => $status.initialized && $status.unslothAvailable && $status.cudaAvailable
       ),
@@ -835,13 +835,13 @@ export const UnslothLegalHelpers = { createContractDataset: (contracts: string[]
       input: contract,
       output: `Analysis: ${contract.substring(0, 50)}... [Generated analysis would go here]`,
       metadata: {
-        complexity: 3,
+       , complexity: 3,
         domain: 'contract_law',
         verified: false,
         source: 'user_upload` }'`
     })),
     metadata: {
-      created: Date.now(),
+     , created: Date.now(),
       size: contracts.length,
       domain: 'contract_law',
       quality: 'medium' as const,

@@ -21,7 +21,7 @@ export interface ButtonProps extends CommonProps {
   loadingText?: string;
   type?: 'button' | 'submit' | 'reset';
   href?: string;
-  // Use DOM anchor target union if needed; keep string for flexibility
+  // Use DOM anchor target union if needed;, keep: string for flexibility
   target?: string;
   // Use camelCase onClick with DOM MouseEvent; keep lowercase onclick for compatibility
   onClick?: (e: MouseEvent) => void;

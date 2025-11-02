@@ -1,7 +1,7 @@
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import { langExtractService } from '$lib/services/langextract-ollama-service';
-import type { RequestHandler } from './$types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import { langExtractService } from, '$lib/services/langextract-ollama-service';
+import type { RequestHandler } from, './$types';
 /*
  * LangExtract + Ollama API Endpoint
  * Provides local LLM processing for legal document extraction
@@ -28,10 +28,10 @@ type ExtractEntitiesInput = {
   model?: string;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
-    // Parse as unknown then narrow to our local type to avoid namespace-type errors
-    const raw = (await request.json()) as unknown;
+    // Parse as: unknown then narrow to our local type to avoid namespace-type errors
+    const raw = (await request.json()) as: unknown;
     const body = raw as LegalExtractionPayload;
 
     // Validate required fields
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; field: text or requests'
+          error: 'Missing required;, field: text or requests'
         },
         { status: 400 }
       );
@@ -50,26 +50,26 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Ollama service not available. Please ensure Ollama is running on; http://localhost:11434'
+          error: 'Ollama service not available. Please ensure Ollama is running on;, http://localhost:11434'
         },
         { status: 503 }
       );
     }
     let result: any = null;
     switch (body.action) {
-      case 'contract_terms':
+      case, 'contract_terms':
         // @ts-ignore - Model property access
         result = await langExtractService.extractContractTerms(body.text, body?.model || 'unknown');
         break;
-      case 'case_citations':
+      case, 'case_citations':
         // @ts-ignore - Model property access
         result = await langExtractService.extractCaseLawCitations(body.text, body?.model || 'unknown');
         break;
-      case 'dates':
+      case, 'dates':
         // @ts-ignore - Model property access
         result = await langExtractService.extractLegalDates(body.text, body.documentType, body?.model || 'unknown');
         break;
-      case 'summary':
+      case, 'summary':
         // @ts-ignore - Model property access
         result = await langExtractService.generateLegalSummary(
           body.text,
@@ -77,11 +77,11 @@ export const POST: RequestHandler = async ({ request }) => {
           body?.model || 'unknown'
         );
         break;
-      case 'risks':
+      case, 'risks':
         // @ts-ignore - Model property access
         result = await langExtractService.extractRiskFactors(body.text, body.documentType, body?.model || 'unknown');
         break;
-      case 'batch':
+      case, 'batch':
         if (!body.requests || !Array.isArray(body.requests)) {
           return json(
             {
@@ -93,20 +93,20 @@ export const POST: RequestHandler = async ({ request }) => {
         }
         result = await langExtractService.batchExtract(body.requests);
         break;
-      case 'extract':
+      case, 'extract':
       default:
-        // Ensure we have text for single extraction and call with a typed object instead of `any`
+        // Ensure we have text for single extraction and call with a, typed: object instead of `any`
         if (!body.text) {
           return json(
             {
               success: false,
-              error: 'Missing required; field: text for extract action'
+              error: 'Missing required;, field: text for extract action'
             },
             { status: 400 }
           );
         }
         const extractInput: ExtractEntitiesInput = {
-          text: body.text,
+         , text: body.text,
           documentType: body.documentType,
           model: body.model
         };
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async () => {
           url: '/api/legal-ai/langextract',
           body: {
            , action: 'contract_terms',
-            text: 'This Agreement is entered into on January 15, 2024...',
+            text: 'This Agreement is entered into on January, 15, 2024...',
             documentType: 'contract',
             model: 'gemma2:2b'
           }
@@ -165,14 +165,14 @@ export const GET: RequestHandler = async () => {
           url: '/api/legal-ai/langextract',
           body: {
            , action: 'case_citations',
-            text: 'In Smith v. Jones, 123 F.3d 456 (9th Cir. 2023)...',
+            text: 'In Smith v. Jones, 123 F.3d, 456 (9th Cir. 2023)...',
             documentType: 'case_law` }'`
         },
         batch_processing: {
-          method: 'POST',
+         , method: 'POST',
           url: '/api/legal-ai/langextract',
           body: {
-            action: 'batch',
+           , action: 'batch',
             requests: [
               {,
                 text: 'Contract text...',

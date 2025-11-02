@@ -1,11 +1,11 @@
-import type { Message } from '$lib/types';
+import type { Message } from, '$lib/types';
 /**
  * 🎮 Simple Chat API - NES Architecture Compatible
  * Basic chat endpoint without complex dependencies
  * Tests core AI functionality with Nintendo memory constraints
  */
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { message } = await request.json();
@@ -22,16 +22,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const nesResponse = { message: `🎮 NES AI, Response: "${message}" processed through CHR-ROM texture streaming`,
       timestamp: new Date().toISOString(),
       nesArchitecture: {
-        memoryBank: 'CHR_ROM',
+       , memoryBank: 'CHR_ROM',
         priority: 180,
         cacheStrategy: 'aggressive',
         responseTime: `2ms (Nintendo-optimized)` },
       system: {
-        llmModel: 'embeddinggemma:latest',
+       , llmModel: 'embeddinggemma:latest',
         backend: 'Ollama',
         status: `healthy` },
       meta: {
-        requestId: `nes_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+       , requestId: `nes_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         version: '1.0.0` }'`
     };
     // Simulate processing delay (Nintendo-style timing)

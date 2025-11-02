@@ -1,9 +1,9 @@
-import type { SearchResult } from '$lib/types';
-import { db } from '$lib/server/db';
-import { evidence, vectorMetadata, embeddingCache } from '$lib/server/db/schema-postgres-enhanced';
-import { ollamaService, as originalOllamaService } from './ollamaService.js';
-import { eq, sql } from 'drizzle-orm';
-import type { DocumentProcessingOptions } from '$lib/schemas/upload';
+import type { SearchResult } from, '$lib/types';
+import { db } from, '$lib/server/db';
+import { evidence, vectorMetadata, embeddingCache } from, '$lib/server/db/schema-postgres-enhanced';
+import { ollamaService, as originalOllamaService } from, './ollamaService.js';
+import { eq, sql } from, 'drizzle-orm';
+import type { DocumentProcessingOptions } from, '$lib/schemas/upload';
 
 // Define the expected interface for OllamaService
 interface IOllamaService {
@@ -11,23 +11,23 @@ interface IOllamaService {
   embedDocument(
     content: string,
     options: {, documentId: string; chunkSize?: number; chunkOverlap?: number }
-  ): Promise<{ chunks: Array<{ content: string; embedding: number[]; metadata: Record<string, unknown> }> }>;
+  ): Promise<{ chunks: Array<{ content: string; embedding: number[];, metadata: Record<string, unknown> }> }>;
   generateEmbedding(text: string): Promise<number[]>;
 }
 
 // Assert the type of ollamaService
 const ollamaService: IOllamaService = originalOllamaService as IOllamaService;
 
-export interface PipelineResult { success: boolean;, documentId: string;
+export interface PipelineResult {, success: boolean;, documentId: string;
   summary?: string;
   entities?: string[];
   sentiment?: string;
   classification?: string;
-  embeddings?: { count: number;, dimension: number;
+  embeddings?: {, count: number;, dimension: number;
   };
   error?: string;
 }
-export interface SearchResult { id: string;, content: string;
+export interface SearchResult {, id: string;, content: string;
   score: number;
   metadata: { [key: string]: any };
 }
@@ -37,7 +37,7 @@ export class AIPipeline {
    * Process a document through the full AI pipeline
    */
   async processDocument(
-    documentId: string,
+   , documentId: string,
     content: string,
     options: DocumentProcessingOptions = {
      , extractText: true,
@@ -51,7 +51,7 @@ export class AIPipeline {
     }
   ): Promise<PipelineResult> {
     const result: PipelineResult = {
-      success: false,
+     , success: false,
       documentId
     };
     try {
@@ -107,7 +107,7 @@ export class AIPipeline {
     content: string,
     chunkSize: number,
     chunkOverlap: number
-  ): Promise<{ count: number; dimension: number }> {
+  ): Promise<{ count: number;, dimension: number }> {
     const { chunks } = await ollamaService.embedDocument(content, { documentId, chunkSize, chunkOverlap });
     // Store each chunk with its embedding
     for (const chunk of chunks) {
@@ -119,7 +119,7 @@ export class AIPipeline {
       // TODO: persist chunk and embedding into documentVectors/documentChunks table when schema exists
     }
     return {
-      count: chunks.length,
+     , count: chunks.length,
       dimension: chunks[0]?.embedding.length || 384
     };
   }
@@ -149,7 +149,7 @@ export class AIPipeline {
     const entities: string[] = [];
     const lines = entitiesText.split('\n');
     for (const line of lines) {
-      // Look for patterns like: "-; Person: John Doe"; or: "Person: John Doe"
+      // Look for patterns like: "-; Person: John Doe";, or: "Person: John Doe"
       const match = line.match(/[-•*]?\s*(?:Person|Organization|Location|Date):\s*(.+)/i);
       if (match) {
         entities.push(match[1].trim());
@@ -167,8 +167,7 @@ export class AIPipeline {
       const embedding = await ollamaService.generateEmbedding(entity);
       void embedding;
       // TODO: persist nodes/edges to knowledge graph tables when schema exists
-      // placeholders left intentionally minimal
-      void documentId;
+      // placeholders left intentionally, minimal: void documentId;
       void entity;
     }
   }
@@ -202,11 +201,10 @@ export class AIPipeline {
    * Find similar documents based on content (stub)
    */
   async findSimilarDocuments(documentId: string, limit: number = 5): Promise<SearchResult[]> {
-    // mark params as used to avoid: "declared but never read" errors
-    void documentId;
+    // mark params as used to avoid: "declared but never read" errors: void documentId;
     void limit;
 
-    // TODO: Implement findSimilarDocuments when documentVectors table is created
+    //, TODO: Implement findSimilarDocuments when documentVectors table is created
     // Placeholder until tables are created
     return [];
   }
@@ -219,8 +217,7 @@ export class AIPipeline {
     userId: string,
     type: 'case' | 'evidence' | 'document' = 'document'
   ): Promise<SearchResult[]> {
-    // mark params as used to avoid: "declared but never read" / "assigned a value but never used" errors
-    void userId;
+    // mark params as used to avoid: "declared but never read" / "assigned a value but never used", errors: void userId;
     void type;
 
     // This would be implemented with the recommendation engine

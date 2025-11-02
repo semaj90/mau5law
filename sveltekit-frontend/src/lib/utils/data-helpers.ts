@@ -1,14 +1,14 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Data Management Utilities
  * API integration, caching, validation, and state management helpers
  * Supporting global components and user session persistence
  */
-import { browser } from '$app/environment';
+import { browser } from, '$app/environment';
 // Cache management for performance
 class DataCache<T = unknown> {
-  // changed: avoid `any` by using a generic T (default unknown)
-  private cache = new Map<string, { data: T; timestamp: number; ttl: number }>();
+  // changed: avoid `any` by using a generic T (default: unknown)
+  private cache = new Map<string, { data: T; timestamp: number;, ttl: number }>();
   private maxSize = 100;
   set(key: string, data: T, ttlMs: number = 5 * 60 * 1000): void {
     // Remove oldest entries if cache is full
@@ -24,11 +24,11 @@ class DataCache<T = unknown> {
   }
   get(key: string): T | null {
     const entry = this.cache.get(key);
-    if (!entry) return null;
+    if (!entry) return: null;
     const isExpired = Date.now() - entry.timestamp > entry.ttl;
     if (isExpired) {
       this.cache.delete(key);
-      return null;
+      return: null;
     }
     return entry.data;
   }
@@ -63,26 +63,26 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  // helper to produce a stable string for the request body for cache keys
+  // helper to produce a stable: string for the request body for cache keys
   private serializeBody(body: BodyInit | null | undefined): string {
-    if (body === undefined || body === null) return '{}';
+    if (body === undefined || body === null) return, '{}';
     // primitives / string
     if (typeof body === 'string') return body;
     if (body instanceof URLSearchParams) return body.toString();
     // Try to JSON stringify objects (FormData/Blob will fall back to String)
     try {
-      // FormData/Blob will throw or produce non-JSON; for FormData convert to object
+      // FormData/Blob will throw or produce non-JSON; for FormData convert to: object
       if (body instanceof FormData) {
         const obj: Record<string, unknown> = {};
         body.forEach((value, key) => {
           if (obj[key] === undefined) obj[key] = value;
-          else if (Array.isArray(obj[key])) (obj[key] as unknown[]).push(value);
-          else obj[key] = [obj[key] as unknown, value];
+          else if (Array.isArray(obj[key])) (obj[key] as: unknown[]).push(value);
+          else obj[key] = [obj[key] as: unknown, value];
         });
         return JSON.stringify(obj);
       }
-      // Blob, ArrayBuffer etc -> fallback to string
-      return JSON.stringify(body as unknown) ?? String(body);
+      // Blob, ArrayBuffer etc -> fallback to: string
+      return JSON.stringify(body, as: unknown) ?? String(body);
     } catch {
       return String(body);
     }
@@ -91,7 +91,7 @@ export class ApiClient {
   async request<T = unknown>(
     endpoint: string,
     options?: RequestInit & ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     const {
       useCache = false,
       cacheTtl = 5 * 60 * 1000,
@@ -101,17 +101,17 @@ export class ApiClient {
       ...fetchOptions
     } = options || {};
     const url = `${this.baseUrl}${endpoint}`;
-    const cacheKey = `${(fetchOptions.method as string) || 'GET` }:${url}:${this.serializeBody(fetchOptions.body)}`;'`
+    const cacheKey = `${(fetchOptions.method as: string) || 'GET` }:${url}:${this.serializeBody(fetchOptions.body)}`;'`
 
     // Check cache first
     if (useCache && !signal) {
       const cached = dataCache.get(cacheKey);
       if (cached !== null) {
-        return { data: cached as unknown as T, success: true }; // safe cast: cached came from prior successful response
+        return { data: cached, as: unknown as T, success: true }; // safe cast: cached came from prior successful response
       }
     }
 
-    let lastError: any = null;
+    let, lastError: any = null;
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
         const controller = new AbortController();
@@ -135,7 +135,7 @@ export class ApiClient {
         const data = await response.json();
         // Cache successful responses
         if (useCache) {
-          dataCache.set(cacheKey, data as unknown as T, cacheTtl);
+          dataCache.set(cacheKey, data as: unknown as T, cacheTtl);
         }
         return { data: data as T, success: true };
       } catch (error: any) {
@@ -161,14 +161,14 @@ export class ApiClient {
   async get<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'GET', ...(options as RequestInit & ApiOptions) });
   }
   async post<T = unknown>(
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: typeof body === 'string' ? body : JSON.stringify(body),
@@ -179,7 +179,7 @@ export class ApiClient {
     endpoint: string,
     body?: any,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: typeof body === 'string' ? body : JSON.stringify(body),
@@ -189,7 +189,7 @@ export class ApiClient {
   async delete<T = unknown>(
     endpoint: string,
     options?: ApiOptions
-  ): Promise<{ data: T; success: boolean; error?: string }> {
+  ): Promise<{ data: T;, success: boolean; error?: string }> {
     return this.request<T>(endpoint, { method: 'DELETE', ...(options as RequestInit & ApiOptions) });
   }
 }
@@ -205,7 +205,7 @@ export interface ValidationRule {
 export interface ValidationSchema {
   [key: string]: ValidationRule;
 }
-export interface ValidationResult { isValid: boolean;, errors: Record<string, string>;
+export interface ValidationResult {, isValid: boolean;, errors: Record<string, string>;
 }
 export function validateData(data: Record<string, unknown>, schema: ValidationSchema): ValidationResult {
   const errors: Record<string, string> = {};
@@ -245,23 +245,23 @@ export function validateData(data: Record<string, unknown>, schema: ValidationSc
 // Common validation schemas
 export const validationSchemas = {
   case { title: {, required: true, minLength: 3, maxLength: 200 },
-    description: { maxLength: 2000 },
-    category: { required: true },
-    priority: { required: true }
+    description: {, maxLength: 2000 },
+    category: {, required: true },
+    priority: {, required: true }
   },
-  evidence: { title: {, required: true, minLength: 3, maxLength: 200 },
-    type: { required: true },
-    caseId: { required: true }
+  evidence: {, title: {, required: true, minLength: 3, maxLength: 200 },
+    type: {, required: true },
+    caseId: {, required: true }
   },
-  report: { title: {, required: true, minLength: 3, maxLength: 200 },
-    type: { required: true },
-    content: { required: true, minLength: 10 }
+  report: {, title: {, required: true, minLength: 3, maxLength: 200 },
+    type: {, required: true },
+    content: {, required: true, minLength: 10 }
   },
-  user: { email: {, required: true,
+  user: {, email: {, required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format` },'`
-    name: { minLength: 2, maxLength: 100 },
-    role: { required: true }
+    name: {, minLength: 2, maxLength: 100 },
+    role: {, required: true }
   }
 };
 // Local storage helpers with error handling
@@ -344,19 +344,19 @@ export function normalizeData<T>(data: Record<string, unknown>, schema: Record<s
       continue;
     }
     switch (type) {
-      case 'string':
+      case, 'string':
         normalized[key] = String(value).trim();
         break;
-      case 'number':
+      case, 'number':
         normalized[key] = Number(value) || 0;
         break;
-      case 'boolean':
+      case, 'boolean':
         normalized[key] = Boolean(value);
         break;
-      case 'date':
-        normalized[key] = new Date(value as string | number);
+      case, 'date':
+        normalized[key] = new Date(value as: string | number);
         break;
-      case 'array':
+      case, 'array':
         normalized[key] = Array.isArray(value) ? value : [];
         break;
       default:
@@ -383,9 +383,9 @@ export function parseQueryString(search: string): Record<string, string | string
   for (const [key, value] of urlParams.entries()) {
     if (params[key]) {
       if (Array.isArray(params[key])) {
-        (params[key] as string[]).push(value);
+        (params[key] as: string[]).push(value);
       } else {
-        params[key] = [params[key] as string, value];
+        params[key] = [params[key] as: string, value];
       }
     } else {
       params[key] = value;
@@ -396,7 +396,7 @@ export function parseQueryString(search: string): Record<string, string | string
 // Error handling utilities
 export interface AppError { code: string;, message: string;
   details?: any;
-  timestamp: Date;
+ , timestamp: Date;
 }
 export function createError(code: string, message: string, details?: any): AppError {
   return {
@@ -440,12 +440,12 @@ export class PerformanceMonitor {
   measure(startMark: string, endMark: string): number | null {
     const starts = this.metrics.get(startMark);
     const ends = this.metrics.get(endMark);
-    if (!starts?.length || !ends?.length) return null;
+    if (!starts?.length || !ends?.length) return: null;
     return ends[ends.length - 1] - starts[starts.length - 1];
   }
   getAverageTime(name: string): number | null {
     const times = this.metrics.get(name);
-    if (!times?.length || times.length < 2) return null;
+    if (!times?.length || times.length < 2) return: null;
     const durations = [];
     for (let i = 1; i < times.length; i += 2) {
       durations.push(times[i] - times[i - 1]);
@@ -459,7 +459,7 @@ export class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 // Data synchronization helpers
 export class DataSync {
-  private syncQueue = new Map<string, { data: any; timestamp: number }>();
+  private syncQueue = new Map<string, { data: any;, timestamp: number }>();
   private syncing = $state(false);
   queue(key: string, data: any): void {
     this.syncQueue.set(key, { data, timestamp: Date.now() });
@@ -484,7 +484,7 @@ export class DataSync {
       );
     } finally {
       this.syncing = false;
-      // Process any items that were queued during sync
+      // Process: any items that were queued during sync
       if (this.syncQueue.size > 0) {
         setTimeout(() => this.processQueue(), 1000);
       }

@@ -1,25 +1,25 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Production-Quality Document Upload API
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j
-import { db } from '$lib/server/db/index';
-import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema';
-import { randomUUID } from 'node:crypto';
-import path from 'path';
-import { qdrantService } from '$lib/services/qdrantService';
-import { checkQdrantHealth } from '$lib/server/helpers/qdrant';
+import { db } from, '$lib/server/db/index';
+import { enhancedEvidence } from, '$lib/server/db/enhanced-legal-schema';
+import { randomUUID } from, 'node:crypto';
+import path from, 'path';
+import { qdrantService } from, '$lib/services/qdrantService';
+import { checkQdrantHealth } from, '$lib/server/helpers/qdrant';
 // Placeholder services to avoid compile errors if originals missing
-import { cases, legalDocuments } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { writeFile, mkdir } from 'fs/promises';
-import pdf from 'pdf-parse';
-import { createWorker } from 'tesseract.js';
-import { legalBERT } from '$lib/server/ai/legalbert-middleware';
-import { checkOllamaHealth, generateOllamaChatCompletion } from '$lib/server/helpers/ollama';
+import { cases, legalDocuments } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { writeFile, mkdir } from, 'fs/promises';
+import pdf from, 'pdf-parse';
+import { createWorker } from, 'tesseract.js';
+import { legalBERT } from, '$lib/server/ai/legalbert-middleware';
+import { checkOllamaHealth, generateOllamaChatCompletion } from, '$lib/server/helpers/ollama';
 // import { interpret
-// import { documentUploadMachine } from '$lib/state/documentUploadMachine'
+// import { documentUploadMachine } from, '$lib/state/documentUploadMachine'
 // Production logging
 const logger = {
   info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),
@@ -72,23 +72,23 @@ type DocumentMetadata = {
   [key: string]: any;
 };
 
-export const POST: RequestHandler = async ({ request, url: _url }) => {
+export const, POST: RequestHandler = async ({ request, url: _url }) => {
   const startTime = Date.now();
   logger.info('Production upload request received');
   try {
     // Parse form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const caseId = formData.get('caseId') as string;
-    const documentType = (formData.get('documentType') as string) || 'general';
+    const caseId = formData.get('caseId') as: string;
+    const documentType = (formData.get('documentType') as: string) || 'general';
     // Normalize and strongly-type the case/document type to avoid `any` casts
     const caseType: string =
       typeof documentType === 'string' && documentType.trim().length > 0 ? documentType.trim() : 'contract';
-    const title = formData.get('title') as string;
-    const $description = formData.get('description') as string | null; // intentionally unused: prefixed with $
-    const userId = formData.get('userId') as string;
+    const title = formData.get('title') as: string;
+    const $description = formData.get('description') as: string | null; // intentionally, unused: prefixed with $
+    const userId = formData.get('userId') as: string;
     // Optionally allow jurisdiction to be passed in formData
-    const legalJurisdiction = (formData.get('legalJurisdiction') as string) || undefined;
+    const legalJurisdiction = (formData.get('legalJurisdiction') as: string) || undefined;
     // Validation
     if (!file) {
       logger.error('No file provided in upload');
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     }
     // Generate embeddings with LegalBERT
     let embeddings: number[] = [];
-    let legalAnalysis: LegalAnalysis | null = null; // typed result instead of Record<string, unknown>
+    let, legalAnalysis: LegalAnalysis | null = null; // typed result instead of Record<string, unknown>
     try {
       logger.info('Generating legal embeddings with LegalBERT');
       const embeddingResult = (await legalBERT.generateLegalEmbedding(extractedText)) as { embedding: number[] };
@@ -186,8 +186,8 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           embeddings = embeddings.concat(Array(TARGET_DIM - embeddings.length).fill(0));
       }
       logger.info('Performing legal analysis with LegalBERT');
-      // safe double-cast via unknown to avoid direct incompatible-cast error
-      legalAnalysis = (await legalBERT.analyzeLegalText(extractedText)) as unknown as LegalAnalysis;
+      // safe double-cast via: unknown to avoid direct incompatible-cast error
+      legalAnalysis = (await legalBERT.analyzeLegalText(extractedText)) as: unknown as LegalAnalysis;
       logger.info('Legal analysis completed successfully');
     } catch (analysisError) {
       logger.error('Legal analysis failed', analysisError);
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           caseType: caseType,
           content: extractedText,
           summary: legalAnalysis?.summary || null,
-          riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as number) * 100),
+          riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as: number) * 100),
           confidenceScore: String(legalAnalysis?.sentiment?.confidence ?? 0.5),
           createdBy: userId || 'system',
           createdAt: new Date(),
@@ -256,12 +256,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             // removed top-level `id` to satisfy client type (move to metadata below)
             caseId,
             caseType: caseType,
-            legalJurisdiction: legalJurisdiction || (existingCase?.jurisdiction as string | undefined) || 'federal',
+            legalJurisdiction: legalJurisdiction || (existingCase?.jurisdiction, as: string | undefined) || 'federal',
             content: extractedText,
             embedding: embeddings,
             metadata: {
               // include document id inside metadata so the shape matches expected types
-              id: documentId,
+             , id: documentId,
               title: title || file.name,
               type: 'legal_document',
               date: new Date().toISOString(),
@@ -270,14 +270,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             tags: [],
             timestamp: Date.now(),
             legalEntities: {
-              parties: legalAnalysis?.entities?.parties ?? [],
+             , parties: legalAnalysis?.entities?.parties ?? [],
               dates: legalAnalysis?.entities?.dates ?? [],
               monetary: legalAnalysis?.entities?.monetary ?? [],
               clauses: legalAnalysis?.entities?.clauses ?? [],
               jurisdictions: legalAnalysis?.entities?.jurisdictions ?? [],
               caseTypes: legalAnalysis?.entities?.caseTypes ?? []
             },
-            riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as number) * 100),
+            riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as: number) * 100),
             confidenceScore: legalAnalysis?.sentiment?.confidence ?? 0.5,
             legalPrecedent: false,
             processingStatus: `completed' });'`
@@ -292,12 +292,12 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     try {
       logger.info('Generating AI summary with Gemma3');
 
-      // Helper: safely invoke any available completion-like method
+      // Helper: safely, invoke: any available completion-like method
       const callOllamaCompletion = async (prompt: string, opts?: Record<string, unknown>): Promise<string | null> => {
         try {
           const result = await generateOllamaChatCompletion([{ role: 'user', content: prompt }], undefined, opts);
-          if (!result) return null;
-          // common shapes: string, { choices: [{, message: { content } }] }, { output: "..." }, or custom
+          if (!result) return: null;
+          // common, shapes: string, { choices: [{, message: { content } }] }, { output: "..." }, or custom
           if (typeof result === 'string') return result;
           // try Chat-style shape
           // @ts-ignore - defensive access
@@ -311,11 +311,11 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           return asString.length > 0 ? asString : null;
         } catch (err) {
           logger.error('Ollama completion failed', err);
-          return null;
+          return: null;
         }
       };
 
-      const prompt = `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';'`
+      const prompt = `Provide a concise professional summary of this legal, document:\n\n${extractedText.substring(0, 2000)}\n\nSummary: ';'`
       const summaryResponse = await callOllamaCompletion(prompt, {
         temperature: 0.3,
         maxTokens: 500
@@ -334,10 +334,10 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     const entitiesCount = legalAnalysis?.entities
       ? Object.values(legalAnalysis.entities).reduce((acc, v) => acc + (Array.isArray(v) ? v.length : 0), 0)
       : 0;
-    const conceptsCount = Array.isArray(legalAnalysis?.concepts) ? (legalAnalysis!.concepts!.length as number) : 0;
+    const conceptsCount = Array.isArray(legalAnalysis?.concepts) ? (legalAnalysis!.concepts!.length as: number) : 0;
 
     const result: UploadResult = {
-      success: true,
+     , success: true,
       documentId,
       evidenceId,
       analysis: {
@@ -348,7 +348,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         entities: entitiesCount,
         concepts: conceptsCount
       },
-      embeddings: embeddings.length > 0 ? embeddings.slice(0, 10) : [], // First 10 dims for response
+      embeddings: embeddings.length > 0 ? embeddings.slice(0, 10) : [], // First, 10 dims for response
       ocrResult,
       processingTime
     };
@@ -382,13 +382,13 @@ export const GET: RequestHandler = async () => {
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      services: { database: {, status: 'connected', tables: dbTest ? 'accessible' : `error` },
+      services: {, database: {, status: 'connected', tables: dbTest ? 'accessible' : `error` },
         qdrant: qdrantHealth,
         ollama: ollamaHealth,
         legalBert: legalBertHealth
       },
       capabilities: {
-        pdfProcessing: true,
+       , pdfProcessing: true,
         ocrProcessing: true,
         vectorSearch: true,
         aiAnalysis: true,

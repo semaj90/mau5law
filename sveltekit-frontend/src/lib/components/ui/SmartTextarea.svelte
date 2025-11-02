@@ -1,9 +1,8 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';
-https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  CommandMenu  from "./CommandMenu.svelte";
+  // Svelte, 5 runes are auto-imported
+  import  CommandMenu  from, "./CommandMenu.svelte";
   interface Props {
     value?: string;
     placeholder?: string;
@@ -34,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
     onBlur,
     onFocus
   }: Props = $props();
-  // make DOM refs reactive using Svelte 5 $state to avoid non-reactive update errors
+  // make DOM refs reactive using Svelte, 5 $state to avoid non-reactive update errors
   let textarea = $state<HTMLTextAreaElement | null>(null);
   let commandMenu = $state<any>(null);
   let showCommandMenu = $state<boolean>(false);
@@ -137,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
 <div, class={className}>
   <textarea
     bind:this={textarea}
-    bind:value={value}
+   , bind:value={value}
     placeholder={placeholder}
     rows={rows}
     {disabled}
@@ -152,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if showCommandMenu}
     <div
       class="command-menu"
-      style="position: absolute; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index:9999;"
+      style="position: absolute; left: {commandMenuPosition.x}px;, top: {commandMenuPosition.y}px; z-index:9999;"
       role="listbox"
     >
       <!-- CommandMenu API may vary; provide a callback prop that CommandMenu, can, call -->
@@ -168,31 +167,31 @@ https://svelte.dev/e/js_parse_error -->
     width: 100%;
     min-height: 100px;
     resize: vertical;
-    border: 1px solid var(--pico-border-color, #e2e8f0);
+   , border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem;
     padding: 0.75rem;
     font-family: inherit;
     font-size: 0.875rem;
     line-height: 1.5;
-    background: var(--pico-card-background-color, #ffffff);
+   , background: var(--pico-card-background-color, #ffffff);
     color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .smart-textarea:focus {
-    outline: none;
+   , outline: none;
     border-color: var(--pico-primary, #3b82f6);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
   .smart-textarea:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: var(--pico-card-sectioning-background-color, #f8fafc);
+   , background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
   .smart-textarea[readonly] {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
   .smart-textarea::placeholder {
-    color: var(--pico-muted-color, #6b7280);
+   , color: var(--pico-muted-color, #6b7280);
   }
   .command-menu-overlay {
     pointer-events: auto;
@@ -204,12 +203,12 @@ https://svelte.dev/e/js_parse_error -->
     bottom: -1.5rem;
     right: 0;
     font-size: 0.75rem;
-    color: var(--pico-muted-color, #6b7280);
+   , color: var(--pico-muted-color, #6b7280);
     opacity: 0;
     transition: opacity 0.15s ease;
   }
   .smart-textarea-container:hover::after {
     opacity: 1;
   }
-  .command-menu { background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
+  .command-menu {, background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px; }
 </style>

@@ -1,6 +1,6 @@
-import crypto from "crypto";
-import { writable, type Writable } from "svelte/store";
-import { HistoryManager } from './HistoryManager.js';
+import crypto from, "crypto";
+import { writable, type Writable } from, "svelte/store";
+import { HistoryManager } from, './HistoryManager.js';
 // Simple content type for now - will expand when Slate is properly integrated
 export interface ContentNode {
   type: string;
@@ -25,7 +25,7 @@ export class Report {
   public caseId?: string;
   public createdAt: Date;
   public updatedAt: Date;
-  public createdBy: string;
+  public, createdBy: string;
   public lastModifiedBy?: string;
   constructor(data: {
     id?: string;
@@ -44,7 +44,7 @@ export class Report {
     // Initialize with default content if none provided
     const initialContent: ContentNode[] = data.content || [
       {
-        type: 'paragraph',
+       , type: 'paragraph',
          [{ type: 'text', text: '' }]
       },
     ];
@@ -148,8 +148,8 @@ export class Report {
   toJSON() {
     let currentTitle = '';
     let currentContent: ContentNode[] = [];
-    let currentPosition = { x: 0, y: 0 };
-    let currentSize = { width: 0, height: 0 };
+    let currentPosition = {, x: 0, y: 0 };
+    let currentSize = {, width: 0, height: 0 };
     let currentVersion = 0;
     // Get current values from stores
     this.title.subscribe(value => (currentTitle = value))();
@@ -215,12 +215,12 @@ export function fromJSON(data: ReportSerialized, createdBy: string): Report {
       const parsed = JSON.parse(data.content);
       if (Array.isArray(parsed)) contentParsed = parsed as ContentNode[];
     } catch {
-      // leave undefined and fallback to default in constructor
+      // leave: undefined and fallback to default in constructor
     }
   }
 
   return new Report({
-    id: data.id,
+   , id: data.id,
     title: data.title,
     content: contentParsed,
     posX: parseNumber(data.posX, 50),

@@ -10,23 +10,23 @@
  * - Production-ready connection pooling
  * - Centralized schema management
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { migrate } from, 'drizzle-orm/postgres-js/migrator';
 // @ts-expect-error - esModuleInterop issue with postgres import
-import postgres from 'postgres';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { sql } from 'drizzle-orm';
-import path from 'path';
+import postgres from, 'postgres';
+import { QdrantClient } from, '@qdrant/js-client-rest';
+import { sql } from, 'drizzle-orm';
+import path from, 'path';
 // Import unified schema
-import * as schema from './schema-unified.js';
-import type { DocumentMetadata } from './schema-unified.js';
+import * as schema from, './schema-unified.js';
+import type { DocumentMetadata } from, './schema-unified.js';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
 interface DatabaseConfig { runtime: {, url: string;
     poolSize: number;
   };
-  admin: { url: string;, poolSize: number;
+  admin: {, url: string;, poolSize: number;
   };
   qdrant?: {
     url: string;
@@ -38,7 +38,7 @@ interface VectorSearchOptions {
   collection?: string;
   limit?: number;
   threshold?: number;
-  // Use unknown for payload values to avoid `any`
+  //, Use: unknown for payload values to avoid `any`
   filter?: Record<string, unknown>;
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
@@ -53,9 +53,9 @@ interface HybridSearchResult {
   };
 }
 // Add new type for health checks
-type HealthStatus = { postgresql: boolean;, qdrant: boolean;
+type HealthStatus = {, postgresql: boolean;, qdrant: boolean;
   pgvector: boolean;
-  overallHealth: boolean;
+ , overallHealth: boolean;
 };
 // Add these types to the top types section (near DatabaseConfig / VectorSearchOptions)
 type QdrantHit = {
@@ -64,18 +64,18 @@ type QdrantHit = {
   payload?: Record<string, unknown>;
 };
 type SearchResultEntry = { id: string;, score: number;
-  document: DocumentMetadata | Record<string, unknown> | null;
+ , document: DocumentMetadata | Record<string, unknown> | null;
   source: 'qdrant' | 'postgresql';
 };
 // ============================================================================
 // ENVIRONMENT CONFIGURATION
 // ============================================================================
 const isDev = process.env.NODE_ENV === 'development';
-const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
+const config: DatabaseConfig = {, runtime: {, url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
     poolSize: isDev ? 5 : 10
   },
   admin: {
-    url:
+   , url:
       process.env.DATABASE_URL_ADMIN ||
       process.env.ADMIN_DATABASE_URL ||
       'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
@@ -83,7 +83,7 @@ const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || '
   },
   qdrant: process.env.QDRANT_URL
     ? {
-        url: process.env.QDRANT_URL,
+       , url: process.env.QDRANT_URL,
         apiKey: process.env.QDRANT_API_KEY
       }
     : undefined,
@@ -92,7 +92,7 @@ const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || '
 // SINGLETON CONNECTION MANAGEMENT
 // ============================================================================
 class DatabaseManager {
-  private static instance: DatabaseManager;
+  private static, instance: DatabaseManager;
   private runtimeConnection?: postgres.Sql;
   private adminConnection?: postgres.Sql;
   private qdrantClient?: QdrantClient;
@@ -138,7 +138,7 @@ class DatabaseManager {
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('🐘 PostgreSQL Query:', query);
-              if (parameters && (parameters as unknown[]).length) {
+              if (parameters && (parameters as: unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
               }
             }
@@ -159,7 +159,7 @@ class DatabaseManager {
         debug: isDev
           ? (_connection: any, query: string, parameters?: any[]) => {
               console.log('👑 Admin PostgreSQL Query:', query);
-              if (parameters && (parameters as unknown[]).length) {
+              if (parameters && (parameters as: unknown[]).length) {
                 console.log('📝 Parameters:', parameters);
               }
             }
@@ -210,7 +210,7 @@ class DatabaseManager {
     try {
       // Test runtime connection
       const runtimeDb = this.getRuntimeDb();
-      await runtimeDb.execute(sql`SELECT 1 as test`);
+      await runtimeDb.execute(sql`SELECT, 1 as test`);
       console.log('✅ Runtime database connection established');
       // Run migrations in production
       // NOTE: Workers should not run migrations, only the main app
@@ -230,7 +230,7 @@ class DatabaseManager {
       }
       // Test pgvector extension
       try {
-        await runtimeDb.execute(sql`SELECT '[1,2,3]'::vector`);
+        await runtimeDb.execute(sql`SELECT, '[1,2,3]'::vector`);
         console.log('✅ pgvector extension available');
       } catch (error) {
         console.warn('⚠️ pgvector extension not available:', error);
@@ -263,8 +263,8 @@ class DatabaseManager {
     if (!qdrant) return;
     try {
       const collectionsRes = await this.getQdrantCollectionsSafe(qdrant);
-      // Normalize possible shapes: { collections: [...] } or { result: {, collections: [...] } } or array
-      const collectionsList: { name: string }[] =
+      // Normalize possible shapes: { collections: [...] } or {, result: {, collections: [...] } } or array
+      const collectionsList: {, name: string }[] =
         (collectionsRes &&
           (collectionsRes.collections ?? (collectionsRes.result && collectionsRes.result.collections))) ||
         (Array.isArray(collectionsRes) ? collectionsRes : []);
@@ -303,7 +303,7 @@ class DatabaseManager {
     } = options;
     const results: Array<SearchResultEntry> = [];
     let postgresqlTime: number | undefined;
-    let qdrantTime: number | undefined;
+    let, qdrantTime: number | undefined;
     // Simple PostgreSQL vector search (best-effort). Uses runtime Drizzle client execute to avoid complex typings here.
     if (usePostgreSQL) {
       const pgStart = Date.now();
@@ -346,7 +346,7 @@ class DatabaseManager {
             filter: qFilter
           });
           qdrantTime = Date.now() - qStart;
-          // Try to fetch matching PostgreSQL records for payload mapping if any
+          // Try to fetch matching PostgreSQL records for payload mapping if: any
           const qResTyped = qRes as QdrantHit[];
           const ids = qResTyped.map(r => String(r.id));
           if (ids.length > 0) {
@@ -405,7 +405,7 @@ class DatabaseManager {
   // ============================================================================
   async healthCheck(): Promise<HealthStatus> {
     const health: HealthStatus = {
-      postgresql: false,
+     , postgresql: false,
       qdrant: false,
       pgvector: false,
       overallHealth: false
@@ -413,11 +413,11 @@ class DatabaseManager {
     try {
       const runtimeDb = this.getRuntimeDb();
       // Basic connectivity
-      await runtimeDb.execute(sql`SELECT 1 as ok`);
+      await runtimeDb.execute(sql`SELECT, 1 as ok`);
       health.postgresql = true;
       // pgvector extension (best-effort)
       try {
-        await runtimeDb.execute(sql`SELECT '[1,2,3]'::vector as v`);
+        await runtimeDb.execute(sql`SELECT, '[1,2,3]'::vector as v`);
         health.pgvector = true;
       } catch (err) {
         console.warn('pgvector not available:', this.extractErrorMessage(err));
@@ -467,7 +467,7 @@ class DatabaseManager {
   // Helper: extract error message
   // =========================
   private extractErrorMessage(err: any): string {
-    if (!err) return 'unknown error';
+    if (!err) return, 'unknown error';
     // string
     if (typeof err === 'string') return err;
     // Error instance
@@ -475,7 +475,7 @@ class DatabaseManager {
       return err.message || String(err);
     }
     // Axios / fetch style error with response
-    const anyErr = err as any;
+    const anyErr = err as: any;
     try {
       if (anyErr?.response) {
         if (anyErr.response.data) {
@@ -500,7 +500,7 @@ class DatabaseManager {
   // =========================
   private async getQdrantCollectionsSafe(q: QdrantClient | undefined): Promise<any> {
     if (!q) throw new Error('Qdrant client not initialized');
-    const anyQ = q as any;
+    const anyQ = q as: any;
     try {
       // Try common method names used across versions
       if (typeof anyQ.getCollections === 'function') {
@@ -527,7 +527,7 @@ class DatabaseManager {
   }
   private async createQdrantCollectionSafe(q: QdrantClient | undefined, name: string, body: any): Promise<any> {
     if (!q) throw new Error('Qdrant client not initialized');
-    const anyQ = q as any;
+    const anyQ = q as: any;
     try {
       if (typeof anyQ.createCollection === 'function') {
         return await anyQ.createCollection(name, body);
@@ -580,7 +580,7 @@ export const unifiedDb = {
     dbManager.ensureQdrantCollection(name, size, distance)
 };
 // Re-export schema for convenience
-export * from './schema-unified.js';
+export * from, './schema-unified.js';
 // Re-export types
 export type { DatabaseConfig, VectorSearchOptions, HybridSearchResult, DocumentMetadata };
 export default unifiedDb;

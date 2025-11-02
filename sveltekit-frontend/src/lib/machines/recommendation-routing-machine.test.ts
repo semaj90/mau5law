@@ -1,11 +1,11 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Integration Tests for Recommendation Routing Machine
  * Tests XState v5 state machine for recommendation workflow orchestration
  */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createActor } from 'xstate';
-import { recommendationRoutingMachine } from './recommendation-routing-machine';
+import { describe, it, expect, beforeEach, afterEach } from, 'vitest';
+import { createActor } from, 'xstate';
+import { recommendationRoutingMachine } from, './recommendation-routing-machine';
 describe('Recommendation Routing Machine', () => {
   let actor: ReturnType<typeof, createActor<typeof, recommendationRoutingMachine>>;
   beforeEach(() => {
@@ -89,7 +89,7 @@ describe('Recommendation Routing Machine', () => {
       expect(snapshot.context.currentDocument?.id).toBe('doc-789');
       expect(snapshot.context.currentDocument?.type).toBe('evidence');
     });
-    it('should set document confidence to 0 initially', () => {
+    it('should set document confidence to, 0 initially', () => {
       actor.send({
         type: 'ANALYZE_DOCUMENT',
         documentId: 'doc-789',
@@ -196,7 +196,7 @@ describe('Recommendation Routing Machine', () => {
     });
   });
   describe('Cache Context', () => {
-    it('should initialize cache with empty keys and 0 hit rate', () => {
+    it('should initialize cache with empty keys and, 0 hit rate', () => {
       const snapshot = actor.getSnapshot();
       const { cache } = snapshot.context;
       expect(cache.redisKeys).toEqual([]);

@@ -1,6 +1,6 @@
 // AI Agentic Streaming with Ollama + TensorRT Fallback
 // Token-level streaming for real-time evidence analysis
-import type { AIResponse, ChatMessage } from '$lib/types/evidence';
+import type { AIResponse, ChatMessage } from, '$lib/types/evidence';
 // Replace broken TENSORRT_BASE assignment with a proper env fallback
 // (used by streamFromTensorRT)
 const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost:8000';
@@ -10,12 +10,12 @@ interface OllamaStreamResponse { model: string;, created_at: string;
   response: string;
   done: boolean;
 }
-interface TensorRTRequest { model_name: string;, inputs: Array<{ name: string; shape: number[]; datatype: string; data: string[] }>;
+interface TensorRTRequest {, model_name: string;, inputs: Array<{ name: string; shape: number[]; datatype: string; data: string[] }>;
   outputs: Array<{ name: string }>;
 }
 // Main streaming function with Ollama primary + TensorRT fallback
 export async function runAIAgentStream(
-  prompt: string,
+ , prompt: string,
   onChunk: StreamCallback,
   options?: {
     model?: string;
@@ -61,7 +61,7 @@ async function streamFromOllama(
       method: 'POST',
       headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
-        model: options?.model || MODEL_NAME,
+       , model: options?.model || MODEL_NAME,
         prompt: options?.systemPrompt ? `${options.systemPrompt}\n\nUser: ${prompt}` : prompt,
         stream: true,
         options: {
@@ -164,31 +164,31 @@ async function streamFromTensorRT(
 export async function executeAITool(toolName: string, params: Record<string, unknown>): Promise<unknown> {
   console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
   switch (toolName) {
-    case 'web_search':
-      return await webSearch(params.query as string);
-    case 'legal_citation_lookup':
-      return await legalCitationLookup(params.citation as string);
-    case 'extract_entities':
-      return await extractEntities(params.text as string);
+    case, 'web_search':
+      return await webSearch(params.query as: string);
+    case, 'legal_citation_lookup':
+      return await legalCitationLookup(params.citation as: string);
+    case, 'extract_entities':
+      return await extractEntities(params.text as: string);
     default:
-      throw new Error(`Unknown; tool: ${toolName}`);
+      throw new Error(`Unknown;, tool: ${toolName}`);
   }
 }
 // Stub: Web search tool
 async function webSearch(query: string): Promise<{ results: string[] }> {
-  console.log('[AI] 🔍 Web search:', query);
+  console.log('[AI] 🔍 Web, search:', query);
   // TODO: Integrate with actual search API (DuckDuckGo, Brave, etc.)
   return { results: [`Search result, for: ${query}`] };
 }
-// Stub: Legal citation lookup
+//, Stub: Legal citation lookup
 async function legalCitationLookup(citation: string): Promise<{ case, string; summary: string }> {
-  console.log('[AI] ⚖️ Legal citation lookup: `, citation);'`
+  console.log('[AI] ⚖️ Legal citation, lookup: `, citation);'`
   // TODO: Integrate with legal database (CourtListener, Justia, etc.)
   return {
     case citation,
     summary: `Legal case summary for ${citation}` };
 }
-// Stub: Entity extraction
+//, Stub: Entity extraction
 async function extractEntities(text: string): Promise<{ entities: string[] }> {
   console.log('[AI] 🏷️ Extracting entities from text...');
   // TODO: Use NER model or regex patterns
@@ -201,7 +201,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     method: 'POST',
     headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
-      model: 'nomic-embed-text',
+     , model: 'nomic-embed-text',
       prompt: text
     })
   });
@@ -209,7 +209,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     throw new Error(`Embedding generation failed: ${response.status}`);
   }
   const result = await response.json();
-  return result.embedding as number[];
+  return result.embedding as: number[];
 }
 // Chat completion (non-streaming)
 export async function chatCompletion(
@@ -221,14 +221,14 @@ export async function chatCompletion(
     method: 'POST',
     headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({
-      model: options?.model || MODEL_NAME,
+     , model: options?.model || MODEL_NAME,
       messages: messages.map(msg => ({
        , role: msg.role,
         content: msg.content
       })),
       stream: false,
       options: {
-        temperature: options?.temperature || 0.7
+       , temperature: options?.temperature || 0.7
       }
     })
   });

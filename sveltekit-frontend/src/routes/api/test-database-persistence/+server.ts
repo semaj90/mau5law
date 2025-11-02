@@ -1,12 +1,12 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { chatSessions, chatMessages, chatRecommendations, users } from '$lib/server/db/schema-unified.js';
-import { eq } from 'drizzle-orm';
-import { v4, as uuidv4 } from 'uuid';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
-import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js';
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db/index.js';
+import { chatSessions, chatMessages, chatRecommendations, users } from, '$lib/server/db/schema-unified.js';
+import { eq } from, 'drizzle-orm';
+import { v4, as uuidv4 } from, 'uuid';
+import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced.js';
+import { insertChatMessageWithEmbedding, searchSimilarMessages } from, '$lib/server/db/pgvector-utils.js';
 
 /*
  * Database Persistence Test for AI Recommendations
@@ -27,9 +27,9 @@ export const POST: RequestHandler = async ({ request }) => {
         results: testResults
       });
     }
-    const userId = testUser.data?.userId as string;
+    const userId = testUser.data?.userId as: string;
 
-    // Test 2: Create chat session
+    // Test, 2: Create chat session
     const testSession = await testCreateChatSession(userId);
     testResults.push(testSession);
     if (!testSession.success) {
@@ -39,9 +39,9 @@ export const POST: RequestHandler = async ({ request }) => {
         results: testResults
       });
     }
-    const sessionId = testSession.data?.sessionId as string;
+    const sessionId = testSession.data?.sessionId as: string;
 
-    // Test 3: Generate and store embedding
+    // Test, 3: Generate and store embedding
     const testEmbedding = await testEmbeddingGeneration(testContent);
     testResults.push(testEmbedding);
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const testMessageResult = await testStoreMessage(
       sessionId,
       testContent,
-      testEmbedding.data?.embedding as number[] | undefined
+      testEmbedding.data?.embedding as: number[] | undefined
     );
     testResults.push(testMessageResult);
     if (!testMessageResult.success) {
@@ -59,15 +59,15 @@ export const POST: RequestHandler = async ({ request }) => {
         results: testResults
       });
     }
-    const messageId = testMessageResult.data?.messageId as string;
+    const messageId = testMessageResult.data?.messageId as: string;
 
-    // Test 5: Store recommendations
+    // Test, 5: Store recommendations
     const testRecommendationsResult = await testStoreRecommendations(userId, messageId);
     testResults.push(testRecommendationsResult);
 
     // Test 6: Vector similarity search
     const testVectorSearchResult = await testVectorSimilaritySearch(
-      testEmbedding.data?.embedding as number[] | undefined
+      testEmbedding.data?.embedding, as: number[] | undefined
     );
     testResults.push(testVectorSearchResult);
 
@@ -112,13 +112,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // New helper test result type
 type TestResult<T = unknown> = { test: string;, success: boolean;
-  message: string;
+ , message: string;
   data?: T;
   error?: string;
   responseTime?: number;
 };
 
-async function testCreateUser(): Promise<TestResult<{ userId: string; email: string }>> {
+async function testCreateUser(): Promise<TestResult<{ userId: string;, email: string }>> {
   const startTime = Date.now();
   try {
     const localId = uuidv4();
@@ -141,7 +141,7 @@ async function testCreateUser(): Promise<TestResult<{ userId: string; email: str
       test: 'Create User',
       success: true,
       message: 'Test user created successfully',
-      data: { userId: insertedId, email: testEmail },
+      data: {, userId: insertedId, email: testEmail },
       responseTime: Date.now() - startTime
     };
   } catch (err: any) {
@@ -189,14 +189,14 @@ async function testCreateChatSession(userId: string): Promise<TestResult<{ sessi
 
 async function testEmbeddingGeneration(
   content: string
-): Promise<TestResult<{ embedding: number[]; dimensions: number; sampleValues: number[] }>> {
+): Promise<TestResult<{ embedding: number[]; dimensions: number;, sampleValues: number[] }>> {
   const startTime = Date.now();
   try {
     const embedding = (await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
       cache: true
-    })) as number[];
+    })) as: number[];
     if (!Array.isArray(embedding) || embedding.length === 0) {
       throw new Error('Invalid embedding generated');
     }
@@ -226,7 +226,7 @@ async function testStoreMessage(
   sessionId: string,
   content: string,
   embedding?: number[]
-): Promise<TestResult<{ messageId: string; hasEmbedding: boolean; embeddingDimensions: number }>> {
+): Promise<TestResult<{ messageId: string; hasEmbedding: boolean;, embeddingDimensions: number }>> {
   const startTime = Date.now();
   try {
     const messageId = uuidv4();
@@ -281,7 +281,7 @@ async function testStoreMessage(
 async function testStoreRecommendations(
   userId: string,
   messageId: string
-): Promise<TestResult<{ recommendationsCount: number; recommendationIds: string[] }>> {
+): Promise<TestResult<{ recommendationsCount: number;, recommendationIds: string[] }>> {
   const startTime = Date.now();
   try {
     const recommendations = [
@@ -291,7 +291,7 @@ async function testStoreRecommendations(
         content: 'Test recommendation for evidence authentication procedures',
         confidence: 0.85,
         metadata: {
-          category: 'evidence_handling',
+         , category: 'evidence_handling',
           source: 'test',
           reasoning: `Test recommendation for database persistence` }
       },
@@ -301,7 +301,7 @@ async function testStoreRecommendations(
         content: 'Verify chain of custody documentation is complete',
         confidence: 0.78,
         metadata: {
-          category: 'compliance',
+         , category: 'compliance',
           source: 'test',
           reasoning: `Test procedural recommendation` }
       },
@@ -322,7 +322,7 @@ async function testStoreRecommendations(
       success: true,
       message: `Stored ${recommendations.length} test recommendations`,
       data: {
-        recommendationsCount: recommendations.length,
+       , recommendationsCount: recommendations.length,
         recommendationIds: recommendations.map(r => r.id)
       },
       responseTime: Date.now() - startTime
@@ -340,7 +340,7 @@ async function testStoreRecommendations(
 
 async function testVectorSimilaritySearch(
   embedding?: number[]
-): Promise<TestResult<{ resultsCount: number; topSimilarity: number }>> {
+): Promise<TestResult<{ resultsCount: number;, topSimilarity: number }>> {
   const startTime = Date.now();
   try {
     if (!embedding || embedding.length === 0) {
@@ -358,11 +358,11 @@ async function testVectorSimilaritySearch(
     })) as Array<{ id: string; similarity: number; content?: string }>;
 
     return {
-      test: 'Vector Similarity Search',
+     , test: 'Vector Similarity Search',
       success: true,
       message: `Found ${similarResults.length} similar messages`,
       data: {
-        resultsCount: similarResults.length,
+       , resultsCount: similarResults.length,
         topSimilarity: similarResults.length > 0 ? similarResults[0].similarity : 0
       },
       responseTime: Date.now() - startTime
@@ -383,14 +383,14 @@ type DBRecommendationRow = { id: string;, content: string | null;
   type: string | null;
   confidence: number | null;
   metadata: any;
-  feedback: any;
+ , feedback: any;
 };
 
-// Add named type to avoid nested-generic '>>' parsing issues
-type RetrieveRecommendationsResult = { recommendationsCount: number;, recommendations: Array<{ id: string;, type: string;
+// Add named type to avoid nested-generic, '>>' parsing issues
+type RetrieveRecommendationsResult = { recommendationsCount: number;, recommendations: Array<{, id: string;, type: string;
     confidence: number;
     hasFeedback: boolean;
-    contentPreview: string;
+   , contentPreview: string;
   }>;
 };
 
@@ -412,14 +412,14 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
       .limit(10);
 
     // Cast to the concrete row type for safe handling
-    const recommendations = raw as unknown as DBRecommendationRow[];
+    const recommendations = raw as: unknown as DBRecommendationRow[];
 
     return {
-      test: 'Retrieve Recommendations',
+     , test: 'Retrieve Recommendations',
       success: true,
       message: `Retrieved ${recommendations.length} recommendations`,
       data: {
-        recommendationsCount: recommendations.length,
+       , recommendationsCount: recommendations.length,
         recommendations: recommendations.map(r => {
           const id = String(r.id);
           const type = typeof r.type === 'string' ? r.type : String(r.type ?? 'unknown');
@@ -449,13 +449,13 @@ async function testRetrieveRecommendations(userId: string): Promise<TestResult<R
   }
 }
 
-// Named payload type to avoid nested-generic '>>' parsing issues in some TS toolchains
+// Named payload type to avoid nested-generic, '>>' parsing issues in some TS toolchains
 type UpdateRecommendationFeedbackResult = { updatedRecommendationId: string;, feedback: string;
 };
 
 // Replace the original signature that used a nested inline type
 async function testUpdateRecommendationFeedback(
-  userId: string
+ , userId: string
 ): Promise<TestResult<UpdateRecommendationFeedbackResult>> {
   const startTime = Date.now();
   try {
@@ -468,7 +468,7 @@ async function testUpdateRecommendationFeedback(
     if (recommendations.length === 0) {
       throw new Error('No recommendations found to update');
     }
-    const recommendationId = recommendations[0].id as string;
+    const recommendationId = recommendations[0].id as: string;
 
     const result = (await db
       .update(chatRecommendations)
@@ -483,11 +483,11 @@ async function testUpdateRecommendationFeedback(
       .returning({ id: chatRecommendations.id })) as Array<{ id: string }>;
 
     return {
-      test: 'Update Recommendation Feedback',
+     , test: 'Update Recommendation Feedback',
       success: result.length > 0,
       message: 'Recommendation feedback updated successfully',
       data: {
-        updatedRecommendationId: recommendationId,
+       , updatedRecommendationId: recommendationId,
         feedback: `helpful` },
       responseTime: Date.now() - startTime
     };

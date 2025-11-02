@@ -1,24 +1,24 @@
-import { json } from '@sveltejs/kit';
-import { db, sql } from '$lib/server/db';
-import { cases, evidence, legalDocuments, users } from '$lib/server/db';
-import { helpers } from '$lib/server/db';
-import { vectorOps } from '$lib/server/db/enhanced-vector-operations';
-import type { CommandSearchRequest, CommandSearchResponse } from '$lib/types/api';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db, sql } from, '$lib/server/db';
+import { cases, evidence, legalDocuments, users } from, '$lib/server/db';
+import { helpers } from, '$lib/server/db';
+import { vectorOps } from, '$lib/server/db/enhanced-vector-operations';
+import type { CommandSearchRequest, CommandSearchResponse } from, '$lib/types/api';
+import type { RequestHandler } from, './$types.js';
 
 type CaseResult = typeof cases.$inferSelect & { similarity: number; content?: string };
-type EvidenceResult = typeof evidence.$inferSelect & { caseTitle: string | null;, similarity: number;
+type EvidenceResult = typeof evidence.$inferSelect & {, caseTitle: string | null;, similarity: number;
   content?: string;
 };
 type DocumentResult = typeof legalDocuments.$inferSelect & { similarity: number };
 type PersonResult = typeof users.$inferSelect & { similarity: number; content?: string };
 
-interface SearchResults { cases: CaseResult[];, evidence: EvidenceResult[];
+interface SearchResults {, cases: CaseResult[];, evidence: EvidenceResult[];
   documents: DocumentResult[];
   people: PersonResult[];
 }
 
-interface VectorSearchResult { id: string;, content: string;
+interface VectorSearchResult {, id: string;, content: string;
   similarity: number;
   metadata: {
     type: keyof SearchResults;
@@ -26,7 +26,7 @@ interface VectorSearchResult { id: string;, content: string;
   };
 }
 
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     const user = locals.user;
     if (!user) {
@@ -47,14 +47,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json(
         {
           success: false,
-          error: 'Query must be at least 2 characters long'
+          error: 'Query must be at least, 2 characters long'
         },
         { status: 400 }
       );
     }
     const searchQuery = query.trim();
     const results: SearchResults = {
-      cases: [],
+     , cases: [],
       evidence: [],
       documents: [],
       people: []
@@ -195,17 +195,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 similarity: result.similarity
               };
               switch (type) {
-                case 'cases':
-                  results.cases.push(newResult as unknown as CaseResult);
+                case, 'cases':
+                  results.cases.push(newResult as: unknown as CaseResult);
                   break;
-                case 'evidence':
-                  results.evidence.push(newResult as unknown as EvidenceResult);
+                case, 'evidence':
+                  results.evidence.push(newResult as: unknown as EvidenceResult);
                   break;
-                case 'documents':
-                  results.documents.push(newResult as unknown as DocumentResult);
+                case, 'documents':
+                  results.documents.push(newResult as: unknown as DocumentResult);
                   break;
-                case 'people':
-                  results.people.push(newResult as unknown as PersonResult);
+                case, 'people':
+                  results.people.push(newResult as: unknown as PersonResult);
                   break;
               }
             }
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       resultArray.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
     });
     const response: CommandSearchResponse = {
-      success: true,
+     , success: true,
       results,
       meta: {
         totalResults,

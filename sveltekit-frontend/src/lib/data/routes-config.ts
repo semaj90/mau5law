@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { SvelteComponent } from 'svelte'; // Add this import
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { SvelteComponent } from, 'svelte'; // Add this import
 /**
  * Complete Routes Configuration for YoRHa Navigation
  * Comprehensive mapping of all available demo routes and features
@@ -17,7 +17,7 @@ export interface RouteDefinition { id: string;, label: string;
 export const allRoutes: RouteDefinition[] = [
   // === MAIN OPERATIONS ===
   {
-    id: 'command-center',
+   , id: 'command-center',
     label: 'Command Center',
     route: '/',
     icon: '⚡',
@@ -319,10 +319,10 @@ export const allRoutes: RouteDefinition[] = [
   },
   {
     id: 'demo-phase5',
-    label: 'Phase 5 Demo',
+    label: 'Phase, 5 Demo',
     route: '/demo/phase5',
     icon: '🚀',
-    description: 'Phase 5 development milestone demonstration',
+    description: 'Phase, 5 development milestone demonstration',
     category: 'demo',
     status: 'active',
     tags: ['phase5', 'milestone', 'demo']
@@ -372,7 +372,7 @@ export const allRoutes: RouteDefinition[] = [
     label: 'UnoCSS + Svelte 5',
     route: '/demo/unocss-svelte5',
     icon: '🎨',
-    description: 'UnoCSS styling with Svelte 5 features',
+    description: 'UnoCSS styling with Svelte, 5 features',
     category: 'demo',
     status: 'active',
     tags: ['unocss', 'svelte5', 'styling']
@@ -3017,31 +3017,31 @@ export const routeCategories = { main: {, label: 'CORE OPERATIONS',
     color: '#ffbf00'
   },
   demo: {
-    label: 'AI DEMONSTRATIONS',
+   , label: 'AI DEMONSTRATIONS',
     icon: '🎯',
     description: 'AI capabilities and technology showcases',
     color: '#00ff41'
   },
   ai: {
-    label: 'AI SYSTEMS',
+   , label: 'AI SYSTEMS',
     icon: '🤖',
     description: 'Artificial intelligence tools and interfaces',
     color: '#ff6b6b'
   },
   legal: {
-    label: 'LEGAL OPERATIONS',
+   , label: 'LEGAL OPERATIONS',
     icon: '⚖️',
     description: 'Legal-specific tools and workflows',
     color: '#4ecdc4'
   },
   dev: {
-    label: 'DEVELOPMENT TOOLS',
+   , label: 'DEVELOPMENT TOOLS',
     icon: '🔧',
     description: 'Development and debugging utilities',
     color: '#a78bfa'
   },
   admin: {
-    label: 'ADMINISTRATION',
+   , label: 'ADMINISTRATION',
     icon: '⚙️',
     description: 'System administration and configuration',
     color: '#fb7185'
@@ -3049,7 +3049,7 @@ export const routeCategories = { main: {, label: 'CORE OPERATIONS',
 };
 // Statistics for dashboard
 export const routeStats = {
-  total: allRoutes.length,
+ , total: allRoutes.length,
   active: getActiveRoutes().length,
   experimental: allRoutes.filter(route => route.status === 'experimental').length,
   beta: allRoutes.filter(route => route.status === 'beta').length,
@@ -3071,7 +3071,7 @@ export interface DynamicRouteConfig {
 export interface GeneratedRoute { path: string;, handler: typeof SvelteComponent | undefined;
   config: DynamicRouteConfig;
 }
-export interface NavigationGuard { name: string;, condition: (route: RouteDefinition) => boolean;
+export interface NavigationGuard {, name: string;, condition: (route: RouteDefinition) => boolean;
 }
 // Route registry for dynamic route management
 export const routeRegistry = new Map<string, RouteDefinition>();

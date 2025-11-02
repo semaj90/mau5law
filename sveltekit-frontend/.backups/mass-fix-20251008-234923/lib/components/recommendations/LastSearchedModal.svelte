@@ -206,7 +206,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       </div>
       <!-- AI Suggestions Section -->
       {#if aiSuggestions.length > 0}
-        <div class="ai-suggestions" transition:slide={{ duration: 300 }}>
+        <div class="ai-suggestions" use:slide={{ duration: 300 }}>
           <h4>🤖 AI Suggestions</h4>
           <div class="suggestions-grid">
             {#each aiSuggestions as suggestion}
@@ -238,7 +238,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         </div>
       {:else}
         {#each filteredSearches as searchItem (searchItem.id)}
-          <div class="search-item" transition:slide={{ duration: 200, easing: cubicOut }}>
+          <div class="search-item" use:slide={{ duration: 200, easing: cubicOut }}>
             <div
               class="search-main"
               onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
@@ -267,7 +267,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               </div>
               <!-- Expanded Details -->
               {#if selectedSearch?.id === searchItem.id}
-                <div class="search-details" transition:slide={{ duration: 300 }}>
+                <div class="search-details" use:slide={{ duration: 300 }}>
                   <!-- Filters Used -->
                   {#if searchItem.filters && Object.keys(searchItem.filters).length > 0}
                     <div class="filters-section">

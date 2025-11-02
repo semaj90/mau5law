@@ -2,30 +2,30 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-  // Svelte 5 runes are auto-imported
+import type { User } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
-  import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte';
+  import { onMount } from, 'svelte';
+  import Button from, '$lib/components/ui/enhanced-bits.svelte';
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
-  import { Badge } from '$lib/components/ui/badge/index.js';
-  import { Separator } from '$lib/components/ui/separator/index.js';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs/index.js';
-  import ModernAuthForm from '$lib/components/auth/ModernAuthForm.svelte';
-  import AIAssistantChat from '$lib/components/ai/AIAssistantChat.svelte';
+   from, "$lib/components/ui/enhanced-bits.svelte";
+  import { Badge } from, '$lib/components/ui/badge/index.js';
+  import { Separator } from, '$lib/components/ui/separator/index.js';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from, '$lib/components/ui/tabs/index.js';
+  import ModernAuthForm from, '$lib/components/auth/ModernAuthForm.svelte';
+  import AIAssistantChat from, '$lib/components/ai/AIAssistantChat.svelte';
   // Import all the integrated stores and managers
   import {
     authService,
     isAuthenticated,
     user,
     isLoading as authLoading
-  } from '$lib/stores/auth.svelte.js';
+  } from, '$lib/stores/auth.svelte.js';
   import {
     sessionManager,
     isSessionActive,
@@ -33,23 +33,23 @@ import type { User } from '$lib/types';
     sessionHealth,
     sessionAnalytics,
     securityLevel
-  } from '$lib/stores/sessionManager.svelte.js';
+  } from, '$lib/stores/sessionManager.svelte.js';
   import {
     aiAssistantManager,
     isAIProcessing,
     clusterHealth,
     aiUsage,
     conversationHistory
-  } from '$lib/stores/aiAssistant.svelte.js';
-  import { productionServiceClient } from '$lib/services/productionServiceClient.js';
-  // Component state using Svelte 5 runes
+  } from, '$lib/stores/aiAssistant.svelte.js';
+  import { productionServiceClient } from, '$lib/services/productionServiceClient.js';
+  // Component state using Svelte, 5 runes
   let showAuthDialog = $state<boolean>(false);
   let systemStatus = $state({
     authentication: false,
     sessionManagement: false
     aiAssistant: false
     productionServices: false
-    overallHealth: 'unknown' as: 'healthy' | 'partial' | 'down' | 'unknown';
+    overallHealth: 'unknown', as: 'healthy' | 'partial' | 'down' | 'unknown';
   });
   let serviceMetrics = $state({
     lastUpdate: new Date());
@@ -73,9 +73,9 @@ import type { User } from '$lib/types';
 // Initialize system health monitoring
     await checkSystemHealth();
     // Set up periodic health checks
-    const healthCheckInterval = setInterval(checkSystemHealth, 10000); // Every 10 seconds
+    const healthCheckInterval = setInterval(checkSystemHealth, 10000); // Every, 10 seconds
     // Update metrics periodically
-    const metricsInterval = setInterval(updateMetrics, 5000); // Every 5 seconds
+    const metricsInterval = setInterval(updateMetrics, 5000); // Every, 5 seconds
     // Cleanup on unmount
     return () => {
       clearInterval(healthCheckInterval);
@@ -167,7 +167,7 @@ import type { User } from '$lib/types';
   async function demoAIInteraction(): Promise<any> {
     try {
       await aiAssistantManager.sendMessage(
-        "Analyze the integration of XState machines with Svelte 5 runes for legal AI applications",
+        "Analyze the integration of XState machines with Svelte, 5 runes for legal AI applications",
         { useContext7: true }
       );
       demoMode = 'ai';
@@ -188,10 +188,10 @@ import type { User } from '$lib/types';
       return status ? 'bg-green-500' : 'bg-red-500';
     }
     switch (status) {
-      case 'healthy': return 'bg-green-500';
-      case 'partial': return 'bg-yellow-500';
-      case 'down': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case, 'healthy': return, 'bg-green-500';
+      case, 'partial': return, 'bg-yellow-500';
+      case, 'down': return, 'bg-red-500';
+      default: return, 'bg-gray-500';
     }
   }
   // Handle authentication success
@@ -240,7 +240,7 @@ import type { User } from '$lib/types';
           <div class="mt-2, text-sm, text-gray-500">
             User: {authenticatedUser.email}<br>
             Role: {authenticatedUser.role}<br>
-            Uptime: {formatUptime(serviceMetrics.authUptime)}
+           , Uptime: {formatUptime(serviceMetrics.authUptime)}
           </div>
         {/if}
       </div>
@@ -296,7 +296,7 @@ import type { User } from '$lib/types';
         <div class="mt-2, text-sm, text-gray-500">
           Enhanced RAG: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Upload Service: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
-          Total Interactions: {serviceMetrics.totalInteractions}
+          Total, Interactions: {serviceMetrics.totalInteractions}
         </div>
       </div>
     </div>
@@ -324,7 +324,7 @@ import type { User } from '$lib/types';
             <div, class="space-y-2">
               <h4, class="font-semibold">✅ Completed Integrations:</h4>
               <ul class="text-sm, space-y-1, text-gray-600">
-                <li>• Modern authentication with Svelte 5 runes</li>
+                <li>• Modern authentication with Svelte, 5 runes</li>
                 <li>• XState session management</li>
                 <li>• AI assistant with Ollama cluster</li>
                 <li>• Context7 documentation integration</li>
@@ -358,7 +358,7 @@ Demo Logout
           {#if !authenticatedUser}
             <div, class="space-y-4">
               <p, class="text-gray-600">
-                Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
+                Demonstrate the modern authentication system with Svelte, 5 runes and XState integration.
               </p>
               <Button.Root, class="bits-btn" onclick={() =>
 showAuthDialog = true}>
@@ -475,7 +475,7 @@ sessionManager.refreshSession()}
                 <div, class="text-sm, space-y-1">
                   <p><strong>Last Update:</strong> {serviceMetrics.lastUpdate.toLocaleTimeString()}</p>
                   <p><strong>Total Interactions:</strong> {serviceMetrics.totalInteractions}</p>
-                  <p><strong>System Uptime:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
+                  <p><strong>System, Uptime:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
                   <p><strong>AI Response Time:</strong> {Math.round(serviceMetrics.aiResponseTime)}ms</p>
                 </div>
               </div>

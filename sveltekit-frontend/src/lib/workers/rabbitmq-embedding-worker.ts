@@ -1,16 +1,16 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * RabbitMQ Embedding Worker - Server-side Background Job Processing
  * Processes embedding generation jobs via RabbitMQ message queues
  */
-import { rabbitMQService, type JobMessage, type JobResult } from '../services/rabbitmq-connection';
-import { QUEUES } from '../config/rabbitmq-config';
-import { createEmbedding, createEmbeddings } from '../services/embedding-service';
-import { db } from '../server/db/unified-client';
-import { documents, document_chunks, cases } from '../server/schema/documents';
-import { eq, sql } from 'drizzle-orm';
-import { redis } from '../server/redis';
+import { rabbitMQService, type JobMessage, type JobResult } from, '../services/rabbitmq-connection';
+import { QUEUES } from, '../config/rabbitmq-config';
+import { createEmbedding, createEmbeddings } from, '../services/embedding-service';
+import { db } from, '../server/db/unified-client';
+import { documents, document_chunks, cases } from, '../server/schema/documents';
+import { eq, sql } from, 'drizzle-orm';
+import { redis } from, '../server/redis';
 
 export interface EmbeddingJobPayload { entity_type: 'document' | 'case' | 'chunk';, entity_id: string;
   text_content?: string;
@@ -24,10 +24,10 @@ export interface BulkEmbeddingJobPayload {
   batch_size?: number;
 }
 class RabbitMQEmbeddingWorker {
-  private isRunning: boolean = $state(false);
+  private, isRunning: boolean = $state(false);
   private processedJobs: number = 0;
   private failedJobs: number = 0;
-  private startTime: Date | null = null;
+  private, startTime: Date | null = null;
   constructor() {
     this.handleEmbeddingJob = this.handleEmbeddingJob.bind(this);
     this.handleBulkEmbeddingJob = this.handleBulkEmbeddingJob.bind(this);
@@ -51,7 +51,7 @@ class RabbitMQEmbeddingWorker {
       // Subscribe to embedding queues with different concurrency settings
       await rabbitMQService.subscribe(QUEUES.DOCUMENT_EMBEDDING, this.handleEmbeddingJob, {
         concurrency: 2, // Moderate concurrency for document embeddings
-        prefetchCount: 5, // Buffer 5 jobs
+        prefetchCount: 5, // Buffer, 5 jobs
         retryAttempts: 3,
         retryDelay: 5000,
         autoAck: false
@@ -127,17 +127,17 @@ class RabbitMQEmbeddingWorker {
       }
       let result: any;
       switch (payload.entity_type) {
-        case 'document':
+        case, 'document':
           result = await this.processDocumentEmbedding(payload);
           break;
-        case 'case':
+        case, 'case':
           result = await this.processCaseEmbedding(payload);
           break;
-        case 'chunk':
+        case, 'chunk':
           result = await this.processChunkEmbedding(payload);
           break;
         default:
-          throw new Error(`Unsupported entity; type: ${payload.entity_type}`);
+          throw new Error(`Unsupported entity;, type: ${payload.entity_type}`);
       }
       this.processedJobs++;
       const processingTime = Date.now() - startTime;
@@ -226,7 +226,7 @@ class RabbitMQEmbeddingWorker {
       return {
         success: successCount > 0,
         result: {
-          total: results.length,
+         , total: results.length,
           successful: successCount,
           failed: failCount,
           results,
@@ -259,10 +259,10 @@ class RabbitMQEmbeddingWorker {
       }
       documentData = doc;
       switch (embedding_type) {
-        case 'title':
+        case, 'title':
           textToEmbed = doc.title;
           break;
-        case 'summary':
+        case, 'summary':
           textToEmbed = doc.ai_summary || doc.title;
           break;
         default:
@@ -278,7 +278,7 @@ class RabbitMQEmbeddingWorker {
     // Update document in database with the new embedding
     const updateData: any = {};
     const columnMap = {
-      content: 'embedding',
+     , content: 'embedding',
       title: 'title_embedding',
       summary: 'summary_embedding` };'`
     const column = columnMap[embedding_type];
@@ -330,7 +330,7 @@ class RabbitMQEmbeddingWorker {
       const titleText = caseData.title || '';
       const descText = caseData.description || '';
       const jurisdictionText = caseData.jurisdiction ? `Jurisdiction: ${caseData.jurisdiction}` : '';
-      const typeText = caseData.case_type ? `Case Type: ${caseData.case_type}` : '';
+      const typeText = caseData.case_type ? `Case, Type: ${caseData.case_type}` : '';
       textToEmbed = [titleText, descText, jurisdictionText, typeText]
         .filter(text => text.length > 0)
         .join('\n\n')
@@ -419,23 +419,23 @@ class RabbitMQEmbeddingWorker {
   }): Promise<any> {
     try {
       const payload: EmbeddingJobPayload = {
-        entity_type: entity.entity_type,
+       , entity_type: entity.entity_type,
         entity_id: entity.entity_id,
         text_content: entity.text_content,
         embedding_type: entity.embedding_type || 'content` };'`
-      let result: any;
+      let, result: any;
       switch (entity.entity_type) {
-        case 'document':
+        case, 'document':
           result = await this.processDocumentEmbedding(payload);
           break;
-        case 'case':
+        case, 'case':
           result = await this.processCaseEmbedding(payload);
           break;
-        case 'chunk':
+        case, 'chunk':
           result = await this.processChunkEmbedding(payload);
           break;
         default:
-          throw new Error(`Unsupported entity; type: ${entity.entity_type}`);
+          throw new Error(`Unsupported entity;, type: ${entity.entity_type}`);
       }
       return { success: true, entity_id: entity.entity_id, result };
     } catch (error) {
@@ -453,7 +453,7 @@ class RabbitMQEmbeddingWorker {
     failedJobs: number;
     successRate: number;
     uptime: number | null;
-    startTime: Date | null;
+   , startTime: Date | null;
   } {
     const uptime = this.startTime ? Date.now() - this.startTime.getTime() : null;
     const totalJobs = this.processedJobs + this.failedJobs;
@@ -486,7 +486,7 @@ class RabbitMQEmbeddingWorker {
     return {
       status: isHealthy ? 'healthy' : 'unhealthy',
       details: {
-        worker_running: this.isRunning,
+       , worker_running: this.isRunning,
         rabbitmq_connected: rabbitHealth.connected,
         processed_jobs: stats.processedJobs,
         failed_jobs: stats.failedJobs,

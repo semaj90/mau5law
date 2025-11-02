@@ -1,5 +1,5 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { vectorEmbeddingService } from '$lib/services/vector-embedding-service';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { vectorEmbeddingService } from, '$lib/services/vector-embedding-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   if (typeof window !== 'undefined') return new Response('Not allowed', { status: 405 });

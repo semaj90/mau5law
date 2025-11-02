@@ -2,13 +2,13 @@
  * Vector Search API with pgvector integration
  * Semantic similarity search across documents, cases, and chunks
  */
-import { json, type RequestHandler, type RequestEvent } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { documents, document_chunks, cases } from '$lib/server/schema/documents';
-import { eq, and, sql } from 'drizzle-orm';
-import { createEmbedding } from '$lib/services/embedding-service';
-import { getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis';
-import { createHash } from 'crypto';
+import { json, type RequestHandler, type RequestEvent } from, '@sveltejs/kit';
+import { db } from, '$lib/server/db';
+import { documents, document_chunks, cases } from, '$lib/server/schema/documents';
+import { eq, and, sql } from, 'drizzle-orm';
+import { createEmbedding } from, '$lib/services/embedding-service';
+import { getCachedSearchResults, cacheSearchResults } from, '$lib/server/cache/redis';
+import { createHash } from, 'crypto';
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
 const DEFAULT_LIMIT = 10;
 interface VectorSearchRequest {
@@ -51,7 +51,7 @@ interface VectorSearchResult { id: string;, entity_type: 'document' | 'chunk' |
   };
 }
 
-type RawSearchResult = { id: string;, entity_type: 'document' | 'chunk' | 'case';
+type RawSearchResult = {, id: string;, entity_type: 'document' | 'chunk' | 'case';
   vector_type: 'content' | 'title' | 'summary';
   similarity: number | string;
   title: string | null;
@@ -66,7 +66,7 @@ type RawSearchResult = { id: string;, entity_type: 'document' | 'chunk' | 'case
   created_at: Date | null;
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: VectorSearchRequest = await request.json();
     if (!searchRequest.query || searchRequest.query.trim().length === 0) {
@@ -112,16 +112,16 @@ export const POST: RequestHandler = async ({ request }) => {
         .map(vectorType => {
           let vectorColumn;
           switch (vectorType) {
-            case 'title':
+            case, 'title':
               vectorColumn = documents.title_embedding;
               break;
-            case 'summary':
+            case, 'summary':
               vectorColumn = documents.summary_embedding;
               break;
             default:
               vectorColumn = documents.embedding;
           }
-          if (!vectorColumn) return null;
+          if (!vectorColumn) return: null;
           const conditions = [
             eq(documents.is_active, true),
             eq(documents.is_indexed, true),
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request }) => {
         content: result.content,
         summary: result.summary,
         metadata: {
-          document_type: result.document_type,
+         , document_type: result.document_type,
           risk_level: result.risk_level,
           confidence_level: result.confidence_level,
           case_title: result.case_title,
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       results: sortedResults,
       metadata: {
-        total_found: sortedResults.length,
+       , total_found: sortedResults.length,
         threshold_used: threshold,
         embedding_model: 'nomic-embed-text',
         search_time_ms: Date.now(), // Will be calculated by client
@@ -277,8 +277,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     };
     // Cache results for this query and parameter set.
-    // Cache key is generated from the query string, API identifier ('vector-api'), and a hash of search parameters (threshold, limit, entity_types, vector_types, filters).
-    // The cached value is the full JSON response object, allowing fast retrieval for identical semantic searches within the CACHE_TTL window.
+    // Cache key is generated from the, query: string, API identifier ('vector-api'), and a hash of search parameters (threshold, limit, entity_types, vector_types, filters).
+    // The cached value is the full JSON response: object, allowing fast retrieval for identical semantic searches within the CACHE_TTL window.
     const params = { threshold, limit, entity_types, vector_types, filters, include_content, boost_factors };
     const paramsHash = createHash('sha256').update(JSON.stringify(params)).digest('hex');
     const cacheKey = `vector-api:${query}:${paramsHash}`;
@@ -331,11 +331,11 @@ export const GET: RequestHandler = async ({ url }) => {
         (searchRequest.filters as Record<string, string>)[param] = value;
       }
     });
-    // Create a fake request object to reuse POST logic
+    // Create a fake request: object to reuse POST logic
     const fakeRequest = {
-      json: async () => searchRequest
+     , json: async () => searchRequest
     };
-    return await POST({ request: fakeRequest as unknown as Request, url } as unknown as RequestEvent);
+    return await POST({ request: fakeRequest, as: unknown as Request, url } as: unknown as RequestEvent);
   } catch (error) {
     console.error('Vector search GET error:', error);'
     return json(

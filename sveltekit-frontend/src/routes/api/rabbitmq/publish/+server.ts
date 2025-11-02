@@ -1,12 +1,12 @@
-import type { Message } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /*
  * RabbitMQ Message Publishing API Endpoint
  *
  * Handles publishing messages to RabbitMQ queues for NLP processing pipeline
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { exchange, routingKey, message, headers } = await request.json();
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: headers || {}
     };
     // Log the message for debugging
-    console.log('📤 RabbitMQ Message Published:', {
+    console.log('📤 RabbitMQ Message, Published:', {
       messageId,
       exchange,
       routingKey,
@@ -40,17 +40,17 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     // Simulate different processing flows based on routing key
     switch (routingKey) {
-      case 'document':
+      case, 'document':
         console.log('📄 Document queued for chunking:', message.document_id);
         break;
-      case 'chunk':
+      case, 'chunk':
         console.log('🧩 Chunk queued for embedding:', message.chunk_id);
         break;
-      case 'embedding':
+      case, 'embedding':
         console.log('🧠 Embedding queued for Neo4j storage:', message.chunk_id);
         break;
       default:
-        console.log('📝 Generic message published; to:', routingKey);
+        console.log('📝 Generic message published;, to:', routingKey);
     }
     // In a real system, you might want to store this in a database
     // or forward it to an actual RabbitMQ instance
@@ -85,28 +85,28 @@ export const GET: RequestHandler = async () => {
     ],
     requiredFields: ['exchange', 'routingKey', 'message'],
     optionalFields: ['headers'],
-    examples: { document: {, exchange: 'legal.main',
+    examples: {, document: {, exchange: 'legal.main',
         routingKey: 'document',
         message: {
-          document_id: 'doc_123',
+         , document_id: 'doc_123',
           case_id: 'case_456',
           source_location: 's3://legal-docs/contract.pdf',
           metadata: {
-            title: 'Service Agreement',
+           , title: 'Service Agreement',
             file_type: 'pdf',
             upload_date: '2025-01-20T10:00:00Z` }'`
         }
       },
       chunk: {
-        exchange: 'legal.main',
+       , exchange: 'legal.main',
         routingKey: 'chunk',
         message: {
-          document_id: 'doc_123',
+         , document_id: 'doc_123',
           case_id: 'case_456',
           chunk_id: 1,
           text: 'This agreement is entered into...',
           metadata: {
-            start_position: 0,
+           , start_position: 0,
             end_position: 500,
             chunk_size: 500,
             overlap_size: 50

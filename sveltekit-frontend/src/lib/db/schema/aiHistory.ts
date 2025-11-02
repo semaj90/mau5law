@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, jsonb, real } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, jsonb, real } from, 'drizzle-orm/pg-core';
 export const aiHistory = pgTable('ai_history', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: text('user_id'),

@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
-import type { SvelteComponent } from 'svelte';
+import { writable } from, 'svelte/store';
+import type { SvelteComponent } from, 'svelte';
 
 type Props = Record<string, unknown>;
 
@@ -17,7 +17,7 @@ export interface ModalConfig {
 export interface ModalState { modals: ModalConfig[];, activeModal: string | null;
 }
 const initialState: ModalState = {
-  modals: [],
+ , modals: [],
   activeModal: null
 };
 function createModalStore() {
@@ -31,7 +31,7 @@ function createModalStore() {
         // replace deprecated substr(...) with slice(...)
         `modal-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
       const modalConfig: ModalConfig = {
-        size: 'md',
+       , size: 'md',
         closable: true,
         persistent: false,
         ...config,

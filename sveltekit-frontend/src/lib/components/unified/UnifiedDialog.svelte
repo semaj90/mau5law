@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
   UnifiedDialog.svelte
-  Phase 14 - Unified UI Kit Component
-  Perfect integration of bits-ui v2 + Melt Svelte 5 + UnoCSS
+  Phase, 14 - Unified UI Kit Component
+  Perfect integration of bits-ui v2 + Melt Svelte, 5 + UnoCSS
   Features:
   - Real-time collaboration support
   - WebGPU effects and transitions
@@ -13,10 +13,10 @@ https://svelte.dev/e/js_parse_error -->
   - Legal AI context integration
 -->
 <script, lang="ts">
-import type { User } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
-  import { cubicInOut } from 'svelte/easing';
+import type { User } from, '$lib/types';
+  import { onMount, onDestroy } from, 'svelte';
+  import { fade, scale } from, 'svelte/transition';
+  import { cubicInOut } from, 'svelte/easing';
 
   interface DialogProps {
     open?: boolean;
@@ -53,12 +53,12 @@ import type { User } from '$lib/types';
   }: DialogProps = $props();
 
   // Minimal WebGPU state (graceful fallback)
-  // make canvas reactive in Svelte 5 so updates trigger correctly
+  // make canvas reactive in Svelte, 5 so updates trigger correctly
   let canvas = $state<HTMLCanvasElement | null>(null);
   let device: GPUDevice | null = null;
   let animationFrame = $state<number | null>(null);
 
-  // Reactive classes (use Svelte 5 runes $derived instead of legacy $:)
+  // Reactive classes (use Svelte, 5 runes $derived instead of legacy $:)
   let dialogClasses = $derived(() => {
     return [
       'fixed inset-0 z-50 flex items-center justify-center p-4',
@@ -104,12 +104,12 @@ import type { User } from '$lib/types';
   async function initWebGPU(): Promise<void> {
     if (!webgpuEffects) return;
     // graceful fallback if not supported
-    if (!canvas || typeof (navigator as any).gpu === 'undefined') {
+    if (!canvas || typeof (navigator as: any).gpu === 'undefined') {
       console.info('WebGPU not supported or not available; using CSS fallback for background effects.');
       return;
     }
     try {
-      const adapter = await (navigator as any).gpu.requestAdapter();
+      const adapter = await (navigator as: any).gpu.requestAdapter();
       if (!adapter) return;
       device = await adapter.requestDevice();
       // Keep this file lightweight: complex compute pipeline creation should be done in a dedicated module.
@@ -126,7 +126,7 @@ import type { User } from '$lib/types';
   onDestroy(() => {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     // Device destruction if supported (some implementations expose destroy())
-    try { if (device && (device as any).destroy) (device as any).destroy(); } catch {}
+    try { if (device && (device as: any).destroy) (device as: any).destroy(); } catch {}
     device = null;
   });
 </script>
@@ -144,7 +144,7 @@ import type { User } from '$lib/types';
       ></canvas>
     {/if}
 
-    <!-- Overlay: use a semantic button so keyboard users can close with Enter/Space and ARIA role, is, implicit -->
+    <!--, Overlay: use a semantic button so keyboard users can close with Enter/Space and ARIA role, is, implicit -->
     <button
       type="button"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm appearance-none border-none p-0 m-0"
@@ -200,7 +200,7 @@ import type { User } from '$lib/types';
                   class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'}
                   class:text-red-800={legalContext.aiAnalysis.riskLevel === 'high'}
                 >
-                  AI: {Math.round((legalContext.aiAnalysis.confidence ?? 0) * 100)}%
+                 , AI: {Math.round((legalContext.aiAnalysis.confidence ?? 0) * 100)}%
                 </span>
               {/if}
             </h2>
@@ -255,7 +255,7 @@ import type { User } from '$lib/types';
           onclick={closeDialog}
           aria-label="Close"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12" />
           </svg>
         </button>
@@ -265,9 +265,9 @@ import type { User } from '$lib/types';
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
-            transitionfade={{ duration: 200 }}
+            transitionfade={{, duration: 200 }}
           >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0, 24, 24">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0, 0, 24, 24">
               <path d="M7 2L17 12L12 13L13, 18L7, 2Z"/>
             </svg>
             <span
@@ -292,7 +292,7 @@ import type { User } from '$lib/types';
   /* WebGPU canvas optimization */
   canvas {
     will-change: transform;
-    transform: translateZ(0);
+   , transform: translateZ(0);
   }
   /* NES-style shadows */
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {

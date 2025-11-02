@@ -1,15 +1,15 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * User Analytics & Reinforcement Learning Integration Service
  * Combines user.history and user.analytics with QLorA training and Moogle Graph Synthesizer
  * Provides concurrent data parallelism with caching for enhanced user productivity
  */
-import { writable, derived } from 'svelte/store';
-import type { Writable, Readable } from 'svelte/store';
-import { browser } from '$app/environment';
-import { qloraTrainingService, userAnalytics as qloraAnalytics } from './qlora-training-service.js';
-import { recommendationOrchestrator } from './recommendation-orchestrator.js';
-import { MoogleGraphSynthesizer } from '../ai/moogle-graph-synthesizer.js';
+import { writable, derived } from, 'svelte/store';
+import type { Writable, Readable } from, 'svelte/store';
+import { browser } from, '$app/environment';
+import { qloraTrainingService, userAnalytics as qloraAnalytics } from, './qlora-training-service.js';
+import { recommendationOrchestrator } from, './recommendation-orchestrator.js';
+import { MoogleGraphSynthesizer } from, '../ai/moogle-graph-synthesizer.js';
 
 export interface UserHistoryEntry { id: string;, userId: string;
   sessionId: string;
@@ -24,18 +24,18 @@ export interface UserHistoryEntry { id: string;, userId: string;
       | 'analysis_run'
       | 'connection_made'
       | 'insight_generated';
-    target: string;
+   , target: string;
     // tightened types (no `any`)
     parameters: Record<string, unknown>;
     context: Record<string, unknown>;
   };
-  outcome: { success: boolean;, duration: number;
+  outcome: {, success: boolean;, duration: number;
     result?: any;
     error?: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
   };
-  environment: { page: string;, viewport: { width: number; height: number };
+  environment: {, page: string;, viewport: { width: number; height: number };
     userAgent: string;
     timestamp: number;
   };
@@ -47,54 +47,54 @@ export interface UserHistoryEntry { id: string;, userId: string;
   };
 }
 
-export interface UserAnalyticsProfile { userId: string;, createdAt: number;
+export interface UserAnalyticsProfile {, userId: string;, createdAt: number;
   lastUpdated: number;
   patterns: {
-    activeHours: Record<number, number>;
+   , activeHours: Record<number, number>;
     // use structured generic records instead of Array<any>
     commonWorkflows: Array<Record<string, unknown>>;
     documentPreferences: {
-      types: Record<string, number>;
+     , types: Record<string, number>;
       complexityRange: { min: number; max: number; preferred: number };
-      averageProcessingTime: Record<string, number>;
+     , averageProcessingTime: Record<string, number>;
     };
-    searchPatterns: { commonTerms: string[]; // tightened, queryComplexity: number;
+    searchPatterns: {, commonTerms: string[]; // tightened, queryComplexity: number;
       refinementRate: number;
     };
   };
-  performance: { overallProductivity: number;, taskCompletionRate: number;
+  performance: {, overallProductivity: number;, taskCompletionRate: number;
     averageTaskDuration: number;
     accuracyRate: number;
     learningVelocity: number;
     expertiseLevel: 'novice' | 'intermediate' | 'advanced' | 'expert';
   };
-  reinforcement: { rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
+  reinforcement: {, rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[], actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
     explorationTendency: number;
     adaptationRate: number;
-    convergenceMetrics: { stability: number;, consistency: number;
+    convergenceMetrics: {, stability: number;, consistency: number;
       improvement: number;
     };
   };
-  predictions: { nextLikelyActions: NextLikelyAction[]; // tightened, optimalWorkflow: string[];
+  predictions: {, nextLikelyActions: NextLikelyAction[]; // tightened, optimalWorkflow: string[];
     recommendedComplexity: number;
-    estimatedTaskTimes: Record<string, number>;
+   , estimatedTaskTimes: Record<string, number>;
     riskFactors: string[]; // tightened
   };
 }
 
-export interface ProductivityCache { id: string;, userId: string;
+export interface ProductivityCache {, id: string;, userId: string;
   context: {
     caseId?: string;
     documentTypes: string[];
     complexity: number;
     timeframe: string;
   };
-  cached: { insights: any[];        // tightened from any[], connections: any[];     // tightened from any[]
-    recommendations: any[]; // tightened from any[]
-    analysis: any;          // tightened from any
+  cached: { insights: any[];        // tightened, from: any[], connections: any[];     // tightened from: any[]
+    recommendations: any[]; // tightened from: any[]
+    analysis: any;          // tightened from: any
     timestamp: number;
   };
-  performance: { cacheHitRate: number;, averageResponseTime: number;
+  performance: {, cacheHitRate: number;, averageResponseTime: number;
     concurrentProcesses: number;
   };
 }
@@ -102,29 +102,29 @@ export interface ProductivityCache { id: string;, userId: string;
 // New: explicit types to avoid `any`
 type ActionType = UserHistoryEntry['action']['type'];
 
-interface GraphNode { id: string;, type: ActionType;
-  properties: { target: string;, frequency: number;
+interface GraphNode {, id: string;, type: ActionType;
+  properties: {, target: string;, frequency: number;
     avgDuration: number;
     successRate: number;
     lastAccessed: number;
   };
-  metadata: { complexity: number;, timestamp: number;
+  metadata: {, complexity: number;, timestamp: number;
   };
   score?: number;
 }
 
-interface GraphEdge { id: string;, source: string;
+interface GraphEdge {, id: string;, source: string;
   target: string;
   type: 'sequence';
   weight: number;
-  properties: { timeDelta: number;, success: boolean;
+  properties: {, timeDelta: number;, success: boolean;
   };
 }
 
-interface GraphPath { id: string;, nodes: GraphNode[];
+interface GraphPath {, id: string;, nodes: GraphNode[];
   edges: GraphEdge[];
   totalScore: number;
-  metadata: { pathType: string;, sessionId: string;
+  metadata: {, pathType: string;, sessionId: string;
     userId: string;
   };
 }
@@ -144,7 +144,7 @@ interface Visualization {
 }
 
 interface NextLikelyAction {
-  action: string;
+ , action: string;
   probability?: number;
   confidence?: number;
 }
@@ -165,7 +165,7 @@ interface PatternPayload {
 
 interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {}
 
-// New: typed reward entry (replaces Array<any> uses)
+//, New: typed reward entry (replaces Array<any> uses)
 interface RewardEntry { timestamp: number;, reward: number;
   action: string;
   context?: string;
@@ -173,8 +173,8 @@ interface RewardEntry { timestamp: number;, reward: number;
 }
 
 // New: recommendation types to avoid `any` casts
-interface Recommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
-  title: string;
+interface Recommendation {, id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
+ , title: string;
   description?: string;
   confidence?: number;
   priority?: 'low' | 'medium' | 'high';
@@ -196,13 +196,13 @@ export class UserAnalyticsRLIntegration {
   private moogleSynthesizer: MoogleGraphSynthesizer;
   // Processing state
   private processingWorkers: Worker[] = [];
-  private cacheWorker: Worker | null = null;
+  private, cacheWorker: Worker | null = null;
   private isProcessing = $state(false);
   private maxConcurrentProcesses = 6;
   // Analytics tracking
   private sessionId: string;
   private userId: string;
-  private startTime: number;
+  private, startTime: number;
   // keep a reference to the unload handler so we can remove it later
   private unloadHandler?: () => void;
   constructor() {
@@ -241,7 +241,7 @@ export class UserAnalyticsRLIntegration {
    */
   private async initializeWorkers() {
     try {
-      // mark processing state as active (prevents "declared but never read")
+      // mark processing state as active (prevents, "declared but never read")
       this.isProcessing = true;
 
       // Analytics processing workers
@@ -288,35 +288,35 @@ export class UserAnalyticsRLIntegration {
     // use slice instead of deprecated substr
     const actionId = `action_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const historyEntry: UserHistoryEntry = {
-      id: actionId,
+     , id: actionId,
       userId: this.userId,
       sessionId: this.sessionId,
       timestamp: Date.now(),
       action: {
-        type: actionType,
+       , type: actionType,
         target,
         parameters,
         context
       },
       outcome: {
-        success: false, // Will be updated when action completes
+       , success: false, // Will be updated when action completes
         duration: 0
       },
       environment: {
         // guard browser-only globals
-        page: browser ? window.location.pathname : '/server',
+       , page: browser ? window.location.pathname : '/server',
         viewport: {
-          width: browser ? window.innerWidth : 0,
+         , width: browser ? window.innerWidth : 0,
           height: browser ? window.innerHeight : 0
         },
         userAgent: browser ? navigator.userAgent : 'server',
         timestamp: Date.now()
       },
       metadata: {
-        caseId: (context as any).caseId, // preserve previous behavior for optional fields
-        documentIds: (context as any).documentIds || [],
-        tags: (context as any).tags || [],
-        complexity: (context as any).complexity || 0.5
+        caseId: (context, as: any).caseId, // preserve previous behavior for optional fields
+        documentIds: (context, as: any).documentIds || [],
+        tags: (context, as: any).tags || [],
+        complexity: (context, as: any).complexity || 0.5
       }
     };
 
@@ -333,7 +333,7 @@ export class UserAnalyticsRLIntegration {
     actionId: string,
     outcome: {
      , success: boolean;
-      result?: any; // tightened from any -> unknown
+      result?: any; // tightened, from: any -> unknown
       error?: string;
       userFeedback?: 'positive' | 'negative' | 'neutral';
       confidence?: number;
@@ -400,7 +400,7 @@ export class UserAnalyticsRLIntegration {
       if (!profile) return profile;
       // Add to reward history (now strongly typed)
       const rewardEntry: RewardEntry = {
-        timestamp: action.timestamp,
+       , timestamp: action.timestamp,
         reward,
         action: actionKey,
         context: JSON.stringify(action.action.context),
@@ -431,7 +431,7 @@ export class UserAnalyticsRLIntegration {
     });
 
     // Send to NES-RL agent in recommendation orchestrator (typed)
-    const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
+    const recOrch = recommendationOrchestrator as: unknown as RecommendationOrchestrator;
     if (recOrch.updateDetectiveContext) {
       recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} -> ${reward.toFixed(3)}`,
         timeInMode: Date.now() - this.startTime,
@@ -527,7 +527,7 @@ export class UserAnalyticsRLIntegration {
       // Extract insights from visualization metadata
       const insights = this.extractInsightsFromVisualization(visualization, action);
       // Generate targeted recommendations
-      const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
+      const recOrch = recommendationOrchestrator as: unknown as RecommendationOrchestrator;
       for (const insight of insights) {
         recOrch.addRecommendation({
           id: `rl_insight_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
@@ -540,7 +540,7 @@ export class UserAnalyticsRLIntegration {
           action: insight.action,
           createdAt: Date.now(),
           metadata: {
-            basedOnAction: actionId,
+           , basedOnAction: actionId,
             reinforcementScore: insight.reinforcementScore,
             productivityImpact: insight.productivityImpact
           }
@@ -596,7 +596,7 @@ export class UserAnalyticsRLIntegration {
         type: 'sequence',
         weight: 1 / Math.max(1, (actions[i + 1].timestamp - actions[i].timestamp) / 1000),
         properties: {
-          timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
+         , timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
           success: !!(actions[i].outcome.success && actions[i + 1].outcome.success)
         }
       });
@@ -608,7 +608,7 @@ export class UserAnalyticsRLIntegration {
       edges,
       totalScore: Array.from(nodeMap.values()).reduce((sum, node) => sum + (node.score ?? 0), 0),
       metadata: {
-        pathType: 'user_workflow',
+       , pathType: 'user_workflow',
         sessionId: this.sessionId,
         userId: this.userId
       }
@@ -628,7 +628,7 @@ export class UserAnalyticsRLIntegration {
       priority: 'low' | 'medium' | 'high';
       reinforcementScore: number;
       productivityImpact: number;
-      action: () => void;
+     , action: () => void;
     }> = [];
 
     const nodePositions: NodePosition[] = (visualization?.metadata?.nodePositions ?? []) as NodePosition[];
@@ -692,17 +692,17 @@ export class UserAnalyticsRLIntegration {
   private handleWorkerMessage(_workerId: number, data: {, type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
-      case 'analytics_updated':
+      case, 'analytics_updated':
         if (payload && typeof payload === 'object') {
           this.updateAnalyticsProfile(payload as AnalyticsUpdatePayload);
         }
         break;
-      case 'pattern_identified':
+      case, 'pattern_identified':
         if (payload && typeof payload === 'object') {
           this.handlePatternIdentified(payload as PatternPayload);
         }
         break;
-      case 'prediction_generated':
+      case, 'prediction_generated':
         if (payload && typeof payload === 'object') {
           this.updatePredictions(payload as PredictionsPayload);
         }
@@ -714,7 +714,7 @@ export class UserAnalyticsRLIntegration {
   private handleCacheMessage(data: {, type: string; payload?: any }) {
     const { type, payload } = data;
     switch (type) {
-      case 'cache_updated':
+      case, 'cache_updated':
         if (payload && typeof payload === 'object' && 'id' in payload) {
           const p = payload as ProductivityCache;
           this.productivityCache.update(cache => {
@@ -728,7 +728,7 @@ export class UserAnalyticsRLIntegration {
           });
         }
         break;
-      case 'cache_hit':
+      case, 'cache_hit':
         console.log('Cache hit:', payload);
         break;
       default: break;
@@ -753,35 +753,35 @@ export class UserAnalyticsRLIntegration {
       createdAt: Date.now(),
       lastUpdated: Date.now(),
       patterns: {
-        activeHours: {},
+       , activeHours: {},
         commonWorkflows: [],
         documentPreferences: {
-          types: {},
-          complexityRange: { min: 0.2, max: 0.8, preferred: 0.5 },
+         , types: {},
+          complexityRange: {, min: 0.2, max: 0.8, preferred: 0.5 },
           averageProcessingTime: {}
         },
         searchPatterns: {
-          commonTerms: [],
+         , commonTerms: [],
           queryComplexity: 0.5,
           refinementRate: 0.2
         }
       },
       performance: {
-        overallProductivity: 0.5,
+       , overallProductivity: 0.5,
         taskCompletionRate: 0.5,
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
         expertiseLevel: `novice` },'`'`
       reinforcement: {
-        rewardHistory: [],
+       , rewardHistory: [],
         actionPreferences: {},
         explorationTendency: 0.3,
         adaptationRate: 0.1,
-        convergenceMetrics: { stability: 0.5, consistency: 0.5, improvement: 0.5 }
+        convergenceMetrics: {, stability: 0.5, consistency: 0.5, improvement: 0.5 }
       },
       predictions: {
-        nextLikelyActions: [],
+       , nextLikelyActions: [],
         optimalWorkflow: [],
         recommendedComplexity: 0.5,
         estimatedTaskTimes: {},
@@ -790,12 +790,12 @@ export class UserAnalyticsRLIntegration {
     };
   }
   private handlePatternIdentified(pattern: PatternPayload) {
-    const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
+    const recOrch = recommendationOrchestrator as: unknown as RecommendationOrchestrator;
     recOrch.addRecommendation({
-      id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+     , id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       type: 'ai',
       title: 'Usage Pattern Identified',
-      description: 'New pattern; detected: ${pattern.description ?? 'unspecified` }`,
+      description: 'New pattern;, detected: ${pattern.description ?? 'unspecified` }`,
       confidence: pattern.confidence ?? 0.5,
       priority: 'low',
       source: 'user-analytics-rl',
@@ -910,7 +910,7 @@ export class UserAnalyticsRLIntegration {
     exportedAt: number;
   }> {
     return {
-      userId: this.userId,
+     , userId: this.userId,
       history: this.getUserHistory(),
       analytics: this.getAnalyticsProfile(),
       exportedAt: Date.now()

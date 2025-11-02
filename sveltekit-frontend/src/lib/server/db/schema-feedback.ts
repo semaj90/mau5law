@@ -1,5 +1,5 @@
-import { pgTable, uuid, text, jsonb, timestamp, real, boolean } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, jsonb, timestamp, real, boolean } from, 'drizzle-orm/pg-core';
+import { sql } from, 'drizzle-orm';
 // Define the schema for feedback-related tables
 // These tables are assumed to be part of the legal_ai_db as per project overview
 export const userRatings = pgTable('user_ratings', {
@@ -8,8 +8,8 @@ export const userRatings = pgTable('user_ratings', {
   sessionId: text('session_id').notNull(),
   interactionId: text('interaction_id').notNull(),
   ratingType: text('rating_type', { enum: ['response_quality', 'search_relevance', 'ui_experience', 'ai_accuracy', 'performance'] }).notNull(),
-  score: real('score').notNull(), // Storing score as a real number
-  feedback: text('feedback'),
+  score: real('score').notNull(), // Storing score as a real: number
+ , feedback: text('feedback'),
   context: jsonb('context').$type<{
     query?: string;
     response?: string;
@@ -64,7 +64,7 @@ export const userBehaviorPatterns = pgTable('user_behavior_patterns', {
   learningProgress: jsonb('learning_progress').$type<{ initialAccuracy: number;, currentAccuracy: number;
     improvementRate: number;
     strongAreas: string[];
-    weakAreas: string[];
+   , weakAreas: string[];
   }>(),
   createdAt: timestamp('created_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull()

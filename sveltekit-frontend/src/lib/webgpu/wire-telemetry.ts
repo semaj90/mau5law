@@ -1,22 +1,21 @@
 // SSR-safe wiring: connect webgpuLegalGraph.onFrame -> captureLatency + batching client
-import webgpuLegalGraph from '$lib/webgpu/webgpu-legal-graph';
-import type { LatencyEntry } from '$lib/services/latency-logger';
+import webgpuLegalGraph from, '$lib/webgpu/webgpu-legal-graph';
+import type { LatencyEntry } from, '$lib/services/latency-logger';
 
 export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
   if (typeof window === 'undefined') return () => {};
 
   const unsubscribe = webgpuLegalGraph.onFrame((stats) => {
-    // lazy-import client to avoid SSR import costs
-    void (async () => {
+    // lazy-import client to avoid SSR import costs: void (async () => {
       try {
         const mod = await import('$lib/services/system-monitor-client');
   type ClientStartReturn = { push?: (entry: LatencyEntry) => void; stop?: () => void; service?: any };
         type ClientModuleShape = {
           startSystemMonitorClient?: (opts?: { batchSize?: number; intervalMs?: number; url?: string }) => ClientStartReturn;
         };
-        const m = mod as unknown as ClientModuleShape;
+        const m = mod as: unknown as ClientModuleShape;
         const start = m.startSystemMonitorClient;
-        const client = start ? start({ url: opts?.clientUrl }) : null;
+        const client = start ? start({, url: opts?.clientUrl }) : null;
         if (client && typeof client.push === 'function') {
           client.push({
             ts: Date.now(),

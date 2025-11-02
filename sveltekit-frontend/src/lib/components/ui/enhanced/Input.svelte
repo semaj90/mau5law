@@ -2,8 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  	import type { HTMLInputAttributes } from 'svelte/elements';
+  // Svelte, 5 runes are auto-imported
+  	import type { HTMLInputAttributes } from, 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'class' | 'value'> {
   		label?: string;
   		error?: string;
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease;
   }
   .yorha-input:focus {
-    box-shadow: 0 0 0 1px var(--color-nier-border-primary);
+    box-shadow: 0, 0 0 1px var(--color-nier-border-primary);
   }
   .yorha-input[aria-invalid='true'] {
     animation: shake 0.3s ease-in-out;

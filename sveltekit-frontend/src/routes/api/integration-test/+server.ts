@@ -1,13 +1,13 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit'
-import { db, testConnection, healthCheck } from '$lib/server/db'
-import { users, cases, evidence, documentChunks } from '$lib/server/db/schema-postgres'
-import { eq, sql } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
-// import { mcpTools } from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
-import bcrypt from 'bcrypt'
-import crypto from "crypto"
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit'
+import { db, testConnection, healthCheck } from, '$lib/server/db'
+import { users, cases, evidence, documentChunks } from, '$lib/server/db/schema-postgres'
+import { eq, sql } from, 'drizzle-orm'
+import type { RequestHandler } from, './$types.js'
+// import { mcpTools } from, '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
+import bcrypt from, 'bcrypt'
+import crypto from, "crypto"
 
 // --- ADDED HELPERS: safer error/id handling (replace uses of `any`) ---
 function getErrorMessage(err: any): string {
@@ -17,19 +17,19 @@ function getErrorMessage(err: any): string {
     const maybe = err as Record<string, unknown>
     if (typeof maybe.message === 'string') return maybe.message
     if (typeof maybe.code === 'string') return `Error code: ${maybe.code}` }'`'`
-  return 'Unknown error` }'`
+  return, 'Unknown error` }'`
 
 function extractId(result: any): number | string | undefined {
   if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object' && result[0] !== null) {
-    return (result[0] as Record<string, unknown>)['id'] as number | string | undefined
+    return (result[0] as Record<string, unknown>)['id'] as: number | string | undefined
   }
   if (typeof result === 'object' && result !== null) {
-    return (result as Record<string, unknown>)['id'] as number | string | undefined
+    return (result as Record<string, unknown>)['id'] as: number | string | undefined
   }
-  return undefined
+  return: undefined
 }
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('type') || 'all';
   // tightened type
   const results: Record<string, unknown> = {};
@@ -150,15 +150,15 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.crud = {
           success: true,
-          operations: { create: {, user: Array.isArray(newUserRaw) ? (newUserRaw as unknown[])[0] : newUserRaw,
-              case Array.isArray(newCaseRaw) ? (newCaseRaw as unknown[])[0] : newCaseRaw,
-              evidence: Array.isArray(newEvidence) ? (newEvidence as unknown[])[0] : newEvidence
+          operations: {, create: {, user: Array.isArray(newUserRaw) ? (newUserRaw as: unknown[])[0] : newUserRaw,
+              case Array.isArray(newCaseRaw) ? (newCaseRaw as: unknown[])[0] : newCaseRaw,
+              evidence: Array.isArray(newEvidence) ? (newEvidence as: unknown[])[0] : newEvidence
             },
             read: {
-              caseWithDetails: Array.isArray(caseWithDetailsRaw) ? caseWithDetailsRaw[0] : caseWithDetailsRaw
+             , caseWithDetails: Array.isArray(caseWithDetailsRaw) ? caseWithDetailsRaw[0] : caseWithDetailsRaw
             },
             update: {
-              updatedCase: Array.isArray(updatedCaseRaw) ? updatedCaseRaw[0] : updatedCaseRaw
+             , updatedCase: Array.isArray(updatedCaseRaw) ? updatedCaseRaw[0] : updatedCaseRaw
             }
           }
         };
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.vectorOps = {
           success: true,
           operations: {
-            create: Array.isArray(newChunkRaw) ? (newChunkRaw as unknown[])[0] : newChunkRaw,
+           , create: Array.isArray(newChunkRaw) ? (newChunkRaw as: unknown[])[0] : newChunkRaw,
             search: similarChunks
           }
         };
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: `MCP tools temporarily disabled due to dependency issues - use direct database operations instead` };
     }
     return json({
-      success: true,
+     , success: true,
       timestamp: new Date().toISOString(),
       testType,
       results
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const action = typeof body.action === 'string' ? body.action : undefined;
 
     switch (action) {
-      case 'create-test-data': {
+      case, 'create-test-data': {
         // Create comprehensive test data set
         const testUserRaw = await db
           .insert(users)
@@ -281,12 +281,12 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-           , user: Array.isArray(testUserRaw) ? (testUserRaw as unknown[])[0] : testUserRaw,
-            case Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw
+           , user: Array.isArray(testUserRaw) ? (testUserRaw as: unknown[])[0] : testUserRaw,
+            case Array.isArray(testCaseRaw) ? (testCaseRaw as: unknown[])[0] : testCaseRaw
           }
         });
       }
-      case 'cleanup-test-data': {
+      case, 'cleanup-test-data': {
         // Cleanup all test data
         const deletedEvidence = await db
           .delete(evidence)
@@ -304,7 +304,7 @@ export const POST: RequestHandler = async ({ request }) => {
           }
         });
       }
-      default: return json({ error: `Unknown action` }, { status: 400 });
+      default: return json({, error: `Unknown action` }, { status: 400 });
     }
   } catch (error: any) {
     return json(

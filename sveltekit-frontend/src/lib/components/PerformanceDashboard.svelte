@@ -3,10 +3,10 @@
   Real-time monitoring and analytics
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { writable } from, 'svelte/store';
   interface PerformanceMetrics {
     totalRequests: number;
     averageResponseTime: number;
@@ -20,7 +20,7 @@ import type { Case } from '$lib/types';
     database: 'healthy' | 'warning' | 'error';
     storage: number;
   }
-  // --- NEW: strongly-typed logs ---
+  // ---, NEW: strongly-typed logs ---
   interface LogEntry {
     id?: string | number;
     timestamp?: string | number;
@@ -30,13 +30,13 @@ import type { Case } from '$lib/types';
   }
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
-  const logs = writable<LogEntry[]>([]); // changed from unknown[]
-  let refreshInterval: NodeJS.Timeout;
+  const logs = writable<LogEntry[]>([]); // changed from: unknown[]
+  let, refreshInterval: NodeJS.Timeout;
   let autoRefresh = $state<boolean>(true);
   $effect(() => {
     loadMetrics();
     if (autoRefresh) {
-      refreshInterval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds
+      refreshInterval = setInterval(loadMetrics, 30000); // Refresh every, 30 seconds
     }
     return () => {
       if (refreshInterval) clearInterval(refreshInterval);
@@ -80,13 +80,13 @@ import type { Case } from '$lib/types';
   }
   function getHealthColor(status: string): string {
     switch (status) {
-      case 'healthy':
-        return 'text-green-600';
-      case 'warning':
-        return 'text-yellow-600';
-      case 'error':
-        return 'text-red-600';
-      default: return 'text-gray-600';
+      case, 'healthy':
+        return, 'text-green-600';
+      case, 'warning':
+        return, 'text-yellow-600';
+      case, 'error':
+        return, 'text-red-600';
+      default: return, 'text-gray-600';
     }
   }
   function formatHour(hour: number): string {
@@ -220,7 +220,7 @@ import type { Case } from '$lib/types';
   .dashboard-header h1 {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--primary-color);
+   , color: var(--primary-color);
   }
   .controls {
     display: flex;
@@ -235,11 +235,11 @@ import type { Case } from '$lib/types';
     transition: all 0.2s ease; /* added unit + easing */
   }
   .btn-primary {
-    background: var(--primary-color);
+   , background: var(--primary-color);
     color: white;
   }
   .btn-secondary {
-    background: var(--secondary-color);
+   , background: var(--secondary-color);
     color: var(--text-color);
   }
   .health-grid {
@@ -251,14 +251,14 @@ import type { Case } from '$lib/types';
   .health-card {
     background: white;
     border-radius: 0.5rem;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
   }
   .health-card h3 {
-    margin: 0 0 1rem 0;
+    margin: 0, 0 1rem 0;
     font-size: 1rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
   }
   .health-status {
     font-size: 1.25rem;
@@ -266,7 +266,7 @@ import type { Case } from '$lib/types';
     text-transform: capitalize; /* fixed typo */
   }
   .metrics-grid {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
@@ -274,22 +274,22 @@ import type { Case } from '$lib/types';
   .metric-card {
     background: white;
     border-radius: 0.5rem;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     text-align: center;
   }
   .metric-card h3 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     font-size: 0.875rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
   .metric-value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--primary-color);
+   , color: var(--primary-color);
   }
   .metric-value.large {
     font-size: 2rem;
@@ -297,28 +297,28 @@ import type { Case } from '$lib/types';
   .progress-bar {
     width: 100%;
     height: 0.5rem;
-    background: var(--border-color);
+   , background: var(--border-color);
     border-radius: 0.25rem;
     overflow: hidden;
     margin-top: 0.5rem;
   }
   .progress-fill {
     height: 100%;
-    background: var(--primary-color);
+   , background: var(--primary-color);
     transition: width: 0.3s ease;
   }
   .chart-section {
     background: white;
     border-radius: 0.5rem;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     margin-bottom: 2rem;
   }
   .chart-section h2 {
-    margin: 0 0 1.5rem 0;
+   , margin: 0, 0 1.5rem 0;
     font-size: 1.25rem;
-    color: var(--text-color);
+   , color: var(--text-color);
   }
   .endpoints-list {
     display: flex;
@@ -330,7 +330,7 @@ import type { Case } from '$lib/types';
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
-    background: var(--background-light);
+   , background: var(--background-light);
     border-radius: 0.375rem;
     margin-bottom: 0.5rem;
   }
@@ -342,7 +342,7 @@ import type { Case } from '$lib/types';
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
   }
   .peak-hours-chart {
     display: flex;
@@ -360,13 +360,13 @@ import type { Case } from '$lib/types';
   }
   .bar-fill {
     width: 100%;
-    background: var(--primary-color);
-    border-radius: 0.25rem 0.25rem 0 0;
+   , background: var(--primary-color);
+    border-radius: 0.25rem 0.25rem, 0 0;
     min-height: 2px;
   }
   .bar-label {
     font-size: 0.75rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
     margin-top: 0.5rem;
     writing-mode: vertical-rl;
     text-orientation: mixed; /* fixed syntax */
@@ -379,24 +379,24 @@ import type { Case } from '$lib/types';
   .logs-section {
     background: white;
     border-radius: 0.5rem;
-    padding: 1.5rem;
+   , padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
   }
   .logs-section h2 {
-    margin: 0 0 1.5rem 0;
+    margin: 0, 0 1.5rem 0;
     font-size: 1.25rem;
-    color: var(--text-color);
+   , color: var(--text-color);
   }
   .logs-container {
     max-height: 400px;
     overflow-y: auto;
   }
   .log-entry {
-    padding: 0.75rem;
+   , padding: 0.75rem;
     border-left: 4px solid var(--border-color);
     margin-bottom: 0.5rem;
-    background: var(--background-light);
+   , background: var(--background-light);
     border-radius: 0 0.375rem 0.375rem 0;
   }
   .log-entry.error {
@@ -413,7 +413,7 @@ import type { Case } from '$lib/types';
   }
   .log-timestamp {
     font-size: 0.75rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
     margin-bottom: 0.25rem;
   }
   .log-level {
@@ -422,7 +422,7 @@ import type { Case } from '$lib/types';
     font-weight: bold;
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
-    background: var(--text-secondary);
+   , background: var(--text-secondary);
     color: white;
     margin-bottom: 0.5rem;
   }
@@ -433,7 +433,7 @@ import type { Case } from '$lib/types';
   .log-metadata {
     font-family: monospace;
     font-size: 0.75rem;
-    color: var(--text-secondary);
+   , color: var(--text-secondary);
     background: white;
     padding: 0.5rem;
     border-radius: 0.25rem;
@@ -451,6 +451,6 @@ import type { Case } from '$lib/types';
     color: #dc2626;
   }
   .text-gray-600 {
-    color: #6b7280;
+   , color: #6b7280;
   }
 </style>

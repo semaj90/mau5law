@@ -1,4 +1,4 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * MCP Integration Status API Endpoint
  * Provides status information about the enhanced MCP integration
@@ -118,23 +118,23 @@ export const GET: RequestHandler = async ({ url, request }) => {
       timestamp: new Date().toISOString(),
       overallStatus,
       integrationReadiness,
-      services: { mcpServer: {, status: mcpServerStatus,
+      services: {, mcpServer: {, status: mcpServerStatus,
           metrics: mcpMetrics,
           url: 'http:,//localhost:40000'
         },
         ollama: {
-          status: ollamaStatus,
+         , status: ollamaStatus,
           models: ollamaModels,
           url: 'http:,//localhost:11434'
         },
         cluster: {
-          status: clusterStatus,
+         , status: clusterStatus,
           metrics: clusterMetrics
         }
       },
       mcpTools: mcpToolsStatus,
       capabilities: {
-        enhancedRAG: mcpServerStatus === 'online',
+       , enhancedRAG: mcpServerStatus === 'online',
         memoryGraph: mcpServerStatus === 'online',
         context7Documentation: mcpServerStatus === 'online',
         multiAgentOrchestration: mcpServerStatus === 'online',

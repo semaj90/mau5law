@@ -396,7 +396,7 @@
               })}>
               📚
             </Button>
-            <Dialog.Root>
+            <Dialog>
               <Dialog.Trigger asChild let:builder>
                 <Button builders={[builder]} variant="ghost" size="icon" title="AI Assistant">
                   <Brain class="h-5 w-5" />
@@ -444,7 +444,7 @@
                   </Button>
                 </Dialog.Footer>
               </Dialog.Content>
-            </Dialog.Root>
+            </Dialog>
           </div>
           <div class="text-sm text-nier-gray-light">
             {content.length} characters | {content.split(/\s+/).filter(Boolean).length} words

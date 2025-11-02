@@ -1,15 +1,15 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
 import {
   evidenceBoards,
   evidenceBoardItems,
   evidenceBoardConnections,
   evidence,
   personsOfInterest
-} from '$lib/database/enhanced-schema';
-import { eq, and } from 'drizzle-orm';
-import { z } from 'zod';
+} from, '$lib/database/enhanced-schema';
+import { eq, and } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 const updateEvidenceBoardSchema = z.object({
   name: z.string().min(1).max(255).optional(),

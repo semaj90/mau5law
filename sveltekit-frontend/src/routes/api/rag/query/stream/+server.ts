@@ -1,6 +1,6 @@
-import type { Document } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { Document } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
           );
 
           // Simulate AI response streaming (in production, this would stream from Ollama/LLM)
-          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10} relevant documents from your legal corpus.`;'
+          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey, findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10} relevant documents from your legal corpus.`;'
 
           // Stream the AI response word by word
           const words = aiResponse.split(' ');
@@ -110,8 +110,8 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-                type: 'error',
-                message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,'`'`
+               , type: 'error',
+                message: `RAG processing;, error: ${error instanceof Error ? error.message : `Unknown error` }`,'`'`
                 error: true
               })}\n\n`
             )

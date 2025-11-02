@@ -1,8 +1,8 @@
 <script, lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { writable, get } from 'svelte/store';
+	import { onMount, onDestroy } from, 'svelte';
+	import { writable, get } from, 'svelte/store';
 	// prefer the module entry (no .js) and avoid importing TS types from a .js file
-	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator';
+	import { coordinatorStatus, masterServiceCoordinator } from, '$lib/services/master-service-coordinator';
 	// local lightweight ServiceStatus shape (keeps TS happy without importing types from a .js module)
 	type ServiceStatus = {
 		status?: string;
@@ -38,7 +38,7 @@
 			degraded_services: string[];
 			offline_services: string[];
 		}
-		recommendations: string[];
+	, recommendations: string[];
 	}
 	// Enhanced dashboard state
 	const healthData = writable<HealthData | null>(null);
@@ -47,14 +47,14 @@
 	let refreshInterval: ReturnType<typeof setInterval> | null = null;
 	let autoRefresh = true;
 	let refreshRate = 5000; // ms
-	let selectedTier: 'all' | string = 'all';
+	let, selectedTier: 'all' | string = 'all';
 	let showOnlyIssues = $state<boolean>(false);
 	// Real-time snapshot holder for coordinator data (populated during fetch)
 	let systemStatusSnapshot: any = {
-		services: new Map<string, any>(),
+	, services: new Map<string, any>(),
 		errors: [],
-		summary: { totalServices: 0, healthyServices: 0 },
-		metrics: { successRate: 1, avgResponseTime: 0 }
+		summary: {, totalServices: 0, healthyServices: 0 },
+		metrics: {, successRate: 1, avgResponseTime: 0 }
 	};
 	const fetchHealth = async () => {
 		try {
@@ -87,8 +87,8 @@
 	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
 		const now = Date.now();
 		// Use coordinator data if available, fallback to legacy
-		if ((coordinator as any)?.success && (coordinator as any).data) {
-			const data = (coordinator as any).data;
+		if ((coordinator as: any)?.success && (coordinator as: any).data) {
+			const data = (coordinator as: any).data;
 			// use the snapshot from the coordinator store (if present) for per-service status
 			const servicesMap = systemStatusSnapshot?.services instanceof Map ? systemStatusSnapshot.services : new Map<string, ServiceStatus>();
 			const errors = systemStatusSnapshot?.errors || [];
@@ -102,14 +102,14 @@
 				services_online: data.healthyServices,
 				services_total: data.totalServices,
 				cuda: {
-					service_available: data.performance?.cudaUtilization > 0,
+				, service_available: data.performance?.cudaUtilization > 0,
 					worker_available: true,
 					gpu_ready: data.performance?.cudaUtilization > 0,
 					response_time: data.performance?.avgResponseTime || null
 				},
 				services: mapServicesToHealthFormat(servicesMap),
 				summary: {
-					critical_services: errors.map((e: any) => e.description || String(e)),
+				, critical_services: errors.map((e: any) => e.description || String(e)),
 					degraded_services: serviceEntries
 						.filter(([, status]) => status?.status === 'degraded')
 						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id),
@@ -128,14 +128,14 @@
 			services_online: 0,
 			services_total: 38,
 			cuda: {
-				service_available: false,
+			, service_available: false,
 				worker_available: false,
 				gpu_ready: false,
 				response_time: null
 			},
 			services: [],
 			summary: {
-				critical_services: ['Coordinator not available'],
+			, critical_services: ['Coordinator not available'],
 				degraded_services: [],
 				offline_services: []
 			},
@@ -144,14 +144,14 @@
 	}
 	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
 		switch (health) {
-			case 'excellent':
-			case 'good':
-				return 'healthy';
-			case 'degraded':
-				return 'degraded';
-			case 'critical':
-			case 'offline':
-			default: return 'critical';
+			case, 'excellent':
+			case, 'good':
+				return, 'healthy';
+			case, 'degraded':
+				return, 'degraded';
+			case, 'critical':
+			case, 'offline':
+			default: return, 'critical';
 		}
 	}
 	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
@@ -162,11 +162,11 @@
 				name: service?.displayName || id,
 				url: service ? `http://localhost:${service.port}` : '',
 				status: mapServiceStatus(status?.status || 'unknown'),
-				// coerce null -> undefined so the type matches ServiceHealth.responseTime?: number
-				responseTime: typeof status?.responseTime === 'number' ? status?.responseTime : undefined,
+				// coerce: null -> undefined so the type matches ServiceHealth.responseTime?: number
+			, responseTime: typeof status?.responseTime === 'number' ? status?.responseTime : undefined,
 				lastCheck: status?.lastCheck || Date.now(),
 				details: {
-					tier: service?.tier,
+				, tier: service?.tier,
 					protocol: service?.protocol,
 					critical: service?.critical,
 					cudaAccelerated: service?.cudaAccelerated,
@@ -178,13 +178,13 @@
 	}
 	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
 		switch (status) {
-			case 'healthy':
-				return 'online';
-			case 'degraded':
-				return 'degraded';
-			case 'failed':
-			case 'unknown':
-			default: return 'offline';
+			case, 'healthy':
+				return, 'online';
+			case, 'degraded':
+				return, 'degraded';
+			case, 'failed':
+			case, 'unknown':
+			default: return, 'offline';
 		}
 	}
 	const generateRecommendations = (): string[] => {
@@ -203,36 +203,36 @@
 	}
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case 'online':
-			case 'healthy':
-				return 'text-green-600 bg-green-50 border-green-200';
-			case 'degraded':
-				return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-			case 'offline':
-			case 'critical':
-				return 'text-red-600 bg-red-50 border-red-200';
-			default: return 'text-gray-600 bg-gray-50 border-gray-200';
+			case, 'online':
+			case, 'healthy':
+				return, 'text-green-600 bg-green-50 border-green-200';
+			case, 'degraded':
+				return, 'text-yellow-600 bg-yellow-50 border-yellow-200';
+			case, 'offline':
+			case, 'critical':
+				return, 'text-red-600 bg-red-50 border-red-200';
+			default: return, 'text-gray-600 bg-gray-50 border-gray-200';
 		}
 	}
 	const getStatusIcon = (status: string) => {
 		switch (status) {
-			case 'online':
-			case 'healthy':
-				return '✅';
-			case 'degraded':
-				return '⚠️';
-			case 'offline':
-			case 'critical':
-				return '❌';
-			default: return '🔍';
+			case, 'online':
+			case, 'healthy':
+				return, '✅';
+			case, 'degraded':
+				return, '⚠️';
+			case, 'offline':
+			case, 'critical':
+				return, '❌';
+			default: return, '🔍';
 		}
 	}
 	const formatTimestamp = (timestamp: number) => {
 		return new Date(timestamp).toLocaleString();
 	}
 	const formatResponseTime = (time?: number | null) => {
-		// treat null/undefined as unavailable, but show 0ms when explicitly zero
-		if (time === null || typeof time === 'undefined') return 'N/A';
+		// treat: null/undefined as unavailable, but show 0ms when explicitly zero
+		if (time === null || typeof time === 'undefined') return, 'N/A';
 		return `${time}ms`;
 	}
 	// Service actions
@@ -242,7 +242,7 @@
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					action: 'restart_service',
+				, action: 'restart_service',
 					target: serviceId
 				})
 			});
@@ -259,7 +259,7 @@
 			const response = await fetch('/api/v1/coordinator', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'start_all' })
+				body: JSON.stringify({, action: 'start_all' })
 			});
 			if (response.ok) {
 				console.log('Starting all services...');
@@ -274,7 +274,7 @@
 			const response = await fetch('/api/v1/coordinator', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'force_health_check' })
+				body: JSON.stringify({, action: 'force_health_check' })
 			});
 			if (response.ok) {
 				console.log('Forced health check initiated');
@@ -304,7 +304,7 @@
 			let services = hd.services ?? [];
 			if (selectedTier !== 'all') {
 				const tierNum = Number(selectedTier);
-				services = services.filter(s => (s.details as any)?.tier === tierNum);
+				services = services.filter(s => (s.details as: any)?.tier === tierNum);
 			}
 			if (showOnlyIssues) {
 				services = services.filter(s => s.status !== 'online');
@@ -314,8 +314,7 @@
 	}
 
 	onMount(() => {
-		// initial fetch and optional auto-refresh
-		void fetchHealth();
+		// initial fetch and optional auto-refresh: void fetchHealth();
 		if (autoRefresh) {
 			refreshInterval = setInterval(fetchHealth, refreshRate);
 		}

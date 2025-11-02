@@ -9,21 +9,21 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 /// <reference, types="vite/client" />
-import { json } from "@sveltejs/kit"
-import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from '$lib/server/summarizeCache'
-import type { RequestHandler } from './$types';
+import { json } from, "@sveltejs/kit"
+import { getCache, setCache, hashPayload, CACHE_CONSTANTS, deleteCache } from, '$lib/server/summarizeCache'
+import type { RequestHandler } from, './$types';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import { getOllamaEndpoint } from '$lib/server/endpoints';
-import { redis } from '$lib/server/redis';
-import { CONFIG } from '$lib/config/env.server';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { getOllamaEndpoint } from, '$lib/server/endpoints';
+import { redis } from, '$lib/server/redis';
+import { CONFIG } from, '$lib/config/env.server';
 
 // Enhanced summarization endpoint now supports: streaming, multi-layer caching (Memory + Redis + client IndexedDB hint), structured summaries.
 // Cache strategy: hash(text + salient options) => LRU/TTL memory; write-through to Redis if available; emit clientCacheHint for IndexedDB persistence.
@@ -45,7 +45,7 @@ export interface SummarizeOptions {
   cache?: boolean; // enable server-side cache
   clientCacheHint?: boolean; // request IndexedDB persistence hint
 }
-export interface SummarizeResponseMeta { duration: number;, tokens: number;
+export interface SummarizeResponseMeta {, duration: number;, tokens: number;
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
@@ -62,7 +62,7 @@ export interface SummarizeRequest {
   type?: 'legal' | 'general';
   options?: SummarizeOptions;
 }
-export interface StructuredSummary { overview: string;, keyPoints: string[];
+export interface StructuredSummary {, overview: string;, keyPoints: string[];
   risks: string[];
   actions: string[];
 }
@@ -81,14 +81,14 @@ export interface SummarizeResponse {
   compressionRatio?: string;
   performance?: SummarizeResponseMeta;
   timestamp: string;
-  clientCacheHint?: { key: string;, ttlMs: number;
+  clientCacheHint?: {, key: string;, ttlMs: number;
   };
   suggestions?: string[];
   error?: string;
   details?: string;
 }
 function buildSummarizerPrompt(
-  text: string,
+ , text: string,
   mode: SummarizeOptions['mode'],
   bullets: number,
   maxTokens: number,
@@ -98,18 +98,18 @@ function buildSummarizerPrompt(
   const trimmed = text.trim();
   const baseInstruction = `You are an expert legal summarizer. Provide a faithful, concise summary with NO fabrication.`;
   const structuredSuffix = structured
-    ? `\nReturn JSON with keys: overview (string), keyPoints (string[]), risks (string[]), actions (string[]). If insufficient info for a field, use an empty array or short placeholder string. JSON ONLY.`
+    ? `\nReturn JSON with keys: overview (string), keyPoints (string[]), risks (string[]), actions (string[]). If insufficient info for a field, use an empty array or short placeholder: string. JSON ONLY.`
     : '';
   if (mode === 'bullets') {
-    return `${baseInstruction}\nSummarize the following ${docType} in exactly ${bullets} bullet points.\nEach bullet: ≤ ${Math.max(12, Math.round(maxTokens / bullets / 2))} words, factual, no intro/outro.${structured ? '\nIf structured output requested, still include bullet text in keyPoints array.' : `` }\n\nTEXT:\n${trimmed}\n\nBULLET SUMMARY (use '-' prefix):${structuredSuffix}`;
+    return `${baseInstruction}\nSummarize the following ${docType} in exactly ${bullets} bullet points.\nEach bullet: ≤ ${Math.max(12, Math.round(maxTokens / bullets / 2))} words, factual, no intro/outro.${structured ? '\nIf structured output requested, still include bullet text in keyPoints array.' : `` }\n\nTEXT:\n${trimmed}\n\nBULLET SUMMARY (use, '-' prefix):${structuredSuffix}`;
   }
   if (mode === 'abstract') {
     return `${baseInstruction}\nProduce an abstract-style summary (≈ ${Math.round(maxTokens / 4)} words) covering: Purpose, Key Points, Risks.\nAvoid bullet formatting.\n\nTEXT:\n${trimmed}\n\nABSTRACT:${structuredSuffix}`;
   }
   if (mode === 'structured') {
-    return `${baseInstruction}\nReturn a structured summary with the following labeled sections in this order: Overview, Key Points, Legal Risks, Action Items.${structuredSuffix ? '\nYou MUST output JSON only.' : `` }\nKeep each section concise.\n\nTEXT:\n${trimmed}\n\nSTRUCTURED SUMMARY:${structuredSuffix}`;
+    return `${baseInstruction}\nReturn a structured summary with the following labeled sections in this order: Overview, Key Points, Legal Risks, Action Items.${structuredSuffix ? '\nYou MUST output JSON only.' : `` }\nKeep each section concise.\n\nTEXT:\n${trimmed}\n\nSTRUCTURED, SUMMARY:${structuredSuffix}`;
   }
-  return `${baseInstruction}\nFirst give a 2 sentence abstract, then ${Math.min(5, bullets)} bullet points of key facts (no duplicates).${structured ? '\nProvide structured JSON after bullets.' : `` }\n\nTEXT:\n${trimmed}\n\nSUMMARY:${structuredSuffix}`;
+  return `${baseInstruction}\nFirst give a, 2 sentence abstract, then ${Math.min(5, bullets)} bullet points of key facts (no duplicates).${structured ? '\nProvide structured JSON after bullets.' : `` }\n\nTEXT:\n${trimmed}\n\nSUMMARY:${structuredSuffix}`;
 }
 function naiveFallbackSummary(text: string, bullets = 3) {
   const sentences = text
@@ -151,7 +151,7 @@ async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise
 type ModelsResponse = { models?: Array<{ name?: string }> };
 type ExecuteResult = Response | OllamaResponse;
 
-// --- ADDED: typed cache entry shape (avoid `any`)
+// ---, ADDED: typed cache entry shape (avoid `any`)
 type CacheEntryRecord = {
   summary: string;
   model?: string;
@@ -159,7 +159,7 @@ type CacheEntryRecord = {
   perf?: SummarizeResponseMeta;
 };
 
-const originalGETHandler: RequestHandler = async () => {
+const, originalGETHandler: RequestHandler = async () => {
   try {
     const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
     const models = (await res.json().catch(() => ({ models: [] }))) as ModelsResponse;
@@ -199,7 +199,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { text, type = 'legal', options = {} as SummarizeOptions } = raw;
     if (!text || typeof text !== 'string' || text.trim().length < 10) {
       return json(
-        { success: false, error: `Text is required and must be at least 10 characters long` },
+        { success: false, error: `Text is required and must be at least, 10 characters long` },
         { status: 400 }
       );
     }
@@ -244,7 +244,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           compressionRatio: ((cachedEntry.summary.length / text.length) * 100).toFixed(1) + '%',
           performance: cachedEntry.perf,
           timestamp: new Date().toISOString(),
-          clientCacheHint: options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+          clientCacheHint: options.clientCacheHint ? {, key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
           suggestions: [
             'Cached (result as { response?: any; eval_count?: any; prompt_eval_count?: any }). Adjust text or options to recompute.',
           ]
@@ -258,10 +258,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       model,
       prompt,
       stream: !!options.stream,
-      options: { temperature: options.temperature ?? 0.25, top_p: 0.9, max_tokens: maxTokens }
+      options: {, temperature: options.temperature ?? 0.25, top_p: 0.9, max_tokens: maxTokens }
     };
     // --- CHANGED: typed result and executePrimary signature
-    let result: ExecuteResult;
+    let, result: ExecuteResult;
     const executePrimary = async (): Promise<ExecuteResult> => {
       // Streaming path
       if (body.stream) {
@@ -361,7 +361,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             fallbackUsed: true
           };
           return json({
-            success: true,
+           , success: true,
             summary: naive,
             model: meta.modelUsed,
             type,
@@ -419,7 +419,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // tighten structured type; parse into StructuredSummary
     let structured: StructuredSummary | null = null;
     if (structuredRequested) {
-      // Try to extract final JSON object from summary tail
+      // Try to extract final JSON: object from summary tail
       const jsonMatch = summary.match(/\{[\s\S]*\}$/);
       if (jsonMatch) {
         try {
@@ -459,10 +459,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       cacheKey: cacheKey || undefined,
       cached: false,
       clientCacheHint:
-        cacheKey && options.clientCacheHint ? { key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
+        cacheKey && options.clientCacheHint ? {, key: cacheKey, ttlMs: CACHE_CONSTANTS.TTL_MS } : undefined,
       suggestions: [
         'Try mode="bullets" or mode="structured" for different formats',
-        'Provide "bullets": N to control bullet count',
+        'Provide, "bullets": N to control bullet count',
         'Use smaller excerpts for more precise summaries',
       ]
     });
@@ -481,7 +481,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 };
 // Auxiliary DELETE for invalidation: /api/ai/summarize/cache/:key
-const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
+const, originalDELETEHandler: RequestHandler = async ({ params, url }) => {
   try {
     const key = (params as { key?: string }).key || url.searchParams.get('key'); // narrow params to include optional key
     if (!key) return json({ success: false, error: 'Cache key required' }, { status: 400 });
@@ -491,7 +491,7 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });'` }'`
 };
 
-// POST body: { fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string }
+// POST body: {, fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string }
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json().catch(() => ({}));
@@ -519,9 +519,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 
 		const data = await res.json().catch(() => ({}));
-		const text = (data?.response as string) ?? (data?.summary as string) ?? `Fallback: Could not generate summary for ${fileId}.`;
+		const text = (data?.response as: string) ?? (data?.summary as: string) ?? `Fallback: Could not generate summary for ${fileId}.`;
 
-		// Cache for 30 minutes
+		// Cache for, 30 minutes
 		await redis.set(cacheKey, text, { EX: 1800 });
 
 		return new Response(JSON.stringify({ success: true, summary: text, provider: 'ollama', model }), {

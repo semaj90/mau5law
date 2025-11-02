@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Demo RAG functionality for testing
  * Simulates AI-powered case analysis with mock data
@@ -11,23 +11,23 @@ interface Evidence { id: string;, filename: string;
   uploadedAt: Date;
   metadata?: { [key: string]: any }
 }
-interface Case { id: string;, title: string;
+interface Case {, id: string;, title: string;
   description: string;
   createdAt: Date;
   status: 'open' | 'closed' | 'archived';
 }
-interface Report { id: string;, title: string;
+interface Report {, id: string;, title: string;
   content: string;
   createdAt: Date;
   generatedBy: string;
 }
-export interface RAGDemoQuery { query: string;, caseId: string;
+export interface RAGDemoQuery {, query: string;, caseId: string;
   evidence?: Evidence[];
   reports?: Report[];
   maxTokens?: number;
   temperature?: number;
 }
-export interface RAGDemoResponse { response: string;, sources: Array<any>;
+export interface RAGDemoResponse {, response: string;, sources: Array<any>;
   confidence: number;
   tokensUsed: number;
   reasoning: string[];
@@ -37,7 +37,7 @@ export interface RAGDemoResponse { response: string;, sources: Array<any>;
  */
 const mockCaseData = {
   '1': {
-    title: 'Financial Fraud Investigation',
+   , title: 'Financial Fraud Investigation',
     description: 'Investigation into suspicious financial transactions',
     evidence: [
       {,
@@ -46,7 +46,7 @@ const mockCaseData = {
         type: 'document' as const,
         description: 'Bank statements showing unusual transfers',
         uploadedAt: new Date('2024-01-15'),
-        metadata: { amount: '$50,000', account: '****1234' }
+        metadata: {, amount: '$50,000', account: '****1234' }
       },
       {
         id: 'e2',
@@ -54,7 +54,7 @@ const mockCaseData = {
         type: 'communication' as const,
         description: 'Email communications between suspect and accomplice',
         uploadedAt: new Date('2024-01-16'),
-        metadata: { participants: ['john.doe@email.com', 'jane.smith@email.com'] }
+        metadata: {, participants: ['john.doe@email.com', 'jane.smith@email.com'] }
       },
       {
         id: 'e3',
@@ -62,7 +62,7 @@ const mockCaseData = {
         type: 'data' as const,
         description: 'Digital transaction logs from internal systems',
         uploadedAt: new Date('2024-01-17'),
-        metadata: { entries: 247, dateRange: '2023-12-01 to 2024-01-15' }
+        metadata: {, entries: 247, dateRange: '2023-12-01 to 2024-01-15' }
       }
     ],
     reports: [
@@ -85,7 +85,7 @@ const mockCaseData = {
         type: 'media' as const,
         description: 'Security camera footage from server room',
         uploadedAt: new Date('2024-02-01'),
-        metadata: { duration: '2:30:45', quality: '1080p' }
+        metadata: {, duration: '2:30:45', quality: '1080p' }
       },
       {
         id: 'e5',
@@ -93,7 +93,7 @@ const mockCaseData = {
         type: 'data' as const,
         description: 'Network access logs showing unauthorized data transfers',
         uploadedAt: new Date('2024-02-02'),
-        metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] }
+        metadata: {, size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] }
       }
     ],
     reports: []
@@ -111,7 +111,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
   }
   const queryLower = query.query.toLowerCase();
   const sources: RAGDemoResponse['sources'] = [];
-  const reasoning: string[] = [];
+  const, reasoning: string[] = [];
   // Analyze query against evidence
   caseData.evidence.forEach(evidence => {
     const relevance = calculateRelevance(queryLower, evidence);
@@ -218,7 +218,7 @@ function generateSummaryResponse(caseData: any, sources: any[]): string {
   return `Based on my analysis of ${sources.length} pieces of evidence, this case involves ${caseData.description.toLowerCase()}.`
 Key findings include:
 • ${sources.length} relevant evidence items identified
-• Evidence spans multiple data types: documents, communications, and digital logs
+• Evidence spans multiple data, types: documents, communications, and digital logs
 • Patterns suggest systematic activity requiring further investigation
 The evidence quality is strong, with multiple corroborating sources. I recommend prioritizing the highest-relevance items for detailed forensic analysis.`;' }'`
 function generateEvidenceResponse(caseData: any, sources: any[]): string {
@@ -263,7 +263,7 @@ function generatePatternResponse(caseData: any, sources: any[]): string {
 • Systematic data collection across multiple evidence types
 • Coordinated timing between different activities
 • Sophisticated operational security measures
-**Data Patterns:**
+**Data, Patterns:**
 • Evidence clustering around specific time periods
 • Cross-referencing reveals hidden connections
 • Multiple data sources validate findings
@@ -284,7 +284,7 @@ ${sources.length > 0
  */
 export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
   const caseData = mockCaseData[caseId as keyof typeof mockCaseData];
-  if (!caseData) return 'Case not found in demo data.';
+  if (!caseData) return, 'Case not found in demo data.';
   await new Promise(resolve => setTimeout(resolve, 1000));
   return `# Case Summary: ${caseData.title}`
 ## Overview

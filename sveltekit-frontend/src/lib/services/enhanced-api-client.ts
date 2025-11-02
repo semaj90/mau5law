@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility
  */
-import { z } from 'zod';
-import { goto } from '$app/navigation';
-import { browser } from '$app/environment';
+import { z } from, 'zod';
+import { goto } from, '$app/navigation';
+import { browser } from, '$app/environment';
 // Base API configuration
 const API_BASE_URL = '/api/v1';
 // API Response types
@@ -20,7 +20,7 @@ export interface ApiResponse<T = unknown> {
 export interface PaginatedResponse<T = unknown> { data: T[];, page: number;
   limit: number;
   total: number;
-  totalPages: number;
+ , totalPages: number;
   hasNext?: boolean;
   hasPrev?: boolean;
 }
@@ -36,7 +36,7 @@ export interface RequestOptions {
 // Error types
 export class ApiError extends Error {
   public status: number;
-  public code: string;
+  public, code: string;
   public details?: Record<string, unknown> | unknown;
 
   constructor(status: number, code = 'API_ERROR', message = 'API error', details?: Record<string, unknown> | unknown) {
@@ -92,7 +92,7 @@ export class LegalAIApiClient {
     };
 
     if (body && method !== 'GET') {
-      requestInit.body = JSON.stringify(body as unknown);
+      requestInit.body = JSON.stringify(body as: unknown);
     }
 
     let lastError: any;
@@ -112,9 +112,9 @@ export class LegalAIApiClient {
         if (!response.ok) {
           const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}` };'`'`
           const ed = errorData as Record<string, unknown>;
-          const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as string) : 'API_ERROR';
+          const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as: string) : 'API_ERROR';
           const errMessage =
-            typeof ed?.['message'] === 'string' ? (ed['message'] as string) : `HTTP ${response.status}`;
+            typeof ed?.['message'] === 'string' ? (ed['message'] as: string) : `HTTP ${response.status}`;
           const errDetails = ed?.['details'] ?? ed;
           if (response.status === 401) {
             if (browser) goto('/auth/login');
@@ -126,7 +126,7 @@ export class LegalAIApiClient {
         return (parsed as T) ?? ({} as T);
       } catch (error) {
         lastError = error;
-        // Don't retry on client errors (4xx) except 429 (rate limit)'
+        // Don't retry on client errors (4xx) except, 429 (rate limit)'
         if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.status !== 429) {
           throw error;
         }
@@ -268,13 +268,13 @@ export class LegalAIApiClient {
    */
   async updateEvidence(
     id: string,
-    evidenceData: Partial<{ title: string;, evidenceType: string;
+    evidenceData: Partial<{, title: string;, evidenceType: string;
       description: string;
       fileUrl: string;
       fileName: string;
       fileSize: number;
       mimeType: string;
-      hash: string;
+     , hash: string;
      , tags: string[];
      , chainOfCustody: any[];
      , aiSummary: string;
@@ -452,7 +452,7 @@ export class LegalAIApiClient {
     file: File,
     onProgress?: (progress: number) => void,
     signal?: AbortSignal
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string; hash: string }> {
+  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string;, hash: string }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -506,8 +506,8 @@ export class LegalAIApiClient {
    */
   async getHealthStatus(
     signal?: AbortSignal
-  ): Promise<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>> {
-    return this.request<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>>(
+  ): Promise<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>> {
+    return this.request<ApiResponse<{ status: string; timestamp: string;, services: Record<string, unknown> }>>(
       '/health',
       { signal }
     );
@@ -519,7 +519,7 @@ export const apiClient = new LegalAIApiClient();
 export const CreateCaseSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
   description: z.string().optional(),
-  caseNumber: z.string().max(100, 'Case number too long').optional(),
+  caseNumber: z.string().max(100, 'Case: number too long').optional(),
   status: z.enum(['open', 'closed', 'pending', 'archived']).default('open'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   category: z.string().optional(),

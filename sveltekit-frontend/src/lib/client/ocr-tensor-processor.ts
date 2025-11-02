@@ -3,14 +3,14 @@
  * OCR.js → Text Extraction → Node API → Embeddings → Multi-dimensional Tensors
  * SIMD parsing via Service Worker for streaming performance
  */
-import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
-import { browser } from '$app/environment';
-import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
+import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager.js';
+import { browser } from, '$app/environment';
+import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from, '$lib/components/ui/gaming/constants/gaming-constants.js';
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
 type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];
 type Word = { text: string; bbox: BBox; confidence: number };
-type RecognizeResult = { data: { text: string; confidence: number; words: Word[] } };
+type RecognizeResult = { data: { text: string; confidence: number;, words: Word[] } };
 type LoggerMessage = Record<string, unknown>;
 // accept both module shapes (default export or direct export) and expose common helpers optionally
 type TesseractLike = {
@@ -31,24 +31,24 @@ declare global {
   }
 }
 export interface OCRResult { text: string;, confidence: number;
-  boundingBoxes: Array<{ text: string;, bbox: BBox;
+  boundingBoxes: Array<{, text: string;, bbox: BBox;
     confidence: number;
   }>;
 }
-export interface TensorData { embeddings: Float32Array;, dimensions: number;
-  metadata: { source: 'ocr' | 'manual' | 'api';, processed_at: number;
+export interface TensorData {, embeddings: Float32Array;, dimensions: number;
+  metadata: {, source: 'ocr' | 'manual' | 'api';, processed_at: number;
     tensor_id: string;
     confidence: number;
   };
 }
-export interface ProcessingResult { ocr: OCRResult;, embeddings: TensorData;
+export interface ProcessingResult {, ocr: OCRResult;, embeddings: TensorData;
   searchIndex: Float32Array;
   processingTime: number;
   cacheHit: boolean;
 }
 // New interfaces for API responses and options
 export interface EmbeddingAPIResponse {
-  embedding: number[]; // API returns array of numbers, convert to Float32Array
+ , embedding: number[]; // API returns array of numbers, convert to Float32Array
   fromCache?: boolean;
   model?: string;
   type?: string;
@@ -67,7 +67,7 @@ export interface OCRProcessOptions {
   tessjs_create_tsv?: boolean;
 }
 export interface BatchProcessingItem { image: ImageData | HTMLCanvasElement | File;, priority: number;
-  options: OCRProcessOptions;
+ , options: OCRProcessOptions;
 }
 export class OCRTensorProcessor {
   // worker may be a Dedicated Worker or a ServiceWorker (registration.active)
@@ -93,7 +93,7 @@ export class OCRTensorProcessor {
     // Monitor memory pressure using gaming era specs
     this.updateMemoryPressure();
     // Set initial LOD level based on device capabilities
-    const memoryInfo = performance.memory; // Removed: 'as any' cast
+    const memoryInfo = performance.memory; // Removed: 'as: any' cast
     if (memoryInfo) {
       // const usedMemoryMB = memoryInfo.usedJSHeapSize / (1024 * 1024); // Removed unused variable
       const totalMemoryMB = memoryInfo.totalJSHeapSize / (1024 * 1024);
@@ -108,7 +108,7 @@ export class OCRTensorProcessor {
     console.log(`🎮 LOD Level set to: ${this.currentLODLevel}`);
   }
   private updateMemoryPressure(): void {
-    const memoryInfo = performance.memory; // Removed: 'as any' cast
+    const memoryInfo = performance.memory; // Removed: 'as: any' cast
     if (memoryInfo) {
       this.memoryPressure = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
       // Adapt LOD based on memory pressure using gaming thresholds
@@ -123,7 +123,7 @@ export class OCRTensorProcessor {
     if (!browser || this.ocrInitialized) return;
     try {
       // Load Tesseract.js dynamically and handle both `default` and direct export shapes
-      const rawModule = (await import('tesseract.js')) as unknown;
+      const rawModule = (await import('tesseract.js')) as: unknown;
       // If the module has a default export use it, otherwise treat rawModule as the runtime shape
       const modWithDefault = rawModule as { default?: TesseractLike } & Record<string, unknown>;
       const runtime: TesseractLike = modWithDefault.default ?? (rawModule as TesseractLike);
@@ -157,7 +157,7 @@ export class OCRTensorProcessor {
       const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js', { scope: `/api/tensor/` });
       this.serviceWorkerRegistration = registration;
       const activeWorker = registration.active || registration.installing || registration.waiting;
-      // keep reference to the underlying ServiceWorker (may be undefined until activated)
+      // keep reference to the underlying ServiceWorker (may be: undefined until activated)
       this.worker = activeWorker ?? undefined;
       console.log('✅ SIMD Service Worker initialized');
     } catch (error) {
@@ -223,7 +223,7 @@ export class OCRTensorProcessor {
         ...ocrOptions
       });
       const ocrResult: OCRResult = {
-        text: result.data.text,
+       , text: result.data.text,
         confidence: result.data.confidence,
         boundingBoxes: result.data.words.map((word: Word) => ({
           text: word.text,
@@ -246,7 +246,7 @@ export class OCRTensorProcessor {
   private getOCROptionsForLOD(): OCRProcessOptions {
     // Use gaming memory architecture to optimize OCR based on current LOD level
     switch (this.currentLODLevel) {
-      case 'low':
+      case, 'low':
         // 8-bit NES level optimization
         return {
           psm: GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 3 : 8,
@@ -255,7 +255,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: false,
           tessjs_create_tsv: false
         };
-      case 'medium':
+      case, 'medium':
         // 16-bit SNES level optimization
         return {
           psm: GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 6 : 8,
@@ -264,7 +264,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: true,
           tessjs_create_tsv: false
         };
-      case 'high':
+      case, 'high':
         // N64 level optimization with DNN LOD system
         return {
           psm: GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 11 : 13,
@@ -273,7 +273,7 @@ export class OCRTensorProcessor {
           tessjs_create_hocr: true,
           tessjs_create_tsv: true
         };
-      default: return {};
+     , default: return {};
     }
   }
   private async selectOptimalModel(): Promise<{
@@ -308,7 +308,7 @@ export class OCRTensorProcessor {
       if (availableMemory > 2048) {
         // 2GB+ GPU memory
         return {
-          model: 'gemma3:legal-latest', // Primary: Gemma 3 legal for best quality; fallback: ['gemma:270m', 'nomic-embed-text'],
+          model: 'gemma3:legal-latest', // Primary: Gemma, 3 legal for best quality; fallback: ['gemma:270m', 'nomic-embed-text'],
           useCrewAI: false,
           parallelism: 8, // High parallelism for powerful GPU
           cacheSize: 512, // Large cache for complex models
@@ -355,7 +355,7 @@ export class OCRTensorProcessor {
   }
   private async generateEmbeddings(
     text: string
-  ): Promise<{ embeddings: Float32Array; fromCache: boolean; model: string }> {
+  ): Promise<{ embeddings: Float32Array; fromCache: boolean;, model: string }> {
     try {
       // Intelligent model selection based on Ollama GPU memory and system state
       const modelConfig = await this.selectOptimalModel();
@@ -378,7 +378,7 @@ export class OCRTensorProcessor {
       });
       if (!response.ok) {
         throw new Error(`Embedding API failed: ${response.status}`); // No need for: 'as { ok?: any; ... }' }
-      const data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
+      const, data: EmbeddingAPIResponse = await response.json(); // Type data as EmbeddingAPIResponse
       return {
         embeddings: new Float32Array(data.embedding), // Access properties directly
         fromCache: data.fromCache || false,
@@ -394,7 +394,7 @@ export class OCRTensorProcessor {
         embeddings,
         dimensions: embeddings.length,
         metadata: {
-          source: 'ocr',
+         , source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8
@@ -431,7 +431,7 @@ export class OCRTensorProcessor {
         embeddings: processedData.slice(),
         dimensions: processedData.length,
         metadata: {
-          source: 'ocr',
+         , source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.9
@@ -443,7 +443,7 @@ export class OCRTensorProcessor {
         embeddings,
         dimensions: embeddings.length,
         metadata: {
-          source: 'ocr',
+         , source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           confidence: 0.8
@@ -492,7 +492,7 @@ export class OCRTensorProcessor {
           return await this.processImageAsync(item.image, item.options); // Access properties directly
         } catch (error) {
           console.warn(`Failed to process image ${i}: ', error);'`
-          return null;
+          return: null;
         }
       });
       const chunkResults = await Promise.allSettled(chunkPromises);
@@ -603,7 +603,7 @@ export class OCRTensorProcessor {
           reject(err);
         }
       }
-      // Timeout after 30 seconds
+      // Timeout after, 30 seconds
       const timer = setTimeout(() => {
         cleanup();
         reject(new Error('OCR processing timeout'));
@@ -621,11 +621,11 @@ export class OCRTensorProcessor {
   private getOptimalChunkSize(): number {
     // Adaptive chunk size based on gaming memory architecture
     switch (this.currentLODLevel) {
-      case 'low':
+      case, 'low':
         return GAMING_ERA_SPECS['8bit'].memoryArchitecture?.autoEncoderCache ? 1 : 2;
-      case 'medium':
+      case, 'medium':
         return GAMING_ERA_SPECS['16bit'].memoryArchitecture?.lodScalingBuffer ? 3 : 4;
-      case 'high':
+      case, 'high':
         return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
       default: return 3;
     }

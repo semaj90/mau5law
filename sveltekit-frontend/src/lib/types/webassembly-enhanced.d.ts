@@ -16,11 +16,11 @@ export const webAssemblyGPUUtils = {
   // Safe conversion of GPUDevice to ImportValue
   convertGPUDeviceToImportValue: (device: GPUDevice): WebAssembly.ImportValue => {
     // Instead of converting directly, create a function that provides access
-    return (() => device) as any;
+    return (() => device) as: any;
   },
-  // Create WebAssembly import object with GPU support
-  createImportsWithGPU: (device: GPUDevice, additionalImports: any = {}): WebAssembly.Imports => {
-    return { env: {, memory: new WebAssembly.Memory({ initial: 10, maximum: 100 }),
+  // Create WebAssembly import: object with GPU support
+ , createImportsWithGPU: (device: GPUDevice, additionalImports: any = {}): WebAssembly.Imports => {
+    return { env: {, memory: new WebAssembly.Memory({, initial: 10, maximum: 100 }),
         getGPUDevice: () => device,
         ...additionalImports
       },
@@ -29,20 +29,20 @@ export const webAssemblyGPUUtils = {
   },
   // Type assertion helper for GPU device conversion
   assertGPUDevice: (device: any): device is GPUDevice => {
-    return device !== null && typeof device === 'object' && 'createBuffer' in (device as any);
+    return device !== null && typeof device === 'object' && 'createBuffer' in (device as: any);
   },
   // Safe type conversion for analysis results
   convertAnalysisResult: (analysis: any): any => {
     if (analysis && typeof analysis === 'object') {
       return {
-        summary: (analysis as any).summary || 'No summary available',
-        keyTerms: (analysis as any).keyTerms || [],
-        entities: (analysis as any).entities || [],
-        risks: (analysis as any).risks || [],
-        recommendations: (analysis as any).recommendations || [],
-        confidence: (analysis as any).confidence || 0,
-        processingTime: (analysis as any).processingTime || 0,
-        method: (analysis as any).method || 'unknown',
+        summary: (analysis, as: any).summary || 'No summary available',
+        keyTerms: (analysis, as: any).keyTerms || [],
+        entities: (analysis, as: any).entities || [],
+        risks: (analysis, as: any).risks || [],
+        recommendations: (analysis, as: any).recommendations || [],
+        confidence: (analysis, as: any).confidence || 0,
+        processingTime: (analysis, as: any).processingTime || 0,
+        method: (analysis, as: any).method || 'unknown',
         ...analysis
       };
     }
@@ -59,7 +59,7 @@ export const webAssemblyGPUUtils = {
   }
 };
 // Module declaration for WebAssembly enhancements
-declare module 'webassembly' {
+declare module, 'webassembly' {
   interface ImportValue {
     gpu?: GPUDevice;
   }

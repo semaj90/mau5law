@@ -3,7 +3,7 @@
   Testing the PatternDetectionInterface with Enhanced-Bits UI components
 -->
 <script, lang="ts">
-  import  PatternDetectionInterface  from "$lib/components/ai/PatternDetectionInterface.svelte";
+  import  PatternDetectionInterface  from, "$lib/components/ai/PatternDetectionInterface.svelte";
 </script>
 
 <svelte:head>
@@ -18,6 +18,6 @@
 <style>
   .page-container {
     min-height: 100vh;
-    background: #f8fafc;
+   , background: #f8fafc;
   }
 </style>

@@ -312,7 +312,7 @@
 </script>
 
 <!-- bits-ui Dialog provides functionality, nes.css provides retro styling -->
-<Dialog.Root bind:open={showProcessingDetails}>
+<Dialog bind:open={showProcessingDetails}>
   <div class="nes-container with-title enhanced-legal-upload">
     <p class="title">🏛️ LEGAL AI DOCUMENT PROCESSOR</p>
     <div class="upload-header">
@@ -692,7 +692,7 @@
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 
 <style>
   /* bits-ui + nes.css integration styles */

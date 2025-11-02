@@ -1,6 +1,6 @@
 /**
  * Legal Evidence Canvas Component
- * Svelte 5 component for interactive evidence visualization
+ * Svelte, 5 component for interactive evidence visualization
  */
 
 export interface EvidenceItem { id: string;, type: 'photo' | 'document' | 'physical' | 'digital';
@@ -9,17 +9,17 @@ export interface EvidenceItem { id: string;, type: 'photo' | 'document' | 'phys
   rotation: number;
   scale: number;
   textureId?: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   connections: string[];
 }
-export interface CanvasState { zoom: number;, pan: { x: number; y: number };
+export interface CanvasState {, zoom: number;, pan: { x: number; y: number };
   selectedItems: string[];
   mode: 'view' | 'edit' | 'present';
   showConnections: boolean;
-  filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';
+ , filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';
 }
 /**
- * Headless evidence canvas component using Svelte 5 runes
+ * Headless evidence canvas component using Svelte, 5 runes
  */
 export function useEvidenceCanvas() {
   // Evidence items state
@@ -37,7 +37,7 @@ export function useEvidenceCanvas() {
   });
   // Interaction state
   let isDragging = $state<boolean>(false);
-  let dragStartPos = $state<{ x: number; y: number } | null>(null);
+  let dragStartPos = $state<{ x: number;, y: number } | null>(null);
   // draggedItems is reassigned in pointer handling, keep let
   let draggedItems = $state<Set<string>>(new Set());
   // Canvas dimensions
@@ -54,7 +54,7 @@ export function useEvidenceCanvas() {
     const evidenceItem: EvidenceItem = {
       ...item,
       id,
-      position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
+      position: item.position || {, x: canvasSize.width / 2, y: canvasSize.height / 2 },
       rotation: item.rotation || 0,
       scale: item.scale || 1.0,
       connections: item.connections || []
@@ -309,7 +309,7 @@ export function useEvidenceCanvas() {
   type CanvasExport = {
     evidenceItems: Array<[string, EvidenceItem]>;
     canvasState?: Partial<CanvasState>;
-    canvasSize?: { width: number; height: number };
+    canvasSize?: { width: number;, height: number };
     timestamp?: string;
   };
 

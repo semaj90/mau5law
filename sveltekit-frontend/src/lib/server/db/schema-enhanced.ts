@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { pgTable, text, uuid, integer, timestamp, jsonb, serial, real } from 'drizzle-orm/pg-core';
-import { vector } from 'pgvector/drizzle';
+import { pgTable, text, uuid, integer, timestamp, jsonb, serial, real } from, 'drizzle-orm/pg-core';
+import { vector } from, 'pgvector/drizzle';
 // Enhanced documents table: metadata + basic text for embeddings
 export const enhanced_documents = pgTable('enhanced_documents', {
   id: uuid('id').defaultRandom().primaryKey(),

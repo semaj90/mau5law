@@ -102,7 +102,7 @@
     </div>
   </div>
   <!-- Recent Cases Bar -->
-  <div class="recent-cases-bar" transition:slide={{ duration: 300, easing: cubicOut }}>
+  <div class="recent-cases-bar" use:slide={{ duration: 300, easing: cubicOut }}>
     <div class="cases-container">
       <span class="cases-label">📊 Recent:</span>
       {#if isLoading}
@@ -117,7 +117,7 @@
             <a
               href="/cases/{caseItem.id}"
               class="case-pill"
-              transition:scale|local={{,
+              use:scale|local={{,
                 duration: 200,
                 delay: i * 50,
                 easing: elasticOut;

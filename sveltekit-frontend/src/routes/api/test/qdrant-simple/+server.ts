@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js'
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js'
 // Simple Qdrant Service Test API
 // Basic test without Redis dependencies
-import { json } from '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
 
 export type TestResult = { test: string;, status: 'success' | 'error' | 'warning';
   data?: Record<string, unknown>;
@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
   const results: TestResult[] = [];
   try {
-    // Test 1: Basic Configuration
+    // Test, 1: Basic Configuration
     if (testType === 'all' || testType === 'config') {
       const startTime = Date.now();
       try {
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
           memoryLimit: '32MB'
         };
         results.push({
-          test: 'qdrant_config',
+         , test: 'qdrant_config',
           status: 'success',
           data: config,
           duration: Date.now() - startTime
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
           id: `doc_${i + 1}`,
           score: Math.random() * 0.5 + 0.5,
           payload: {
-            title: `Legal Document ${i + 1}`,
+           , title: `Legal Document ${i + 1}`,
             type: 'evidence',
             caseId: 'case_${Math.floor(Math.random() * 3) + 1}` }'`
         }));
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
           som_clusters: 12,
           status: `optimal` };'`'`
         results.push({
-          test: 'memory_efficiency',
+         , test: 'memory_efficiency',
           status: 'success',
           data: memoryStats,
           duration: Date.now() - startTime
@@ -110,14 +110,14 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'qdrant_simple_test',
       tests: results,
       summary: {
-        total: results.length,
+       , total: results.length,
         passed: results.filter(item => item.status === 'success').length,
         failed: results.filter(item => item.status === 'error').length,
         warnings: results.filter(item => item.status === 'warning').length,
         avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / (results.length || 1))
       },
       configuration: {
-        vector_dimensions: 384,
+       , vector_dimensions: 384,
         embedding_model: 'nomic-embed-text',
         memory_efficient: true,
         clustering_enabled: true,

@@ -9,19 +9,19 @@ export interface WASMRankingEntry { hash: string;, summary: Float32Array;
   timestamp: number;
   crc32: number;
 }
-export interface WASMCacheConfig { maxEntries: number;, ttlSeconds: number;
+export interface WASMCacheConfig {, maxEntries: number;, ttlSeconds: number;
   enableServiceWorker: boolean;
   wasmModulePath: string;
   redisBackend?: string;
 }
-export interface RankingRequest { id: string;, vectors: Float32Array[];
+export interface RankingRequest {, id: string;, vectors: Float32Array[];
   topK: number;
   threshold?: number;
   useCache?: boolean;
 }
 export type RankingItem = { index: number; score: number };
 
-export interface RankingResponse { id: string;, rankings: RankingItem[];
+export interface RankingResponse {, id: string;, rankings: RankingItem[];
   cached: boolean;
   processingTime: number;
   wasmTime?: number;
@@ -29,7 +29,7 @@ export interface RankingResponse { id: string;, rankings: RankingItem[];
 }
 
 interface WASMExports {
-  memory: WebAssembly.Memory;
+ , memory: WebAssembly.Memory;
   malloc(size: number): number;
   free?(ptr: number): void;
   rank_vectors(ptr: number, length: number, resultPtr: number, topK: number, threshold: number): number;
@@ -47,11 +47,11 @@ export interface CacheMetrics { hits: number;, misses: number;
 class WebASMRankingCache {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
-  private serviceWorker: SWRegistrationLike | null = null;
+  private, serviceWorker: SWRegistrationLike | null = null;
   private cache = new Map<string, WASMRankingEntry>();
   private pendingRequests = new Map<string, Promise<RankingResponse>>();
   private metrics: CacheMetrics = {
-    hits: 0,
+   , hits: 0,
     misses: 0,
     totalRequests: 0,
     hitRatio: 0,
@@ -61,7 +61,7 @@ class WebASMRankingCache {
     memoryUsage: 0
   };
 
-  constructor(private config: WASMCacheConfig) {}
+  constructor(private, config: WASMCacheConfig) {}
 
   async initialize(): Promise<boolean> {
     try {
@@ -164,10 +164,10 @@ class WebASMRankingCache {
         const buffer = await response.arrayBuffer();
         return this.deserializeFromQUIC(buffer);
       }
-      return null;
+      return: null;
     } catch (error) {
       console.error('QUIC decode failed:', error);
-      return null;
+      return: null;
     }
   }
 
@@ -197,7 +197,7 @@ class WebASMRankingCache {
       return;
     }
     try {
-      const nav = navigator as unknown as { serviceWorker?: SWContainerLike };
+      const nav = navigator as: unknown as { serviceWorker?: SWContainerLike };
       const swContainer = nav.serviceWorker;
       if (!swContainer || typeof swContainer.register !== 'function') {
         this.serviceWorker = null;
@@ -243,7 +243,7 @@ class WebASMRankingCache {
       this.setCachedResult(cacheKey, cacheEntry);
     }
     const response: RankingResponse = {
-      id: request.id,
+     , id: request.id,
       rankings,
       cached: false,
       processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
@@ -306,7 +306,7 @@ class WebASMRankingCache {
       throw new Error('WASM instance not initialized');
     }
     try {
-      const exports = this.wasmInstance.exports as unknown as WASMExports;
+      const exports = this.wasmInstance.exports as: unknown as WASMExports;
       const vectorBytes = new Uint8Array(vectorData.buffer);
       const vectorPtr = exports.malloc(vectorBytes.byteLength);
       const resultPtr = exports.malloc(topK * 8);
@@ -347,7 +347,7 @@ class WebASMRankingCache {
 
   private allocateWASMMemory(size: number): number {
     if (!this.wasmInstance) throw new Error('WASM instance not initialized');
-    const exports = this.wasmInstance.exports as unknown as WASMExports;
+    const exports = this.wasmInstance.exports as: unknown as WASMExports;
     return exports.malloc(size);
   }
 
@@ -386,16 +386,16 @@ class WebASMRankingCache {
 
   private getCachedResult(key: string): WASMRankingEntry | null {
     const entry = this.cache.get(key);
-    if (!entry) return null;
+    if (!entry) return: null;
     if (Date.now() - entry.timestamp > this.config.ttlSeconds * 1000) {
       this.cache.delete(key);
-      return null;
+      return: null;
     }
     const currentCRC = this.calculateCRC32(entry.rankings.buffer);
     if (currentCRC !== entry.crc32) {
       console.warn(`⚠️ Cache integrity check failed for ${key}`);
       this.cache.delete(key);
-      return null;
+      return: null;
     }
     return entry;
   }
@@ -507,7 +507,7 @@ class WebASMRankingCache {
     try {
       const testVectors = [new Float32Array([0.1, 0.2, 0.3, 0.4]), new Float32Array([0.5, 0.6, 0.7, 0.8])];
       const testRequest: RankingRequest = {
-        id: 'warmup',
+       , id: 'warmup',
         vectors: testVectors,
         topK: 2,
         threshold: 0.0,
@@ -539,7 +539,7 @@ class WebASMRankingCache {
       }
     } catch (error) {
       console.warn('Failed to get QUIC metrics: ', error);'` }'`
-    return null;
+    return: null;
   }
 } // end of class WebASMRankingCache
 
@@ -570,7 +570,7 @@ export interface SWContainerLike {
 
 // Singleton instance with default configuration
 export const webASMRankingCache = new WebASMRankingCache({
-  maxEntries: 1000,
+ , maxEntries: 1000,
   ttlSeconds: 300,
   enableServiceWorker: true,
   wasmModulePath: '/webasm/ranking-cache.wasm' });

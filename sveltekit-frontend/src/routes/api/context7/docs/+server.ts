@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 // Context7 Documentation RAG API endpoint
 // Integrates with Go RAG pipeline and Gemma embeddings
 const CONTEXT7_MCP_ENDPOINT = 'http://localhost:4000'
@@ -21,7 +21,7 @@ interface SearchRequest {
   threshold?: number
 }
 // GET /api/context7/docs - List available documentation
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'list'
     if (action === 'libraries') {
@@ -85,16 +85,16 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const req: DocFetchRequest = await request.json()
     switch (req.action) {
-      case 'fetch':
+      case, 'fetch':
         return await fetchDocumentation(req)
-      case 'search':
+      case, 'search':
         return await searchDocumentation(req)
-      case 'list':
+      case, 'list':
         return await listDocumentation()
       default: return json(
           {
-            success: false,
-            error: 'Unknown; action: ${req.action}' },
+           , success: false,
+            error: 'Unknown;, action: ${req.action}' },
           { status: 400 }
         );
     }
@@ -179,7 +179,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
     if (req.useEnhancedRAG) {
       searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query` }
     const searchRequest: SearchRequest = {
-      query: req.query,
+     , query: req.query,
       library: req.library,
       topic: req.topic,
       limit: req.limit || 10,
@@ -239,7 +239,7 @@ async function listDocumentation(): Promise<Response> {
     const healthResponse = await fetch(`${GO_RAG_QUERY_SERVER}/health`)
     const health = healthResponse.ok ? await healthResponse.json() : { status: `unknown` }
     return json({
-      success: true,
+     , success: true,
       action: 'list',
       libraries,
       topics,

@@ -1,20 +1,20 @@
 /**
  * CanvasStore - Unified Evidence Canvas & Collaboration
  *
- * Phase 8 Consolidation: Merges
+ * Phase, 8 Consolidation: Merges
  * - canvas-state.ts
  * - canvas-store.ts
  * - canvas-sync.ts
  * - canvas-collaboration.ts
  *
- * Usage:
- *   import { canvasStore } from '$lib/stores/unified';
+ *, Usage:
+ *   import { canvasStore } from, '$lib/stores/unified';
  *
  *   canvasStore.addElement('node', { x: 100, y: 100 });
  *   $: canvas = $canvasStore.canvasData;
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from, 'svelte/store';
 
 /**
  * Types
@@ -25,7 +25,7 @@ export interface CanvasElement { id: string;, type: ElementType;
   x: number;
   y: number;
   width: number;
-  height: number;
+ , height: number;
   data?: Record<string, unknown>;
   style?: Record<string, unknown>;
   locked?: boolean;
@@ -34,7 +34,7 @@ export interface CanvasElement { id: string;, type: ElementType;
 
 export interface CanvasConnection { id: string;, fromId: string;
   toId: string;
-  type: string;
+ , type: string;
   label?: string;
   style?: Record<string, unknown>;
 }
@@ -46,14 +46,14 @@ export interface CanvasState { id: string;, elements: CanvasElement[];
   updatedAt: number;
 }
 
-export interface CollaboratorCursor { userId: string;, name: string;
+export interface CollaboratorCursor {, userId: string;, name: string;
   x: number;
   y: number;
   color: string;
   timestamp: number;
 }
 
-export interface CanvasHistoryEntry { version: number;, action: string;
+export interface CanvasHistoryEntry {, version: number;, action: string;
   timestamp: number;
   userId: string;
   changes: any;
@@ -75,7 +75,7 @@ interface CanvasStoreState {
 
   // Collaboration
   collaborators: CollaboratorCursor[];
-  locks: Map<string, string>; // element ID -> user ID
+ , locks: Map<string, string>; // element ID -> user ID
 
   // Undo/Redo
   history: CanvasHistoryEntry[];
@@ -98,7 +98,7 @@ interface CanvasStoreState {
 }
 
 const initialState: CanvasStoreState = {
-  canvasId: null,
+ , canvasId: null,
   canvasData: null,
   elements: [],
   connections: [],
@@ -352,7 +352,7 @@ function createCanvasStore() {
      */
     async saveCanvas() {
       const state: { canvasId: string | null; elements: CanvasElement[]; connections: CanvasConnection[] } = {
-        canvasId: null,
+       , canvasId: null,
         elements: [],
         connections: []
       };
@@ -464,7 +464,7 @@ function createCanvasStore() {
      * Export canvas
      */
     async exportCanvas(format: 'svg' | 'png' | 'json') {
-      const state: { canvasId: string | null } = { canvasId: null };
+      const state: { canvasId: string | null } = {, canvasId: null };
       subscribe(s => {
         state.canvasId = s.canvasId;
       })();
@@ -495,7 +495,7 @@ function createCanvasStore() {
      * Share canvas
      */
     async shareCanvas(userIds: string[]) {
-      const state: { canvasId: string | null } = { canvasId: null };
+      const state: { canvasId: string | null } = {, canvasId: null };
       subscribe(s => {
         state.canvasId = s.canvasId;
       })();
@@ -518,11 +518,11 @@ function createCanvasStore() {
       update(s => {
         const action = getAction(s);
         const entry: CanvasHistoryEntry = {
-          version: s.history.length,
+         , version: s.history.length,
           action,
           timestamp: Date.now(),
           userId: 'current-user',
-          changes: { elements: s.elements, connections: s.connections }
+          changes: {, elements: s.elements, connections: s.connections }
         };
 
         return {
@@ -562,10 +562,10 @@ export const selectedElements = derived(
 /**
  * MIGRATION NOTES:
  *
- * Old imports to replace:
- *   import { canvasData, addElement } from '$lib/stores/canvas-state'
- *   import { canvasStore } from '$lib/stores/canvas-store'
+ * Old imports to, replace:
+ *   import { canvasData, addElement } from, '$lib/stores/canvas-state'
+ *   import { canvasStore } from, '$lib/stores/canvas-store'
  *
  * New imports:
- *   import { canvasStore, canvasElements, canvasConnections } from '$lib/stores/unified'
+ *   import { canvasStore, canvasElements, canvasConnections } from, '$lib/stores/unified'
  */

@@ -302,7 +302,7 @@
   </div.Root>
 
   <!-- Main Content Tabs -->
-  <Tabs.Root value="search" class="w-full">
+  <Tabs value="search" class="w-full">
     <Tabs.List class="grid w-full grid-cols-4">
       <Tabs.Trigger value="search">Live Search</Tabs.Trigger>
       <Tabs.Trigger value="testing">Integration Testing</Tabs.Trigger>
@@ -606,5 +606,5 @@
         </div.Content>
       </div.Root>
     </Tabs.Content>
-  </Tabs.Root>
+  </Tabs>
 </div>

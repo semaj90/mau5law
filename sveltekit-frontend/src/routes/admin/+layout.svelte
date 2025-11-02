@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-  import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+import type { User } from, '$lib/types';
+  import type { Snippet } from, 'svelte';
+  import { page } from, '$app/stores';
 
   interface AdminLayoutData {
     user?: {
@@ -91,7 +91,7 @@ import type { User } from '$lib/types';
     display: grid;
     grid-template-columns: 260px 1fr;
     min-height: 100vh;
-    background: var(--surface-primary, #0f172a);
+   , background: var(--surface-primary, #0f172a);
     color: var(--text-primary, #e2e8f0);
   }
 
@@ -114,7 +114,7 @@ import type { User } from '$lib/types';
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: rgba(99, 102, 241, 0.2);
+   , background: rgba(99, 102, 241, 0.2);
     display: grid;
     place-items: center;
     font-size: 1.5rem;
@@ -127,7 +127,7 @@ import type { User } from '$lib/types';
 
   .brand-subtitle {
     font-size: 0.85rem;
-    color: var(--text-muted, #94a3b8);
+   , color: var(--text-muted, #94a3b8);
   }
 
   .user-block {
@@ -136,7 +136,7 @@ import type { User } from '$lib/types';
     gap: 0.75rem;
     padding: 0.75rem;
     border-radius: 0.75rem;
-    background: rgba(30, 41, 59, 0.8);
+   , background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(79, 70, 229, 0.2);
   }
 
@@ -144,7 +144,7 @@ import type { User } from '$lib/types';
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: rgba(79, 70, 229, 0.25);
+   , background: rgba(79, 70, 229, 0.25);
     display: grid;
     place-items: center;
     font-weight: 600;
@@ -157,7 +157,7 @@ import type { User } from '$lib/types';
 
   .user-role {
     font-size: 0.8rem;
-    color: var(--text-muted, #94a3b8);
+   , color: var(--text-muted, #94a3b8);
   }
 
   .nav-list {
@@ -175,12 +175,12 @@ import type { User } from '$lib/types';
     color: inherit;
     text-decoration: none;
     background: transparent;
-    transition: background 0.2s ease, color 0.2s ease;
+   , transition: background 0.2s ease, color 0.2s ease;
     border: 1px solid transparent;
   }
 
   .nav-list a:hover {
-    background: rgba(79, 70, 229, 0.15);
+   , background: rgba(79, 70, 229, 0.15);
     border-color: rgba(79, 70, 229, 0.3);
   }
 
@@ -213,7 +213,7 @@ import type { User } from '$lib/types';
   }
 
   .content-header p {
-    margin: 0.4rem 0 0;
+   , margin: 0.4rem, 0 0;
     color: var(--text-muted, #94a3b8);
   }
 
@@ -228,11 +228,11 @@ import type { User } from '$lib/types';
   .placeholder {
     text-align: center;
     padding: 4rem 1rem;
-    color: var(--text-muted, #94a3b8);
+   , color: var(--text-muted, #94a3b8);
   }
 
   .placeholder h2 {
-    margin: 0 0 1rem;
+    margin: 0, 0 1rem;
     color: #e2e8f0;
   }
 
@@ -256,7 +256,7 @@ import type { User } from '$lib/types';
     }
 
     .nav-list a {
-      padding: 0.5rem 0.75rem;
+     , padding: 0.5rem 0.75rem;
     }
   }
 </style>

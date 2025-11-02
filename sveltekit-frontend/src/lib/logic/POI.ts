@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable } from, 'svelte/store';
 // Interface for the structured profile data (Who, What, Why, How)
 export interface POIProfile {
   who: string; // Biography, background, identity
@@ -12,7 +12,7 @@ export interface POIData { id: string;, caseId: string;
   profileImageUrl?: string;
   profileData: POIProfile;
   posX: number;
-  posY: number;
+ , posY: number;
   relationship?: string; // 'suspect', 'witness', 'victim', 'co-conspirator'
   threatLevel: string;
   status: string;
@@ -21,7 +21,7 @@ export interface POIData { id: string;, caseId: string;
   createdAt: Date;
   updatedAt: Date;
 }
-export class POI { id: string;, caseId: string;
+export class POI {, id: string;, caseId: string;
   name: Writable<string>;
   aliases: Writable<string[]>;
   profileImageUrl: Writable<string | undefined>;
@@ -32,10 +32,10 @@ export class POI { id: string;, caseId: string;
   threatLevel: Writable<string>;
   status: Writable<string>;
   tags: Writable<string[]>;
-  isDirty: boolean = $state(false);
+ , isDirty: boolean = $state(false);
   createdBy: string;
   createdAt: Date;
-  updatedAt: Date;
+ , updatedAt: Date;
   constructor(data: POIData) {
     this.id = data.id;
     this.caseId = data.caseId;

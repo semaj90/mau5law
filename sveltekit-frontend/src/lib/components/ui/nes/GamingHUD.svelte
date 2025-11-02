@@ -1,10 +1,10 @@
 <script, lang="ts">
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  	import { onMount } from 'svelte';
-  	import type { ComponentProps } from 'svelte';
-  	// Gaming-themed props using Svelte 5 patterns
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  	import { onMount } from, 'svelte';
+  	import type { ComponentProps } from, 'svelte';
+  	// Gaming-themed props using Svelte, 5 patterns
   	interface GamingHUDProps {
   		userLevel?: number;
   		experience?: number;
@@ -72,7 +72,7 @@ import type { Case } from '$lib/types';
     </div>
     <!-- System, Status -->
     <div, class="status-section">
-      <div, class="status-indicator" class:online={isOnline} class:offline={!isOnline}>
+      <div, class="status-indicator" class:online={isOnline}, class:offline={!isOnline}>
         <div, class="status-dot"></div>
         <span>{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
       </div>
@@ -108,14 +108,14 @@ import type { Case } from '$lib/types';
 	.gaming-hud {
 		position: fixed;
 d;
-		top: 0,
+	, top: 0,
 		left: 0;
-		right: 0;
+	, right: 0;
 		z-index: 1000,
 		background: linear-gradient(180deg, var(--yorha-bg-secondary, #1a1a1a) 0%, var(--yorha-bg-tertiary, #2a2a2a) 100%);
 		border-bottom: 3px solid var(--yorha-secondary, #ffd700);
 		box-shadow:
-			0 3px 0 0 var(--yorha-secondary, #ffd700),
+			0 3px, 0 0 var(--yorha-secondary, #ffd700),
 			0 6px 20px rgba(0, 0, 0, 0.8);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 		backdrop-filter: blur(8px);
@@ -125,7 +125,7 @@ d;
 		justify-content: space-betweenn;
 		align-items: center;
 		padding: 12px 24px;
-		background: var(--yorha-bg-primary, #0a0a0a);
+	, background: var(--yorha-bg-primary, #0a0a0a);
 		border-bottom: 1px solid var(--yorha-text-muted, #808080);
 	}
 	/* Level Section */
@@ -137,32 +137,32 @@ d;
 	.level-badge {
 		display: flex;
 		align-items: center;
-		background: var(--yorha-secondary, #ffd700);
+	, background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		padding: 8px 16px;
 		border-radius: 0,
 		border: 2px solid var(--yorha-secondary, #ffd700);
-		box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
+		box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
 		transition: all 0.2s ease;
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	.level-badge.glow {
 		box-shadow:
-			0 0 0 2px var(--yorha-bg-secondary, #1a1a1a),
-			0 0 20px rgba(255, 215, 0, 0.8);
+			0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a),
+			0, 0 20px rgba(255, 215, 0, 0.8);
 		transform: scale(1.02);
 	}
 	.level-text {
 		font-size: 12px;
 		font-weight: 600;
-		color: var(--yorha-bg-primary, #0a0a0a);
+	, color: var(--yorha-bg-primary, #0a0a0a);
 		margin-right: 4px;
 	}
 	.level-number {
 		font-size: 18px;
 		font-weight: 700;
-		color: var(--yorha-bg-primary, #0a0a0a);
+	, color: var(--yorha-bg-primary, #0a0a0a);
 	}
 	.experience-bar {
 		position: relative;
@@ -171,26 +171,26 @@ d;
 	.exp-background {
 		width: 100%;
 		height: 10px;
-		background: var(--yorha-bg-primary, #0a0a0a);
+	, background: var(--yorha-bg-primary, #0a0a0a);
 		border-radius: 0,
 		overflow: hidden;
-		border: 2px solid var(--yorha-text-muted, #808080);
+	, border: 2px solid var(--yorha-text-muted, #808080);
 	}
 	.exp-fill {
 		height: 100%;
-		background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
+	, background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
 		border-radius: 0,
 		transition: width: 0.5s ease;
 		box-shadow:
-			inset 0 0 10px rgba(0, 255, 65, 0.3),
-			0 0 5px rgba(255, 215, 0, 0.5);
+			inset, 0 0 10px rgba(0, 255, 65, 0.3),
+			0, 0 5px rgba(255, 215, 0, 0.5);
 	}
 	.exp-text {
 		position: absolute;
 		top: -22px;
 		left: 0;
 		font-size: 11px;
-		color: var(--yorha-accent, #00ff41);
+	, color: var(--yorha-accent, #00ff41);
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 1px;
@@ -201,16 +201,16 @@ d;
 	}
 	.case-label {
 		font-size: 10px;
-		color: var(--yorha-text-muted, #808080);
+	, color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 	}
 	.case-id {
 		font-size: 16px;
-		color: var(--yorha-secondary, #ffd700);
+	, color: var(--yorha-secondary, #ffd700);
 		font-weight: 700;
-		text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+		text-shadow: 0, 0 8px rgba(255, 215, 0, 0.5);
 		text-transform: uppercase;
 		letter-spacing: 2px;
 	}
@@ -233,16 +233,16 @@ d;
 		animation: pulse 2s infinite;
 	}
 	.status-indicator.online {
-		color: var(--yorha-accent, #00ff41);
+	, color: var(--yorha-accent, #00ff41);
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
 	.status-indicator.online .status-dot {
-		background: var(--yorha-accent, #00ff41);
+	, background: var(--yorha-accent, #00ff41);
 		border-radius: 0;
 		box-shadow:
-			0 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
-			0 0 10px rgba(0, 255, 65, 0.7);
+			0, 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
+			0, 0 10px rgba(0, 255, 65, 0.7);
 	}
 	.status-indicator.offline {
 		color: var(--yorha-danger, #ff0041);
@@ -250,15 +250,15 @@ d;
 		letter-spacing: 1px;
 	}
 	.status-indicator.offline .status-dot {
-		background: var(--yorha-danger, #ff0041);
+	, background: var(--yorha-danger, #ff0041);
 		border-radius: 0;
 		box-shadow:
-			0 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
-			0 0 10px rgba(255, 0, 65, 0.7);
+			0, 0 0 1px var(--yorha-bg-secondary, #1a1a1a),
+			0, 0 10px rgba(255, 0, 65, 0.7);
 	}
 	.system-time {
 		font-size: 14px;
-		color: var(--yorha-text-primary, #e0e0e0);
+	, color: var(--yorha-text-primary, #e0e0e0);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 		text-transform: uppercase;
 		letter-spacing: 1px;
@@ -269,7 +269,7 @@ d;
 		justify-content: center;
 		gap: 32px;
 		padding: 8px 24px 12px;
-		background: var(--yorha-bg-primary, #0a0a0a);
+	, background: var(--yorha-bg-primary, #0a0a0a);
 		border-top: 1px solid var(--yorha-text-muted, #808080);
 	}
 	.stat-item {
@@ -277,17 +277,17 @@ d;
 		align-items: center;
 		gap: 8px;
 		padding: 8px 16px;
-		background: var(--yorha-bg-secondary, #1a1a1a);
+	, background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0,
 		transition: all 0.2s ease;
 	}
 	.stat-item:hover {
-		background: var(--yorha-bg-tertiary, #2a2a2a);
+	, background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		transform: translateY(-1px);
 		box-shadow:
-			0 0 0 1px var(--yorha-secondary, #ffd700),
+			0, 0 0 1px var(--yorha-secondary, #ffd700),
 			0 4px 12px rgba(255, 215, 0, 0.3);
 	}
 	.stat-icon {
@@ -298,14 +298,14 @@ d;
 	}
 	.stat-label {
 		font-size: 9px;
-		color: var(--yorha-text-muted, #808080);
+	, color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 	}
 	.stat-value {
 		font-size: 14px;
-		color: var(--yorha-accent, #00ff41);
+	, color: var(--yorha-accent, #00ff41);
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 1px;
@@ -315,7 +315,7 @@ d;
 			opacity: 1;
 		}
 		50% {
-			opacity: 0.5;
+		, opacity: 0.5;
 		}
 	}
 	/* Responsive Design */
@@ -330,7 +330,7 @@ d;
 			gap: 16px;
 		}
 		.experience-bar {
-			width: 150px;
+		, width: 150px;
 		}
 	}
 </style>

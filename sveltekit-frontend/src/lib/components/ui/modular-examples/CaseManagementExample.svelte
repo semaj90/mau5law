@@ -1,14 +1,14 @@
 <!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute;
 https://svelte.dev/e/illegal_element_attribute -->
-<!-- Example: Modular Case Management with, API, Integration -->
+<!--, Example: Modular Case Management with, API, Integration -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { ModularDialog } from '../modular-dialog';
-  import { ModularCommand } from '../modular-command';
-  import Button from 'bits-ui';
-  import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
-  import { reactiveApiClient } from '$lib/services/api-client';
-  import type { Case, Evidence } from '$lib/types/api';
+  // Svelte, 5 runes are auto-imported
+  import { ModularDialog } from, '../modular-dialog';
+  import { ModularCommand } from, '../modular-command';
+  import Button from, 'bits-ui';
+  import { Search, Plus, FileText, Users, Calendar } from, 'lucide-svelte';
+  import { reactiveApiClient } from, '$lib/services/api-client';
+  import type { Case, Evidence } from, '$lib/types/api';
   // Component state
   let showCaseDialog = $state<boolean>(false);
   let showCommandPalette = $state<boolean>(false);
@@ -26,16 +26,16 @@ https://svelte.dev/e/illegal_element_attribute -->
   function handleCommandSearch(item: any, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
-      case 'cases':
+      case, 'cases':
         handleCaseSelect(item, type);
         break;
-      case 'evidence':
+      case, 'evidence':
         // Navigate to evidence view
         break;
-      case 'documents':
+      case, 'documents':
         // Open document viewer
         break;
-      case 'people':
+      case, 'people':
         // Show person profile
         break;
     }
@@ -194,7 +194,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   cacheData={true}
   class="case-details-dialog"
 >
-  {#snippet children({ data: caseData, refresh })}
+  {#snippet children({, data: caseData, refresh })}
     {#if caseData}
       <div, class="space-y-6">
         <!-- Case, Overview -->
@@ -230,7 +230,7 @@ https://svelte.dev/e/illegal_element_attribute -->
           </button>
           <button
             onclick={refresh}
-            class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors font-mono"
+            class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md, hover:bg-yorha-bg-hover transition-colors font-mono"
           >
             Refresh Data
           </button>

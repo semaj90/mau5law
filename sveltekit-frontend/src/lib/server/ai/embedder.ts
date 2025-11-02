@@ -1,8 +1,8 @@
-import { cache } from '../cache/redis.js';
+import { cache } from, '../cache/redis.js';
 // add centralized endpoint helper
-import { getOllamaEndpoint } from './endpoints.js';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { getOllamaEndpoint } from, './endpoints.js';
+import { OpenAIEmbeddings } from, 'langchain/embeddings/openai';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
 
 const EMBEDDING_CONFIG = {
   // useLocal means use the local Ollama-like endpoint when available
@@ -36,7 +36,7 @@ async function extractVectorFromResponse(response: Response): Promise<number[]> 
     throw new Error(`Failed to parse embedder response JSON: ${err}`);
   }
 
-  // Common shapes: { embedding: [...]} | { vector: [...] } | { embeddings: [...] } | [{ embedding: [...] }] | { data: [...] }
+  // Common shapes: { embedding: [...]} | { vector: [...] } | { embeddings: [...] } | [{ embedding: [...] }] | {, data: [...] }
   const candidates = [
     data?.embedding,
     data?.vector,
@@ -48,13 +48,13 @@ async function extractVectorFromResponse(response: Response): Promise<number[]> 
 
   for (const c of candidates) {
     if (Array.isArray(c) && c.length > 0 && typeof c[0] === 'number') {
-      return c as number[];
+      return c as: number[];
     }
   }
 
   // If the top-level is an array of numbers
   if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'number') {
-    return data as number[];
+    return data as: number[];
   }
 
   throw new Error('Unable to extract embedding vector from response');
@@ -206,7 +206,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
         if (parsed) {
           const vectors = parsed.embeddings || parsed.vectors || parsed.data || parsed;
           if (Array.isArray(vectors)) {
-            return vectors as number[][];
+            return vectors as: number[][];
           }
         }
       }
@@ -216,7 +216,7 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
   }
 
   // Fallback: per-item embedding
-  const results: number[][] = [];
+  const, results: number[][] = [];
   for (const t of texts) {
     try {
       results.push(await embedText(t, modelName));
@@ -303,7 +303,7 @@ export async function embeddingFunction(text: string): Promise<any> {
 
 async function extractKeywords(text: string): Promise<string[]> {
   // Simple heuristic — replace with LangChain LLMChain if needed
-  // Extracts words starting with an uppercase letter, at least 4 characters long
+  // Extracts words starting with an uppercase letter, at least, 4 characters long
   return Array.from(new Set(text.match(/\b[A-Z][a-zA-Z]{3}\b/g)))?.slice(0, 10) ?? [];
 }
 

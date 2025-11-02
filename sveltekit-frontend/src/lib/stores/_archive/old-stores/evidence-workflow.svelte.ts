@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // SvelteKit + xState integration for Legal AI PNG Evidence Workflow
-import { createMachine, assign, interpret } from 'xstate';
-import { writable, derived } from 'svelte/store';
-import { PNGEmbedExtractor } from '$lib/services/png-embed-extractor';
-import type { LegalAIMetadata } from '$lib/services/png-embed-extractor';
+import { createMachine, assign, interpret } from, 'xstate';
+import { writable, derived } from, 'svelte/store';
+import { PNGEmbedExtractor } from, '$lib/services/png-embed-extractor';
+import type { LegalAIMetadata } from, '$lib/services/png-embed-extractor';
 // Evidence Processing State Machine
 interface EvidenceContext { file: File | null;, evidenceId: string;
   caseId: string;
@@ -14,7 +14,7 @@ interface EvidenceContext { file: File | null;, evidenceId: string;
   error: string | null;
   artifactUrl: string | null;
 }
-type StartProcessingEvent = { type: 'START_PROCESSING';, file: File;
+type StartProcessingEvent = {, type: 'START_PROCESSING';, file: File;
   evidenceId: string;
   caseId: string;
 };
@@ -22,10 +22,10 @@ type RetryEvent = { type: 'RETRY' };
 type ResetEvent = { type: 'RESET' };
 type EvidenceEvents = StartProcessingEvent | RetryEvent | ResetEvent | { type: string; [key: string]: any };
 const evidenceProcessingMachine = createMachine({
-  id: 'evidenceProcessor',
+ , id: 'evidenceProcessor',
   initial: 'idle',
   // Using xstate v5 generic types requires runtime noop; cast for compile-time only
-  types: {} as {, context: EvidenceContext; events: EvidenceEvents },
+  types: {} as {, context: EvidenceContext;, events: EvidenceEvents },
   context: {
    , file: null,
     evidenceId: '',
@@ -48,7 +48,7 @@ const evidenceProcessingMachine = createMachine({
         }
       }
     },
-    validating: { invoke: {, id: 'validateEvidence',
+    validating: {, invoke: {, id: 'validateEvidence',
         src: async ({ context }) => {
           if (!context.file) throw new Error('No file provided');
           if (!context.evidenceId) throw new Error('Evidence ID required');
@@ -60,21 +60,21 @@ const evidenceProcessingMachine = createMachine({
           return true as const;
         },
         onDone: {
-          target: 'analyzing',
+         , target: 'analyzing',
           actions: assign({
-            processingSteps: ({ context }) => [...context.processingSteps, 'File validated']
+           , processingSteps: ({ context }) => [...context.processingSteps, 'File validated']
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) =>
-              (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Validation failed'
+           , error: ({ event }) =>
+              (event as: any)?.error?.message ?? (event as: any)?.data?.message ?? 'Validation failed'
           })
         }
       }
     },
-    analyzing: { invoke: {, id: 'analyzeEvidence',
+    analyzing: {, invoke: {, id: 'analyzeEvidence',
         src: async ({ context }) => {
           const formData = new FormData();
           formData.append('file', context.file!);
@@ -90,21 +90,21 @@ const evidenceProcessingMachine = createMachine({
           return (await response.json()) as LegalAIMetadata;
         },
         onDone: {
-          target: 'embedding',
+         , target: 'embedding',
           actions: assign({
-            metadata: ({ event }) => (event as any).output ?? (event as any).data,
+           , metadata: ({ event }) => (event as: any).output ?? (event as: any).data,
             processingSteps: ({ context }) => [...context.processingSteps, 'AI analysis completed']
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Analysis failed'
+           , error: ({ event }) => (event as: any)?.error?.message ?? (event as: any)?.data?.message ?? 'Analysis failed'
           })
         }
       }
     },
-    embedding: { invoke: {, id: 'embedMetadata',
+    embedding: {, invoke: {, id: 'embedMetadata',
         src: async ({ context }) => {
           const fileBuffer = await context.file!.arrayBuffer();
           // Use static API per PNGEmbedExtractor implementation
@@ -115,19 +115,19 @@ const evidenceProcessingMachine = createMachine({
           return pngWithMetadata;
         },
         onDone: {
-          target: 'uploading',
+         , target: 'uploading',
           actions: assign({
-            pngArtifact: ({ event }) => (event as any).output ?? (event as any).data,
+           , pngArtifact: ({ event }) => (event as: any).output ?? (event as: any).data,
             processingSteps: ({ context }) => [...context.processingSteps, 'Metadata embedded in PNG']
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Embedding failed' })'` }'`
+           , error: ({ event }) => (event as: any)?.error?.message ?? (event as: any)?.data?.message ?? 'Embedding failed' })'` }'`
       }
     },
-    uploading: { invoke: {, id: 'uploadArtifact',
+    uploading: {, invoke: {, id: 'uploadArtifact',
         src: async ({ context }) => {
           const uploadData = {
             evidence_id: context.evidenceId,
@@ -135,7 +135,7 @@ const evidenceProcessingMachine = createMachine({
             document_type: 'evidence',
             file_data: Array.from(new Uint8Array(context.pngArtifact!)),
             metadata: {
-              original_filename: context.file!.name,
+             , original_filename: context.file!.name,
               processing_timestamp: new Date().toISOString()
             },
             ai_analysis: context.metadata,
@@ -154,27 +154,27 @@ const evidenceProcessingMachine = createMachine({
           return await response.json();
         },
         onDone: {
-          target: 'completed',
+         , target: 'completed',
           actions: assign({
-            artifactUrl: ({ event }) => ((event as any).output ?? (event as any).data)?.downloadUrl,
+           , artifactUrl: ({ event }) => ((event as: any).output ?? (event as: any).data)?.downloadUrl,
             processingSteps: ({ context }) => [...context.processingSteps, 'Artifact uploaded and indexed']
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }) => (event as any)?.error?.message ?? (event as any)?.data?.message ?? 'Upload failed'
+           , error: ({ event }) => (event as: any)?.error?.message ?? (event as: any)?.data?.message ?? 'Upload failed'
           })
         }
       }
     },
-    completed: { on: {, RESET: 'idle` }'`
+    completed: {, on: {, RESET: 'idle` }'`
     },
-    error: { on: {, RETRY: 'validating',
+    error: {, on: {, RETRY: 'validating',
         RESET: `idle` }
     }
   }
-} as any);
+}, as: any);
 // Svelte Stores for State Management
 export const evidenceService = interpret(evidenceProcessingMachine);
 try {
@@ -182,13 +182,13 @@ try {
 } catch (e) {
   console.warn('evidenceService.start() failed or is not required in this environment', e);
 }
-export const currentState = writable(evidenceService.getSnapshot() as any);
+export const currentState = writable(evidenceService.getSnapshot() as: any);
 export const isProcessing = derived(currentState, function deriveIsProcessing($state: any) {
-  const v = $state?.value as string;
+  const v = $state?.value as: string;
   return v !== 'idle' && v !== 'completed' && v !== 'error';
 });
 export const processingProgress = derived(currentState, $state => {
-  const steps = (($state as any).context?.processingSteps?.length ?? 0) as number;
+  const steps = (($state as: any).context?.processingSteps?.length ?? 0) as: number;
   const totalSteps = 5; // validate, analyze, embed, upload, complete
   return Math.round((steps / totalSteps) * 100);
 });
@@ -196,7 +196,7 @@ export const processingProgress = derived(currentState, $state => {
 // If the actor supports onTransition, subscribe to transitions; fallback to no-op otherwise.
 try {
   evidenceService.onTransition?.(state => {
-    currentState.set(state as any);
+    currentState.set(state as: any);
   });
 } catch (e) {
   console.warn('evidenceService.onTransition failed or is unavailable in this environment', e);
@@ -256,7 +256,7 @@ export const extractPNGMetadata = async (file: File | ArrayBuffer): Promise<Lega
 };
 // Utility Functions
 export const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return, '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));

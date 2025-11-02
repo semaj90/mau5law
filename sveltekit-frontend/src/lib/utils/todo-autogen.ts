@@ -1,10 +1,10 @@
-import { getLocalOllamaUrl } from "$lib/constants/local-llm-config";
+import { getLocalOllamaUrl } from, "$lib/constants/local-llm-config";
 /**
  * Automated TODO Generation & LLM Misfire Tracking
  * Captures and categorizes development issues for AI review
  */
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { writeFile, mkdir } from, "fs/promises";
+import { join } from, "path";
 
 export interface TodoEntry { id: string;, timestamp: string;
   category: 'llm-misfire' | 'typescript' | 'runtime' | 'performance' | 'memory';
@@ -14,11 +14,11 @@ export interface TodoEntry { id: string;, timestamp: string;
   stackTrace?: string;
   context?: { [key: string]: any };
   llmAttempts?: number;
-  memoryUsage?: { heapUsed: number;, heapTotal: number;
+  memoryUsage?: {, heapUsed: number;, heapTotal: number;
     external: number;
   };
 }
-export interface LLMMisfireData { model: string;, prompt: string;
+export interface LLMMisfireData {, model: string;, prompt: string;
   error: string;
   tokenCount?: number;
   retryCount: number;
@@ -26,7 +26,7 @@ export interface LLMMisfireData { model: string;, prompt: string;
 }
 
 // New: explicit types for performance issue details to avoid `any`
-type MemoryPerformanceDetails = { heapUsedMB: number;, heapTotalMB: number;
+type MemoryPerformanceDetails = {, heapUsedMB: number;, heapTotalMB: number;
   externalMB?: number;
   threshold?: number;
   samples?: Array<{ timestamp: number; heapUsedMB: number }>;
@@ -41,7 +41,7 @@ type GPUPerformanceDetails = {
   note?: string;
 };
 
-type TimeoutPerformanceDetails = { operation: string;, durationMs: number;
+type TimeoutPerformanceDetails = {, operation: string;, durationMs: number;
   retries?: number;
   backoffStrategy?: string;
   lastError?: string;
@@ -86,8 +86,8 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: 'LLM; Failure: ${data?.model || 'unknown' } - ${data.error.substring(0, 50)}...`,'`
-      description: 'Model: ${data?.model || 'unknown' }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,'`
+      title: 'LLM;, Failure: ${data?.model || 'unknown' } - ${data.error.substring(0, 50)}...`,'`
+      description: 'Model: ${data?.model || 'unknown' }\nError: ${data.error}\nPrompt, length: ${data.prompt.length}\nRetries: ${data.retryCount}`,'`
       context: {
         ...data,
         timestamp: Date.now(),
@@ -111,7 +111,7 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
-      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '' }`,'`'`
+      title: `TypeScript;, Error: ${file}${lineNumber ? `:${lineNumber}` : '' }`,'`'`
       description: error,
       context: {
         file,
@@ -132,7 +132,7 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'runtime',
       severity: 'high',
-      title: `Runtime; Error: ${error.name}`,
+      title: `Runtime;, Error: ${error.name}`,
       description: error.message,
       stackTrace: error.stack,
       context: {
@@ -156,7 +156,7 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'performance',
       severity: type === 'memory' ? 'critical' : 'medium',
-      title: `Performance; Issue: ${type.toUpperCase()}`,
+      title: `Performance;, Issue: ${type.toUpperCase()}`,
       description: JSON.stringify(details, null, 2),
       context: {
         type,
@@ -202,13 +202,13 @@ class TodoAutogen {
    */
   private generateReviewInstructions(todo: TodoEntry): string {
     switch (todo.category) {
-      case 'llm-misfire':
+      case, 'llm-misfire':
         return `Analyze LLM failure patterns and suggest retry strategies, prompt optimization, or model switching. Focus on local Ollama GPU usage only.`;
-      case 'typescript':
-        return `Review TypeScript error and provide precise fix. Consider type safety, modern patterns, and SvelteKit 2 compatibility.`;
-      case 'runtime':
+      case, 'typescript':
+        return `Review TypeScript error and provide precise fix. Consider type safety, modern patterns, and SvelteKit, 2 compatibility.`;
+      case, 'runtime':
         return `Investigate runtime exception, identify root cause, and suggest defensive programming patterns.`;
-      case 'performance':
+      case, 'performance':
         return `Analyze performance bottleneck and recommend optimizations using worker threads, WASM, or caching strategies.`;
       default: return `General review and resolution suggestions for this development issue.`;
     }
@@ -278,7 +278,7 @@ export function startMemoryMonitoring() {
         threshold: 2048
       });
     }
-  }, 30000); // Check every 30 seconds
+  }, 30000); // Check every, 30 seconds
   // Cleanup on process exit
   process.on('beforeExit', () => clearInterval(interval));
 }

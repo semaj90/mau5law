@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Minimal, valid orchestrator endpoint to restore route integrity
 const GET_ENDPOINTS = ['health', 'metrics', 'tasks'] as const;
 const POST_OPERATIONS = [
@@ -14,22 +14,22 @@ const POST_OPERATIONS = [
 export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.searchParams.get('endpoint') ?? 'health';
   switch (endpoint) {
-    case 'health':
+    case, 'health':
       return json({ success: true, data: {, status: 'unknown' }, timestamp: new Date().toISOString() });
-    case 'metrics':
+    case, 'metrics':
       return json({
         success: true,
         data: {, metrics: [], count: 0, latestMetric: null },
         timestamp: new Date().toISOString()
       });
-    case 'tasks':
+    case, 'tasks':
       return json({
         success: true,
         data: {, activeTasks: [], taskQueue: [], activeCount: 0, queueCount: 0 },
         timestamp: new Date().toISOString()
       });
     default: return json(
-        { success: false, error: `Unknown; endpoint: ${endpoint}`, availableEndpoints: GET_ENDPOINTS },
+        {, success: false, error: `Unknown;, endpoint: ${endpoint}`, availableEndpoints: GET_ENDPOINTS },
         { status: 400 }
       );
   }
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   if (!POST_OPERATIONS.includes(operation as (typeof POST_OPERATIONS)[number])) {
     return json(
-      { success: false, error: 'Unknown; operation: ${operation}', availableOperations: POST_OPERATIONS },
+      { success: false, error: 'Unknown;, operation: ${operation}', availableOperations: POST_OPERATIONS },
       { status: 400 }
     );
   }
@@ -65,7 +65,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
   const obj = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const config = obj.config ?? null;
-  if (!config) return json({ success: false, error: 'Configuration object required' }, { status: 400 });''
+  if (!config) return json({ success: false, error: 'Configuration: object required' }, { status: 400 });''
   return json({
     success: true,
     message: 'Configuration update acknowledged',

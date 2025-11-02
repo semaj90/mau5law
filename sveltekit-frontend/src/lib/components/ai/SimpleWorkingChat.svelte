@@ -1,22 +1,22 @@
 <!-- Simple Working Chat Component for CUDA, AI, Backend -->
 <script, lang="ts">
-  import { Input } from '$lib/components/ui/input';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/Button.svelte";
+  import { Input } from, '$lib/components/ui/input';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import  Button  from, "$lib/components/ui/Button.svelte";
   import 
     Input
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
-  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
-  import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
-  // Svelte 5 runes for state management
+   from, "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
+  import  Separator  from, "$lib/components/ui/separator/Separator.svelte";
+  import  ScrollArea  from, "$lib/components/ui/scroll-area/ScrollArea.svelte";
+  // Svelte, 5 runes for state management
   let messages = $state<any[]>([]);
   let inputMessage = $state<string>('');
   let isLoading = $state<boolean>(false);
@@ -33,7 +33,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          messages: [{ role: 'user', content: 'Connection test' }]
+          messages: [{, role: 'user', content: 'Connection test' }]
         })
       });
       if (response.ok) {
@@ -53,7 +53,7 @@
     const userMessage = {
       role: 'user' as const,
       content: inputMessage;
-      timestamp: new Date().toLocaleTimeString();
+     , timestamp: new Date().toLocaleTimeString();
     }
     // Add user message immediately
     messages = [...messages, userMessage];
@@ -66,7 +66,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          messages: [{ role: 'user', content: currentInput }]
+          messages: [{, role: 'user', content: currentInput }]
         })
       });
       const data = await response.json();
@@ -95,7 +95,7 @@
       console.error('❌ Chat error:', error);'
       const errorMessage = {
         role: 'assistant' as const,
-        content: `Network error: ${error.message}`,
+        content: `Network, error: ${error.message}`,
         timestamp: new Date().toLocaleTimeString();
       }
       messages = [...messages, errorMessage];
@@ -114,18 +114,18 @@
   }
   function getStatusColor() {
     switch (connectionStatus) {
-      case 'connected': return 'bg-green-500';
-      case 'disconnected': return 'bg-red-500';
-      case 'testing': return 'bg-yellow-500';
-      default: return 'bg-gray-500';
+      case, 'connected': return, 'bg-green-500';
+      case, 'disconnected': return, 'bg-red-500';
+      case, 'testing': return, 'bg-yellow-500';
+      default: return, 'bg-gray-500';
     }
   }
   function getStatusText() {
     switch (connectionStatus) {
-      case 'connected': return 'CUDA AI Connected';
-      case 'disconnected': return 'CUDA AI Disconnected';
-      case 'testing': return 'Testing Connection...';
-      default: return 'Unknown Status';
+      case, 'connected': return, 'CUDA AI Connected';
+      case, 'disconnected': return, 'CUDA AI Disconnected';
+      case, 'testing': return, 'Testing Connection...';
+      default: return, 'Unknown Status';
     }
   }
 </script>
@@ -213,7 +213,7 @@
     </div>
     <!-- Status, Info -->
     <div class="text-xs nes-text is-disabled flex, justify-between, items-center">
-      <span> GPU: RTX 3060 Ti • Model: Gemma3-Legal • Port: 8096 </span>
+      <span> GPU: RTX, 3060 Ti • Model: Gemma3-Legal •, Port: 8096 </span>
       <span>
         {messages.length} messages
       </span>

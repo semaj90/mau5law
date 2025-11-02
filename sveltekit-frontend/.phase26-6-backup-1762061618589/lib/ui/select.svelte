@@ -60,4 +60,4 @@
       {/each}
     </SelectViewport>
   </SelectContent>
-</Select.Root>
+</Select>

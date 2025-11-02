@@ -11,7 +11,7 @@
  *   await embedder.initialize();
  *   const vector = await embedder.embed('legal document text');
  */
-import { pipeline, env } from '@huggingface/transformers';
+import { pipeline, env } from, '@huggingface/transformers';
 // Configure Transformers.js environment
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -26,7 +26,7 @@ export class BrowserEmbeddings {
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
   constructor(
-    modelName: string = 'Xenova/all-MiniLM-L6-v2',
+   , modelName: string = 'Xenova/all-MiniLM-L6-v2',
     device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
   ) {
     this.modelName = modelName;
@@ -112,10 +112,10 @@ export class BrowserEmbeddings {
     query: string,
     documents: Array<{, text: string; metadata?: any }>,
     topK: number = 5
-  ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
-    const queryEmbedding = await this.embed(query) as number[];
+  ): Promise<Array<{ text: string;, score: number; metadata?: any }>> {
+    const queryEmbedding = await this.embed(query) as: number[];
     const docTexts = documents.map(d => d.text);
-    const docEmbeddings = await this.embed(docTexts) as number[][];
+    const docEmbeddings = await this.embed(docTexts) as: number[][];
     const results = documents.map((doc, idx) => ({
       ...doc,
       score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
@@ -157,10 +157,10 @@ export const browserEmbeddings = new BrowserEmbeddings();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte component:
+ * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserEmbeddings } from '$lib/ai/browser-embeddings';
- *   import { onMount } from 'svelte';
+ *   import { browserEmbeddings } from, '$lib/ai/browser-embeddings';
+ *   import { onMount } from, 'svelte';
  *
  *   let isReady = $state<boolean>(false);
  *   let searchResults = $state<any[]>([]);

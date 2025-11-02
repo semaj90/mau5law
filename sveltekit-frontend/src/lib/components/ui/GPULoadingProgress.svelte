@@ -2,12 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+	import type { Snippet } from, 'svelte';
 </script>
-  import { tweened } from 'svelte/motion';
-  import { cubicInOut } from 'svelte/easing';
-  import { slide } from 'svelte/transition';
+  import { tweened } from, 'svelte/motion';
+  import { cubicInOut } from, 'svelte/easing';
+  import { slide } from, 'svelte/transition';
   // Props
   interface Props {
     status?: 'idle' | 'model-loading' | 'inference' | 'complete' | 'error';
@@ -31,21 +31,21 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // Animated progress value
   const progressValue = tweened(0, {
-    duration 800,
+    duration, 800,
     easing: cubicInOut;
   });
   const opacity = tweened(0, {
-    duration 400,
+    duration, 400,
     easing: cubicInOut;
   });
   // Auto-update progress and text based on status
   $effect(() => {
     progressValue.set(progress);
     switch (status) {
-      case 'idle':
+      case, 'idle':
         opacity.set(0);
         break;
-      case 'model-loading':
+      case, 'model-loading':
         opacity.set(1);
         loadingText = 'Loading GPU model into VRAM...';
         estimatedTime = '60-90 seconds';
@@ -54,22 +54,22 @@ https://svelte.dev/e/js_parse_error -->
           simulateModelLoading();
         }
         break;
-      case 'inference':
+      case, 'inference':
         loadingText = 'Processing with AI model...';
         estimatedTime = '10-30 seconds';
         break;
-      case 'complete':
+      case, 'complete':
         loadingText = 'Inference complete!';
         estimatedTime = '';
         progress = 100;
-        // Auto-hide after 2 seconds
+        // Auto-hide after, 2 seconds
         setTimeout(() => {
           if (status === 'complete') {
             opacity.set(0);
           }
         }, 2000);
         break;
-      case 'error':
+      case, 'error':
         loadingText = 'GPU inference failed';
         estimatedTime = 'Please try again';
         opacity.set(1);
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
   <div
     class="gpu-progress-container {className}"
     style:opacity="{$opacity}"
-    transitionslide="{{ duration 300 }}"
+    transitionslide="{{ duration, 300 }}"
   >
     <!-- Main, Progress, Card -->
     <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border border-blue-200 rounded-xl p-6, shadow-lg, backdrop-blur-sm">
@@ -115,14 +115,14 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex, items-center, space-x-3">
           <!-- GPU, Icon -->
           <div, class="relative">
-            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0, 24, 24">
+            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0, 0, 24, 24">
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/>
             </svg>
             {#if status === 'model-loading' || status === 'inference'}
               <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400, rounded-full, animate-pulse">{/if}
           </div>
           <div>
-            <h3 class="font-semibold, text-gray-800, text-sm">RTX 3060 Ti</h3>
+            <h3 class="font-semibold, text-gray-800, text-sm">RTX, 3060 Ti</h3>
             <p, class="text-xs, text-gray-600">{modelName}</p>
           </div>
         </div>
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
               <div
                 class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"
                 style:animation-delay="{dot.delay}ms"
-                style:opacity="{dot.opacity}"
+               , style:opacity="{dot.opacity}"
               ></div>
             {/each}
           </div>
@@ -225,11 +225,11 @@ https://svelte.dev/e/js_parse_error -->
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
       opacity: 0.3;
-      transform: scale(0.95);
+     , transform: scale(0.95);
     }
     50% {
       opacity: 1;
-      transform: scale(1.05);
+     , transform: scale(1.05);
     }
   }
   .animate-gpu-pulse {

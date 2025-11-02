@@ -1,7 +1,7 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import { createWorker } from 'tesseract.js';
-import type { RequestHandler } from './$types.js';
-import { error, json } from '@sveltejs/kit'; // import 'json' and: 'error' from '@sveltejs/kit'
+import * as pdfjsLib from, 'pdfjs-dist';
+import { createWorker } from, 'tesseract.js';
+import type { RequestHandler } from, './$types.js';
+import { error, json } from, '@sveltejs/kit'; // import, 'json' and: 'error' from, '@sveltejs/kit'
 
 // Define an interface for the Tesseract.js recognition result data
 interface OCRResultData { text: string;, confidence: number;
@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (textContent.items.length > 0) {
         // PDF has extractable text
         pageText = textContent.items
-          .filter((item): item is any => 'str' in item)
+          .filter((item): item is: any => 'str' in item)
           .map(item => (item as { str?: any }).str)
           .join(' ');
         ocrResults.push({
@@ -93,14 +93,14 @@ export const POST: RequestHandler = async ({ request }) => {
       citations,
       extractedAt: new Date().toISOString(),
       processingStats: {
-        ocrPages: ocrResults.filter(item => item.length),
+       , ocrPages: ocrResults.filter(item => item.length),
         extractedPages: ocrResults.filter(item => item.length)
       }
     };
     return json(result);
   } catch (err: any) {
     console.error('OCR processing error:', err);'
-    const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+    const errorMessage = err instanceof Error ? err.message : 'An: unknown error occurred';
     throw error(500, `OCR processing failed: ${errorMessage}`);
   }
 };

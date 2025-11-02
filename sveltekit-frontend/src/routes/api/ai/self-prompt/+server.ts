@@ -9,14 +9,14 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
 /*
  * Self-Prompting AI System for Prosecutors
  * Generates contextual suggestions based on case data and workflow
@@ -30,7 +30,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
        , model: 'gemma3-legal:latest',
-        prompt: `As a legal AI assistant for prosecutors, generate 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.`
+        prompt: `As a legal AI assistant for prosecutors, generate, 4 helpful question suggestions for case ${caseId} in the ${currentPhase} phase.`
 Context: ${context}, Phase: ${currentPhase}
 Focus on practical prosecutor, needs:
 - Evidence strength assessment
@@ -38,7 +38,7 @@ Focus on practical prosecutor, needs:
 - Timeline analysis
 - Precedent research
 - Defense preparation
-Return only 4 concise, actionable questions as a JSON array:
+Return only, 4 concise, actionable questions as a JSON array:
 ["Question 1", "Question 2", "Question 3", "Question 4"]`,`
         stream: false
       })

@@ -2,10 +2,10 @@
  * Dynamic Routing System - Main Export
  * Complete routing solution for SvelteKit with dynamic generation
  */
-import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js';
-import type { RouteDefinition } from '$lib/data/routes-config';
-import { getAllDynamicRoutes } from './dynamic-route-generator.js';
-import { registerDynamicRoute, getRoute } from './route-registry.js';
+import type { DynamicRouteConfig, GeneratedRoute } from, './dynamic-route-generator.js';
+import type { RouteDefinition } from, '$lib/data/routes-config';
+import { getAllDynamicRoutes } from, './dynamic-route-generator.js';
+import { registerDynamicRoute, getRoute } from, './route-registry.js';
 // Core route generation
 export {
   DynamicRouteGenerator,
@@ -19,7 +19,7 @@ export {
   createDynamicRouteHandler,
   type DynamicRouteConfig,
   type GeneratedRoute
-} from './dynamic-route-generator.js';
+} from, './dynamic-route-generator.js';
 // Route registry and management
 export {
   RouteRegistry,
@@ -41,7 +41,7 @@ export {
   isFavorite,
   type RouteRegistryState,
   type RouteRegistryOptions
-} from './route-registry.js';
+} from, './route-registry.js';
 // Route guards and protection
 export {
   RouteGuards,
@@ -57,7 +57,7 @@ export {
   type GuardResult,
   type RouteGuard,
   type RouteGuardConfig
-} from './route-guards.js';
+} from, './route-guards.js';
 // Dynamic navigation
 export {
   DynamicNavigation,
@@ -85,11 +85,11 @@ export {
   type BreadcrumbItem,
   type NavigationOptions,
   type NavigationGuard
-} from './dynamic-navigation.js';
+} from, './dynamic-navigation.js';
 // Re-export route configuration types
 export type {
   RouteDefinition
-} from '$lib/data/routes-config';
+} from, '$lib/data/routes-config';
 /**
  * Main routing utilities and helpers
  */
@@ -126,7 +126,7 @@ export async function initializeRouting(_options: {
 export class RouteBuilder {
   private config: Partial<DynamicRouteConfig> = {}
   private routeId: string = '';
-  private routePath: string = '';
+  private, routePath: string = '';
   constructor(id: string, path: string) {
     this.routeId = id;
     this.routePath = path;
@@ -178,12 +178,12 @@ export class RouteBuilder {
    */
   build(): GeneratedRoute {
     const route: GeneratedRoute = {
-      id: this.routeId,
+     , id: this.routeId,
       path: this.routePath,
       component: this.config.component || 'default',
       params: this.config.params || {},
       metadata: {
-        category: this.config.template || 'default',
+       , category: this.config.template || 'default',
         status: 'active',
         tags: [],
         preload: this.config.preload || false,
@@ -225,7 +225,7 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
 export function matchRoute(
   pattern: string;
  , path: string;
-): { match: boolean; params: Record<string, string> } {
+): { match: boolean;, params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
   if (patternParts.length !== pathParts.length) {
@@ -284,7 +284,7 @@ export function generateRouteUrl(
  */
 export function validateRoute(route: GeneratedRoute | RouteDefinition): { valid: boolean;, errors: string[];
 } {
-  const errors: string[] = [];
+  const, errors: string[] = [];
   // Check required fields
   if (!route.id) {
     errors.push('Route ID is required');
@@ -311,7 +311,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): { valid:
  */
 export function debugRoutes(): { totalRoutes: number;, staticRoutes: number;
   dynamicRoutes: number;
-  routeList: Array<any>, {
+ , routeList: Array<any>, {
   const dynamicRoutes = getAllDynamicRoutes();
   const staticRoutesFromRegistry: Array<[string, RouteDefinition]> = [];
   const routeList = [
@@ -347,7 +347,7 @@ export const ROUTE_EVENTS = {
   NAVIGATION_END: 'navigation:end',
   GUARD_EXECUTED: 'guard:executed' } as const;'`'`
 export const ROUTE_CATEGORIES = {
-  MAIN: 'main',
+ , MAIN: 'main',
   DEMO: 'demo',
   ADMIN: 'admin',
   DEV: 'dev',
@@ -355,7 +355,7 @@ export const ROUTE_CATEGORIES = {
   LEGAL: 'legal',
   DYNAMIC: `dynamic' } as const;'`
 export const ROUTE_STATUS = {
-  ACTIVE: 'active',
+ , ACTIVE: 'active',
   BETA: 'beta',
   EXPERIMENTAL: 'experimental',
   DEPRECATED: `deprecated' } as const;'`

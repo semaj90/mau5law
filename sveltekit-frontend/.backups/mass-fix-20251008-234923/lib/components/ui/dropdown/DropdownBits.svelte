@@ -45,7 +45,7 @@
   }
 </script>
 
-<Popover.Root bind:open onOpenChange={handleOpenChange}>
+<Popover bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <Popover.Trigger class="legal-ai-dropdown-trigger">
       {@render trigger?.()}
@@ -62,7 +62,7 @@
   >
     {@render children?.()}
   </Popover.Content>
-</Popover.Root>
+</Popover>
 <!-- Export helper components for easier usage -->
 {#snippet DropdownItem({
   class: className = '',

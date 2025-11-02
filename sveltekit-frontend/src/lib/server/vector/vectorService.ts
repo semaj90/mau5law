@@ -16,16 +16,16 @@ export interface EmbeddingResult { id: string;, score: number;
   content?: string;
 }
 
-type QdrantPoint = { id: string; vector: number[]; payload?: Record<string, any> };
+type QdrantPoint = { id: string;, vector: number[]; payload?: Record<string, any> };
 
 interface QdrantClientLike {
   upsert(collection: string, payload: { wait?: boolean;, points: QdrantPoint[] }): Promise<void>;
   search(
     collection: string,
     args: {, vector: number[]; limit?: number; score_threshold?: number; filter?: any; with_payload?: boolean }
-  ): Promise<Array<{ id: string; score: number; payload?: any }>>;
+  ): Promise<Array<{ id: string;, score: number; payload?: any }>>;
   delete(collection: string, args: { wait?: boolean;, points: string[] }): Promise<void>;
-  getCollections(): Promise<{ collections: Array<{ name: string; points_count: number }> }>;
+  getCollections(): Promise<{ collections: Array<{ name: string;, points_count: number }> }>;
   getCollection(collection: string): Promise<{ points_count?: number; name?: string } | null>;
 }
 
@@ -78,7 +78,7 @@ class QdrantStub implements QdrantClientLike {
     const results = points
       .map((p) => ({ id: p.id, score: this.cosine(args.vector, p.vector), payload: p.payload }))
       .filter((r) => (args.score_threshold ? r.score >= args.score_threshold : true));
-    // simple filter: match payload key equals value if provided as { must: [{ key, match: { value } }, ...] }
+    // simple filter: match payload key equals value if provided as {, must: [{ key, match: { value } }, ...] }
     if (args.filter && args.filter.must && Array.isArray(args.filter.must)) {
       const must = args.filter.must;
       const matchFn = (payload: any) =>
@@ -109,17 +109,17 @@ class QdrantStub implements QdrantClientLike {
 
   async getCollection(collection: string) {
     const pts = this.collections.get(collection);
-    if (!pts) return null;
-    return { name: collection, points_count: pts.length };
+    if (!pts) return: null;
+    return {, name: collection, points_count: pts.length };
   }
 }
 
 class DBStub implements DBClientLike {
   private cases = [
-    { id: 'case-1', title: 'Contract dispute', description: 'Breach of contract', category: 'civil' }
+    {, id: 'case-1', title: 'Contract dispute', description: 'Breach of contract', category: 'civil' }
   ];
-  private evidence = [{ id: 'e-1', title: 'Email thread', description: 'email content', summary: 'important', caseId: 'case-1' }];
-  private criminals = [{ id: 'c-1', firstName: 'John', lastName: 'Doe', notes: 'none' }];
+  private evidence = [{, id: 'e-1', title: 'Email thread', description: 'email content', summary: 'important', caseId: 'case-1' }];
+  private criminals = [{, id: 'c-1', firstName: 'John', lastName: 'Doe', notes: 'none' }];
 
   async findCasesByQuery(query: string, limit: number) {
     const q = query.toLowerCase();
@@ -159,7 +159,7 @@ class RedisStub implements RedisClientLike {
     }
   }
   async ping() {
-    return 'PONG';
+    return, 'PONG';
   }
   async quit() {
     this.store.clear();
@@ -173,7 +173,7 @@ export class VectorService {
   public collectionName = 'legal_documents';
   private qdrant: QdrantClientLike;
   private db: DBClientLike;
-  private redis: RedisClientLike;
+  private, redis: RedisClientLike;
   private vectorDim = 128;
 
   constructor(opts?: { qdrant?: QdrantClientLike; db?: DBClientLike; redis?: RedisClientLike; collectionName?: string }) {
@@ -347,8 +347,8 @@ export class VectorService {
   }
 
   private buildQdrantFilter(filter: Record<string, any> | undefined) {
-    if (!filter || Object.keys(filter).length === 0) return undefined;
-    const must: any[] = [];
+    if (!filter || Object.keys(filter).length === 0) return: undefined;
+    const, must: any[] = [];
     if (filter.type) must.push({ key: 'type', match: {, value: filter.type } });
     if (filter.case_id) must.push({ key: 'case_id', match: {, value: filter.case_id } });
     if (filter.created_after) must.push({ key: 'created_at', range: {, gte: filter.created_after } });
@@ -408,7 +408,7 @@ export class VectorService {
   }
 
   async healthCheck(): Promise<{ qdrant: boolean; redis: boolean; collection: boolean }> {
-    const status = { qdrant: false, redis: false, collection: false };
+    const status = {, qdrant: false, redis: false, collection: false };
     try {
       const collections = await this.qdrant.getCollections();
       status.qdrant = true;
@@ -425,7 +425,7 @@ export class VectorService {
     return status;
   }
 
-  async getStats(): Promise<{ documentCount: number; collectionInfo: any | null }> {
+  async getStats(): Promise<{ documentCount: number;, collectionInfo: any | null }> {
     try {
       const info = await this.qdrant.getCollection(this.collectionName);
       return { documentCount: info?.points_count ?? 0, collectionInfo: info ?? null };

@@ -2,9 +2,9 @@
  * QLoRA Topology Sample API
  * Provides mock QLoRA topology predictions and training samples for neural sprite system
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { mockDataGenerators } from '$lib/server/sync/mock-api-sync-simple';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { mockDataGenerators } from, '$lib/server/sync/mock-api-sync-simple';
 
 // Mock implementation since qloraTopologyPredictor is not available
 const qloraTopologyPredictor = {
@@ -13,7 +13,7 @@ const qloraTopologyPredictor = {
       recommendedTopology: 'auto',
       confidence: 0.85,
       estimatedPerformance: {
-        latency: Math.random() * 1000 + 500,
+       , latency: Math.random() * 1000 + 500,
         accuracy: 0.85 + Math.random() * 0.1,
         memoryUsage: Math.random() * 256 + 128
       },
@@ -28,14 +28,14 @@ const hmmSomEngine = {
     return {
       input: 'mock_input',
       expected_output: 'mock_output',
-      metadata: { generated_at: new Date().toISOString() }
+      metadata: {, generated_at: new Date().toISOString() }
     };
   }
 };
 
 // Small helper types and functions to satisfy TS checks
 type MockDoc = { id?: string; type?: string; [k: string]: any };
-type BatchJob = { jobId: string; documentId: string; config: Record<string, unknown>; variation?: number };
+type BatchJob = { jobId: string; documentId: string;, config: Record<string, unknown>; variation?: number };
 
 function getErrorMessage(error: any): string {
   if (error instanceof Error) return error.message;
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case 'samples': {
+      case, 'samples': {
         const mockStates = mockDataGenerators.generateMockQLoRAStates(count);
         const types = mockStates.length ? [...new Set(mockStates.map(s => s.documentType))] : [];
         const avgComplexity =
@@ -79,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case 'predictions': {
+      case, 'predictions': {
         const predictions: Array<any> = [];
         const sampleDocs = await mockDataGenerators.generateMockLegalDocuments(count);
         for (const doc of sampleDocs.slice(0, Math.min(5, sampleDocs.length))) {
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
               qualityExpectation: 0.9,
               timeConstraints: 0.5
             };
-            const prediction = await qloraTopologyPredictor.predictOptimalTopology(doc as any, mockUserContext, {
+            const prediction = await qloraTopologyPredictor.predictOptimalTopology(doc, as: any, mockUserContext, {
               maxLatency: 2000,
               minAccuracy: 0.85,
               memoryBudget: 512
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case 'hmm_som_predictions': {
+      case, 'hmm_som_predictions': {
         const hmmPredictions = mockDataGenerators.generateMockAssetPredictions(count);
         const countPreds = hmmPredictions.length;
         const aggregateStats = countPreds
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         return json(
           {
-            action: 'hmm_som_predictions',
+           , action: 'hmm_som_predictions',
             predictions: hmmPredictions,
             count: countPreds,
             aggregateStats,
@@ -154,16 +154,16 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case 'training_history': {
+      case, 'training_history': {
         const trainingJobs = Array.from({ length: count }, (_, i) => ({
           id: `job_${Date.now()}_${i}`,
           documentId: `doc_${i}`,
-          configJson: { rank: 8, alpha: 16, learningRate: 1e-4 },
+          configJson: {, rank: 8, alpha: 16, learningRate: 1e-4 },
           status: ['completed', 'training', 'failed'][Math.floor(Math.random() * 3)],
           accuracy: 0.8 + Math.random() * 0.15,
           trainingTime: 1000 + Math.random() * 5000,
           createdAt: new Date(Date.now() - Math.random() * 86400000).toISOString(),
-          metadata: { mockData: true }
+          metadata: {, mockData: true }
         }));
 
         const stats = trainingJobs.length
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         return json(
           {
-            action: 'training_history',
+           , action: 'training_history',
             jobs: trainingJobs,
             count: trainingJobs.length,
             stats,
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         );
       }
 
-      case 'performance_metrics': {
+      case, 'performance_metrics': {
         const mockAccuracies = Array.from({ length: 50 }, () => 0.8 + Math.random() * 0.15);
         const mockTrainingTimes = Array.from({ length: 50 }, () => 1000 + Math.random() * 5000);
         const metrics = {
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
           avgTrainingTime: mockTrainingTimes.reduce((sum, time) => sum + time, 0) / mockTrainingTimes.length,
           improvementTrend: 0.02 + Math.random() * 0.03,
           documentTypeDistribution: {
-            contract: 15,
+           , contract: 15,
             evidence: 12,
             brief: 10,
             citation: 8,
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         return json(
           {
-            action: 'performance_metrics',
+           , action: 'performance_metrics',
             metrics,
             dataPoints: 50,
             timestamp: new Date().toISOString()
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: {
         return json(
           {
-            error: 'Unknown action',
+           , error: 'Unknown action',
             availableActions: [
               'samples',
               'predictions',
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action, params = {} } = body;
 
     switch (action) {
-      case 'train_sample': {
+      case, 'train_sample': {
         // Avoid unused variable by not destructuring unused feedback
         const { documentId, config } = params as {
           documentId?: string;
@@ -273,7 +273,7 @@ export const POST: RequestHandler = async ({ request }) => {
           estimatedCompletion: new Date(Date.now() + 300000).toISOString(),
           mockTraining: true
         };
-        console.log(`📝 Mock: Inserted training job ${trainingResult.jobId} into database`);
+        console.log(`📝, Mock: Inserted training job ${trainingResult.jobId} into database`);
         return json(
           {
             action: 'train_sample',
@@ -284,8 +284,8 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
 
-      case 'update_prediction': {
-        const { predictionId, feedback, actualOutcome } = params as any;
+      case, 'update_prediction': {
+        const { predictionId, feedback, actualOutcome } = params as: any;
         if (!predictionId) {
           return json({ error: 'predictionId required' }, { status: 400 });
         }
@@ -299,7 +299,7 @@ export const POST: RequestHandler = async ({ request }) => {
         };
         return json(
           {
-            action: 'update_prediction',
+           , action: 'update_prediction',
             result: updateResult,
             timestamp: new Date().toISOString()
           },
@@ -307,7 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
         );
       }
 
-      case 'batch_train': {
+      case, 'batch_train': {
         const {
           documents,
           baseConfig,
@@ -326,9 +326,9 @@ export const POST: RequestHandler = async ({ request }) => {
           for (let i = 0; i < variations; i++) {
             const variationConfig: Record<string, unknown> = {
               ...baseConfig,
-              rank: ((baseConfig as any).rank || 0) + i * 4,
-              alpha: ((baseConfig as any).alpha || 0) + i * 8,
-              learningRate: ((baseConfig as any).learningRate || 1e-4) * (1 + i * 0.1)
+              rank: ((baseConfig, as: any).rank || 0) + i * 4,
+              alpha: ((baseConfig, as: any).alpha || 0) + i * 8,
+              learningRate: ((baseConfig, as: any).learningRate || 1e-4) * (1 + i * 0.1)
             };
             const jobId = 'batch_job_${Date.now()}_${doc.id ?? 'unknown` }_${i}`;
             batchJobs.push({
@@ -355,7 +355,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: {
         return json(
           {
-            error: 'Unknown POST action',
+           , error: 'Unknown POST action',
             availableActions: ['train_sample', 'update_prediction', 'batch_train'],
             timestamp: new Date().toISOString()
           },

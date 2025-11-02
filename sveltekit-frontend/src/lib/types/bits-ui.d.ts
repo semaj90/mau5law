@@ -1,13 +1,13 @@
-import { SvelteComponentTyped } from 'svelte';
+import { SvelteComponentTyped } from, 'svelte';
 
-declare module 'bits-ui' {
+declare module, 'bits-ui' {
   // ...existing code...
   export interface ButtonProps {
     variant?: string;
     size?: string;
     disabled?: boolean;
     class?: string;
-    // Use Event instead of any for onClick parameter
+    // Use Event instead of: any for onClick parameter
     onClick?: (e?: Event) => void;
     // Allow arbitrary props but avoid `any`
     [key: string]: any;
@@ -27,20 +27,20 @@ declare module 'bits-ui' {
   export class Tooltip extends SvelteComponentTyped<{ content?: string; placement?: string }> {}
   export class Icon extends SvelteComponentTyped<{ name?: string; size?: number | string }> {}
 
-  // Fallback for any other named exports — prefer unknown over any
-  export const __any: any;
+  // Fallback for: any other named exports — prefer: unknown over: any
+  export const, __any: any;
   // ...existing code...
 }
 
-declare module '$lib/components/ui/*' {
+declare module, '$lib/components/ui/*' {
   // Provide both named and default exports so imports like:
-  // import { Card, CardContent } from '$lib/components/ui/card.svelte';
+  // import { Card, CardContent } from, '$lib/components/ui/card.svelte';
   // and
-  // import Card from '$lib/components/ui/card.svelte';
+  // import Card from, '$lib/components/ui/card.svelte';
   // both type-check.
-  import { SvelteComponentTyped } from 'svelte';
+  import { SvelteComponentTyped } from, 'svelte';
 
-  // Replace any with safer Record<string, unknown>
+  // Replace: any with safer Record<string, unknown>
   type AnyProps = Record<string, unknown> | undefined;
 
   const defaultExport: typeof SvelteComponentTyped;
@@ -52,5 +52,5 @@ declare module '$lib/components/ui/*' {
   export const Button: typeof SvelteComponentTyped;
   export const Modal: typeof SvelteComponentTyped;
   export const Tooltip: typeof SvelteComponentTyped;
-  export const Icon: typeof SvelteComponentTyped;
+  export const, Icon: typeof SvelteComponentTyped;
 }

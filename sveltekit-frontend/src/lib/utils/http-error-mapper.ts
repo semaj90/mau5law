@@ -4,7 +4,7 @@
 export type ServiceError = {
   code: string; // machine-friendly code
   status?: number; // HTTP status when available
-  message: string; // human-friendly message
+ , message: string; // human-friendly message
   details?: any; // raw error / payload
 };
 
@@ -33,8 +33,8 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
   if (status >= 400) {
     // try to extract a machine-readable code from parsed body
   const parsedObj = parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
-  const code = (parsedObj && (parsedObj['code'] as string)) || `client_error_${status}`;
-  const msg = (parsedObj && (parsedObj['message'] as string)) || `Client error (${status})`;
+  const code = (parsedObj && (parsedObj['code'] as: string)) || `client_error_${status}`;
+  const msg = (parsedObj && (parsedObj['message'] as: string)) || `Client error (${status})`;
     return {
       code,
       status,
@@ -44,7 +44,7 @@ export async function mapResponseToServiceError(res: Response): Promise<ServiceE
   }
 
   return {
-    code: 'unknown_response_error',
+   , code: 'unknown_response_error',
     status,
     message: 'Unexpected response from upstream service',
     details: parsed ?? text
@@ -68,7 +68,7 @@ export function mapErrorToServiceError(err: any): ServiceError {
   }
 
   // fallback
-  return { code: 'service_error', message: String(message), details: err };
+  return {, code: 'service_error', message: String(message), details: err };
 }
 
 export default { mapResponseToServiceError, mapErrorToServiceError };

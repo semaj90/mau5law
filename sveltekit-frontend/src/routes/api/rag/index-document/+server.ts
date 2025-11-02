@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * RAG Document Indexing API Endpoint
  *
@@ -10,14 +10,14 @@ import type { Document } from '$lib/types';
  *
  * @route POST /api/rag/index-document
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { randomUUID } from 'crypto';
-import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
-import { db } from '$lib/server/db/drizzle';
-import { sql } from 'drizzle-orm';
-import * as schema from '$lib/server/db/schema-postgres';
-import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { randomUUID } from, 'crypto';
+import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
+import { db } from, '$lib/server/db/drizzle';
+import { sql } from, 'drizzle-orm';
+import * as schema from, '$lib/server/db/schema-postgres';
+import { requireAuth } from, '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 
 // Define document interfaces locally since schema doesn't export them'
 interface LegalDocumentData {
@@ -66,11 +66,11 @@ interface LegalDocument extends NewLegalDocument {
 /**
  * Index documents for RAG pipeline
  */
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const, POST: RequestHandler = async ({ request, cookies }) => {
   const startTime = Date.now();
   try {
     // Authentication required for document indexing
-    const { user } = await requireAuth({ cookies } as any);
+    const { user } = await requireAuth({ cookies } as: any);
     if (!user) {
       return json(
         {
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Robust request parsing: accept
     // - { document: {...} }
-    // - { documents: [...] , mode: 'bulk' }
+    // - {, documents: [...] , mode: 'bulk' }
     // - direct document body
     const requestData = await request.json();
     const inferredMode = requestData?.mode ?? (Array.isArray(requestData?.documents) ? 'bulk' : 'single');
@@ -198,7 +198,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
     }
 
     const updateData: Partial<NewLegalDocument> = {
-      title: docData.title,
+     , title: docData.title,
       documentType: docType,
       jurisdiction: docData.jurisdiction,
       court: docData.court,
@@ -231,7 +231,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       .set(updateData)
       .where(sql`id = ${documentId}`);
 
-    document = { ...(existingDoc[0] as any), ...updateData, id: documentId } as LegalDocument;
+    document = { ...(existingDoc[0] as: any), ...updateData, id: documentId } as LegalDocument;
 
     // Delete existing chunks to avoid duplicates (non-fatal)
     try {
@@ -242,7 +242,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
   } else {
     // Create new document
     const newDocData: NewLegalDocument = {
-      title: docData.title,
+     , title: docData.title,
       documentType: docType,
       jurisdiction: docData.jurisdiction,
       court: docData.court,
@@ -281,7 +281,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
 
     // Defensive: some drivers may not return id; fallback to generated UUID
     documentId =
-      insertedDocs && insertedDocs[0] && (insertedDocs[0] as any).id ? (insertedDocs[0] as any).id : randomUUID();
+      insertedDocs && insertedDocs[0] && (insertedDocs[0], as: any).id ? (insertedDocs[0] as: any).id : randomUUID();
     document = { ...newDocData, id: documentId } as LegalDocument;
   }
 
@@ -312,7 +312,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
   };
 }
 // GET endpoint for indexing status and statistics
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('documentId');
     if (documentId) {
@@ -341,7 +341,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
 
       // Defensive parsing for aggregate row (drivers may return strings or nulls)
-      const agg = chunks && chunks[0] ? (chunks[0] as any) : { count: '0', totalSize: '0', avgRelevance: null };
+      const agg = chunks && chunks[0] ? (chunks[0] as: any) : { count: '0', totalSize: '0', avgRelevance: null };
       const chunkCount = Number(agg.count ?? 0) || 0;
       const totalContentSize = Number(agg.totalSize ?? 0) || 0;
       const averageRelevance =
@@ -384,7 +384,7 @@ export const GET: RequestHandler = async ({ url }) => {
 // DELETE endpoint for removing document from index
 export const DELETE: RequestHandler = async ({ request, cookies }) => {
   try {
-    const { user } = await requireAuth({ cookies } as any);
+    const { user } = await requireAuth({ cookies } as: any);
     if (!user) {
       return json(
         {

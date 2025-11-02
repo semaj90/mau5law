@@ -3,27 +3,27 @@
  * Fetches initial state from database for server-side rendering
  * Integrates with our decoupled architecture
  */
-import type { PageServerLoad } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
-import { desc, eq } from 'drizzle-orm';
-import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } from, './$types.js';
+import { db } from, '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from, '$lib/server/db/schema-postgres.js';
+import { desc, eq } from, 'drizzle-orm';
+import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
 // Types for page data
-export interface LegalAIPageData { initialState: {, langchainService: { isAvailable: boolean;, models: string[];
+export interface LegalAIPageData { initialState: {, langchainService: {, isAvailable: boolean;, models: string[];
       error: string | null;
     };
     recentSessions: Array<any>;
     recentDocuments: Array<any>;
-    serviceStatus: { postgresql: boolean;, ollama: boolean;
+    serviceStatus: {, postgresql: boolean;, ollama: boolean;
       redis: boolean;
       lastChecked: string;
     };
   };
-  meta: { totalDocuments: number;, totalSessions: number;
+  meta: {, totalDocuments: number;, totalSessions: number;
     serverRenderTime: number;
   };
 }
-export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageData> => {
+export const, load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageData> => {
   const startTime = Date.now();
   try {
     // Check service availability
@@ -74,7 +74,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           messageCount: session.messageCount || 0,
           lastActivity:
             session.lastActivity?.toISOString() || session.createdAt?.toISOString() || new Date().toISOString(),
-          documentsProcessed: parseInt(count as string) || 0
+          documentsProcessed: parseInt(count, as: string) || 0
         };
       })
     );
@@ -104,13 +104,13 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       redisAvailable = false;
     }
     const serverRenderTime = Date.now() - startTime;
-    const pageData: LegalAIPageData = { initialState: {, langchainService: {
-          isAvailable: isOllamaAvailable,
+    const pageData: LegalAIPageData = {, initialState: {, langchainService: {
+         , isAvailable: isOllamaAvailable,
           models: availableModels,
           error: isOllamaAvailable ? null : `Ollama service not available` },'`'`
         recentSessions: sessionsWithCounts,
         recentDocuments: recentDocuments.map(doc => ({
-          id: doc.id,
+         , id: doc.id,
           title: doc.title || 'Untitled Document',
           summary: doc.summary || 'No summary available',
           documentType: doc.documentType || 'unknown',
@@ -118,7 +118,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
           keyTerms: doc.keyTerms || []
         })),
         serviceStatus: {
-          postgresql: postgresqlAvailable,
+         , postgresql: postgresqlAvailable,
           ollama: isOllamaAvailable,
           redis: redisAvailable,
           lastChecked: new Date().toISOString()
@@ -135,20 +135,20 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
     console.error('Failed to load legal AI page data: ', error);'`'`
     // Return fallback data if loading fails
     return { initialState: {, langchainService: {
-          isAvailable: false,
+         , isAvailable: false,
           models: [],
           error: 'Failed to load service data` },'`
         recentSessions: [],
         recentDocuments: [],
         serviceStatus: {
-          postgresql: false,
+         , postgresql: false,
           ollama: false,
           redis: false,
           lastChecked: new Date().toISOString()
         }
       },
       meta: {
-        totalDocuments: 0,
+       , totalDocuments: 0,
         totalSessions: 0,
         serverRenderTime: Date.now() - startTime
       }

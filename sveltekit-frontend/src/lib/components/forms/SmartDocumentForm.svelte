@@ -1,16 +1,16 @@
 <!-- Smart Document Form with, OCR, Auto-Population -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount, createEventDispatcher } from "svelte";
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount, createEventDispatcher } from, "svelte";
   // keep local Button component
-  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Button  from, "$lib/components/ui/Button.svelte";
   // removed incorrect bits-ui named imports and unused variables
-  import { ocrService, type FormField, type FieldType } from '$lib/services/ocrService';
+  import { ocrService, type FormField, type FieldType } from, '$lib/services/ocrService';
   // removed enhancedRAG (unused)
-  import { fade, scale } from 'svelte/transition'; // removed fly (unused)
-  import { writable, get } from 'svelte/store';
+  import { fade, scale } from, 'svelte/transition'; // removed fly (unused)
+  import { writable, get } from, 'svelte/store';
   // expose props (including optional ondispatch callback)
   let {
     title = "Smart Document Form",
@@ -68,7 +68,7 @@ import type { Document } from '$lib/types';
     try {
       isProcessing = true;
       const result: any = await ocrService.processDocument(uploadedFile, {
-        documentType: selectedDocumentType as any,
+        documentType: selectedDocumentType, as: any,
         extractFields: true,
         qualityEnhancement: true
       });
@@ -76,7 +76,7 @@ import type { Document } from '$lib/types';
       populatedFields = ocrService.autoPopulateForm($extractedFields, populatedFields);
       // Generate smart suggestions for incomplete fields
       if (enableSmartSuggestions) {
-        await generateSmartSuggestions((result?.text ?? '') as string);
+        await generateSmartSuggestions((result?.text ?? '') as: string);
       }
       showPreview = true;
       if (ondispatch) ondispatch({ result, extractedFields: $extractedFields });
@@ -131,9 +131,9 @@ import type { Document } from '$lib/types';
     // Required field validation
     if (field.required && !value?.toString().trim()) {
       errors[fieldName] = 'This field is required';
-    } else if ((field as any).validation) {
+    } else if ((field as: any).validation) {
       try {
-        (field as any).validation.parse(value);
+        (field as: any).validation.parse(value);
         delete errors[fieldName];
       } catch (error: any) {
         errors[fieldName] = error?.errors?.[0]?.message || 'Invalid value';
@@ -149,7 +149,7 @@ import type { Document } from '$lib/types';
   const handleSubmit = () => {
     // Final validation
     populatedFields.forEach(field => {
-      if (field.value) validateField(field.name, field.value as string);
+      if (field.value) validateField(field.name, field.value as: string);
     });
     if (isFormValid) {
       const formData = populatedFields.reduce((acc: Record<string, any>, field) => {
@@ -163,22 +163,22 @@ import type { Document } from '$lib/types';
   // Get field type icon
   const getFieldTypeIcon = (type: FieldType) => {
     switch (type) {
-      case 'name': return '👤';
-      case 'email': return '📧';
-      case 'phone': return '📞';
-      case 'date': return '📅';
-      case 'address': return '📍';
-      case 'case_number': return '📋';
-      case 'monetary_amount': return '💰';
-      default: return '📝';
+      case, 'name': return, '👤';
+      case, 'email': return, '📧';
+      case, 'phone': return, '📞';
+      case, 'date': return, '📅';
+      case, 'address': return, '📍';
+      case, 'case_number': return, '📋';
+      case, 'monetary_amount': return, '💰';
+      default: return, '📝';
     }
   };
   // Get confidence color
   const getConfidenceColor = (confidence?: number) => {
-    if (!confidence) return 'bg-gray-500';
-    if (confidence >= 0.9) return 'bg-green-500';
-    if (confidence >= 0.7) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (!confidence) return, 'bg-gray-500';
+    if (confidence >= 0.9) return, 'bg-green-500';
+    if (confidence >= 0.7) return, 'bg-yellow-500';
+    return, 'bg-red-500';
   };
   // Helper to compute input classes for components (components don't support class: directives)'
   const getInputClasses = (field: FormField) => {
@@ -223,7 +223,7 @@ import type { Document } from '$lib/types';
           <!-- replaced Label component with, native, label -->
           <label, class="text-sm, font-medium">Document Type:</label>
           <select
-            bind:value={selectedDocumentType}
+           , bind:value={selectedDocumentType}
             class="px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary"
           >
             <option, value="auto">Auto-detect</option>
@@ -235,7 +235,7 @@ import type { Document } from '$lib/types';
         <!-- File, Drop, Zone -->
         <div
           class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
-          class:border-yorha-primary={uploadedFile}
+         , class:border-yorha-primary={uploadedFile}
           ondrop={handleDrop}
           role="button"
           aria-label="Drop zone"
@@ -304,7 +304,7 @@ import type { Document } from '$lib/types';
             <div, class="text-xs, text-yorha-text-secondary">
               Confidence: {Math.round($ocrResult.confidence ?? 0)}% |
               Processing Time: {$ocrResult.processingTime ?? 0}ms |
-              Document Type: {$ocrResult.metadata?.documentType ?? 'unknown'}
+              Document, Type: {$ocrResult.metadata?.documentType ?? 'unknown'}
             </div>
           {/if}
       </div>
@@ -421,7 +421,7 @@ import type { Document } from '$lib/types';
             <Button
               type="submit"
               disabled={!isFormValid}
-              class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn"
+              class="bg-yorha-primary hover:bg-yorha-primary/80, disabled:opacity-50 bits-btn"
             >
               Submit Form
             </Button>

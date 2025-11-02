@@ -1,5 +1,5 @@
-import { pgTable, text, timestamp, uuid, boolean, jsonb, index } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { pgTable, text, timestamp, uuid, boolean, jsonb, index } from, 'drizzle-orm/pg-core';
+import { relations } from, 'drizzle-orm';
 // Authentication tables for Lucia + legal AI platform
 export const authUsers = pgTable(
   'auth_users',

@@ -5,14 +5,14 @@
  * Unified setup and teardown for all test suites
  * Import this file in your test configuration (vitest.config.ts)
  */
-import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { TEST_CONFIG, getTestConfig, TestConfigHelpers } from './test-config.js';
-import { UnifiedTestUtils } from './unified-test-utilities.js';
+import { beforeAll, afterAll, beforeEach, afterEach } from, 'vitest';
+import { TEST_CONFIG, getTestConfig, TestConfigHelpers } from, './test-config.js';
+import { UnifiedTestUtils } from, './unified-test-utilities.js';
 // ============================================================================
 // GLOBAL TEST ENVIRONMENT SETUP
 // ============================================================================
 let globalTestEnv: any;
-let restoreEnvVars: (() => void) | undefined;
+let, restoreEnvVars: (() => void) | undefined;
 // Global setup - runs once before all tests
 beforeAll(async () => {
   console.log('🚀 Setting up global test environment...');
@@ -23,8 +23,8 @@ beforeAll(async () => {
   globalTestEnv = await UnifiedTestUtils.quickSetup.standardTestEnv();
   // Additional global setup
   if (TEST_CONFIG.database.cleanupAfterAll) {
-    // Clean up any leftover test data from previous runs
-    console.log('🧹 Cleaning up any leftover test data...');
+    // Clean up: any leftover test data from previous runs
+    console.log('🧹 Cleaning, up: any leftover test data...');
   }
   console.log('✅ Global test environment ready');
 });
@@ -149,13 +149,13 @@ export function assertPerformance(operation: string, duration: number) {
   const thresholds = TEST_CONFIG.performance.thresholds;
   let threshold: number;
   switch (operation) {
-    case 'api':
+    case, 'api':
       threshold = thresholds.apiResponse;
       break;
-    case 'db':
+    case, 'db':
       threshold = thresholds.dbQuery;
       break;
-    case 'page':
+    case, 'page':
       threshold = thresholds.pageLoad;
       break;
     default:

@@ -2,16 +2,16 @@
  * Simple Authentication Service for Demo
  * Direct PostgreSQL queries to avoid schema mismatches
  */
-import { Argon2id } from 'oslo/password';
-import pkg from 'pg';
+import { Argon2id } from, 'oslo/password';
+import pkg from, 'pg';
 const { Client } = pkg;
-import { lucia } from './auth.js';
+import { lucia } from, './auth.js';
 // Simple user type for authentication
 export interface SimpleUser { id: string;, email: string;
   first_name?: string;
   last_name?: string;
   role: string;
-  is_active: boolean;
+ , is_active: boolean;
 }
 export class SimpleAuthService {
   private argon2id = new Argon2id();

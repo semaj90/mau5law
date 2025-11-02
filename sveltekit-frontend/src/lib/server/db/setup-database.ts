@@ -2,45 +2,45 @@
  * Database Setup Script for Unified Vector Systems
  * Ensures all required tables, indexes, and extensions are properly configured
  */
-import { db } from './client.js'; // Corrected: Use central db client
-import { sql } from 'drizzle-orm';
+import { db } from, './client.js'; // Corrected: Use central db client
+import { sql } from, 'drizzle-orm';
 export interface DatabaseSetupResult { success: boolean;, steps: Array<any>;
-  timestamp: string;
+ , timestamp: string;
 }
 export async function setupDatabase(): Promise<DatabaseSetupResult> {
   console.log('🚀 Setting up database for Unified Vector Systems...');
   const steps: DatabaseSetupResult['steps'] = [];
   try {
     // Step 1: Enable required extensions
-    console.log('Step 1: Enabling PostgreSQL extensions...');
+    console.log('Step, 1: Enabling PostgreSQL extensions...');
     try {
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`); // Fixed: removed ':'
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`); // Fixed: removed ':'
-      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS "vector"`); // Fixed: removed ':'
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS, "uuid-ossp"`); // Fixed: removed, ':'
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS, "pgcrypto"`); // Fixed: removed, ':'
+      await db.execute(sql`CREATE EXTENSION IF NOT EXISTS, "vector"`); // Fixed: removed, ':'
       steps.push({ step: 'Enable extensions', success: true });
     } catch (error: any) {
       steps.push({ step: 'Enable extensions', success: false, error: error.message });
     }
     // Step 2: Create core tables for vector operations
-    console.log('Step 2: Creating vector tables...');
+    console.log('Step, 2: Creating vector tables...');
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS embedding_cache (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           text_hash TEXT UNIQUE NOT NULL,
           embedding vector(768) NOT NULL,
-          model TEXT NOT NULL DEFAULT 'nomic-embed-text', -- Fixed: removed ':'
+          model TEXT NOT NULL DEFAULT, 'nomic-embed-text', -- Fixed: removed, ':'
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          access_count INTEGER DEFAULT 1
+          access_count INTEGER DEFAULT, 1
         )
       `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS vector_metadata (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           document_id TEXT UNIQUE NOT NULL,
           collection_name TEXT NOT NULL,
-          metadata JSONB NOT NULL DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
+          metadata JSONB NOT NULL DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
           content_hash TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,27 +51,27 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create vector tables', success: false, error: error.message });
     }
     // Step 3: Create legal document tables
-    console.log('Step 3: Creating legal document tables...');
+    console.log('Step, 3: Creating legal document tables...');
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS legal_documents (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           title TEXT NOT NULL,
           content TEXT NOT NULL,
           document_type TEXT CHECK (document_type IN ('CONTRACT', 'CASE_LAW', 'STATUTE', 'EVIDENCE', 'PRECEDENT', 'REGULATION')),
           embedding vector(768),
-          metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
+          metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
           pagerank_score DECIMAL(10,6) DEFAULT 1.0,
-          positive_votes INTEGER DEFAULT 0,
-          negative_votes INTEGER DEFAULT 0,
-          view_count INTEGER DEFAULT 0,
+          positive_votes INTEGER DEFAULT, 0,
+          negative_votes INTEGER DEFAULT, 0,
+          view_count INTEGER DEFAULT, 0,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS document_relationships (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           from_document_id TEXT NOT NULL REFERENCES legal_documents(id) ON DELETE CASCADE,
           to_document_id TEXT NOT NULL REFERENCES legal_documents(id) ON DELETE CASCADE,
           relationship_type TEXT NOT NULL CHECK (relationship_type IN ('cites', 'references', 'contradicts', 'supports')),
@@ -85,30 +85,30 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create legal document tables', success: false, error: error.message });
     }
     // Step 4: Create glyph and visualization tables
-    console.log('Step 4: Creating glyph and visualization tables...');
+    console.log('Step, 4: Creating glyph and visualization tables...');
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS generated_glyphs (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           evidence_id TEXT NOT NULL,
           prompt TEXT NOT NULL,
           style TEXT NOT NULL,
           dimensions INTEGER[] NOT NULL,
           image_url TEXT,
           tensor_data BYTEA,
-          metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
+          metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
           generation_time_ms INTEGER,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS som_clusters (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           cluster_id TEXT NOT NULL,
           node_position POINT NOT NULL,
           weights vector(768) NOT NULL,
-          pattern_count INTEGER DEFAULT 0,
-          activation_count INTEGER DEFAULT 0,
+          pattern_count INTEGER DEFAULT, 0,
+          activation_count INTEGER DEFAULT, 0,
           last_activation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           associated_documents TEXT[] DEFAULT ARRAY[]:: TEXT[],
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -120,18 +120,18 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create glyph and visualization tables', success: false, error: error.message });
     }
     // Step 5: Create user and session tracking tables
-    console.log('Step 5: Creating user and session tables...');
+    console.log('Step, 5: Creating user and session tables...');
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS user_sessions (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           user_id TEXT NOT NULL,
           session_id TEXT NOT NULL,
           operation_type TEXT NOT NULL,
           query_text TEXT,
-          results_count INTEGER DEFAULT 0,
-          processing_time_ms INTEGER DEFAULT 0,
-          confidence_score DECIMAL(5,3) DEFAULT 0,
+          results_count INTEGER DEFAULT, 0,
+          processing_time_ms INTEGER DEFAULT, 0,
+          confidence_score DECIMAL(5,3) DEFAULT, 0,
           components_used TEXT[] DEFAULT ARRAY[]:: TEXT[],
           feedback_score INTEGER CHECK (feedback_score IN (-1, 0, 1)),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -139,11 +139,11 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       `);`
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS recommendation_patterns (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           user_id TEXT NOT NULL,
           pattern_features vector(50) NOT NULL,
           som_node_id TEXT,
-          pattern_metadata JSONB DEFAULT '{}'::jsonb, -- Fixed: removed ':' and space
+          pattern_metadata JSONB DEFAULT, '{}'::jsonb, -- Fixed: removed, ':' and space
           success_rating DECIMAL(3,2) DEFAULT 0.5,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -153,18 +153,18 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create user and session tables', success: false, error: error.message });
     }
     // Step 6: Create performance monitoring tables
-    console.log('Step 6: Creating performance monitoring tables...');
+    console.log('Step, 6: Creating performance monitoring tables...');
     try {
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS system_performance (
-          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed ':: text'
+          id TEXT PRIMARY KEY DEFAULT gen_random_uuid(), -- Fixed: removed, ':: text'
           component_name TEXT NOT NULL,
           operation_type TEXT NOT NULL,
           processing_time_ms INTEGER NOT NULL,
           memory_usage_mb INTEGER,
           gpu_utilization DECIMAL(5,2),
           cache_hit_ratio DECIMAL(5,3),
-          error_count INTEGER DEFAULT 0,
+          error_count INTEGER DEFAULT, 0,
           recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);`
@@ -173,7 +173,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create performance monitoring tables', success: false, error: error.message });
     }
     // Step 7: Create essential indexes
-    console.log('Step 7: Creating database indexes...');
+    console.log('Step, 7: Creating database indexes...');
     try {
       // Vector similarity indexes
       await db.execute(sql`
@@ -189,7 +189,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       // Text search indexes
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_content_gin
-        ON legal_documents USING gin (to_tsvector('english', content)); -- Fixed: added missing ')'
+        ON legal_documents USING gin (to_tsvector('english', content)); -- Fixed: added missing, ')'
       `);`
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_metadata_gin
@@ -217,7 +217,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       steps.push({ step: 'Create database indexes', success: false, error: error.message });
     }
     // Step 8: Insert sample data for testing
-    console.log('Step 8: Inserting sample data...');
+    console.log('Step, 8: Inserting sample data...');
     try {
       // Insert sample legal documents
       await db.execute(sql`
@@ -284,12 +284,12 @@ export async function checkDatabaseHealth(): Promise<any> {
     // Check if indexes exist
     const indexesResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM pg_indexes
-      WHERE indexname LIKE 'idx_%' AND tablename LIKE '%legal_documents%' OR tablename LIKE '%embedding_cache%' -- Fixed: removed ':'
+      WHERE indexname LIKE, 'idx_%' AND tablename LIKE, '%legal_documents%' OR tablename LIKE, '%embedding_cache%' -- Fixed: removed, ':'
     `);`
     const indexesReady = Number(indexesResult.rows[0].count) > 0;
     // Check if sample data exists
     const sampleDataResult = await db.execute(sql`
-      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE 'sample_%' -- Fixed: removed ':'
+      SELECT COUNT(*) as count FROM legal_documents WHERE id LIKE, 'sample_%' -- Fixed: removed, ':'
     `);`
     const sampleDataPresent = Number(sampleDataResult.rows[0].count) > 0;
     return {

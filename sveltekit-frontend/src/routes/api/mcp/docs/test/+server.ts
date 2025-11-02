@@ -1,23 +1,23 @@
-import type { Message } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { Message } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 import {
   getMessageQueueRedisBestPractices,
   getRabbitMQDocs,
   getAllRedisDocs,
   getRedisErrorHandling,
   getNodeRedisAdvancedFeatures
-} from '$lib/mcp-rabbitmq-redis-docs.js';
+} from, '$lib/mcp-rabbitmq-redis-docs.js';
 export const GET: RequestHandler = async ({ url, fetch }) => {
   try {
     console.log('🔍 Testing MCP library documentation access...');
     const topic = url.searchParams.get('topic');
     const results: any = {
-      timestamp: new Date().toISOString(),
+     , timestamp: new Date().toISOString(),
       success: [],
       errors: []
     };
-    // Test 1: Message Queue + Redis Best Practices
+    // Test, 1: Message Queue + Redis Best Practices
     try {
       const practices = await getMessageQueueRedisBestPractices(fetch);
       results.success.push({
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
     return json(
       {
         status: 'error',
-        message: `MCP Documentation test; failed: ${error.message}`,
+        message: `MCP Documentation test;, failed: ${error.message}`,
         error: error.message,
         stack: error.stack
       },

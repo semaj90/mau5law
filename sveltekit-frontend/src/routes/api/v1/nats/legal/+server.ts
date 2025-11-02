@@ -1,8 +1,8 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
-import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging';
+import { EnhancedNATSMessagingService } from, '$lib/services/enhanced-nats-messaging';
 import type {
   CaseEventData,
   DocumentEventData,
@@ -10,7 +10,7 @@ import type {
   ChatEventData,
   SearchEventData,
   // SystemEventData removed - not exported from $lib/types/nats-messaging
-} from '$lib/types/nats-messaging';
+} from, '$lib/types/nats-messaging';
 
 // Add a local alias for system events (matches getSystemEventSchema used below)
 type SystemEventData = { component: string;, status: 'healthy' | 'degraded' | 'critical';
@@ -19,7 +19,7 @@ type SystemEventData = { component: string;, status: 'healthy' | 'degraded' | '
   [key: string]: any;
 };
 
-let natsService: EnhancedNATSMessagingService | null = null;
+let, natsService: EnhancedNATSMessagingService | null = null;
 function getNATSService(): EnhancedNATSMessagingService {
   if (!natsService) {
     natsService = new EnhancedNATSMessagingService();
@@ -33,22 +33,22 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const nats = getNATSService();
     switch (body.event_type) {
-      case 'case':
+      case, 'case':
         return await handleCaseEvent(nats, body);
-      case 'document':
+      case, 'document':
         return await handleDocumentEvent(nats, body);
-      case 'ai_analysis':
+      case, 'ai_analysis':
         return await handleAIAnalysisEvent(nats, body);
-      case 'chat':
+      case, 'chat':
         return await handleChatEvent(nats, body);
-      case 'search':
+      case, 'search':
         return await handleSearchEvent(nats, body);
-      case 'system':
+      case, 'system':
         return await handleSystemEvent(nats, body);
       default: return json(
           {
-            success: false,
-            error: 'Unsupported event; type: ${body.event_type}' },
+           , success: false,
+            error: 'Unsupported event;, type: ${body.event_type}' },
           { status: 400 }
         );
     }
@@ -78,40 +78,40 @@ export const GET: RequestHandler = async () => {
         schema: getCaseEventSchema()
       },
       document: {
-        actions: ['uploaded', 'processed', 'analyzed', 'indexed'],
+       , actions: ['uploaded', 'processed', 'analyzed', 'indexed'],
         subject_pattern: 'legal.document.*',
         required_fields: ['document_id', 'filename', 'file_type', 'processing_status'],
         schema: getDocumentEventSchema()
       },
       ai_analysis: {
-        actions: ['started', 'completed', 'failed'],
+       , actions: ['started', 'completed', 'failed'],
         subject_pattern: 'legal.ai.analysis.*',
         required_fields: ['analysis_id', 'analysis_type', 'model_used'],
         schema: getAIAnalysisEventSchema()
       },
       chat: {
-        actions: ['message', 'response', 'streaming'],
+       , actions: ['message', 'response', 'streaming'],
         subject_pattern: 'legal.chat.*',
         required_fields: ['message_id', 'session_id', 'user_id', 'content'],
         schema: getChatEventSchema()
       },
       search: {
-        actions: ['query', 'results'],
+       , actions: ['query', 'results'],
         subject_pattern: 'legal.search.*',
         required_fields: ['query_id', 'user_id', 'query_text', 'search_type'],
         schema: getSearchEventSchema()
       },
       system: {
-        actions: ['health', 'metrics'],
+       , actions: ['health', 'metrics'],
         subject_pattern: 'system.*',
         required_fields: ['component', 'status'],
         schema: getSystemEventSchema()
       }
     },
-    examples: { case_created: {, event_type: 'case',
+    examples: {, case_created: {, event_type: 'case',
         action: 'created',
         data: {
-          case_id: 'case-12345',
+         , case_id: 'case-12345',
           case_number: 'LEGAL-2024-001',
           title: 'Contract Dispute Analysis',
           status: 'open',
@@ -120,10 +120,10 @@ export const GET: RequestHandler = async () => {
           created_by: 'paralegal@firm.com' }
       },
       document_uploaded: {
-        event_type: 'document',
+       , event_type: 'document',
         action: 'uploaded',
         data: {
-          document_id: 'doc-67890',
+         , document_id: 'doc-67890',
           case_id: 'case-12345',
           filename: 'contract.pdf',
           file_type: `application/pdf`,
@@ -131,10 +131,10 @@ export const GET: RequestHandler = async () => {
           processing_status: `uploaded` }
       },
       ai_analysis_completed: {
-        event_type: 'ai_analysis',
+       , event_type: 'ai_analysis',
         action: 'completed',
         data: {
-          analysis_id: 'analysis-abc123',
+         , analysis_id: 'analysis-abc123',
           case_id: 'case-12345',
           document_id: 'doc-67890',
           analysis_type: 'summary',
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async () => {
           confidence_score: 0.89,
           processing_time_ms: 1500,
           results: {
-            summary: 'Contract analysis complete...',
+           , summary: 'Contract analysis complete...',
             key_terms: ['liability', 'indemnification', 'termination']
           }
         }
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async () => {
 // Event Handlers
 async function handleCaseEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: CaseEventData }
+  body: {, action: string;, data: CaseEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['created', 'updated', 'closed'].includes(action)) {
@@ -175,7 +175,7 @@ async function handleCaseEvent(
 }
 async function handleDocumentEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: DocumentEventData }
+  body: {, action: string;, data: DocumentEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['uploaded', 'processed', 'analyzed', 'indexed'].includes(action)) {
@@ -196,7 +196,7 @@ async function handleDocumentEvent(
 }
 async function handleAIAnalysisEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: AIAnalysisEventData }
+  body: {, action: string;, data: AIAnalysisEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['started', 'completed', 'failed'].includes(action)) {
@@ -217,7 +217,7 @@ async function handleAIAnalysisEvent(
 }
 async function handleChatEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: ChatEventData }
+  body: {, action: string;, data: ChatEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['message', 'response', 'streaming'].includes(action)) {
@@ -239,7 +239,7 @@ async function handleChatEvent(
 }
 async function handleSearchEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: SearchEventData }
+  body: {, action: string;, data: SearchEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['query', 'results'].includes(action)) {
@@ -263,7 +263,7 @@ async function handleSearchEvent(
 }
 async function handleSystemEvent(
   nats: EnhancedNATSMessagingService,
-  body: {, action: string; data: SystemEventData }
+  body: {, action: string;, data: SystemEventData }
 ): Promise<Response> {
   const { action, data } = body;
   if (!['health', 'metrics'].includes(action)) {
@@ -364,14 +364,14 @@ function validateSystemData(data: SystemEventData): void {
 function getCaseEventSchema() {
   return {
     type: 'object',
-    properties: { case_id: {, type: 'string' },
-      case_number: { type: 'string' },
-      title: { type: 'string' },
-      status: { type: 'string', enum: ['open', 'in_progress', 'closed', 'archived'] },
-      priority: { type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
-      assigned_to: { type: 'array', items: { type: 'string' } },
-      created_by: { type: 'string' },
-      metadata: { type: 'object' }
+    properties: {, case_id: {, type: 'string' },
+      case_number: {, type: 'string' },
+      title: {, type: 'string' },
+      status: {, type: 'string', enum: ['open', 'in_progress', 'closed', 'archived'] },
+      priority: {, type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
+      assigned_to: {, type: 'array', items: {, type: 'string' } },
+      created_by: {, type: 'string' },
+      metadata: {, type: 'object' }
     },
     required: ['case_id', 'case_number', 'title', 'status']
   };
@@ -379,14 +379,14 @@ function getCaseEventSchema() {
 function getDocumentEventSchema() {
   return {
     type: 'object',
-    properties: { document_id: {, type: 'string' },
-      case_id: { type: 'string' },
-      filename: { type: 'string' },
-      file_type: { type: 'string' },
-      file_size: { type: 'number' },
-      processing_status: { type: 'string', enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'] },
-      checksum: { type: 'string' },
-      metadata: { type: 'object' }
+    properties: {, document_id: {, type: 'string' },
+      case_id: {, type: 'string' },
+      filename: {, type: 'string' },
+      file_type: {, type: 'string' },
+      file_size: {, type: 'number' },
+      processing_status: {, type: 'string', enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'] },
+      checksum: {, type: 'string' },
+      metadata: {, type: 'object' }
     },
     required: ['document_id', 'filename', 'file_type', 'processing_status']
   };
@@ -394,15 +394,15 @@ function getDocumentEventSchema() {
 function getAIAnalysisEventSchema() {
   return {
     type: 'object',
-    properties: { analysis_id: {, type: 'string' },
+    properties: {, analysis_id: {, type: 'string' },
       analysis_type: {
-        type: 'string',
+       , type: 'string',
         enum: ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment']
       },
-      model_used: { type: 'string' },
-      confidence_score: { type: 'number', minimum: 0, maximum: 1 },
-      processing_time_ms: { type: 'number' },
-      results: { type: 'object' }
+      model_used: {, type: 'string' },
+      confidence_score: {, type: 'number', minimum: 0, maximum: 1 },
+      processing_time_ms: {, type: 'number' },
+      results: {, type: 'object' }
     },
     required: ['analysis_id', 'analysis_type', 'model_used']
   };
@@ -410,12 +410,12 @@ function getAIAnalysisEventSchema() {
 function getChatEventSchema() {
   return {
     type: 'object',
-    properties: { message_id: {, type: 'string' },
-      session_id: { type: 'string' },
-      user_id: { type: 'string' },
-      message_type: { type: 'string', enum: ['user', 'assistant', 'system'] },
-      content: { type: 'string' },
-      is_streaming: { type: 'boolean' }
+    properties: {, message_id: {, type: 'string' },
+      session_id: {, type: 'string' },
+      user_id: {, type: 'string' },
+      message_type: {, type: 'string', enum: ['user', 'assistant', 'system'] },
+      content: {, type: 'string' },
+      is_streaming: {, type: 'boolean' }
     },
     required: ['message_id', 'session_id', 'user_id', 'content']
   };
@@ -423,22 +423,22 @@ function getChatEventSchema() {
 function getSearchEventSchema() {
   return {
     type: 'object',
-    properties: { query_id: {, type: 'string' },
-      user_id: { type: 'string' },
-      query_text: { type: 'string' },
-      search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
-      filters: { type: 'object' },
-      results: { type: 'array' }'` },'`
+    properties: {, query_id: {, type: 'string' },
+      user_id: {, type: 'string' },
+      query_text: {, type: 'string' },
+      search_type: {, type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
+      filters: {, type: 'object' },
+      results: {, type: 'array' }'` },'`
     required: ['query_id', 'user_id', 'query_text', 'search_type']
   };
 }
 function getSystemEventSchema() {
   return {
     type: 'object',
-    properties: { component: {, type: `string` },
-      status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
-      metrics: { type: `object` },
-      uptime_seconds: { type: `number` }
+    properties: {, component: {, type: `string` },
+      status: {, type: 'string', enum: ['healthy', 'degraded', 'critical'] },
+      metrics: {, type: `object` },
+      uptime_seconds: {, type: `number` }
     },
     required: ['component', 'status']
   };

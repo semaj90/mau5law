@@ -1,8 +1,8 @@
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from, 'svelte';
   interface GridColumn {
     key: string;
-    title: string;
+   , title: string;
     formatter?: (_value: any, row: any) => string;
   }
   interface DataGridProps {
@@ -54,7 +54,7 @@
   .yorha-data-grid {
     border: 2px solid #ffbf00;
     background: #0a0a0a;
-    color: #e0e0e0;
+   , color: #e0e0e0;
     font-family: 'JetBrains Mono', monospace;
   }
   .grid-scroll {
@@ -67,7 +67,7 @@
   }
   thead th {
     position: sticky;
-    top: 0,
+   , top: 0,
     background: #ffd700;
     color: #000;
     text-align: left;
@@ -78,12 +78,12 @@
     padding: 8px;
     border-bottom: 1px solid #333;
   }
-  tr:nth-child(even) td {
+ , tr:nth-child(even) td {
     background: #151515;
   }
   .grid-loading,
   .grid-empty {
     padding: 12px;
-    color: #ffbf00;
+   , color: #ffbf00;
   }
 </style>

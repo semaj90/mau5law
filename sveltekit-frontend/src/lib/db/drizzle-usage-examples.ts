@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Drizzle ORM Usage Examples - Legal AI Platform
  *
@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
  * - Transactions
  * - Joins and relationships
  */
-import { db } from './index'; // Your database connection
+import { db } from, './index'; // Your database connection
 import {
   legalDocuments,
   legalCases,
@@ -17,8 +17,8 @@ import {
   aiProcessingQueue,
   type NewLegalDocument,
   type LegalMetadata
-} from './schema-example-legal';
-import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from 'drizzle-orm';
+} from, './schema-example-legal';
+import { eq, and, or, sql, desc, asc, like, inArray, gt, lt } from, 'drizzle-orm';
 // ==================================================
 // 1. Basic CRUD Operations
 // ==================================================
@@ -96,7 +96,7 @@ export async function findDocumentsByParty(partyName: string): Promise<any> {
 }
 // Complex JSONB query: Find documents by practice area and confidence
 export async function findDocumentsByPracticeAreaAndConfidence(
-  practiceArea: string,
+ , practiceArea: string,
   minConfidence: number
 ): Promise<any> {
   return db
@@ -127,14 +127,14 @@ export async function semanticSearch(
       metadata
     FROM legal_documents
     WHERE embedding IS NOT NULL
-      AND 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${minSimilarity}
+      AND, 1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${minSimilarity}
     ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
     LIMIT ${limit}
   `);`
 }
 // Hybrid search: Combine vector search with metadata filtering
 export async function hybridSearch(
-  queryEmbedding: number[],
+ , queryEmbedding: number[],
   caseId: string,
   limit: number = 10
 ): Promise<any> {
@@ -247,7 +247,7 @@ export async function getCaseStatistics(caseId: string): Promise<any> {
       COUNT(DISTINCT document_type) as document_types,
       AVG((metadata->'classification'->>'confidenceLevel')::float) as avg_confidence,
       SUM(file_size) as total_size,
-      COUNT(CASE WHEN is_admissible THEN 1 END) as admissible_count
+      COUNT(CASE WHEN is_admissible THEN, 1 END) as admissible_count
     FROM legal_documents
     WHERE case_id = ${caseId}
   `);`
@@ -408,7 +408,7 @@ export async function completeDocumentUpload(params: {, caseId: string;, userId
             datesFiled: [],
             status: 'active` },'`
           classification: {
-           , documentType: params.documentType as any,
+           , documentType: params.documentType, as: any,
             practiceArea: [],
             confidenceLevel: 0,
             riskLevel: 'low',
@@ -431,7 +431,7 @@ export async function completeDocumentUpload(params: {, caseId: string;, userId
           }
         },
         chainOfCustody: {
-          entries: [
+         , entries: [
             {,
               timestamp: new Date().toISOString(),
               action: 'uploaded',

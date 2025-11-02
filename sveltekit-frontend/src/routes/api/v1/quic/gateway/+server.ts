@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * QUIC Gateway API - HTTP/3 Gateway Proxy
  * Provides high-performance HTTP/3 connectivity to SvelteKit frontend
  * Port: 8443 (QUIC), 8444 (HTTP/2 fallback)
  */
-import { json, error } from '@sveltejs/kit';
-import { ensureError } from '$lib/utils/ensure-error';
+import { json, error } from, '@sveltejs/kit';
+import { ensureError } from, '$lib/utils/ensure-error';
 
 const QUIC_GATEWAY_CONFIG = {
   primaryPort: 8443, // QUIC HTTP/3
@@ -18,7 +18,7 @@ const QUIC_GATEWAY_CONFIG = {
 /*
  * GET /api/v1/quic/gateway - Gateway health and status
  */
-export const GET: RequestHandler = async ({ url: _url }) => {
+export const GET: RequestHandler = async ({, url: _url }) => {
   try {
     // Check gateway health
     const healthResponse = await fetch(`${QUIC_GATEWAY_CONFIG.baseUrl}/health`, {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
        , quic: QUIC_GATEWAY_CONFIG.primaryPort,
         fallback: QUIC_GATEWAY_CONFIG.fallbackPort
       },
-      backend: (responseData.backend as string) || 'http://localhost:5173',
+      backend: (responseData.backend, as: string) || 'http://localhost:5173',
       features: [
         'HTTP/3 (QUIC)',
         'HTTP/2 Fallback',

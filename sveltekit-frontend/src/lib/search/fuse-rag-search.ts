@@ -2,11 +2,11 @@
  * Fuse.js Integration for RAG Search
  * Provides client-side fuzzy search capabilities with tag filtering
  */
-import Fuse from 'fuse.js';
+import Fuse from, 'fuse.js';
 export interface RAGDocument { id: number | string;, filename: string;
   content: string;
   tags: string[];
-  fileType: string;
+ , fileType: string;
   metadata?: Record<string, any>;
   createdAt?: string;
   score?: number;
@@ -97,7 +97,7 @@ function extractHighlights(doc: RAGDocument, query: string): string[] {
       highlights.push(doc.content.slice(start, end).trim());
     }
   });
-  return highlights.slice(0, 3); // Return top 3 highlights
+  return highlights.slice(0, 3); // Return top, 3 highlights
 }
 /**
  * Get unique tags from documents

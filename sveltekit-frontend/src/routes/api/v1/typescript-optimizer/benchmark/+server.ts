@@ -1,11 +1,11 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 // TypeScript Optimizer Benchmark Suite
 // Performance testing and comparison across different processing strategies
-import type { BenchmarkRequest, BenchmarkResult, PerformanceComparison } from '$lib/types/typescript-optimizer';
-import { json } from '@sveltejs/kit';
+import type { BenchmarkRequest, BenchmarkResult, PerformanceComparison } from, '$lib/types/typescript-optimizer';
+import { json } from, '@sveltejs/kit';
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as BenchmarkRequest;
     // Validate benchmark request
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid; benchmark: error_count required (minimum 1)'
+          error: 'Invalid;, benchmark: error_count required (minimum 1)'
         },
         { status: 400 }
       );
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Invalid; strategy: must; be: "speed", "quality", or: "comparison"'
+          error: 'Invalid; strategy: must;, be: "speed", "quality", or: "comparison"'
         },
         { status: 400 }
       );
@@ -34,13 +34,13 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     let results: BenchmarkResult[];
     switch (body.strategy) {
-      case 'speed':
+      case, 'speed':
         results = await runSpeedBenchmark(errorCount, iterations);
         break;
-      case 'quality':
+      case, 'quality':
         results = await runQualityBenchmark(errorCount, iterations);
         break;
-      case 'comparison':
+      case, 'comparison':
         results = await runComparisonBenchmark(errorCount, iterations);
         break;
       default:
@@ -61,10 +61,10 @@ export const POST: RequestHandler = async ({ request }) => {
       analysis,
       recommendations: generateRecommendations(analysis),
       metadata: {
-        api_version: '2.0.0',
+       , api_version: '2.0.0',
         go_service_url: ENHANCED_API_BASE_URL,
         sveltekit_benchmark_suite: true,
-        hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM' }'' });
+        hardware_info: 'NVIDIA RTX, 3060 Ti, 16GB RAM' }'' });
   } catch (error: any) {
     console.error('Benchmark Error:', error);
     return json(
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async () => {
       supported_strategies: ['speed', 'quality', 'comparison']
     },
     hardware: {
-     , gpu: 'NVIDIA RTX 3060 Ti',
+     , gpu: 'NVIDIA RTX, 3060 Ti',
       memory: '16GB RAM',
       cuda_version: '12.8',
       go_service_version: `2.0.0' },'`
@@ -120,10 +120,10 @@ export const GET: RequestHandler = async () => {
 async function runSpeedBenchmark(errorCount: number, iterations: number): Promise<BenchmarkResult[]> {
   const results: BenchmarkResult[] = [];
   const endpoints = [
-    { name: 'cpu_baseline', url: '/api/auto-solve', config: { use_gpu: false, use_llama: false } },
-    { name: 'optimized', url: '/api/optimized/auto-solve', config: { use_gpu: false, use_llama: false } },
-    { name: 'gpu_accelerated', url: '/api/gpu/batch-process', config: { use_gpu: true, use_llama: false } },
-    { name: 'go_llama_direct', url: '/api/go-llama/batch', config: { use_gpu: false, use_llama: true } }
+    {, name: 'cpu_baseline', url: '/api/auto-solve', config: {, use_gpu: false, use_llama: false } },
+    { name: 'optimized', url: '/api/optimized/auto-solve', config: {, use_gpu: false, use_llama: false } },
+    { name: 'gpu_accelerated', url: '/api/gpu/batch-process', config: {, use_gpu: true, use_llama: false } },
+    { name: 'go_llama_direct', url: '/api/go-llama/batch', config: {, use_gpu: false, use_llama: true } }
   ];
   for (const endpoint of endpoints) {
     console.log(`🔧 Benchmarking ${endpoint.name}...`);
@@ -169,9 +169,9 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
   // Quality benchmark focuses on fix accuracy and confidence
   const results: BenchmarkResult[] = [];
   const strategies = [
-    { name: 'template_matching', config: { strategy: 'template_only', use_cache: true } },
-    { name: 'ai_inference', config: { strategy: 'llama_thinking', use_thinking: true } },
-    { name: 'hybrid_approach', config: { strategy: 'optimized', use_gpu: true, use_llama: true } }
+    {, name: 'template_matching', config: {, strategy: 'template_only', use_cache: true } },
+    { name: 'ai_inference', config: {, strategy: 'llama_thinking', use_thinking: true } },
+    { name: 'hybrid_approach', config: {, strategy: 'optimized', use_gpu: true, use_llama: true } }
   ];
 
   // expected minimal shape from service responses
@@ -198,7 +198,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
           })
         });
         if (response.ok) {
-          const result = (await response.json()) as unknown as FixResult;
+          const result = (await response.json()) as: unknown as FixResult;
           const confidence = result.metadata?.avg_confidence ?? 0.7;
           const processedCount = result.processed_count ?? 1;
           const fixesApplied = result.fixes_applied ?? 0;
@@ -275,7 +275,7 @@ function findBestOverall(results: BenchmarkResult[]): string {
 type PerformanceSummary = { strategy: string;, total_tests: number;
   avg_latency: number;
   avg_throughput: number;
-  avg_success_rate: number;
+ , avg_success_rate: number;
 };
 function generatePerformanceSummary(results: BenchmarkResult[], strategy: string): PerformanceSummary {
   const total = results.length || 1; // avoid division by zero
@@ -299,7 +299,7 @@ function calculateResourceEfficiency(_results: BenchmarkResult[]): Record<string
 }
 function generateRecommendations(analysis: PerformanceComparison): string[] {
   const recommendations: string[] = [];
-  recommendations.push(`For fastest processing: Use ${analysis.fastest_endpoint}`);
+  recommendations.push(`For fastest, processing: Use ${analysis.fastest_endpoint}`);
   recommendations.push(`For highest accuracy: Use ${analysis.most_accurate}`);
   recommendations.push(`For best overall performance: Use ${analysis.best_overall}`);
   if (analysis.performance_summary.avg_latency > 50) {
@@ -315,7 +315,7 @@ function generateSampleErrors(count: number) {
     file: 'src/lib/components/TestComponent.svelte',
     line: 42,
     column: 12,
-    message: 'Property "handleClick" does not exist on; type: "EventTarget"',
+    message: 'Property, "handleClick" does not exist on; type: "EventTarget"',
     code: 'event.target.handleClick()',
     context: `Event handler in Svelte component` };
   return Array(count)

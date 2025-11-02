@@ -4,9 +4,9 @@
  * Provides cross-worker job state management using LokiJS with Redis pub/sub
  * for real-time updates and synchronization
  */
-import Loki from 'lokijs';
-import type { Collection } from 'lokijs';
-import type Redis from 'ioredis';
+import Loki from, 'lokijs';
+import type { Collection } from, 'lokijs';
+import type Redis from, 'ioredis';
 export interface JobState { id: string;, type: string;
   state: 'queued' | 'processing' | 'completed' | 'failed' | 'skipped';
   progress?: number;
@@ -18,7 +18,7 @@ export interface JobState { id: string;, type: string;
 }
 export class GlobalLokiStore {
   private db: Loki;
-  private coll: Collection<JobState>;
+  private, coll: Collection<JobState>;
   private redis?: Redis;
   private subscriber?: Redis;
   private redisKeyPrefix = 'loki:jobs:';
@@ -40,20 +40,20 @@ export class GlobalLokiStore {
     if (this.redis) {
       try {
         // Create subscriber connection (Redis clients can't pub/sub on same connection)'
-        this.subscriber = (this.redis as any).duplicate ? (this.redis as any).duplicate() : undefined;
-        if (this.subscriber && typeof (this.subscriber as any).connect === 'function') {
+        this.subscriber = (this.redis as: any).duplicate ? (this.redis as: any).duplicate() : undefined;
+        if (this.subscriber && typeof (this.subscriber as: any).connect === 'function') {
           try {
-            await (this.subscriber as any).connect();
+            await (this.subscriber as: any).connect();
           } catch (error) {}
         }
         // Subscribe to job updates from other workers (defensive)
-        if (this.subscriber && typeof (this.subscriber as any).subscribe === 'function') {
+        if (this.subscriber && typeof (this.subscriber as: any).subscribe === 'function') {
           try {
-            await (this.subscriber as any).subscribe(this.pubsubChannel);
+            await (this.subscriber as: any).subscribe(this.pubsubChannel);
           } catch (error) {}
         }
-        if (this.subscriber && typeof (this.subscriber as any).on === 'function') {
-          (this.subscriber as any).on('message', (channel: string, message: string) => {
+        if (this.subscriber && typeof (this.subscriber as: any).on === 'function') {
+          (this.subscriber as: any).on('message', (channel: string, message: string) => {
             if (channel === this.pubsubChannel) {
               try {
                 const update = JSON.parse(message) as JobState;
@@ -100,7 +100,7 @@ export class GlobalLokiStore {
   async startJob(jobMeta: Partial<JobState>): Promise<void> {
     const now = Date.now();
     const job: JobState = {
-      id: jobMeta.id || `job_${now}_${Math.random().toString(36).slice(2)}`,
+     , id: jobMeta.id || `job_${now}_${Math.random().toString(36).slice(2)}`,
       type: jobMeta.type || 'unknown',
       state: 'queued',
       progress: 0,
@@ -253,7 +253,7 @@ export class GlobalLokiStore {
   private async broadcastUpdate(job: JobState): Promise<void> {
     if (!this.redis) return;
     try {
-      const r = this.redis as any;
+      const r = this.redis as: any;
       if (typeof r.publish === 'function') {
         await r.publish(this.pubsubChannel, JSON.stringify(job));
       }
@@ -267,7 +267,7 @@ export class GlobalLokiStore {
   async shutdown(): Promise<void> {
     if (this.subscriber) {
       try {
-        const s = this.subscriber as any;
+        const s = this.subscriber as: any;
         if (typeof s.disconnect === 'function') await s.disconnect();
       } catch (e) {
         console.warn('Error disconnecting Redis subscriber:', e);

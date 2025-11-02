@@ -1,6 +1,6 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { error, fail } from '@sveltejs/kit';
-import { redisService } from '$lib/server/redis-service';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { error, fail } from, '@sveltejs/kit';
+import { redisService } from, '$lib/server/redis-service';
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     throw error(401, 'Authentication required');
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         uptime_in_seconds: 2847293
       },
       keyStats: {
-        total_keys: 15679,
+       , total_keys: 15679,
         expired_count: 2341,
         avg_ttl: 3600,
         memory_usage: '32.1MB',
@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       ],
       connectionStatus: 'connected',
       performanceMetrics: {
-        hit_rate: 88.8,
+       , hit_rate: 88.8,
         miss_rate: 11.2,
         ops_per_sec: 142,
         latency_avg: 0.85,
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 };
 export const actions: Actions = {
-  flushCache: async ({ locals }) => {
+ , flushCache: async ({ locals }) => {
     if (!locals.user || !isAdminUser(locals.user)) {
       return fail(403, { error: 'Admin privileges required' });
     }
@@ -88,14 +88,14 @@ export const actions: Actions = {
       return fail(403, { error: 'Admin privileges required' });
     }
     const data = await request.formData();
-    const key = data.get('key') as string;
+    const key = data.get('key') as: string;
     if (!key) {
       return fail(400, { error: 'Key is required' });
     }
     try {
       await redisService.del(key);
       console.log(`Redis key deleted by admin: ${key}`);
-      return { success: true, message: `Key "${key}" deleted successfully` };
+      return { success: true, message: `Key, "${key}" deleted successfully` };
     } catch (err) {
       console.error('Failed to delete Redis key: `, err);'`
       return fail(500, { error: `Failed to delete key` });
@@ -106,9 +106,9 @@ export const actions: Actions = {
       return fail(403, { error: `Admin privileges required` });
     }
     const data = await request.formData();
-    const key = data.get('key') as string;
-    const value = data.get('value') as string;
-    const ttl = parseInt(data.get('ttl') as string) || null;
+    const key = data.get('key') as: string;
+    const value = data.get('value') as: string;
+    const ttl = parseInt(data.get('ttl') as: string) || null;
     if (!key || !value) {
       return fail(400, { error: `Key and value are required` });
     }
@@ -119,7 +119,7 @@ export const actions: Actions = {
         await redisService.set(key, value);
       }
       console.log(`Redis key set by admin: ${key}`);
-      return { success: true, message: `Key "${key}" set successfully` };
+      return { success: true, message: `Key, "${key}" set successfully` };
     } catch (err) {
       console.error('Failed to set Redis key: ', err);'`'`
       return fail(500, { error: `Failed to set key` });
@@ -166,9 +166,9 @@ async function getRecentKeys(): Promise<any> {
 async function checkRedisConnection(): Promise<void> {
   try {
     await redisService.ping();
-    return 'connected';
+    return, 'connected';
   } catch (error) {
-    return 'disconnected';
+    return, 'disconnected';
   }
 }
 async function getPerformanceMetrics(): Promise<any> {

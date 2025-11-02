@@ -1,12 +1,12 @@
 // --- small runtime config + helpers ---
 function getRandomId(bytes = 8): string {
   try {
-    if (typeof (globalThis as any).crypto !== 'undefined' && typeof (globalThis as any).crypto.randomUUID === 'function') {
-      return (globalThis as any).crypto.randomUUID();
+    if (typeof (globalThis as: any).crypto !== 'undefined' && typeof (globalThis as: any).crypto.randomUUID === 'function') {
+      return (globalThis as: any).crypto.randomUUID();
     }
-    if (typeof (globalThis as any).crypto !== 'undefined' && typeof (globalThis as any).crypto.getRandomValues === 'function') {
+    if (typeof (globalThis as: any).crypto !== 'undefined' && typeof (globalThis as: any).crypto.getRandomValues === 'function') {
       const arr = new Uint8Array(bytes);
-      (globalThis as any).crypto.getRandomValues(arr);
+      (globalThis as: any).crypto.getRandomValues(arr);
       return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
     }
   } catch {
@@ -34,24 +34,24 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
       body: JSON.stringify({, model: this.state.embeddingModel, input: text })
     });
     const json = await res.json().catch(() => ({}));
-    // common shapes: { embedding: [...]} or { data: [{, embedding: [...] }] } or { embeddings: [...] }
+    // common shapes: { embedding: [...]} or {, data: [{, embedding: [...] }] } or {, embeddings: [...] }
     const raw =
       json.embedding ??
       json.embeddings ??
       (Array.isArray(json.data) && json.data[0]?.embedding) ??
       (Array.isArray(json) && json[0]?.embedding) ??
       null;
-    if (Array,.isArray(raw)) retur,n new Float32Array(raw as number,[]);
+    if (Array,.isArray(raw)) retur,n new Float32Array(raw as: number,[]);
   } catch (e) {
     console.warn('getEmbeddingFromOllama failed:', e);
   }
   return this.generateFallbackEmbedding(text);
 }
 
-import { randomBytes } from "crypto";
+import { randomBytes } from, "crypto";
 
 /**
- * Vector Intelligence Service - Phase 4 Implementation (fixed)
+ * Vector Intelligence Service - Phase, 4 Implementation (fixed)
  * Note: external integrations (aiWorkerManager, real vector DB) are stubbed/minimal
  * to restore compilation and basic runtime behavior. Replace stubs with real impls.
  */
@@ -66,8 +66,8 @@ export interface AITask {
   priority?: number | string;
 }
 
-export interface DocumentRecord { id: string;, content: string;
-  metadata: Record<string, unknown>;
+export interface DocumentRecord {, id: string;, content: string;
+ , metadata: Record<string, unknown>;
 }
 
 export interface VectorSearchOptions {
@@ -78,13 +78,13 @@ export interface VectorSearchOptions {
   contextFilter?: {
     caseId?: string;
     evidenceType?: string;
-    dateRange?: { start: Date;, end: Date;
+    dateRange?: {, start: Date;, end: Date;
     };
   };
 }
 
-export interface VectorSearchResult { id: string;, content: string;
-  similarity: number;
+export interface VectorSearchResult {, id: string;, content: string;
+ , similarity: number;
   metadata?: Record<string, unknown>;
   source: "document" | "case" | "evidence" | "note";
   relevanceScore: number;
@@ -110,7 +110,7 @@ export interface RecommendationRequest {
   };
 }
 
-export interface IntelligenceRecommendation { id: string;, type: "action" | "insight" | "warning" | "opportunity";
+export interface IntelligenceRecommendation {, id: string;, type: "action" | "insight" | "warning" | "opportunity";
   title: string;
   description: string;
   confidence: number;
@@ -122,38 +122,38 @@ export interface IntelligenceRecommendation { id: string;, type: "action" | "in
     | "case_strategy"
     | "workflow";
   supportingEvidence: VectorSearchResult[];
-  actionItems: { immediate: string[];, shortTerm: string[];
+  actionItems: {, immediate: string[];, shortTerm: string[];
     longTerm: string[];
   };
-  estimatedImpact: { timeToComplete: number;, successProbability: number;
+  estimatedImpact: {, timeToComplete: number;, successProbability: number;
     riskFactors: string[];
     benefits: string[];
   };
   relatedRecommendations: string[];
 }
 
-export interface SemanticAnalysisResult { entities: {, type: "person" | "organization" | "location" | "date" | "legal_concept";
+export interface SemanticAnalysisResult {, entities: {, type: "person" | "organization" | "location" | "date" | "legal_concept";
     text: string;
     confidence: number;
     mentions: number;
   }[];
-  themes: { topic: string;, weight: number;
+  themes: {, topic: string;, weight: number;
     relevantDocuments: string[];
   }[];
   relationships: {
-    from string;
+    from: string;
     to: string;
     type: string;
     strength: number;
   }[];
-  sentiment: { overall: number;, aspects: Record<string, number>;
+  sentiment: {, overall: number;, aspects: Record<string, number>;
   };
-  complexity: { readability: number;, technicalLevel: number;
+  complexity: {, readability: number;, technicalLevel: number;
     legalComplexity: number;
   };
 }
 
-export interface VectorIntelligenceState { isInitialized: boolean;, embeddingModel: string;
+export interface VectorIntelligenceState {, isInitialized: boolean;, embeddingModel: string;
   vectorDimensions: number;
   indexedDocuments: number;
   lastUpdateTime: number;
@@ -163,7 +163,7 @@ export interface VectorIntelligenceState { isInitialized: boolean;, embeddingMo
 
 class VectorIntelligenceService {
   private state: VectorIntelligenceState = {
-    isInitialized: false,
+   , isInitialized: false,
     embeddingModel: "embeddinggemma:latest",
     vectorDimensions: 384,
     indexedDocuments: 0,
@@ -177,8 +177,8 @@ class VectorIntelligenceService {
 
   // moved runtime config inside the class (instance private)
   private config = {
-    ollamaEndpoint: (process?.env?.OLLAMA_URL as string) || 'http://localhost:11434',
-    qdrantUrl: (process?.env?.QDRANT_URL as string) || 'http://localhost:6333',
+    ollamaEndpoint: (process?.env?.OLLAMA_URL, as: string) || 'http://localhost:11434',
+    qdrantUrl: (process?.env?.QDRANT_URL, as: string) || 'http://localhost:6333',
     qdrantCollection: 'documents',
     enqueueApi: `/api/queues/enqueue` };
 
@@ -245,7 +245,7 @@ class VectorIntelligenceService {
       // If aiWorkerManager exists, attempt to use it, otherwise fallback
       if (typeof aiWorkerManager !== "undefined" && aiWorkerManager?.submitTask) {
         const task: AITask = {
-          id: getRandomId(8),
+         , id: getRandomId(8),
           type: "analyze",
           data: { content },
           priority: "medium"
@@ -311,7 +311,7 @@ class VectorIntelligenceService {
 
   private async buildDocumentIndex(): Promise<void> {
     // No-op stub: implement indexing pipeline in real system
-    // Use fetchExistingDocuments so the helper is referenced and can index if any docs exist.
+    // Use fetchExistingDocuments so the helper is referenced and can index, if: any docs exist.
     const existing = await this.fetchExistingDocuments();
     for (const doc of existing) {
       try {
@@ -333,7 +333,7 @@ class VectorIntelligenceService {
     try {
       if (typeof aiWorkerManager !== "undefined" && aiWorkerManager?.submitTask) {
         const task: AITask = {
-          id: getRandomId(8),
+         , id: getRandomId(8),
           type: "embed",
           data: { text },
           priority: "medium"
@@ -341,7 +341,7 @@ class VectorIntelligenceService {
         const taskId = await aiWorkerManager.submitTask(task);
         const result = await aiWorkerManager.waitForTask(taskId);
         if (result?.response?.embedding && Array.isArray(result.response.embedding)) {
-          const arr = new Float32Array(result.response.embedding as number[]);
+          const arr = new Float32Array(result.response.embedding as: number[]);
           this.vectorCache.set(cacheKey, arr);
           return arr;
         }
@@ -402,7 +402,7 @@ class VectorIntelligenceService {
       console.warn('Qdrant search failed, falling back to local search:', e);
     }
 
-    // 2) fallback: brute-force cosine over in-memory vectorCache (keys; like: 'doc_<id>')
+    // 2) fallback: brute-force cosine over in-memory vectorCache (keys;, like: 'doc_<id>')
     try {
       const results: VectorSearchResult[] = [];
       for (const [key, vec] of this.vectorCache) {
@@ -490,10 +490,10 @@ class VectorIntelligenceService {
   private createFallbackAnalysis(_content: string): SemanticAnalysisResult {
     return {
       entities: [],
-      themes: [{ topic: "general_content", weight: 0.5, relevantDocuments: [] }],
+      themes: [{, topic: "general_content", weight: 0.5, relevantDocuments: [] }],
       relationships: [],
-      sentiment: { overall: 0, aspects: {} },
-      complexity: { readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 }
+      sentiment: {, overall: 0, aspects: {} },
+      complexity: {, readability: 0.5, technicalLevel: 0.5, legalComplexity: 0.5 }
     };
   }
 
@@ -608,7 +608,7 @@ class VectorIntelligenceService {
 
   // Inserted: persist vector to in-memory cache and best-effort push to Qdrant
   private async storeVector(
-    documentId: string,
+   , documentId: string,
     embedding: Float32Array | number[],
     content: string = '',
     metadata: Record<string, unknown> = {}

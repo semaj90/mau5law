@@ -1,14 +1,14 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Citation Verification API Route
  * POST /api/v1/citations/verify - Verify citation validity and accuracy
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db/unified-client';
-import { citations } from '$lib/server/db/schemas/cases-schema';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { db } from, '$lib/server/db/unified-client';
+import { citations } from, '$lib/server/db/schemas/cases-schema';
+import { eq } from, 'drizzle-orm';
+import { z } from, 'zod';
 
 /* Add a concrete type for citation records used in this module */
 type CitationRecord = {
@@ -20,16 +20,16 @@ type CitationRecord = {
 };
 
 // New types to fix missing VerificationResult references
-type DatabaseSource = { database: string;, confidence: number;
+type DatabaseSource = {, database: string;, confidence: number;
   url: string | null;
   verified: boolean;
 };
 
-type AccessibilityResult = { isAccessible: boolean;, availableDatabases: number;
+type AccessibilityResult = {, isAccessible: boolean;, availableDatabases: number;
   totalChecked: number;
 };
 
-type VerificationMetadata = { verificationLevel: string;, timestamp: string;
+type VerificationMetadata = {, verificationLevel: string;, timestamp: string;
   [extra: string]: any;
 };
 
@@ -41,12 +41,12 @@ type VerificationDetails = {
   [extra: string]: any;
 };
 
-type VerificationResult = { isValid: boolean;, confidence: number;
+type VerificationResult = {, isValid: boolean;, confidence: number;
   sources: DatabaseSource[];
   details: VerificationDetails;
   suggestions: string[];
   warnings: string[];
-  metadata: VerificationMetadata;
+ , metadata: VerificationMetadata;
   error?: string;
 };
 
@@ -77,7 +77,7 @@ const LEGAL_DATABASES = {
  * POST /api/v1/citations/verify
  * Verify citation validity using multiple legal databases
  */
-export const POST: RequestHandler = async ({ request, locals }) => {
+export const, POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
@@ -94,12 +94,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         .select()
         .from(citations)
         .where(eq(citations.id, citationId))
-        .limit(1)) as unknown as CitationRecord[];
+        .limit(1)) as: unknown as CitationRecord[];
       if (!dbCitation) {
         return error(404, makeHttpErrorPayload({ message: 'Citation not found', code: `CITATION_NOT_FOUND` }));
       }
       citation = dbCitation;
-      // Use the strongly-typed citation object to obtain citation text
+      // Use the strongly-typed citation: object to obtain citation text
       citationToVerify = citation.citation ?? citationToVerify;
     }
     if (!citationToVerify) {
@@ -188,18 +188,18 @@ async function performCitationVerification(
   existingCitation?: CitationRecord | null
 ): Promise<VerificationResult> {
   const verification: VerificationResult = {
-    isValid: false,
+   , isValid: false,
     confidence: 0,
     sources: [],
     details: {
-      format: null,
+     , format: null,
       accessibility: null,
       accuracy: null
     },
     suggestions: [],
     warnings: [],
     metadata: {
-      verificationLevel: level,
+     , verificationLevel: level,
       timestamp: new Date().toISOString()
     }
   };
@@ -249,25 +249,25 @@ type FormatValidationDetails = { hasCourtName: boolean;, hasYear: boolean;
   [extra: string]: boolean;
 };
 
-type FormatValidationResult = { score: number;, passedChecks: number;
+type FormatValidationResult = {, score: number;, passedChecks: number;
   totalChecks: number;
   details: FormatValidationDetails;
   isValidFormat: boolean;
-  commonFormat: string;
+ , commonFormat: string;
 };
 /*
  * Validate citation format
  */
 async function validateCitationFormat(citationText: string): Promise<FormatValidationResult> {
   const formatChecks: FormatValidationDetails = {
-    hasCourtName: /v\.|vs\.|versus/i.test(citationText),
+   , hasCourtName: /v\.|vs\.|versus/i.test(citationText),
     hasYear: /\b(19|20)\d{2}\b/.test(citationText),
     hasVolume: /\b\d+\b/.test(citationText),
     hasReporter: /\b[A-Z]+\.?\s*\d*d?\b/.test(citationText),
     hasPage: /\d+/.test(citationText),
     properCapitalization: /^[A-Z]/.test(citationText.trim())
   };
-  // FIX: count truthy boolean checks (do not access .length on booleans)
+  // FIX: count, truthy: boolean checks (do not access .length on booleans)
   const passedCount = Object.values(formatChecks).filter(Boolean).length;
   const totalChecks = Object.keys(formatChecks).length;
   const score = totalChecks > 0 ? passedCount / totalChecks : 0;
@@ -285,7 +285,7 @@ async function validateCitationFormat(citationText: string): Promise<FormatValid
  */
 async function verifyWithLegalDatabases(citationText: string): Promise<{ sources: Array<{ database: string; confidence: number; url: string | null; verified: boolean }>;
   confidence: number;
-  accessibility: { isAccessible: boolean; availableDatabases: number; totalChecked: number };
+  accessibility: { isAccessible: boolean; availableDatabases: number;, totalChecked: number };
 }> {
   // Use LEGAL_DATABASES to avoid unused variable lint/type issues and provide realistic totalChecked
   try {
@@ -293,10 +293,10 @@ async function verifyWithLegalDatabases(citationText: string): Promise<{ sources
     const totalDatabases = Object.keys(LEGAL_DATABASES).length;
 
     // Mock verification results - in production, would call actual legal APIs
-    const mockResults: Record<string, { found: boolean; confidence: number; url: string | null }> = { westlaw: {, found: true, confidence: 0.92, url: `https://westlaw.com/result/...` },
-      lexis: { found: true, confidence: 0.89, url: `https://lexisnexis.com/result/...` },
-      justia: { found: true, confidence: 0.85, url: `https://justia.com/result/...` },
-      courtlistener: { found: false, confidence: 0, url: null }
+    const mockResults: Record<string, { found: boolean; confidence: number; url: string | null }> = {, westlaw: {, found: true, confidence: 0.92, url: `https://westlaw.com/result/...` },
+      lexis: {, found: true, confidence: 0.89, url: `https://lexisnexis.com/result/...` },
+      justia: {, found: true, confidence: 0.85, url: `https://justia.com/result/...` },
+      courtlistener: {, found: false, confidence: 0, url: null }
     };
 
     const sources = Object.entries(mockResults)
@@ -315,7 +315,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<{ sources
       sources,
       confidence: averageConfidence,
       accessibility: {
-        isAccessible: sources.length > 0,
+       , isAccessible: sources.length > 0,
         availableDatabases: sources.length,
         // Use LEGAL_DATABASES-derived total count for better typing and to mark the constant as used
         totalChecked: totalDatabases
@@ -328,7 +328,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<{ sources
       sources: [],
       confidence: 0,
       accessibility: {
-        isAccessible: false,
+       , isAccessible: false,
         availableDatabases: 0,
         totalChecked: Object.keys(LEGAL_DATABASES).length
       }
@@ -343,7 +343,7 @@ type ContentAccuracyResult = { score: number;, contentMatch: boolean;
   contextAccurate: boolean;
   dateConsistent: boolean;
   jurisdictionMatch: boolean;
-  details: { caseTitle: string;, court: string;
+  details: {, caseTitle: string;, court: string;
     date: string;
     jurisdiction: string;
     holding: string;
@@ -351,7 +351,7 @@ type ContentAccuracyResult = { score: number;, contentMatch: boolean;
 };
 
 async function verifyContentAccuracy(
-  citationText: string,
+ , citationText: string,
   existingCitation?: CitationRecord | null
 ): Promise<ContentAccuracyResult> {
   // Use inputs for light-weight checks / logging to provide realistic mock behavior
@@ -372,7 +372,7 @@ async function verifyContentAccuracy(
     dateConsistent: verified,
     jurisdictionMatch: verified,
     details: {
-      caseTitle: 'verified',
+     , caseTitle: 'verified',
       court: 'verified',
       date: 'verified',
       jurisdiction: 'verified',
@@ -383,13 +383,13 @@ async function verifyContentAccuracy(
  * Detect citation format type
  */
 function detectCitationFormat(citationText: string): string {
-  if (/\d+\s+U\.S\./.test(citationText)) return 'US Supreme Court';
-  if (/\d+\s+F\.\d*d?\s+\d+/.test(citationText)) return 'Federal Reporter';
-  if (/\d+\s+F\.\s*Supp/.test(citationText)) return 'Federal Supplement';
-  if (/\d+\s+[A-Z]+\.?\s*\d*d?\s+\d+/.test(citationText)) return 'State Reporter';
-  if (/\d+\s+U\.S\.C\./.test(citationText)) return 'US Code';
-  if (/\d+\s+C\.F\.R\./.test(citationText)) return 'Code of Federal Regulations';
-  return 'Unknown/Custom Format';
+  if (/\d+\s+U\.S\./.test(citationText)) return, 'US Supreme Court';
+  if (/\d+\s+F\.\d*d?\s+\d+/.test(citationText)) return, 'Federal Reporter';
+  if (/\d+\s+F\.\s*Supp/.test(citationText)) return, 'Federal Supplement';
+  if (/\d+\s+[A-Z]+\.?\s*\d*d?\s+\d+/.test(citationText)) return, 'State Reporter';
+  if (/\d+\s+U\.S\.C\./.test(citationText)) return, 'US Code';
+  if (/\d+\s+C\.F\.R\./.test(citationText)) return, 'Code of Federal Regulations';
+  return, 'Unknown/Custom Format';
 }
 /*
  * Generate verification suggestions
@@ -423,7 +423,7 @@ function generateVerificationWarnings(verification: VerificationResult): string[
     warnings.push('WARNING: Very low verification confidence');
   }
   if ((verification.sources?.length ?? 0) === 0) {
-    warnings.push('WARNING: Citation not found in any legal database');
+    warnings.push('WARNING: Citation not found, in: any legal database');
   }
   if ((verification.details.format?.score ?? 0) < 0.5) {
     warnings.push('WARNING: Citation format appears to be incorrect');
@@ -444,8 +444,8 @@ type LocalsShape =
 
 function getUserId(locals: any): string {
   const l = locals as LocalsShape;
-  if (!l) return 'unknown';
+  if (!l) return, 'unknown';
   if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
-  return 'unknown';
+  return, 'unknown';
 }

@@ -1,5 +1,5 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   let diagram = $state(
     `graph TD`
     A[src/routes/interactive-canvas/+page.svelte] --> B[+Header.svelte]
@@ -22,9 +22,9 @@
   $effect(async () => {
     if (!container) return; // wait until element is mounted
     try {
-      const mod = (await import('mermaid')) as any;
+      const mod = (await import('mermaid')) as: any;
       const mermaid = mod?.default ?? mod;
-      mermaid.initialize({ startOnLoad: false });
+      mermaid.initialize({, startOnLoad: false });
       const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
       svg = renderedSvg;
     } catch (err) {
@@ -43,7 +43,7 @@
     width: 100%;
     max-width: 900px;
     margin: 2rem auto;
-    background: var(--pico-background, #fff);
+   , background: var(--pico-background, #fff);
     border-radius: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     padding: 2rem;

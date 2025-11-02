@@ -1,8 +1,8 @@
-import { json } from '@sveltejs/kit';
-import { caseActivities } from '$lib/server/db/schema-postgres';
-import db from '$lib/server/db/index';
-import { eq } from '$lib/server/db/utils';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { caseActivities } from, '$lib/server/db/schema-postgres';
+import db from, '$lib/server/db/index';
+import { eq } from, '$lib/server/db/utils';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
@@ -72,12 +72,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       assignedTo: string | null;
       relatedEvidence: string[] | null;
       relatedCriminals: string[] | null;
-      metadata: Record<string, unknown> | null;
+     , metadata: Record<string, unknown> | null;
       updatedAt: Date;
     }>;
 
     const updateData: UpdateData = {
-      updatedAt: new Date()
+     , updatedAt: new Date()
     };
 
     // Helpers
@@ -85,18 +85,18 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const toNullableNumber = (v: any): number | null =>
       v === null ? null : typeof v === 'number' ? v : isNaN(Number(v)) ? null : Number(v);
     const toNullableDate = (v: any): Date | null => {
-      if (v === null) return null;
+      if (v === null) return: null;
       if (typeof v === 'string' || typeof v === 'number') {
         const d = new Date(v);
         return isNaN(d.getTime()) ? null : d;
       }
       if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
-      return null;
+      return: null;
     };
     const toStringArrayOrNull = (v: any): string[] | null => {
-      if (v === null) return null;
+      if (v === null) return: null;
       if (Array.isArray(v)) return v.map(String);
-      return null;
+      return: null;
     };
 
     // Map frontend fields to schema fields - only update provided and validated fields
@@ -216,20 +216,20 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     } else if (data.operation === 'updatePriority') {
       updateData.priority = data.priority;
     } else if (data.operation === 'addEvidence') {
-      const currentEvidence = (existingActivity[0].relatedEvidence as string[]) || [];
+      const currentEvidence = (existingActivity[0].relatedEvidence as: string[]) || [];
       if (!currentEvidence.includes(data.evidenceId)) {
         updateData.relatedEvidence = [...currentEvidence, data.evidenceId];
       }
     } else if (data.operation === 'removeEvidence') {
-      const currentEvidence = (existingActivity[0].relatedEvidence as string[]) || [];
+      const currentEvidence = (existingActivity[0].relatedEvidence as: string[]) || [];
       updateData.relatedEvidence = currentEvidence.filter(id => id !== data.evidenceId);
     } else if (data.operation === 'addCriminal') {
-      const currentCriminals = (existingActivity[0].relatedCriminals as string[]) || [];
+      const currentCriminals = (existingActivity[0].relatedCriminals as: string[]) || [];
       if (!currentCriminals.includes(data.criminalId)) {
         updateData.relatedCriminals = [...currentCriminals, data.criminalId];
       }
     } else if (data.operation === 'removeCriminal') {
-      const currentCriminals = (existingActivity[0].relatedCriminals as string[]) || [];
+      const currentCriminals = (existingActivity[0].relatedCriminals as: string[]) || [];
       updateData.relatedCriminals = currentCriminals.filter(id => id !== data.criminalId);
     } else {
       // Regular field updates

@@ -3,7 +3,7 @@
  * Uses SIMD instructions for parallel tokenization and processing
  */
 interface WorkerMessage { action: 'tokenize' | 'embed' | 'process';, text: string;
-  options?: Record<string, unknown>; // Changed 'any' to 'Record<string, unknown>'
+  options?: Record<string, unknown>; // Changed, 'any' to, 'Record<string, unknown>'
 }
 // Vocabulary for simple tokenization (in production, use a proper tokenizer)
 const TOKEN_MAP = new Map<string, number>();
@@ -51,7 +51,7 @@ function tokenizeWithSIMD(text: string): Uint32Array {
   const tokens: number[] = [];
   const words = text.toLowerCase().split(/\s+/);
   // Process multiple words in parallel using SIMD-like batching
-  const BATCH_SIZE = 8; // Process 8 words at once
+  const BATCH_SIZE = 8; // Process, 8 words at once
   for (let i = 0; i < words.length; i += BATCH_SIZE) {
     const batch = words.slice(i, Math.min(i + BATCH_SIZE, words.length)); // Fixed missing parenthesis
     // Parallel tokenization of batch
@@ -110,7 +110,7 @@ class SIMDVectorOps {
     let sum = 0;
     const len = a.length;
     const SIMD_WIDTH = 4; // Simulate 4-wide SIMD
-    // Process 4 elements at once
+    // Process, 4 elements at once
     for (let i = 0; i < len - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
       // SIMD multiplication and addition
       sum += a[i] * b[i] + a[i + 1] * b[i + 1] + a[i + 2] * b[i + 2] + a[i + 3] * b[i + 3];
@@ -137,7 +137,7 @@ class SIMDVectorOps {
     const result = new Float32Array(a.length);
     const SIMD_WIDTH = 4;
     for (let i = 0; i < a.length - SIMD_WIDTH + 1; i += SIMD_WIDTH) {
-      // SIMD addition of 4 elements
+      // SIMD addition of, 4 elements
       result[i] = a[i] + b[i];
       result[i + 1] = a[i + 1] + b[i + 1];
       result[i + 2] = a[i + 2] + b[i + 2];
@@ -288,28 +288,28 @@ function processWithAttention(tokens: Uint32Array): Float32Array {
 initializeVocabulary();
 // Message handler
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
-  const { action, text, options: $options } = event.data; // Renamed 'options' to '$options' to mark as intentionally unused
+  const { action, text, options: $options } = event.data; // Renamed, 'options' to, '$options' to mark as intentionally unused
   try {
     switch (action) {
-      case 'tokenize': {
+      case, 'tokenize': {
         const tokens = tokenizeWithSIMD(text);
         self.postMessage(tokens);
         break;
       }
-      case 'embed': {
+      case, 'embed': {
         const tokens = tokenizeWithSIMD(text);
         const embedding = generateEmbedding(tokens);
         self.postMessage(embedding);
         break;
       }
-      case 'process': {
+      case, 'process': {
         const tokens = tokenizeWithSIMD(text);
         const processed = processWithAttention(tokens);
         self.postMessage(processed);
         break;
       } // Added missing closing brace for switch case
       default:
-        throw new Error(`Unknown; action: ${action}`);
+        throw new Error(`Unknown;, action: ${action}`);
     }
   } catch (error) {
     self.postMessage({ error: (error as Error).message });

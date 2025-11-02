@@ -1,4 +1,4 @@
-import type { SearchResult } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
 /**
  * Search and Vector Types
  * Core types for pgvector search, embeddings, and retrieval
@@ -6,7 +6,7 @@ import type { SearchResult } from '$lib/types';
  */
 export interface SearchResult { id: string;, title: string;
   content: string;
-  similarity: number;
+ , similarity: number;
   metadata?: Record<string, unknown>;
 }
 
@@ -14,7 +14,7 @@ export interface SearchResult { id: string;, title: string;
  * Summary response from RAG system
  */
 export interface SummaryResponse { summary: string;, keyPoints: string[];
-  metadata: { documentsProcessed: number;, processingTime: number;
+  metadata: {, documentsProcessed: number;, processingTime: number;
     lambda: number;
     sentenceCount?: number; // Added for MMR compatibility
   };
@@ -26,8 +26,8 @@ export interface SummaryRequest {
   lambda?: number;
   type?: string;
 }
-export interface LegalDocument { id: string;, title: string;
-  content: string;
+export interface LegalDocument {, id: string;, title: string;
+ , content: string;
   type?: string;
   metadata?: Record<string, unknown>;
 }
@@ -44,17 +44,17 @@ export interface SystemStatus { database: boolean;, qdrant: boolean;
   elasticsearch?: boolean;
   langchain?: boolean;
 }
-export interface TestResults { query: string;, results: SearchResult[];
+export interface TestResults {, query: string;, results: SearchResult[];
   timestamp: Date;
-  performance: { duration: number;, documentsSearched: number;
+  performance: {, duration: number;, documentsSearched: number;
   };
   error?: any;
 }
-export interface TensorOperation { type: string;, data: any;
+export interface TensorOperation {, type: string;, data: any;
   shape?: number[];
 }
-export interface MetricData { name: string;, value: number;
-  timestamp: Date;
+export interface MetricData {, name: string;, value: number;
+ , timestamp: Date;
   labels?: Record<string, string>;
 }
 // GPU-specific types
@@ -72,7 +72,7 @@ export interface GPUChatMessage { id: string;, role: 'user' | 'assistant' | 'sy
 export interface GPUProcessingStatus {
   gpuAvailable: boolean;
   cudaVersion?: string;
-  gpuMemory?: { total: number;, used: number;
+  gpuMemory?: {, total: number;, used: number;
     free: number;
   };
   activeJobs: number;
@@ -88,11 +88,11 @@ export interface StreamingResponse {
   };
 }
 
-export interface VectorSearchQueryResult { success: true;, results: SearchResult[];
+export interface VectorSearchQueryResult {, success: true;, results: SearchResult[];
   query: string;
   topK: number;
   responseTime: number;
-  timestamp: string;
+ , timestamp: string;
   metadata?: {
     modelUsed?: string;
     indexType?: string;

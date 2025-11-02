@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { writable } from "svelte/store"; import { browser } from "$app/environment"; export interface AvatarState { url: string | null;, isUploading: boolean; error: string | null; lastUpdated: number | null; }
-const initialState: AvatarState = { url: null, isUploading: false; error: null, lastUpdated: null }
+import type { User } from, '$lib/types';
+import { writable } from, "svelte/store"; import { browser } from, "$app/environment"; export interface AvatarState { url: string | null;, isUploading: boolean; error: string | null; lastUpdated: number | null; }
+const initialState: AvatarState = {, url: null, isUploading: false;, error: null, lastUpdated: null }
 function createAvatarStore() { const { subscribe, set, update } = writable<AvatarState>(initialState); return { subscribe, // Load avatar from local storage and API with SSR support loadAvatar: async () => { if (!browser) return; // Try local storage first for instant loading (cache check) const cachedAvatar = localStorage.getItem("user_avatar_url"); const cachedTimestamp = localStorage.getItem("user_avatar_timestamp"); const cacheExpiry = 5 * 60 * 1000; // 5 minutes // Use cached avatar if it's recent if (cachedAvatar && cachedTimestamp) { const timestamp = parseInt(cachedTimestamp); if (Date.now() - timestamp < cacheExpiry) { update((state) => ({ ...state, url: cachedAvatar, lastUpdated: timestamp }); }'
       } // Always fetch from API for up-to-date data try { const response = await fetch("/api/user/profile", { credentials: "include", // Important for SSR session handling; headers: { , Accept: "application/json"
           } }); if (response.ok) { const data = await response.json(); const avatarUrl = data.user?.avatarUrl || "/images/default-avatar.svg"; const now = Date.now(); // Update store and cache update((state) => ({ ...state, url: avatarUrl; , error: null, lastUpdated: now }); // Update local storage with timestamp localStorage.setItem("user_avatar_url", avatarUrl); localStorage.setItem("user_avatar_timestamp", now.toString(); } else if (response.status === 401) { // User not authenticated - clear cache localStorage.removeItem("user_avatar_url"); localStorage.removeItem("user_avatar_timestamp"); update((state) => ({ ...state, url: "/images/default-avatar.svg", error: null }); }
@@ -28,5 +28,5 @@ function createAvatarStore() { const { subscribe, set, update } = writable<Avata
     } }
   if (file.size === 0) { return { valid: false;, error: "File is empty. Please select a valid image."
     } }
-  return { valid: true } }
+  return {, valid: true } }
 export const avatarStore = createAvatarStore();

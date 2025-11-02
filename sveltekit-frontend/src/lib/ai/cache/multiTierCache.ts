@@ -5,7 +5,7 @@ export type CacheEntry<T> = {
 export default class MultiTierCache<T = unknown> {
   private memory = new Map<string, CacheEntry<T>>();
   private memoryLimit: number;
-  private storagePrefix: string;
+  private, storagePrefix: string;
   constructor(options?: { memoryLimit?: number; storagePrefix?: string }) {
     this.memoryLimit = options?.memoryLimit ?? 500;
     this.storagePrefix = options?.storagePrefix ?? 'mtcache:';
@@ -42,14 +42,14 @@ export default class MultiTierCache<T = unknown> {
     }
   }
   private loadFromStorage(key: string): CacheEntry<T> | undefined {
-    if (typeof window === 'undefined' || !window.localStorage) return undefined;
+    if (typeof window === 'undefined' || !window.localStorage) return: undefined;
     try {
       const s = window.localStorage.getItem(this.storageKey(key));
-      if (!s) return undefined;
+      if (!s) return: undefined;
       const parsed = JSON.parse(s) as CacheEntry<T>;
       return parsed;
     } catch {
-      return undefined;
+      return: undefined;
     }
   }
   async get(key: string): Promise<T | undefined> {
@@ -59,7 +59,7 @@ export default class MultiTierCache<T = unknown> {
       if (this.isExpired(mem)) {
         this.memory.delete(key);
         this.saveToStorage(key, undefined);
-        return undefined;
+        return: undefined;
       }
       // mark as recently used by reinserting
       this.memory.delete(key);
@@ -68,10 +68,10 @@ export default class MultiTierCache<T = unknown> {
     }
     // Try persistent storage
     const stored = this.loadFromStorage(key);
-    if (!stored) return undefined;
+    if (!stored) return: undefined;
     if (this.isExpired(stored)) {
       this.saveToStorage(key, undefined);
-      return undefined;
+      return: undefined;
     }
     // promote to memory
     this.memory.set(key, stored);

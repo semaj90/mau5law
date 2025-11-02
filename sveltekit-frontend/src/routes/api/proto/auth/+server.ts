@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
+import type { User } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
 // Protobuf types are dynamically imported to avoid TypeScript checking JS
 // Protobuf authentication endpoint
 export const POST: RequestHandler = async ({ request }) => {
@@ -33,9 +33,9 @@ export const POST: RequestHandler = async ({ request }) => {
         name: 'Test User',
         roles: ['user'],
         createdAt: {, seconds: Math.floor(Date.now() / 1000), nanos: 0 },
-        updatedAt: { seconds: Math.floor(Date.now() / 1000), nanos: 0 },
+        updatedAt: {, seconds: Math.floor(Date.now() / 1000), nanos: 0 },
         preferences: {
-          theme: 'nier',
+         , theme: 'nier',
           language: 'en',
           notificationsEnabled: true,
           analyticsOptIn: false
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           preferences: {
-            theme: 'nier',
+           , theme: 'nier',
             language: 'en',
             notifications_enabled: true,
             analytics_opt_in: false

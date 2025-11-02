@@ -1,17 +1,17 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * 🎯 Headless Legal Processing API
  *
  * Server-side API endpoint for headless WebGPU legal document processing
  * Integrates YoRHa Mipmap Shaders + LOD Cache + Ollama AI analysis
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 import {
   headlessLegalProcessorFactory,
   DEFAULT_HEADLESS_CONFIG
-} from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
-import type { HeadlessProcessingConfig } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+} from, '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+import type { HeadlessProcessingConfig } from, '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
 
 interface ProcessingRequest {
   text: string;
@@ -52,7 +52,7 @@ interface BatchProcessingRequest {
 
 // Add small focused types to replace `any`
 type SvgVisualization = {
-  // SVG markup string (server-friendly)
+  // SVG, markup: string (server-friendly);
   svgMarkup: string;
   width?: number;
   height?: number;
@@ -112,11 +112,11 @@ interface HeadlessProcessorLike {
     [k: string]: any;
   };
   initializeHeadless?: () => Promise<boolean> | boolean;
-  processLegalDocument?: (
+  processLegalDocument?: (;
     text: string,
     config?: Partial<HeadlessProcessingConfig>
   ) => Promise<HeadlessResult | null> | HeadlessResult | null;
-  processBatch?: (
+  processBatch?: (;
     documents: HeadlessDocument[],
     config?: Partial<HeadlessProcessingConfig>
   ) => Promise<HeadlessResult[]>;
@@ -125,13 +125,13 @@ interface HeadlessProcessorLike {
 }
 
 // Safe, typed alias to the imported factory
-const factory = headlessLegalProcessorFactory as unknown as HeadlessProcessorLike;
+const factory = headlessLegalProcessorFactory as: unknown as HeadlessProcessorLike;
 
 /**
  * POST /api/headless/legal-processing
  * Process a single legal document through the headless pipeline
  */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const body = (await request.json()) as ProcessingRequest;
@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: Date.now(),
       metadata: body.metadata
     };
-    console.log(`⚡ Starting headless processing with config: ${JSON.stringify(processingConfig)}`);
+    console.log(`⚡ Starting headless processing with, config: ${JSON.stringify(processingConfig)}`);
 
     // Process through headless pipeline (safe call)
     const result = await factory.processLegalDocument?.(body.text, processingConfig);
@@ -187,19 +187,19 @@ export const POST: RequestHandler = async ({ request }) => {
       requestId: context.requestId,
       // Processing results
       document: {
-        id: body.documentId,
+       , id: body.documentId,
         type: body.documentType,
         length: body.text.length,
         processingMode: `headless-webgpu' },'`
       // WebGPU results;
       webgpu: {
-        mipmapGenerated: !!result?.mipmapChain,
+       , mipmapGenerated: !!result?.mipmapChain,
         mipmapLevels: result?.mipmapChain?.levels ?? 0,
         memoryUsed: result?.mipmapChain?.totalMemoryUsed ?? 0
       },
       // LOD cache results
       lod: {
-        compressionRatio: result?.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null,
+       , compressionRatio: result?.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null,
         svgSummariesGenerated: !!result?.svgVisualizations,
         lodLevels: result?.svgVisualizations ? Object.keys(result.svgVisualizations) : [],
         cacheEntryId: result?.lodEntry?.id ?? null
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
       visualizations: processingConfig.generateSVGSummaries ? result?.svgVisualizations : undefined,
       // Performance metrics
       performance: {
-        totalTime: result?.processingTime ?? Date.now() - startTime,
+       , totalTime: result?.processingTime ?? Date.now() - startTime,
         webgpuInitTime: result?.metrics?.webgpuInitTime ?? 0,
         memoryUsage: result?.metrics?.memoryUsage ?? 0,
         cacheHitRate: result?.metrics?.cacheHitRate ?? 0
@@ -219,17 +219,17 @@ export const POST: RequestHandler = async ({ request }) => {
       outputFiles: result?.outputFiles ?? [],
       // System info
       system: {
-        webgpuAvailable: true,
+       , webgpuAvailable: true,
         headlessMode: factory.getStats?.()?.isHeadless ?? true,
         processingCapabilities: {
-          mipmapGeneration: processingConfig.enableMipmapGeneration ?? false,
+         , mipmapGeneration: processingConfig.enableMipmapGeneration ?? false,
           lodCaching: processingConfig.enableLODCaching ?? false,
           offscreenRendering: processingConfig.enableOffscreenRendering ?? false,
           streamingOptimization: processingConfig.enableStreamingOptimization ?? false
         }
       }
     };
-    console.log(`✅ Headless processing completed: ${(response as { processingTime?: number }).processingTime}ms`);
+    console.log(`✅ Headless processing, completed: ${(response as { processingTime?: number }).processingTime}ms`);
     return json(response);
   } catch (error: any) {
     const errInfo = getErrorInfo(error);
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error: errInfo.message || 'Internal processing error',
         processingTime: Date.now() - startTime,
         system: {
-          webgpuAvailable: false,
+         , webgpuAvailable: false,
           fallbackMode: 'cpu',
           error: errInfo.name
         }
@@ -287,7 +287,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       // fallback: process sequentially (or in parallel via Promise.all)
       results = await Promise.all(
         body.documents.map(async (doc: HeadlessDocument) => {
-          const text = (doc?.text ?? doc?.content ?? '') as string;
+          const text = (doc?.text ?? doc?.content ?? '') as: string;
           const r = await factory.processLegalDocument?.(text, processingConfig);
           return r as HeadlessResult;
         })
@@ -332,7 +332,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         error: result.success ? undefined : `Processing failed' })),'`
       // Performance summary
       performance: {
-        documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
+       , documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
         parallelizationEfficiency: batchStats.totalProcessingTime / (Date.now() - startTime),
         memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024), // MB
       },
@@ -366,7 +366,7 @@ export const GET: RequestHandler = async () => {
     lodCacheStats: {}
   };
   return json({
-    status: 'operational',
+   , status: 'operational',
     capabilities: {
      , headlessWebGPU: stats.hasDevice,
       mipmapGeneration: true,
@@ -417,7 +417,7 @@ function buildProcessingConfig(
   const baseConfig = { ...DEFAULT_HEADLESS_CONFIG };
   // Adjust config based on document type
   switch (documentType) {
-    case 'contract':
+    case, 'contract':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -426,7 +426,7 @@ function buildProcessingConfig(
         outputFormats: ['svg', 'json', 'lod', 'vector'],
         ...customConfig
       };
-    case 'evidence':
+    case, 'evidence':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'advanced',
@@ -435,7 +435,7 @@ function buildProcessingConfig(
         outputFormats: ['svg', 'json', 'lod'],
         ...customConfig
       };
-    case 'brief':
+    case, 'brief':
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -455,8 +455,8 @@ function generateRequestId(): string {
   return `headless-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
-// New helper: safely extract message/name from unknown error without using `any`
-function getErrorInfo(error: any): { message: string; name: string } {
+// New helper: safely extract message/name, from: unknown error without using `any`
+function getErrorInfo(error: any): { message: string;, name: string } {
   if (error instanceof Error) {
     return { message: error.message, name: error.name };
   }

@@ -3,8 +3,8 @@
  * Tests provider registration, health monitoring, and fallback routing
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { AIServiceOrchestrator } from './ai-service-orchestrator';
+import { describe, it, expect, beforeEach } from, 'vitest';
+import { AIServiceOrchestrator } from, './ai-service-orchestrator';
 
 describe('AI Service Orchestrator', () => {
   let orchestrator: AIServiceOrchestrator;

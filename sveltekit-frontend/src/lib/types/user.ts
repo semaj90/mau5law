@@ -1,4 +1,4 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // User types consolidated
 export interface User { id: string;, email: string;
   name: string;
@@ -11,9 +11,9 @@ export interface User { id: string;, email: string;
   createdAt: Date;
   updatedAt: Date;
 }
-export interface UserSession { id: string;, userId: string;
+export interface UserSession {, id: string;, userId: string;
   expiresAt: Date;
-  user?: User; // Optional complete user object
+  user?: User; // Optional complete, user: object
 }
 export interface UserProfile extends User {
   preferences?: { [key: string]: any };

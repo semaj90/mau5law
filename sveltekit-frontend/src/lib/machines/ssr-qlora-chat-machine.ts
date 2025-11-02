@@ -4,8 +4,8 @@
  * XState Machine for SSR QLoRA Chat Assistant
  * Manages the complete chat flow with user dictionary, GPU caching, and Gemma3 integration
  */
-import { createMachine, assign, spawn } from 'xstate';
-import type { ActorRefFrom } from 'xstate';
+import { createMachine, assign, spawn } from, 'xstate';
+import type { ActorRefFrom } from, 'xstate';
 // Types for the chat machine
 export interface ChatContext { userId: string;, sessionId: string;
   messages: ChatMessage[];
@@ -18,7 +18,7 @@ export interface ChatContext { userId: string;, sessionId: string;
   qloraJobId?: string;
   performanceMetrics: PerformanceMetrics;
 }
-export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
+export interface ChatMessage {, id: string;, role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   streaming?: boolean;
@@ -28,18 +28,18 @@ export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'syste
   feedback?: number;
   processingTime?: number;
 }
-export interface UserDictionary { preferredStyle: 'formal' | 'casual' | 'technical' | 'adaptive';, domainExpertise: string[];
+export interface UserDictionary {, preferredStyle: 'formal' | 'casual' | 'technical' | 'adaptive';, domainExpertise: string[];
   termCount: number;
   interactionCount: number;
   qloraCheckpoint?: string;
 }
-export interface SystemStatus { nesMemoryReady: boolean;, gpuCacheReady: boolean;
+export interface SystemStatus {, nesMemoryReady: boolean;, gpuCacheReady: boolean;
   qloraReady: boolean;
   wasmBridgeReady: boolean;
   ollamaReady: boolean;
   gemma3Ready: boolean;
 }
-export interface PerformanceMetrics { averageResponseTime: number;, cacheHitRate: number;
+export interface PerformanceMetrics {, averageResponseTime: number;, cacheHitRate: number;
   qloraJobsTriggered: number;
   gemma3Requests: number;
   userSatisfaction: number;
@@ -64,7 +64,7 @@ export type ChatEvent =
   | { type: 'CLEAR_CHAT' }
   | { type: 'RETRY_MESSAGE'; messageId: string }
   | { type: 'UPDATE_DICTIONARY'; updates: Partial<UserDictionary> }
-  | { type: 'SYSTEM_STATUS_UPDATED'; status: Partial<SystemStatus> }
+  | { type: 'SYSTEM_STATUS_UPDATED';, status: Partial<SystemStatus> }
 /**
  * SSR QLoRA Chat Machine
  * Orchestrates the complete chat experience with multiple AI backends
@@ -73,18 +73,18 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
   id: 'ssrQloraChat',
   initial: 'initializing',
   context: {
-    userId: '',
+   , userId: '',
     sessionId: '',
     messages: [],
     currentMessage: '',
     userDictionary: {
-      preferredStyle: 'adaptive',
+     , preferredStyle: 'adaptive',
       domainExpertise: [],
       termCount: 0,
       interactionCount: 0
     },
     systemStatus: {
-      nesMemoryReady: false,
+     , nesMemoryReady: false,
       gpuCacheReady: false,
       qloraReady: false,
       wasmBridgeReady: false,
@@ -93,7 +93,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
     processingMode: 'instant',
     performanceMetrics: {
-      averageResponseTime: 0,
+     , averageResponseTime: 0,
       cacheHitRate: 0,
       qloraJobsTriggered: 0,
       gemma3Requests: 0,
@@ -101,49 +101,49 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       totalMessages: 0
     }
   },
-  states: { initializing: {, entry: ['logInitialization'],
-      on: { INITIALIZE: {, actions: ['setUserSession'],
+  states: {, initializing: {, entry: ['logInitialization'],
+      on: {, INITIALIZE: {, actions: ['setUserSession'],
           target: 'loading'
         }
       }
     },
     loading: {
-      entry: ['checkSystemStatus'],
-      on: { CONTEXT_LOADED: {, actions: ['loadContext'],
+     , entry: ['checkSystemStatus'],
+      on: {, CONTEXT_LOADED: {, actions: ['loadContext'],
           target: 'idle'
         },
         ERROR: {
-          actions: ['setError'],
+         , actions: ['setError'],
           target: 'error'
         }
       },
       after: {
         10000: {
-          target: 'error',
+         , target: 'error',
           actions: ['setTimeoutError']
         }
       }
     },
     idle: {
-      entry: ['updateIdleMetrics'],
-      on: { SEND_MESSAGE: {, actions: ['addUserMessage'],
+     , entry: ['updateIdleMetrics'],
+      on: {, SEND_MESSAGE: {, actions: ['addUserMessage'],
           target: 'processing'
         },
         CLEAR_CHAT: {
-          actions: ['clearMessages'],
+         , actions: ['clearMessages'],
           target: 'idle'
         },
         UPDATE_DICTIONARY: {
-          actions: ['updateUserDictionary']
+         , actions: ['updateUserDictionary']
         },
         SYSTEM_STATUS_UPDATED: {
-          actions: ['updateSystemStatus']
+         , actions: ['updateSystemStatus']
         }
       }
     },
     processing: {
-      initial: 'determiningMode',
-      states: { determiningMode: {, entry: ['analyzeMessage'],
+     , initial: 'determiningMode',
+      states: {, determiningMode: {, entry: ['analyzeMessage'],
           always: [
             {,
               guard: 'hasInstantResponse',
@@ -163,76 +163,76 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           ]
         },
         instantResponse: {
-          entry: ['setProcessingMode', 'handleInstantResponse'],
-          on: { INSTANT_RESPONSE: {, actions: ['addInstantResponse'],
+         , entry: ['setProcessingMode', 'handleInstantResponse'],
+          on: {, INSTANT_RESPONSE: {, actions: ['addInstantResponse'],
               target: '#ssrQloraChat.idle'
             }
           }
         },
         cachedResponse: {
-          entry: ['setProcessingMode', 'handleCacheHit'],
-          on: { CACHE_HIT: {, actions: ['addCachedResponse'],
+         , entry: ['setProcessingMode', 'handleCacheHit'],
+          on: {, CACHE_HIT: {, actions: ['addCachedResponse'],
               target: '#ssrQloraChat.idle'
             }
           }
         },
         qloraProcessing: {
-          entry: ['setProcessingMode', 'startQLoRAProcessing'],
-          on: { STREAM_STARTED: {, actions: ['startStreaming'],
+         , entry: ['setProcessingMode', 'startQLoRAProcessing'],
+          on: {, STREAM_STARTED: {, actions: ['startStreaming'],
               target: 'streaming'
             },
             QLORA_RESPONSE: {
-              actions: ['addQLoRAResponse'],
+             , actions: ['addQLoRAResponse'],
               target: '#ssrQloraChat.idle'
             },
             ERROR: {
-              actions: ['setError'],
+             , actions: ['setError'],
               target: '#ssrQloraChat.error'
             }
           }
         },
         gemma3Processing: {
-          entry: ['setProcessingMode', 'startGemma3Processing'],
-          on: { STREAM_STARTED: {, actions: ['startStreaming'],
+         , entry: ['setProcessingMode', 'startGemma3Processing'],
+          on: {, STREAM_STARTED: {, actions: ['startStreaming'],
               target: 'streaming'
             },
             GEMMA3_RESPONSE: {
-              actions: ['addGemma3Response'],
+             , actions: ['addGemma3Response'],
               target: '#ssrQloraChat.idle'
             },
             ERROR: {
-              actions: ['setError'],
+             , actions: ['setError'],
               target: '#ssrQloraChat.error'
             }
           }
         },
-        streaming: { on: {, STREAM_CHUNK: {
-              actions: ['addStreamChunk']
+        streaming: {, on: {, STREAM_CHUNK: {
+             , actions: ['addStreamChunk']
             },
             STREAM_COMPLETE: {
-              actions: ['completeStreaming'],
+             , actions: ['completeStreaming'],
               target: 'postProcessing'
             },
             ERROR: {
-              actions: ['setError'],
+             , actions: ['setError'],
               target: '#ssrQloraChat.error'
             }
           }
         },
         postProcessing: {
-          entry: ['generateNeuralSprite', 'updatePerformanceMetrics'],
-          on: { NEURAL_SPRITE_GENERATED: {, actions: ['attachNeuralSprite'],
+         , entry: ['generateNeuralSprite', 'updatePerformanceMetrics'],
+          on: {, NEURAL_SPRITE_GENERATED: {, actions: ['attachNeuralSprite'],
               target: '#ssrQloraChat.idle'
             }
           },
           after: {
             2000: {
-              target: '#ssrQloraChat.idle'
+             , target: '#ssrQloraChat.idle'
             }
           }
         }
       },
-      on: { ERROR: {, actions: ['setError'],
+      on: {, ERROR: {, actions: ['setError'],
           target: 'error'
         }
       }
@@ -263,15 +263,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       console.log('🔄 SSR QLoRA Chat Machine initializing...');
     },
     setUserSession: assign({
-      userId: (_, event) => event.type === 'INITIALIZE' ? event.userId: '',
+     , userId: (_, event) => event.type === 'INITIALIZE' ? event.userId: '',
       sessionId: (_, event) => event.type === 'INITIALIZE' ? event.sessionId : ''
     }),
     loadContext: assign({
-      userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : { [key,: strin,g]: any },
+     , userDictionary: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.userDictionary : { [key,: strin,g]: any },
       systemStatus: (_, event) => event.type === 'CONTEXT_LOADED' ? event.context.systemStatus : { [key,: strin,g]: any }
     }),
     addUserMessage: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'SEND_MESSAGE') {
           return [...context.messages, event.message];
         }
@@ -283,9 +283,9 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       })
     }),
     setProcessingMode: assign({
-      processingMode: (_, event) => {
+     , processingMode: (_, event) => {
         // Determine processing mode based on event context
-        return 'qlora'; // Default, will be determined by guards
+        return, 'qlora'; // Default, will be determined by guards
       }
     }),
     analyzeMessage: (context, event) => {
@@ -311,7 +311,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       // Trigger Gemma3 processing
     },
     addInstantResponse: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'INSTANT_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -329,7 +329,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     addCachedResponse: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'CACHE_HIT') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -356,7 +356,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     addQLoRAResponse: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'QLORA_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -371,13 +371,13 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         }
         return context.messages;
       },
-      qloraJobId: (_, event) => event.type === 'QLORA_RESPONSE' ? event.jobId: undefined; performanceMetrics: (context) => ({
+      qloraJobId: (_, event) => event.type === 'QLORA_RESPONSE' ? event.jobId: undefined;, performanceMetrics: (context) => ({
         ...context.performanceMetrics,
         qloraJobsTriggered: context.performanceMetrics.qloraJobsTriggered + 1
       })
     }),
     addGemma3Response: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'GEMMA3_RESPONSE') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -398,10 +398,10 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       })
     }),
     startStreaming: assign({
-      streamingMessage: (context) => context.messages[context.messages.length - 1]
+     , streamingMessage: (context) => context.messages[context.messages.length - 1]
     }),
     addStreamChunk: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'STREAM_CHUNK') {
           const lastMessage = context.messages[context.messages.length - 1];
           const updatedChunks = [...(lastMessage.chunks || []), event.chunk];
@@ -410,7 +410,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               chunks: updatedChunks;
-              content: updatedChunks.join(' ')
+             , content: updatedChunks.join(' ')
             }
           ];
         }
@@ -418,7 +418,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     completeStreaming: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'STREAM_COMPLETE') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -438,7 +438,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       // Trigger neural sprite generation
     },
     attachNeuralSprite: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'NEURAL_SPRITE_GENERATED') {
           const lastMessage = context.messages[context.messages.length - 1];
           return [
@@ -453,7 +453,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     recordFeedback: assign({
-      messages: (context, event) => {
+     , messages: (context, event) => {
         if (event.type === 'FEEDBACK_PROVIDED') {
           return context.messages.map(msg =>
             msg.id === event.messageId
@@ -485,12 +485,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     },
     clearMessages: assign({
-      messages: [],
+     , messages: [],
       streamingMessage: undefined,
       errorMessage: undefined
     }),
     updateUserDictionary: assign({
-      userDictionary: (context, event) => {
+     , userDictionary: (context, event) => {
         if (event.type === 'UPDATE_DICTIONARY') {
           return { ...context.userDictionary, ...event.updates }
         }
@@ -498,7 +498,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     updateSystemStatus: assign({
-      systemStatus: (context, event) => {
+     , systemStatus: (context, event) => {
         if (event.type === 'SYSTEM_STATUS_UPDATED') {
           return { ...context.systemStatus, ...event.status }
         }
@@ -506,7 +506,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     }),
     updatePerformanceMetrics: assign({
-      performanceMetrics: (context) => {
+     , performanceMetrics: (context) => {
         const totalTime = context.messages.reduce((sum, msg) => sum + (msg.processingTime || 0), 0);
         const avgTime = totalTime / Math.max(context.messages.length, 1);
         return {
@@ -523,19 +523,19 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       console.log('📊 Updating idle metrics...');
     },
     setError: assign({
-      errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
+     , errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
     }),
     setTimeoutError: assign({
-      errorMessage: `System initialization timed out` }),'`'`
+     , errorMessage: `System initialization timed out` }),'`'`
     clearError: assign({
-      errorMessage: undefined
+     , errorMessage: undefined
     }),
     logError: (context) => {
       console.error('❌ Chat machine error: `, context.errorMessage);` }'
   },
   // Guards
   guards: {
-    hasInstantResponse: (context, event) => {
+   , hasInstantResponse: (context, event) => {
       // Check if message matches NES memory patterns
       if (event.type === 'SEND_MESSAGE') {
         const message = event.message.content.toLowerCase();

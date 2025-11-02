@@ -5,10 +5,10 @@
  * - langextract for NLP entity extraction
  * - Sharp for image optimization
  */
-import { createWorker } from 'tesseract.js';
-import pdfParse from 'pdf-parse';
-import sharp from 'sharp';
-import { readFile } from 'fs/promises';
+import { createWorker } from, 'tesseract.js';
+import pdfParse from, 'pdf-parse';
+import sharp from, 'sharp';
+import { readFile } from, 'fs/promises';
 export interface PDFProcessingResult { text: string;, pageCount: number;
   metadata: {
     title?: string;
@@ -23,18 +23,18 @@ export interface PDFProcessingResult { text: string;, pageCount: number;
     dates?: string[];
     legalCitations?: string[];
   };
-  ocr?: { confidence: number;, text: string;
+  ocr?: {, confidence: number;, text: string;
   };
   processingTime: number;
 }
-export interface OCRResult { text: string;, confidence: number;
-  processingTime: number;
+export interface OCRResult {, text: string;, confidence: number;
+ , processingTime: number;
 }
 /**
  * Extract text from PDF using pdf-parse
  */
 export async function extractPDFText(filePath: string): Promise<{ text: string;, pages: number;
-  metadata: Record<string, any>;
+ , metadata: Record<string, any>;
 }> {
   const dataBuffer = await readFile(filePath);
   const data = await pdfParse(dataBuffer, {
@@ -62,7 +62,7 @@ export async function extractPDFText(filePath: string): Promise<{ text: string;
  * GPU-accelerated via WebGL backend
  */
 export async function performOCR(
-  imagePath: string,
+ , imagePath: string,
   options: {
     lang?: string;
     optimize?: boolean;
@@ -119,7 +119,7 @@ export async function performOCR(
 export async function extractEntities(text: string): Promise<{ persons: string[];, organizations: string[];
   locations: string[];
   dates: string[];
-  legalCitations: string[];
+ , legalCitations: string[];
 }> {
   try {
     const response = await fetch('http://localhost:8099/api/extract', {
@@ -154,7 +154,7 @@ export async function extractEntities(text: string): Promise<{ persons: string[]
   }
 }
 /**
- * Process PDF with full pipeline:
+ * Process PDF with full, pipeline:
  * 1. Extract text from PDF
  * 2. If low quality, perform OCR
  * 3. Extract entities with langextract
@@ -174,7 +174,7 @@ export async function processPDF(
   const pdfData = await extractPDFText(filePath);
   const finalText = pdfData.text;
   let ocrResult: OCRResult | undefined;
-  // Step 2: If text extraction yielded little content, perform OCR
+  // Step, 2: If text extraction yielded little content, perform OCR
   const textQuality = pdfData.text.trim().length;
   const shouldOCR = forceOCR || textQuality < 100;
   if (shouldOCR) {
@@ -194,7 +194,7 @@ export async function processPDF(
     text: finalText,
     pageCount: pdfData.pages,
     metadata: {
-      title: pdfData.metadata.Title,
+     , title: pdfData.metadata.Title,
       author: pdfData.metadata.Author,
       subject: pdfData.metadata.Subject,
       createdAt: pdfData.metadata.CreationDate ? new Date(pdfData.metadata.CreationDate) : undefined

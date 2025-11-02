@@ -1,9 +1,9 @@
-import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types.js';
-import { db } from '$lib/db/index.js';
-import { users, cases, evidence, sessions, aiHistory, profileTable } from '$lib/db/schema.js';
-import { eq, desc, count, sql } from 'drizzle-orm';
-import { getUserId } from '$lib/server/auth/utils';
+import { error, redirect } from, '@sveltejs/kit';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { db } from, '$lib/db/index.js';
+import { users, cases, evidence, sessions, aiHistory, profileTable } from, '$lib/db/schema.js';
+import { eq, desc, count, sql } from, 'drizzle-orm';
+import { getUserId } from, '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ params, locals }) => {
   // Check authentication using Lucia v3
   if (!locals.session || !locals.user) {
@@ -131,7 +131,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   }
 };
 export const actions: Actions = {
-  updateProfile: async ({ request, params, locals }) => {
+ , updateProfile: async ({ request, params, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
     }
@@ -193,7 +193,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const newPassword = formData.get('newPassword')?.toString();
     if (!newPassword || newPassword.length < 8) {
-      return { success: false, error: 'Password must be at least 8 characters' };
+      return { success: false, error: 'Password must be at least, 8 characters' };
     }
     try {
       // Hash the new password

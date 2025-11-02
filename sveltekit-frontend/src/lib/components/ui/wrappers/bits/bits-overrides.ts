@@ -13,7 +13,7 @@ export function getBitsOverrides(): OverrideMap | undefined {
   try {
     return globalThis.__BITS_OVERRIDES__;
   } catch {
-    return undefined;
+    return: undefined;
   }
 }
 export function registerOverride(name: string, impl: any): void {

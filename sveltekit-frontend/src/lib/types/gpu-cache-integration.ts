@@ -5,7 +5,7 @@
 // === Core Integration Types ===
 
 export interface EnhancedGPUCacheEntry { id: string;, cacheKey: string;
-  data: any; // was any
+  data: any; // was: any
   metadata: GPUCacheMetadata;
   integrations: IntegrationStatus;
   performance: PerformanceMetrics;
@@ -23,7 +23,7 @@ export interface GPUCacheMetadata {
   legalContext?: LegalContext;
   version: string;
 }
-export interface IntegrationStatus { binaryEncoding: BinaryEncodingStatus;, nesCache: NESCacheStatus;
+export interface IntegrationStatus {, binaryEncoding: BinaryEncodingStatus;, nesCache: NESCacheStatus;
   webgpu: WebGPUStatus;
   shaderCache: ShaderCacheStatus;
   som?: SOMClusteringStatus;
@@ -31,7 +31,7 @@ export interface IntegrationStatus { binaryEncoding: BinaryEncodingStatus;, nes
 // === Binary Encoding Types ===
 export type EncodingFormat = 'cbor' | 'msgpack' | 'json';
 
-export interface BinaryEncodingStatus { enabled: boolean;, format: EncodingFormat;
+export interface BinaryEncodingStatus {, enabled: boolean;, format: EncodingFormat;
   compressionRatio: number;
   encodingTime: number;
   decodingTime: number;
@@ -47,7 +47,7 @@ export interface BinaryEncodingOptions {
   performance?: boolean;
   workflowOptimized?: boolean;
 }
-export interface EncodingMetrics { format: EncodingFormat;, originalSize: number;
+export interface EncodingMetrics {, format: EncodingFormat;, originalSize: number;
   encodedSize: number;
   compressionRatio: number;
   encodeTime: number;
@@ -66,19 +66,19 @@ export interface NESCacheStatus {
   optimized: boolean;
   error?: string;
 }
-export interface NESMemoryAllocation { nesRegions: NESMemoryRegion[];, allocation: Record<NESMemoryRegion, number>;
+export interface NESMemoryAllocation {, nesRegions: NESMemoryRegion[];, allocation: Record<NESMemoryRegion, number>;
   utilization: number;
   available: number;
   fragmentation: number;
 }
-export interface NESCacheConfig { enablePredictiveLoading: boolean;, enableCompression: boolean;
+export interface NESCacheConfig {, enablePredictiveLoading: boolean;, enableCompression: boolean;
   enableCoherence: boolean;
   memoryBudget: number;
   garbageCollectionThreshold: number;
   defaultPriority: number;
 }
 // === WebGPU Types ===
-export interface WebGPUStatus { available: boolean;, accelerated: boolean;
+export interface WebGPUStatus {, available: boolean;, accelerated: boolean;
   device?: string;
   adapter?: string;
   features: string[];
@@ -86,18 +86,18 @@ export interface WebGPUStatus { available: boolean;, accelerated: boolean;
   performance?: WebGPUPerformanceMetrics;
   error?: string;
 }
-export interface WebGPUPerformanceMetrics { processingTime: number;, gpuUtilization: number;
+export interface WebGPUPerformanceMetrics {, processingTime: number;, gpuUtilization: number;
   memoryBandwidth: number;
   computeUnits: number;
   shaderCompilationTime?: number;
 }
-export interface WebGPUShaderData { name: string;, computeShader: string;
+export interface WebGPUShaderData {, name: string;, computeShader: string;
   vertexShader?: string;
   fragmentShader?: string;
   uniforms?: Record<string, unknown>; // was { [key: string]: any }
   // use a local, safe fallback type for bind group layout to avoid TS errors
   // when @webgpu/types is not installed in the project
-  bindGroupLayout?: any; // was any
+  bindGroupLayout?: any; // was: any
   workgroupSize?: [number, number, number];
 }
 // === Shader Cache Types ===
@@ -108,7 +108,7 @@ export interface ShaderCacheStatus { cached: boolean;, shaderType: 'vertex' | '
   optimized: boolean;
   error?: string;
 }
-export interface ShaderCacheEntry { id: string;, cacheKey: string;
+export interface ShaderCacheEntry {, id: string;, cacheKey: string;
   shaderType: 'vertex' | 'fragment' | 'compute' | 'geometry';
   sourceCode: string;
   compiledBinary: ArrayBuffer;
@@ -121,7 +121,7 @@ export interface ShaderCacheEntry { id: string;, cacheKey: string;
 export interface ShaderMetadata {
   legalContext?: string;
   visualizationType?: string;
-  complexity: number;
+ , complexity: number;
   embedding?: Float32Array;
   parameters?: Record<string, unknown>; // was { [key: string]: any }
   tags: string[];
@@ -158,7 +158,7 @@ export interface LegalWorkflowContext {
   requiresEncryption?: boolean;
   retentionPeriod?: number;
   collaborators?: number;
-  urgency: UrgencyLevel;
+ , urgency: UrgencyLevel;
   clientId?: string;
   caseId?: string;
   metadata?: Record<string, unknown>;
@@ -173,24 +173,24 @@ export interface LegalContext { jurisdiction: string;, practiceArea: string;
   complianceStandards: string[];
 }
 // === SOM Clustering Types ===
-export interface SOMClusteringStatus { enabled: boolean;, clustered: boolean;
+export interface SOMClusteringStatus {, enabled: boolean;, clustered: boolean;
   clusterCount?: number;
   similarity?: number;
   trainingId?: string;
   performance?: SOMPerformanceMetrics;
   error?: string;
 }
-export interface SOMPerformanceMetrics { trainingTime: number;, convergenceRate: number;
+export interface SOMPerformanceMetrics {, trainingTime: number;, convergenceRate: number;
   clusterAccuracy: number;
   memoryUsage: number;
 }
-export interface SOMClusterResult { clusterId: number;, centroid: number[];
+export interface SOMClusterResult {, clusterId: number;, centroid: number[];
   members: string[];
   similarity: number;
   legalRelevance?: number;
 }
 // === Performance and Analytics Types ===
-export interface PerformanceMetrics { cacheHitRatio: number;, averageRetrievalTime: number;
+export interface PerformanceMetrics {, cacheHitRatio: number;, averageRetrievalTime: number;
   averageStorageTime: number;
   memoryUtilization: number;
   compressionEfficiency: number;
@@ -198,14 +198,14 @@ export interface PerformanceMetrics { cacheHitRatio: number;, averageRetrievalT
   nesOptimizationGain?: number;
   overallPerformanceScore: number;
 }
-export interface CacheAnalytics { totalEntries: number;, totalSize: number;
+export interface CacheAnalytics {, totalEntries: number;, totalSize: number;
   hitRate: number;
   missRate: number;
   evictionRate: number;
   averageEntryAge: number;
   hotEntries: string[];
   coldEntries: string[];
-  workflowDistribution: Record<LegalWorkflowType, number>;
+ , workflowDistribution: Record<LegalWorkflowType, number>;
 }
 export interface OptimizationRecommendations { encoding: string;, caching: string;
   memory: string;
@@ -227,13 +227,13 @@ export interface EnhancedGPUCacheResponse<T = unknown> {
   metadata: ResponseMetadata;
   error?: string;
 }
-export interface ResponseMetadata { timestamp: string;, processingTime: number;
+export interface ResponseMetadata {, timestamp: string;, processingTime: number;
   version: string;
   requestId?: string;
   cacheStatus: 'hit' | 'miss' | 'partial';
   optimizations: string[];
 }
-export interface BatchOperationResult { successful: number;, failed: number;
+export interface BatchOperationResult {, successful: number;, failed: number;
   results: Array<unknown>; // was Array<any>
   performance: PerformanceMetrics;
 }
@@ -251,18 +251,18 @@ export interface EnhancedGPUCacheConfig {
     features?: string[];
   };
   // Shader cache configuration
-  shaderCache: { enabled: boolean;, maxEntries: number;
+  shaderCache: {, enabled: boolean;, maxEntries: number;
     compressionEnabled: boolean;
     predictiveLoading: boolean;
   };
   // Legal workflow configuration
-  legalWorkflows: { enabled: boolean;, defaultComplexity: ComplexityLevel;
+  legalWorkflows: {, enabled: boolean;, defaultComplexity: ComplexityLevel;
     securityLevel: SecurityLevel;
     retentionPeriod: number;
   };
   // Performance configuration
-  performance: { enableAnalytics: boolean;, metricsInterval: number;
-    optimizationThreshold: number;
+  performance: {, enableAnalytics: boolean;, metricsInterval: number;
+   , optimizationThreshold: number;
   };
 }
 // === Utility Types ===
@@ -284,37 +284,37 @@ export interface RetrievalOptions {
   decodeFormat?: EncodingFormat;
   workflowContext?: LegalWorkflowContext;
 }
-export interface WorkflowOptimizationResult { workflowType: LegalWorkflowType;, recommendedEncoding: EncodingFormat;
+export interface WorkflowOptimizationResult {, workflowType: LegalWorkflowType;, recommendedEncoding: EncodingFormat;
   cacheStrategy: 'memory' | 'nes' | 'hybrid' | 'distributed';
   compressionLevel: number;
   estimatedPerformanceGain: number;
   memoryOptimization: NESMemoryAllocation;
   webgpuAcceleration: boolean;
   securityLevel: SecurityLevel;
-  configuration: Record<string, unknown>; // was any
-  predictions: any; // was any
+ , configuration: Record<string, unknown>; // was: any
+  predictions: any; // was: any
 }
 // === Event Types ===
-export interface CacheEvent { type: 'store' | 'retrieve' | 'evict' | 'optimize' | 'error';, key: string;
-  timestamp: number;
+export interface CacheEvent {, type: 'store' | 'retrieve' | 'evict' | 'optimize' | 'error';, key: string;
+ , timestamp: number;
   workflowType?: LegalWorkflowType;
   performance?: Partial<PerformanceMetrics>;
   metadata?: Record<string, unknown>; // was { [key: string]: any }
 }
-export interface IntegrationEvent { type: 'binary_encode' | 'nes_cache' | 'webgpu_process' | 'shader_compile' | 'som_cluster';, source: string;
+export interface IntegrationEvent {, type: 'binary_encode' | 'nes_cache' | 'webgpu_process' | 'shader_compile' | 'som_cluster';, source: string;
   target: string;
   success: boolean;
   performance: number;
-  timestamp: number;
+ , timestamp: number;
   details?: Record<string, unknown>; // was { [key: string]: any }
 }
 // === Error Types ===
 export class EnhancedGPUCacheError extends Error {
   constructor(
-    message: string,
+   , message: string,
     public code: string,
     public integration?: keyof IntegrationStatus,
-    public context?: Record<string, unknown> // was any
+    public context?: Record<string, unknown> // was: any
   ) {
     super(message);
     this.name = 'EnhancedGPUCacheError';
@@ -325,7 +325,7 @@ export interface ErrorContext {
   key?: string;
   workflowType?: LegalWorkflowType;
   integration?: keyof IntegrationStatus;
-  timestamp: number;
+ , timestamp: number;
   requestId?: string;
 }
 // === Type Guards ===
@@ -367,7 +367,7 @@ export function createDefaultEnhancedGPUCacheConfig(): EnhancedGPUCacheConfig {
       workflowOptimized: true
     },
     nesCache: {
-      enablePredictiveLoading: true,
+     , enablePredictiveLoading: true,
       enableCompression: true,
       enableCoherence: true,
       memoryBudget: 59424, // NES total budget
@@ -375,24 +375,24 @@ export function createDefaultEnhancedGPUCacheConfig(): EnhancedGPUCacheConfig {
       defaultPriority: 1
     },
     webgpu: {
-      enabled: true,
+     , enabled: true,
       memoryLimit: 1024 * 1024 * 1024, // 1GB
       features: ['gpu-accelerated-rag', 'vector-ops']
     },
     shaderCache: {
-      enabled: true,
+     , enabled: true,
       maxEntries: 1000,
       compressionEnabled: true,
       predictiveLoading: true
     },
     legalWorkflows: {
-      enabled: true,
+     , enabled: true,
       defaultComplexity: 'medium',
       securityLevel: 'standard',
       retentionPeriod: 365
     },
     performance: {
-      enableAnalytics: true,
+     , enableAnalytics: true,
       metricsInterval: 60000, // 1 minute
       optimizationThreshold: 0.7
     }
@@ -409,7 +409,7 @@ export function calculateOverallPerformanceScore(metrics: PerformanceMetrics): n
   };
   // Normalize metrics to 0-1 range
   const normalized = {
-    cacheHitRatio: metrics.cacheHitRatio,
+   , cacheHitRatio: metrics.cacheHitRatio,
     averageRetrievalTime: Math.max(0, 1 - metrics.averageRetrievalTime / 1000), // Invert - lower is better
     memoryUtilization: Math.min(metrics.memoryUtilization, 1),
     compressionEfficiency: metrics.compressionEfficiency,
@@ -433,9 +433,9 @@ export function estimateMemoryFootprint(data: any, format: EncodingFormat = 'jso
     const serialized = JSON.stringify(data);
     const jsonSize = serialized ? serialized.length * 2 : 0; // UTF-16 heuristic
     switch (format) {
-      case 'cbor':
+      case, 'cbor':
         return Math.floor(jsonSize * 0.7); // ~30% compression
-      case 'msgpack':
+      case, 'msgpack':
         return Math.floor(jsonSize * 0.8); // ~20% compression
       default: return jsonSize;
     }

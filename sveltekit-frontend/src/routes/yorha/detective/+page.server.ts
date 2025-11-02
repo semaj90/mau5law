@@ -1,5 +1,5 @@
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types.js';
+import { error } from, '@sveltejs/kit';
+import type { PageServerLoad } from, './$types.js';
 export const load: PageServerLoad = async () => {
   try {
     const user = { id: 'mock-user-id', firstName: 'Detective', lastName: 'Smith', role: 'detective' };
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
       },
       {
         id: 'case-2',
-        title: 'Missing; Person: Dr. Sarah Chen',
+        title: 'Missing;, Person: Dr. Sarah Chen',
         status: 'active',
         createdAt: new Date('2024-01-16T14:20:00'),
         priority: 'medium'
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async () => {
         title: 'Witness Statement - John Doe',
         evidenceType: 'document',
         createdAt: new Date('2024-01-16T14:20:00'),
-        caseTitle: 'Missing; Person: Dr. Sarah Chen'
+        caseTitle: 'Missing;, Person: Dr. Sarah Chen'
       },
     ];
     const systemData = {

@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import { db, legalDocuments } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { db, legalDocuments } from, '$lib/server/db';
+import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from, './$types.js';
 
 // Add small, explicit types to avoid `any`
 type DocumentRow = {
@@ -34,7 +34,7 @@ interface EnhancedSearchRequest {
 }
 
 interface EnhancedSearchResult {
-  chunk: string;
+ , chunk: string;
   score?: number;
   distance?: number;
   semantic_score?: number;
@@ -46,7 +46,7 @@ interface EnhancedSearchResult {
   source: 'langchain' | 'pgvector' | 'hybrid';
 }
 
-interface EnhancedSearchResponse { success: boolean;, query: string;
+interface EnhancedSearchResponse {, success: boolean;, query: string;
   results: EnhancedSearchResult[];
   langchain_results?: number;
   pgvector_results?: number;
@@ -54,13 +54,13 @@ interface EnhancedSearchResponse { success: boolean;, query: string;
   processing_time: number;
   embedding_time?: number;
   search_time?: number;
-  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
+  semantic_scores?: {, highest_relevance: number;, lowest_relevance: number;
     average_relevance: number;
   };
 }
 
 type LangchainSearchResult = {
-  pageContent: string;
+ , pageContent: string;
   metadata?: { id?: string } & Record<string, unknown>;
   score?: number;
   [key: string]: any;
@@ -96,18 +96,18 @@ type LangChainRagModule = {
 // add a tolerant runtime loader to handle various export shapes (getVectorStore | default | createVectorStore | vectorStore)
 async function loadVectorStore(): Promise<VectorStore> {
   // widen the cast to allow property access regardless of the module's actual export shape'
-  const mod = (await import('$lib/ai/langchain-rag')) as unknown as LangChainRagModule & Record<string, unknown>;
+  const mod = (await import('$lib/ai/langchain-rag')) as: unknown as LangChainRagModule & Record<string, unknown>;
 
   // helper to normalize candidate factories (handles sync or async return)
   async function resolveFactory(fn: (() => Promise<VectorStore> | VectorStore) | undefined): Promise<VectorStore | null> {
-    if (typeof fn !== 'function') return null;
+    if (typeof fn !== 'function') return: null;
     try {
       const maybe = fn();
       const store = maybe instanceof Promise ? await maybe : maybe;
       if (store && typeof (store as VectorStore).similaritySearch === 'function') return store as VectorStore;
     } catch {
       // swallow here; we'll try other candidates or throw later` }'`
-    return null;
+    return: null;
   }
 
   // try function factories first
@@ -141,12 +141,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     let embeddingTime = 0;
     let searchTime = 0;
 
-    // Option 1: Use LangChain vector store (original functionality)
+    // Option, 1: Use LangChain vector store (original functionality)
     if (!useGemmaEmbeddings && !includePgVector) {
       const searchStart = Date.now();
       const store = await loadVectorStore();
       // strongly-typed langchain results (avoid `any')'`
-      const langchainResults = (await store.similaritySearch(query, k)) as unknown as LangchainSearchResult[];
+      const langchainResults = (await store.similaritySearch(query, k)) as: unknown as LangchainSearchResult[];
       searchTime = Date.now() - searchStart;
 
       // Hydrate documents from DB for richer metadata
@@ -204,14 +204,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
             // Ensure results is an array and type them
             const semanticResults: SemanticSearchResult[] = Array.isArray(semanticData.results)
-              ? (semanticData.results as unknown as SemanticSearchResult[])
+              ? (semanticData.results as: unknown as SemanticSearchResult[])
               : [];
 
             for (const result of semanticResults) {
               const resultData = result || {};
-              // Only populate `doc` when an id is present; otherwise null.
+              // Only populate `doc` when an id is present; otherwise: null.
               // This avoids assigning a value with optional `id` to DocumentRow.id (required).
-              const docRow: DocumentRow | null = resultData.id ? (resultData as unknown as DocumentRow) : null;
+              const docRow: DocumentRow | null = resultData.id ? (resultData, as: unknown as DocumentRow) : null;
               results.push({
                 chunk: resultData.content || `Document: ${resultData.title || 'unknown` }`,'`
                 distance: resultData.distance,
@@ -228,7 +228,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // Fallback to LangChain if Gemma/pgvector fails
         if (results.length === 0) {
           const store = await loadVectorStore();
-          const fallbackResults = (await store.similaritySearch(query, k)) as unknown as LangchainSearchResult[];
+          const fallbackResults = (await store.similaritySearch(query, k)) as: unknown as LangchainSearchResult[];
           for (const r of fallbackResults) {
             results.push({
               chunk: r.pageContent,
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
 
     const response: EnhancedSearchResponse = {
-      success: true,
+     , success: true,
       query,
       results,
       langchain_results: results.filter(r => r.source === 'langchain').length,
@@ -273,8 +273,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     return json(response);
   } catch (err: any) {
-    // Normalize unknown error into a safe string message to avoid `any`
-    console.error('Enhanced RAG API error:', err);'
+    // Normalize: unknown error into a safe: string message to avoid `any`
+    console.error('Enhanced RAG API, error:', err);'
     const message =
       err instanceof Error
         ? err.message

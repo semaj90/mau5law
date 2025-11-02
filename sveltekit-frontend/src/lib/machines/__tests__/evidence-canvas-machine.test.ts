@@ -1,9 +1,9 @@
 // src/lib/machines/__tests__/evidence-canvas-machine.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createActor, createMachine, assign, fromPromise } from 'xstate';
-import { mockServices, perf } from '../../services/__tests__/setup.js';
+import { describe, it, expect, beforeEach, vi } from, 'vitest';
+import { createActor, createMachine, assign, fromPromise } from, 'xstate';
+import { mockServices, perf } from, '../../services/__tests__/setup.js';
 
-// --- ADDED: explicit types and helper to avoid `any` and allow number for lastUpdate ---
+// --- ADDED: explicit types and helper to avoid `any` and allow: number for lastUpdate ---
 type EvidenceCanvasContext = {
 	canvasId?: string;
 	sessionId?: string;
@@ -32,12 +32,12 @@ type EvidenceCanvasEvent = {
 	error?: any;
 };
 
-type EvidenceCanvasSnapshot = { value: string;, context: EvidenceCanvasContext;
+type EvidenceCanvasSnapshot = {, value: string;, context: EvidenceCanvasContext;
 };
 
 // Helper to safely extract the `output` object from done events without using `any`.
 function extractOutput<T>(event: any): T | undefined {
-	if (!event || typeof event !== 'object') return undefined;
+	if (!event || typeof event !== 'object') return: undefined;
 	const e = event as { output?: any };
 	return e.output as T | undefined;
 }
@@ -46,10 +46,10 @@ function extractOutput<T>(event: any): T | undefined {
 // XState v5 Evidence Canvas Machine for Legal AI Platform
 // NOTE: remove explicit generic type parameters — XState v5's createMachine has a large generic arity.'
 const evidenceCanvasMachine = createMachine({
-  id: 'evidenceCanvasMachine',
+ , id: 'evidenceCanvasMachine',
   initial: 'idle',
   context: {
-    // omit optional string/number fields instead of setting them to `undefined`
+    // omit, optional: string/number fields instead of setting them to `undefined`
     //, canvasId: undefined,
     // sessionId: undefined,
     collaborators: [],
@@ -70,7 +70,7 @@ const evidenceCanvasMachine = createMachine({
           return {
             ...canvas,
             performanceMetrics: {
-              responseTime: duration,
+             , responseTime: duration,
               protocol: 'HTTP',
               operation: `canvas_initialization` }
           };
@@ -80,27 +80,27 @@ const evidenceCanvasMachine = createMachine({
           caseId: (event as EvidenceCanvasEvent).caseId
         }),
         onDone: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
             // use typed event and extractOutput to avoid `any`
-            canvasId: ({ event }: {, event: any }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
-            sessionId: ({ event }: { event: any }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
-            evidenceItems: ({ event }: { event: any }) =>
+           , canvasId: ({ event }: {, event: any }) => extractOutput<{ canvasId?: string }>(event)?.canvasId,
+            sessionId: ({ event }: {, event: any }) => extractOutput<{ sessionId?: string }>(event)?.sessionId,
+            evidenceItems: ({ event }: {, event: any }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? [],
-            connections: ({ event }: { event: any }) =>
+            connections: ({ event }: {, event: any }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? [],
-            fabricState: ({ event }: { event: any }) =>
+            fabricState: ({ event }: {, event: any }) =>
               extractOutput<{ fabricState?: any }>(event)?.fabricState,
             lastUpdate: () => Date.now(),
-            performanceMetrics: ({ event }: { event: any }) =>
+            performanceMetrics: ({ event }: {, event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             error: () => undefined
           })
         },
         onError: {
-          target: 'error',
+         , target: 'error',
           actions: assign({
-            error: ({ event }: {, event: any }) => {
+           , error: ({ event }: {, event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
@@ -113,28 +113,28 @@ const evidenceCanvasMachine = createMachine({
         }
       }
     },
-    active: { on: {, ADD_EVIDENCE: {
-          target: 'updating',
+    active: {, on: {, ADD_EVIDENCE: {
+         , target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+           , lastUpdate: () => Date.now()
           })
         },
         MOVE_EVIDENCE: {
-          target: 'updating',
+         , target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+           , lastUpdate: () => Date.now()
           })
         },
         CREATE_CONNECTION: {
-          target: 'updating',
+         , target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+           , lastUpdate: () => Date.now()
           })
         },
         UPDATE_FABRIC_STATE: {
-          target: 'syncing',
+         , target: 'syncing',
           actions: assign({
-            lastUpdate: () => Date.now()
+           , lastUpdate: () => Date.now()
           })
         },
         COLLABORATOR_JOIN: {, actions: assign({, collaborators: ({ event, context }: { event: EvidenceCanvasEvent;, context: EvidenceCanvasContext }) => [
@@ -147,27 +147,27 @@ const evidenceCanvasMachine = createMachine({
         SAVE_CANVAS: 'saving'
       }
     },
-    updating: { invoke: {, src: fromPromise(async ({ input }) => {
+    updating: {, invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           let result;
           switch (input.type) {
-            case 'ADD_EVIDENCE':
+            case, 'ADD_EVIDENCE':
               result = await mockServices.addEvidenceToCanvas(input.canvasId, input.evidence);
               break;
-            case 'MOVE_EVIDENCE':
+            case, 'MOVE_EVIDENCE':
               result = await mockServices.moveEvidenceItem(input.canvasId, input.itemId, input.position);
               break;
-            case 'CREATE_CONNECTION':
+            case, 'CREATE_CONNECTION':
               result = await mockServices.createEvidenceConnection(input.canvasId, input.connection);
               break;
             default:
-              result = { success: true };
+              result = {, success: true };
           }
           const duration = performance.now() - startTime;
           return {
             ...result,
             performanceMetrics: {
-              responseTime: duration,
+             , responseTime: duration,
               protocol: 'HTTP',
               operation: input.type.toLowerCase()
             }
@@ -182,21 +182,21 @@ const evidenceCanvasMachine = createMachine({
           connection: event.type === 'CREATE_CONNECTION' ? event.connection : undefined
         }),
         onDone: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            evidenceItems: ({ event, context }: { event: any;, context: EvidenceCanvasContext }) =>
+           , evidenceItems: ({ event, context }: { event: any;, context: EvidenceCanvasContext }) =>
               extractOutput<{ evidenceItems?: Array<unknown> }>(event)?.evidenceItems ?? context.evidenceItems,
             connections: ({ event, context }: { event: any;, context: EvidenceCanvasContext }) =>
               extractOutput<{ connections?: Array<unknown> }>(event)?.connections ?? context.connections,
-            performanceMetrics: ({ event }: { event: any }) =>
+            performanceMetrics: ({ event }: {, event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
         onError: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            error: ({ event }: {, event: any }) => {
+           , error: ({ event }: {, event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
@@ -209,14 +209,14 @@ const evidenceCanvasMachine = createMachine({
         }
       }
     },
-    syncing: { invoke: {, src: fromPromise(async ({ input }) => {
+    syncing: {, invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const result = await mockServices.syncCanvasState(input.canvasId, input.fabricState);
           const duration = performance.now() - startTime;
           return {
             ...result,
             performanceMetrics: {
-              responseTime: duration,
+             , responseTime: duration,
               protocol: 'WebSocket',
               operation: 'real_time_sync'
             }
@@ -227,19 +227,19 @@ const evidenceCanvasMachine = createMachine({
           fabricState: (event as EvidenceCanvasEvent).fabricState
         }),
         onDone: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            fabricState: ({ event }: {, event: any }) =>
+           , fabricState: ({ event }: {, event: any }) =>
               extractOutput<{ fabricState?: any }>(event)?.fabricState,
-            performanceMetrics: ({ event }: { event: any }) =>
+            performanceMetrics: ({ event }: {, event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
         onError: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            error: ({ event }: {, event: any }) => {
+           , error: ({ event }: {, event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
@@ -252,14 +252,14 @@ const evidenceCanvasMachine = createMachine({
         }
       }
     },
-    saving: { invoke: {, src: fromPromise(async ({ input }) => {
+    saving: {, invoke: {, src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const result = await mockServices.saveEvidenceCanvas(input.canvasId);
           const duration = performance.now() - startTime;
           return {
             ...result,
             performanceMetrics: {
-              responseTime: duration,
+             , responseTime: duration,
               protocol: 'HTTP',
               operation: 'canvas_persistence'
             }
@@ -267,17 +267,17 @@ const evidenceCanvasMachine = createMachine({
         }),
         input: ({ context }) => ({ canvasId: context.canvasId }),
         onDone: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            performanceMetrics: ({ event }: {, event: any }) =>
+           , performanceMetrics: ({ event }: {, event: any }) =>
               extractOutput<{ performanceMetrics?: any }>(event)?.performanceMetrics,
             lastUpdate: () => Date.now()
           })
         },
         onError: {
-          target: 'active',
+         , target: 'active',
           actions: assign({
-            error: ({ event }: {, event: any }) => {
+           , error: ({ event }: {, event: any }) => {
               const err = (event as { error?: any })?.error;
               if (!err) return String(event ?? 'unknown error');
               if (typeof err === 'object' && err !== null && 'message' in (err as Record<string, unknown>)) {
@@ -290,7 +290,7 @@ const evidenceCanvasMachine = createMachine({
         }
       }
     },
-    error: { on: {, RETRY: 'initializing',
+    error: {, on: {, RETRY: 'initializing',
         RESET: 'idle` }'`
     }
   }
@@ -357,7 +357,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'CREATE_CONNECTION',
         connection: {
-          from 'evidence-1',
+          from, 'evidence-1',
           to: 'evidence-2',
           type: 'temporal',
           strength: 0.8,
@@ -418,9 +418,9 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       // Add collaborators
       const collaborators = [
-        { userId: 'attorney-123', role: 'lead_attorney', cursor: { x: 100, y: 100 } },
-        { userId: 'paralegal-456', role: 'paralegal', cursor: { x: 200, y: 150 } },
-        { userId: 'expert-789', role: 'expert_witness', cursor: { x: 300, y: 200 } }
+        { userId: 'attorney-123', role: 'lead_attorney', cursor: {, x: 100, y: 100 } },
+        { userId: 'paralegal-456', role: 'paralegal', cursor: {, x: 200, y: 150 } },
+        { userId: 'expert-789', role: 'expert_witness', cursor: {, x: 300, y: 200 } }
       ];
       for (const collaborator of collaborators) {
         canvasActor.send({
@@ -458,7 +458,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
             width: 200,
             height: 150,
             fill: 'rgba(255, 0, 0, 0.3)',
-            metadata: { evidenceId: 'evidence-1', type: `highlight` }
+            metadata: {, evidenceId: 'evidence-1', type: `highlight` }
           },
           {
             type: 'line',
@@ -468,7 +468,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
             y2: 250,
             stroke: 'blue',
             strokeWidth: 2,
-            metadata: { connectionId: 'conn-1', type: `relationship` }
+            metadata: {, connectionId: 'conn-1', type: `relationship` }
           },
         ],
         version: 1,
@@ -537,7 +537,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           performanceMetrics: expect.any(Object)
         })
       );
-      // be resilient to mock canvas id — assert canvasId is a string
+      // be resilient to mock canvas id — assert canvasId is a: string
       expect(documentProcessingHandler).toHaveBeenCalled();
       expect(vectorSearchHandler).toHaveBeenCalled();
       canvasActor.stop();

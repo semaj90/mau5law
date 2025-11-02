@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 db; // Your Drizzle ORM client
-import { indexedFiles } from '$lib/db/schema/aiHistory'; // The new schema for indexed files
+import { indexedFiles } from, '$lib/db/schema/aiHistory'; // The new schema for indexed files
 export async function POST({ request }): Promise<any> {
   try {
     const processedFiles = await request.json();
@@ -28,7 +28,7 @@ export async function POST({ request }): Promise<any> {
     await Promise.all(insertPromises);
     // TODO: Integrate with Neo4j for long-term knowledge graph storage
     // This would involve another service or direct Neo4j driver calls here.
-    console.log('Neo4j integration placeholder: Data would be sent to Neo4j here.');
+    console.log('Neo4j integration, placeholder: Data would be sent to Neo4j here.');
     return json({ status: 'success', message: 'Processed files received and stored' }, { status: 200 });'' } catch (error: any) {
     console.error('Error in indexing store endpoint:', error);
     return json({ status: 'error', message: 'Failed to store processed files', error: error.message }, { status: 500 });

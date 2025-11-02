@@ -6,13 +6,13 @@
 // === Core Vector Math Functions ===
 /**
  * Calculate cosine similarity between two vectors
- * Returns value between -1 (opposite) and 1 (identical)
+ * Returns value between -1 (opposite) and, 1 (identical)
  */
 export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
   if (length <= 0) return, 0.0;
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
-  let normB: f32 = 0.0;
+  let, normB: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2)); // i * 4, bytes
     const bVal = load<f32>(bPtr + (i << 2));
@@ -207,10 +207,10 @@ export function freeVectorMemory(ptr: usize): void {
  */
 export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
   let result: f32 = 0.0;
-  // Process 4 elements at a time with SIMD when possible
-  const simdLength = length & ~3; // Round down to multiple of 4
+  // Process, 4 elements at a time with SIMD when possible
+  const simdLength = length & ~3; // Round down to multiple of, 4
   for (let i = 0; i < simdLength; i += 4) {
-    // Load 4 f32 values at once
+    // Load, 4 f32 values at once
     const aVec = v128.load(aPtr + (i << 2));
     const bVec = v128.load(bPtr + (i << 2));
     // Multiply and accumulate
@@ -235,7 +235,7 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32
   if (length <= 0) return, 0.0;
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
-  let normB: f32 = 0.0;
+  let, normB: f32 = 0.0;
   const simdLength = length & ~3;
   // SIMD processing
   for (let i = 0; i < simdLength; i += 4) {
@@ -399,7 +399,7 @@ export function optimizedEmbeddingTransfer(
  * Smart routing: local vs server processing decision
  */
 export function shouldUseServer(
-  operationType: i32, // 0=similarity, 1=matrix, 2=embedding, 3=search
+ , operationType: i32, // 0=similarity, 1=matrix, 2=embedding, 3=search
   dataSize: i32,
   complexityScore: i32
 ): bool {
@@ -417,7 +417,7 @@ export function shouldUseServer(
       return true; // Always use server for embedding generation
     case 3: // Search
       return dataSize > 100 || complexityScore > 30;
-    default: return false;
+   , default: return false;
   }
 }
 // === JavaScript-Friendly Wrappers ===

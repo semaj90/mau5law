@@ -297,7 +297,7 @@
     <!-- Main viewer area -->
     <div class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
       {#if isStreaming}
-        <div class="streaming-overlay" transition:fade>
+        <div class="streaming-overlay" use:fade>
           <div class="nes-loading">
             <div class="loading-bar">
               <div class="loading-progress" style="width: {streamingProgress}%"></div>
@@ -306,7 +306,7 @@
           </div>
         {/if}
       {#if currentTexture}
-        <div class="texture-display" transition:scale>
+        <div class="texture-display" use:scale>
           <img src={getTextureDisplayData()} alt="Streamed texture LOD {currentLOD}" class="texture-image" />
           <div class="texture-overlay">
             <div class="lod-indicator">
@@ -323,7 +323,7 @@
     </div>
     {#if debugMode}
       <!-- Debug panel -->
-      <div class="debug-panel" transition:slide>
+      <div class="debug-panel" use:slide>
         <h4>🔧 NES Debug Console</h4>
         <div class="debug-stats">
           <div class="stat-group">

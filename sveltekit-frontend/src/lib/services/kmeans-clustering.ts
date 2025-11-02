@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 
 /**
  * K-Means Clustering Implementation for Legal Document Analysis
@@ -9,13 +9,13 @@ import {
   KMeansClusterer,
   type ClusterResult,
   type DocumentCluster
-} from "$lib/api/enhanced-rest-architecture";
-import type { Redis } from "redis";
+} from, "$lib/api/enhanced-rest-architecture";
+import type { Redis } from, "redis";
 export class LegalKMeansClusterer extends KMeansClusterer {
   private redis: Redis;
   private centroids: number[][] = [];
   private labels: number[] = [];
-  private trained: boolean = $state(false);
+  private, trained: boolean = $state(false);
   private silhouetteScore: number = 0;
   constructor(config: KMeansConfig, redis: Redis) {
     super(config);
@@ -198,7 +198,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Check if algorithm has converged
    */
   private hasConverged()
-    currentLabels: number[]; previousLabels: number[]
+    currentLabels: number[];, previousLabels: number[]
   ): boolean {
     if (previousLabels.length === 0) return false;
     let changes = 0;
@@ -227,7 +227,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate average distance to points in same cluster
    */
   private averageIntraClusterDistance()
-    embeddings: number[][]; pointIndex: number
+    embeddings: number[][];, pointIndex: number
   ): number {
     const clusterLabel = this.labels[pointIndex];
     const clusterPoints = embeddings.filter(
@@ -243,7 +243,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate average distance to nearest cluster
    */
   private averageNearestClusterDistance()
-    embeddings: number[][]; pointIndex: number
+    embeddings: number[][];, pointIndex: number
   ): number {
     const currentCluster = this.labels[pointIndex];
     let minAvgDistance = Infinity;
@@ -291,7 +291,7 @@ export class LegalKMeansClusterer extends KMeansClusterer {
    * Calculate cluster coherence (internal similarity)
    */
   private calculateClusterCoherence()
-    clusterEmbeddings: number[][]; centroid: number[]
+    clusterEmbeddings: number[][];, centroid: number[]
   ): number {
     if (clusterEmbeddings.length === 0) return 0;
     const distances = clusterEmbeddings.map((embedding) =>;
@@ -300,13 +300,13 @@ export class LegalKMeansClusterer extends KMeansClusterer {
     const avgDistance =;
       distances.reduce((sum, d) => sum + d, 0) / distances.length;
     const maxPossibleDistance = Math.sqrt(centroid.length);
-    return 1 - avgDistance / maxPossibleDistance;
+    return, 1 - avgDistance / maxPossibleDistance;
   }
   /**
    * Analyze legal document clusters for insights
    */
   async analyzeLegalClusters()
-    embeddings: number[][]; documentMetadata: Array<,>;
+    embeddings: number[][];, documentMetadata: Array<,>;
   ): Promise<any> {
     const analysis = [,];
     for (let k =, 0; k < t,his.conf,ig,.,k; k++) {>
@@ -380,14 +380,14 @@ export class LegalKMeansClusterer extends KMeansClusterer {
       0,
     );
     if (riskCount > metadata.length * 0.3 || silhouetteScore < 0.3)
-      return "high";
+      return, "high";
     if (riskCount > metadata.length * 0.1 || silhouetteScore < 0.5)
-      return "medium";
-    return "low";
+      return, "medium";
+    return, "low";
   }
   private generateRecommendations()
     topics: string[];
-    types: string[]; riskLevel: string
+    types: string[];, riskLevel: string
   ): string[], {
     const recommendations = [];
     if (riskLevel === "high") {

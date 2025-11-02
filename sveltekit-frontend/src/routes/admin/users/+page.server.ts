@@ -1,10 +1,10 @@
-import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types.js';
-import { db } from '$lib/db/index.js';
-import { users, profileTable } from '$lib/db/schema.js';
-import { eq, desc, like, or } from 'drizzle-orm';
-import { hash } from '@node-rs/argon2';
-import { getUserId } from '$lib/server/auth/utils';
+import { error, redirect } from, '@sveltejs/kit';
+import type { PageServerLoad, Actions } from, './$types.js';
+import { db } from, '$lib/db/index.js';
+import { users, profileTable } from, '$lib/db/schema.js';
+import { eq, desc, like, or } from, 'drizzle-orm';
+import { hash } from, '@node-rs/argon2';
+import { getUserId } from, '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ url, locals }) => {
   if (!locals.session || !locals.user) {
     throw redirect(302, '/login');
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     return {
       users: usersResult,
       pagination: {
-        currentPage: page,
+       , currentPage: page,
         totalPages,
         totalUsers,
         limit,
@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   }
 };
 export const actions: Actions = {
-  createUser: async ({ request, locals }) => {
+ , createUser: async ({ request, locals }) => {
     if (!locals.session || !locals.user) {
       throw redirect(302, '/login');
     }
@@ -85,7 +85,7 @@ export const actions: Actions = {
     if (password.length < 8) {
       return {
         success: false,
-        error: 'Password must be at least 8 characters',
+        error: 'Password must be at least, 8 characters',
         formData: { email }
       };
     }
@@ -117,7 +117,7 @@ export const actions: Actions = {
       return {
         success: true,
         user: {
-          id: newUser[0].id,
+         , id: newUser[0].id,
           email: newUser[0].email,
           created_at: newUser[0].created_at
         }
@@ -149,7 +149,7 @@ export const actions: Actions = {
       if (deleteResult.length === 0) {
         return { success: false, error: 'User not found' };
       }
-      return { success: true, deletedUser: deleteResult[0] };
+      return {, success: true, deletedUser: deleteResult[0] };
     } catch (err) {
       console.error('Error deleting user:', err);
       return { success: false, error: 'Failed to delete user` };'`

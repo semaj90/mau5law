@@ -1,6 +1,6 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import Redis from 'ioredis';
-import { formatErrorResponse } from './errors';
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import Redis from, 'ioredis';
+import { formatErrorResponse } from, './errors';
 
 let _redis: Redis | null = null;
 try {
@@ -22,19 +22,19 @@ export async function logStructuredError(payload: {, source: string;, level: 'e
     ...payload,
     error:
       payload.error instanceof Error
-        ? { message: payload.error.message, stack: (payload.error as Error).stack }
+        ? {, message: payload.error.message, stack: (payload.error as Error).stack }
         : payload.error
   };
 
   try {
     if (_redis) {
-      const r = _redis as any;
+      const r = _redis as: any;
       await r.lpush('structured_errors', JSON.stringify(record));
       await r.ltrim('structured_errors', 0, 999);
       try {
         const sentryAdapter = await import('./log-adapters/sentry');
-        const captureException = (sentryAdapter as any).captureException;
-        const isEnabled = (sentryAdapter as any).isEnabled;
+        const captureException = (sentryAdapter as: any).captureException;
+        const isEnabled = (sentryAdapter as: any).isEnabled;
         if (isEnabled) {
           console.info('[logger] Sentry adapter is active');
         }
@@ -66,7 +66,7 @@ export async function captureAndFormat(error: any): Promise<any> {
     return {
       success: false,
       error: {
-        message: 'An unexpected error occurred',
+       , message: 'An unexpected error occurred',
         code: 'UNKNOWN_ERROR',
         status: 500
       }
@@ -74,7 +74,7 @@ export async function captureAndFormat(error: any): Promise<any> {
   }
 }
 
-const counters: Record<string, number> = {};
+const, counters: Record<string, number> = {};
 export function incrementMetric(name: string, value = 1) {
   counters[name] = (counters[name] || 0) + value;
 }

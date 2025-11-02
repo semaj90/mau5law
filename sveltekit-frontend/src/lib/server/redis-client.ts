@@ -3,12 +3,12 @@
  * Centralizes configuration + connection reuse across services rabbitmq, workers, caches, etc.)
  * Handles Docker defaults, password injection, and safe reconnect helpers.
  */
-import Redis, { type RedisOptions, type Redis as IORedis } from 'ioredis';
-import { CONFIG } from '$lib/config/env.server';
+import Redis, { type RedisOptions, type Redis as IORedis } from, 'ioredis';
+import { CONFIG } from, '$lib/config/env.server';
 
 const metaEnv =
   typeof import.meta !== 'undefined'
-    ? ((import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? undefined)
+    ? ((import.meta as: unknown as { env?: Record<string, string | undefined> }).env ?? undefined)
     : undefined;
 
 export interface RedisResolvedConfig {
@@ -52,7 +52,7 @@ function buildRedisOptions(overrides?: RedisClientOptions): [string, RedisOption
   // rename unused destructured bindings to start with $ to satisfy the unused-var rule
   const { url: $url = undefined, password: $password = undefined, ...rest } = overrides ?? {};
   const baseOptions: RedisOptions = {
-    // Make connect explicit to avoid: "already connecting/connected" races when modules re-import
+    // Make connect explicit to, avoid: "already connecting/connected" races when modules re-import
     // Consumers should call ensureRedisReady() to establish the connection.
     lazyConnect: true,
     maxRetriesPerRequest: 3,
@@ -82,16 +82,16 @@ type RedisLike = IORedis & {
 
 export function createRedisClient(options?: RedisClientOptions): IORedis {
   const [url, redisOptions] = buildRedisOptions(options);
-  // ioredis v5 expects a single options object; include url into options and instantiate with one arg
-  const optsWithUrl: RedisOptions = { ...redisOptions, url };
+  // ioredis v5 expects a single options: object; include url into options and instantiate with one arg
+  const, optsWithUrl: RedisOptions = { ...redisOptions, url };
   // cast to IORedis to align return type
-  return new Redis(optsWithUrl) as unknown as IORedis;
+  return new Redis(optsWithUrl) as: unknown as IORedis;
 }
 
-const globalForRedis = globalThis as unknown as { sharedRedis?: IORedis };
+const globalForRedis = globalThis as: unknown as { sharedRedis?: IORedis };
 
 // Create or reuse a single shared Redis instance and ensure it's connected'
-export const redis: IORedis = globalForRedis.sharedRedis ?? createRedisClient();
+export const, redis: IORedis = globalForRedis.sharedRedis ?? createRedisClient();
 globalForRedis.sharedRedis = redis;
 
 // Attach events once

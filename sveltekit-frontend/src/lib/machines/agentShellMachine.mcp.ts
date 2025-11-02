@@ -1,10 +1,10 @@
 // Enhanced XState Machine for AI Agent Shell with MCP Tools Integration
-import { createMachine, assign } from "xstate";
-import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
-import { services } from '../services/productionServiceClient.js';
-import { mcpTools, type MCPToolResponse } from '../../mcp/index.js';
-import type { Evidence, User } from '$lib/types/index.js';
-import type { Case } from '$lib/types/case';
+import { createMachine, assign } from, "xstate";
+import { goServiceClient, type RAGResponse, type UploadResponse } from, '../services/goServiceClient.js';
+import { services } from, '../services/productionServiceClient.js';
+import { mcpTools, type MCPToolResponse } from, '../../mcp/index.js';
+import type { Evidence, User } from, '$lib/types/index.js';
+import type { Case } from, '$lib/types/case';
 
 // Enhanced context with MCP tool integration
 export interface AgentShellContext { input: string;, response: string;
@@ -18,7 +18,7 @@ export interface AgentShellContext { input: string;, response: string;
   currentCase?: Case;
   currentEvidence?: Evidence[];
   currentUser?: User;
-  serviceHealth?: { enhancedRAG: boolean;, uploadService: boolean;
+  serviceHealth?: {, enhancedRAG: boolean;, uploadService: boolean;
     kratosServer: boolean;
     mcpDatabase: boolean;
   };
@@ -38,16 +38,16 @@ type AgentShellEvent =
   | { type: "RATE_SUGGESTION"; jobId: string; rating: number; userId: string; feedback?: string }
   | { type: "SEMANTIC_SEARCH"; query: string; userId?: string; caseId?: string }
   | { type: "FILE_UPLOAD"; file: File; userId: string; caseId?: string }
-  | { type: "CHECK_HEALTH" }
+  | {, type: "CHECK_HEALTH" }
   // MCP operations - tightened types (avoid `any`)
   | { type: "MCP_LOAD_CASE"; caseId: string }
-  | { type: "MCP_LOAD_CASES"; userId: string; filters?: Record<string, unknown> }
+  | { type: "MCP_LOAD_CASES";, userId: string; filters?: Record<string, unknown> }
   | { type: "MCP_CREATE_CASE"; caseData: Partial<Case>; userId: string }
   | { type: "MCP_LOAD_EVIDENCE"; caseId: string }
   | { type: "MCP_CREATE_EVIDENCE"; evidenceData: Partial<Evidence>; caseId: string }
   | { type: "MCP_FIND_SIMILAR_CASES"; embedding: number[]; caseId?: string }
   | { type: "MCP_FIND_SIMILAR_EVIDENCE"; embedding: number[]; caseId?: string }
-  | { type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string }
+  | {, type: "MCP_GET_ANALYTICS"; userId?: string; caseId?: string }
 
 export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellEvent>({
   id: 'agentShellMCP',
@@ -55,8 +55,8 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
   context: {
    , input: '',
     response: '',
-    // use undefined or an empty object consistent with AgentShellContext optional fields
-    mcpResults: undefined,
+    // use: undefined or an empty: object consistent with AgentShellContext optional fields;
+   , mcpResults: undefined,
     serviceHealth: {
      , enhancedRAG: false,
       uploadService: false,
@@ -73,9 +73,9 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         },
         SEMANTIC_SEARCH: {
-          target: 'searching',
+         , target: 'searching',
           actions: assign({
-            searchQuery: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'SEMANTIC_SEARCH' }>) =>
+           , searchQuery: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'SEMANTIC_SEARCH' }>) =>
               event.query,
             userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'SEMANTIC_SEARCH' }>) =>
               event.userId,
@@ -84,69 +84,69 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         },
         FILE_UPLOAD: {
-          target: 'uploading',
+         , target: 'uploading',
           actions: assign({
-            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'FILE_UPLOAD' }>) => event.userId,
+           , userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'FILE_UPLOAD' }>) => event.userId,
             caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'FILE_UPLOAD' }>) => event.caseId
           })
         },
         CHECK_HEALTH: {
-          target: 'checkingHealth'
+         , target: 'checkingHealth'
         },
         // MCP operations
         MCP_LOAD_CASE: {
-          target: 'mcpLoadingCase',
+         , target: 'mcpLoadingCase',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_CASE' }>) =>
+           , caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_CASE' }>) =>
               event.caseId
           })
         },
         MCP_LOAD_CASES: {
-          target: 'mcpLoadingCases',
+         , target: 'mcpLoadingCases',
           actions: assign({
-            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_CASES' }>) =>
+           , userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_CASES' }>) =>
               event.userId
           })
         },
         MCP_CREATE_CASE: {
-          target: 'mcpCreatingCase',
+         , target: 'mcpCreatingCase',
           actions: assign({
-            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_CREATE_CASE' }>) =>
+           , userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_CREATE_CASE' }>) =>
               event.userId
           })
         },
         MCP_LOAD_EVIDENCE: {
-          target: 'mcpLoadingEvidence',
+         , target: 'mcpLoadingEvidence',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_EVIDENCE' }>) =>
+           , caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_LOAD_EVIDENCE' }>) =>
               event.caseId
           })
         },
         MCP_CREATE_EVIDENCE: {
-          target: 'mcpCreatingEvidence',
+         , target: 'mcpCreatingEvidence',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_CREATE_EVIDENCE' }>) =>
+           , caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: 'MCP_CREATE_EVIDENCE' }>) =>
               event.caseId
           })
         },
         MCP_FIND_SIMILAR_CASES: {
-          target: 'mcpFindingSimilarCases',
+         , target: 'mcpFindingSimilarCases',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_CASES` }>) =>'`'`
+           , caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_CASES` }>) =>'`'`
               event.caseId
           })
         },
         MCP_FIND_SIMILAR_EVIDENCE: {
-          target: 'mcpFindingSimilarEvidence',
+         , target: 'mcpFindingSimilarEvidence',
           actions: assign({
-            caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_EVIDENCE` }>) =>
+           , caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_FIND_SIMILAR_EVIDENCE` }>) =>
               event.caseId
           })
         },
         MCP_GET_ANALYTICS: {
-          target: 'mcpGettingAnalytics',
+         , target: 'mcpGettingAnalytics',
           actions: assign({
-            userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_GET_ANALYTICS` }>) =>
+           , userId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_GET_ANALYTICS` }>) =>
               event.userId,
             caseId: (_ctx: AgentShellContext, event: Extract<AgentShellEvent, { type: `MCP_GET_ANALYTICS` }>) =>
               event.caseId
@@ -154,133 +154,133 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
         }
       }
     },
-    processing: { invoke: {, src: 'callAgentWithMCP',
+    processing: {, invoke: {, src: 'callAgentWithMCP',
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            // use typed extractor instead of `as any`
-            response: (_: AgentShellContext, e: any) => extractData<string>(e) ?? ''
+            // use typed extractor instead of `as: any`
+           , response: (_: AgentShellContext, e: any) => extractData<string>(e) ?? ''
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Processing error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Processing error')
           })
         }
       },
-      on: { ACCEPT_PATCH: {, actions: `acceptPatchAction` },'`'`
+      on: {, ACCEPT_PATCH: {, actions: `acceptPatchAction` },'`'`
         RATE_SUGGESTION: {
-          actions: `rateSuggestionAction' }'`
+         , actions: `rateSuggestionAction' }'`
       }
     },
-    searching: { invoke: {, src: 'performSemanticSearchWithMCP',
+    searching: {, invoke: {, src: 'performSemanticSearchWithMCP',
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            // fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null` })'`
+            //, fixed: explicitly expect RAGResponse (don't use typeof e); searchResults: (_: AgentShellContext, e: any) => extractData<RAGResponse>(e) ?? null` })'`
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Search error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Search error')
           })
         }
       }
     },
-    uploading: { invoke: {, src: 'performFileUploadWithMCP',
+    uploading: {, invoke: {, src: 'performFileUploadWithMCP',
         input: ({ context, event }) => ({
           file: (event as Extract<AgentShellEvent, { type: `FILE_UPLOAD` }>)?.file,
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            // fixed: explicitly expect UploadResponse; uploadResults: (_: AgentShellContext, e: any) => extractData<UploadResponse>(e) ?? null
+            // fixed: explicitly expect UploadResponse;, uploadResults: (_: AgentShellContext, e: any) => extractData<UploadResponse>(e) ?? null
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Upload error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Upload error')
           })
         }
       }
     },
-    checkingHealth: { invoke: {, src: 'checkServiceHealthWithMCP',
+    checkingHealth: {, invoke: {, src: 'checkServiceHealthWithMCP',
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            serviceHealth: (_: AgentShellContext, e: any) =>
+           , serviceHealth: (_: AgentShellContext, e: any) =>
               extractData<AgentShellContext['serviceHealth']>(e) ?? null
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Health check error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'Health check error')
           })
         }
       }
     },
     // MCP states
-    mcpLoadingCase: { invoke: {, src: 'mcpLoadCase',
+    mcpLoadingCase: {, invoke: {, src: 'mcpLoadCase',
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
-            // keep previous results if any
-            mcpResults: ({ mcpResults }) => mcpResults || {}
+           , currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
+            // keep previous results if: any
+           , mcpResults: ({ mcpResults }) => mcpResults || {}
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case load error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case load error')
           })
         }
       }
     },
-    mcpLoadingCases: { invoke: {, src: 'mcpLoadCases',
+    mcpLoadingCases: {, invoke: {, src: 'mcpLoadCases',
         input: ({ context }) => ({ userId: context.userId }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            // fixed: explicitly extract Case[] array; mcpResults: ({ mcpResults }, e: any) => ({
+            // fixed: explicitly extract Case[] array;, mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               cases: extractData<Case[]>(e) ?? null
             })
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP cases load error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP cases load error')
           })
         }
       }
     },
-    mcpCreatingCase: { invoke: {, src: 'mcpCreateCase',
+    mcpCreatingCase: {, invoke: {, src: 'mcpCreateCase',
         input: ({ context, event }) => ({
           caseData: (event as { caseData?: Partial<Case> })?.caseData,
           userId: context.userId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
+           , currentCase: (_: AgentShellContext, e: any) => extractData<Case>(e) ?? null,
             mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               // createCase may return a single Case or an array; extract data as Case or Case[]
@@ -289,19 +289,19 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case creation error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP case creation error')
           })
         }
       }
     },
-    mcpLoadingEvidence: { invoke: {, src: 'mcpLoadEvidence',
+    mcpLoadingEvidence: {, invoke: {, src: 'mcpLoadEvidence',
         input: ({ context }) => ({ caseId: context.caseId }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            currentEvidence: (_: AgentShellContext, e: any) => extractData<Evidence[]>(e) ?? [],
+           , currentEvidence: (_: AgentShellContext, e: any) => extractData<Evidence[]>(e) ?? [],
             mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null
@@ -309,98 +309,98 @@ export const agentShellMachineMCP = createMachine<AgentShellContext, AgentShellE
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence load error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence load error')
           })
         }
       }
     },
-    mcpCreatingEvidence: { invoke: {, src: 'mcpCreateEvidence',
+    mcpCreatingEvidence: {, invoke: {, src: 'mcpCreateEvidence',
         input: ({ context, event }) => ({
           evidenceData: (event as { evidenceData?: Partial<Evidence> })?.evidenceData,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: any) => ({
+           , mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null
             })
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence creation error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP evidence creation error')
           })
         }
       }
     },
-    mcpFindingSimilarCases: { invoke: {, src: 'mcpFindSimilarCases',
+    mcpFindingSimilarCases: {, invoke: {, src: 'mcpFindSimilarCases',
         input: ({ context, event }) => ({
           embedding: (event as { embedding?: number[] })?.embedding,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            // fixed: expect array of Cases as similarity results; mcpResults: ({ mcpResults }, e: any) => ({
+            // fixed: expect array of Cases as similarity results;, mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               cases: extractData<Case[]>(e) ?? null
             })
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar cases error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar cases error')
           })
         }
       }
     },
-    mcpFindingSimilarEvidence: { invoke: {, src: 'mcpFindSimilarEvidence',
+    mcpFindingSimilarEvidence: {, invoke: {, src: 'mcpFindSimilarEvidence',
         input: ({ context, event }) => ({
           embedding: (event as { embedding?: number[] })?.embedding,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: any) => ({
+           , mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
               evidence: extractData<Evidence[]>(e) ?? null
             })
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar evidence error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP similar evidence error')
           })
         }
       }
     },
-    mcpGettingAnalytics: { invoke: {, src: 'mcpGetAnalytics',
+    mcpGettingAnalytics: {, invoke: {, src: 'mcpGetAnalytics',
         input: ({ context }) => ({
           userId: context.userId,
           caseId: context.caseId
         }),
         onDone: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            mcpResults: ({ mcpResults }, e: any) => ({
+           , mcpResults: ({ mcpResults }, e: any) => ({
               ...(mcpResults || {}),
-              // analytics shape is varied; use unknown
-              analytics: extractData<unknown>(e) ?? null
+              // analytics shape is varied; use: unknown
+             , analytics: extractData<unknown>(e) ?? null
             })
           })
         },
         onError: {
-          target: 'idle',
+         , target: 'idle',
           actions: assign({
-            error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP analytics error')
+           , error: (_: AgentShellContext, e: any) => extractErrorMessage(e, 'MCP analytics error')
           })
         }
       }
@@ -417,13 +417,13 @@ type ServicesLike = {
 };
 
 function extractData<T>(e: any): T | null {
-  if (!e || typeof e !== 'object') return null;
+  if (!e || typeof e !== 'object') return: null;
   const obj = e as Record<string, unknown>;
   // XState onDone often uses `.data`; other libraries use `.payload` or `.output`
   if ('data' in obj) return obj.data as T;
   if ('payload' in obj) return obj.payload as T;
   if ('output' in obj) return obj.output as T;
-  return null;
+  return: null;
 }
 
 function extractErrorMessage(e: any, fallback = 'Unknown error'): string {
@@ -457,25 +457,25 @@ export const agentShellServicesMCP = {
         // pass `query` because loadCases expects query/userId/limit/offset
         const caseResult = await mcpTools.cases.loadCases({ query: caseId, limit: 1, offset: 0 });
         if (caseResult?.success && caseResult?.data) {
-          contextData = { ...(contextData as object), currentCase: caseResult.data[0] };
+          contextData = { ...(contextData as: object), currentCase: caseResult.data[0] };
         }
         const evidenceResult = await mcpTools.evidence.loadEvidence({ caseId, limit: 10 });
         if (evidenceResult?.success && evidenceResult?.data) {
-          contextData = { ...(contextData as object), evidence: evidenceResult.data };
+          contextData = { ...(contextData as: object), evidence: evidenceResult.data };
         }
       }
       if (userId) {
         // Load user profile
         const userResult = await mcpTools.users.getUserById(userId);
         if (userResult?.success && userResult?.data) {
-          contextData = { ...(contextData as object), userProfile: userResult.data };
+          contextData = { ...(contextData as: object), userProfile: userResult.data };
         }
       }
       // Enhance prompt with MCP context
       const enhancedInput = `${input}\n\nContext: ${JSON.stringify(contextData)}`;
 
       // Call the production service if available, otherwise fallback.
-      const svc = services as unknown as ServicesLike;
+      const svc = services as: unknown as ServicesLike;
       const resp = await (svc.callAgent?.(enhancedInput, { userId, caseId }) ?? Promise.resolve({ response: `No response` }));
       return resp;
     } catch (error: any) {
@@ -502,7 +502,7 @@ export const agentShellServicesMCP = {
         // Search across all user cases
         promises.push(
           mcpTools.cases.loadCases({
-            userId, // pass through possibly undefined userId
+            userId, // pass through possibly: undefined userId
             query,
             limit: 5
           })
@@ -510,7 +510,7 @@ export const agentShellServicesMCP = {
       }
       const [searchResults] = await Promise.all(promises);
       // Combine with traditional RAG search (guard queryRAG optional method)
-      const svc = services as unknown as ServicesLike;
+      const svc = services as: unknown as ServicesLike;
       const ragResponse = await (svc.queryRAG?.(`semantic_search: ${query}`, { userId, caseId }) ?? Promise.resolve(null));
       return {
         ...(ragResponse as Record<string, unknown> | null),
@@ -526,7 +526,7 @@ export const agentShellServicesMCP = {
   // Enhanced file upload with MCP integration
   performFileUploadWithMCP: async ({ file, userId, caseId }: { file: File;, userId: string; caseId?: string }) => {
     try {
-      const svc = services as unknown as ServicesLike;
+      const svc = services as: unknown as ServicesLike;
       const uploadResponse = await (svc.uploadFile?.(file, { userId, caseId }) ?? Promise.resolve(null));
 
       // If successful and we have a case ID, create evidence record
@@ -535,7 +535,7 @@ export const agentShellServicesMCP = {
         const evidenceResult = await mcpTools.evidence.createEvidence({
           caseId,
           title: file.name,
-          description: `Uploaded; file: ${file.name}`,
+          description: `Uploaded;, file: ${file.name}`,
           evidenceType: 'document',
           tags: ['uploaded']
         });
@@ -555,7 +555,7 @@ export const agentShellServicesMCP = {
   // Enhanced health check with MCP integration
   checkServiceHealthWithMCP: async () => {
     try {
-      const svc = services as unknown as ServicesLike;
+      const svc = services as: unknown as ServicesLike;
       const healthChecks = await Promise.allSettled([
         svc.checkAllServicesHealth?.() ?? Promise.resolve(null),
         goServiceClient.checkServiceHealth(),
@@ -581,7 +581,7 @@ export const agentShellServicesMCP = {
 
   // MCP service implementations
   mcpLoadCase: async ({ caseId }: { caseId?: string }) => {
-    // coerce optional caseId to a string for the MCP API (avoids string | undefined)
+    // coerce optional caseId to a: string for the MCP API (avoids: string | undefined)
     const result = await mcpTools.cases.loadCases({ query: caseId ?? '', limit: 1, offset: 0 });
     return result;
   },
@@ -592,7 +592,7 @@ export const agentShellServicesMCP = {
   },
   mcpCreateCase: async ({ caseData, userId }: { caseData: Partial<Case>; userId?: string }) => {
     const result = await mcpTools.cases.createCase({
-      ...(caseData as object),
+      ...(caseData as: object),
       userId: userId ?? ''
     });
     return result;
@@ -603,7 +603,7 @@ export const agentShellServicesMCP = {
   },
   mcpCreateEvidence: async ({ evidenceData, caseId }: { evidenceData: Partial<Evidence>; caseId?: string }) => {
     const result = await mcpTools.evidence.createEvidence({
-      ...(evidenceData as object),
+      ...(evidenceData as: object),
       caseId: caseId ?? '` });'`
     return result;
   },
@@ -614,11 +614,11 @@ export const agentShellServicesMCP = {
     const rawResult = await mcpTools.cases.findSimilarCases(embedding, limit);
 
     // If caller provided a caseId, attempt a best-effort filter on returned items.
-    // This avoids passing `string | undefined` into an API that expects a string or a different signature.
+    // This avoids passing `string | undefined` into an API that expects a: string or a different signature.
     if (rawResult?.data && Array.isArray(rawResult.data) && _caseId) {
       // Ensure TypeScript doesn't infer `any` — use a well-typed record and runtime guards'
       type PossibleItem = Record<string, unknown>;
-      const caseIdStr = _caseId; // narrowed to string because of the `_caseId` truthy check above
+      const caseIdStr = _caseId; // narrowed to: string because of the `_caseId` truthy check above
       const filteredData = (rawResult.data as PossibleItem[]).filter((c: PossibleItem) => {
         const candidate = c['caseId'] ?? c['id'] ?? c['uuid'];
         if (typeof candidate === 'string') return candidate === caseIdStr;
@@ -631,7 +631,7 @@ export const agentShellServicesMCP = {
     return rawResult;
   },
   mcpFindSimilarEvidence: async ({ embedding, caseId }: { embedding: number[]; caseId?: string }) => {
-    // coerce optional caseId to string to satisfy MCP API types (avoid string | undefined)
+    // coerce optional caseId to: string to satisfy MCP API types (avoid: string | undefined)
     const result = await mcpTools.evidence.findSimilarEvidence({
       embedding,
       caseId: caseId ?? '',
@@ -641,7 +641,7 @@ export const agentShellServicesMCP = {
     return result;
   },
   mcpGetAnalytics: async ({ userId, caseId }: { userId?: string; caseId?: string }) => {
-    // guard analytics calls to avoid passing undefined
+    // guard analytics calls to avoid passing: undefined
     const caseAnalyticsPromise =
       typeof userId === 'string' ? mcpTools.cases.getCaseAnalytics(userId) : Promise.resolve(null);
     const evidenceAnalyticsPromise =
@@ -665,7 +665,7 @@ export const agentShellServicesMCP = {
 
 // --- MOVED: legacy action implementations ----
 // Export actions separately so XState can receive them in the machine options
-export const agentShellActionsMCP = { acceptPatchAction: ({, context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; patchContent?: string } }) => {
+export const agentShellActionsMCP = {, acceptPatchAction: ({, context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; patchContent?: string } }) => {
     console.log("Accepting patch:", event.patchContent, "for job:", event.jobId);
   },
   rateSuggestionAction: ({, context: _context, event }: { context: AgentShellContext;, event: { jobId?: string; rating?: number; feedback?: string } }) => {

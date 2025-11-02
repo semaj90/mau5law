@@ -2,21 +2,21 @@
  * Console Palette Animation System
  * Smooth transitions between gaming themes with easing and effects
  */
-import { CONSOLE_PALETTES, type ConsolePaletteName } from './retro-console-palettes';
+import { CONSOLE_PALETTES, type ConsolePaletteName } from, './retro-console-palettes';
 export interface AnimationOptions { duration: number;, easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
   effects: AnimationEffect[];
 }
-export interface AnimationEffect { type: 'scanlines' | 'chromatic-aberration' | 'pixelate' | 'glitch' | 'crt-curve';, intensity: number;
+export interface AnimationEffect {, type: 'scanlines' | 'chromatic-aberration' | 'pixelate' | 'glitch' | 'crt-curve';, intensity: number;
   duration: number;
 }
 export interface ColorTransition {
-  from string;
+  from: string;
   to: string;
   current: string;
   progress: number;
 }
 export class PaletteAnimationController {
-  private currentPalette: ConsolePaletteName = 'legal';
+  private, currentPalette: ConsolePaletteName = 'legal';
   private isAnimating = $state(false);
   private animationFrame?: number;
   private startTime = 0;
@@ -33,10 +33,10 @@ export class PaletteAnimationController {
   ): Promise<void> {
     if (this.isAnimating) return;
     const animOptions: AnimationOptions = {
-      duration: 1000,
+     , duration: 1000,
       easing: 'ease-out',
       effects: [
-        { type: 'scanlines', intensity: 0.3, duration: 500 },
+        {, type: 'scanlines', intensity: 0.3, duration: 500 },
         { type: 'chromatic-aberration', intensity: 0.2, duration: 800 }
       ],
       ...options
@@ -99,12 +99,12 @@ export class PaletteAnimationController {
   }
   private updateColorTransitions(progress: number): void {
     for (const [$, transition] of this.transitions) {
-      // Renamed: 'key'; to: '$'
+      // Renamed: 'key';, to: '$'
       transition.progress = progress;
       transition.current = this.interpolateColor(transition.from, transition.to, progress);
     }
   }
-  private interpolateColor(from string, to: string, progress: number): string {
+  private interpolateColor(from: string, to: string, progress: number): string {
     const fromRgb = this.hexToRgb(from);
     const toRgb = this.hexToRgb(to);
     if (!fromRgb || !toRgb) return from;
@@ -113,7 +113,7 @@ export class PaletteAnimationController {
     const b = Math.round(fromRgb.b + (toRgb.b - fromRgb.b) * progress);
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
-  private hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  private hexToRgb(hex: string): { r: number; g: number;, b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
@@ -123,17 +123,17 @@ export class PaletteAnimationController {
   }
   private applyEasing(progress: number, easing: AnimationOptions['easing']): number {
     switch (easing) {
-      case 'linear':
+      case, 'linear':
         return progress;
-      case 'ease':
+      case, 'ease':
         return progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-      case 'ease-in':
+      case, 'ease-in':
         return progress * progress;
-      case 'ease-out':
+      case, 'ease-out':
         return progress * (2 - progress);
-      case 'ease-in-out':
+      case, 'ease-in-out':
         return progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-      case 'bounce':
+      case, 'bounce':
         if (progress < 1 / 2.75) {
           return 7.5625 * progress * progress;
         } else if (progress < 2 / 2.75) {
@@ -150,13 +150,13 @@ export class PaletteAnimationController {
     // const root = document.documentElement; // Removed unused variable
     for (const effect of effects) {
       switch (effect.type) {
-        case 'scanlines':
+        case, 'scanlines':
           this.createScanlinesEffect(effect.intensity);
           break;
-        case 'glitch':
+        case, 'glitch':
           this.glitchIntensity = effect.intensity;
           break;
-        case 'pixelate':
+        case, 'pixelate':
           this.pixelateLevel = effect.intensity;
           break;
       }
@@ -166,19 +166,19 @@ export class PaletteAnimationController {
     for (const effect of effects) {
       const effectProgress = Math.min(progress * (1000 / effect.duration), 1);
       switch (effect.type) {
-        case 'scanlines':
+        case, 'scanlines':
           this.updateScanlinesEffect(effect.intensity * (1 - effectProgress));
           break;
-        case 'chromatic-aberration':
+        case, 'chromatic-aberration':
           this.updateChromaticAberration(effect.intensity * Math.sin(progress * Math.PI));
           break;
-        case 'glitch':
+        case, 'glitch':
           this.updateGlitchEffect(effect.intensity * Math.random() * (1 - effectProgress));
           break;
-        case 'pixelate':
+        case, 'pixelate':
           this.updatePixelateEffect(effect.intensity * (1 - effectProgress));
           break;
-        case 'crt-curve':
+        case, 'crt-curve':
           this.updateCRTCurveEffect(effect.intensity);
           break;
       }
@@ -186,13 +186,13 @@ export class PaletteAnimationController {
   }
   private createScanlinesEffect(intensity: number): void {
     const scanlineCSS = `
-      .palette-scanlines::before { content: '';, position: fixed;
+      .palette-scanlines::before {, content: '';, position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
         pointer-events: none;
-        background: linear-gradient(
+       , background: linear-gradient(
           transparent 50%,
           rgba(0, 255, 0, ${intensity * 0.1}) 51%,
           transparent 52%
@@ -202,7 +202,7 @@ export class PaletteAnimationController {
         z-index: 9999;
       }
       @keyframes scanline-scroll {
-        0% { transform: translateY(0) }
+        0% {, transform: translateY(0) }
         100% { transform: translateY(4px) }
       }
     `;`
@@ -236,7 +236,7 @@ export class PaletteAnimationController {
           animation: glitch-effect 0.1s ${intensity * 10} linear;
         }
         @keyframes glitch-effect {
-          0% { transform: translateX(0) }
+          0% {, transform: translateX(0) }
           10% { transform: translateX(-2px) scaleX(1.01) }
           20% { transform: translateX(2px) scaleY(1.01) }
           30% { transform: translateX(-1px) scaleX(0.99) }
@@ -264,7 +264,7 @@ export class PaletteAnimationController {
           image-rendering: pixelated;
           image-rendering: -moz-crisp-edges;
           image-rendering: crisp-edges;
-          filter: contrast(1.1) saturate(1.2);
+         , filter: contrast(1.1) saturate(1.2);
         }
       `;`
       this.injectCSS('palette-pixelate', pixelateCSS);
@@ -274,13 +274,13 @@ export class PaletteAnimationController {
   private updateCRTCurveEffect(intensity: number): void {
     if (intensity > 0) {
       const crtCSS = `
-        .palette-crt::before { content: '';, position: fixed;
+        .palette-crt::before {, content: '';, position: fixed;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
           pointer-events: none;
-          background: radial-gradient(
+         , background: radial-gradient(
             ellipse at center,
             transparent 70%,
             rgba(0, 0, 0, ${intensity * 0.3}) 100%
@@ -288,7 +288,7 @@ export class PaletteAnimationController {
           z-index: 9998;
         }
         .palette-crt {
-          transform: perspective(1000px) rotateX(${intensity * 2}deg);
+         , transform: perspective(1000px) rotateX(${intensity * 2}deg);
           filter: brightness(1.1) contrast(1.2);
         }
       `;`
@@ -302,7 +302,7 @@ export class PaletteAnimationController {
     for (const [key, transition] of this.transitions) {
       if (key.includes('[')) {
         // Handle accent color arrays,
-        const [$, indexStr] = key.split('['); // Renamed: 'baseKey'; to: '$'
+        const [$, indexStr] = key.split('['); // Renamed: 'baseKey';, to: '$'
         const index = parseInt(indexStr.replace(']', ''));
         root.style.setProperty(`--console-accent-${index}`, transition.current);
       } else {
@@ -440,12 +440,12 @@ export async function smoothPaletteTransition(
 }
 export function quickGamingTransition(consoleName: ConsolePaletteName): Promise<void> {
   switch (consoleName) {
-    case 'nes': return paletteAnimator.animateToNES();
-    case 'snes': return paletteAnimator.animateToSNES();
-    case 'n64': return paletteAnimator.animateToN64();
-    case 'ps1': return paletteAnimator.animateToPS1();
-    case 'ps2': return paletteAnimator.animateToPS2();
-    case 'legal': return paletteAnimator.animateToLegal();
+    case, 'nes': return paletteAnimator.animateToNES();
+    case, 'snes': return paletteAnimator.animateToSNES();
+    case, 'n64': return paletteAnimator.animateToN64();
+    case, 'ps1': return paletteAnimator.animateToPS1();
+    case, 'ps2': return paletteAnimator.animateToPS2();
+    case, 'legal': return paletteAnimator.animateToLegal();
     default: return paletteAnimator.animateToLegal();
   }
 }

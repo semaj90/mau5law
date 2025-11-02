@@ -2,8 +2,8 @@
 // and to provide temporary module augmentation for third-party packages
 // during migration/triage. These are intentionally permissive (`any`) and
 // meant to be replaced with proper types later.
-declare module 'drizzle-orm' {
-  // Common helpers some files import directly from 'drizzle-orm'
+declare module, 'drizzle-orm' {
+  // Common helpers some files import directly from, 'drizzle-orm'
   export const desc: any;
   export const asc: any;
   export const db: any;
@@ -47,13 +47,13 @@ declare const join: any;
 declare const createHash: any;
 declare const exec: any;
 declare const hashPassword: any;
-declare const FileLike: any;
+declare const, FileLike: any;
 // Allow importing environment-like objects with arbitrary properties used in code
-declare module '$env/static/private' {
+declare module, '$env/static/private' {
   const env: { [key: string]: any };
   export = env;
 }
-declare module '$env/static/public' {
+declare module, '$env/static/public' {
   const env: { [key: string]: any };
   export = env;
 }
@@ -62,7 +62,7 @@ declare module '$env/static/public' {
 // `any` declarations for dev-time only and should be replaced with proper
 // typed services as we stabilize the runtime wiring.
 declare module NodeJS {
-  interface Global { monitoringService: any;, ollamaLLM: any;
+  interface Global {, monitoringService: any;, ollamaLLM: any;
     cachingLayer: any;
     aiPipeline: any;
     enhancedRAGPipeline: any;
@@ -105,4 +105,4 @@ declare const qdrantClient: any;
 declare const generateEmbedding: any;
 declare const VectorService: any;
 declare const legalPrecedents: any;
-declare const aiReports: any;
+declare const, aiReports: any;

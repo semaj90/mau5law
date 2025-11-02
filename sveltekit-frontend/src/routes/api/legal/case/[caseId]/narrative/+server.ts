@@ -1,7 +1,7 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 interface NarrativeSection { id: string;, title: string;
   content: string;
@@ -15,7 +15,7 @@ interface NarrativeSection { id: string;, title: string;
   tags: string[];
   legalReferences: string[];
   evidenceReferences: string[];
-  metadata: { tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE';, audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL';
+  metadata: {, tone: 'FORMAL' | 'PERSUASIVE' | 'NEUTRAL' | 'AGGRESSIVE' | 'DEFENSIVE';, audience: 'JUDGE' | 'JURY' | 'OPPOSING_COUNSEL' | 'CLIENT' | 'GENERAL';
     complexity: 'SIMPLE' | 'MODERATE' | 'COMPLEX' | 'EXPERT';
     style: 'NARRATIVE' | 'ANALYTICAL' | 'CHRONOLOGICAL' | 'THEMATIC';
   };
@@ -23,7 +23,7 @@ interface NarrativeSection { id: string;, title: string;
   revisionHistory: Array<any>;
 }
 
-interface CaseNarrative { id: string;, caseId: string;
+interface CaseNarrative {, id: string;, caseId: string;
   title: string;
   narrativeType:
     | 'OPENING_STATEMENT'
@@ -43,7 +43,7 @@ interface CaseNarrative { id: string;, caseId: string;
   reviewers: string[];
   template?: string;
   aiAssistanceLevel: 'NONE' | 'SUGGESTIONS' | 'COLLABORATIVE' | 'FULLY_GENERATED';
-  qualityMetrics: { clarity: number;, persuasiveness: number;
+  qualityMetrics: {, clarity: number;, persuasiveness: number;
     factualAccuracy: number;
     legalSoundness: number;
     coherence: number;
@@ -64,15 +64,15 @@ interface NarrativeRequest {
   focusAreas?: string[];
 }
 
-interface AIWritingAssistance { suggestions: Array<any>;, alternativePhrasings: Array<any>;
+interface AIWritingAssistance {, suggestions: Array<any>;, alternativePhrasings: Array<any>;
   factChecking: Array<any>;
   legalReferences: Array<any>;
-  strengthWeaknessAnalysis: { strengths: string[];, weaknesses: string[];
+  strengthWeaknessAnalysis: {, strengths: string[];, weaknesses: string[];
     recommendations: string[];
   };
 }
 
-export const GET: RequestHandler = async ({ params, url }) => {
+export const, GET: RequestHandler = async ({ params, url }) => {
   try {
     const caseId = params.caseId;
     if (!caseId) {
@@ -186,7 +186,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
   const narrativeId = `NARRATIVE-${Date.now()}`;
   const sections: NarrativeSection[] = [
     {
-      id: 'SECTION-001',
+     , id: 'SECTION-001',
       title: 'Case Overview',
       content: generateNarrativeContent('OPENING', request),
       sectionType: 'OPENING',
@@ -200,7 +200,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       legalReferences: [],
       evidenceReferences: ['EVIDENCE-001', 'EVIDENCE-002'],
       metadata: {
-        tone: request.tone || 'FORMAL',
+       , tone: request.tone || 'FORMAL',
         audience: request.audience || 'JUDGE',
         complexity: 'MODERATE',
         style: 'NARRATIVE'
@@ -231,7 +231,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       legalReferences: [],
       evidenceReferences: ['EVIDENCE-003', 'EVIDENCE-004', 'EVIDENCE-005'],
       metadata: {
-        tone: request.tone || 'NEUTRAL',
+       , tone: request.tone || 'NEUTRAL',
         audience: request.audience || 'JUDGE',
         complexity: 'MODERATE',
         style: 'CHRONOLOGICAL'
@@ -262,7 +262,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
       legalReferences: ['Evidence Act Section 45', 'Criminal Code 123'],
       evidenceReferences: ['EVIDENCE-001', 'EVIDENCE-002', 'EVIDENCE-003', 'EVIDENCE-006'],
       metadata: {
-        tone: request.tone || 'FORMAL',
+       , tone: request.tone || 'FORMAL',
         audience: request.audience || 'JUDGE',
         complexity: 'COMPLEX',
         style: 'ANALYTICAL'
@@ -288,7 +288,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
     status: 'DRAFT',
     sections,
     totalWordCount,
-    estimatedReadingTime: Math.ceil(totalWordCount / 250), // Assume 250 words per minute
+    estimatedReadingTime: Math.ceil(totalWordCount / 250), // Assume, 250 words per minute
     overallConfidence: sections.reduce((sum, section) => sum + section.confidence, 0) / sections.length,
     createdAt: new Date().toISOString(),
     lastModified: new Date().toISOString(),
@@ -297,7 +297,7 @@ async function generateCaseNarrative(caseId: string, request: NarrativeRequest):
     template: request.template,
     aiAssistanceLevel: request.aiAssistance ? 'FULLY_GENERATED' : 'NONE',
     qualityMetrics: {
-      clarity: 0.87,
+     , clarity: 0.87,
       persuasiveness: 0.82,
       factualAccuracy: 0.94,
       legalSoundness: 0.89,
@@ -411,12 +411,12 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
     ],
     factChecking: [
       {,
-        claim: 'Incident occurred on January 15, 2024',
+        claim: 'Incident occurred on January, 15, 2024',
         verification: 'VERIFIED',
         sources: ['Police Report PR-2024-001', 'Witness Statement WS-001'],
         notes: `Multiple independent sources confirm this date` },'`'`
       {
-        claim: 'Evidence was collected within 24 hours',
+        claim: 'Evidence was collected within, 24 hours',
         verification: 'DISPUTED',
         sources: ['Evidence Log EL-2024-001'],
         notes: `Some evidence items show collection dates beyond 24-hour window` },
@@ -450,13 +450,13 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         suggestedCitations: [
           'Federal Rules of Evidence 803',
           'Crawford v. Washington, 541 U.S. 36 (2004)',
-          'State v. Martinez, 789 F.3d 456 (2022)',
+          'State v. Martinez, 789 F.3d, 456 (2022)',
         ],
         relevance: 0.72
       },
     ],
     strengthWeaknessAnalysis: {
-      strengths: [
+     , strengths: [
         'Strong chronological organization improves readability',
         'Comprehensive evidence analysis demonstrates thoroughness',
         'Clear factual presentation supports legal arguments',
@@ -471,7 +471,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
       recommendations: [
         'Add legal citations to strengthen evidentiary arguments',
         'Include section addressing potential counterarguments',
-        'Verify and resolve any chronological inconsistencies',
+        'Verify and resolve: any chronological inconsistencies',
         'Consider adding expert testimony to support technical claims',
         'Expand discussion of evidence chain of custody procedures',
       ]
@@ -509,7 +509,7 @@ function generateMockNarrative(caseId: string, narrativeId: string, includeRevis
     aiAssistanceLevel: (['SUGGESTIONS', 'COLLABORATIVE', 'FULLY_GENERATED'][Math.floor(Math.random() * 3)] ||
       'SUGGESTIONS') as CaseNarrative['aiAssistanceLevel'],
     qualityMetrics: {
-      clarity: Math.random() * 0.3 + 0.7,
+     , clarity: Math.random() * 0.3 + 0.7,
       persuasiveness: Math.random() * 0.3 + 0.7,
       factualAccuracy: Math.random() * 0.2 + 0.8,
       legalSoundness: Math.random() * 0.3 + 0.7,
@@ -524,35 +524,35 @@ function generateMockSections(
 ): NarrativeSection[] {
   const sectionConfigs: Record<string, { type: NarrativeSection['sectionType']; title: string }[]> = {
     OPENING_STATEMENT: [
-      { type: 'OPENING', title: 'Introduction' },
+      {, type: 'OPENING', title: 'Introduction' },
       { type: 'FACTS', title: 'Key Facts' },
       { type: 'ARGUMENT', title: 'Legal Arguments' }
     ],
     CLOSING_ARGUMENT: [
-      { type: 'OPENING', title: 'Summary' },
+      {, type: 'OPENING', title: 'Summary' },
       { type: 'EVIDENCE', title: 'Evidence Review' },
       { type: 'ARGUMENT', title: 'Final Arguments' },
       { type: 'CONCLUSION', title: 'Conclusion' }
     ],
     CASE_SUMMARY: [
-      { type: 'OPENING', title: 'Case Overview' },
+      {, type: 'OPENING', title: 'Case Overview' },
       { type: 'FACTS', title: 'Factual Background' },
       { type: 'EVIDENCE', title: 'Evidence Analysis' },
       { type: 'CONCLUSION', title: 'Summary' }
     ],
     BRIEF: [
-      { type: 'OPENING', title: 'Statement of Issues' },
+      {, type: 'OPENING', title: 'Statement of Issues' },
       { type: 'FACTS', title: 'Statement of Facts' },
       { type: 'ARGUMENT', title: 'Argument' },
       { type: 'CONCLUSION', title: 'Conclusion' }
     ],
     MOTION: [
-      { type: 'OPENING', title: 'Motion Introduction' },
+      {, type: 'OPENING', title: 'Motion Introduction' },
       { type: 'FACTS', title: 'Relevant Facts' },
       { type: 'ARGUMENT', title: 'Legal Basis' }
     ],
     INVESTIGATION_REPORT: [
-      { type: 'OPENING', title: 'Investigation Summary' },
+      {, type: 'OPENING', title: 'Investigation Summary' },
       { type: 'FACTS', title: `Findings` },'`'`
       { type: 'EVIDENCE', title: `Evidence Summary` },
       { type: 'CONCLUSION', title: `Recommendations` }
@@ -574,7 +574,7 @@ function generateMockSections(
     legalReferences: Math.random() > 0.5 ? generateMockLegalReferences() : [],
     evidenceReferences: Math.random() > 0.4 ? generateMockEvidenceReferences() : [],
     metadata: {
-      tone: (['FORMAL', 'PERSUASIVE', 'NEUTRAL'][Math.floor(Math.random() * 3)] ||
+     , tone: (['FORMAL', 'PERSUASIVE', 'NEUTRAL'][Math.floor(Math.random() * 3)] ||
         'FORMAL') as NarrativeSection['metadata']['tone'],
       audience: (['JUDGE', 'JURY', 'OPPOSING_COUNSEL'][Math.floor(Math.random() * 3)] ||
         'JUDGE') as NarrativeSection['metadata']['audience'],
@@ -611,7 +611,7 @@ function generateNarrativeContent(sectionType: NarrativeSection['sectionType'], 
     CONCLUSION:
       'In conclusion, the evidence clearly establishes [findings]. Therefore, we respectfully request that the court [requested relief].',
     TIMELINE:
-      'The relevant timeline of events is as; follows: [chronological events]. This sequence demonstrates [pattern or causation].',
+      'The relevant timeline of events is as;, follows: [chronological events]. This sequence demonstrates [pattern or causation].',
     WITNESS:
       'Witness testimony will establish [key points]. The credibility of these witnesses is supported by [corroborating evidence].',
     EXPERT: `Expert analysis reveals [technical findings]. The methodology used meets the standards established in [legal standard].` };

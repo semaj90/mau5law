@@ -1,7 +1,7 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { createHash } from 'node:crypto';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { createHash } from, 'node:crypto';
 
 const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || 'http://localhost:8081/analyze';
 
@@ -45,10 +45,10 @@ function buildEnhancedAnalysisPrompt(
 Document Text:
 ${documentText}
 ${contextualInfo ? `Context: ${contextualInfo}` : '' }'`'`
-Provide a structured analysis focusing on:
+Provide a structured analysis focusing, on:
 1. Key findings
 2. Legal relevance
-3. Compliance issues (if any)
+3. Compliance issues (if: any)
 4. Recommendations
 Format: JSON with clear sections for each point.`;`
   if (useThinkingStyle) {
@@ -64,7 +64,7 @@ ${basePrompt}`;' }'`
 
 // POST handler: use langextract service when requested or when only `message` is provided.
 // Otherwise generate a richer analysis prompt and return a deterministic id + skeleton analysis.
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const body = (await request.json()) as AnalysisRequest;
 
   // If caller explicitly requested langextract mode OR only provided a message (simple extraction)
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
       recommendations: []
     };
 
-    return json({ ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });
+    return json({, ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });
   } catch (err) {
     return json({ ok: false, error: 'Failed to perform analysis', details: String(err) }, { status: 500 });
   }

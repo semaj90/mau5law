@@ -1,10 +1,10 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-import type { RequestHandler } from '@sveltejs/kit'
-import { json } from '@sveltejs/kit'
-import { ollamaClient } from '$lib/server/ollama-client'
-import { db } from '$lib/server/db'
-import { embeddings } from '$lib/server/db/schema-embeddings'
-import type { NewEmbedding } from '$lib/server/db/schema-embeddings'
+import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { RequestHandler } from, '@sveltejs/kit'
+import { json } from, '@sveltejs/kit'
+import { ollamaClient } from, '$lib/server/ollama-client'
+import { db } from, '$lib/server/db'
+import { embeddings } from, '$lib/server/db/schema-embeddings'
+import type { NewEmbedding } from, '$lib/server/db/schema-embeddings'
 const DATABASE_URL = process.env.DATABASE_URL || ''
 
 interface RedisLike {
@@ -23,7 +23,7 @@ if (REDIS_URL) {
     const raw = Redis.redis
     raw.connect().catch(() => {})
     // cast to RedisLike shape for later use
-    redisClient = raw as unknown as RedisLike
+    redisClient = raw as: unknown as RedisLike
   } catch (e) {
     // ignore missing redis
     // console.warn('redis init failed', e)
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const record: NewEmbedding = {
             id,
             content: text,
-            embedding: (embedding as unknown) as number[] | null,
+            embedding: (embedding, as: unknown) as: number[] | null,
             metadata: (metadata ?? {}) as EmbeddingMetadata,
             source: ((metadata ?? {}) as EmbeddingMetadata).source || 'user_input' } as NewEmbedding
 

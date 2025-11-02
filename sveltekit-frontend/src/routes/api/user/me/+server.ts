@@ -1,6 +1,6 @@
-import type { User } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 export const GET: RequestHandler = async ({ locals }) => {
   try {
     // Lucia put user into locals in hooks.server.ts
@@ -22,17 +22,17 @@ export const GET: RequestHandler = async ({ locals }) => {
       success: false,
       error: 'failure default to mock',
       user: {
-        id: 'mock-user-001',
+       , id: 'mock-user-001',
         email: 'mock.user@lawfirm.com',
         name: 'Mock Legal User',
         role: 'attorney',
         preferences: {
-          theme: 'legal-console',
+         , theme: 'legal-console',
           notifications: true,
           practiceAreas: ['employment', 'corporate']
         },
         metadata: {
-          lastLogin: new Date().toISOString(),
+         , lastLogin: new Date().toISOString(),
           caseCount: 15,
           activeProjects: 3
         }

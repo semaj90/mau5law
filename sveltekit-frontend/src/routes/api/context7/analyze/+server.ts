@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit'
-import { db } from '$lib/server/db'
-import { evidence } from '$lib/server/db/schema-postgres-enhanced'
-import eq from 'drizzle-orm';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit'
+import { db } from, '$lib/server/db'
+import { evidence } from, '$lib/server/db/schema-postgres-enhanced'
+import eq from, 'drizzle-orm';
+import type { RequestHandler } from, './$types';
 
-// Types for Context7 analysis payload (avoids 'any')
-type CaseLawConnection = { case string; relevance: number };
+// Types for Context7 analysis payload (avoids, 'any')
+type CaseLawConnection = { case: string; relevance: number };
 type SemanticMapping = { concept: string; confidence: number };
 
-interface Context7Analysis { id: string;, type: string;
+interface Context7Analysis {, id: string;, type: string;
   status: string;
-  analysis: { legalEntities: string[];, keyTerms: string[];
+  analysis: {, legalEntities: string[];, keyTerms: string[];
     caseLawConnections: CaseLawConnection[];
     prosecutionRelevance: { score: number; reasoning: string };
     semanticMappings: SemanticMapping[];
@@ -19,7 +19,7 @@ interface Context7Analysis { id: string;, type: string;
   };
   confidence: number;
   processingTime: number;
-  timestamp: string;
+ , timestamp: string;
 }
 
 const formatError = (err: any) => {
@@ -43,22 +43,22 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Mock Context7 analysis for now (typed)
     const context7Analysis: Context7Analysis = {
-      id: evidenceId,
+     , id: evidenceId,
       type: type || 'legal_evidence',
       status: 'completed',
       analysis: {
-        legalEntities: ['Party A', 'Party B', 'Contract Terms'],
+       , legalEntities: ['Party A', 'Party B', 'Contract Terms'],
         keyTerms: ['indemnification', 'liability', 'termination'],
         caseLawConnections: [
-          { case 'Smith v. Jones', relevance: 0.85 },
-          { case 'Doe v. Corporation', relevance: 0.72 }
+          { case, 'Smith v. Jones', relevance: 0.85 },
+          { case, 'Doe v. Corporation', relevance: 0.72 }
         ],
         prosecutionRelevance: {
-          score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0
+         , score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0
           reasoning: 'High relevance due to contract violations and potential fraud indicators'
         },
         semanticMappings: [
-          { concept: 'breach of contract', confidence: 0.9 },
+          {, concept: 'breach of contract', confidence: 0.9 },
           { concept: 'damages', confidence: 0.8 }
         ],
         riskFactors: ['Incomplete documentation', 'Missing signatures', 'Ambiguous terms'],

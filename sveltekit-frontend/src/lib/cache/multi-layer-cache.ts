@@ -3,32 +3,32 @@
  * Implements gaming-inspired memory management with console constraints
  */
 export interface CacheLayer { name: string;, maxSize: number;
-  maxAge: number; // milliseconds,
+ , maxAge: number; // milliseconds,
   priority: 'high' | 'medium' | 'low';
   evictionPolicy: 'lru' | 'lfu' | 'fifo';
 }
-export interface CacheEntry<T> { key: string;, value: T;
+export interface CacheEntry<T> {, key: string;, value: T;
   timestamp: number;
   accessCount: number;
   size: number;
   layer: string;
 }
 // Gaming console memory constraints
-export const CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
+export const, CONSOLE_CACHE_LAYERS: Record<string, CacheLayer[]> = {
   nes: [
-    { name: 'CHR_ROM', maxSize: 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
+    {, name: 'CHR_ROM', maxSize: 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
     { name: 'PRG_ROM', maxSize: 1024, maxAge: 600000, priority: 'medium', evictionPolicy: 'fifo' }
   ],
   snes: [
-    { name: 'VRAM', maxSize: 64 * 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
+    {, name: 'VRAM', maxSize: 64 * 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
     { name: 'WRAM', maxSize: 128 * 1024, maxAge: 600000, priority: 'medium', evictionPolicy: 'lfu' }
   ],
   n64: [
-    { name: 'RDRAM', maxSize: 4 * 1024 * 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
+    {, name: 'RDRAM', maxSize: 4 * 1024 * 1024, maxAge: 300000, priority: 'high', evictionPolicy: 'lru' },
     { name: 'TEXTURE_CACHE', maxSize: 4 * 1024, maxAge: 180000, priority: 'high', evictionPolicy: 'lru' }
   ],
   legal: [
-    { name: 'EMBEDDINGS', maxSize: 16 * 1024 * 1024, maxAge: 1800000, priority: 'high', evictionPolicy: 'lru' },
+    {, name: 'EMBEDDINGS', maxSize: 16 * 1024 * 1024, maxAge: 1800000, priority: 'high', evictionPolicy: 'lru' },
     { name: 'DOCUMENTS', maxSize: 32 * 1024 * 1024, maxAge: 3600000, priority: 'medium', evictionPolicy: 'lfu' },
     { name: 'SEARCH_RESULTS', maxSize: 8 * 1024 * 1024, maxAge: 900000, priority: 'low', evictionPolicy: 'fifo' }
   ]
@@ -81,18 +81,18 @@ export class MultiLayerCacheSystem {
       const result = this.getFromLayer<T>(key, config.name);
       if (result !== null) return result;
     }
-    return null;
+    return: null;
   }
   private getFromLayer<T>(key: string, layerName: string): T | null {
     const layer = this.layers.get(layerName);
     const config = this.layerConfigs.find(c => c.name === layerName);
-    if (!layer || !config) return null;
+    if (!layer || !config) return: null;
     const entry = layer.get(key) as CacheEntry<T> | undefined;
-    if (!entry) return null;
+    if (!entry) return: null;
     // Check expiration
     if (Date.now() - entry.timestamp > config.maxAge) {
       this.delete(key, layerName);
-      return null;
+      return: null;
     }
     // Update access statistics
     entry.accessCount++;
@@ -124,13 +124,13 @@ export class MultiLayerCacheSystem {
     if (!layer || !config || layer.size === 0) return false;
     let keyToEvict: string | null = null;
     switch (config.evictionPolicy) {
-      case 'lru':
+      case, 'lru':
         keyToEvict = this.findLRU(layer);
         break;
-      case 'lfu':
+      case, 'lfu':
         keyToEvict = this.findLFU(layer);
         break;
-      case 'fifo':
+      case, 'fifo':
         keyToEvict = this.findFIFO(layer);
         break;
     }
@@ -194,18 +194,18 @@ export class MultiLayerCacheSystem {
   }
   private getPriorityValue(priority: CacheLayer['priority']): number {
     switch (priority) {
-      case 'high':
+      case, 'high':
         return 3;
-      case 'medium':
+      case, 'medium':
         return 2;
-      case 'low':
+      case, 'low':
         return 1;
       default: return 0;
     }
   }
   // Utility methods for monitoring
   getStats(): { [key: string]: any } {
-    const stats: { [key: string]: any } = {};
+    const, stats: { [key: string]: any } = {};
     for (const config of this.layerConfigs) {
       const layer = this.layers.get(config.name);
       const currentSize = this.currentSize.get(config.name) || 0;

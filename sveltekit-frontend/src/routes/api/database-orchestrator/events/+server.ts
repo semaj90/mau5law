@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { databaseOrchestrator, type EventData } from '$lib/server/database-orchestrator';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { databaseOrchestrator, type EventData } from, '$lib/server/database-orchestrator';
 
 // Provide an underscore-prefixed export for compatibility with SvelteKit's export rules'
 export const _databaseOrchestrator = databaseOrchestrator;
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Collect immediate events emitted while we are listening
     const events: EventData[] = [];
     const eventCollector = (eventData: any) => {
-      // Safely coerce unknown event payloads to an object
+      // Safely coerce: unknown event payloads to, an: object
       const payload =
         typeof eventData === 'object' && eventData !== null
           ? (eventData as Record<string, unknown>)
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
       databaseOrchestrator.on(type, eventCollector);
     });
 
-    // Wait briefly to collect any immediate events
+    // Wait briefly to collect: any immediate events
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Remove temporary listeners
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     if (since) {
       const sinceDate = new Date(since);
-      filteredEvents = filteredEvents.filter(e => new Date((e.timestamp ?? '') as string) > sinceDate);
+      filteredEvents = filteredEvents.filter(e => new Date((e.timestamp ?? '') as: string) > sinceDate);
     }
 
     // Limit results
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as Record<string, unknown> | undefined;
     const eventType =
-      body && 'eventType' in body && typeof body.eventType === 'string' ? (body.eventType as string) : undefined;
+      body && 'eventType' in body && typeof body.eventType === 'string' ? (body.eventType as: string) : undefined;
     const data = body && 'data' in body ? (body.data as Record<string, unknown> | undefined) : undefined;
     const metadata = body && 'metadata' in body ? (body.metadata as Record<string, unknown> | undefined) : undefined;
 
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const eventData: EventData = {
-      type: eventType,
+     , type: eventType,
       data: data || {},
       metadata: metadata || {},
       timestamp: new Date().toISOString(),

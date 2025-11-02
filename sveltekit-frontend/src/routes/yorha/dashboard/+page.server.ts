@@ -1,4 +1,4 @@
-import type { PageServerLoad } from './$types.js';
+import type { PageServerLoad } from, './$types.js';
 export const load: PageServerLoad = async ({ fetch }) => {
   try {
     const res = await fetch('/api/yorha/system/status');
@@ -26,8 +26,8 @@ export const load: PageServerLoad = async ({ fetch }) => {
 };
 function generateMockSystemStatus() {
   return { database: {, connected: true },
-    backend: { healthy: true },
-    frontend: { webGPUEnabled: true },
+    backend: {, healthy: true },
+    frontend: {, webGPUEnabled: true },
     timestamp: new Date().toISOString()
   };
 }

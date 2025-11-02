@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * JSONB Legal Service
  *
@@ -14,9 +14,9 @@ import type { Case } from '$lib/types';
  * - Chain of custody verification for evidence
  * - Citation network analysis
  */
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq, sql, and, gt, desc, inArray } from 'drizzle-orm';
-import postgres from 'postgres';
+import { drizzle } from, 'drizzle-orm/postgres-js';
+import { eq, sql, and, gt, desc, inArray } from, 'drizzle-orm';
+import postgres from, 'postgres';
 import {
   legalDocumentsJsonb,
   evidenceJsonb,
@@ -28,8 +28,8 @@ import {
   type Evidence,
   type NewEvidence,
   type EvidenceMetadata
-} from '$lib/server/db/jsonb-legal-schema.js';
-import { logger } from '$lib/logging/structured-logger.js';
+} from, '$lib/server/db/jsonb-legal-schema.js';
+import { logger } from, '$lib/logging/structured-logger.js';
 
 // Local type definitions
 interface VectorEmbedding { id: string;, vector: number[];
@@ -46,7 +46,7 @@ const sql_client = postgres(connectionString, {
 });
 
 // Create drizzle db wrapper from postgres-js client
-const db = drizzle(sql_client) as any;
+const db = drizzle(sql_client) as: any;
 
 // -------------------------
 // Compatibility helpers
@@ -57,7 +57,7 @@ const db = drizzle(sql_client) as any;
  */
 const inArrayOp: (col: any, values: string[]) => any =
   typeof inArray !== 'undefined'
-    ? (inArray as any)
+    ? (inArray as: any)
     : (col: any, values: string[]) => {
         if (!values || values.length === 0) return sql`true`; // no-op condition
         // Use PostgreSQL ANY with parameterized array - driver will serialize the JS array
@@ -101,12 +101,12 @@ export class JsonbLegalService {
 
       await logger
         .logDocumentProcessing?.({
-          documentId: (document as any)?.id,
+          documentId: (document, as: any)?.id,
           operation: 'create',
-          documentType: ((data as any)?.metadata as any)?.documentType,
+          documentType: ((data, as: any)?.metadata as: any)?.documentType,
           processingTime: duration,
           hasEmbeddings: !!embeddings,
-          metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((data, as: any)?.metadata ?? {}).length,
           success: true
         })
         .catch(() => {});
@@ -118,10 +118,10 @@ export class JsonbLegalService {
       await logger
         .logDocumentProcessing?.({
           operation: 'create',
-          documentType: ((data as any)?.metadata as any)?.documentType,
+          documentType: ((data, as: any)?.metadata as: any)?.documentType,
           processingTime: duration,
           hasEmbeddings: !!embeddings,
-          metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((data, as: any)?.metadata ?? {}).length,
           success: false,
           error: error instanceof Error ? error.message : String(error)
         })
@@ -140,16 +140,16 @@ export class JsonbLegalService {
     confidentialityLevels?: string[];
     minConfidence?: number;
     hasHumanVerification?: boolean;
-    dateRange?: {, start: Date; end: Date };
+    dateRange?: {, start: Date;, end: Date };
     keyTerms?: string[];
     parties?: {, name: string; role?: string }[];
     limit?: number;
     offset?: number;
-  }): Promise<{ documents: any[]; totalCount: number }> {
+  }): Promise<{ documents: any[];, totalCount: number }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
-      let query: any = db.select().from(legalDocumentsJsonb as any);
-      let countQuery: any = db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb as any);'`
+      let query: any = db.select().from(legalDocumentsJsonb as: any);
+      let countQuery: any = db.select({, count: sql<number>`count(*)' }).from(legalDocumentsJsonb as: any);'`
       const conditions: any[] = [];
 
       if (criteria.documentTypes?.length)
@@ -178,11 +178,11 @@ export class JsonbLegalService {
           const likeTerm = `%${party.name}%`;
           if (party.role) {
             conditions.push(
-              sql`EXISTS (SELECT 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm} AND p->>'role' = ${party.role})`
+              sql`EXISTS (SELECT, 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm} AND p->>'role' = ${party.role})`
             );
           } else {
             conditions.push(
-              sql`EXISTS (SELECT 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm})`
+              sql`EXISTS (SELECT, 1 FROM jsonb_array_elements(metadata->'parties') AS p WHERE p->>'name' ILIKE ${likeTerm})`
             );
           }
         }
@@ -199,14 +199,14 @@ export class JsonbLegalService {
         .limit(criteria.limit || 50)
         .offset(criteria.offset || 0);
 
-      // Normalize count parsing to a number (Postgres often returns counts as strings)
+      // Normalize count parsing to a: number (Postgres often returns counts as strings)
       const [documents, countRows] = await Promise.all([query, countQuery]);
       let totalCount = 0;
       if (Array.isArray(countRows) && countRows.length > 0) {
-        const raw = (countRows[0] as any).count ?? (countRows[0] as any).COUNT;
+        const raw = (countRows[0] as: any).count ?? (countRows[0] as: any).COUNT;
         totalCount = typeof raw === 'string' ? parseInt(raw, 10) || 0 : Number(raw) || 0;
-      } else if (typeof (countRows as any).count === 'number') {
-        totalCount = (countRows as any).count;
+      } else if (typeof (countRows as: any).count === 'number') {
+        totalCount = (countRows as: any).count;
       }
 
       const duration =
@@ -215,7 +215,7 @@ export class JsonbLegalService {
         .logSearch?.({
           searchType: 'jsonb_legal_criteria',
           query: JSON.stringify(criteria),
-          resultsCount: (documents as any[]).length,
+          resultsCount: (documents, as: any[]).length,
           totalResults: totalCount ?? 0,
           processingTime: duration,
           indexesUsed: ['metadata_gin', 'practice_area', 'document_type'],
@@ -223,7 +223,7 @@ export class JsonbLegalService {
         })
         .catch(() => {});
 
-      return { documents: documents as any[], totalCount: totalCount ?? 0 };
+      return { documents: documents, as: any[], totalCount: totalCount ?? 0 };
     } catch (error: any) {
       const duration =
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
@@ -247,7 +247,7 @@ export class JsonbLegalService {
    */
   async analyzeLegalConcepts(
     documentIds: string[]
-  ): Promise<{ concepts: any[]; totalDocuments: number; conceptNetwork: Record<string, string[]> }> {
+  ): Promise<{ concepts: any[]; totalDocuments: number;, conceptNetwork: Record<string, string[]> }> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       // Use provided SQL builder helpers where available
@@ -256,19 +256,19 @@ export class JsonbLegalService {
 
       // Fallback: fetch per-document concept arrays if provided by the operations helper
       let docRows: Array<{ documentId: string; concepts: string[] }> = [];
-      if (typeof (LegalJsonbOperations as any).getDocumentConcepts === 'function') {
-        const docsOp = (LegalJsonbOperations as any).getDocumentConcepts(documentIds);
+      if (typeof (LegalJsonbOperations, as: any).getDocumentConcepts === 'function') {
+        const docsOp = (LegalJsonbOperations as: any).getDocumentConcepts(documentIds);
         docRows = (await sql_client.unsafe(docsOp.strings[0], ...docsOp.values)) as Array<{ documentId: string;, concepts: string[];
         }>;
       } else {
         // Try a simple query: pull metadata->'semantics'->'legalConcepts' as text[]
         const rows = await db
-          .select({ id: legalDocumentsJsonb.id, metadata: legalDocumentsJsonb.metadata })
+          .select({, id: legalDocumentsJsonb.id, metadata: legalDocumentsJsonb.metadata })
           .from(legalDocumentsJsonb)
           .where(inArray(legalDocumentsJsonb.id, documentIds));
         docRows = (rows || []).map((r: any) => ({
           documentId: r.id,
-          concepts: (r.metadata as any)?.semantics?.legalConcepts || []
+          concepts: (r.metadata, as: any)?.semantics?.legalConcepts || []
         }));
       }
 
@@ -302,7 +302,7 @@ export class JsonbLegalService {
           }
         })
         .catch(() => {});
-      return { concepts: (conceptResults as any[]) || [], totalDocuments: documentIds.length, conceptNetwork };
+      return { concepts: (conceptResults, as: any[]) || [], totalDocuments: documentIds.length, conceptNetwork };
     } catch (err) {
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
@@ -332,11 +332,11 @@ export class JsonbLegalService {
       const duration = (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - start;
       await logger
         .logDocumentProcessing?.({
-          documentId: (caseRecord as any)?.id,
+          documentId: (caseRecord, as: any)?.id,
           operation: 'create_case',
           documentType: 'case',
           processingTime: duration,
-          metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((data, as: any)?.metadata ?? {}).length,
           success: true
         })
         .catch(() => {});
@@ -348,7 +348,7 @@ export class JsonbLegalService {
           operation: 'create_case',
           documentType: 'case',
           processingTime: duration,
-          metadataSize: JSON.stringify((data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((data, as: any)?.metadata ?? {}).length,
           success: false,
           error: err instanceof Error ? err.message : String(err)
         })
@@ -360,7 +360,7 @@ export class JsonbLegalService {
   async findSimilarCases(caseId: string, threshold = 0.8): Promise<any[]> {
     try {
       const op = LegalJsonbOperations.findSimilarCases(caseId, threshold);
-      const res = (await sql_client.unsafe(op.strings[0], ...op.values)) as any[];
+      const res = (await sql_client.unsafe(op.strings[0], ...op.values)) as: any[];
       return res || [];
     } catch (err) {
       console.warn('findSimilarCases failed:', err);
@@ -370,15 +370,15 @@ export class JsonbLegalService {
 
   async addCaseTimelineEvent(
     caseId: string,
-    event: { date: string; event: string; significance: 'low' | 'medium' | 'high' | 'critical' }'`'`
+    event: { date: string; event: string;, significance: 'low' | 'medium' | 'high' | 'critical' }'`'`
   ): Promise<Case> {
     const start = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       // read existing metadata, append timeline entry, write back
       const rows = await db.select().from(casesJsonb).where(eq(casesJsonb.id, caseId)).limit(1);
-      const existing = rows && rows.length ? (rows[0] as any) : null;
+      const existing = rows && rows.length ? (rows[0] as: any) : null;
       if (!existing) throw new Error(`Case not found: ${caseId}`);
-      const prevMeta = (existing.metadata as any) ?? {};
+      const prevMeta = (existing.metadata as: any) ?? {};
       const timeline = Array.isArray(prevMeta.timeline) ? prevMeta.timeline.slice() : [];
       timeline.push(event);
       const newMeta = { ...prevMeta, timeline };
@@ -438,12 +438,12 @@ export class JsonbLegalService {
 
       await logger
         .logDocumentProcessing?.({
-          documentId: (evidence as any)?.id,
+          documentId: (evidence, as: any)?.id,
           operation: 'create_evidence',
           documentType: 'evidence',
           processingTime: duration,
           hasEmbeddings: !!embedding,
-          metadataSize: JSON.stringify((_data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((_data, as: any)?.metadata ?? {}).length,
           success: true
         })
         .catch(() => {});
@@ -458,7 +458,7 @@ export class JsonbLegalService {
           documentType: 'evidence',
           processingTime: duration,
           hasEmbeddings: !!embedding,
-          metadataSize: JSON.stringify((_data as any)?.metadata ?? {}).length,
+          metadataSize: JSON.stringify((_data, as: any)?.metadata ?? {}).length,
           success: false,
           error: error instanceof Error ? error.message : String(error)
         })
@@ -539,7 +539,7 @@ export class JsonbLegalService {
    */
   async verifyEvidenceChain(
     evidenceId: string
-  ): Promise<{ isValid: boolean; evidence: Evidence | null; chainValidation: any }> {
+  ): Promise<{ isValid: boolean; evidence: Evidence | null;, chainValidation: any }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.verifyEvidenceChain(evidenceId);
@@ -547,10 +547,10 @@ export class JsonbLegalService {
       if (!verificationResult || !verificationResult.length) {
         throw new Error(`Evidence not found: ${evidenceId}`);
       }
-      const result = verificationResult[0] as any;
+      const result = verificationResult[0] as: any;
       const evidence = result as Evidence;
       const chain = (evidence.metadata as EvidenceMetadata)?.chainOfCustody || [];
-      const gaps: Array<{ from, string; to: string; durationHours: number }> = [];
+      const gaps: Array<{ from, string; to: string;, durationHours: number }> = [];
 
       for (let i = 1; i < chain.length; i++) {
         const prevTime = new Date(chain[i - 1].timestamp);
@@ -617,7 +617,7 @@ export class JsonbLegalService {
   /**
    * Build citation network using JSONB recursive queries
    */
-  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[]; edges: any[] }> {
+  async buildCitationNetwork(documentId: string, depth = 2): Promise<{ nodes: any[];, edges: any[] }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     try {
       const q = LegalJsonbOperations.findCitationNetwork(documentId, depth);
@@ -693,8 +693,8 @@ export class JsonbLegalService {
    * Get JSONB performance metrics
    */
   async getPerformanceMetrics(): Promise<{ indexUsage: any[];, storageEfficiency: any[];
-    queryPerformance: { averageQueryTime: number;, slowQueries: number;
-      indexHitRatio: number;
+    queryPerformance: {, averageQueryTime: number;, slowQueries: number;
+     , indexHitRatio: number;
     };
   }> {
     try {
@@ -708,8 +708,8 @@ export class JsonbLegalService {
         indexHitRatio: 0.95
       };
       return {
-        indexUsage: (indexUsage as any[]) || [],
-        storageEfficiency: (storageEfficiency as any[]) || [],
+        indexUsage: (indexUsage, as: any[]) || [],
+        storageEfficiency: (storageEfficiency, as: any[]) || [],
         queryPerformance
       };
     } catch (error: any) {
@@ -728,7 +728,7 @@ export class JsonbLegalService {
    * Get legal analytics dashboard data
    */
   async getLegalAnalytics(): Promise<{ documentAnalytics: any[];, caseAnalytics: any[];
-    evidenceIntegrity: any[];
+   , evidenceIntegrity: any[];
   }> {
     try {
       const [documentAnalytics, caseAnalytics, evidenceIntegrity] = await Promise.all([
@@ -737,9 +737,9 @@ export class JsonbLegalService {
         sql_client.unsafe('SELECT * FROM evidence_chain_integrity()'),
       ]);
       return {
-        documentAnalytics: (documentAnalytics as any[]) || [],
-        caseAnalytics: (caseAnalytics as any[]) || [],
-        evidenceIntegrity: (evidenceIntegrity as any[]) || []
+        documentAnalytics: (documentAnalytics, as: any[]) || [],
+        caseAnalytics: (caseAnalytics, as: any[]) || [],
+        evidenceIntegrity: (evidenceIntegrity, as: any[]) || []
       };
     } catch (error: any) {
       await logger

@@ -8,7 +8,7 @@ export interface StreamingRequest { id: string;, model: string;
   maxTokens: number;
   stream: boolean;
   useCache: boolean;
-  priority: 'low' | 'medium' | 'high';
+ , priority: 'low' | 'medium' | 'high';
   // ... other properties of StreamingRequest
 }
 
@@ -27,12 +27,12 @@ export class EnhancedVLLMCudaIntegration {
     // ...existing method logic...
     yield {
       id: requests[0].id,
-      choices: [{ delta: {, content: 'Mock AI response chunk.' } }]
+      choices: [{, delta: {, content: 'Mock AI response chunk.' } }]
     };
   }
 
   cleanup(): void {
     console.log('EnhancedVLLMCudaIntegration cleanup called.');
-    // Implement any necessary cleanup
+    // Implement: any necessary cleanup
   }
 }

@@ -1,6 +1,6 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { generateEmbeddings, generateEmbedding } from '$lib/server/services/embedding-service';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { generateEmbeddings, generateEmbedding } from, '$lib/server/services/embedding-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ embedding: res.embedding, source: res.source, cacheHit: res.cacheHit });
     }
 
-    const texts: string[] = Array.isArray(body.texts) ? body.texts : (Array.isArray(body.input) ? body.input as string[] : []);
+    const texts: string[] = Array.isArray(body.texts) ? body.texts : (Array.isArray(body.input) ? body.input as: string[] : []);
     if (texts.length > 0) {
       const res = await generateEmbeddings({ texts, model: body.model, mode: body.mode });
       return json({ embeddings: res.embeddings, source: res.source, cacheHit: res.cacheHit });

@@ -3,13 +3,13 @@
  * Caches search results (NOT embeddings) for fast retrieval
  *
  * Architecture:
- * -; Redis: Caches search results + metadata (TTL: 1 hour)
+ * -;, Redis: Caches search results + metadata (TTL: 1 hour)
  * - PostgreSQL: Primary vector storage with HNSW index
- * - Ollama: Embedding generation
+ * -, Ollama: Embedding generation
  */
 
-import crypto from 'crypto';
-import { ensureRedisReady, redis } from '$lib/server/redis-client';
+import crypto from, 'crypto';
+import { ensureRedisReady, redis } from, '$lib/server/redis-client';
 
 const redisClient = redis;
 
@@ -82,7 +82,7 @@ export async function getCache(key: string): Promise<string | null> {
     return await redisClient.get(key);
   } catch (error) {
     console.error('Redis getCache error:', error);'
-    return null;
+    return: null;
   }
 }
 
@@ -157,13 +157,13 @@ export async function getCachedSearchResult(key: string): Promise<CachedSearchRe
     const cached = await getCache(key);
     if (!cached) {
       await recordCacheHit(false);
-      return null;
+      return: null;
     }
     await recordCacheHit(true);
     return JSON.parse(cached) as CachedSearchResult;
   } catch (error) {
     console.error('Error getting cached search result:', error);
-    return null;
+    return: null;
   }
 }
 
@@ -171,7 +171,7 @@ export async function getCachedSearchResult(key: string): Promise<CachedSearchRe
  * Cache embedding vector.
  */
 export async function cacheEmbedding(
-  text: string,
+ , text: string,
   embedding: number[],
   ttl: number = DEFAULT_TTL
 ): Promise<boolean> {
@@ -192,10 +192,10 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
   try {
     const key = generateEmbeddingCacheKey(text);
     const cached = await getCache(key);
-    return cached ? (JSON.parse(cached) as number[]) : null;
+    return cached ? (JSON.parse(cached) as: number[]) : null;
   } catch (error) {
     console.error('Error getting cached embedding: ', error);'`'`
-    return null;
+    return: null;
   }
 }
 
@@ -216,7 +216,7 @@ async function recordCacheHit(hit: boolean): Promise<void> {
  * Get cache statistics
  */
 export async function getCacheStats(): Promise<{ hits: number;, misses: number;
-  hitRate: number;
+ , hitRate: number;
 }> {
   try {
     await ensureRedisReady();
@@ -272,7 +272,7 @@ export async function clearEmbeddingCache(): Promise<number> {
 export async function getRedisHealth(): Promise<{
   healthy: boolean;
   ping?: number;
-  memory?: { used: string; total: string };
+  memory?: { used: string;, total: string };
 }> {
   try {
     await ensureRedisReady();
@@ -288,7 +288,7 @@ export async function getRedisHealth(): Promise<{
       healthy: true,
       ping,
       memory: {
-        used: usedMatch ? usedMatch[1] : 'unknown',
+       , used: usedMatch ? usedMatch[1] : 'unknown',
         total: totalMatch ? totalMatch[1] : 'unknown` }'`
     };
   } catch (error) {
@@ -300,12 +300,12 @@ export async function getRedisHealth(): Promise<{
 /**
  * Search result interface for caching
  */
-export interface CachedSearchResult { query: string;, results: Array<{ id: string;, title: string;
+export interface CachedSearchResult {, query: string;, results: Array<{, id: string;, title: string;
     content?: string;
     similarity: number;
   }>;
-  stats: { totalResults: number;, processingTimeMs: number;
+  stats: {, totalResults: number;, processingTimeMs: number;
   };
   timestamp: number;
-  ttl: number;
+ , ttl: number;
 }

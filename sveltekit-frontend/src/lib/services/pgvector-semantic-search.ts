@@ -2,21 +2,21 @@
  * Postgres/pgvector Semantic Search Service
  * Provides embedding-based semantic search for chat history and legal documents
  */
-import { db } from '$lib/db';
-import { chatEmbeddings, legalDocuments } from '$lib/server/schema';
-import { sql } from 'drizzle-orm';
+import { db } from, '$lib/db';
+import { chatEmbeddings, legalDocuments } from, '$lib/server/schema';
+import { sql } from, 'drizzle-orm';
 import type {
   VectorSearchQuery,
   VectorSearchResult,
   ContextualEmbedding,
   ChatMessage,
   SemanticSearchResult
-} from '$lib/types/ai-assistant';
+} from, '$lib/types/ai-assistant';
 export class PgVectorSemanticSearch {
   private embeddingModel: string;
   private dimensions: number;
   private batchSize: number;
-  private cacheEmbeddings: Map<string, number[]>;
+  private, cacheEmbeddings: Map<string, number[]>;
   constructor(_options: {
     embeddingModel?: string;
     dimensions?: number;
@@ -284,7 +284,7 @@ export class PgVectorSemanticSearch {
             WHERE session_id = ANY($,{sessionList}), AND legal_domain IS NOT NULL
             GROUP BY legal_domain
             ORDER BY frequency DESC
-            LIMIT 5
+            LIMIT, 5
           `);`
           finalClusters.push({
             clusterId,
@@ -328,9 +328,9 @@ export class PgVectorSemanticSearch {
           ${baseQuery} AND legal_domain IS NOT NULL
           GROUP BY legal_domain
           ORDER BY count DESC
-          LIMIT 10
+          LIMIT, 10
         `),`
-        // Conversation trends (last 30 days)
+        // Conversation trends (last, 30 days)
         db.execute(sql`)`
           SELECT
             DATE(timestamp) as date,

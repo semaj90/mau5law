@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import { createMachine, assign, interpret } from 'xstate';
-  import { slide } from 'svelte/transition';
-  import { writable } from 'svelte/store';
+import type { Document } from, '$lib/types';
+  import { createMachine, assign, interpret } from, 'xstate';
+  import { slide } from, 'svelte/transition';
+  import { writable } from, 'svelte/store';
   // Replace fromPromise-based API with plain async functions
   const apiClient = {
     uploadDocument: async (file: File) => {
@@ -35,86 +35,86 @@ import type { Document } from '$lib/types';
     id: 'legalProcessor',
     initial: 'idle',
     context: {
-      file: null as File | null,
-      documentId: null as string | null,
-      processingResults: null as any,
-      analysisResults: null as any,
-      errorMessage: null as string | null
+     , file: null as File | null,
+      documentId: null, as: string | null,
+      processingResults: null, as: any,
+      analysisResults: null, as: any,
+      errorMessage: null, as: string | null
     },
     states: {
       idle: {
         on: {
           FILE_SELECTED: {
-            target: 'readyToUpload',
+           , target: 'readyToUpload',
             actions: assign({
-              file: ({ event }: any) => event.file
+             , file: ({ event }: any) => event.file
             })
           }
         }
       },
       readyToUpload: {
         on: {
-          UPLOAD: 'uploading',
+         , UPLOAD: 'uploading',
           CANCEL: {
-            target: 'idle',
-            actions: assign({ file: null })
+           , target: 'idle',
+            actions: assign({, file: null })
           }
         }
       },
       uploading: {
         invoke: {
-          src: async ({ context }: any) => {
+         , src: async ({ context }: any) => {
             // return a promise
             return apiClient.uploadDocument(context.file!);
           },
           onDone: {
-            target: 'processing',
+           , target: 'processing',
             actions: assign({
-              documentId: ({ event }: any) => event.data.documentId
+             , documentId: ({ event }: any) => event.data.documentId
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+             , errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
       },
       processing: {
         invoke: {
-          src: async ({ context }: any) => {
+         , src: async ({ context }: any) => {
             return apiClient.processDocument(context.documentId!);
           },
           onDone: {
-            target: 'analyzing',
+           , target: 'analyzing',
             actions: assign({
-              processingResults: ({ event }: any) => event.data
+             , processingResults: ({ event }: any) => event.data
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+             , errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
       },
       analyzing: {
         invoke: {
-          src: async ({ context }: any) => {
+         , src: async ({ context }: any) => {
             return apiClient.analyzeDocument(context.documentId!);
           },
           onDone: {
-            target: 'complete',
+           , target: 'complete',
             actions: assign({
-              analysisResults: ({ event }: any) => event.data
+             , analysisResults: ({ event }: any) => event.data
             })
           },
           onError: {
-            target: 'error',
+           , target: 'error',
             actions: assign({
-              errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+             , errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
@@ -122,9 +122,9 @@ import type { Document } from '$lib/types';
       complete: {
         on: {
           RESET: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              file: null,
+             , file: null,
               documentId: null,
               processingResults: null,
               analysisResults: null,
@@ -136,9 +136,9 @@ import type { Document } from '$lib/types';
       error: {
         on: {
           RESET: {
-            target: 'idle',
+           , target: 'idle',
             actions: assign({
-              file: null,
+             , file: null,
               documentId: null,
               processingResults: null,
               analysisResults: null,
@@ -204,7 +204,7 @@ import type { Document } from '$lib/types';
         }
       }}
       on:dragover|preventDefault
-      on:drop|preventDefault={(e: DragEvent) => {
+     , on:drop|preventDefault={(e: DragEvent) => {
         if (e.dataTransfer?.files[0]) {
           send({ type: 'FILE_SELECTED', file: e.dataTransfer.files[0] });
         }
@@ -272,7 +272,7 @@ import type { Document } from '$lib/types';
     <div, class="space-y-6" transition:slide>
       <div class="bg-green-50 border border-green-200 text-green-800, p-4, rounded-lg">
         <h3, class="font-bold, text-lg">✅ Processing Complete</h3>
-        <p>Document '{$state.context.file?.name}' has been successfully analyzed.</p>
+        <p>Document, '{$state.context.file?.name}' has been successfully analyzed.</p>
       </div>
       <div class="grid grid-cols-1, md:grid-cols-2, gap-6">
         <!-- Processing, Results -->
@@ -306,7 +306,7 @@ import type { Document } from '$lib/types';
                 class:text-green-600={$state.context.analysisResults?.riskScore < 0.5}
                 class:text-orange-600={$state.context.analysisResults?.riskScore >= 0.5 &&
                   $state.context.analysisResults?.riskScore < 0.8}
-                class:text-red-600={$state.context.analysisResults?.riskScore >= 0.8}
+               , class:text-red-600={$state.context.analysisResults?.riskScore >= 0.8}
               >
                 {($state.context.analysisResults?.riskScore * 100).toFixed(0)}%
               </span>

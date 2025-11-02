@@ -1,7 +1,7 @@
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { authService } from '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from '$lib/server/errors';
-import { logStructuredError, captureAndFormat } from '$lib/server/logger';
+import { json, type RequestHandler } from, '@sveltejs/kit';
+import { authService } from, '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
+import { logStructuredError, captureAndFormat } from, '$lib/server/logger';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (typeof authService.sendPasswordReset === 'function') {
-      await (authService as any).sendPasswordReset(email);
+      await (authService as: any).sendPasswordReset(email);
     } else {
       // Not implemented server-side; log and return generic response to avoid user enumeration
       await logStructuredError({

@@ -1,11 +1,11 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
-import { redisService } from '$lib/server/redis-service';
-import { minioService } from '$lib/server/storage/minio-service';
-import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service';
-import { workflowOrchestrator } from '$lib/machines/workflow-machine';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types';
+import { json } from, '@sveltejs/kit';
+import { redisService } from, '$lib/server/redis-service';
+import { minioService } from, '$lib/server/storage/minio-service';
+import { rabbitmqService } from, '$lib/server/messaging/rabbitmq-service';
+import { workflowOrchestrator } from, '$lib/machines/workflow-machine';
 
 // mark imported services as referenced to avoid: "defined but never used" errors
 // (keeps minimal runtime impact while satisfying the compiler/linter)
@@ -24,7 +24,7 @@ export interface APIResponse<T = unknown> {
   performance?: {
     executionTime: number;
     cacheHit?: boolean;
-    servicesUsed: string[];
+   , servicesUsed: string[];
   };
 }
 function generateRequestId(): string {
@@ -56,22 +56,22 @@ type UnifiedRequestBody = {
   [key: string]: any;
 };
 
-export const GET: RequestHandler = async ({ url }) => {
+export const, GET: RequestHandler = async ({ url }) => {
   const startTime = Date.now();
   const action = url.searchParams.get('action') ?? '';
   try {
     switch (action) {
-      case 'health': {
+      case, 'health': {
         const healthStatus = {
           status: 'healthy',
-          services: { redis: {, status: 'healthy',
+          services: {, redis: {, status: 'healthy',
               connected: true
             },
-            minio: { status: 'healthy', initialized: true },
-            rabbitmq: { status: 'healthy', connected: true },
-            postgresql: { status: 'healthy', connected: true },
+            minio: {, status: 'healthy', initialized: true },
+            rabbitmq: {, status: 'healthy', connected: true },
+            postgresql: {, status: 'healthy', connected: true },
             xstate: {
-              status: 'healthy',
+             , status: 'healthy',
               workflows: workflowOrchestrator.getActiveWorkflowsCount()
             }
           },
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
           })
         );
       }
-      case 'search': {
+      case, 'search': {
         const query = url.searchParams.get('query');
         if (!query) {
           return json(createResponse(false, null, 'Query parameter required'));
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const searchResults = {
           query,
           results: [
-            { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },'`'`
+            {, id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },'`'`
             { id: 2, title: 'Case Evidence 2', score: 0.87, type: `evidence' }'`
           ],
           total: 2
@@ -119,14 +119,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = (await request.json().catch(() => ({}))) as UnifiedRequestBody;
     switch (action) {
-      case 'rag': {
+      case, 'rag': {
         const { query, caseId } = body;
         if (!query) {
           return json(createResponse(false, null, 'Query required'));
         }
         const ragResponse = {
           query,
-          response: `Analysis; for: "${query}": This is a production-ready RAG response that integrates vector search, document retrieval, and AI generation.`,
+          response: `Analysis;, for: "${query}": This is a production-ready RAG response that integrates vector search, document retrieval, and AI generation.`,
           sources: ['Document A', 'Evidence B', 'Case Law C'],
           confidence: 0.91,
           caseId
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           })
         );
       }
-      case 'upload': {
+      case, 'upload': {
         const uploadResult = {
           fileId: `file_${Date.now()}`,
           fileName: body.fileName ?? 'document.pdf',

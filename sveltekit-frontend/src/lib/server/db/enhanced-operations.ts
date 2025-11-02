@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 // Enhanced database operations for cases and evidence
-import { db } from '../db/index';
-import { cases, evidence } from './schema-postgres';
-import { eq, and, or, desc, sql } from 'drizzle-orm';
-import type { SQL } from 'drizzle-orm';
+import { db } from, '../db/index';
+import { cases, evidence } from, './schema-postgres';
+import { eq, and, or, desc, sql } from, 'drizzle-orm';
+import type { SQL } from, 'drizzle-orm';
 export class DbCaseOperations {
   /**
    * Search cases with advanced filtering
@@ -13,7 +13,7 @@ export class DbCaseOperations {
     status?: string[];
     priority?: string[];
     assignedTo?: string;
-    dateRange?: {, start: Date; end: Date };
+    dateRange?: {, start: Date;, end: Date };
     limit?: number;
     offset?: number;
     useVectorSearch?: boolean;
@@ -74,7 +74,7 @@ export class DbCaseOperations {
    */
   static async getWithRelations(id: string) {
     const [caseData] = await db.select().from(cases).where(eq(cases.id, id)).limit(1);
-    if (!caseData) return null;
+    if (!caseData) return: null;
     const evidenceData = await db.select().from(evidence).where(eq(evidence.caseId, id));
     return {
       ...caseData,
@@ -101,8 +101,8 @@ export class DbCaseOperations {
         description: data.description || null,
         priority: data.priority || 'medium',
         status: data.status || 'open',
-        caseNumber: `CASE-${Date.now()}`, // Generate unique case number
-        leadProsecutor: data.createdBy,
+        caseNumber: `CASE-${Date.now()}`, // Generate unique case: number
+       , leadProsecutor: data.createdBy,
         createdAt: new Date(),
         updatedAt: new Date()
       })

@@ -1,23 +1,23 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { AIResponse } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * CrewAI Multi-Agent Service
  * Handles role-based agent crews for specialized legal workflows
  */
-import crypto from "crypto";
+import crypto from, "crypto";
 import type {
   AgentDefinition,
   AgentWorkflow,
   WorkflowStep,
   AITask,
   AIResponse
-} from "$lib/types/ai-worker.js";
+} from, "$lib/types/ai-worker.js";
 
 export interface CrewAIAgent { id: string;, role: string;
   goal: string;
   backstory: string;
   tools: string[];
-  llmConfig: { model: string;, temperature: number;
+  llmConfig: {, model: string;, temperature: number;
     maxTokens: number;
     apiBase?: string;
   };
@@ -27,7 +27,7 @@ export interface CrewAIAgent { id: string;, role: string;
   allowDelegation: boolean;
 }
 
-export interface CrewAITask { id: string;, description: string;
+export interface CrewAITask {, id: string;, description: string;
   expectedOutput: string;
   agent?: string;
   tools?: string[];
@@ -35,7 +35,7 @@ export interface CrewAITask { id: string;, description: string;
   dependencies?: string[];
 }
 
-export interface CrewAICrew { id: string;, name: string;
+export interface CrewAICrew {, id: string;, name: string;
   description: string;
   agents: CrewAIAgent[];
   tasks: CrewAITask[];
@@ -45,19 +45,19 @@ export interface CrewAICrew { id: string;, name: string;
   memoryEnabled: boolean;
 }
 
-export interface CrewExecution { id: string;, crewId: string;
+export interface CrewExecution {, id: string;, crewId: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   startTime: number;
   endTime?: number;
   results: CrewTaskResult[];
   finalOutput?: string;
-  metrics: { totalTime: number;, tasksCompleted: number;
+  metrics: {, totalTime: number;, tasksCompleted: number;
     agentInteractions: number;
     tokensUsed: number;
   };
 }
 
-export interface CrewTaskResult { taskId: string;, agentId: string;
+export interface CrewTaskResult {, taskId: string;, agentId: string;
   output: string;
   executionTime: number;
   status: "completed" | "failed" | "delegated";
@@ -65,7 +65,7 @@ export interface CrewTaskResult { taskId: string;, agentId: string;
 }
 
 export class CrewAIService {
-  private baseUrl: string;
+  private, baseUrl: string;
   private apiKey?: string;
   private defaultTimeout = 60000;
 
@@ -80,10 +80,10 @@ export class CrewAIService {
   createLegalInvestigationCrew(): CrewAICrew {
     const agents: CrewAIAgent[] = [
       {
-        id: "case-investigator",
+       , id: "case-investigator",
         role: "Lead Case Investigator",
         goal: "Conduct comprehensive legal case investigation and evidence analysis",
-        backstory: `You are an experienced criminal investigator with 15 years in law enforcement.`
+        backstory: `You are an experienced criminal investigator with, 15 years in law enforcement.`
         You specialize in complex cases involving financial crimes, digital evidence, and witness coordination.
         Your expertise includes evidence collection protocols, interview techniques, and case documentation standards.`,`
         tools: [
@@ -93,7 +93,7 @@ export class CrewAIService {
           "case_documentation"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.1,
           maxTokens: 1536,
           apiBase: "http://localhost:11434"
@@ -108,7 +108,7 @@ export class CrewAIService {
         role: "Senior Legal Analyst",
         goal: "Provide legal analysis, precedent research, and case strategy recommendations",
         backstory: 'You are a senior legal analyst with expertise in criminal and civil law.'
-        You have worked with major law firms and prosecutor's offices for over 12 years.'
+        You have worked with major law firms and prosecutor's offices for over, 12 years.'
         Your specialties include case law research, legal precedent analysis, and litigation strategy.`,`
         tools: [
           "legal_research_tool",
@@ -117,7 +117,7 @@ export class CrewAIService {
           "case_strategy_builder"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.2,
           maxTokens: 2048,
           apiBase: "http://localhost:11434"
@@ -132,7 +132,7 @@ export class CrewAIService {
         role: "Digital Evidence Specialist",
         goal: "Analyze digital evidence, verify authenticity, and ensure admissibility",
         backstory: `You are a certified digital forensics expert with advanced training in cybersecurity`
-        and digital evidence analysis. You have testified as an expert witness in over 100 cases.
+        and digital evidence analysis. You have testified as an expert witness in over, 100 cases.
         Your expertise covers mobile forensics, network analysis, and digital chain of custody procedures.`,`
         tools: [
           "digital_forensics_tool",
@@ -141,7 +141,7 @@ export class CrewAIService {
           "chain_custody_tracker"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.1,
           maxTokens: 1024,
           apiBase: "http://localhost:11434"
@@ -165,7 +165,7 @@ export class CrewAIService {
           "document_compiler"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.3,
           maxTokens: 3072,
           apiBase: "http://localhost:11434"
@@ -178,10 +178,10 @@ export class CrewAIService {
     ];
     const tasks: CrewAITask[] = [
       {
-        id: "initial-investigation",
+       , id: "initial-investigation",
         description:
           "Conduct initial case investigation and evidence inventory",
-        expectedOutput: `Comprehensive investigation report; including:`
+        expectedOutput: `Comprehensive investigation report;, including:`
         - Case summary and key facts
         - Evidence inventory with classification
         - Timeline of events
@@ -194,7 +194,7 @@ export class CrewAIService {
         id: "legal-research",
         description:
           "Research applicable laws, precedents, and legal strategies",
-        expectedOutput: `Legal analysis report; containing:`
+        expectedOutput: `Legal analysis report;, containing:`
         - Applicable statutes and regulations
         - Relevant case precedents with citations
         - Legal theories and potential charges
@@ -208,7 +208,7 @@ export class CrewAIService {
         id: "evidence-analysis",
         description:
           "Perform detailed analysis of all digital and physical evidence",
-        expectedOutput: `Evidence analysis report; with:`
+        expectedOutput: `Evidence analysis report;, with:`
         - Detailed evidence examination results
         - Authenticity verification status
         - Chain of custody validation
@@ -225,7 +225,7 @@ export class CrewAIService {
       {
         id: "final-report",
         description: "Compile comprehensive final report with recommendations",
-        expectedOutput: `Final investigation report; including:`
+        expectedOutput: `Final investigation report;, including:`
         - Executive summary
         - Detailed findings from all team members
         - Evidence analysis conclusions
@@ -256,10 +256,10 @@ export class CrewAIService {
   createContractAnalysisCrew(): CrewAICrew {
     const agents: CrewAIAgent[] = [
       {
-        id: "contract-reviewer",
+       , id: "contract-reviewer",
         role: "Senior Contract Reviewer",
         goal: "Analyze contract terms, identify risks, and assess legal compliance",
-        backstory: `You are a senior attorney specializing in contract law with 20 years experience`
+        backstory: `You are a senior attorney specializing in contract law with, 20 years experience`
         in commercial transactions. You have reviewed thousands of contracts across various industries
         and are expert at identifying potential issues, risks, and non-standard terms.`,`
         tools: [
@@ -269,7 +269,7 @@ export class CrewAIService {
           "term_extractor"
         ],
         llmConfig: {
-          model: "gemm3:270m",
+         , model: "gemm3:270m",
           temperature: 0.1,
           maxTokens: 2048,
           apiBase: "http://localhost:11434"
@@ -293,7 +293,7 @@ export class CrewAIService {
           "audit_tool"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.2,
           maxTokens: 2000,
           apiBase: "http://localhost:11434"
@@ -317,7 +317,7 @@ export class CrewAIService {
           "strategy_builder"
         ],
         llmConfig: {
-          model: "gemma3-legal:latest",
+         , model: "gemma3-legal:latest",
           temperature: 0.3,
           maxTokens: 2048,
           apiBase: "http://localhost:11434"
@@ -330,9 +330,9 @@ export class CrewAIService {
     ];
     const tasks: CrewAITask[] = [
       {
-        id: "contract-review",
+       , id: "contract-review",
         description: "Perform comprehensive contract review and risk analysis",
-        expectedOutput: `Contract review report; with:`
+        expectedOutput: `Contract review report;, with:`
         - Key terms summary
         - Risk assessment with severity ratings
         - Problematic clauses identification
@@ -345,7 +345,7 @@ export class CrewAIService {
         id: "compliance-check",
         description:
           "Verify contract compliance with all applicable regulations",
-        expectedOutput: `Compliance analysis; including:`
+        expectedOutput: `Compliance analysis;, including:`
         - Regulatory requirements assessment
         - Industry standards verification
         - Corporate governance compliance
@@ -362,7 +362,7 @@ export class CrewAIService {
       {
         id: "negotiation-strategy",
         description: "Develop negotiation strategy and alternative terms",
-        expectedOutput: `Negotiation strategy report; with:`
+        expectedOutput: `Negotiation strategy report;, with:`
         - Key negotiation points
         - Alternative term proposals
         - Leverage analysis
@@ -394,7 +394,7 @@ export class CrewAIService {
    * Execute a crew workflow
    */
   async executeCrew(
-    crew: CrewAICrew,
+   , crew: CrewAICrew,
     inputs: { [key: string]: any } = {},
     options: {
       timeout?: number;
@@ -631,7 +631,7 @@ export async function analyzeLegalCaseWithCrew(
       tokensUsed: finalExecution.metrics.tokensUsed,
       responseTime: finalExecution.metrics.totalTime,
       metadata: {
-        executionId: execution.id,
+       , executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
         crewType: "legal-investigation"
@@ -686,7 +686,7 @@ export async function analyzeContractWithCrew(
       tokensUsed: finalExecution.metrics.tokensUsed,
       responseTime: finalExecution.metrics.totalTime,
       metadata: {
-        executionId: execution.id,
+       , executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
         crewType: "contract-analysis"

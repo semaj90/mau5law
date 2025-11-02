@@ -12,7 +12,7 @@ declare global {
   // Minimal thread-safe Postgres surface used by middleware tests and wiring.
   interface ThreadSafePostgres {
     // Return RowList of records by default; callers can cast for more precision.
-    query: (q: string, ...args: any[]) => Promise<RowList<Record<string, unknown>> | unknown>;
+   , query: (q: string, ...args: any[]) => Promise<RowList<Record<string, unknown>> | unknown>;
     insertJsonbDocument?: (...args: any[]) => Promise<RowList<Record<string, unknown>> | unknown>;
     deleteJsonbDocuments?: (...args: any[]) => Promise<number | unknown>;
     // fallback catch-all
@@ -48,26 +48,26 @@ declare class PNGEmbedExtractor {
   static createPortableArtifact?: (...args: any[]) => Promise<unknown> | unknown;
   static validateMetadata?: (...args: any[]) => Promise<unknown> | unknown;
 }
-declare module 'png-embed-extractor' {
+declare module, 'png-embed-extractor' {
   const PNGEmbedExtractorAny: any;
   export default PNGEmbedExtractorAny;
 }
 // Broad internal module shims — non-invasive
-declare module '$lib/server/*' {
+declare module, '$lib/server/*' {
   const _default: any;
   export default _default;
 }
-declare module '$lib/server/db/*' {
+declare module, '$lib/server/db/*' {
   const _default: any;
   export default _default;
 }
-declare module '$lib/services/*' {
+declare module, '$lib/services/*' {
   const _default: any;
   export default _default;
 }
-declare module '$lib/components/*' {
+declare module, '$lib/components/*' {
   const _default: any;
   export default _default;
 }
-// Fallback: any unknown module
-declare module '*';
+// Fallback:, any: unknown module
+declare module, '*';

@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Unified Legal RAG Service
  *
@@ -16,8 +16,8 @@ import type { Document } from '$lib/types';
  * - Gemma embeddings (primary), nomic-embed-text (fallback)
  */
 
-import type Redis from 'ioredis';
-import type { Sql } from 'postgres';
+import type Redis from, 'ioredis';
+import type { Sql } from, 'postgres';
 
 // Vector search provider
 export type VectorProvider = 'pgvector' | 'qdrant';
@@ -56,7 +56,7 @@ export interface LegalEntities { parties: string[];, dates: string[];
 /**
  * RAG search result with relevance scoring
  */
-export interface RAGSearchResult { document: LegalDocument;, originalScore: number;
+export interface RAGSearchResult {, document: LegalDocument;, originalScore: number;
   rerankScore?: number;
   relevanceReason: string;
   legalPrecedent?: boolean;
@@ -94,7 +94,7 @@ export interface RAGQueryOptions {
 /**
  * RAG query response
  */
-export interface RAGQueryResponse { query: string;, results: RAGSearchResult[];
+export interface RAGQueryResponse {, query: string;, results: RAGSearchResult[];
   totalFound: number;
   semanticExpansions?: string[];
   mcpDocsUsed?: Array<{ libraryName: string; content: string }>;
@@ -106,7 +106,7 @@ export interface RAGQueryResponse { query: string;, results: RAGSearchResult[];
 /**
  * Service configuration
  */
-export interface UnifiedRAGConfig { redis: Redis;, database: Sql<Record<string, unknown>>;
+export interface UnifiedRAGConfig {, redis: Redis;, database: Sql<Record<string, unknown>>;
   ollamaUrl?: string;
   qdrantUrl?: string;
   qdrantApiKey?: string;
@@ -123,7 +123,7 @@ export interface UnifiedRAGConfig { redis: Redis;, database: Sql<Record<string,
  */
 export class UnifiedRAGService {
   private redis: Redis;
-  private database: Sql<Record<string, unknown>>;
+  private, database: Sql<Record<string, unknown>>;
   private ollamaUrl: string;
   private qdrantUrl: string;
   private qdrantApiKey: string;
@@ -136,7 +136,7 @@ export class UnifiedRAGService {
   // Provider health tracking
   private pgvectorHealthy: boolean = true;
   private qdrantHealthy: boolean = true;
-  private mcpHealthy: boolean = $state(false);
+  private, mcpHealthy: boolean = $state(false);
 
   // Legal concept mappings for semantic expansion
   private legalConceptMap = new Map<string, string[]>([
@@ -200,7 +200,7 @@ export class UnifiedRAGService {
 
     // Step 1: MCP Context7 documentation enrichment (if enabled)
     let enhancedQuery = options.query;
-    let mcpDocsUsed: Array<{ libraryName: string; content: string }> = [];
+    let mcpDocsUsed: Array<{ libraryName: string;, content: string }> = [];
 
     if (options.useMCPDocs && options.requiredLibraries && options.requiredLibraries.length > 0 && this.mcpHealthy) {
       try {
@@ -238,7 +238,7 @@ export class UnifiedRAGService {
     const finalResults = this.applyFilters(rerankedResults, options).slice(0, options.limit || 10);
 
     const response: RAGQueryResponse = {
-      query: options.query,
+     , query: options.query,
       results: finalResults,
       totalFound: finalResults.length,
       semanticExpansions,
@@ -363,7 +363,7 @@ export class UnifiedRAGService {
         ...((row.metadata as Record<string, unknown>) || {})
       } as LegalDocument,
       originalScore: row.similarity,
-      relevanceReason: `pgvector; similarity: ${(row.similarity * 100).toFixed(1)}%`,
+      relevanceReason: `pgvector;, similarity: ${(row.similarity * 100).toFixed(1)}%`,
       source: 'pgvector' as const
     }));
   }
@@ -401,7 +401,7 @@ export class UnifiedRAGService {
         ...item.payload
       } as LegalDocument,
       originalScore: item.score,
-      relevanceReason: `Qdrant; similarity: ${(item.score * 100).toFixed(1)}%`,
+      relevanceReason: `Qdrant;, similarity: ${(item.score * 100).toFixed(1)}%`,
       source: 'qdrant' as const
     }));
   }
@@ -484,7 +484,7 @@ export class UnifiedRAGService {
     return results
       .map((result) => {
         let score = result.originalScore || 0;
-        const reasons: string[] = [`Base; similarity: ${(score * 100).toFixed(1)}%`];
+        const reasons: string[] = [`Base;, similarity: ${(score * 100).toFixed(1)}%`];
 
         // Legal precedent bonus
         if (result.document.entities?.caseReferences && result.document.entities.caseReferences.length > 0) {
@@ -693,7 +693,7 @@ export class UnifiedRAGService {
   /**
    * Fetch MCP Context7 documentation
    */
-  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string; content: string }>> {
+  private async fetchMCPDocs(libraries: string[]): Promise<Array<{ libraryName: string;, content: string }>> {
     try {
       const response = await fetch(`${this.mcpUrl}/mcp/docs`, {
         method: 'POST',
@@ -791,7 +791,7 @@ export class UnifiedRAGService {
 }
 
 // Export singleton factory
-let unifiedRAGInstance: UnifiedRAGService | null = null;
+let, unifiedRAGInstance: UnifiedRAGService | null = null;
 
 export async function getUnifiedRAG(config?: UnifiedRAGConfig): Promise<UnifiedRAGService> {
   if (!unifiedRAGInstance && config) {

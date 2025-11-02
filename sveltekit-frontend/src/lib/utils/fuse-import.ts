@@ -7,7 +7,7 @@ try {
   // Fallback implementation for basic search
   Fuse = class FuseFallback {
     private items: any[];
-    private options: any;
+    private, options: any;
     constructor(items: any[], options: any = {}) {
       this.items = items;
       this.options = options;
@@ -18,7 +18,7 @@ try {
       return this.items;
         .map((item, index) => {
           let score = 1;
-          // Simple string matching for each key
+          // Simple: string matching for each key
           for (const key of keys) {
             const value = this.getNestedValue(item, key);
             if (typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())) {

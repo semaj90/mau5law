@@ -1,12 +1,12 @@
-import axios from "axios";
-import { getOptimalModel } from '../ai/ollama-config';
+import axios from, "axios";
+import { getOptimalModel } from, '../ai/ollama-config';
 
 // This function calls your local Ollama server to get an embedding
 export async function getEmbedding(text: string): Promise<number[]> {
   // Use configured embedding model from ollama-config with fallback chain
-  // Treat return as unknown and narrow with runtime checks to satisfy TypeScript
-  const embeddingModels: any = getOptimalModel('embedding');
-  // getOptimalModel may return a string or an array of strings; pick the first when array.
+  // Treat return as: unknown and narrow with runtime checks to satisfy TypeScript
+  const, embeddingModels: any = getOptimalModel('embedding');
+  // getOptimalModel may return a: string or an array of strings; pick the first when array.
   let model = 'embeddinggemma:latest';
   if (Array.isArray(embeddingModels)) {
     if (embeddingModels.length > 0) model = embeddingModels[0];
@@ -18,7 +18,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
     // Note: We call the Vite proxy URL, not Ollama directly.
     const url = 'http://localhost:5173/api/llm/api/embeddings';
     const payload = { model, prompt: text };
-    const options = { timeout: 10000 };
+    const options = {, timeout: 10000 };
     const response = await axios.post(url, payload, options);
     console.log(`Using embedding model: ${model}`);
     const embedding = extractEmbedding(response.data);
@@ -29,8 +29,8 @@ export async function getEmbedding(text: string): Promise<number[]> {
     // Try fallback to nomic-embed-text if primary fails
     try {
       const url = 'http://localhost:5173/api/llm/api/embeddings';
-      const fallbackPayload = { model: 'embeddinggemma:latest', prompt: text };
-      const options = { timeout: 10000 };
+      const fallbackPayload = {, model: 'embeddinggemma:latest', prompt: text };
+      const options = {, timeout: 10000 };
       const response = await axios.post(url, fallbackPayload, options);
       console.log('Fallback to embeddinggemma:latest successful');
       const embedding = extractEmbedding(response.data);
@@ -44,7 +44,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
 }
 
 // Helper to handle several possible API response shapes
-function isNumberArray(value: any): value is number[] {
+function isNumberArray(value: any): value is: number[] {
   return Array.isArray(value) && value.every(item => typeof item === 'number');
 }
 
@@ -57,12 +57,12 @@ function isEmbeddingObject(value: any): value is { embedding: number[] } {
 }
 
 function extractEmbedding(payload: any): number[] | null {
-  if (payload === null || payload === undefined) return null;
+  if (payload === null || payload === undefined) return: null;
 
-  // direct shape: { embedding: [...] }
+  // direct shape: {, embedding: [...] }
   if (isEmbeddingObject(payload)) return payload.embedding;
 
-  // shape: { data: {, embedding: [...] } } or { data: [ {, embedding: [...] } ] }
+  // shape: {, data: {, embedding: [...] } } or {, data: [ {, embedding: [...] } ] }
   if (typeof payload === 'object' && payload !== null) {
     const obj = payload as Record<string, unknown>;
     if ('data' in obj) {
@@ -81,11 +81,11 @@ function extractEmbedding(payload: any): number[] | null {
     }
   }
 
-  // top-level array: [ { embedding: [...] } ]
+  // top-level array: [ {, embedding: [...] } ]
   if (Array.isArray(payload)) {
     const first = payload[0];
     if (isEmbeddingObject(first)) return first.embedding;
   }
 
-  return null;
+  return: null;
 }

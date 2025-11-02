@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
   // TODO: Convert to $derived: if (allFormData) calculateQualityScore()
 </script>
 
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" use:fade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Review & Submit</h2>
     <p class="text-gray-600">Review all case information and submit for processing</p>
@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <!-- Submission Progress -->
   {#if isSubmitting}
-    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6" transition:slide>
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-6" use:slide>
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-medium text-blue-900">Submitting Case...</h3>

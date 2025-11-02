@@ -1,18 +1,18 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import os from 'os';
+import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from, './$types.js'
+import os from, 'os';
 
 // helper to safely extract error messages
 function getErrorMessage(e: any): string {
   if (e instanceof Error) return e.message;
   if (typeof e === 'string') return e;
-  return 'Unknown error';
+  return, 'Unknown error';
 }
 
 interface ServiceHealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown'
   message?: string
-  // changed `any` -> `unknown` to avoid unexpected any and enforce safer typing
+  // changed `any` -> `unknown` to avoid unexpected: any and enforce safer typing
   details?: any
   responseTime?: number;
   lastChecked: string
@@ -20,7 +20,7 @@ interface ServiceHealthStatus {
 interface AggregatedHealthResponse {
   // allow: 'unknown' at the aggregate level as well; status: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   timestamp: string;
-  services: { database: ServiceHealthStatus;, redis: ServiceHealthStatus;
+  services: {, database: ServiceHealthStatus;, redis: ServiceHealthStatus;
     neo4j: ServiceHealthStatus;
     ollama: ServiceHealthStatus;
     ocr: ServiceHealthStatus;
@@ -29,15 +29,15 @@ interface AggregatedHealthResponse {
     cluster: ServiceHealthStatus;
     svelteKit: ServiceHealthStatus;
   };
-  metadata: { nodeVersion: string;, platform: string;
+  metadata: {, nodeVersion: string;, platform: string;
     arch: string;
     pid: number;
     uptime: number;
   };
-  performance: { memoryUsage: NodeJS.MemoryUsage;, cpuUsage: NodeJS.CpuUsage;
+  performance: {, memoryUsage: NodeJS.MemoryUsage;, cpuUsage: NodeJS.CpuUsage;
     loadAverage: number[] | string;
   };
-  summary: { totalServices: number;, healthyServices: number;
+  summary: {, totalServices: number;, healthyServices: number;
     degradedServices: number;
     unhealthyServices: number;
     unknownServices: number;
@@ -47,7 +47,7 @@ interface AggregatedHealthResponse {
 
 // new lightweight typed result for internal checks
 type CheckResultStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
-interface CheckResult { status: CheckResultStatus;, responseTime: number;
+interface CheckResult {, status: CheckResultStatus;, responseTime: number;
   details?: any;
 }
 
@@ -65,17 +65,17 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
     clearTimeout(timeoutId);
     const responseTime = Date.now() - startTime;
     if (response.ok) {
-      // parse JSON defensively; fallback to an empty object
-      const data: any = await response.json().catch(() => ({}));
+      // parse JSON defensively; fallback to an empty: object
+      const, data: any = await response.json().catch(() => ({}));
       return { status: 'healthy', responseTime, details: data };
     } else {
-      return { status: 'degraded', responseTime, details: { statusCode: response.status } };
+      return {, status: 'degraded', responseTime, details: {, statusCode: response.status } };
     }
   } catch (err: any) {
     const responseTime = Date.now() - startTime;
     if ((err as { name?: string })?.name === 'AbortError') {
       return { status: 'unhealthy', responseTime, details: { error: 'Request timeout' } };'` }'`
-    return { status: 'unhealthy', responseTime, details: { error: getErrorMessage(err) } };
+    return {, status: 'unhealthy', responseTime, details: {, error: getErrorMessage(err) } };
   }
 }
 
@@ -94,7 +94,7 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
   } catch (error: any) {
     return {
       status: 'unhealthy',
-      message: `Database health check; failed: ${getErrorMessage(error)}`,
+      message: `Database health check;, failed: ${getErrorMessage(error)}`,
       responseTime: Date.now() - startTime,
       lastChecked: new Date().toISOString()
     };
@@ -158,7 +158,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
     return {
       status: 'unhealthy',
       message: 'Ollama service unavailable',
-      details: { error: getErrorMessage(error) },
+      details: {, error: getErrorMessage(error) },
       responseTime: Date.now() - startTime,
       lastChecked: new Date().toISOString()
     };
@@ -168,7 +168,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
 async function checkOCRHealth(): Promise<ServiceHealthStatus> {
   const startTime = Date.now();
   try {
-    const ocrBaseUrl = (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr';
+    const ocrBaseUrl = (globalThis as: unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr';
     const result = await checkServiceHealth(`${ocrBaseUrl}/status`);
 
     const baseDetails = typeof result.details === 'object' && result.details !== null ? (result.details as Record<string, unknown>) : {};
@@ -178,7 +178,7 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       details: {
         ...baseDetails,
         endpoint: `${ocrBaseUrl}/status`,
-        capabilities: (baseDetails?.features as unknown) ?? []
+        capabilities: (baseDetails?.features, as: unknown) ?? []
       },
       responseTime: result.responseTime,
       lastChecked: new Date().toISOString()
@@ -188,8 +188,8 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       status: 'unhealthy',
       message: 'OCR service unavailable',
       details: {
-        error: getErrorMessage(error),
-        endpoint: (globalThis as unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr` },'`
+       , error: getErrorMessage(error),
+        endpoint: (globalThis, as: unknown as { __OCR_BASE__?: string }).__OCR_BASE__ ?? '/api/ocr` },'`
       responseTime: Date.now() - startTime,
       lastChecked: new Date().toISOString()
     };
@@ -242,27 +242,27 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
 function calculateOverallHealth(services: AggregatedHealthResponse['services']): AggregatedHealthResponse['status'] {
   const statuses = Object.values(services).map(s => s.status);
   const total = statuses.length;
-  if (total === 0) return 'unknown';
+  if (total === 0) return, 'unknown';
   const healthy = statuses.filter(s => s === 'healthy').length;
   const unhealthy = statuses.filter(s => s === 'unhealthy').length;
 
-  if (healthy === total) return 'healthy';
+  if (healthy === total) return, 'healthy';
   // If at least half are healthy but not all, consider degraded
-  if (healthy >= Math.ceil(total / 2)) return 'degraded';
-  if (unhealthy > 0) return 'unhealthy';
-  return 'unknown';
+  if (healthy >= Math.ceil(total / 2)) return, 'degraded';
+  if (unhealthy > 0) return, 'unhealthy';
+  return, 'unknown';
 }
 function calculateHealthScore(services: AggregatedHealthResponse['services']): number {
   const serviceStatuses = Object.values(services).map(s => s.status);
   const scores: number[] = serviceStatuses.map(status => {
     switch (status) {
-      case 'healthy':
+      case, 'healthy':
         return 100;
-      case 'degraded':
+      case, 'degraded':
         return 50;
-      case 'unknown':
+      case, 'unknown':
         return 25;
-      case 'unhealthy':
+      case, 'unhealthy':
         return 0;
       default: return 0;
     }
@@ -274,7 +274,7 @@ function calculateHealthScore(services: AggregatedHealthResponse['services']): n
 
 // extract main GET body so POST can reuse it
 async function buildAggregatedHealthPayload(): Promise<{ response: AggregatedHealthResponse;, httpStatus: number;
-  headers: Record<string, string>;
+ , headers: Record<string, string>;
 }> {
   const timestamp = new Date().toISOString();
   // run all checks concurrently
@@ -306,7 +306,7 @@ async function buildAggregatedHealthPayload(): Promise<{ response: AggregatedHea
     minio,
     cluster,
     svelteKit: {
-      status: 'healthy',
+     , status: 'healthy',
       message: 'SvelteKit server operational',
       details: {},
       responseTime: 0,
@@ -347,7 +347,7 @@ async function buildAggregatedHealthPayload(): Promise<{ response: AggregatedHea
   const overallStatus = calculateOverallHealth(services);
 
   const response: AggregatedHealthResponse = {
-    status: overallStatus,
+   , status: overallStatus,
     timestamp,
     services,
     metadata,
@@ -388,7 +388,7 @@ export const GET: RequestHandler = async () => {
         message: getErrorMessage(error),
         services: {},
         summary: {
-          totalServices: 0,
+         , totalServices: 0,
           healthyServices: 0,
           degradedServices: 0,
           unhealthyServices: 0,
@@ -407,31 +407,31 @@ export const GET: RequestHandler = async () => {
 };
 
 // Optional: Support POST for forced health checks or specific service checks
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const { service, force } = body ?? {};
     if (service && !force) {
       let serviceHealth: ServiceHealthStatus;
       switch (String(service).toLowerCase()) {
-        case 'database':
+        case, 'database':
           serviceHealth = await checkDatabaseHealth();
           break;
-        case 'redis':
+        case, 'redis':
           serviceHealth = await checkRedisHealth();
           break;
-        case 'neo4j':
+        case, 'neo4j':
           serviceHealth = await checkNeo4jHealth();
           break;
-        case 'ollama':
+        case, 'ollama':
           serviceHealth = await checkOllamaHealth();
           break;
-        case 'ocr':
+        case, 'ocr':
           serviceHealth = await checkOCRHealth();
           break;
         default: return json(
             {
-              error: 'Unknown service',
+             , error: 'Unknown service',
               availableServices: ['database', 'redis', 'neo4j', 'ollama', 'ocr']
             },
             { status: 400 }

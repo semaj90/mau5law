@@ -8,8 +8,8 @@
  * - Device capability detection
  * - Memory and CPU optimization
  */
-import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types.js';
-import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants-minimal.js';
+import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from, '../types/gaming-types.js';
+import { N64_TEXTURE_PRESETS } from, '../constants/gaming-constants-minimal.js';
 interface DeviceCapabilities {
   memory: number; // GB,
   cores: number;
@@ -27,7 +27,7 @@ export class GamingEvolutionManager {
   private config: ProgressiveGamingConfig;
   private performanceObserver: PerformanceObserver | null = null;
   private frameMetrics: number[] = [];
-  private listeners: Set<(state: GamingThemeState) => void> = new Set();
+  private, listeners: Set<(state: GamingThemeState) => void> = new Set();
   private boundHandleDeviceChange: () => void;
   private constructor(config: Partial<ProgressiveGamingConfig> = {}) {
     // sensible defaults; cast because config shape may be larger in project
@@ -37,12 +37,12 @@ export class GamingEvolutionManager {
       performanceThreshold: 16.67, // 60fps in milliseconds
       // optional nested settings kept minimal to satisfy usage
       nesSettings: {
-        strictPalette: true,
+       , strictPalette: true,
         enableScanlines: true,
         pixelScale: 2
       },
       snesSettings: {
-        enableGradients: true,
+       , enableGradients: true,
         enableModeViitColors: true,
         layerCount: 4
       },
@@ -54,12 +54,12 @@ export class GamingEvolutionManager {
       yorhaIntegration: true,
       bitsUICompatibility: true,
       ...config
-    } as unknown as ProgressiveGamingConfig;
+    } as: unknown as ProgressiveGamingConfig;
     // initialize currentState with safe defaults
     // only accept configured default eras that are known; avoid comparing against unrelated literals
     const allowedEras = ['8bit', '16bit', 'n64'] as const;
     const initialEra =
-      typeof this.config.defaultEra === 'string' && allowedEras.includes(this.config.defaultEra as any)
+      typeof this.config.defaultEra === 'string' && allowedEras.includes(this.config.defaultEra as: any)
         ? (this.config.defaultEra as GamingEra)
         : '8bit';
     this.currentState = {
@@ -70,7 +70,7 @@ export class GamingEvolutionManager {
       transitionDuration: 300,
       performanceLevel: 'medium',
       colorPalette: {
-        background: ['#0F0F0F', '#1A1A1A', '#2F2F2F'],
+       , background: ['#0F0F0F', '#1A1A1A', '#2F2F2F'],
         sprites: ['#FFFFFF', '#CCCCCC', '#999999'],
         ui: ['#4A90E2', '#357ABD', '#2E6DA4']
       },
@@ -104,7 +104,7 @@ export class GamingEvolutionManager {
     // memory pressure monitoring if available
     try {
       // performance.memory is non-standard; guard access
-      const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
+      const perfAny = performance as: unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
       if (perfAny && typeof perfAny.memory !== 'undefined') {
         this.monitorMemoryPressure();
       }
@@ -121,12 +121,12 @@ export class GamingEvolutionManager {
     };
     const nav = navigator as NavigatorEx;
     const capabilities: DeviceCapabilities = {
-      memory: typeof nav.deviceMemory === 'number' ? nav.deviceMemory : 4,
+     , memory: typeof nav.deviceMemory === 'number' ? nav.deviceMemory : 4,
       cores: typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 2,
       gpu: await this.detectGPUCapability(),
       connection: this.detectConnectionSpeed(),
       screenSize: {
-        width: window.innerWidth,
+       , width: window.innerWidth,
         height: window.innerHeight
       },
       pixelRatio: window.devicePixelRatio || 1,
@@ -142,20 +142,20 @@ export class GamingEvolutionManager {
       const canvas = document.createElement('canvas');
       const gl = (canvas.getContext('webgl') ||
         canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
-      if (!gl) return 'basic';
+      if (!gl) return, 'basic';
       const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      if (!debugInfo) return 'integrated';
-      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) as unknown;
+      if (!debugInfo) return, 'integrated';
+      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) as: unknown;
       if (typeof renderer === 'string') {
         const r = renderer.toLowerCase();
         if (r.includes('nvidia') || r.includes('amd') || r.includes('radeon') || r.includes('geforce')) {
-          return 'discrete';
+          return, 'discrete';
         }
-        return 'integrated';
+        return, 'integrated';
       }
-      return 'integrated';
+      return, 'integrated';
     } catch {
-      return 'unknown';
+      return, 'unknown';
     }
   }
   private detectConnectionSpeed(): DeviceCapabilities['connection'] {
@@ -170,7 +170,7 @@ export class GamingEvolutionManager {
     } catch {
       // fallthrough
     }
-    return 'unknown';
+    return, 'unknown';
   }
   private hasWebGL(): boolean {
     try {
@@ -217,7 +217,7 @@ export class GamingEvolutionManager {
   private monitorMemoryPressure(): void {
     const checkMemory = () => {
       try {
-        const perfAny = performance as unknown as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } };
+        const perfAny = performance as: unknown as { memory?: { usedJSHeapSize: number;, jsHeapSizeLimit: number } };
         const memory = perfAny.memory;
         if (!memory) return;
         const memoryRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
@@ -250,9 +250,9 @@ export class GamingEvolutionManager {
   }
   private getPerformanceLevel(frameTime: number): GamingThemeState['performanceLevel'] {
     const threshold = this.config.performanceThreshold ?? 16.67;
-    if (frameTime > threshold * 2) return 'low';
-    if (frameTime > threshold) return 'medium';
-    return 'high';
+    if (frameTime > threshold * 2) return, 'low';
+    if (frameTime > threshold) return, 'medium';
+    return, 'high';
   }
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
     this.currentState = {
@@ -274,18 +274,18 @@ export class GamingEvolutionManager {
     this.notifyListeners();
   }
   private determineOptimalEra(): GamingEra {
-    if (!this.capabilities) return '8bit';
+    if (!this.capabilities) return, '8bit';
     const { memory, cores, gpu, webgl, webgpu } = this.capabilities;
     // N64 requirements: Good GPU, WebGL, 4GB+ memory
     if (webgpu || (webgl && gpu !== 'basic' && memory >= 4 && cores >= 4)) {
-      return 'n64';
+      return, 'n64';
     }
     // SNES requirements: Moderate specs
     if (memory >= 2 && cores >= 2) {
-      return '16bit';
+      return, '16bit';
     }
     // NES: Universal fallback
-    return '8bit';
+    return, '8bit';
   }
   public async setEra(era: GamingEra): Promise<void> {
     if (era === this.currentState.currentEra) return;

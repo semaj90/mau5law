@@ -162,7 +162,7 @@
 <div class="tag-list" class:readonly>
   <div class="tag-container">
     {#each _tags as tag (tag)}
-      <div class="tag" transition:scale>
+      <div class="tag" use:scale>
         <span class="tag-text">{tag}</span>
         {#if !readonly}
           <button

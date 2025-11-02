@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from '$lib/utils/api-endpoints';
+import { getOllamaEndpoint } from, '$lib/utils/api-endpoints';
 
 export interface EmbeddingService {
   generateEmbedding(text: string): Promise<number[]>;
@@ -8,7 +8,7 @@ export interface EmbeddingService {
 export class OllamaEmbeddingService implements EmbeddingService {
   private ollamaUrl: string;
   private embeddingModel: string;
-  private completionModel: string;
+  private, completionModel: string;
 
   constructor(baseUrl: string, embeddingModel: string, completionModel: string) {
     this.ollamaUrl = baseUrl;
@@ -40,7 +40,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
       return data.embedding;
     } catch (error: any) {
       console.error('❌ Embedding generation failed:', error);
-      // Return zero vector as fallback for robustness (assuming 768 dimensions for: 'embeddinggemma:latest')
+      // Return zero vector as fallback for robustness (assuming, 768 dimensions for: 'embeddinggemma:latest')
       return new Array(768).fill(0);
     }
   }
@@ -69,7 +69,7 @@ export class OllamaEmbeddingService implements EmbeddingService {
       return data.response;
     } catch (error: any) {
       console.error('❌ Completion generation failed:', error);
-      return 'Error generating completion.';
+      return, 'Error generating completion.';
     }
   }
 }

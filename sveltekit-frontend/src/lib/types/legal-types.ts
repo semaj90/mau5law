@@ -1,9 +1,9 @@
-import type { SearchResult } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { SearchResult } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 // Legal AI System Type Definitions - Extended for Evidence and Case Management
-export * from './legal';
+export * from, './legal';
 // Additional Evidence Types
 export interface Evidence { id: string;, title: string;
   description?: string;
@@ -25,7 +25,7 @@ export interface Evidence { id: string;, title: string;
   isProcessed: boolean;
   processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
 }
-export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
+export interface ChainOfCustodyEntry {, id: string;, evidenceId: string;
   action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'accessed';
   performedBy: string;
   timestamp: Date;
@@ -33,7 +33,7 @@ export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
   notes?: string;
   signature?: string;
 }
-export interface AIAnalysis { id: string;, evidenceId: string;
+export interface AIAnalysis {, id: string;, evidenceId: string;
   analysisType: 'content_extraction' | 'sentiment_analysis' | 'entity_recognition' | 'classification' | 'similarity';
   results: { [key: string]: any };
   confidence: number;
@@ -43,7 +43,7 @@ export interface AIAnalysis { id: string;, evidenceId: string;
   analyzedAt: Date;
 }
 // Extended Legal Document Interface
-export interface LegalDocument { id: string;, title: string;
+export interface LegalDocument {, id: string;, title: string;
   fullText?: string; // Complete document content
   content: string; // Processed/summarized content
   summary?: string;
@@ -67,7 +67,7 @@ export interface LegalDocument { id: string;, title: string;
   lastModified?: Date;
   createdAt: Date;
   updatedAt: Date;
-  confidentialityLevel: number;
+ , confidentialityLevel: number;
   tags?: string[];
   topics?: string[];
   jurisdiction?: string;
@@ -77,7 +77,7 @@ export interface LegalDocument { id: string;, title: string;
   embeddings?: number[]; // Vector embeddings for search
 }
 // Enhanced Case Interface
-export interface Case { id: string;, caseNumber: string;
+export interface Case {, id: string;, caseNumber: string;
   title: string;
   description?: string;
   status: 'active' | 'pending' | 'closed' | 'archived';
@@ -98,14 +98,14 @@ export interface Case { id: string;, caseNumber: string;
   tags?: string[];
 }
 // API Response Types
-export interface DocumentSearchResult { id: string;, title: string;
+export interface DocumentSearchResult {, id: string;, title: string;
   excerpt: string;
   relevanceScore: number;
   documentType: string;
   caseId?: string;
   lastModified: Date;
 }
-export interface EvidenceSearchResult { id: string;, title: string;
+export interface EvidenceSearchResult {, id: string;, title: string;
   description?: string;
   evidenceType: string;
   caseId: string;
@@ -122,10 +122,10 @@ export interface VectorSearchOptions {
   documentType?: string;
   evidenceType?: string;
 }
-export interface VectorSearchResult { id: string;, score: number;
+export interface VectorSearchResult {, id: string;, score: number;
   content: string;
   metadata: { [key: string]: any };
-  type: 'document' | 'evidence' | 'case';
+ , type: 'document' | 'evidence' | 'case';
 }
 // Export commonly used types from legal.ts
 export type {
@@ -141,4 +141,4 @@ export type {
   SearchQuery,
   SearchResult,
   ApiResponse
-} from './legal';
+} from, './legal';

@@ -1,12 +1,12 @@
-import { json } from '@sveltejs/kit'
-import type { RequestEvent } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit'
+import type { RequestEvent } from, '@sveltejs/kit';
 // Import all our AI suggestion services
-import { testOllamaIntegration } from '$lib/services/ollama-suggestions-service';
-import { testEnhancedRAGIntegration } from '$lib/services/enhanced-rag-suggestions-service';
-import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client';
-import { pgvectorHealthCheck } from '$lib/server/db/pgvector-utils';
-import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced';
-import dbHealthCheck from '$lib/server/db/index';
+import { testOllamaIntegration } from, '$lib/services/ollama-suggestions-service';
+import { testEnhancedRAGIntegration } from, '$lib/services/enhanced-rag-suggestions-service';
+import { aiSuggestionsClient } from, '$lib/services/ai-suggestions-grpc-client';
+import { pgvectorHealthCheck } from, '$lib/server/db/pgvector-utils';
+import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced';
+import dbHealthCheck from, '$lib/server/db/index';
 
 export interface IntegrationTestResult { service: string;, status: 'pass' | 'fail' | 'warning';
   message: string;
@@ -24,7 +24,7 @@ interface OllamaTestResult {
 }
 
 interface EnhancedRAGTestResult {
-  success: boolean;
+ , success: boolean;
   serviceAvailable?: boolean;
   version?: string;
   testSuggestion?: string;
@@ -41,7 +41,7 @@ export const GET = async (_event: RequestEvent): Promise<Response> => {
   const testResults: IntegrationTestResult[] = [];
   const testContent =
     'The defendant was found with stolen evidence. We need to analyze the chain of custody and prepare charges for prosecution.';
-  // Test 1: Database Connection
+  // Test, 1: Database Connection
   testResults.push(await testDatabaseConnection());
   // Test 2: pgvector Integration
   testResults.push(await testPgVectorIntegration());
@@ -161,7 +161,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
         status: 'pass',
         message: `Generated ${embedding.length}-dimensional embedding`,
         details: {
-          dimensions: embedding.length,
+         , dimensions: embedding.length,
           sampleValues: embedding.slice(0, 5),
           provider: 'nomic-embed'
         },
@@ -198,7 +198,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         status: 'pass',
         message: 'Ollama service operational with model ${typedResult.model || 'unknown` }`,
         details: {
-          model: typedResult.model || 'unknown',
+         , model: typedResult.model || 'unknown',
           availableModels: typedResult.availableModels,
           testSuggestion: typedResult.testSuggestion
         },
@@ -236,7 +236,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
         status: 'pass',
         message: 'Enhanced RAG service operational',
         details: {
-          serviceAvailable: typedResult.serviceAvailable,
+         , serviceAvailable: typedResult.serviceAvailable,
           version: typedResult.version,
           testSuggestion: typedResult.testSuggestion,
           responseTime: typedResult.responseTime
@@ -319,7 +319,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         status: 'pass',
         message: `API returned ${result?.suggestions?.length || 0} suggestions`,
         details: {
-          suggestionsCount: result?.suggestions?.length || 0,
+         , suggestionsCount: result?.suggestions?.length || 0,
           confidence: result?.confidence,
           servicesUsed: result?.servicesUsed
         },
@@ -356,7 +356,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
         status: 'pass',
         message: 'Streaming API is operational',
         details: {
-          contentType: response.headers.get('content-type'),
+         , contentType: response.headers.get('content-type'),
           status: response.status
         },
         responseTime
@@ -383,14 +383,14 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
     // Test GET endpoint (should require userId)
     const response = await fetch('/api/ai/suggestions/rate');
     const responseTime = Date.now() - startTime;
-    // Should return 400 for missing userId
+    // Should return, 400 for missing userId
     if (response.status === 400) {
       return {
         service: 'Rating API',
         status: 'pass',
         message: 'Rating API is operational (validation working)',
         details: {
-          status: response.status,
+         , status: response.status,
           validation: `userId parameter required` },
         responseTime
       };
@@ -399,7 +399,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         service: 'Rating API',
         status: 'warning',
         message: 'Rating API responded unexpectedly',
-        details: { status: response.status },
+        details: {, status: response.status },
         responseTime
       };
     }
@@ -456,7 +456,7 @@ function generateRecommendations(results: IntegrationTestResult[]): string[] {
   // Specific recommendations
   const dbTest = results.find(r => r.service === 'Database Connection');
   if (dbTest?.status === 'fail') {
-    recommendations.push('Database connection failed - check PostgreSQL service and connection string');
+    recommendations.push('Database connection failed - check PostgreSQL service and connection: string');
   }
   const pgVectorTest = results.find(r => r.service === 'pgvector Integration');
   if (pgVectorTest?.status === 'fail') {

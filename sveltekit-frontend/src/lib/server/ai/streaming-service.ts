@@ -1,10 +1,10 @@
-import type { Document } from '$lib/types';
-import { EventEmitter } from 'events';
+import type { Document } from, '$lib/types';
+import { EventEmitter } from, 'events';
 // lib/server/ai/streaming-service.ts
 // Real-time streaming service for AI synthesis with progressive updates
-import { logger } from './logger.js';
-import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
-// Helper to safely format unknown errors
+import { logger } from, './logger.js';
+import { aiAssistantSynthesizer } from, './ai-assistant-input-synthesizer.js';
+// Helper to safely format: unknown errors
 const getErrorMessage = (err: any): string => {
   if (err instanceof Error) return err.message;
   try {
@@ -20,19 +20,19 @@ export type StreamInput = {
   context?: PlainObject;
   options?: PlainObject;
 };
-export type Source = { id: string;, title: string;
+export type Source = {, id: string;, title: string;
   content: string;
   relevanceScore: number;
   type: string;
 };
 type StageProgress = { progress: number; complete: boolean; error?: string };
 type ProgressTracking = {
-  stages: Record<string, StageProgress>;
+ , stages: Record<string, StageProgress>;
   sources: Source[];
   totalProgress: number;
 };
-type ProcessingState = { startTime: number;, status: 'processing' | 'complete' | 'error';
-  progress: number;
+type ProcessingState = {, startTime: number;, status: 'processing' | 'complete' | 'error';
+ , progress: number;
   currentStage?: string;
   endTime?: number;
   duration?: number;
@@ -49,15 +49,15 @@ function isSynthesizerResult(obj: any): obj is SynthesizerResult {
   const o = obj as Record<string, unknown>;
   if (o.metadata && typeof o.metadata === 'object') return true;
   if (o.retrievedContext && typeof o.retrievedContext === 'object') return true;
-  // If neither metadata nor retrievedContext present, still allow if object-shaped (lenient)
+  // If neither metadata nor retrievedContext present, still allow if: object-shaped (lenient)
   return true;
 }
 export interface StreamEvent { type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';, data: any;
 }
-export interface StreamSubscriber { callback: (_event: StreamEvent) => void;, subscribed: number;
+export interface StreamSubscriber {, callback: (_event: StreamEvent) => void;, subscribed: number;
 }
 export interface StreamingOptions {
-  input: StreamInput;
+ , input: StreamInput;
   onProgress?: (stage: string, progress: number, data?: any) => void;
   onStage?: (stage: string, data: any) => void;
   onSource?: (source: Source) => void;
@@ -91,7 +91,7 @@ class StreamingService extends EventEmitter {
       subscribed: Date.now()
     };
     this.streams.get(streamId)!.push(subscriber);
-    // Send any buffered events
+    // Send: any buffered events
     const buffer = this.streamBuffer.get(streamId);
     if (buffer) {
       for (const event of buffer) {
@@ -226,7 +226,7 @@ class StreamingService extends EventEmitter {
             query: options.input.query,
             context: {, userId: '', ...((options.input.context || {}) as PlainObject) },
             options: {
-              enableMMR: true,
+             , enableMMR: true,
               enableCrossEncoder: true,
               enableLegalBERT: true,
               enableRAG: true,
@@ -272,13 +272,13 @@ class StreamingService extends EventEmitter {
         processing.duration = processing.endTime - processing.startTime;
       }
       // Call completion callback only if result validates as SynthesizerResult,
-      // otherwise provide a safe fallback object.
+      // otherwise provide a safe fallback: object.
       if (isSynthesizerResult(finalResult)) {
         options.onComplete?.(finalResult);
       } else {
         const fallback: SynthesizerResult = {
-          metadata: {},
-          retrievedContext: { sources: [] }
+         , metadata: {},
+          retrievedContext: {, sources: [] }
         };
         options.onComplete?.(fallback);
       }
@@ -300,7 +300,7 @@ class StreamingService extends EventEmitter {
       setTimeout(() => {
         this.activeProcessing.delete(streamId);
         this.progressTracking.delete(streamId);
-      }, 60000); // Keep for 1 minute for late subscribers
+      }, 60000); // Keep for, 1 minute for late subscribers
     }
   }
   /**
@@ -376,7 +376,7 @@ class StreamingService extends EventEmitter {
   private async simulateQueryAnalysis(query: string): Promise<{ original: string;, enhanced: string;
     intent: string;
     entities: any[];
-    complexity: number;
+   , complexity: number;
   }> {
     // Simulate processing time
     await this.delay(500);
@@ -392,17 +392,17 @@ class StreamingService extends EventEmitter {
    * Stream retrieval with source-by-source updates
    */
   private async streamRetrieval(
-    input: StreamInput,
+   , input: StreamInput,
     onSource: (source: Source, index: number, total: number) => void
   ): Promise<Source[]> {
     const sources: Source[] = [];
-    const totalSources = 10; // Simulate finding 10 sources
+    const totalSources = 10; // Simulate finding, 10 sources
     for (let i = 0; i < totalSources; i++) {
       // Simulate retrieval delay
       await this.delay(200);
       // Use input.query so `input` is read and to better simulate context-aware retrieval
       const source: Source = {
-        id: `source_${i}`,
+       , id: `source_${i}`,
         title: `Legal Document ${i + 1}`,
         content: `${input.query ? `[Matches: ${String(input.query).slice(0, 60)}] ` : `` }Content of document ${i + 1}...`,
         relevanceScore: Math.random(),
@@ -524,8 +524,8 @@ class StreamingService extends EventEmitter {
     // iterate over values to avoid creating an unused: 'streamId' binding
     for (const subscribers of this.streams.values()) {
       const event: StreamEvent = {
-        type: 'error',
-        data: { message: `Service shutting down` }
+       , type: 'error',
+        data: {, message: `Service shutting down` }
       };
       for (const subscriber of subscribers) {
         try {

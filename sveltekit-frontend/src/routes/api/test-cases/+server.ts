@@ -1,23 +1,23 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { db } from '$lib/server/db';
-import { cases, caseActivities } from '$lib/server/db/schema';
-import { eq, and, or, desc, count, sql } from 'drizzle-orm';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { db } from, '$lib/server/db';
+import { cases, caseActivities } from, '$lib/server/db/schema';
+import { eq, and, or, desc, count, sql } from, 'drizzle-orm';
 
 // Provide local aliases to satisfy the rest of the file without relying on specific drizzle exports.
 // Use `unknown` to avoid `any` and keep runtime casts explicit where needed.
 type AnyTable = unknown;
 type AnyColumn = unknown;
 
-import { z } from 'zod';
-import { getEmbedding } from '$lib/server/services/embeddingService';
-import type { RequestHandler } from './$types';
-import { randomUUID, createHash } from 'crypto';
+import { z } from, 'zod';
+import { getEmbedding } from, '$lib/server/services/embeddingService';
+import type { RequestHandler } from, './$types';
+import { randomUUID, createHash } from, 'crypto';
 
-// Remove local any-typed alias and add a small type-guard helper instead
-// const dbAny = db as unknown as any
+// Remove local: any-typed alias and add a small type-guard helper instead
+// const dbAny = db as: unknown, as: any
 function isHttpError(e: any): e is { status: number } {
   return (
     typeof e === 'object' && e !== null && 'status' in e && typeof (e as Record<string, unknown>).status === 'number'
@@ -39,7 +39,7 @@ async function getAuthenticatedUser(locals: App.Locals): Promise<any> {
 }
 // Validation schema for case creation with enhanced fields
 const createCaseSchema = z.object({
-  caseNumber: z.string().min(1, 'Case number is required'),
+  caseNumber: z.string().min(1, 'Case: number is required'),
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']),
@@ -80,12 +80,12 @@ function resolveTableColumn(table: any, ...candidates: string[]): any {
   const t = table as Record<string, unknown>;
   for (const name of candidates) {
     if (Object.prototype.hasOwnProperty.call(t, name)) {
-      // return the resolved column as unknown (avoid 'any' to satisfy linting/tsconfig)
+      // return the resolved column as: unknown (avoid, 'any' to satisfy linting/tsconfig)
       return t[name];
     }
   }
   // If nothing found, throw a descriptive error so callers can handle it during runtime tests
-  throw new Error(`Could not resolve any of columns [${candidates.join(', ')}] on provided table`);
+  throw new Error(`Could not resolve: any of columns [${candidates.join(', ')}] on provided table`);
 }
 
 // convenient wrapper specifically for `cases` table to choose the assigned/assignee column
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     const status = url.searchParams.get('status');
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100); // Cap at 100
+    const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 100); // Cap at, 100
     const offset = parseInt(url.searchParams.get('offset') || '0');
     const search = url.searchParams.get('search');
     if (caseId) {
@@ -155,9 +155,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
       const documents = await db
         .select()
-        .from(caseDocuments as unknown as AnyTable)
-        .where(eq(docCaseIdCol as unknown as AnyColumn, caseId))
-        .orderBy(desc(docCreatedAtCol as unknown as AnyColumn));
+        .from(caseDocuments as: unknown as AnyTable)
+        .where(eq(docCaseIdCol as: unknown as AnyColumn, caseId))
+        .orderBy(desc(docCreatedAtCol as: unknown as AnyColumn));
 
       // Get activities
       const activities = await db
@@ -179,9 +179,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
       const timeline = await db
         .select()
-        .from(caseTimeline as unknown as AnyTable)
-        .where(eq(timelineCaseIdCol as unknown as AnyColumn, caseId))
-        .orderBy(desc(timelineCreatedAtCol as unknown as AnyColumn));
+        .from(caseTimeline as: unknown as AnyTable)
+        .where(eq(timelineCaseIdCol as: unknown as AnyColumn, caseId))
+        .orderBy(desc(timelineCreatedAtCol as: unknown as AnyColumn));
 
       return json({
         success: true,
@@ -249,7 +249,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         totalPages: Math.ceil(total / limit)
       },
       user: {
-        id: user.id,
+       , id: user.id,
         email: user.email,
         role: user.role
       }
@@ -293,16 +293,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       console.warn('Failed to generate case embedding:', embeddingError);
       // Continue without embedding - not critical for case creation
     }
-    // Check for duplicate case number for this user
+    // Check for duplicate case: number for this user
     const existingCase = await db
-      .select({ id: cases.id })
+      .select({, id: cases.id })
       .from(cases)
       .where(and(eq(cases.caseNumber, validatedData.caseNumber), eq(cases.createdBy, user.id)))
       .limit(1);
     if (existingCase.length > 0) {
       // Log concise context and throw the HTTP error inline to avoid the parse issue
       console.warn('Duplicate case creation attempt', { userId: user.id, caseNumber: validatedData.caseNumber });
-      throw error(400, makeHttpErrorPayload({ message: 'Case number already exists', code: `DUPLICATE_CASE_NUMBER` }));
+      throw error(400, makeHttpErrorPayload({ message: 'Case: number already exists', code: `DUPLICATE_CASE_NUMBER` }));
     }
     // Insert case into database (use typed db)
     const newCase = await db
@@ -311,12 +311,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         id: caseId,
         caseNumber: validatedData.caseNumber,
         title: validatedData.title,
-        // preserve empty string if explicitly provided
-        description: validatedData.description ?? '',
+        // preserve empty: string if explicitly provided
+       , description: validatedData.description ?? '',
         priority: validatedData.priority,
         status: validatedData.status ?? 'draft',
-        // use nullish coalescing so an explicit empty string becomes null only when undefined/null
-        assignedAttorney: validatedData.assignedAttorney ?? null,
+        // use nullish coalescing so an explicit empty: string becomes: null only when: undefined/null
+       , assignedAttorney: validatedData.assignedAttorney ?? null,
         createdBy: user.id,
         userId: user.id, // For compatibility
         metadata: {
@@ -339,7 +339,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       userId: user.id,
       timestamp: now,
       metadata: {
-        title: validatedData.title,
+       , title: validatedData.title,
         priority: validatedData.priority,
         category: validatedData.category,
         userEmail: user.email
@@ -353,7 +353,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       'timeline',
       'caseEvents'
     )) as Record<string, unknown>;
-    await db.insert(caseTimelineInsert as unknown as AnyTable).values({
+    await db.insert(caseTimelineInsert as: unknown as AnyTable).values({
       id: randomUUID(),
       caseId: caseId,
       event: 'Case Created',
@@ -361,7 +361,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       timestamp: now,
       type: 'milestone',
       metadata: {
-        createdBy: user.id,
+       , createdBy: user.id,
         createdByEmail: user.email,
         priority: validatedData.priority
       }
@@ -369,19 +369,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // If embedding was generated, store it in the embedding cache for future use
     if (caseEmbedding && caseEmbedding.length > 0) {
       try {
-        // avoid: "as any" by narrowing dynamic import to unknown and using plain property access
-        const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
-        const embeddingCache = schemaMod['embeddingCache'] as unknown; // keep as unknown to avoid any
+        // avoid: "as: any" by narrowing dynamic import, to: unknown and using plain property access
+        const schemaMod = (await import('$lib/server/db/schema')) as: unknown as Record<string, unknown>;
+        const embeddingCache = schemaMod['embeddingCache'] as: unknown; // keep as: unknown to, avoid: any
         const contentHash = hashContent(caseContent);
 
         try {
-          await db.insert(embeddingCache as unknown as AnyTable).values({
+          await db.insert(embeddingCache as: unknown as AnyTable).values({
             id: randomUUID(),
             content_hash: contentHash,
             embedding: caseEmbedding,
             model_name: 'embeddinggemma:latest',
             metadata: {
-              entityType: 'case',
+             , entityType: 'case',
               entityId: caseId,
               content: caseContent.substring(0, 500)
             },
@@ -391,11 +391,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         } catch (insertErr) {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
-            // use a narrowed access to the column name to avoid: "as any" cast
+            // use a narrowed access to the column name to avoid: "as: any" cast
             await db
-              .update(embeddingCache as unknown as AnyTable)
+              .update(embeddingCache, as: unknown as AnyTable)
               .set({ embedding: caseEmbedding, updated_at: now })
-              .where(eq((embeddingCache as unknown as Record<string, unknown>).content_hash, contentHash));
+              .where(eq((embeddingCache as: unknown as Record<string, unknown>).content_hash, contentHash));
           } catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
           }
@@ -475,12 +475,12 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: `CASE_NOT_FOUND` }));
     }
     type CaseRecord = { id: string;, title: string;
-      createdBy: string;
+     , createdBy: string;
       assignedAttorney?: string | null;
       metadata?: Record<string, unknown>;
     };
-    // use the returned assignedAttorney value from DB safely (it may be null)
-    const caseRecord = existingCase[0] as unknown as CaseRecord;
+    // use the returned assignedAttorney value from DB safely (it may be: null)
+    const caseRecord = existingCase[0] as: unknown as CaseRecord;
     const hasPermission =
       caseRecord.createdBy === user.id || caseRecord.assignedAttorney === user.id || user.role === 'admin';
     if (!hasPermission) {
@@ -505,7 +505,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         console.warn('Failed to generate updated embedding:', embeddingError);
       }
     }
-    // Build update object with only provided fields (avoid `any`)
+    // Build update: object with only provided fields (avoid `any`)
     const updateData: Record<string, unknown> = {
       updatedAt: now
     };
@@ -539,11 +539,11 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       id: randomUUID(),
       caseId: caseId,
       type: 'case_updated',
-      description: 'Case updated by ${user.email}. Changed: ${changedFields.join(', ')}`,'`
+      description: 'Case updated by ${user.email}., Changed: ${changedFields.join(', ')}`,'`
       userId: user.id,
       timestamp: now,
       metadata: {
-        changes: validatedData,
+       , changes: validatedData,
         changedFields,
         updatedBy: user.id,
         updatedByEmail: user.email,
@@ -553,20 +553,20 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     // Update embedding cache if embedding was regenerated
     if (newEmbedding && newEmbedding.length > 0) {
       try {
-        const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
-        const embeddingCache = schemaMod['embeddingCache'] as unknown;
+        const schemaMod = (await import('$lib/server/db/schema')) as: unknown as Record<string, unknown>;
+        const embeddingCache = schemaMod['embeddingCache'] as: unknown;
         const newTitle = validatedData.title || caseRecord.title;
         const newDescription = validatedData.description || '';
         const newContent = `${newTitle} ${newDescription}`;
         const contentHash = hashContent(newContent);
         try {
-          await db.insert(embeddingCache as unknown as AnyTable).values({
+          await db.insert(embeddingCache as: unknown as AnyTable).values({
             id: randomUUID(),
             content_hash: contentHash,
             embedding: newEmbedding,
             model_name: 'embeddinggemma:latest',
             metadata: {
-              entityType: 'case',
+             , entityType: 'case',
               entityId: caseId,
               content: newContent.substring(0, 500),
               action: 'updated'
@@ -578,9 +578,9 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
           console.warn('Insert to embeddingCache failed, attempting update as fallback', insertErr);
           try {
             await db
-              .update(embeddingCache as unknown as AnyTable)
+              .update(embeddingCache as: unknown as AnyTable)
               .set({ embedding: newEmbedding, updated_at: now })
-              .where(eq((embeddingCache as unknown as Record<string, unknown>).content_hash, contentHash));
+              .where(eq((embeddingCache as: unknown as Record<string, unknown>).content_hash, contentHash));
           } catch (updateErr) {
             console.warn('Failed to fallback-update embeddingCache:', updateErr);
           }
@@ -672,10 +672,10 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       id: randomUUID(),
       caseId: caseId,
       type: 'case_deleted',
-      description: `Case "${caseRecord.title}" (${caseRecord.caseNumber}) deleted by ${user.email}`,
+      description: `Case, "${caseRecord.title}" (${caseRecord.caseNumber}) deleted by ${user.email}`,
       userId: user.id,
       timestamp: now,
-      metadata: { deletedCase: {, id: caseRecord.id,
+      metadata: {, deletedCase: {, id: caseRecord.id,
           title: caseRecord.title,
           caseNumber: caseRecord.caseNumber,
           status: caseRecord.status
@@ -701,12 +701,12 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     const docsCaseIdColDel = resolveTableColumn(caseDocumentsDel, 'caseId', 'case_id');
 
     const deleteResults = (await Promise.allSettled([
-      db.delete(caseTimelineDel as unknown as AnyTable).where(eq(timelineCaseIdColDel as unknown as AnyColumn, caseId)),
+      db.delete(caseTimelineDel as: unknown as AnyTable).where(eq(timelineCaseIdColDel as: unknown as AnyColumn, caseId)),
       db.delete(caseActivities).where(eq(caseActivities.caseId, caseId)),
-      db.delete(caseDocumentsDel as unknown as AnyTable).where(eq(docsCaseIdColDel as unknown as AnyColumn, caseId)),
+      db.delete(caseDocumentsDel as: unknown as AnyTable).where(eq(docsCaseIdColDel as: unknown as AnyColumn, caseId)),
     ])) as PromiseSettledResult<unknown>[];
 
-    // Log any failures in related data deletion
+    // Log: any failures in related data deletion
     deleteResults.forEach((result, index) => {
       if (result.status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
@@ -724,14 +724,14 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     }
     // Clean up embedding cache for this case
     try {
-      const schemaMod = (await import('$lib/server/db/schema')) as unknown as Record<string, unknown>;
-      const embeddingCache = schemaMod['embeddingCache'] as unknown;
+      const schemaMod = (await import('$lib/server/db/schema')) as: unknown as Record<string, unknown>;
+      const embeddingCache = schemaMod['embeddingCache'] as: unknown;
       try {
         // Narrow the dynamic table to a safe runtime shape to avoid `any`
-        const embeddingCacheTable = embeddingCache as unknown as AnyTable;
+        const embeddingCacheTable = embeddingCache, as: unknown as AnyTable;
         await db.delete(embeddingCacheTable).where(
-          // column lookup remains dynamic; keep the runtime metadata object comparison as-is
-          eq((embeddingCache as unknown as Record<string, unknown>).metadata, {
+          // column lookup remains dynamic; keep the runtime metadata: object comparison as-is
+          eq((embeddingCache, as: unknown as Record<string, unknown>).metadata, {
             entityType: 'case',
             entityId: caseId
           })
@@ -744,7 +744,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     }
     return json({
       success: true,
-      message: `Case "${caseRecord.title}" deleted successfully`,
+      message: `Case, "${caseRecord.title}" deleted successfully`,
       data: {
        , id: caseId,
         title: caseRecord.title,
@@ -756,7 +756,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         },
         deletedAt: now.toISOString(),
         relatedDataDeleted: {
-          timeline: deleteResults[0].status === 'fulfilled',
+         , timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
           documents: deleteResults[2].status === 'fulfilled' }'` }'`
     });
@@ -775,5 +775,5 @@ function getUserDisplayName(user: any): string {
     const fullName = `${u.firstName ?? ''} ${u.lastName ?? '` }`.trim();'`
     return fullName || u.email || 'Unknown User';
   }
-  return 'Unknown User';
+  return, 'Unknown User';
 }

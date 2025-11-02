@@ -2,7 +2,7 @@
  * Loki.js Enhanced Type Definitions
  * Fixes missing methods and type arguments for Loki.js integration
  */
-declare module 'lokijs' {
+declare module, 'lokijs' {
   interface LokiOptions {
     filename?: string;
     autoload?: boolean;
@@ -31,7 +31,7 @@ declare module 'lokijs' {
     };
     uniqueNames: string[];
     transforms: { [key: string]: any };
-    ttl: {
+   , ttl: {
       age?: number;
       ttlInterval?: number;
       daemon?: any;
@@ -81,7 +81,7 @@ declare module 'lokijs' {
     removeDynamicView(name: string): void;
   }
   interface Resultset<T = any> { collection: Collection<T>;, filteredrows: number[];
-    filterInitialized: boolean;
+   , filterInitialized: boolean;
     // Filtering
     find(): Resultset<T>;
     find(query: any): Resultset<T>;
@@ -121,7 +121,7 @@ declare module 'lokijs' {
     sortPriority: 'passive' | 'active';
     minRebuildInterval: number;
     resultdata: number[];
-    resultsdirty: boolean;
+   , resultsdirty: boolean;
     cachedresultset?: Resultset<T>;
     // Filtering
     applyFind(query: any): DynamicView<T>;
@@ -181,7 +181,7 @@ declare module 'lokijs' {
     // Static properties
     static LokiMemoryAdapter: typeof LokiMemoryAdapter;
     static LokiPartitioningAdapter: typeof LokiPartitioningAdapter;
-    static LokiCryptedFileAdapter: typeof LokiCryptedFileAdapter;
+    static, LokiCryptedFileAdapter: typeof LokiCryptedFileAdapter;
     constructor(filename?: string, options?: LokiOptions);
     // Collection management
     addCollection<T = any>(name: string, options?: any): Collection<T>;

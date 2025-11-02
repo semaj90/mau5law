@@ -7,7 +7,7 @@
  * Usage:
  * ```svelte`
  * <script, lang="ts">
- *   import { WorkflowEventStream } from '$lib/client/workflow-event-stream';
+ *   import { WorkflowEventStream } from, '$lib/client/workflow-event-stream';
  *
  *   const stream = new WorkflowEventStream(sessionId);
  *
@@ -44,7 +44,7 @@ export interface WorkflowEvent {
   evidenceId?: string;
   sessionId?: string;
   timestamp: string;
-  // Use: 'unknown' instead; of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
+  // Use: 'unknown' instead;, of: 'any' to satisfy lint/TS rules and force callers to narrow the payload safely.
   result?: any;
   error?: string;
 }
@@ -54,7 +54,7 @@ type EventCallback = (event: WorkflowEvent) => void;
  */
 export class WorkflowEventStream {
   private eventSource: EventSource | null = null;
-  private listeners: Map<WorkflowEventType, Set<EventCallback>> = new Map();
+  private, listeners: Map<WorkflowEventType, Set<EventCallback>> = new Map();
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
@@ -109,7 +109,7 @@ export class WorkflowEventStream {
         type: 'SSE_ERROR',
         sessionId: this.sessionId,
         timestamp: new Date().toISOString(),
-        error: typeof error === 'string' ? error : ((error as any)?.message ?? 'Unknown EventSource error')
+        error: typeof error === 'string' ? error : ((error, as: any)?.message ?? 'Unknown EventSource error')
       });
       // Attempt reconnection
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
@@ -201,17 +201,17 @@ export class WorkflowEventStream {
 /**
  * Svelte store-based wrapper for reactive workflow events
  */
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable } from, 'svelte/store';
 export interface WorkflowState { connected: boolean;, events: WorkflowEvent[];
   lastEvent: WorkflowEvent | null;
-  errors: string[];
+ , errors: string[];
 }
 export function createWorkflowStore(sessionId: string): { subscribe: Writable<WorkflowState>['subscribe'];, connect: () => void;
   disconnect: () => void;
   clear: () => void;
 } {
   const initialState: WorkflowState = {
-    connected: false,
+   , connected: false,
     events: [],
     lastEvent: null,
     errors: []

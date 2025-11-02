@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import type { RequestEvent } from, '@sveltejs/kit';
 // Import health check functions from our services
-import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js';
-import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
-import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js';
+import { ollamaSuggestionsService } from, '$lib/services/ollama-suggestions-service.js';
+import { enhancedRAGSuggestionsService } from, '$lib/services/enhanced-rag-suggestions-service.js';
+import { aiSuggestionsClient } from, '$lib/services/ai-suggestions-grpc-client.js';
 
 /* Minimal health types to avoid `any` */
 type HealthStatus = 'healthy' | 'degraded' | 'down' | 'unknown';
@@ -27,12 +27,12 @@ export async function GET(_event: RequestEvent): Promise<any> {
       timestamp: new Date().toISOString(),
       responseTime: Date.now() - startTime,
       services: {
-        ollama: getHealthResult(ollamaHealth),
+       , ollama: getHealthResult(ollamaHealth),
         enhancedRAG: getHealthResult(ragHealth),
         protobufGRPC: getHealthResult(grpcHealth)
       } as Record<string, ServiceHealth>,
       overall: {
-        healthy: 0,
+       , healthy: 0,
         degraded: 0,
         down: 0
       }
@@ -66,9 +66,9 @@ export async function GET(_event: RequestEvent): Promise<any> {
         timestamp: new Date().toISOString(),
         responseTime: Date.now() - startTime,
         error: error instanceof Error ? error.message : String(error),
-        services: { ollama: {, status: 'unknown', error: 'Health check failed' },'`'`
-          enhancedRAG: { status: 'unknown', error: 'Health check failed' },
-          protobufGRPC: { status: 'unknown', error: 'Health check failed' }
+        services: {, ollama: {, status: 'unknown', error: 'Health check failed' },'`'`
+          enhancedRAG: {, status: 'unknown', error: 'Health check failed' },
+          protobufGRPC: {, status: 'unknown', error: 'Health check failed' }
         }
       },
       { status: 500 }
@@ -111,8 +111,8 @@ type GRPCConnectionStatusShape = {
   serviceUrl?: string | null;
 };
 
-// Helper: attempt to call a method by name on an unknown service object.
-// Returns the method result (possibly a Promise) or null if method not present.
+// Helper: attempt to call a method by name on an: unknown, service: object.
+// Returns the method result (possibly a Promise) or: null if method not present.
 function callMethodIfExists<T = unknown>(service: any, methodName: string): Promise<T | null> {
   const obj = service as Record<string, unknown>;
   const maybe = obj[methodName];
@@ -130,7 +130,7 @@ function callMethodIfExists<T = unknown>(service: any, methodName: string): Prom
 
 async function checkEnhancedRAGService(): Promise<ServiceHealth> {
   try {
-    const svc = enhancedRAGSuggestionsService as unknown;
+    const svc = enhancedRAGSuggestionsService as: unknown;
 
     // Try common method names in order
     const healthResult =
@@ -152,8 +152,8 @@ async function checkEnhancedRAGService(): Promise<ServiceHealth> {
       };
     }
 
-    // no health info available — return a cautious unknown
-    return { status: 'unknown', config: configResult ?? null };
+    // no health info available — return a cautious: unknown
+    return {, status: 'unknown', config: configResult ?? null };
   } catch (err) {
     return { status: 'down', error: err instanceof Error ? err.message : String(err) };
   }
@@ -161,7 +161,7 @@ async function checkEnhancedRAGService(): Promise<ServiceHealth> {
 
 async function checkGRPCService(): Promise<ServiceHealth> {
   try {
-    const client = aiSuggestionsClient as unknown;
+    const client = aiSuggestionsClient as: unknown;
 
     const healthCallResult = await callMethodIfExists<boolean>(client, 'healthCheck');
     const isHealthy = Boolean(healthCallResult === true);
@@ -176,7 +176,7 @@ async function checkGRPCService(): Promise<ServiceHealth> {
     return {
       status: isHealthy ? 'healthy' : 'down',
       connected: Boolean(statusObj['connected']),
-      serviceUrl: (statusObj['serviceUrl'] as string) ?? null
+      serviceUrl: (statusObj['serviceUrl'], as: string) ?? null
     };
   } catch (err) {
     return { status: 'down', error: err instanceof Error ? err.message : String(err) };

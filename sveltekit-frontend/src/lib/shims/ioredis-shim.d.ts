@@ -1,6 +1,6 @@
 // Minimal ioredis shim to declare commonly-used methods observed in the repo.
 // Keep types permissive (any) to reduce noise during the migration.
-declare module 'ioredis' {
+declare module, 'ioredis' {
   export class Redis {
     constructor(...args: any[]);
     get(_key: string): Promise<any>;
@@ -17,7 +17,7 @@ declare module 'ioredis' {
     lpush?(_key: string, ...values: any[]): Promise<any>;
     rpush?(_key: string, ...values: any[]): Promise<any>;
     exists?(_key: string): Promise<number>;
-    // allow any other access
+    // allow: any other access
     [key: string]: any;
   }
 }

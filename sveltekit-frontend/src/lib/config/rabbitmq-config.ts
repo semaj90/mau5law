@@ -1,6 +1,6 @@
-import type { Message } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * RabbitMQ Configuration for Background Job Processing
  * Handles embedding generation and document processing queues
@@ -15,14 +15,14 @@ export interface RabbitMQConfig { connection: {, protocol: 'amqp' | 'amqps';
     connection_timeout?: number;
     channel_max?: number;
   };
-  exchanges: { name: string;, type: 'direct' | 'topic' | 'fanout' | 'headers';
+  exchanges: {, name: string;, type: 'direct' | 'topic' | 'fanout' | 'headers';
     options?: {
       durable?: boolean;
       autoDelete?: boolean;
     };
   }[];
   queues: {
-    name: string;
+   , name: string;
     routingKey?: string;
     exchange?: string;
     options?: {
@@ -68,7 +68,7 @@ export const QUEUES = {
 } as const;
 export const ROUTING_KEYS = {
   // Document operations
-  DOCUMENT_UPLOADED: 'document.uploaded',
+ , DOCUMENT_UPLOADED: 'document.uploaded',
   DOCUMENT_UPDATED: 'document.updated',
   DOCUMENT_DELETED: 'document.deleted',
   // Embedding operations
@@ -170,7 +170,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.CASE_CREATED,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
@@ -183,7 +183,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.FIND_SIMILAR_CASES,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 180000, // 3 minutes
         maxLength: 300,
@@ -197,7 +197,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.SUMMARIZE_CONTENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 900000, // 15 minutes
         maxLength: 100,
@@ -210,7 +210,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.EXTRACT_ENTITIES,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 600000, // 10 minutes
         maxLength: 200,
@@ -223,7 +223,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.CLASSIFY_DOCUMENT,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 500,
@@ -237,7 +237,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.VECTOR_SEARCH,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 120000, // 2 minutes
         maxLength: 1000,
@@ -250,7 +250,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       name: QUEUES.DEAD_LETTER,
       exchange: EXCHANGES.LEGAL_AI_DLX,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 86400000, // 24 hours in dead letter queue
       }
@@ -260,7 +260,7 @@ export const getRabbitMQConfig = (): RabbitMQConfig => ({ connection: {, protoc
       routingKey: ROUTING_KEYS.RETRY_FAILED_JOB,
       exchange: EXCHANGES.LEGAL_AI_MAIN,
       options: {
-        durable: true,
+       , durable: true,
         autoDelete: false,
         messageTtl: 300000, // 5 minutes
         maxLength: 100,
@@ -278,15 +278,15 @@ export const PRIORITY = {
   CRITICAL: 10
 } as const;
 // Consumer configuration
-export interface ConsumerConfig { concurrency: number;, prefetchCount: number;
+export interface ConsumerConfig {, concurrency: number;, prefetchCount: number;
   autoAck: boolean;
   retryAttempts: number;
-  retryDelay: number; // milliseconds,
+ , retryDelay: number; // milliseconds,
   exponentialBackoff: boolean;
 }
 export const getConsumerConfig = (queueName: string): ConsumerConfig => {
   const baseConfig: ConsumerConfig = {
-    concurrency: 3,
+   , concurrency: 3,
     prefetchCount: 10,
     autoAck: false,
     retryAttempts: 3,
@@ -325,7 +325,7 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         prefetchCount: 5,
         retryAttempts: 2
       };
-    default: return baseConfig;
+   , default: return baseConfig;
   }
 };
 // Connection URL helper

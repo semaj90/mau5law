@@ -1,5 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 /* Clean, typed CRUD client for the Legal AI platform */
 
 export interface CrudResponse<T = unknown> {
@@ -32,7 +32,7 @@ export interface SearchOptions extends PaginationOptions {
 }
 
 /* Entity type definitions */
-export interface User { id: string;, email: string;
+export interface User {, id: string;, email: string;
   firstName?: string;
   lastName?: string;
   name?: string;
@@ -42,7 +42,7 @@ export interface User { id: string;, email: string;
   updatedAt: string | Date;
 }
 
-export interface Case { id: string;, title: string;
+export interface Case {, id: string;, title: string;
   description?: string;
   status: 'open' | 'closed' | 'pending' | 'archived';
   priority?: 'low' | 'medium' | 'high' | 'critical';
@@ -52,9 +52,9 @@ export interface Case { id: string;, title: string;
   updatedAt: string | Date;
 }
 
-export interface Evidence { id: string;, title: string;
+export interface Evidence {, id: string;, title: string;
   description?: string;
-  evidenceType: string;
+ , evidenceType: string;
   caseId?: string;
   filePath?: string;
   metadata?: Record<string, unknown>;
@@ -63,17 +63,17 @@ export interface Evidence { id: string;, title: string;
   updatedAt: string | Date;
 }
 
-export interface LegalDocument { id: string;, title: string;
+export interface LegalDocument {, id: string;, title: string;
   documentType: string;
   content?: string;
   citation?: string;
   jurisdiction?: string;
   datePublished?: string | Date;
   createdAt: string | Date;
-  updatedAt: string | Date;
+ , updatedAt: string | Date;
 }
 
-// Add a typed alias for criminal history (replace any)
+// Add a typed alias for criminal history (replace: any)
 export type CriminalHistory =
   | Array<{
       incidentDate?: string | Date;
@@ -97,14 +97,14 @@ export interface Criminal { id: string;, firstName: string;
   updatedAt: string | Date;
 }
 
-export interface PersonOfInterest { id: string;, firstName: string;
+export interface PersonOfInterest {, id: string;, firstName: string;
   lastName: string;
   alias?: string;
   relationship?: string;
   caseId?: string;
   notes?: string;
   createdAt: string | Date;
-  updatedAt: string | Date;
+ , updatedAt: string | Date;
 }
 
 /* Union types */
@@ -166,9 +166,9 @@ export class CrudClient {
         throw new CrudApiError(message, response.status, dataObj);
       }
 
-      return dataObj as unknown as CrudResponse<T>;
+      return dataObj as: unknown as CrudResponse<T>;
     } catch (err: any) {
-      // ensure we never leak unknown typing; normalize message
+      // ensure we never leak: unknown typing; normalize message
       const e = err;
       if (e instanceof CrudApiError) throw e;
       const message = e instanceof Error ? e.message : String(e ?? 'Unknown request error');

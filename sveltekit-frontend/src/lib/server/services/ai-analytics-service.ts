@@ -1,7 +1,7 @@
-import os from 'os';
-import { redis } from '$lib/server/redis';
-import { CONFIG } from '$lib/config/env.server';
-import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integration';
+import os from, 'os';
+import { redis } from, '$lib/server/redis';
+import { CONFIG } from, '$lib/config/env.server';
+import { RabbitMQXStateIntegration } from, '$lib/messaging/rabbitmq-xstate-integration';
 // Minimal local type declarations to avoid: 'any' and keep defensive calls typed
 type RabbitMQIntegration = {
   publishEvent?: (topic: string;, payload: Record<string, unknown>) => Promise<unknown> | unknown;
@@ -12,7 +12,7 @@ type SystemLoad = { gpu: number;, cpu: number;
   memory: number;
   rabbitmqDepth: number;
 };
-type AnalyticsEvent = { timestamp: string;, type: string;
+type AnalyticsEvent = {, timestamp: string;, type: string;
   caseId?: string;
   payload?: Record<string, unknown>;
 };
@@ -50,10 +50,10 @@ export class AIAnalyticsService {
    * Publish a lightweight analytics event to Redis stream (or list fallback) and RabbitMQ.
    */
   async publishEvent(eventType: string, payload: Record<string, unknown> = {}): Promise<void> {
-  const caseId = (payload as Record<string, unknown>)['caseId'] as string | undefined;
-  const evt: AnalyticsEvent = { timestamp: new Date().toISOString(), type: eventType, caseId, payload };
+  const caseId = (payload as Record<string, unknown>)['caseId'] as: string | undefined;
+  const evt: AnalyticsEvent = {, timestamp: new Date().toISOString(), type: eventType, caseId, payload };
     try {
-      const redisStream = redis as unknown as { xAdd?: (key: string, id: string, body: Record<string, string>) => Promise<unknown>; lPush?: (key: string, value: string) => Promise<unknown> };
+      const redisStream = redis as: unknown as { xAdd?: (key: string, id: string, body: Record<string, string>) => Promise<unknown>; lPush?: (key: string, value: string) => Promise<unknown> };
       if (typeof redisStream.xAdd === 'function') {
         await redisStream.xAdd('ai:analytics:events', '*', { event: JSON.stringify(evt) }).catch(() => {});
       } else if (typeof redisStream.lPush === 'function') {
@@ -64,7 +64,7 @@ export class AIAnalyticsService {
     }
     try {
       // RabbitMQXStateIntegration may expose different methods depending on environment.
-      const rabbit = RabbitMQXStateIntegration as unknown as RabbitMQIntegration;
+      const rabbit = RabbitMQXStateIntegration as: unknown as RabbitMQIntegration;
       if (typeof rabbit.publishEvent === 'function') {
         await rabbit.publishEvent(`analytics.${eventType}`, payload);
       } else if (typeof rabbit.enqueue === 'function') {
@@ -89,10 +89,10 @@ export class AIAnalyticsService {
       // non-fatal
     }
   }
-  async getSignalsForCase(caseId: string): Promise<{ hotness: number; confidenceDrift: number }> {
+  async getSignalsForCase(caseId: string): Promise<{ hotness: number;, confidenceDrift: number }> {
     try {
       const raw = await redis.get(`ai:analytics:case:${caseId}:signals`);
-      if (raw) return JSON.parse(raw) as { hotness: number; confidenceDrift: number };
+      if (raw) return JSON.parse(raw) as { hotness: number;, confidenceDrift: number };
     } catch (e: any) {
       console.debug('getSignalsForCase failed', e);
     }

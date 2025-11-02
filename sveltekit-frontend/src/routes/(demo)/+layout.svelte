@@ -1,7 +1,7 @@
 <!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
-  import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import type { Snippet } from, 'svelte';
+  import { page } from, '$app/stores';
 
   interface Props {
     data?: any;
@@ -86,7 +86,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--nier-bg-primary);
+   , background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
   }
 
@@ -111,12 +111,12 @@
   .demo-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--nier-accent-warm);
+   , color: var(--nier-accent-warm);
     margin: 0;
   }
 
   .demo-badge {
-    background: var(--nier-accent-warm);
+   , background: var(--nier-accent-warm);
     color: var(--nier-bg-primary);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
@@ -136,10 +136,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    border: 1px solid var(--nier-border-primary);
+   , border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--nier-text-secondary);
+   , color: var(--nier-text-secondary);
     background: var(--nier-bg-primary);
     transition: all 0.2s ease;
   }
@@ -168,7 +168,7 @@
   .demo-content {
     flex: 1;
     overflow-y: auto;
-    background: var(--nier-bg-primary);
+   , background: var(--nier-bg-primary);
   }
 
   .demo-container {
@@ -181,13 +181,13 @@
   .demo-placeholder {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--nier-bg-secondary);
+   , background: var(--nier-bg-secondary);
     border: 2px dashed var(--nier-border-muted);
     border-radius: 1rem;
   }
 
   .demo-placeholder h2 {
-    color: var(--nier-accent-warm);
+   , color: var(--nier-accent-warm);
     margin-bottom: 1rem;
   }
 
@@ -212,7 +212,7 @@
     align-items: center;
     gap: 1rem;
     font-size: 0.9rem;
-    color: var(--nier-text-muted);
+   , color: var(--nier-text-muted);
   }
 
   .demo-current strong {
@@ -222,16 +222,16 @@
 
   .demo-controls {
     display: flex;
-    gap: 1rem;
+   , gap: 1rem;
   }
 
   .demo-home-btn,
   .demo-main-btn {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--nier-border-primary);
+   , border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
     text-decoration: none;
-    color: var(--nier-text-primary);
+   , color: var(--nier-text-primary);
     background: var(--nier-bg-primary);
     transition: all 0.2s ease;
     font-size: 0.9rem;
@@ -266,16 +266,16 @@
   }
 
   .demo-content::-webkit-scrollbar-track {
-    background: var(--nier-bg-tertiary);
+   , background: var(--nier-bg-tertiary);
   }
 
   .demo-content::-webkit-scrollbar-thumb {
-    background: var(--nier-accent-warm);
+   , background: var(--nier-accent-warm);
     border-radius: 4px;
   }
 
   .demo-content::-webkit-scrollbar-thumb:hover {
-    background: var(--nier-accent-cool);
+   , background: var(--nier-accent-cool);
   }
 </style>
 

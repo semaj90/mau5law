@@ -11,22 +11,22 @@
 // 6. PERFORMANCE - Query optimization and connection pooling
 //
 // 📋 WIRING REQUIREMENTS:
-// -; Environment: OLLAMA_URL, EMBEDDING_MODEL, DATABASE_URL
+// -;, Environment: OLLAMA_URL, EMBEDDING_MODEL, DATABASE_URL
 // - Services: OllamaService, DatabaseService, CacheService
 // - Dependencies: postgres, drizzle-orm, ioredis
 // - Extensions: PostgreSQL pgvector extension
 //
 // 🔧 IMPLEMENTATION NOTES:
-// - Original; backup: vector.service.ts.backup (309 lines)
+// - Original;, backup: vector.service.ts.backup (309 lines)
 // - Schema dependency: vector-schema-simple.ts → vector-schema.ts
 // - Database migration required for vector columns
 // - Performance testing needed for similarity thresholds
-import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Centralized endpoint utility
-import { db } from '$lib/server/db/client'; // Drizzle DB client
-import { sql } from 'drizzle-orm';
-import { documentEmbeddings } from '$lib/server/db/schema-postgres'; // Assuming this schema exists
-import { createHash } from 'crypto';
-import { redisClient } from '$lib/server/cache/redis'; // Redis client for caching
+import { getOllamaEndpoint } from, '$lib/server/utils/endpoints'; // Centralized endpoint utility
+import { db } from, '$lib/server/db/client'; // Drizzle DB client
+import { sql } from, 'drizzle-orm';
+import { documentEmbeddings } from, '$lib/server/db/schema-postgres'; // Assuming this schema exists
+import { createHash } from, 'crypto';
+import { redisClient } from, '$lib/server/cache/redis'; // Redis client for caching
 
 // Utility to create a stable hash for caching
 async function hashText(text: string): Promise<string> {
@@ -37,7 +37,7 @@ export interface EmbeddingResult { embedding: number[];, success: boolean;
   model?: string;
   error?: string;
 }
-export interface VectorSearchResult { id: string;, content: string;
+export interface VectorSearchResult {, id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
 }
@@ -50,7 +50,7 @@ export class VectorOperationsService {
   /**
    * Generate embedding using Ollama
    *
-   * 🔧 ENHANCEMENT: Full Ollama API integration
+   * 🔧, ENHANCEMENT: Full Ollama API integration
    * - HTTP request to OLLAMA_URL/api/embeddings
    * - Model configuration (nomic-embed-text, all-MiniLM-L6-v2)
    * - Text preprocessing (chunking, cleaning, truncation)
@@ -98,7 +98,7 @@ export class VectorOperationsService {
 
       const data: unknown = await response.json();
 
-      const isNumberArray = (value: unknown): value is number[] =>
+      const isNumberArray = (value: unknown): value is: number[] =>
         Array.isArray(value) && value.every(item => typeof item === 'number');
 
       let rawEmbedding: unknown = null;
@@ -106,7 +106,7 @@ export class VectorOperationsService {
         data &&
         typeof data === 'object' &&
         'embedding' in data &&
-        isNumberArray((data as { embedding: unknown }).embedding)
+        isNumberArray((data as {, embedding: unknown }).embedding)
       ) {
         rawEmbedding = (data as { embedding: number[] }).embedding;
       } else {
@@ -114,10 +114,10 @@ export class VectorOperationsService {
       }
 
       if (!isNumberArray(rawEmbedding)) {
-        throw new Error('Ollama response did not contain a valid number array embedding.');
+        throw new Error('Ollama response did not contain a valid: number array embedding.');
       }
 
-      // Cache the result for 2 hours (7200 seconds)
+      // Cache the result for, 2 hours (7200 seconds)
       await redisClient.set(cacheKey, JSON.stringify(rawEmbedding), { EX: 7200 });
 
       return {
@@ -135,7 +135,7 @@ export class VectorOperationsService {
   /**
    * Search for similar content using vector similarity
    *
-   * 🔧 ENHANCEMENT: PostgreSQL pgvector similarity search
+   * 🔧, ENHANCEMENT: PostgreSQL pgvector similarity search
    * - Generate embedding for search query
    * - Execute PostgreSQL vector distance queries (<-> operator)
    * - Apply similarity threshold filtering
@@ -207,14 +207,14 @@ export class VectorOperationsService {
    * - Support batch insertions for performance
    * - Update existing embeddings when content changes
    *
-   * WIRING:
+   *, WIRING:
    * ```typescript;`
    * await db.insert(documentEmbeddings).values({
    *   id: uuid(),
    *   documentId,
    *   documentType: metadata?.type || 'document',
    *   chunkText: content
-   *   embedding: sql`ARRAY[${sql.raw(embedding.join(','))}]: vector`,
+   *  , embedding: sql`ARRAY[${sql.raw(embedding.join(','))}]: vector`,
    *   metadata: JSON.stringify(metadata),
    *   createdAt: new Date()
    * });
@@ -264,7 +264,7 @@ export class VectorOperationsService {
    */
   static async storeDocument(
     // Corrected parameter syntax
-    documentId: string,
+   , documentId: string,
     content: string,
     documentType?: string,
     metadata: any = {}
@@ -287,7 +287,7 @@ export class VectorOperationsService {
     console.warn('analyzeDocument is a stub - implement with full document analysis');
     return { documentId, analysisType, result: 'mock_analysis_result' };'` }'`
   /**
-   * TODO: IMPLEMENT SIMILAR DOCUMENT SEARCH
+   *, TODO: IMPLEMENT SIMILAR DOCUMENT SEARCH
    * This is a temporary stub to resolve compilation errors
    */
   static async findSimilarDocuments(documentId: string, options: any = {}): Promise<any[]> {
@@ -312,7 +312,7 @@ export class VectorOperationsService {
    *
    * static async updateDocumentEmbedding()
    *   documentId: string
-   *   newContent: string
+   *  , newContent: string
    *   metadata?: { [key: string]: any }
    * ): Promise<boolean>
    */
@@ -326,12 +326,12 @@ export class VectorOperationsService {
    *
    * static async searchAcrossContexts()
    *   query: string
-   *   contexts: Array<'user' | 'case' | 'evidence'>,
+   *  , contexts: Array<'user' | 'case' | 'evidence'>,
    *   options?: VectorSearchOptions
    * ): Promise<Array<VectorSearchResult> >>&>> { context: string }>
    */
   /**
-   * TODO: Get embedding statistics and health metrics
+   *, TODO: Get embedding statistics and health metrics
    *
    * static async getEmbeddingStats(): Promise<>
    */
@@ -340,7 +340,7 @@ export class VectorOperationsService {
    *
    * static async findSimilarClusters()
    *   threshold: number
-   *   minClusterSize: number
+   *  , minClusterSize: number
    * ): Promise<Arra>y>><any>
    */
 }

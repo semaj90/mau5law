@@ -1,4 +1,4 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /// <reference, types="vite/client" />
 
 import {
@@ -6,29 +6,29 @@ import {
   getJobStatus,
   getQueueStats,
   type DocumentProcessingJobData
-} from '$lib/services/queue-service';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit'; // Import json helper
+} from, '$lib/services/queue-service';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit'; // Import json helper
 // Types for Go server integration (kept for compatibility)
 export interface DocumentProcessRequest { document_id: string;, content: string;
   document_type: string;
   case_id?: string;
   options: ProcessingOptions;
 }
-export interface ProcessingOptions { extract_entities: boolean;, generate_summary: boolean;
+export interface ProcessingOptions {, extract_entities: boolean;, generate_summary: boolean;
   assess_risk: boolean;
   generate_embedding: boolean;
   store_in_database: boolean;
   use_gemma3_legal: boolean;
 }
 // Define a more specific type for the Go server's response to /process-document'
-export interface GoProcessDocumentResponse { success: boolean;, document_id: string;
+export interface GoProcessDocumentResponse {, success: boolean;, document_id: string;
   summary?: string;
   entities?: LegalEntity[];
   risk_assessment?: RiskAssessment;
   embedding?: number[];
   processing_time: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   error?: string;
 }
 export interface DocumentProcessResponse { success: boolean;, document_id: string;
@@ -37,7 +37,7 @@ export interface DocumentProcessResponse { success: boolean;, document_id: stri
   risk_assessment?: RiskAssessment;
   embedding?: number[];
   processing_time: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   error?: string;
 }
 export interface LegalEntity { type: string;, value: string;
@@ -45,7 +45,7 @@ export interface LegalEntity { type: string;, value: string;
   start_pos: number;
   end_pos: number;
 }
-export interface RiskAssessment { overall_risk: string;, risk_score: number;
+export interface RiskAssessment {, overall_risk: string;, risk_score: number;
   risk_factors: string[];
   recommendations: string[];
   confidence: number;
@@ -65,7 +65,7 @@ const USE_QUEUE = import.meta.env.USE_QUEUE !== 'false'; // Enable by default
  * Process document through BullMQ worker system
  * Integrates with Go Legal AI Server via queue workers
  */
-export const POST: RequestHandler = async ({ request, url }) => {
+export const, POST: RequestHandler = async ({ request, url }) => {
   try {
     const body = await request.json();
     // Check if this is a job status check
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json(status);
       } catch (error: any) {
         // Changed: 'any'; to: 'unknown'
-        console.error('❌ Error checking job status:', error);
+        console.error('❌ Error checking job, status:', error);
         return json(
           {
             error: 'Failed to check job status',
@@ -93,13 +93,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const documentId = body.document_id || `doc_${Date.now()}`;
     // Prepare job data
     const jobData: DocumentProcessingJobData = {
-      documentId: documentId,
+     , documentId: documentId,
       content: body.content,
       documentType: body.document_type || 'evidence',
       caseId: body.case_id,
       filePath: body.file_path,
       options: {
-        extractEntities: body.extract_entities ?? true,
+       , extractEntities: body.extract_entities ?? true,
         generateSummary: body.generate_summary ?? true,
         assessRisk: body.assess_risk ?? true,
         generateEmbedding: body.generate_embedding ?? true,
@@ -107,13 +107,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         useGemma3Legal: body.use_gemma3_legal ?? true
       }
     };
-    console.log(`🔄 Queuing document for processing: ${documentId}`);
+    console.log(`🔄 Queuing document for, processing: ${documentId}`);
     if (USE_QUEUE) {
       try {
         // Add job to queue
         const priority = body.priority || 0;
         // NOTE: The type definition for queueDocumentProcessing in $lib/services/queue-service.ts
-        // likely expects 0 arguments, but the intent here is to pass jobData and priority.
+        // likely expects, 0 arguments, but the intent here is to pass jobData and priority.
         // The type definition in queue-service.ts should be updated to accept these arguments.
         // @ts-ignore
         const { jobId: queueJobId, estimated } = await queueDocumentProcessing(jobData, priority);
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: new Date().toISOString()
         });
       } catch (queueError: any) {
-        // Changed: 'any'; to: 'unknown'
+        // Changed: 'any';, to: 'unknown'
         console.error('❌ Queue error, falling back to direct processing:', queueError);
         // Fall through to direct processing
       }
@@ -186,7 +186,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     } catch (fetchError: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Direct processing error:', fetchError);'
+      console.error('❌ Direct processing, error:', fetchError);'
       return json(
         {
           error: 'Processing failed',
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ API endpoint error:', error);'
+    console.error('❌ API endpoint, error:', error);'
     return json(
       {
         error: 'Internal server error',
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('❌ Go server health check failed:', error);
+    console.error('❌ Go server health check, failed:', error);
     return json(
       {
         error: 'Go server unreachable',

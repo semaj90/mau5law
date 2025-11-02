@@ -6,17 +6,17 @@
  * npx vitest src/lib/server/helpers/service-discovery.test.ts
  * ```
  *
- * Or with tsx:
+ * Or with, tsx:
  * ```bash`
  * tsx --test src/lib/server/helpers/service-discovery.test.ts
  * ```
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from, 'vitest';
 import {
   getServiceDiscovery,
   ServiceDiscovery,
   COMMON_SERVICES
-} from './service-discovery';
+} from, './service-discovery';
 describe('ServiceDiscovery', () => {
   let discovery: ServiceDiscovery;
   beforeEach(() => {
@@ -94,7 +94,7 @@ describe('ServiceDiscovery', () => {
           port: 9000
         },
         ollama: {
-          envVar: 'OLLAMA_URL',
+         , envVar: 'OLLAMA_URL',
           fallback: 'http://localhost:11434',
           containerName: 'ollama',
           port: 11434
@@ -126,7 +126,7 @@ describe('ServiceDiscovery', () => {
       expect(config.port).toBe(11434);
       expect(config.containerName).toBe('ollama');
     });
-    it('should have all 8 services configured', () => {
+    it('should have all, 8 services configured', () => {
       const services = Object.keys(COMMON_SERVICES);
       expect(services.length).toBeGreaterThanOrEqual(8);
       expect(services).toContain('minio');
@@ -211,13 +211,13 @@ describe('ServiceDiscovery Integration Tests', () => {
         port: 8001
       },
       service2: {
-        envVar: 'SVC2_URL',
+       , envVar: 'SVC2_URL',
         fallback: 'http://localhost:8002',
         containerName: 'service2',
         port: 8002
       },
       service3: {
-        envVar: 'SVC3_URL',
+       , envVar: 'SVC3_URL',
         fallback: 'http://localhost:8003',
         containerName: 'service3',
         port: 8003
@@ -231,13 +231,13 @@ describe('ServiceDiscovery Integration Tests', () => {
   });
   it('should respect env var override in batch discovery', async () => {
     process.env.BATCH_TEST_SVC1 = 'http://override:9999';
-    const services = { service1: {, envVar: 'BATCH_TEST_SVC1',
+    const services = {, service1: {, envVar: 'BATCH_TEST_SVC1',
         fallback: 'http://localhost:8001',
         containerName: 'service1',
         port: 8001
       },
       service2: {
-        envVar: 'BATCH_TEST_SVC2',
+       , envVar: 'BATCH_TEST_SVC2',
         fallback: 'http://localhost:8002',
         containerName: 'service2',
         port: 8002

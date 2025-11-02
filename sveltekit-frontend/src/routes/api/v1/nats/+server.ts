@@ -1,7 +1,7 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 // Enhanced NATS API Integration
-import { EnhancedNATSMessagingService } from '$lib/services/enhanced-nats-messaging';
+import { EnhancedNATSMessagingService } from, '$lib/services/enhanced-nats-messaging';
 
 // Global NATS service instance
 let natsService: EnhancedNATSMessagingService | null = null;
@@ -30,25 +30,25 @@ export const POST: RequestHandler = async ({ request }) => {
     const bodyRaw: any = await request.json();
     const body = (bodyRaw as Record<string, unknown>) || {};
     const nats = getNATSService();
-    switch (body.action as string) {
-      case 'publish':
+    switch (body.action as: string) {
+      case, 'publish':
         return await handlePublish(nats, body);
-      case 'publish_batch':
+      case, 'publish_batch':
         return await handlePublishBatch(nats, body);
-      case 'request':
+      case, 'request':
         return await handleRequest(nats, body);
-      case 'subscribe':
+      case, 'subscribe':
         return await handleSubscribe(nats, body);
-      case 'unsubscribe':
+      case, 'unsubscribe':
         return await handleUnsubscribe(nats, body);
-      case 'create_stream':
+      case, 'create_stream':
         return await handleCreateStream(nats, body);
-      case 'create_consumer':
+      case, 'create_consumer':
         return await handleCreateConsumer(nats, body);
       default: return json(
           {
-            success: false,
-            error: 'Unsupported; action: ${String(body.action)}' },
+           , success: false,
+            error: 'Unsupported;, action: ${String(body.action)}' },
           { status: 400 }
         );
     }
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
     type Metrics = Record<string, unknown>;
     type SystemStatus = { connection_status?: string; [k: string]: any };
 
-    const compat = nats as unknown as {
+    const compat = nats, as: unknown as {
       getMetrics?: () => Promise<Metrics>;
       getSystemStatus?: () => Promise<SystemStatus>;
     };
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
       metrics,
       system_status: systemStatus,
       supported_subjects: {
-        case_management: ['legal.case.created', 'legal.case.updated', 'legal.case.closed'],
+       , case_management: ['legal.case.created', 'legal.case.updated', 'legal.case.closed'],
         document_processing: [
           'legal.document.uploaded',
           'legal.document.processed',
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async () => {
         system_monitoring: ['system.health', 'system.metrics']
       },
       capabilities: {
-        message_publishing: true,
+       , message_publishing: true,
         batch_publishing: true,
         request_reply: true,
         stream_processing: true,
@@ -136,18 +136,18 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<st
     throw new Error('Subject (string) and data are required for publish');
   }
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     publish?: (subject: string, data: any, options?: Record<string, unknown>) => Promise<void>;
   };
 
   const options = (body.options as Record<string, unknown> | undefined) ?? undefined;
   if (compat.publish) {
-    await compat.publish(body.subject as string, body.data as unknown, options);
+    await compat.publish(body.subject as: string, body.data as: unknown, options);
   }
 
-  const correlation = options?.['correlation_id'] as string | undefined;
+  const correlation = options?.['correlation_id'] as: string | undefined;
   return json({
-    success: true,
+   , success: true,
     action: 'publish',
     subject: body.subject,
     message_id: correlation ?? 'auto-generated',
@@ -161,7 +161,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
     throw new Error('Messages array is required for batch publish');
   }
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     publishBatch?: (messages: any[]) => Promise<void>;
   };
 
@@ -169,13 +169,13 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
     await compat.publishBatch(messages);
   } else {
     // fallback: publish sequentially if only single publish exists
-    const singleCompat = nats as unknown as {
+    const singleCompat = nats, as: unknown as {
       publish?: (subject: string, data: any, options?: Record<string, unknown>) => Promise<void>;
     };
     for (const msg of messages) {
       if (!msg || typeof msg !== 'object') continue;
       const rec = msg as Record<string, unknown>;
-      const subj = rec.subject as string | undefined;
+      const subj = rec.subject as: string | undefined;
       if (subj && singleCompat.publish) {
         await singleCompat.publish(subj, rec.data, rec.options as Record<string, unknown> | undefined);
       }
@@ -185,7 +185,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
   return json({
     success: true,
     action: 'publish_batch',
-    message_count: (messages as unknown[]).length,
+    message_count: (messages, as: unknown[]).length,
     timestamp: new Date().toISOString()
   });
 }
@@ -194,13 +194,13 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<st
   if (typeof body.subject !== 'string' || body.data === undefined) {
     throw new Error('Subject (string) and data are required for request');
   }
-  const timeout = typeof body.timeout_ms === 'number' ? (body.timeout_ms as number) : 5000;
+  const timeout = typeof body.timeout_ms === 'number' ? (body.timeout_ms as: number) : 5000;
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     request?: (subject: string, data: any, timeoutMs?: number) => Promise<unknown>;
   };
 
-  const response = compat.request ? await compat.request(body.subject as string, body.data as unknown, timeout) : null;
+  const response = compat.request ? await compat.request(body.subject as: string, body.data as: unknown, timeout) : null;
   return json({
     success: true,
     action: 'request',
@@ -233,11 +233,11 @@ async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: Recor
     throw new Error('Subject (string) is required for unsubscribe');
   }
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     unsubscribe?: (subject: string) => Promise<void>;
   };
   if (compat.unsubscribe) {
-    await compat.unsubscribe(body.subject as string);
+    await compat.unsubscribe(body.subject as: string);
   } // else ignore silently
 
   return json({
@@ -254,7 +254,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Reco
     throw new Error('Stream configuration with a name is required');
   }
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     createStream?: (config: any) => Promise<void>;
   };
   if (compat.createStream) {
@@ -271,13 +271,13 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Reco
 }
 
 async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
-  const streamName = body.stream_name as string | undefined;
+  const streamName = body.stream_name as: string | undefined;
   const consumerCfg = body.consumer_config as Record<string, unknown> | undefined;
   if (!streamName || !consumerCfg) {
     throw new Error('Stream name (string) and consumer configuration are required');
   }
 
-  const compat = nats as unknown as {
+  const compat = nats as: unknown as {
     createConsumer?: (streamName: string, config: any) => Promise<void>;
   };
   if (compat.createConsumer) {

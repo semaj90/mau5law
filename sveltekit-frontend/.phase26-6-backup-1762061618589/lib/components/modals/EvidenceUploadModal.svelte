@@ -49,7 +49,7 @@
     uploadStore.closeModal();
   }
 </script>
-<Dialog.Root open={isOpen} onOpenChange={(open) => !open && closeModal()}>
+<Dialog open={isOpen} onOpenChange={(open) => !open && closeModal()}>
   <Dialog.Content class="max-w-3xl">
     <Dialog.Header>
       <Dialog.Title class="flex items-center gap-2">
@@ -183,5 +183,5 @@
       </div>
     </Dialog.Footer>
   </Dialog.Content>
-</Dialog.Root>
+</Dialog>
 </Dialog>

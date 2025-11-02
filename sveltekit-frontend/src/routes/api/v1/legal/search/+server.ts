@@ -8,9 +8,9 @@
  * - Metadata filtering
  */
 
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getLegalAIPipeline } from '$lib/server/integrations';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getLegalAIPipeline } from, '$lib/server/integrations';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (typeof topK !== 'number' || topK < 1 || topK > 100) {
-      throw error(400, 'topK must be a number between 1 and 100');
+      throw error(400, 'topK must be a: number between, 1 and 100');
     }
 
     // Perform search
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const type = url.searchParams.get('type'); // Filter by document type
 
     if (!query) {
-      throw error(400, 'Missing "query" parameter');
+      throw error(400, 'Missing, "query" parameter');
     }
 
     // Build filter from query params

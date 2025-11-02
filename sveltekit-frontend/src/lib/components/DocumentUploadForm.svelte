@@ -1,16 +1,16 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import { fade, slide } from 'svelte/transition';
-  import type { OCRResult } from '$lib/services/ocr-processor';
-  import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
+  // Svelte, 5 runes are auto-imported
+  import  Button  from, "$lib/components/ui/Button.svelte";
+  import { fade, slide } from, 'svelte/transition';
+  import type { OCRResult } from, '$lib/services/ocr-processor';
+  import type { DocumentUploadFormProps } from, '$lib/types/component-props.js';
 
   // Local types
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';
   interface InternalFormData {
     uploaded_files: File[];
     ocr_results: OCRResult[];
-    processing_status: ProcessingStatus;
+   , processing_status: ProcessingStatus;
   }
 
   function createDefaultFormData(): InternalFormData {
@@ -26,7 +26,7 @@
   const { allowedTypes } = $props<{ allowedTypes: string[] }>()
   const { maxFileSize } = $props<{ maxFileSize: number }>() // 10MB
   const { maxFiles } = $props<{ maxFiles: number }>()
-  const { onUploadComplete } = $props<{ onUploadComplete: ((payload: { caseId?: string }>() files: File[]; ocr_results: OCRResult[] }) => void) | undefined;
+  const { onUploadComplete } = $props<{ onUploadComplete: ((payload: { caseId?: string }>() files: File[];, ocr_results: OCRResult[] }) => void) | undefined;
   const { onUploadError } = $props<{ onUploadError: ((err: any) }>()
   const { onNext } = $props<{ onNext: ((event: {, step: 'documents' }>() data: InternalFormData }) => void) | undefined;
   const { onPrevious } = $props<{ onPrevious: ((event: {, step: 'documents' }) }>()
@@ -39,7 +39,7 @@
   // Local state variables
   let dragActive = $state<boolean>(false);
   let fileInput: HTMLInputElement | null = null;
-  let uploadProgress: Record<string, number> = {};
+  let, uploadProgress: Record<string, number> = {};
   let processingErrors: Record<string, string> = {};
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
@@ -55,7 +55,7 @@
     return acceptedTypes.includes(file.type);
   }
   function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return, '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -67,7 +67,7 @@
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    if (!(e.currentTarget as Element)?.contains((e as any).relatedTarget as Node)) {
+    if (!(e.currentTarget as Element)?.contains((e as: any).relatedTarget as Node)) {
       dragActive = false;
     }
   }
@@ -123,11 +123,11 @@
         uploadProgress = { ...uploadProgress, [file.name]: p };
       }
       const ocrResult: OCRResult = {
-        text: `Mock OCR text for ${file.name}`,
+       , text: `Mock OCR text for ${file.name}`,
         confidence: 0.95,
         pages: [],
         metadata: {
-          title: file.name,
+         , title: file.name,
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
@@ -181,18 +181,18 @@
   }
   function getFileIcon(fileType: string): string {
     if (fileType.includes('pdf')) {
-      return 'i-lucide-file-text'; // PDF icon
+      return, 'i-lucide-file-text'; // PDF icon
     } else if (fileType.startsWith('image/')) {
-      return 'i-lucide-image'; // Image icon
+      return, 'i-lucide-image'; // Image icon
     } else if (fileType.includes('word')) {
-      return 'i-lucide-file-text'; // Word document icon
+      return, 'i-lucide-file-text'; // Word document icon
     }
-    return 'i-lucide-file'; // Generic file icon
+    return, 'i-lucide-file'; // Generic file icon
   }
 </script>
 
 <div, class="document-upload-form {className}" {id} data-test-id={testId}>
-  <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave} on:drop|preventDefault={handleDrop}>
+  <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave}, on:drop|preventDefault={handleDrop}>
     <input, type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
     <div, class="drag-drop-content {dragActive ? 'active' : ''}">
       <p>Drag and drop your files here</p>
@@ -243,7 +243,7 @@
     border-radius: 8px;
     padding: 16px;
     text-align: center;
-    transition: border-color 0.3s;
+   , transition: border-color 0.3s;
   }
   .upload-area.active {
     border-color: var(--primary-color);
@@ -262,7 +262,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 0;
+   , padding: 8px 0;
     border-bottom: 1px solid var(--border-color);
   }
   .file-icon {
@@ -275,17 +275,17 @@
   }
   .file-size {
     font-size: 0.875rem;
-    color: var(--text-muted);
+   , color: var(--text-muted);
   }
   .file-actions {
     flex-shrink: 0;
   }
   .remove-button {
-    color: var(--danger-color);
+   , color: var(--danger-color);
   }
   .error-messages {
     margin-top: 16px;
-    padding: 8px;
+   , padding: 8px;
     background-color: var(--danger-bg);
     border-radius: 4px;
   }
@@ -297,11 +297,11 @@
   .error-text {
     margin-left: 4px;
     font-size: 0.875rem;
-    color: var(--danger-color);
+   , color: var(--danger-color);
   }
   .actions {
     margin-top: 16px;
-    display: flex;
+   , display: flex;
     justify-content: flex-end;
   }
   .save-draft-button {

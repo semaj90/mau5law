@@ -8,11 +8,11 @@
   - Advanced filtering capabilities
 -->
 <script, lang="ts">
-import type { SearchResult } from '$lib/types';
-  import { onMount } from "svelte";
-  import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
-  import { debounce } from 'lodash-es';
-  import { cn } from '$lib/utils/cn';
+import type { SearchResult } from, '$lib/types';
+  import { onMount } from, "svelte";
+  import { Search, FileText, Scale, Shield, Users, Zap, Clock } from, 'lucide-svelte';
+  import { debounce } from, 'lodash-es';
+  import { cn } from, '$lib/utils/cn';
   // Root element reference to dispatch DOM CustomEvents (parent can listen with onselect)
   let rootEl: HTMLElement | null = null;
 
@@ -20,7 +20,7 @@ import type { SearchResult } from '$lib/types';
   interface SearchResult {
     id: string;
     title: string;
-    type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document' | 'recent';
+   , type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document' | 'recent';
     content?: string;
     score?: number;
     metadata?: {
@@ -34,7 +34,7 @@ import type { SearchResult } from '$lib/types';
     highlights?: string[];
   }
 
-  // Props using Svelte 5 syntax
+  // Props using Svelte, 5 syntax
   let {
     placeholder = "Search cases, precedents, statutes, evidence...",
     value = $bindable(""),
@@ -78,8 +78,8 @@ import type { SearchResult } from '$lib/types';
     document: FileText,
     recent: Clock
   };
-  const typeColors: Record<string, string> = {
-    case 'text-blue-600',
+  const, typeColors: Record<string, string> = {
+    case, 'text-blue-600',
     evidence: 'text-red-600',
     precedent: 'text-purple-600',
     statute: 'text-green-600',
@@ -133,7 +133,7 @@ import type { SearchResult } from '$lib/types';
           content: r.content ?? r.summary ?? '',
           score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0),
           metadata: {
-            date: r.createdAt ?? r.date,
+           , date: r.createdAt ?? r.date,
             jurisdiction: r.jurisdiction,
             status: r.status,
             confidentiality: r.confidentialityLevel,
@@ -228,7 +228,7 @@ import type { SearchResult } from '$lib/types';
     value={inputValue}
     oninput={handleInputChange}
     disabled={disabled}
-    class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-11 pr-10 text-sm focus:outline-none"
+    class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-11 pr-10 text-sm, focus:outline-none"
     aria-autocomplete="list"
     aria-controls="legal-search-list"
   />
@@ -253,7 +253,7 @@ import type { SearchResult } from '$lib/types';
       aria-label="Clear search"
       title="Clear search"
     >
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0, 24, 24" aria-hidden="true" focusable="false">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24" aria-hidden="true" focusable="false">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12" />
       </svg>
     </button>
@@ -449,6 +449,6 @@ import type { SearchResult } from '$lib/types';
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+   , overflow: hidden;
   }
 </style>

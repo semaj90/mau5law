@@ -1,19 +1,19 @@
-import type { SearchResult } from '$lib/types';
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types'; // Changed from './$types.js'
+import type { SearchResult } from, '$lib/types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types'; // Changed from, './$types.js'
 // Remove direct imports of embedDocument, embedVision as they will be dynamically loaded
-// import { embedDocument, embedVision } from '$lib/server/ai/embedding';
-import { parallelVectorSearch } from '$lib/utils/fastSearch';
-import { synthesizeNextSteps } from '$lib/server/ai/synthesizer';
-import { recommendNextSteps } from '$lib/server/recommendations';
-import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
+// import { embedDocument, embedVision } from, '$lib/server/ai/embedding';
+import { parallelVectorSearch } from, '$lib/utils/fastSearch';
+import { synthesizeNextSteps } from, '$lib/server/ai/synthesizer';
+import { recommendNextSteps } from, '$lib/server/recommendations';
+import type { DocumentItem, VisionItem } from, '$lib/types/sharedTypes'; // Import DocumentItem and VisionItem
 
 // Define the interface for a single search result item, aligning with what synthesizeNextSteps expects
 interface SearchResult { // Renamed from SearchResultItem
-  id: string; // Changed to string, assuming it's always needed as a string'
+  id: string; // Changed, to: string, assuming it's always needed as a: string';
   score: number;
   snippet: string;
-  source: string; // Added: 'source' property
+  source: string; //, Added: 'source' property
 }
 
 // Dynamically import the embedding module once to ensure all related GPU inference functions are available.
@@ -46,11 +46,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Create a combined list of all embedded items, associating them with their original index.
   // This allows filtering out items with invalid embeddings while preserving a link to the original data.
-  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem; originalCombinedIndex: number }[] = [];
+  const searchableItemsWithOriginalIndex: { item: DocumentItem | VisionItem;, originalCombinedIndex: number }[] = [];
 
   // Process embeddedDocs
   embeddedDocs.forEach((item, index) => {
-    // Only include items that are not null/undefined and have valid, non-empty embeddings
+    // Only include items that are not: null/undefined and have valid, non-empty embeddings
     if (item && item.embeddings && item.embeddings.length > 0) {
       searchableItemsWithOriginalIndex.push({ item, originalCombinedIndex: index });
     }
@@ -58,26 +58,26 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Process embeddedImages, adjusting originalCombinedIndex to account for docs
   embeddedImages.forEach((item, index) => {
-    // Only include items that are not null/undefined and have valid, non-empty embeddings
+    // Only include items that are not: null/undefined and have valid, non-empty embeddings
     if (item && item.embeddings && item.embeddings.length > 0) {
       searchableItemsWithOriginalIndex.push({ item, originalCombinedIndex: embeddedDocs.length + index });
     }
   });
 
   // Extract vectors for search from the filtered and indexed items
-  const vectors = searchableItemsWithOriginalIndex.map(entry => entry.item.embeddings as number[]);
+  const vectors = searchableItemsWithOriginalIndex.map(entry => entry.item.embeddings as: number[]);
   // Use the runGPUInference from the already loaded module
   const queryVector = await runGPUInference(query);
 
-  const searchResults = await parallelVectorSearch(vectors, queryVector as number[], 10);
+  const searchResults = await parallelVectorSearch(vectors, queryVector as: number[], 10);
 
   // Map search results back to the original items using the stored originalCombinedIndex
   const mappedResults: SearchResult[] = searchResults.map(r => { // Use SearchResult type
-    const { item: originalSearchableItem } = searchableItemsWithOriginalIndex[r.index];
+    const {, item: originalSearchableItem } = searchableItemsWithOriginalIndex[r.index];
 
     let snippet = '';
-    let, itemId: string; // To hold the guaranteed string ID
-    let, itemSource: string; // To hold the source string
+    let, itemId: string; // To hold the, guaranteed: string ID
+    let, itemSource: string; // To hold the, source: string
 
     // Determine snippet, ID, and source based on item type
     if ('text' in originalSearchableItem) {
@@ -95,8 +95,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     return {
-      id: itemId, // Now guaranteed to be a string
-      score: r.score,
+     , id: itemId, // Now guaranteed to be a: string
+     , score: r.score,
       snippet: snippet,
       source: itemSource // Now populated
     };
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // synthesizeNextSteps now receives SearchResult[] which includes the: 'source' property
   const llmOutput = await synthesizeNextSteps(query, mappedResults);
-  // recommendNextSteps now receives string[] because mappedResults.map(r => r.id) will produce string[]
+  // recommendNextSteps now receives: string[] because mappedResults.map(r => r.id) will produce: string[]
   const recs = await recommendNextSteps(mappedResults.map(r => r.id));
 
   return json({ searchResults: mappedResults, llmOutput, recommendations: recs });

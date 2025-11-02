@@ -718,7 +718,7 @@ Reset Filters
   {/if}
   <!-- Analytics Panel -->
   {#if $showAnalytics && enableAnalytics}
-    <Dialog.Root bind:open={$showAnalytics}>
+    <Dialog bind:open={$showAnalytics}>
       <Dialog.RootContent class="max-w-4xl">
         <Dialog.Header>
           <Dialog.Title>Search Analytics</Dialog.Title>
@@ -859,7 +859,7 @@ Reset Filters
           </TabsContent>
         </Tabs>
       </Dialog.Content>
-    </Dialog.Root>
+    </Dialog>
   {/if}
 </div>
 <style>

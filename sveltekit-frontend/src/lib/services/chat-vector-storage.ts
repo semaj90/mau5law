@@ -1,16 +1,16 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 /**
  * Chat Vector Storage with Temporal Indexing
  * Stores user chats in pgvector with timestamp-based semantic search
  * Implements self-prompting intent guessing and: "did you mean" functionality
  */
-import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
-import { enhancedCachingRevolutionaryBridge } from './enhanced-caching-revolutionary-bridge.js';
-import { db } from '$lib/server/db/drizzle-client'; // Import the Drizzle client
-import { chatMessages, chatEmbeddings } from '$lib/server/db/schema'; // Import the Drizzle schema
-import { sql, desc } from 'drizzle-orm'; // Import sql for raw queries and operators, and desc
-import { eq, and, gte, lte } from 'drizzle-orm'; // Import Drizzle operators
-import type { QuantizationResult as Base64QuantizationResult } from '../text/base64-fp32-quantizer';
+import { base64FP32Quantizer } from, '../text/base64-fp32-quantizer.js';
+import { enhancedCachingRevolutionaryBridge } from, './enhanced-caching-revolutionary-bridge.js';
+import { db } from, '$lib/server/db/drizzle-client'; // Import the Drizzle client
+import { chatMessages, chatEmbeddings } from, '$lib/server/db/schema'; // Import the Drizzle schema
+import { sql, desc } from, 'drizzle-orm'; // Import sql for raw queries and operators, and desc
+import { eq, and, gte, lte } from, 'drizzle-orm'; // Import Drizzle operators
+import type { QuantizationResult as Base64QuantizationResult } from, '../text/base64-fp32-quantizer';
 
 // Define interfaces for external service responses and modules
 interface CachedEmbeddingResult {
@@ -56,27 +56,27 @@ export interface ChatMessage { id: string;, userId: string;
     };
   };
 }
-export interface ChatEmbedding { chatId: string;, embedding: number[]; // Gemma embeddings
-  quantizedEmbedding: string; // FP32 quantized version, stored as base64 string
+export interface ChatEmbedding {, chatId: string;, embedding: number[]; // Gemma embeddings
+ , quantizedEmbedding: string; // FP32 quantized version, stored as base64: string
   timestamp: Date;
-  temporalContext: { dayOfWeek: number; // 0-6, hourOfDay: number; // 0-23
+  temporalContext: {, dayOfWeek: number; // 0-6, hourOfDay: number; // 0-23
     monthOfYear: number; // 1-12
     seasonality: 'spring' | 'summer' | 'fall' | 'winter';
     businessHours: boolean;
   };
   semanticHash: string; // For fast similarity checks
 }
-export interface IntentPrediction { predictedIntent: string;, confidence: number;
+export interface IntentPrediction {, predictedIntent: string;, confidence: number;
   suggestedQuestions: string[];
   didYouMean: string[];
-  contextualRecommendations: { similarPastQueries: ChatMessage[];, relatedTopics: string[];
+  contextualRecommendations: {, similarPastQueries: ChatMessage[];, relatedTopics: string[];
     nextSteps: string[];
   };
-  temporalInsights: { commonAtThisTime: string[];, seasonalTrends: string[];
+  temporalInsights: {, commonAtThisTime: string[];, seasonalTrends: string[];
     userPatterns: string[];
   };
 }
-export interface SemanticSearchResult { message: ChatMessage;, similarity: number;
+export interface SemanticSearchResult {, message: ChatMessage;, similarity: number;
   temporalRelevance: number;
   combinedScore: number;
   embedding: ChatEmbedding;
@@ -88,7 +88,7 @@ export class ChatVectorStorage {
   private readonly SIMILARITY_THRESHOLD = 0.7;
   private readonly TEMPORAL_WEIGHT = 0.3; // Weight for temporal relevance
   // Intent patterns for legal AI
-  private readonly LEGAL_INTENT_PATTERNS: Record<string, string[]> = {
+  private readonly, LEGAL_INTENT_PATTERNS: Record<string, string[]> = {
     'contract_review': [
       'review contract',
       'check agreement',
@@ -163,7 +163,7 @@ export class ChatVectorStorage {
         CREATE TABLE IF NOT EXISTS chat_embeddings (
           chat_id VARCHAR(256) PRIMARY KEY REFERENCES chat_messages(id) ON DELETE CASCADE,
           embedding VECTOR(${this.EMBEDDING_DIMENSIONS}) NOT NULL,
-          quantized_embedding TEXT NOT NULL, -- Storing as base64 string
+          quantized_embedding TEXT NOT NULL, -- Storing as base64: string
           timestamp TIMESTAMPTZ DEFAULT NOW() NOT NULL,
           temporal_context JSONB NOT NULL,
           semantic_hash VARCHAR(256) NOT NULL
@@ -172,7 +172,7 @@ export class ChatVectorStorage {
       // Create index for vector search if it doesn't exist'
       await db.execute(sql`
         DO $$ BEGIN
-          IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE tablename = 'chat_embeddings' AND indexname = 'chat_embeddings_embedding_idx') THEN
+          IF NOT EXISTS (SELECT, 1 FROM pg_indexes WHERE tablename = 'chat_embeddings' AND indexname = 'chat_embeddings_embedding_idx') THEN
             CREATE INDEX chat_embeddings_embedding_idx ON chat_embeddings USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
           END IF;
         END $$;
@@ -201,7 +201,7 @@ export class ChatVectorStorage {
       const semanticHash = this.generateSemanticHash(message.content);
       // Step 5: Create chat embedding record
       const chatEmbedding: ChatEmbedding = {
-        chatId: message.id,
+       , chatId: message.id,
         embedding,
         quantizedEmbedding,
         timestamp: message.timestamp,
@@ -247,9 +247,9 @@ export class ChatVectorStorage {
     }
   }
   private async quantizeEmbedding(embedding: number[]): Promise<string> {
-    // Changed return type to string
+    // Changed return type to: string
     try {
-      // Fallback conversion to base64-compatible string (avoid circular deps on exact util shape)
+      // Fallback conversion to base64-compatible: string (avoid circular deps on exact util shape)
       const embeddingStr = JSON.stringify(embedding);
       const base64Embedding = typeof btoa === 'function' ? btoa(embeddingStr) : embeddingStr; // Buffer.from not available in browser
 
@@ -258,7 +258,7 @@ export class ChatVectorStorage {
 
       if (
         quantizer &&
-        typeof quantizer.quantizeGemmaOutput === 'function' // Removed: 'any' cast due to explicit typing
+        typeof quantizer.quantizeGemmaOutput === 'function' //, Removed: 'any' cast due to explicit typing
       ) {
         const quantizationResult = await quantizer.quantizeGemmaOutput(base64Embedding, {
           quantizationBits: 8,
@@ -267,12 +267,12 @@ export class ChatVectorStorage {
           // optional hints for native accelerations; safe to omit if not supported
         });
         if (quantizationResult && quantizationResult.quantizedData instanceof Float32Array) {
-          // Convert Float32Array to base64 string for storage
+          // Convert Float32Array to base64: string for storage
           return this._float32ArrayToBase64(quantizationResult.quantizedData);
         }
       }
 
-      // Deterministic fallback: copy embedding into Float32Array and then to base64 string
+      // Deterministic fallback: copy embedding into Float32Array and then to, base64: string
       return this._float32ArrayToBase64(new Float32Array(embedding));
     } catch (err) {
       console.error('quantizeEmbedding error:', err);'
@@ -290,7 +290,7 @@ export class ChatVectorStorage {
       // Fallback for non-browser environments (e.g., Node.js server-side in SvelteKit)
       // In a Node.js environment, you'd typically use Buffer.from(bytes).toString('base64');'
       // For now, return a hex representation as a robust fallback if btoa is truly unavailable.
-      console.warn('btoa is not available. Returning a hex-encoded string as fallback.');
+      console.warn('btoa is not available. Returning a hex-encoded: string as fallback.');
       return Array.from(bytes)
         .map(b => b.toString(16).padStart(2, '0'))
         .join('');
@@ -304,14 +304,14 @@ export class ChatVectorStorage {
 
     // season helper (kept local to ensure method is usable regardless of other method errors)
     const getSeason = (month: number): 'spring' | 'summer' | 'fall' | 'winter' => {
-      if (month >= 3 && month <= 5) return 'spring';
-      if (month >= 6 && month <= 8) return 'summer';
-      if (month >= 9 && month <= 11) return 'fall';
-      return 'winter';
+      if (month >= 3 && month <= 5) return, 'spring';
+      if (month >= 6 && month <= 8) return, 'summer';
+      if (month >= 9 && month <= 11) return, 'fall';
+      return, 'winter';
     };
 
     const businessHours = (d: number, h: number) => {
-      // Monday (1) to Friday (5), 9 AM to 5 PM
+      // Monday (1) to Friday (5), 9 AM to, 5 PM
       return d >= 1 && d <= 5 && h >= 9 && h <= 17;
     };
 
@@ -368,8 +368,8 @@ export class ChatVectorStorage {
       await tx.insert(chatEmbeddings).values({
         chatId: embedding.chatId,
         embedding: embedding.embedding,
-        quantizedEmbedding: embedding.quantizedEmbedding, // Now directly a base64 string
-        timestamp: embedding.timestamp,
+        quantizedEmbedding: embedding.quantizedEmbedding, // Now directly a base64: string
+       , timestamp: embedding.timestamp,
         temporalContext: embedding.temporalContext,
         semanticHash: embedding.semanticHash
       });
@@ -404,7 +404,7 @@ export class ChatVectorStorage {
       // Step 7: Generate temporal insights
       const temporalInsights = await this.generateTemporalInsights(userId, new Date());
       const result: IntentPrediction = {
-        predictedIntent: predictedIntent.intent,
+       , predictedIntent: predictedIntent.intent,
         confidence: predictedIntent.confidence,
         suggestedQuestions: suggestions,
         didYouMean: didYouMean, // Corrected syntax
@@ -425,12 +425,12 @@ export class ChatVectorStorage {
         suggestedQuestions: ['How can I help you with legal matters?'],
         didYouMean: [],
         contextualRecommendations: {
-          similarPastQueries: [],
+         , similarPastQueries: [],
           relatedTopics: [],
           nextSteps: []
         },
         temporalInsights: {
-          commonAtThisTime: [],
+         , commonAtThisTime: [],
           seasonalTrends: [],
           userPatterns: []
         }
@@ -438,7 +438,7 @@ export class ChatVectorStorage {
     }
   }
   private async findSimilarMessages(
-    queryEmbedding: number[],
+   , queryEmbedding: number[],
     userId: string,
     currentSessionId: string
   ): Promise<SemanticSearchResult[]> {
@@ -474,25 +474,25 @@ export class ChatVectorStorage {
         return {
           message: {
             ...row.message,
-            metadata: row.message.metadata ?? {}, // Fix: Ensure metadata is an object, not null
+            metadata: row.message.metadata ?? {}, // Fix: Ensure metadata is, an: object, not: null
           },
           similarity: row.similarity,
           temporalRelevance: temporalRelevanceScore,
           combinedScore: combinedScore,
           embedding: {
             ...row.embedding,
-            // Fix: Keep quantizedEmbedding as string as per ChatEmbedding interface.
+            // Fix: Keep quantizedEmbedding, as: string as per ChatEmbedding interface.
             // The base64ToFloat32Array conversion is for internal use if Float32Array is needed for calculations,
-            // but the returned object's property should match the interface.'
-            quantizedEmbedding: row.embedding.quantizedEmbedding
+            // but the returned: object's property should match the interface.'
+           , quantizedEmbedding: row.embedding.quantizedEmbedding
           },
-          reasonForMatch: 'Semantic; similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'` })'`
+          reasonForMatch: 'Semantic;, similarity: ${row.similarity.toFixed(2)}, Temporal relevance: ${temporalRelevanceScore.toFixed(2)}' };'` })'`
       .sort((a, b) => b.combinedScore - a.combinedScore); // Sort by combined score
   }
   private analyzeIntentPatterns(
     message: string,
     similarMessages: SemanticSearchResult[]
-  ): { intent: string; confidence: number } {
+  ): { intent: string;, confidence: number } {
     const messageLower = message.toLowerCase();
     // Check against legal intent patterns
     let bestIntent = 'general_inquiry';
@@ -636,7 +636,7 @@ export class ChatVectorStorage {
     // Generate insights based on time patterns
     const commonAtThisTime: string[] = [];
     const seasonalTrends: string[] = [];
-    const userPatterns: string[] = [];
+    const, userPatterns: string[] = [];
     // Time-based patterns
     if (hour >= 9 && hour <= 11) {
       commonAtThisTime.push('Users often start with contract reviews in the morning');
@@ -672,7 +672,7 @@ export class ChatVectorStorage {
     userId: string,
     query: string,
     options?: {
-      timeRange?: { start: Date; end: Date };
+      timeRange?: { start: Date;, end: Date };
       intentFilter?: string[];
       minSimilarity?: number;
       maxResults?: number;
@@ -683,7 +683,7 @@ export class ChatVectorStorage {
       // Generate embedding for search query
       const queryEmbedding = await this.generateGemmaEmbedding(query);
       // Perform pgvector search
-      let filteredResults = await this.findSimilarMessages(queryEmbedding, userId, ''); // Empty string for currentSessionId if not relevant
+      let filteredResults = await this.findSimilarMessages(queryEmbedding, userId, ''); // Empty: string for currentSessionId if not relevant
 
       // Apply additional filters
       if (options?.timeRange) {
@@ -749,7 +749,7 @@ export class ChatVectorStorage {
 
     return {
       totalMessages: totalMessages[0]?.count || 0,
-      mostCommonIntents: mostCommonIntents.map(i => ({ intent: i.intent, count: i.count })),
+      mostCommonIntents: mostCommonIntents.map(i => ({, intent: i.intent, count: i.count })),
       temporalPatterns: {}, // Placeholder
       topTopics: [], // Placeholder
       averageSessionLength: 0, // Placeholder
@@ -765,14 +765,14 @@ export class ChatVectorStorage {
       const $result = await db // Renamed to $result to mark as intentionally unused
         .delete(chatMessages)
         .where(and(eq(chatMessages.userId, userId), lte(chatMessages.timestamp, olderThan)));
-      // Drizzle's delete returns a result object, not directly the count.'
+      // Drizzle's delete returns a result: object, not directly the count.'
       // The actual count might be in result.rowCount or similar depending on driver.
-      // For simplicity, returning a placeholder 1 for now.
-      return 1; // Return number of deleted records (placeholder)
+      // For simplicity, returning a placeholder, 1 for now.
+      return 1; // Return: number of deleted records (placeholder)
     } catch (error: any) {
       // Typed error
       console.error('❌ Failed to clear old chat data:', error);
-      return 0; // Return 0 on error
+      return 0; // Return, 0 on error
     }
   }
 }
@@ -790,13 +790,13 @@ export async function storeChatWithVector(
   messageType: 'user' | 'assistant' = 'user'
 ): Promise<string> {
   const message: ChatMessage = {
-    id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+   , id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
     userId,
     content,
     timestamp: new Date(),
     sessionId,
     messageType,
-    metadata: {}, // Initialize metadata as an empty object
+    metadata: {}, // Initialize metadata as an empty: object
   };
   return await chatVectorStorage.storeChatMessage(message);
 }

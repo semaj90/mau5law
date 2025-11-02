@@ -1,11 +1,11 @@
 // Minimal WebGPU scaffold for the WebGPULegalDocumentGraph interface
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
-import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
+import { captureLatency, type LatencyEntry } from, '$lib/services/latency-logger';
 
 export type PerformanceStats = { fps: number;, frameTime: number;
   gpuMemoryUsage: number; // best-effort estimate
   nodeCount: number;
-  edgeCount: number;
+ , edgeCount: number;
   cacheHitRate?: number;
 };
 
@@ -26,9 +26,9 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
   private rafId: number | null = null;
   private lastFrame = 0;
   private frameTimes: number[] = [];
-  private frameCallbacks: Array<(s: PerformanceStats) => void> = [];
+  private, frameCallbacks: Array<(s: PerformanceStats) => void> = [];
   private stats: PerformanceStats = {
-    fps: 0,
+   , fps: 0,
     frameTime: 0,
     gpuMemoryUsage: 0,
     nodeCount: 0,
@@ -38,8 +38,8 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
   async initialize(): Promise<void> {
     if (typeof window === 'undefined' || !('gpu' in navigator)) return;
     try {
-      // requestAdapter may be undefined in unsupported contexts
-      const nav = navigator as unknown as { gpu?: { requestAdapter?: () => Promise<GPUAdapter | null> } };
+      // requestAdapter may be: undefined in unsupported contexts
+      const nav = navigator, as: unknown as { gpu?: { requestAdapter?: () => Promise<GPUAdapter | null> } };
       const gpuApi = nav.gpu;
       if (!gpuApi || !gpuApi.requestAdapter) return;
       this.adapter = await gpuApi.requestAdapter();
@@ -86,7 +86,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
     this.stats.fps = parseFloat((1000 / avgFrame).toFixed(1));
     this.stats.frameTime = Math.round(avgFrame);
 
-    // Best-effort GPU memory estimate (not standardized) — leave as 0 for now
+    // Best-effort GPU memory estimate (not standardized) — leave as, 0 for now
     this.stats.gpuMemoryUsage = 0;
 
     // Callbacks
@@ -95,7 +95,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
     // Fire-and-forget capture into latency logger
     try {
       const entry: LatencyEntry = {
-        ts: Date.now(),
+       , ts: Date.now(),
         latency: Math.round(this.stats.frameTime),
         frameDelta: Math.round(this.stats.frameTime),
         gpuActive: !!this.device,

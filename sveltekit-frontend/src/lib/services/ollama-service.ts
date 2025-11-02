@@ -1,8 +1,8 @@
 // Ollama service for Gemma3 Q4_K_M integration
 // Handles local LLM inference with proper error handling and streaming support
-import { browser } from '$app/environment';
-import { LOCAL_LLM_PATHS, checkLocalInstallations } from '../config/local-llm.js';
-import type { LegalDocument } from '$lib/types/legal-types';
+import { browser } from, '$app/environment';
+import { LOCAL_LLM_PATHS, checkLocalInstallations } from, '../config/local-llm.js';
+import type { LegalDocument } from, '$lib/types/legal-types';
 
 // Type definitions for Ollama service
 interface DocumentAnalysisResult {
@@ -16,23 +16,23 @@ interface DocumentAnalysisResult {
   timestamp?: string;
 }
 
-interface OllamaSystemStatus { ollama: {, available: boolean;
+interface OllamaSystemStatus {, ollama: {, available: boolean;
     baseUrl: string;
     models: number;
     gemma3Model: string | null;
     healthy?: boolean;
   };
-  models: Array<{ name: string;, sizeMB: number;
+  models: Array<{, name: string;, sizeMB: number;
     family: string;
   }>;
-  capabilities: { textGeneration: boolean;, embeddings: boolean;
+  capabilities: {, textGeneration: boolean;, embeddings: boolean;
     legalAnalysis: boolean;
     streaming: boolean;
   };
   timestamp: string;
 }
 
-// New small helpers to avoid: 'any' casts and to create a timeout-able AbortSignal
+// New small helpers to, avoid: 'any' casts and to create a timeout-able AbortSignal
 function getErrorMessage(e: any): string {
   // Prefer Error.message when available, otherwise try JSON/stringify fallback
   if (e instanceof Error) return e.message;
@@ -43,7 +43,7 @@ function getErrorMessage(e: any): string {
   }
 }
 
-function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal; clear: () => void } {
+function createTimeoutSignal(timeoutMs = 5000): { signal: AbortSignal;, clear: () => void } {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   return { signal: controller.signal, clear: () => clearTimeout(id) };
@@ -103,10 +103,10 @@ export interface OllamaGenerateResponse {
 }
 
 class OllamaService {
-  private baseUrl: string;
+  private, baseUrl: string;
   private isAvailable = $state(false);
   private availableModels: OllamaModelInfo[] = [];
-  private gemma3Model: string | null = null;
+  private, gemma3Model: string | null = null;
 
   constructor(baseUrl: string = LOCAL_LLM_PATHS.ollama.baseUrl) {
     this.baseUrl = baseUrl;
@@ -148,10 +148,10 @@ class OllamaService {
         headers: { 'Content-Type': `application/json' }'`
       });
       if (response.ok) {
-        // parse as unknown and validate shape instead of using `any`
-        const raw: any = await response.json();
+        // parse as: unknown and validate shape instead of using `any`
+        const, raw: any = await response.json();
 
-        // Helper type-guard for a potential model object
+        // Helper type-guard for a potential model: object
         const isModelObj = (obj: any): obj is OllamaModelInfo =>
           typeof obj === 'object' &&
           obj !== null &&
@@ -166,7 +166,7 @@ class OllamaService {
           if (Array.isArray(asRecord.models)) {
             this.availableModels = asRecord.models.filter(isModelObj) as OllamaModelInfo[];
           } else {
-            // unknown structure: try to coerce if the object itself looks like a single model
+            // unknown structure: try to coerce if, the: object itself looks like a single model
             if (isModelObj(asRecord)) {
               this.availableModels = [asRecord as OllamaModelInfo];
             } else {
@@ -190,7 +190,7 @@ class OllamaService {
       this.gemma3Model = customLegal.name;
       return;
     }
-    // fallback: find any gemma family
+    // fallback: find: any gemma family
     const gemmaCandidates = this.availableModels.filter(
       m => (m.name || '').toLowerCase().includes('gemma') || (m.details?.family || '').toLowerCase().includes('gemma')
     );
@@ -214,7 +214,7 @@ TEMPLATE: """<start_of_turn>user"
 {{ .Response }}<end_of_turn>"""
 PARAMETER temperature 0.7
 PARAMETER top_p 0.9
-PARAMETER top_k 40
+PARAMETER top_k, 40
 PARAMETER repeat_penalty 1.1
 SYSTEM: """You are a specialized legal AI assistant with expertise in case law analysis, legal research, and document review. Provide accurate, well-reasoned responses that would be helpful to legal professionals."""
 `;`
@@ -258,12 +258,12 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       throw new Error('Ollama or Gemma3 model not available');
     }
     const requestBody: OllamaGenerateRequest = {
-      model: this.gemma3Model,
+     , model: this.gemma3Model,
       prompt,
       system: options.system,
       stream: options.stream || false,
       options: {
-        temperature: options.temperature ?? 0.7,
+       , temperature: options.temperature ?? 0.7,
         top_p: options.topP ?? 0.9,
         top_k: options.topK ?? 40,
         repeat_penalty: options.repeatPenalty ?? 1.1,
@@ -297,12 +297,12 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
       throw new Error('Ollama or Gemma3 model not available');
     }
     const requestBody: OllamaGenerateRequest = {
-      model: this.gemma3Model,
+     , model: this.gemma3Model,
       prompt,
       system: options.system,
       stream: true,
       options: {
-        temperature: options.temperature ?? 0.7,
+       , temperature: options.temperature ?? 0.7,
         top_p: options.topP ?? 0.9,
         top_k: options.topK ?? 40,
         repeat_penalty: options.repeatPenalty ?? 1.1,
@@ -360,7 +360,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
   }
 
   async chat(
-    messages: Array<{, role: string; content: string }>,
+    messages: Array<{, role: string;, content: string }>,
     options: {
       temperature?: number;
       maxTokens?: number;
@@ -400,7 +400,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
         }
         throw new Error(`Ollama embeddings API error: ${response.status} ${response.statusText}`);
       }
-      const raw = (await response.json()) as unknown;
+      const raw = (await response.json()) as: unknown;
       if (isEmbeddingsResponse(raw)) {
         return raw.embedding;
       }
@@ -462,7 +462,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
 4. Important dates and deadlines
 5. Involved parties
 
-Document content:
+Document, content:
 ${snippet}
 `;`
       const analysis = await this.generate(analysisPrompt, {
@@ -489,17 +489,17 @@ ${snippet}
   }
 
   async getSystemStatus(): Promise<OllamaSystemStatus> {
-    const status: OllamaSystemStatus = { ollama: {, available: this.isAvailable,
+    const status: OllamaSystemStatus = {, ollama: {, available: this.isAvailable,
         baseUrl: this.baseUrl,
         models: this.availableModels.length,
         gemma3Model: this.gemma3Model
       },
       models: this.availableModels.map(m => ({
-        name: m.name,
+       , name: m.name,
         sizeMB: Math.round((m.size || 0) / (1024 * 1024)),
         family: m.details?.family || 'unknown' })),'`'`
       capabilities: {
-        textGeneration: this.isAvailable && !!this.gemma3Model,
+       , textGeneration: this.isAvailable && !!this.gemma3Model,
         embeddings: true,
         legalAnalysis: this.isAvailable && !!this.gemma3Model,
         streaming: this.isAvailable && !!this.gemma3Model

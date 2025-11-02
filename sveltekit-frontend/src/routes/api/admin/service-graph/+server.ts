@@ -4,8 +4,8 @@
  * GET /api/admin/service-graph
  */
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
 
 interface Service { id: string;, label: string;
   type: string;
@@ -19,13 +19,13 @@ interface Service { id: string;, label: string;
   uptime?: number;
 }
 
-interface Edge { source: string;, target: string;
+interface Edge {, source: string;, target: string;
   type: string;
 }
 
-interface ServiceGraph { nodes: Service[];, edges: Edge[];
-  metadata: { totalServices: number;, totalConnections: number;
-    generated: string;
+interface ServiceGraph {, nodes: Service[];, edges: Edge[];
+  metadata: {, totalServices: number;, totalConnections: number;
+   , generated: string;
     lastUpdated?: string;
   };
 }
@@ -35,7 +35,7 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
   'sveltekit-frontend': {
     type: 'frontend',
     port: 5173,
-    description: 'SvelteKit 5 frontend application',
+    description: 'SvelteKit, 5 frontend application',
     capabilities: ['svelte5', 'typescript', 'ssr'],
     protocol: 'http',
     dependsOn: ['postgres', 'redis', 'qdrant', 'minio', 'rabbitmq', 'neo4j', 'ollama']
@@ -299,7 +299,7 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
   'minio-proxy': {
     type: 'infrastructure',
     port: 8126,
-    description: 'MinIO object storage proxy',
+    description: 'MinIO: object storage proxy',
     capabilities: ['object-storage', 'file-proxy'],
     protocol: 'http',
     dependsOn: ['minio']
@@ -411,7 +411,7 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
   'minio': {
     type: 'storage',
     port: 9000,
-    description: 'MinIO object storage (S3-compatible)',
+    description: 'MinIO: object storage (S3-compatible)',
     capabilities: ['object-storage', 'document-storage'],
     protocol: 'http',
     dependsOn: []
@@ -446,9 +446,9 @@ const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
  * Check health of a service
  */
 async function checkServiceHealth(
-  serviceId: string,
+ , serviceId: string,
   port: number
-): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }> {
+): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }> {
   const startTime = Date.now();
   try {
     const url = `http://localhost:${port}/health`;
@@ -480,7 +480,7 @@ async function checkServiceHealth(
  */
 function buildServiceGraph(): ServiceGraph {
   const nodes: Service[] = [];
-  const edges: Edge[] = [];
+  const, edges: Edge[] = [];
 
   for (const [id, config] of Object.entries(SERVICES_INVENTORY)) {
     nodes.push({
@@ -501,7 +501,7 @@ function buildServiceGraph(): ServiceGraph {
     nodes,
     edges,
     metadata: {
-      totalServices: nodes.length,
+     , totalServices: nodes.length,
       totalConnections: edges.length,
       generated: new Date().toISOString()
     }
@@ -528,7 +528,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       const healthResults = await Promise.allSettled(healthPromises);
-      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }>();
+      const healthMap = new Map<string, { status: 'healthy' | 'degraded' | 'unhealthy';, responseTime: number; uptime?: number }>();
 
       healthResults.forEach((result) => {
         if (result.status === 'fulfilled') {
@@ -588,7 +588,7 @@ export const POST: RequestHandler = async ({ request }) => {
       averageDependencies: (graph.edges.length / graph.nodes.length).toFixed(2),
       serviceByCriticalityScore: graph.nodes
         .map(node => ({
-          id: node.id,
+         , id: node.id,
           criticalityScore: calculateCriticalityScore(graph, node.id)
         }))
         .sort((a, b) => b.criticalityScore - a.criticalityScore)

@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 interface SystemHealthResponse { system_overview: {, healthy_services: number;
     total_services: number;
@@ -7,10 +7,10 @@ interface SystemHealthResponse { system_overview: {, healthy_services: number;
     last_updated: string;
   };
   services: Array<any>;
-  performance: { cpu_usage: number;, memory_usage: number;
+  performance: {, cpu_usage: number;, memory_usage: number;
     disk_usage: number;
   };
-  cluster_info?: { active_workers: number;, total_capacity: number;
+  cluster_info?: {, active_workers: number;, total_capacity: number;
     load_average: number;
   };
 }
@@ -20,9 +20,9 @@ interface APIOperationRequest {
   data?: any;
 }
 
-interface APIOperationResponse { success: boolean;, operation: string;
+interface APIOperationResponse {, success: boolean;, operation: string;
   result?: any;
-  timestamp: string;
+ , timestamp: string;
   processing_time?: number;
 }
 
@@ -60,12 +60,12 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     },
     services: serviceResults,
     performance: {
-      cpu_usage: Math.random() * 80 + 10,
+     , cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
       disk_usage: Math.random() * 60 + 15
     },
     cluster_info: {
-      active_workers: 8,
+     , active_workers: 8,
       total_capacity: 16,
       load_average: Math.random() * 2 + 0.5
     }
@@ -79,7 +79,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
     let result: any = {};
 
     switch (operation) {
-      case 'system_optimization':
+      case, 'system_optimization':
         // Simulate system optimization
         await new Promise(resolve => setTimeout(resolve, 1000));
         result = {
@@ -94,7 +94,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case 'context7_integration':
+      case, 'context7_integration':
         // Simulate Context7 integration check
         await new Promise(resolve => setTimeout(resolve, 800));
         result = {
@@ -106,7 +106,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case 'real_time_analysis':
+      case, 'real_time_analysis':
         // Simulate real-time analysis
         await new Promise(resolve => setTimeout(resolve, 1200));
         result = {
@@ -118,7 +118,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case 'legal_research':
+      case, 'legal_research':
         // Simulate legal research operation
         await new Promise(resolve => setTimeout(resolve, 1500));
         result = {
@@ -130,7 +130,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         };
         break;
 
-      case 'vector_search_test':
+      case, 'vector_search_test':
         // Simulate vector search test
         await new Promise(resolve => setTimeout(resolve, 600));
         result = {
@@ -144,7 +144,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
 
       default:
         result = {
-          message: 'Operation '${operation}' completed successfully`,'`
+         , message: 'Operation, '${operation}' completed successfully`,'`
           data: data || {}
         };
     }
@@ -163,7 +163,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       success: false,
       operation,
       result: {
-        error: String(error),
+       , error: String(error),
         message: 'Operation ${operation} failed' },
       timestamp: new Date().toISOString(),
       processing_time: Date.now() - startTime

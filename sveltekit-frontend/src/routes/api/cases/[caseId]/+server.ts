@@ -1,10 +1,10 @@
-import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { db } from '$lib/server/db/index.js';
-import { cases, evidence } from '$lib/server/db/schema.js';
-import { eq } from 'drizzle-orm';
-import { requireAuth } from '$lib/server/auth-helpers';
+import type { Case } from, '$lib/types';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { db } from, '$lib/server/db/index.js';
+import { cases, evidence } from, '$lib/server/db/schema.js';
+import { eq } from, 'drizzle-orm';
+import { requireAuth } from, '$lib/server/auth-helpers';
 
 export const GET: RequestHandler = async ({ params, ...event }) => {
   // Require authentication with test mode fallback

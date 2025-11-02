@@ -1,7 +1,7 @@
-declare module 'bits-ui' {
+declare module, 'bits-ui' {
   // Minimal ambient declarations for bits-ui used during development.
   // Use Svelte's SvelteComponentTyped constructor shape to avoid `any` ESLint/TS warnings.'
-  import type { SvelteComponentTyped } from 'svelte';
+  import type { SvelteComponentTyped } from, 'svelte';
   type ComponentCtor = new (...args: any[]) => SvelteComponentTyped<unknown, unknown, unknown>;
   export const Dialog: ComponentCtor;
   export const Button: ComponentCtor;
@@ -15,15 +15,15 @@ declare module 'bits-ui' {
   export const Tooltip: ComponentCtor;
   export const Avatar: ComponentCtor;
   export const Menu: ComponentCtor;
-  export const ScrollAreaViewport: ComponentCtor;
+  export const, ScrollAreaViewport: ComponentCtor;
   // Factory helpers (some bits-ui builds expose factories)
   export function createDropdownMenu(): { Trigger: ComponentCtor;, Root: ComponentCtor;
     Content: ComponentCtor;
-    Item: ComponentCtor;
+   , Item: ComponentCtor;
   };
   export function createSelect(): any;
   export function createDialog(): any;
-  const _default: { Dialog: ComponentCtor;, Button: ComponentCtor;
+  const _default: {, Dialog: ComponentCtor;, Button: ComponentCtor;
     Badge: ComponentCtor;
     Card: ComponentCtor;
     Checkbox: ComponentCtor;
@@ -34,7 +34,7 @@ declare module 'bits-ui' {
     Tooltip: ComponentCtor;
     Avatar: ComponentCtor;
     Menu: ComponentCtor;
-    ScrollAreaViewport: ComponentCtor;
+   , ScrollAreaViewport: ComponentCtor;
   };
   export default _default;
 

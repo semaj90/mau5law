@@ -1,7 +1,7 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { browser } from, '$app/environment';
   let systemStatus = $state<any>(null);
   let memoryPrediction = $state<any>(null);
   let isLoading = $state<boolean>(true);
@@ -10,7 +10,7 @@
     (async () => {
 if (browser) {
       await loadData();
-      // Refresh data every 30 seconds
+      // Refresh data every, 30 seconds
       setInterval(loadData, 30000);
     }
     })();
@@ -57,13 +57,13 @@ if (browser) {
     }
   }
   function getHealthColor(_value: number): string {
-    if (value >= 0.8) return 'text-green-600';
-    if (value >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (value >= 0.8) return, 'text-green-600';
+    if (value >= 0.6) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   function formatBytes(bytes: number): string {
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return, '0 B';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
@@ -79,7 +79,7 @@ if (browser) {
         <div, class="text-sm, text-gray-500">Loading...</div>
       {/if}
       <button
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50, disabled:cursor-not-allowed"
         onclick={triggerOptimization}
         disabled={isLoading}
       >

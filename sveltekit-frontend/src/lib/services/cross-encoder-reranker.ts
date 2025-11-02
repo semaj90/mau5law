@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import type { LegalDocument } from './types/legal.js';
+import type { SearchResult } from, '$lib/types';
+import type { LegalDocument } from, './types/legal.js';
 
 export interface SearchResult { document: LegalDocument;, score: number;
   metadata?: { [key: string]: any };
@@ -17,15 +17,15 @@ export interface RerankingConfig {
   useSemanticSimilarity?: boolean;
 }
 
-export interface ScoredResult { document: LegalDocument;, originalScore: number;
+export interface ScoredResult {, document: LegalDocument;, originalScore: number;
   rerankScore: number;
   combinedScore: number;
-  metadata: { modelUsed: string;, processingTime: number;
+  metadata: {, modelUsed: string;, processingTime: number;
     confidence: number;
   };
 }
 
-export interface CrossEncoderConfig { model: string;, maxResults: number;
+export interface CrossEncoderConfig {, model: string;, maxResults: number;
   scoreWeight: number;
   batchSize: number;
   timeout: number;
@@ -35,7 +35,7 @@ export interface CrossEncoderConfig { model: string;, maxResults: number;
 
 export class CrossEncoderReranker {
   private config: CrossEncoderConfig;
-  private modelCache: Map<string, any> = new Map();
+  private, modelCache: Map<string, any> = new Map();
   private scoreCache: Map<string, number> = new Map();
 
   constructor(config: Partial<CrossEncoderConfig> = {}) {
@@ -84,8 +84,8 @@ export class CrossEncoderReranker {
         return rebuilt;
       });
     } catch (error: any) {
-      // Changed to unknown
-      console.error('[CrossEncoder] Reranking failed:', error instanceof Error ? error.message : String(error));
+      // Changed to: unknown
+      console.error('[CrossEncoder] Reranking, failed:', error instanceof Error ? error.message : String(error));
       if (this.config.fallbackEnabled) {
         console.warn('[CrossEncoder] Falling back to original scores');
         return results;
@@ -117,14 +117,14 @@ export class CrossEncoderReranker {
           rerankScore,
           combinedScore: 0, // computed later
           metadata: {
-            modelUsed: this.config.model,
+           , modelUsed: this.config.model,
             processingTime: Date.now() - batchStartTime,
             confidence: this.calculateConfidence(rerankScore)
           }
         };
       });
     } catch (error: any) {
-      // Changed to unknown
+      // Changed to: unknown
       console.warn(
         '[CrossEncoder] Batch processing failed, using lexical fallback',
         error instanceof Error ? error.message : String(error)
@@ -138,7 +138,7 @@ export class CrossEncoderReranker {
           rerankScore: fallbackScore,
           combinedScore: 0,
           metadata: {
-            modelUsed: 'lexical-fallback',
+           , modelUsed: 'lexical-fallback',
             processingTime: Date.now() - batchStartTime,
             confidence: 0.3
           }
@@ -265,7 +265,7 @@ Scores: ';'
       result.content || '',
       result.summary || '',
       result.excerpt || '',
-      (result.document && (result.document as any).content) || '',
+      (result.document && (result.document as: any).content) || '',
     ].filter(Boolean);
     return parts.join(' ').trim();
   }
@@ -293,13 +293,13 @@ Scores: ';'
   }
 
   getCacheStats(): { scoreCache: number; modelCache: number } {
-    return { scoreCache: this.scoreCache.size, modelCache: this.modelCache.size };
+    return {, scoreCache: this.scoreCache.size, modelCache: this.modelCache.size };
   }
 }
 
 // Convenience function for quick reranking
 export async function rerankSearchResults(
-  query: string,
+ , query: string,
   results: SearchResult[],
   config: Partial<CrossEncoderConfig> = {}
 ): Promise<SearchResult[]> {
@@ -312,13 +312,13 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
   try {
     const mockResults: SearchResult[] = [
       {
-        id: 'doc1',
+       , id: 'doc1',
         title: 'Contract Formation Requirements',
         content: 'A valid contract requires offer, acceptance, and consideration.',
         score: 0.6,
         rank: 1,
         document: {
-          id: 'doc1',
+         , id: 'doc1',
           title: 'Contract Formation Requirements',
           documentType: 'contract',
           content: 'A valid contract requires offer, acceptance, and consideration.' }'` },'`
@@ -329,7 +329,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
         score: 0.8,
         rank: 2,
         document: {
-          id: 'doc2',
+         , id: 'doc2',
           title: 'Employment Termination',
           documentType: 'case',
           content: `Employment can be terminated with proper notice.` }
@@ -341,7 +341,7 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
         score: 0.4,
         rank: 3,
         document: {
-          id: 'doc3',
+         , id: 'doc3',
           title: 'Property Rights',
           documentType: 'case',
           content: `Property ownership includes the right to exclude others.` }

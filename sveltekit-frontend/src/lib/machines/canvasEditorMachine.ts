@@ -2,7 +2,7 @@
  * Canvas Editor State Machine (XState v5)
  * Manages canvas editor state with collaboration, history, and auto-save
  */
-import { createMachine, assign } from 'xstate';
+import { createMachine, assign } from, 'xstate';
 export interface CanvasEditorContext { reportId: string;, canvasState: any | null;
   selectedObjects: any[];
   history: string[];
@@ -28,10 +28,10 @@ export type CanvasEditorEvent =
   | { type: 'COLLABORATION_DISABLED' }
   | { type: 'REMOTE_CHANGE'; change: any };
 export const canvasEditorMachine = createMachine({
-  id: 'canvasEditor',
+ , id: 'canvasEditor',
   initial: 'idle',
   context: {
-    reportId: '',
+   , reportId: '',
     canvasState: null,
     selectedObjects: [],
     history: [],
@@ -40,7 +40,7 @@ export const canvasEditorMachine = createMachine({
     isCollaborating: false,
     lastSaved: null
   } as CanvasEditorContext,
-  states: { idle: {, on: {
+  states: {, idle: {, on: {
        , CANVAS_INITIALIZED: 'ready'
       }
     },
@@ -54,16 +54,16 @@ export const canvasEditorMachine = createMachine({
                 }
               }
             },
-            selected: { on: {, SELECT_OBJECT: {
-                  target: 'selected',
+            selected: {, on: {, SELECT_OBJECT: {
+                 , target: 'selected',
                   actions: assign({
-                    selectedObjects: ({ event }) => [event.object]
+                   , selectedObjects: ({ event }) => [event.object]
                   })
                 },
                 DESELECT: {
-                  target: 'none',
+                 , target: 'none',
                   actions: assign({
-                    selectedObjects: []
+                   , selectedObjects: []
                   })
                 }
               }
@@ -71,9 +71,9 @@ export const canvasEditorMachine = createMachine({
           }
         },
         history: {
-          initial: 'idle',
-          states: { idle: {, on: { ADD_TO_HISTORY: {, actions: assign({
-                    history: ({ context, event }) => {
+         , initial: 'idle',
+          states: {, idle: {, on: {, ADD_TO_HISTORY: {, actions: assign({
+                   , history: ({ context, event }) => {
                       const newHistory = context.history.slice(0, context.historyIndex + 1);
                       newHistory.push(event.state);
                       return newHistory;
@@ -81,10 +81,10 @@ export const canvasEditorMachine = createMachine({
                     historyIndex: ({ context }) => context.historyIndex + 1
                   })
                 },
-                UNDO: { actions: assign({, historyIndex: ({ context }) => Math.max(0, context.historyIndex - 1)
+                UNDO: {, actions: assign({, historyIndex: ({ context }) => Math.max(0, context.historyIndex - 1)
                   })
                 },
-                REDO: { actions: assign({, historyIndex: ({ context }) => Math.min(context.history.length - 1, context.historyIndex + 1)
+                REDO: {, actions: assign({, historyIndex: ({ context }) => Math.min(context.history.length - 1, context.historyIndex + 1)
                   })
                 }
               }
@@ -92,51 +92,51 @@ export const canvasEditorMachine = createMachine({
           }
         },
         saving: {
-          initial: 'idle',
-          states: { idle: {, on: {
-                SAVE_START: 'saving'
+         , initial: 'idle',
+          states: {, idle: {, on: {
+               , SAVE_START: 'saving'
               }
             },
-            saving: { on: {, SAVE_SUCCESS: {
-                  target: 'idle',
+            saving: {, on: {, SAVE_SUCCESS: {
+                 , target: 'idle',
                   actions: assign({
-                    canvasState: ({ event }) => event.state,
+                   , canvasState: ({ event }) => event.state,
                     lastSaved: () => new Date(),
                     error: null
                   })
                 },
                 SAVE_ERROR: {
-                  target: 'error',
+                 , target: 'error',
                   actions: assign({
-                    error: ({ event }) => event.error?.message || 'Save failed'
+                   , error: ({ event }) => event.error?.message || 'Save failed'
                   })
                 }
               }
             },
-            error: { on: {, SAVE_START: 'saving'
+            error: {, on: {, SAVE_START: 'saving'
               }
             }
           }
         },
         collaboration: {
-          initial: 'disabled',
-          states: { disabled: {, on: { COLLABORATION_ENABLED: {, target: 'enabled',
+         , initial: 'disabled',
+          states: {, disabled: {, on: {, COLLABORATION_ENABLED: {, target: 'enabled',
                   actions: assign({
-                    isCollaborating: true
+                   , isCollaborating: true
                   })
                 }
               }
             },
-            enabled: { on: {, COLLABORATION_DISABLED: {
-                  target: 'disabled',
+            enabled: {, on: {, COLLABORATION_DISABLED: {
+                 , target: 'disabled',
                   actions: assign({
-                    isCollaborating: false
+                   , isCollaborating: false
                   })
                 },
                 REMOTE_CHANGE: {
                   actions: assign({
                     // Handle remote changes
-                    canvasState: ({ context, event }) => {
+                   , canvasState: ({ context, event }) => {
                       // Merge remote changes
                       return { ...context.canvasState, ...event.change };
                     }
@@ -147,8 +147,8 @@ export const canvasEditorMachine = createMachine({
           }
         }
       },
-      on: { STATE_LOADED: {, actions: assign({
-            canvasState: ({ event }) => event.state
+      on: {, STATE_LOADED: {, actions: assign({
+           , canvasState: ({ event }) => event.state
           })
         },
         TOOL_CHANGED: {

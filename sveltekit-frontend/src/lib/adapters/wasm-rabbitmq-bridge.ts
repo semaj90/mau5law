@@ -3,9 +3,9 @@
  * Connects RabbitMQ message processing with WebAssembly vector operations
  * Enables high-performance tensor processing within RabbitMQ workflows
  */
-import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
-import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service';
-import { enhanceRabbitMQMessage, parseVectorData } from '$lib/simd/simd-json-integration.js';
+import { rabbitmqServiceWorker } from, '$lib/workers/rabbitmq-service-worker.js';
+import type { MessageHandler } from, '$lib/server/messaging/rabbitmq-service';
+import { enhanceRabbitMQMessage, parseVectorData } from, '$lib/simd/simd-json-integration.js';
 // WebAssembly module cache
 let wasmModule: WebAssembly.WebAssemblyInstantiatedSource | null = null;
 let wasmReady = $state<boolean>(false);
@@ -46,7 +46,7 @@ export function createWASMHandler(
       const simdEnhancedMessage = enhanceRabbitMQMessage(message);
       // Check if message requires WASM acceleration
       if (shouldUseWASM(simdEnhancedMessage) && wasmReady && wasmModule) {
-        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown` }`);'`
+        console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage, as: any)?.type || 'unknown` }`);'`
         // Enhance message with WASM capabilities
         const enhancedMessage = await enhanceMessageWithWASM(simdEnhancedMessage, wasmOperations);
         // Process with WASM-enhanced context

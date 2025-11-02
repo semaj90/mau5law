@@ -1,11 +1,11 @@
-import crypto from "crypto";
-import Fuse from "fuse.js";
-import type { Writable } from 'svelte/store';
-import { derived, writable, get } from 'svelte/store'; // Added: 'get'
+import crypto from, "crypto";
+import Fuse from, "fuse.js";
+import type { Writable } from, 'svelte/store';
+import { derived, writable, get } from, 'svelte/store'; // Added: 'get'
 
 // New small types to avoid: 'any'
 type ISODateString = string;
-export interface ChainOfCustodyEntry { actor: string;, action: 'collected' | 'transferred' | 'analyzed' | 'sealed' | string;
+export interface ChainOfCustodyEntry {, actor: string;, action: 'collected' | 'transferred' | 'analyzed' | 'sealed' | string;
   timestamp: ISODateString | Date;
   notes?: string;
   location?: string;
@@ -14,7 +14,7 @@ export interface ChainOfCustodyEntry { actor: string;, action: 'collected' | 't
 export interface LabAnalysis {
   reportId?: string;
   summary?: string;
-  findings?: Array<{ test: string; result: string; confidence?: number }>;
+  findings?: Array<{ test: string;, result: string; confidence?: number }>;
   performedAt?: ISODateString | Date;
   performedBy?: string;
 }
@@ -34,11 +34,11 @@ export interface CanvasPosition { x: number;, y: number;
 }
 
 // === TYPES ===
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence {, id: string;, caseId: string;
   criminalId?: string;
   title: string;
   description?: string;
-  type: string; // Required property for compatibility,
+ , type: string; // Required property for compatibility,
   evidenceType: string;
   fileType?: string;
   subType?: string;
@@ -61,19 +61,19 @@ export interface Evidence { id: string;, caseId: string;
   confidentialityLevel: string;
   canvasPosition: CanvasPosition; // tightened type
   uploadedBy: string;
-  uploadedAt: ISODateString | Date; // allow string from API or Date
-  updatedAt: ISODateString | Date; // allow string from API or Date
+  uploadedAt: ISODateString | Date; // allow: string from API or Date
+  updatedAt: ISODateString | Date; // allow: string from API or Date
   // Add missing properties for compatibility
-  analysis?: { summary: string;, keyPoints: string[];
+  analysis?: {, summary: string;, keyPoints: string[];
     relevance: number;
     admissibility: 'admissible' | 'questionable' | 'inadmissible';
     reasoning: string;
     suggestedTags: string[];
   };
 }
-export interface UploadFile { id: string;, file: File;
+export interface UploadFile {, id: string;, file: File;
   progress: number;
-  status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
+ , status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error';
   preview?: string;
   extractedText?: string;
   aiAnalysis?: any;
@@ -99,7 +99,7 @@ export interface EvidenceGridState { items: Evidence[];, searchQuery: string;
   error?: string;
 }
 
-export interface UploadModalState { isOpen: boolean;, files: UploadFile[];
+export interface UploadModalState {, isOpen: boolean;, files: UploadFile[];
   step: 'select' | 'preview' | 'uploading' | 'completed';
   isProcessing: boolean;
   caseId?: string;
@@ -109,7 +109,7 @@ export interface UploadModalState { isOpen: boolean;, files: UploadFile[];
 // === STORES ===
 // Evidence Grid Store
 export const evidenceGrid: Writable<EvidenceGridState> = writable({
-  items: [],
+ , items: [],
   searchQuery: '',
   filteredItems: [],
   sortBy: 'uploadedAt',
@@ -120,7 +120,7 @@ export const evidenceGrid: Writable<EvidenceGridState> = writable({
 });
 // Upload Modal Store
 export const uploadModal: Writable<UploadModalState> = writable({
-  isOpen: false,
+ , isOpen: false,
   files: [],
   step: 'select',
   isProcessing: false
@@ -130,7 +130,7 @@ let fuseInstance: Fuse<Evidence> | null = null;
 let lastItemsLength = 0;
 const fuseOptions = {
   keys: [
-    { name: 'title', weight: 0.3 },
+    {, name: 'title', weight: 0.3 },
     { name: 'description', weight: 0.2 },
     { name: 'tags', weight: 0.2 },
     { name: 'evidenceType', weight: 0.1 },
@@ -163,22 +163,22 @@ export const filteredEvidence = derived(evidenceGrid, $evidenceGrid => {
 
   filtered.sort((a, b) => {
     let aVal: string | number = '';
-    let bVal: string | number = '';
+    let, bVal: string | number = '';
 
     switch (sortBy) {
-      case 'title':
+      case, 'title':
         aVal = (a.title || '').toLowerCase();
         bVal = (b.title || '').toLowerCase();
         break;
-      case 'evidenceType':
+      case, 'evidenceType':
         aVal = (a.evidenceType || '').toLowerCase();
         bVal = (b.evidenceType || '').toLowerCase();
         break;
-      case 'fileSize':
+      case, 'fileSize':
         aVal = a.fileSize ?? 0;
         bVal = b.fileSize ?? 0;
         break;
-      case 'uploadedAt':
+      case, 'uploadedAt':
       default:
         aVal = toTime(a.uploadedAt);
         bVal = toTime(b.uploadedAt);
@@ -224,7 +224,7 @@ export const evidenceActions = {
         isLoading: false
       }));
     } catch (error: any) {
-      // Changed: 'any'; to: 'unknown'
+      // Changed: 'any';, to: 'unknown'
       evidenceGrid.update(state => ({
         ...state,
         isLoading: false,
@@ -274,7 +274,7 @@ export const evidenceActions = {
       }));
     } catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('Delete evidence error:', error);'
+      console.error('Delete evidence, error:', error);'
       throw error;
     }
   }
@@ -307,7 +307,7 @@ export const uploadActions = {
   addFiles(files: FileList | File[]) {
     const fileArray = Array.from(files);
     const uploadFiles: UploadFile[] = fileArray.map(file => ({
-      id: crypto.randomUUID(),
+     , id: crypto.randomUUID(),
       file,
       progress: 0,
       status: `pending` }));
@@ -322,7 +322,7 @@ export const uploadActions = {
         reader.onload = (e: ProgressEvent<FileReader>) => {
           uploadModal.update(state => ({
             ...state,
-            files: state.files.map(f => (f.id === uploadFile.id ? { ...f, preview: e.target?.result as string } : f))
+            files: state.files.map(f => (f.id === uploadFile.id ? { ...f, preview: e.target?.result, as: string } : f))
           }));
         };
         reader.readAsDataURL(uploadFile.file);

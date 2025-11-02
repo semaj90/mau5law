@@ -1,7 +1,7 @@
 /**
- * TensorRT-LLM + Triton Inference Client - Phase 3
+ * TensorRT-LLM + Triton Inference Client - Phase, 3
  */
-import type { AIProvider, InferenceRequest, InferenceResponse } from '../../types/ai-provider';
+import type { AIProvider, InferenceRequest, InferenceResponse } from, '../../types/ai-provider';
 
 export interface TritonConfig {
   httpUrl: string;
@@ -12,7 +12,7 @@ export interface TritonConfig {
 
 export class TritonInferenceClient implements AIProvider {
   public modelName: string;
-  private httpUrl: string;
+  private, httpUrl: string;
   private isHealthy = $state(false);
 
   constructor(config: TritonConfig) {
@@ -37,7 +37,7 @@ export class TritonInferenceClient implements AIProvider {
 
   async generate(request: InferenceRequest): Promise<InferenceResponse> {
     const startTime = Date.now();
-    return { text: '[TensorRT not yet implemented]', model: this.modelName, latency: Date.now() - startTime, tokens: { prompt: 0, completion: 0, total: 0 } };
+    return { text: '[TensorRT not yet implemented]', model: this.modelName, latency: Date.now() - startTime, tokens: {, prompt: 0, completion: 0, total: 0 } };
   }
 
   async embed(): Promise<Float32Array> {

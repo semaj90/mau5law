@@ -325,7 +325,7 @@
           w-6 h-6 rounded-full transition-all duration-200
           ${styles.suggestion}
         `}
-        transition:scale={{ duration: 150 }}
+        use:scale={{ duration: 150 }}
       >
         ✕
       </button>
@@ -336,7 +336,7 @@
         {#each searchTerms as term, index}
           <div
             class="px-2 py-1 bg-green-400/20 border border-green-400/30 rounded text-xs text-green-400"
-            transition:fly={{ x: 20, delay: index * 100 }}
+            use:fly={{ x: 20, delay: index * 100 }}
           >
             {term}
           </div>
@@ -352,7 +352,7 @@
         ${styles.container}
         ${theme === 'yorha' ? 'font-mono' : ''}
       `}
-      transition:fly={{ y: -10, duration: 200 }}
+      use:fly={{ y: -10, duration: 200 }}
     >
       {#each allSuggestions() as suggestion, index}
         <button

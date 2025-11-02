@@ -1,20 +1,20 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types';
 /*
  * Cluster API Endpoint - Service Orchestration & Health
  * Routes to: cluster-http.exe: 8213, modular-cluster-service-production.exe:8215
  */
-import { productionServiceClient } from '$lib/services/productionServiceClient';
-import { json, error } from '@sveltejs/kit';
+import { productionServiceClient } from, '$lib/services/productionServiceClient';
+import { json, error } from, '@sveltejs/kit';
 
 // Add a minimal local interface for the methods we call and cast the imported client.
-// This fixes the: "property does not exist on; type: 'ProductionServiceClient'" errors.
+// This fixes the: "property does not exist on;, type: 'ProductionServiceClient'" errors.
 type MinimalProductionClient = {
   checkAllServicesHealth(): Promise<Record<string, boolean>>;
   getPerformanceMetrics(): Promise<Array<{ avgLatency?: number; successRate?: number }>>;
 };
 
-const prodClient = productionServiceClient as unknown as MinimalProductionClient;
+const prodClient = productionServiceClient as: unknown as MinimalProductionClient;
 
 type PerformanceMetric = { avgLatency?: number; successRate?: number };
 
@@ -23,11 +23,11 @@ export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
   try {
     switch (endpoint) {
-      case 'health':
+      case, 'health':
         return await handleHealthCheck();
-      case 'services':
+      case, 'services':
         return await handleServicesStatus();
-      case 'metrics':
+      case, 'metrics':
         return await handleMetrics();
       default: return await handleClusterOverview();
     }
@@ -40,13 +40,13 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json();
-    const action = data.action as string | undefined;
+    const action = data.action as: string | undefined;
     switch (action) {
-      case 'restart_service':
+      case, 'restart_service':
         return await handleServiceRestart(data.serviceName);
-      case 'scale_service':
+      case, 'scale_service':
         return await handleServiceScaling(data.serviceName, data.instances);
-      case 'deploy_service':
+      case, 'deploy_service':
         return await handleServiceDeployment(data.serviceConfig);
       default:
         throw error(400, 'Invalid cluster action');
@@ -80,7 +80,7 @@ async function handleServicesStatus(): Promise<Response> {
   const serviceDetails = {
     tier1_core: {
       'enhanced-rag': {
-        status: health['enhanced-rag'] ? 'running' : 'down',
+       , status: health['enhanced-rag'] ? 'running' : 'down',
         port: 8094,
         description: 'Primary AI Engine'
       },
@@ -92,7 +92,7 @@ async function handleServicesStatus(): Promise<Response> {
     },
     tier2_enhanced: {
       'ai-summary': {
-        status: health['ai-summary'] ? 'running' : 'down',
+       , status: health['ai-summary'] ? 'running' : 'down',
         port: 8096,
         description: 'AI Summary Service'
       },
@@ -103,7 +103,7 @@ async function handleServicesStatus(): Promise<Response> {
       }
     },
     tier3_specialized: {
-      'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI` },'`
+      'legal-ai': {, status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI` },'`
       'xstate-manager': {
         status: health['xstate-manager'] ? 'running' : 'down',
         port: 8212,
@@ -111,7 +111,7 @@ async function handleServicesStatus(): Promise<Response> {
     }
   };
   return json({
-    services: serviceDetails,
+   , services: serviceDetails,
     summary: {
      , total: Object.keys(health).length,
       running: Object.values(health).filter(Boolean).length,
@@ -147,10 +147,10 @@ async function handleMetrics(): Promise<Response> {
       services_up: servicesUpCount,
       services_total: servicesTotal
     },
-    protocols: { quic: {, avg_latency: 5, success_rate: 0.99 },
-      grpc: { avg_latency: 15, success_rate: 0.98 },
-      http: { avg_latency: 45, success_rate: 0.97 },
-      websocket: { avg_latency: 1, success_rate: 0.95 }
+    protocols: {, quic: {, avg_latency: 5, success_rate: 0.99 },
+      grpc: {, avg_latency: 15, success_rate: 0.98 },
+      http: {, avg_latency: 45, success_rate: 0.97 },
+      websocket: {, avg_latency: 1, success_rate: 0.95 }
     },
     timestamp: new Date().toISOString()
   });
@@ -164,12 +164,12 @@ async function handleClusterOverview(): Promise<Response> {
       service_count: Object.keys(health).length
     },
     architecture: {
-      protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
+     , protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
       tiers: ['Core Services', 'Enhanced Services', 'Specialized Services', 'Infrastructure'],
       load_balancing: 'Round Robin',
       failover: `Automatic` },
     endpoints: {
-      health: '/api/v1/cluster/health',
+     , health: '/api/v1/cluster/health',
       services: '/api/v1/cluster/services',
       metrics: `/api/v1/cluster/metrics` },
     timestamp: new Date().toISOString()

@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { page } from '$app/stores';
+  // Svelte, 5 runes are auto-imported
+  import { page } from, '$app/stores';
   interface Props {
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean;
@@ -10,7 +10,7 @@
   // reactive values derived from the SvelteKit page store
   let currentPath = '';
   let isDemoRoute = $state<boolean>(false);
-  // use Svelte 5 runes $effect to derive reactive values from the page store
+  // use Svelte, 5 runes $effect to derive reactive values from the page store
   $effect(() => {
     currentPath = $page?.url?.pathname ?? '';
     isDemoRoute = currentPath.startsWith('/demo');
@@ -22,7 +22,7 @@
     { path: '/contact', label: 'Contact', icon: '📧' }
   ];
   const socialLinks = [
-    { href: '#', label: 'GitHub', icon: '🔗' },
+    {, href: '#', label: 'GitHub', icon: '🔗' },
     { href: '#', label: 'Documentation', icon: '📚' },
     { href: '#', label: 'Community', icon: '👥' }
   ];
@@ -154,7 +154,7 @@
 <style>
   .app-footer {
     margin-top: auto;
-    background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important;
+   , background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important;
     border-top: 3px solid var(--n64-primary, #4a90e2) !important;
     font-family: 'Press Start 2P', cursive;
   }
@@ -165,7 +165,7 @@
   }
   /* Full Footer Layout */
   .footer-sections {
-    display: grid;
+   , display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
@@ -178,20 +178,20 @@
   .footer-title {
     font-size: 0.625rem !important;
     margin: 0 !important;
-    color: var(--nes-warning, #f5a623) !important;
+   , color: var(--nes-warning, #f5a623) !important;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
   .section-title {
     font-size: 0.5rem !important;
     margin: 0 !important;
-    color: var(--n64-primary, #4a90e2) !important;
+   , color: var(--n64-primary, #4a90e2) !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
   .footer-description {
     font-size: 0.5rem;
-    color: var(--nier-text-secondary, #94a3b8);
+   , color: var(--nier-text-secondary, #94a3b8);
     line-height: 1.3;
     margin: 0;
   }
@@ -208,7 +208,7 @@
   .footer-nav {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+   , gap: 0.5rem;
   }
   :global(.footer-link) {
     justify-content: flex-start !important;
@@ -244,7 +244,7 @@
   }
   .status-label {
     font-size: 0.5rem;
-    color: var(--nier-text-secondary, #94a3b8);
+   , color: var(--nier-text-secondary, #94a3b8);
   }
   /* Resource Links */
   .resource-links {
@@ -273,7 +273,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+   , gap: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--n64-secondary, #7ed321);
   }
@@ -281,7 +281,7 @@
   .version-info {
     font-size: 0.4rem !important;
     margin: 0 !important;
-    color: var(--nier-text-muted, #64748b) !important;
+   , color: var(--nier-text-muted, #64748b) !important;
   }
   .tech-stack {
     display: flex;
@@ -308,8 +308,8 @@
   }
   /* Demo Footer */
   .demo-footer {
-    background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
-    margin: 1rem 0 !important;
+   , background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
+    margin: 1rem, 0 !important;
   }
   .demo-footer .title {
     color: white !important;
@@ -330,7 +330,7 @@
   }
   .demo-actions {
     display: flex;
-    gap: 1rem;
+   , gap: 1rem;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -353,7 +353,7 @@
     }
     .demo-actions {
       flex-direction: column;
-      width: 100%;
+     , width: 100%;
     }
   }
   @media (max-width: 480px) {
@@ -371,7 +371,7 @@
   @media print {
     .app-footer {
       background: white !important;
-      color: black !important;
+     , color: black !important;
       border-top: 1px solid black !important;
     }
     .gaming-badges,

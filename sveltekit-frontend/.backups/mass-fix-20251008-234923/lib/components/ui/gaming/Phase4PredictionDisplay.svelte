@@ -105,7 +105,7 @@
     </button>
   </div>
   {#if loading}
-    <div class="loading-container" transition:fade>
+    <div class="loading-container" use:fade>
       <div class="loading-spinner {consoleTheme}"></div>
       <p>Analyzing case data...</p>
       <div class="loading-bar">
@@ -113,7 +113,7 @@
       </div>
     </div>
   {:else if error}
-    <div class="error-container" transition:fade>
+    <div class="error-container" use:fade>
       <div class="error-icon">❌</div>
       <p class="error-message">{error}</p>
       <button class="retry-btn nes-btn is-error" onclick={loadPrediction}> Retry Analysis </button>
@@ -229,7 +229,7 @@
       </div>
     </div>
   {:else}
-    <div class="empty-state" transition:fade>
+    <div class="empty-state" use:fade>
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
       <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}> Analyze Case </button>

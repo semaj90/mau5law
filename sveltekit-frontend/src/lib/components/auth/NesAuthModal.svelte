@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  // NES Auth Modal - Svelte 5 compatible
+  // Svelte, 5 runes are auto-imported
+  // NES Auth Modal - Svelte, 5 compatible
   interface Props {
     open?: boolean;
     title?: string;
@@ -8,7 +8,7 @@
     onSubmit?: (payload: {, email: string;, password: string }) => void;
     form?: any;
   }
-  // Svelte 5 runes - props via $props()
+  // Svelte, 5 runes - props via $props()
   let {
     open = $bindable(false),
     title = 'Sign in',

@@ -2,9 +2,9 @@
  * Enhanced RAG API Endpoint
  * GPU-accelerated RAG queries with semantic embeddings
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { gpuEmbeddingService } from, '$lib/services/gpu-semantic-embedding-service';
 
 interface RAGRequest { query: string;, documents: string[];
   options?: {
@@ -16,11 +16,11 @@ interface RAGRequest { query: string;, documents: string[];
   };
 }
 
-type SimilarDoc = { index: number;, score: number;
+type SimilarDoc = {, index: number;, score: number;
   document: string;
 };
 
-type RAGContext = { similarDocs: SimilarDoc[];, processingTime: number;
+type RAGContext = {, similarDocs: SimilarDoc[];, processingTime: number;
   metadata: {
     model?: string;
     gpuUsed?: boolean;
@@ -29,7 +29,7 @@ type RAGContext = { similarDocs: SimilarDoc[];, processingTime: number;
 };
 
 /* POST /api/v1/embeddings/rag */
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const ragRequest: RAGRequest = await request.json();
 
@@ -77,19 +77,19 @@ export const POST: RequestHandler = async ({ request }) => {
       const isRecord = (v: any): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
       const extractFirstEmbedding = (resp: any): any | undefined => {
-        if (!isRecord(resp)) return undefined;
+        if (!isRecord(resp)) return: undefined;
         const maybeEmb = resp['embeddings'];
         if (Array.isArray(maybeEmb) && maybeEmb.length) return maybeEmb[0];
         const maybeData = resp['data'];
         if (Array.isArray(maybeData) && maybeData.length) return maybeData[0];
-        return undefined;
+        return: undefined;
       };
 
       // Request embeddings for each document individually and extract the first embedding from each response
       const docsEmbeddingsRaw = await Promise.all(
         ragRequest.documents.map(async doc => {
-          const res: any = await gpuEmbeddingService
-            .generateEmbeddings({, text: doc as string, model: modelName })
+          const, res: any = await gpuEmbeddingService
+            .generateEmbeddings({, text: doc, as: string, model: modelName })
             .catch(() => ({}));
           return extractFirstEmbedding(res);
         })
@@ -97,21 +97,21 @@ export const POST: RequestHandler = async ({ request }) => {
 
       // Single query embedding
       const queryResp: any = await gpuEmbeddingService
-        .generateEmbeddings({ text: ragRequest.query, model: modelName })
+        .generateEmbeddings({, text: ragRequest.query, model: modelName })
         .catch(() => ({}));
       const queryEmbeddingsRaw = queryResp ? [extractFirstEmbedding(queryResp)] : [];
 
       const docEmbeddingsRaw = docsEmbeddingsRaw;
 
       const toFloat = (v: any): Float32Array | null => {
-        if (!v) return null;
+        if (!v) return: null;
         if (v instanceof Float32Array) return v;
-        if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as number[]);
-        return null;
+        if (Array.isArray(v) && v.every(n => typeof n === 'number')) return new Float32Array(v as: number[]);
+        return: null;
       };
 
       const qVec = toFloat(queryEmbeddingsRaw[0]);
-      const docVecs = (docEmbeddingsRaw as unknown[]).map(toFloat);
+      const docVecs = (docEmbeddingsRaw as: unknown[]).map(toFloat);
 
       const cosine = (a: Float32Array, b: Float32Array): number => {
         let dot = 0,
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarDocs: sorted,
         processingTime: Math.round((performance.now() - embedStart) * 1000) / 1000,
         metadata: {
-          model: modelName,
+         , model: modelName,
           gpuUsed: !!useGPU,
           vectorDimensions: qVec ? qVec.length : null
         }
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: context.metadata ?? {}
         },
         options: {
-          model: ragRequest.options?.model || 'gemma3-legal:latest',
+         , model: ragRequest.options?.model || 'gemma3-legal:latest',
           contextLimit: ragRequest.options?.contextLimit ?? 5,
           temperature: ragRequest.options?.temperature ?? 0.7,
           threshold: ragRequest.options?.threshold ?? 0.4,
@@ -211,38 +211,38 @@ export const GET: RequestHandler = async () => {
       'Configurable context limits and similarity thresholds',
       'Performance telemetry and monitoring',
     ],
-    parameters: { query: {, type: 'string',
+    parameters: {, query: {, type: 'string',
         required: true,
         description: 'The user query or question'
       },
       documents: {
-        type: 'string[]',
+       , type: 'string[]',
         required: true,
         description: 'Array of documents to use as context'
       },
       options: {
-        type: 'object',
+       , type: 'object',
         required: false,
-        properties: { useGPU: {, type: 'boolean', default: true, description: 'Enable GPU acceleration' },
+        properties: {, useGPU: {, type: 'boolean', default: true, description: 'Enable GPU acceleration' },
           model: {
-            type: 'string',
+           , type: 'string',
             default: 'gemma3-legal:latest',
             description: 'RAG model to use'
           },
-          contextLimit: { type: 'number', default: 5, description: 'Maximum documents in context' },
+          contextLimit: {, type: 'number', default: 5, description: 'Maximum documents in context' },
           temperature: {
-            type: 'number',
+           , type: 'number',
             default: 0.7,
             description: 'Response creativity (0.0-1.0)'
           },
-          threshold: { type: 'number', default: 0.4, description: 'Minimum similarity threshold' }'` }'`
+          threshold: {, type: 'number', default: 0.4, description: 'Minimum similarity threshold' }'` }'`
       }
     },
     response: {
-      success: 'boolean',
+     , success: 'boolean',
       query: 'string',
       context: {
-        similarDocs: [
+       , similarDocs: [
           {,
             document: 'string',
             score: 'number',
@@ -250,25 +250,25 @@ export const GET: RequestHandler = async () => {
         ],
         processingTime: 'number',
         metadata: {
-          model: 'string',
+         , model: 'string',
           gpuUsed: 'boolean',
           vectorDimensions: `number` }
       },
       options: `object` },
     integration: {
-      embeddingModel: 'embeddinggemma:latest',
+     , embeddingModel: 'embeddinggemma:latest',
       ragService: 'http://localhost:8094/api/rag',
       gpuSupport: true,
       telemetryEnabled: true
     },
-    examples: { request: {, query: 'What are the key terms in this contract?',
+    examples: {, request: {, query: 'What are the key terms in this contract?',
         documents: [
           'This agreement shall be binding upon all parties...',
-          'Payment terms are net 30 days from invoice date...',
-          'Either party may terminate with 30 days notice...',
+          'Payment terms are net, 30 days from invoice date...',
+          'Either party may terminate with, 30 days notice...',
         ],
         options: {
-          useGPU: true,
+         , useGPU: true,
           model: 'gemma3-legal:latest',
           contextLimit: 3,
           temperature: 0.7,

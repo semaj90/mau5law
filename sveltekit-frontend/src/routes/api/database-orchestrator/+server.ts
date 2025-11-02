@@ -1,11 +1,11 @@
-import { sql, desc } from 'drizzle-orm';
-import { eq } from '$lib/server/db/utils';
-import type { RequestHandler } from './$types.js';
+import { sql, desc } from, 'drizzle-orm';
+import { eq } from, '$lib/server/db/utils';
+import type { RequestHandler } from, './$types.js';
 // Database Orchestrator API - Complete Integration with Event Loops and Context7
 // Provides REST API for database orchestrator management and real-time operations
 databaseOrchestrator; // alias exported in orchestrator stub
-import { db } from '$lib/server/db/drizzle';
-import { cases, evidence, legalDocuments, personsOfInterest } from 'drizzle-orm';
+import { db } from, '$lib/server/db/drizzle';
+import { cases, evidence, legalDocuments, personsOfInterest } from, 'drizzle-orm';
 // GET /api/database-orchestrator - Get orchestrator status
 export const GET: RequestHandler = async () => {
   try {
@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
       status,
       timestamp: new Date().toISOString(),
       endpoints: {
-        start: 'POST /api/database-orchestrator/start',
+       , start: 'POST /api/database-orchestrator/start',
         stop: 'POST /api/database-orchestrator/stop',
         conditions: 'GET/POST /api/database-orchestrator/conditions',
         events: 'GET /api/database-orchestrator/events',
@@ -38,34 +38,34 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json();
     switch (action) {
-      case 'start':
+      case, 'start':
         await databaseOrchestrator.start();
         return json({
           success: true,
           message: 'Database orchestrator started',
           status: databaseOrchestrator.getStatus()
         });
-      case 'stop':
+      case, 'stop':
         await databaseOrchestrator.stop();
         return json({
           success: true,
           message: 'Database orchestrator stopped'
         });
-      case 'add_condition':
+      case, 'add_condition':
         databaseOrchestrator.addCondition(data.condition);
         return json({
           success: true,
           message: 'Condition added',
           condition: data.condition
         });
-      case 'remove_condition':
+      case, 'remove_condition':
         databaseOrchestrator.removeCondition(data.conditionId);
         return json({
           success: true,
           message: 'Condition removed',
           conditionId: data.conditionId
         });
-      case 'save_data':
+      case, 'save_data':
         const result = await databaseOrchestrator.saveToDatabase(data.record, data.table);
         return json({
           success: true,
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           result,
           table: data.table
         });
-      case 'query_data':
+      case, 'query_data':
         const queryResult = await databaseOrchestrator.queryDatabase(data.query, data.table);
         return json({
           success: true,
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       default: return json(
           {
-            success: false,
-            error: `Unknown; action: ${action}' },'`
+           , success: false,
+            error: `Unknown;, action: ${action}' },'`
           { status: 400 }
         );
     }

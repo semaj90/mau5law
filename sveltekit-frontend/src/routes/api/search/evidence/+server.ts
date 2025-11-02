@@ -1,19 +1,19 @@
-import type { SearchResult } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { SearchResult } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
-import { evidence } from '$lib/server/db/schema-postgres';
-import { and, desc, ilike, or, sql } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
+import { evidence } from, '$lib/server/db/schema-postgres';
+import { and, desc, ilike, or, sql } from, 'drizzle-orm';
+import { db } from, '$lib/server/db/index';
 
 export const GET: RequestHandler = async ({ url }) => {
   // declare here so catch() can access them
   let query: string | null = null;
   let caseId: string | null = null;
   let evidenceType: string | null = null;
-  let searchMode: string = 'hybrid';
+  let, searchMode: string = 'hybrid';
   let limit = 20;
 
   try {
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const startTime = Date.now();
     let results: SearchResult[] = [];
     switch (searchMode) {
-      case 'text':
+      case, 'text':
         // Fast metadata search
         results = await searchEvidenceText(query, {
           caseId,
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         });
         break;
-      case 'content':
+      case, 'content':
         // Deep content search using Qdrant
         results = await searchEvidenceContent(query, {
           caseId,
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         });
         break;
-      case 'semantic':
+      case, 'semantic':
         // PostgreSQL vector search
         results = await searchEvidenceSemantic(query, {
           caseId,
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit
         });
         break;
-      case 'hybrid':
+      case, 'hybrid':
       default:
         // Best of all worlds
         results = await searchEvidenceHybrid(query, {
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: 'mock-evidence-search-1',
             caseId: safeCaseId,
             title: 'Mock Contract Document - Search Result',
-            description: `Mock evidence search result for; query: "${safeQuery}"`,
+            description: `Mock evidence search result for;, query: "${safeQuery}"`,
             evidenceType: safeEvidenceType,
             fileName: 'mock_contract_search.pdf',
             fileUrl: '/api/evidence/mock/mock-evidence-search-1',
@@ -95,14 +95,14 @@ export const GET: RequestHandler = async ({ url }) => {
             summary: 'Mock evidence document returned due to search service failure.',
             uploadedAt: new Date(Date.now() - 86400000).toISOString(),
             similarity: 0.85,
-            searchType: safeSearchMode as any,
+            searchType: safeSearchMode, as: any,
             mockData: true
           },
           {
             id: 'mock-evidence-search-2',
             caseId: safeCaseId,
             title: 'Mock Email Communication - Search Result',
-            description: `Mock email evidence for; query: "${safeQuery}"`,
+            description: `Mock email evidence for;, query: "${safeQuery}"`,
             evidenceType: 'communication',
             fileName: 'mock_email_search.eml',
             fileUrl: '/api/evidence/mock/mock-evidence-search-2',
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
             summary: 'Mock email evidence returned due to search service failure.',
             uploadedAt: new Date(Date.now() - 172800000).toISOString(),
             similarity: 0.72,
-            searchType: safeSearchMode as any,
+            searchType: safeSearchMode, as: any,
             mockData: true
           },
         ],
@@ -144,7 +144,7 @@ type EvidenceRecord = { id: string;, caseId: string;
   // other DB columns may exist
 };
 
-type EvidenceResult = EvidenceRecord & { similarity: number;, searchType: 'text' | 'content' | 'semantic' | 'hybrid';
+type EvidenceResult = EvidenceRecord & {, similarity: number;, searchType: 'text' | 'content' | 'semantic' | 'hybrid';
   contentMatch?: string | null;
   mockData?: boolean;
 };
@@ -153,7 +153,7 @@ type QdrantHit = { payload: {; evidence_id: string;
     content_snippet?: string | null;
     // other payload fields...
   };
-  score: number;
+ , score: number;
 };
 
 // Fast text search on evidence metadata

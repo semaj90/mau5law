@@ -2,9 +2,9 @@
  * Singleton instance of VectorSearchService
  * Provides lazy initialization for the search service
  */
-import { VectorSearchService } from './vector-search-service';
-import { redis } from '$lib/server/cache/redis';
-import { db } from '$lib/server/db/client';
+import { VectorSearchService } from, './vector-search-service';
+import { redis } from, '$lib/server/cache/redis';
+import { db } from, '$lib/server/db/client';
 let serviceInstance: VectorSearchService | null = null;
 /**
  * Get or create the vector search service instance
@@ -16,7 +16,7 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
       qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
       qdrantApiKey: process.env.QDRANT_API_KEY,
       redis,
-      database: db as any, // Type casting for now - db is a Drizzle client
+      database: db, as: any, // Type casting for now - db is a Drizzle client
       cacheTtl: 3600,
       primaryProvider: 'pgvector'
     });
@@ -30,7 +30,7 @@ export async function getVectorSearchService(): Promise<VectorSearchService> {
   return serviceInstance;
 }
 /**
- * Export a proxy object that lazily initializes the service
+ * Export a proxy: object that lazily initializes the service
  */
 export const enhancedVectorSearchService = {
   async healthCheck() {

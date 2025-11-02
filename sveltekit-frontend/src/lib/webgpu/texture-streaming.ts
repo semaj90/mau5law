@@ -1,6 +1,6 @@
 // @ts-nocheck - Complex experimental service with external dependencies
 /**
- * WebGPU Texture Streaming System - Phase 14
+ * WebGPU Texture Streaming System - Phase, 14
  *
  * Lightweight 3D asset management with NES-like memory constraints:
  * - 2KB RAM for active textures
@@ -14,7 +14,7 @@ import {
   BufferTypeGuards,
   type BufferLike,
   BufferDebugUtils
-} from '../utils/buffer-conversion.js';
+} from, '../utils/buffer-conversion.js';
 // Memory constraints (Nintendo NES inspired)
 const MEMORY_CONSTRAINTS = {
   RAM: 2048, // 2KB for active textures (like NES)
@@ -24,7 +24,7 @@ const MEMORY_CONSTRAINTS = {
   SPRITE_LIMIT: 64, // Max sprites on screen
   PALETTE_COLORS: 52 // NES-like color palette
 } as const;
-export interface NESTexture { id: string;, data: ArrayBuffer;
+export interface NESTexture {, id: string;, data: ArrayBuffer;
   width: number;
   height: number;
   format: GPUTextureFormat;
@@ -32,25 +32,25 @@ export interface NESTexture { id: string;, data: ArrayBuffer;
   lastUsed: number;
   priority: number;
   compressed: boolean;
-  legalContext?: { documentType: 'contract' | 'evidence' | 'brief' | 'citation';, confidenceLevel: number;
+  legalContext?: {, documentType: 'contract' | 'evidence' | 'brief' | 'citation';, confidenceLevel: number;
     riskIndicator: boolean;
   }
 }
-export interface MemoryRegion { name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';, size: number;
+export interface MemoryRegion {, name: 'RAM' | 'CHR_ROM' | 'PRG_ROM';, size: number;
   used: number;
-  textures: Map<string, NESTexture>;
+ , textures: Map<string, NESTexture>;
 }
 export class WebGPUTextureStreamer {
   private device: GPUDevice | null = null;
   private adapter: GPUAdapter | null = null;
   private context: GPUCanvasContext | null = null;
   // NES-inspired memory regions
-  private memoryRegions: Map<string, MemoryRegion> = new Map();
+  private, memoryRegions: Map<string, MemoryRegion> = new Map();
   private textureCache: Map<string, GPUTexture> = new Map();
   private compressionWorker: Worker | null = null;
   // WebGL2 fallback
   private gl: WebGL2RenderingContext | null = null;
-  private webglTextures: Map<string, WebGLTexture> = new Map();
+  private, webglTextures: Map<string, WebGLTexture> = new Map();
   // Memory management
   private gcThreshold = 0.85; // Trigger cleanup at 85% memory usage
   private isInitialized = $state(false);
@@ -107,7 +107,7 @@ export class WebGPUTextureStreamer {
       if (!this.adapter) return false;
         this.device = await this.adapter.requestDevice({
           requiredFeatures: [],
-          requiredLimits: {} as unknown as GPUSupportedLimits
+          requiredLimits: {}, as: unknown as GPUSupportedLimits
         });
       if (canvas) {
         this.context = canvas.getContext('webgpu');
@@ -422,7 +422,7 @@ export class WebGPUTextureStreamer {
   getMemoryStats() {
     const stats = {
       total: MEMORY_CONSTRAINTS.TOTAL,
-        regions: {} as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
+        regions: {} as Record<string, { used: number; size: number; utilization: number;, textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
       isWebGL2: !!this.gl
@@ -443,7 +443,7 @@ export class WebGPUTextureStreamer {
     return stats;
   }
   private formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));

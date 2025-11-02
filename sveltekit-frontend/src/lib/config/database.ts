@@ -12,8 +12,8 @@ export interface DatabaseConfig { host: string;, port: number;
   idleTimeoutMs?: number;
   connectionTimeoutMs?: number;
 }
-export interface DatabaseUrls { connectionString: string;, appUrl: string;
-  adminUrl: string;
+export interface DatabaseUrls {, connectionString: string;, appUrl: string;
+ , adminUrl: string;
 }
 /**
  * Get database configuration from environment with smart defaults
@@ -41,28 +41,28 @@ export function getDatabaseUrls(): DatabaseUrls {
   const encodedPassword = encodeURIComponent(config.password);
   const baseUrl = `postgresql://${encodedUser}:${encodedPassword}@${config.host}:${config.port}/${config.database}`;
   return {
-    connectionString: process.env.DATABASE_URL || baseUrl,
+   , connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
     adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
   };
 }
 /**
- * Get connection string for specific service types
+ * Get, connection: string for specific service types
  */
 export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app'): string {
   const urls = getDatabaseUrls();
   switch (type) {
-    case 'admin':
-    case 'migration':
+    case, 'admin':
+    case, 'migration':
       return urls.adminUrl;
-    case 'app':
+    case, 'app':
     default: return urls.appUrl;
   }
 }
 /**
  * Validate database configuration
  */
-export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
+export function validateDatabaseConfig(): { valid: boolean;, errors: string[] } {
   const config = getDatabaseConfig();
   const errors: string[] = [];
   if (!config.host) errors.push('Database host is required');
@@ -77,7 +77,7 @@ export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
 }
 export interface PoolConfig { connectionString: string;, max: number;
   idleTimeoutMillis: number;
-  connectionTimeoutMillis: number;
+ , connectionTimeoutMillis: number;
 }
 
 /**
@@ -90,18 +90,18 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
       connectionTimeoutMillis: 10000
     },
     production: {
-      max: config.maxConnections || 20,
+     , max: config.maxConnections || 20,
       idleTimeoutMillis: config.idleTimeoutMs || 60000,
       connectionTimeoutMillis: config.connectionTimeoutMs || 5000
     },
     test: {
-      max: 2,
+     , max: 2,
       idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 5000
     }
   };
   return {
-    connectionString: getConnectionString(),
+   , connectionString: getConnectionString(),
     ...poolConfigs[environment]
   };
 }
@@ -114,7 +114,7 @@ export const DATABASE_CONSTANTS = {
   DEFAULT_DATABASE: 'legal_ai_db',
   DEFAULT_USER: 'legal_admin',
   VECTOR_DIMENSIONS: {
-    EMBEDDING_GEMMA: 768,
+   , EMBEDDING_GEMMA: 768,
     NOMIC_EMBED: 768,
     OPENAI_ADA: 1536
   }
@@ -126,7 +126,7 @@ export function getBrowserSafeDatabaseInfo(): { host: string;, port: number;
   database: string;
   user: string;
   ssl?: boolean;
-  connected: boolean;
+ , connected: boolean;
 } {
   const config = getDatabaseConfig();
   return {

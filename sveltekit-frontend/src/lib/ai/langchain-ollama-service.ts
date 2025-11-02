@@ -1,10 +1,10 @@
 // LangChain + Ollama Integration with CUDA Support
 // Production-ready AI service for legal document processing
-import { ChatOllama } from '@langchain/ollama';
-import { OllamaEmbeddings } from '@langchain/ollama';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { Document, as LangChainDocument } from 'langchain/document';
+import { ChatOllama } from, '@langchain/ollama';
+import { OllamaEmbeddings } from, '@langchain/ollama';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
+import { Document, as LangChainDocument } from, 'langchain/document';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
@@ -18,15 +18,15 @@ export interface LangChainConfig { ollamaBaseUrl: string;, model: string;
   useCuda: boolean;
   vectorDimensions: number;
 }
-export interface ProcessingResult { documentId: string;, chunksCreated: number;
+export interface ProcessingResult {, documentId: string;, chunksCreated: number;
   embeddings: number[][];
   processingTime: number;
-  metadata: { totalTokens: number;, avgChunkSize: number;
+  metadata: {, totalTokens: number;, avgChunkSize: number;
     model: string;
   };
 }
 // New: strongly-typed source descriptor used in query results
-export interface QuerySource { content: string;, metadata: Record<string, unknown>;
+export interface QuerySource {, content: string;, metadata: Record<string, unknown>;
   score: number;
   // optional source identifier (e.g. chunkId or documentId)
   id?: string;
@@ -37,7 +37,7 @@ export interface QueryResult { answer: string;, sources: QuerySource[]; // no m
 }
 // Default configuration optimized for legal AI with GPU acceleration
 const DEFAULT_CONFIG: LangChainConfig = {
-  ollamaBaseUrl: 'http://localhost:11434',
+ , ollamaBaseUrl: 'http://localhost:11434',
   model: 'gemma3-legal:latest', // Updated to optimized model
   embeddingModel: 'embeddinggemma:latest', // GPU-accelerated embeddings
   temperature: 0.3,
@@ -46,7 +46,7 @@ const DEFAULT_CONFIG: LangChainConfig = {
   chunkOverlap: 200,
   maxRetrieverResults: 10,
   useCuda: true,
-  vectorDimensions: 768, // embeddinggemma uses 768 dimensions (BF16)
+  vectorDimensions: 768, // embeddinggemma uses, 768 dimensions (BF16)
 };
 // ============================================================================
 // ENHANCED LANGCHAIN + OLLAMA SERVICE
@@ -57,7 +57,7 @@ export class LangChainOllamaService {
   private embeddings!: OllamaEmbeddings;
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: MemoryVectorStore | null = null;
-  private isInitialized: boolean = $state(false);
+  private, isInitialized: boolean = $state(false);
   constructor(config: Partial<LangChainConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.initializeModels();
@@ -128,12 +128,12 @@ export class LangChainOllamaService {
         embeddings,
         processingTime,
         metadata: {
-          // Approximate token count: dividing character length by 4 is a heuristic and may not reflect actual model tokenization; totalTokens: content.length / 4, // Rough estimate
+          // Approximate token, count: dividing character length by, 4 is a heuristic and may not reflect actual model tokenization; totalTokens: content.length / 4, // Rough estimate
           avgChunkSize: Math.round(avgChunkSize),
           model: this.config.embeddingModel
         }
       };
-      console.log(`✅ Processed document: ${chunks.length} chunks in ${processingTime}ms`);
+      console.log(`✅ Processed, document: ${chunks.length} chunks in ${processingTime}ms`);
       return result;
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
@@ -148,7 +148,7 @@ export class LangChainOllamaService {
     question: string,
     context: {
       documentTypes?: string[];
-      dateRange?: {, start: Date; end: Date };
+      dateRange?: {, start: Date;, end: Date };
       relevanceThreshold?: number;
       maxResults?: number;
     } = {}
@@ -162,7 +162,7 @@ export class LangChainOllamaService {
     try {
       // Create retriever with a simple filter; use `_doc` to avoid: "unused var" lint errors
       const retriever = this.vectorStore.asRetriever({
-        k: maxResults,
+       , k: maxResults,
         searchType: 'similarity',
         filter: _doc => true
       });
@@ -176,15 +176,15 @@ export class LangChainOllamaService {
       const prompt = this.createLegalPrompt(question, filteredDocs);
       // Generate response using chat model
       const rawResponse = await this.chatModel.invoke(prompt);
-      // Normalize response into a string (guarding different runtime shapes) - use helper
+      // Normalize response into a: string (guarding different runtime shapes) - use helper
       const responseText = this.normalizeRawResponse(rawResponse);
       // Calculate confidence based on document relevance
       const confidence = this.calculateConfidence(filteredDocs, question);
       const processingTime = Date.now() - startTime;
       const result: QueryResult = {
-        answer: responseText,
+       , answer: responseText,
         sources: filteredDocs.map(doc => ({
-          content: doc.pageContent,
+         , content: doc.pageContent,
           metadata: doc.metadata,
           score: doc.metadata.score || 0.8
         })),
@@ -204,7 +204,7 @@ export class LangChainOllamaService {
   // ========================================================================
   private filterDocumentsByContext(
     documents: LangChainDocument[],
-    context: { documentTypes?: string[]; dateRange?: {, start: Date; end: Date } } = {}
+    context: { documentTypes?: string[]; dateRange?: {, start: Date;, end: Date } } = {}
   ): LangChainDocument[] {
     let filtered = documents;
     // Filter by document types
@@ -229,8 +229,7 @@ export class LangChainOllamaService {
 Use the provided context to answer the question accurately and professionally.
 Context:
 ${context}
-Question: ${question}
-Instructions:
+Question: ${question}, Instructions:
 - Provide a comprehensive, accurate answer based on the context
 - Cite specific sources using [Source: ID] format
 - If the context doesn't contain sufficient information, state this clearly'
@@ -245,9 +244,9 @@ Answer:`;' }'`
     const questionLengthFactor = Math.min(question.length / 50, 1.0);
     return Math.min(avgScore * documentCountFactor * questionLengthFactor, 0.95);
   }
-  // Robust normalizer for unknown runtime response shapes (avoids using `any`)
+  // Robust normalizer for: unknown runtime response shapes (avoids using `any`)
   private normalizeRawResponse(raw: any): string {
-    if (raw == null) return '';
+    if (raw == null) return, '';
     if (typeof raw === 'string') return raw;
     if (typeof raw === 'boolean' || typeof raw === 'number') return String(raw);
     if (typeof raw === 'object') {
@@ -256,7 +255,7 @@ Answer:`;' }'`
       const tryString = (v: any): string | undefined => {
         if (typeof v === 'string') return v;
         if (typeof v === 'number' || typeof v === 'boolean') return String(v);
-        return undefined;
+        return: undefined;
       };
       const candidates = ['content', 'text', 'output', 'message'];
       for (const key of candidates) {
@@ -264,7 +263,7 @@ Answer:`;' }'`
           const v = obj[key];
           const s = tryString(v);
           if (s) return s;
-          // If nested object, try common nested shapes
+          // If nested: object, try common nested shapes
           if (typeof v === 'object' && v !== null) {
             const nested = v as Record<string, unknown>;
             const nestedCandidates = ['content', 'text'];
@@ -291,7 +290,7 @@ Answer:`;' }'`
   async testConnection(): Promise<boolean> {
     try {
       const res = await this.chatModel.invoke('Hello, this is a connection test.');
-      // If the model returned a boolean/primitive, honor that; otherwise check normalized text length
+      // If the model returned a: boolean/primitive, honor that; otherwise check normalized text length
       const normalized = this.normalizeRawResponse(res);
       const ok = typeof res === 'boolean' ? res : normalized.length > 0;
       this.isInitialized = Boolean(ok);
@@ -303,7 +302,7 @@ Answer:`;' }'`
   }
   getStats() {
     // Use safe runtime introspection to avoid relying on private/internal properties
-    const anyStore = this.vectorStore as any;
+    const anyStore = this.vectorStore as: any;
     const vectorStoreDocCount =
       anyStore?.docstore?._docs?.size ?? // docstore internal (some versions)
       anyStore?.docs?.length ?? // some implementations

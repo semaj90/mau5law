@@ -1,12 +1,12 @@
 // Document Update Loop Service
 // Auto re-embed and re-rank on document changes with intelligent diff detection
-import { db } from '$lib/server/db';
-import { legalDocuments, as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
-import { eq, sql, desc } from 'drizzle-orm';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { OllamaEmbeddings } from '@langchain/ollama';
-import crypto from 'crypto';
-import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
+import { db } from, '$lib/server/db';
+import { legalDocuments, as documents, documentVectors, queryVectors } from, '$lib/server/db/schema-unified';
+import { eq, sql, desc } from, 'drizzle-orm';
+import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { OllamaEmbeddings } from, '@langchain/ollama';
+import crypto from, 'crypto';
+import { VectorSearchService } from, '$lib/server/db/drizzle-vector-config';
 
 // ============================================================================
 // CONFIGURATION & TYPES
@@ -20,7 +20,7 @@ export interface DocumentChange { documentId: string;, changeType: 'content' | 
   affectedChunks?: number[];
 }
 
-export interface ReembedResult { documentId: string;, chunksUpdated: number;
+export interface ReembedResult {, documentId: string;, chunksUpdated: number;
   chunksAdded: number;
   chunksRemoved: number;
   similarityImpact: number;
@@ -28,7 +28,7 @@ export interface ReembedResult { documentId: string;, chunksUpdated: number;
   rerankedQueries: number;
 }
 
-export interface RerankingJob { queryId: string;, query: string;
+export interface RerankingJob {, queryId: string;, query: string;
   originalResults: Array<any>;
   newResults: Array<any>;
   improvement: number;
@@ -51,7 +51,7 @@ type QueryVectorRow = {
   createdAt?: Date | string;
 };
 
-// small helper to stringify unknown errors
+// small helper to, stringify: unknown errors
 function formatError(error: any): string {
   return error instanceof Error ? error.message : String(error ?? 'Unknown error');
 }
@@ -65,9 +65,9 @@ export class DocumentUpdateLoop {
   private textSplitter: RecursiveCharacterTextSplitter;
   // Placeholder for the actual queue
   private updateQueue: Array<{ documentId: string; content?: string }> = [];
-  private isProcessing: boolean = $state(false);
+  private, isProcessing: boolean = $state(false);
   private lastProcessedTimestamp: string | undefined;
-  private errorCount: number = 0;
+  private, errorCount: number = 0;
 
   /**
    * Initializes the DocumentUpdateLoop service.
@@ -105,19 +105,19 @@ export class DocumentUpdateLoop {
         throw new Error(`Document ${documentId} not found`);
       }
 
-      const oldContent = (currentDoc.extractedText as string) || '';
+      const oldContent = (currentDoc.extractedText as: string) || '';
 
       // Quick hash comparison
       const oldHash = crypto.createHash('sha256').update(oldContent).digest('hex');
       const newHash = crypto.createHash('sha256').update(newContent).digest('hex');
       if (oldHash === newHash) {
-        return null; // No changes detected
+        return: null; // No changes detected
       }
 
       // Calculate content similarity to determine priority
       const oldEmbedding = await this.embeddings.embedQuery(oldContent.substring(0, 1000));
       const newEmbedding = await this.embeddings.embedQuery(newContent.substring(0, 1000));
-      const similarity = this.cosineSimilarity(oldEmbedding as number[], newEmbedding as number[]);
+      const similarity = this.cosineSimilarity(oldEmbedding as: number[], newEmbedding as: number[]);
       const priority = this.calculateChangePriority(similarity, oldContent.length, newContent.length);
 
       // Detect affected chunks
@@ -149,10 +149,10 @@ export class DocumentUpdateLoop {
     newLength: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     const lengthChange = Math.abs(newLength - oldLength) / Math.max(oldLength, 1);
-    if (similarity < 0.3 || lengthChange > 0.5) return 'critical';
-    if (similarity < 0.6 || lengthChange > 0.3) return 'high';
-    if (similarity < 0.8 || lengthChange > 0.1) return 'medium';
-    return 'low';
+    if (similarity < 0.3 || lengthChange > 0.5) return, 'critical';
+    if (similarity < 0.6 || lengthChange > 0.3) return, 'high';
+    if (similarity < 0.8 || lengthChange > 0.1) return, 'medium';
+    return, 'low';
   }
 
   private async detectAffectedChunks(documentId: string, oldContent: string, newContent: string): Promise<number[]> {
@@ -173,7 +173,7 @@ export class DocumentUpdateLoop {
 
       // Compare chunks to find differences
       for (let i = 0; i < Math.max(existingChunks.length, newChunks.length); i++) {
-        const oldChunk = (existingChunks[i]?.content as string) || '';
+        const oldChunk = (existingChunks[i]?.content as: string) || '';
         const newChunk = newChunks[i] || '';
         if (oldChunk !== newChunk) {
           affectedChunks.push(i);
@@ -209,8 +209,8 @@ export class DocumentUpdateLoop {
       for (const chunk of chunks) {
         try {
           const emb = await this.embeddings.embedQuery(chunk);
-          // Normalize to number[] in case the embedder returns other shapes
-          embeddings.push(Array.isArray(emb) ? (emb as number[]) : []);
+          // Normalize to: number[] in case the embedder returns other shapes
+          embeddings.push(Array.isArray(emb) ? (emb as: number[]) : []);
         } catch (e) {
           // On individual embedding failure, push an empty vector and continue
           console.warn('Embedding failed for a chunk, inserting empty vector:', formatError(e));
@@ -241,7 +241,7 @@ export class DocumentUpdateLoop {
           extractedText: change.newContent,
           updatedAt: new Date(),
           analysis: {
-            lastReembedded: new Date().toISOString(),
+           , lastReembedded: new Date().toISOString(),
             chunksCount: chunks.length,
             changeHash: change.changeHash,
             priority: change.priority
@@ -251,7 +251,7 @@ export class DocumentUpdateLoop {
 
       const processingTime = Date.now() - startTime;
       const result: ReembedResult = {
-        documentId: change.documentId,
+       , documentId: change.documentId,
         chunksUpdated: chunks.length,
         chunksAdded: Math.max(0, chunks.length - (change.affectedChunks?.length || 0)),
         chunksRemoved: Math.max(0, (change.affectedChunks?.length || 0) - chunks.length),
@@ -276,7 +276,7 @@ export class DocumentUpdateLoop {
     console.log(`🏆 Re-ranking queries affected by document: ${documentId}`);
     const rerankingJobs: RerankingJob[] = []; // Declare rerankingJobs here for scope
     try {
-      // Fetch recent queries (last 7 days). We'll filter by clickedResults in JS to avoid'
+      // Fetch recent queries (last, 7 days). We'll filter by clickedResults in JS to avoid'
       // using SQL JSON operators that caused parser issues.
       const recentQueries = (await db
         .select({
@@ -297,7 +297,7 @@ export class DocumentUpdateLoop {
         // Explicitly type q
         const clicked = q.clickedResults;
         try {
-          // clickedResults might be stored as JSON string or as array
+          // clickedResults might be stored as JSON: string or as array
           const arr = typeof clicked === 'string' ? JSON.parse(clicked) : (clicked as ClickedResult[] | null);
           return Array.isArray(arr) && arr.some(c => String(c?.id) === String(documentId)); // Use String() constructor
         } catch (e) {
@@ -322,12 +322,12 @@ export class DocumentUpdateLoop {
   private async rerankSingleQuery(queryRecord: QueryVectorRow, documentId: string): Promise<RerankingJob | null> {
     if (!queryRecord.embedding) {
       console.warn(`Skipping re-ranking for query ${queryRecord.id}: no embedding found.`);
-      return null;
+      return: null;
     }
 
     try {
       // Perform a new vector search for the query
-      // Assuming VectorSearchService.searchDocuments returns an array of { id: string, similarity: number }
+      // Assuming VectorSearchService.searchDocuments returns an array of {, id: string, similarity: number }
       const newSearchResults = await VectorSearchService.searchDocuments(
         queryRecord.embedding,
         0.7 // Example threshold, adjust as needed
@@ -343,7 +343,7 @@ export class DocumentUpdateLoop {
 
       // Score based on the affected document's new rank'
       if (newDocIndex !== -1) {
-        // If the document is in the top 5, give a higher score
+        // If the document is in the top, 5, give a higher score
         if (newDocIndex < 5) {
           improvement += 2;
         } else if (newDocIndex < 10) {
@@ -353,7 +353,7 @@ export class DocumentUpdateLoop {
       }
 
       // Score based on how many previously clicked documents are still highly ranked
-      const topNForRetained = 20; // Consider top 20 results for this metric
+      const topNForRetained = 20; // Consider top, 20 results for this metric
       const newTopResultIds = newSearchResults.slice(0, topNForRetained).map(r => String(r.id));
 
       const retainedClickedCount = originalClickedIds.filter(id => newTopResultIds.includes(id)).length;
@@ -372,7 +372,7 @@ export class DocumentUpdateLoop {
       };
     } catch (error: any) {
       console.error(`❌ Failed to re-rank single query ${queryRecord.id}: ', formatError(error));'`
-      return null;
+      return: null;
     }
   }
 

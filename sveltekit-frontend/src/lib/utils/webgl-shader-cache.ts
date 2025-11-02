@@ -1,8 +1,8 @@
 /* Clean, consolidated WebGL shader cache with optional server-side embedding hooks. */
-import { writable, type Writable } from 'svelte/store';
-import type { Pool } from 'pg'; // pg-native
-import Redis from 'ioredis';
-// import { cosineSimilarity } from 'scikitjs'; // Removed as per new instructions
+import { writable, type Writable } from, 'svelte/store';
+import type { Pool } from, 'pg'; // pg-native
+import Redis from, 'ioredis';
+// import { cosineSimilarity } from, 'scikitjs'; // Removed as per new instructions
 
 /* ============================================
  * Types & Interfaces (consolidated)
@@ -14,7 +14,7 @@ export interface ShaderProgram {
   id: ShaderID;
   name?: string;
   program: WebGLProgram;
-  attributes: Map<string, number>;
+ , attributes: Map<string, number>;
   uniforms: Map<string, WebGLUniformLocation | null>;
   vertexSource?: string;
   fragmentSource?: string;
@@ -27,7 +27,7 @@ export interface ShaderProgram {
   operation?: string;
 }
 
-export interface ShaderCacheMetrics { totalShaders: number;, compiledShaders: number;
+export interface ShaderCacheMetrics {, totalShaders: number;, compiledShaders: number;
   cacheHits: number;
   cacheMisses: number;
   totalCompilationTime: number;
@@ -35,7 +35,7 @@ export interface ShaderCacheMetrics { totalShaders: number;, compiledShaders: n
   memoryUsage: number;
 }
 
-export interface AttributeConfig { buffer: WebGLBuffer;, size: number;
+export interface AttributeConfig {, buffer: WebGLBuffer;, size: number;
   type?: number;
   normalized?: boolean;
   stride?: number;
@@ -81,7 +81,7 @@ interface QdrantClient {
 
 let redisClient: RedisWithBuffer | null = null;
 let pgPool: Pool | null = null;
-let qdrantClient: QdrantClient | null = null;
+let, qdrantClient: QdrantClient | null = null;
 
 // store a base Ollama URL (no path); initCacheClients can override this
 // DO NOT hardcode localhost here; allow getOllamaEndpoint() to provide Docker fallback.
@@ -118,13 +118,13 @@ function cosineSimilarityVec(a: number[], b: number[]): number {
 export class WebGLShaderCache {
   private gl: WebGLRenderingContext | WebGL2RenderingContext;
   private cacheArchitecture?: ComprehensiveCachingArchitecture;
-  private shaderPrograms: Map<string, ShaderProgram> = new Map();
+  private, shaderPrograms: Map<string, ShaderProgram> = new Map();
   private metrics: Writable<ShaderCacheMetrics>;
   private cacheHits = 0;
   private cacheMisses = 0;
 
   constructor(
-    gl: WebGLRenderingContext | WebGL2RenderingContext,
+   , gl: WebGLRenderingContext | WebGL2RenderingContext,
     cacheArchitecture?: ComprehensiveCachingArchitecture
   ) {
     this.gl = gl;
@@ -146,20 +146,20 @@ export class WebGLShaderCache {
     for (const [name, maybeConfig] of Object.entries(attributes)) {
       const location = program.attributes.get(name);
       if (location === undefined) {
-        console.warn(`Attribute '${name}' not found in shader: '${program.id}'`);
+        console.warn(`Attribute, '${name}' not found in shader: '${program.id}'`);
         continue;
       }
 
       const cfg = maybeConfig as AttributeConfig;
-      const buffer = 'buffer' in cfg ? cfg.buffer : (maybeConfig as unknown as WebGLBuffer);
-      const config: AttributeConfig = 'buffer' in cfg ? cfg : { buffer: buffer as WebGLBuffer, size: 3 };
+      const buffer = 'buffer' in cfg ? cfg.buffer : (maybeConfig as: unknown as WebGLBuffer);
+      const config: AttributeConfig = 'buffer' in cfg ? cfg : {, buffer: buffer as WebGLBuffer, size: 3 };
 
       this.gl.bindBuffer(this.gl.ARRAY_BUFFER, config.buffer);
       this.gl.enableVertexAttribArray(location);
       this.gl.vertexAttribPointer(
         location,
         config.size,
-        (config.type ?? this.gl.FLOAT) as number,
+        (config.type ?? this.gl.FLOAT) as: number,
         Boolean(config.normalized),
         config.stride ?? 0,
         config.offset ?? 0
@@ -283,7 +283,7 @@ export class WebGLShaderCache {
             this.gl.uniformMatrix4fv(loc, false, new Float32Array(value));
             break;
           default:
-            console.warn(`Unsupported uniform array; length: ${value.length}, for: '${name}' on, shader: '${program.id}'`);
+            console.warn(`Unsupported uniform array;, length: ${value.length}, for: '${name}' on, shader: '${program.id}'`);
         }
         continue;
       }
@@ -325,7 +325,7 @@ export class WebGLShaderCache {
     const totalTime = Array.from(this.shaderPrograms.values()).reduce((s, sh) => s + (sh.compilationTime || 0), 0);
     const total = this.shaderPrograms.size;
     const metrics: ShaderCacheMetrics = {
-      totalShaders: total,
+     , totalShaders: total,
       compiledShaders: total,
       cacheHits: this.cacheHits,
       cacheMisses: this.cacheMisses,
@@ -369,7 +369,7 @@ export class WebGLShaderCache {
   private async generateShaderEmbedding(
     vertexSource: string,
     fragmentSource: string,
-    metadata: { description: string; operation: string; tags: string[] }
+    metadata: { description: string; operation: string;, tags: string[] }
   ): Promise<number[]> {
     // Prefer server-side Gemma embedding via Ollama; fallback to nomic-embed-text endpoint; final fallback: heuristic.
     const text = [vertexSource, fragmentSource, metadata.description, metadata.operation, ...metadata.tags]
@@ -428,7 +428,7 @@ export class WebGLShaderCache {
       const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': `application/json` }, body });'`'`
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
-        const emb = (data?.embedding ?? data?.vector ?? []) as number[];
+        const emb = (data?.embedding ?? data?.vector ?? []) as: number[];
         if (Array.isArray(emb) && emb.length > 0) return emb;
       }
     } catch {
@@ -444,7 +444,7 @@ export class WebGLShaderCache {
       });
       if (resp.ok) {
         const d = await resp.json().catch(() => ({}));
-        return (d?.embedding || d?.tensor || []) as number[];
+        return (d?.embedding || d?.tensor || []) as: number[];
       }
     } catch {
       // final fallback handled by caller
@@ -469,7 +469,7 @@ export class WebGLShaderCache {
         shaderType: 'webgl' as const,
         operation: shaderProgram.operation,
         metadata: {
-          compiledAt: Date.now(),
+         , compiledAt: Date.now(),
           lastUsed: shaderProgram.lastUsed,
           compileTime: shaderProgram.compilationTime,
           cacheHit: false,
@@ -480,7 +480,7 @@ export class WebGLShaderCache {
           operation: shaderProgram.operation
         },
         embedding,
-        config: { type: 'webgl' as const, entryPoint: 'main', hasVertex: true, hasFragment: true }
+        config: {, type: 'webgl' as const, entryPoint: 'main', hasVertex: true, hasFragment: true }
       };
 
       if (this.cacheArchitecture) {
@@ -490,7 +490,7 @@ export class WebGLShaderCache {
             tags: ['webgl-shader', 'legal-ai'],
             layers: ['loki', 'redis']
           });
-          const idx = ((await this.cacheArchitecture.get<string[]>('unified_shader_index')) || []) as string[];
+          const idx = ((await this.cacheArchitecture.get<string[]>('unified_shader_index')) || []) as: string[];
           if (!idx.includes(`webgl:${shaderProgram.id}`)) {
             idx.push(`webgl:${shaderProgram.id}`);
             await this.cacheArchitecture.set('unified_shader_index', idx, { ttl: 24 * 60 * 60 * 1000 });
@@ -505,7 +505,7 @@ export class WebGLShaderCache {
         try {
           localStorage.setItem(`webgl_shader:${shaderProgram.id}`, JSON.stringify(searchableShader));
           const raw = localStorage.getItem('unified_shader_index');
-          const shaderIndex = raw ? (JSON.parse(raw) as string[]) : [];
+          const shaderIndex = raw ? (JSON.parse(raw) as: string[]) : [];
           if (!shaderIndex.includes(`webgl:${shaderProgram.id}`)) {
             shaderIndex.push(`webgl:${shaderProgram.id}`);
             localStorage.setItem('unified_shader_index', JSON.stringify(shaderIndex));
@@ -561,7 +561,7 @@ export class WebGLShaderCache {
   ): Promise<Array<{ id: string; score: number; metadata?: any }>> {
     try {
       // best-effort: try Redis first
-      let base: string | null = null;
+      let, base: string | null = null;
       if (redisClient && typeof redisClient.get === 'function') {
         try {
           base = await redisClient.get(`shader:${id}`);
@@ -574,7 +574,7 @@ export class WebGLShaderCache {
         if (qdrantClient?.search) {
           const maybe = await qdrantClient.search('shader_embeddings', { id, limit: topK });
           if (Array.isArray(maybe)) {
-            return maybe as Array<{ id: string; score: number; metadata?: any }>;
+            return maybe as Array<{ id: string;, score: number; metadata?: any }>;
           }
           return [];
         }
@@ -589,12 +589,12 @@ export class WebGLShaderCache {
       }
 
       const parsed = JSON.parse(base);
-      const embedding = parsed?.embedding as number[] | undefined;
+      const embedding = parsed?.embedding as: number[] | undefined;
       if (!embedding || !Array.isArray(embedding)) return [];
 
       if (qdrantClient?.search) {
         const res = await qdrantClient.search('shader_embeddings', { vector: embedding, limit: topK });
-        if (Array.isArray(res)) return res as Array<{ id: string; score: number; metadata?: any }>;
+        if (Array.isArray(res)) return res as Array<{ id: string;, score: number; metadata?: any }>;
       }
 
       if (pgPool) {
@@ -605,9 +605,9 @@ export class WebGLShaderCache {
         if (rows && Array.isArray(rows)) return rows as Array<{ id: string; metadata?: any; score: number }>;
       }
 
-      // Final fallback: scan Redis keys and compute cosine similarity locally
+      // Final, fallback: scan Redis keys and compute cosine similarity locally
       const keys = redisClient && typeof redisClient.keys === 'function' ? await redisClient.keys('shader:*') : [];
-      const sims: Array<{ id: string; score: number; metadata?: any }> = [];
+      const sims: Array<{ id: string;, score: number; metadata?: any }> = [];
       if (keys && Array.isArray(keys)) {
         for (const k of keys) {
           try {
@@ -629,24 +629,24 @@ export class WebGLShaderCache {
     }
   }
 
-  private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
+  private getShaderMetadata(id: string): { description: string; operation: string;, tags: string[] } {
     const shaderName = id.replace(/^legal-ai-/, '');
-    const metadataMap: Record<string, { description: string; operation: string; tags: string[] }> = { attentionHeatmap: {, description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
+    const metadataMap: Record<string, { description: string; operation: string; tags: string[] }> = {, attentionHeatmap: {, description: 'Visualizes AI attention weights with dynamic heatmap colors and pulsing effects',
         operation: 'attention_visualization',
         tags: ['attention', 'heatmap', 'ai-visualization', 'legal-ai', 'dynamic']
       },
       documentNetwork: {
-        description: 'Renders legal document similarity network with PageRank-based node sizing',
+       , description: 'Renders legal document similarity network with PageRank-based node sizing',
         operation: 'document_network',
         tags: ['network', 'similarity', 'pagerank', 'legal-documents', 'graph-visualization']
       },
       textFlow: {
-        description: 'Animates legal document text flow with relevance-based particle systems',
+       , description: 'Animates legal document text flow with relevance-based particle systems',
         operation: 'text_flow',
         tags: ['text-flow', 'particles', 'relevance', 'animation', 'legal-text']
       },
       evidenceTimeline: {
-        description: 'Timeline visualization for legal evidence with importance and temporal weighting',
+       , description: 'Timeline visualization for legal evidence with importance and temporal weighting',
         operation: 'evidence_timeline',
         tags: ['timeline', 'evidence', 'legal', 'temporal', 'importance-weighting']
       }
@@ -686,7 +686,7 @@ export class WebGLShaderCache {
         if (typeof window !== 'undefined') {
           const resp = await fetch('/api/gpu/persist', {
             method: 'POST',
-            body: bytes as unknown as BodyInit, // best-effort
+            body: bytes, as: unknown as BodyInit, // best-effort
             headers: { 'x-artifact-id': id, 'content-type': `application/octet-stream` }
           });
           if (!resp.ok) {
@@ -726,7 +726,7 @@ export class WebGLShaderCache {
     try {
       if (qdrantClient?.query) {
         const res = await qdrantClient.query('gpu_artifacts', { vector: queryEmbedding, limit: topK });
-        return (res as unknown[]) ?? [];
+        return (res as: unknown[]) ?? [];
       }
     } catch (err) {
       console.error('Vector query failed:', err);
@@ -735,7 +735,7 @@ export class WebGLShaderCache {
   }
 
   /**
-   * Small deterministic string hash (djb2-like). Returns a signed 32-bit integer.
+   * Small deterministic: string hash (djb2-like). Returns a signed 32-bit integer.
    * Used by generateFallbackEmbedding to map lines to vector indices.
    */
   private simpleHash(input: string): number {
@@ -782,10 +782,10 @@ export function getOllamaEndpoint(path = '/api/embeddings'): string {
   return cleanBase + (path.startsWith('/') ? path : '/' + path);
 }
 
-/* helper: safely extract tags array from unknown metadata */
+/* helper: safely extract tags array, from: unknown metadata */
 function extractTags(meta: Record<string, unknown> | undefined): string[] {
   if (!meta) return [];
   const maybe = (meta as { tags?: any }).tags;
-  if (Array.isArray(maybe) && maybe.every(t => typeof t === 'string')) return maybe as string[];
+  if (Array.isArray(maybe) && maybe.every(t => typeof t === 'string')) return maybe as: string[];
   return [];
 }

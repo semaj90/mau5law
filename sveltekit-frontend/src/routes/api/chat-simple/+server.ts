@@ -9,18 +9,18 @@
  * - Ollama; AI: Centralized chat generation via services.ts
  * - Redis: Automatic caching via redis-orchestrator-middleware
  *
- * Features:
+ *, Features:
  * - No database persistence (stateless)
  * - Fast response with centralized service
  * - Type-safe implementation
  * - Graceful error handling
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
-import { readBodyFast } from '$lib/server/utils/json-fast';
-import { generateChatResponse } from '$lib/server/services';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { readBodyFast } from, '$lib/server/utils/json-fast';
+import { generateChatResponse } from, '$lib/server/services';
 
-type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
+type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
 type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;
 
 function isChatMessageArray(x: any): x is ChatMessage[] {

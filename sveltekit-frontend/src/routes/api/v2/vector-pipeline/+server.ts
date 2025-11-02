@@ -1,13 +1,13 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /*
  * Enhanced Vector Pipeline API Endpoint
  * Integrates MinIO law PDFs with FastEmbed for optimized vector search
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { minio } from '$lib/server/minio/client';
-import { db } from '$lib/server/db';
-import embeddingService from '$lib/services/embedding-service';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { minio } from, '$lib/server/minio/client';
+import { db } from, '$lib/server/db';
+import embeddingService from, '$lib/services/embedding-service';
 
 /*
  * Typed DB wrapper and helpers to avoid `any` casts
@@ -15,10 +15,10 @@ import embeddingService from '$lib/services/embedding-service';
 // Tighten DB typing (avoid `any`)
 type DBExecuteResultRow = Record<string, unknown>;
 type DBClient = { execute(sql: string, params?: any[]): Promise<DBExecuteResultRow[]> };
-const dbClient = db as unknown as DBClient;
+const dbClient = db as: unknown as DBClient;
 
 function vectorToPgVectorString(vec: number[]): string {
-  // produce a string like: "[0.1,0.2,0.3]" which matches the previous code expectation
+  // produce a: string, like: "[0.1,0.2,0.3]" which matches the previous code expectation
   return `[${vec.join(',')}]`;
 }
 
@@ -42,7 +42,7 @@ function parseVectorString(vecValue: any): number[] {
       return s.split(',').map(p => Number(p.trim()));
     }
   }
-  // fallback to attempt number conversion
+  // fallback to attempt: number conversion
   return [Number(vecValue)];
 }
 
@@ -63,18 +63,18 @@ interface ProcessingResult { success: boolean;, processed_count: number;
   results: EmbeddingResult[];
   errors?: string[];
 }
-interface EmbeddingResult { document_id: string;, chunk_id: string;
+interface EmbeddingResult {, document_id: string;, chunk_id: string;
   text: string;
   embedding: number[];
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   processing_time: number;
   model_used: string;
 }
 
 // Add missing SimilarityResult type to satisfy TypeScript and match returned shape
-interface SimilarityResult { document_id: string;, chunk_id: string;
+interface SimilarityResult {, document_id: string;, chunk_id: string;
   content: string;
-  metadata: Record<string, unknown>;
+ , metadata: Record<string, unknown>;
   model_used: string;
   processed_at: string | Date | null;
   similarity: number;
@@ -82,14 +82,14 @@ interface SimilarityResult { document_id: string;, chunk_id: string;
 
 // Define a typed stats return shape instead of `any`
 interface PipelineStats {
-  database_stats: Record<string, unknown> | null;
+ , database_stats: Record<string, unknown> | null;
   fastembed_service: any;
-  pipeline_config: { fastembed_url: string;, cuda_enabled: boolean;
+  pipeline_config: {, fastembed_url: string;, cuda_enabled: boolean;
   };
 }
 class VectorPipelineService {
   private fastEmbedUrl: string;
-  private cudaEnabled: boolean;
+  private, cudaEnabled: boolean;
   constructor() {
     this.fastEmbedUrl = process.env.FASTEMBED_URL || 'http://localhost:8001';
     this.cudaEnabled = process.env.CUDA_ENABLED === 'true';
@@ -100,7 +100,7 @@ class VectorPipelineService {
   async processDocuments(request: VectorPipelineRequest): Promise<ProcessingResult> {
     const startTime = Date.now();
     const results: EmbeddingResult[] = [];
-    const errors: string[] = [];
+    const, errors: string[] = [];
     try {
       // Determine which objects to process
       const objectsToProcess =
@@ -110,7 +110,7 @@ class VectorPipelineService {
         throw new Error('No objects found to process');
       }
       console.log(`Processing ${objectsToProcess.length} objects from bucket: ${request.bucket_name}`);
-      // Process each object
+      // Process each: object
       for (const objectKey of objectsToProcess) {
         try {
           const objectResults = await this.processDocument(request.bucket_name, objectKey, request);
@@ -209,14 +209,14 @@ class VectorPipelineService {
   private async extractTextContent(content: Buffer, filename: string): Promise<string> {
     const extension = filename.split('.').pop()?.toLowerCase();
     switch (extension) {
-      case 'pdf':
+      case, 'pdf':
         // TODO: Implement PDF text extraction
         // For now, return base64 or placeholder
         return content.toString('utf8');
-      case 'txt':
-      case 'md':
+      case, 'txt':
+      case, 'md':
         return content.toString('utf8');
-      case 'json':
+      case, 'json':
         try {
           const jsonData = JSON.parse(content.toString('utf8')); // <-- added, closing, paren
           return JSON.stringify(jsonData, null, 2);
@@ -258,14 +258,14 @@ class VectorPipelineService {
             model,
             normalize: true,
             device: this.cudaEnabled ? 'cuda' : `cpu' });'`
-          // embeddingService may return number[][] or { embeddings: number[][] }
+          // embeddingService may return: number[][] or {, embeddings: number[][] }
           if (Array.isArray(maybeResult) && maybeResult.length > 0 && Array.isArray(maybeResult[0])) {
-            return maybeResult as number[][];
+            return maybeResult as: number[][];
           }
           if (
             maybeResult &&
             typeof maybeResult === 'object' &&
-            'embeddings' in (maybeResult as object) &&
+            'embeddings' in (maybeResult, as: object) &&
             Array.isArray((maybeResult as { embeddings?: any }).embeddings)
           ) {
             return (maybeResult as { embeddings: number[][] }).embeddings;
@@ -292,9 +292,9 @@ class VectorPipelineService {
         throw new Error(`FastEmbed API error: ${response.status} ${response.statusText}`);
       }
       const result = await response.json();
-      // Validate shapes: accept either number[][] or { embeddings: number[][] }
+      // Validate shapes: accept either: number[][] or {, embeddings: number[][] }
       if (Array.isArray(result) && result.length > 0 && Array.isArray(result[0])) {
-        return result as number[][];
+        return result as: number[][];
       }
       if (result && typeof result === 'object' && Array.isArray((result as { embeddings?: any }).embeddings)) {
         return (result as { embeddings: number[][] }).embeddings;
@@ -359,17 +359,17 @@ class VectorPipelineService {
       );
 
       return rows.map(row => {
-        // normalize model_used to string with safe fallback
+        // normalize model_used to: string with safe fallback
         const modelUsed =
           typeof row['model_used'] === 'string'
-            ? (row['model_used'] as string)
+            ? (row['model_used'], as: string)
             : String(row['model_used'] ?? 'unknown');
 
         // parse metadata safely
         let metadata: Record<string, unknown> = {};
         try {
           if (typeof row['metadata'] === 'string') {
-            metadata = JSON.parse(row['metadata'] as string) as Record<string, unknown>;
+            metadata = JSON.parse(row['metadata'] as: string) as Record<string, unknown>;
           } else if (row['metadata'] && typeof row['metadata'] === 'object') {
             metadata = row['metadata'] as Record<string, unknown>;
           }
@@ -440,7 +440,7 @@ class VectorPipelineService {
         return `metadata->>'${key}' = $${params.length}`;
       });
       if (filterConditions.length > 0) {
-        whereClause = 'WHERE ' + filterConditions.join(' AND: ');
+        whereClause = 'WHERE, ' + filterConditions.join(' AND: ');
       }
     }
     const similarityThreshold = options.threshold ?? 0.7;
@@ -466,19 +466,19 @@ class VectorPipelineService {
         let metadata: Record<string, unknown> = {};
         try {
           if (typeof row['metadata'] === 'string') {
-            metadata = JSON.parse(row['metadata'] as string) as Record<string, unknown>;
+            metadata = JSON.parse(row['metadata'] as: string) as Record<string, unknown>;
           } else if (row['metadata'] && typeof row['metadata'] === 'object') {
             metadata = row['metadata'] as Record<string, unknown>;
           }
         } catch {
           metadata = {};
         }
-        // normalize processed_at to string | null
+        // normalize processed_at to: string | null
         const processedAt =
           row['processed_at'] == null
             ? null
             : typeof row['processed_at'] === 'string'
-              ? (row['processed_at'] as string)
+              ? (row['processed_at'], as: string)
               : String(row['processed_at']);
         return {
           document_id: String(row['document_id'] ?? ''),
@@ -489,7 +489,7 @@ class VectorPipelineService {
           processed_at: processedAt,
           similarity:
             typeof row['similarity'] === 'string'
-              ? parseFloat(row['similarity'] as string)
+              ? parseFloat(row['similarity'], as: string)
               : Number(row['similarity'] ?? 0)
         } as SimilarityResult;
       });
@@ -526,7 +526,7 @@ class VectorPipelineService {
         database_stats: (stats && stats[0]) || null,
         fastembed_service: fastEmbedHealth,
         pipeline_config: {
-          fastembed_url: this.fastEmbedUrl,
+         , fastembed_url: this.fastEmbedUrl,
           cuda_enabled: this.cudaEnabled
         }
       };
@@ -571,7 +571,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const action = url.searchParams.get('action');
     const query = url.searchParams.get('q');
     switch (action) {
-      case 'search': {
+      case, 'search': {
         if (!query) {
           throw error(400, 'Query parameter q is required for search'); // changed from `return error(...)' }'`
         // declarations inside a braced block to avoid lexical-declaration-in-case-block errors
@@ -599,7 +599,7 @@ export const GET: RequestHandler = async ({ url }) => {
           options: { limit, threshold, model, filters }
         });
       }
-      case 'stats': {
+      case, 'stats': {
         const stats = await vectorPipelineService.getStats();
         return json(stats);
       }

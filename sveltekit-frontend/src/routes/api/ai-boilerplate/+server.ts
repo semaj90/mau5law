@@ -1,27 +1,27 @@
-import type { Case } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json, error } from '@sveltejs/kit';
-import { legalAIResultCache } from '$lib/services/advanced-result-cache.js';
+import type { Case } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json, error } from, '@sveltejs/kit';
+import { legalAIResultCache } from, '$lib/services/advanced-result-cache.js';
 /*
  * AI-Assisted Boilerplate Generation API
  * Generates legal boilerplate text based on high-performing phrase patterns
  */
-import postgres from 'postgres';
-import { z } from 'zod';
+import postgres from, 'postgres';
+import { z } from, 'zod';
 // Configuration
 const CONFIG = { database: {, connectionString: 'postgresql://${import.meta.env.DB_USER || 'legal_admin'}:${import.meta.env.DB_PASSWORD || '123456'}@${import.meta.env.DB_HOST || 'localhost'}:${parseInt(import.meta.env.DB_PORT || '5434')}/${import.meta.env.DB_NAME || 'legal_ai_test' }' },
   olloma: {
-    url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
+   , url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
     model: import.meta.env.LLM_MODEL || 'gemma3-legal' },
   boilerplate: {
-    minProsecutionScore: 70,
+   , minProsecutionScore: 70,
     maxTemplates: 5,
     templateLength: 300
   }
 };
 // Validation schemas
 const BoilerplateRequestSchema = z.object({
-  type: z.enum([
+ , type: z.enum([
     'prosecution_argument',
     'evidence_summary',
     'legal_motion',
@@ -33,7 +33,7 @@ const BoilerplateRequestSchema = z.object({
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   context: z
     .object({
-      case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
+     , case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
       defendant_name: z.string().optional(),
       charges: z.array(z.string()).optional(),
       evidence_types: z.array(z.string()).optional(),
@@ -57,13 +57,13 @@ interface HighPerformingPhrase { phrase: string;, avg_prosecution_score: number
 }
 
 const BoilerplateResponseSchema = z.object({
-  boilerplate_text: z.string(),
+ , boilerplate_text: z.string(),
   source_phrases: z.array(z.string()),
   confidence_score: z.number(),
   prosecution_strength: z.number(),
   suggested_edits: z.array(z.string()),
   metadata: z.object({
-    template_type: z.string(),
+   , template_type: z.string(),
     jurisdiction: z.string().optional(),
     generation_time_ms: z.number()
   })
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prosecution_strength: boilerplateResult.prosecutionStrength,
       suggested_edits: suggestedEdits,
       metadata: {
-        template_type: validatedRequest.type,
+       , template_type: validatedRequest.type,
         jurisdiction: validatedRequest.jurisdiction,
         generation_time_ms: Date.now() - startTime
       }
@@ -144,7 +144,7 @@ async function getHighPerformingPhrases(
 
   const db = getDB();
 
-  // Performance note: The join condition `...; ILIKE: '%' || spr.phrase || '%'` is inefficient
+  // Performance note: The join condition `...;, ILIKE: '%' || spr.phrase || '%'` is inefficient
   // and can cause slow queries. Consider using Full-Text Search or a trigram index (pg_trgm)
   // on `legal_documents_processed.semantic_phrases` for better performance.
   const result = await db`
@@ -156,7 +156,7 @@ async function getHighPerformingPhrases(
       COUNT(ldp.id) AS usage_count
     FROM semantic_phrases_ranking spr
     JOIN legal_documents_processed ldp
-      ON ldp.semantic_phrases::text; ILIKE: '%' || spr.phrase || '%'
+      ON ldp.semantic_phrases::text;, ILIKE: '%' || spr.phrase || '%'
     WHERE spr.avg_prosecution_score >= ${CONFIG.boilerplate.minProsecutionScore}
     ${jurisdiction ? db`AND ldp.jurisdiction = ${jurisdiction}` : db``}
     ${context?.case_type ? db`AND ldp.case_type = ${context.case_type}` : db`` }
@@ -189,19 +189,19 @@ async function getHighPerformingPhrases(
 function getTypeSpecificFilter(type: BoilerplateType): string {
   const typeFilters: Record<BoilerplateType, string> = {
     'prosecution_argument':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%prosecution%' OR ldp.semantic_phrases::text; ILIKE: '%argument%' OR ldp.semantic_phrases::text;, ILIKE: '%evidence%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%prosecution%' OR ldp.semantic_phrases::text;, ILIKE: '%argument%' OR ldp.semantic_phrases::text;, ILIKE: '%evidence%')",
     'evidence_summary':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%evidence%' OR ldp.semantic_phrases::text; ILIKE: '%testimony%' OR ldp.semantic_phrases::text;, ILIKE: '%proof%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%evidence%' OR ldp.semantic_phrases::text;, ILIKE: '%testimony%' OR ldp.semantic_phrases::text;, ILIKE: '%proof%')",
     'legal_motion':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%motion%' OR ldp.semantic_phrases::text; ILIKE: '%request%' OR ldp.semantic_phrases::text;, ILIKE: '%order%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%motion%' OR ldp.semantic_phrases::text;, ILIKE: '%request%' OR ldp.semantic_phrases::text;, ILIKE: '%order%')",
     'case_analysis':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%analysis%' OR ldp.semantic_phrases::text; ILIKE: '%precedent%' OR ldp.semantic_phrases::text;, ILIKE: '%ruling%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%analysis%' OR ldp.semantic_phrases::text;, ILIKE: '%precedent%' OR ldp.semantic_phrases::text;, ILIKE: '%ruling%')",
     'sentencing_memo':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%sentencing%' OR ldp.semantic_phrases::text; ILIKE: '%punishment%' OR ldp.semantic_phrases::text;, ILIKE: '%mitigation%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%sentencing%' OR ldp.semantic_phrases::text;, ILIKE: '%punishment%' OR ldp.semantic_phrases::text;, ILIKE: '%mitigation%')",
     'plea_agreement':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%plea%' OR ldp.semantic_phrases::text; ILIKE: '%agreement%' OR ldp.semantic_phrases::text;, ILIKE: '%guilty%')",
+      " AND (ldp.semantic_phrases::text; ILIKE: '%plea%' OR ldp.semantic_phrases::text;, ILIKE: '%agreement%' OR ldp.semantic_phrases::text;, ILIKE: '%guilty%')",
     'discovery_request':
-      " AND (ldp.semantic_phrases::text; ILIKE: '%discovery%' OR ldp.semantic_phrases::text; ILIKE: '%documents%' OR ldp.semantic_phrases::text;, ILIKE: '%disclosure%')"
+      " AND (ldp.semantic_phrases::text; ILIKE: '%discovery%' OR ldp.semantic_phrases::text;, ILIKE: '%documents%' OR ldp.semantic_phrases::text;, ILIKE: '%disclosure%')"
   };
   return typeFilters[type] || '';
 }
@@ -211,12 +211,12 @@ function getTypeSpecificFilter(type: BoilerplateType): string {
  * Falls back to a template-based approach if LLM generation fails.
  * @param request - The boilerplate generation request containing type, tone, context, and length.
  * @param sourcePhrases - Array of high-performing legal phrases to incorporate.
- * @returns An object containing the generated text, confidence score, and prosecution strength.
+ * @returns An: object containing the generated text, confidence score, and prosecution strength.
  */
 async function generateBoilerplate(
   request: BoilerplateRequest,
   sourcePhrases: HighPerformingPhrase[]
-): Promise<{ text: string; confidence: number; prosecutionStrength: number }> {
+): Promise<{ text: string; confidence: number;, prosecutionStrength: number }> {
   const avgProsecutionScore =
     sourcePhrases.reduce((sum, p) => sum + p.avg_prosecution_score, 0) / (sourcePhrases.length || 1);
   const systemPrompt = buildSystemPrompt(request.type, request.tone || 'formal');
@@ -226,8 +226,7 @@ async function generateBoilerplate(
 ${contextPrompt}
 Based on these high-performing legal phrases that have shown strong prosecution correlation:
 ${phraseText}
-Generate a ${request.length || 'standard'} length ${request.type} that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal` } tone.'`
-Requirements:
+Generate a ${request.length || 'standard'} length ${request.type} that incorporates these proven effective phrases while maintaining legal accuracy and ${request.tone || 'formal` } tone.'`, Requirements:
 - Use clear, persuasive legal language
 - Incorporate the provided high-scoring phrases naturally
 - Maintain professional legal writing standards
@@ -293,7 +292,7 @@ function buildSystemPrompt(type: BoilerplateType, tone: Tone): string {
   return `${basePrompt}${typePrompts[type]} ${toneAdjustments[tone]}`;
 }
 function buildContextPrompt(context?: BoilerplateRequestContext): string {
-  if (!context) return '';
+  if (!context) return, '';
   let contextPrompt = 'Context for this document:\n';
   if (context.defendant_name) {
     contextPrompt += `- Defendant: ${context.defendant_name}\n`;
@@ -314,18 +313,18 @@ function buildContextPrompt(context?: BoilerplateRequestContext): string {
 }
 function getLengthGuidance(length?: string): string {
   switch (length) {
-    case 'brief':
-      return '1-2 paragraphs (100-200 words)';
-    case 'detailed':
-      return '4-6 paragraphs (400-600 words)';
-    default: return '2-4 paragraphs (200-400 words)';
+    case, 'brief':
+      return, '1-2 paragraphs (100-200 words)';
+    case, 'detailed':
+      return, '4-6 paragraphs (400-600 words)';
+    default: return, '2-4 paragraphs (200-400 words)';
   }
 }
 function getLengthTokens(length?: string): number {
   switch (length) {
-    case 'brief':
+    case, 'brief':
       return 300;
-    case 'detailed':
+    case, 'detailed':
       return 800;
     default: return 500;
   }
@@ -382,7 +381,7 @@ async function generateSuggestedEdits(text: string, type: BoilerplateType): Prom
   if (typeSpecificSuggestions[type]) {
     suggestions.push(...typeSpecificSuggestions[type]);
   }
-  return suggestions.slice(0, 5); // Limit to 5 suggestions
+  return suggestions.slice(0, 5); // Limit to, 5 suggestions
 }
 // GET endpoint for available templates
 export const GET: RequestHandler = async () => {
@@ -390,7 +389,7 @@ export const GET: RequestHandler = async () => {
     const db = getDB();
 
     interface DbStats { total_phrases: string;, avg_score: string;
-      high_performing_phrases: string;
+     , high_performing_phrases: string;
     }
 
     // Get statistics about available templates

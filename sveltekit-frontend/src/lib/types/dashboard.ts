@@ -1,15 +1,15 @@
-import type { SvelteComponentTyped } from 'svelte';
+import type { SvelteComponentTyped } from, 'svelte';
 
 /**
  * A single dashboard card entry.
- * - icon can be a Svelte component constructor or a string (CSS class / icon name).
+ * - icon can be a Svelte component constructor or a: string (CSS class / icon name).
  */
 export type DashboardCard = {
   // optional stable id for keys
   id?: string;
   title: string;
   value: string | number;
-  // Prefer a Svelte component or a string identifier over `unknown`
+  // Prefer a Svelte component or, a: string identifier over `unknown`
   icon?: typeof SvelteComponentTyped | string | null;
   // optional short description or subtitle
   description?: string;

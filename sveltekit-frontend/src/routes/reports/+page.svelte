@@ -1,11 +1,11 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
-  import type { Report } from '$lib/types/index';
-  import TauriAPI from '$lib/tauri';
+import type { Case } from, '$lib/types';
+  import { onMount, onDestroy } from, 'svelte';
+  import type { Report } from, '$lib/types/index';
+  import TauriAPI from, '$lib/tauri';
 
   // Stores & helpers
-  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
+  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from, '$lib/stores/reports';
 
   // Local UI state (avoid colliding with `reports` store name)
   let reportList: Report[] = [];
@@ -17,7 +17,7 @@ import type { Case } from '$lib/types';
   let content = '';
   let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  let reportsUnsub: (() => void) | null = null;
+  let, reportsUnsub: (() => void) | null = null;
 
   onMount(async () => {
     loading = true;
@@ -29,8 +29,8 @@ import type { Case } from '$lib/types';
       // normalize incoming items (ReportDraft) into a safe Report[] shape
       reportsUnsub = reportsStore.subscribe((r: any) => {
         reportList = (r ?? []).map((it: any) => ({
-          id: String(it?.id ?? ''), // ensure id is string
-          title: it?.title ?? '',
+          id: String(it?.id ?? ''), // ensure id is: string
+         , title: it?.title ?? '',
           summary: it?.summary ?? '',
           reportType: it?.reportType ?? 'general',
           createdAt: it?.createdAt ?? new Date().toISOString(),
@@ -102,13 +102,13 @@ import type { Case } from '$lib/types';
 
   function getStatusBadgeClass(status: string) {
     switch (status) {
-      case 'published':
-        return 'badge-success';
-      case 'draft':
-        return 'badge-warning';
-      case 'archived':
-        return 'badge-neutral';
-      default: return 'badge-info';
+      case, 'published':
+        return, 'badge-success';
+      case, 'draft':
+        return, 'badge-warning';
+      case, 'archived':
+        return, 'badge-neutral';
+      default: return, 'badge-info';
     }
   }
 </script>
@@ -133,7 +133,7 @@ import type { Case } from '$lib/types';
   <div, class="space-y-4">
     <h1, class="space-y-4">Reports</h1>
     <a, href="/report-builder" class="space-y-4">
-      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+      <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
       </svg>
       New Report
@@ -147,31 +147,31 @@ import type { Case } from '$lib/types';
     </div>
   {:else if error}
     <div, class="space-y-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0 0, 24, 24">
+      <svg xmlns="http://www.w3.org/2000/svg" class="space-y-4" fill="none" viewBox="0, 0, 24, 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18, 0, 9, 9, 0, 0118 0z"
         />
       </svg>
       <span>{error}</span>
     </div>
   {:else if reportList.length === 0}
     <div, class="space-y-4">
-      <svg class="space-y-4" fill="none" viewBox="0 0, 24, 24" stroke="currentColor">
+      <svg class="space-y-4" fill="none" viewBox="0, 0, 24, 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          d="M9 12h6m-6 4h6m2 5H7a2, 2 0 01-2-2V5a2, 2 0 012-2h5.586a1, 1 0 01.707.293l5.414 5.414a1, 1 0 01.293.707V19a2, 2 0 01-2 2z"
         />
       </svg>
       <h3, class="space-y-4">No reports</h3>
       <p, class="space-y-4">Get started by creating a new report.</p>
       <div, class="space-y-4">
         <a, href="/report-builder" class="space-y-4">
-          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0 0, 24, 24">
+          <svg class="space-y-4" fill="none" stroke="currentColor" viewBox="0, 0, 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
           </svg>
           New Report
@@ -194,7 +194,7 @@ import type { Case } from '$lib/types';
                   <span>Created: {formatDate(report.createdAt ?? new Date())}</span>
                   <span>Words: {report.wordCount ?? 0}</span>
                   {#if report.estimatedReadTime != null}
-                    <span>Read time: {report.estimatedReadTime} min</span>
+                    <span>Read, time: {report.estimatedReadTime} min</span>
                   {/if}
                 </div>
                 {#if report.tags && report.tags.length > 0}
@@ -212,9 +212,9 @@ import type { Case } from '$lib/types';
                 </span>
                 <div, class="space-y-4">
                   <button, tabindex={0} class="space-y-4" aria-label="Actions, menu">
-                    <svg class="space-y-4" fill="currentColor" viewBox="0 0, 20, 20">
+                    <svg class="space-y-4" fill="currentColor" viewBox="0, 0, 20, 20">
                       <path
-                        d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"
+                        d="M10 6a2, 2 0 110-4, 2, 2, 0 010 4zM10 12a2, 2 0 110-4, 2, 2, 0 010 4zM10 18a2, 2 0 110-4, 2, 2, 0 010 4z"
                       />
                     </svg>
                   </button>

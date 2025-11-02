@@ -1,10 +1,10 @@
-import { cuidSchema } from '$lib/server/z-schemas';
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import { caseTimeline } from '$lib/server/db/schemas/cases-schema';
-import db from '$lib/server/db/unified-client';
-import { eq, and } from 'drizzle-orm/expressions';
-import { z } from 'zod';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { cuidSchema } from, '$lib/server/z-schemas';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import { caseTimeline } from, '$lib/server/db/schemas/cases-schema';
+import db from, '$lib/server/db/unified-client';
+import { eq, and } from, 'drizzle-orm/expressions';
+import { z } from, 'zod';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
 
 // add a local type describing the auth-aware locals used by these handlers
 type LocalsWithAuth = {
@@ -15,7 +15,7 @@ type LocalsWithAuth = {
 
 // Schema for updating timeline events
 const UpdateTimelineEventSchema = z.object({
-  title: z.string().min(1).optional(),
+ , title: z.string().min(1).optional(),
   description: z.string().optional(),
   eventDate: z.string().datetime().optional(),
   eventType: z

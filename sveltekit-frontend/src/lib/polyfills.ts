@@ -1,15 +1,15 @@
 /// <reference, types="vite/client" />
-import crypto from "crypto";
-import { URL } from "url";
+import crypto from, "crypto";
+import { URL } from, "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
 // This ensures Bits UI, and other dependencies work properly in browser context
 // Global polyfills for Node.js globals
 declare global {
   interface Window { global: typeof globalThis;, process: {
-      env: Record<string, string | undefined>;
+     , env: Record<string, string | undefined>;
       browser: boolean;
     }
-    Buffer: any;
+   , Buffer: any;
   }
 }
 // Polyfill process.env for browser
@@ -23,10 +23,10 @@ if (typeof window !== 'undefined') {
       cwd: () => '/', // Fix process.cwd() error
       nextTick: (callback: () => void) => setTimeout(callback, 0),
       version: 'v18.0.0',
-      versions: { node: '18.0.0' },
+      versions: {, node: '18.0.0' },
       platform: 'browser',
       arch: 'x64'
-    } as any;
+    }, as: any;
   }
 }
 // Polyfill Buffer for browser if needed
@@ -36,7 +36,7 @@ if (typeof window !== 'undefined' && !window.Buffer) {
     from (str: string, encoding?: string) => new TextEncoder().encode(str),
     isBuffer: (obj: any) => obj instanceof Uint8Array,
     alloc: (size: number) => new Uint8Array(size)
-  } as any;
+  } as: any;
 }
 // Ensure crypto is available (for Node.js crypto module usage)
 if (typeof window !== 'undefined' && !window.crypto) {
@@ -198,13 +198,13 @@ if (typeof window !== 'undefined') {
 // Lightweight WebGPU utilities (safe in non-supporting browsers)
 const webGPU = {
   isSupported: () =>
-    typeof navigator !== 'undefined' && typeof (navigator as any).gpu !== 'undefined',
+    typeof navigator !== 'undefined' && typeof (navigator as: any).gpu !== 'undefined',
   getAdapter: async (options?: GPURequestAdapterOptions) => {
-    if (!webGPU.isSupported()) return null;
+    if (!webGPU.isSupported()) return: null;
     try {
-      return await (navigator as any).gpu.requestAdapter(options);
+      return await (navigator, as: any).gpu.requestAdapter(options);
     } catch {
-      return null;
+      return: null;
     }
   },
   getDevice: async (options?: {
@@ -212,11 +212,11 @@ const webGPU = {
     device?: GPUDeviceDescriptor;
   }) => {
     const adapter = await webGPU.getAdapter(options?.adapter);
-    if (!adapter) return null;
+    if (!adapter) return: null;
     try {
       return await adapter.requestDevice(options?.device);
     } catch {
-      return null;
+      return: null;
     }
   },
   ensureDevice: async () => {
@@ -226,7 +226,7 @@ const webGPU = {
   }
 }
 if (typeof window !== 'undefined') {
-  (window as any).__WEBGPU_SUPPORTED__ = webGPU.isSupported();
+  (window as: any).__WEBGPU_SUPPORTED__ = webGPU.isSupported();
 }
 export default {
   pathUtils,

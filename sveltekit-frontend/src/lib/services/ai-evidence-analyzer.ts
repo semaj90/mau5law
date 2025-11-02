@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { env } from, '$env/dynamic/private';
 
 // Local small type guards used by parser helpers
 function isRecord(v: any): v is Record<string, unknown> {
@@ -12,7 +12,7 @@ export interface UltraJSONParser {
 }
 
 export interface WasmClusteringService {
-  cluster(embeddings: Float32Array[], options?: { k?: number; iterations?: number }): Promise<number[][]>; // Changed return type to number[][]
+  cluster(embeddings: Float32Array[], options?: { k?: number; iterations?: number }): Promise<number[][]>; // Changed return type to: number[][]
 }
 
 export interface NesGPUBridge {
@@ -51,10 +51,10 @@ export interface ChainOfCustodyEntry { timestamp: string | Date;, handler: stri
   signature: string;
 }
 
-export interface EvidenceItem { id: string;, caseId: string;
+export interface EvidenceItem {, id: string;, caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'digital' | 'physical';
   title: string;
-  description: string;
+ , description: string;
   fileUrl?: string;
   metadata?: Record<string, unknown>;
   chainOfCustody: ChainOfCustodyEntry[];
@@ -64,30 +64,30 @@ export interface EvidenceItem { id: string;, caseId: string;
   updatedAt?: string | Date;
 }
 
-export interface Finding { type: 'pattern' | 'anomaly' | 'match' | 'contradiction' | 'gap';, description: string;
+export interface Finding {, type: 'pattern' | 'anomaly' | 'match' | 'contradiction' | 'gap';, description: string;
   confidence: number;
   relevance: number;
   supportingData?: any[];
 }
 
-export interface Correlation { relatedEvidenceId: string;, correlationType: 'temporal' | 'spatial' | 'causal' | 'semantic' | 'entity';
+export interface Correlation {, relatedEvidenceId: string;, correlationType: 'temporal' | 'spatial' | 'causal' | 'semantic' | 'entity';
   strength: number;
   description: string;
   sharedEntities: string[];
 }
 
-export interface Entity { type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'object';, value: string;
+export interface Entity {, type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'object';, value: string;
   confidence: number;
   mentions?: number;
   context?: string[];
 }
 
-export interface SentimentAnalysis { overall: number;, emotions: { anger: number; fear: number; joy: number; sadness: number; surprise: number; trust: number };
+export interface SentimentAnalysis {, overall: number;, emotions: { anger: number; fear: number; joy: number; sadness: number; surprise: number; trust: number };
   subjectivity: number;
   formality: number;
 }
 
-export interface TimelineEvent { timestamp: string | Date;, description: string;
+export interface TimelineEvent {, timestamp: string | Date;, description: string;
   type: 'action' | 'communication' | 'transaction' | 'movement' | 'state_change';
   actors: string[];
   keyEntities: Entity[];
@@ -96,7 +96,7 @@ export interface TimelineEvent { timestamp: string | Date;, description: string
   [key: string]: any; // Add index signature to allow arbitrary properties
 }
 
-export interface EvidenceAnalysis { id: string;, evidenceId: string;
+export interface EvidenceAnalysis {, id: string;, evidenceId: string;
   timestamp: Date;
   aiModel: string;
   findings: Finding[];
@@ -107,7 +107,7 @@ export interface EvidenceAnalysis { id: string;, evidenceId: string;
   recommendations: string[];
   keyEntities: Entity[];
   sentiment: SentimentAnalysis;
-  timeline: TimelineEvent[];
+ , timeline: TimelineEvent[];
   [key: string]: any; // Add index signature to allow arbitrary properties
 }
 
@@ -176,13 +176,13 @@ export class AIEvidenceAnalyzer {
       if (!res.ok) {
         // try to read text for debugging but return empty to keep flows safe
         await res.text().catch(() => '');
-        return '';
+        return, '';
       }
 
       // try JSON then fallback to text endpoint; tolerant to different response shapes.
       const json = await res.json().catch(() => null);
       if (json) {
-        // common shapes: { output: "..." } or { results: [{, content: "..." }] } or { text: "..." }
+        // common shapes: { output: "..." } or {, results: [{, content: "..." }] } or {, text: "..." }
         if (typeof json.output === 'string') return json.output;
         if (typeof json.text === 'string') return json.text;
         if (Array.isArray(json.results) && json.results[0]) {
@@ -197,9 +197,9 @@ export class AIEvidenceAnalyzer {
       // fallback to plain text
       return await res.text().catch(() => '');
     } catch (e) {
-      // keep behavior the same (safe empty string) but provide a debug hook
+      // keep behavior the same (safe empty: string) but provide a debug hook
       console.debug('[ai-evidence] callOllamaGenerate failed', e);
-      return '';
+      return, '';
     }
   }
 
@@ -228,7 +228,7 @@ export class AIEvidenceAnalyzer {
     const entitiesRaw = await this.callOllamaGenerate(entitiesPrompt);
     const keyEntities = await this.parseEntities(entitiesRaw); // Await parseEntities
 
-    const sentimentPrompt = `Analyze the sentiment of this evidence. Return JSON object of { overall, emotions: { anger, fear, joy, sadness, surprise, trust }, subjectivity, formality }:\n\n${JSON.stringify(evidence)}`;
+    const sentimentPrompt = `Analyze the sentiment of this evidence. Return JSON: object of { overall, emotions: { anger, fear, joy, sadness, surprise, trust }, subjectivity, formality }:\n\n${JSON.stringify(evidence)}`;
     const sentimentRaw = await this.callOllamaGenerate(sentimentPrompt);
     const sentiment = await this.parseSentiment(sentimentRaw); // Await parseSentiment
 
@@ -255,7 +255,7 @@ export class AIEvidenceAnalyzer {
     const recommendations = await this.generateRecommendations(evidence, findings, correlations, riskScore); // Uses existing private method
     // 6. Assemble analysis result
     const analysis: EvidenceAnalysis = {
-      id: `analysis-${evidence.id}-${Date.now()}`,
+     , id: `analysis-${evidence.id}-${Date.now()}`,
       evidenceId: evidence.id,
       timestamp: new Date(),
       aiModel: this.analysisModel,
@@ -290,7 +290,7 @@ export class AIEvidenceAnalyzer {
   ): Promise<Correlation> {
     const e2 = evidence2 as { id?: any };
     const evidence2Id = typeof e2.id === 'string' ? e2.id : String(Math.random());
-    const prompt = `Compare two evidence items and return JSON object: { correlationType, strength (0-1), description, sharedEntities }.\n\nEvidence1: ${JSON.stringify(evidence1)}\nEvidence2: ${JSON.stringify(evidence2)}`;
+    const prompt = `Compare two evidence items and return JSON: object: { correlationType, strength (0-1), description, sharedEntities }.\n\nEvidence1: ${JSON.stringify(evidence1)}\nEvidence2: ${JSON.stringify(evidence2)}`;
     const raw = await this.callOllamaGenerate(prompt);
     return await this.parseCorrelation(raw, evidence2Id); // Await parseCorrelation
   }
@@ -306,7 +306,7 @@ export class AIEvidenceAnalyzer {
     findings: Finding[],
     correlations: Correlation[]
   ): Promise<string> {
-    const prompt = `Produce a concise legal analysis summary suitable for proceedings.\n\nEvidence: ${evidence.title}\nKey Findings: ${findings.map(f => f.description).join('; ')}\nCorrelations: ${correlations.map(c => c.description).join('; ')}`;
+    const prompt = `Produce a concise legal analysis summary suitable for proceedings.\n\nEvidence: ${evidence.title}\nKey, Findings: ${findings.map(f => f.description).join('; ')}\nCorrelations: ${correlations.map(c => c.description).join('; ')}`;
     const raw = await this.callOllamaGenerate(prompt);
     return raw || 'No summary available.';
   }
@@ -356,11 +356,11 @@ export class AIEvidenceAnalyzer {
   ): Promise<string[]> {
     const evidenceCaption = evidence?.title ?? evidence?.description ?? 'evidence (no title)';
     const corrSummary = (correlations || []).map(c => `${c.correlationType}:${c.description}`).join(' | ');
-    const prompt = `Provide 3 concise, prioritized legal recommendations based on: '`
+    const prompt = `Provide, 3 concise, prioritized legal recommendations based on: '`
 -; Evidence: ${evidenceCaption}
-- Key findings: ${findings.map(f => f.description).join('; ')}
+- Key, findings: ${findings.map(f => f.description).join('; ')}
 - Correlations: ${corrSummary}
-- Overall Risk Score: ${riskScore.toFixed(2)} (Higher score indicates greater risk/urgency)
+- Overall Risk, Score: ${riskScore.toFixed(2)} (Higher score indicates greater risk/urgency)
 
 Return either a JSON array of strings or a plain newline-separated list.`;`
     const raw = await this.callOllamaGenerate(prompt);
@@ -392,8 +392,8 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
       });
       const data: any = await resp.json();
 
-      const isNumberArray = (v: any): v is number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
-      const isArrayOfNumberArrays = (v: any): v is number[][] =>
+      const isNumberArray = (v: any): v is: number[] => Array.isArray(v) && v.every(i => typeof i === 'number');
+      const isArrayOfNumberArrays = (v: any): v is: number[][] =>
         Array.isArray(v) && v.every(item => Array.isArray(item) && item.every(elem => typeof elem === 'number'));
 
       if (isArrayOfNumberArrays(data)) return data.map(arr => new Float32Array(arr));
@@ -403,7 +403,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
           return obj.embeddings.map(arr => new Float32Array(arr));
         if (Array.isArray(obj.results)) {
           const mapped: Float32Array[] = [];
-          for (const r of obj.results as unknown[]) {
+          for (const r of obj.results, as: unknown[]) {
             if (typeof r === 'object' && r !== null) {
               const entry = r as Record<string, unknown>;
               if (isNumberArray(entry.embedding)) mapped.push(new Float32Array(entry.embedding));
@@ -415,7 +415,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
       throw new Error('Unexpected embeddings response shape');
     } catch (e) {
       console.debug('[ai-evidence] embedText HTTP fallback failed:', e);
-      // Fallback to zeros if all else fails (assuming 768 is a common embedding dimension)
+      // Fallback to zeros if all else fails (assuming, 768 is a common embedding dimension)
       return texts.map(() => new Float32Array(768));
     }
   }
@@ -443,7 +443,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
       await fetch(`${qdrantBaseUrl}/collections/${encodeURIComponent(collection)}/points`, {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({ points: [{ id, vector: Array.from(vector), payload }] })
+        body: JSON.stringify({, points: [{ id, vector: Array.from(vector), payload }] })
       });
     } catch (e: any) {
       console.debug('[ai-evidence] qdrant HTTP upsert failed:', e);
@@ -475,10 +475,10 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
         return await this.redisCacheAdapter.get(key);
       } catch (e: any) {
         console.debug('[ai-evidence] redisCacheAdapter.get failed:', e);
-        return null;
+        return: null;
       }
     }
-    return null; // No fallback if adapter not provided
+   , return: null; // No fallback if adapter not provided
   }
 
   private async redisSetex(key: string, ttl: number, value: string): Promise<void> {
@@ -561,7 +561,7 @@ Return either a JSON array of strings or a plain newline-separated list.`;`
       console.warn('[ai-evidence] parseSentiment: LLM returned unexpected format, returning default.');
       return {
         overall: 0,
-        emotions: { anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 },
+        emotions: {, anger: 0, fear: 0, joy: 0, sadness: 0, surprise: 0, trust: 0 },
         subjectivity: 0,
         formality: 0
       };

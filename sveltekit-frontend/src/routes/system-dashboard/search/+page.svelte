@@ -1,14 +1,14 @@
 <!--
   Unified Vector Search - Legal AI Dashboard
-  Enhanced-Bits orchestrated components with Svelte 5 runes
+  Enhanced-Bits orchestrated components with Svelte, 5 runes
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
   // Enhanced-Bits orchestrated components — adjust imports to match module exports
-  import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
-  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import Input from '$lib/components/ui/Input.svelte';
+  import Badge from, '$lib/components/ui/enhanced-bits/Badge.svelte';
+  import Button from, '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Input from, '$lib/components/ui/Input.svelte';
   // NOTE: lucide-svelte named exports caused type/import issues in this project;
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   const ICON = {
@@ -57,12 +57,12 @@ import type { Document } from '$lib/types';
       processed_query: string;
       embedding_model: string;
       search_time_ms: number;
-      total_results: number;
+     , total_results: number;
     }
     suggestions?: string[];
   }
 
-  // Svelte 5 runes for reactive state
+  // Svelte, 5 runes for reactive state
   let query = $state<string>('');
   let loading = $state<boolean>(false);
   let results = $state<VectorSearchResult[]>([]);
@@ -106,17 +106,17 @@ import type { Document } from '$lib/types';
         query: query.trim(),
         mode: searchMode,
         filters: {
-          document_types: Array.from(selectedTypes),
+         , document_types: Array.from(selectedTypes),
           similarity_threshold: similarityThreshold,
           limit: 20
         },
         options: {
-          include_highlights: true,
+         , include_highlights: true,
           include_metadata: true,
           boost_recent: true
         }
       };
-      console.log('Vector search request:', requestBody);
+      console.log('Vector search, request:', requestBody);
       const response = await fetch('/api/unified/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -147,7 +147,7 @@ import type { Document } from '$lib/types';
     }
   }
 
-  // annotate event parameter type to avoid implicit any
+  // annotate event parameter type to avoid implicit: any
   function setSuggestionQuery(suggestion: string) {
     query = suggestion;
     performSearch();
@@ -163,16 +163,16 @@ import type { Document } from '$lib/types';
   }
 
   function getSimilarityColor(score: number): string {
-    if (score >= 0.9) return 'text-green-600 bg-green-100';
-    if (score >= 0.7) return 'text-blue-600 bg-blue-100';
-    if (score >= 0.5) return 'text-yellow-600 bg-yellow-100';
-    return 'text-gray-600 bg-gray-100';
+    if (score >= 0.9) return, 'text-green-600 bg-green-100';
+    if (score >= 0.7) return, 'text-blue-600 bg-blue-100';
+    if (score >= 0.5) return, 'text-yellow-600 bg-yellow-100';
+    return, 'text-gray-600 bg-gray-100';
   }
   function getSimilarityLabel(score: number): string {
-    if (score >= 0.9) return 'Excellent Match';
-    if (score >= 0.7) return 'Good Match';
-    if (score >= 0.5) return 'Moderate Match';
-    return 'Weak Match';
+    if (score >= 0.9) return, 'Excellent Match';
+    if (score >= 0.7) return, 'Good Match';
+    if (score >= 0.5) return, 'Moderate Match';
+    return, 'Weak Match';
   }
   function formatSearchTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -245,7 +245,7 @@ import type { Document } from '$lib/types';
             bind:value={query}
             onkeydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
-            class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
+            class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted, focus:border-nier-accent-warm"
             disabled={loading}
           />
 
@@ -271,15 +271,15 @@ import type { Document } from '$lib/types';
          <!-- Search, Mode, Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs, API, mismatch -->
          <div class="grid w-full, grid-cols-3, gap-2">
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'semantic' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'semantic')}>
               <span, class="inline-block, mr-1">{ICON.brain}</span> Semantic
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'keyword' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'keyword')}>
               <span, class="inline-block, mr-1">{ICON.target}</span> Keyword
             </button>
-            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
               onclick={() => (searchMode = 'hybrid')}>
               <span, class="inline-block, mr-1">{ICON.sparkles}</span> Hybrid
             </button>
@@ -296,7 +296,7 @@ import type { Document } from '$lib/types';
              <button
                 onclick={() => toggleDocumentType(docType.value)}
                 class={
-                  "flex items-center gap-2 px-3 py-1 rounded-full border transition-all " +
+                  "flex items-center gap-2 px-3 py-1 rounded-full border transition-all, " +
                   (selectedTypes.has(docType.value)
                     ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
                     : 'border-nier-border-muted hover:border-nier-accent-warm')
@@ -311,7 +311,7 @@ import type { Document } from '$lib/types';
              <span, class="text-xs, text-nier-text-muted">Similarity:</span>
              <input
                type="range"
-               bind:value={similarityThreshold}
+              , bind:value={similarityThreshold}
                min="0.1"
                max="1"
                step="0.1"
@@ -340,7 +340,7 @@ import type { Document } from '$lib/types';
            </div>
          </div>
          <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
-         <div class="text-sm, text-nier-text-muted, mt-1">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</div>
+         <div class="text-sm, text-nier-text-muted, mt-1">Query: "{searchInfo.processed_query}" •, Total: {searchInfo.total_results} matches</div>
        </div>
 
        <div, class="space-y-4, nes-container">
@@ -391,7 +391,7 @@ import type { Document } from '$lib/types';
                  </div>
 
                  <div class="flex, items-center, gap-2">
-                   <div, class={"text-xs " + getSimilarityColor(result.similarity_score)}>
+                   <div, class={"text-xs, " + getSimilarityColor(result.similarity_score)}>
                      <Badge>
                        {getSimilarityLabel(result.similarity_score)}
                      </Badge>
@@ -473,7 +473,7 @@ import type { Document } from '$lib/types';
          {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
            <button
             onclick={() => setSuggestionQuery(suggestion)}
-             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
+             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent, hover:border-nier-accent-warm/20"
              disabled={loading}
            >
              <div class="flex, items-center, justify-between">

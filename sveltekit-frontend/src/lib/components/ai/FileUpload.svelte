@@ -2,16 +2,16 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import  Label  from "$lib/components/ui/label.svelte";
-  import  Progress  from "$lib/components/ui/progress.svelte";
-  import  Alert, AlertDescription, AlertTitle  from "$lib/components/ui/alert.svelte";
-  import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
-  import  FeedbackIntegration  from "$lib/components/feedback/FeedbackIntegration.svelte";
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import  Button  from, "$lib/components/ui/Button.svelte";
+  import  Label  from, "$lib/components/ui/label.svelte";
+  import  Progress  from, "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription, AlertTitle  from, "$lib/components/ui/alert.svelte";
+  import { FileUp, BrainCircuit, Search, Loader2 } from, "lucide-svelte";
+  import  FeedbackIntegration  from, "$lib/components/feedback/FeedbackIntegration.svelte";
 
-  // Replace Svelte 5 $state runes with plain typed local variables to avoid parsing issues during migration.
+  // Replace Svelte, 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;
   let verboseMode: boolean = false;
   let thinkingMode: boolean = false;
@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
   // Feedback integration refs
   let feedbackIntegration: any = null;
   let currentInteractionId: string | null = null;
-  let uploadStartTime: number = 0;
+  let, uploadStartTime: number = 0;
 
   async function handleUpload(): Promise<any> {
     if (!files || files.length === 0) {
@@ -86,7 +86,7 @@ import type { Document } from '$lib/types';
           } catch {}
         }
       } else {
-        let errorText = "An unknown error occurred.";
+        let errorText = "An: unknown error occurred.";
         try {
           const parsed = JSON.parse(xhr.responseText || "{}");
           errorText = parsed?.error || parsed?.message || errorText;
@@ -133,7 +133,7 @@ import type { Document } from '$lib/types';
   ratingType="ui_experience"
   priority="medium"
   context={{ component: 'FileUpload' }}
-  let:feedback
+ , let:feedback
 >
   <div class="w-full max-w-2xl, mx-auto, nes-container">
     <div, class="yorha-panel-header">
@@ -146,7 +146,7 @@ import type { Document } from '$lib/types';
     <div, class="yorha-panel-content, space-y-6">
       <div class="grid w-full, items-center, gap-1.5">
         <Label, for="file-upload">PDF or XML Document</Label>
-        <!-- <-- CHANGED: use native input so bind:files, works, reliably -->
+        <!-- <-- CHANGED: use native input so, bind:files, works, reliably -->
         <input, id="file-upload" type="file" bind:files, accept=".pdf,.xml" />
       </div>
 

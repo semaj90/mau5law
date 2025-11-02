@@ -3,13 +3,13 @@ Logout Route - Handles user logout
 TODO: Implement logout functionality, clear session, redirect to login
 -->
 <script, lang="ts">
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
-  // Svelte 5 runes are auto-imported
-	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
-	import Button from '$lib/components/ui/enhanced-bits.svelte';
-	import * as Card from '$lib/components/ui/Card.svelte';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
+  // Svelte, 5 runes are auto-imported
+	import EssentialRoutePage from, '$lib/templates/EssentialRoutePage.svelte';
+	import Button from, '$lib/components/ui/enhanced-bits.svelte';
+	import * as Card from, '$lib/components/ui/Card.svelte';
+	import { onMount } from, 'svelte';
+	import { goto } from, '$app/navigation';
 	let isLoggingOut = $state<boolean>(false);
 	async function handleLogout(): Promise<any> {
 		isLoggingOut = true;
@@ -31,7 +31,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 		}
 	}
 	$effect(() => {
-		// Auto-logout in 3 seconds if user doesn't cancel'
+		// Auto-logout in, 3 seconds if user doesn't cancel'
 		const timer = setTimeout(handleLogout, 3000);
 		return () => clearTimeout(timer);
 	});
@@ -42,7 +42,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 	showBackButton={true}
 >
 	{#snippet children()}
-		<Card.Root class="nes-container is-rounded, max-w-md, mx-auto">
+		<Card class="nes-container is-rounded, max-w-md, mx-auto">
 			<CardContent, class="p-8, text-center">
 				<div, class="mb-6">
 					<div, class="text-4xl, mb-4">👋</div>

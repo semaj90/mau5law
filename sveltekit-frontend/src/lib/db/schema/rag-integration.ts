@@ -1,9 +1,9 @@
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { pgTable, serial, varchar, text, integer, timestamp, jsonb, vector, boolean, real } from 'drizzle-orm/pg-core';
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { pgTable, serial, varchar, text, integer, timestamp, jsonb, vector, boolean, real } from, 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from, 'drizzle-zod';
+import { z } from, 'zod';
+import { eq } from, 'drizzle-orm';
 // Cases table for organizing documents
 export const cases = pgTable('cases', {
   id: serial('id').primaryKey(),
@@ -109,16 +109,16 @@ export const ragQueryResults = pgTable('rag_query_results', {
   createdAt: timestamp('created_at').notNull().defaultNow()
 });
 // Zod schemas for validation - Fixed compatibility issues
-export const insertCaseSchema = createInsertSchema(cases) as any;
-export const selectCaseSchema = createSelectSchema(cases) as any;
-export const insertDocumentSchema = createInsertSchema(documents) as any;
-export const selectDocumentSchema = createSelectSchema(documents) as any;
-export const insertDocumentChunkSchema = createInsertSchema(documentChunks) as any;
-export const selectDocumentChunkSchema = createSelectSchema(documentChunks) as any;
-export const insertProcessingJobSchema = createInsertSchema(processingJobs) as any;
-export const selectProcessingJobSchema = createSelectSchema(processingJobs) as any;
-export const insertRAGQuerySchema = createInsertSchema(ragQueries) as any;
-export const selectRAGQuerySchema = createSelectSchema(ragQueries) as any;
+export const insertCaseSchema = createInsertSchema(cases) as: any;
+export const selectCaseSchema = createSelectSchema(cases) as: any;
+export const insertDocumentSchema = createInsertSchema(documents) as: any;
+export const selectDocumentSchema = createSelectSchema(documents) as: any;
+export const insertDocumentChunkSchema = createInsertSchema(documentChunks) as: any;
+export const selectDocumentChunkSchema = createSelectSchema(documentChunks) as: any;
+export const insertProcessingJobSchema = createInsertSchema(processingJobs) as: any;
+export const selectProcessingJobSchema = createSelectSchema(processingJobs) as: any;
+export const insertRAGQuerySchema = createInsertSchema(ragQueries) as: any;
+export const selectRAGQuerySchema = createSelectSchema(ragQueries) as: any;
 // Types for TypeScript
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;
@@ -146,7 +146,7 @@ export const getDocumentChunksWithSimilarity = (db: any, queryEmbedding: number[
            1 - (dc.embedding <=> $1::vector) as similarity_score
     FROM document_chunks dc
     JOIN documents d ON dc.document_id = d.id
-    WHERE 1 - (dc.embedding <=> $1::vector) > $2
+    WHERE, 1 - (dc.embedding <=> $1::vector) > $2
     ORDER BY dc.embedding <=> $1::vector
     LIMIT $3
   `,`

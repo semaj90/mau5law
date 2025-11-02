@@ -6,7 +6,7 @@ export interface MissingImportAnalysis { missingFunctions: Set<string>;, missin
   missingMethods: Set<string>;
   missingTypes: Set<string>;
   missingModules: Set<string>;
-  errorsByFile: Map<string, string[]>;
+ , errorsByFile: Map<string, string[]>;
   errorsByCategory: Map<string, string[]>;
 }
 export interface BarrelStoreGeneration {
@@ -21,7 +21,7 @@ export interface PackageAnalysis { name: string;, missingExports: string[];
   version?: string;
 }
 export interface WebFetchResolution {
-  implementations: Map<string, ImplementationResult>;
+ , implementations: Map<string, ImplementationResult>;
   documentation: Map<string, DocumentationResult>;
   examples: Map<string, ExampleResult>;
   fallbacks: Map<string, FallbackResult>;
@@ -32,29 +32,29 @@ export interface ImplementationResult { name: string;, implementation: string;
   source?: string;
   confidence?: number;
 }
-export interface DocumentationResult { name: string;, description: string;
+export interface DocumentationResult {, name: string;, description: string;
   parameters: ParameterInfo[];
   returnType: string;
   examples: string[];
   source: string;
 }
-export interface ParameterInfo { name: string;, type: string;
+export interface ParameterInfo {, name: string;, type: string;
   description: string;
   optional?: boolean;
-  // Changed from `any` to `unknown` to avoid unexpected any lint/type errors
+  // Changed from `any` to `unknown` to avoid unexpected: any lint/type errors
   default?: any;
 }
-export interface ExampleResult { name: string;, code: string;
+export interface ExampleResult {, name: string;, code: string;
   description: string;
   language: string;
 }
-export interface FallbackResult { name: string;, implementation: string;
+export interface FallbackResult {, name: string;, implementation: string;
   types: string;
   warning?: string;
 }
-export interface Context7Integration { svelteComplete: Context7Documentation | null;, drizzleOrmDocs: Context7Documentation | null;
+export interface Context7Integration {, svelteComplete: Context7Documentation | null;, drizzleOrmDocs: Context7Documentation | null;
   xStateDocs: Context7Documentation | null;
-  bestPractices: Map<string, string[]>;
+ , bestPractices: Map<string, string[]>;
 }
 export interface Context7Documentation {
   library: string;
@@ -65,7 +65,7 @@ export interface Context7Documentation {
   bestPractices: string[];
   apiReference?: ApiReference[];
 }
-export interface ApiReference { name: string;, type: 'function' | 'class' | 'interface' | 'type';
+export interface ApiReference {, name: string;, type: 'function' | 'class' | 'interface' | 'type';
   signature: string;
   description: string;
   parameters?: ParameterInfo[];
@@ -73,42 +73,42 @@ export interface ApiReference { name: string;, type: 'function' | 'class' | 'in
   examples?: string[];
 }
 // Specific error pattern types
-export interface TypeScriptErrorPattern { pattern: string;, category: 'missing-function' | 'missing-property' | 'missing-module' | 'missing-export' | 'type-error';
+export interface TypeScriptErrorPattern {, pattern: string;, category: 'missing-function' | 'missing-property' | 'missing-module' | 'missing-export' | 'type-error';
   severity: 'error' | 'warning';
   suggestion?: string;
 }
-export interface ErrorResolutionStrategy { pattern: TypeScriptErrorPattern;, resolution: 'barrel-store' | 'type-definition' | 'polyfill' | 'dependency' | 'fallback';
+export interface ErrorResolutionStrategy {, pattern: TypeScriptErrorPattern;, resolution: 'barrel-store' | 'type-definition' | 'polyfill' | 'dependency' | 'fallback';
   implementation?: string;
   confidence: number;
 }
 // Package-specific interfaces
-export interface SvelteKitMissingItems { runes: string[];, stores: string[];
+export interface SvelteKitMissingItems {, runes: string[];, stores: string[];
   utilities: string[];
   components: string[];
   actions: string[];
 }
-export interface DrizzleOrmMissingItems { columnTypes: string[];, queryOperators: string[];
+export interface DrizzleOrmMissingItems {, columnTypes: string[];, queryOperators: string[];
   schemaBuilders: string[];
   connections: string[];
 }
-export interface DatabaseMissingItems { postgres: string[];, redis: string[];
+export interface DatabaseMissingItems {, postgres: string[];, redis: string[];
   neo4j: string[];
   vector: string[];
 }
-export interface StateMachineMissingItems { xstate: string[];, actors: string[];
+export interface StateMachineMissingItems {, xstate: string[];, actors: string[];
   guards: string[];
   actions: string[];
 }
 // Resolution result types
-export interface AutomatedResolutionResult { totalErrors: number;, resolvedErrors: number;
+export interface AutomatedResolutionResult {, totalErrors: number;, resolvedErrors: number;
   generatedFiles: string[];
   failedResolutions: string[];
   warnings: string[];
-  performance: { analysisTime: number;, generationTime: number;
+  performance: {, analysisTime: number;, generationTime: number;
     totalTime: number;
   }
 }
-export interface BarrelStoreFile { fileName: string;, content: string;
+export interface BarrelStoreFile {, fileName: string;, content: string;
   imports: string[];
   exports: string[];
   types: string[];
@@ -116,11 +116,11 @@ export interface BarrelStoreFile { fileName: string;, content: string;
   classes: string[];
 }
 // Web fetch integration types
-export interface WebFetchConfig { sources: WebFetchSource[];, cacheEnabled: boolean;
+export interface WebFetchConfig {, sources: WebFetchSource[];, cacheEnabled: boolean;
   timeout: number;
   retries: number;
 }
-export interface WebFetchSource { name: string;, baseUrl: string;
+export interface WebFetchSource {, name: string;, baseUrl: string;
   apiKey?: string;
   headers?: Record<string, string>;
   rateLimit?: number;
@@ -131,7 +131,7 @@ export interface Context7McpConfig { serverUrl: string;, libraries: string[];
   maxTokens: number;
   cacheEnabled: boolean;
 }
-export interface Context7McpResponse { library: string;, content: string;
+export interface Context7McpResponse {, library: string;, content: string;
   metadata: {
     tokenCount: number;
     version?: string;
@@ -140,22 +140,22 @@ export interface Context7McpResponse { library: string;, content: string;
   }
   snippets?: CodeSnippet[];
 }
-export interface CodeSnippet { title: string;, code: string;
+export interface CodeSnippet {, title: string;, code: string;
   description: string;
   language: string;
   tags: string[];
 }
 // Enhanced error analysis
-export interface EnhancedErrorAnalysis extends MissingImportAnalysis { errorClusters: ErrorCluster[];, priorityFiles: string[];
-  resolutionStrategies: Map<string, ErrorResolutionStrategy>;
+export interface EnhancedErrorAnalysis extends MissingImportAnalysis {, errorClusters: ErrorCluster[];, priorityFiles: string[];
+ , resolutionStrategies: Map<string, ErrorResolutionStrategy>;
   dependencies: DependencyAnalysis;
 }
-export interface ErrorCluster { pattern: string;, count: number;
+export interface ErrorCluster {, pattern: string;, count: number;
   files: string[];
   suggestedResolution: string;
   priority: number;
 }
-export interface DependencyAnalysis { missingPackages: string[];, versionConflicts: string[];
+export interface DependencyAnalysis {, missingPackages: string[];, versionConflicts: string[];
   devDependencies: string[];
-  peerDependencies: string[];
+ , peerDependencies: string[];
 }

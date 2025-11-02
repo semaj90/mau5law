@@ -1,11 +1,11 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // MCP (Model Context Protocol) Tools Integration
 
 export interface MCPToolResponse<T = any> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: { timestamp: string;, tool: string;
+  metadata?: {, timestamp: string;, tool: string;
     duration?: number;
   };
 }
@@ -13,7 +13,7 @@ export interface MCPToolResponse<T = any> {
 export interface MCPTools {
   // Nested structure expected by agentShellMachine
   cases: {
-    loadCases: (params: {
+   , loadCases: (params: {
       userId?: string;
       limit?: number;
       offset?: number;
@@ -26,7 +26,7 @@ export interface MCPTools {
     getCaseAnalytics: (userId: string) => Promise<MCPToolResponse<any>>;
   };
   evidence: {
-    loadEvidence: (params: { caseId?: string; limit?: number; query?: string }) => Promise<MCPToolResponse<any>>;
+   , loadEvidence: (params: { caseId?: string; limit?: number; query?: string }) => Promise<MCPToolResponse<any>>;
     createEvidence: (evidenceData: any) => Promise<MCPToolResponse<any>>;
     updateEvidence: (evidenceId: string, updates: any) => Promise<MCPToolResponse<any>>;
     deleteEvidence: (evidenceId: string) => Promise<MCPToolResponse<any>>;
@@ -36,7 +36,7 @@ export interface MCPTools {
     }) => Promise<MCPToolResponse<any>>;
     getEvidenceAnalytics: (caseId: string) => Promise<MCPToolResponse<any>>;
   };
-  users: { getUserById: (userId: string) => Promise<MCPToolResponse<any>>;, updateUser: (userId: string, updates: any) => Promise<MCPToolResponse<any>>;
+  users: {, getUserById: (userId: string) => Promise<MCPToolResponse<any>>;, updateUser: (userId: string, updates: any) => Promise<MCPToolResponse<any>>;
     getUserAnalytics: () => Promise<MCPToolResponse<any>>;
   };
   // Direct methods for other functionality
@@ -49,7 +49,7 @@ export interface MCPTools {
 }
 
 // Mock implementation for development
-export const mcpTools: MCPTools = { cases: {, loadCases: async (_params: { userId?: string; limit?: number; offset?: number; query?: string }) => ({
+export const mcpTools: MCPTools = {, cases: {, loadCases: async (_params: { userId?: string; limit?: number; offset?: number; query?: string }) => ({
       success: true,
       data: []
     }),
@@ -60,7 +60,7 @@ export const mcpTools: MCPTools = { cases: {, loadCases: async (_params: { user
     getCaseAnalytics: async (_userId: string) => ({ success: true, data: {, totalCases: 0, activeCases: 0 } })
   },
   evidence: {
-    loadEvidence: async (_params: { caseId?: string; limit?: number; query?: string }) => ({
+   , loadEvidence: async (_params: { caseId?: string; limit?: number; query?: string }) => ({
       success: true,
       data: []
     }),
@@ -82,7 +82,7 @@ export const mcpTools: MCPTools = { cases: {, loadCases: async (_params: { user
       data: {, totalEvidence: 0, processedEvidence: 0 }
     })
   },
-  users: { getUserById: async (userId: string) => ({, success: true,
+  users: {, getUserById: async (userId: string) => ({, success: true,
       data: {, id: userId, name: 'Demo User', role: 'attorney' }
     }),
     updateUser: async (userId: string, updates: any) => ({ success: true, data: {, id: userId, ...updates } }),

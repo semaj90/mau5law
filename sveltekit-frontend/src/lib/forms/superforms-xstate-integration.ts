@@ -1,12 +1,12 @@
 // Superforms + XState Integration for Legal AI Forms
 // Advanced form management with state machines and validation
-import { superForm, type SuperValidated } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { writable, derived, type Writable, type Readable } from 'svelte/store';
-import { createActor } from 'xstate';
-import { z } from 'zod';
-import { DocumentUploadSchema, CaseCreationSchema, SearchQuerySchema, AIAnalysisSchema } from '$lib/schemas/forms';
-import { documentUploadMachine, caseCreationMachine, searchMachine, aiAnalysisMachine } from '$lib/machines';
+import { superForm, type SuperValidated } from, 'sveltekit-superforms';
+import { zod } from, 'sveltekit-superforms/adapters';
+import { writable, derived, type Writable, type Readable } from, 'svelte/store';
+import { createActor } from, 'xstate';
+import { z } from, 'zod';
+import { DocumentUploadSchema, CaseCreationSchema, SearchQuerySchema, AIAnalysisSchema } from, '$lib/schemas/forms';
+import { documentUploadMachine, caseCreationMachine, searchMachine, aiAnalysisMachine } from, '$lib/machines';
 // Lightweight local types to reduce broad casting and improve readability
 type SuperFormSnapshot = { valid?: boolean; data?: any; errors?: Record<string, unknown> };
 type ActorSnapshotRec = { status?: string | number; value?: any; context?: Record<string, unknown> };
@@ -43,13 +43,13 @@ type AnalysisContext = {
 // ============================================================================
 // FORM STATE INTEGRATION TYPES
 // ============================================================================
-export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
+export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any;, context: any };
 export interface FormMachineIntegration<M, extends { getSnapshot: () => unknown }> { form: ReturnType<typeof, superForm>;, actor: M;
   state: Writable<unknown>;
   context: Writable<unknown>;
   isValid: Readable<boolean>;
   isSubmitting: Readable<boolean>;
-  errors: Readable<Record<string, string[]>>;
+ , errors: Readable<Record<string, string[]>>;
   progress: Readable<number>;
   autoSaveDelay?: number;
   resetOnSuccess?: boolean;
@@ -77,7 +77,7 @@ export function createDocumentUploadForm(
     delayMs: 300,
     timeoutMs: 8000,
     invalidateAll: false,
-    onUpdated: ({ form: updatedForm }) => {
+    onUpdated: ({, form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
       if (f.valid) {
         actor.send({ type: 'VALIDATE_FORM', data: f.data ?? f });
@@ -95,9 +95,9 @@ export function createDocumentUploadForm(
     }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
-  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
+  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
   const context = writable((snapshot.context ?? {}) as Record<string, unknown>);
-  const isValid = derived([form.form], ([$form]) => !!($form as unknown as SuperFormSnapshot).valid);
+  const isValid = derived([form.form], ([$form]) => !!($form as: unknown as SuperFormSnapshot).valid);
   const isSubmitting = derived(
     state,
     $state => $state === 'uploading' || $state === 'processing' || $state === 'validating'
@@ -110,7 +110,7 @@ export function createDocumentUploadForm(
         const fullKey = prefix ? `${prefix}.${key}` : key;
         if (Array.isArray(value)) {
           // ensure we only store arrays of strings
-          flattened[fullKey] = (value as unknown[]).map(v => String(v));
+          flattened[fullKey] = (value as: unknown[]).map(v => String(v));
         } else if (value && typeof value === 'object') {
           flattenErrors(value, fullKey);
         }
@@ -127,13 +127,13 @@ export function createDocumentUploadForm(
   });
   const progress = derived(context, $context =>
     Math.max(
-      (($context as Record<string, unknown>)?.uploadProgress as number) ?? 0,
-      (($context as Record<string, unknown>)?.processingProgress as number) ?? 0
+      (($context as Record<string, unknown>)?.uploadProgress as: number) ?? 0,
+      (($context as Record<string, unknown>)?.processingProgress as: number) ?? 0
     )
   );
   actor.subscribe(snapshot => {
     const snap = snapshot as ActorSnapshotRec;
-    const stateValue = (snap.status ?? snap.value ?? 'idle') as string;
+    const stateValue = (snap.status ?? snap.value ?? 'idle') as: string;
     const contextValue = (snap.context ?? {}) as Record<string, unknown>;
     state.set(stateValue);
     context.set(contextValue);
@@ -184,7 +184,7 @@ export function createCaseCreationForm(
     delayMs: 500,
     timeoutMs: 10000,
     invalidateAll: true,
-    onUpdated: ({ form: updatedForm }) => {
+    onUpdated: ({, form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
       actor.send({ type: 'UPDATE_FORM', data: f.data ?? f });
     },
@@ -198,9 +198,9 @@ export function createCaseCreationForm(
     }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
-  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
+  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
   const context = writable((snapshot.context ?? {}) as Record<string, unknown>);
-  const isValid = derived([form.form], ([$form]) => !!($form as unknown as SuperFormSnapshot).valid);
+  const isValid = derived([form.form], ([$form]) => !!($form as: unknown as SuperFormSnapshot).valid);
   const isSubmitting = derived(state, $state => $state === 'submitting' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
@@ -209,7 +209,7 @@ export function createCaseCreationForm(
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
         if (Array.isArray(value)) {
-          flattened[fullKey] = (value as unknown[]).map(v => String(v));
+          flattened[fullKey] = (value as: unknown[]).map(v => String(v));
         } else if (value && typeof value === 'object') {
           flattenErrors(value, fullKey);
         }
@@ -229,12 +229,12 @@ export function createCaseCreationForm(
     if ($state === 'completed') return 100;
     if ($state === 'submitting') return 80;
     if ($state === 'validating') return 60;
-    if ($state === 'editing' && (ctx?.isAutoSaving as boolean)) return 30;
+    if ($state === 'editing' && (ctx?.isAutoSaving as: boolean)) return 30;
     return 0;
   });
   actor.subscribe(snapshot => {
     const snap = snapshot as ActorSnapshotRec;
-    const stateValue = (snap.status ?? snap.value ?? 'idle') as string;
+    const stateValue = (snap.status ?? snap.value ?? 'idle') as: string;
     const contextValue = (snap.context ?? {}) as Record<string, unknown>;
     state.set(stateValue);
     context.set(contextValue);
@@ -242,7 +242,7 @@ export function createCaseCreationForm(
     if (stateValue === 'completed' && options.onSuccess) options.onSuccess(caseCtx?.createdCase);
     else if (caseCtx?.error && options.onError) options.onError(caseCtx.error);
   });
-  actor.send({ type: `START_CREATION` } as unknown);'`'`
+  actor.send({ type: `START_CREATION` }, as: unknown);'`'`
   return {
     form,
     actor,
@@ -269,7 +269,7 @@ export function createSearchForm(
     delayMs: 300,
     timeoutMs: 15000,
     invalidateAll: false,
-    onUpdated: ({ form: updatedForm }) => {
+    onUpdated: ({, form: updatedForm }) => {
       const f = updatedForm as SuperFormSnapshot;
       const fd = f.data as { query?: string } | undefined;
       if (fd?.query && fd.query.length > 2) {
@@ -286,9 +286,9 @@ export function createSearchForm(
     }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
-  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
+  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
   const context = writable((snapshot.context ?? {}) as Record<string, unknown>);
-  const isValid = derived([form.form], ([$form]) => !!($form as unknown as SuperFormSnapshot).valid);
+  const isValid = derived([form.form], ([$form]) => !!($form as: unknown as SuperFormSnapshot).valid);
   const isSubmitting = derived(state, $state => $state === 'searching' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
@@ -296,7 +296,7 @@ export function createSearchForm(
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
-        if (Array.isArray(value)) flattened[fullKey] = value as string[];
+        if (Array.isArray(value)) flattened[fullKey] = value as: string[];
         else if (typeof value === 'object' && value !== null) flattenErrors(value, fullKey);
       }
     };
@@ -313,7 +313,7 @@ export function createSearchForm(
   });
   actor.subscribe(snapshot => {
     const snap = snapshot as ActorSnapshotRec;
-    const stateValue = (snap.status ?? snap.value ?? 'idle') as string;
+    const stateValue = (snap.status ?? snap.value ?? 'idle') as: string;
     const contextValue = (snap.context ?? {}) as Record<string, unknown>;
     state.set(stateValue);
     context.set(contextValue);
@@ -322,7 +322,7 @@ export function createSearchForm(
       options.onSuccess({ results: searchCtx?.results, analytics: searchCtx?.analytics });
     else if (stateValue === 'error' && options.onError) options.onError(searchCtx?.error ?? 'Search failed');
   });
-  actor.send({ type: `LOAD_HISTORY` } as unknown);'`'`
+  actor.send({ type: `LOAD_HISTORY` }, as: unknown);'`'`
   return {
     form,
     actor,
@@ -359,9 +359,9 @@ export function createAIAnalysisForm(
     }
   });
   const snapshot = actor.getSnapshot() as ActorSnapshotRec;
-  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as string);
+  const state = writable((snapshot.status ?? snapshot.value ?? 'idle') as: string);
   const context = writable((snapshot.context ?? {}) as Record<string, unknown>);
-  const isValid = derived([form.form], ([$form]) => !!($form as unknown as SuperFormSnapshot).valid);
+  const isValid = derived([form.form], ([$form]) => !!($form as: unknown as SuperFormSnapshot).valid);
   const isSubmitting = derived(state, $state => $state === 'analyzing' || $state === 'validating');
   const errors = derived([form.errors, context], ([$errors, $context]) => {
     const flattened: Record<string, string[]> = {};
@@ -369,7 +369,7 @@ export function createAIAnalysisForm(
       const rec = obj as Record<string, unknown> | undefined;
       for (const [key, value] of Object.entries(rec || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
-        if (Array.isArray(value)) flattened[fullKey] = value as string[];
+        if (Array.isArray(value)) flattened[fullKey] = value as: string[];
         else if (typeof value === 'object' && value !== null) flattenErrors(value, fullKey);
       }
     };
@@ -386,7 +386,7 @@ export function createAIAnalysisForm(
   });
   actor.subscribe(snapshot => {
     const snap = snapshot as ActorSnapshotRec;
-    const stateValue = (snap.status ?? snap.value ?? 'idle') as string;
+    const stateValue = (snap.status ?? snap.value ?? 'idle') as: string;
     const contextValue = (snap.context ?? {}) as Record<string, unknown>;
     state.set(stateValue);
     context.set(contextValue);
@@ -483,7 +483,7 @@ export class FormStatePersistence {
     } catch (error) {
       console.warn('Failed to load form state:', error);
     }
-    return null;
+    return: null;
   }
   clear(): void {
     try {

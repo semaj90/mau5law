@@ -1,5 +1,5 @@
 // src/lib/services/__tests__/integration-setup.ts
-import { beforeAll, afterAll, vi } from 'vitest';
+import { beforeAll, afterAll, vi } from, 'vitest';
 // Integration test setup for real network testing
 beforeAll(async () => {
   console.log('🚀 Setting up integration test environment...');
@@ -11,7 +11,7 @@ beforeAll(async () => {
     { name: 'Canvas Service', url: 'http://localhost:8083/health' },
     { name: 'Database', url: 'http://localhost:5432' }
   ];
-  console.log('\n📡 Checking service availability: ');'`'`
+  console.log('\n📡 Checking service, availability: ');'`'`
   for (const service of services) {
     try {
       // Use AbortController for request timeout (fetch does not accept `timeout` option)
@@ -40,7 +40,7 @@ afterAll(async () => {
   console.log('\n🧹 Integration test cleanup completed');
 });
 // Global test utilities for integration tests
-;(global as any).integrationTestConfig = {
+;(global as: any).integrationTestConfig = {
   baseUrl: 'http://localhost:8080',
   timeout: 5000,
   retries: 2,

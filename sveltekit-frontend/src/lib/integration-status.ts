@@ -23,51 +23,51 @@ export interface IntegrationStatus { webassembly: {, available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
   };
-  sveltekit: { version: string;, svelte5Patterns: boolean;
+  sveltekit: {, version: string;, svelte5Patterns: boolean;
     ssrReady: boolean;
   };
-  database: { drizzleOrm: boolean;, pgvectorSupport: boolean;
+  database: {, drizzleOrm: boolean;, pgvectorSupport: boolean;
     postgresqlReady: boolean;
   };
-  ui: { enhancedBitsComponents: boolean;, unoCSS: boolean;
+  ui: {, enhancedBitsComponents: boolean;, unoCSS: boolean;
     nesCSS: boolean;
     gamingTheme: boolean;
   };
-  webgpu: { available: boolean;, dawnBackend: boolean;
+  webgpu: {, available: boolean;, dawnBackend: boolean;
     unifiedRuntime: boolean;
   };
-  cache: { chrRomCache: boolean;, redisConnected: boolean;
-    wasmCache: boolean;
+  cache: {, chrRomCache: boolean;, redisConnected: boolean;
+   , wasmCache: boolean;
   };
 }
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
-  const status: IntegrationStatus = { webassembly: {, available: false,
+  const status: IntegrationStatus = {, webassembly: {, available: false,
       simdSupport: false,
       runtimeConnected: false
     },
     sveltekit: {
-      version: '2.0',
+     , version: '2.0',
       svelte5Patterns: true,
       ssrReady: true
     },
     database: {
-      drizzleOrm: true,
+     , drizzleOrm: true,
       pgvectorSupport: true,
       postgresqlReady: false
     },
     ui: {
-      enhancedBitsComponents: true,
+     , enhancedBitsComponents: true,
       unoCSS: true,
       nesCSS: true,
       gamingTheme: true
     },
     webgpu: {
-      available: false,
+     , available: false,
       dawnBackend: false,
       unifiedRuntime: true
     },
     cache: {
-      chrRomCache: true,
+     , chrRomCache: true,
       redisConnected: false,
       wasmCache: true
     }
@@ -81,7 +81,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
       try {
         const wasmModule = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]);
         await WebAssembly.instantiate(wasmModule);
-        status.webassembly.simdSupport = typeof (WebAssembly as any).SIMD !== 'undefined';
+        status.webassembly.simdSupport = typeof (WebAssembly as: any).SIMD !== 'undefined';
       } catch (e) {
         console.warn('WebAssembly SIMD check failed:', e);
       }
@@ -140,7 +140,7 @@ export function formatStatusReport(status: IntegrationStatus): string {
     '',
     '🚀 SvelteKit & Svelte 5: ','`'`
     `  ✅ Version: ${status.sveltekit.version}`,
-    `  🎯 Svelte 5 Patterns: ${status.sveltekit.svelte5Patterns}`,
+    `  🎯 Svelte, 5 Patterns: ${status.sveltekit.svelte5Patterns}`,
     `  🌐 SSR Ready: ${status.sveltekit.ssrReady}`,
     '',
     '🗄️ Database Stack: ','`'`

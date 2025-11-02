@@ -1,4 +1,4 @@
-import type { QdrantClient, QdrantVectorPayload, QdrantSearchResult } from '../../types/external-services';
+import type { QdrantClient, QdrantVectorPayload, QdrantSearchResult } from, '../../types/external-services';
 type QdrantConfig = {
   url?: string; // e.g. http://localhost:6333
   apiKey?: string | null;

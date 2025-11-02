@@ -1,17 +1,17 @@
-import { db } from '$lib/server/db/client';
-import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
-import { desc, eq, sql } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { db } from, '$lib/server/db/client';
+import { chatSessions, chatMessages } from, '$lib/server/db/schema-unified';
+import { desc, eq, sql } from, 'drizzle-orm';
+import { randomUUID } from, 'crypto';
 // Use InferModel or define types directly for better compatibility
 type NewChatSession = typeof chatSessions.$inferInsert;
 type NewChatMessage = typeof chatMessages.$inferInsert;
 export class ChatHistoryService {
   static async getSessionsByUser(userId: string, limit = 20) {
     // Use raw SQL predicate for jsonb userId
-    return (db as any)
+    return (db as: any)
       .select()
       .from(chatSessions)
-      .where(sql`${(chatSessions as any).metadata} ->> 'userId' = ${userId}`)
+      .where(sql`${(chatSessions as: any).metadata} ->> 'userId' = ${userId}`)
       .orderBy(desc(chatSessions.updatedAt))
       .limit(limit);
   }
@@ -50,7 +50,7 @@ export class ChatHistoryService {
       content: params.content,
       embedding: null,
       metadata: {
-        model: params?.model || 'unknown',
+       , model: params?.model || 'unknown',
         ...(params.metadata || {})
       }
     };
@@ -58,12 +58,12 @@ export class ChatHistoryService {
     // Update session metadata with incremented message count
     const currentSession = await db.select().from(chatSessions).where(eq(chatSessions.id, params.sessionId)).limit(1);
     if (currentSession.length > 0) {
-      const currentCount = (currentSession[0].metadata as any)?.messageCount || 0;
+      const currentCount = (currentSession[0].metadata as: any)?.messageCount || 0;
       await db
         .update(chatSessions)
         .set({
           metadata: {
-            ...(currentSession[0].metadata as object),
+            ...(currentSession[0].metadata, as: object),
             messageCount: currentCount + 1
           },
           updatedAt: new Date()

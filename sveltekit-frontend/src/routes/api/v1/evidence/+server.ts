@@ -1,17 +1,17 @@
-import { cuidSchema } from '$lib/server/z-schemas';
+import { cuidSchema } from, '$lib/server/z-schemas';
 /*
  * Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence - List user's evidence (with pagination)'
  * POST /api/v1/evidence - Create new evidence
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
 import {
   EvidenceCRUDService,
   CreateEvidenceSchema,
   type CreateEvidenceData
-} from '$lib/server/services/user-scoped-crud';
-import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod';
+} from, '$lib/server/services/user-scoped-crud';
+import { queueEvidenceAnalysis } from, '$lib/server/services/background-job-queue';
+import { z } from, 'zod';
 // Query parameters schema for GET requests
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       success: true,
       data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
       pagination: {
-        page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
+       , page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
         limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
         total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
         totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
       },
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         caseId: validatedQuery.caseId || null,
         timestamp: new Date().toISOString()
       }

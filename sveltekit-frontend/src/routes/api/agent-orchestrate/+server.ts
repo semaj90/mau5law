@@ -1,8 +1,8 @@
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { claudeAgent } from '$lib/ai/claude-agent';
-import { context7Service, autoGenAgent, crewAIAgent, enhancedRAGService } from '$lib/services/agent-stubs';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { claudeAgent } from, '$lib/ai/claude-agent';
+import { context7Service, autoGenAgent, crewAIAgent, enhancedRAGService } from, '$lib/services/agent-stubs';
 /*
  * Agent Orchestrator API Endpoint
  * Coordinates multiple AI agents with Context7 MCP integration and auto-fix capabilities
@@ -23,24 +23,24 @@ export interface AutoFixChange {
 export interface Context7Analysis {
   documentation?: string;
   recommendations?: string[];
-  codeExamples?: AgentCodeExample[]; // was any[]
+  codeExamples?: AgentCodeExample[]; // was: any[]
   bestPractices?: string[];
   timestamp?: string;
 }
 export interface AutoFixResults {
   applied?: boolean;
   area?: string;
-  changes?: AutoFixChange[]; // was any[]
+  changes?: AutoFixChange[]; // was: any[]
   summary?: string;
   timestamp?: string;
 }
 export interface AgentOrchestrationContext {
   context7Analysis?: Context7Analysis;
   autoFixResults?: AutoFixResults;
-  [key: string]: any; // was any
+  [key: string]: any; //, was: any
 }
-// import { autoGenAgent } from '../../../../../agents/autogen-agent.js'
-// import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js'
+// import { autoGenAgent } from, '../../../../../agents/autogen-agent.js'
+// import { enhancedRAGService } from, '../../../../../rag/enhanced-rag-service.js'
 export interface AgentOrchestrationRequest {
   prompt: string;
   context?: AgentOrchestrationContext;
@@ -56,48 +56,48 @@ export interface AgentOrchestrationRequest {
   };
 }
 export interface AgentResult { agent: string;, output: string;
-  score: number;
+ , score: number;
   metadata?: Record<string, unknown>;
   error?: string;
   sources?: string[];
   [key: string]: any;
 }
-export interface AgentOrchestrationResponse { success: boolean;, results: AgentResult[]; // was Array<any>
-  synthesis: { bestResult: string;, consensusScore: number;
+export interface AgentOrchestrationResponse {, success: boolean;, results: AgentResult[]; // was Array<any>
+  synthesis: {, bestResult: string;, consensusScore: number;
     recommendations: string[];
     nextSteps: string[];
   };
-  orchestrationMetadata: { totalProcessingTime: number;, agentsUsed: number;
+  orchestrationMetadata: {, totalProcessingTime: number;, agentsUsed: number;
     context7Enhanced: boolean;
     autoFixApplied: boolean;
     timestamp: string;
   };
 }
 
-// Utility: safe error message extraction
+//, Utility: safe error message extraction
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
 // Map raw Context7 response into Context7Analysis
 function mapContext7Analysis(raw: any): Context7Analysis {
-  // raw may be { summary: string; ok: boolean } or richer object
+  // raw may be { summary: string; ok: boolean } or, richer: object
   if (raw && typeof raw === 'object') {
     const r = raw as Record<string, unknown>;
     return {
-      documentation: (r.summary as string) ?? (r.documentation as string) ?? undefined,
+      documentation: (r.summary, as: string) ?? (r.documentation as: string) ?? undefined,
       recommendations: Array.isArray(r.recommendations)
-        ? (r.recommendations as string[])
+        ? (r.recommendations as: string[])
         : r.recommendation
           ? [String(r.recommendation)]
           : undefined,
       codeExamples: Array.isArray(r.codeExamples) ? (r.codeExamples as AgentCodeExample[]) : undefined,
-      bestPractices: Array.isArray(r.bestPractices) ? (r.bestPractices as string[]) : undefined,
+      bestPractices: Array.isArray(r.bestPractices) ? (r.bestPractices as: string[]) : undefined,
       timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString()
     };
   }
@@ -110,10 +110,10 @@ function mapAutoFixResults(raw: any, area?: string): AutoFixResults {
     const r = raw as Record<string, unknown>;
     const fixes = Array.isArray(r.fixes) ? (r.fixes as AutoFixChange[]) : undefined;
     return {
-      applied: (r.success as boolean) ?? (r.applied as boolean) ?? undefined,
-      area: area ?? (r.area as string) ?? undefined,
+      applied: (r.success, as: boolean) ?? (r.applied as: boolean) ?? undefined,
+      area: area ?? (r.area, as: string) ?? undefined,
       changes: fixes,
-      summary: (r.summary as string) ?? (r.message as string) ?? undefined,
+      summary: (r.summary, as: string) ?? (r.message as: string) ?? undefined,
       timestamp: r.timestamp ? String(r.timestamp) : new Date().toISOString()
     };
   }
@@ -135,13 +135,13 @@ function normalizeAgentResult(raw: any, agentName: string): AgentResult {
       score: typeof r.score === 'number' ? r.score : 0,
       metadata: (r.metadata as Record<string, unknown>) ?? undefined,
       error: typeof r.error === 'string' ? r.error : undefined,
-      sources: Array.isArray(r.sources) ? (r.sources as string[]) : undefined
+      sources: Array.isArray(r.sources) ? (r.sources as: string[]) : undefined
     };
   }
   return { agent: agentName, output: '', score: 0 };
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const requestData: AgentOrchestrationRequest = await request.json();
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    const results: AgentResult[] = []; // was any[]
+    const results: AgentResult[] = []; //, was: any[]
     let context7Enhanced = $state<boolean>(false);
     let autoFixApplied = $state<boolean>(false);
     // Apply Context7 analysis and auto-fix if requested
@@ -181,8 +181,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     if (options.autoFix) {
       const autoFixResult = await context7Service.autoFixCodebase({
-        area: options.autoFixArea, // options.autoFixArea is typed as string | undefined
-        dryRun: false
+        area: options.autoFixArea, // options.autoFixArea is typed as: string | undefined
+       , dryRun: false
       });
       context.autoFixResults = mapAutoFixResults(autoFixResult, options.autoFixArea);
       autoFixApplied = true;
@@ -347,7 +347,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const synthesis = synthesizeResults(results, prompt);
     const totalProcessingTime = Date.now() - startTime;
     const response: AgentOrchestrationResponse = {
-      success: true,
+     , success: true,
       results,
       synthesis,
       orchestrationMetadata: {
@@ -367,13 +367,13 @@ export const POST: RequestHandler = async ({ request }) => {
         error: getErrorMessage(err),
         results: [],
         synthesis: {
-          bestResult: '',
+         , bestResult: '',
           consensusScore: 0,
           recommendations: ['Check agent configurations', 'Verify service availability'],
           nextSteps: ['Review error logs', 'Test individual agents']
         },
         orchestrationMetadata: {
-          totalProcessingTime: Date.now() - startTime,
+         , totalProcessingTime: Date.now() - startTime,
           agentsUsed: 0,
           context7Enhanced: false,
           autoFixApplied: false,
@@ -385,7 +385,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 function synthesizeResults(results: AgentResult[], _originalPrompt: string) {
-  // was any[]
+  // was: any[]
   // Find best result by score
   const validResults = results.filter(r => !r.error && r.score > 0);
   if (validResults.length === 0) {

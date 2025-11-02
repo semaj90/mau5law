@@ -5,14 +5,14 @@
  * Replace the placeholder/simulated implementations (e.g., executeQueryForCache, getRecentDocumentsByType)
  * with real integration logic as needed.
  */
-import { EventEmitter } from 'events';
-import { createClient } from 'redis';
+import { EventEmitter } from, 'events';
+import { createClient } from, 'redis';
 // Use the concrete return type from createClient instead of RedisClientType (some redis versions don't export RedisClientType)'
 
 // Minimal RequestBatcher implementation (simple concurrency control + batch-size adjusters)
 class RequestBatcher {
   private batchSize: number;
-  private maxConcurrency: number;
+  private, maxConcurrency: number;
 
   constructor(opts: { batchSize?: number; maxConcurrency?: number } = {}) {
     this.batchSize = Math.max(1, Math.floor(opts.batchSize ?? 50));
@@ -20,18 +20,18 @@ class RequestBatcher {
   }
 
   // Execute an array of async tasks (task generators) in parallel batches honoring maxConcurrency.
-  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number; total: number }> {
+  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number;, total: number }> {
     const total = tasks.length;
     let successful = 0;
 
     // run tasks in slices of batchSize, but each slice respects maxConcurrency
     const runSlice = async (slice: Array<() => Promise<R>>) => {
       type Tracked = { p: Promise<void>; settled: boolean };
-      let runners: Tracked[] = [];
+      let, runners: Tracked[] = [];
 
       for (const task of slice) {
         // create a tracked promise so we can tell when it settled without using `any`
-        const tracked: Tracked = { settled: false, p: Promise.resolve() };
+        const tracked: Tracked = {, settled: false, p: Promise.resolve() };
         tracked.p = (async () => {
           try {
             await task();
@@ -54,7 +54,7 @@ class RequestBatcher {
         }
       }
 
-      // wait for any remaining runners
+      // wait for: any remaining runners
       await Promise.all(runners.map(r => r.p));
     };
 
@@ -79,17 +79,17 @@ export interface CacheWarmerConfig { warmupSchedule: {, commonQueries: string[]
     documentTypes: string[];
     userPatterns: string[];
   };
-  priorities: { legal: number;, evidence: number;
+  priorities: {, legal: number;, evidence: number;
     reports: number;
     searches: number;
     [k: string]: number;
   };
-  performance: { batchSize: number;, maxConcurrency: number;
+  performance: {, batchSize: number;, maxConcurrency: number;
     gpuUtilizationTarget: number; // 0.0 to 1.0
   };
 }
 
-export interface CacheMetrics { hitRate: number;, missRate: number;
+export interface CacheMetrics {, hitRate: number;, missRate: number;
   evictionRate: number;
   averageLatency: number;
   gpuUtilization: number;
@@ -103,10 +103,10 @@ export interface CacheMetrics { hitRate: number;, missRate: number;
   misses: number;
 }
 
-export interface TTLStrategy { documentType: string;, accessFrequency: number;
+export interface TTLStrategy {, documentType: string;, accessFrequency: number;
   lastAccessed: Date;
   computedTTL: number;
-  priority: 'critical' | 'high' | 'medium' | 'low';
+ , priority: 'critical' | 'high' | 'medium' | 'low';
 }
 
 export class EnhancedCachingOptimizer extends EventEmitter {
@@ -114,10 +114,10 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   private redis?: ReturnType<typeof, createClient>;
   private redisUrl?: string;
   private metrics: CacheMetrics;
-  private ttlStrategies: Map<string, TTLStrategy>;
+  private, ttlStrategies: Map<string, TTLStrategy>;
   private requestBatcher: RequestBatcher;
   private warmupTimer: ReturnType<typeof setInterval> | null;
-  private config: CacheWarmerConfig;
+  private, config: CacheWarmerConfig;
 
   constructor(config: Partial<CacheWarmerConfig> = {}) {
     super();
@@ -133,14 +133,14 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         ...(config.warmupSchedule || {})
       },
       priorities: {
-        legal: 0.9,
+       , legal: 0.9,
         evidence: 0.8,
         reports: 0.6,
         searches: 0.7,
         ...(config.priorities || {})
       },
       performance: {
-        batchSize: 50,
+       , batchSize: 50,
         maxConcurrency: 10,
         gpuUtilizationTarget: 0.85,
         ...(config.performance || {})
@@ -305,7 +305,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     let computedTTL = baseTTL * Math.max(frequencyMultiplier, 1) * recencyMultiplier;
     const priorityMultiplier = this.getPriorityMultiplier(strategy.priority);
     computedTTL *= priorityMultiplier;
-    computedTTL = Math.max(300, Math.min(computedTTL, 86400)); // 5 minutes to 24 hours
+    computedTTL = Math.max(300, Math.min(computedTTL, 86400)); // 5 minutes to, 24 hours
     strategy.computedTTL = computedTTL;
     strategy.lastAccessed = new Date();
     return Math.floor(computedTTL);
@@ -361,7 +361,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     this.updateMetrics('miss', data);
     const identifier = data.key ?? data.query;
     if (!identifier) return;
-    // schedule proactive load of the query string (if available)
+    // schedule proactive load of the query: string (if available)
     if (data.query) {
       void this.scheduleProactiveLoad(data.query);
     }
@@ -410,7 +410,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     // Schedule regular optimization cycles
     this.warmupTimer = setInterval(async () => {
       await this.optimizationCycle();
-    }, 300_000); // Every 5 minutes
+    }, 300_000); // Every, 5 minutes
 
     console.log('🔄 Started continuous cache optimization');
   }
@@ -479,7 +479,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   // replace simulated query executor with API call
   private async executeQueryForCache(
     query: string
-  ): Promise<{ query: string; results: any[]; timestamp: number; fromCache: boolean }> {
+  ): Promise<{ query: string; results: any[]; timestamp: number;, fromCache: boolean }> {
     try {
       const res = await fetch('/api/search/execute', {
         method: 'POST',
@@ -490,7 +490,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         const text = await res.text();
         throw new Error(`Search API error: ${text}`);
       }
-      // assume backend returns a JSON object with results
+      // assume backend returns a JSON: object with results
       const payload = await res.json();
       return {
         query,
@@ -512,15 +512,15 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   // call backend endpoint that returns recent documents by type
   private async getRecentDocumentsByType(
-    docType: string,
+   , docType: string,
     limit: number
-  ): Promise<Array<{ id: string; type: string; content?: string }>> {
+  ): Promise<Array<{ id: string;, type: string; content?: string }>> {
     const effectiveLimit = Math.max(0, Math.min(limit, 50));
     try {
       const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
       const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
         method: 'GET',
-        headers: { Accept: 'application/json' }'` });'`
+        headers: {, Accept: 'application/json' }'` });'`
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Documents API error: ${text}`);
@@ -637,8 +637,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   private async redisExists(key: string): Promise<boolean> {
     try {
       if (!this.redis) return false;
-      const client = this.redis as unknown as RedisClientLike;
-      // Preferred: modern `exists` that returns number
+      const client = this.redis as: unknown as RedisClientLike;
+      // Preferred: modern `exists` that, returns: number
       if (typeof client.exists === 'function') {
         const res = await client.exists(key);
         const n = typeof res === 'string' ? Number(res) : Number(res ?? 0);
@@ -667,7 +667,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   private async redisSetEx(key: string, ttlSeconds: number, value: string): Promise<void> {
     try {
       if (!this.redis) return;
-      const client = this.redis as unknown as RedisClientLike;
+      const client = this.redis as: unknown as RedisClientLike;
       // Try common variants in order of likely availability
       if (typeof client.setEx === 'function') {
         await client.setEx(key, ttlSeconds, value);
@@ -679,7 +679,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         return;
       }
 
-      // Try modern set with options object
+      // Try modern set with options: object
       if (typeof client.set === 'function') {
         try {
           // Some clients support: set(key, value, { EX: ttl })
@@ -780,8 +780,8 @@ type RedisClientLike = {
   exists?: (key: string) => Promise<number | string> | number | string;
   sendCommand?: (cmd: string[] | Array<string>) => Promise<unknown>;
   get?: (key: string) => Promise<string | null>;
-  setEx?: (key: string; ttl: number;, value: string) => Promise<unknown>;
-  setex?: (key: string; ttl: number;, value: string) => Promise<unknown>;
+  setEx?: (key: string;, ttl: number;, value: string) => Promise<unknown>;
+  setex?: (key: string;, ttl: number;, value: string) => Promise<unknown>;
   // changed: avoid `any[]` — use `unknown[]` to be type-safe while keeping variadic support
   set?: (key: string;, value: string, ...rest: any[]) => Promise<unknown>;
   del?: (key: string) => Promise<number | null>;

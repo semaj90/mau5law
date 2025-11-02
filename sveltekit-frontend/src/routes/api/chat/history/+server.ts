@@ -1,9 +1,9 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { ChatHistoryService } from '$lib/server/chat/history-service';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { ChatHistoryService } from, '$lib/server/chat/history-service';
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    const user = locals.user as any;
+    const user = locals.user as: any;
     if (!user?.id) return json({ error: 'Unauthorized' }, { status: 401 });
     const sessionId = url.searchParams.get('sessionId');
     if (sessionId) {

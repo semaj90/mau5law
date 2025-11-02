@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { z } from 'zod';
-import { simdRedisClient } from '$lib/services/simd-redis-client';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { z } from, 'zod';
+import { simdRedisClient } from, '$lib/services/simd-redis-client';
 
 const SIMDProcessSchema = z.object({
   data: z.any(),
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           error: 'SIMD service unavailable',
-          message: 'Go microservice not running on; localhost:8080',
+          message: 'Go microservice not running on;, localhost:8080',
           fallback: 'Using standard JSON processing',
           details: String(healthError)
         },
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     switch (operation) {
-      case 'parse': {
+      case, 'parse': {
         const result = await simdRedisClient.parseJSON(payloadData);
         return json({
           success: true,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'cache': {
+      case, 'cache': {
         if (!cacheKey) {
           return json({ error: 'cache_key required for cache operation' }, { status: 400 });
         }
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      case 'benchmark': {
+      case, 'benchmark': {
         const result = await simdRedisClient.benchmark(payloadData, iterations);
         return json({
           success: true,
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      default: return json({ error: 'Invalid operation' }, { status: 400 });
+      default: return json({, error: 'Invalid operation' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('SIMD API error:', error);'
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async () => {
         service: 'simd-redis-microservice',
         status: 'unavailable',
         error: error instanceof Error ? error.message : String(error),
-        message: 'Go microservice not running. Start; with: cd go-microservice && go run simd-server.go'
+        message: 'Go microservice not running. Start;, with: cd go-microservice && go run simd-server.go'
       },
       { status: 503 }
     );

@@ -2,7 +2,7 @@
  * Comprehensive Integration Layer for Legal AI Platform
  * Unifies Enhanced RAG, WebGPU Acceleration, Real-time Communication, and Database Integration
  */
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable } from, 'svelte/store';
 // Define types for missing dependencies
 export interface SemanticAnalysisResult { summaryEmbedding: number[];, legalRelevanceScore: number;
   concepts: Array<KeyValue>; // replaced Array<any>
@@ -10,7 +10,7 @@ export interface SemanticAnalysisResult { summaryEmbedding: number[];, legalRel
 export interface RAGQuery {
   query: string;
   context?: string;
-  semantic: { useEmbeddings: boolean;, expandConcepts: boolean;
+  semantic: {, useEmbeddings: boolean;, expandConcepts: boolean;
     includeRelated: boolean;
   };
   filters: {
@@ -25,7 +25,7 @@ export interface RAGResponse {
   results: RAGResult[]; // replaced Array<any>
 }
 export interface WebGPUCapabilities {
-  available: boolean;
+ , available: boolean;
   maxBufferSize?: number;
   maxTextureSize?: number;
 }
@@ -69,18 +69,18 @@ export interface SystemStatus { enhancedRAG: {, status: 'online' | 'offline' | 
     lastChecked: Date;
     responseTime: number;
   };
-  webGPU: { available: boolean;, capabilities: WebGPUCapabilities | null;
+  webGPU: {, available: boolean;, capabilities: WebGPUCapabilities | null;
     performance: number;
   };
-  realtimeComm: { websocket: boolean;, sse: boolean;
+  realtimeComm: {, websocket: boolean;, sse: boolean;
     webrtc: boolean;
     primaryChannel: string | null;
   };
-  databases: { postgresql: boolean;, redis: boolean;
+  databases: {, postgresql: boolean;, redis: boolean;
     qdrant: boolean;
     neo4j: boolean;
   };
-  models: { ollama: boolean;, embeddings: boolean;
+  models: {, ollama: boolean;, embeddings: boolean;
     gemma3Legal: boolean;
   };
 }
@@ -96,9 +96,9 @@ export interface IntegratedQuery {
     confidenceThreshold?: number;
   };
 }
-export interface IntegratedResponse { query: string;, semanticAnalysis: SemanticAnalysisResult | null;
+export interface IntegratedResponse {, query: string;, semanticAnalysis: SemanticAnalysisResult | null;
   ragResults: RAGResponse | null;
-  webGPUMetrics: { used: boolean;, processingTime: number;
+  webGPUMetrics: {, used: boolean;, processingTime: number;
     speedup: number;
   } | null;
   realtimeStreamId: string | null;
@@ -108,7 +108,7 @@ export interface IntegratedResponse { query: string;, semanticAnalysis: Semanti
 }
 
 // --- MOVED / EARLY SHARED TYPES ---
-// ensure KeyValue and Neo4jResultRow are available before any usage to avoid ordering / parsing problems
+// ensure KeyValue and Neo4jResultRow are available, before: any usage to avoid ordering / parsing problems
 export type KeyValue = Record<string, unknown>;
 
 export interface Neo4jResultRow {
@@ -116,7 +116,7 @@ export interface Neo4jResultRow {
 }
 
 // Add small domain types to avoid `any`
-export interface QdrantPoint { id: string;, vector: number[];
+export interface QdrantPoint {, id: string;, vector: number[];
   payload?: Record<string, unknown>;
 }
 
@@ -131,43 +131,43 @@ export interface DatabaseOperations { postgresql: {, query: (sql: string, param
     insert: (table: string, data: KeyValue) => Promise<string>;
     update: (table: string, id: string, data: KeyValue) => Promise<boolean>;
   };
-  redis: { get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ttl?: number) => Promise<boolean>;
+  redis: {, get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ttl?: number) => Promise<boolean>;
     del: (key: string) => Promise<boolean>;
   };
   qdrant: {
-    search: (vector: number[], collection: string, limit?: number) => Promise<QdrantSearchResult[]>;
+   , search: (vector: number[], collection: string, limit?: number) => Promise<QdrantSearchResult[]>;
     upsert: (collection: string, points: QdrantPoint[]) => Promise<boolean>;
   };
   neo4j: {
-    query: (cypher: string, params?: any) => Promise<Neo4jResultRow[]>;
+   , query: (cypher: string, params?: any) => Promise<Neo4jResultRow[]>;
     createNode: (label: string, properties: KeyValue) => Promise<string>;
-    createRelationship: (from string, to: string, type: string, properties?: KeyValue) => Promise<string>;
+    createRelationship: (from: string, to: string, type: string, properties?: KeyValue) => Promise<string>;
   };
 }
 
 class ComprehensiveIntegrationService {
-  private systemStatus: SystemStatus = { enhancedRAG: {, status: 'offline', lastChecked: new Date(), responseTime: 0 },
-    webGPU: { available: false, capabilities: null, performance: 0 },
-    realtimeComm: { websocket: false, sse: false, webrtc: false, primaryChannel: null },
-    databases: { postgresql: false, redis: false, qdrant: false, neo4j: false },
-    models: { ollama: false, embeddings: false, gemma3Legal: false }
+  private systemStatus: SystemStatus = {, enhancedRAG: {, status: 'offline', lastChecked: new Date(), responseTime: 0 },
+    webGPU: {, available: false, capabilities: null, performance: 0 },
+    realtimeComm: {, websocket: false, sse: false, webrtc: false, primaryChannel: null },
+    databases: {, postgresql: false, redis: false, qdrant: false, neo4j: false },
+    models: {, ollama: false, embeddings: false, gemma3Legal: false }
   };
 
-  private dbOperations: DatabaseOperations = { postgresql: {, query: this.executePostgreSQLQuery.bind(this),
+  private dbOperations: DatabaseOperations = {, postgresql: {, query: this.executePostgreSQLQuery.bind(this),
       insert: this.insertPostgreSQL.bind(this),
       update: this.updatePostgreSQL.bind(this)
     },
     redis: {
-      get: this.getRedis.bind(this),
+     , get: this.getRedis.bind(this),
       set: this.setRedis.bind(this),
       del: this.deleteRedis.bind(this)
     },
     qdrant: {
-      search: this.searchQdrant.bind(this),
+     , search: this.searchQdrant.bind(this),
       upsert: this.upsertQdrant.bind(this)
     },
     neo4j: {
-      query: this.queryNeo4j.bind(this),
+     , query: this.queryNeo4j.bind(this),
       createNode: this.createNeo4jNode.bind(this),
       createRelationship: this.createNeo4jRelationship.bind(this)
     }
@@ -200,7 +200,7 @@ class ComprehensiveIntegrationService {
     const startTime = performance.now();
     console.log('🔍 Executing integrated query:', query.query);
     const response: IntegratedResponse = {
-      query: query.query,
+     , query: query.query,
       semanticAnalysis: null,
       ragResults: null,
       webGPUMetrics: null,
@@ -210,7 +210,7 @@ class ComprehensiveIntegrationService {
       confidence: 0
     };
     try {
-      // Step 1: Perform semantic analysis
+      // Step, 1: Perform semantic analysis
       if (this.systemStatus.enhancedRAG.status === 'online') {
         try {
           response.semanticAnalysis = await semanticAnalyzer.analyzeDocument(query.query, `query_${Date.now()}`);
@@ -224,15 +224,15 @@ class ComprehensiveIntegrationService {
       if (this.systemStatus.enhancedRAG.status === 'online') {
         try {
           const ragQuery: RAGQuery = {
-            query: query.query,
+           , query: query.query,
             context: query.context,
             semantic: {
-              useEmbeddings: query.options.includeEmbeddings ?? true,
+             , useEmbeddings: query.options.includeEmbeddings ?? true,
               expandConcepts: query.options.semanticExpansion ?? true,
               includeRelated: true
             },
             filters: {
-              confidenceThreshold: query.options.confidenceThreshold ?? 0.7
+             , confidenceThreshold: query.options.confidenceThreshold ?? 0.7
             }
           };
           response.ragResults = await semanticAnalyzer.enhancedQuery(ragQuery);
@@ -249,7 +249,7 @@ class ComprehensiveIntegrationService {
           if (response.semanticAnalysis?.summaryEmbedding) {
             const queryEmbedding = new Float32Array(384);
             queryEmbedding.fill(Math.random());
-            const summaryEmb = new Float32Array(response.semanticAnalysis.summaryEmbedding as number[]);
+            const summaryEmb = new Float32Array(response.semanticAnalysis.summaryEmbedding as: number[]);
             const similarity = await webGPUAccelerator.computeVectorSimilarity(summaryEmb, queryEmbedding);
             const gpuTime = performance.now() - gpuStartTime;
             response.webGPUMetrics = {
@@ -423,11 +423,11 @@ class ComprehensiveIntegrationService {
             const val = (entry as Record<string, unknown>)['name'];
             return typeof val === 'string' ? val : undefined;
           }
-          return undefined;
+          return: undefined;
         };
 
         this.systemStatus.models = {
-          ollama: models.length > 0,
+         , ollama: models.length > 0,
           embeddings: models.some((m: any) => {
             const name = getModelName(m);
             return typeof name === 'string' && name.includes('nomic-embed');
@@ -441,7 +441,7 @@ class ComprehensiveIntegrationService {
       }
     } catch (error: any) {
       this.systemStatus.models = { ollama: false, embeddings: false, gemma3Legal: false };
-      console.warn('⚠️ Model availability check failed:', error);
+      console.warn('⚠️ Model availability check, failed:', error);
     }
   }
 
@@ -482,7 +482,7 @@ class ComprehensiveIntegrationService {
             id: response.realtimeStreamId || `query_${Date.now()}`,
             vector: response.semanticAnalysis.summaryEmbedding,
             payload: {
-              query: query.query,
+             , query: query.query,
               timestamp: response.timestamp.toISOString(),
               confidence: response.confidence
             }
@@ -503,9 +503,9 @@ class ComprehensiveIntegrationService {
               : undefined;
           const confidenceVal =
             typeof (concept as KeyValue)['confidenceScore'] === 'number'
-              ? ((concept as KeyValue)['confidenceScore'] as number)
+              ? ((concept as KeyValue)['confidenceScore'] as: number)
               : typeof (concept as KeyValue)['confidence'] === 'number'
-                ? ((concept as KeyValue)['confidence'] as number)
+                ? ((concept as KeyValue)['confidence'] as: number)
                 : 0;
 
           await this.dbOperations.neo4j.createNode('LegalConcept', {
@@ -573,8 +573,8 @@ class ComprehensiveIntegrationService {
 
   private async getRedis(key: string): Promise<string | null> {
     const response = await fetch(`http://localhost:8094/api/database/redis/${encodeURIComponent(key)}`);
-    if (!response.ok) return null;
-    const result: { value?: string } = await response.json();
+    if (!response.ok) return: null;
+    const, result: { value?: string } = await response.json();
     return result.value ?? null;
   }
 
@@ -640,9 +640,9 @@ class ComprehensiveIntegrationService {
 
     const rows: Neo4jResultRow[] = data.map(entry => {
       if (this.isRecord(entry) && Array.isArray(entry['row'])) {
-        return { row: entry['row'] as unknown[] };
+        return { row: entry['row'] as: unknown[] };
       }
-      return { row: [] };
+      return {, row: [] };
     });
 
     return rows;
@@ -656,7 +656,7 @@ class ComprehensiveIntegrationService {
   }
 
   private async createNeo4jRelationship(
-    from string,
+    from: string,
     to: string,
     type: string,
     properties?: KeyValue
@@ -681,9 +681,9 @@ class ComprehensiveIntegrationService {
     try {
       // Node.js / bundlers that provide Buffer
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof (globalThis as any).Buffer !== 'undefined') {
+      if (typeof (globalThis as: any).Buffer !== 'undefined') {
         // @ts-expect-error Buffer may not exist in all environments
-        return (globalThis as any).Buffer.from(input, 'utf-8').toString('base64');
+        return (globalThis as: any).Buffer.from(input, 'utf-8').toString('base64');
       }
     } catch {
       // fall through to browser approach

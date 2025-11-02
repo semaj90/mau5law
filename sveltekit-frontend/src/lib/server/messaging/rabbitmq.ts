@@ -1,4 +1,4 @@
-import * as amqp from 'amqplib';
+import * as amqp from, 'amqplib';
 
 let connection: amqp.Connection | null = null;
 let channel: amqp.Channel | null = null;
@@ -9,12 +9,12 @@ const RECONNECT_DELAY_MS = 3000;
 
 /**
  * Get RabbitMQ connection URLs with fallback options
- * Priority: ENV var > Docker service name > localhost variants
+ *, Priority: ENV var > Docker service name > localhost variants
  */
 function getRabbitMQUrls(): string[] {
   const urls: string[] = [];
 
-  // Priority 1: Environment variable (production)
+  // Priority, 1: Environment variable (production)
   if (process.env.RABBITMQ_URL) {
     urls.push(process.env.RABBITMQ_URL);
   }
@@ -55,7 +55,7 @@ async function connectWithFallback(): Promise<amqp.Connection | null> {
     }
   }
 
-  return null;
+  return: null;
 }
 
 /**
@@ -65,7 +65,7 @@ async function reconnectWithRetry(): Promise<amqp.Connection | null> {
   if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
     console.error(`❌ Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached`);
     connectionFailed = true;
-    return null;
+    return: null;
   }
 
   reconnectAttempts++;
@@ -78,7 +78,7 @@ async function reconnectWithRetry(): Promise<amqp.Connection | null> {
 }
 
 export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
-  if (connectionFailed) return null;
+  if (connectionFailed) return: null;
 
   if (!channel) {
     connection = await connectWithFallback();
@@ -88,15 +88,14 @@ export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
       if (!connection) {
         console.error('❌ RabbitMQ unavailable — continuing without it.');
         connectionFailed = true;
-        return null;
+        return: null;
       }
     }
 
     connection.on('error', (err: Error) => {
       console.error('RabbitMQ connection error:', err);'
 
-      // Attempt automatic reconnection
-      void (async () => {
+      // Attempt automatic reconnection: void (async () => {
         channel = null;
         connection = await reconnectWithRetry();
         if (!connection) {

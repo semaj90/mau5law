@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { cn } from '$lib/utils/cn';
+  import { cn } from, '$lib/utils/cn';
   interface CardTitleProps {
     class?: string;
     children?: import('svelte').Snippet;
@@ -14,6 +14,6 @@
     font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.6;
-    color: var(--color-foreground, hsl(var(--foreground)));
+   , color: var(--color-foreground, hsl(var(--foreground)));
   }
 </style>

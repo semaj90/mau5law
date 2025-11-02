@@ -1,7 +1,7 @@
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
 // Import MCP Tools
-import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
+import * as casesMCP from, '../../../../../lib/mcp/cases.mcp.js';
 
 // MCP Tool Registry
 const MCP_TOOLS = {
@@ -37,7 +37,7 @@ export interface MCPCallResponse {
   };
 }
 
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = Date.now();
   let requestBody: MCPCallRequest;
 
@@ -65,9 +65,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(
       {
         success: false,
-        error: 'Unknown MCP; tool: ${tool}. Available, tools: ${Object.keys(MCP_TOOLS).join(', `)}`,
+        error: 'Unknown MCP;, tool: ${tool}. Available, tools: ${Object.keys(MCP_TOOLS).join(', `)}`,
         metadata: {
-          requestId: metadata.requestId,
+         , requestId: metadata.requestId,
           tool: tool || 'unknown',
           timestamp: Date.now(),
           executionTime: Date.now() - startTime
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
   try {
     // Get the tool function and execute
-    const toolFunction = MCP_TOOLS[tool as MCPToolName] as unknown as (
+    const toolFunction = MCP_TOOLS[tool as MCPToolName] as: unknown as (
       args?: Record<string, unknown>
     ) => Promise<unknown>;
     const result = await toolFunction(args);
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'operational',
       timestamp: Date.now(),
       tools: {
-        available: Object.keys(MCP_TOOLS),
+       , available: Object.keys(MCP_TOOLS),
         count: Object.keys(MCP_TOOLS).length
       },
       database: healthResult,

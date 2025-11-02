@@ -1,5 +1,5 @@
-import type { Case } from '$lib/types';
-import type { PageServerLoad } from './$types';
+import type { Case } from, '$lib/types';
+import type { PageServerLoad } from, './$types';
 
 export const load: PageServerLoad = async ({ params, fetch, locals }) => {
 	try {

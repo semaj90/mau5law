@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
     {/snippet}
   </Drawer>
 {:else}
-  <Dialog.Root open={isOpen} close={closeModal}>
+  <Dialog open={isOpen} close={closeModal}>
     <Dialog.Content size="lg">
       <Dialog.Header>
         <Dialog.Title>Case Summary</Dialog.Title>
@@ -221,6 +221,6 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
     </Dialog.Content>
-  </Dialog.Root>
+  </Dialog>
 {/if}
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

@@ -9,17 +9,17 @@
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory Bank: CHR_ROM (Nintendo-style)
+ * - Memory, Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from '$lib/server/services/ai-service.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
-import { json } from '@sveltejs/kit';
-import { z } from 'zod';
+import { aiService } from, '$lib/server/services/ai-service.js';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
+import { json } from, '@sveltejs/kit';
+import { z } from, 'zod';
 
 // Input validation schema
 const SearchSchema = z.object({
@@ -45,7 +45,7 @@ type AISimilarDocument = {
   [k: string]: any;
 };
 
-type FormattedResult = { content: string | null;, similarity: number | null;
+type FormattedResult = {, content: string | null;, similarity: number | null;
   documentId: string | null;
   documentType: string;
   confidence: number | null;
@@ -54,7 +54,7 @@ type FormattedResult = { content: string | null;, similarity: number | null;
 
 // Helper: filter and format raw AI results
 function filterAndFormatResults(
-  resultsRaw: AISimilarDocument[],
+ , resultsRaw: AISimilarDocument[],
   documentType?: string,
   threshold = 0
 ): FormattedResult[] {
@@ -84,7 +84,7 @@ function filterAndFormatResults(
 // --- END ADDED ---
 
 // POST handler: accepts JSON body
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json().catch(() => ({}));
     const parsed = SearchSchema.parse(body);
@@ -114,7 +114,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 };
 
 // GET handler: accepts query params
-const originalGETHandler: RequestHandler = async ({ url }) => {
+const, originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const queryParam = url.searchParams.get('query') ?? '';
     const limitParam = url.searchParams.get('limit');

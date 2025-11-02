@@ -1,6 +1,6 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import type { Snippet } from 'svelte';
+  // Svelte, 5 runes are auto-imported
+  import type { Snippet } from, 'svelte';
   interface Props {
     content?: string;
     placement?: 'top' | 'bottom' | 'left' | 'right';
@@ -51,25 +51,25 @@
 .tooltip-top {
   bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
+ , transform: translateX(-50%);
   margin-bottom: 0.5rem;
 }
 .tooltip-bottom {
   top: 100%;
   left: 50%;
-  transform: translateX(-50%);
+ , transform: translateX(-50%);
   margin-top: 0.5rem;
 }
 .tooltip-left {
   right: 100%;
   top: 50%;
-  transform: translateY(-50%);
+ , transform: translateY(-50%);
   margin-right: 0.5rem;
 }
 .tooltip-right {
   left: 100%;
   top: 50%;
-  transform: translateY(-50%);
+ , transform: translateY(-50%);
   margin-left: 0.5rem;
 }
 </style>

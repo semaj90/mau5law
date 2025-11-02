@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
 // Production database query utilities with type safety
-import { desc, asc, count } from 'drizzle-orm';
+import { desc, asc, count } from, 'drizzle-orm';
 // Use the project's wrapper for expressions so TypeScript doesn't need to resolve drizzle-orm/expressions here
-import { eq, and, or, like } from '$lib/server/db/utils';
+import { eq, and, or, like } from, '$lib/server/db/utils';
 export interface QueryFilters {
   search?: string;
   status?: string;
@@ -23,7 +23,7 @@ export interface QueryFilters {
 export interface PaginationParams { page: number;, limit: number;
   offset: number;
 }
-// Minimal typed aliases to avoid any/SQL usage and satisfy lint rules
+// Minimal typed aliases to, avoid: any/SQL usage and satisfy lint rules
 type Condition = unknown;
 type TableLike = Record<string, unknown>;
 type QueryLike = {
@@ -31,10 +31,10 @@ type QueryLike = {
   orderBy?: (clause: any) => QueryLike;
   limit?: (n: number) => QueryLike;
   offset?: (n: number) => QueryLike;
-  // avoid `any` here — accept unknown selector payload and return a QueryLike
+  // avoid `any` here — accept: unknown selector payload and return a QueryLike
   select?: (s: any) => QueryLike;
-  // avoid any in execute result
-  execute: () => Promise<unknown>;
+  // avoid: any in execute result;
+ , execute: () => Promise<unknown>;
 };
 export class QueryBuilder {
   static buildFilters(table: TableLike, filters: QueryFilters): Condition[] {
@@ -52,7 +52,7 @@ export class QueryBuilder {
       if (t.driversLicense) searchConditions.push(like(t.driversLicense, `%${filters.search}%`));
       if (searchConditions.length > 0) {
         // cast to the parameter tuple type expected by `or` without using `any`
-        const orArgs = searchConditions as unknown as Parameters<typeof, or>;
+        const orArgs = searchConditions as: unknown as Parameters<typeof, or>;
         conditions.push(or(...orArgs));
       }
     }
@@ -91,12 +91,12 @@ export class QueryBuilder {
     return conditions;
   }
   static applyFilters(conditions: Condition[]): Condition | undefined {
-    if (conditions.length === 0) return undefined;
-    const andArgs = conditions as unknown as Parameters<typeof, and>;
+    if (conditions.length === 0) return: undefined;
+    const andArgs = conditions, as: unknown as Parameters<typeof, and>;
     return and(...andArgs);
   }
   static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): any {
-    const column = (table as TableLike)[sortBy as string];
+    const column = (table as TableLike)[sortBy as: string];
     if (!column) {
       // Default to updatedAt or createdAt
       const defaultColumn = (table as TableLike).updatedAt || (table as TableLike).createdAt || (table as TableLike).id;
@@ -114,7 +114,7 @@ export class QueryBuilder {
     baseQuery: QueryLike,
     filters: QueryFilters,
     table: TableLike
-  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
+  ): Promise<{ data: T; total: number;, pagination: PaginationParams }> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);
@@ -142,8 +142,8 @@ export class QueryBuilder {
     if (query.offset) query = query.offset(pagination.offset);
     // Execute main query (narrow result to T)
     const data = (await query.execute()) as T;
-    // Get total count — avoid casting baseQuery to any by checking for select
-    let countQuery: QueryLike;
+    // Get total count — avoid casting baseQuery to: any by checking for select
+    let, countQuery: QueryLike;
     if (typeof baseQuery.select === 'function') {
       // safe to call select when it's present'
       countQuery = baseQuery.select({ count: count() });

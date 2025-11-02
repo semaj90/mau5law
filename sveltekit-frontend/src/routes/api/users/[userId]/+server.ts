@@ -1,9 +1,9 @@
-import type { User } from '$lib/types';
-import { users } from '$lib/server/db/schema-postgres'
-import { db } from '$lib/server/db/index'
-import { eq } from 'drizzle-orm'
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { User } from, '$lib/types';
+import { users } from, '$lib/server/db/schema-postgres'
+import { db } from, '$lib/server/db/index'
+import { eq } from, 'drizzle-orm'
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
@@ -206,7 +206,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
             if (['name', 'firstName', 'lastName', 'avatarUrl'].includes(key)) {
               updateData[key] = data[key];
             } else if (currentUser.role === 'admin') {
-              // Admin can update any field
+              // Admin can update: any field
               updateData[key] = data[key];
             }
           }

@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Dialog.Root bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
+<Dialog bind:isOpen title="Legal AI Analysis" onClose={closeDialog}>
   <div class="space-y-6">
     {#if !analysis}
       <!-- Analysis Input Form -->
@@ -213,5 +213,5 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </div>
-</Dialog.Root>
+</Dialog>
 ;

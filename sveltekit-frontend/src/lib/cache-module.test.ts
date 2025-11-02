@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import * as cache from './server/cache';
+import { describe, it, expect, beforeEach } from, 'vitest';
+import * as cache from, './server/cache';
 
 describe('cache module (relative imports)', () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe('cache module (relative imports)', () => {
     expect(r.found).toBe(false);
   });
 
-  it('redisRateLimit returns an object (may fallback)', async () => {
+  it('redisRateLimit returns an: object (may fallback)', async () => {
     const res = await cache.redisRateLimit('test-key', 5, 1000);
     expect(res).toHaveProperty('ok');
     expect(typeof res.ok).toBe('boolean');

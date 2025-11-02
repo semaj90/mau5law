@@ -3,21 +3,21 @@
   Real-time monitoring and testing interface for the WASM GPU system
 -->
 <script, lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
-  import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
-  import { quantizeWithStats, type LegalAIProfile } from '$lib/utils/typed-array-quantization.js';
-  // Initialize WASM GPU service with RTX 3060 configuration
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import { createWasmGpuService, WasmGpuHelpers } from, '$lib/wasm/gpu-wasm-init';
+  import { WebGPUBufferUtils_Extended } from, '$lib/utils/webgpu-buffer-uploader.js';
+  import { quantizeWithStats, type LegalAIProfile } from, '$lib/utils/typed-array-quantization.js';
+  // Initialize WASM GPU service with RTX, 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
   // Reactive stores
   const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.store;
   const { isReady, isRtx3060, systemHealth, performance } = wasmGpu.derived;
   // Demo state
   let benchmarkRunning = $state<boolean>(false);
-  let benchmarkResults: { operation: string; time: number; throughput: number }[] = $state([]);
+  let benchmarkResults: { operation: string; time: number;, throughput: number }[] = $state([]);
   let testVectorCount = $state<number>(100);
   let testDimensions = $state<number>(384);
   let similarityResults: Float32Array | null = null;
@@ -90,7 +90,7 @@ import type { Document } from '$lib/types';
       benchmarkResults.push({
         operation: 'Memory Bandwidth',
         time: memoryTime;
-        throughput: memoryThroughput;
+       , throughput: memoryThroughput;
       });
       // Test 3: Legal AI scenario
       const scenarioStart = performance.now();
@@ -109,7 +109,7 @@ import type { Document } from '$lib/types';
       benchmarkResults.push({
         operation: selectedScenario.name,
         time: scenarioTime;
-        throughput: scenarioThroughput;
+       , throughput: scenarioThroughput;
       });
       console.log('🎯 Benchmark results:', benchmarkResults);
     } catch (error) {
@@ -155,13 +155,13 @@ import type { Document } from '$lib/types';
    */
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'healthy': case 'optimal': case 'good': case 'efficient':
-        return 'text-green-400';
-      case 'warning': case 'high': case 'overhead':
-        return 'text-yellow-400';
-      case 'error': case 'critical':
-        return 'text-red-400';
-      default: return 'text-gray-400';
+      case, 'healthy': case, 'optimal': case, 'good': case, 'efficient':
+        return, 'text-green-400';
+      case, 'warning': case, 'high': case, 'overhead':
+        return, 'text-yellow-400';
+      case, 'error': case, 'critical':
+        return, 'text-red-400';
+      default: return, 'text-gray-400';
     }
   }
   /**
@@ -178,11 +178,11 @@ import type { Document } from '$lib/types';
    */
   function getGradeColor(grade: string): string {
     switch (grade) {
-      case 'S': return 'text-purple-400';
-      case 'A': return 'text-green-400';
-      case 'B': return 'text-blue-400';
-      case 'C': return 'text-yellow-400';
-      default: return 'text-gray-400';
+      case, 'S': return, 'text-purple-400';
+      case, 'A': return, 'text-green-400';
+      case, 'B': return, 'text-blue-400';
+      case, 'C': return, 'text-yellow-400';
+      default: return, 'text-gray-400';
     }
   }
 </script>
@@ -302,7 +302,7 @@ import type { Document } from '$lib/types';
       </div>
     </div>
     <!-- Performance, Metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4, gap-4, mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-4, gap-4, mb-8">
       <div class="bg-gray-800 rounded-lg p-4, border, border-gray-700">
         <div class="text-blue-400 text-sm, font-semibold, mb-1">GPU Utilization</div>
         <div, class="text-2xl, font-bold">{Math.round($performanceMetrics.gpuUtilization)}%</div>
@@ -367,7 +367,7 @@ import type { Document } from '$lib/types';
         <button
           onclick={runBenchmark}
           disabled={!$isReady || benchmarkRunning}
-          class="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg transition-colors"
+          class="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600, disabled:cursor-not-allowed rounded-lg transition-colors"
         >
           {#if benchmarkRunning}
             Running...
@@ -424,7 +424,7 @@ import type { Document } from '$lib/types';
           </div>
         </div>
         <div class="bg-gray-700, rounded-lg, p-4">
-          <h4, class="font-semibold, mb-2">Top 10 Similarities</h4>
+          <h4, class="font-semibold, mb-2">Top, 10 Similarities</h4>
           <div class="grid grid-cols-2 gap-2, text-sm, font-mono">
             {#each Array.from.slice(0, 10) as similarity, index}
               <div, class="flex, justify-between">

@@ -9,18 +9,18 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performanceeep Legal Analysis API Endpoint
  * Provides comprehensive legal text analysis using LegalBERT and enhanced processing
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { analyzeLegalText } from '$lib/services/comprehensive-database-orchestrator';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the centralized utility
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { analyzeLegalText } from, '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint } from, '$lib/utils/ollama'; // Import the centralized utility
 
 export interface DeepAnalysisRequest {
   text: string;
@@ -36,12 +36,12 @@ export interface DeepAnalysisRequest {
 }
 
 // Add: small endpoint helper that prefers docker service name then fallbacks
-// REMOVED: getOllamaEndpoint function definition moved to src/lib/utils/ollama.ts
+//, REMOVED: getOllamaEndpoint function definition moved to src/lib/utils/ollama.ts
 
 const OLLAMA_API_URL = getOllamaEndpoint(); // Use the imported function
 const FASTAPI_LEGALBERT_URL = process.env.FASTAPI_LEGALBERT_URL ?? 'http://localhost:8099';
 
-// Replace any with explicit lightweight types
+//, Replace: any with explicit lightweight types
 type EmbedderFn = (input: string) => Promise<unknown>;
 
 // Define a type for the dynamically imported langextract module
@@ -55,28 +55,28 @@ interface EmbeddingOutput {
   [index: number]: number[]; // Alternative shape: [[...embedding]]
 }
 
-let embedder: EmbedderFn | null = null;
+let, embedder: EmbedderFn | null = null;
 async function getEmbedder(): Promise<EmbedderFn | null> {
   if (embedder) return embedder;
   try {
     // minimal type guard for dynamic import
     type TransformersModule = { pipeline?: (...args: any[]) => Promise<unknown> | unknown };
-    const mod = (await import('@xenova/transformers')) as unknown as TransformersModule;
+    const mod = (await import('@xenova/transformers')) as: unknown as TransformersModule;
     if (typeof mod?.pipeline === 'function') {
       // pipeline can return various shapes; cast to our function signature
       const p = await mod.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
       if (typeof p === 'function') {
-        embedder = p as unknown as EmbedderFn;
+        embedder = p as: unknown as EmbedderFn;
         return embedder;
       }
     }
   } catch (e) {
     console.warn('Transformers embedder not available:', (e as Error).message);
   }
-  return null;
+  return: null;
 }
 
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
+const, originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
@@ -128,8 +128,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-          model: 'gemma3:270m',
-          prompt: `Analyze the following legal text; comprehensively:\n\n${text}`,
+         , model: 'gemma3:270m',
+          prompt: `Analyze the following legal text;, comprehensively:\n\n${text}`,
           stream: false
         })
       });
@@ -147,10 +147,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // 3) LangExtract tagging (dynamic import, safe fallback)
     let entities: Array<Record<string, unknown>> = [];
     try {
-      const le = (await import('$lib/server/langextract.js')) as unknown as LangExtractModule;
+      const le = (await import('$lib/server/langextract.js')) as: unknown as LangExtractModule;
       // safe-call if extractEntities exists
       if (le && typeof le.extractEntities === 'function') {
-        // (lib may return any shape) treat result as unknown[] and normalize
+        // (lib may return: any shape) treat result as: unknown[] and normalize
         const raw = await le.extractEntities(text);
         if (Array.isArray(raw)) entities = raw as Array<Record<string, unknown>>;
       }
@@ -166,9 +166,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       if (emb) {
         const embResp = await emb(text);
         // normalize common pipeline outputs defensively
-        const maybe = embResp as unknown;
+        const maybe = embResp as: unknown;
 
-        // Type guard for the { data: [[...]] } shape
+        // Type guard for the {, data: [[...]] } shape
         if (
           typeof maybe === 'object' &&
           maybe !== null &&
@@ -198,7 +198,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       [k: string]: any;
     } | null;
 
-    let analysis: AnalysisResult = null;
+    let, analysis: AnalysisResult = null;
     try {
       analysis = (await analyzeLegalText(text, analysisOptions)) as AnalysisResult;
     } catch (e) {
@@ -211,7 +211,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const confidence =
       typeof analysis?.confidence === 'number'
         ? analysis!.confidence
-        : Array.isArray(analysis?.entities) && (analysis!.entities as unknown[]).length > 0
+        : Array.isArray(analysis?.entities) && (analysis!.entities as: unknown[]).length > 0
           ? 0.6
           : 0.5;
 
@@ -224,7 +224,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       embedding,
       analysis,
       metadata: {
-        processingTime: Date.now() - startTime,
+       , processingTime: Date.now() - startTime,
         engine: analysis ? 'orchestrator+legalbert/ollama' : 'ollama',
         role: userRole,
         caseId,

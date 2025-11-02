@@ -1,14 +1,14 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
+import type { User } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import type { RequestHandler } from, './$types.js'
+import { json } from, '@sveltejs/kit'
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
-import { db } from '$lib/server/db'
-import { users, cases, documents, documentVectors } from '$lib/server/db/schema-postgres'
-import { eq, sql, desc } from 'drizzle-orm'
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama'
+import { db } from, '$lib/server/db'
+import { users, cases, documents, documentVectors } from, '$lib/server/db/schema-postgres'
+import { eq, sql, desc } from, 'drizzle-orm'
+import { OllamaEmbeddings } from, '@langchain/community/embeddings/ollama'
 // ============================================================================
 // TEST CONFIGURATION
 // ============================================================================
@@ -44,7 +44,7 @@ const testConfig = {
 // ============================================================================
 class VectorPipelineTest {
   private embeddings: OllamaEmbeddings
-  private testResults: any = {}
+  private, testResults: any = {}
   constructor() {
     this.embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
@@ -62,7 +62,7 @@ class VectorPipelineTest {
       performance: {}
     }
     try {
-      // Step 1: Test Ollama Connection
+      // Step, 1: Test Ollama Connection
       await this.testOllamaConnection()
       // Step 2: Create Test User and Cases
       await this.createTestData()
@@ -102,7 +102,7 @@ class VectorPipelineTest {
       this.testResults.steps.ollama = {
         status: 'failed',
         error: err instanceof Error ? err.message: `Connection failed` }
-      throw new Error(`Ollama connection failed: ${err}`)
+      throw new Error(`Ollama connection, failed: ${err}`)
     }
   }
   async createTestData() {
@@ -120,7 +120,7 @@ class VectorPipelineTest {
       for (const doc of testConfig.testDocuments) {
         const [testCase] = await db.insert(cases).values({
           title: doc.caseTitle,
-          description: `Test case; for: ${doc.title}`,
+          description: `Test case;, for: ${doc.title}`,
           status: 'active',
           priority: 'medium',
           createdBy: testUser.id
@@ -293,7 +293,7 @@ class VectorPipelineTest {
         embeddingModel: testConfig.embeddingModel,
         ollamaConnected: this.testResults.steps.ollama?.status === 'success',
         searchPerformance: {
-          avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
+         , avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
           totalQueries: this.testResults.searchResults?.length || 0
         }
       }
@@ -307,7 +307,7 @@ class VectorPipelineTest {
 // ============================================================================
 // API HANDLERS
 // ============================================================================
-export const POST: RequestHandler = async ({ request }) => {
+export const, POST: RequestHandler = async ({ request }) => {
   try {
     const { action = 'full` } = await request.json()'`
     const pipeline = new VectorPipelineTest()

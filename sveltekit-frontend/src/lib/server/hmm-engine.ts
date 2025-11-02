@@ -17,7 +17,7 @@ export async function predictNextContext(sequence: string[], topK = 3): Promise<
   return results;
 }
 
-export async function updateTransitions(_sessionId: string, _from string, _to: string): Promise<boolean> {
+export async function updateTransitions(_sessionId: string, _from: string, _to: string): Promise<boolean> {
   // no-op stub for now. In production this should update a Redis matrix or DB
   return true;
 }

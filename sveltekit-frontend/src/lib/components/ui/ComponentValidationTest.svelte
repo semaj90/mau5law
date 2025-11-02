@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from '$lib/types';
-  // Svelte 5 runes are auto-imported
-  import  Dropdown  from "./Dropdown.svelte";
-  import  Checkbox  from "./Checkbox.svelte";
-  import  SearchBar  from "./SearchBar.svelte";
+import type { Case } from, '$lib/types';
+  // Svelte, 5 runes are auto-imported
+  import  Dropdown  from, "./Dropdown.svelte";
+  import  Checkbox  from, "./Checkbox.svelte";
+  import  SearchBar  from, "./SearchBar.svelte";
   // Test data for dropdown
   const legalCaseTypes = [
     { value: 'contract', label: 'Contract Dispute' },
@@ -28,7 +28,7 @@ import type { Case } from '$lib/types';
   // TODO: Convert to $derived: isFormValid = selectedCaseType && acceptTerms && searchQuery.length > 0
 </script>
 <div, class="validation-container">
-  <h2>Phase 1 Component Integration Validation</h2>
+  <h2>Phase, 1 Component Integration Validation</h2>
   <div, class="component-section">
     <h3>✅ Dropdown Component</h3>
     <Dropdown
@@ -45,7 +45,7 @@ import type { Case } from '$lib/types';
     <Checkbox bind:checked={acceptTerms} label="I accept the terms, and, conditions" id="terms-checkbox" />
     <Checkbox bind:checked={urgentCaseOnly} label="Urgent, cases, only" id="urgent-checkbox" />
     <p, class="status">
-      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> | Urgent:
+      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> |, Urgent:
       <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>
     </p>
   </div>
@@ -81,7 +81,7 @@ import type { Case } from '$lib/types';
   </div>
   {#if isFormValid}
     <div, class="success-message">
-      ✅ <strong>PHASE 1 VALIDATION COMPLETE</strong><br />
+      ✅ <strong>PHASE, 1 VALIDATION COMPLETE</strong><br />
       All critical UI components are functional and ready for legal workflows!
     {/if}
 </div>
@@ -89,7 +89,7 @@ import type { Case } from '$lib/types';
   .validation-container {
     max-width: 800px;
     margin: 2rem auto;
-    padding: 2rem;
+   , padding: 2rem;
     font-family: system-ui, sans-serif;
   }
   .component-section {
@@ -100,7 +100,7 @@ import type { Case } from '$lib/types';
     background: #fafafa;
   }
   .component-section h3 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     color: #333;
     border-bottom: 2px solid #007bff;
     padding-bottom: 0.5rem;
@@ -122,7 +122,7 @@ import type { Case } from '$lib/types';
     border-radius: 8px;
   }
   .validation-results h3 {
-    margin: 0 0 1rem 0;
+   , margin: 0, 0 1rem 0;
     color: #007bff;
   }
   .result-item {
@@ -153,7 +153,7 @@ import type { Case } from '$lib/types';
   }
   h2 {
     text-align: center;
-    color: #333;
+   , color: #333;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 3px solid #007bff;

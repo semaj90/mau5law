@@ -260,7 +260,7 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
 </script>
-<Dialog.Root bind:open={isOpen}>
+<Dialog bind:open={isOpen}>
   <Dialog.Portal>
     <Dialog.Overlay
       class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
@@ -567,7 +567,7 @@ const saved = localStorage.getItem('ai-search-history');
       </div>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog>
 <style>
   /* NieR Automata Theme Enhancements */
   .nier-container {

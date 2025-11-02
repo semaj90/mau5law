@@ -1,20 +1,20 @@
-import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { Message } from, '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * WebAssembly Chat API - Fallback for Ollama
  *
  * Provides local LLM inference using WebAssembly when Ollama is unavailable
  * Uses llama.cpp compiled to WebAssembly for client-side processing
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
 
 // Define options type for WebAssembly LLM
 interface WasmLLMOptions { temperature: number;, maxTokens: number;
 }
 
-interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
+interface ChatMessage {, role: 'user' | 'assistant' | 'system';, content: string;
 }
 
 // WebAssembly LLM service interface
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
             const initialChunk = {
               text: '',
               metadata: {
-                type: 'sources',
+               , type: 'sources',
                 sources: [
                   {,
                     type: 'system',
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
               const streamChunk = {
                 text: chunk,
                 metadata: {
-                  type: 'text',
+                 , type: 'text',
                   confidence: 0.75,
                   model: `webassembly-llm` }
               };
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
             console.error('WebAssembly streaming error:', error);'
             const errorChunk = {
               text: 'I apologize, but I encountered an error processing your request in WebAssembly mode. Please try again or connect to the full Ollama service for enhanced capabilities.',
-              metadata: { type: 'error', error: error.message }
+              metadata: {, type: 'error', error: error.message }
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
             controller.close();
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async () => {
       success: true,
       status: wasm.isAvailable() ? 'available' : 'unavailable',
       capabilities: {
-        streaming: true,
+       , streaming: true,
         models: ['webassembly-llm'],
         features: [
           'Basic legal guidance',

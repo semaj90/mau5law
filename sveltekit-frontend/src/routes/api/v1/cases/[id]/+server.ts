@@ -4,10 +4,10 @@
  * PUT /api/v1/cases/[id] - Update specific case
  * DELETE /api/v1/cases/[id] - Delete specific case
  */
-import { json, error, type RequestHandler } from '@sveltejs/kit';
-import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { CasesCRUDService, UpdateCaseSchema, type UpdateCaseData } from '$lib/server/services/user-scoped-crud';
-import { z } from 'zod';
+import { json, error, type RequestHandler } from, '@sveltejs/kit';
+import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
+import { CasesCRUDService, UpdateCaseSchema, type UpdateCaseData } from, '$lib/server/services/user-scoped-crud';
+import { z } from, 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format');
 /*
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         success: z.literal(true),
         data: z
           .object({
-            id: z.string(),
+           , id: z.string(),
             title: z.string().optional(),
             description: z.any().optional()
           })
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       data: caseData,
       meta: {
-        userId: getUserId(locals),
+       , userId: getUserId(locals),
         timestamp: new Date().toISOString()
       }
     };

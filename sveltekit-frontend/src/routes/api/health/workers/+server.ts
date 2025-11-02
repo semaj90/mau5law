@@ -2,14 +2,14 @@
  * Worker Health Check API
  * Monitors status of background workers: OCR, Embedding, Legal Analysis
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { createRedisConnection } from '$lib/server/redis';
-import type { RedisClientType } from 'redis';
-import amqp from 'amqplib';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { createRedisConnection } from, '$lib/server/redis';
+import type { RedisClientType } from, 'redis';
+import amqp from, 'amqplib';
 
 interface WorkerStatus { name: string;, status: 'online' | 'offline' | 'degraded';
-  healthy: boolean;
+ , healthy: boolean;
   lastHeartbeat?: string;
   queueDepth?: number;
   processedJobs?: number;
@@ -61,8 +61,8 @@ async function safeQuit(client: ConnectableRedisClient | null, label: string): P
 
 async function fetchWorkerRedisState(
   label: string,
-  keys: {, heartbeat: string; stats: string }
-): Promise<{ ok: true; heartbeat: string | null; stats: string | null } | { ok: false; reason: string }> {
+  keys: {, heartbeat: string;, stats: string }
+): Promise<{ ok: true; heartbeat: string | null; stats: string | null } | { ok: false;, reason: string }> {
   const client = createRedisConnection() as ConnectableRedisClient;
 
   const ready = await ensureRedisConnection(client, label);
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ url }) => {
       workers,
       timestamp: new Date().toISOString(),
       summary: {
-        total: workers.length,
+       , total: workers.length,
         online: workers.filter(w => w.status === 'online').length,
         offline: workers.filter(w => w.status === 'offline').length,
         degraded: workers.filter(w => w.status === 'degraded').length
@@ -186,7 +186,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       processedJobs: parsedStats.processedJobs || 0,
       uptime: parsedStats.uptime || 0,
       details: {
-        timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
+       , timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         gpuEnabled: parsedStats.gpuEnabled || false,
         workerPoolSize: parsedStats.workerPoolSize || 4
       }
@@ -267,7 +267,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
       processedJobs: parsedStats.processedJobs || 0,
       uptime: parsedStats.uptime || 0,
       details: {
-        timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
+       , timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         ollamaModel: 'embeddinggemma:latest',
         queuedJobs: totalQueueDepth,
         failedJobs: parsedStats.failedJobs || 0
@@ -328,7 +328,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       processedJobs: parsedStats.processedJobs || 0,
       uptime: parsedStats.uptime || 0,
       details: {
-        timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
+       , timeSinceHeartbeat: `${Math.floor(timeSinceHeartbeat / 1000)}s`,
         gemma3Legal: parsedStats.aiPowered || false
       }
     };

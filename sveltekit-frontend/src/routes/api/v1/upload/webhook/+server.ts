@@ -1,25 +1,25 @@
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from, './$types.js';
 /*
  * Upload Completion Webhook - MinIO → Ingestion Pipeline Trigger
  * Triggers document processing workflow after successful upload
  */
-import { json } from '@sveltejs/kit';
-import { redisService } from '$lib/server/redis-service';
-import db from '$lib/server/db/unified-client';
-import { evidence } from '$lib/db/schema';
-import crypto from 'crypto';
+import { json } from, '@sveltejs/kit';
+import { redisService } from, '$lib/server/redis-service';
+import db from, '$lib/server/db/unified-client';
+import { evidence } from, '$lib/db/schema';
+import crypto from, 'crypto';
 
 // --- CHANGES START ---
 type RedisTyped = {
   get(key: string): Promise<string | null>;
   keys(pattern: string): Promise<string[]>;
-  setex(key: string; seconds: number;, value: string): Promise<unknown>;
+  setex(key: string;, seconds: number;, value: string): Promise<unknown>;
   lpush(key: string;, value: string): Promise<number>;
-  lrange(key: string; start: number;, stop: number): Promise<string[]>;
+  lrange(key: string;, start: number;, stop: number): Promise<string[]>;
   publish(channel: string;, message: string): Promise<number>;
 };
 
-const redis = redisService as unknown as RedisTyped;
+const redis = redisService as: unknown as RedisTyped;
 // --- CHANGES END ---
 
 // --- CHANGES START ---
@@ -53,11 +53,11 @@ type JobLike = {
   metadata?: Record<string, unknown>;
 };
 
-// Use Record<string, unknown> instead of any
-export interface WebhookEvent { eventName: string;, bucket: string;
+// Use Record<string, unknown> instead of: any
+export interface WebhookEvent {, eventName: string;, bucket: string;
   objectName: string;
   objectSize: number;
-  contentType: string;
+ , contentType: string;
   uploadId?: string;
   caseId?: string;
   metadata?: Record<string, unknown>;
@@ -71,7 +71,7 @@ export interface IngestionJob { id: string;, uploadId: string;
   caseId?: string;
   evidenceType: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-  createdAt: string;
+ , createdAt: string;
   metadata?: Record<string, unknown>;
 }
 // Local helper to safely parse values that may be strings or already-parsed objects
@@ -80,8 +80,8 @@ function parseMaybeString<T = Record<string, unknown>>(val: any): T {
     try {
       return JSON.parse(val) as T;
     } catch {
-      // if parsing fails, return the raw string cast into the expected shape
-      return val as unknown as T;
+      // if parsing fails, return the raw: string cast into the expected shape
+      return val as: unknown as T;
     }
   }
   return val as T;
@@ -89,7 +89,7 @@ function parseMaybeString<T = Record<string, unknown>>(val: any): T {
 // --- CHANGES END ---
 
 // POST /api/v1/upload/webhook - Handle MinIO upload completion
-export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+export const, POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     console.log('📥 POST /api/v1/upload/webhook - Processing upload completion');
     const webhookEvent: WebhookEvent = await request.json();
@@ -103,18 +103,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
     console.log('📋 Webhook received: ${webhookEvent.eventName} - ${webhookEvent.bucket}/${webhookEvent.objectName}');
-    // Only process object creation events
+    // Only process: object creation events
     if (webhookEvent.eventName !== 's3:ObjectCreated:Put' && webhookEvent.eventName !== 's3:ObjectCreated:Post') {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event` });'`
+        message: 'Event ignored - not, an: object creation event` });'`
     }
-    // Extract upload metadata from object name or Redis
+    // Extract upload metadata from: object name or Redis
     let uploadMetadata = null;
     let uploadId = webhookEvent.uploadId;
-    // Try to extract upload ID from object name if not provided
+    // Try to extract upload ID, from: object name if not provided
     if (!uploadId) {
-      // Look for uploadId in Redis by searching for matching object name
+      // Look for uploadId in Redis by searching for matching: object name
       const keys = await redis.keys('upload:*');
       for (const key of keys) {
         const data = await redis.get(key);
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Create ingestion job
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const ingestionJob: IngestionJob = {
-      id: jobId,
+     , id: jobId,
       uploadId: uploadId || crypto.randomUUID(),
       bucket: webhookEvent.bucket,
       objectName: webhookEvent.objectName,
@@ -187,13 +187,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           .values({
             caseId: uploadMetadata.caseId,
             title: uploadMetadata.fileName,
-            description: `Uploaded; file: ${uploadMetadata.fileName}`,
+            description: `Uploaded;, file: ${uploadMetadata.fileName}`,
             evidenceType: uploadMetadata.evidenceType || 'document',
             fileUrl: `${webhookEvent.bucket}/${webhookEvent.objectName}`,
             fileName: uploadMetadata.fileName,
             fileSize: uploadMetadata.contentLength,
             mimeType: uploadMetadata.contentType,
-            hash: null, // TODO: Calculate file hash; uploadedBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth; tags: [],
+            hash: null, // TODO: Calculate file hash;, uploadedBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth;, tags: [],
             chainOfCustody: [],
             labAnalysis: {},
             aiAnalysis: {
@@ -250,12 +250,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         objectName: webhookEvent.objectName
       },
       metadata: {
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         clientAddress: getClientAddress(),
         webhookEvent: webhookEvent.eventName
       }
     };
-    console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`);
+    console.log(`✅ Ingestion job, created: ${jobId} for ${uploadMetadata.fileName}`);
     return json(response);
   } catch (error: any) {
     const err = error instanceof Error ? error : new Error('Unknown error');
@@ -315,12 +315,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     const response = {
       success: true,
       data: {
-        jobs: jobs.slice(0, limit),
+       , jobs: jobs.slice(0, limit),
         count: jobs.length,
         filters: { status, caseId, limit }
       },
       metadata: {
-        timestamp: Date.now(),
+       , timestamp: Date.now(),
         clientAddress: getClientAddress()
       }
     };

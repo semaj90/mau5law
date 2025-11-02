@@ -1,6 +1,6 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { searchLocal } from '$lib/search/local-pipeline';
+import type { RequestHandler } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { searchLocal } from, '$lib/search/local-pipeline';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json().catch(() => ({}));

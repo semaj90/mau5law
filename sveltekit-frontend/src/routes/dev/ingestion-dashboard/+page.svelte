@@ -2,17 +2,17 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
+import type { Document } from, '$lib/types';
+  import { onMount, onDestroy } from, 'svelte';
+  import { writable } from, 'svelte/store';
 
   // Dashboard data store - initialize with safe defaults
   const dashboardData = writable({
-    jobs: { active: [], recent: [], stats: { total: 0, successRate: 0 } },
-    workers: { active: [], stats: {} },
-    metrics: { recentActivity: [], performance: {} },
-    workflow: { state: 'idle', context: { queueLength: 0, concurrency: 0 } },
-    system: { uptime: 0, memory: { rss: 0 }, config: {} }
+    jobs: {, active: [], recent: [], stats: {, total: 0, successRate: 0 } },
+    workers: {, active: [], stats: {} },
+    metrics: {, recentActivity: [], performance: {} },
+    workflow: {, state: 'idle', context: {, queueLength: 0, concurrency: 0 } },
+    system: {, uptime: 0, memory: {, rss: 0 }, config: {} }
   });
 
   let pollInterval: ReturnType<typeof setInterval> | null = null;
@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
 
   // Job submission form state
   let newJob: { documentId: string; text: string; chunks: number; priority: string } = {
-    documentId: '',
+   , documentId: '',
     text: '',
     chunks: 1,
     priority: 'normal'
@@ -72,11 +72,11 @@ import type { Document } from '$lib/types';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'submit_document',
+         , action: 'submit_document',
           documentId: newJob.documentId,
           chunks,
           metadata: {
-            priority: newJob.priority,
+           , priority: newJob.priority,
             source: 'dashboard_test',
             userId: 'test_user'
           }
@@ -87,7 +87,7 @@ import type { Document } from '$lib/types';
       if (result && result.success) {
         submissionStatus = `✅ Job submitted: ${result.jobId ?? 'unknown-id'}`;
         // Reset form
-        newJob = { documentId: '', text: '', chunks: 1, priority: 'normal' };
+        newJob = {, documentId: '', text: '', chunks: 1, priority: 'normal' };
         // Refresh dashboard
         await fetchDashboardData();
       } else {
@@ -119,8 +119,8 @@ import type { Document } from '$lib/types';
   }
 
   function formatBytes(bytes: number) {
-    if (!bytes && bytes !== 0) return '0 B';
-    if (bytes === 0) return '0 B';
+    if (!bytes && bytes !== 0) return, '0 B';
+    if (bytes === 0) return, '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -128,7 +128,7 @@ import type { Document } from '$lib/types';
   }
 
   function formatDuration(ms: number) {
-    if (ms === 0) return '0ms';
+    if (ms === 0) return, '0ms';
     if (ms < 1000) return `${ms}ms`;
     const totalSeconds = Math.floor(ms / 1000);
     if (totalSeconds < 60) return `${totalSeconds}s`;

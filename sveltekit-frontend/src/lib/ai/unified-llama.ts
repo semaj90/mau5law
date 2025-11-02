@@ -1,20 +1,20 @@
-import type { Document } from '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * Unified llama.cpp Bridge
- * Intelligently routes inference across 4 execution paths:
+ * Intelligently routes inference across, 4 execution paths:
  * 1. Browser WASM (llama-cpp-engine.ts) - Offline, private, ~20-35 tok/s
  * 2. Node Native (@llama-node/llama-cpp) - Local dev, ~80-120 tok/s
  * 3. Remote gRPC (TensorRT) - Heavy inference, ~250-500 tok/s
  * 4. Remote QUIC/HTTP3 (TensorRT streaming) - Ultra-low latency, ~300-600 tok/s
  */
 
-import { browser } from '$app/environment';
-import type { InferenceRequest, InferenceResponse } from '$lib/webgpu/unified-runtime-abstraction';
+import { browser } from, '$app/environment';
+import type { InferenceRequest, InferenceResponse } from, '$lib/webgpu/unified-runtime-abstraction';
 
 // Lazy imports for tree-shaking
 let llamaWasmEngine: any = null;
 let clientWasmLlama: any = null;
-let quicTransport: any = null;
+let, quicTransport: any = null;
 
 export type LlamaMode = 'auto' | 'wasm' | 'native' | 'remote' | 'quic';
 
@@ -48,11 +48,11 @@ export interface GenerateResult { text: string;, tokensGenerated: number;
  * Unified generation API - automatically selects best execution path
  */
 export async function generate(
-	prompt: string,
+, prompt: string,
 	options: GenerateOptions = {}
 ): Promise<GenerateResult> {
 	const config: Required<UnifiedLlamaConfig> = {
-		mode: options.mode ?? 'auto',
+	, mode: options.mode ?? 'auto',
 		model: options.model ?? 'gemma3:270m',
 		maxTokens: options.maxTokens ?? 512,
 		temperature: options.temperature ?? 0.7,
@@ -65,7 +65,7 @@ export async function generate(
 	const startTime = performance.now();
 	let method: 'wasm' | 'native' | 'remote';
 
-	// Auto mode: intelligently select execution path
+	// Auto, mode: intelligently select execution path
 	if (config.mode === 'auto') {
 		method = await selectExecutionPath(prompt, config);
 	} else if (config.mode === 'wasm') {
@@ -84,13 +84,13 @@ export async function generate(
 		let result: GenerateResult;
 
 		switch (method) {
-			case 'wasm':
+			case, 'wasm':
 				result = await generateWithWasm(prompt, config, options.onToken, options.signal);
 				break;
-			case 'native':
+			case, 'native':
 				result = await generateWithNative(prompt, config, options.onToken, options.signal);
 				break;
-			case 'remote':
+			case, 'remote':
 				// Use QUIC if explicitly requested or streaming enabled
 				if (config.mode === 'quic' || (config.stream && await checkQuicAvailable(config.quicEndpoint))) {
 					result = await generateWithQuic(prompt, config, options.onToken, options.signal);
@@ -99,7 +99,7 @@ export async function generate(
 				}
 				break;
 			default:
-				throw new Error(`Unknown; method: ${method}`);
+				throw new Error(`Unknown;, method: ${method}`);
 		}
 
 		const totalTime = performance.now() - startTime;
@@ -157,7 +157,7 @@ async function selectExecutionPath(
 
 	// Long prompts always go remote for TensorRT acceleration
 	if (promptLength > config.remoteFallbackLength) {
-		return 'remote';
+		return, 'remote';
 	}
 
 	// Check environment
@@ -314,7 +314,7 @@ async function checkQuicAvailable(endpoint: string): Promise<boolean> {
 
 	try {
 		// Test QUIC connection with timeout
-		const transport = new (window as any).WebTransport(endpoint);
+		const transport = new (window as: any).WebTransport(endpoint);
 		await Promise.race([
 			transport.ready,
 			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
@@ -347,7 +347,7 @@ async function generateWithQuic(
 	try {
 		// Initialize WebTransport (browser) or QUIC client (Node)
 		if (browser && 'WebTransport' in window) {
-			transport = new (window as any).WebTransport(endpoint);
+			transport = new (window as: any).WebTransport(endpoint);
 			await transport.ready;
 			console.log('[QUIC] WebTransport connection established');
 		} else {
@@ -469,7 +469,7 @@ async function checkCUDA(): Promise<boolean> {
 export async function getCapabilities(): Promise<{ wasm: boolean;, native: boolean;
 	remote: boolean;
 	webgpu: boolean;
-	cuda: boolean;
+, cuda: boolean;
 }> {
 	const [webgpu, cuda, remote] = await Promise.all([
 		checkWebGPU(),
@@ -513,8 +513,7 @@ export async function analyzeLegalDocument(
 Be precise and thorough.<|end|>
 
 <|user|>Document Title: ${title}
-
-Content:
+, Content:
 ${content}
 
 Please analyze this document.<|end|>

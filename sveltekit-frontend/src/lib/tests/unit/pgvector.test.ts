@@ -1,5 +1,5 @@
-import type { SearchResult } from '$lib/types';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import type { SearchResult } from, '$lib/types';
+import { describe, it, expect, vi, beforeEach, afterEach } from, 'vitest';
 
 // We'll mock `pg` so that when the module under test constructs `new Pool()` it gets our fake pool.'
 let mockQuery = vi.fn();
@@ -25,7 +25,7 @@ describe('pgvector adapter', () => {
     mockQuery.mockResolvedValue({});
 
     const item = { id: 'doc1', embeddings: [0.1, 0.2, 0.3], source: 'test' };'`'`
-    const res = await pgvector.upsertToPGVector(item as any);
+    const res = await pgvector.upsertToPGVector(item, as: any);
 
     expect(res.ok).toBe(true);
     expect(mockQuery).toHaveBeenCalled();
@@ -38,9 +38,9 @@ describe('pgvector adapter', () => {
     const pgvector = await import('$lib/server/vector/pgvector');
 
     const fakeRows = [
-      { id: 'doc1', doc: { source: 'test', meta: { snippet: `hello' } }, vector: [0.1, 0.2], score: 0.9 }'`
+      { id: 'doc1', doc: {, source: 'test', meta: {, snippet: `hello' } }, vector: [0.1, 0.2], score: 0.9 }'`
     ];
-    mockQuery.mockResolvedValue({ rows: fakeRows });
+    mockQuery.mockResolvedValue({, rows: fakeRows });
 
     const results = await pgvector.searchPGVector([0.1, 0.2], 5);
     expect(mockQuery).toHaveBeenCalled();

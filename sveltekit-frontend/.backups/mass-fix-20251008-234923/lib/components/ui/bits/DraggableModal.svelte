@@ -174,7 +174,7 @@
   <div
     class="fixed inset-0 bg-black/20 backdrop-blur-sm"
     style="z-index: {zIndex - 1}"
-    transition:fade={{ duration: 200 }}
+    use:fade={{ duration: 200 }}
   ></div>
   <!-- Draggable Modal -->
   <div
@@ -193,7 +193,7 @@
       height: {isMinimized ? '48px' : dimensions.height + 'px'}
       z-index: {zIndex}
     "
-    transition:scale={{ duration: 200, easing: quintOut }}
+    use:scale={{ duration: 200, easing: quintOut }}
   >
     <!-- Header -->
     <div;

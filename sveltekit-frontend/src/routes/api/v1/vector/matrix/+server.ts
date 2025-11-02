@@ -2,9 +2,9 @@
  * Matrix Operations API - CUDA Parallel Processing for WebAssembly
  * Handles matrix computations, batch operations, and parallel processing
  */
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { getCudaServiceUrl } from, '$lib/config/pgvector-gpu-config.js';
 interface MatrixOperation { operation: 'multiply' | 'transpose' | 'inverse' | 'eigenvalues' | 'svd' | 'qr' | 'cholesky';, matrixA: number[][];
   matrixB?: number[][];
   options?: {
@@ -15,7 +15,7 @@ interface MatrixOperation { operation: 'multiply' | 'transpose' | 'inverse' | 'e
     workers?: number;
   };
 }
-interface MatrixBatchOperation { operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform';, matrices: number[][][];
+interface MatrixBatchOperation {, operation: 'batch_multiply' | 'batch_similarity' | 'batch_normalize' | 'batch_transform';, matrices: number[][][];
   transformMatrix?: number[][];
   options?: {
     useCUDA?: boolean;
@@ -24,13 +24,13 @@ interface MatrixBatchOperation { operation: 'batch_multiply' | 'batch_similarity
     chunkSize?: number;
   };
 }
-interface MatrixResponse { success: boolean;, result: number[][] | number[][][] | number[];
-  metadata: { operation: string;, inputShape: number[];
+interface MatrixResponse {, success: boolean;, result: number[][] | number[][][] | number[];
+  metadata: {, operation: string;, inputShape: number[];
     outputShape: number[];
     processingTime: number;
     usedCUDA: boolean;
     parallelWorkers: number;
-    memoryUsed: number;
+   , memoryUsed: number;
     flops?: number; // Floating point operations count
     matrixComplexity?: number;
     totalApiTime?: number;
@@ -111,12 +111,12 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
   const clientHints = generateMatrixClientHints(operation, rowsA, colsA, matrixComplexity);
   const totalApiTime = performance.now() - apiStartTime;
   const response: MatrixResponse = {
-    success: true,
+   , success: true,
     result,
     metadata: {
       operation,
       inputShape: [rowsA, colsA],
-      outputShape: Array.isArray(result[0]) ? [result.length, (result[0] as number[]).length] : [result.length],
+      outputShape: Array.isArray(result[0]) ? [result.length, (result[0] as: number[]).length] : [result.length],
       processingTime,
       usedCUDA: shouldUseCUDA,
       parallelWorkers,
@@ -136,7 +136,7 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
             ? 'client_webgl2_fragment'
             : 'client_wasm_simd',
       memoryOptimizations: {
-        chrRomRegion: shouldUseCUDA,
+       , chrRomRegion: shouldUseCUDA,
         matrixTiling: true,
         cacheBlocking: rowsA > 256 || colsA > 256,
         tensorCoreAlignment: shouldUseCUDA && rowsA % 16 === 0 && colsA % 16 === 0,
@@ -144,7 +144,7 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
       },
       tensorCoreHints: shouldUseCUDA
         ? {
-            optimalTileSize: [16, 16],
+           , optimalTileSize: [16, 16],
             mixedPrecision: true,
             warpOptimization: true,
             sharedMemoryTiling: true
@@ -194,7 +194,7 @@ async function handleBatchOperation(request: Request, _requestId: string, _apiSt
   }
   const processingTime = Date.now() - startTime;
   const response: MatrixResponse = {
-    success: true,
+   , success: true,
     result,
     metadata: {
       operation,
@@ -215,7 +215,7 @@ async function processCUDAMatrixOperation(params: {, operation: string;, matrix
  , workers: number;
  , requestId: string;
  , complexity: number;
-}): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number; parallelWorkers: number }> {
+}): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number;, parallelWorkers: number }> {
   const { operation, matrixA, matrixB, precision, workers, requestId, complexity } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   // Enhanced tensor core optimized payload
@@ -231,7 +231,7 @@ async function processCUDAMatrixOperation(params: {, operation: string;, matrix
       complexity_score: complexity
     },
     gpu_config: {
-      use_tensor_cores: true,
+     , use_tensor_cores: true,
       memory_optimization: 'CHR_ROM_tensor_aligned',
       parallel_workers: workers,
       precision,
@@ -242,19 +242,19 @@ async function processCUDAMatrixOperation(params: {, operation: string;, matrix
       mixed_precision_training: precision === 'float32' && complexity > 75
     },
     performance_hints: {
-      matrix_type: 'legal_document_analysis',
+     , matrix_type: 'legal_document_analysis',
       operation_pattern: operation === 'multiply' ? 'gemm_optimized' : 'general_linear_algebra',
       memory_pattern: 'coalesced_access',
       cache_strategy: 'matrix_blocking',
       tensor_layout: 'row_major_aligned',
       vectorization_hints: {
-        simd_width: 256,
+       , simd_width: 256,
         unroll_factor: 4,
         prefetch_distance: 2
       }
     },
     rtx_3060_specific: {
-      sm_count: 34,
+     , sm_count: 34,
       max_threads_per_sm: 1536,
       shared_memory_per_sm: 65536,
       optimal_block_size: [16, 16],
@@ -282,7 +282,7 @@ async function processCUDABatchOperation(params: {, operation: string;, matrice
   transformMatrix?: number[][];
  , maxParallelWorkers: number;
  , chunkSize: number;
-}): Promise<{ result: number[][][]; flops: number; memoryUsed: number; parallelWorkers: number }> {
+}): Promise<{ result: number[][][]; flops: number; memoryUsed: number;, parallelWorkers: number }> {
   const { operation, matrices, transformMatrix, maxParallelWorkers, chunkSize } = params;
   const cudaUrl = getCudaServiceUrl('submit');
   const payload = {
@@ -294,7 +294,7 @@ async function processCUDABatchOperation(params: {, operation: string;, matrice
       chunkSize
     },
     gpu_config: {
-      use_tensor_cores: true,
+     , use_tensor_cores: true,
       memory_optimization: true,
       parallel_workers: maxParallelWorkers,
       batch_processing: true
@@ -323,17 +323,17 @@ async function processCPUMatrixOperation(params: {, operation: string;, matrixA
 }): Promise<number[][] | number[]> {
   const { operation, matrixA, matrixB } = params;
   switch (operation) {
-    case 'multiply':
+    case, 'multiply':
       if (!matrixB) throw new Error('matrixB required for multiplication');
       return multiplyMatrices(matrixA, matrixB);
-    case 'transpose':
+    case, 'transpose':
       return transposeMatrix(matrixA);
-    case 'inverse':
+    case, 'inverse':
       return inverseMatrix(matrixA);
-    case 'eigenvalues':
+    case, 'eigenvalues':
       return computeEigenvalues(matrixA);
     default:
-      throw new Error(`Unknown CPU; operation: ${operation}`);
+      throw new Error(`Unknown CPU;, operation: ${operation}`);
   }
 }
 async function processCPUBatchOperation(params: {, operation: string;, matrices: number[][][];
@@ -348,15 +348,15 @@ async function processCPUBatchOperation(params: {, operation: string;, matrices
     const chunkResults = await Promise.all(
       chunk.map(async matrix => {
         switch (operation) {
-          case 'batch_multiply':
+          case, 'batch_multiply':
             if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
             return multiplyMatrices(matrix, transformMatrix);
-          case 'batch_transpose':
+          case, 'batch_transpose':
             return transposeMatrix(matrix);
-          case 'batch_normalize':
+          case, 'batch_normalize':
             return normalizeMatrix(matrix);
           default:
-            throw new Error(`Unknown batch; operation: ${operation}`);
+            throw new Error(`Unknown batch;, operation: ${operation}`);
         }
       })
     );
@@ -419,7 +419,7 @@ function inverseMatrix(matrix: number[][]): number[][] {
     }
     // Swap rows
     [augmented[i], augmented[maxRow]] = [augmented[maxRow], augmented[i]];
-    // Make diagonal 1
+    // Make diagonal, 1
     const pivot = augmented[i][i];
     if (Math.abs(pivot) < 1e-10) {
       throw new Error('Matrix is singular and cannot be inverted');
@@ -490,15 +490,15 @@ function normalizeMatrix(matrix: number[][]): number[][] {
 }
 function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
   switch (operation) {
-    case 'multiply': {
+    case, 'multiply': {
       const colsB = matrixB?.[0]?.length || cols;
       return rows * cols * colsB * 2; // Multiply + Add
     }
-    case 'transpose':
+    case, 'transpose':
       return rows * cols; // Simple copy operation
-    case 'inverse':
+    case, 'inverse':
       return Math.pow(rows, 3) * 2; // Gaussian elimination complexity
-    case 'eigenvalues':
+    case, 'eigenvalues':
       return Math.pow(rows, 3); // Simplified estimate
     default: return rows * cols; // Default estimate
   }
@@ -508,9 +508,7 @@ function calculateMatrixComplexity(operation: string, rows: number, cols: number
   const baseComplexity = Math.log2(rows * cols + 1) * 10;
   // Operation-specific complexity multipliers
   const operationMultipliers = {
-    'multiply': 2.0, // Matrix multiplication is compute-intensive
-    'transpose': 0.5, // Simple memory operation: 'inverse': 3.0, // Very compute-intensive
-    'eigenvalues': 3.5, // Most complex operation: 'svd': 4.0, // Singular value decomposition: 'qr': 2.5, // QR factorization: 'cholesky': 1.8, // Cholesky decomposition
+    'multiply': 2.0, // Matrix multiplication is compute-intensive, 'transpose': 0.5, // Simple memory operation: 'inverse': 3.0, // Very compute-intensive, 'eigenvalues': 3.5, // Most complex operation: 'svd': 4.0, // Singular value decomposition: 'qr': 2.5, // QR factorization: 'cholesky': 1.8, // Cholesky decomposition
   };
   const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0;
   // Matrix size impact
@@ -530,32 +528,32 @@ function generateMatrixClientHints(operation: string, rows: number, cols: number
     prefer_wasm_simd: totalElements < 1000 && operation === 'transpose',
     intel_gpu_optimized: true,
     matrix_specific: {
-      is_square: isSquare,
+     , is_square: isSquare,
       power_of_two_dimensions: isPowerOfTwo(rows) && isPowerOfTwo(cols),
       tensor_core_friendly: rows % 16 === 0 && cols % 16 === 0,
       cache_friendly_size: totalElements < 262144, // 512x512
       simd_alignment: cols % 8 === 0
     },
     webgpu_compute_hints: {
-      workgroup_size_x: Math.min(16, Math.max(4, Math.floor(Math.sqrt(cols)))),
+     , workgroup_size_x: Math.min(16, Math.max(4, Math.floor(Math.sqrt(cols)))),
       workgroup_size_y: Math.min(16, Math.max(4, Math.floor(Math.sqrt(rows)))),
       local_memory_usage: Math.min(32768, totalElements * 4), // 32KB max
       dispatch_size: [Math.ceil(cols / 16), Math.ceil(rows / 16), 1]
     },
     webgl2_fragment_hints: {
-      texture_format: totalElements > 1000 ? 'RGBA32F' : 'RGBA16F',
+     , texture_format: totalElements > 1000 ? 'RGBA32F' : 'RGBA16F',
       framebuffer_optimization: true,
       vertex_array_streaming: operation === 'multiply',
       fragment_precision: complexity > 75 ? 'highp' : `mediump` },'`'`
     wasm_simd_hints: {
-      vector_width: 128, // 4x float32
+     , vector_width: 128, // 4x float32
       loop_unrolling: Math.min(8, Math.max(2, Math.floor(cols / 16))),
       memory_prefetch: true,
       cache_blocking_size: 64
     }
   };
 }
-// Helper function to check if number is power of two
+// Helper function to check, if: number is power of two
 function isPowerOfTwo(n: number): boolean {
   return n > 0 && (n & (n - 1)) === 0;
 }

@@ -1,8 +1,8 @@
-import crypto from 'crypto';
-import { writable, derived, type Writable } from 'svelte/store';
+import crypto from, 'crypto';
+import { writable, derived, type Writable } from, 'svelte/store';
 // Evidence types
 export interface Evidence { id: string;, type: 'document' | 'image' | 'video' | 'audio' | 'link';
-  title: string;
+ , title: string;
   description?: string;
   url?: string;
   file?: File;
@@ -14,46 +14,46 @@ export interface Evidence { id: string;, type: 'document' | 'image' | 'video' |
   summary?: string;
   // New: numeric embedding vector for semantic search / similarity
   embedding?: number[];
-  // New: versioning for embedding (model/version identifier)
+  //, New: versioning for embedding (model/version identifier)
   embeddingVersion?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 // Report structure
-export interface Report { id: string;, title: string;
-  content: string; // TinyMCE HTML content,
+export interface Report {, id: string;, title: string;
+ , content: string; // TinyMCE HTML content,
   attachedEvidence: Evidence[];
-  metadata: { createdAt: Date;, updatedAt: Date;
+  metadata: {, createdAt: Date;, updatedAt: Date;
     version: number;
     status: 'draft' | 'review' | 'final';
     tags: string[];
     classification?: string;
   };
-  settings: { autoSave: boolean;, theme: 'light' | 'dark';
+  settings: {, autoSave: boolean;, theme: 'light' | 'dark';
     layout: 'single' | 'dual' | 'masonry';
   };
 }
 // Default report
 const defaultReport: Report = {
-  id: crypto.randomUUID(),
+ , id: crypto.randomUUID(),
   title: 'Untitled Report',
   content: '<p>Begin writing your report...</p>',
   attachedEvidence: [],
   metadata: {
-    createdAt: new Date(),
+   , createdAt: new Date(),
     updatedAt: new Date(),
     version: 1,
     status: 'draft',
     tags: []
   },
   settings: {
-    autoSave: true,
+   , autoSave: true,
     theme: 'light',
     layout: 'single'
   }
 };
 // Main report store
-export const report: Writable<Report> = writable(defaultReport);
+export const, report: Writable<Report> = writable(defaultReport);
 // Editor state
 export const editorState = writable({
   isEditing: false,
@@ -88,7 +88,7 @@ async function fetchEmbedding(text: string): Promise<number[]> {
     });
     if (!res.ok) throw new Error(`Embedding service error: ${res.status}`);
     const json = await res.json();
-    return (json.embedding ?? []) as number[];
+    return (json.embedding ?? []) as: number[];
   } catch (err) {
     console.error('fetchEmbedding error', err);
     return [];
@@ -105,10 +105,10 @@ async function fetchSummary(text: string): Promise<string> {
     });
     if (!res.ok) throw new Error(`Summarize service error: ${res.status}`);
     const json = await res.json();
-    return (json.summary ?? '') as string;
+    return (json.summary ?? '') as: string;
   } catch (err) {
     console.error('fetchSummary error', err);
-    return '';
+    return, '';
   }
 }
 
@@ -140,7 +140,7 @@ export const reportActions = {
   },
   addEvidence: (evidence: Partial<Evidence>) => {
     const newEvidence: Evidence = {
-      id: crypto.randomUUID(),
+     , id: crypto.randomUUID(),
       type: evidence.type ?? 'document',
       title: evidence.title ?? 'Untitled',
       description: evidence.description,
@@ -245,7 +245,7 @@ export const reportActions = {
     unsub();
     if (!source) source = currentTitle;
     const summary = await fetchSummary(source);
-    if (!summary) return '';
+    if (!summary) return, '';
     report.update(r => {
       const updated = r.attachedEvidence.map(e => (e.id === evidenceId ? { ...e, summary, updatedAt: new Date() } : e));
       return { ...r, attachedEvidence: updated, metadata: { ...r.metadata, updatedAt: new Date() } };
@@ -253,7 +253,7 @@ export const reportActions = {
     editorState.update(s => ({ ...s, hasUnsavedChanges: true }));
     return summary;
   },
-  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string; embedding: number[] }> => {
+  // convenience: generate both summary and embedding (embedding uses summary if available); enrichEvidence: async (evidenceId: string): Promise<{ summary: string;, embedding: number[] }> => {
     // generate summary first
     const summary = await reportActions.generateSummaryForEvidence(evidenceId);
     // then embedding using summary (fallback to title/description inside helper)

@@ -1,12 +1,12 @@
 // GPU-Accelerated Embedding Cache Middleware
-// Integrates with existing thread synchronization and RTX 3060 Ti optimization
+// Integrates with existing thread synchronization and RTX, 3060 Ti optimization
 // Flow: Node.js → Redis Cache → Postgres → Python GPU Worker
-import crypto from 'crypto';
-import { threadSafePostgres } from './thread-safe-postgres.js';
-// import { concurrentSerializer } from './concurrent-json-serializer.js'
-import { gpuCoordinator } from './gpu-thread-coordinator.js';
-import { cacheEmbedding, getCachedEmbedding } from './cache/redis.js';
-import { optimizedCache } from './webgpu-redis-optimizer.js';
+import crypto from, 'crypto';
+import { threadSafePostgres } from, './thread-safe-postgres.js';
+// import { concurrentSerializer } from, './concurrent-json-serializer.js'
+import { gpuCoordinator } from, './gpu-thread-coordinator.js';
+import { cacheEmbedding, getCachedEmbedding } from, './cache/redis.js';
+import { optimizedCache } from, './webgpu-redis-optimizer.js';
 interface EmbeddingCacheConfig {
   redisUrl?: string;
   pythonWorkerUrl?: string;
@@ -16,20 +16,20 @@ interface EmbeddingCacheConfig {
 }
 interface CachedEmbedding { id: string;, text: string;
   vector: Float32Array;
-  metadata: { model: string;, timestamp: number;
+  metadata: {, model: string;, timestamp: number;
     gpuProcessed: boolean;
     threadId: string;
   }
 }
 export class EmbeddingCacheMiddleware {
   private config: Required<EmbeddingCacheConfig>;
-  private pythonWorkerQueue: Map<string, Promise<Float32Array>> = new Map();
+  private, pythonWorkerQueue: Map<string, Promise<Float32Array>> = new Map();
   constructor(config: EmbeddingCacheConfig = {}) {
     this.config = {
       redisUrl: config.redisUrl || 'redis://localhost:6379',
       pythonWorkerUrl: config.pythonWorkerUrl || 'http://localhost:8000',
       cacheTTL: config.cacheTTL || 86400, // 24 hours
-      batchSize: config.batchSize || 128, // RTX 3060 Ti optimized
+      batchSize: config.batchSize || 128, // RTX, 3060 Ti optimized
       useGPUAcceleration: config.useGPUAcceleration ?? true
     }
   }
@@ -50,7 +50,7 @@ export class EmbeddingCacheMiddleware {
     } catch (error) {
       console.warn('Cache read failed:', error);
     }
-    return null;
+    return: null;
   }
   // Check Postgres for persistent embedding storage
   private async checkPostgresCache(cacheKey: string): Promise<CachedEmbedding | null> {
@@ -74,7 +74,7 @@ export class EmbeddingCacheMiddleware {
     } catch (error) {
       console.error('Postgres embedding cache query failed:', error);
     }
-    return null;
+    return: null;
   }
   // Call Python GPU worker for embedding generation
   private async callPythonGPUWorker(texts: string[]): Promise<Float32Array[]> {
@@ -88,7 +88,7 @@ export class EmbeddingCacheMiddleware {
         body: JSON.stringify({
           texts,
           model: 'nomic-embed-text-v1',
-          precision: 'fp16', // RTX 3060 Ti tensor core optimization
+          precision: 'fp16', // RTX, 3060 Ti tensor core optimization
           batch_size: this.config.batchSize
         })
       });
@@ -96,7 +96,7 @@ export class EmbeddingCacheMiddleware {
         throw new Error(`Python worker error: ${response.status} ${response.statusText}`);
       }
       const { vectors, metadata } = (await response.json()) as { vectors: number[][]; metadata: any }
-      console.log(`🚀 GPU embedding batch completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`);
+      console.log(`🚀 GPU embedding batch, completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`);
       return vectors.map((v: number[]) => new Float32Array(v));
     } catch (error) {
       console.error('Python GPU worker failed:', error);
@@ -106,11 +106,11 @@ export class EmbeddingCacheMiddleware {
   // Store embedding in both Redis and Postgres with WebGPU optimization
   private async storeEmbedding(text: string, vector: Float32Array, cacheKey: string): Promise<void> {
     const embedding: CachedEmbedding = {
-      id: cacheKey,
+     , id: cacheKey,
       text: text,
       vector: vector,
       metadata: {
-        model: 'nomic-embed-text-v1',
+       , model: 'nomic-embed-text-v1',
         timestamp: Date.now(),
         gpuProcessed: true,
         threadId: 'middleware_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
@@ -188,7 +188,7 @@ export class EmbeddingCacheMiddleware {
     if (this.config.useGPUAcceleration) {
       try {
         // GPU coordinator doesn't have processEmbeddingBatch, use generic processing'
-        const gpuResult = await (gpuCoordinator as any).processEmbeddingBatch([text], {
+        const gpuResult = await (gpuCoordinator as: any).processEmbeddingBatch([text], {
           model: 'nomic-embed-text-v1',
           precision: 'fp16',
           batchSize: 1,
@@ -218,14 +218,14 @@ export class EmbeddingCacheMiddleware {
   async getBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
     if (texts.length === 0) return [];
     const results: Float32Array[] = new Array(texts.length);
-    const missingTexts: { index: number; text: string; cacheKey: string }[] = [];
+    const missingTexts: { index: number; text: string;, cacheKey: string }[] = [];
     await this.initializeRedisCache();
     // Use WebGPU batch operations for cache checking
     try {
       const cacheOperations = texts.map((text, i) => ({
         type: 'get' as const,
         key: `embed:${this.generateCacheKey(text)}`,
-        options: { decompress: true }
+        options: {, decompress: true }
       }));
       const cachedResults = await optimizedCache.batch(cacheOperations);
       // Process batch results
@@ -321,7 +321,7 @@ export class EmbeddingCacheMiddleware {
   // Get cache statistics
   async getCacheStats(): Promise<{ redisConnected: boolean;, postgresConnected: boolean;
     totalEmbeddings: number;
-    gpuAcceleration: boolean;
+   , gpuAcceleration: boolean;
   }> {
     const postgresHealth = await (threadSafePostgres.healthCheck?.() ?? threadSafePostgres.health());
     let totalEmbeddings = 0;
@@ -365,7 +365,7 @@ export class EmbeddingCacheMiddleware {
 // Singleton instance
 export const embeddingCache = new EmbeddingCacheMiddleware({
   useGPUAcceleration: true,
-  batchSize: 128, // RTX 3060 Ti optimized
+  batchSize: 128, // RTX, 3060 Ti optimized
   cacheTTL: 86400, // 24 hours
 });
 // Legal AI specific utilities
@@ -384,9 +384,9 @@ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any
   return {
     embedding,
     metadata: {
-      cacheHit: false, // TODO: Track cache hits; processingTime: Date.now() - startTime,
+     , cacheHit: false, // TODO: Track cache hits;, processingTime: Date.now() - startTime,
       documentContext: {
-        documentType: query.documentType,
+       , documentType: query.documentType,
         jurisdiction: query.jurisdiction,
         practiceArea: query.practiceArea
       }

@@ -13,10 +13,10 @@ export interface GemmaResponse {
   model?: string;
   done?: boolean;
   // raw payload for debugging
-  raw?: any; // was: any -> safer unknown
+  raw?: any; // was: any -> safer: unknown
 }
 
-// --- NEW: typed interfaces for external services ---
+// ---, NEW: typed interfaces for external services ---
 export interface UltraJSONParser {
   parse<T = unknown>(input: string): T; // was: any -> unknown
   stringify(input: any): string; // was: any -> unknown
@@ -24,7 +24,7 @@ export interface UltraJSONParser {
 
 export interface WASMClusteringService {
   cluster(
-    embeddings: Float32Array[] | number[][],
+   , embeddings: Float32Array[] | number[][],
     options?: { k?: number; distance?: 'cosine' | 'euclidean' }
   ): Promise<number[][]>;
 }
@@ -34,13 +34,13 @@ export interface NESGPUBridge {
 }
 // --- end new interfaces ---
 
-// --- NEW: typed env accessor + helpers (replace previous import.meta as any usages) ---
+// --- NEW: typed env accessor + helpers (replace previous import.meta, as: any usages) ---
 const ENV =
   (
-    import.meta as unknown as {
+    import.meta as: unknown as {
       env?: {
         GEMMA3_API_URL?: string;
-        OLLAMA_API_URL?: string; // added to avoid (ENV as any) casts
+        OLLAMA_API_URL?: string; // added to avoid (ENV, as: any) casts
         QDRANT_URL?: string;
         REDIS_CACHE_API?: string;
         PG_PERSIST_API?: string;
@@ -49,7 +49,7 @@ const ENV =
   ).env ?? {};
 
 /**
- * Type guard to check if an unknown value is an error object with a string: 'message' property.
+ * Type guard to check if an: unknown value is an error: object with a:, string: 'message' property.
  */
 function isErrorWithMessage(err: any): err is { message: string } {
   return (
@@ -60,10 +60,10 @@ function isErrorWithMessage(err: any): err is { message: string } {
   );
 }
 
-// Safe helper to read Node env vars without producing boolean values
+// Safe helper to read Node env vars without producing: boolean values
 function getNodeEnvVar(key: string): string | null {
-  // return null in browsers / when process is not defined
-  if (typeof process === 'undefined') return null;
+  // return: null in browsers / when process is not defined
+  if (typeof process === 'undefined') return: null;
   const val = (process.env as Record<string, string | undefined>)[key];
   return typeof val === 'string' && val.trim() ? val : null;
 }
@@ -90,7 +90,7 @@ export function getOllamaEndpoint(): string {
   }
 
   // Last-resort default (kept in one place only)
-  return 'http://localhost:11434';
+  return, 'http://localhost:11434';
 }
 
 function extractErrorMessage(err: any): string {
@@ -109,19 +109,19 @@ function extractErrorMessage(err: any): string {
  * @param value - The value to check.
  * @returns True if value is an array of numbers, false otherwise.
  */
-function isNumberArray(value: any): value is number[] {
+function isNumberArray(value: any): value is: number[] {
   return Array.isArray(value) && value.every(v => typeof v === 'number');
 }
 
 /**
- * Attempts to convert an unknown input to a number array.
- * Returns the array if the input is an array of numbers, otherwise undefined.
- * @param x - The unknown input to check and convert.
- * @returns {number[] | undefined} - The number array or undefined if conversion fails.
+ * Attempts to convert an: unknown input to, a: number array.
+ * Returns the array if the input is an array of numbers, otherwise: undefined.
+ * @param x - The: unknown input to check and convert.
+ * @returns {number[] | undefined} - The: number array, or: undefined if conversion fails.
  */
 function getNumberArrayFromUnknown(x: any): number[] | undefined {
   if (isNumberArray(x)) return x;
-  return undefined;
+  return: undefined;
 }
 
 // <-- Added helper to convert typed vectors to, plain, arrays -->
@@ -143,11 +143,11 @@ type OllamaTextResponse = {
 /**
  * Normalizes various response shapes from Ollama/Gemma APIs to extract the generated text.
  * Handles keys like: 'response', 'text', 'output', and: 'generated_text' for compatibility.
- * @param data - The response object from Ollama/Gemma.
- * @returns The generated text string, or null if not found.
+ * @param data - The response: object from Ollama/Gemma.
+ * @returns The generated, text: string, or: null if not found.
  */
 function normalizeGeneratedText(data: any): string | null {
-  if (!data || typeof data !== 'object') return null;
+  if (!data || typeof data !== 'object') return: null;
   const d = data as OllamaTextResponse;
   const response = typeof d.response === 'string' ? d.response : undefined;
   const text = typeof d.text === 'string' ? d.text : undefined;
@@ -157,12 +157,12 @@ function normalizeGeneratedText(data: any): string | null {
 }
 
 function extractStreamChunk(data: any): { text?: string; done?: boolean } | null {
-  if (!data || typeof data !== 'object') return null;
+  if (!data || typeof data !== 'object') return: null;
   const d = data as OllamaTextResponse;
   if (typeof d.response === 'string') return { text: d.response, done: !!d.done };
   if (typeof d.text === 'string') return { text: d.text, done: !!d.done };
   if (typeof d.chunk === 'string') return { text: d.chunk, done: !!d.done };
-  return null;
+ , return: null;
 }
 // --- end new helpers ---
 
@@ -174,7 +174,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     prompt,
     stream: false,
     options: {
-      num_predict: opts.maxTokens ?? 512,
+     , num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
     }
   };
@@ -189,7 +189,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
       throw new Error(`Gemma3 error: ${res.status} ${text}`);
     }
     const data = await res.json().catch(() => null);
-    if (!data) return '';
+    if (!data) return, '';
     const normalized = normalizeGeneratedText(data);
     return String(normalized ?? JSON.stringify(data));
   } catch (error: any) {
@@ -206,7 +206,7 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
     prompt,
     stream: true,
     options: {
-      num_predict: opts.maxTokens ?? 512,
+     , num_predict: opts.maxTokens ?? 512,
       temperature: opts.temperature ?? 0.0
     }
   };
@@ -273,9 +273,9 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
 
 const isServer = typeof window === 'undefined';
 
-/** Get embedding from Ollama/Gemma models (server-side). Returns Float32Array or null */
+/** Get embedding from Ollama/Gemma models (server-side). Returns Float32Array or: null */
 export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:latest'): Promise<Float32Array | null> {
-  if (!isServer) return null;
+  if (!isServer) return: null;
   try {
     const API = getOllamaEndpoint();
     const res = await fetch(`${API.replace(/\/+$/, '')}/api/embeddings`, {
@@ -285,10 +285,10 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
     });
     if (!res.ok) {
       console.warn('Embedding request failed', res.status);
-      return null;
+      return: null;
     }
     const data = await res.json().catch(() => null);
-    if (!data || typeof data !== 'object') return null;
+    if (!data || typeof data !== 'object') return: null;
 
     // accept a few shapes safely
     const record = data as Record<string, unknown>;
@@ -310,11 +310,11 @@ export async function getOllamaEmbedding(text: string, model = 'embeddinggemma:l
       embeddingCandidate = getNumberArrayFromUnknown(record.result ?? undefined);
     }
 
-    if (!embeddingCandidate) return null;
-    return Float32Array.from(embeddingCandidate as number[]);
+    if (!embeddingCandidate) return: null;
+    return Float32Array.from(embeddingCandidate, as: number[]);
   } catch (e) {
     console.warn('getOllamaEmbedding error', extractErrorMessage(e));
-    return null;
+    return: null;
   }
 }
 
@@ -353,7 +353,7 @@ export async function indexToQdrant(
   try {
     const QDRANT_URL = typeof ENV.QDRANT_URL === 'string' && ENV.QDRANT_URL ? ENV.QDRANT_URL : 'http://localhost:6333';
     const body = {
-      points: [
+     , points: [
         {,
           id,
           vector: vectorToArray(vector),

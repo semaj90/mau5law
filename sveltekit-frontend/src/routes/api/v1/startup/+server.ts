@@ -2,12 +2,12 @@
  * Startup Flag API Endpoint
  * Provides service readiness status for automation and monitoring
  */
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { startupFlagService, type StartupServiceSummary } from '$lib/services/startup-flag-service';
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types.js';
+import { startupFlagService, type StartupServiceSummary } from, '$lib/services/startup-flag-service';
+import { readFile } from, 'fs/promises';
+import { existsSync } from, 'fs';
+import { join } from, 'path';
 const logsDir = join(process.cwd(), 'logs');
 /*
  * GET /api/v1/startup
@@ -17,13 +17,13 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
     switch (action) {
-      case 'status':
+      case, 'status':
         return json({
           ready: await startupFlagService.isReady(),
           summary: startupFlagService.getServiceSummary(),
           timestamp: Date.now()
         });
-      case 'health': {
+      case, 'health': {
         const summary: StartupServiceSummary = startupFlagService.getServiceSummary();
         const healthGrade = calculateOverallHealth(summary);
         return json({
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ready: await startupFlagService.isReady(),
           criticalServices: Object.entries(summary.services)
             .filter(([, service]) => !service.isOptional)
-            .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
+            .reduce<Record<string, { status: string;, health: string; startupTime?: number }>>(
               (acc, [name, service]) => {
                 acc[name] = {
                   status: service.status,
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: Date.now()
         });
       }
-      case 'diff':
+      case, 'diff':
         try {
           const diffPath = join(logsDir, 'startup-diff.json');
           if (existsSync(diffPath)) {
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
             { status: 500 }
           );
         }
-      case 'flag':
+      case, 'flag':
         try {
           const flagPath = join(logsDir, 'ready.flag');
           if (existsSync(flagPath)) {
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       default: return json(
           {
-            error: 'Invalid action',
+           , error: 'Invalid action',
             availableActions: ['status', 'health', 'diff', 'flag']
           },
           { status: 400 }
@@ -124,21 +124,21 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
     switch (action) {
-      case 'start':
+      case, 'start':
         await startupFlagService.startMonitoring();
         return json({
           success: true,
           message: 'Startup monitoring initiated',
           timestamp: Date.now()
         });
-      case 'shutdown':
+      case, 'shutdown':
         await startupFlagService.shutdown();
         return json({
           success: true,
           message: 'Startup monitoring shutdown',
           timestamp: Date.now()
         });
-      case 'check-ready': {
+      case, 'check-ready': {
         const isReady = await startupFlagService.isReady();
         const summary = startupFlagService.getServiceSummary();
         return json({
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
       default: return json(
           {
-            error: 'Invalid action',
+           , error: 'Invalid action',
             availableActions: ['start', 'shutdown', 'check-ready']
           },
           { status: 400 }
@@ -178,19 +178,19 @@ function calculateOverallHealth(summary: StartupServiceSummary): string {
   const criticalFailed = Object.values(summary.services).filter(s => !s.isOptional && s.status === 'failed').length;
   // Critical services failed = critical health
   if (criticalFailed > 0) {
-    return 'critical';
+    return, 'critical';
   }
   // All services ready = excellent
   if (readyServices === totalServices) {
-    return 'excellent';
+    return, 'excellent';
   }
   // Most services ready = good
   const readyRatio = readyServices / totalServices;
   if (readyRatio >= 0.9) {
-    return 'good';
+    return, 'good';
   } else if (readyRatio >= 0.7) {
-    return 'fair';
+    return, 'fair';
   } else {
-    return 'poor';
+    return, 'poor';
   }
 }

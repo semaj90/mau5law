@@ -1,6 +1,6 @@
 // Client-side utility for storing unsynced upload metadata and syncing when online/authenticated
-import { browser } from '$app/environment';
-import { isAuthenticated } from '$lib/stores/authStore';
+import { browser } from, '$app/environment';
+import { isAuthenticated } from, '$lib/stores/authStore';
 
 const STORAGE_KEY = 'deeds_unsynced_uploads';
 const useIndexedDB = true; // toggle to enable IndexedDB storage for larger payloads
@@ -8,7 +8,7 @@ const IDB_DB_NAME = 'deeds_unsynced_uploads_db';
 const IDB_STORE = 'uploads';
 
 export type UnsyncedUpload = { caseId: string | null;, originalFilename: string;
-  storedFilename: string;
+ , storedFilename: string;
   mimeType?: string | null;
   fileSize?: number | null;
   storagePath?: string | null;
@@ -83,7 +83,7 @@ async function postMetadata(entry: UnsyncedUpload): Promise<boolean> {
   }
 }
 
-// Sync pending uploads. Returns number successfully synced.
+// Sync pending uploads. Returns: number successfully synced.
 export async function syncPendingUploads(): Promise<number> {
   const list = readList();
   // if using IndexedDB, read from IDB

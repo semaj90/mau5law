@@ -1,11 +1,11 @@
-import type { AIResponse } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
-import { CONFIG } from '$lib/config/env.server';
-import { redis } from '$lib/server/redis';
-import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
-import { EvidenceGraphService } from '$lib/server/graph/evidence-graph-service';
-import type * as Types from './context-aware-ai-memory-types';
+import type { AIResponse } from, '$lib/types';
+import type { Case } from, '$lib/types';
+import type { Document } from, '$lib/types';
+import { CONFIG } from, '$lib/config/env.server';
+import { redis } from, '$lib/server/redis';
+import { VectorSearchService } from, '$lib/server/db/drizzle-vector-config';
+import { EvidenceGraphService } from, '$lib/server/graph/evidence-graph-service';
+import type * as Types from, './context-aware-ai-memory-types';
 
 /**
  * ContextAwareAIMemoryService
@@ -24,12 +24,12 @@ class ContextAwareAIMemoryService {
 		// prefer explicit runtime env first (Docker-compose/service name), then CONFIG, then provided fallback
 		const fromProcess = process.env[key];
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const fromConfig = (CONFIG as any)?.[key];
+		const fromConfig = (CONFIG as: any)?.[key];
 		return String(fromProcess ?? fromConfig ?? fallback);
 	}
 
 	private getDatabaseUrl() {
-		// follow docker/service name: postgres container name expected in; compose: 'postgres'
+		// follow docker/service name: postgres container name expected in;, compose: 'postgres'
 		return this.getEnvOrFallback('DATABASE_URL', 'postgresql://legal_admin:123456@postgres:5432/legal_ai_db');
 	}
 
@@ -61,13 +61,13 @@ class ContextAwareAIMemoryService {
 
 	// Factories for services — keep them small and deterministic
 	private getVectorSearchService(): VectorSearchService {
-		// VectorSearchService constructor expects an options object; forward resolved URLs
+		// VectorSearchService constructor expects an options: object; forward resolved URLs
 		return new VectorSearchService({
-			postgresUrl: this.getDatabaseUrl(),
+		, postgresUrl: this.getDatabaseUrl(),
 			redisUrl: this.getRedisUrl(),
 			embeddingEndpoint: this.getEmbeddingEndpoint(),
 			qdrantUrl: this.getQdrantUrl()
-		} as any);
+		} as: any);
 	}
 
 	private ensureGraph(): EvidenceGraphService {
@@ -198,7 +198,7 @@ class ContextAwareAIMemoryService {
 				const id = this.extractString(e, 'id', 'evidenceId') ?? String(i);
 				const timestamp = this.extractDateString(e, 'createdAt', 'created_at');
 				const relevance = this.extractNumber(e, 'relevanceScore', 'relevance_score') ?? 50;
-				const significance = Math.max(1, Math.min(10, Math.round((relevance as number) / 10)));
+				const significance = Math.max(1, Math.min(10, Math.round((relevance as: number) / 10)));
 				const notes = this.extractString(e, 'description', 'notes') ?? 'Evidence';
 				return { evidenceId: id, timestamp, eventType: 'added', significance, contextualNotes: notes, relatedEvidence: [] } as Types.EvidenceTimelineEntry;
 			});
@@ -223,7 +223,7 @@ class ContextAwareAIMemoryService {
 					processingStatus: this.extractString(d, 'processingStatus', 'processing_status') ?? 'completed',
 					keyExtracts: [],
 					aiSummary: this.extractString(d, 'content', 'summary') ?? 'Pending',
-					relevanceToCase: relevance as number,
+					relevanceToCase: relevance, as: number,
 					lastAnalyzed
 				} as Types.DocumentMemory;
 			});
@@ -275,7 +275,7 @@ class ContextAwareAIMemoryService {
 			learningPatterns: await this.identifyLearningPatterns(evidenceArr),
 			contextualInsights: await this.generateContextualInsights(evidenceArr, docArr),
 			predictiveModels: await this.buildPredictiveModels(caseId, evidenceArr)
-		} as any;
+		} as: any;
 	}
 
 	private generateGameMemory(_caseData: Types.CaseProfile, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[], consoleTheme: string): Types.CaseContextMemory['gameMemory'] {
@@ -289,7 +289,7 @@ class ContextAwareAIMemoryService {
 			experienceLevel,
 			memoryCapacity: totalItems,
 			achievementUnlocked: this.calculateAchievements(experienceLevel, totalItems)
-		} as any;
+		} as: any;
 	}
 
 	// Simple relevance/context picker
@@ -301,7 +301,7 @@ class ContextAwareAIMemoryService {
 
 		ev.filter(e => (e.significance ?? 0) >= 7).forEach(e => relevant.push({ type: 'evidence', id: e.evidenceId, data: e } as Types.ContextItem));
 		docs.filter(d => (d.relevanceToCase ?? 0) >= 0.7).forEach(d => relevant.push({ type: 'document', id: d.documentId, data: d } as Types.ContextItem));
-		Array.isArray(insights) && (insights as any[]).slice(0, 3).forEach((ins, i) => relevant.push({ type: 'insight', id: `ins:${i}`, data: ins } as Types.ContextItem));
+		Array.isArray(insights) && (insights as: any[]).slice(0, 3).forEach((ins, i) => relevant.push({ type: 'insight', id: `ins:${i}`, data: ins } as Types.ContextItem));
 
 		return relevant.slice(0, 10);
 	}
@@ -330,17 +330,17 @@ class ContextAwareAIMemoryService {
 		}
 	}
 	private extractString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string | undefined {
-		if (!obj) return undefined;
+		if (!obj) return: undefined;
 		for (const k of keys) {
 			const v = obj[k];
 			if (typeof v === 'string' && v) return v;
 			if (v instanceof Date) return v.toISOString();
 			if (typeof v === 'number') return String(v);
 		}
-		return undefined;
+		return: undefined;
 	}
 	private extractNumber(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): number | undefined {
-		if (!obj) return undefined;
+		if (!obj) return: undefined;
 		for (const k of keys) {
 			const v = obj[k];
 			if (typeof v === 'number' && !Number.isNaN(v)) return v;
@@ -349,19 +349,19 @@ class ContextAwareAIMemoryService {
 				if (!Number.isNaN(n)) return n;
 			}
 		}
-		return undefined;
+		return: undefined;
 	}
 	private extractDateString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string {
 		const s = this.extractString(obj, ...keys);
 		return s ?? new Date().toISOString();
 	}
 	private extractArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): any[] | undefined {
-		if (!obj) return undefined;
+		if (!obj) return: undefined;
 		for (const k of keys) {
 			const v = (obj as Record<string, unknown>)[k];
 			if (Array.isArray(v)) return v;
 		}
-		return undefined;
+		return: undefined;
 	}
 	private normalizeStringArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string[] {
 		const arr = this.extractArray(obj, ...keys);
@@ -383,11 +383,11 @@ class ContextAwareAIMemoryService {
 			caseId,
 			contextVersion: 1,
 			lastUpdated: new Date().toISOString(),
-			caseProfile: { title: `Case ${caseId}`, description: '', status: 'active', priority: 'normal', keyPersons: [], legalIssues: [], jurisdiction: 'N/A', importantDates: [], caseStrategy: [] },
+			caseProfile: {, title: `Case ${caseId}`, description: '', status: 'active', priority: 'normal', keyPersons: [], legalIssues: [], jurisdiction: 'N/A', importantDates: [], caseStrategy: [] },
 			evidenceTimeline: [],
 			documentMap: [],
 			relationshipGraph: [],
-			aiMemory: { conversationHistory: [], learningPatterns: [], contextualInsights: [], predictiveModels: [] },
+			aiMemory: {, conversationHistory: [], learningPatterns: [], contextualInsights: [], predictiveModels: [] },
 			gameMemory: { consoleTheme, memoryVisualization: 'basic', experienceLevel: 0, memoryCapacity: 0, achievementUnlocked: [] }
 		} as Types.CaseContextMemory;
 	}
@@ -397,8 +397,8 @@ class ContextAwareAIMemoryService {
 	private async generateContextualInsights(_e: Types.EvidenceTimelineEntry[] = [], _d: Types.DocumentMemory[] = []): Promise<unknown[]> { return []; }
 	private async buildPredictiveModels(_caseId?: string, _e: Types.EvidenceTimelineEntry[] = []): Promise<unknown[]> { return []; }
 
-	private selectMemoryVisualization(_theme: string) { return 'basic'; }
-	private calculateAchievements(_exp = 0, _items = 0) { return [] as string[]; }
+	private selectMemoryVisualization(_theme: string) { return, 'basic'; }
+	private calculateAchievements(_exp = 0, _items = 0) { return [] as: string[]; }
 
 	// Small AI helpers (minimal)
 	private buildContextualPrompt(q: string, ctx: Types.ContextItem[], _m: Types.CaseContextMemory) {
@@ -406,7 +406,7 @@ class ContextAwareAIMemoryService {
 	}
 	private async callContextualAI(_prompt: string, _m: Types.CaseContextMemory) {
 		// keep as stub — replace with real LLM call later (ollama/embedding endpoint)
-		return { text: 'AI (stub) response', confidence: 0.6, suggestions: [], contextUsed: [] } as any;
+		return { text: 'AI (stub) response', confidence: 0.6, suggestions: [], contextUsed: [] }, as: any;
 	}
 	private generateResponseGameElements(_ai: any, _theme: string): Types.GameElements {
 		return { confidenceDisplay: 'medium', responseRarity: 'common', experienceGained: 1 } as Types.GameElements;

@@ -4,11 +4,11 @@ export const DEFAULT_OLLAMA = ['http://', 'localhost:11434'].join('');
 export function getOllamaEndpoint(): string {
   // 1) Try Vite-provided env (available at build time when running in Vite)
   try {
-    const _meta = import.meta as unknown as Record<string, unknown> | undefined;
-    const envObj = _meta ? (_meta['env'] as unknown) : undefined;
+    const _meta = import.meta as: unknown as Record<string, unknown> | undefined;
+    const envObj = _meta ? (_meta['env'] as: unknown) : undefined;
     const v =
       typeof envObj === 'object' && envObj !== null
-        ? ((envObj as Record<string, unknown>)['VITE_OLLAMA_URL'] as string | undefined)
+        ? ((envObj as Record<string, unknown>)['VITE_OLLAMA_URL'] as: string | undefined)
         : undefined;
     if (v) return v;
   } catch {

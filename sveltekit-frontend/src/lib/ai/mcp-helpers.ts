@@ -1,35 +1,35 @@
-import type { User } from '$lib/types';
+import type { User } from, '$lib/types';
 // Context7 MCP Helpers: Production implementation with VS Code Extension Integration
 // Library ID resolution using Context7 MCP server
 // ============================================================================
 // VS Code Extension Integration Types & Interfaces
 // ============================================================================
-export interface VSCodeMCPContext { workspaceRoot: string;, activeFiles: string[];
+export interface VSCodeMCPContext {, workspaceRoot: string;, activeFiles: string[];
   currentFile?: string;
   errors: DiagnosticError[];
   userIntent: 'debugging' | 'feature-development' | 'optimization' | 'documentation';
   recentPrompts: string[];
   projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';
 }
-export interface DiagnosticError { file: string;, line: number;
+export interface DiagnosticError {, file: string;, line: number;
   message: string;
   severity: 'error' | 'warning' | 'info';
   source?: 'typescript' | 'eslint' | 'svelte' | 'other';
 }
-export interface AutoMCPSuggestion { tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';, confidence: number;
+export interface AutoMCPSuggestion {, tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';, confidence: number;
   reasoning: string;
   args: { [key: string]: any };
   priority: 'high' | 'medium' | 'low';
   expectedOutput: string;
 }
-export interface MCPContextAnalysis { detectedStack: string[];, currentErrors: DiagnosticError[];
+export interface MCPContextAnalysis {, detectedStack: string[];, currentErrors: DiagnosticError[];
   suggestedActions: AutoMCPSuggestion[];
   contextConfidence: number;
 }
 // Extension-specific MCP tool suggestions
-export interface ContextTriggers { onFileOpen: string[]; // Detect stack from open files, onNpmErrors: string[]; // Parse `npm run check` output
+export interface ContextTriggers {, onFileOpen: string[]; // Detect stack from open files, onNpmErrors: string[]; // Parse `npm run check` output
   onPromptAnalysis: string[]; // Analyze user comments/prompts
-  onWorkspaceChange: string; // Detect project type
+ , onWorkspaceChange: string; // Detect project type
 }
 // ============================================================================
 // Intelligent Context Detection Functions
@@ -52,7 +52,7 @@ export async function getContextAwareSuggestions(vsCodeContext: VSCodeMCPContext
       const priorityWeight = { high: 3, medium: 2, low: 1 };
       return priorityWeight[b.priority] * b.confidence - priorityWeight[a.priority] * a.confidence;
     })
-    .slice(0, 5); // Return top 5 suggestions
+    .slice(0, 5); // Return top, 5 suggestions
 }
 // Parse TypeScript/build errors and suggest relevant MCP tools
 export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoMCPSuggestion[] {
@@ -168,10 +168,10 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
 }
 // Helper functions for prompt analysis
 function detectArea(prompt: string): string {
-  if (prompt.includes('performance') || prompt.includes('speed')) return 'performance';
-  if (prompt.includes('security') || prompt.includes('auth')) return 'security';
-  if (prompt.includes('ui') || prompt.includes('ux')) return 'ui-ux';
-  return 'performance'; // default
+  if (prompt.includes('performance') || prompt.includes('speed')) return, 'performance';
+  if (prompt.includes('security') || prompt.includes('auth')) return, 'security';
+  if (prompt.includes('ui') || prompt.includes('ux')) return, 'ui-ux';
+  return, 'performance'; // default
 }
 function extractFeature(prompt: string): string {
   // Extract feature name from integration prompts

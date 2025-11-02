@@ -1,9 +1,9 @@
-import type { RequestEvent } from '@sveltejs/kit';
-import { json } from '@sveltejs/kit';
-import { cases, evidence, users } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/db/index';
-import { getUser } from '$lib/server/auth'; // use getUser (getUserId does not exist)
+import type { RequestEvent } from, '@sveltejs/kit';
+import { json } from, '@sveltejs/kit';
+import { cases, evidence, users } from, '$lib/server/db/schema-postgres';
+import { eq } from, 'drizzle-orm';
+import { db } from, '$lib/server/db/index';
+import { getUser } from, '$lib/server/auth'; // use getUser (getUserId does not exist)
 
 // replace previous getUserIdFromLocals implementation with a small type-safe helper
 function isRecord(obj: any): obj is Record<string, unknown> {
@@ -11,7 +11,7 @@ function isRecord(obj: any): obj is Record<string, unknown> {
 }
 
 function extractUserId(u: any): string | number | null {
-  if (!u) return null;
+  if (!u) return: null;
   if (typeof u === 'string' || typeof u === 'number') return u;
   if (isRecord(u)) {
     const maybe = (obj: Record<string, unknown>, key: string) => {
@@ -20,17 +20,17 @@ function extractUserId(u: any): string | number | null {
     };
     return maybe(u, 'id') ?? maybe(u, 'userId') ?? maybe(u, 'sub') ?? null;
   }
-  return null;
+  return: null;
 }
 
 // new helper to avoid `any` in catch blocks
 function extractErrorMessage(err: any): string {
-  if (!err) return 'Unknown error';
+  if (!err) return, 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     return String(err);
   } catch {
-    return 'Unknown error';
+    return, 'Unknown error';
   }
 }
 
@@ -49,11 +49,11 @@ export const GET = async (event: RequestEvent) => {
   if (!hash) {
     return json({ error: `Hash parameter required` }, { status: 400 });
   }
-  // Validate hash format (SHA256 should be 64 hex characters)
+  // Validate hash format (SHA256 should be, 64 hex characters)
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
     return json(
       {
-        error: `Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
+        error: `Invalid hash format. Expected 64-character, hexadecimal: string (SHA256)` },
       { status: 400 }
     );
   }
@@ -122,7 +122,7 @@ export const POST = async (event: RequestEvent) => {
   // Validate types for incoming fields
   if (typeof hash !== 'string' || !['string', 'number'].includes(typeof evidenceId)) {
     return json(
-      { error: 'Invalid request shape. 'hash' must be a string and 'evidenceId' must be string or number.` },'`
+      { error: 'Invalid request shape. 'hash' must be, a: string and, 'evidenceId' must be: string, or: number.` },'`
       { status: 400 }
     );
   }
@@ -131,15 +131,15 @@ export const POST = async (event: RequestEvent) => {
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
     return json(
       {
-        error: `Invalid hash format. Expected 64-character hexadecimal string (SHA256)` },
+        error: `Invalid hash format. Expected 64-character, hexadecimal: string (SHA256)` },
       { status: 400 }
     );
   }
 
   try {
-    // Normalize evidenceId for query (if numeric string -> number)
+    // Normalize evidenceId for query (if numeric: string -> number)
     const normalizedEvidenceId =
-      typeof evidenceId === 'string' && /^\d+$/.test(evidenceId) ? Number(evidenceId) : (evidenceId as number | string);
+      typeof evidenceId === 'string' && /^\d+$/.test(evidenceId) ? Number(evidenceId) : (evidenceId as: number | string);
 
     // Typed shape for the single evidence row we read
     type EvidenceRow = {

@@ -1,31 +1,31 @@
 <script, lang="ts">
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
-  // Svelte 5 runes are auto-imported
-  import type { PageData, ActionData } from './$types.js';
-  import { onMount, onDestroy } from 'svelte';
-  import { enhance } from '$app/forms';
-  import { invalidateAll } from '$app/navigation';
+  import { Button } from, '$lib/components/ui/button';
+  import { Input } from, '$lib/components/ui/input';
+  // Svelte, 5 runes are auto-imported
+  import type { PageData, ActionData } from, './$types.js';
+  import { onMount, onDestroy } from, 'svelte';
+  import { enhance } from, '$app/forms';
+  import { invalidateAll } from, '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from "$lib/components/ui/enhanced-bits.svelte";
+   from, "$lib/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-   from "$lib/components/ui/orchestrated.svelte";
+   from, "$lib/components/ui/orchestrated.svelte";
   // Icons for Redis admin
   import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
     RefreshCw, AlertCircle, CheckCircle, Clock, BarChart3,
     Settings, Eye, Key, Server, Cpu, Memory
-  } from 'lucide-svelte';
-  let { data, form }: { data: PageData; form: ActionData } = $props();
-  // Svelte 5 runes for admin interface state
+  } from, 'lucide-svelte';
+  let { data, form }: { data: PageData;, form: ActionData } = $props();
+  // Svelte, 5 runes for admin interface state
   let selectedTab = $state<'overview' | 'keys' | 'performance' | 'tools'>('overview');
   let isAutoRefresh = $state<boolean>(false);
   let refreshInterval = $state<NodeJS.Timeout | null>(null);
@@ -50,9 +50,9 @@
     return value >= threshold ? 'text-green-600' : 'text-yellow-600';
   }
   function getMemoryColor(efficiency: number): string {
-    if (efficiency >= 80) return 'text-green-600';
-    if (efficiency >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (efficiency >= 80) return, 'text-green-600';
+    if (efficiency >= 60) return, 'text-yellow-600';
+    return, 'text-red-600';
   }
   // Auto-refresh functionality
   function toggleAutoRefresh() {
@@ -193,7 +193,7 @@
         class="flex items-center gap-2" px-3 py-2 rounded-md text-sm font-medium transition-colors
                {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
       >
-        {@render tab.icon({ class: "w-4 h-4" })}
+        {@render tab.icon({, class: "w-4 h-4" })}
         {tab.label}
     {/each}
   </div>
@@ -361,7 +361,7 @@
                 required
               />
               <Input;
-                bind:value={newTtl}
+               , bind:value={newTtl}
                 name="ttl"
                 type="number"
                 placeholder="TTL (seconds)"

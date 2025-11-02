@@ -1,10 +1,10 @@
 <script, lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import  useChatActor, chatActions  from "\/stores/chat.svelte";
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import  Input  from "$lib/components/ui/bits/Input.svelte";
-  import  serviceStatus  from "\/stores/chat.svelte";
+  // Svelte, 5 runes are auto-imported
+  import { onMount } from, 'svelte';
+  import  useChatActor, chatActions  from, "\/stores/chat.svelte";
+  import  Button  from, "$lib/components/ui/Button.svelte";
+  import  Input  from, "$lib/components/ui/bits/Input.svelte";
+  import  serviceStatus  from, "\/stores/chat.svelte";
   // Use the XState machine through the store
   const actor = useChatActor();
   const stateStore = actor.state;
@@ -34,7 +34,7 @@
   });
   // Check service status on mount
   $effect(() => {
-    // Add any initialization here
+    // Add: any initialization here
   });
 </script>
 <div class="flex flex-col h-[70vh] max-w-3xl mx-auto, my-8, nes-container">
@@ -138,7 +138,7 @@
     height: 5px;
     border-radius: 50%;
     background-color: currentColor;
-    animation: typing 1s infinite steps(4, end);
+   , animation: typing 1s infinite steps(4, end);
     margin-left: 8px;
     vertical-align: middl;
   }

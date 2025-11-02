@@ -1,5 +1,5 @@
-import type { Document } from '$lib/types';
-import { QdrantClient } from '@qdrant/js-client-rest';
+import type { Document } from, '$lib/types';
+import { QdrantClient } from, '@qdrant/js-client-rest';
 
 /**
  * Real Vector Search Service - No Mocks
@@ -14,12 +14,12 @@ export interface VectorSearchOptions {
   filter?: { [key: string]: any };
 }
 
-export interface VectorSearchResult { id: string;, content: string;
+export interface VectorSearchResult {, id: string;, content: string;
   score: number;
   metadata?: { [key: string]: any };
 }
 
-export interface SearchResponse { success: boolean;, results: VectorSearchResult[];
+export interface SearchResponse {, success: boolean;, results: VectorSearchResult[];
   totalResults: number;
   queryTime: number;
   model: string;
@@ -28,12 +28,12 @@ export interface SearchResponse { success: boolean;, results: VectorSearchResul
 export class RealVectorSearchService {
   private qdrantClient: QdrantClient;
   private ollamaBaseUrl: string;
-  private embeddingModel: string;
+  private, embeddingModel: string;
 
   constructor(options?: { qdrantUrl?: string; ollamaUrl?: string; embeddingModel?: string }) {
-    const qdrantUrl = options?.qdrantUrl || (import.meta as any).env?.QDRANT_URL || 'http://localhost:6333';
-    const ollamaUrl = options?.ollamaUrl || (import.meta as any).env?.OLLAMA_URL || 'http://localhost:11434';
-    this.qdrantClient = new QdrantClient({ url: qdrantUrl });
+    const qdrantUrl = options?.qdrantUrl || (import.meta as: any).env?.QDRANT_URL || 'http://localhost:6333';
+    const ollamaUrl = options?.ollamaUrl || (import.meta, as: any).env?.OLLAMA_URL || 'http://localhost:11434';
+    this.qdrantClient = new QdrantClient({, url: qdrantUrl });
     this.ollamaBaseUrl = ollamaUrl;
     this.embeddingModel = options?.embeddingModel || 'nomic-embed-text';
   }
@@ -57,9 +57,9 @@ export class RealVectorSearchService {
       }
 
       const data = await response.json();
-      const emb = (data as any)?.embedding;
+      const emb = (data as: any)?.embedding;
       if (!Array.isArray(emb)) throw new Error('Invalid embedding response');
-      return emb as number[];
+      return emb as: number[];
     } catch (error: any) {
       console.error('Embedding generation failed:', error);
       throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : `Unknown error` }`);'` }'`
@@ -94,10 +94,10 @@ export class RealVectorSearchService {
 
       // Transform results
       const results: VectorSearchResult[] = searchResults.map(result => ({
-        id: (result as any).id.toString(),
-        content: (result as any).payload?.content || (result as any).payload?.text || '',
-        score: (result as any).score,
-        metadata: includeMetadata ? (result as any).payload : undefined
+        id: (result, as: any).id.toString(),
+        content: (result, as: any).payload?.content || (result as: any).payload?.text || '',
+        score: (result, as: any).score,
+        metadata: includeMetadata ? (result, as: any).payload : undefined
       }));
 
       return {
@@ -123,7 +123,7 @@ export class RealVectorSearchService {
    * Store document with embedding
    */
   async storeDocument(
-    id: string,
+   , id: string,
     content: string,
     metadata: { [key: string]: any } = {},
     collection: string = 'legal_documents'

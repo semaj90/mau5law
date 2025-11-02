@@ -1,4 +1,4 @@
-import type { Case } from '$lib/types';
+import type { Case } from, '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -10,22 +10,22 @@ import type { Case } from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
+ * - Memory, Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
+ * - Fresh, queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from '@sveltejs/kit';
-import { qdrantService } from '$lib/server/services/qdrant-service';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from './$types.js';
+import { json } from, '@sveltejs/kit';
+import { qdrantService } from, '$lib/server/services/qdrant-service';
+import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from, './$types.js';
 interface ScoreFactor { category: string;, weight: number;
-  impact: number; // 0-1 scaled,
+ , impact: number; // 0-1 scaled,
   description: string;
   confidence: number;
 }
-interface CaseScore { id: string;, title: string;
+interface CaseScore {, id: string;, title: string;
   description: string;
   score: number; // 0-100
   priority: 'critical' | 'high' | 'medium' | 'low';
@@ -34,19 +34,19 @@ interface CaseScore { id: string;, title: string;
   lastUpdated: string;
   factors: ScoreFactor[];
   recommendations: string[];
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+ , riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 function derivePriority(score: number): 'critical' | 'high' | 'medium' | 'low' {
-  if (score >= 85) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  return 'low';
+  if (score >= 85) return, 'critical';
+  if (score >= 70) return, 'high';
+  if (score >= 50) return, 'medium';
+  return, 'low';
 }
 function deriveRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
-  if (score >= 85) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  return 'low';
+  if (score >= 85) return, 'critical';
+  if (score >= 70) return, 'high';
+  if (score >= 50) return, 'medium';
+  return, 'low';
 }
 function sampleCase(id: number, title: string, base: number): CaseScore {
   const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));
@@ -55,7 +55,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
   // Enhanced factors matching frontend component expectations
   const factors: ScoreFactor[] = [
     {
-      category: 'Evidence Quality',
+     , category: 'Evidence Quality',
       weight: 0.3,
       impact: Math.random(),
       description: 'Strength and reliability of evidence collection',
@@ -140,7 +140,7 @@ const originalGETHandler: RequestHandler = async () => {
       analysis_confidence: 0.89
     },
     metadata: {
-      response_time_ms: Math.floor(Math.random() * 50) + 25,
+     , response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
       cache_status: 'hit` }'`
   });
@@ -150,7 +150,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const { content = 'N/A', evidenceType = 'evidence', metadata = {} } = await request.json();
     let rawScore: number | string = 50;
     try {
-      const svc: any = qdrantService as unknown;
+      const svc: any = qdrantService, as: unknown;
       const scorer = (
         svc as { calculateAISummaryScore?: (c: string, t: string, m: Record<string, unknown>) => Promise<number> }
       ).calculateAISummaryScore;

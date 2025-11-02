@@ -1,5 +1,5 @@
-import type { LatencyEntry } from '$lib/services/latency-logger';
-import { startLatencyLogger } from '$lib/services/latency-logger';
+import type { LatencyEntry } from, '$lib/services/latency-logger';
+import { startLatencyLogger } from, '$lib/services/latency-logger';
 
 // Simple browser-only batching telemetry client
 export function startSystemMonitorClient(opts?: { batchSize?: number; intervalMs?: number; url?: string }) {

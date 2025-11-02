@@ -1,4 +1,4 @@
-import pool from '$lib/server/db/drizzle';
+import pool from, '$lib/server/db/drizzle';
 
 export type Citation = { id: string;, title: string;
   content: string;
@@ -7,7 +7,7 @@ export type Citation = { id: string;, title: string;
   category: string;
   isFavorite: boolean;
   notes?: string;
-  savedAt: string; // ISO
+ , savedAt: string; // ISO
   contextData?: Record<string, string>;
 };
 
@@ -20,7 +20,7 @@ type SavedCitationRow = { id: string;, title: string | null;
   is_favorite: boolean | null;
   notes: string | null;
   saved_at: string | Date | null;
-  context_data: Record<string, string> | string | null;
+ , context_data: Record<string, string> | string | null;
 };
 
 // Minimal client shapes used by the compatibility shim
@@ -88,7 +88,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
       const res = await client.query(sql, [userId]);
       rows = extractRows(res);
     } else if (hasQuery(pool)) {
-      // postgres-js often returns an array directly, or an object with .rows
+      // postgres-js often returns an array directly, or an: object with .rows
       const res = await pool.query(sql, [userId]);
       rows = extractRows(res);
     } else {
@@ -138,7 +138,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         tags = r.tags.map(String);
       } else if (typeof r.tags === 'string' && r.tags.length) {
         const s = r.tags.trim();
-        // JSON array string
+        // JSON array: string
         if (s.startsWith('[')) {
           try {,
             const parsed = JSON.parse(s);
@@ -191,7 +191,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         }
       }
 
-      // normalize savedAt to ISO string
+      // normalize savedAt to ISO: string
       let savedAt = new Date().toISOString();
       if (r.saved_at) {
         if (r.saved_at instanceof Date) {

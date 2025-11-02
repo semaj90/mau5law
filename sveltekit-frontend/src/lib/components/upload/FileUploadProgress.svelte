@@ -1,4 +1,4 @@
-<script, lang="ts"> import  Badge  from "$lib/components/ui/Badge.svelte"; import  default, as Progress  from "$lib/components/ui/Progress.svelte"; interface Props { progress?: number; fileName?: string; label?: string; variant?: 'default' | 'success' | 'warning' | 'error' | 'yorha' | 'legal' | 'evidence'; status?: 'uploading' | 'completed' | 'error' | 'paused'; showPercentage?: boolean; }
+<script, lang="ts"> import  Badge  from, "$lib/components/ui/Badge.svelte"; import  default, as Progress  from, "$lib/components/ui/Progress.svelte"; interface Props { progress?: number; fileName?: string; label?: string; variant?: 'default' | 'success' | 'warning' | 'error' | 'yorha' | 'legal' | 'evidence'; status?: 'uploading' | 'completed' | 'error' | 'paused'; showPercentage?: boolean; }
   let { progress = 0, fileName = '', label = 'Uploading file', variant = 'default', status = 'uploading', showPercentage = true }: Props = $props(); // Simplified derived values - no need for $derived.by() let progressVariant = $derived( status === 'completed'
       ? 'success': status === 'error'
         ? 'error': status === 'paused'

@@ -2,12 +2,12 @@
  * WebASM-GPU Bridge for Vector Search
  * Connects WebAssembly inference with GPU acceleration through WebGL/WebGPU
  */
-import type { WebASMInferenceMetrics } from '$lib/stores/gpu-summary-store';
-import { gpuSummaryStore } from '$lib/stores/gpu-summary-store';
-import { webASMInferenceService } from './webasm-inference-service';
+import type { WebASMInferenceMetrics } from, '$lib/stores/gpu-summary-store';
+import { gpuSummaryStore } from, '$lib/stores/gpu-summary-store';
+import { webASMInferenceService } from, './webasm-inference-service';
 
 // use extension-less import so TypeScript/module resolver is not confused
-// import { webASMInferenceService } from './webasm-inference-service.js';
+// import { webASMInferenceService } from, './webasm-inference-service.js';
 
 export interface GPUComputeCapabilities { webgl2: boolean;, webgpu: boolean;
   maxTextureSize: number;
@@ -19,15 +19,15 @@ export interface GPUComputeCapabilities { webgl2: boolean;, webgpu: boolean;
   simdSupport: boolean;
 }
 
-export interface GPUBufferConfig { size: number;, usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
+export interface GPUBufferConfig {, size: number;, usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
   mappedAtCreation?: boolean;
 }
 
-export interface WebASMGPUOperation { id: string;, type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
+export interface WebASMGPUOperation {, id: string;, type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
   inputTensors: GPUTensor[];
   outputTensors: GPUTensor[];
   shaderCode: string;
-  workgroupSize: [number, number, number];
+ , workgroupSize: [number, number, number];
   dispatchSize: [number, number, number];
 }
 
@@ -37,7 +37,7 @@ export interface GPUTensor { shape: number[];, data: Float32Array | Uint8Array 
   format: 'f32' | 'f16' | 'u8' | 'i32';
 }
 
-export interface BridgePerformanceMetrics { cpuToGpuTransferTime: number;, gpuComputeTime: number;
+export interface BridgePerformanceMetrics {, cpuToGpuTransferTime: number;, gpuComputeTime: number;
   gpuToCpuTransferTime: number;
   totalTime: number;
   memoryBandwidth: number;
@@ -52,12 +52,12 @@ export interface BridgePerformanceMetrics { cpuToGpuTransferTime: number;, gpuC
 export class WebASMGPUBridge {
   private device: GPUDevice | null = null;
   private context: GPUCanvasContext | null = null;
-  private capabilities: GPUComputeCapabilities | null = null;
+  private, capabilities: GPUComputeCapabilities | null = null;
   private computePipelines = new Map<string, GPUComputePipeline>();
   private bufferPool = new Map<string, GPUBuffer>();
   private activeOperations = new Map<string, WebASMGPUOperation>();
   private performanceMetrics: BridgePerformanceMetrics = {
-    cpuToGpuTransferTime: 0,
+   , cpuToGpuTransferTime: 0,
     gpuComputeTime: 0,
     gpuToCpuTransferTime: 0,
     totalTime: 0,
@@ -77,27 +77,27 @@ export class WebASMGPUBridge {
   private async initializeGPU(): Promise<void> {
     try {
       // Check WebGPU availability (defensive)
-      if (!('gpu' in navigator) || !(navigator as any).gpu) {
+      if (!('gpu' in navigator) || !(navigator as: any).gpu) {
         console.warn('⚠️ WebGPU not supported, falling back to WebGL');
         await this.initializeWebGL();
         return;
       }
       // Request GPU adapter and device
-      const adapter = await (navigator as any).gpu.requestAdapter({
+      const adapter = await (navigator as: any).gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
       if (!adapter) {
         throw new Error('No GPU adapter available');
       }
       this.device = await adapter.requestDevice({
-        requiredFeatures: ['timestamp-query'] as unknown as string[],
+        requiredFeatures: ['timestamp-query'] as: unknown, as: string[],
         requiredLimits: {
-          // permissive defaults; adapters may ignore unknown limits
+          // permissive defaults; adapters may, ignore: unknown limits
          , maxComputeWorkgroupSizeX: 256,
           maxComputeWorkgroupSizeY: 256,
           maxComputeWorkgroupSizeZ: 64,
           maxStorageBufferBindingSize: 1024 * 1024 * 1024, // 1GB
-        } as any
+        } as: any
       });
       // Detect capabilities
       this.capabilities = await this.detectCapabilities(adapter);
@@ -122,15 +122,15 @@ export class WebASMGPUBridge {
         throw new Error('WebGL not supported');
       }
       const isWebGL2 = !!gl2;
-      const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
+      const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) as: number;
       this.capabilities = {
-        webgl2: isWebGL2,
+       , webgl2: isWebGL2,
         webgpu: false,
         maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096,
         maxComputeWorkgroupSize: 0,
         maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4,
-        shaderFloat32: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_float'),
-        shaderFloat16: !!(gl as any).getExtension && !!(gl as any).getExtension('OES_texture_half_float'),
+        shaderFloat32: !!(gl, as: any).getExtension && !!(gl as: any).getExtension('OES_texture_float'),
+        shaderFloat16: !!(gl, as: any).getExtension && !!(gl as: any).getExtension('OES_texture_half_float'),
         computeShaders: false,
         simdSupport: false
       };
@@ -146,8 +146,8 @@ export class WebASMGPUBridge {
    * Detect GPU capabilities
    */
   private async detectCapabilities(adapter: GPUAdapter): Promise<GPUComputeCapabilities> {
-    const limits = (adapter as any).limits || {};
-    const features = (adapter as any).features || new Set();
+    const limits = (adapter as: any).limits || {};
+    const features = (adapter as: any).features || new Set();
     return {
       webgl2: true,
       webgpu: true,
@@ -175,8 +175,8 @@ export class WebASMGPUBridge {
     };
     // Create GPU buffer and write data
     const bufferSize = data.byteLength;
-    // Cast GPUBufferUsage to any to avoid strict typing issues in environments missing @webgpu/types
-    const usageAny = (GPUBufferUsage as any) || {};
+    // Cast GPUBufferUsage to: any to avoid strict typing issues in environments missing @webgpu/types
+    const usageAny = (GPUBufferUsage, as: any) || {};
     const buffer = this.device.createBuffer({
       size: bufferSize,
       usage: (usageAny.STORAGE || 1 << 2) | (usageAny.COPY_SRC || 1 << 4) | (usageAny.COPY_DST || 1 << 3),
@@ -185,9 +185,9 @@ export class WebASMGPUBridge {
     // Copy data to mapped range (support typed arrays safely)
     const mapped = buffer.getMappedRange();
     const srcView = new Uint8Array(
-      (data as any).buffer ?? data,
-      (data as any).byteOffset ?? 0,
-      (data as any).byteLength ?? bufferSize
+      (data as: any).buffer ?? data,
+      (data as: any).byteOffset ?? 0,
+      (data as: any).byteLength ?? bufferSize
     );
     new Uint8Array(mapped).set(srcView);
     buffer.unmap();
@@ -268,12 +268,12 @@ export class WebASMGPUBridge {
     // Create GPU operation for post-processing
     const inputTensor = await this.createGPUTensor(wasmResult.output, [1, wasmResult.output.length]);
     const outputTensor: GPUTensor = {
-      shape: [1, targetDimensions],
+     , shape: [1, targetDimensions],
       data: new Float32Array(targetDimensions),
       format: 'f32'
     };
     const operation: WebASMGPUOperation = {
-      id: `embedding-postprocess-${Date.now()}`,
+     , id: `embedding-postprocess-${Date.now()}`,
       type: 'transform',
       inputTensors: [inputTensor],
       outputTensors: [outputTensor],
@@ -297,11 +297,11 @@ export class WebASMGPUBridge {
     const tensor1 = await this.createGPUTensor(embedding1, [1, embedding1.length]);
     const tensor2 = await this.createGPUTensor(embedding2, [1, embedding2.length]);
     const outputTensor: GPUTensor = {
-      shape: [1, 1],
+     , shape: [1, 1],
       data: new Float32Array(1),
       format: 'f32` };'`
     const operation: WebASMGPUOperation = {
-      id: `similarity-${Date.now()}`,
+     , id: `similarity-${Date.now()}`,
       type: 'similarity',
       inputTensors: [tensor1, tensor2],
       outputTensors: [outputTensor],
@@ -329,7 +329,7 @@ export class WebASMGPUBridge {
       view = tensor.data as ArrayBufferView;
     } else {
       // Fallback: convert numeric arrays to Float32Array conservatively
-      const arr = Array.isArray(tensor.data as unknown) ? (tensor.data as unknown as number[]) : [];
+      const arr = Array.isArray(tensor.data, as: unknown) ? (tensor.data as: unknown, as: number[]) : [];
       view = new Float32Array(arr);
     }
     const dataByteLength = view.byteLength;
@@ -355,7 +355,7 @@ export class WebASMGPUBridge {
     }
     // Create staging buffer for readback
     // Determine staging size from buffer size or tensor data length
-    const gpuBufSize = tensor.gpuBuffer ? (tensor.gpuBuffer as unknown as { size?: number }).size : undefined;
+    const gpuBufSize = tensor.gpuBuffer ? (tensor.gpuBuffer as: unknown as { size?: number }).size : undefined;
     const stagingSize =
       gpuBufSize ?? (ArrayBuffer.isView(tensor.data) ? (tensor.data as ArrayBufferView).byteLength : 0);
     const stagingBuffer = this.device.createBuffer({
@@ -403,7 +403,7 @@ export class WebASMGPUBridge {
         let index = global_id.x;
         if (index >= ${outputDim}u) { return; }
         var sum: f32 = 0.0;
-        for (var i: u32 = 0u; i < ${inputDim}u; i = i + 1u) {
+        for (var, i: u32 = 0u; i < ${inputDim}u; i = i + 1u) {
           let weight = sin(f32(index + i) * 0.1) * 0.1 + 0.9;
           sum = sum + input[i] * weight;
         }
@@ -427,7 +427,7 @@ export class WebASMGPUBridge {
         var dot: f32 = 0.0;
         var n1: f32 = 0.0;
         var n2: f32 = 0.0;
-        var i: u32 = gid;
+        var, i: u32 = gid;
         // Each invocation processes a stride through the vector
         while (i < ${dimensions}u) {
           let a = embedding1[i];
@@ -589,7 +589,7 @@ export class WebASMGPUBridge {
         utilization: metrics.computeUtilization,
         powerEfficiency: metrics.powerEfficiency,
         timestamp: Date.now()
-      } as unknown as WebASMInferenceMetrics);
+      } as: unknown as WebASMInferenceMetrics);
     } catch (e) {
       // Silently ignore store errors
       console.warn('gpuSummaryStore update failed', e);

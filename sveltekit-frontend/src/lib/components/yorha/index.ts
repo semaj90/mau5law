@@ -1,6 +1,6 @@
 // YoRHa Table and Grid Components
-export { default, as YoRHaTable } from './YoRHaTable.svelte.js';
-export { default, as YoRHaDataGrid } from './YoRHaDataGrid.svelte.js';
+export { default, as YoRHaTable } from, './YoRHaTable.svelte.js';
+export { default, as YoRHaDataGrid } from, './YoRHaDataGrid.svelte.js';
 // Table utilities and stores
 export {
   tableManager,
@@ -10,7 +10,7 @@ export {
   legalAITableConfigs,
   type TableState,
   type TableNotification
-} from '$lib/stores/tables';
+} from, '$lib/stores/tables';
 // Table-related types for components
 export interface YoRHaTableColumn { key: string;, title: string;
   sortable?: boolean;
@@ -22,7 +22,7 @@ export interface YoRHaTableRow {
   id: string;
   [key: string]: any;
 }
-export interface YoRHaGridColumn { key: string;, title: string;
+export interface YoRHaGridColumn {, key: string;, title: string;
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -45,11 +45,11 @@ export const statusFormatters = {
   evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
   userRole: (r: string) => r?.toUpperCase() || 'USER'
 };
-// Import stores used in convenience object
-import { tableManager, as importedTableManager, createTableStats as importedCreateTableStats } from '$lib/stores/tables';
-// Export convenience object as named export only
+// Import stores used in convenience: object
+import { tableManager, as importedTableManager, createTableStats as importedCreateTableStats } from, '$lib/stores/tables';
+// Export convenience: object as named export only
 export const YoRHa = {
-  YoRHaTable: () => import('./YoRHaTable.svelte'),
+ , YoRHaTable: () => import('./YoRHaTable.svelte'),
   YoRHaDataGrid: () => import('./YoRHaDataGrid.svelte'),
   tableManager: importedTableManager,
   createTableStats: importedCreateTableStats,

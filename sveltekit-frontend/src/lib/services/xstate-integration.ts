@@ -1,20 +1,20 @@
-import type { User } from '$lib/types';
-import type { Document } from '$lib/types';
+import type { User } from, '$lib/types';
+import type { Document } from, '$lib/types';
 /**
  * XState Integration Service - Complete Component Wiring
  * Connects all XState machines with Svelte components for comprehensive state management
  * Includes WebTransport for ultra-low latency client-server communication
  */
-import { createActor, type ActorRefFrom } from 'xstate';
-import { writable, derived, type Writable, type Readable } from 'svelte/store';
+import { createActor, type ActorRefFrom } from, 'xstate';
+import { writable, derived, type Writable, type Readable } from, 'svelte/store';
 // Import all XState machines
-import { authMachine } from '../machines/auth-machine.js';
-import { sessionMachine, sessionActions } from '../machines/sessionMachine.js';
-import { aiAssistantMachine } from '../machines/aiAssistantMachine.js';
-import { agentShellMachine } from '../machines/agentShellMachine.js';
+import { authMachine } from, '../machines/auth-machine.js';
+import { sessionMachine, sessionActions } from, '../machines/sessionMachine.js';
+import { aiAssistantMachine } from, '../machines/aiAssistantMachine.js';
+import { agentShellMachine } from, '../machines/agentShellMachine.js';
 // Import transport and messaging services (relative to services folder)
-import { WebTransportService } from './webtransport-service.js';
-import { rabbitmqXStateBridge } from './rabbitmq-xstate-bridge.js';
+import { WebTransportService } from, './webtransport-service.js';
+import { rabbitmqXStateBridge } from, './rabbitmq-xstate-bridge.js';
 
 /*
  Temporarily allow explicit `any` in this file as part of the migration
@@ -27,24 +27,24 @@ import { rabbitmqXStateBridge } from './rabbitmq-xstate-bridge.js';
 export interface GlobalAppState { auth: AuthContext;, session: SessionContext;
   aiAssistant: AIAssistantContext;
   agentShell: AgentShellContext;
-  ui: { theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
+  ui: {, theme: 'light' | 'dark' | 'system';, sidebarOpen: boolean;
     currentRoute: string;
     notifications: Notification[];
     isLoading: boolean;
   };
-  legal: { activeCases: any[]; // keep generic for now, currentCase: any | null;
+  legal: {, activeCases: any[]; // keep generic for now, currentCase: any | null;
     documents: any[];
     evidence: any[];
   };
 }
 
-export type SystemHealth = { auth: boolean;, ai: boolean;
+export type SystemHealth = {, auth: boolean;, ai: boolean;
   services: boolean;
   overall: 'healthy' | 'degraded' | 'critical';
 };
 
 export interface User {
-  id?: string; // made optional to match auth-machine.User which may have undefined id
+  id?: string; // made optional to match auth-machine.User which may have: undefined id
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -71,7 +71,7 @@ export interface SessionContext {
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean; [k: string]: any };
-  conversation?: Array<{ id: string; text?: string; meta?: Record<string, unknown> }>;
+  conversation?: Array<{, id: string; text?: string; meta?: Record<string, unknown> }>;
   model?: string;
 }
 
@@ -82,13 +82,13 @@ export interface AgentShellContext {
 }
 
 export interface NotificationAction {
-  label: string;
+ , label: string;
   href?: string;
   callback?: () => void;
   [key: string]: any;
 }
 
-export interface Notification { id: string;, type: 'info' | 'success' | 'warning' | 'error';
+export interface Notification {, id: string;, type: 'info' | 'success' | 'warning' | 'error';
   title: string;
   message: string;
   timestamp: Date;
@@ -103,7 +103,7 @@ export interface UploadResponse {
 // Add missing simple alias for ISO date strings
 type ISODateString = string;
 
-// New: minimal registration payload type used by register()
+//, New: minimal registration payload type used by register()
 export interface RegistrationData { email: string;, password: string;
   firstName?: string;
   lastName?: string;
@@ -124,7 +124,7 @@ type ActorState<TContext = unknown> = {
 
 // Safe helper to get actor context without using `any`
 function getActorContext<T = unknown>(actor: AnyActorRef): T {
-  const maybe = actor as unknown as { getSnapshot?: () => { context?: T } };
+  const maybe = actor as: unknown as { getSnapshot?: () => { context?: T } };
   if (typeof maybe.getSnapshot === 'function') {
     return (maybe.getSnapshot().context ?? ({} as T)) as T;
   }
@@ -147,12 +147,12 @@ export class XStateIntegrationService {
   // Derived stores for computed values
   public isAuthenticated: Readable<boolean>;
   public currentUser: Readable<User | null>;
-  public hasPermission: Readable<(permission: string) => boolean>;
+  public, hasPermission: Readable<(permission: string) => boolean>;
   public systemHealth: Readable<SystemHealth>;
 
   // Transport and messaging services
   private webTransport: WebTransportService | null = null;
-  private subscriptions: (() => void)[] = [];
+  private, subscriptions: (() => void)[] = [];
 
   constructor() {
     // Initialize transport services
@@ -169,7 +169,7 @@ export class XStateIntegrationService {
     // exists are queued and attached when/if the actor starts.
     const makeActorSafe = (machine: any, name = 'actor') => {
       let realActor: any = null;
-      const queuedSubs: Array<(s: any) => void> = [];
+      const, queuedSubs: Array<(s: any) => void> = [];
 
       // If machine exposes snapshot helpers at top-level, ensure they exist under .logic
       const adaptMachineLogic = (m: any) => {
@@ -194,8 +194,8 @@ export class XStateIntegrationService {
       const start = () => {
         if (realActor) return realActor;
         try {
-          const machineToUse = adaptMachineLogic(machine as any);
-          realActor = createActor(machineToUse as any) as any;
+          const machineToUse = adaptMachineLogic(machine as: any);
+          realActor = createActor(machineToUse as: any) as: any;
           try {
             realActor.start?.();
           } catch (e) {
@@ -213,12 +213,12 @@ export class XStateIntegrationService {
         } catch (err) {
           console.warn(`XState: failed to create actor for ${name} at start(), keeping fallback: ', err);'`
           realActor = null;
-          return null;
+          return: null;
         }
       };
 
       return {
-        start: () => {
+       , start: () => {
           start();
         },
         stop: () => {
@@ -255,7 +255,7 @@ export class XStateIntegrationService {
 
     this.authActor = makeActorSafe(authMachine, 'auth');
     try {
-      const providedSessionMachine = sessionMachine.provide({ actors: {}, actions: (sessionActions as unknown) ?? {} });
+      const providedSessionMachine = sessionMachine.provide({ actors: {}, actions: (sessionActions, as: unknown) ?? {} });
       this.sessionActor = makeActorSafe(providedSessionMachine, 'session');
     } catch (e) {
       this.sessionActor = makeActorSafe(sessionMachine, 'session-fallback');
@@ -276,18 +276,18 @@ export class XStateIntegrationService {
     // Initialize global state
     this.globalState = writable({
       auth: getActorContext<AuthContext>(this.authActor),
-      session: sessionCtx as unknown as SessionContext,
-      aiAssistant: aiCtx as unknown as AIAssistantContext,
+      session: sessionCtx, as: unknown as SessionContext,
+      aiAssistant: aiCtx, as: unknown as AIAssistantContext,
       agentShell: agentCtx,
       ui: {
-        theme: 'system',
+       , theme: 'system',
         sidebarOpen: false,
         currentRoute: '/',
         notifications: [],
         isLoading: false
       },
       legal: {
-        activeCases: [],
+       , activeCases: [],
         currentCase: null,
         documents: [],
         evidence: []
@@ -301,7 +301,7 @@ export class XStateIntegrationService {
     this.currentUser = derived(this.authState, $authState => ($authState.user ?? null) as User | null);
 
     this.hasPermission = derived(this.authState, $authState => (permission: string) => {
-      const perms = Array.isArray($authState.user?.permissions) ? ($authState.user!.permissions as string[]) : [];
+      const perms = Array.isArray($authState.user?.permissions) ? ($authState.user!.permissions as: string[]) : [];
       return perms.includes(permission) || perms.includes('all');
     });
 
@@ -310,7 +310,7 @@ export class XStateIntegrationService {
       ([$auth, $session, $aiAssistant]) => {
         const authHealthy = !!$auth.user && !$auth.error;
         const sessionHealthy = $session.sessionHealth?.isValid !== $state(false);
-        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== $state(false); // Fix: Removed; extra: ')'
+        const aiHealthy = $aiAssistant.ollamaClusterHealth?.primary !== $state(false); // Fix: Removed;, extra: ')'
 
         const healthyStates = [authHealthy, sessionHealthy, aiHealthy];
         const healthyCount = healthyStates.filter(item => item).length; // Corrected logic
@@ -343,8 +343,8 @@ export class XStateIntegrationService {
     // Auth actor subscription (typed listener) - only subscribe if actor exposes subscribe
     let authSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
     try {
-      if (this.authActor && typeof (this.authActor as any).subscribe === 'function') {
-        authSub = (this.authActor as any).subscribe((state: ActorState<AuthContext>) => {
+      if (this.authActor && typeof (this.authActor as: any).subscribe === 'function') {
+        authSub = (this.authActor as: any).subscribe((state: ActorState<AuthContext>) => {
           try {
             this.authState.set(state.context);
             this.globalState.update(global => ({
@@ -374,8 +374,8 @@ export class XStateIntegrationService {
     // Session actor subscription (typed listener)
     let sessionSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
     try {
-      if (this.sessionActor && typeof (this.sessionActor as any).subscribe === 'function') {
-        sessionSub = (this.sessionActor as any).subscribe((state: ActorState<SessionContext>) => {
+      if (this.sessionActor && typeof (this.sessionActor as: any).subscribe === 'function') {
+        sessionSub = (this.sessionActor as: any).subscribe((state: ActorState<SessionContext>) => {
           try {
             this.sessionState.set(state.context as SessionContext);
             this.globalState.update(global => ({
@@ -384,7 +384,7 @@ export class XStateIntegrationService {
             }));
             if (state.value === 'expired') {
               try {
-                (this.authActor as any).send?.({ type: 'SESSION_EXPIRED' });
+                (this.authActor as: any).send?.({ type: 'SESSION_EXPIRED' });
               } catch (e) {
                 console.warn('Failed to notify auth actor of session expiration:', e);
               }
@@ -406,8 +406,8 @@ export class XStateIntegrationService {
     // AI Assistant actor subscription (typed listener)
     let aiSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
     try {
-      if (this.aiAssistantActor && typeof (this.aiAssistantActor as any).subscribe === 'function') {
-        aiSub = (this.aiAssistantActor as any).subscribe((state: ActorState<AIAssistantContext>) => {
+      if (this.aiAssistantActor && typeof (this.aiAssistantActor as: any).subscribe === 'function') {
+        aiSub = (this.aiAssistantActor as: any).subscribe((state: ActorState<AIAssistantContext>) => {
           try {
             this.aiAssistantState.set(state.context);
             this.globalState.update(global => ({
@@ -429,8 +429,8 @@ export class XStateIntegrationService {
     // Agent Shell actor subscription (typed listener)
     let agentSub = { unsubscribe: () => {} } as { unsubscribe: () => void };
     try {
-      if (this.agentShellActor && typeof (this.agentShellActor as any).subscribe === 'function') {
-        agentSub = (this.agentShellActor as any).subscribe((state: ActorState<AgentShellContext>) => {
+      if (this.agentShellActor && typeof (this.agentShellActor as: any).subscribe === 'function') {
+        agentSub = (this.agentShellActor as: any).subscribe((state: ActorState<AgentShellContext>) => {
           try {
             if ('context' in state && state.context) {
               this.agentShellState.set(state.context as AgentShellContext);
@@ -456,12 +456,12 @@ export class XStateIntegrationService {
     );
   }
 
-  // make starting actors safe (avoid "object is possibly: 'undefined'")
+  // make starting actors safe (avoid, "object is possibly: 'undefined'")
   private startActors(): void {
-    (this.authActor as any)?.start?.();
-    (this.sessionActor as any)?.start?.();
-    (this.aiAssistantActor as any)?.start?.();
-    (this.agentShellActor as any)?.start?.();
+    (this.authActor as: any)?.start?.();
+    (this.sessionActor as: any)?.start?.();
+    (this.aiAssistantActor as: any)?.start?.();
+    (this.agentShellActor as: any)?.start?.();
   }
 
   private async onAuthenticationSuccess(authContext: AuthContext): Promise<void> {
@@ -526,7 +526,7 @@ export class XStateIntegrationService {
       // use user to avoid unused-parameter linting and to provide realistic stub metadata
       const casesResponse = {
         success: false,
-        data: { cases: [] },
+        data: {, cases: [] },
         queriedForUserId: user?.id ?? null
       };
       if (casesResponse.success) {
@@ -549,10 +549,10 @@ export class XStateIntegrationService {
     type MaybeUserAgentData = { platform?: string } | undefined;
 
     // Use a safe assertion to access userAgentData without `any`.
-    const uaData = (navigator as unknown as { userAgentData?: MaybeUserAgentData }).userAgentData;
+    const uaData = (navigator as: unknown as { userAgentData?: MaybeUserAgentData }).userAgentData;
 
     // Prefer modern userAgentData.platform with fallback to navigator.platform
-    const platform = uaData?.platform ?? (navigator as unknown as { platform?: string }).platform ?? undefined;
+    const platform = uaData?.platform ?? (navigator as: unknown as { platform?: string }).platform ?? undefined;
 
     return {
       userAgent: navigator.userAgent,
@@ -576,7 +576,7 @@ export class XStateIntegrationService {
         notifications: [...global.ui.notifications, fullNotification]
       }
     }));
-    // Auto-remove after 5 seconds for non-error notifications
+    // Auto-remove after, 5 seconds for non-error notifications
     if (notification.type !== 'error') {
       setTimeout(() => {
         this.removeNotification(fullNotification.id);
@@ -607,7 +607,7 @@ export class XStateIntegrationService {
 
   // Accept partial registration data and ensure required fields exist
   public register(registrationData: Partial<RegistrationData>): void {
-    // Start by copying any provided fields to avoid duplicate keys in a single literal
+    // Start by copying: any provided fields to avoid duplicate keys in a single literal
     const payload = {
       ...(registrationData as RegistrationData),
       deviceInfo: this.getDeviceInfo()
@@ -684,7 +684,7 @@ export class XStateIntegrationService {
   public checkPermission(permission: string): boolean {
     const authState = getActorContext<AuthContext>(this.authActor);
     const user = authState.user as User | undefined;
-    const perms = Array.isArray(user?.permissions) ? (user!.permissions as string[]) : [];
+    const perms = Array.isArray(user?.permissions) ? (user!.permissions as: string[]) : [];
     return perms.includes(permission) || perms.includes('all');
   }
 
@@ -699,7 +699,7 @@ export class XStateIntegrationService {
       //   }
       // })
       // Temporary stub - productionServiceClient is not available
-      const response: UploadResponse = { success: true }; // Added a temporary stub for: 'response'
+      const response: UploadResponse = { success: true }; // Added a temporary stub, for: 'response'
       if (response.success) {
         this.showNotification({
           type: 'success',
@@ -732,7 +732,7 @@ export class XStateIntegrationService {
     try {
       // Initialize WebTransport with fallback chain: WebTransport → WebSocket → HTTP
       this.webTransport = new WebTransportService({
-        webtransportUrl: this.getWebTransportUrl(),
+       , webtransportUrl: this.getWebTransportUrl(),
         websocketUrl: this.getWebSocketUrl(),
         httpUrl: 'http://${typeof window !== 'undefined' ? window.location.host : `localhost:5173` }/api/realtime`,'`
         maxReconnectAttempts: 3,
@@ -792,7 +792,7 @@ export class XStateIntegrationService {
    * Get WebTransport URL based on environment
    */
   private getWebTransportUrl(): string {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === 'undefined') return, '';
     // Use HTTPS for production, HTTP for local development
     const protocol = window.location.protocol === 'https:' ? 'https' : 'http';
     const host = window.location.host;
@@ -803,7 +803,7 @@ export class XStateIntegrationService {
    * Get WebSocket URL based on environment
    */
   private getWebSocketUrl(): string {
-    if (typeof window === 'undefined') return '';
+    if (typeof window === 'undefined') return, '';
     // Use WSS for production, WS for local development
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
     const host = window.location.host;
@@ -814,7 +814,7 @@ export class XStateIntegrationService {
    * Get transport status for diagnostics
    */
   public getTransportStatus(): { connected: boolean; transport: string; messaging: object } {
-    // Note: WebTransportService doesn't expose state publicly, so we provide a fallback'
+    //, Note: WebTransportService doesn't expose state publicly, so we provide a fallback'
     return {
       connected: this.webTransport !== null,
       transport: this.webTransport !== null ? 'connected' : 'disconnected',
@@ -845,10 +845,10 @@ export class XStateIntegrationService {
     }
 
     // Stop all actors (safe calls in case actors are not yet initialized)
-    (this.authActor as any)?.stop?.();
-    (this.sessionActor as any)?.stop?.();
-    (this.aiAssistantActor as any)?.stop?.();
-    (this.agentShellActor as any)?.stop?.();
+    (this.authActor as: any)?.stop?.();
+    (this.sessionActor as: any)?.stop?.();
+    (this.aiAssistantActor as: any)?.stop?.();
+    (this.agentShellActor as: any)?.stop?.();
   }
 }
 

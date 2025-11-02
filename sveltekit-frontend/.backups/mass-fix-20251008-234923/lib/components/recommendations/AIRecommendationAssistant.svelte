@@ -278,7 +278,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     </div>
     <!-- AI Thinking Process -->
     {#if isThinking}
-      <div class="ai-thinking" transition:slide={{ duration: 300 }}>
+      <div class="ai-thinking" use:slide={{ duration: 300 }}>
         <div class="thinking-header">
           <div class="thinking-icon">🧠</div>
           <h3>Gemma3:legal-latest Processing</h3>
@@ -287,7 +287,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <div class="thinking-message">{thinkingMessage}</div>
         <div class="processing-steps">
           {#each processingSteps as step, i}
-            <div class="processing-step" ; transition:slide={{ duration: 200, delay: i * 100 }}>
+            <div class="processing-step" ; use:slide={{ duration: 200, delay: i * 100 }}>
               ✓ {step}
             </div>
           {/each}
@@ -296,7 +296,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     {/if}
     <!-- AI Analysis Results -->
     {#if !isThinking && recommendations.length > 0}
-      <div class="ai-results" transition:fade={{ duration: 400 }}>
+      <div class="ai-results" use:fade={{ duration: 400 }}>
         <!-- AI Reasoning -->
         <div class="ai-reasoning">
           <div class="reasoning-header">
@@ -320,7 +320,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               <div
                 class="recommendation-card"
                 ;
-                transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
+                use:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
               >
                 <div class="rec-header">
                   <span class="rec-icon">{getTypeIcon(recommendation.type)}</span>
@@ -377,7 +377,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>⚡ Suggested Actions ({suggestedActions.length})</h4>
             <div class="actions-list">
               {#each suggestedActions as action, i (action.action)}
-                <div class="action-card" ; transition:slide={{ duration: 200, delay: i * 50 }}>
+                <div class="action-card" ; use:slide={{ duration: 200, delay: i * 50 }}>
                   <div class="action-header">
                     <div class="action-info">
                       <h5 class="action-title">{action.action}</h5>

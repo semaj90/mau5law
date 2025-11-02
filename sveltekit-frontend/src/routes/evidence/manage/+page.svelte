@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
+  import EvidenceFilesManager from, '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 
 <section class="container mx-auto, py-8, space-y-6">

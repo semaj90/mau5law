@@ -1,8 +1,8 @@
-import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { evidence } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { json, error } from, '@sveltejs/kit';
+import type { RequestHandler } from, './$types';
+import { db } from, '$lib/server/db';
+import { evidence } from, '$lib/server/db/schema';
+import { eq } from, 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   // Only authenticated users can claim
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   // Reassign evidence rows that were uploaded by the anonId to the authenticated user
   const updated = await db
     .update(evidence)
-    .set({ uploadedBy: userId } as any)
+    .set({ uploadedBy: userId }, as: any)
     .where(eq(evidence.uploadedBy, anonId))
     .returning();
 
@@ -30,15 +30,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (updated && updated.length) {
       for (const row of updated) {
         try {
-          const metaRaw = (row as any).metadata;
+          const metaRaw = (row as: any).metadata;
           const meta = typeof metaRaw === 'string' ? JSON.parse(metaRaw || '{}') : metaRaw || {};
           delete meta.anonExpiry;
           delete meta.anonId;
           meta.claimedBy = userId;
           await db
             .update(evidence)
-            .set({ metadata: JSON.stringify(meta) } as any)
-            .where(eq(evidence.id, (row as any).id));
+            .set({ metadata: JSON.stringify(meta) } as: any)
+            .where(eq(evidence.id, (row as: any).id));
         } catch {
           /* non-fatal */
         }

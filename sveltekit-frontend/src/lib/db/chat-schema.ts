@@ -1,6 +1,6 @@
 // Database schema for chat functionality with pgvector support
-import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } from, 'drizzle-orm/pg-core';
+import { sql } from, 'drizzle-orm';
 export const chatSessions = pgTable('chat_sessions', {
   id: uuid('id').primaryKey(),
   model: text('model').notNull().default('gemma3-legal'),
@@ -18,8 +18,8 @@ export const chatMessages = pgTable('chat_messages', {
   content: text('content').notNull(),
   role: text('role').notNull(), // 'user' | 'assistant' | 'system'
   timestamp: timestamp('timestamp').defaultNow().notNull(),
-  embedding: text('embedding'), // JSON string of embedding vector for pgvector
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  embedding: text('embedding'), // JSON: string of embedding vector for pgvector
+ , metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
   model: text('model'),
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -35,8 +35,8 @@ export const legalDocuments = pgTable('legal_documents', {
   minioPath: text('minio_path'), // Path in MinIO bucket
   content: text('content'), // Full text content for search
   summary: text('summary'), // AI-generated summary
-  embedding: text('embedding'), // JSON string of embedding vector
-  metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
+  embedding: text('embedding'), // JSON: string of embedding vector
+ , metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
@@ -60,8 +60,8 @@ export const ragQueries = pgTable('rag_queries', {
   id: uuid('id').primaryKey().defaultRandom(),
   sessionId: uuid('session_id').references(() => chatSessions.id),
   query: text('query').notNull(),
-  queryEmbedding: text('query_embedding'), // JSON string of query embedding
-  results: jsonb('results'),
+  queryEmbedding: text('query_embedding'), // JSON: string of query embedding
+ , results: jsonb('results'),
   metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at').defaultNow().notNull()
 });
