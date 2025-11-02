@@ -30,11 +30,11 @@ export type AITaskPayload = AnalysisData | ProcessingData | SearchData;
 // Union type for the AI task types
 export type AITaskType = 'analysis' | 'processing' | 'search';
 // Generic AITask interface
-export interface AITask<T extends, AITaskPayload = AITaskPayload> { id: string;, type: AITaskType;
+export interface AITask<T, extends, AITaskPayload = AITaskPayload> { id: string;, type: AITaskType;
   data: T;
   timestamp: number;
 }
-export const createAITask = <T extends, AITaskPayload>(type: AITaskType, data: T): AITask<T> => ({
+export const createAITask = <T, extends, AITaskPayload>(type: AITaskType, data: T): AITask<T> => ({
   id: `${type}_${Date.now()}`,
   type,
   data,

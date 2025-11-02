@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import Svelte5Examples from '$lib/components/examples/Svelte5Examples.svelte';
-  import { useMediaQuery } from '$lib/utils/media-query.svelte';
+  import  useMediaQuery  from "$lib/utils/media-query.svelte";
   // Example of custom media query
   const isWideScreen = useMediaQuery('(min-width: 1400px)');
 </script>

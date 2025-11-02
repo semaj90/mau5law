@@ -22,7 +22,7 @@
 </script>
 <button, class="yorha-button {buttonVariants({ variant, size })} {className}" disabled={isDisabled} {...props}>
   {#if loading}
-    <div class="i-lucide-loader-2 animate-spin mr-2 h-4, w-4" aria-hidden="true">{/if}
+    <div class="i-lucide-loader-2 animate-spin mr-2, h-4, w-4" aria-hidden="true">{/if}
   <slot />
 </button>
 <style>

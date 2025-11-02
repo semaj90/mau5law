@@ -195,7 +195,7 @@
                   >
                     <LogOut class="w-4 h-4" />
                     {revoking === session.id ? 'Revoking...' : 'Revoke'}
-                  </Button.Root>
+                  </Button>
                 {/if}
               </div>
             </div>
@@ -212,7 +212,7 @@
                 <p class="text-sm text-yellow-700 mb-4">
                   Sign out from all other devices for enhanced security.
                 </p>
-                <Button.Root
+                <Button
                   onclick={revokeAllOtherSessions}
                   class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
                 >

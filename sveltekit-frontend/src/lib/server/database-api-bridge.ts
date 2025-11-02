@@ -545,8 +545,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
         cached: false,
         source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Case creation failed'
-    };
+      error: error instanceof Error ? error.message : 'Case creation failed` };'`
   }
 }
 export async function apiSearchDocuments(searchQuery: any, options: any = {}): Promise<SSRResponse<LegalDocument[]>> {

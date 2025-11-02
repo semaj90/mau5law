@@ -111,7 +111,7 @@ try {
     vectorSearch = async () => ({ results: [] });
   }
 } catch (error: any) {
-  console.warn('Vector search not available: `, error);'`
+  console.warn('Vector search not available: ', error);'`'`
   vectorSearch = async () => ({ results: [] });
 }
 
@@ -174,8 +174,7 @@ try {
 } catch (error: any) {
   console.warn('AI service not available:', error);
   aiService = {
-    generateResponse: async () => 'AI service not available` };'`
-}
+    generateResponse: async () => 'AI service not available' };'` }'`
 
 try {
   // import as unknown and inspect at runtime to avoid TS module-shape errors
@@ -611,7 +610,7 @@ Instructions:
       data: response
     });
   } catch (error: any) {
-    console.error('Error processing request: `, error);'`
+    console.error('Error processing request: ', error);'`'`
     return json(
       {
         success: false,
@@ -625,8 +624,7 @@ Instructions:
 // no LLM / cloud service is available. Keeps types and is safe for tests.
 function generateFallbackResponse(query: string, sources: SearchResultItem[]): string {
   if (!sources || sources.length === 0) {
-    return 'I couldn't locate any documents relevant to your question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;`
-  }
+    return 'I couldn't locate any documents relevant to your question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;` }
 
   // Use top 3 sources to build a concise, human-readable template.
   const top = sources.slice(0, 3);

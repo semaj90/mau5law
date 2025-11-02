@@ -182,7 +182,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
 // Vector embeddings table
 export const documentEmbeddings = pgTable('document_embeddings', {
   id: uuid('id').defaultRandom().primaryKey(),
-  documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade` }),'`
+  documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),'`'`
   chunkIndex: integer('chunk_index').notNull(),
   chunkText: text('chunk_text').notNull(),
   embedding: vector('embedding'),
@@ -197,7 +197,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
 // Summarization jobs queue
 export const summarizationJobs = pgTable('summarization_jobs', {
   id: uuid('id').defaultRandom().primaryKey(),
-  documentId: uuid('document_id').references(() => aiSummarizedDocuments.id, { onDelete: 'cascade` }),'`
+  documentId: uuid('document_id').references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),'`'`
   config: jsonb('config').default(sql`'{'`
     "style": "executive",
     "max_length": 500,

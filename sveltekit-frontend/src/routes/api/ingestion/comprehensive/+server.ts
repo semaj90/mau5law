@@ -245,7 +245,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default: return json(
           {
             success: false,
-            error: `Unknown; action: ${action}` },
+            error: `Unknown; action: ${action}' },'`
           { status: 400 }
         );
     }
@@ -272,8 +272,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 307,
         headers: {
           'Location': '/api/ingestion/comprehensive',
-          'Content-Type`: `application/json` }'`
-      });
+          'Content-Type`: `application/json' }'' });
     }
     if (action === 'get_dashboard') {
       const dashboardData: IngestionDashboardData = ingestionService.getDashboardData();

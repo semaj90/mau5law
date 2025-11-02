@@ -202,8 +202,7 @@ function estimatePerformance(deviceType: string) {
       tokensPerSecond: 50, // Increased tokens/sec for WASM with SIMD
       embeddingTimeMs: 150, // Reduced embedding time for WASM with SIMD
       memoryUsageMB: 1024,
-      powerEfficiency: 'low'
-    },
+      powerEfficiency: 'low` },'`
     none: {
       tokensPerSecond: 0,
       embeddingTimeMs: 0,

@@ -87,7 +87,7 @@ const config: DatabaseConfig = { runtime: {, url: process.env.DATABASE_URL || '
         apiKey: process.env.QDRANT_API_KEY
       }
     : undefined,
-  environment: isDev ? 'development' : `production' };'`
+  environment: isDev ? 'development' : `production` };'`'`
 // ============================================================================
 // SINGLETON CONNECTION MANAGEMENT
 // ============================================================================
@@ -325,11 +325,9 @@ class DatabaseManager {
             id: String(row.id),
             score: Number(row.similarity) ?? 0,
             document: row as DocumentMetadata,
-            source: `postgresql' });'`
-        }
+            source: 'postgresql' });'' }
       } catch (error) {
-        console.error('PostgreSQL vector search error:', error);'
-      }
+        console.error('PostgreSQL vector search error:', error);` }`'
     }
     // Qdrant vector search (best-effort)
     if (useQdrant) {
@@ -375,13 +373,11 @@ class DatabaseManager {
                   id: String(r.id),
                   score: r.score ?? 0,
                   document: r.payload ?? null,
-                  source: `qdrant' } as SearchResultEntry);'`
-              }
+                  source: 'qdrant' } as SearchResultEntry);'' }
             }
           }
         } catch (error) {
-          console.error('Qdrant vector search error:', error);'
-        }
+          console.error('Qdrant vector search error:', error);` }`'
       }
     }
     // Deduplicate by id and sort by score desc

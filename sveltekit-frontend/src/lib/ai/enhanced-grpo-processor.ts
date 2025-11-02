@@ -149,7 +149,7 @@ Extract and format as JSON:;
 }`;`
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: 'gemma3-legal:latest',
           prompt: structurePrompt,
@@ -182,7 +182,7 @@ Extract and format as JSON:;
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: 'nomic-embed-text',
           prompt: text.slice(0, 2048), // Limit length
@@ -232,8 +232,7 @@ Extract and format as JSON:;
           contextRelevance: (row.confidence as number) || 0.8,
           temporalFactor,
           finalScore: similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence as number) || 0.8) * 0.2,
-          snippet: (row.response as string).slice(0, 200) + '...` });'`
-      }
+          snippet: (row.response as string).slice(0, 200) + '...' });'' }
       return recommendations.sort((a, b) => b.finalScore - a.finalScore);
     } catch (error) {
       console.warn('Failed to get recommendation context:', error);
@@ -299,7 +298,7 @@ Extract and format as JSON:;
    */
   private static async saveGRPOAnalysis(data: {, query: string;, response: string;
     thinkingContent: string;
-    structuredReasoning: GRPOAnalysis['structuredReasoning'];
+   , structuredReasoning: GRPOAnalysis['structuredReasoning'];
    , queryEmbedding: number[];
    , responseEmbedding: number[];
    , confidence: number;
@@ -364,15 +363,14 @@ Extract and format as JSON:;
         relevance: feedback.relevance,
         userId: feedback.userId,
         userRole: feedback.userRole,
-        feedbackType: `rating` });
+        feedbackType: `rating' });'`
       // Update the response's usage metrics'
       await db.execute(sql`
         UPDATE ai_responses
         SET usage_count = COALESCE(usage_count, 0) + 1,
             success_metric = ${feedback.userRating / 5.0}
         WHERE id = ${responseId}
-      `);`
-    } catch (error) {
+      `);' } catch (error) {'`
       console.error('Failed to record feedback:', error);
     }
   }
@@ -470,8 +468,7 @@ export const GRPOUtils = {
       contextRelevance: row.confidence || 0.8,
       temporalFactor: EnhancedGRPOProcessor['calculateTemporalScore'](new Date(row.created_at), 30),
       finalScore: row.user_preference_score || 0.6,
-      snippet: row.response.slice(0, 200) + '...` }));'`
-  },
+      snippet: row.response.slice(0, 200) + '...' }));'' },
   /**
    * Get trending legal topics based on recent queries
    */

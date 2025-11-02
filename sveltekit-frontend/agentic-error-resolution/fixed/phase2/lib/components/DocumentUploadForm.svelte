@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import { fade, slide } from 'svelte/transition';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
@@ -199,7 +199,7 @@
       <p>or</p>
       <Button onclick={() => fileInput?.click()} variant="outline" class="browse-button">
         Browse files
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <div class="file-info">
@@ -213,7 +213,7 @@
         <div class="file-actions">
           <Button onclick={() => removeFile(index)} variant="text" class="remove-button" aria-label="Remove file">
             <i class="i-lucide-trash" aria-hidden="true"></i>
-          </Button.Root>
+          </Button>
         </div>
       </div>
     {/each}
@@ -228,10 +228,10 @@
       {/each}
     {/if}
   <div class="actions">
-    <Button.Root onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
+    <Button onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
       Save Draft
     </Button>
-    <Button.Root onclick={handleNext} variant="primary" class="next-button">
+    <Button onclick={handleNext} variant="primary" class="next-button">
       Continue to Next Step
     </Button>
   </div>

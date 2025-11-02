@@ -8,10 +8,10 @@
   // constructors instead of namespace/instance objects.
   // @ts-nocheck
   import { onDestroy, tick } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // If your UI lib exposes a dedicated Input component file, prefer importing it
   // directly. Keep this change minimal for now.
-  import { Input } from '$lib/components/ui/enhanced-bits.svelte'; // import as default to match typical Bits-UI exports
+  import  Input  from "$lib/components/ui/enhanced-bits.svelte"; // import as default to match typical Bits-UI exports
   // Only import icons used in the template
   import { Bot, Send, Cpu, Zap, MessageSquare, Mic, MicOff, Download, Square, Activity } from 'lucide-svelte';
   // some service modules export named functions; import all to avoid default-export issues
@@ -511,14 +511,14 @@
               >Go µS</span
             >
           </div>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
             <Download class="w-4 h-4 mr-1" />
             Export
-          </Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
             <Square class="w-4 h-4 mr-1" />
             Clear
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </div>
@@ -630,7 +630,7 @@
             class="pr-12"
           />
           {#if 'mediaDevices' in navigator}
-            <Button.Root
+            <Button
               variant="ghost"
               size="sm"
               onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
@@ -642,43 +642,43 @@
               {:else}
                 <Mic class="w-4 h-4" />
               {/if}
-            </Button.Root>
+            </Button>
           {/if}
         </div>
-        <Button.Root class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
+        <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
           <Send class="w-4 h-4 mr-1" />
           Send
-        </Button.Root>
+        </Button>
       </div>
       <!-- Quick Actions -->
       <div class="flex gap-2 mt-3 flex-wrap">
-        <Button.Root
+        <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
           onclick={() => (currentMessage = 'Analyze the evidence in this case')}
         >
           🔍 Analyze Evidence
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
           onclick={() => (currentMessage = 'What are the key legal issues?')}
         >
           ⚖️ Legal Issues
-        </Button.Root>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
           📋 Case Summary
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
           onclick={() => (currentMessage = 'Find relevant precedents')}
         >
           📚 Find Precedents
-        </Button.Root>
+        </Button>
       </div>
     </div>
   </div>

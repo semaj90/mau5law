@@ -326,7 +326,7 @@ class Context7MulticoreService extends EventEmitter {
         ((await import('node-fetch')).default as unknown as FetchFn);
       const res = await fetchFn(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, taskId: _task.id, payload: _task.data }),
         signal: controller.signal
       });
@@ -379,7 +379,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { text },
       priority,
       createdAt: new Date(),
-      status: 'queued` };'`
+      status: 'queued' };'`'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     this.emit('task_queued', { task });
@@ -397,7 +397,7 @@ class Context7MulticoreService extends EventEmitter {
       data: { jsonString, schema },
       priority,
       createdAt: new Date(),
-      status: `queued` };
+      status: `queued' };'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;
@@ -410,7 +410,7 @@ class Context7MulticoreService extends EventEmitter {
       data: tensorData,
       priority,
       createdAt: new Date(),
-      status: `queued` };
+      status: `queued' };'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;

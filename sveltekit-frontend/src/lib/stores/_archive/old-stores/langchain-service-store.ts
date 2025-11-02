@@ -201,8 +201,7 @@ class LangChainServiceLogic {
     } catch (error) {
       documentProcessingState.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message : `Failed to delete document' }));'`
-    }
+        error: error instanceof Error ? error.message : 'Failed to delete document' }));'` }'`
   }
   async sendChatMessage(message: string): Promise<void> {
     chatState.update(state => ({
@@ -223,8 +222,7 @@ class LangChainServiceLogic {
       chatState.update(state => ({
         ...state,
         isTyping: false,
-        error: error instanceof Error ? error.message : `Chat message failed' }));'`
-    }
+        error: error instanceof Error ? error.message : 'Chat message failed' }));'` }'`
   }
   clearDocumentProcessing(): void {
     documentProcessingState.set({

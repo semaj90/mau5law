@@ -118,7 +118,7 @@ export class ShaderCacheManager {
           layout: 'auto',
           vertex: {
            , module: shaderModule,
-            entryPoint: config.type === 'vertex' ? config.entryPoint : `main' },'`
+            entryPoint: config.type === 'vertex' ? config.entryPoint : `main` },'`'`
           fragment:
             config.type === 'fragment'
               ? {
@@ -128,8 +128,7 @@ export class ShaderCacheManager {
                 }
               : undefined,
           primitive: {
-           , topology: `triangle-list' }'`
-        });
+           , topology: 'triangle-list' }'` });'`
         bindGroupLayout = (pipeline as GPURenderPipeline).getBindGroupLayout(0);
       }
       const compileTime = performance.now() - startTime;
@@ -333,13 +332,12 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Use existing embedding service
       const response = await fetch('/api/ocr/langextract', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgpu', ...metadata.tags],
-          type: `shader' })'`
-      });
+          type: 'shader' })'` });'`
       if (response.ok) {
         const data = await response.json();
         return data.embedding || data.tensor || [];
@@ -423,7 +421,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 averageExecutionTime: 0,
                 description: query.text,
                 tags: query.tags || [],
-                operation: `query' });'`
+                operation: `query` });'`'`
               embeddingSimilarity = this.calculateCosineSimilarity(shaderData.embedding, queryEmbedding);
               relevanceScore += embeddingSimilarity * 0.7;
             } catch (error) {

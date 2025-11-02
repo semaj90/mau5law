@@ -25,22 +25,22 @@
     if (show) { playSound('open'); if (autoClose > 0) { closeTimer = setTimeout(handleClose, autoClose); }
     } document.addEventListener('keydown', handleKeydown); return () => { document.removeEventListener('keydown', handleKeydown); if (closeTimer) clearTimeout(closeTimer); }
   }); $effect(() => { if (show && sound) { playSound('open'); if (autoClose > 0) { closeTimer = setTimeout(handleClose, autoClose); }
-    } }); </script> {#if show} <!-- Backdrop --> <div class="modal-backdrop"
+    } }); </script> {#if show} <!-- Backdrop --> <div, class="modal-backdrop"
     style:background-color="rgba(0, 0, 0, 0.8)"
     transitionfade={{ duration 300 }} role="button"
     tabindex="0"
     onclick={ handleClose } aria-label="Close modal"
-  ></div> <!-- Modal, Container --> <div bind:this={ modalElement } class="retro-modal { consoleStyle }"
+  ></div> <!-- Modal, Container --> <div, bind:this={ modalElement } class="retro-modal { consoleStyle }"
     style:background={currentTheme.colors.background} style:border-color={currentTheme.colors.border} style:box-shadow={currentTheme.shadow} style:font-family={currentTheme.fontFamily} transitionfly={{ y: -50, duration 400, easing: quintOut }} role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
-  > <!-- Header --> <div, class="modal-header" style:border-bottom-color={currentTheme.colors.border}> <h2, id="modal-title" class="modal-title" style:color={currentTheme.colors.text}> { title } </h2> <button class="close-button"
+  > <!-- Header --> <div, class="modal-header" style:border-bottom-color={currentTheme.colors.border}> <h2, id="modal-title" class="modal-title" style:color={currentTheme.colors.text}> { title } </h2> <button, class="close-button"
         style:color={currentTheme.colors.accent} onclick={ handleClose } aria-label="Close modal"
       > ×
-      </button> </div> <!-- Content --> <div, class="modal-content"> {#if recommendations.length === 0} <div, class="no-recommendations" style:color={currentTheme.colors.text}> <span, class="icon">🤖</span> <p>No recommendations available at this time.</p> </div> {:else} <div, class="recommendations-list"> {#each recommendations as rec, index (rec.id)} <div class="recommendation-item"
+      </button> </div> <!-- Content --> <div, class="modal-content"> {#if recommendations.length === 0} <div, class="no-recommendations" style:color={currentTheme.colors.text}> <span, class="icon">🤖</span> <p>No recommendations available at this time.</p> </div> {:else} <div, class="recommendations-list"> {#each recommendations as rec, index (rec.id)} <div, class="recommendation-item"
               class:selected={index === selectedIndex} style:border-color={index === selectedIndex ? currentTheme.colors.selected: 'transparent'} style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20`: 'transparent'} role="button"
               onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }} tabindex={index === selectedIndex ? 0: -1} transitionscale={{ duration 200, delay: index * 50 }} >
-              <!-- Priority, Indicator --> <div class="priority-indicator {rec.priority}"
+              <!-- Priority, Indicator --> <div, class="priority-indicator {rec.priority}"
                 style:color={rec.priority === 'critical' ? '#EF4444': currentTheme.colors.accent} >
                 {getPriorityIcon(rec.priority)} </div> <!-- Content --> <div, class="rec-content"> <div, class="rec-header"> <span, class="rec-type" style:color={getTypeColor(rec.type)}> [{rec.type.toUpperCase()}] </span> <span, class="rec-confidence" style:color={currentTheme.colors.text}> {(rec.confidence * 100).toFixed(0)}% </span> </div> <h3, class="rec-title" style:color={currentTheme.colors.text}> {rec.title} </h3> <p, class="rec-description" style:color={currentTheme.colors.text}> {rec.description} </p> </div> <!-- Action, Indicator --> <div, class="action-indicator" style:color={currentTheme.colors.selected}> {#if index === selectedIndex} →
                 {/if} </div> </div> {/each} {/if} </div> <!-- Footer --> <div, class="modal-footer" style:border-top-color={currentTheme.colors.border}> <div, class="controls-hint" style:color={currentTheme.colors.text}> <span>↑↓ Navigate</span> <span>Enter Execute</span> <span>Esc Close</span> </div> </div> {/if} <style> .modal-backdrop { position: fixed; d; top: 0, left: 0; right: 0, bottom: 0; z-index: 1000; backdrop-filter: blur(4px); }

@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const yorhaMessages: ChatMessage[] = [
         {
           role: 'system',
-          content: `You are YoRHa Legal AI, an advanced legal analysis system. Provide professional legal analysis with the following guidelines:\n1. Be precise and informative\n2. Cite relevant legal principles when applicable\n3. Identify key legal concepts and issues\n4. Provide practical insights\n5. Maintain professional legal terminology\n\nGlory to mankind.' },'`
+          content: `You are YoRHa Legal AI, an advanced legal analysis system. Provide professional legal analysis with the following guidelines:\n1. Be precise and informative\n2. Cite relevant legal principles when applicable\n3. Identify key legal concepts and issues\n4. Provide practical insights\n5. Maintain professional legal terminology\n\nGlory to mankind.` },'`'`
         ...anonymized,
       ];
 
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: new Date().toISOString(),
           analysisType: 'demo-response',
           theme: 'yorha',
-          mode: 'fallback' }
+          mode: 'fallback` }'`
       });
     }
   } catch (error) {
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : `Unknown error' },'`
+        details: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

@@ -8,7 +8,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
+  import  aiAssistant  from "$lib/stores/ai-assistant.svelte";
   import { pgVectorSearch } from '$lib/services/pgvector-semantic-search';
   import type { ChatMessage, Backend } from '$lib/types/ai-assistant';
   import { Bot, Download, Loader2, MessageSquare, Quote, Search, Settings, User as UserIcon, Mic, MicOff } from "lucide-svelte";

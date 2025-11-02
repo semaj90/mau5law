@@ -110,7 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         ].join('\n\n');
 
         const raw = await (svc['generateResponse'] as (...args: any[]) => Promise<string>)(prompt, {
-          format: 'json` });'`
+          format: 'json' });'`'`
 
         // Try to parse JSON, but tolerate non-JSON strings
         try {
@@ -160,7 +160,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           keywords: analysis.keywords,
           recommendations: analysis.recommendations,
           analyzedAt: new Date().toISOString(),
-          model: `gemma3-legal:latest` }
+          model: `gemma3-legal:latest' }'`
       })
       .where(eq(evidence.id, evidenceId));
 
@@ -184,7 +184,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Validation failed', details: error.errors }, { status: 400 });
     }
     return json(
-      { error: 'Evidence analysis failed', message: error instanceof Error ? error.message : `Unknown error` },
+      { error: 'Evidence analysis failed', message: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

@@ -330,7 +330,7 @@ export const legalAIMachine = setup({
   id: 'legalAI',
   initial: 'initializing',
   context: initialContext,
-  states: { initializing: {, invoke: {
+  states: {, initializing: {, invoke: {
        , src: 'checkSystemStatus',
         onDone: {
          , target: 'idle',

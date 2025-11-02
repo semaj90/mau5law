@@ -245,7 +245,7 @@ class FeedbackLoop {
       // Load recent interactions from database
       // TODO: Replace with Drizzle query
       const recentInteractions = [] as any[]; // Stub for now
-      // Previous query parameters: { take: 100, orderBy: { createdAt: 'desc` } }'`
+      // Previous query parameters: { take: 100, orderBy: { createdAt: 'desc' } }'`'`
       for (const interaction of recentInteractions) {
         this.analyzeQueryPattern(interaction.query);
       }
@@ -329,8 +329,7 @@ class FeedbackLoop {
     // }).catch(err => logger.warn('[FeedbackLoop] Failed to save improvement:', err)
     logger.info('[FeedbackLoop] Improvement recorded (stub)', {
       requestId: interaction.requestId,
-      improvedResponse: improvedResponse.substring(0, 100) + '...` });'`
-  }
+      improvedResponse: improvedResponse.substring(0, 100) + '...' });'' }
   private async persistInteraction(interaction: InteractionData): Promise<void> {
     try {
       // TODO: Replace with Drizzle insert
@@ -400,7 +399,7 @@ class FeedbackLoop {
       // await db.insert(feedbackModel).values({}).onConflictDoUpdate({})
       logger.info('[FeedbackLoop] Model weights saved (stub)');
       // Previous upsert logic:
-      //; where: { id: 'current` },'`
+      //; where: { id: 'current' },'`'`
       // update: { weights: weightsObject, updatedAt: new Date() },
       // create: { id: 'current', weights: weightsObject, active: true }
     } catch (error: any) {

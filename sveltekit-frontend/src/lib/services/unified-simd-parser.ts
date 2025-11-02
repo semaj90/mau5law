@@ -335,8 +335,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'WEBGPU_ULTRA',
         parse_time_ms: 0,
-        memory_bank: 'L1_WEBGPU_ACCELERATION'
-      };
+        memory_bank: 'L1_WEBGPU_ACCELERATION` };'`
     } catch (error) {
       // Fallback to Ultra without GPU (await safely)
       const data = await Promise.resolve(

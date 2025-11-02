@@ -19,7 +19,7 @@ https://svelte.dev/e/expected_token -->
 import { onMount, onDestroy } from 'svelte';
 import { simdGPUTilingEngine, calculateOptimalTileSize } from '$lib/evidence/simd-gpu-tiling-engine.js';
 import { ultimateNeuralTopologyOrchestrator } from '$lib/ai/ultimate-neural-topology-orchestrator.js';
-import { AdaptiveRenderingEngine } from './AdaptiveRenderingEngine.svelte';
+import  AdaptiveRenderingEngine  from "./AdaptiveRenderingEngine.svelte";
 import type { QualityTier } from './AdaptiveRenderingEngine.svelte';
 export interface Props {
   // UI Component data

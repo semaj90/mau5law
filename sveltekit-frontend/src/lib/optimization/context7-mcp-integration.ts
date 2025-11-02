@@ -210,8 +210,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
               'Use memory-mapped files for large datasets',
             ],
             expected_benefit: 'Improve performance by 30-50% while reducing memory usage',
-            code_example: '// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');` });'`
-        }
+            code_example: '// Enable high-performance JSON processing\nconst jsonOptimizer = createHighPerformanceJSONProcessor();\njsonOptimizer.setOptimizationLevel('high');' });'` }'`
         break;
       case 'memory':
         recommendations.push({
@@ -326,8 +325,7 @@ const db = drizzle(pool, {
           'Implement caching where applicable',
           'Monitor resource usage',
         ],
-        expected_benefit: 'Optimized library usage'
-      } as OptimizationRecommendation);
+        expected_benefit: 'Optimized library usage` } as OptimizationRecommendation);'`
     return [recommendation];
   }
   private async estimatePerformanceImpact(
@@ -355,8 +353,7 @@ const db = drizzle(pool, {
   }
   // Utility
   private generateCacheKey(request: Context7MCPRequest): string {
-    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || '` }`;'`
-  }
+    return `${request.tool}:${request.component || ''}:${request.area || ''}:${request.feature || ''}:${request.library || '` }`;'` }
   async runComprehensiveOptimizationAnalysis(): Promise<{ current_metrics: EnhancedPerformanceMetrics;, recommendations: OptimizationRecommendation[];
     estimated_improvements: Record<string, number>;
     implementation_plan: string[];

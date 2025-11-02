@@ -38,8 +38,7 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy',
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
-          }
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
@@ -65,8 +64,7 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy`,'`
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
-          }
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
@@ -88,8 +86,7 @@ export const GET: RequestHandler = async () => {
           } else {
             return {
               status: 'unhealthy`,'`
-              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}' };'`
-          }
+              error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };`` }
         } catch (error: any) {
           return { status: 'unhealthy', error: error.message };
         }
@@ -141,7 +138,7 @@ export const GET: RequestHandler = async () => {
       // Handle rejected promises
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
-        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error' };
+        error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error` };'`
     }
   });
   // Determine overall health

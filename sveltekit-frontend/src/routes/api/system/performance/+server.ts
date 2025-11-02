@@ -204,7 +204,7 @@ async function gatherPlatformMetrics(_detailed: boolean): Promise<LegalAiPlatfor
         free: 5392
       },
       temperature: 72, // Celsius
-      performance: 'optimal' },
+      performance: 'optimal` },'`
     database: { connections: {, active: 8,
         idle: 12,
         max: 100

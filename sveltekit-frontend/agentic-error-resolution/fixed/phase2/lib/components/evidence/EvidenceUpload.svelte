@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, Dialog, Input, Label, Select, Textarea, Progress } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, Dialog, Input, Label, Select, Textarea, Progress  from "$lib/components/ui/enhanced-bits.svelte";
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
   import { Upload, FileText, Image, Video, Music, File, X, CheckCircle, AlertCircle, Trash2, Eye } from 'lucide-svelte';
@@ -222,7 +222,7 @@
           </h4>
           <div class="space-y-3 max-h-96 overflow-y-auto">
             {#each Array.isArray(selectedFiles) ? selectedFiles : [] as fileData}
-              <Card.Root class="p-4">
+              <Card class="p-4">
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0">
                     <svelte:component this={getFileIcon(fileData.file)} class="w-8 h-8 text-gray-400" />
@@ -283,7 +283,7 @@
                     </div>
                   </div>
                 </div>
-              </Card.Root>
+              </Card>
             {/each}
           </div>
         {/if}

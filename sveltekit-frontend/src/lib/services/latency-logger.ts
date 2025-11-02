@@ -51,7 +51,7 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
       if (remoteUrl) {
         void fetch(remoteUrl, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify(entry)
         }).catch(() => {});
       }
@@ -83,7 +83,7 @@ export async function captureLatency(entry: LatencyEntry): Promise<any> {
       if (endpoint) {
         void fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify(entry)
         }).catch((err) => {
           // non-fatal: remote post failed
@@ -139,7 +139,7 @@ export async function exportLatencyJSONL(): Promise<string> {
 
 export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl'): Promise<any> {
   const payload = await exportLatencyJSONL();
-  const blob = new Blob([payload], { type: `application/jsonl` });
+  const blob = new Blob([payload], { type: `application/jsonl' });'`
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

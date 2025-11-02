@@ -130,7 +130,7 @@ export class FlashAttentionGPUErrorProcessor {
           memory_usage_mb: 0,
           tokens_per_second: 0
         },
-        status: `failed` };
+        status: 'failed' };
     }
   }
   private categorizeErrors(errors: TypeScriptError[]): TypeScriptError[] {
@@ -195,7 +195,7 @@ export class FlashAttentionGPUErrorProcessor {
 
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
        , model: 'gemma3-legal:latest',
         prompt,
@@ -241,8 +241,7 @@ Category: ${error.category}
 ${categoryPrompts[error.category]}
 Context from similar files:
 ${context}
-Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;`
-  }
+Provide ONLY the corrected code snippet that fixes this specific error. Do not include explanations or markdown formatting.`;' }'`
   private parseFixResponse(error: TypeScriptError, response: string): ErrorFix {
     // Normalize response: strip fenced code blocks and leading/trailing whitespace
     let fixedCode = response
@@ -470,7 +469,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
         line: 1,
         column: 5,
         severity: 'error',
-        category: `type` },
+        category: 'type' },
       {
         code: 'TS2307',
         message: "Cannot find; module: 'nonexistent'",
@@ -478,7 +477,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
         line: 2,
         column: 1,
         severity: 'error',
-        category: `import` }
+        category: 'import' }
     ];
     const startTime = performance.now();
     const result = await this.processErrors(testErrors);
@@ -499,7 +498,7 @@ Provide ONLY the corrected code snippet that fixes this specific error. Do not i
       gpu_utilization: (result as { performance?: any; path?: any; content?: any; response?: any; fixes?: any })
         .performance.gpu_utilization
     };
-    console.log('📊 FlashAttention2 Benchmark Results: `);'`
+    console.log('📊 FlashAttention2 Benchmark Results: ');'`'`
     console.log(`   - Processing Speed: ${benchmarkResults.processing_speed.toFixed(1)} tokens/sec`);
     console.log(`   - Memory Efficiency: ${(benchmarkResults.memory_efficiency * 100).toFixed(1)}%`);
     console.log(`   - Accuracy Score: ${(benchmarkResults.accuracy_score * 100).toFixed(1)}%`);

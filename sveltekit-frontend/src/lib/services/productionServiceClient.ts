@@ -275,7 +275,7 @@ export class ProductionServiceClient {
       { name: 'enhanced-rag', url: `${this.endpoints.http.enhancedRAG}/health` },
       { name: 'upload-service', url: `${this.endpoints.http.uploadService}/health` },
       { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` },
-      { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health` },
+      { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health' },'`
       { name: 'legal-ai', url: '${this.endpoints.http.legalAI}/health' },
       { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' }
     ];
@@ -308,7 +308,7 @@ export class ProductionServiceClient {
     Array<{ tier: ServiceTier; avgLatency: number; successRate: number; endpoint: string }>
   > {
     return [
-      { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy' },
+      { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy` },'`
       { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: `grpc-server` },
       { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: `enhanced-rag` },
       { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` }

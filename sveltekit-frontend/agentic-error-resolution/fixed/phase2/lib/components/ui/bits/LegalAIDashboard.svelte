@@ -14,7 +14,7 @@
     initializeEnhancedBits,
     LegalDesignTokens
   } from './index';
-  import { LegalPOICard } from './LegalPOICard.svelte';
+  import  LegalPOICard  from "./LegalPOICard.svelte";
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';
@@ -229,15 +229,15 @@
         <div class="dashboard-overview">
           <!-- Stats Cards -->
           <div class="stats-grid">
-            <Card.Root class="stat-card">
+            <Card class="stat-card">
               <CardHeader>
                 <CardTitle>📂 Total Cases</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="stat-value">{dashboardData.totalCases}</div>
               </CardContent>
-            </Card.Root>
-            <Card.Root class="stat-card">
+            </Card>
+            <Card class="stat-card">
               <CardHeader>
                 <CardTitle>📚 Citations</CardTitle>
               </CardHeader>
@@ -245,8 +245,8 @@
                 <div class="stat-value">{dashboardData.totalCitations}</div>
                 <div class="stat-detail">{dashboardData.activeCitations} verified</div>
               </CardContent>
-            </Card.Root>
-            <Card.Root class="stat-card">
+            </Card>
+            <Card class="stat-card">
               <CardHeader>
                 <CardTitle>📊 Reports</CardTitle>
               </CardHeader>
@@ -254,8 +254,8 @@
                 <div class="stat-value">{dashboardData.totalReports}</div>
                 <div class="stat-detail">{dashboardData.pendingReports} pending</div>
               </CardContent>
-            </Card.Root>
-            <Card.Root class="stat-card">
+            </Card>
+            <Card class="stat-card">
               <CardHeader>
                 <CardTitle>👥 Persons of Interest</CardTitle>
               </CardHeader>
@@ -263,7 +263,7 @@
                 <div class="stat-value">{dashboardData.totalPOIs}</div>
                 <div class="stat-detail high-risk">{dashboardData.highRiskPOIs} high risk</div>
               </CardContent>
-            </Card.Root>
+            </Card>
           </div>
           <!-- Recent Activity -->
           <div class="recent-activity">

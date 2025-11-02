@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Generate bitmap sprite cache states
         const spriteStates = await mockDataGenerators.generateMockEmbeddingShards(count);
         const bitmapSprites = spriteStates.map(
-          (shard: { shardId: string; compressionRatio: number;, cacheState: string }) => ({
+          (shard: {, shardId: string; compressionRatio: number;, cacheState: string }) => ({
             shardId: shard.shardId,
             spriteMatrix: Array.from({, length: 8 }, () =>
               Array.from({ length: 8 }, () => Math.floor(Math.random() * 4))
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
             utilization: 0.6 + Math.random() * 0.3,
             avgBankSize: Math.floor(Math.random() * 8192 + 4096), // bytes
             swapRate: Math.random() * 0.05,
-            status: Math.random() > 0.05 ? 'healthy' : 'warning` },'`
+            status: Math.random() > 0.05 ? 'healthy' : `warning` },'`'`
           predictiveEngine: {
             accuracy: 0.75 + Math.random() * 0.2,
             predictions: Math.floor(Math.random() * 1000 + 500),

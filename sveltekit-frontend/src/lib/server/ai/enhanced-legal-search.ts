@@ -158,7 +158,7 @@ export class EnhancedLegalSearchService {
             idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata` },'`
+            metadataColumnName: 'metadata' },'`'`
           distanceStrategy: 'cosine' as any
         }
         // Initialize PGVector store
@@ -188,7 +188,7 @@ export class EnhancedLegalSearchService {
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': `application/json` },
+              'Content-Type': `application/json' },'`
             body: JSON.stringify({
               query,
               limit: options.maxResults || this.config.maxResults,
@@ -227,7 +227,7 @@ export class EnhancedLegalSearchService {
                     ...result.metadata,
                     semantic_score: result.semantic_score,
                     distance: result.distance,
-                    source: `enhanced_semantic_search` }
+                    source: `enhanced_semantic_search' }'`
                 })
               );
               console.log(`✅ Enhanced semantic search returned ${enhancedResults.length} results`);

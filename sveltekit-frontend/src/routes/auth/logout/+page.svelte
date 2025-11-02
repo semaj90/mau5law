@@ -42,14 +42,14 @@ TODO: Implement logout functionality, clear session, redirect to login
 	showBackButton={true}
 >
 	{#snippet children()}
-		<Card.Root class="nes-container is-rounded max-w-md, mx-auto">
-			<CardContent class="p-8, text-center">
+		<Card.Root class="nes-container is-rounded, max-w-md, mx-auto">
+			<CardContent, class="p-8, text-center">
 				<div, class="mb-6">
-					<div class="text-4xl, mb-4">👋</div>
-					<h2 class="nes-text is-primary text-lg, mb-2">
+					<div, class="text-4xl, mb-4">👋</div>
+					<h2 class="nes-text is-primary, text-lg, mb-2">
 						Signing Out
 					</h2>
-					<p class="nes-text is-disabled, text-sm">
+					<p class="nes-text, is-disabled, text-sm">
 						{#if isLoggingOut}
 							Logging you out...
 						{:else}
@@ -58,14 +58,14 @@ TODO: Implement logout functionality, clear session, redirect to login
 					</p>
 				</div>
 				{#if !isLoggingOut}
-					<div class="flex justify-center, gap-4">
-						<Button.Root
+					<div class="flex, justify-center, gap-4">
+						<Button
 							class="nes-btn is-error"
 							onclick={handleLogout}
 							disabled={isLoggingOut}
 						>
 							Logout Now
-						<Button.Root
+						<Button
 							variant="ghost"
 							class="nes-btn"
 							onclick={() => window.history.back()}
@@ -74,7 +74,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 					</div>
 				{:else}
 					<div, class="animate-pulse">
-						<div class="nes-text, is-primary">Redirecting...</div>
+						<div, class="nes-text, is-primary">Redirecting...</div>
 					</div>
 				{/if}
 			</div.Content>

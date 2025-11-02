@@ -374,7 +374,7 @@ export class ClientEmbeddingGenerator {
       const payload = { model: 'embeddinggemma:latest', input: text };
       const res = await fetch(`${this.ollamaUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -404,7 +404,7 @@ export class ClientEmbeddingGenerator {
       const payload = { model: 'embeddinggemma:latest', input: texts };
       const res = await fetch(`${this.ollamaUrl}/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -445,8 +445,7 @@ export class ClientEmbeddingGenerator {
    */
   async optimizeMemory(): Promise<void> {
     if (this.worker) {
-      this.worker.postMessage({ type: `optimize_memory' });'`
-    }
+      this.worker.postMessage({ type: 'optimize_memory' });'` }'`
     // Trigger garbage collection if available
     if (typeof (globalThis as unknown as { gc?: () => void }).gc === 'function') {
       (globalThis as unknown as { gc: () => void }).gc();

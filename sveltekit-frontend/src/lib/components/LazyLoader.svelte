@@ -1,4 +1,4 @@
-<!-- LazyLoader.svelte - Universal lazy loading wrapper, component -->
+<!-- LazyLoader.svelte - Universal lazy loading, wrapper, component -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
@@ -86,7 +86,7 @@
     lazyStore.reset?.();
   });
 </script>
-<!-- Container element with intersection, observer -->
+<!-- Container element with, intersection, observer -->
 <div
   bind:this={containerElement}
   use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
@@ -127,9 +127,9 @@
       </div>
     </div>
   {:else if hasBeenVisible && !loadError}
-    <!-- Actual content - only render when, visible/seen -->
+    <!-- Actual content - only render, when, visible/seen -->
     <div, class="lazy-loader-content" data-lazy-loaded="true">
-      <!-- expose useful props to parent via slot, let:... -->
+      <!-- expose useful props to parent via, slot, let:... -->
       <slot {isVisible} {hasBeenVisible} {intersectionRatio}></slot>
     {/if}
 </div>

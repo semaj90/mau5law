@@ -283,8 +283,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error) {
     console.error('❌ RL Stats API error: ', error);'
-    return json({ error: 'Failed to retrieve statistics` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to retrieve statistics' }, { status: 500 });'` }'`
 };
 // ===============================
 // HELPER FUNCTIONS
@@ -484,8 +483,7 @@ async function triggerDomainSpecificDistillation(domain: string, userId: string)
     // Update user that specialized model is being created
     await notifyUserOfDistillation(userId, domain, distillationConfig.targetModelName);
   } catch (error) {
-    console.error(`❌ Distillation failed for domain ${domain}: ', error);'`
-  }
+    console.error(`❌ Distillation failed for domain ${domain}: ', error);'` }
 }
 /**
  * Estimate next training time based on current feedback count

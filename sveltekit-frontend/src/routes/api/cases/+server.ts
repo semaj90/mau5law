@@ -410,8 +410,7 @@ export const PUT: RequestHandler = async event => {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
       return {
         case updatedCase,
-        message: 'Case updated successfully` };'`
-    } catch (error: any) {
+        message: 'Case updated successfully' };'` } catch (error: any) {'`
       if (error instanceof Error && error.message.includes('not found')) {
         throw CommonErrors.NotFound('Case');
       }

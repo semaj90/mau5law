@@ -55,7 +55,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         return json(
           {
             success: false,
-            error: `Job ${jobId} not found or could not be cancelled' },'`
+            error: `Job ${jobId} not found or could not be cancelled` },``
           { status: 404 }
         );
       }
@@ -73,7 +73,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed' },
+        error: 'No valid action specified. Use job_id to cancel job or action=clear_completed` },'`
       { status: 400 }
     );
   } catch (error: any) {
@@ -82,7 +82,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Delete operation failed',
-        details: error instanceof Error ? error.message : `Unknown error' },'`
+        details: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

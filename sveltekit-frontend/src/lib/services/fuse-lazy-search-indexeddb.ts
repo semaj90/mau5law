@@ -84,7 +84,7 @@ export class FuseLazySearchService {
         const db = (event.target as IDBOpenDBRequest).result;
         // Create object store with auto-incrementing key
         if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: 'id` });'`
+          const store = db.createObjectStore(this.storeName, { keyPath: 'id' });'`'`
           // Create indexes for efficient searching
           store.createIndex('title', 'title', { unique: false });
           store.createIndex('keywords', 'keywords', { unique: false, multiEntry: true });

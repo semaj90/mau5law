@@ -65,7 +65,7 @@ export interface LegalEntity { text: string;, type: string; // e.g., 'PERSON', 
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
   confidence?: number;  // Optional: confidence score of the detection
-  metadata?: Record<string, unknown>; // <-- changed from, Record<string, any>
+  metadata?: Record<string, unknown>; // <-- changed, from, Record<string, any>
 }
 
 export interface DocumentProcessingJobResult { success: boolean;, documentId: string;
@@ -89,7 +89,7 @@ interface QueueDocumentProcessingResult { jobId: string;, estimated: number;
 interface JobStatusResult { status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';, progress: number;
   error?: string;
   result?: DocumentProcessingJobResult; // For: 'completed'
-  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed' }
+  data?: DocumentProcessingJobData; // For: 'waiting', 'active', 'delayed` }'`
 
 interface QueueStatsResult { waiting: number;, active: number;
   completed: number;

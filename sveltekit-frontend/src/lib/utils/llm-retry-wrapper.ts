@@ -35,8 +35,7 @@ const todoAutogen = {
     console.warn(`Performance issue: ${type}`, details);
   },
   logLLMMisfire: async (details: LogDetails) => {
-    console.warn('LLM misfire: `, details);'`
-  }
+    console.warn('LLM misfire: ', details);'' }
 };
 
 // --- added: safe type helpers to avoid `any` casts ---
@@ -106,7 +105,7 @@ export class OllamaRetryWrapper {
         try {
           const response = await fetch(`${this.baseUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` },
+            headers: { 'Content-Type': 'application/json' },
             signal: controller.signal,
             body: JSON.stringify({
               model,
@@ -183,7 +182,7 @@ export class OllamaRetryWrapper {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': 'application/json' }
       });
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.status}`);
@@ -271,7 +270,7 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
   try {
     const response = await fetch(`${ollamaWrapper.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
       body: JSON.stringify({
         model,

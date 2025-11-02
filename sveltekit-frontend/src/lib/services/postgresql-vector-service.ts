@@ -169,8 +169,7 @@ export class PostgreSQLVectorService {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error` }`);'`
-      }
+        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error' }`);'' }
 
       const data = await response.json();
       if (!data.embedding || !Array.isArray(data.embedding)) {

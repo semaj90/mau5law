@@ -1,7 +1,7 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-* Enhanced PostgreSQL + pgvector Schema for Drizzle ORM v0.44
+/* Enhanced PostgreSQL + pgvector Schema for Drizzle ORM v0.44
  * ------------------------------------------------------------
  * - Compatible with drizzle-orm@0.44.x
  * - Simplified, type-safe relations
@@ -348,7 +348,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   })
 }));
 export const documentsRelations = relations(documents, ({ one, many }) => ({
-  case one(cases, { fields: [documents.caseId], references: [cases.id] }),
+  case: one(cases, { fields: [documents.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [documents.createdBy],
     references: [users.id],
@@ -361,7 +361,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] })
 }));
 export const evidenceRelations = relations(evidence, ({ one }) => ({
-  case one(cases, { fields: [evidence.caseId], references: [cases.id] }),
+  case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
   document: one(documents, { fields: [evidence.documentId], references: [documents.id] }),
   creator: one(users, {
     fields: [evidence.createdBy],
@@ -388,7 +388,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
 }));
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, { fields: [aiInteractions.userId], references: [users.id] }),
-  case one(cases, { fields: [aiInteractions.caseId], references: [cases.id] })
+  case: one(cases, { fields: [aiInteractions.caseId], references: [cases.id] })
 }));
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
   verifier: one(users, { fields: [legalKnowledgeBase.verifiedBy], references: [users.id] })
@@ -403,19 +403,21 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one, m
   evidenceBoardItems: many(evidenceBoardItems)
 }));
 export const casePoiRelationsRelations = relations(casePoiRelations, ({ one }) => ({
-  case one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
+  case: one(cases, { fields: [casePoiRelations.caseId], references: [cases.id] }),
   poi: one(personsOfInterest, { fields: [casePoiRelations.poiId], references: [personsOfInterest.id] }),
   creator: one(users, {
     fields: [casePoiRelations.createdBy],
     references: [users.id],
-    relationName: 'case_poi_relation_creator` })'`
+    relationName: 'case_poi_relation_creator'
+  })
 }));
 export const evidenceBoardsRelations = relations(evidenceBoards, ({ one, many }) => ({
-  case one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
+  case: one(cases, { fields: [evidenceBoards.caseId], references: [cases.id] }),
   creator: one(users, {
     fields: [evidenceBoards.createdBy],
     references: [users.id],
-    relationName: `evidence_board_creator` }),
+    relationName: 'evidence_board_creator'
+  }),
   items: many(evidenceBoardItems),
   connections: many(evidenceBoardConnections)
 }));
@@ -426,7 +428,8 @@ export const evidenceBoardItemsRelations = relations(evidenceBoardItems, ({ one 
   creator: one(users, {
     fields: [evidenceBoardItems.createdBy],
     references: [users.id],
-    relationName: `evidence_board_item_creator` })
+    relationName: 'evidence_board_item_creator'
+  })
 }));
 export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnections, ({ one }) => ({
   board: one(evidenceBoards, { fields: [evidenceBoardConnections.boardId], references: [evidenceBoards.id] }),
@@ -435,7 +438,7 @@ export const evidenceBoardConnectionsRelations = relations(evidenceBoardConnecti
   creator: one(users, {
     fields: [evidenceBoardConnections.createdBy],
     references: [users.id],
-    relationName: `evidence_board_connection_creator` })
+    relationName: 'evidence_board_connection_creator` })'`
 }));
 export const embeddingJobsRelations = relations(embeddingJobs, () => ({
   // Polymorphic relation. Query manually based on entityType and entityId.

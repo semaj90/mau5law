@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Alert } from '$lib/components/ui/alert/Alert.svelte';
-  import { Label } from '$lib/components/ui/Label.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Alert  from "$lib/components/ui/alert/Alert.svelte";
+  import  Label  from "$lib/components/ui/Label.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
   interface Props {
     mode?: 'login' | 'register';
     open?: boolean;

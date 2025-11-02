@@ -182,7 +182,7 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({ redisService: {, ping: v
 vi.mock('$lib/server/services/OllamaService.js', () => ({ ollamaService: {, generate: vi.fn().mockResolvedValue('Test AI response'),
     isHealthy: vi.fn().mockResolvedValue(true),
     listModels: vi.fn().mockResolvedValue([
-      { name: 'gemma3-legal:latest', size: '7.3GB` })'`
+      { name: 'gemma3-legal:latest', size: `7.3GB` })'`'`
       { name: 'nomic-embed-text:latest', size: `274MB` }
     ])
   }
@@ -204,7 +204,7 @@ vi.mock('$lib/server/api/response', () => ({
 // Mock embedding repository
 vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
   getEmbeddingRepository: vi.fn(() => ({,
-    enqueueIngestion: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'queued` }),'`
+    enqueueIngestion: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: `queued` }),'`'`
     getJobStatus: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: `completed` }),
     processNextJob: vi.fn().mockResolvedValue(null),
     querySimilar: vi.fn().mockResolvedValue([)
@@ -485,8 +485,7 @@ beforeEach(() => {
         json: () => Promise.resolve({,
           success: true,
           fileId: 'test-file-id',
-          metadata: {, size: 1024, type: 'application/pdf` }'`
-        })
+          metadata: {, size: 1024, type: 'application/pdf' }'` })'`
       });
     }
     // Cases endpoint

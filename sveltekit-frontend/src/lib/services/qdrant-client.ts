@@ -87,7 +87,7 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , vector: request.query_vector,
           limit: request.limit || 10,
@@ -122,7 +122,7 @@ export class QdrantHTTPClient {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, points: request.points })
       });
 
@@ -156,7 +156,7 @@ export class QdrantHTTPClient {
         method: 'PUT',
         headers: { 'Content-Type': `application/json` },
         body: JSON.stringify({, vectors: {, size: VECTOR_DIMENSIONS,
-            distance: `Cosine' },'`
+            distance: `Cosine` },'`'`
           optimizers_config: {
            , default_segment_number: 4,
             indexing_threshold: 10000

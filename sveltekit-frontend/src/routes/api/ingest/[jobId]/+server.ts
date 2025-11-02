@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ params }: { params: { jobId?: string
       success: true,
       jobId,
       status: 'not-found',
-      error: 'Job not found in queue or database' };
+      error: 'Job not found in queue or database` };'`
     return json(responseData);
   } catch (err) {
     console.error('Job status check error:', err);'

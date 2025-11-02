@@ -5,16 +5,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte';
-  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
-  import { yorhaTextureManager } from '$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  yorhaWebGPU  from "$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte";
+  import  yorhaMipmapShaders  from "$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte";
+  import  yorhaTextureManager  from "$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Reactive state using Svelte 5 runes
   let isInitialized = $state(false);
   let isProcessing = $state(false);
@@ -288,9 +288,9 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </span>
         </div>
         {#if !isInitialized && !isProcessing}
-          <Button.Root class="bits-btn" onclick={initializeSystem} size="sm">
+          <Button class="bits-btn" onclick={initializeSystem} size="sm">
 🔄 Initialize System
-</Button.Root>
+</Button>
         {/if}
         {#if isProcessing}
           <span class="text-blue-600">⏳ Processing...</span>
@@ -369,32 +369,32 @@ https://svelte.dev/e/unexpected_reserved_word -->
                   Size: {document.textureSize} • Complexity: {document.estimatedComplexity}
                 </div>
               </div>
-              <Button.Root class="bits-btn"
+              <Button class="bits-btn"
                 onclick={() =>
 processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
               >
                 🔥 Process
-</Button.Root>
+</Button>
             </div>
           {/each}
         </div>
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
 🚀 Batch Process All
-</Button.Root>
-          <Button.Root class="bits-btn"
+</Button>
+          <Button class="bits-btn"
             onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="ghost"
           >
 🔥 Mipmap Demo
-</Button.Root>
+</Button>
         </div>
       </div>
     </div>

@@ -28,8 +28,7 @@ export interface ServerServices { minio: { url: string; source: 'env' | 'discove
   postgres: { url: string; source: 'env' | 'discovery' | 'fallback' };
   neo4j: { url: string; source: 'env' | 'discovery' | 'fallback' };
   rabbitmq: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback` };'`
-}
+  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback' };'` }'`
 
 // Global services instance
 let globalServices: ServerServices | null = null;

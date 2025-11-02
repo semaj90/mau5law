@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const enrichedResults = results.map((result, index) => ({
       ...result,
       similarity: 0.95 - index * 0.05, // Mock similarity scores
-      source: 'database` }));'`
+      source: 'database' }));'`'`
 
     return json({
       results: enrichedResults,
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         error: 'Vector search failed',
         results: [],
-        metadata: {, query: '', count: 0, source: `error` }
+        metadata: {, query: '', count: 0, source: `error' }'`
       },
       { status: 500 }
     );

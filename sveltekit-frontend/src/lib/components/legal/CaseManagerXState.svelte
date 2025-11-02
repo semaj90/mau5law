@@ -6,7 +6,7 @@
   import { useMachine } from '@xstate/svelte';
   import { legalCaseMachine, legalCaseSelectors } from '$lib/state/legal-case-machine.js';
   import type { LegalCaseContext } from '$lib/state/legal-case-machine.js';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // Get caseId from route params
   let caseId = $state(null as string | null);
   // Initialize XState machine (rename `state` to `machineState` to avoid $state rune conflict)
@@ -94,35 +94,35 @@
     }
   }
 </script>
-<!-- Legal Case Manager Component with, XState -->
-<div class="case-manager-xstate p-6 max-w-7xl, mx-auto">
+<!-- Legal Case Manager Component, with, XState -->
+<div class="case-manager-xstate p-6, max-w-7xl, mx-auto">
   <!-- Error, State -->
   {#if $hasError}
-    <div class="mb-6 border-red-200 bg-red-50, nes-container">
+    <div class="mb-6 border-red-200, bg-red-50, nes-container">
       <div, class="p-4">
-        <h3 class="text-lg font-semibold text-red-800, mb-2">Error</h3>
-        <!-- use $machineState to access machine, context -->
-        <p class="text-red-600, mb-4">{$machineState.context.error}</p>
-        <div class="flex, gap-2">
-          <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button.Root>
-          <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>Dismiss</Button.Root>
+        <h3 class="text-lg font-semibold, text-red-800, mb-2">Error</h3>
+        <!-- use $machineState to access, machine, context -->
+        <p, class="text-red-600, mb-4">{$machineState.context.error}</p>
+        <div, class="flex, gap-2">
+          <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
+          <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>Dismiss</Button>
         </div>
       </div>
     {/if}
   <!-- Loading, State -->
   {#if $isLoading}
-    <div class="flex items-center justify-center, py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2, border-blue-600"></div>
-      <span class="ml-3, text-gray-600">Loading...</span>
+    <div class="flex items-center, justify-center, py-12">
+      <div class="animate-spin rounded-full h-8 w-8, border-b-2, border-blue-600"></div>
+      <span, class="ml-3, text-gray-600">Loading...</span>
     {/if}
-  <!-- Case Creation Form (when no case is, loaded) -->
+  <!-- Case Creation Form (when no case, is, loaded) -->
   {#if !$currentCase && !$isLoading}
-    <div class="mb-6, nes-container">
+    <div, class="mb-6, nes-container">
       <div, class="p-6">
-        <h2 class="text-2xl font-bold, mb-4">Create New Case</h2>
+        <h2 class="text-2xl, font-bold, mb-4">Create New Case</h2>
         <div, class="space-y-4">
           <div>
-            <label for="case-title" class="block text-sm font-medium, mb-2">Case Title</label>
+            <label for="case-title" class="block text-sm, font-medium, mb-2">Case Title</label>
             <input
               id="case-title"
               type="text"
@@ -132,7 +132,7 @@
             />
           </div>
           <div>
-            <label for="case-number" class="block text-sm font-medium, mb-2">Case Number</label>
+            <label for="case-number" class="block text-sm, font-medium, mb-2">Case Number</label>
             <input
               id="case-number"
               type="text"
@@ -142,7 +142,7 @@
             />
           </div>
           <div>
-            <label for="case-description" class="block text-sm font-medium, mb-2">Description</label>
+            <label for="case-description" class="block text-sm, font-medium, mb-2">Description</label>
             <textarea
               id="case-description"
               bind:value={newCaseDescription}
@@ -151,23 +151,23 @@
               placeholder="Describe the case..."
             ></textarea>
           </div>
-          <Button.Root onclick={handleCreateCase} class="w-full bits-btn, bits-btn">Create Case</Button.Root>
+          <Button onclick={handleCreateCase} class="w-full, bits-btn, bits-btn">Create Case</Button>
         </div>
       </div>
     {/if}
-  <!-- Case Management Interface (when case is, loaded) -->
+  <!-- Case Management Interface (when case, is, loaded) -->
   {#if $currentCase && !$isLoading}
     <div, class="space-y-6">
       <!-- Case, Header -->
       <div, class="nes-container">
         <div, class="p-6">
-          <div class="flex justify-between items-start, mb-4">
+          <div class="flex justify-between, items-start, mb-4">
             <div>
-              <!-- read from $currentCase, store -->
-              <h1 class="text-3xl font-bold, text-gray-900">{$currentCase.title}</h1>
-              <p class="text-sm, text-gray-500">Case #{$currentCase.caseNumber}</p>
+              <!-- read, from $currentCase, store -->
+              <h1 class="text-3xl, font-bold, text-gray-900">{$currentCase.title}</h1>
+              <p, class="text-sm, text-gray-500">Case #{$currentCase.caseNumber}</p>
             </div>
-            <div class="flex items-center, gap-2">
+            <div class="flex, items-center, gap-2">
               <select
                 value={$workflowStage}
                 onchange={(e) => handleWorkflowStageChange((e.target as HTMLSelectElement).value as any)}
@@ -181,31 +181,31 @@
               </select>
             </div>
           </div>
-          <p class="text-gray-700, mb-4">{$currentCase.description}</p>
+          <p, class="text-gray-700, mb-4">{$currentCase.description}</p>
           <!-- Stats (read, from $stats) -->
-          <div class="grid grid-cols-4, gap-4">
+          <div class="grid, grid-cols-4, gap-4">
             <div, class="text-center">
-              <div class="text-2xl font-bold, text-blue-600">{$stats.totalEvidence}</div>
-              <div class="text-sm, text-gray-500">Evidence Items</div>
+              <div class="text-2xl, font-bold, text-blue-600">{$stats.totalEvidence}</div>
+              <div, class="text-sm, text-gray-500">Evidence Items</div>
             </div>
             <div, class="text-center">
-              <div class="text-2xl font-bold, text-green-600">{$stats.processedEvidence}</div>
-              <div class="text-sm, text-gray-500">Processed</div>
+              <div class="text-2xl, font-bold, text-green-600">{$stats.processedEvidence}</div>
+              <div, class="text-sm, text-gray-500">Processed</div>
             </div>
             <div, class="text-center">
-              <div class="text-2xl font-bold, text-purple-600">{$stats.averageConfidence}%</div>
-              <div class="text-sm, text-gray-500">Avg Confidence</div>
+              <div class="text-2xl, font-bold, text-purple-600">{$stats.averageConfidence}%</div>
+              <div, class="text-sm, text-gray-500">Avg Confidence</div>
             </div>
             <div, class="text-center">
-              <div class="text-2xl font-bold, text-orange-600">{$stats.processingTime}ms</div>
-              <div class="text-sm, text-gray-500">Processing Time</div>
+              <div class="text-2xl, font-bold, text-orange-600">{$stats.processingTime}ms</div>
+              <div, class="text-sm, text-gray-500">Processing Time</div>
             </div>
           </div>
         </div>
       </div>
       <!-- Navigation, Tabs -->
-      <div class="border-b, border-gray-200">
-        <nav class="flex, space-x-8">
+      <div, class="border-b, border-gray-200">
+        <nav, class="flex, space-x-8">
           {#each Array.isArray(tabs) ? tabs : [] as tab}
             <button
               class={ $activeTab === tab
@@ -225,11 +225,11 @@
         {#if $activeTab === 'overview'}
           <div, class="nes-container">
             <div, class="p-6">
-              <h3 class="text-lg font-semibold, mb-4">Next Actions</h3>
+              <h3 class="text-lg, font-semibold, mb-4">Next Actions</h3>
               <ul, class="space-y-2">
                 {#each Array.isArray($nextActions) ? $nextActions : [] as action}
-                  <li class="flex, items-center">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full, mr-3"></span>
+                  <li, class="flex, items-center">
+                    <span class="w-2 h-2 bg-blue-500, rounded-full, mr-3"></span>
                     {action}
                   </li>
                 {/each}
@@ -242,7 +242,7 @@
             <!-- Evidence, Upload -->
             <div, class="nes-container">
               <div, class="p-6">
-                <h3 class="text-lg font-semibold, mb-4">Upload Evidence</h3>
+                <h3 class="text-lg, font-semibold, mb-4">Upload Evidence</h3>
                 <input
                   type="file"
                   multiple
@@ -250,43 +250,43 @@
                   onchange={onFileChange}
                   class="hidden"
                 />
-                <Button.Root, class="bits-btn" onclick={triggerFileUpload}>Choose Files</Button.Root>
+                <Button.Root, class="bits-btn" onclick={triggerFileUpload}>Choose Files</Button>
               </div>
             </div>
             <!-- Evidence, List -->
             {#if $evidence.length > 0}
               <div, class="nes-container">
                 <div, class="p-6">
-                  <h3 class="text-lg font-semibold, mb-4">Evidence Items</h3>
+                  <h3 class="text-lg, font-semibold, mb-4">Evidence Items</h3>
                   <div, class="space-y-3">
                     {#each Array.isArray(evidence) ? evidence : [] as item}
-                      <div class="border border-gray-200 rounded-lg, p-4">
-                        <div class="flex justify-between, items-start">
+                      <div class="border border-gray-200, rounded-lg, p-4">
+                        <div class="flex, justify-between, items-start">
                           <div>
                             <h4, class="font-medium">{(item as { title?: any; type?: any; aiSummary?: any }).title}</h4>
-                            <p class="text-sm, text-gray-500">{(item as { title?: any; type?: any; aiSummary?: any }).type}</p>
+                            <p, class="text-sm, text-gray-500">{(item as { title?: any; type?: any; aiSummary?: any }).type}</p>
                           </div>
-                          <div class="flex, gap-2">
-                            <Button.Root
+                          <div, class="flex, gap-2">
+                            <Button
                               class="bits-btn"
                               size="sm"
                               variant="ghost"
                               onclick={() => send({ type: 'VIEW_EVIDENCE', evidence: item })}
                             >
                               View
-                            </Button.Root>
-                            <Button.Root
+                            </Button>
+                            <Button
                               class="bits-btn"
                               size="sm"
                               variant="ghost"
                               onclick={() => send({ type: 'SELECT_EVIDENCE', evidence: item })}
                             >
                               Select
-                            </Button.Root>
+                            </Button>
                           </div>
                         </div>
                         {#if (item as { title?: any; type?: any; aiSummary?: any }).aiSummary}
-                          <div class="mt-3 p-3 bg-blue-50, rounded-md">
+                          <div class="mt-3 p-3, bg-blue-50, rounded-md">
                             <p, class="text-sm">{(item as { title?: any; type?: any; aiSummary?: any }).aiSummary}</p>
                           {/if}
                       </div>
@@ -300,34 +300,34 @@
           <div, class="space-y-4">
             <div, class="nes-container">
               <div, class="p-6">
-                <h3 class="text-lg font-semibold, mb-4">AI Analysis</h3>
-                <div class="flex gap-3, mb-4">
-                  <Button.Root, class="bits-btn" onclick={handleStartAIAnalysis} disabled={!$canStartAIAnalysis}>Start AI Analysis</Button.Root>
-                  <Button.Root, class="bits-btn" variant="ghost" onclick={handleFindSimilarCases}>Find Similar Cases</Button.Root>
+                <h3 class="text-lg, font-semibold, mb-4">AI Analysis</h3>
+                <div class="flex, gap-3, mb-4">
+                  <Button.Root, class="bits-btn" onclick={handleStartAIAnalysis} disabled={!$canStartAIAnalysis}>Start AI Analysis</Button>
+                  <Button.Root, class="bits-btn" variant="ghost" onclick={handleFindSimilarCases}>Find Similar Cases</Button>
                 </div>
                 {#if $aiSummary}
-                  <div class="border border-gray-200 rounded-lg, p-4">
-                    <h4 class="font-medium, mb-2">AI Summary</h4>
+                  <div class="border border-gray-200, rounded-lg, p-4">
+                    <h4, class="font-medium, mb-2">AI Summary</h4>
                     <p, class="text-gray-700">{$aiSummary}</p>
                   {/if}
                 {#if $similarCases.length > 0}
                   <div, class="mt-6">
-                    <h4 class="font-medium, mb-3">Similar Cases</h4>
+                    <h4, class="font-medium, mb-3">Similar Cases</h4>
                     <div, class="space-y-2">
                       {#each Array.isArray(similarCases) ? similarCases : [] as similarCase}
-                        <div class="border border-gray-200 rounded-lg p-3 flex justify-between, items-center">
+                        <div class="border border-gray-200 rounded-lg p-3 flex, justify-between, items-center">
                           <div>
                             <h5, class="font-medium">{similarCase.title}</h5>
-                            <p class="text-sm, text-gray-500">Similarity: {similarCase.similarity}%</p>
+                            <p, class="text-sm, text-gray-500">Similarity: {similarCase.similarity}%</p>
                           </div>
-                          <Button.Root
+                          <Button
                             class="bits-btn"
                             size="sm"
                             variant="ghost"
                             onclick={() => send({ type: 'OPEN_SIMILAR_CASE', caseId: similarCase.id })}
                           >
                             View
-                          </Button.Root>
+                          </Button>
                         </div>
                       {/each}
                     </div>
@@ -339,25 +339,25 @@
         {#if $activeTab === 'search'}
           <div, class="nes-container">
             <div, class="p-6">
-              <h3 class="text-lg font-semibold, mb-4">Search Cases</h3>
-              <div class="flex, gap-3">
+              <h3 class="text-lg, font-semibold, mb-4">Search Cases</h3>
+              <div, class="flex, gap-3">
                 <input
                   type="text"
                   placeholder="Enter search query..."
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <Button.Root, class="bits-btn">Search</Button.Root>
+                <Button.Root, class="bits-btn">Search</Button>
               </div>
             </div>
           {/if}
       </div>
     {/if}
-  <!-- Debug Panel (development, only) -->
+  <!-- Debug, Panel (development, only) -->
   {#if import.meta.env.DEV}
-    <div class="mt-8 bg-gray-50, nes-container">
+    <div class="mt-8, bg-gray-50, nes-container">
       <div, class="p-4">
-        <h4 class="text-sm font-semibold, mb-2">XState Debug</h4>
-        <div class="text-xs, space-y-1">
+        <h4 class="text-sm, font-semibold, mb-2">XState Debug</h4>
+        <div, class="text-xs, space-y-1">
           <p>Current State: <span, class="font-mono">{$machineState.value}</span></p>
           <p>Loading: {$isLoading}</p>
           <p>Error: {$hasError}</p>

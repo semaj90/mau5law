@@ -133,7 +133,7 @@ export const legalPlatformMachine = createMachine(
       error: null
     },
     states: { idle: {, on: { LOAD_CASE: {, target: 'loading_case' },
-          CREATE_CASE: { target: 'creating_case' },
+          CREATE_CASE: {, target: 'creating_case' },
           LINK_ENTITY: {, target: 'linking_entity' },
           ANALYZE_CROSS_SYSTEMS: {, target: 'analyzing_systems' },
           SYNC_ALL_SYSTEMS: {, target: 'syncing_systems' },
@@ -318,7 +318,7 @@ export const legalPlatformMachine = createMachine(
       ),
       // Link entity to case
       linkEntityToCase: fromPromise(
-        async ({ input }: { input: { caseId: string; entityType: string;, entityId: string } }) => {
+        async ({ input }: { input: {, caseId: string; entityType: string;, entityId: string } }) => {
           const response = await fetch(`/api/cases/${input.caseId}/link`, {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
@@ -462,7 +462,7 @@ export async function unifiedSearch(query: string, systems: ('citations' | 'repo
     searchPromises.push(
       fetch('/api/poi/search', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ query, type: `poi` })
       }).then(res => res.json()).then(data => ({ type: 'poi', results: data }))
     );

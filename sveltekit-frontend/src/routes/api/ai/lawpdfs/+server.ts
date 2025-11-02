@@ -194,7 +194,7 @@ async function handleFileUpload(request: Request, _locals: App.Locals): Promise<
           contentLength: file.size,
           embeddingGenerated: enableEmbedding,
           processingTime: 'In progress',
-          webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}' });
+          webSocketUrl: '${new URL(request.url).origin.replace(/^http/, 'ws')}/api/evidence/stream/${sessionId}` });'`
       } catch (error: any) {
         // Changed any to unknown
         console.error(`[LawPDF] Failed to process file ${file.name}:`, error);
@@ -239,7 +239,7 @@ async function processWithLocalModels(
     // 1. Generate comprehensive legal summary with gemma3-legal
     const summaryResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , model: summaryModel.replace(':latest', ''),
         prompt: legalPrompt,
@@ -262,7 +262,7 @@ async function processWithLocalModels(
     try {
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
@@ -346,7 +346,7 @@ Focus on accuracy and legal precision. Use clear, professional language.`;`
     basic: basePrompt,
     comprehensive: basePrompt + '\n\nProvide detailed analysis with citations and cross-references where applicable.',
     'legal-focused':
-      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.' };
+      basePrompt + '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.` };'`
   return enhancedPrompts[analysisType] || enhancedPrompts['comprehensive'];
 }
 function parseGemmaLegalResponse(response: string): { summary: string;, entities: LawPdfResponse['entities'];

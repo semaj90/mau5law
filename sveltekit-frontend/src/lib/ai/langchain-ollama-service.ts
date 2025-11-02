@@ -236,8 +236,7 @@ Instructions:
 - If the context doesn't contain sufficient information, state this clearly'
 - Use legal terminology appropriately
 - Structure your response clearly with bullet points or numbered lists when appropriate
-Answer:`;`
-  }
+Answer:`;' }'`
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
     if (documents.length === 0) return 0.1;
     // Simple confidence calculation based on document count and relevance

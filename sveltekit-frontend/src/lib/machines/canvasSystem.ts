@@ -92,7 +92,7 @@ export const canvasSystemMachine = createMachine<CanvasContext, CanvasEvent>(
         }
       },
       dragging: { on: {, END_DRAG: {
-            target: 'idle',
+           , target: 'idle',
             actions: ['endDrag']
           },
           UPDATE_NODE: {

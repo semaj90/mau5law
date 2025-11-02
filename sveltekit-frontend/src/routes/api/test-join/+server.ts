@@ -49,8 +49,7 @@ export const GET: RequestHandler = async _event => {
     try {
       console.log('Generated SQL:', getToSQL(joinQuery) ?? '[toSQL not available]');
     } catch {
-      /* ignore toSQL errors in environments where it's not present */'
-    }
+      /* ignore toSQL errors in environments where it's not present */` }'`
 
     // Execute the join query
     const joinResults = await joinQuery;

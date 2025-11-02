@@ -32,33 +32,33 @@
     handleContentChange(new Event("input")); aiSuggestions = []; }
   function setupAutoSave() { // Auto-save every 30 seconds if dirty setInterval(() => { if (isDirty && autoSaveEnabled) { saveReport(); }
     }, 30000); }
-</script> <div class="container mx-auto, px-4"> <!-- Header with title and, controls --> <div class="container mx-auto, px-4"> <input bind:value={ title } class="container mx-auto px-4"
+</script> <div class="container, mx-auto, px-4"> <!-- Header with title, and, controls --> <div class="container, mx-auto, px-4"> <input bind:value={ title } class="container mx-auto, px-4"
       placeholder="Report Title"
-      disabled={ readOnly } /> <div class="container mx-auto, px-4"> <div class="container mx-auto, px-4"> <span class="container mx-auto, px-4">{ wordCount } words</span> <span class="container mx-auto, px-4">{ characterCount } characters</span> <span class="container mx-auto, px-4">{ estimatedReadTime } min read</span> </div> <div class="container mx-auto, px-4"> {#if isLoading} <span class="container mx-auto, px-4">Saving...</span> {:else if lastSaved} <span class="container mx-auto, px-4">Saved {lastSaved.toLocaleTimeString()}</span> {:else if isDirty} <span class="container mx-auto, px-4">Unsaved changes</span> {/if} </div> <div class="container mx-auto, px-4"> <button class="container mx-auto px-4"
+      disabled={ readOnly } /> <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4"> <span class="container, mx-auto, px-4">{ wordCount } words</span> <span class="container, mx-auto, px-4">{ characterCount } characters</span> <span class="container, mx-auto, px-4">{ estimatedReadTime } min read</span> </div> <div class="container, mx-auto, px-4"> {#if isLoading} <span class="container, mx-auto, px-4">Saving...</span> {:else if lastSaved} <span class="container, mx-auto, px-4">Saved {lastSaved.toLocaleTimeString()}</span> {:else if isDirty} <span class="container, mx-auto, px-4">Unsaved changes</span> {/if} </div> <div class="container, mx-auto, px-4"> <button class="container mx-auto, px-4"
           onclick={() => (showAiPanel = !showAiPanel)} >
-          AI Assist </button> <button class="container mx-auto px-4"
+          AI Assist </button> <button class="container mx-auto, px-4"
           onclick={() => saveReport()} disabled={!isDirty || isLoading} >
-          Save </button> </div> </div> </div> <!-- Main editing, area --> <div class="container mx-auto, px-4"> <!-- Formatting, toolbar --> {#if !readOnly} <div class="container mx-auto, px-4"> <button type="button"
+          Save </button> </div> </div> </div> <!-- Main, editing, area --> <div class="container, mx-auto, px-4"> <!-- Formatting, toolbar --> {#if !readOnly} <div class="container, mx-auto, px-4"> <button, type="button"
           onclick={() => formatText("bold")} title="Bold (Ctrl+B)"
-        > <strong>B</strong> </button> <button type="button"
+        > <strong>B</strong> </button> <button, type="button"
           onclick={() => formatText("italic")} title="Italic (Ctrl+I)"
-        > <em>I</em> </button> <button type="button"
+        > <em>I</em> </button> <button, type="button"
           onclick={() => formatText("underline")} title="Underline (Ctrl+U)"
-        > <u>U</u> </button> <div class="container mx-auto, px-4"></div> <button type="button"
+        > <u>U</u> </button> <div class="container, mx-auto, px-4"></div> <button, type="button"
           onclick={() => insertCitationPrompt()} title="Insert Citation (Ctrl+K)"
-        > 📎 Citation </button> </div> {/if} <!-- Content, editor --> <div bind:this={ editorElement } class="container mx-auto px-4"; class:read-ly={ readOnly } role="textbox"
+        > 📎 Citation </button> </div> {/if} <!-- Content, editor --> <div bind:this={ editorElement } class="container mx-auto, px-4"; class:read-ly={ readOnly } role="textbox"
       aria-multiline="true"
       aria-label="Report content editor"
-    ></div> </div> <!-- Citation, sidebar --> <div; bind:this={ citationSidebar } class="container mx-auto px-4"
+    ></div> </div> <!-- Citation, sidebar --> <div; bind:this={ citationSidebar } class="container mx-auto, px-4"
     style="display: none;"
-  > <div class="container mx-auto, px-4"> <h3>Citations</h3> <button class="container mx-auto px-4"
+  > <div class="container, mx-auto, px-4"> <h3>Citations</h3> <button class="container mx-auto, px-4"
         onclick={() => (citationSidebar.style.display = "none")}>×</button >
-    </div> <div class="container mx-auto, px-4"> <div class="container mx-auto, px-4"> <input type="text" placeholder="Search, citations..." /> </div> <div class="container mx-auto, px-4"> {#each Array.isArray(availableCitations) ? availableCitations: [] as citation} <div class="container mx-auto, px-4"> <div class="container mx-auto, px-4">{citation.text}</div> <div class="container mx-auto, px-4">{citation.source}</div> <button class="container mx-auto px-4"
+    </div> <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4"> <input, type="text" placeholder="Search, citations..." /> </div> <div class="container, mx-auto, px-4"> {#each Array.isArray(availableCitations) ? availableCitations: [] as citation} <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4">{citation.text}</div> <div class="container, mx-auto, px-4">{citation.source}</div> <button class="container mx-auto, px-4"
               onclick={() => insertCitation(citation)} >
-              Add </button> </div> {/each} </div> </div> </div> <!-- AI suggestions, panel --> {#if showAiPanel} <div class="container mx-auto, px-4"> <div class="container mx-auto, px-4"> <h3>AI Suggestions</h3> <button class="container mx-auto, px-4" onclick={() => (showAiPanel = false)} >×</button >
-      </div> <div class="container mx-auto, px-4"> {#if isGeneratingAi} <div class="container mx-auto, px-4">Generating suggestions...</div> {:else if aiSuggestions.length > 0} {#each Array.isArray(aiSuggestions) ? aiSuggestions: [] as suggestion} <div class="container mx-auto, px-4"> <p>{ suggestion }</p> <button class="container mx-auto px-4"
+              Add </button> </div> {/each} </div> </div> </div> <!-- AI, suggestions, panel --> {#if showAiPanel} <div class="container, mx-auto, px-4"> <div class="container, mx-auto, px-4"> <h3>AI Suggestions</h3> <button class="container, mx-auto, px-4" onclick={() => (showAiPanel = false)} >×</button >
+      </div> <div class="container, mx-auto, px-4"> {#if isGeneratingAi} <div class="container, mx-auto, px-4">Generating suggestions...</div> {:else if aiSuggestions.length > 0} {#each Array.isArray(aiSuggestions) ? aiSuggestions: [] as suggestion} <div class="container, mx-auto, px-4"> <p>{ suggestion }</p> <button class="container mx-auto, px-4"
                 onclick={() => insertAiSuggestion(suggestion)} >
-                Use This </button> </div> {/each} {:else} <p>Start typing to get AI suggestions...</p> {/if} </div> </div> {/if} <!-- Selected citations, display --> {#if selectedCitations.length > 0} <div class="container mx-auto, px-4"> <h4>Citations in this report:</h4> {#each Array.isArray(selectedCitations) ? selectedCitations: [] as citation} <div class="container mx-auto, px-4"> <span class="container mx-auto, px-4">[{citation.source}]</span> <button class="container mx-auto px-4"
+                Use This </button> </div> {/each} {:else} <p>Start typing to get AI suggestions...</p> {/if} </div> </div> {/if} <!-- Selected, citations, display --> {#if selectedCitations.length > 0} <div class="container, mx-auto, px-4"> <h4>Citations in this report:</h4> {#each Array.isArray(selectedCitations) ? selectedCitations: [] as citation} <div class="container, mx-auto, px-4"> <span class="container, mx-auto, px-4">[{citation.source}]</span> <button class="container mx-auto, px-4"
             onclick={() => removeCitation(citation.id)}>×</button >
         </div> {/each} </div> {/if} </div> <style> /* @unocss-include */ .report-editor-container { display: flex; flex-direction: column; height: 100vh; max-height: 800px; border: 1px solid #e2e8f0; border-radius: 8px; background: white; position: relative; }
   .editor-header { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
@@ -103,5 +103,5 @@
   .selected-citation { display: inline-flex; align-items: center; gap: 4px; background: #dbeaf; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 12px; }
   .remove-citation { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 14px; line-height: 1; }
   .loading { text-align: center; color: #6b7280; font-style: italic; }
-</style> <!-- TODO: migrate export lets to $props(); CommonProps, assumed. -->
+</style> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
 

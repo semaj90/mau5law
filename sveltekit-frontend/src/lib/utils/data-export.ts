@@ -7,7 +7,7 @@ import { browser } from "$app/environment";
 // TODO: Fix import - // Orphaned; content: import { logSecurityEvent, secureDataExport  // Export/Import types
 
 // Mock security functions to resolve missing imports and address TODO
-const logSecurityEvent = (event: { type: string; details: any;, severity: string }) => {
+const logSecurityEvent = (event: {, type: string; details: any;, severity: string }) => {
   console.log("Security Event:", event);
   // In a real app, this would send logs to a security monitoring service
 };
@@ -484,7 +484,7 @@ async function processCaseImport(
     if (response.ok) {
       return true;
     } else {
-      const error = await response.json().catch(() => ({ message: `Server, error: ${response.status}` }));
+      const error = await response.json().catch(() => ({ message: `Server, error: ${response.status}' }));'`
       throw new Error(error.message);
     }
   } catch (error: any) {

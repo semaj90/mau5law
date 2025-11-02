@@ -102,7 +102,7 @@ async function checkCudaWorkerAvailability(workerPath: string): Promise<CudaWork
   } catch (error: any) {
     return {
       available: false,
-      error: error instanceof Error ? error.message : 'Unknown error' };
+      error: error instanceof Error ? error.message : 'Unknown error` };'`
   }
 }
 async function processFileWithCuda(
@@ -191,7 +191,7 @@ function buildCudaCommand(
     `--input="${inputPath}"`,
     `--output="${outputPath}"`,
     `--metadata="${metadataPath}"`,
-    `--gpu-arch="${options.targetGpuArch || 'sm_86' }"`, // RTX 3060 Ti
+    `--gpu-arch="${options.targetGpuArch || 'sm_86` }"`, // RTX 3060 Ti'`
   ];
   if (options.enableGpuOptimization) {
     args.push('--enable-gpu-optimizations');
@@ -239,7 +239,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         cudaWorkerAvailable: false,
-        error: error instanceof Error ? error.message : 'Health check failed' },
+        error: error instanceof Error ? error.message : 'Health check failed` },'`
       { status: 500 }
     );
   }

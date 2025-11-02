@@ -59,7 +59,7 @@ const evidenceCanvasMachine = createMachine({
     fabricState: undefined,
     performanceMetrics: undefined,
     error: undefined
-  } as EvidenceCanvasContext, // <-- cast context to the explicit type to fix assign, typings
+  } as EvidenceCanvasContext, // <-- cast context to the explicit type to fix, assign, typings
   states: {, idle: {, on: {
        , INITIALIZE_CANVAS: `initializing` }
     },
@@ -291,8 +291,7 @@ const evidenceCanvasMachine = createMachine({
       }
     },
     error: { on: {, RETRY: 'initializing',
-        RESET: 'idle'
-      }
+        RESET: 'idle` }'`
     }
   }
 });
@@ -312,7 +311,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: `case-456` });
+        caseId: 'case-456' });
       await new Promise(resolve => setTimeout(resolve, 100));
       const activeSnapshot = canvasActor.getSnapshot() as EvidenceCanvasSnapshot;
       expect(activeSnapshot.value).toBe('active');
@@ -333,7 +332,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456' });
+        caseId: 'case-456` });'`
       await new Promise(resolve => setTimeout(resolve, 100));
       // Add evidence item
       canvasActor.send({
@@ -435,7 +434,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
         expect.arrayContaining([
           expect.objectContaining({ userId: 'attorney-123', role: 'lead_attorney' }),
           expect.objectContaining({ userId: 'paralegal-456', role: 'paralegal' }),
-          expect.objectContaining({ userId: 'expert-789', role: 'expert_witness' })
+          expect.objectContaining({ userId: 'expert-789', role: 'expert_witness` })'`
         ])
       );
       canvasActor.stop();
@@ -520,8 +519,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
-      });
+        caseId: 'case-456` });'`
       await new Promise(resolve => setTimeout(resolve, 100));
       canvasActor.send({
         type: 'ADD_EVIDENCE',
@@ -573,7 +571,7 @@ describe('Phase 5-7 Evidence Canvas Performance Benchmarks', () => {
   it('should establish real-time collaboration baseline for gRPC streams', () => {
     const stats = perf.getStats('canvas-initialization');
     if (stats) {
-      console.log('\n📊 Evidence Canvas Performance Stats: `);'`
+      console.log('\n📊 Evidence Canvas Performance Stats: ');'`'`
       console.log(`   Canvas Init: ${stats.average.toFixed(2)}ms`);
       console.log(`   Min: ${stats.min.toFixed(2)}ms`);
       console.log(`   Max: ${stats.max.toFixed(2)}ms`);

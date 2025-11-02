@@ -372,16 +372,16 @@
           {#if showAnalysisPanel}
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <Button.Root variant="ghost" size="sm" class="p-2 nes-btn is-small">
+                <Button variant="ghost" size="sm" class="p-2 nes-btn is-small">
                   <MagnifyingGlassIcon class="w-4 h-4" />
-                </Button.Root>
+                </Button>
               </Tooltip.Trigger>
               <Tooltip.Content>
                 <p>View Analysis</p>
               </Tooltip.Content>
             </Tooltip.Root>
           {/if}
-          <Button.Root class="nes-btn is-small" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button.Root>
+          <Button class="nes-btn is-small" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button>
         </div>
       </div>
     </div>
@@ -454,13 +454,13 @@
             class="flex-1 min-h-[40px] max-h-[120px] resize-none nes-input"
           />
         </div>
-        <Button.Root
+        <Button
           onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end nes-btn is-primary"
         >
           <PaperPlaneIcon class="w-4 h-4" />
-        </Button.Root>
+        </Button>
       </div>
       {#if processingMetrics.tokensPerSecond > 0}
         <div class="flex gap-4 mt-2 text-xs nes-text is-disabled">
@@ -500,7 +500,7 @@
             {/if}
         </div>
         <Dialog.Footer class="nes-container is-dark">
-          <Button.Root class="nes-btn is-small" variant="ghost">Close</Button.Root>
+          <Button class="nes-btn is-small" variant="ghost">Close</Button>
         </Dialog.Footer>
       </Dialog.Content>
     </Dialog.Root>

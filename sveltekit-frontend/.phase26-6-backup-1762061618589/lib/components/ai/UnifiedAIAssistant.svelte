@@ -8,7 +8,7 @@
   // constructors instead of namespace/instance objects.
   // @ts-nocheck
   import { onDestroy, tick } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // If your UI lib exposes a dedicated Input component file, prefer importing it
   // directly. Keep this change minimal for now.
   import { Input } from '$lib/components/ui/enhanced-bits.svelte''; // import as default to match typical Bits-UI exports

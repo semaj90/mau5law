@@ -423,7 +423,7 @@
     {/if}
 
     <div class="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <Card.Root variant="legal" class="space-y-6" title="Account Information">
+      <Card variant="legal" class="space-y-6" title="Account Information">
         <form class="space-y-5" onsubmit={submitProfileUpdate}>
           <div class="grid gap-5 md:grid-cols-2">
             <Input
@@ -484,9 +484,9 @@
           </h3>
           <AvatarUpload userId={typeof user?.id === 'string' ? user?.id : user?.id?.toString()} currentAvatar={user?.avatarUrl ?? undefined} />
         </div>
-      </Card.Root>
+      </Card>
 
-      <Card.Root variant="case" class="space-y-4" title="Account Statistics">
+      <Card variant="case" class="space-y-4" title="Account Statistics">
         <div class="grid gap-3">
           <div class="stat-card">
             <span class="stat-value">{stats.totalCases}</span>
@@ -515,10 +515,10 @@
             Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered Postgres services.
           </p>
         </div>
-      </Card.Root>
+      </Card>
     </div>
 
-    <Card.Root variant="evidence" class="space-y-6" title="AI Knowledge Base">
+    <Card variant="evidence" class="space-y-6" title="AI Knowledge Base">
       <p class="text-sm text-gray-600 dark:text-gray-300">
         Upload briefs, filings, exhibits, or research memos to enrich the GPU-backed RAG pipeline. Files are processed
         through the UnoCSS-friendly pipeline and vectorized via Drizzle-managed workflows.
@@ -573,7 +573,7 @@
           </div>
         </div>
       {/if}
-    </Card.Root>
+    </Card>
   </div>
 {/if}
 

@@ -310,7 +310,7 @@ export class VectorSearchCache extends QueryCache {
       type: `vector-search` };
     return this.getOrQuery(query, searchFn, {
       ttl: options?.ttl,
-      namespace: `vector-search` });
+      namespace: `vector-search' });'`
   }
 }
 /**
@@ -340,7 +340,7 @@ export class CaseQueryCache extends QueryCache {
     };
     return this.getOrQuery(query, queryFn, {
       ttl: options?.ttl,
-      namespace: `case:${caseId}` });
+      namespace: `case:${caseId}' });'`
   }
   /**
    * Invalidate all cache for a specific case
@@ -375,7 +375,7 @@ export class RAGQueryCache extends QueryCache {
       type: `rag-query` };
     return this.getOrQuery(query, ragFn, {
       ttl: options?.ttl,
-      namespace: `rag` });
+      namespace: `rag' });'`
   }
 }
 // Export singleton instances
@@ -390,14 +390,14 @@ export const QUERY_CACHE_EXAMPLES = `
 // 1. BASIC QUERY CACHING
 import { defaultQueryCache } from '$lib/server/optimize/query-cache';
 const { data, cacheHit } = await defaultQueryCache.getOrQuery(
-  { caseId: '123', type: 'evidence-list` },'`
+  { caseId: '123', type: 'evidence-list' },'`'`
   async () => {
     // Expensive database query
     return await db.select().from(evidence).where(eq(evidence.caseId, '123'));
   },
-  { ttl: 3600, namespace: `evidence` }
+  { ttl: 3600, namespace: `evidence' }'`
 );
-console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS` } (\${cacheHit.source})\`);
+console.log(\`Cache \${cacheHit.hit ? 'HIT' : `MISS' } (\${cacheHit.source})\`);'`
 console.log(\`Latency: \${cacheHit.latency.toFixed(2)}ms\`);
 // 2. VECTOR SEARCH CACHING
 import { vectorSearchCache } from '$lib/server/optimize/query-cache';
@@ -407,7 +407,7 @@ const { data: searchResults, cacheHit } = await vectorSearchCache.cacheVectorSea
     // Expensive vector search
     return await faissGPU.search(queryEmbedding, 50);
   },
-  { ttl: 1800, caseId: `123` }
+  { ttl: 1800, caseId: `123' }'`
 );
 // 3. RAG QUERY CACHING
 import { ragQueryCache } from '$lib/server/optimize/query-cache';

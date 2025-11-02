@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available' },
+          error: 'Cluster manager not available` },'`
         { status: 503 }
       );
     }
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
       action: 'cluster_scale',
       previousWorkers: currentWorkers,
       newWorkers: workers,
-      initiator: `admin_api' };'`
+      initiator: `admin_api` };'`'`
     console.log('📝 Scaling audit log:', auditLog);
     return json({
       success: true,
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async () => {
     if (!clusterManager) {
       return json(
         {
-          error: 'Cluster manager not available' },
+          error: 'Cluster manager not available` },'`
         { status: 503 }
       );
     }

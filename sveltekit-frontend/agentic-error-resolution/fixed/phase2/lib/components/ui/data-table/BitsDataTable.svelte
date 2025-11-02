@@ -3,8 +3,8 @@
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
-  import { BitsInput } from '../input/BitsInput.svelte';
-  import { Button } from '../button/Button.svelte';
+  import  BitsInput  from "../input/BitsInput.svelte";
+  import  Button  from "../button/Button.svelte";
   export interface DataTableColumn<T = any> {
     key: string;
     label: string;
@@ -124,11 +124,11 @@
           />
         {/if}
       {#if filterable}
-        <Button.Root class="bits-btn" variant="ghost" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 <Filter class="w-4 h-4" />
       {/if}
       {#if exportable}
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleExport}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={handleExport}>
 <Download class="w-4 h-4 mr-2" />
           Export
       {/if}
@@ -225,7 +225,7 @@
     </div>
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           size="sm"
           disabled={currentPage === 0}
@@ -236,7 +236,7 @@ currentPage = Math.max(0, currentPage - 1)}
         <span class="px-3 py-1 text-yorha-text-primary">
           Page {currentPage + 1} of {totalPages}
         </span>
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           size="sm"
           disabled={currentPage >

@@ -321,14 +321,14 @@
       </div>
 
       <!-- Upload Button -->
-      <Button.Root
+      <Button
         onclick={uploadFile}
         disabled={!selectedFile || uploading}
         class="nes-btn is-success"
         style="width: 100%;"
       >
         {uploading ? '⏳ UPLOADING...' : '📤 UPLOAD TO RAG SYSTEM'}
-      </Button.Root>
+      </Button>
 
       <!-- Upload Result -->
       {#if uploadResult}
@@ -416,14 +416,14 @@
       </div>
 
       <!-- Search Button -->
-      <Button.Root
+      <Button
         onclick={searchDocuments}
         disabled={!searchQuery.trim() || searching}
         class="nes-btn is-primary"
         style="width: 100%;"
       >
         {searching ? '🔍 SEARCHING...' : '🔎 SEARCH'}
-      </Button.Root>
+      </Button>
     </div>
     </div>
   {/if}
@@ -587,14 +587,14 @@
         </div>
 
         <!-- Search Button -->
-        <Button.Root
+        <Button
           onclick={searchDocuments}
           disabled={!searchQuery.trim() || searching}
           class="nes-btn is-primary"
           style="width: 100%;"
         >
           {searching ? '🔍 SEARCHING...' : '🔎 SEARCH'}
-        </Button.Root>
+        </Button>
       </div>
 
       <!-- Search Status -->

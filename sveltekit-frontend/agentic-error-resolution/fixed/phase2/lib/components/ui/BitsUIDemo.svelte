@@ -1,10 +1,10 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { BitsDialog } from './dialog/BitsDialog.svelte';
-  import { BitsSelect } from './select/BitsSelect.svelte';
-  import { BitsInput } from './input/BitsInput.svelte';
-  import { Button } from './button/Button.svelte';
+  import  BitsDialog  from "./dialog/BitsDialog.svelte";
+  import  BitsSelect  from "./select/BitsSelect.svelte";
+  import  BitsInput  from "./input/BitsInput.svelte";
+  import  Button  from "./button/Button.svelte";
   import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
   // Demo state
   let showDialog = $state(false);
@@ -101,7 +101,7 @@
       💬 Dialog Components
     </h2>
     <!-- Dialog Trigger Button -->
-    <Button.Root class="bits-btn"
+    <Button class="bits-btn"
       variant="primary"
       size="md"
       onclick={() =>
@@ -151,19 +151,19 @@ showDialog = true}
         </div>
       {/snippet}
 {#snippet footer()}
-  <Button.Root class="bits-btn"
+  <Button class="bits-btn"
     variant="ghost"
     onclick={() => showDialog = false}
   >
     Cancel
-  </Button.Root>
-  <Button.Root class="bits-btn"
+  </Button>
+  <Button class="bits-btn"
     variant="primary"
     onclick={handleCreateCase}
     disabled={!caseName || !clientName || !selectedCaseType}
   >
     Create Case
-  </Button.Root>
+  </Button>
 {/snippet}
     </BitsDialog>
   </section>
@@ -184,12 +184,12 @@ showDialog = true}
                 {sampleCase.type} • {sampleCase.status}
               </p>
 <div class="flex gap-2">
-  <Button.Root class="bits-btn" variant="ghost" size="sm">
+  <Button class="bits-btn" variant="ghost" size="sm">
     <Eye class="w-4 h-4" />
-  </Button.Root>
-  <Button.Root class="bits-btn" variant="ghost" size="sm">
+  </Button>
+  <Button class="bits-btn" variant="ghost" size="sm">
     <Edit class="w-4 h-4" />
-  </Button.Root>
+  </Button>
 </div>
             </div>
           </div>

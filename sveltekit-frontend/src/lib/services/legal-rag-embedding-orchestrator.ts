@@ -206,7 +206,7 @@ class LegalRAGEmbeddingOrchestrator {
     if (cachedRaw) {
       try {
         const cached = JSON.parse(cachedRaw) as { context: RAGContext; timestamp: string };
-        if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5 minutes, TTL
+        if (Date.now() - new Date(cached.timestamp).getTime() < 300000) { // 5, minutes, TTL
           return cached.context;
         }
       } catch (parseError) {
@@ -399,7 +399,7 @@ class LegalRAGEmbeddingOrchestrator {
         queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional
       ]),
       embedding_models: ['gemma3-legal:latest', 'embeddinggemma:latest', 'legal-bert'], // Updated models
-      metadata_filters: { jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed' },
+      metadata_filters: { jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed` },'`
       schema_types: ['legal-case'],
       hybrid_weights: { semantic: 0.25, legal: 0.35, contextual: 0.25, temporal: 0.15 },
       similarity_threshold: options.confidence_threshold ?? 0.75,
@@ -439,7 +439,7 @@ class LegalRAGEmbeddingOrchestrator {
       `Case Type: ${legalCase.case_type}`,
       `Jurisdiction: ${legalCase.jurisdiction}`,
       `Practice Area: ${legalCase.practice_area}`,
-      `Key Issues: ${Array.isArray(legalCase.key_issues) ? legalCase.key_issues.join(', ') : '' }`
+      `Key Issues: ${Array.isArray(legalCase.key_issues) ? legalCase.key_issues.join(', ') : '` }`'`
     ].join(' | ');
     return `[${contextElements}] ${query}`;
   }

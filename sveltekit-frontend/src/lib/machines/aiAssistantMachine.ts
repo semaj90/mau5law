@@ -373,7 +373,7 @@ class $WebWorkerPool {
         }
       }
     `;`
-    const blob = new Blob([code], { type: `application/javascript' });'`
+    const blob = new Blob([code], { type: `application/javascript` });'`'`
     const worker = new Worker(URL.createObjectURL(blob));
     return new Promise<TaskResult>((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -607,8 +607,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error('[RabbitMQ] subscriber callback error:', err);'
-            }
+              console.error('[RabbitMQ] subscriber callback error:', err);` }`'
             try {
               channel.ack(msg);
             } catch (e) {
@@ -663,8 +662,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error('[RabbitMQ] case subscriber callback error:', err);'
-            }
+              console.error('[RabbitMQ] case subscriber callback error:', err);` }`'
             try {
               channel.ack(msg);
             } catch (e) {
@@ -717,8 +715,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error('[RabbitMQ] ai analysis subscriber callback error:', err);'
-            }
+              console.error('[RabbitMQ] ai analysis subscriber callback error:', err);` }`'
             try {
               channel.ack(msg);
             } catch (e) {
@@ -831,8 +828,7 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
         src: fromPromise(async ({ input }: { input: {, currentQuery: string } }): Promise<ProcessQueryOutput> => {
           // simple echo behavior for now; replace with real implementation later
           await new Promise(r => setTimeout(r, 10));
-          return { response: `Echo: ${input.currentQuery}' };'`
-        }),
+          return { response: 'Echo: ${input.currentQuery}' };'` }),'`
         onDone: {
           target: 'idle',
           actions: assign<AIAssistantContext, { output?: ProcessQueryOutput }>((context, event) => {
@@ -847,8 +843,7 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
               response: resp,
               conversationHistory: [...context.conversationHistory, newEntry],
               isProcessing: false,
-              currentQuery: `' };'`
-          })
+              currentQuery: '' };'` })'`
         },
         onError: {
           target: 'error',

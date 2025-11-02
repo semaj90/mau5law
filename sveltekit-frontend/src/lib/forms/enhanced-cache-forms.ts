@@ -157,8 +157,7 @@ export class CacheFirstFormManager {
         const res = result as FormResult;
         this.formErrors.update(errors => ({
           ...errors,
-          [formId]: res.error ?? 'unknown error` }));'`
-      }
+          [formId]: res.error ?? 'unknown error' }));'` }'`
     });
     return {
       form,
@@ -233,8 +232,7 @@ export class CacheFirstFormManager {
           await cacheFirstService.createEvidence(evidenceData);
           this.cleanupForm(formId);
         } else if (res.type === 'error') {
-          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error` }));'`
-        }
+          this.formErrors.update(e => ({ ...(e || {}), [formId]: res.error ?? 'unknown error' }));'` }'`
       }
     });
     return {

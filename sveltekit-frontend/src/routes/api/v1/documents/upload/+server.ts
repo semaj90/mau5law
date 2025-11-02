@@ -179,7 +179,7 @@ export const POST = async ({ request, locals }) => {
     let embeddings: number[][] = [];
     let embeddingModel = 'none';
     try {
-      const result = await serverGenerateEmbeddings({ texts: chunks, model: `embeddinggemma:latest` });
+      const result = await serverGenerateEmbeddings({ texts: chunks, model: `embeddinggemma:latest' });'`
       embeddings = result.embeddings;
       embeddingModel = result.source || 'server-embedding-service';
       console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
@@ -192,7 +192,7 @@ export const POST = async ({ request, locals }) => {
         const embeddingServiceUrl = process.env.EMBEDDING_SERVICE_URL || 'http://localhost:8094/api/embed';
         const fallbackResp = await fetch(embeddingServiceUrl, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({, texts: chunks }),
           signal: AbortSignal.timeout(60000)
         });
@@ -249,8 +249,7 @@ export const POST = async ({ request, locals }) => {
 					${chunks[i]},
 					${embedding ? sql`${JSON.stringify(embedding)}::vector` : null}
 				)
-			`);`
-    }
+			`);' }'`
 
     console.log(`✅ [Upload] Stored document and ${chunks.length} chunks in PostgreSQL`);
 
@@ -403,12 +402,12 @@ async function indexInQdrant(
         filename: metadata.filename,
         user_id: metadata.userId,
         case_id: metadata.caseId,
-        source: `minio://${metadata.bucket}/${metadata.objectName}` }
+        source: `minio://${metadata.bucket}/${metadata.objectName}' }'`
     }));
 
     await fetch(`${qdrantUrl}/collections/${collectionName}/points`, {
       method: 'PUT',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ points })
     });
 
@@ -444,7 +443,7 @@ export const GET = async () => {
   -H "Cookie: legal_ai_session=..." \\
   -F "file=@contract.pdf" \\
   -F "caseId=case_123" \\
-  -F "description=Employment contract"` },`
+  -F "description=Employment contract"' },`'`
     timestamp: new Date().toISOString()
   });
 };

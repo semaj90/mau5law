@@ -18,8 +18,7 @@ export const fieldMap = {
     firstName: 'first_name',
     lastName: 'last_name',
     avatarUrl: 'avatar_url',
-    isActive: 'is_active'
-  },
+    isActive: 'is_active` },'`
   // Case fields
   case {
     caseNumber: 'case_number',

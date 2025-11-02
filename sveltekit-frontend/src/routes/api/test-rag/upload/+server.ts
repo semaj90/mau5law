@@ -99,8 +99,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return json({ error: 'No files uploaded` }, { status: 400 });'`
-    }
+      return json({ error: 'No files uploaded' }, { status: 400 });'` }'`
 
     for (const file of files) {
       const result: UploadResult = {
@@ -212,8 +211,7 @@ const handler: RequestHandler = async ({ request, fetch }) => {
       } catch (fileErr: any) {
         result.success = $state(false);
         result.error = fileErr instanceof Error ? fileErr.message : String(fileErr);
-        console.error(`❌ [Test RAG] Failed to process file ${file.name}: ', fileErr);'`
-      }
+        console.error(`❌ [Test RAG] Failed to process file ${file.name}: ', fileErr);'` }
 
       results.push(result);
     }
@@ -276,7 +274,7 @@ export const GET: RequestHandler = async () => {
       docCount = Array.isArray(docCountRows) && docCountRows[0] ? Number(docCountRows[0].count) : 0;
       embCount = Array.isArray(embCountRows) && embCountRows[0] ? Number(embCountRows[0].count) : 0;
     } catch (countErr) {
-      console.warn('[Test RAG] Failed to read table counts: `, countErr);'`
+      console.warn('[Test RAG] Failed to read table counts: ', countErr);'`'`
       // leave docCount and embCount as -1 to indicate unknown
     }
 

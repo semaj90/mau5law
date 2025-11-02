@@ -104,8 +104,7 @@ export async function logout(): Promise<void> {
       await fetch('/api/auth/logout', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ${token}` }'`
-      });
+          'Authorization': 'Bearer ${token}' }'' });
     }
     // Clear local storage
     TokenManager.clearAll();
@@ -126,7 +125,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
     const response = await fetch('/api/auth/register', {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify(data)
     });
     if (!response.ok) {
@@ -167,7 +166,7 @@ export async function refreshTokenIfNeeded(): Promise<boolean> {
     const response = await fetch('/api/auth/refresh', {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({ refreshToken })
     });
     if (!response.ok) {
@@ -187,5 +186,5 @@ export async function refreshTokenIfNeeded(): Promise<boolean> {
 }
 export function getAuthHeaders(): Record<string, string> {
   const token = TokenManager.getToken();
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
+  return token ? { 'Authorization': `Bearer ${token}' } : {};'`
 }

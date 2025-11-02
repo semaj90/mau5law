@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found` },
+          message: `Patch with ID ${patchId} was not found' },'`
         { status: 404 }
       );
     }
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not applicable for rollback',
-          message: `Patch ${patchId} is in, status: ${demoPatch.status}. Only applied patches can be rolled back.` },
+          message: `Patch ${patchId} is in, status: ${demoPatch.status}. Only applied patches can be rolled back.' },'`
         { status: 400 }
       );
     }
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: `Successfully rolled back; patch: ${demoPatch.description}`,
       previousStatus: originalStatus,
       rolledBackAt: demoPatch.rolledBackAt,
-      backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup` };
+      backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup' };'`
 
     // Log the rollback for monitoring
     console.log(`↩️ Patch rolled back: ${patchId} from ${demoPatch.filePath}`);
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Patch with ID ${patchId} was not found` },
+          message: `Patch with ID ${patchId} was not found' },'`
         { status: 404 }
       );
     }

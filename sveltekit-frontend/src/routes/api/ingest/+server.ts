@@ -41,7 +41,7 @@ async function proxyToGo(path: string, init?: RequestInit): Promise<any> {
   } catch (err) {
     return new Response(JSON.stringify({ success: false, error: String(err) }), {
       status: 502,
-      headers: { 'content-type': `application/json` }
+      headers: { 'content-type': `application/json' }'`
     });
   }
 }
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             status: 200,
             headers: {
               'content-type': 'application/json',
-              'set-cookie': `anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly` }
+              'set-cookie': `anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' }'`
           });
         return json(resp);
       }
@@ -121,15 +121,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           status: 200,
           headers: {
             'content-type': 'application/json',
-            'set-cookie': 'anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly` }'`
-        });
+            'set-cookie': 'anonId=${anonIdCreated}; Path=/; Max-Age=3600; HttpOnly' }'' });
       return json(resp);
     }
 
     const init: RequestInit = {
       method: 'POST',
       body: JSON.stringify(data),
-      headers: { 'content-type': `application/json` }
+      headers: { 'content-type': `application/json' }'`
     };
     if (anonIdCreated) init.headers = { ...(init.headers || {}), 'x-anon-id': anonIdCreated };
     return await proxyToGo('/api/ingest', init);

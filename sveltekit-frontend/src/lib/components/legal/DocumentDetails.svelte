@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -164,15 +164,15 @@ import type { Document } from '$lib/types';
     return `${(ms / 1000).toFixed(2)}s`;
   }
 </script>
-<!-- Document Details, Modal -->
+<!-- Document, Details, Modal -->
 {#if isVisible}
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4, z-50">
-    <div class="bg-white rounded-lg shadow-2xl w-full max-w-6xl, max-h-[90vh] overflow-hidden">
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center, p-4, z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-full, max-w-6xl, max-h-[90vh] overflow-hidden">
       <!-- Header -->
-      <div class="bg-blue-600 text-white px-6 py-4 flex justify-between, items-center">
+      <div class="bg-blue-600 text-white px-6 py-4 flex, justify-between, items-center">
         <div>
-          <h2 class="text-2xl, font-bold">Document Analysis</h2>
-          <p class="text-blue-100, text-sm">
+          <h2, class="text-2xl, font-bold">Document Analysis</h2>
+          <p, class="text-blue-100, text-sm">
             {#if $loadingSource === 'cache'}
               📦 Loading from cache... ({formatDuration(cacheHitTime)})
             {:else if $loadingSource === 'server'}
@@ -184,14 +184,14 @@ import type { Document } from '$lib/types';
             {/if}
           </p>
         </div>
-        <button onclick={onClose} class="text-white hover:text-blue-200 text-2xl, font-bold" aria-label="Close">
+        <button onclick={onClose} class="text-white hover:text-blue-200, text-2xl, font-bold" aria-label="Close">
           ×
         </button>
       </div>
       <!-- Loading, State -->
       {#if $isLoading}
-        <div class="p-8, text-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto, mb-4"></div>
+        <div, class="p-8, text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600, mx-auto, mb-4"></div>
           <p, class="text-gray-600">
             {#if $loadingSource === 'cache'}
               Checking cache...
@@ -204,9 +204,9 @@ import type { Document } from '$lib/types';
         {/if}
       <!-- Error, State -->
       {#if $errorMessage}
-        <div class="p-8, text-center">
-          <div class="text-red-600 text-xl, mb-4">❌ Error</div>
-          <p class="text-red-700, mb-4">{$errorMessage}</p>
+        <div, class="p-8, text-center">
+          <div class="text-red-600, text-xl, mb-4">❌ Error</div>
+          <p, class="text-red-700, mb-4">{$errorMessage}</p>
           <button
             onclick={() => loadDocumentDetails(documentId, true)}
             class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
@@ -216,34 +216,34 @@ import type { Document } from '$lib/types';
         {/if}
       <!-- Document, Content -->
       {#if $documentData && !$isLoading}
-        <div class="overflow-y-auto, max-h-[calc(90vh-120px)]">
-          <!-- Performance Metrics, Bar -->
-          <div class="bg-gray-100 px-6 py-3 border-b grid grid-cols-2 md:grid-cols-4 gap-4, text-sm">
+        <div, class="overflow-y-auto, max-h-[calc(90vh-120px)]">
+          <!-- Performance, Metrics, Bar -->
+          <div class="bg-gray-100 px-6 py-3 border-b grid grid-cols-2 md:grid-cols-4, gap-4, text-sm">
             <div>
-              <span class="font-semibold, text-green-600">Cache Hit:</span>
+              <span, class="font-semibold, text-green-600">Cache Hit:</span>
               {cacheHitTime ? formatDuration(cacheHitTime) : 'No cache'}
             </div>
             <div>
-              <span class="font-semibold, text-blue-600">Server Fetch:</span>
+              <span, class="font-semibold, text-blue-600">Server Fetch:</span>
               {serverFetchTime ? formatDuration(serverFetchTime) : 'Not fetched'}
             </div>
             <div>
-              <span class="font-semibold, text-purple-600">Related Docs:</span>
+              <span, class="font-semibold, text-purple-600">Related Docs:</span>
               {$relatedDocuments.length}
             </div>
             <div>
-              <span class="font-semibold, text-orange-600">Graph Links:</span>
+              <span, class="font-semibold, text-orange-600">Graph Links:</span>
               {$graphConnections.length}
             </div>
           </div>
-          <!-- Main Content, Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6, p-6">
+          <!-- Main, Content, Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3, gap-6, p-6">
             <!-- Document, Content -->
             <div, class="lg:col-span-2">
-              <div class="bg-white rounded-lg border border-gray-200, p-6">
-                <div class="flex justify-between items-start, mb-4">
-                  <h3 class="text-xl font-semibold, text-gray-800">Document Content</h3>
-                  <div class="flex, gap-2">
+              <div class="bg-white rounded-lg border, border-gray-200, p-6">
+                <div class="flex justify-between, items-start, mb-4">
+                  <h3 class="text-xl, font-semibold, text-gray-800">Document Content</h3>
+                  <div, class="flex, gap-2">
                     <button
                       onclick={() => loadDocumentDetails(documentId, true)}
                       class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
@@ -262,19 +262,19 @@ import type { Document } from '$lib/types';
                 </div>
                 <div, class="space-y-4">
                   <div>
-                    <span class="font-medium, text-gray-700">Title:</span>
+                    <span, class="font-medium, text-gray-700">Title:</span>
                     <p, class="text-gray-900">{$documentData.title}</p>
                   </div>
                   <div>
-                    <span class="font-medium, text-gray-700">Type:</span>
-                    <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm, ml-2">
+                    <span, class="font-medium, text-gray-700">Type:</span>
+                    <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded, text-sm, ml-2">
                       {$documentData.document_type || 'Unknown'}
                     </span>
                   </div>
                   <div>
-                    <span class="font-medium, text-gray-700">Content:</span>
-                    <div class="mt-2 p-4 bg-gray-50 rounded-lg max-h-96, overflow-y-auto">
-                      <pre class="whitespace-pre-wrap text-sm, text-gray-800">
+                    <span, class="font-medium, text-gray-700">Content:</span>
+                    <div class="mt-2 p-4 bg-gray-50 rounded-lg, max-h-96, overflow-y-auto">
+                      <pre class="whitespace-pre-wrap, text-sm, text-gray-800">
                         {$documentData.content
                           ? $documentData.content.substring(0, 2000) +
                             ($documentData.content.length > 2000 ? '...' : '')
@@ -284,32 +284,32 @@ import type { Document } from '$lib/types';
                   </div>
                 </div>
               </div>
-              <!-- GPU Analysis, Results -->
+              <!-- GPU, Analysis, Results -->
               {#if $gpuAnalysis}
-                <div class="bg-purple-50 rounded-lg border border-purple-200 p-6, mt-6">
-                  <h3 class="text-xl font-semibold text-purple-800 mb-4 flex items-center, gap-2">
+                <div class="bg-purple-50 rounded-lg border border-purple-200, p-6, mt-6">
+                  <h3 class="text-xl font-semibold text-purple-800 mb-4 flex, items-center, gap-2">
                     🧠 GPU Analysis (FlashAttention2 RTX 3060 Ti)
                   </h3>
-                  <div class="grid grid-cols-2, gap-4">
+                  <div class="grid, grid-cols-2, gap-4">
                     <div>
-                      <span class="font-medium, text-purple-700">Confidence:</span>
-                      <div class="w-full bg-purple-200 rounded-full h-2, mt-1">
+                      <span, class="font-medium, text-purple-700">Confidence:</span>
+                      <div class="w-full bg-purple-200 rounded-full, h-2, mt-1">
                         <div
                           class="bg-purple-600 h-2 rounded-full"
                           style="width: {($gpuAnalysis.confidence * 100).toFixed(1)}%"
                         ></div>
                       </div>
-                      <p class="text-sm text-purple-600, mt-1">{($gpuAnalysis.confidence * 100).toFixed(1)}%</p>
+                      <p class="text-sm, text-purple-600, mt-1">{($gpuAnalysis.confidence * 100).toFixed(1)}%</p>
                     </div>
                     <div>
-                      <span class="font-medium, text-purple-700">Processing Time:</span>
+                      <span, class="font-medium, text-purple-700">Processing Time:</span>
                       <p, class="text-purple-800">{formatDuration($gpuAnalysis.processingTime)}</p>
                     </div>
                   </div>
                   {#if $gpuAnalysis.legalAnalysis}
                     <div, class="mt-4">
-                      <h4 class="font-medium text-purple-700, mb-2">Legal Analysis:</h4>
-                      <div class="bg-white rounded p-3, text-sm">
+                      <h4 class="font-medium, text-purple-700, mb-2">Legal Analysis:</h4>
+                      <div class="bg-white rounded, p-3, text-sm">
                         <p>
                           <strong>Relevance:</strong>
                           {($gpuAnalysis.legalAnalysis.relevanceScore * 100).toFixed(1)}%
@@ -330,19 +330,19 @@ import type { Document } from '$lib/types';
             <div, class="space-y-6">
               <!-- Related, Documents -->
               {#if $relatedDocuments.length > 0}
-                <div class="bg-white rounded-lg border border-gray-200, p-4">
-                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center, gap-2">
+                <div class="bg-white rounded-lg border, border-gray-200, p-4">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex, items-center, gap-2">
                     🔗 Related Documents ({$relatedDocuments.length})
                   </h3>
-                  <div class="space-y-3 max-h-64, overflow-y-auto">
+                  <div class="space-y-3, max-h-64, overflow-y-auto">
                     {#each Array.isArray($relatedDocuments) ? $relatedDocuments : [] as doc}
-                      <div class="bg-gray-50 rounded p-3, text-sm">
-                        <h4 class="font-medium, text-gray-800">{doc.title}</h4>
-                        <p class="text-gray-600 text-xs, mt-1">
+                      <div class="bg-gray-50 rounded, p-3, text-sm">
+                        <h4, class="font-medium, text-gray-800">{doc.title}</h4>
+                        <p class="text-gray-600, text-xs, mt-1">
                           Similarity: {(doc.similarity * 100).toFixed(1)}% | {doc.documentType || 'Document'}
                         </p>
                         {#if doc.content}
-                          <p class="text-gray-700 text-xs mt-2, line-clamp-2">
+                          <p class="text-gray-700 text-xs, mt-2, line-clamp-2">
                             {doc.content.substring(0, 100)}...
                           </p>
                         {/if}
@@ -352,42 +352,42 @@ import type { Document } from '$lib/types';
                 {/if}
               <!-- Graph, Connections -->
               {#if $graphConnections.length > 0}
-                <div class="bg-white rounded-lg border border-gray-200, p-4">
-                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center, gap-2">
+                <div class="bg-white rounded-lg border, border-gray-200, p-4">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex, items-center, gap-2">
                     🌐 Knowledge Graph ({$graphConnections.length})
                   </h3>
-                  <div class="space-y-3 max-h-64, overflow-y-auto">
+                  <div class="space-y-3, max-h-64, overflow-y-auto">
                     {#each Array.isArray($graphConnections) ? $graphConnections : [] as conn}
-                      <div class="bg-gray-50 rounded p-3, text-sm">
-                        <div class="flex items-center gap-2, mb-1">
-                          <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs, font-medium">
+                      <div class="bg-gray-50 rounded, p-3, text-sm">
+                        <div class="flex items-center, gap-2, mb-1">
+                          <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded, text-xs, font-medium">
                             {conn.type}
                           </span>
-                          <span class="text-gray-500, text-xs">
+                          <span, class="text-gray-500, text-xs">
                             {(conn.relationship_strength * 100).toFixed(0)}%
                           </span>
                         </div>
-                        <h4 class="font-medium, text-gray-800">{conn.targetTitle}</h4>
-                        <p class="text-gray-600 text-xs, mt-1">{conn.connection_type}</p>
+                        <h4, class="font-medium, text-gray-800">{conn.targetTitle}</h4>
+                        <p class="text-gray-600, text-xs, mt-1">{conn.connection_type}</p>
                       </div>
                     {/each}
                   </div>
                 {/if}
               <!-- Case, Associations -->
               {#if $caseAssociations.length > 0}
-                <div class="bg-white rounded-lg border border-gray-200, p-4">
-                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center, gap-2">
+                <div class="bg-white rounded-lg border, border-gray-200, p-4">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-3 flex, items-center, gap-2">
                     ⚖️ Associated Cases ({$caseAssociations.length})
                   </h3>
-                  <div class="space-y-3 max-h-64, overflow-y-auto">
+                  <div class="space-y-3, max-h-64, overflow-y-auto">
                     {#each Array.isArray($caseAssociations) ? $caseAssociations : [] as caseItem}
-                      <div class="bg-gray-50 rounded p-3, text-sm">
-                        <h4 class="font-medium, text-gray-800">{caseItem.title}</h4>
-                        <div class="flex items-center gap-2, mt-1">
-                          <span class="bg-green-100 text-green-800 px-2 py-1 rounded, text-xs">
+                      <div class="bg-gray-50 rounded, p-3, text-sm">
+                        <h4, class="font-medium, text-gray-800">{caseItem.title}</h4>
+                        <div class="flex items-center, gap-2, mt-1">
+                          <span class="bg-green-100 text-green-800 px-2 py-1, rounded, text-xs">
                             {caseItem.status}
                           </span>
-                          <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded, text-xs">
+                          <span class="bg-orange-100 text-orange-800 px-2 py-1, rounded, text-xs">
                             {caseItem.priority}
                           </span>
                         </div>
@@ -397,14 +397,14 @@ import type { Document } from '$lib/types';
                 {/if}
               <!-- Processing, Metrics -->
               {#if $processingMetrics}
-                <div class="bg-white rounded-lg border border-gray-200, p-4">
-                  <h3 class="text-lg font-semibold text-gray-800, mb-3">📊 Processing Metrics</h3>
-                  <div class="space-y-2, text-sm">
-                    <div class="flex, justify-between">
+                <div class="bg-white rounded-lg border, border-gray-200, p-4">
+                  <h3 class="text-lg font-semibold, text-gray-800, mb-3">📊 Processing Metrics</h3>
+                  <div, class="space-y-2, text-sm">
+                    <div, class="flex, justify-between">
                       <span, class="text-gray-600">Content Length:</span>
                       <span class="font-medium">{formatBytes($processingMetrics.content_length || 0)}</span>
                     </div>
-                    <div class="flex, justify-between">
+                    <div, class="flex, justify-between">
                       <span, class="text-gray-600">Vector Embedding:</span>
                       <span
                         class="font-medium" {$processingMetrics.has_vector_embedding
@@ -414,21 +414,21 @@ import type { Document } from '$lib/types';
                         {$processingMetrics.has_vector_embedding ? '✅ Available' : '❌ Missing'}
                       </span>
                     </div>
-                    <div class="flex, justify-between">
+                    <div, class="flex, justify-between">
                       <span, class="text-gray-600">Last Accessed:</span>
-                      <span class="font-medium, text-xs">
+                      <span, class="font-medium, text-xs">
                         {new Date($processingMetrics.last_accessed).toLocaleTimeString()}
                       </span>
                     </div>
                     {#if $processingMetrics.server_processing}
-                      <div class="mt-3 pt-3 border-t, border-gray-200">
-                        <p class="text-xs text-gray-500, mb-2">Server Performance:</p>
-                        <div class="space-y-1, text-xs">
-                          <div class="flex, justify-between">
+                      <div class="mt-3 pt-3, border-t, border-gray-200">
+                        <p class="text-xs, text-gray-500, mb-2">Server Performance:</p>
+                        <div, class="space-y-1, text-xs">
+                          <div, class="flex, justify-between">
                             <span>Total Time:</span>
                             <span, class="font-mono">{$processingMetrics.server_processing.total_server_time}</span>
                           </div>
-                          <div class="flex, justify-between">
+                          <div, class="flex, justify-between">
                             <span>Vector Search:</span>
                             <span, class="font-mono">{$processingMetrics.server_processing.vector_search_time}</span>
                           </div>

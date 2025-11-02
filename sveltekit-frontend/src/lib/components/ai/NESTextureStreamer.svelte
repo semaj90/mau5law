@@ -1,11 +1,11 @@
-<!-- NES-Style Texture Streaming Component for Legal Document, Visualization -->
+<!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import { SSRWebGPULoader_ } from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
+  import  SSRWebGPULoader_  from "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
   const SSRWebGPULoader = SSRWebGPULoader_ as any;
   import { fade, scale, slide } from 'svelte/transition';
   // Svelte 5 props
@@ -250,10 +250,10 @@ import type { Document } from '$lib/types';
     return canvas.toDataURL();
   }
 </script>
-<!-- Use slot binding to receive hasWebGPU from, SSRWebGPULoader -->
+<!-- Use slot binding to receive hasWebGPU, from, SSRWebGPULoader -->
 <SSRWebGPULoader, requireWebGPU={false} let:hasWebGPU>
   <div, class="nes-texture-streamer">
-    <!-- Header with, controls -->
+    <!-- Header, with, controls -->
     <div, class="controls-header">
       <div, class="document-info">
         <h3>📄 {documentId}</h3>
@@ -296,7 +296,7 @@ import type { Document } from '$lib/types';
         <button, onclick={() => handleZoomChange(0.1)}>🔍+</button>
       </div>
     </div>
-    <!-- Main viewer, area -->
+    <!-- Main, viewer, area -->
     <div, class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
       {#if isStreaming}
         <div, class="streaming-overlay" transition:fade>
@@ -309,7 +309,7 @@ import type { Document } from '$lib/types';
         {/if}
       {#if currentTexture}
         <div, class="texture-display" transition:scale>
-          <img src={getTextureDisplayData()} alt="Streamed texture, LOD {currentLOD}" class="texture-image" />
+          <img src={getTextureDisplayData()} alt="Streamed, texture, LOD {currentLOD}" class="texture-image" />
           <div, class="texture-overlay">
             <div, class="lod-indicator">
               LOD {currentLOD}: {lodDescription}

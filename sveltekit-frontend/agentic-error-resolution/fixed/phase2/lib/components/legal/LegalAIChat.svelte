@@ -2,8 +2,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   interface LegalQuery {
     id?: number;
     prompt: string;
@@ -116,7 +116,7 @@
     </p>
   </div>
   <!-- Query Form -->
-  <Card.Root class="mb-8">
+  <Card class="mb-8">
     <CardHeader>
       <CardTitle>Ask a Legal Question</CardTitle>
     </CardHeader>
@@ -158,7 +158,7 @@
           />
           <span class="ml-2 text-sm text-gray-700"> Search similar documents </span>
         </label>
-        <Button.Root onclick={submitQuery} disabled={!canSubmit} class="px-6 py-2">
+        <Button onclick={submitQuery} disabled={!canSubmit} class="px-6 py-2">
           {#if isLoading}
             <span class="flex items-center">
               <svg
@@ -179,12 +179,12 @@
           {:else}
             Analyze
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Sample Prompts -->
-  <Card.Root class="mb-8">
+  <Card class="mb-8">
     <CardHeader>
       <CardTitle>Sample Legal Queries</CardTitle>
     </CardHeader>
@@ -201,7 +201,7 @@
         {/each}
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Error Display -->
   {#if error}
     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -221,7 +221,7 @@
     {/if}
   <!-- Current Response -->
   {#if currentResponse}
-    <Card.Root class="mb-8 border-green-200 bg-green-50">
+    <Card class="mb-8 border-green-200 bg-green-50">
       <CardHeader>
         <CardTitle class="text-green-800">Latest Response</CardTitle>
         <div class="flex items-center space-x-4 text-sm text-green-600">
@@ -245,7 +245,7 @@
           </div>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Query History -->
   {#if hasQueries}

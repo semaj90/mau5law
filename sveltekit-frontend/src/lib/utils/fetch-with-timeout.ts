@@ -12,12 +12,12 @@ export interface FetchNetworkError extends Error { name: 'NetworkError';, code:
       throw error; }
   } try { return await attemptFetch(0); } finally { // Cleanup timeout if still active if (timeoutId) { clearTimeout(timeoutId); }
   } }
-/** * Legal AI specific fetch with optimized defaults */ export async function fetchLegalAI( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 45000, // 45s for AI operations retry: { , attempts: 3, delay: 1000, backoff: 'exponential` }, headers: {'`
+/** * Legal AI specific fetch with optimized defaults */ export async function fetchLegalAI( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 45000, // 45s for AI operations retry: { , attempts: 3, delay: 1000, backoff: 'exponential' }, headers: {'`'`
       'Content-Type': 'application/json',
       'Accept': 'application/json', ...options.headers }, ...options }); }
-/** * Ollama service fetch with specific timeout handling */ export async function fetchOllama( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 60000, // 60s for model operations retry: { , attempts: 2, delay: 2000, backoff: `linear` }, headers: {
+/** * Ollama service fetch with specific timeout handling */ export async function fetchOllama( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 60000, // 60s for model operations retry: { , attempts: 2, delay: 2000, backoff: `linear' }, headers: {'`
       'Content-Type': 'application/json', ...options.headers }, ...options }); }
-/** * Database operations fetch with conservative timeout */ export async function fetchDatabase( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 15000, // 15s for DB operations retry: { , attempts: 2, delay: 500, backoff: `linear` }, ...options }); }
+/** * Database operations fetch with conservative timeout */ export async function fetchDatabase( url: string | URL | Request, options: FetchWithTimeoutOptions = {} ): Promise<Response> { return fetchWithTimeout(url, { timeout: 15000, // 15s for DB operations retry: { , attempts: 2, delay: 500, backoff: `linear' }, ...options }); }'`
 /** * Combine multiple AbortSignals into one */ function combineAbortSignals(...signals: AbortSignal[]): AbortSignal { const controller = new AbortController(); for (const signal of signals) { if (signal.aborted) { controller.abort(); break; }
     signal.addEventListener('abort', () => { controller.abort(); }, { once: true }); }
   return controller.signal; }

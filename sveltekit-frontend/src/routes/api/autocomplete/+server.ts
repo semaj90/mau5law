@@ -209,8 +209,7 @@ async function getCachedSuggestions(query: string): Promise<Suggestion[]> {
       }
     } catch (error: any) {
       const f = formatError(error);
-      console.warn(`Cache lookup failed for prefix: "${prefix}": ', f.message, f.details ?? '');'`
-    }
+      console.warn(`Cache lookup failed for prefix: "${prefix}": ', f.message, f.details ?? '');'` }
   }
   return suggestions;
 }
@@ -369,7 +368,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
        , redis: 'connected',
-        database: 'connected' },
+        database: 'connected` },'`
       stats: {
        , semantic_phrases: parseInt(phraseCount.rows[0].count),
         legal_documents: parseInt(documentCount.rows[0].count)

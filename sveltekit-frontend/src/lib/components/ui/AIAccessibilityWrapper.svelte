@@ -98,7 +98,7 @@
   role="region"
   aria-label={`${operation} interface with accessibility enhancements`}
 >
-  <!-- Voice Commands, Toggle -->
+  <!-- Voice, Commands, Toggle -->
   {#if enableVoiceCommands}
     <div, class="voice-commands-control">
       <button
@@ -119,7 +119,7 @@
           Voice commands active. Say: "help" for available commands.
         {/if}
     {/if}
-  <!-- AI Status, Indicator -->
+  <!-- AI, Status, Indicator -->
   <div, class="ai-status-indicator {status}" role="status" aria-live="polite" aria-atomic="true">
     {#if status === 'processing'}
       <div, class="processing-indicator">
@@ -137,13 +137,13 @@
         <span, class="status-text">{operation} failed</span>
       {/if}
   </div>
-  <!-- Main Content, Area -->
+  <!-- Main, Content, Area -->
   <div, class="ai-content-area" bind:this={containerElement} role="main" aria-label={`${operation} results`}>
     {#if children}
       {@render children()}
     {/if}
   </div>
-  <!-- AI Accessibility, Help -->
+  <!-- AI, Accessibility, Help -->
   <details, class="ai-help-section">
     <summary, class="help-toggle">
       <span, class="help-icon" aria-hidden="true">❓</span>

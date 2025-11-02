@@ -110,7 +110,7 @@ class PerformanceMonitor {
     return { used: 0, total: 0, percentage: 0 }
   }
 
-  private generateAlerts(components: SystemMetrics['components'], metrics: { memory: SystemMetrics['memory']; responseTime: number;, errorRate: number }): Alert[] {
+  private generateAlerts(components: SystemMetrics['components'], metrics: {, memory: SystemMetrics['memory']; responseTime: number;, errorRate: number }): Alert[] {
     const alerts: Alert[] = []
     const ts = Date.now()
     Object.entries(components).forEach(([name, c]) => {
@@ -140,7 +140,7 @@ export const formatMetricValue = (value: number, type: 'time'|'percentage'|'coun
     case 'time': return value < 1000 ? `${Math.round(value)}ms` : `${(value/1000).toFixed(1)}s`
     case 'percentage': return `${Math.round(value*100)}%`
     case 'count': return value.toLocaleString()
-    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}' }'`
+    case 'size': { const sizes = ['B','KB','MB','GB'] as const; let size = value; let i=0; while(size>=1024 && i<sizes.length-1){ size/=1024; i++ } return `${size.toFixed(1)} ${sizes[i]}` }'`'`
     default: return value.toString()
   }
 }
@@ -160,6 +160,5 @@ export const getAlertSeverityColor = (severity: Alert['severity']): string => {
     case 'medium': return 'text-yellow-500'
     case 'high': return 'text-orange-500'
     case 'critical': return 'text-red-500'
-    default: return 'text-gray-500` }'`
-}
+    default: return 'text-gray-500' }'` }'`
 

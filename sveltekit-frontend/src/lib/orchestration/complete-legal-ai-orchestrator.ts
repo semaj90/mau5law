@@ -234,7 +234,7 @@ export class CompleteLegalAIOrchestrator {
       streamResponse?: boolean;
     } = {}
   ): Promise<ProcessResult> {
-    // <-- changed from, Promise<any> to Promise<ProcessResult>
+    // <-- changed, from, Promise<any> to Promise<ProcessResult>
     const startTime = Date.now();
     const systemPath: string[] = [];
     let cachingStrategy = 'none';
@@ -306,7 +306,7 @@ export class CompleteLegalAIOrchestrator {
           compressed: false,
           metadata: { vectorEmbedding: embedding, vectorResult }, // include vectorResult in metadata
         },
-        { extractionType: options.extractionType || 'full` }'`
+        { extractionType: options.extractionType || 'full' }'`'`
       );
       // Step 5: RTX Tensor Upscaling (if requested)
       let upscaledVisualization = null;
@@ -660,7 +660,7 @@ export class CompleteLegalAIOrchestrator {
 
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ text })
     });
 
@@ -723,7 +723,7 @@ export class CompleteLegalAIOrchestrator {
     return;
   }
 
-  private updatePerformanceMetrics(data: { processingTime: number; systemPath: string[];, success: boolean }): void {
+  private updatePerformanceMetrics(data: {, processingTime: number; systemPath: string[];, success: boolean }): void {
     // Update performance metrics based on processing data
     // Use the strongly-typed property directly (no `any` cast)
     this.performanceMetrics.averageQueryResponseTime =
@@ -759,7 +759,7 @@ export class CompleteLegalAIOrchestrator {
 🔍 Frontend Search: Loki.js + Fuse.js integration
 🎛️ XState Machines: Reliable state management
 🌐 WebAssembly Bridge: LLVM compilation pipeline
-📦 Message Queue: RabbitMQ async processing
+📦 Message, Queue: RabbitMQ async processing
 💾 Object, Storage: MinIO file management
 Total Integrated, Systems: 25+
 Memory, Architecture: Nintendo-inspired with modern scaling
@@ -767,8 +767,7 @@ Processing, Capacity: Sub-second legal document analysis
 User, Experience: Instant responses with neural visualization
 🚀 Ready for production legal AI workloads!
 ============================================
-    `);`
-  }
+    `);' }'`
 }
 // Export singleton instance
 export const completeLegalAIOrchestrator = new CompleteLegalAIOrchestrator();

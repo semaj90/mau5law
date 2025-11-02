@@ -1,6 +1,6 @@
 <script lang="ts">
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { default as Progress } from '$lib/components/ui/Progress.svelte';
+  import  default as Progress  from "$lib/components/ui/Progress.svelte";
 
   interface Props {
     progress?: number;

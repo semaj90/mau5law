@@ -1,8 +1,8 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Input } from '$lib/components/ui/input/Input.svelte';
+  import  Input  from "$lib/components/ui/input/Input.svelte";
   import Loader2 from 'lucide-svelte/icons/loader-2';
   import Bot from 'lucide-svelte/icons/bot';
   import MessageSquare from 'lucide-svelte/icons/message-square';

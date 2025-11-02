@@ -299,7 +299,7 @@ class G0llamaService {
     try {
       const response = await fetch(`${this.baseUrl}/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,

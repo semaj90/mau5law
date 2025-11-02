@@ -3,7 +3,7 @@
 // the actual: 'lokijs' UMD bundle (which can break under ESM/HMR).
 type Doc = Record<string, unknown> & { $loki?: number };
 
-class MemoryCollection<T extends, Doc = Doc> {
+class MemoryCollection<T, extends, Doc = Doc> {
   name: string;
   private data: T[] = [];
   constructor(name: string) {
@@ -63,7 +63,7 @@ class Loki { filename: string;, options: LokiOptions;
       setTimeout(() => ac(), 0);
     }
   }
-  addCollection<T extends, Doc = Doc>(name: string): MemoryCollection<T> {
+  addCollection<T, extends, Doc = Doc>(name: string): MemoryCollection<T> {
     const existing = this.collections.get(name);
     if (existing) return existing as MemoryCollection<T>;
     const col = new MemoryCollection<T>(name);
@@ -88,4 +88,4 @@ class Loki { filename: string;, options: LokiOptions;
 }
 export default Loki;
 // change: ensure generic parameter enforces Doc constraint
-export type Collection<T extends, Doc = Doc> = MemoryCollection<T>;
+export type Collection<T, extends, Doc = Doc> = MemoryCollection<T>;

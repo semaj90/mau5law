@@ -9,9 +9,9 @@
   // Ensure we import the component constructors (named exports) from enhanced-bits.
   // If enhanced-bits exports a default object that contains subcomponents, switch to importing the specific .svelte files instead.
   // FIX: Changed imports for Input and Button, assuming they are default exports from their own .svelte files.
-  import { Input } from '$lib/components/ui/Input.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Label } from '$lib/components/ui/label.svelte';
+  import  Input  from "$lib/components/ui/Input.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Label  from "$lib/components/ui/label.svelte";
   import { Shield, UserPlus, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-svelte'; // Added icon imports
   import {
     FileText,
@@ -582,25 +582,25 @@
       <div class="space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div class="flex-1">
-            <Button.Root
+            <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-btn"
               onclick={triggerFileInput}
               disabled={isLoading}
             >
               Upload Documents
-            </Button.Root>
+            </Button>
             <input bind:this={fileInputEl} onchange={onFilesSelected} type="file" multiple class="hidden" />
           </div>
           <div class="flex-1">
-            <Button.Root
+            <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-ghost"
               onclick={uploadAllPending}
               disabled={isLoading || files.length === 0}
             >
               Upload All Pending
-            </Button.Root>
+            </Button>
           </div>
         </div>
         <!-- File list -->
@@ -629,14 +629,14 @@
                     <div class="text-red-600" title={f.error}>⚠</div>
                   {:else if f.status === 'needs-attach'}
                     <div class="text-sm text-muted">File missing — please reattach</div>
-                    <Button.Root
+                    <Button
                       type="button"
                       class="bits-btn bits-ghost text-xs px-2 py-1"
                       onclick={() => reattachFile(f.id)}
                       disabled={isLoading}>Reattach</Button
                     >
                   {/if}
-                  <Button.Root
+                  <Button
                     type="button"
                     class="bits-btn bits-ghost text-xs px-2 py-1"
                     onclick={() => removeFile(f.id)}
@@ -647,7 +647,7 @@
             {/each}
           {/if}
         <!-- Main Submit Button -->
-        <Button.Root type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
+        <Button type="submit" class="w-full bits-btn bits-btn" disabled={isLoading}>
           {#if isLoading}
             <Loader2 class="mr-2 h-4 w-4 animate-spin" />
             Creating Account...
@@ -655,7 +655,7 @@
             <UserPlus class="mr-2 h-4 w-4" />
             Create Legal Professional Account
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </form>
     <!-- Login Link -->

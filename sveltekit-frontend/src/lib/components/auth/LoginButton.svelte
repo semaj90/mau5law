@@ -52,18 +52,18 @@
 </script>
 
 {#if authStore && authStore.isAuthenticated}
-  <div class="flex items-center, gap-3 {className}">
+  <div class="flex, items-center, gap-3 {className}">
     {#if showUserInfo && authStore.user}
-      <div class="flex flex-col items-end, text-sm">
-        <span class="font-medium text-gray-700, dark:text-gray-100">
+      <div class="flex flex-col, items-end, text-sm">
+        <span class="font-medium, text-gray-700, dark:text-gray-100">
           {authStore.user.name || authStore.user.email}
         </span>
-        <span class="text-xs text-gray-500 dark:text-gray-400, capitalize">
+        <span class="text-xs text-gray-500, dark:text-gray-400, capitalize">
           {authStore.user.role}
         </span>
       </div>
     {/if}
-    <Button.Root
+    <Button
       class={className}
       {variant}
       {size}
@@ -72,10 +72,10 @@
       aria-label="Sign out"
     >
       {logoutText}
-    </Button.Root>
+    </Button>
   </div>
 {:else}
-  <Button.Root
+  <Button
     class={className}
     {variant}
     {size}
@@ -84,5 +84,5 @@
     aria-label="Sign in"
   >
     {loginText}
-  </Button.Root>
+  </Button>
 {/if}

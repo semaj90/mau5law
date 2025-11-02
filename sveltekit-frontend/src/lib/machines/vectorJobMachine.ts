@@ -285,7 +285,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
               error: event.error
             }))
           },
-          CANCEL: 'cancelled' }
+          CANCEL: `cancelled` }
       },
       webgpuFallback: { entry: assign(() => ({, useWebGPU: true })),
         invoke: {
@@ -302,7 +302,7 @@ export const vectorJobMachine = createMachine<VectorJobContext, VectorJobEvent>(
           },
           onError: {
             target: 'failed',
-            actions: assign((_, ev: { data?: any }) => ({ error: 'WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }',
+            actions: assign((_, ev: { data?: any }) => ({ error: `WebGPU fallback, failed: ${ev.data ? getErrorMessage(ev.data) : `unknown` }','`
               endTime: new Date()
             }))
           }

@@ -176,7 +176,7 @@ export class LegalRAGEngine {
       // Convert to RAGSearchResult format
       const searchResults: RAGSearchResult[] = rawSearchResults.map(result => ({
         ...result,
-        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match` }));'`
+        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match' }));'`'`
 
       // Apply custom legal reranker
       const rerankedResults = this.rerank(searchResults, {
@@ -214,7 +214,7 @@ export class LegalRAGEngine {
       const resultsWithDistance = await db
         .select({
           doc: legalDocuments,
-          distance: sql<number>`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector` })
+          distance: sql<number>`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector' })'`
         .from(legalDocuments)
         .where(
           sql`${legalDocuments.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector <= ${1 - similarityThreshold}`
@@ -389,8 +389,7 @@ export class LegalRAGEngine {
     } catch (error: any) {
       // Changed from any
       console.error('Error generating embedding:', error);
-      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error` }`);'`
-    }
+      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error' }`);'' }
   }
   /**
    * Extract legal entities using Context7 MCP or local processing
@@ -443,7 +442,7 @@ export class LegalRAGEngine {
     try {
       // Use Ollama for risk assessment
       const riskAnalysis = await this.ollama.generateCompletion(
-        `Analyze the legal risk level of this ${caseType || 'legal` } document on a scale of 0-100.'
+        `Analyze the legal risk level of this ${caseType || 'legal' } document on a scale of 0-100.'`
         Consider liability, compliance issues, and potential legal exposure.
         Document: ${content.substring(0, 2000)}
         Return only a JSON object with: 'score' (0-100); and: 'confidence' (0-1) properties.`

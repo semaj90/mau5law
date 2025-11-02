@@ -122,7 +122,7 @@ export class AuthService {
         await orchestratorAdapter.makeRequest(
           '/api/analytics/session-restore',
           { userId: user!.id, timestamp: new Date().toISOString() },
-          { userId: user!.id, analyticsLevel: 'session` }'`
+          { userId: user!.id, analyticsLevel: `session` }'`'`
         );
       } else {
         authState.user = null;
@@ -176,7 +176,7 @@ export class AuthService {
         await orchestratorAdapter.makeRequest(
           '/api/security/failed-login',
           { ...securityContext, error: result.error },
-          { securityLevel: 'high` }'`
+          { securityLevel: `high` }'`'`
         );
         return { success: false, error: result.error };
       }
@@ -283,7 +283,7 @@ export class AuthService {
     try {
       const response = await fetch('/api/auth/profile', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(updates),
         credentials: `include` });
       const res = response as ResponseLike<AuthApiResult>;

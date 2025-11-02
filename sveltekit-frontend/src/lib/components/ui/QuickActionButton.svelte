@@ -62,7 +62,7 @@
   {/if}
 </button>
 {#if errorMessage}
-  <p class="nes-text is-error, mt-2">{errorMessage}</p>
+  <p class="nes-text, is-error, mt-2">{errorMessage}</p>
 {/if}
 <style>
   /* @unocss-include */

@@ -150,8 +150,7 @@ export async function hybridSearch(
       AND case_id = ${caseId}
     ORDER BY embedding <=> ${JSON.stringify(queryEmbedding)}::vector
     LIMIT ${limit}
-  `);`
-}
+  `);` }
 // Find similar documents using HNSW index
 export async function findSimilarDocuments(
   documentId: string,
@@ -177,8 +176,7 @@ export async function findSimilarDocuments(
       AND embedding IS NOT NULL
     ORDER BY embedding <=> ${sourceDoc[0].embedding}::vector
     LIMIT ${limit}
-  `);`
-}
+  `);` }
 // ==================================================
 // 4. Joins and Relationships
 // ==================================================
@@ -233,7 +231,7 @@ export async function uploadAndQueueDocument(
     await tx
       .update(legalCases)
       .set({
-        documentCount: sql`${legalCases.documentCount} + 1' })'`
+        documentCount: sql`${legalCases.documentCount} + 1` })'`'`
       .where(eq(legalCases.id, documentData.caseId));
     return document[0];
   });
@@ -266,8 +264,7 @@ export async function getQueueStatistics(): Promise<any> {
     FROM ai_processing_queue
     GROUP BY task_type, status
     ORDER BY task_type, status
-  `);`
-}
+  `);` }
 // ==================================================
 // 7. Pagination
 // ==================================================
@@ -308,7 +305,7 @@ export async function getPaginatedDocuments(
   const documents = await query;
   // Get total count
   const countResult = await db
-    .select({ count: sql<number>`count(*)::int' })'`
+    .select({ count: sql<number>`count(*)::int` })'`'`
     .from(legalDocuments)
     .where(conditions.length > 0 ? and(...conditions) : undefined);
   const totalCount = countResult[0]?.count || 0;
@@ -381,7 +378,7 @@ export async function cleanExpiredCache(): Promise<any> {
 // 10. Real-world Example: Complete Document Upload Flow
 // ==================================================
 export async function completeDocumentUpload(params: {, caseId: string;, userId: string;
-  title: string;
+ , title: string;
  , content: string;
  , documentType: string;
  , fileUrl: string;
@@ -409,7 +406,7 @@ export async function completeDocumentUpload(params: {, caseId: string;, userId
             courtLevel: 'district',
             parties: [],
             datesFiled: [],
-            status: 'active' },
+            status: 'active` },'`
           classification: {
            , documentType: params.documentType as any,
             practiceArea: [],
@@ -422,7 +419,7 @@ export async function completeDocumentUpload(params: {, caseId: string;, userId
             keyTerms: [],
             sentiment: 0,
             complexity: 0,
-            language: `en' },'`
+            language: `en` },'`'`
           aiAnalysis: {
            , summary: '',
             keyPoints: [],

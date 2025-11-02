@@ -170,7 +170,7 @@ export class RedisLLMCache {
       query: query.trim().toLowerCase(),
       caseId: context.caseId || 'global',
       legalCategory: context.legalCategory || 'general',
-      practiceArea: context.practiceArea || 'default` };'`
+      practiceArea: context.practiceArea || 'default' };'`'`
     const hashInput = JSON.stringify(normalized);
     return createHash('sha256').update(hashInput).digest('hex');
   }
@@ -404,7 +404,7 @@ export class RedisAgentMemory {
       };
     } catch (error) {
       console.error('🎮 Redis agent memory stats failed:', error);
-      return { active_sessions: 0, total_memory_keys: 0, memory_usage: `0MB` };
+      return { active_sessions: 0, total_memory_keys: 0, memory_usage: `0MB' };'`
     }
   }
 }
@@ -441,7 +441,7 @@ export class RedisTaskQueue {
         metadata,
         priority,
         timestamp: Date.now(),
-        status: `queued` };
+        status: `queued' };'`
       // Use sorted set for priority queue; many redis clients expose zadd or zAdd
       const zaddResult = await callRedis(client, 'zadd', this.QUEUE_KEY, priority, JSON.stringify(task));
       if (zaddResult === undefined) {
@@ -548,7 +548,7 @@ export class RedisTaskQueue {
         result,
         processingTime,
         completed_at: Date.now(),
-        status: success ? 'completed' : `failed` };
+        status: success ? 'completed' : `failed' };'`
       // Remove from processing, add to completed
       await callRedis(client, 'hdel', this.PROCESSING_KEY, taskId);
       await callRedis(client, 'del', `${this.PROCESSING_KEY}:${taskId}`);
@@ -579,7 +579,7 @@ export class RedisTaskQueue {
       await callRedis(client, 'set', this.AVG_PROCESSING_TIME_KEY, newAvg.toFixed(2));
 
       console.log(
-        `🎮 [REDIS TASK ${success ? 'COMPLETED' : `FAILED` }] Task ${taskId} completed in ${processingTime}ms`
+        `🎮 [REDIS TASK ${success ? 'COMPLETED' : `FAILED' }] Task ${taskId} completed in ${processingTime}ms`'`
       );
     } catch (error) {
       console.error('🎮 Redis task completion failed:', error);

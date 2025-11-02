@@ -22,8 +22,8 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
   import { Badge } from '$lib/components/ui/badge.svelte'';
   // Import components into intermediate names and cast to any to avoid TS errors
-  import { Input_ } from '$lib/components/ui/input/Input.svelte';
-  import { Textarea_ } from '$lib/components/ui/textarea/Textarea.svelte';
+  import  Input_  from "$lib/components/ui/input/Input.svelte";
+  import  Textarea_  from "$lib/components/ui/textarea/Textarea.svelte";
   const Input = Input_ as unknown as any;
   const Textarea = Textarea_ as unknown as any;
   import {

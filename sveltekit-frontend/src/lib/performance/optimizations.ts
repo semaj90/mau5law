@@ -41,11 +41,10 @@ export class OptimizedQueries {
         e.*,
         1 - (e.embedding <=> ${embedding}) as similarity_score
       FROM evidence e
-      ${caseId ? sql`WHERE e.case_id = ${caseId}` : sql`' }'`
+      ${caseId ? sql`WHERE e.case_id = ${caseId}` : sql`` }'`'`
       ORDER BY e.embedding <=> ${embedding}
       LIMIT ${limit}
-    `);`
-  }
+    `);` }
 }
 // 2. Redis Caching Layer
 export class CacheService {
@@ -74,7 +73,7 @@ export class CacheService {
 // 3. Performance Utilities
 export function createDebouncedSearch(delay = 300) {
   let timeoutId: NodeJS.Timeout;
-  return function <T extends, unknown[]>(fn: (...args: T) => void) {
+  return function <T, extends, unknown[]>(fn: (...args: T) => void) {
     return (...args: T) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => fn(...args), delay);

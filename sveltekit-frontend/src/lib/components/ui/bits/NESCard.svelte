@@ -1,7 +1,7 @@
 <script, lang="ts"> interface NESCardProps { variant?: 'default' | 'dark' | 'primary' | 'success' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg'; elevated?: boolean; rounded?: boolean; border?: boolean; title?: string; subtitle?: string; children?: any; }
   let { variant = 'default', size = 'md', elevated = false, rounded = false, border = true, title, subtitle, children, ...restProps }: NESCardProps = $props(); const sizeClasses = { sm: 'p-3', md: 'p-4', lg: 'p-6'
   } const variantClasses = { default: 'nes-card', dark: 'nes-card-dark', primary: 'nes-card-primary', success: 'nes-card-success', warning: 'nes-card-warning', danger: 'nes-card-danger'
-  } </script> <div class="nes-card-container {variantClasses[variant]} {sizeClasses[size]}"
+  } </script> <div, class="nes-card-container {variantClasses[variant]} {sizeClasses[size]}"
   class:is-elevated={ elevated } class:is-rounded={ rounded } class:has-border={ border } {...restProps} >
   {#if title || subtitle} <div, class="nes-card-header"> {#if title} <h3, class="nes-card-title">{ title }</h3> {/if} {#if subtitle} <p, class="nes-card-subtitle">{ subtitle }</p> {/if} {/if} <div, class="nes-card-content"> <slot /> </div> </div> <style> .nes-card-container { position: relative; display: flex; flex-direction: column; font-family: 'Press Start 2P', cursiv; transition: all 0.2s ease; }
 /* Base NES Card Styling */ {} .nes-card { background: theme('colors.nes.white'); color: theme('colors.nes.black'); }

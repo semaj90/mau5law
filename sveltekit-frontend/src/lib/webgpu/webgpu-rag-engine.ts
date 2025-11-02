@@ -283,7 +283,7 @@ export class WebGPURAGEngine {
         {
           binding: 3,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'storage` }'`
+          buffer: {, type: `storage` }'`'`
         },
         {
           binding: 4,

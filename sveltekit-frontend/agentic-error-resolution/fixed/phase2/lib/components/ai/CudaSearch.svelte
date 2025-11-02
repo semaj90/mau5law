@@ -11,7 +11,7 @@ Usage:
 <CudaSearch bind:results {onSearchComplete} />
 -->
 <script lang="ts">
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface SearchResult {
@@ -274,7 +274,7 @@ Usage:
 
 <div class="cuda-search-container">
   <!-- Search Header -->
-  <Card.Root class="mb-4">
+  <Card class="mb-4">
     <CardHeader>
       <CardTitle class="flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,9 +332,9 @@ Usage:
           {/if}
           <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-sm font-medium">Domain: {legalDomain}</span>
         </div>
-        <Button.Root type="submit" disabled={isSearching || !query.trim()} class="w-full">
+        <Button type="submit" disabled={isSearching || !query.trim()} class="w-full">
           {#if isSearching}🔄 Searching...{:else}🚀 Search Legal Documents{/if}
-        </Button.Root>
+        </Button>
       </form>
       <!-- Error Message -->
       {#if errorMessage}
@@ -342,10 +342,10 @@ Usage:
           {errorMessage}
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Performance Metrics -->
   {#if searchTime > 0 || cudaCapabilities}
-    <Card.Root class="mb-4">
+    <Card class="mb-4">
       <CardHeader>
         <CardTitle class="text-lg">Performance Metrics</CardTitle>
       </CardHeader>
@@ -372,7 +372,7 @@ Usage:
             {/if}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Search Results -->
   {#if results.length > 0}

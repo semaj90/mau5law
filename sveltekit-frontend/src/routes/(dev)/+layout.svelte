@@ -23,7 +23,7 @@
 
 <svelte:head>
   <title>Dev Tools | YoRHa Legal AI</title>
-  <meta name="description" content="Development tools, testing, and debugging, interface" />
+  <meta name="description" content="Development tools, testing, and, debugging, interface" />
 </svelte:head>
 
 <div, class="dev-layout">
@@ -33,7 +33,7 @@
       <Sidebar {user} open={sidebarOpen} theme={consolePalette} />
     </aside>
     <main, class="dev-main">
-      <div, class="dev-main-content"> <!-- New wrapper, div -->
+      <div, class="dev-main-content"> <!-- New, wrapper, div -->
         {@render children()}
       </div>
     </main>

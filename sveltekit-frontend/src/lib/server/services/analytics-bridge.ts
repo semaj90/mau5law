@@ -3,7 +3,7 @@ const BASE = process.env.PUBLIC_ANALYTICS_API || 'http://localhost:8001';
 export async function postAnalytics(event: any): Promise<any> {
   const res = await fetch(`${BASE}/analytics`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(event)
   });
   return res.json();

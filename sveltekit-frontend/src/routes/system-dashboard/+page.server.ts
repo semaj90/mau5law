@@ -79,7 +79,7 @@ export const load: ServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   logout: async ({ cookies }) => {
     // Clear the auth-session cookie
-    cookies.delete('auth-session', { path: '/` });'`
+    cookies.delete('auth-session', { path: '/' });'`'`
     // Redirect back to homepage after logout
     throw redirect(303, '/');
   }

@@ -253,8 +253,7 @@ export class ErrorResolutionEngine {
           parameters: { instances: 2, loadBalance: true },
           timeout: 60000,
           retries: 1,
-          description: 'Scale service to handle load'
-        },
+          description: 'Scale service to handle load` },'`
         {
           type: 'cleanup',
           target: 'service',

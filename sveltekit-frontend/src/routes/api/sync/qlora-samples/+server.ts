@@ -104,8 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
               mockData: true
             });
           } catch (err: any) {
-            console.warn(`Failed to generate prediction for doc ${doc.id}: ', err?.message || err);'`
-          }
+            console.warn(`Failed to generate prediction for doc ${doc.id}: ', err?.message || err);'` }
         }
 
         const avgConfidence =

@@ -163,8 +163,7 @@ export class BullMQService {
       console.log(`Worker completed job ${job.id} in ${queueName}`);
     });
     worker.on('failed', (job, err) => {
-      console.error(`Worker failed job ${job?.id} in ${queueName}: ', err);'`
-    });
+      console.error(`Worker failed job ${job?.id} in ${queueName}: ', err);'' });'`
     this.workers.set(queueName, worker);
   }
   /**
@@ -477,8 +476,7 @@ export class BullMQService {
       try {
         stats[queueName] = await this.getQueueStats(queueName);
       } catch (error: any) {
-        stats[queueName] = { error: 'Failed to get stats` }'`
-      }
+        stats[queueName] = { error: 'Failed to get stats' }'' }
     }
     return stats;
   }

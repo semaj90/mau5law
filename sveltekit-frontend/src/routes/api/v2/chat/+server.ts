@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'No user message found' },
+          error: 'No user message found` },'`
         { status: 400 }
       );
     }
@@ -268,8 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Cache-Control': 'no-cache',
           'Connection': 'keep-alive',
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': `Content-Type' }'`
-      });
+          'Access-Control-Allow-Headers': 'Content-Type' }'` });'`
     }
     // For non-streaming responses
     let fullResponse = '';

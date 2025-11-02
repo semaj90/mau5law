@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
         headers: {
           'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`,
           'X-Total-Results': dockerResult.totalCount?.toString() ?? '0',
-          'Cache-Control': `public, max-age=120` }
+          'Cache-Control': `public, max-age=120' }'`
       });
     }
 
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     // Count total results
     const countQuery = db
-      .select({ count: sql`count(*)` })
+      .select({ count: sql`count(*)' })'`
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id));
 
@@ -205,8 +205,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     });
   } catch (err) {
     console.error('Search error: ', err);'
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error` }`);'`
-  }
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' }
 };
 
 async function buildSearchConditions(filters: SearchFilters): Promise<Array<unknown>> {
@@ -231,7 +230,7 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
 
   // File type filters
   if (filters?.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%` }`)));
+    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%' }`)));'`
   }
 
   // Case filters
@@ -479,7 +478,7 @@ async function generateFacets(filters: SearchFilters): Promise<any> {
     // Try Docker Desktop microservice for facets
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/facets`, {
       method: 'POST',
-      headers: { 'content-type': `application/json` },
+      headers: { 'content-type': `application/json' },'`
       body: JSON.stringify({ filters })
     });
     if (res.ok) {
@@ -547,7 +546,7 @@ async function getCaseFacets(): Promise<any> {
       .select({
         id: cases.id,
         title: cases.title,
-        count: sql`count(${evidence.id})` })
+        count: sql`count(${evidence.id})' })'`
       .from(cases)
       .leftJoin(evidence, eq(cases.id, evidence.caseId))
       .groupBy(cases.id, cases.title)
@@ -613,7 +612,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
     'audio/': '/icons/audio-thumbnail.svg',
-    'document': `/icons/document-thumbnail.svg` };
+    'document': `/icons/document-thumbnail.svg' };'`
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
   }
@@ -644,12 +643,12 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const request = new Request('', {
       method: 'POST',
       body: JSON.stringify({ filters, options }),
-      headers: { 'content-type': `application/json` }
+      headers: { 'content-type': `application/json' }'`
     });
     // Avoid casting to any, call POST directly
     return await POST({ request, locals: _locals });
   } catch (err) {
     console.error('GET search error: ', err);'
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error` }');
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }');'`
   }
 };

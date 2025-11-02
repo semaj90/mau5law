@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default: return await handleClusterOverview();
     }
   } catch (err: any) {
-    console.error('Cluster API Error: `, err);'`
+    console.error('Cluster API Error: ', err);'`'`
     throw error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, 'Invalid cluster action');
     }
   } catch (err: any) {
-    console.error('Cluster Action Error: `, err);'`
+    console.error('Cluster Action Error: ', err);'`'`
     throw error(500, `Cluster action failed: ${err instanceof Error ? err.message : `Unknown error` }`);
   }
 };
@@ -103,7 +103,7 @@ async function handleServicesStatus(): Promise<Response> {
       }
     },
     tier3_specialized: {
-      'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI' },
+      'legal-ai': { status: health['legal-ai'] ? 'running' : 'down', port: 8202, description: 'Legal Document AI` },'`
       'xstate-manager': {
         status: health['xstate-manager'] ? 'running' : 'down',
         port: 8212,

@@ -443,8 +443,7 @@ export class EnhancedIngestService {
           title: currentSection.title || 'Remaining Content',
           content: remainingContent,
           type: currentSection.type || 'general',
-          context: currentSection.context || 'legal_document` });'`
-      }
+          context: currentSection.context || 'legal_document' });'` }'`
     }
 
     // If no sections were found, treat the whole content as one general section
@@ -470,7 +469,7 @@ export class EnhancedIngestService {
   private splitLegalSection(section: LegalSection, maxSize: number, overlap: number): string[] {
     const chunks: string[] = [];
     // Simplified splitting: just split by sentences or paragraphs if too large
-    const sentences = section.content.split(/(?<=[.?!])\s+(?=[A-Z])/); // Split by, sentences
+    const sentences = section.content.split(/(?<=[.?!])\s+(?=[A-Z])/); // Split, by, sentences
     let currentChunk = '';
 
     for (const sentence of sentences) {

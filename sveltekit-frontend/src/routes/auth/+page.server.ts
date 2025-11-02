@@ -89,8 +89,7 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed` });'`
-        }
+            error: errors[0]?.message || 'Login validation failed' });'` }'`
         // For demo purposes - accept any valid email/password
         console.log('Demo Login:', { email });
         // Set demo session

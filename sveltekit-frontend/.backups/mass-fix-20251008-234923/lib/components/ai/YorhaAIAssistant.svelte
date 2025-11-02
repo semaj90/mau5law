@@ -477,7 +477,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Main Chat Interface -->
 <div class="yorha-ai-assistant">
 	<!-- Trigger Button -->
-	<Button.Root
+	<Button
 		{...$trigger}
 		onclick={openDialog}
 		variant="default"
@@ -502,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
 			connectionStatus === 'streaming' && "bg-blue-400 animate-pulse",
 			connectionStatus === 'disconnected' && "bg-red-400"
 		)}></div>
-	</Button.Root>
+	</Button>
 	<!-- Chat Dialog -->
 	{#if $open}
 		<div
@@ -545,7 +545,7 @@ https://svelte.dev/e/js_parse_error -->
 						<!-- Metrics badge -->
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{metrics.totalMessages} msgs</span>
 						<!-- Close button -->
-						<Button.Root
+						<Button
 							{...$close}
 							variant="ghost"
 							size="sm"
@@ -556,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
 							<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 							</svg>
-						</Button.Root>
+						</Button>
 					</div>
 				</div>
 				<!-- Messages Area -->
@@ -662,7 +662,7 @@ https://svelte.dev/e/js_parse_error -->
 							data-yorha-input
 							class="flex-1"
 						/>
-						<Button.Root
+						<Button
 							onclick={sendMessage}
 							disabled={!canSendMessage}
 							variant="default"
@@ -679,12 +679,12 @@ https://svelte.dev/e/js_parse_error -->
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
 								</svg>
 							{/if}
-						</Button.Root>
+						</Button>
 					</div>
 					<!-- Quick actions -->
 					<div class="flex justify-between items-center">
 						<div class="flex gap-1">
-							<Button.Root
+							<Button
 								variant="ghost"
 								size="sm"
 								onclick={clearChat}
@@ -692,15 +692,15 @@ https://svelte.dev/e/js_parse_error -->
 								class="text-xs h-6 px-2 bits-btn bits-btn"
 							>
 								Clear
-							</Button.Root>
+							</Button>
 							{#if enableMCPIntegration}
-								<Button.Root
+								<Button
 									variant="ghost"
 									size="sm"
 									class="text-xs h-6 px-2 bits-btn bits-btn"
 								>
 									MCP
-								</Button.Root>
+								</Button>
 							{/if}
 							{#if enableGPUAcceleration}
 								<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">50 && "bg-green-500/20 text-green-400"

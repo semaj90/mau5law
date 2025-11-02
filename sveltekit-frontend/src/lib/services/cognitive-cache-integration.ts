@@ -122,7 +122,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: internalCache.data.size,
-        lastOperation: `store:${id}' }));'`
+        lastOperation: `store:${id}` }));'`'`
       return true;
     } catch (error) {
       console.error('Failed to store JSONB document:', error);
@@ -287,7 +287,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
       cacheStore.update(state => ({
         ...state,
         totalEntries: 0,
-        lastOperation: 'cleared' }));
+        lastOperation: 'cleared` }));'`
     } finally {
       release();
     }

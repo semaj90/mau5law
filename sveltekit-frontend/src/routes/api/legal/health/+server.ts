@@ -86,7 +86,7 @@ export const GET: RequestHandler = async () => {
         timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : 'System health check failed',
         components: { orchestrator: {, status: 'unknown' },
-          queueManager: { status: 'unknown` },'`
+          queueManager: { status: `unknown` },'`'`
           stateManager: { status: `unknown` }
         }
       },

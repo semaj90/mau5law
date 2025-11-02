@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Replaced script to fix Svelte 5 runes, imports, types and logic typos
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Textarea } from '$lib/components/ui/textarea.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   import {
     aiPersonality,
     chatActions,
@@ -17,9 +17,9 @@ https://svelte.dev/e/js_parse_error -->
   import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
   import { Bot, Loader2, Send } from 'lucide-svelte';
   import { onDestroy, tick } from 'svelte';
-  import { ChatMessage } from './ChatMessage.svelte';
-  import { ProactivePrompt } from './ProactivePrompt.svelte';
-  import { ThinkingStyleToggle } from './ThinkingStyleToggle.svelte';
+  import  ChatMessage  from "./ChatMessage.svelte";
+  import  ProactivePrompt  from "./ProactivePrompt.svelte";
+  import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
   import { ThinkingProcessor } from '$lib/ai/thinking-processor';
   // props (Svelte 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
           on:toggle={handleThinkingToggle}
         />
         {#if caseId}
-          <Button.Root
+          <Button
             class="bits-btn"
             variant="ghost"
             size="sm"
@@ -312,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </Button.Root>
+          </Button>
         {/if}
         <div class="mx-auto px-4 max-w-7xl">
           {#if lastAnalysisResult}
@@ -409,7 +409,7 @@ https://svelte.dev/e/js_parse_error -->
           disabled={$isLoading}
         />
       </div>
-      <Button.Root
+      <Button
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
@@ -421,7 +421,7 @@ https://svelte.dev/e/js_parse_error -->
         {:else}
           <Send class="mx-auto px-4 max-w-7xl" />
         {/if}
-      </Button.Root>
+      </Button>
     </div>
     <!-- Enhanced Status Text -->
     <div class="mx-auto px-4 max-w-7xl">

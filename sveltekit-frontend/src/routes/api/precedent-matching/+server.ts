@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
     //    Example:
     //    const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
     //      method: 'POST',
-    //      headers: { 'Content-Type': 'application/json` },'`
+    //      headers: { 'Content-Type': 'application/json' },'`'`
     //      body: JSON.stringify({, model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
     //    });
     //    const embeddingData = await embeddingResponse.json();

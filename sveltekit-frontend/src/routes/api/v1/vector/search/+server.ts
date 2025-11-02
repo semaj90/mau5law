@@ -156,8 +156,7 @@ export const POST = withValidationAndRate(handler, null, {
 async function generateCUDAEmbedding(text: string, _requestId?: string): Promise<number[]> {
   // Optional: log request id for debugging/tracing without triggering unused-arg lint errors
   if (_requestId) {
-    console.debug(`generateCUDAEmbedding requestId=${_requestId}');'`
-  }
+    console.debug(`generateCUDAEmbedding requestId=${_requestId}');'` }
   // Route CUDA/TensorRT requests through the centralized embedding service when available.
   // NOTE: '_requestId' is intentionally not sent inside the embed request payload.
   const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: `tensorrt` });
@@ -165,7 +164,7 @@ async function generateCUDAEmbedding(text: string, _requestId?: string): Promise
 }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
   // Use the canonical embedding service (which may call Ollama, FastAPI, or other backends)
-  const resp = await generateEmbeddings({ texts: [text], model: `embeddinggemma:latest' });'`
+  const resp = await generateEmbeddings({ texts: [text], model: `embeddinggemma:latest` });'`'`
   return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function performVectorSearch(params: {, embedding: number[];, limit: number;
@@ -233,8 +232,8 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
       id,
       content,
       (1 - (embedding ${distanceOperator} $1)) as similarity,
-      ${includeMetadata ? 'metadata,' : `' }'`
-      ${includeMetadata ? 'embedding,' : `' }'`
+      ${includeMetadata ? 'metadata,' : `` }'`'`
+      ${includeMetadata ? 'embedding,' : `` }'`'`
       created_at
     FROM legal_documents
     ${whereClause}
@@ -299,7 +298,7 @@ async function performVectorSearch(params: {, embedding: number[];, limit: numb
       }));
   } catch (dbError) {
     console.error('Database query error: ', dbError);'
-    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error' }');
+    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error` }');'`
   }
 }
 // Enhanced search complexity analysis for legal queries
@@ -367,6 +366,5 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };

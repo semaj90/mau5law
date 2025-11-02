@@ -57,8 +57,7 @@ export const GET: RequestHandler = async () => {
 				status: allHealthy ? 200 : 503,
 				headers: {
 					'Cache-Control': 'no-cache, no-store, must-revalidate',
-					'X-Health-Check': 'true` }'`
-			}
+					'X-Health-Check': 'true' }'' }
 		);
 	} catch (error: any) {
 		console.error('Health check failed:', error);

@@ -100,8 +100,7 @@ When responding:
 2. Suggest specific next steps
 3. Focus on legal case management context
 4. Be helpful and constructive
-Format your response as clear, professional advice.`;`
-}
+Format your response as clear, professional advice.`;' }'`
 function getTemperatureForVibe(vibe: string): number {
   const temperatureMap = {
     professional: 0.3,
@@ -204,7 +203,7 @@ async function generateMockResponse(
     },
     creative: {
       prefix: 'Looking at this from a fresh perspective,',
-      style: 'innovative and exploratory` },'`
+      style: `innovative and exploratory` },'`'`
     analytical: {
       prefix: 'From a systematic examination of the evidence,',
       style: `logical and methodical` },
@@ -220,8 +219,7 @@ async function generateMockResponse(
       'I recommend focusing on the documentary evidence patterns that show consistency in the timeline. Consider cross-referencing witness statements with physical evidence locations.';
   } else if (prompt.toLowerCase().includes('timeline')) {
     responseText +=
-      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";'
-  } else if (prompt.toLowerCase().includes('witness')) {
+      "The chronological sequence suggests three key phases. I'd suggest creating visual markers for each phase to highlight the progression of events.";` } else if (prompt.toLowerCase().includes('witness')) {'`
     responseText +=
       'The witness testimony reveals interesting correlations. Consider mapping their locations and perspectives to identify potential blind spots or confirmatory evidence.';
   } else if (prompt.toLowerCase().includes('analysis')) {

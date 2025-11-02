@@ -7,13 +7,13 @@
   // Svelte 5 runes are auto-imported
   import { workflowOrchestrator, workflowStore, currentWorkflowStore, healthStore, isSystemHealthy } from '$lib/services/end-to-end-api-integration.js';
   import type { LegalResearchWorkflowRequest, DocumentProcessingWorkflowRequest, CaseCreationWorkflowRequest } from '$lib/services/end-to-end-api-integration.js';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   // Svelte 5 runes for state management
   let selectedWorkflow = $state<'legal-research' | 'document-processing' | 'case-creation'>('legal-research');
   let isProcessing = $state(false);
@@ -207,13 +207,13 @@
               </div>
             </label>
           </div>
-          <Button.Root
+          <Button
             variant="ghost"
             onclick={loadDemoData}
             class="w-full bits-btn bits-btn"
           >
 Load Demo Data
-</Button.Root>
+</Button>
         </div>
       </div>
       <!-- System Status -->
@@ -332,7 +332,7 @@ Load Demo Data
             {/if}
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
-            <Button.Root
+            <Button
               onclick={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
               class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
@@ -345,7 +345,7 @@ Load Demo Data
               {:else}
                 Execute {selectedWorkflow.split.map(w => w.charAt.toUpperCase() + w.slice(1)).join(' ')} Workflow
               {/if}
-</Button.Root>
+</Button>
           </div>
         </div>
       </div>

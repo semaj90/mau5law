@@ -177,8 +177,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
           tags: doc.tags,
           timestamp: Date.now(),
           importance: 0.8,
-          category: 'legal'
-        },
+          category: 'legal` },'`
         embedding: doc.embedding,
         pageRankScore: 0,
         inboundLinks: new Set(),
@@ -589,7 +588,7 @@ export class PageRankSimilarityRetrieval extends EventEmitter {
     // Normalize weights
     const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
     if (totalWeight === 0) return 0;
-    (Object.keys(weights) as Array<keyof typeof, weights>).forEach(key => {
+    (Object.keys(weights) as Array<keyof, typeof, weights>).forEach(key => {
       weights[key] = weights[key] / totalWeight;
     });
     switch (ranking.combinationStrategy) {

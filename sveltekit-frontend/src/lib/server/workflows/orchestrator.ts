@@ -377,8 +377,7 @@ class WorkflowOrchestrator {
       // Create serializable version (exclude actor)
       const serializable = {
         ...workflow,
-        actor: null, // Don't serialize the actor'
-      };
+        actor: null, // Don't serialize the actor` };'`
       await cache.set(`workflow:${workflowId}`, serializable, 86400); // 24h TTL
     } catch (error) {
       console.error(`❌ Failed to persist workflow ${workflowId}:`, error);
@@ -454,7 +453,7 @@ class WorkflowOrchestrator {
     for (const [workflowId, workflow] of this.workflows) {
       if (
         workflow.status === 'completed' &&
-        workflow.updatedAt < cutoff // changed: removed stray, semicolon
+        workflow.updatedAt < cutoff // changed: removed, stray, semicolon
       ) {
         if (workflow.actor) {
           workflow.actor.stop();

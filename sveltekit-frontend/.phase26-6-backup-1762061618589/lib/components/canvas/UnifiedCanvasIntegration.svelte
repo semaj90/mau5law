@@ -6,8 +6,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
   import { writable } from 'svelte/store';
-  import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  import { CanvasBoard } from '$lib/components/yorha/CanvasBoard.svelte';
+  import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
+  import  CanvasBoard  from "$lib/components/yorha/CanvasBoard.svelte";
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
   interface Props {
     caseId?: string;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Dialog } from 'bits-ui';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import X from 'lucide-svelte';
   import { goto } from '$app/navigation';
   import { superForm } from 'sveltekit-superforms';
@@ -93,15 +93,15 @@
           <a href="/forgot-password" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
         </div>
         <div class="flex gap-3 justify-end pt-4">
-          <Button.Root
+          <Button
             type="button"
             onclick={closeModal}
             variant="secondary"
             class="px-4 py-2 bg-slate-200 text-slate-900 rounded hover:bg-slate-300"
           >
             Cancel
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             type="submit"
             disabled={$submitting}
             class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
@@ -111,7 +111,7 @@
             {:else}
               Sign In
             {/if}
-          </Button.Root>
+          </Button>
         </div>
       </form>
       <div class="mt-4 text-center text-sm text-slate-600">

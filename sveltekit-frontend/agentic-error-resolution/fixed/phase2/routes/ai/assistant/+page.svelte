@@ -358,7 +358,7 @@ $effect(() => {
     </div>
 
     <!-- System Status Card -->
-    <Card.Root class="mb-6 p-6 nes-container">
+    <Card class="mb-6 p-6 nes-container">
       <CardHeader>
         <CardTitle class="text-xl font-semibold flex items-center gap-2">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -384,10 +384,10 @@ $effect(() => {
           {/each}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
     <!-- Quick Actions -->
-    <Card.Root class="mb-6 p-6 nes-container">
+    <Card class="mb-6 p-6 nes-container">
       <CardHeader>
         <CardTitle class="text-xl font-semibold mb-4">Quick Legal Queries</CardTitle>
       </CardHeader>
@@ -419,13 +419,13 @@ $effect(() => {
           >Tort Law</button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
     <!-- Chat Interface -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <!-- Chat Messages -->
       <div class="xl:col-span-2">
-        <Card.Root class="flex flex-col h-[70vh] nes-container">
+        <Card class="flex flex-col h-[70vh] nes-container">
           <CardHeader>
             <div class="flex justify-between items-center">
               <!-- FIX: use cn() to combine static classes + conditional classes instead of embedding expression inside class string -->
@@ -508,11 +508,11 @@ $effect(() => {
               </button>
             </div>
           </div>
-        </Card.Root>
+        </Card>
 
         <!-- POI Timeline Visualization -->
         {#if showTimeline && poiTimelineData.length > 0}
-          <Card.Root class="mt-6 p-6 nes-container">
+          <Card class="mt-6 p-6 nes-container">
             <CardHeader class="mb-4 flex justify-between items-center">
               <CardTitle class="text-xl font-semibold flex items-center gap-2">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -587,12 +587,12 @@ $effect(() => {
                 </div>
               {/each}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/if}
 
         <!-- User Activity Timeline -->
         {#if userActivityTimeline.length > 0}
-          <Card.Root class="mt-6 p-6 nes-container">
+          <Card class="mt-6 p-6 nes-container">
             <CardHeader>
               <CardTitle class="text-xl font-semibold mb-4 flex items-center gap-2">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -617,7 +617,7 @@ $effect(() => {
                 </div>
               {/each}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/if}
       </div>
 
@@ -625,7 +625,7 @@ $effect(() => {
       <div class="xl:col-span-1">
         <div class="space-y-6">
           <!-- Model Information -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">AI Model</CardTitle>
             </CardHeader>
@@ -639,10 +639,10 @@ $effect(() => {
                 </p>
               </div>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Features -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">Features</CardTitle>
             </CardHeader>
@@ -674,10 +674,10 @@ $effect(() => {
                 </div>
               </div>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Controls -->
-          <Card.Root class="p-6 nes-container">
+          <Card class="p-6 nes-container">
             <CardHeader>
               <CardTitle class="font-semibold mb-3">Controls</CardTitle>
             </CardHeader>
@@ -742,11 +742,11 @@ $effect(() => {
                 {/if}
               </button>
             </CardContent>
-          </Card.Root>
+          </Card>
 
           <!-- Focus Metrics -->
           {#if userActivityTimeline.length > 0}
-            <Card.Root class="p-6 nes-container">
+            <Card class="p-6 nes-container">
               <CardHeader>
                 <CardTitle class="font-semibold mb-3">Focus Metrics</CardTitle>
               </CardHeader>
@@ -768,7 +768,7 @@ $effect(() => {
                   <span class="font-medium">{focusMetrics.evidenceReviewed}</span>
                 </div>
               </CardContent>
-            </Card.Root>
+            </Card>
           {/if}
       </div>
     </div>

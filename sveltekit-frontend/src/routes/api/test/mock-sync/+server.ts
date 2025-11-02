@@ -217,8 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Database not connected - cannot insert mock data',
-            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing` });'`
-        }
+            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing' });'` }'`
         // This would insert mock data into the actual database
         // For safety, we'll return a simulation instead'
         return json({

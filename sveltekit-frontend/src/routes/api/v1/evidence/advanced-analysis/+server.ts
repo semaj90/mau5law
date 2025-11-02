@@ -86,8 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleSynthesis(data);
       case 'real_time':
         return await handleRealTimeAnalysis(data);
-      default: return json({ error: 'Invalid action` }, { status: 400 });'`
-    }
+      default: return json({ error: 'Invalid action' }, { status: 400 });'` }'`
   } catch (error) {
     console.error('Advanced evidence analysis error:', error);'
     return json(
@@ -243,8 +242,7 @@ async function handleBatchAnalyze(data: BatchAnalyzeRequest): Promise<any> {
     } catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message : 'Analysis failed` });'`
-    }
+        error: error instanceof Error ? error.message : 'Analysis failed' });'` }'`
   }
   // Broadcast batch completion (rename count to avoid duplicate property name)
   if (caseId) {
@@ -408,8 +406,7 @@ async function handleRealTimeAnalysis(data: RealTimeRequest): Promise<any> {
   // Get evidence from database
   const evidenceRecord = await dbClient.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
   if (evidenceRecord.length === 0) {
-    return json({ error: 'Evidence not found` }, { status: 404 });'`
-  }
+    return json({ error: 'Evidence not found' }, { status: 404 });'' }
   const evidenceData = evidenceRecord[0];
   // Run quick analysis for real-time display
   const quickAnalysis = await analyzer.analyzeEvidence(evidenceData, analysisTypes, {
@@ -469,8 +466,7 @@ async function storeAnalysisResult(evidenceId: string, results: any, analysisId:
     });
   } catch (error) {
     console.error('Failed to store analysis result:', error);
-    // Don't throw - analysis succeeded even if storage failed'
-  }
+    // Don't throw - analysis succeeded even if storage failed` }'`
 }
 export const GET: RequestHandler = async ({ url }) => {
   try {

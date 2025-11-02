@@ -2,19 +2,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import {
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Separator } from '$lib/components/ui/separator/Separator.svelte';
-  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Separator  from "$lib/components/ui/separator/Separator.svelte";
+  import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
   let inputMessage = $state('');
@@ -138,7 +138,7 @@
           {getStatusText()}
         </Badge>
       </h3>
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button.Root>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button>
     </div>
   </div>
   <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
@@ -202,13 +202,13 @@
         disabled={isLoading || connectionStatus !== 'connected'}
         class="flex-1"
       />
-      <Button.Root
+      <Button
         class="bits-btn"
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
         {isLoading ? '⏳' : '📤'} Send
-      </Button.Root>
+      </Button>
     </div>
     <!-- Status Info -->
     <div class="text-xs nes-text is-disabled flex justify-between items-center">

@@ -747,7 +747,7 @@ class AdvancedCacheManager {
     return await cryptoApi.subtle.importKey(
       'raw',
       keyData,
-      { name: 'AES-GCM` },'`
+      { name: 'AES-GCM' },'`'`
       false,
       ['encrypt', 'decrypt']
     );

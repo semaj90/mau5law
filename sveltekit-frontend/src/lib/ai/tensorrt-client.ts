@@ -104,7 +104,7 @@ export class TensorRTLegalClient {
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
-        method: `GET' });'`
+        method: `GET` });'`'`
       if (!response.ok) {
         console.warn(`TensorRT health check failed: ${response.status}`);
         return null;
@@ -119,7 +119,7 @@ export class TensorRTLegalClient {
   }
   async listModels(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/models', { method: `GET' });'`
+      const response = await this.makeRequest('/v1/models', { method: `GET` });'`'`
       if (!response.ok) {
         throw new Error(`Models list failed: ${response.status} ${response.statusText}`);
       }
@@ -131,13 +131,13 @@ export class TensorRTLegalClient {
   }
   async getPerformanceMetrics(): Promise<any> {
     try {
-      const response = await this.makeRequest('/v1/performance', { method: `GET' });'`
+      const response = await this.makeRequest('/v1/performance', { method: `GET` });'`'`
       if (!response.ok) {
         throw new Error(`Performance metrics failed: ${response.status} ${response.statusText}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Failed to get performance metrics: `, error);'`
+      console.error('Failed to get performance metrics: ', error);'`'`
       throw error;
     }
   }
@@ -171,15 +171,14 @@ export class TensorRTLegalClient {
 2. Evidence requirements
 3. Procedural considerations
 4. Settlement opportunities
-5. Strategic recommendations' };'
+5. Strategic recommendations` };'`
     const instructions = analysisTypes[analysisType || 'comprehensive'] || analysisTypes.comprehensive;
     return `<legal_analysis>`
 Document/Text: ${text}
-${context ? `\nRelevant Context:\n${context}` : `' }'`
+${context ? `\nRelevant Context:\n${context}` : `` }'`'`
 Analysis Instructions:
 ${instructions}
-Provide a detailed, professional legal analysis:`;`
-  }
+Provide a detailed, professional legal analysis:`;` }
   private async makeRequest(endpoint: string, options: RequestInit): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
     let lastError: Error | null = null;
@@ -196,7 +195,7 @@ Provide a detailed, professional legal analysis:`;`
         signal: controller.signal
       };
       try {
-        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET' } ${endpoint}`);
+        console.log(`TensorRT request (attempt ${attempt}): ${options.method ?? 'GET` } ${endpoint}`);'`
         const response = await fetch(url, requestOptions);
         clearTimeout(timeoutId);
         // Return for successful or client error (do not retry 4xx)
@@ -233,7 +232,7 @@ Provide a detailed, professional legal analysis:`;`
         return {
           connected: false,
           latency,
-          error: 'Health check failed' };
+          error: 'Health check failed` };'`
       }
       return {
         connected: health.status === 'healthy',
@@ -246,8 +245,7 @@ Provide a detailed, professional legal analysis:`;`
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message : `Unknown error' };'`
-    }
+        error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
   }
 }
 export const tensorRTClient = new TensorRTLegalClient(

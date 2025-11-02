@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing agentId',
-          message: `agentId is required to update status` },
+          message: `agentId is required to update status' },'`
         { status: 400 }
       );
     }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Agent not found',
-          message: `Agent with ID ${agentId} does not exist` },
+          message: `Agent with ID ${agentId} does not exist' },'`
         { status: 404 }
       );
     }

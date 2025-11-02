@@ -37,7 +37,7 @@ Query: ${query}
 Response: ';'
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , model: 'legal:latest',
         prompt: prompt,
@@ -101,8 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: `chat_embeddings' }'`
-    }));
+        source: 'chat_embeddings' }'` }));'`
 
     return json({
       success: true,

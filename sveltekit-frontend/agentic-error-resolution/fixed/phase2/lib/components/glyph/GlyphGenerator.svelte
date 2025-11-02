@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte'; // Adjusted import
+  import  Button  from "$lib/components/ui/button.svelte"; // Adjusted import
   import * as Card from '$lib/components/ui/card.svelte'; // Adjusted import
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
@@ -278,7 +278,7 @@
             </div>
           {/each}
         {/if}
-      <Button.Root
+      <Button
         variant="ghost"
         onclick={addConditioningTensor}
         disabled={generating}
@@ -434,7 +434,7 @@
     </div>
     <!-- Generate Button -->
     <div class="flex justify-end">
-      <Button.Root
+      <Button
         onclick={generateGlyph}
         disabled={generating || !prompt.trim()}
         class="px-6 py-2 bits-btn bits-btn"

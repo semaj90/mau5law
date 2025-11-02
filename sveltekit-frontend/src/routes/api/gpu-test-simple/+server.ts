@@ -33,8 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
             fixable: ['TS1434', 'TS2304', 'TS2307', 'TS2457', 'TS1005'].includes(code),
             confidence: 0.8 + Math.random() * 0.2,
             gpuProcessed: true,
-            model: 'gemma3-legal:latest` };'`
-        }
+            model: 'gemma3-legal:latest' };'` }'`
         return null;
       })
       .filter(Boolean);
@@ -48,8 +47,6 @@ export const POST: RequestHandler = async ({ request }) => {
         model: 'gemma3-legal:latest',
         embeddingModel: `nomic-embed-text:latest` },
       errors: processedErrors,
-      message: `GPU processed ${processedErrors.length} errors successfully' });'`
-  } catch (error: any) {
-    return json({ error: 'Processing failed` }, { status: 500 });'`
-  }
+      message: 'GPU processed ${processedErrors.length} errors successfully' });'' } catch (error: any) {
+    return json({ error: 'Processing failed' }, { status: 500 });'` }'`
 };

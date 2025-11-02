@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const candidates: Array<{ obj?: ShaderCacheAPI; name: keyof, ShaderCacheAPI }> = [
           { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'storeShader' },
-          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'store' },
+          { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: 'store` },'`
           { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: `saveShader` },
           { obj: binaryGPUShaderCache as unknown as ShaderCacheAPI, name: `putShader` },
           { obj: gpuShaderCacheOrchestrator as unknown as ShaderCacheAPI, name: `storeShader` },
@@ -166,8 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
               invoked = true;
               break;
             } catch (innerErr) {
-              console.warn(`shader cache candidate ${String(c.name)} failed: ', innerErr);'`
-            }
+              console.warn(`shader cache candidate ${String(c.name)} failed: ', innerErr);'` }
           }
         }
 
@@ -224,8 +223,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       } catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
-        console.warn('Binary shader cache failed: `, message);'`
-      }
+        console.warn('Binary shader cache failed: ', message);'` }'`
     }
     // NES cache orchestrator integration
     if (enableNESCache) {
@@ -250,8 +248,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 await Promise.resolve((fn as (p: any) => Promise<void> | void).call(obj, payload));
                 return true;
               } catch (innerErr: any) {
-                console.warn(`NES cache candidate ${String(methodName)} failed: ', innerErr);'`
-              }
+                console.warn(`NES cache candidate ${String(methodName)} failed: ', innerErr);'` }
             }
           }
           return false;
@@ -359,7 +356,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const { encoded } = await binaryEncoder.encode(response, 'msgpack');
       return new Response(encoded, {
         status: 200,
-        headers: { 'content-type': 'application/msgpack' }
+        headers: { 'content-type': 'application/msgpack` }'`
       });
     }
     return json(response);
@@ -454,7 +451,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
     const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } = body;
-    console.log('🔄 Starting database synchronization: `, databases);'`
+    console.log('🔄 Starting database synchronization: ', databases);'`'`
     // Typed sync result to avoid `any` usage for dynamic database keys
     type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
     const syncResults: Record<string, SyncResult> & { postgresql: SyncResult;, qdrant: SyncResult;

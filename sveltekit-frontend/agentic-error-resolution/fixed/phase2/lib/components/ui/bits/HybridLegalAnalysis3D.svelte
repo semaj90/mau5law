@@ -7,7 +7,7 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount, tick } from "svelte";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import {
@@ -522,7 +522,7 @@ https://svelte.dev/e/expected_token -->
     </div>
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <Button.Root
+      <Button
         variant="ghost"
         onclick={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
@@ -537,7 +537,7 @@ https://svelte.dev/e/expected_token -->
             Start Hybrid Analysis
           {/if}
         {/snippet}
-      <Button.Root
+      <Button
         variant="ghost"
         onclick={checkSystemHealth}
         disabled={isAnalyzing}
@@ -547,7 +547,7 @@ https://svelte.dev/e/expected_token -->
           <Activity class="w-4 h-4 mr-2" />
           Health Check
         {/snippet}
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         onclick={() =>
 enable3DVisualization = !enable3DVisualization}

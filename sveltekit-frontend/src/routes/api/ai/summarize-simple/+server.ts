@@ -45,7 +45,7 @@ const FORMAT_TEMPLATES = {
 	bullets: (text: string, maxLength: number) =>
 		`Create a bullet-point summary (max ${maxLength} tokens) of this text. Extract:\n- Main issues or errors\n- Patterns and frequency\n- Severity levels\n- Recommended fixes\n\nText:\n${text}`,
 	'legal-brief': (text: string, maxLength: number) =>
-		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}' };'`
+		`Generate a legal brief (max ${maxLength} tokens) for this document. Include:\n1. Summary\n2. Key Issues\n3. Recommendations\n\nDocument:\n${text}` };'`'`
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {

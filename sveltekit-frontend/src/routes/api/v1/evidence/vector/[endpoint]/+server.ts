@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             id: 'evidence-1',
             similarity: 0.92,
             title: `Evidence; matching: ${validatedData.data.query}`,
-            type: 'document' }
+            type: 'document` }'`
         ];
         break;
       case 'embed':
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Processing error' },
+        error: error instanceof Error ? error.message : 'Processing error` },'`
       { status: 500 }
     );
   }

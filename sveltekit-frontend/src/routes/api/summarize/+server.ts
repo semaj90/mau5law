@@ -37,6 +37,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (error instanceof SyntaxError) {
       return json({ error: 'Invalid JSON in request body.' }, { status: 400 });
     }
-    return json({ error: 'Failed to generate summary.' }, { status: 500 });
+    return json({ error: 'Failed to generate summary.` }, { status: 500 });'`
   }
 };

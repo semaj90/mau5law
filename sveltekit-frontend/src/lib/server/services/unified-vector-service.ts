@@ -145,7 +145,7 @@ async function generateEmbedding(text: string, model: string = 'gemma'): Promise
 
     const response = await fetch(`${config.ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , model: embeddingModel,
         prompt: text

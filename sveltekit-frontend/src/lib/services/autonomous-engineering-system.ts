@@ -239,7 +239,7 @@ export class AutonomousEngineeringSystem {
 					input: any,
 					opts?: Record<string, unknown>
 				) => Promise<CrewExecutionResult | undefined>;
-				const execution = await execFn(diagnosticCrew, crewInput, { timeout: 180000, priority: `high` });
+				const execution = await execFn(diagnosticCrew, crewInput, { timeout: 180000, priority: `high' });'`
 
 				// Use safeExtractId helper instead of casting to `any`
 				const execId = safeExtractId(execution);
@@ -276,7 +276,7 @@ export class AutonomousEngineeringSystem {
 				const rawAgents = await Promise.all([
 					Promise.resolve(createFn({ role: `senior-architect` }, {}, {})),
 					Promise.resolve(createFn({ role: `devops-engineer` }, {}, {})),
-					Promise.resolve(createFn({ role: `qa-specialist` }, {}, {}))
+					Promise.resolve(createFn({ role: `qa-specialist' }, {}, {}))'`
 				]);
 
 				const engineeringAgents: AutoGenAgent[] = rawAgents.map((r, idx) =>
@@ -423,7 +423,7 @@ export class AutonomousEngineeringSystem {
 				model: 'gemma3-legal',
 				prompt: `Optimize the following; analysis:\n${JSON.stringify(result, null, 2)}`,
 				timestamp: Date.now(),
-				priority: `high` };
+				priority: `high' };'`
 
 			const submitResult = await aiWorkerManager.submitTask(synthesisTask);
 			const synthesisResult = await aiWorkerManager.waitForTask(submitResult);
@@ -440,7 +440,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/directory/scan`, {
 				method: 'POST',
-				headers: { 'Content-Type': `application/json` },
+				headers: { 'Content-Type': `application/json' },'`
 				body: JSON.stringify({, path: projectPath })
 			});
 			if (response.ok) return (await response.json()) as Record<string, unknown>;
@@ -456,7 +456,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/logs/collect`, {
 				method: 'POST',
-				headers: { 'Content-Type': `application/json` },
+				headers: { 'Content-Type': `application/json' },'`
 				body: JSON.stringify({, path: projectPath })
 			});
 			if (response.ok) {
@@ -476,7 +476,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/semantic/search`, {
 				method: 'POST',
-				headers: { 'Content-Type': `application/json` },
+				headers: { 'Content-Type': `application/json' },'`
 				body: JSON.stringify({, query: `Common software engineering, issues: ${query}`, limit: 10, threshold: 0.7 })
 			});
 			const results = response.ok ? (await response.json()) as unknown[] : [];
@@ -493,7 +493,7 @@ export class AutonomousEngineeringSystem {
 		try {
 			const response = await fetch(`${this.mcpEndpoint}/api/semantic/best-practices`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json` },'`
+				headers: { 'Content-Type': 'application/json' },'`'`
 				body: JSON.stringify({ query })
 			});
 			return response.ok ? (await response.json()) as unknown[] : [];
@@ -533,7 +533,7 @@ export class AutonomousEngineeringSystem {
 			estimatedTime: 30,
 			confidence: 0.8,
 			dependencies: [],
-			riskAssessment: `Medium risk` };
+			riskAssessment: `Medium risk' };'`
 	}
 
 	private generateFallbackStrategy(problem: EngineeringProblem): SolutionStrategy {
@@ -553,7 +553,7 @@ export class AutonomousEngineeringSystem {
 			estimatedTime: 15,
 			confidence: 0.5,
 			dependencies: [],
-			riskAssessment: `Low risk manual investigation` };
+			riskAssessment: `Low risk manual investigation' };'`
 	}
 
 	private calculateCriticalPath(_strategies: SolutionStrategy[], phases: ExecutionPhase[]): string[] {

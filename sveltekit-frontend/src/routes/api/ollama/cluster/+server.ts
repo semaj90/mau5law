@@ -546,7 +546,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
       baseResult = {
         pulled: true,
         model: operation.model ?? 'unknown',
-        size: `${(Math.random() * 4 + 1).toFixed(2)}GB` };
+        size: `${(Math.random() * 4 + 1).toFixed(2)}GB' };'`
       break;
     case 'remove':
       baseResult = {
@@ -565,7 +565,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
       baseResult = {
         preloaded: true,
         model: operation.model ?? 'unknown',
-        memoryUsage: '${(Math.random() * 2 + 0.5).toFixed(2)}GB` };'`
+        memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB` };'`'`
       break;
     default:
       baseResult = { success: false, reason: `unknown operation` };

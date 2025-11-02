@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
   interface Props {
     fallback?: string;
@@ -123,18 +123,18 @@
           </div>
           <!-- Actions -->
           <div class="flex flex-wrap gap-3 mb-6">
-            <Button.Root onclick={retryAction} class="flex items-center gap-2">
+            <Button onclick={retryAction} class="flex items-center gap-2">
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
-            </Button.Root>
-            <Button.Root variant="ghost" onclick={goHome} class="flex items-center gap-2">
+            </Button>
+            <Button variant="ghost" onclick={goHome} class="flex items-center gap-2">
               <Home class="w-4 h-4" />
               Go Home
-            </Button.Root>
-            <Button.Root variant="ghost" onclick={reportError} class="flex items-center gap-2">
+            </Button>
+            <Button variant="ghost" onclick={reportError} class="flex items-center gap-2">
               <Bug class="w-4 h-4" />
               Report Issue
-            </Button.Root>
+            </Button>
           </div>
           <!-- Technical Details (Collapsible) -->
           {#if showDetails && errorInfo}

@@ -17,9 +17,9 @@ https://svelte.dev/e/js_parse_error -->
   import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
   import { Bot, Loader2, Send } from 'lucide-svelte';
   import { onDestroy, tick } from 'svelte';
-  import { ChatMessage } from './ChatMessage.svelte';
-  import { ProactivePrompt } from './ProactivePrompt.svelte';
-  import { ThinkingStyleToggle } from './ThinkingStyleToggle.svelte';
+  import  ChatMessage  from "./ChatMessage.svelte";
+  import  ProactivePrompt  from "./ProactivePrompt.svelte";
+  import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
   import { ThinkingProcessor } from '$lib/ai/thinking-processor';
   // props (Svelte 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();

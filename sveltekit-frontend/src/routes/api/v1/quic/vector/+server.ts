@@ -206,7 +206,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const config = await request.json();
     // Validate configuration
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
-      error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds` }));'`
+      error(400, ensureError({ message: `Cache TTL must be between 10 and 3600 seconds` }));'`'`
     }
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
       error(400, ensureError({ message: `Max cache size must be between 10 and 10000` }));

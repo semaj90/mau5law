@@ -48,7 +48,7 @@ export interface UpsertEmbeddingOptions { model: string;, textHash: string;
 export async function upsertEmbedding(
   opts: UpsertEmbeddingOptions
 ): Promise<{ created?: boolean; updated?: boolean; method: string; scale?: number | null }> {
-  const { model, textHash, embedding, packMethod = 'int8-symmetric` } = opts;'`
+  const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;'`'`
   const db = await getDb();
 
   // packEmbedding returns { b64, scale, method }

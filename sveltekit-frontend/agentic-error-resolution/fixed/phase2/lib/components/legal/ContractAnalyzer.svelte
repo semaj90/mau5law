@@ -22,13 +22,13 @@
 
 <script lang="ts">
   import { fade, scale, fly } from 'svelte/transition';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
 
   // exported props - use explicit union types to avoid svelte-preprocess parsing issues
   const { contract } = $props<{ contract: ContractAnalysis | undefined }>()
@@ -184,7 +184,7 @@
             </button>
 
             <div class="export-dropdown">
-              <Button.Root class="export-btn">📤 Export</Button.Root>
+              <Button class="export-btn">📤 Export</Button>
               <div class="export-menu">
                 <button onclick={() => exportContract('pdf')}>📄 PDF</button>
                 <button onclick={() => exportContract('docx')}>📝 DOCX</button>

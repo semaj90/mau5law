@@ -119,7 +119,7 @@ export class FullSystemOrchestrator {
       result.success = result.errors.length === 0;
       this.isInitialized = true;
       console.log(
-        `✅ Full System Orchestration ${result.success ? 'completed successfully' : `completed with warnings' }`'`
+        `✅ Full System Orchestration ${result.success ? 'completed successfully' : `completed with warnings` }`'`'`
       );
       console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
       return result;
@@ -262,8 +262,7 @@ export class FullSystemOrchestrator {
           phase_2: 'UI component API reconciliation (600+ fixes)',
           phase_3: 'CSS selector cleanup (400+ fixes)',
           phase_4: 'Binding pattern validation (162+ fixes)',
-          total_automation_potential: `85%' }'`
-      };
+          total_automation_potential: '85%' }'` };'`
       result.services.errorAnalysis = mockAnalysisResult;
       result.performance.servicesOnline++;
       // Extract recommendations from error analysis
@@ -471,8 +470,7 @@ export class FullSystemOrchestrator {
       console.log('✅ System cleanup completed');
     } catch (error: any) {
       const message = formatError(error);
-      console.error('❌ Cleanup error:', message);'
-    }
+      console.error('❌ Cleanup error:', message);` }`'
     this.isInitialized = $state(false);
   }
 }
@@ -482,7 +480,7 @@ export const fullSystemOrchestrator = new FullSystemOrchestrator({
   enablePhase13Integration: true,
   enableErrorAnalysis: true,
   enableAutoRemediation: false, // Can be enabled after manual review
-  performanceMode: `development' });'`
+  performanceMode: `development` });'`'`
 /**
  * Initialize the complete system
  * This is the main entry point for full system integration
@@ -524,7 +522,7 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
 function formatError(err: any): string {
   // Safe formatting for unknown error shapes
   if (!err) return 'Unknown error';
-  if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `' }`;'`
+  if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `` }`;'`'`
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);
   } catch {

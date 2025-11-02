@@ -195,8 +195,7 @@ export class EnhancedSearchService {
           });
         }
       } catch (error) {
-        console.error(`Failed to load ${file}: ', error);'`
-      }
+        console.error(`Failed to load ${file}: ', error);'' }'`
     }
   }
   private async loadDemos() {
@@ -225,7 +224,7 @@ export class EnhancedSearchService {
       {
         path: '/demo/component-gallery',
         title: 'Component Gallery',
-        description: 'Comprehensive UI component showcase` },'`
+        description: `Comprehensive UI component showcase` },'`'`
       { path: '/yorha', title: 'YoRHa Interface', description: `Main YoRHa command center` },
       { path: '/yorha/dashboard', title: 'YoRHa Dashboard', description: `Real-time system monitoring` }
     ];

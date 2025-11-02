@@ -249,22 +249,22 @@
             </Badge>
           </div>
           <div class="flex gap-2">
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={handleSaveDraft}
               disabled={$isSubmitting}
             >
 <Save size={16} />
-</Button.Root>
-            <Button.Root class="bits-btn"
+</Button>
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={handleReset}
               disabled={$isSubmitting}
             >
 <RotateCcw size={16} />
-</Button.Root>
+</Button>
           </div>
         </h3>
       </div>
@@ -307,14 +307,14 @@
                   "Unknown type"}
               </p>
             </div>
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={removeFile}
               disabled={$isSubmitting}
             >
 <X size={16} />
-</Button.Root>
+</Button>
           </div>
         {:else}
           <div class="drop-zone-content">
@@ -325,10 +325,10 @@
             <p class="drop-zone-description">
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
-            <Button.Root class="bits-btn" variant="ghost" disabled={$isSubmitting}>
+            <Button class="bits-btn" variant="ghost" disabled={$isSubmitting}>
 <Upload class="mr-2" size={16} />
               Browse Files
-</Button.Root>
+</Button>
           {/if}
       </div>
       <input;
@@ -501,7 +501,7 @@
           {contextValue.error || "An error occurred during processing"}
           {#if stateValue === "uploadError" || stateValue === "processingError"}
             <div class="mt-2">
-              <Button.Root class="bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() =>
@@ -510,9 +510,9 @@ actor.send({ type: "RETRY" })}
               >
                 Retry ({contextValue.maxRetries - contextValue.retryCount} attempts
                 left)
-</Button.Root>
+</Button>
               {#if stateValue === "processingError"}
-                <Button.Root class="bits-btn"
+                <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
                   onclick={() =>
@@ -520,7 +520,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
                   Skip AI Processing
-</Button.Root>
+</Button>
               {/if}
             {/if}
         </AlertDescription>
@@ -550,14 +550,14 @@ actor.send({ type: "SKIP_PROCESSING" })}
         {/if}
       </div>
       <div class="flex gap-3">
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           onclick={handleReset}
           disabled={$isSubmitting}
         >
 Reset Form
-</Button.Root>
-        <Button.Root class="bits-btn"
+</Button>
+        <Button class="bits-btn"
           type="submit"
           onclick|preventDefault={handleSubmit}
           disabled={!canSubmit}
@@ -573,7 +573,7 @@ Reset Form
             <Upload class="mr-2" size={16} />
             Upload & Process
           {/if}
-</Button.Root>
+</Button>
       </div>
     </div>
   </form>

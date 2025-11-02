@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Changed from default to named import
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // Changed from default to named import
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import ArrowRight from 'lucide-svelte/icons/arrow-right';
   import Book from 'lucide-svelte/icons/book';
@@ -471,18 +471,18 @@
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
-          <Button.Root variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
-          </Button.Root>
-          <Button.Root variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          </Button>
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
-          </Button.Root>
-          <Button.Root variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          </Button>
+          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </div>
@@ -531,11 +531,11 @@
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
                       {@html article.content.split('\n').slice(0, 3).join('\n').substring(0, 200)}...
                     </div>
-                    <Button.Root class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+                    <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
-                    </Button.Root>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -581,14 +581,14 @@
               Can't find what you're looking for? Our support team is here to help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button.Root class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
-              </Button.Root>
-              <Button.Root class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+              </Button>
+              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
-              </Button.Root>
+              </Button>
             </div>
           </div>
         </div>

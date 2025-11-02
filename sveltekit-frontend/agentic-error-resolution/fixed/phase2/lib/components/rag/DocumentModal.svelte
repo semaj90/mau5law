@@ -1,6 +1,6 @@
 <script lang="ts">
   import { X, Download, Trash2, Clock, FileText, Zap } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   interface Document {
     id: string;
     filename: string;
@@ -181,29 +181,29 @@
     </div>
     <!-- Footer / Actions -->
     <div class="flex gap-3 bg-gray-50 px-6 py-4 border-t">
-      <Button.Root
+      <Button
         onclick={downloadDocument}
         disabled={downloading || deleting}
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
       >
         <Download class="w-4 h-4" />
         {downloading ? 'Downloading...' : 'Download'}
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         onclick={deleteDocument}
         disabled={deleting || downloading}
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
       >
         <Trash2 class="w-4 h-4" />
         {deleting ? 'Deleting...' : 'Delete'}
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         onclick={closeModal}
         disabled={deleting || downloading}
         class="flex-1 px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 disabled:opacity-50"
       >
         Close
-      </Button.Root>
+      </Button>
     </div>
   {/if}
 <style>

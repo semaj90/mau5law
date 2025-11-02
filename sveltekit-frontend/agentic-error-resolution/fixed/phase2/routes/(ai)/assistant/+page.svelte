@@ -1,7 +1,7 @@
 <script lang="ts">
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
-  import { Button } from '$lib/components/ui/core.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
 
   interface ChatMessage {
     id: string;
@@ -143,14 +143,14 @@
       {#each Array.isArray(quickQueries) ? quickQueries : [] as query}
         <Button onclick={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
           {query}
-        </Button.Root>
+        </Button>
       {/each}
     </div>
   </div>
 
   <!-- Chat Interface -->
   <div class="chat-container">
-    <Card.Root class="chat-card">
+    <Card class="chat-card">
       <CardHeader>
         <CardTitle>💬 Legal AI Chat</CardTitle>
       </CardHeader>
@@ -191,12 +191,12 @@
             class="message-input"
             rows="3"
           ></textarea>
-          <Button.Root onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
+          <Button onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
             {isStreaming ? '🔄' : '📤'} Send
           </Button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </div>
 
   <!-- AI Capabilities -->

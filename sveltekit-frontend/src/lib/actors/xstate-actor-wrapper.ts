@@ -65,7 +65,7 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
   try {
     const response = await fetchWithTimeout('/api/ai/process-document', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify(input),
       timeout: 60000, // 60s timeout for document processing
     });
@@ -103,7 +103,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
   try {
     const response = await fetchWithTimeout('/api/ai/legal-analysis', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify(input),
       timeout: 45000
     });
@@ -140,7 +140,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
   try {
     const response = await fetchWithTimeout('/api/ai/rag-search', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify(input),
       timeout: 30000
     });
@@ -152,7 +152,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data?.model || 'unknown' } as RAGSearchOutput;
+      model: data?.model || 'unknown` } as RAGSearchOutput;'`
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
   }

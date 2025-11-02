@@ -184,7 +184,7 @@ export class BrowserLocalAI {
     try {
       // Prepare prompt with system context
       const fullPrompt = request.systemPrompt
-        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant: '`
+        ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant: '`'
         : request.prompt;
       // Generate text using local model
       const result = await this.textModel.generate(fullPrompt, {
@@ -363,7 +363,7 @@ export const browserLocalAI = new BrowserLocalAI({
 // Legal-specific helper functions
 export class LegalLocalAI {
   constructor(private ai: BrowserLocalAI) {}
-  async suggestEvidenceLinks(evidenceNodes: Array<{ id: string; title: string;, content: string }>): Promise<
+  async suggestEvidenceLinks(evidenceNodes: Array<{, id: string; title: string;, content: string }>): Promise<
     Array<{ fromId: string;, toId: string;
       relationship: string;
       confidence: number;
@@ -379,14 +379,14 @@ export class LegalLocalAI {
         const similarity = this.cosineSimilarity(embeddings.embeddings[i], embeddings.embeddings[j]);
         if (similarity > 0.6) {
           // Generate relationship description using local AI
-          const relationshipPrompt = `Analyze the relationship between these two pieces of evidence:`
+          const relationshipPrompt = `Analyze the relationship between these two pieces of evidence: '`
 1. ${evidenceNodes[i].title}: ${evidenceNodes[i].content.substring(0, 200)}
 2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)}
 Describe their relationship in one concise phrase: ';'
           const result = await this.ai.generateText({
             prompt: relationshipPrompt,
             maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.' });
+            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.` });'`
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
@@ -405,7 +405,7 @@ Suggest 3 additional bullet points that should be added to the notes: ';'
     const result = await this.ai.generateText({
       prompt,
       maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.' });
+      systemPrompt: 'You are a legal AI assistant helping with case note preparation.` });'`
     // Parse suggestions from the response
     return result.text
       .split('\n')

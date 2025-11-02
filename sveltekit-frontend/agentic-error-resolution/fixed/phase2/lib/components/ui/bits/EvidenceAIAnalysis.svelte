@@ -66,7 +66,7 @@
     URL.revokeObjectURL(url);
   }
 </script>
-<Card.Root class="nes-container is-rounded bg-white {className}" {...restProps}>
+<Card class="nes-container is-rounded bg-white {className}" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header pb-3 mb-4">
     <div class="flex items-center justify-between">
@@ -220,7 +220,7 @@
         </div>
       {/if}
   </div>
-</Card.Root>
+</Card>
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 {

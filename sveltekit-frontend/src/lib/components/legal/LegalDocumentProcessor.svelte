@@ -87,17 +87,17 @@ import type { Case } from '$lib/types';
     return `${(ms / 60000).toFixed(1)}m`;
   }
 </script>
-<div class="legal-document-processor p-6 bg-white dark:bg-gray-900 rounded-lg, shadow-lg">
+<div class="legal-document-processor p-6 bg-white dark:bg-gray-900, rounded-lg, shadow-lg">
   <!-- Header -->
-  <div class="flex items-center justify-between, mb-6">
-    <h2 class="text-2xl font-bold text-gray-900, dark:text-gray-100">Legal Document Processor</h2>
-    <div class="flex items-center, space-x-2">
+  <div class="flex items-center, justify-between, mb-6">
+    <h2 class="text-2xl font-bold, text-gray-900, dark:text-gray-100">Legal Document Processor</h2>
+    <div class="flex, items-center, space-x-2">
       {#if $context.processingDuration}
-        <span class="text-sm, text-gray-500">
+        <span, class="text-sm, text-gray-500">
           Duration {formatDuration($context.processingDuration)}
         </span>
       {/if}
-      <div class="flex items-center, space-x-1">
+      <div class="flex, items-center, space-x-1">
         <div
           class="w-3 h-3 rounded-full" {isProcessing
             ? 'bg-blue-500 animate-pulse'
@@ -107,15 +107,15 @@ import type { Case } from '$lib/types';
                 ? 'bg-red-500'
                 : 'bg-gray-300'}"
         ></div>
-        <span class="text-sm, font-medium">{processingStage}</span>
+        <span, class="text-sm, font-medium">{processingStage}</span>
       </div>
     </div>
   </div>
   <!-- Document, Info -->
   {#if document}
-    <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-800, rounded-lg">
-      <h3 class="font-semibold, mb-2">Document Information</h3>
-      <div class="grid grid-cols-2 gap-4, text-sm">
+    <div class="mb-6 p-4 bg-gray-50, dark:bg-gray-800, rounded-lg">
+      <h3, class="font-semibold, mb-2">Document Information</h3>
+      <div class="grid grid-cols-2, gap-4, text-sm">
         <div>
           <span, class="font-medium">Title:</span>
           {document.title || 'Untitled'}
@@ -136,27 +136,27 @@ import type { Case } from '$lib/types';
     {/if}
   <!-- Progress, Bar -->
   <div, class="mb-6">
-    <div class="flex justify-between items-center, mb-2">
-      <span class="text-sm, font-medium">Processing Progress</span>
-      <span class="text-sm, text-gray-500">{progress}%</span>
+    <div class="flex justify-between, items-center, mb-2">
+      <span, class="text-sm, font-medium">Processing Progress</span>
+      <span, class="text-sm, text-gray-500">{progress}%</span>
     </div>
-    <div class="w-full bg-gray-200 rounded-full h-2.5, dark:bg-gray-700">
+    <div class="w-full bg-gray-200 rounded-full, h-2.5, dark:bg-gray-700">
       <div
         class="h-2.5 rounded-full transition-all duration-300 {getProgressColor(progress)}"
         style="width: {progress}%"
       ></div>
     </div>
   </div>
-  <!-- Analysis Progress (when, analyzing) -->
+  <!-- Analysis, Progress (when, analyzing) -->
   {#if isAnalyzing}
-    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20, rounded-lg">
-      <h3 class="font-semibold mb-3 text-blue-900, dark:text-blue-100">AI Analysis Progress</h3>
-      <div class="grid grid-cols-2 gap-3, text-sm">
+    <div class="mb-6 p-4 bg-blue-50, dark:bg-blue-900/20, rounded-lg">
+      <h3 class="font-semibold mb-3, text-blue-900, dark:text-blue-100">AI Analysis Progress</h3>
+      <div class="grid grid-cols-2, gap-3, text-sm">
         {#each Object.entries(analysisProgress) as [task, status]}
-          <div class="flex items-center, space-x-2">
+          <div class="flex, items-center, space-x-2">
             {#if status === 'completed'}
-              <div class="w-4 h-4 rounded-full bg-green-500 flex items-center, justify-center">
-                <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20, 20">
+              <div class="w-4 h-4 rounded-full bg-green-500 flex, items-center, justify-center">
+                <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0, 20, 20">
                   <path
                     fill-rule="evenodd"
                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -175,25 +175,25 @@ import type { Case } from '$lib/types';
     {/if}
   <!-- Results (when, completed) -->
   {#if isCompleted}
-    <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20, rounded-lg">
-      <h3 class="font-semibold mb-3 text-green-900, dark:text-green-100">Processing Results</h3>
+    <div class="mb-6 p-4 bg-green-50, dark:bg-green-900/20, rounded-lg">
+      <h3 class="font-semibold mb-3, text-green-900, dark:text-green-100">Processing Results</h3>
       <!-- Summary -->
       {#if $context.summary}
         <div, class="mb-4">
-          <h4 class="font-medium, mb-2">AI Summary</h4>
-          <p class="text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-3, rounded">
+          <h4, class="font-medium, mb-2">AI Summary</h4>
+          <p class="text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800, p-3, rounded">
             {$context.summary}
           </p>
         {/if}
       <!-- Risk, Assessment -->
       {#if $context.riskScore !== undefined}
         <div, class="mb-4">
-          <h4 class="font-medium, mb-2">Risk Assessment</h4>
-          <div class="flex items-center, space-x-4">
-            <div class="flex items-center, space-x-2">
+          <h4, class="font-medium, mb-2">Risk Assessment</h4>
+          <div class="flex, items-center, space-x-4">
+            <div class="flex, items-center, space-x-2">
               <span, class="text-sm">Risk Score:</span>
-              <div class="flex items-center, space-x-1">
-                <div class="w-16 bg-gray-200 rounded-full, h-2">
+              <div class="flex, items-center, space-x-1">
+                <div class="w-16 bg-gray-200, rounded-full, h-2">
                   <div
                     class="h-2 rounded-full" {$context.riskScore > 70
                       ? 'bg-red-500'
@@ -203,7 +203,7 @@ import type { Case } from '$lib/types';
                     style="width: {$context.riskScore}%"
                   ></div>
                 </div>
-                <span class="text-sm, font-medium">{$context.riskScore}/100</span>
+                <span, class="text-sm, font-medium">{$context.riskScore}/100</span>
               </div>
             </div>
             {#if $context.confidenceScore}
@@ -215,41 +215,41 @@ import type { Case } from '$lib/types';
       <!-- Entities -->
       {#if $context.entities}
         <div, class="mb-4">
-          <h4 class="font-medium, mb-2">Extracted Entities</h4>
-          <div class="grid grid-cols-2 gap-4, text-sm">
+          <h4, class="font-medium, mb-2">Extracted Entities</h4>
+          <div class="grid grid-cols-2, gap-4, text-sm">
             <div>
               <span, class="font-medium">Parties:</span>
-              <div class="text-gray-600, dark:text-gray-400">
+              <div, class="text-gray-600, dark:text-gray-400">
                 {$context.entities.parties.join(', ') || 'None'}
               </div>
             </div>
             <div>
               <span, class="font-medium">Monetary:</span>
-              <div class="text-gray-600, dark:text-gray-400">
+              <div, class="text-gray-600, dark:text-gray-400">
                 {$context.entities.monetary.join(', ') || 'None'}
               </div>
             </div>
             <div>
               <span, class="font-medium">Dates:</span>
-              <div class="text-gray-600, dark:text-gray-400">
+              <div, class="text-gray-600, dark:text-gray-400">
                 {$context.entities.dates.join(', ') || 'None'}
               </div>
             </div>
             <div>
               <span, class="font-medium">Clauses:</span>
-              <div class="text-gray-600, dark:text-gray-400">
+              <div, class="text-gray-600, dark:text-gray-400">
                 {$context.entities.clauses.join(', ') || 'None'}
               </div>
             </div>
           </div>
         {/if}
-      <!-- Context7 MCP, Recommendations -->
+      <!-- Context7, MCP, Recommendations -->
       {#if $context.stackRecommendations && $context.stackRecommendations.length > 0}
         <div, class="mb-4">
-          <h4 class="font-medium, mb-2">Stack Recommendations</h4>
-          <ul class="text-sm text-gray-700 dark:text-gray-300, space-y-1">
+          <h4, class="font-medium, mb-2">Stack Recommendations</h4>
+          <ul class="text-sm text-gray-700, dark:text-gray-300, space-y-1">
             {#each Array.isArray($context.stackRecommendations) ? $context.stackRecommendations : [] as recommendation}
-              <li class="flex items-start, space-x-2">
+              <li class="flex, items-start, space-x-2">
                 <span, class="text-blue-500">•</span>
                 <span>{recommendation}</span>
               </li>
@@ -258,17 +258,17 @@ import type { Case } from '$lib/types';
         {/if}
       <!-- Document, ID -->
       {#if $context.documentId}
-        <div class="text-sm, text-gray-500">
-          Document ID: <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1, rounded">{$context.documentId}</code>
+        <div, class="text-sm, text-gray-500">
+          Document ID: <code class="bg-gray-100 dark:bg-gray-800 px-2, py-1, rounded">{$context.documentId}</code>
         {/if}
     {/if}
   <!-- Errors (when, failed) -->
   {#if isFailed && $context.errors.length > 0}
-    <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20, rounded-lg">
-      <h3 class="font-semibold mb-3 text-red-900, dark:text-red-100">Processing Errors</h3>
-      <ul class="text-sm text-red-700 dark:text-red-300, space-y-1">
+    <div class="mb-6 p-4 bg-red-50, dark:bg-red-900/20, rounded-lg">
+      <h3 class="font-semibold mb-3, text-red-900, dark:text-red-100">Processing Errors</h3>
+      <ul class="text-sm text-red-700, dark:text-red-300, space-y-1">
         {#each Array.isArray($context.errors) ? $context.errors : [] as error}
-          <li class="flex items-start, space-x-2">
+          <li class="flex, items-start, space-x-2">
             <span, class="text-red-500">×</span>
             <span>{error}</span>
           </li>
@@ -276,7 +276,7 @@ import type { Case } from '$lib/types';
       </ul>
     {/if}
   <!-- Action, Buttons -->
-  <div class="flex items-center, space-x-3">
+  <div class="flex, items-center, space-x-3">
     {#if !isProcessing && !isCompleted && document}
       <button
         onclick={startProcessing}
@@ -314,11 +314,11 @@ import type { Case } from '$lib/types';
       </button>
     {/if}
   </div>
-  <!-- Debug Info (development, only) -->
+  <!-- Debug, Info (development, only) -->
   {#if import.meta.env.DEV}
     <details, class="mt-6">
-      <summary class="cursor-pointer text-sm text-gray-500, hover:text-gray-700"> Debug Information </summary>
-      <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs, overflow-auto">,
+      <summary class="cursor-pointer text-sm, text-gray-500, hover:text-gray-700"> Debug Information </summary>
+      <pre class="mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded, text-xs, overflow-auto">,
 State: {JSON.stringify($state.value, null, 2)}
 Context: {JSON.stringify($context, null, 2)}
       </pre>

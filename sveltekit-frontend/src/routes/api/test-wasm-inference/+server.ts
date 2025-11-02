@@ -58,8 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       rabbitMQResult = {
         status: 'failed',
         error: rabbitError instanceof Error ? rabbitError.message : String(rabbitError),
-        fallback: 'Direct processing mode available` };'`
-    }
+        fallback: 'Direct processing mode available' };'` }'`
     // Test 3: PostgreSQL-Qdrant Sync Integration
     console.log('📊 Test 3: PostgreSQL-Qdrant Sync');
     let syncResult = null;
@@ -273,7 +272,7 @@ export const GET: RequestHandler = async () => {
     // Test Enhanced RAG Service
     try {
       const response = await fetch('http://localhost:8094/api/health', {
-        method: 'GET` });'`
+        method: `GET` });'`'`
       services.enhancedRAGService = response.ok;
     } catch (_error) {
       services.enhancedRAGService = $state(false);

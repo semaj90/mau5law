@@ -34,7 +34,7 @@ class IngestionService {
     this.workflowActor?.send?.({ type: 'ENQUEUE', data: job });
     return {
       success: true,
-      message: `Enqueued job ${job.id}` };
+      message: `Enqueued job ${job.id}' };'`
   }
 
   async process(job: IngestionJob): Promise<ServiceResponse> {
@@ -58,7 +58,7 @@ class IngestionService {
     jobTracker.reset();
     return {
       success: true,
-      message: `Statistics reset` };
+      message: `Statistics reset' };'`
   }
 
   async shutdown(): Promise<void> {

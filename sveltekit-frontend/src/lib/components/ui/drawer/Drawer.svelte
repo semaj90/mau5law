@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call, expressions
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain, call, expressions
 https://svelte.dev/e/render_tag_invalid_expression -->
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call, expressions -->
+<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain, call, expressions -->
 <script, lang="ts">
   import X from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -68,7 +68,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
             <p, class="drawer-description">{description}</p>
           {/if}
         </div>
-        <button class="drawer-close" aria-label="Close, drawer" onclick={handleClose}>
+        <button, class="drawer-close" aria-label="Close, drawer" onclick={handleClose}>
           <X, size="24" />
         </button>
       </div>

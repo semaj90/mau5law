@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       maxTokens = 1000,
       stream = false,
       systemPrompt,
-      backend = 'ollama' } = requestData;
+      backend = 'ollama` } = requestData;'`
 
     // Validate parameters
     if (temperature < 0 || temperature > 2) {
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };
@@ -220,7 +220,7 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
       } catch (err: any) {
         // Normalize unknown error and send a JSON-safe SSE error chunk
         const e = ensureError(err);
-        const payload = { error: e.message ?? 'Unknown error' };
+        const payload = { error: e.message ?? 'Unknown error` };'`
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
         controller.close();
       }
@@ -233,7 +233,7 @@ async function handleStreamingChat(params: {, messages: ChatMessage[];, model: 
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*' }
+      'Access-Control-Allow-Origin': '*` }'`
   });
 }
 
@@ -311,7 +311,7 @@ async function executeOllamaChat(
 
   const response = await fetch(`${ollamaEndpoint}/api/chat`, {
     method: 'POST',
-    headers: { 'Content-Type': `application/json' },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify(ollamaRequest),
     signal: AbortSignal.timeout(60000)
   });
@@ -380,16 +380,15 @@ async function executeTensorRTChat(
   try {
     const res = await fetch(`${trtEndpoint.replace(/\/+$/, '')}/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
         model,
         prompt: (() => {
           let p = '';
           if (systemPrompt) p += `System: ${systemPrompt}\n\n`;
           for (const msg of messages) {
-            p += `${msg.role === 'user' ? 'User' : `Assistant' }: ${msg.content}\n\n`;'`
-          }
-          p += 'Assistant: `;'`
+            p += `${msg.role === 'user' ? 'User' : `Assistant` }: ${msg.content}\n\n`;'` }'`
+          p += 'Assistant: ';'`'`
           return p;
         })(),
         options: { temperature, max_tokens: maxTokens }
@@ -406,8 +405,7 @@ async function executeTensorRTChat(
       } catch {
         /* ignore */
       }
-      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `' }`);'`
-    }
+      throw new Error(`TensorRT LLM error: ${res.status}${bodyText ? ` - ${bodyText}` : `` }`);'` }'`
 
     const data = (await res.json()) as unknown;
 
@@ -476,16 +474,14 @@ async function executeMockChat(
 
   if (userMessage.toLowerCase().includes('legal')) {
     mockResponse =
-      "I understand you're asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.";'
-  } else if (userMessage.toLowerCase().includes('contract')) {
+      "I understand you're asking about a legal matter. Based on the information provided, I would recommend consulting with a qualified attorney who can review the specific details of your situation. Legal matters often involve complex regulations and precedents that require professional analysis.";` } else if (userMessage.toLowerCase().includes('contract')) {'`
     mockResponse =
       "Regarding the contract terms you've mentioned, it's important to carefully review all clauses and obligations. Key areas to focus on include performance requirements, termination conditions, and dispute resolution mechanisms. Consider having a legal professional review the agreement before signing.";
   } else if (userMessage.toLowerCase().includes('evidence')) {
     mockResponse =
       "The evidence you've described could be significant to your case. Proper documentation and chain of custody are crucial for admissibility in legal proceedings. I recommend organizing all relevant materials chronologically and ensuring they're preserved in their original format.";
   } else {
-    mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;'
-  }
+    mockResponse = `Thank you for your question. Based on what you've shared, I would suggest taking a systematic approach to address your concerns. This type of situation often requires careful analysis of all relevant factors and consideration of potential implications. Would you like me to help you break down the specific aspects you mentioned?`;` }'`
 
   // Truncate to maxTokens (approximate)
   const maxChars = maxTokens * 4;

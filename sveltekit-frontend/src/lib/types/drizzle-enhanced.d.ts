@@ -5,38 +5,38 @@ import type { Case } from '$lib/types';
  */
 declare module 'drizzle-orm/pg-core' {
   // Enhanced table function with safer types
-  export function pgTable<T extends, string>(
+  export function pgTable<T, extends, string>(
     name: T,
     columns: Record<string, unknown>,
     extraConfig?: Record<string, unknown>
   ): any;
   // Column types
-  export function serial<T extends, string>(name?: T): any;
-  export function text<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function varchar<T extends, string>(name?: T, config?: { length?: number }): any;
-  export function integer<T extends, string>(name?: T): any;
-  export function boolean<T extends, string>(name?: T): any;
-  export function timestamp<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function json<T extends, string>(name?: T): any;
-  export function jsonb<T extends, string>(name?: T): any;
-  export function uuid<T extends, string>(name?: T): any;
-  export function real<T extends, string>(name?: T): any;
-  export function doublePrecision<T extends, string>(name?: T): any;
-  export function bigint<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function numeric<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function decimal<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function char<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function date<T extends, string>(name?: T): any;
-  export function time<T extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function interval<T extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function serial<T, extends, string>(name?: T): any;
+  export function text<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function varchar<T, extends, string>(name?: T, config?: { length?: number }): any;
+  export function integer<T, extends, string>(name?: T): any;
+  export function boolean<T, extends, string>(name?: T): any;
+  export function timestamp<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function json<T, extends, string>(name?: T): any;
+  export function jsonb<T, extends, string>(name?: T): any;
+  export function uuid<T, extends, string>(name?: T): any;
+  export function real<T, extends, string>(name?: T): any;
+  export function doublePrecision<T, extends, string>(name?: T): any;
+  export function bigint<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function numeric<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function decimal<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function char<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function date<T, extends, string>(name?: T): any;
+  export function time<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
+  export function interval<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
   // pgvector specific types
-  export function vector<T extends, string>(name?: T, config?: { dimensions?: number }): any;
+  export function vector<T, extends, string>(name?: T, config?: { dimensions?: number }): any;
   // Constraint functions
-  export function primaryKey<T extends readonly, string[]>(...columns: T): any;
+  export function primaryKey<T extends, readonly, string[]>(...columns: T): any;
   export function foreignKey<T = unknown>(config: T): any;
-  export function unique<T extends readonly, string[]>(...columns: T): any;
-  export function index<T extends, string>(name: T, config?: Record<string, unknown>): any;
-  export function uniqueIndex<T extends, string>(name: T, config?: Record<string, unknown>): any;
+  export function unique<T extends, readonly, string[]>(...columns: T): any;
+  export function index<T, extends, string>(name: T, config?: Record<string, unknown>): any;
+  export function uniqueIndex<T, extends, string>(name: T, config?: Record<string, unknown>): any;
   // Relations
   export function relations<T = unknown>(table: T, relations: Record<string, unknown>): any;
   export function one<T = unknown>(table: T, config?: Record<string, unknown>): any;
@@ -70,8 +70,8 @@ declare module 'drizzle-orm' {
   export function exists<T = unknown>(query: T): any;
   export function notExists<T = unknown>(query: T): any;
   // Logical operators
-  export function and<T extends, unknown[]>(...conditions: T): any;
-  export function or<T extends, unknown[]>(...conditions: T): any;
+  export function and<T, extends, unknown[]>(...conditions: T): any;
+  export function or<T, extends, unknown[]>(...conditions: T): any;
   export function not<T = unknown>(condition: T): any;
   // Aggregates
   export function count<T = unknown>(column?: T): any;
@@ -80,7 +80,7 @@ declare module 'drizzle-orm' {
   export function min<T = unknown>(column: T): any;
   export function max<T = unknown>(column: T): any;
   // Strings
-  export function concat<T extends, unknown[]>(...columns: T): any;
+  export function concat<T, extends, unknown[]>(...columns: T): any;
   export function substring<T = unknown>(column: T, start: number, length?: number): any;
   export function length<T = unknown>(column: T): any;
   export function lower<T = unknown>(column: T): any;
@@ -124,7 +124,7 @@ declare module 'drizzle-orm/postgres-js' {
   ): any;
 }
 // Enhanced types using unknown/Record instead of any
-export type DrizzleTable<T extends, Record<string, unknown> = Record<string, unknown>> = T;
+export type DrizzleTable<T, extends, Record<string, unknown> = Record<string, unknown>> = T;
 export interface DrizzleColumn<T = unknown> { dataType: string;, columnType: string;
   data: T;
   enumValues?: any[];
@@ -139,7 +139,7 @@ export interface DrizzleQuery<T = unknown> {
 export interface DrizzleInsert<T = unknown> {
   values(values: T | T[]): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
   onConflictDoNothing(): DrizzleInsert<T>;
   onConflictDoUpdate(config: Record<string, unknown>): DrizzleInsert<T>;
 }
@@ -147,12 +147,12 @@ export interface DrizzleUpdate<T = unknown> {
   set(values: Partial<T>): DrizzleQuery<T>;
   where(condition: any): DrizzleUpdate<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
 }
 export interface DrizzleDelete<T = unknown> {
   where(condition: any): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
 }
 export interface DrizzleSelect<T = unknown> {
   from<U = unknown>(table: U): DrizzleSelect<T>;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { updateUserProfile } from '$lib/stores/user';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import { Upload, Camera } from 'lucide-svelte';
   interface Props {
     userId?: string;
@@ -102,14 +102,14 @@
       <p class="text-sm text-gray-600 mb-3">
         Upload a profile picture (JPEG or PNG, max 2MB)
       </p>
-      <Button.Root
+      <Button
         onclick={triggerUpload}
         disabled={uploading}
         class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
       >
         <Upload class="w-4 h-4" />
         {uploading ? 'Uploading...' : 'Choose Image'}
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <!-- Hidden file input -->

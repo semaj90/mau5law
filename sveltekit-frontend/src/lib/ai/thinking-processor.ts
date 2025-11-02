@@ -258,7 +258,7 @@ export const LegalAnalysisUtils = {
   getConfidenceLabel(confidence: number): { label: string; color: string } {
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
-    if (confidence >= 0.7) return { label: 'Good', color: '#f59e0b` };'`
+    if (confidence >= 0.7) return { label: 'Good', color: `#f59e0b` };'`'`
     if (confidence >= 0.6) return { label: 'Fair', color: `#ef4444` };
     return { label: 'Low', color: `#6b7280` };
   },

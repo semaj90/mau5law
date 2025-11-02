@@ -13,7 +13,7 @@ import crypto from 'crypto';
 type RedisTyped = {
   get(key: string): Promise<string | null>;
   keys(pattern: string): Promise<string[]>;
-  setex(key: string, seconds: number;, value: string): Promise<unknown>;
+  setex(key: string; seconds: number;, value: string): Promise<unknown>;
   lpush(key: string;, value: string): Promise<number>;
   lrange(key: string; start: number;, stop: number): Promise<string[]>;
   publish(channel: string;, message: string): Promise<number>;
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (webhookEvent.eventName !== 's3:ObjectCreated:Put' && webhookEvent.eventName !== 's3:ObjectCreated:Post') {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event' });
+        message: 'Event ignored - not an object creation event` });'`
     }
     // Extract upload metadata from object name or Redis
     let uploadMetadata = null;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         contentLength: webhookEvent.objectSize || 0,
         bucket: webhookEvent.bucket,
         objectName: webhookEvent.objectName,
-        status: 'processing' };
+        status: 'processing` };'`
     }
     // Create ingestion job
     const jobId = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (uploadMetadata.caseId) {
       try {
         const [evidenceEntry] = await db
-          .runtime() // <-- use runtime() so .insert() exists on the returned DB, client
+          .runtime() // <-- use runtime() so .insert() exists on the returned, DB, client
           .insert(evidence)
           .values({
             caseId: uploadMetadata.caseId,

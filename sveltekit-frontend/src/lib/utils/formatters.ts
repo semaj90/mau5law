@@ -182,7 +182,7 @@ export function formatEntityType(type: string): { label: string;, icon: string;
     photo: { label: 'Photo', icon: '📸', color: 'text-pink-600' },
     video: { label: 'Video', icon: '🎥', color: 'text-red-600' },
     audio: { label: 'Audio', icon: '🎵', color: 'text-indigo-600' },
-    physical: { label: 'Physical', icon: '📦', color: 'text-orange-600` },'`
+    physical: { label: 'Physical', icon: '📦', color: `text-orange-600` },'`'`
     digital: { label: 'Digital', icon: '💾', color: `text-cyan-600` }
   };
   return (
@@ -196,7 +196,7 @@ export function formatEntityType(type: string): { label: string;, icon: string;
 export function highlightSearchTerm(text: string, searchTerm: string): string {
   if (!searchTerm.trim()) return text;
   const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900 px-0.5, rounded">$1</mark>');
+  return text.replace(regex, '<mark class="bg-yellow-200 text-yellow-900, px-0.5, rounded">$1</mark>');
 }
 // Progress calculation
 export function calculateProgress(
@@ -273,7 +273,7 @@ export function formatActivityType(type: string): { label: string;, icon: strin
     evidence_analyzed: { label: 'Evidence Analyzed', icon: '🔍', color: 'text-purple-600' },
     report_generated: { label: 'Report Generated', icon: '📊', color: 'text-blue-600' },
     citation_added: { label: 'Citation Added', icon: '⚖️', color: 'text-amber-600' },
-    ai_analysis: { label: 'AI Analysis', icon: '🤖', color: 'text-indigo-600` },'`
+    ai_analysis: { label: 'AI Analysis', icon: '🤖', color: `text-indigo-600` },'`'`
     system_update: { label: 'System Update', icon: '⚙️', color: `text-gray-600` }
   };
   return (

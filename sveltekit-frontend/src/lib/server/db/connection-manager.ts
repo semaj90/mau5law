@@ -51,7 +51,7 @@ export function getAppPool(): LocalPoolLike {
   if (!appPool) {
     const validation = validateDatabaseConfig();
     if (!validation.valid) {
-      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown' }`);
+      throw new Error(`Invalid database configuration: ${validation.errors?.join?.(', ') ?? 'unknown` }`);'`
     }
     const environment = (process.env.NODE_ENV as: 'development' | 'production' | 'test') || 'development';
     appPool = resolvePool();
@@ -152,7 +152,7 @@ export async function testDatabaseConnection(): Promise<{
   try {
     const pool = getAppPool();
     if (!pool?.connect) {
-      return { success: false, error: 'App pool unavailable or missing connect()' };
+      return { success: false, error: 'App pool unavailable or missing connect()` };'`
     }
     const conn = await pool.connect();
     try {
@@ -192,8 +192,7 @@ export async function testDatabaseConnection(): Promise<{
     console.error('Database connection test failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : `Unknown error' };'`
-  }
+      error: error instanceof Error ? error.message : 'Unknown error' };'` }'`
 }
 
 /**

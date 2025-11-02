@@ -114,8 +114,7 @@ export interface ReportSection { id: string;, title: string;
   metadata?: {
     citations: string[]; // CitationPoint IDs,
     evidenceRefs: string[]; // Evidence IDs
-    canvasStateId?: string; // CanvasState ID if type is: 'canvas` };'`
-}
+    canvasStateId?: string; // CanvasState ID if type is: 'canvas' };'' }
 export interface ReportWithSections extends Report { sections: ReportSection[];, citationPoints: CitationPoint[];
   canvasState?: CanvasState;
 }

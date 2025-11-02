@@ -114,7 +114,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     const libraries = [
       { id: 'typescript', name: 'TypeScript' },
-      { id: 'webgpu', name: 'WebGPU` },'`
+      { id: 'webgpu', name: `WebGPU` },'`'`
       { id: 'postgresql', name: `PostgreSQL 17` },
       { id: `drizzle-orm`, name: `Drizzle ORM` }
     ]
@@ -128,7 +128,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json` },'`
+          'Accept': `application/json` },'`'`
         body: JSON.stringify({
          , name: 'get_library_docs',
           arguments: {

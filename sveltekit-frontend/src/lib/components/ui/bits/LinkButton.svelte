@@ -1,7 +1,7 @@
-<!-- LinkButton component for SvelteKit 2 - Clean SPA navigation with button, styling -->
+<!-- LinkButton component for SvelteKit 2 - Clean SPA navigation with, button, styling -->
 <script, lang="ts">
   import { goto } from '$app/navigation';
-  import { Button } from './Button.svelte';
+  import  Button  from "./Button.svelte";
   interface Props {
     href: string;
     replace?: boolean;
@@ -29,6 +29,6 @@
     onclick?.(event);
   }
 </script>
-<Button.Root {variant} {size} {disabled} class={className} onclick={handleClick}>
+<Button {variant} {size} {disabled} class={className} onclick={handleClick}>
   <slot />
-</Button.Root>
+</Button>

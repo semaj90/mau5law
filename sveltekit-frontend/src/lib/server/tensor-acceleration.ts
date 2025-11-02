@@ -285,8 +285,7 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: vectorA.byteLength + vectorB.byteLength + numTiles * 4,
           kernelType: 'tiled-similarity',
-          precision: options.precision || 'fp32` }'`
-      };
+          precision: options.precision || 'fp32' }'` };'`
     } catch (error) {
       console.error('GPU similarity computation failed:', error);
       throw error;
@@ -451,8 +450,7 @@ export class TensorAccelerator {
           computeTime,
           memoryUsage: imageData.byteLength + numFeatures * 4,
           kernelType: 'tiled-image-analysis',
-          precision: options.precision || 'fp32` }'`
-      };
+          precision: options.precision || 'fp32' }'` };'`
     } catch (error) {
       console.error('GPU image analysis failed:', error);
       throw error;

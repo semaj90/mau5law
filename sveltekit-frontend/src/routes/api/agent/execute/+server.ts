@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { id: 'generate', name: 'Generating code changes', status: 'pending' },
         { id: 'patch', name: 'Creating diff patches', status: 'pending' },
         { id: 'validate', name: 'Validating changes', status: 'pending' },
-        { id: 'apply', name: 'Applying patches', status: `pending` }
+        { id: 'apply', name: 'Applying patches', status: `pending' }'`
       ]
     };
 
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         agentId,
         status: 'started',
         estimatedDuration: 30000, // 30 seconds for demo
-        message: `Agent ${agentId} started working on task ${taskId}` },
+        message: `Agent ${agentId} started working on task ${taskId}' },'`
       capabilities: {
         ragEnabled: true,
         gemma3Model: 'gemma3:legal-latest',

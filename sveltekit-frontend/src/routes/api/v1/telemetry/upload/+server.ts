@@ -44,8 +44,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     });
   } catch (error) {
     console.error('Telemetry processing error:', error);'
-    return json({ error: 'Failed to process telemetry batch` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to process telemetry batch' }, { status: 500 });'' }
 };
 /*
  * GET /api/v1/telemetry/upload

@@ -8,7 +8,8 @@ $phases = @(
   "node phase4-comma-cleanup.cjs",
   "node phase6-advanced-ts1005-fixer.cjs",
   "node phase7-structural-fixer.cjs",
-  "node phase8-string-fixer.cjs"
+  "node phase8-string-fixer.cjs",
+  "pwsh scripts/phase29-fix-imports-and-runes.ps1 -SkipVerification"
 )
 
 $totalFixes = 0

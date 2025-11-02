@@ -330,7 +330,7 @@ export class APIOrchestrator {
   /**
    * Route request to optimal service with protocol selection
    */
-  async routeRequest<T extends keyof, ServiceEndpoints>(
+  async routeRequest<T extends, keyof, ServiceEndpoints>(
     service: T,
     endpoint: string,
     options: MultiProtocolRequestOptions = {}
@@ -387,8 +387,7 @@ export class APIOrchestrator {
             return fallbackResponse;
           }
         } catch (fallbackError) {
-          console.error(`Fallback failed for ${String(service)}: ', fallbackError);'`
-        }
+          console.error(`Fallback failed for ${String(service)}: ', fallbackError);'' }'`
       }
       this.recordMetrics(String(service), Date.now() - startTime, true);
       throw error;

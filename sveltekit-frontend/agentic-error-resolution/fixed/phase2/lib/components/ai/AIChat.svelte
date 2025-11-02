@@ -1,10 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { useChatActor, chatActions } from '\/stores/chat.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/bits/Input.svelte';
-  import { serviceStatus } from '\/stores/chat.svelte';
+  import  useChatActor, chatActions  from "\/stores/chat.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Input  from "$lib/components/ui/bits/Input.svelte";
+  import  serviceStatus  from "\/stores/chat.svelte";
   // Use the XState machine through the store
   const actor = useChatActor();
   const stateStore = actor.state;
@@ -51,7 +51,7 @@
         {/if}
       </p>
     </div>
-    <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button.Root>
+    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
   </div>
   <!-- Chat messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -89,9 +89,9 @@
         disabled={$stateStore.matches('loading')}
         class="flex-1"
       />
-      <Button.Root class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
+      <Button class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
         {$stateStore.matches('loading') ? 'Thinking...' : 'Send'}
-      </Button.Root>
+      </Button>
     </form>
   </div>
 </div>

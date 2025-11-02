@@ -203,7 +203,7 @@ export class CUDAVectorService {
 
     while (attempt < MAX_RETRY_ATTEMPTS) {
       try {
-        const headers: Record<string, string> = { 'Content-Type': `application/json' };'`
+        const headers: Record<string, string> = { 'Content-Type': `application/json` };'`'`
         const userAgent = event?.request?.headers?.get('user-agent');
         if (userAgent) headers['User-Agent'] = userAgent;
 
@@ -233,7 +233,7 @@ export class CUDAVectorService {
           return result;
         }
 
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error` }));'`
         throw new Error(`CUDA service error: ${errorData.error || response.statusText}`);
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
@@ -258,7 +258,7 @@ export class CUDAVectorService {
     try {
       const response = await fetch(`${this.serviceUrl}/api/gpu/normalize-embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ embeddings }),
         signal: AbortSignal.timeout(REQUEST_TIMEOUT)
       });
@@ -382,7 +382,7 @@ export class CUDAVectorService {
         factor: 'Low similarity matches',
         impact: 0.8,
         probability: 0.9,
-        description: `Search results have low semantic similarity to query' });'`
+        description: `Search results have low semantic similarity to query` });'`'`
       overallRisk = 'high';
     }
     return {

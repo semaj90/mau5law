@@ -413,7 +413,7 @@ export class SelfOrganizingMapRAG {
   private euclideanDistance(a: number[], b: number[]): number {
     return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
   }
-  private manhattanDistance(a: { x: number;, y: number }, b: {, x: number;, y: number }): number {
+  private manhattanDistance(a: {, x: number;, y: number }, b: {, x: number;, y: number }): number {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
   }
   private cosineSimilarity(a: number[], b: number[]): number {
@@ -513,7 +513,7 @@ export class SelfOrganizingMapRAG {
           cluster: node.cluster,
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
-          evidenceType: node.legalContext.evidenceType || 'unknown' });
+          evidenceType: node.legalContext.evidenceType || 'unknown` });'`
       }
     }
     return vizData;

@@ -234,7 +234,7 @@ export const GET: RequestHandler = async (event) => {
     return new Response(dataStream as any, {
       headers: {
         'Content-Type': latestImage.name.endsWith('.jpg') ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=2592000' }
+        'Cache-Control': 'public, max-age=2592000` }'`
     });
   } catch (error) {
     console.error('Error retrieving POI image:', error);

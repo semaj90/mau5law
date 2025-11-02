@@ -124,7 +124,7 @@ export class BrowserRAGChain {
     const answer = await this.llm.generate(prompt, {
       maxTokens,
       temperature,
-      systemPrompt: `You are a helpful legal AI assistant. Answer questions based ONLY on the provided context. If the context does not contain relevant information, say so honestly.` });
+      systemPrompt: 'You are a helpful legal AI assistant. Answer questions based ONLY on the provided context. If the context does not contain relevant information, say so honestly.' });
     const endTime = performance.now();
     return {
       answer,
@@ -192,7 +192,7 @@ export class BrowserRAGChain {
     const context = documents
       .map((doc, idx) => `[Document ${idx + 1}]\n${doc.content}`)
       .join('\n\n');
-    return `Context Information:`
+    return `Context Information: '`
 ${context}
 Question: ${question}
 Instructions: Answer the question based ONLY on the context provided above. If the context does not contain enough information, say: "I don't have enough information to answer this question." Be concise and accurate.; Answer: ';
@@ -277,12 +277,12 @@ export const browserRAG = new BrowserRAGChain();
  *       {,
  *         id: 'doc1',
  *         content: 'Contract law states that...',
- *         metadata: {, type: 'contract', date: '2024-01-01` }'`
+ *         metadata: {, type: 'contract', date: '2024-01-01' }'`'`
  *       },
  *       {
  *         id: 'doc2',
  *         content: 'Employment agreements must include...',
- *         metadata: {, type: 'employment', date: `2024-01-15` }
+ *         metadata: {, type: 'employment', date: '2024-01-15' }
  *       }
  *     ]);
  *

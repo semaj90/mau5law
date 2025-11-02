@@ -185,7 +185,7 @@ export class WebGPUSIMDAccelerator {
         layout: 'auto',
         compute: {
          , module: computeShader,
-          entryPoint: 'main' }
+          entryPoint: 'main` }'`
       });
 
       // Bind group is illustrative; real binding layout depends on shader
@@ -270,8 +270,7 @@ export class WebGPUSIMDAccelerator {
           output[idx] = input[idx];
         }
       }
-    `;`
-  }
+    `;` }
   /**
    * Determine if input should use WebGPU acceleration
    */
@@ -441,4 +440,4 @@ export const webgpuSIMDAccelerator = new WebGPUSIMDAccelerator({
   maxBatchSize: 32,
   gpuMemoryLimit: 2048, // Optimized for RTX 3060 Ti
   workgroupSize: 64,
-  preferredDevice: 'discrete' });
+  preferredDevice: 'discrete` });'`

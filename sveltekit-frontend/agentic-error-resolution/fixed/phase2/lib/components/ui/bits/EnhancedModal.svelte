@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   interface EnhancedModalProps {
     open?: boolean;
     title?: string;
@@ -64,7 +64,7 @@
       onclick={e => e.stopPropagation()}
       {...restProps}
     >
-      <Card.Root class="enhanced-modal {variantClasses[variant]} border-2">
+      <Card class="enhanced-modal {variantClasses[variant]} border-2">
         <!-- Close Button -->
         <button
           class="absolute top-4 right-4 z-10 p-2 rounded-md bg-enhanced-bg-secondary/80 hover:bg-enhanced-bg-secondary text-enhanced-text-secondary hover:text-enhanced-text-primary transition-colors nes-btn is-small"
@@ -84,7 +84,7 @@
         <CardContent class="max-h-[calc(90vh-8rem)] overflow-y-auto">
           <slot />
         </CardContent>
-      </Card.Root>
+      </Card>
     </div>
   {/if}
 <style>

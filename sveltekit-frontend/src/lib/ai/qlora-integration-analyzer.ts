@@ -70,7 +70,7 @@ export class QLoRAIntegrationAnalyzer {
     const patterns = (data || []).map((d: any, i: number) => ({
       id: `p_${i}`,
       score: Math.min(1, Math.random() * 0.5 + 0.5),
-      summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary` }));'`
+      summary: typeof d.interaction_data === 'string' ? d.interaction_data.slice(0, 80) : 'summary' }));'`'`
     const coherence = patterns.length ? patterns.reduce((s, p) => s + p.score, 0) / patterns.length : 0.7;
     return Promise.resolve({
       patterns,
@@ -93,7 +93,7 @@ export class QLoRAIntegrationAnalyzer {
     edges: Array<unknown>;
     graph_metrics: { connectivity: number; depth: number };
   }> {
-    return Promise.resolve({ nodes: (data || []).map(d => ({, id: d.node_id, type: `user_interaction` })),
+    return Promise.resolve({ nodes: (data || []).map(d => ({, id: d.node_id, type: `user_interaction' })),'`
       edges: data.flatMap(d => (d.edges || []) as unknown[]),
       graph_metrics: { connectivity: 0.5, depth: Math.max(1, Math.floor((data || []).length / 10)) }
     });
@@ -131,7 +131,7 @@ export class QLoRAIntegrationAnalyzer {
       const mockDocument = {
         id: 'feedback-analysis',
         type: 'feedback',
-        content: `aggregated feedback data` } as any;
+        content: `aggregated feedback data' } as any;'`
       const mockUserContext = {
         sessionType: 'analysis' as const,
         focusIntensity: 0.8,

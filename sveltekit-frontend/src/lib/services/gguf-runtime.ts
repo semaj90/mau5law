@@ -382,7 +382,7 @@ export class GGUFRuntimeService extends EventEmitter {
             contract: 'You are a legal AI assistant specialized in contract analysis. Provide accurate, detailed analysis while maintaining professional legal standards.',
             litigation: 'You are a legal AI assistant specialized in litigation support. Analyze documents and provide insights relevant to case strategy and legal arguments.',
             compliance: 'You are a legal AI assistant specialized in regulatory compliance. Ensure all advice aligns with current legal standards and requirements.',
-            general: `You are a legal AI assistant. Provide accurate legal information while noting that this does not constitute legal advice.` }
+            general: `You are a legal AI assistant. Provide accurate legal information while noting that this does not constitute legal advice.' }'`
         }
         async loadModel(modelPath) {
           console.log('Loading GGUF model:', modelPath);
@@ -609,8 +609,7 @@ export class GGUFRuntimeService extends EventEmitter {
           });
         }
       }
-    `;`
-  }
+    `;' }'`
   /**
    * Load model metadata from GGUF file
    */
@@ -1045,7 +1044,7 @@ export class GGUFRuntimeService extends EventEmitter {
       oldWorker.worker.terminate();
       // Create new worker
       const workerScript = this.generateWorkerScript();
-      const blob = new Blob([workerScript], { type: `application/javascript` });
+      const blob = new Blob([workerScript], { type: `application/javascript' });'`
       const newWorker = new Worker(URL.createObjectURL(blob));
       const newWorkerState: WorkerState = {
         id: workerId,
@@ -1209,7 +1208,7 @@ export const GGUFLegalHelpers = {
      , documentType: 'contract',
       jurisdiction,
       practiceArea: 'contract_law',
-      confidentialityLevel: 'confidential` },'`
+      confidentialityLevel: 'confidential' },'`'`
     stopTokens: ['\n\n', '---', 'END_ANALYSIS']
   }),
   // Legal document review with compliance checking
@@ -1226,7 +1225,7 @@ export const GGUFLegalHelpers = {
       documentType,
       jurisdiction: 'federal',
       practiceArea: 'general_practice',
-      confidentialityLevel: `confidential` },
+      confidentialityLevel: `confidential' },'`
     stopTokens: ['\n\n\n', 'END_REVIEW']
   }),
   // Legal research with citation support
@@ -1242,7 +1241,7 @@ export const GGUFLegalHelpers = {
      , documentType: 'case_law',
       jurisdiction,
       practiceArea: 'legal_research',
-      confidentialityLevel: `public` },
+      confidentialityLevel: `public' },'`
     stopTokens: ['\n\n\n\n']
   }),
   // Litigation document analysis
@@ -1278,7 +1277,7 @@ export const GGUFLegalHelpers = {
      , documentType: 'statute',
       jurisdiction: 'federal',
       practiceArea: 'regulatory_compliance',
-      confidentialityLevel: 'public` },'`
+      confidentialityLevel: 'public' },'`'`
     stopTokens: ['END_COMPLIANCE', '\n\n\n']
   })
 }
@@ -1295,7 +1294,7 @@ export const GGUFRuntimeUtils = {
     quantization: gpuMemory >= 8192 ? 'Q4_K_M' : 'Q4_K_S',
     maxMemory: Math.floor(gpuMemory * 0.8),
     useGPU: gpuMemory >= 4096,
-    logLevel: `info` }),
+    logLevel: `info' }),'`
   /**
    * Estimate memory requirements for configuration
    */

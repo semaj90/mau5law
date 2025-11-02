@@ -292,7 +292,7 @@ ${Array.from(analysis.missingTypes).filter(type => type.includes('_') && type ==
 
  ## ⚙️ CONFIGURATION USED
  - Context7 Integration: ${options.useContext7 ? '✅ Enabled' : '❌ Disabled'}
- - Web Fetch Resolution: ${options.useWebFetch ? '✅ Enabled' : '❌ Disabled` }'`
+ - Web Fetch Resolution: ${options.useWebFetch ? '✅ Enabled' : `❌ Disabled` }'`'`
  - File Generation: ${options.generateFiles ? '✅ Enabled' : `❌ Disabled` }
  - Best Practices: ${options.applyBestPractices ? '✅ Enabled' : `❌ Disabled` }
 

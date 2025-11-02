@@ -7,7 +7,7 @@
 </script>
 <svelte: head>
   <title>AI Recommendations - Legal AI Platform</title>
-  <meta name="description" content="Intelligent suggestions for case strategy and next actions using Enhanced-Bits, architecture" />
+  <meta name="description" content="Intelligent suggestions for case strategy and next actions using, Enhanced-Bits, architecture" />
 </svelte:head>
 <div, class="page-container">
   <RecommendationEngine />

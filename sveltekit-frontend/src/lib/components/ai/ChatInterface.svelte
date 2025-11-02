@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
 import type { Case } from '$lib/types';
   // Replaced script to fix Svelte 5 runes, imports, types and logic typos
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Textarea } from '$lib/components/ui/textarea.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   import {
     aiPersonality,
     chatActions,
@@ -18,9 +18,9 @@ import type { Case } from '$lib/types';
   import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
   import { Bot, Loader2, Send } from 'lucide-svelte';
   import { onDestroy, tick } from 'svelte';
-  import { ChatMessage } from './ChatMessage.svelte';
-  import { ProactivePrompt } from './ProactivePrompt.svelte';
-  import { ThinkingStyleToggle } from './ThinkingStyleToggle.svelte';
+  import  ChatMessage  from "./ChatMessage.svelte";
+  import  ProactivePrompt  from "./ProactivePrompt.svelte";
+  import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
   import { ThinkingProcessor } from '$lib/ai/thinking-processor';
   // props (Svelte 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
@@ -292,11 +292,11 @@ import type { Case } from '$lib/types';
     }
   });
 </script>
-<div class="mx-auto px-4, max-w-7xl">
-  <!-- Enhanced Header with Thinking, Toggle -->
-  <div class="mx-auto px-4, max-w-7xl">
-    <div class="mx-auto px-4, max-w-7xl">
-      <div class="mx-auto px-4, max-w-7xl">
+<div class="mx-auto, px-4, max-w-7xl">
+  <!-- Enhanced Header with, Thinking, Toggle -->
+  <div class="mx-auto, px-4, max-w-7xl">
+    <div class="mx-auto, px-4, max-w-7xl">
+      <div class="mx-auto, px-4, max-w-7xl">
         <ThinkingStyleToggle
           bind:enabled={thinkingStyleEnabled}
           loading={$isLoading}
@@ -305,7 +305,7 @@ import type { Case } from '$lib/types';
           ontoggle={handleThinkingToggle}
         />
         {#if caseId}
-          <Button.Root
+          <Button
             class="bits-btn"
             variant="ghost"
             size="sm"
@@ -313,15 +313,15 @@ import type { Case } from '$lib/types';
             disabled={$isLoading}
           >
             🔍 Quick Analysis
-          </Button.Root>
+          </Button>
         {/if}
-        <div class="mx-auto px-4, max-w-7xl">
+        <div class="mx-auto, px-4, max-w-7xl">
           {#if lastAnalysisResult}
-            <span class="mx-auto px-4, max-w-7xl">
+            <span class="mx-auto, px-4, max-w-7xl">
               📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
             </span>
           {/if}
-          <div class="mx-auto px-4, max-w-7xl">
+          <div class="mx-auto, px-4, max-w-7xl">
             <span>AI Active</span>
           </div>
         </div>
@@ -332,27 +332,27 @@ import type { Case } from '$lib/types';
     style="height: calc({height} - 140px);"
   >
     {#if $currentConversation?.messages.length === 0}
-      <!-- Enhanced Welcome, Message -->
-      <div class="mx-auto px-4, max-w-7xl">
-        <div class="mx-auto px-4, max-w-7xl">
-          <Bot class="mx-auto px-4, max-w-7xl" />
+      <!-- Enhanced, Welcome, Message -->
+      <div class="mx-auto, px-4, max-w-7xl">
+        <div class="mx-auto, px-4, max-w-7xl">
+          <Bot class="mx-auto, px-4, max-w-7xl" />
         </div>
-        <h3 class="mx-auto px-4, max-w-7xl">
+        <h3 class="mx-auto, px-4, max-w-7xl">
           Hi! I'm {$aiPersonality.name}, your enhanced AI legal assistant'
         </h3>
-        <p class="mx-auto px-4, max-w-7xl">
+        <p class="mx-auto, px-4, max-w-7xl">
           I can provide both quick responses and detailed reasoning analysis.
           Toggle thinking style above to see my step-by-step reasoning process.
         </p>
         {#if thinkingStyleEnabled}
-          <div class="mx-auto px-4, max-w-7xl">
-            <p class="mx-auto px-4, max-w-7xl">
+          <div class="mx-auto, px-4, max-w-7xl">
+            <p class="mx-auto, px-4, max-w-7xl">
               🧠 <strong>Thinking Style Active:</strong> I'll show my reasoning process for deeper analysis.'
             </p>
           </div>
         {:else}
-          <div class="mx-auto px-4, max-w-7xl">
-            <p class="mx-auto px-4, max-w-7xl">
+          <div class="mx-auto, px-4, max-w-7xl">
+            <p class="mx-auto, px-4, max-w-7xl">
               ⚡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.'
             </p>
           {/if}
@@ -365,12 +365,12 @@ import type { Case } from '$lib/types';
     {/if}
     <!-- Typing, Indicator -->
     {#if $isTyping}
-      <div class="mx-auto px-4, max-w-7xl">
-        <div class="mx-auto px-4, max-w-7xl">
-          <Bot class="mx-auto px-4, max-w-7xl" />
+      <div class="mx-auto, px-4, max-w-7xl">
+        <div class="mx-auto, px-4, max-w-7xl">
+          <Bot class="mx-auto, px-4, max-w-7xl" />
         </div>
-        <div class="mx-auto px-4, max-w-7xl">
-          <div class="mx-auto px-4, max-w-7xl">
+        <div class="mx-auto, px-4, max-w-7xl">
+          <div class="mx-auto, px-4, max-w-7xl">
             <div
               class="mx-auto px-4 max-w-7xl"
               style="animation-delay: 0.1s"
@@ -381,23 +381,23 @@ import type { Case } from '$lib/types';
             ></div>
           </div>
           {#if thinkingStyleEnabled}
-            <p class="mx-auto px-4, max-w-7xl">Thinking step by step...</p>
+            <p class="mx-auto, px-4, max-w-7xl">Thinking step by step...</p>
           {/if}
         </div>
       {/if}
   </div>
   <!-- Proactive, Prompt -->
   {#if $showProactivePrompt}
-    <div class="mx-auto px-4, max-w-7xl">
+    <div class="mx-auto, px-4, max-w-7xl">
       <ProactivePrompt
         accept={handleProactiveResponse}
         dismiss={() => showProactivePrompt.set(false)}
       />
     {/if}
   <!-- Input, Area -->
-  <div class="mx-auto px-4, max-w-7xl">
-    <div class="mx-auto px-4, max-w-7xl">
-      <div class="mx-auto px-4, max-w-7xl">
+  <div class="mx-auto, px-4, max-w-7xl">
+    <div class="mx-auto, px-4, max-w-7xl">
+      <div class="mx-auto, px-4, max-w-7xl">
         <Textarea
           bind:element={inputElement}
           bind:value={messageInput}
@@ -410,7 +410,7 @@ import type { Case } from '$lib/types';
           disabled={$isLoading}
         />
       </div>
-      <Button.Root
+      <Button
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
@@ -418,15 +418,15 @@ import type { Case } from '$lib/types';
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}
-          <Loader2 class="mx-auto px-4, max-w-7xl" />
+          <Loader2 class="mx-auto, px-4, max-w-7xl" />
         {:else}
-          <Send class="mx-auto px-4, max-w-7xl" />
+          <Send class="mx-auto, px-4, max-w-7xl" />
         {/if}
-      </Button.Root>
+      </Button>
     </div>
-    <!-- Enhanced Status, Text -->
-    <div class="mx-auto px-4, max-w-7xl">
-      <div class="mx-auto px-4, max-w-7xl">
+    <!-- Enhanced, Status, Text -->
+    <div class="mx-auto, px-4, max-w-7xl">
+      <div class="mx-auto, px-4, max-w-7xl">
         {#if ($currentConversation?.messages?.length || 0) > 0}
           <span>{$currentConversation?.messages?.length || 0} messages</span>
         {/if}
@@ -437,8 +437,8 @@ import type { Case } from '$lib/types';
           <span>• Analysis Mode</span>
         {/if}
       </div>
-      <div class="mx-auto px-4, max-w-7xl">
-        <span class="mx-auto px-4, max-w-7xl">
+      <div class="mx-auto, px-4, max-w-7xl">
+        <span class="mx-auto, px-4, max-w-7xl">
           {thinkingStyleEnabled ? "🧠 Thinking" : "⚡ Quick"}
         </span>
       </div>

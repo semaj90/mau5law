@@ -41,7 +41,7 @@ export const canvasEditorMachine = createMachine({
     lastSaved: null
   } as CanvasEditorContext,
   states: { idle: {, on: {
-        CANVAS_INITIALIZED: 'ready'
+       , CANVAS_INITIALIZED: 'ready'
       }
     },
     ready: {

@@ -369,8 +369,7 @@ export class QUICGatewayClient {
     return this.request({
       method: 'GET',
       endpoint: '/health',
-      priority: 'medium` });'`
-  }
+      priority: 'medium' });'' }
 
   /**
    * Detect protocol from response

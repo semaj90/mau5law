@@ -170,8 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Error recording search:', error)
     return json({
       success: false,
-      error: 'Failed to record search'
-    }, { status: 500 })
+      error: 'Failed to record search` }, { status: 500 })'`
   }
 }
 export const PATCH: RequestHandler = async ({ request }) => {
@@ -212,7 +211,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     })
   } catch (error) {
-    console.error('Error updating search: `, error)'`
+    console.error('Error updating search: ', error)'`'`
     return json({
       success: false,
       error: `Failed to update search` }, { status: 500 })

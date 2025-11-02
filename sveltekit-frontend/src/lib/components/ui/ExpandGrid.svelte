@@ -10,7 +10,7 @@
     if (expandOnFocus) { el.addEventListener('focusin', handleFocusIn); el.addEventListener('focusout', handleFocusOut); }
     return () => { if (expandOnHover) { el.removeEventListener('mouseenter', handleMouseEnter); el.removeEventListener('mouseleave', handleMouseLeave); }
       if (expandOnFocus) { el.removeEventListener('focusin', handleFocusIn); el.removeEventListener('focusout', handleFocusOut); }
-    }; }); </script> <div bind:this={ containerElement } class={`expand-grid ${state.expanded ? 'expanded': ''} ${ className }`} style={`--columns:${ currentColumns };--gap:${ gap };--expand-duration${ expandDuration };--easing:${ easing };`} role="grid"
+    }; }); </script> <div, bind:this={ containerElement } class={`expand-grid ${state.expanded ? 'expanded': ''} ${ className }`} style={`--columns:${ currentColumns };--gap:${ gap };--expand-duration${ expandDuration };--easing:${ easing };`} role="grid"
   tabindex={ 0 } >
   {#if children?.default} {@render children.default()} {/if} </div> <style> /* Base grid */ .expand-grid { display: grid; grid-template-columns: repeat(var(--columns), 1fr); gap: var(--gap); transition: grid-template-columns var(--expand-duration) var(--easing), background-color var(--expand-duration) var(--easing), box-shadow var(--expand-duration) var(--easing); outline: none; border-radius: 0.5rem; padding: 0.5rem; background: var(--expand-bg, #fff); border: 1px solid transparent; }
   .expand-grid:focus-visible { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); }

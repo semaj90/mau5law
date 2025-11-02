@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
               detection_type: 'legal_entity',
               detected_value: 'contract',
               confidence_score: 0.92,
-              context: 'contract terms and conditions' }
+              context: 'contract terms and conditions` }'`
           ];
         }, 1000);
       }, 500);

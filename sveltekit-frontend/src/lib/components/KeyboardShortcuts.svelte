@@ -1,15 +1,15 @@
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a, string;
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string;
 https://svelte.dev/e/attribute_invalid_event_handler -->
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a, string -->
+<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string -->
 <script, lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Tooltip } from '$lib/components/ui/Tooltip.svelte';
-  import { Accessibility } from 'lucide-svelte/icons/accessibility.svelte';
-  import { Keyboard } from 'lucide-svelte/icons/keyboard.svelte';
-  import { Maximize2 } from 'lucide-svelte/icons/maximize-2.svelte';
-  import { Minimize2 } from 'lucide-svelte/icons/minimize-2.svelte';
-  import { AccessibilityPanel } from './AccessibilityPanel.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
+  import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";
+  import  Keyboard  from "lucide-svelte/icons/keyboard.svelte";
+  import  Maximize2  from "lucide-svelte/icons/maximize-2.svelte";
+  import  Minimize2  from "lucide-svelte/icons/minimize-2.svelte";
+  import  AccessibilityPanel  from "./AccessibilityPanel.svelte";
   // local state (simple, compatible with Svelte 5 migration)
   let showShortcuts = $state<boolean>(false);
   let showAccessibilityPanel = $state<boolean>(false);
@@ -92,35 +92,35 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
 </script>
 {#if showShortcuts}
-  <div class="mx-auto px-4, max-w-7xl" role="dialog" aria-modal="true">
-    <div class="mx-auto px-4, max-w-7xl">
-      <p class="mx-auto px-4, max-w-7xl">
+  <div class="mx-auto, px-4, max-w-7xl" role="dialog" aria-modal="true">
+    <div class="mx-auto, px-4, max-w-7xl">
+      <p class="mx-auto, px-4, max-w-7xl">
         💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
-      <ul class="mt-4, space-y-2">
+      <ul, class="mt-4, space-y-2">
         {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
-          <li class="flex items-center justify-between p-2 bg-gray-800, rounded">
+          <li class="flex items-center justify-between p-2, bg-gray-800, rounded">
             <div>
-              <div class="font-medium, text-white">{s.description}</div>
-              <div class="text-sm, text-gray-400">
+              <div, class="font-medium, text-white">{s.description}</div>
+              <div, class="text-sm, text-gray-400">
                 <kbd, class="shortcut-key">{s.key}</kbd>
               </div>
             </div>
             <div>
               <Button, size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
                 Test
-              </Button.Root>
+              </Button>
             </div>
           </li>
         {/each}
       </ul>
     </div>
   {/if}
-<!-- Floating Action, Buttons -->
-<div class="mx-auto px-4 max-w-7xl, floating-actions">
-  <!-- Accessibility Panel, Toggle -->
-  <Tooltip content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
-    <Button.Root
+<!-- Floating, Action, Buttons -->
+<div class="mx-auto px-4, max-w-7xl, floating-actions">
+  <!-- Accessibility, Panel, Toggle -->
+  <Tooltip, content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"
@@ -128,11 +128,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Toggle accessibility panel"
     >
       <Accessibility />
-    </Button.Root>
+    </Button>
   </Tooltip>
-  <!-- Keyboard Shortcuts, Toggle -->
-  <Tooltip content="Keyboard, shortcuts (Ctrl+H)" placement="left">
-    <Button.Root
+  <!-- Keyboard, Shortcuts, Toggle -->
+  <Tooltip, content="Keyboard, shortcuts (Ctrl+H)" placement="left">
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"
@@ -140,11 +140,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard />
-    </Button.Root>
+    </Button>
   </Tooltip>
   <!-- Fullscreen, Toggle -->
-  <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter, fullscreen (F11)'} placement="left">
-    <Button.Root
+  <Tooltip content={isFullscreen ? 'Exit, fullscreen (F11)' : 'Enter, fullscreen (F11)'} placement="left">
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"

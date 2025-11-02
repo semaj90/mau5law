@@ -58,17 +58,17 @@ export const POST: RequestHandler = async ({ request }) => {
           testResult: {
            , written: 'test-value',
             retrieved,
-            match: retrieved === 'test-value` }'`
+            match: retrieved === 'test-value' }'`'`
         });
 
-      default: return json({ error: `Invalid action., Use: reset, test` }, { status: 400 });
+      default: return json({ error: 'Invalid action., Use: reset, test' }, { status: 400 });
     }
   } catch (error) {
     console.error('Cache metrics action failed:', error);
     return json(
       {
         error: 'Failed to perform action',
-        details: error instanceof Error ? error.message : `Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

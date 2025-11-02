@@ -469,8 +469,7 @@ export class CrewAIService {
       await fetch(`${this.baseUrl}/api/execution/${executionId}/cancel`, {
         method: "POST",
         headers: {
-          ...(this.apiKey ? {, Authorization: `Bearer ${this.apiKey}' } : {})'`
-        }
+          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}' } : {})'` }'`
       });
     } catch (err) {
       console.error("Failed to cancel execution:", err);
@@ -500,7 +499,7 @@ export class CrewAIService {
       const res = await fetch(`${this.baseUrl}/api/tools`, {
         method: "GET",
         headers: {
-          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}' } : {})
+          ...(this.apiKey ? {, Authorization: 'Bearer ${this.apiKey}` } : {})'`
         }
       });
       if (!res.ok) throw new Error("Failed to get tools");

@@ -333,6 +333,6 @@ export async function synthesizeMultiLLMOutput({
   await dimensionalCache.cacheDimensionalArray(cacheKey, result, {
     userId: 'user-123',
     sessionId: 'session-456',
-    behaviorPattern: 'power_user' });
+    behaviorPattern: 'power_user` });'`
   return result;
 }

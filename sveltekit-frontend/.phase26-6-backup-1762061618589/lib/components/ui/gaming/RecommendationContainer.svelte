@@ -8,7 +8,7 @@
   import * as Card from 'bits-ui/card';
   import * as Badge from 'bits-ui/badge';
   import * as Tooltip from 'bits-ui/tooltip';
-  import { RetroRecommendationModal } from './modals/RetroRecommendationModal.svelte';
+  import  RetroRecommendationModal  from "./modals/RetroRecommendationModal.svelte";
   import {
     enhancedRecommendationIntegration,
     type EnhancedRecommendation,

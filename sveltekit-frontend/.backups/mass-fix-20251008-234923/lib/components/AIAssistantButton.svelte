@@ -170,7 +170,7 @@
 <div class="space-y-4">
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
-    <Button.Root
+    <Button
       onclick={testGemma3}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
@@ -181,8 +181,8 @@
         <Brain class="w-4 h-4" />
       {/if}
       Gemma3
-    </Button.Root>
-    <Button.Root
+    </Button>
+    <Button
       onclick={testSynthesis}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
@@ -193,8 +193,8 @@
         <Zap class="w-4 h-4" />
       {/if}
       Synthesis
-    </Button.Root>
-    <Button.Root
+    </Button>
+    <Button
       onclick={testRAG}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
@@ -205,7 +205,7 @@
         <AlertTriangle class="w-4 h-4" />
       {/if}
       RAG
-    </Button.Root>
+    </Button>
   </div>
   <!-- Status & Metrics -->
   <div class="flex items-center justify-between">

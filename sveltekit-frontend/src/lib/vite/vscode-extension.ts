@@ -220,7 +220,7 @@ export class VSCodeIntegration {
                     file: { type: 'string' },
                     line: { type: 'number' },
                     column: { type: 'number' },
-                    stack: { type: 'string` },'`
+                    stack: { type: `string` },'`'`
                     suggestion: { type: `string` }
                   }
                 }

@@ -70,8 +70,7 @@ export async function setCache(key: string, value: string, ttl?: number): Promis
       await redisClient.set(key, value);
     }
   } catch (error) {
-    console.error('Redis setCache error:', error);'
-  }
+    console.error('Redis setCache error:', error);` }`'
 }
 
 /**
@@ -195,7 +194,7 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
     const cached = await getCache(key);
     return cached ? (JSON.parse(cached) as number[]) : null;
   } catch (error) {
-    console.error('Error getting cached embedding: `, error);'`
+    console.error('Error getting cached embedding: ', error);'`'`
     return null;
   }
 }
@@ -290,7 +289,7 @@ export async function getRedisHealth(): Promise<{
       ping,
       memory: {
         used: usedMatch ? usedMatch[1] : 'unknown',
-        total: totalMatch ? totalMatch[1] : 'unknown' }
+        total: totalMatch ? totalMatch[1] : 'unknown` }'`
     };
   } catch (error) {
     console.error('Error checking Redis health:', error);

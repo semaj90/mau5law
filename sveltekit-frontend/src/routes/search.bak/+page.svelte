@@ -91,7 +91,7 @@ import type { User } from '$lib/types';
         </div>
       </section>
 
-      <!-- How It, Works -->
+      <!-- How, It, Works -->
       <section, class="how-it-works">
         <h2, class="section-title">⚙️ How It Works</h2>
 

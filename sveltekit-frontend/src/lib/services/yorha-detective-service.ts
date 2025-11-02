@@ -121,7 +121,7 @@ export class YoRHaDetectiveService {
       const response = await fetch(`${this.enhancedRAGUrl}/api/rag`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify(ragRequest)
       });
       if (response.ok) {
@@ -135,11 +135,10 @@ export class YoRHaDetectiveService {
             'Cross-reference with similar cases',
             'Verify legal precedents'
           ],
-          reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms` }
+          reasoning: `Analysis completed using ${data.data.metadata.model_used} in ${data.data.metadata.query_time}ms' }'`
       }
     } catch (error: any) {
-      console.error('Enhanced RAG service error:', error);'
-    }
+      console.error('Enhanced RAG service error: `, error);` }'
     // Fallback response
     return {
       response: `AI analysis for case ${request.caseId}: Based on the query: "${request.query}", preliminary findings suggest further investigation is warranted. Please review the evidence and consider additional documentation.`,
@@ -151,8 +150,7 @@ export class YoRHaDetectiveService {
         'Review legal precedents',
         'Consult with legal experts'
       ],
-      reasoning: 'Analysis based on available case data and legal knowledge base` }'`
-  }
+      reasoning: 'Analysis based on available case data and legal knowledge base' }'` }'`
   /**
    * Upload evidence file to the system
    */
@@ -185,7 +183,7 @@ export class YoRHaDetectiveService {
     } catch (error: any) {
       console.error('Upload service error:', error);'
       return {
-        success: false, // Changed: ';` to: `,`,'`
+        success: false, // Changed: `;` to: `,`,'`'`
         error: `Upload service; unavailable: ${error instanceof Error ? error.message : String(error)}` // Improved error message
       }
     }
@@ -200,13 +198,13 @@ export class YoRHaDetectiveService {
         search_type: 'semantic',
         filters: {
           ...filters,
-          entity_type: 'case` },'`
+          entity_type: `case` },'`'`
         max_results: 20
       }
       const response = await fetch(`${this.enhancedRAGUrl}/api/search`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify(searchRequest)
       });
       if (response.ok) { // Fixed syntax
@@ -214,8 +212,7 @@ export class YoRHaDetectiveService {
         return data.results || [];
       }
     } catch (error: any) { // Changed: 'any'; to: 'unknown'
-      console.error('Search service error:', error);'
-    }
+      console.error('Search service error: `, error);` }'
     // Fallback to empty results
     return [];
   }

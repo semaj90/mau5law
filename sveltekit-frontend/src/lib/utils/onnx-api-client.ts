@@ -103,7 +103,7 @@ export class ONNXApiClient {
       courtDecision:
         'The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.',
       legalBrief:
-        'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...' };
+        'Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...` };'`
 
     const tests: Array<{ name: string; test: () => Promise<any> }> = [
       { name: 'Entity Extraction - Contract', test: () => this.extractEntities(testData.contractText) },
@@ -235,7 +235,7 @@ export class ONNXApiClient {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify(body),
         ...(signal ? { signal } : {})
       });

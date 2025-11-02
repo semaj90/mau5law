@@ -107,12 +107,12 @@ class GPUTensorCache {
       (minioService as any).uploadBuffer(,
         Buffer.from(JSON.stringify(manifest, null, 2)),
         `${tensorId}.meta.json`,
-        { bucket: 'tensor-cache', contentType: `application/json' }'`
+        { bucket: 'tensor-cache', contentType: `application/json` }'`'`
       ),
       (minioService as any).uploadBuffer(
         data,
         `${tensorId}.tensor`)
-        { bucket: 'tensor-cache', contentType,: `application/octet-stream' }'`
+        { bucket: 'tensor-cache', contentType,: `application/octet-stream` }'`'`
       )
     ]);
     // Cache in memory
@@ -133,8 +133,7 @@ class GPUTensorCache {
       ON CONFLICT (id) DO UPDATE SET
         manifest = $2,
         updated_at = NOW()
-    `, [tensorId, manifest]);`
-    } catch (e) {
+    `, [tensorId, manifest]);` } catch (e) {
       // swallow DB errors during triage
       console.warn('tensor_cache insert failed:', e);
     }
@@ -304,7 +303,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: `' },'`
+          created_at: `` },'`'`
         compression: 'none',
         metadata: {
           prompt: request.prompt,
@@ -332,7 +331,7 @@ export class GlyphDiffusionService {
         provenance: {
           hmac: '',
           signer: 'glyph-diffusion-service',
-          created_at: `' },'`
+          created_at: `` },'`'`
         compression: 'zlib',
         metadata: {
           style: request.style,
@@ -356,7 +355,7 @@ export class GlyphDiffusionService {
     const uploadResult = await minioService.uploadBuffer(
       glyphData,
       glyphFilename)
-      { bucket: 'generated-glyphs', contentType,: `image/png' }'`
+      { bucket: 'generated-glyphs', contentType,: `image/png` }'`'`
    ) );
     const glyphUrl = await minioService.getFileUrl('generated-glyphs', glyphFilename, 3600);
     // 6. Store generation metadata in database (moved PNG embedding after neural sprite processing)
@@ -410,7 +409,7 @@ export class GlyphDiffusionService {
             await minioService.uploadBuffer()
               Buffer.from(frames[i].data),
               frameFilename,
-              { bucket: 'generated-glyphs', contentType: `image/png' }'`
+              { bucket: 'generated-glyphs', contentType: `image/png` }'`'`
             );
             const frameUrl = await minioService.getFileUrl('generated-glyphs', frameFilename, 3600);
             predictiveFrames.push(frameUrl);
@@ -431,8 +430,7 @@ export class GlyphDiffusionService {
               position: 'absolute',
               background: `url(${glyphUrl})`,
               width: `${request.dimensions[0]}px`,
-              height: `${request.dimensions[1]}px' }'`
-          }
+              height: '${request.dimensions[1]}px' }'` }'`
           uiLayoutMetrics = await this.tensorUpscalerService.compressUILayoutDemo(mockElement as any);
         }
         // Store compressed tensor in MinIO
@@ -440,7 +438,7 @@ export class GlyphDiffusionService {
         await minioService.uploadBuffer()
           compressedTensor,
           compressedFilename,
-          { bucket: 'tensor-cache', contentType: `application/octet-stream' }'`
+          { bucket: 'tensor-cache', contentType: `application/octet-stream` }'`'`
        ) );
         const compressedTensorUrl = await minioService.getFileUrl('tensor-cache', compressedFilename, 3600);
         neuralSpriteResults = {
@@ -475,7 +473,7 @@ export class GlyphDiffusionService {
       await minioService.uploadBuffer()
         embeddedPNG,
         embeddedFilename,
-        { bucket: 'generated-glyphs', contentType: 'image/png' }
+        { bucket: 'generated-glyphs', contentType: 'image/png` }'`
      ) );
       previewWithTensors = await minioService.getFileUrl('generated-glyphs', embeddedFilename, 3600);
     } catch (error) {
@@ -550,7 +548,7 @@ export class GlyphDiffusionService {
       'detective': '#2C3E50',
       'corporate': '#34495E',
       'forensic': '#E74C3C',
-      'legal': `#8E44AD' }'`
+      'legal': `#8E44AD` }'`'`
     const color = colors[style as keyof typeof colors] || '#95A5A6,';
     // Mock PNG creation - in production use actual image generation
     const mockPNG = Buffer.alloc(1024);

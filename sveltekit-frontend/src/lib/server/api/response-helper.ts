@@ -87,7 +87,7 @@ export const legalApiResponses = {
  * Middleware to wrap API handlers with standardized error handling
  */
 export type ApiHandler = (...args: any[]) => Promise<Response> | Response;
-export function withErrorHandling<T extends, ApiHandler>(handler: T): (...args: Parameters<T>) => Promise<Response> {
+export function withErrorHandling<T, extends, ApiHandler>(handler: T): (...args: Parameters<T>) => Promise<Response> {
   return async (...args: Parameters<T>): Promise<Response> => {
     try {
       const result = await handler(...args);

@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Simple title suggestion based on description keywords
     const suggestions = [
-      `case ${description.substring(0, 50)}${description.length > 50 ? '...' : '` }`,'`
+      `case ${description.substring(0, 50)}${description.length > 50 ? '...' : `` }`,'`'`
       `Investigation: ${description.split(' ').slice(0, 5).join(' ')}`,
       `Matter: ${new Date().getFullYear()}-${Math.floor(Math.random() * 1000)}`
     ];
@@ -20,6 +20,5 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       console.error('Title suggestion error:', error);'
     }
-    return json({ error: 'Failed to generate title suggestions` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to generate title suggestions' }, { status: 500 });'` }'`
 };

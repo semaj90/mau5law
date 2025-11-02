@@ -13,7 +13,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	Input,
 	Badge
   } from '$lib/components/ui/enhanced-bits.svelte'';
-	import { Button } from '$lib/components/ui/Button.svelte';
+	import  Button  from "$lib/components/ui/Button.svelte";
 	import {
 		Search, BookOpen, ExternalLink, Download,
 		Plus, FileText, Calendar, User, Tags,

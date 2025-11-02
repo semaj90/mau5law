@@ -1,6 +1,6 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->
 <!--
 Agent Orchestrator Component
 Manages AutoGen and CrewAI multi-agent workflows
@@ -9,16 +9,16 @@ Manages AutoGen and CrewAI multi-agent workflows
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
-  import { CardContent } from '$lib/components/ui/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/CardTitle.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Card  from "$lib/components/ui/enhanced-bits.svelte";
+  import  CardContent  from "$lib/components/ui/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/CardTitle.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import 
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
   import {
@@ -389,13 +389,13 @@ if (autoStartServices) {
         <Database class="h-3 w-3" />
         CrewAI {serviceStatus.crewai ? 'Online' : 'Offline'}
       </Badge>
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
   onclick={(_event: MouseEvent) => checkServiceStatus}
       >
 <RefreshCw class="h-4 w-4" />
-</Button.Root>
+</Button>
     </div>
   </div>
   <!-- Workflow Configuration -->
@@ -489,19 +489,19 @@ if (autoStartServices) {
             <Play class="h-4 w-4 mr-2" />
             Execute Workflow
           {/if}
-</Button.Root>
+</Button>
         {#if isProcessing}
-          <Button.Root class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => cancelExecution}>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
-</Button.Root>
+</Button>
         {/if}
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button.Root class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults}>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults}>
 Clear
-</Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => downloadResults}>
+</Button>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => downloadResults}>
 <Download class="h-4 w-4" />
-</Button.Root>
+</Button>
         {/if}
       </div>
     </div>
@@ -622,7 +622,7 @@ Clear
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button.Root
+          <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(_event: MouseEvent) => ) =>
@@ -636,8 +636,8 @@ Clear
               <p class="font-medium">Criminal Case Analysis</p>
               <p class="text-xs text-gray-500">AutoGen multi-agent analysis</p>
             </div>
-</Button.Root>
-          <Button.Root
+</Button>
+          <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(_event: MouseEvent) => ) =>
@@ -651,8 +651,8 @@ Clear
               <p class="font-medium">Contract Review</p>
               <p class="text-xs text-gray-500">CrewAI specialized team</p>
             </div>
-</Button.Root>
-          <Button.Root
+</Button>
+          <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(_event: MouseEvent) => ) =>
@@ -666,8 +666,8 @@ Clear
               <p class="font-medium">Digital Evidence Review</p>
               <p class="text-xs text-gray-500">Forensic analysis workflow</p>
             </div>
-</Button.Root>
-          <Button.Root
+</Button>
+          <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(_event: MouseEvent) => ) =>

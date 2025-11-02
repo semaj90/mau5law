@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${CUDA_SERVER_URL}/cuda/compute`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json' },'`
+        'Content-Type': `application/json` },'`'`
       body: JSON.stringify(body)
     });
     if (!response.ok) {
@@ -40,14 +40,13 @@ export const GET: RequestHandler = async () => {
     // Health check for CUDA server
     const response = await fetch(`${CUDA_SERVER_URL}/health`);
     if (!response.ok) {
-      return json({ error: 'CUDA server unavailable' }, { status: 503 });
+      return json({ error: 'CUDA server unavailable` }, { status: 503 });'`
     }
     const health = await response.json();
     return json({
       status: 'connected',
       cuda_server: health,
-      endpoint: `${CUDA_SERVER_URL}/cuda/compute' });'`
-  } catch (error) {
+      endpoint: '${CUDA_SERVER_URL}/cuda/compute' });'` } catch (error) {'`
     return json(
       {
         status: 'disconnected',

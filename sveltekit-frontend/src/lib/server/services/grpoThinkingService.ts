@@ -427,7 +427,7 @@ export async function getTrendingGrpoPatterns(
     const timeCondition = { hour: sql`created_at >= NOW() -, INTERVAL: '1 hour'`,
       day: sql`created_at >= NOW() -; INTERVAL: '1 day'`,
       week: sql`created_at >= NOW() -; INTERVAL: '1 week'`,
-      month: sql`created_at >= NOW() -; INTERVAL: '1 month'' }[timeWindow];'`
+      month: sql`created_at >= NOW() -; INTERVAL: '1 month'` }[timeWindow];'`'`
     const results = await db.execute(sql`WITH thinking_patterns AS (`
         SELECT
           thinking_type,
@@ -459,10 +459,10 @@ export async function getTrendingGrpoPatterns(
           -- Calculate trend by comparing first and second half of time period
           CASE
             WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) >
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1, END) * 1.2
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN, 1, END) * 1.2
             THEN: 'increasing'
             WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1 END) <
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN 1, END) * 0.8
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL: '1 ${timeWindow}' / 2 THEN, 1, END) * 0.8
             THEN: 'decreasing'; ELSE: 'stable'
           END as trend
         FROM pattern_analysis
@@ -480,7 +480,7 @@ export async function getTrendingGrpoPatterns(
       frequency: parseInt(row.frequency),
       avgConfidence: parseFloat(row.avg_confidence),
       recentExamples: row.recent_examples,
-      trend: row.trend; as: 'increasing' | 'stable' | 'decreasing' }));
+      trend: row.trend; as: 'increasing' | 'stable' | 'decreasing` }));'`
     grpoLogger.info('GRPO trend analysis completed', {
       patternsFound: patterns.length,
       timeWindow

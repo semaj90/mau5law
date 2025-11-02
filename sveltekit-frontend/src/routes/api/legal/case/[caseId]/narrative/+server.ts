@@ -414,7 +414,7 @@ async function generateAIWritingAssistance(narrative: CaseNarrative): Promise<AI
         claim: 'Incident occurred on January 15, 2024',
         verification: 'VERIFIED',
         sources: ['Police Report PR-2024-001', 'Witness Statement WS-001'],
-        notes: 'Multiple independent sources confirm this date` },'`
+        notes: `Multiple independent sources confirm this date` },'`'`
       {
         claim: 'Evidence was collected within 24 hours',
         verification: 'DISPUTED',
@@ -553,7 +553,7 @@ function generateMockSections(
     ],
     INVESTIGATION_REPORT: [
       { type: 'OPENING', title: 'Investigation Summary' },
-      { type: 'FACTS', title: 'Findings` },'`
+      { type: 'FACTS', title: `Findings` },'`'`
       { type: 'EVIDENCE', title: `Evidence Summary` },
       { type: 'CONCLUSION', title: `Recommendations` }
     ]

@@ -129,7 +129,7 @@ export class WebGPUWASMService {
         try {
           // cast to AdapterLike to avoid `any` usage
           this.adapter = (await navGPU.requestAdapter({
-            powerPreference: `high-performance` })) as AdapterLike | null;
+            powerPreference: `high-performance' })) as AdapterLike | null;'`
           if (this.adapter) {
             try {
               // requestDevice may not be present or may fail
@@ -207,8 +207,7 @@ export class WebGPUWASMService {
         }
       }
     } catch (error) {
-      console.error('❌ Capability detection error: ', error);'
-    }
+      console.error('❌ Capability detection error: ', error);` }`'
     this.capabilities = capabilities;
     webgpuCapabilities.set(capabilities);
     return capabilities;
@@ -245,15 +244,13 @@ export class WebGPUWASMService {
         stage: `downloading tokenizer` });
       const tokenizerResponse = await fetch(modelConfig.tokenizerUrl);
       if (!tokenizerResponse.ok) {
-        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText}');'`
-      }
+        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText}');'' }'`
       const tokenizerData = await tokenizerResponse.json();
       // Stage 3: Initialize WASM module (70-90%)
       modelLoadingProgress.set({
         isLoading: true,
         progress: 70,
-        stage: 'initializing wasm'
-      });
+        stage: 'initializing wasm` });'`
       await this.initializeWASM(modelBytes, tokenizerData);
       // Stage 4: GPU buffer setup (90-95%)
       modelLoadingProgress.set({
@@ -262,7 +259,7 @@ export class WebGPUWASMService {
         stage: `setting up gpu buffers` });
       await this.setupGPUBuffers();
 
-      // <-- FIX: assign currentModel before warmup so generateText() can run during, warmup
+      // <-- FIX: assign currentModel before warmup so generateText() can run, during, warmup
       this.currentModel = modelConfig;
 
       // Stage 5: Warm-up inference (95-100%)

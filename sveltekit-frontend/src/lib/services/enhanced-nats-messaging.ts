@@ -94,22 +94,22 @@ interface MockConsumer { name: string;, stream: string;
 }
 
 // Enhanced EventEmitter with typed events
-class TypedEventEmitter<T extends, Record<string, unknown[]>> {
+class TypedEventEmitter<T, extends, Record<string, unknown[]>> {
 	// store handlers with a signature that is compatible with all T[K] (unknown[])
 	// Explicitly type and initialize the Map to avoid parser/type issues
 	private listeners: Map<keyof, T, Set<(...args: any[]) => void>> = new Map();
 
-	on<K extends keyof, T>(event: K, fn: (...args: T[K]) => void): void {
+	on<K extends, keyof, T>(event: K, fn: (...args: T[K]) => void): void {
 		if (!this.listeners.has(event)) this.listeners.set(event, new Set());
 		// cast fn to the stored signature - safe because we will cast back on emit
 		this.listeners.get(event)!.add(fn as unknown as (...args: any[]) => void);
 	}
-	off<K extends keyof, T>(event: K, fn: (...args: T[K]) => void): void {
+	off<K extends, keyof, T>(event: K, fn: (...args: T[K]) => void): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
 		set.delete(fn as unknown as (...args: any[]) => void);
 	}
-	emit<K extends keyof, T>(event: K, ...args: T[K]): void {
+	emit<K extends, keyof, T>(event: K, ...args: T[K]): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
 		set.forEach(fn => {
@@ -277,8 +277,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 				try {
 					await subscription.unsubscribe();
 				} catch (error: any) { // Changed any to unknown
-					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);'`
-				}
+					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);'` }
 			}
 			// Clean up streams and consumers
 			await this.cleanupStreams();
@@ -507,8 +506,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 	}
 	async publishSearchQuery(queryData: MessageData): Promise<void> { // Changed queryData type to MessageData
 		await this.publish(this.subjects.SEARCH_QUERY, queryData, {
-			headers: { 'event_type': 'search_operation', 'priority': 'normal` }'`
-		});
+			headers: { 'event_type': 'search_operation', 'priority': 'normal' }'` });'`
 	}
 	async publishSystemHealth(healthData: MessageData): Promise<void> { // Changed healthData type to MessageData
 		await this.publish(this.subjects.SYSTEM_HEALTH, healthData, {

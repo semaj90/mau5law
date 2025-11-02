@@ -95,7 +95,7 @@ if (IS_SERVER) {
           console.warn('⚠️ Redis auth mismatch detected — trying without password...');
           // Try reconnecting without auth
           rawRedisClient = createClient({
-            url: 'redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379` }`,
+            url: 'redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379' }`,'`
             socket: {
              , reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
             }
@@ -228,8 +228,7 @@ export class CacheService {
     try {
       if (this.isRedisReady()) await (this.client as RedisLike).del?.(key);
     } catch (err) {
-      console.warn('Cache.del error:', formatError(err));'
-    } finally {
+      console.warn('Cache.del error:', formatError(err));` } finally {`'
       memoryCache.delete(key);
     }
   }
@@ -259,8 +258,7 @@ export class CacheService {
         return;
       }
     } catch (err) {
-      console.warn('Cache.hset error:', formatError(err));'
-    }
+      console.warn('Cache.hset error:', formatError(err));` }`'
     this.setInMemory(`${key}:${field}`, value, DEFAULT_TTL_MS);
   }
   async mget(keys: string[]): Promise<(unknown | null)[]> {
@@ -270,8 +268,7 @@ export class CacheService {
         return (res ?? []).map(r => (r == null ? null : this.decode(r)));
       }
     } catch (err) {
-      console.warn('Cache.mget error:', formatError(err));'
-    }
+      console.warn('Cache.mget error:', formatError(err));` }`'
     return keys.map(k => this.getFromMemory(k));
   }
   /* ------------------------------ Domain APIs ------------------------------ */

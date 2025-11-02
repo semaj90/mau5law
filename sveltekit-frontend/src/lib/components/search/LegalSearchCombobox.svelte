@@ -234,13 +234,13 @@ import type { SearchResult } from '$lib/types';
   />
 
   <!-- Search, Icon -->
-  <div class="absolute left-4 top-1/2 -translate-y-1/2, text-gray-400">
+  <div class="absolute left-4, top-1/2 -translate-y-1/2, text-gray-400">
     {#if isLoading}
       <div, class="animate-spin">
-        <Zap class="h-5, w-5" />
+        <Zap, class="h-5, w-5" />
       </div>
     {:else}
-      <Search class="h-5, w-5" />
+      <Search, class="h-5, w-5" />
     {/if}
   </div>
 
@@ -253,8 +253,8 @@ import type { SearchResult } from '$lib/types';
       aria-label="Clear search"
       title="Clear search"
     >
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24, 24" aria-hidden="true" focusable="false">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12, 12" />
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0, 24, 24" aria-hidden="true" focusable="false">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12" />
       </svg>
     </button>
   {/if}
@@ -269,10 +269,10 @@ import type { SearchResult } from '$lib/types';
     )}
     aria-hidden={displayResults.length === 0 && inputValue.length >= 2 ? "false" : "false"}
   >
-    <!-- Search Categories, Filter -->
+    <!-- Search, Categories, Filter -->
     {#if inputValue.length >= 2}
-      <div class="border-b border-gray-100, p-3">
-        <div class="flex flex-wrap, gap-2">
+      <div class="border-b, border-gray-100, p-3">
+        <div class="flex, flex-wrap, gap-2">
           {#each Array.isArray(categories) ? categories : [] as category}
             <span, class={cn(
               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
@@ -286,7 +286,7 @@ import type { SearchResult } from '$lib/types';
               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
               "bg-purple-50 text-purple-700"
             )}>
-              <Zap class="mr-1 h-3, w-3" />
+              <Zap class="mr-1, h-3, w-3" />
               AI Search
             </span>
           {/if}
@@ -294,10 +294,10 @@ import type { SearchResult } from '$lib/types';
       {/if}
 
     <!-- Results, List -->
-    <div class="max-h-80 overflow-auto, p-1">
+    <div class="max-h-80, overflow-auto, p-1">
       {#if displayResults.length === 0 && inputValue.length >= 2}
-        <div class="p-4 text-center, text-gray-500">
-          <Search class="mx-auto h-8 w-8 mb-2, text-gray-300" />
+        <div class="p-4, text-center, text-gray-500">
+          <Search class="mx-auto h-8 w-8, mb-2, text-gray-300" />
           <p, class="text-sm">No results found</p>
           <p, class="text-xs">Try different keywords or check spelling</p>
         </div>
@@ -306,8 +306,8 @@ import type { SearchResult } from '$lib/types';
           <!-- Recent, Searches -->
           {#if recentSearches.length > 0}
             <div, class="mb-4">
-              <p class="text-xs font-medium text-gray-500 mb-2 flex, items-center">
-                <Clock class="mr-1 h-3, w-3" />
+              <p class="text-xs font-medium text-gray-500 mb-2, flex, items-center">
+                <Clock class="mr-1, h-3, w-3" />
                 Recent Searches
               </p>
 -              {#each Array.isArray(recentSearches) ? recentSearches : [] as search}
@@ -316,7 +316,7 @@ import type { SearchResult } from '$lib/types';
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
 -                  onclick={() => { inputValue = search; performSearch(search); }}
 -                >
--                  <Search class="mr-3 h-4 w-4, text-gray-400" />
+-                  <Search class="mr-3 h-4, w-4, text-gray-400" />
 -                  {search}
 -                </ComboboxItem>
 +              {#each Array.isArray(recentSearches) ? recentSearches : [] as search}
@@ -327,7 +327,7 @@ import type { SearchResult } from '$lib/types';
 +                  onclick={() => { inputValue = search; performSearch(search); }}
 +                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = search; performSearch(search); } }}
 +                >
-+                  <Search class="mr-3 h-4 w-4, text-gray-400" />
++                  <Search class="mr-3 h-4, w-4, text-gray-400" />
 +                  {search}
 +                </div>
                {/each}
@@ -336,8 +336,8 @@ import type { SearchResult } from '$lib/types';
           <!-- AI, Suggestions -->
           {#if suggestions.length > 0}
             <div>
-              <p class="text-xs font-medium text-gray-500 mb-2 flex, items-center">
-                <Zap class="mr-1 h-3, w-3" />
+              <p class="text-xs font-medium text-gray-500 mb-2, flex, items-center">
+                <Zap class="mr-1, h-3, w-3" />
                 Suggested Searches
               </p>
 -              {#each Array.isArray(suggestions.slice(0, 3)) ? suggestions.slice(0, 3) : [] as suggestion}
@@ -346,7 +346,7 @@ import type { SearchResult } from '$lib/types';
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
 -                  onclick={() => { inputValue = suggestion; performSearch(suggestion); }}
 -                >
--                  <Zap class="mr-3 h-4 w-4, text-purple-400" />
+-                  <Zap class="mr-3 h-4, w-4, text-purple-400" />
 -                  {suggestion}
 -                </ComboboxItem>
 +              {#each Array.isArray(suggestions.slice(0, 3)) ? suggestions.slice(0, 3) : [] as suggestion}
@@ -357,7 +357,7 @@ import type { SearchResult } from '$lib/types';
 +                  onclick={() => { inputValue = suggestion; performSearch(suggestion); }}
 +                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = suggestion; performSearch(suggestion); } }}
 +                >
-+                  <Zap class="mr-3 h-4 w-4, text-purple-400" />
++                  <Zap class="mr-3 h-4, w-4, text-purple-400" />
 +                  {suggestion}
 +                </div>
                {/each}
@@ -381,13 +381,13 @@ import type { SearchResult } from '$lib/types';
             </div>
 
             <!-- Content -->
-            <div class="flex-1, min-w-0">
-              <div class="flex items-center, justify-between">
-                <p class="font-medium text-gray-900, truncate">
+            <div, class="flex-1, min-w-0">
+              <div class="flex, items-center, justify-between">
+                <p class="font-medium, text-gray-900, truncate">
                   {result.title}
                 </p>
                 {#if result.score != null}
-                  <span class="flex-shrink-0 ml-2 text-xs text-gray-500 bg-gray-100 rounded px-1.5, py-0.5">
+                  <span class="flex-shrink-0 ml-2 text-xs text-gray-500 bg-gray-100 rounded, px-1.5, py-0.5">
                     {Math.round((result.score ?? 0) * 100)}%
                   </span>
                 {/if}
@@ -395,26 +395,26 @@ import type { SearchResult } from '$lib/types';
 
               <!-- Content, Preview -->
               {#if result.content}
-                <p class="text-gray-600 text-xs mt-1, line-clamp-2">
+                <p class="text-gray-600 text-xs, mt-1, line-clamp-2">
                   {result.content.substring(0, 120)}...
                 </p>
               {/if}
 
               <!-- Metadata -->
               {#if result.metadata && (result.metadata.date || result.metadata.status || result.metadata.jurisdiction)}
-                <div class="flex items-center space-x-2, mt-2">
+                <div class="flex items-center, space-x-2, mt-2">
                   {#if result.metadata.date}
-                    <span class="text-xs, text-gray-500">
+                    <span, class="text-xs, text-gray-500">
                       {new Date(result.metadata.date).toLocaleDateString()}
                     </span>
                   {/if}
                   {#if result.metadata.status}
-                    <span class="text-xs bg-green-100 text-green-800 rounded px-1.5, py-0.5">
+                    <span class="text-xs bg-green-100 text-green-800 rounded, px-1.5, py-0.5">
                       {result.metadata.status}
                     </span>
                   {/if}
                   {#if result.metadata.jurisdiction}
-                    <span class="text-xs bg-blue-100 text-blue-800 rounded px-1.5, py-0.5">
+                    <span class="text-xs bg-blue-100 text-blue-800 rounded, px-1.5, py-0.5">
                       {result.metadata.jurisdiction}
                     </span>
                   {/if}
@@ -422,8 +422,8 @@ import type { SearchResult } from '$lib/types';
 
               <!-- Highlights -->
               {#if result.highlights && result.highlights.length > 0}
-                <div class="mt-1 text-xs, text-yellow-700">
-                  <span class="bg-yellow-100 px-1, rounded">
+                <div class="mt-1, text-xs, text-yellow-700">
+                  <span class="bg-yellow-100, px-1, rounded">
                     ...{result.highlights[0]}...
                   </span>
                 {/if}
@@ -433,10 +433,10 @@ import type { SearchResult } from '$lib/types';
       {/if}
     </div>
 
-    <!-- Footer with search, stats -->
+    <!-- Footer with, search, stats -->
     {#if searchResults.length > 0}
-      <div class="border-t border-gray-100, p-2">
-        <p class="text-xs text-gray-500, text-center">
+      <div class="border-t, border-gray-100, p-2">
+        <p class="text-xs, text-gray-500, text-center">
           {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
           {#if enableVectorSearch} • AI-powered search{/if}
         </p>

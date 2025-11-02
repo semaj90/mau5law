@@ -242,7 +242,7 @@ export function createCaseCreationForm(
     if (stateValue === 'completed' && options.onSuccess) options.onSuccess(caseCtx?.createdCase);
     else if (caseCtx?.error && options.onError) options.onError(caseCtx.error);
   });
-  actor.send({ type: `START_CREATION' } as unknown);'`
+  actor.send({ type: `START_CREATION` } as unknown);'`'`
   return {
     form,
     actor,
@@ -322,7 +322,7 @@ export function createSearchForm(
       options.onSuccess({ results: searchCtx?.results, analytics: searchCtx?.analytics });
     else if (stateValue === 'error' && options.onError) options.onError(searchCtx?.error ?? 'Search failed');
   });
-  actor.send({ type: `LOAD_HISTORY' } as unknown);'`
+  actor.send({ type: `LOAD_HISTORY` } as unknown);'`'`
   return {
     form,
     actor,
@@ -417,7 +417,7 @@ export function createAIAnalysisForm(
 // ============================================================================
 // UTILITY FUNCTIONS
 // ============================================================================
-export function createFormValidator<T extends, z.ZodType>(schema: T) {
+export function createFormValidator<T, extends, z.ZodType>(schema: T) {
   return {
     validate: (data: any): data is z.infer<T> => {
       return schema.safeParse(data).success;
@@ -432,7 +432,7 @@ export function createFormValidator<T extends, z.ZodType>(schema: T) {
     }
   };
 }
-export function createMultiStepForm<T extends, z.ZodType[]>(...schemas: T) {
+export function createMultiStepForm<T, extends, z.ZodType[]>(...schemas: T) {
   const currentStep = writable(0);
   const isLastStep = derived(currentStep, $step => $step === schemas.length - 1);
   const isFirstStep = derived(currentStep, $step => $step === 0);
@@ -513,4 +513,4 @@ export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: `legal-ai:ai-analysis' } as const;'`
+  AI_ANALYSIS: `legal-ai:ai-analysis` } as const;'`'`

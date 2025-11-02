@@ -147,7 +147,7 @@ export class AIAccessibilityPatterns {
     summary.innerHTML = `
       <h3>Analysis Summary</h3>
       <p>${options.summary}</p>
-      <button class="expand-btn nes-btn, is-primary"
+      <button class="expand-btn, nes-btn, is-primary"
         aria-expanded="false"
         aria-controls="ai-details"
       >
@@ -188,8 +188,7 @@ export class AIAccessibilityPatterns {
         <ul, role="list">
           ${content.map(item => `<li>${this.formatAIContent(item)}</li>`).join('')}
         </ul>
-      `;`
-    }
+      `;` }
     if (typeof content === 'object') {
       return `
         <dl>
@@ -198,8 +197,7 @@ export class AIAccessibilityPatterns {
             <dd>${this.formatAIContent(value)}</dd>
           `).join('')}`
         </dl>
-      `;`
-    }
+      `;` }
     return String(content);
   }
   /**
@@ -214,32 +212,32 @@ export class AIAccessibilityPatterns {
     card.innerHTML = `
       <header, class="ai-result-header">
         <h3>${(result as any)?.title || 'AI Analysis Result` }</h3>'`
-        <div class="ai-result-meta" aria-label="Result, metadata">
-          <span class="confidence" aria-label="Confidence, score">
+        <div, class="ai-result-meta" aria-label="Result, metadata">
+          <span, class="confidence" aria-label="Confidence, score">
             Confidence: ${Math.round(((result as any)?.confidence || 0) * 100)}%
           </span>
-          <span class="timestamp" aria-label="Analysis, time">
+          <span, class="timestamp" aria-label="Analysis, time">
             ${new Date((result as any)?.timestamp || Date.now()).toLocaleString()}
           </span>
         </div>
       </header>
-      <div class="ai-result-content" role="region" aria-label="Analysis, content">
+      <div, class="ai-result-content" role="region" aria-label="Analysis, content">
         ${this.formatAIContent((result as any)?.content || result)}
       </div>
       <footer, class="ai-result-actions">
-        <button class="action-btn nes-btn, is-success"
+        <button class="action-btn, nes-btn, is-success"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-accept', { detail: this.closest('.ai-result-card') }))"
           aria-label="Accept this analysis result"
         >
           Accept
         </button>
-        <button class="action-btn nes-btn, is-warning"
+        <button class="action-btn, nes-btn, is-warning"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-review', { detail: this.closest('.ai-result-card') }))"
           aria-label="Flag this result for review"
         >
           Review
         </button>
-        <button class="action-btn nes-btn, is-error"
+        <button class="action-btn, nes-btn, is-error"
           onclick="this.closest('.ai-result-card').dispatchEvent(new CustomEvent('ai-result-reject', { detail: this.closest('.ai-result-card') }))"
           aria-label="Reject this analysis result"
         >

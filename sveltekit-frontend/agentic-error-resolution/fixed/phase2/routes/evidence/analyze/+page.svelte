@@ -6,19 +6,19 @@ https://svelte.dev/e/js_parse_error -->
   import { goto } from '$app/navigation';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Dialog,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-  } from '$lib/components/ui/dialog.svelte';
+   from "$lib/components/ui/dialog.svelte";
   import Input from '$lib/components/ui/Input.svelte';
   import Label from '$lib/components/ui/Label.svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue } from '$lib/components/ui/select.svelte';
+  import  SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValue  from "$lib/components/ui/select.svelte";
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Reactive state with Svelte 5 syntax
   let analyzing = $state(false);
@@ -324,10 +324,10 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button.Root>
-        <Button.Root class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
-        </Button.Root>
+        </Button>
       </div>
     </CardFooter>
   </div>
@@ -446,21 +446,21 @@ https://svelte.dev/e/js_parse_error -->
 										{JSON.stringify(data, null, 2)}
 									</pre>
                 </div>
-                <Button.Root
+                <Button
                   variant="ghost"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
                   onclick={() => viewDetailedResults(data)}
                 >
                   View Details →
-                </Button.Root>
+                </Button>
               </div>
             </div>
           {/each}
         </div>
         <DialogFooter>
-          <Button.Root class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button.Root>
-          <Button.Root class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button.Root>
+          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

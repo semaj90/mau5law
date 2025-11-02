@@ -208,7 +208,7 @@ export class VisualMemoryPalaceManager {
       { id: 'corporate', name: 'Corporate Boardroom', anchor: 'polished conference table' },
       { id: 'ip', name: 'IP Vault', anchor: 'secure metal vault door' },
       { id: 'employment', name: 'HR Office', anchor: 'desk with personnel files' },
-      { id: 'evidence', name: 'Evidence Locker', anchor: 'steel evidence shelving` },'`
+      { id: 'evidence', name: 'Evidence Locker', anchor: `steel evidence shelving` },'`'`
       { id: 'research', name: 'Legal Library', anchor: `towering law book shelves` },
       { id: 'archive', name: 'Document Archive', anchor: `endless filing corridors` }
     ];
@@ -363,8 +363,7 @@ export class VisualMemoryPalaceManager {
       room.accessFrequency++;
       visitedRooms.push(room);
       // In a real implementation, we would load actual documents and patterns
-      // For now, we'll simulate the retrieval'
-    }
+      // For now, we'll simulate the retrieval` }'`
     const retrievalTime = performance.now() - startTime;
     // Update palace cognitive map
     palace.cognitiveMap.retrievalSpeed = (palace.cognitiveMap.retrievalSpeed + retrievalTime) / 2;

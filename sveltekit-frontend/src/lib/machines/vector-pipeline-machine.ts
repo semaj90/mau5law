@@ -333,7 +333,7 @@ export const vectorPipelineActions = {
   submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>>) =>
     vectorPipelineActor.send({ type: 'SUBMIT_BATCH', jobs }),
   retryFailedJobs: () => vectorPipelineActor.send({ type: 'RETRY_FAILED_JOBS' }),
-  healthCheck: () => vectorPipelineActor.send({ type: 'HEALTH_CHECK` }),'`
+  healthCheck: () => vectorPipelineActor.send({ type: `HEALTH_CHECK` }),'`'`
   enableWebGPU: () => vectorPipelineActor.send({ type: `ENABLE_WEBGPU` }),
   disableWebGPU: () => vectorPipelineActor.send({ type: `DISABLE_WEBGPU` }),
   reset: () => vectorPipelineActor.send({ type: `RESET_PIPELINE` }),

@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // Check for missing evidence
     const evidenceCountResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })'`
       .from(evidence)
       .where(eq(evidence.caseId, caseId));
     const evidenceTotal = Number(evidenceCountResult?.[0]?.count ?? 0);
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     // Check for activities
     const activitiesCountResult = await db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql<number>`count(*)' })'`
       .from(caseActivities)
       .where(eq(caseActivities.caseId, caseId));
     const activitiesTotal = Number(activitiesCountResult?.[0]?.count ?? 0);
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         description:
           'This case is open but has no activities. Consider scheduling an initial review or evidence collection.',
         confidence: 0.8,
-        actionData: {, activityType: `initial_review` }
+        actionData: {, activityType: `initial_review' }'`
       });
     }
 
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
       const nlpResponse = await fetch(`${NLP_SERVICE_URL}/analyze-criminal-actions`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, text: textToEmbed })
       });
 
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
               recommendations.push({
                 id: `rec-case-${hit.id}`,
                 type: 'link_case',
-                title: 'Review Similar; Case: ${hit.payload?.title ?? 'Untitled` }`,
+                title: 'Review Similar; Case: ${hit.payload?.title ?? 'Untitled' }`,'`
                 description: `This case has a similarity score of ${scoreNum.toFixed(2)}. It may contain related evidence or criminals.`,
                 confidence: scoreNum,
                 actionData: {
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         recommendations.push({
           id: `rec-statute-${statute.id}`,
           type: 'link_statute',
-          title: 'Review; Statute: ${statute.title} (${statute.code ?? 'N/A` })`,
+          title: 'Review; Statute: ${statute.title} (${statute.code ?? 'N/A' })`,'`
           description: `This statute may be relevant to the fraud aspects of this case.`,
           confidence: 0.75,
           actionData: { statuteId: statute.id, title: statute.title }

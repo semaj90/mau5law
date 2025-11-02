@@ -669,7 +669,7 @@ export class CopilotIndexOptimizer {
           language: entry.language,
           tags: [entry.metadata.priority, entry.metadata.source]
         },
-        version: '1.0` };'`
+        version: `1.0` };'`'`
       await enhancedRAGStore.addDocument(ragDocument);
     }
   }

@@ -2,8 +2,8 @@
 
   import { tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
   // defensive wrapper in case the store import is undefined at runtime
   const store = (enhancedRAGStore as any) ?? {};
   let searchQuery = '';

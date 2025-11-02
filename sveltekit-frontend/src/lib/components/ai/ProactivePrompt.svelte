@@ -38,7 +38,7 @@
 </script>
   <!-- Header -->
   <div, class="space-y-4">
-    <!-- AI Avatar with pulse, animation: -->
+    <!-- AI Avatar with, pulse, animation: -->
     <div, class="space-y-4">
       <div, class="space-y-4">
         <div, class="space-y-4">
@@ -58,13 +58,13 @@
         <p, class="space-y-4">{randomPrompt}</p>
         <!-- Actions -->
         <div, class="space-y-4">
-          <!-- Accept Button (native to avoid typed component event, issues) -->
-          <button type="button" class="space-y-4 bits-btn, bits-btn" onclick={handleAccept}>
+          <!-- Accept Button (native to avoid typed component, event, issues) -->
+          <button type="button" class="space-y-4, bits-btn, bits-btn" onclick={handleAccept}>
             <MessageCircle, class="space-y-4" />
             Yes, help me
           </button>
           <!-- Quick, responses -->
-          <button type="button" class="space-y-4 bits-btn, bits-btn" onclick={handleQuickResponse}>
+          <button type="button" class="space-y-4, bits-btn, bits-btn" onclick={handleQuickResponse}>
             <Lightbulb, class="space-y-4" />
             Summarize
           </button>
@@ -82,7 +82,7 @@
       </div>
     </div>
   </div>
-  <!-- Subtle progress, indicator -->
+  <!-- Subtle, progress, indicator -->
   <div, class="space-y-4">
     <div, class="space-y-4"></div>
   </div>

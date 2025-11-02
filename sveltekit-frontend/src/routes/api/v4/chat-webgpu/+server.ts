@@ -327,7 +327,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json(webgpuAI.getCapabilities(), { status: 200 });
     }
     return json(
-      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities` },'`
+      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities' },''
       { status: 400 }
     );
   } catch (error: any) {

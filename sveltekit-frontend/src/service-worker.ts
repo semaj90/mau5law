@@ -119,8 +119,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(somResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'som-webgpu` }'`
-        });
+            'X-Cache-Source': 'som-webgpu' }'' });
       }
     } catch (error) {
       console.warn('SOM cache miss:', error);
@@ -134,7 +133,7 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(redisResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': `redis-distributed` }
+            'X-Cache-Source': `redis-distributed' }'`
         });
       }
     } catch (error) {
@@ -171,7 +170,7 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
       statusText: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
-        'X-SIMD-Optimized': `true` }
+        'X-SIMD-Optimized': `true' }'`
     });
   } catch (error) {
     console.warn('SIMD JSON optimization failed, using original response:', error);
@@ -296,8 +295,7 @@ async function syncDistributedCaches(): Promise<void> {
             await safeSomStore(key, redisData);
           }
         } catch (error) {
-          console.warn(`Failed to sync key ${key}: ', error);'`
-        }
+          console.warn(`Failed to sync key ${key}: ', error);'' }'`
       }
       console.log('Distributed cache sync complete');
     }
@@ -339,21 +337,21 @@ function queueCommonCacheWarming(): void {
       id: 'legal-templates',
       type: 'legal_document',
       priority: 10,
-      payload: { type: 'template_analysis` },'`
+      payload: { type: 'template_analysis' },'`'`
       retries: 0
     },
     {
       id: 'common-vectors',
       type: 'vector_similarity',
       priority: 8,
-      payload: { precompute: `common_embeddings` },
+      payload: { precompute: `common_embeddings' },'`
       retries: 0
     },
     {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
-      payload: { warm: `popular_queries` },
+      payload: { warm: `popular_queries' },'`
       retries: 0
     },
   ];

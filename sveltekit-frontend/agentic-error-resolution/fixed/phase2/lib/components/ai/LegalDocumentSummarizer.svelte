@@ -323,7 +323,7 @@ await checkServiceHealth();
           </p>
         </div>
         <!-- Generate Button -->
-        <Button.Root
+        <Button
           onclick={generateSummary}
           disabled={isProcessing || !documentContent.trim() || !documentTitle.trim() || serviceHealth === 'unavailable'}
           class="w-full"
@@ -333,7 +333,7 @@ await checkServiceHealth();
           {:else}
             🤖 Generate AI Summary
           {/if}
-        </Button.Root>
+        </Button>
         <!-- Processing Progress -->
         {#if isProcessing}
           <div class="space-y-2">

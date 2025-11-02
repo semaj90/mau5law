@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
             rlRecommendations = [];
           }
         } catch (invokeError) {
-          console.warn('RL optimizer invocation failed, continuing without: `, invokeError);'`
+          console.warn('RL optimizer invocation failed, continuing without: ', invokeError);'`'`
           rlRecommendations = [];
         }
 
@@ -465,8 +465,7 @@ export const GET: RequestHandler = async ({ url }) => {
             role: 'User role for personalization (optional)',
             caseId: 'Current case ID for context (optional)',
             gpu: 'Enable GPU acceleration (default: true)',
-            cache: 'Enable intelligent caching (default: true)'
-          }
+            cache: 'Enable intelligent caching (default: true)` }'`
         }
       },
       supportedRoles: ['prosecutor', 'detective', 'admin', 'user'],
@@ -486,7 +485,7 @@ export const GET: RequestHandler = async ({ url }) => {
         context7Docs: 'Dynamic documentation integration',
         rlCacheOptimization: `Reinforcement learning cache optimization` },
       performance: {
-        averageLatency: '< 50ms (with cache, hit)',
+        averageLatency: '< 50ms (with, cache, hit)',
         gpuAcceleration: '10-100x speedup for complex queries',
         cacheHitRatio: '> 85% for repeated queries',
         qualityImprovement: `+40% relevance with multi-layer enhancement` }
@@ -754,12 +753,11 @@ async function getCaseRelationships(caseId: string): Promise<CaseRelationship[]>
   return [
     {,
       relatedCaseId: 'case_456',
-      caseId, // <-- use the provided caseId to avoid unused param lint, error
+      caseId, // <-- use the provided caseId to avoid unused param, lint, error
       relationship: 'similar_facts',
       strength: 0.82,
       sharedEntities: ['defendant_name', 'contract_type'],
-      jurisdiction: 'federal'
-    },
+      jurisdiction: 'federal` },'`
     {
       relatedCaseId: 'case_789',
       caseId,

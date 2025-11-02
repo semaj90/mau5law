@@ -49,7 +49,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
           `${this.config.baseUrl}/api/embeddings`,
           {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json` },'`
+            headers: { 'Content-Type': 'application/json' },'`'`
             body: JSON.stringify({
              , model: attemptModel,
               prompt: options?.truncateTo ? text.slice(0, options.truncateTo) : text
@@ -98,7 +98,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
         `${this.config.baseUrl}/api/chat`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({
             model,
             messages: messages.map(m => ({, role: m.role, content: m.content })),
@@ -133,7 +133,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     const model = options?.model || this.config.chatModel;
     const response = await fetch(`${this.config.baseUrl}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         model,
         messages: messages.map(m => ({, role: m.role, content: m.content })),
@@ -182,7 +182,7 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.baseUrl}/api/tags`,
-        { method: 'GET` },'`
+        { method: 'GET' },'`'`
         5000 // Quick health check timeout
       );
       if (!response.ok) {

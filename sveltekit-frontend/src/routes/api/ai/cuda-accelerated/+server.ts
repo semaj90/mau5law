@@ -135,7 +135,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         sveltekit_frontend: true,
         request_timestamp: new Date().toISOString(),
         client_type: 'web',
-        performance_target: `rtx_3060_ti` }
+        performance_target: `rtx_3060_ti' }'`
     };
     // Make request to CUDA server
     const cudaResponse = await fetch(`${CUDA_SERVER_URL}/api/legal/inference`, {
@@ -143,7 +143,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'User-Agent': 'SvelteKit-Legal-AI/1.0',
-        'X-Request-ID': requestData.session_id || `req_${Date.now()}` },
+        'X-Request-ID': requestData.session_id || `req_${Date.now()}' },'`
       body: JSON.stringify(cudaRequest),
       signal: AbortSignal.timeout(CUDA_TIMEOUT)
     });
@@ -202,7 +202,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
            , inference: `${CUDA_SERVER_URL}/api/legal/inference`,
             vector_search: `${CUDA_SERVER_URL}/api/legal/vector-search`,
             stream: `${CUDA_SERVER_URL}/api/legal/stream`,
-            batch: `${CUDA_SERVER_URL}/api/legal/batch` }
+            batch: `${CUDA_SERVER_URL}/api/legal/batch' }'`
         });
       }
       case 'metrics': {
@@ -216,7 +216,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
            , vram_total_gb: 8,
             cuda_cores: 4608,
             compute_capability: '8.6',
-            memory_bandwidth: `448 GB/s` }
+            memory_bandwidth: `448 GB/s' }'`
         });
       }
       case 'gpu-status': {
@@ -270,7 +270,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `query_vector must be 768-dimensional for compatibility with nomic-embed-text` },
+          error: 'query_vector must be 768-dimensional for compatibility with nomic-embed-text' },
         { status: 400 }
       );
     }
@@ -283,7 +283,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     };
     const response = await fetch(`${CUDA_SERVER_URL}/api/legal/vector-search`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(vectorSearchRequest),
       signal: AbortSignal.timeout(15000), // Vector search timeout
     });
@@ -295,8 +295,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       ...result,
       cuda_accelerated: true,
       vector_dimensions: 768,
-      search_algorithm: 'cuda_optimized_cosine_similarity` });'`
-  } catch (error: any) {
+      search_algorithm: 'cuda_optimized_cosine_similarity' });'' } catch (error: any) {
     return json(
       {
         success: false,
@@ -323,7 +322,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Maximum batch size is 16 queries for RTX 3060 Ti optimization` },
+          error: 'Maximum batch size is 16 queries for RTX 3060 Ti optimization' },
         { status: 400 }
       );
     }
@@ -345,7 +344,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
     })); // Added closing parenthesis for map function
     const response = await fetch(`${CUDA_SERVER_URL}/api/legal/batch`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(cudaBatchRequest),
       signal: AbortSignal.timeout(60000), // Extended timeout for batch
     });
@@ -375,7 +374,7 @@ const originalDELETEHandler: RequestHandler = async () => {
   try {
     const response = await fetch(`${CUDA_SERVER_URL}/api/gpu/optimize`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({, force_cleanup: true })
     });
     if (!response.ok) {
@@ -385,7 +384,7 @@ const originalDELETEHandler: RequestHandler = async () => {
     return json({
       ...result,
       message: 'GPU memory optimization completed',
-      rtx_3060_ti_memory: `8GB VRAM optimized` });
+      rtx_3060_ti_memory: `8GB VRAM optimized' });'`
   } catch (error: any) {
     return json(
       {

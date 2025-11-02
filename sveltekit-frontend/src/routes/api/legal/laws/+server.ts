@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // if (search && search.length > 10) {
     //   const ragResults = await fetch('http://localhost:8080/api/legal/statute-search', {
     //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json` },'`
+    //     headers: { 'Content-Type': 'application/json' },'`'`
     //     body: JSON.stringify({, query: search, jurisdiction, type })
     //   });
     //   // Merge RAG results with database results
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
        , count: result.length,
         jurisdiction,
         category,
-        source: `database` }
+        source: `database' }'`
     });
   } catch (error) {
     console.error('❌ Laws API error:', error);'
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         error: 'Failed to fetch laws',
         laws: [],
-        metadata: {, count: 0, source: `error` }
+        metadata: {, count: 0, source: `error' }'`
       },
       { status: 500 }
     );

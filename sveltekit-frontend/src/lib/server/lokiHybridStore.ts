@@ -51,12 +51,12 @@ type KnowledgeRecordMap = { evidence: EvidenceItem;, notes: NoteItem;
 
 type KnowledgeItem = KnowledgeRecordMap[keyof KnowledgeRecordMap];
 
-interface CollectionContext<K extends, KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
+interface CollectionContext<K, extends, KnowledgeCollectionName> { name: K;, collection: Collection<KnowledgeRecordMap[K]>;
   fuse: Fuse<KnowledgeRecordMap[K]>;
   fuseKeys: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
 }
 
-interface CollectionSpec<K extends, KnowledgeCollectionName> {
+interface CollectionSpec<K, extends, KnowledgeCollectionName> {
   name: K;
   indices?: string[];
   fuseKeys?: Array<Fuse.FuseOptionKey<KnowledgeRecordMap[K]>>;
@@ -202,18 +202,18 @@ export class LokiHybridStore {
     return Array.from(this.contexts.keys());
   }
 
-  getAll<K extends, KnowledgeCollectionName>(collection: K): KnowledgeRecordMap[K][] {
+  getAll<K, extends, KnowledgeCollectionName>(collection: K): KnowledgeRecordMap[K][] {
     const ctx = this.getContext(collection);
     return ctx.collection.find();
   }
 
-  search<K extends, KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
+  search<K, extends, KnowledgeCollectionName>(collection: K, query: string): KnowledgeRecordMap[K][] {
     if (!query) return this.getAll(collection);
     const ctx = this.getContext(collection);
     return ctx.fuse.search(query).map((res) => res.item);
   }
 
-  add<K extends, KnowledgeCollectionName>(
+  add<K, extends, KnowledgeCollectionName>(
     collection: K,
     item: KnowledgeRecordMap[K],
     options?: {
@@ -257,7 +257,7 @@ export class LokiHybridStore {
     return enriched;
   }
 
-  upsertMany<K extends, KnowledgeCollectionName>(
+  upsertMany<K, extends, KnowledgeCollectionName>(
     collection: K,
     items: KnowledgeRecordMap[K][],
     options?: {
@@ -470,7 +470,7 @@ export class LokiHybridStore {
     }
   }
 
-  private getContext<K extends, KnowledgeCollectionName>(name: K): CollectionContext<K> {
+  private getContext<K, extends, KnowledgeCollectionName>(name: K): CollectionContext<K> {
     const ctx = this.contexts.get(name);
     if (!ctx) {
       throw new Error(`Collection ${name} not registered in LokiHybridStore`);
@@ -478,7 +478,7 @@ export class LokiHybridStore {
     return ctx;
   }
 
-  private syncFuse<K extends, KnowledgeCollectionName>(ctx: CollectionContext<K>): void {
+  private syncFuse<K, extends, KnowledgeCollectionName>(ctx: CollectionContext<K>): void {
     ctx.fuse.setCollection(ctx.collection.find());
   }
 
@@ -490,7 +490,7 @@ export class LokiHybridStore {
     return `${this.config.redisPrefix}:events`;
   }
 
-  private async persistToRedis<K extends, KnowledgeCollectionName>(
+  private async persistToRedis<K, extends, KnowledgeCollectionName>(
     collection: K,
     item: KnowledgeRecordMap[K]
   ): Promise<void> {
@@ -499,7 +499,7 @@ export class LokiHybridStore {
     await this.redis.hset(key, item.id, JSON.stringify(this.prepareForStorage(item)));
   }
 
-  private prepareForStorage<T extends, KnowledgeItem>(item: T): T {
+  private prepareForStorage<T, extends, KnowledgeItem>(item: T): T {
     return {
       ...item,
       createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : undefined,

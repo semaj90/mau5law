@@ -20,11 +20,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.
@@ -1050,7 +1050,7 @@
       <div class="evidence-grid">
         {#each Array.isArray(evidence) ? evidence : [] as item}
           <!-- Card is a component; use onclick instead of on:click -->
-          <Card.Root class="evidence-item" onclick={() => addEvidence(item)}>
+          <Card class="evidence-item" onclick={() => addEvidence(item)}>
             <CardHeader>
               <CardTitle class="text-sm">{item.title}</CardTitle>
             </CardHeader>
@@ -1063,7 +1063,7 @@
                   {/each}
                 {/if}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/each}
       </div>
     {/if}
@@ -1089,7 +1089,7 @@
 
       <div class="evidence-list">
         {#each Array.isArray(evidence) ? evidence : [] as item}
-          <Button.Root
+          <Button
             variant="outline"
             class="w-full justify-start mb-2"
             onclick={() => {
@@ -1098,12 +1098,12 @@
             }}
           >
             {item.title}
-          </Button.Root>
+          </Button>
         {/each}
       </div>
 
       <div class="modal-actions">
-        <Button variant="secondary" onclick={() => (showEvidenceDialog = false)}>Close</Button.Root>
+        <Button variant="secondary" onclick={() => (showEvidenceDialog = false)}>Close</Button>
       </div>
     </div>
   {/if}
@@ -1174,11 +1174,11 @@
 
   // bits-ui components (unchanged)
   // removed namespace imports for Toolbar / Tooltip / Popover which don't export .Root/.Button etc.
-  import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
 
   // NOTE: lucide-svelte named imports caused TS module errors in this environment.
   // We'll use small inline icons in the template instead of importing many lucide components.
@@ -2204,7 +2204,7 @@
       <div class="evidence-grid">
         {#each Array.isArray(evidence) ? evidence : [] as item}
           <!-- Card is a component; use onclick instead of on:click -->
-          <Card.Root class="evidence-item" onclick={() => addEvidence(item)}>
+          <Card class="evidence-item" onclick={() => addEvidence(item)}>
             <CardHeader>
               <CardTitle class="text-sm">{item.title}</CardTitle>
             </CardHeader>
@@ -2217,7 +2217,7 @@
                   {/each}
                 {/if}
             </CardContent>
-          </Card.Root>
+          </Card>
         {/each}
       </div>
     {/if}
@@ -2243,7 +2243,7 @@
 
       <div class="evidence-list">
         {#each Array.isArray(evidence) ? evidence : [] as item}
-          <Button.Root
+          <Button
             variant="outline"
             class="w-full justify-start mb-2"
             onclick={() => {

@@ -82,7 +82,7 @@ export class AIAnalyticsService {
         void fetch(lokiUrl, {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({, streams: [{, stream: {, service: `ai-analytics` }, values: [[evt.timestamp, JSON.stringify(evt)]] }] })
+          body: JSON.stringify({, streams: [{, stream: {, service: `ai-analytics' }, values: [[evt.timestamp, JSON.stringify(evt)]] }] })'`
         });
       }
     } catch {
@@ -102,7 +102,7 @@ export class AIAnalyticsService {
     // Placeholder: connect to a dedicated analytics store in production (Loki/ClickHouse)
     console.debug(`Retrieving historical analytics for case ${caseId} metric ${metricType}`);
     if (metricType === 'embedding_latency') {
-      return [{ timestamp: new Date().toISOString(), value: Math.random() * 100, strategy: `ollama_cpu` }];
+      return [{ timestamp: new Date().toISOString(), value: Math.random() * 100, strategy: `ollama_cpu' }];'`
     }
     return [];
   }

@@ -380,7 +380,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         error: 'Internal server error',
-        details: err instanceof Error ? err.message : 'Unknown error` },'`
+        details: err instanceof Error ? err.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -517,8 +517,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       ...result,
-      source: 'typescript` });'`
-  } catch (err) {
+      source: 'typescript' });'` } catch (err) {'`
     console.error('Evidence API DELETE error:', err);'
     return json(
       {

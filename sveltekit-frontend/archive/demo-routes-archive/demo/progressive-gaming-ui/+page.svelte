@@ -15,10 +15,10 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  import { ProgressiveGamingProvider } from '$lib/components/ui/gaming/core/ProgressiveGamingProvider.svelte';
+  import  ProgressiveGamingProvider  from "$lib/components/ui/gaming/core/ProgressiveGamingProvider.svelte";
   import { useGamingEvolution } from '$lib/components/ui/gaming/core/useGamingEvolution.js';
   import Button from '$lib/components/ui/enhanced-bits';;
-  import { NES8BitContainer } from '$lib/components/ui/gaming/8bit/NES8BitContainer.svelte';
+  import  NES8BitContainer  from "$lib/components/ui/gaming/8bit/NES8BitContainer.svelte";
   import Button from '$lib/components/ui/enhanced-bits';;
   import Button from '$lib/components/ui/enhanced-bits';;
 

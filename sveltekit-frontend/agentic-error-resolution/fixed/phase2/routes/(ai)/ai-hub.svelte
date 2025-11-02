@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
-  import { Button } from '$lib/components/ui/core.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
+  import  Button  from "$lib/components/ui/core.svelte";
   import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';
   import type { RouteDefinition as RGRouteDefinition } from '$lib/data/route-groups-config';
 
@@ -37,7 +37,7 @@
 
   <!-- AI Statistics Dashboard -->
   <div class="stats-grid">
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Active Models</CardTitle>
       </CardHeader>
@@ -45,9 +45,9 @@
         <div class="stat-value">{aiStats.modelsActive}</div>
         <div class="stat-label">AI Models Online</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Inferences/Hour</CardTitle>
       </CardHeader>
@@ -55,9 +55,9 @@
         <div class="stat-value">{aiStats.inferencesPerHour.toLocaleString()}</div>
         <div class="stat-label">Processing Rate</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>GPU Utilization</CardTitle>
       </CardHeader>
@@ -65,9 +65,9 @@
         <div class="stat-value">{aiStats.gpuUtilization}%</div>
         <div class="stat-label">RTX 3060 Ti Usage</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>Response Time</CardTitle>
       </CardHeader>
@@ -75,7 +75,7 @@
         <div class="stat-value">{aiStats.averageResponseTime}s</div>
         <div class="stat-label">Average Latency</div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </div>
 
   <!-- AI Services Section -->
@@ -84,7 +84,7 @@
       <h2>🚀 AI Services & Tools</h2>
       <div class="services-grid">
         {#each Array.isArray(aiRoutes) ? aiRoutes : [] as route}
-          <Card.Root class="service-card">
+          <Card class="service-card">
             <CardHeader>
               <CardTitle>
                 <span class="service-icon">{route.icon ?? '🧠'}</span> {route.title ?? (route.path ?? 'Untitled')}
@@ -92,11 +92,11 @@
             </CardHeader>
             <CardContent>
               <p class="service-description">{route.description ?? ''}</p>
-              <Button.Root href={route.path ?? '#'} class="service-button">
+              <Button href={route.path ?? '#'} class="service-button">
                 Explore {route.title ?? 'Service'}
-              </Button.Root>
+              </Button>
             </CardContent>
-          </Card.Root>
+          </Card>
         {/each}
       </div>
     </div>
@@ -107,7 +107,7 @@
     <h2>📊 Recent AI Activities</h2>
     <div class="activities-list">
       {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
-        <Card.Root class="activity-card">
+        <Card class="activity-card">
           <CardContent>
             <div class="activity-type">
               {#if activity.type === 'analysis'}
@@ -136,7 +136,7 @@
               {/if}
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </div>

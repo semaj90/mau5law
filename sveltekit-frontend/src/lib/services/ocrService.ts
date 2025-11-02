@@ -285,7 +285,7 @@ Return only one of: legal_document, contract, form`;`
       const base = getOllamaEndpoint().replace(/\/$/, '');
       const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: 'gemma3-legal:latest',
           prompt,
@@ -391,7 +391,7 @@ Return JSON array of objects: [{"fieldName":"...", "value":"...", "fieldType":"n
       const base = getOllamaEndpoint().replace(/\/$/, '');
       const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: 'gemma3-legal:latest',
           prompt,
@@ -488,7 +488,7 @@ Provide 3 realistic suggestions as a JSON array: ["suggestion1", "suggestion2", 
       const base = getOllamaEndpoint().replace(/\/$/, '');
       const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , model: 'gemma3-legal',
           prompt,

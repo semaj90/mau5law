@@ -16,7 +16,7 @@
 
 <svelte:head>
   <title>Legal AI Platform | YoRHa Legal</title>
-  <meta name="description" content="AI-powered legal case management and evidence, analysis" />
+  <meta name="description" content="AI-powered legal case management and, evidence, analysis" />
 </svelte:head>
 
 <div, class="legal-layout">

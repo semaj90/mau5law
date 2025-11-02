@@ -166,8 +166,7 @@ class AISummarizationService {
       return result;
     } catch (error: any) {
       console.error('Document summarization failed:', error);
-      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
-    }
+      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : `Unknown error` }`);'` }'`
   }
   /**
    * Batch summarize multiple documents
@@ -198,7 +197,7 @@ class AISummarizationService {
         results.push({
           documentId: doc.id,
           success: false,
-          error: error instanceof Error ? error.message : `Unknown error' });'`
+          error: error instanceof Error ? error.message : `Unknown error` });'`'`
         totalFailures++;
       }
     }
@@ -338,7 +337,7 @@ class AISummarizationService {
     try {
       // Get document embedding
       const doc = await db
-        .select({ contentEmbedding: sql<number[]>`content_embedding' })'`
+        .select({ contentEmbedding: sql<number[]>`content_embedding` })'`'`
         .from(evidence)
         .where(eq(evidence.id, documentId))
         .limit(1);
@@ -353,7 +352,7 @@ class AISummarizationService {
           title: evidence.title,
           evidenceType: evidence.evidenceType,
           aiSummary: evidence.aiSummary,
-          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})' })'`
+          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})` })'`'`
         .from(evidence)
         .where(
           and(
@@ -528,14 +527,14 @@ class AISummarizationService {
       prompt += `Additionally, identify: ${requestedAnalysis.join(', ')}.\n\n`;
     }
     prompt += `Document content:\n${content}\n\n`;
-    prompt += `Provide your response as a JSON object with the following structure:`
+    prompt += `Provide your response as a JSON object with the following structure: '`
 {
   "summary": "Your summary here",
   "keyPoints": ["key point 1", "key point 2"],
   "entities": [{"name": "Entity Name", "type": "person|organization|location|other", "confidence": 0.9, "mentions": 3}],
   "keywords": ["keyword1", "keyword2"],
   "categories": ["category1", "category2"],
-  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : `' }'`
+  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : `` }'`'`
   "confidence": 0.85
 }`;`
     return prompt;

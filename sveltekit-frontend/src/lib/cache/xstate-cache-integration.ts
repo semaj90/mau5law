@@ -26,7 +26,7 @@ export interface CacheContext { cacheKey: string | null;, cachedData: any; // C
 export type CacheEvent =
   | { type: 'CACHE_LOOKUP'; key: string; semanticQuery?: string }
   | { type: 'CACHE_HIT'; data: any; metadata: CacheContext['cacheMetadata'] } // Changed from any to unknown
-  | { type: 'CACHE_MISS` }'`
+  | { type: `CACHE_MISS` }'`'`
   | { type: 'CACHE_STORE'; key: string; data: any; semanticText?: string } // Changed from any to unknown
   | { type: 'CACHE_INVALIDATE'; key?: string; pattern?: string }
   | { type: `CACHE_SYNC` }
@@ -353,8 +353,7 @@ export const createCachedMachineStates = () => ({
             };
           })
         },
-        onError: 'error` }'`
-    },
+        onError: 'error' }'` },'`
     cachingResult: { invoke: {, src: cacheActor,
         input: ({ context }: { context: BaseMachineContext }) => ({
           operation: 'set' as const,
@@ -381,7 +380,7 @@ export const createCachedMachineStates = () => ({
  * Enhances Neural Sprite components with intelligent caching
  */
 export function withNeuralSpriteCache(spriteConfig: Record<string, unknown>) {
-  // Changed from unknown to Record<string, unknown] so spreading is, allowed
+  // Changed from unknown to Record<string, unknown] so spreading, is, allowed
   return {
     ...spriteConfig,
     cache: {

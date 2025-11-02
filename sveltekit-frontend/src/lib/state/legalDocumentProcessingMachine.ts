@@ -234,7 +234,7 @@ export const legalDocumentProcessingMachine = createMachine({
                 }
               }
             },
-            completed: { type: 'final` },'`
+            completed: { type: `final` },'`'`
             failed: { type: `final` }
           }
         },
@@ -262,7 +262,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final` },'`
+            failed: { type: `final` },'`'`
             skipped: { type: `final` }
           }
         },
@@ -290,7 +290,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final` },'`
+            failed: { type: `final` },'`'`
             skipped: { type: `final` }
           }
         },
@@ -318,7 +318,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final` },'`
+            failed: { type: `final` },'`'`
             skipped: { type: `final` }
           }
         },
@@ -347,7 +347,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final` },'`
+            failed: { type: `final` },'`'`
             skipped: { type: `final` }
           }
         },
@@ -376,7 +376,7 @@ export const legalDocumentProcessingMachine = createMachine({
               }
             },
             completed: { type: 'final' },
-            failed: { type: 'final` },'`
+            failed: { type: `final` },'`'`
             skipped: { type: `final` }
           }
         }
@@ -434,7 +434,7 @@ export const legalDocumentProcessingMachine = createMachine({
       }
     },
     failed: {
-      type: 'final` },'`
+      type: `final` },'`'`
     cancelled: {
       type: `final` }
   }

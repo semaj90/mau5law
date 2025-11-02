@@ -1,4 +1,4 @@
-<!-- Evidence Management Layout - Legal AI Evidence, Processing -->
+<!-- Evidence Management Layout - Legal AI, Evidence, Processing -->
 <script, lang="ts">
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';

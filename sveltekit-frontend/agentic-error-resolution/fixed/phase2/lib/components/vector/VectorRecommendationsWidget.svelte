@@ -5,14 +5,14 @@ Compact AI recommendations component for sidebar/dashboard use
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import {
     Lightbulb,
     Target,
@@ -197,7 +197,7 @@ Compact AI recommendations component for sidebar/dashboard use
         {/if}
       </div>
       <div>
-        <Button.Root
+        <Button
           variant="ghost"
           size="sm"
           onclick={loadRecommendations}
@@ -205,7 +205,7 @@ Compact AI recommendations component for sidebar/dashboard use
           class="h-7 w-7 p-0 bits-btn bits-btn"
         >
           <RefreshCw class="h-3 w-3 {isLoading ? 'animate-spin' : ''}" />
-        </Button.Root>
+        </Button>
       </div>
     </h3>
     {#if lastUpdated && !compact}

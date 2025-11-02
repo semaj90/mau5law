@@ -10,7 +10,7 @@ import { eq, desc, and, sql } from 'drizzle-orm';
 import { createEmbedding } from '$lib/services/embedding-service';
 import { redis } from '$lib/server/redis';
 import type { Document, NewDocument } from '$lib/server/schema/documents';
-import type { SQL } from 'drizzle-orm'; // <-- added type, import
+import type { SQL } from 'drizzle-orm'; // <-- added, type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const results = await query.execute();
 
     const totalQuery = db
-      .select({ count: sql`count(*)` })
+      .select({ count: sql`count(*)' })'`
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined); // no any casts
 
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     if (!data.title || !data.content) {
-      return json({ error: `Title and content are required` }, { status: 400 });
+      return json({ error: 'Title and content are required' }, { status: 400 });
     }
 
     let embedding: number[] | undefined;
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         document: newDocument,
         embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-        message: `Document created successfully` },
+        message: `Document created successfully' },'`
       { status: 201 }
     );
   } catch (error) {
@@ -241,7 +241,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const existingDocument = await db.select().from(documents).where(eq(documents.id, documentId)).limit(1).execute();
 
     if (existingDocument.length === 0) {
-      return json({ error: `Document not found` }, { status: 404 });
+      return json({ error: 'Document not found' }, { status: 404 });
     }
 
     let embedding: number[] | undefined;
@@ -291,8 +291,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully` });'`
-  } catch (error) {
+      message: 'Document updated successfully' });'' } catch (error) {
     console.error('Error updating document:', error);
     return json(
       { error: 'Failed to update document', details: error instanceof Error ? error.message : String(error) },
@@ -319,7 +318,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       .execute();
 
     if (!deletedDocument) {
-      return json({ error: `Document not found` }, { status: 404 });
+      return json({ error: 'Document not found' }, { status: 404 });
     }
 
     {

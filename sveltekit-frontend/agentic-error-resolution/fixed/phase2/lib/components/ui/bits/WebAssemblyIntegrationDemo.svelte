@@ -3,13 +3,13 @@
   import { onMount } from 'svelte';
   import { integrationChecker, type IntegrationStatus } from '$lib/integration-status';
   import { unifiedRuntime } from '$lib/webgpu/unified-runtime-abstraction';
-  import {
+  import 
     Button,
     Card,
     Input,
     Alert,
     AlertDescription
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
@@ -146,14 +146,14 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     </Alert>
   {/if}
   <!-- Integration Status Overview -->
-  <Card.Root class="yorha-card">
+  <Card class="yorha-card">
     <div class="p-6">
       <div class="flex items-center gap-3 mb-6">
         <Server class="w-6 h-6 text-amber-400" />
         <h2 class="text-xl font-semibold text-amber-400">Integration Status</h2>
         <Button onclick={checkAllIntegrations} disabled={isLoading} size="sm" variant="ghost">
           {isLoading ? 'Checking...' : 'Refresh Status'}
-        </Button.Root>
+        </Button>
       </div>
       {#if integrationStatus}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -323,9 +323,9 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           <p class="text-gray-400">Click "Refresh Status" to check integration status</p>
         {/if}
     </div>
-  </Card.Root>
+  </Card>
   <!-- Integration Tests -->
-  <Card.Root class="yorha-card">
+  <Card class="yorha-card">
     <div class="p-6">
       <div class="flex items-center gap-3 mb-6">
         <Cpu class="w-6 h-6 text-amber-400" />
@@ -345,10 +345,10 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       </div>
       <!-- Test Buttons -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Button.Root onclick={testWebAssemblyRuntime} variant="primary" class="w-full">Test WebAssembly Runtime</Button.Root>
-        <Button.Root onclick={testDatabaseIntegration} variant="secondary" class="w-full">Test Database</Button.Root>
-        <Button.Root onclick={testWebGPUCapabilities} variant="secondary" class="w-full">Test WebGPU</Button.Root>
-        <Button.Root onclick={testCacheSystem} variant="secondary" class="w-full">Test Cache</Button>
+        <Button onclick={testWebAssemblyRuntime} variant="primary" class="w-full">Test WebAssembly Runtime</Button>
+        <Button onclick={testDatabaseIntegration} variant="secondary" class="w-full">Test Database</Button>
+        <Button onclick={testWebGPUCapabilities} variant="secondary" class="w-full">Test WebGPU</Button>
+        <Button onclick={testCacheSystem} variant="secondary" class="w-full">Test Cache</Button>
       </div>
       <!-- Test Results -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -376,9 +376,9 @@ console.log('🔧 WebAssembly Integration Demo initialized');
           <p class="text-green-100 text-sm leading-relaxed">{testResult}</p>
         {/if}
     </div>
-  </Card.Root>
+  </Card>
   <!-- Architecture Overview -->
-  <Card.Root class="yorha-card">
+  <Card class="yorha-card">
     <div class="p-6">
       <div class="flex items-center gap-3 mb-6">
         <Globe class="w-6 h-6 text-amber-400" />
@@ -425,7 +425,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
         </div>
       </div>
     </div>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   .yorha-card {

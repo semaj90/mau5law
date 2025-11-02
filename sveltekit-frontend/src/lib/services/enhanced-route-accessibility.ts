@@ -133,7 +133,7 @@ export class EnhancedRouteAccessibility { private currentRouteConfig: RouteAcces
       'main, [role="main"], #main-content, #demo-content, #test-content'
     ); if (mainContent) { (mainContent as HTMLElement).focus(); accessibilityService.announceToScreenReader('Skipped to main content'); }
   } private getFontSize(size: string): string { const sizes = { small: '14px', normal: '16px', large: '18px',
-      'extra-large': '20px` } return sizes[size as keyof typeof sizes] || '16px'; }'`
+      'extra-large': '20px' } return sizes[size as keyof typeof sizes] || '16px'; }'`'`
   /** * Get current route accessibility configuration */ getCurrentConfig(): RouteAccessibilityConfig | null { return this.currentRouteConfig; }
   /** * Cleanup observers */ destroy() { if (this.routeObserver) { this.routeObserver.disconnect(); }
   } }

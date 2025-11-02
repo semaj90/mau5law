@@ -330,38 +330,38 @@ https://svelte.dev/e/element_invalid_closing_tag -->
               <!-- Center section -->
               <div class="controller-center">
                 <div class="dpad-3d">
-                  <Button.Root class="dpad-btn-3d dpad-up-3d bits-btn bits-btn">
-▲</Button.Root>
+                  <Button class="dpad-btn-3d dpad-up-3d bits-btn bits-btn">
+▲</Button>
                   <div class="dpad-middle-3d">
-                    <Button.Root class="dpad-btn-3d dpad-left-3d bits-btn bits-btn">◄</Button.Root>
+                    <Button class="dpad-btn-3d dpad-left-3d bits-btn bits-btn">◄</Button>
                     <div class="dpad-center-3d"></div>
-                    <Button.Root class="dpad-btn-3d dpad-right-3d bits-btn bits-btn">►</Button.Root>
+                    <Button class="dpad-btn-3d dpad-right-3d bits-btn bits-btn">►</Button>
                   </div>
-                  <Button.Root class="dpad-btn-3d dpad-down-3d bits-btn bits-btn">▼</Button.Root>
+                  <Button class="dpad-btn-3d dpad-down-3d bits-btn bits-btn">▼</Button>
                 </div>
 
-                <Button.Root class="start-button-3d bits-btn bits-btn">START</Button.Root>
+                <Button class="start-button-3d bits-btn bits-btn">START</Button>
               </div>
 
               <!-- Right section -->
               <div class="controller-right">
                 <div class="c-buttons">
-                  <Button.Root class="c-btn c-up bits-btn bits-btn">C↑</Button.Root>
+                  <Button class="c-btn c-up bits-btn bits-btn">C↑</Button>
                   <div class="c-middle">
-                    <Button.Root class="c-btn c-left bits-btn bits-btn">C←</Button.Root>
-                    <Button.Root class="c-btn c-right bits-btn bits-btn">C→</Button.Root>
+                    <Button class="c-btn c-left bits-btn bits-btn">C←</Button>
+                    <Button class="c-btn c-right bits-btn bits-btn">C→</Button>
                   </div>
-                  <Button.Root class="c-btn c-down bits-btn bits-btn">C↓</Button.Root>
+                  <Button class="c-btn c-down bits-btn bits-btn">C↓</Button>
                 </div>
 
                 <div class="face-buttons-3d">
-                  <Button.Root class="n64-btn-3d n64-btn-a bits-btn bits-btn">A</Button.Root>
-                  <Button.Root class="n64-btn-3d n64-btn-b bits-btn bits-btn">B</Button.Root>
+                  <Button class="n64-btn-3d n64-btn-a bits-btn bits-btn">A</Button>
+                  <Button class="n64-btn-3d n64-btn-b bits-btn bits-btn">B</Button>
                 </div>
 
                 <div class="shoulder-buttons-3d">
-                  <Button.Root class="n64-btn-3d n64-btn-z bits-btn bits-btn">Z</Button.Root>
-                  <Button.Root class="n64-btn-3d n64-btn-r bits-btn bits-btn">R</Button.Root>
+                  <Button class="n64-btn-3d n64-btn-z bits-btn bits-btn">Z</Button>
+                  <Button class="n64-btn-3d n64-btn-r bits-btn bits-btn">R</Button>
                 </div>
               </div>
 
@@ -541,20 +541,20 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                 <!-- Query Controls -->
                 <div class="legal-controls">
-                  <Button.Root
+                  <Button
                     class="n64-btn-legal bits-btn"
                     onclick={queryLegalRecommendations}
                     disabled={legalLoading || !legalQuery.trim()}
                   >
                     {legalLoading ? '🔄 Analyzing...' : '🎯 Get Legal Recommendations'}
-                  </Button.Root>
+                  </Button>
 
-                  <Button.Root
+                  <Button
                     class="n64-btn-evidence bits-btn"
                     onclick={() => evidenceCanvasOpen = true}
                   >
                     📋 Evidence Canvas
-                  </Button.Root>
+                  </Button>
                 </div>
 
                 <!-- AI Analysis Results -->
@@ -625,12 +625,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
           <!-- 3D Dialog Demo -->
           <div class="dialog-section-3d">
-            <Button.Root
+            <Button
               class="n64-nes-btn is-primary bits-btn bits-btn"
               onclick={() => dialogOpen = true}
             >
               🌟 Show N64 Dialog
-            </Button.Root>
+            </Button>
 
             <Dialog.Root bind:open={dialogOpen}>
               <Dialog.Portal>
@@ -646,12 +646,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                       The Reality Co-Processor delivers unprecedented visual quality.
                     </Dialog.Description>
                     <div class="dialog-actions-3d">
-                      <Button.Root
+                      <Button
                         class="n64-btn-dialog bits-btn bits-btn"
                         onclick={() => dialogOpen = false}
                       >
                         ✓ Acknowledge
-                      </Button.Root>
+                      </Button>
                     </div>
                   </div>
                 </Dialog.Content>
@@ -745,18 +745,18 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         </div>
 
         <div class="evidence-actions-3d">
-          <Button.Root
+          <Button
             class="n64-btn-evidence-action bits-btn"
             onclick={() => evidenceCanvasOpen = false}
           >
             💾 Save Evidence
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="n64-btn-close bits-btn"
             onclick={() => evidenceCanvasOpen = false}
           >
             ❌ Close Canvas
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </Dialog.Content>

@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import  Button, Input, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import  Switch  from "$lib/components/ui/switch/Switch.svelte";
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import {
     aiAssistantManager,
     isAIActive,
@@ -199,7 +199,7 @@
               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-        </Button.Root>
+        </Button>
       {/if}
       {#if hasConversation()}
         <Button variant="ghost" size="sm" onclick={() => (showExportDialog = true)} class="bits-btn">
@@ -211,7 +211,7 @@
               d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-        </Button.Root>
+        </Button>
       {/if}
     </div>
   </div>
@@ -274,7 +274,7 @@
       <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
         <div class="text-sm text-red-800 dark:text-red-200 font-medium">Error</div>
         <div class="text-sm text-red-600 dark:text-red-300 mt-1">{aiError()}</div>
-        <Button.Root variant="ghost" size="sm" class="mt-2 bits-btn" onclick={retryLast}>Retry</Button.Root>
+        <Button variant="ghost" size="sm" class="mt-2 bits-btn" onclick={retryLast}>Retry</Button>
       {/if}
   </div>
   <!-- Input Area -->
@@ -320,7 +320,7 @@
         class="flex-1 min-h-[40px] max-h-[120px] resize-none"
       />
       <div class="flex flex-col gap-1">
-        <Button.Root onclick={sendMessage} disabled={!canSend()} class="px-4 bits-btn">
+        <Button onclick={sendMessage} disabled={!canSend()} class="px-4 bits-btn">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -329,13 +329,13 @@
               d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
             />
           </svg>
-        </Button.Root>
+        </Button>
         {#if isProcessing()}
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={stopGeneration}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={stopGeneration}>
             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="6" width="12" height="12" />
             </svg>
-          </Button.Root>
+          </Button>
         {/if}
         {#if aiUsage().totalQueries > 0}
           <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">
@@ -349,7 +349,7 @@
 <!-- Settings Dialog -->
 {#if showSettingsDialog}
   <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-    <Card.Root class="w-full max-w-lg">
+    <Card class="w-full max-w-lg">
       <CardHeader>
         <CardTitle>AI Assistant Settings</CardTitle>
       </CardHeader>
@@ -379,18 +379,18 @@
           </div>
         </div>
         <div class="flex justify-between gap-2 pt-4">
-          <Button.Root variant="destructive" onclick={clearConversation} disabled={!hasConversation()} class="bits-btn">
+          <Button variant="destructive" onclick={clearConversation} disabled={!hasConversation()} class="bits-btn">
             Clear Chat
-          </Button.Root>
-          <Button.Root class="bits-btn" onclick={() => (showSettingsDialog = false)}>Close</Button>
+          </Button>
+          <Button class="bits-btn" onclick={() => (showSettingsDialog = false)}>Close</Button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
 <!-- Export Dialog -->
 {#if showExportDialog}
   <div class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-    <Card.Root class="w-full max-w-md">
+    <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle>Export Conversation</CardTitle>
       </CardHeader>
@@ -414,7 +414,7 @@
         </div>
         <div class="flex justify-end gap-2">
           <Button variant="ghost" onclick={() => (showExportDialog = false)} class="bits-btn">Cancel</Button>
-          <Button.Root
+          <Button
             class="bits-btn"
             onclick={() => {
               exportConversation();
@@ -425,7 +425,7 @@
           </Button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
 <style>
   :global(.animate-spin) {

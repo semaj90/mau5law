@@ -39,9 +39,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (err: any) {
-    console.error('XState API Error: `, err);'`
-    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    console.error('XState API Error: ', err);'`'`
+    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : `Unknown error` }`);'' }
 };
 export const GET: RequestHandler = async ({ url }) => {
   const machineId = url.searchParams.get('machineId');
@@ -71,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
         machine_status: '/api/v1/xstate?machineId={id}',
         actor_status: '/api/v1/xstate?actorId={id}',
         machines: '/api/v1/xstate/machines',
-        actors: '/api/v1/xstate/actors' },
+        actors: '/api/v1/xstate/actors` },'`
       health: {
         'xstate-manager': health['xstate-manager'] || false
       },
@@ -94,9 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'ERROR',
         'RESET',
       ],
-      version: `1.0.0' });'`
-  } catch (err: any) {
-    console.error('XState GET Error: `, err);'`
-    return error(503, ensureError({ message: `XState service health check failed' }));'`
-  }
+      version: '1.0.0' });'` } catch (err: any) {'`
+    console.error('XState GET Error: ', err);'`'`
+    return error(503, ensureError({ message: 'XState service health check failed' }));'` }'`
 };

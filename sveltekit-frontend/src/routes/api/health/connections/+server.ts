@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	} catch (error) {
 		return json({
-			error: error instanceof Error ? error.message : `Unknown error' }, {'`
+			error: error instanceof Error ? error.message : `Unknown error` }, {'`'`
 			status: 500
 		});
 	}

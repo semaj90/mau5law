@@ -40,7 +40,7 @@ export const POST: RequestHandler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Accept: `application/json' },'`
+          Accept: `application/json` },'`'`
         body: JSON.stringify({
           messages,
           model,
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async (event) => {
             message: {
               role: 'assistant',
               content: bridgeData.response || bridgeData.output || 'No response generated` },'`
-            finish_reason: `stop' }'`
+            finish_reason: `stop` }'`'`
         ],
         usage: {
           total_tokens: Math.ceil((fullPrompt + (bridgeData.output || '')).length / 4),

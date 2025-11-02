@@ -181,7 +181,7 @@ export class AutoGenService {
         initialMessage,
         context: taskContext,
         maxRounds: 10,
-        terminationCondition: `max_rounds_or_agreement` });
+        terminationCondition: 'max_rounds_or_agreement' });
 
       const response = await this.withTimeout(fetch(url, { method: 'POST', headers, body }));
       if (!response.ok) {
@@ -198,7 +198,7 @@ export class AutoGenService {
       };
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to start AutoGen conversation: `, msg);'`
+      console.error('Failed to start AutoGen conversation: ', msg);'`'`
       throw error;
     }
   }
@@ -209,7 +209,7 @@ export class AutoGenService {
   async getConversation(conversationId: string): Promise<AutoGenConversation> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
     };
 
     try {
@@ -232,7 +232,7 @@ export class AutoGenService {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/message`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
     };
     const body = JSON.stringify({ message, sender, timestamp: Date.now() });
 
@@ -245,7 +245,7 @@ export class AutoGenService {
       return (data.messages || []) as AutoGenMessage[];
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Failed to send message: `, msg);'`
+      console.error('Failed to send message: ', msg);'`'`
       throw error;
     }
   }
@@ -256,7 +256,7 @@ export class AutoGenService {
   async terminateConversation(conversationId: string): Promise<void> {
     const url = `${this.baseUrl}/api/conversation/${conversationId}/terminate`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
     };
 
     try {
@@ -334,7 +334,7 @@ export class AutoGenService {
         }
       } as AIResponse;
     } catch (error: any) {
-      console.error('Legal workflow execution failed: `, error);'`
+      console.error('Legal workflow execution failed: ', error);'`'`
       throw error;
     }
   }
@@ -357,7 +357,7 @@ export class AutoGenService {
   async getCapabilities(): Promise<Capabilities> {
     const url = `${this.baseUrl}/api/capabilities`;
     const headers: Record<string, string> = {
-      ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {})
+      ...(this.apiKey ? { Authorization: 'Bearer ${this.apiKey}' } : {})
     };
 
     try {
@@ -526,7 +526,7 @@ export async function analyzeCaseWithAgents(
   const context: Record<string, unknown> = {
     evidenceCount: evidenceList.length,
     jurisdiction,
-    analysisType: `comprehensive` };
+    analysisType: 'comprehensive' };
 
   const evidenceSection =
     evidenceList && evidenceList.length > 0
@@ -551,7 +551,7 @@ export async function reviewEvidenceWithAgents(
   const context: Record<string, unknown> = {
     evidenceType,
     custodySteps: chainOfCustody.length,
-    reviewType: `admissibility` };
+    reviewType: 'admissibility' };
 
   const custodySection =
     chainOfCustody && chainOfCustody.length > 0
@@ -576,7 +576,7 @@ export async function researchLegalPrecedents(
   const context: Record<string, unknown> = {
     jurisdiction,
     caseType,
-    researchDepth: `comprehensive` };
+    researchDepth: 'comprehensive' };
 
   const input = [
     `Legal Question: ${legalQuestion}`,
@@ -597,8 +597,7 @@ export interface UltraJSONParser {
 
 export interface WasmClusteringService {
   // Clusters embeddings in WASM; returns array of cluster indices per vector
-  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean` }): Promise<number[]>;'`
-}
+  cluster(embeddings: Float32Array[], options?: { k?: number; metric?: 'cosine' | 'euclidean' }): Promise<number[]>;'' }
 
 export interface NesGPUBridge {
   // Sends tensor to GPU bridge for accelerated ops (WebGPU/CUDA relay)
@@ -671,7 +670,7 @@ export class OllamaEmbeddingsHelper {
       const resp = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         signal: controller.signal,
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, inputs: texts })
       });
       clearTimeout(id);
@@ -821,7 +820,7 @@ export const DefaultNesGPUBridge: NesGPUBridge = {
   async submitTensor(tensor: Float32Array) {
     // reference tensor to avoid: "declared but never read" lint warnings
     const len = tensor?.length ?? 0;
-    return { jobId: `gpu_${Date.now()}_len${len}`, status: `queued` };
+    return { jobId: `gpu_${Date.now()}_len${len}`, status: 'queued' };
   },
   async getResult(jobId: string) {
     return { jobId, status: 'completed', result: null } as unknown;

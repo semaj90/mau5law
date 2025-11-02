@@ -101,7 +101,7 @@ class AdvancedSearch {
       };
     } catch (error: any) {
       // Minimal error surface
-      console.error('Search failed: `, error);'`
+      console.error('Search failed: ', error);'`'`
       throw error;
     }
   }

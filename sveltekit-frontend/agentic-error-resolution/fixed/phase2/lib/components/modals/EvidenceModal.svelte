@@ -3,8 +3,8 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Dialog } from 'bits-ui/Dialog.svelte';
-  import { Button } from 'bits-ui/Button.svelte';
+  import  Dialog  from "bits-ui/Dialog.svelte";
+  import  Button  from "bits-ui/Button.svelte";
   import { onMount } from 'svelte';
   import { superValidate } from 'sveltekit-superforms/client';
   import { evidenceSchema } from '$lib/schemas/client';
@@ -88,7 +88,7 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button.Root class="bits-btn" onclick={handleEdit}>
+        <Button class="bits-btn" onclick={handleEdit}>
 Edit
       </div>
     {:else}
@@ -98,15 +98,15 @@ Edit
         <input name="jsonData.tags" bind:value={tagsString} placeholder="Tags (comma separated)" class="input input-bordered" />
         <input name="jsonData.type" bind:value={type} placeholder="Type" class="input input-bordered" />
         <div class="flex gap-2 mt-2">
-          <Button.Root type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
+          <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
 Save
-          <Button.Root class="bits-btn" variant="ghost" onclick={handleCancel}>
+          <Button class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button.Root class="bits-btn" onclick={() =>
+      <Button class="bits-btn" onclick={() =>
 (open = false)} variant="ghost">Close
     </div>
   </div>

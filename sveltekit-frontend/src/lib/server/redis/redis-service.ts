@@ -11,7 +11,7 @@ type RedisClientLike = {
   on?: (event: string, cb: (...args: any[]) => void) => void;
   duplicate?: () => RedisClientLike;
   // pub/sub
-  publish?: (channel: string, message: string) => Promise<number> | void;
+  publish?: (channel: string;, message: string) => Promise<number> | void;
   // cache commands (various shim/name permutations)
   setEx?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
   setex?: (key: string; ttl: number;, value: string) => Promise<'OK' | null> | void;
@@ -205,8 +205,7 @@ class RedisService {
         await this.publisher.publish(channel, message as string);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Failed to publish to ${channel}: ', error);'`
-    }
+      console.error(`[RedisService] Failed to publish to ${channel}: ', error);'` }
   }
   // Cache operations with robust method detection
   public async setCache(key: string, value: any, ttlSeconds: number = 300) {
@@ -225,8 +224,7 @@ class RedisService {
         console.warn('[RedisService] No supported SET method available on client');
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache set error for key: "${key}": ', error);'`
-    }
+      console.error(`[RedisService] Cache set error for key: "${key}": ', error);'` }
   }
   public async getCache(key: string) {
     if (!this.isConnected || !this.client) return null;
@@ -245,8 +243,7 @@ class RedisService {
         await this.client.del(key);
       }
     } catch (error: any) {
-      console.error(`[RedisService] Cache delete error for key: "${key}": ', error);'`
-    }
+      console.error(`[RedisService] Cache delete error for key: "${key}": ', error);'' }'`
   }
   // trackEvent - corrected variable usage
   public async trackEvent(event: string, data: any, userId?: string) {
@@ -267,7 +264,7 @@ class RedisService {
   public getStats() {
     return {
       connected: this.isConnected,
-      status: this.isConnected ? 'connected' : 'disconnected' };
+      status: this.isConnected ? 'connected' : 'disconnected` };'`
   }
   public async disconnect() {
     try {

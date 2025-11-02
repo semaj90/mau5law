@@ -345,7 +345,7 @@ export const ROUTE_EVENTS = {
   ROUTE_UNREGISTERED: 'route:unregistered',
   NAVIGATION_START: 'navigation:start',
   NAVIGATION_END: 'navigation:end',
-  GUARD_EXECUTED: 'guard:executed` } as const;'`
+  GUARD_EXECUTED: 'guard:executed' } as const;'`'`
 export const ROUTE_CATEGORIES = {
   MAIN: 'main',
   DEMO: 'demo',
@@ -353,9 +353,9 @@ export const ROUTE_CATEGORIES = {
   DEV: 'dev',
   AI: 'ai',
   LEGAL: 'legal',
-  DYNAMIC: `dynamic` } as const;
+  DYNAMIC: `dynamic' } as const;'`
 export const ROUTE_STATUS = {
   ACTIVE: 'active',
   BETA: 'beta',
   EXPERIMENTAL: 'experimental',
-  DEPRECATED: `deprecated` } as const;
+  DEPRECATED: `deprecated' } as const;'`

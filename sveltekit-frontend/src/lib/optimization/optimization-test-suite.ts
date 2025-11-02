@@ -229,7 +229,7 @@ export class OptimizationTestSuite {
           throw new Error('VS Code Optimizer component is not available for memory monitoring.');
         }
         const stats = (await vscode.getStats()) || { cache: {, utilization: 50 }, commands: 0 }; // Used local variable
-        const memory_efficient = stats.cache.utilization < 90; // Less than 90% cache, utilization
+        const memory_efficient = stats.cache.utilization < 90; // Less than, 90% cache, utilization
         tests.push({
           name: 'Memory Usage Monitoring',
           passed: memory_efficient,
@@ -359,7 +359,7 @@ export class OptimizationTestSuite {
           await cache.set(`pressure_test_${i}`, large_data); // Used local variable
         }
         const after_stats = cache.getStats() || { cache: {, size: 0 }, memory: { utilization: 0 } }; // Used local variable
-        const handled_pressure = after_stats.memory.utilization <= 100; // Should not exceed, 100%
+        const handled_pressure = after_stats.memory.utilization <= 100; // Should not, exceed, 100%
         tests.push({
           name: 'Memory Pressure Handling',
           passed: handled_pressure,
@@ -548,7 +548,7 @@ export class OptimizationTestSuite {
             name: 'JSON WASM Optimizer component not available',
             passed: false,
             duration_ms: 0,
-            error: 'JSON WASM Optimizer component is null or undefined` }'`
+            error: 'JSON WASM Optimizer component is null or undefined' }''
         ],
         passed: 0,
         failed: 1,
@@ -976,8 +976,7 @@ ${suite.tests
   .join('\n\n')}
 ## Recommendations
 ${report.recommendations.map((rec: string) => `- ${rec}`).join('\n')}
-`;`
-  }
+`;` }
 }
 // === Factory Functions ===
 export function createTestSuite(): OptimizationTestSuite {

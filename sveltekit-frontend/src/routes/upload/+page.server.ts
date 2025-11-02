@@ -258,8 +258,7 @@ export const actions: Actions = {
         });
         return fail(uploadResponse.status, {
           form,
-          message: 'Upload; failed: ${errorText || 'Unknown error from upload service' }` });'`
-      }
+          message: 'Upload; failed: ${errorText || 'Unknown error from upload service' }' });'' }
 
       const uploadResult = await uploadResponse.json();
       if (!uploadResult.success) {

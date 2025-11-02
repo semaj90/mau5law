@@ -327,7 +327,7 @@ import '$lib/styles/bits-ui.css';
         <option value={category.value}>{category.label}</option>
       {/each}
     </select>
-    <Button.Root
+    <Button
       class="nes-citation-control n64-enhanced lod-optimized retro-add-btn"
       onclick={() => (showAddDialog = true)}
       aria-label="Open dialog to add a new legal citation"
@@ -338,7 +338,7 @@ import '$lib/styles/bits-ui.css';
     >
       <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
       Add Citation
-    </Button.Root>
+    </Button>
     <div id="add-citation-help" class="sr-only">
       Create a new legal citation with title, content, source, and tags
     </div>
@@ -346,12 +346,12 @@ import '$lib/styles/bits-ui.css';
   <!-- Citations Grid -->
   <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"> <!-- Use grid for citations -->
     {#each filteredCitations as citation (citation.id)}
-      <Card.Root class="citation-nier-bits-card">
+      <Card class="citation-nier-bits-card">
         <div class="yorha-panel-header citation-header flex justify-between items-start"> <!-- Use flex for header layout -->
           <h3 class="text-lg font-semibold">{citation.title}</h3>
           <DropdownMenuRoot>
             <DropdownMenuTrigger>
-              <Button.Root
+              <Button
                 class="nes-citation-control n64-enhanced lod-optimized retro-menu-btn"
                 variant="ghost"
                 size="sm"
@@ -362,7 +362,7 @@ import '$lib/styles/bits-ui.css';
                 data-citation-id={citation.id}
               >
                 <span class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon">{ICON.moreVertical}</span>
-              </Button.Root>
+              </Button>
               <div id="citation-menu-help" class="sr-only">
                 Access citation actions: favorite, copy, edit, or delete
               </div>
@@ -435,7 +435,7 @@ import '$lib/styles/bits-ui.css';
             {/if}
           </div>
         </div>
-      </Card.Root>
+      </Card>
     {/each}
 
     <!-- No-citations / Filters: close Clear filters Button and move help div outside -->
@@ -444,7 +444,7 @@ import '$lib/styles/bits-ui.css';
         {#if searchQuery || selectedCategory !== 'all'}
           <h3 class="text-xl font-semibold">No citations found</h3>
           <p class="text-gray-600">No citations match your current search criteria.</p>
-          <Button.Root
+          <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
             variant="secondary"
             onclick={() => {
@@ -458,7 +458,7 @@ import '$lib/styles/bits-ui.css';
             data-operation="clear-filters"
           >
             Clear filters
-          </Button.Root>
+          </Button>
           <div id="clear-filters-help" class="sr-only">
             Remove search query and category filters to display all saved citations
           </div>
@@ -468,7 +468,7 @@ import '$lib/styles/bits-ui.css';
             You haven't saved any citations yet. Start by adding citations from reports or create
             new ones.
           </p>
-          <Button.Root
+          <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
             onclick={() => (showAddDialog = true)}
             aria-label="Create your first legal citation"
@@ -479,7 +479,7 @@ import '$lib/styles/bits-ui.css';
           >
             <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
             Add your first citation
-          </Button.Root>
+          </Button>
           <div id="first-citation-help" class="sr-only">
             Start your citation collection by creating your first legal citation with source and notes
           </div>
@@ -542,16 +542,16 @@ import '$lib/styles/bits-ui.css';
           </div>
         </div>
         <DialogFooter>
-          <Button.Root
+          <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
             variant="secondary"
             onclick={() => (showAddDialog = false)}
             aria-label="Cancel citation creation and close dialog"
             role="button"
             data-nes-theme="dialog-secondary"
-          >Cancel</Button.Root>
+          >Cancel</Button>
 
-          <Button.Root
+          <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
             onclick={() => saveCitation()}
             disabled={!newCitation.title || !newCitation.content}
@@ -563,7 +563,7 @@ import '$lib/styles/bits-ui.css';
             data-operation="save-citation"
           >
             Save Citation
-          </Button.Root>
+          </Button>
 
           <div id="save-citation-help" class="sr-only">
             Save the new citation with all entered information to your collection
@@ -624,16 +624,16 @@ import '$lib/styles/bits-ui.css';
             </div>
           </div>
           <DialogFooter>
-            <Button.Root
+            <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
               variant="secondary"
               onclick={() => (editingCitation = null)}
               aria-label="Cancel editing and close dialog"
               role="button"
               data-nes-theme="dialog-secondary"
-            >Cancel</Button.Root>
+            >Cancel</Button>
 
-            <Button.Root
+            <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
               onclick={() => updateCitation()}
               aria-label="Save changes to citation"
@@ -641,7 +641,7 @@ import '$lib/styles/bits-ui.css';
               role="button"
               data-nes-theme="dialog-primary"
               data-operation="update-citation"
-            >Update Citation</Button.Root>
+            >Update Citation</Button>
 
             <div id="update-citation-help" class="sr-only">
               Apply changes to the citation and update your collection

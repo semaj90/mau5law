@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body: uploadFormData,
         headers: {
           'X-Request-ID': documentId,
-          'X-User-ID': userId || 'anonymous` }'`
-      });
+          'X-User-ID': userId || 'anonymous' }'` });'`
       if (!uploadResponse.ok) {
         throw new Error(`Upload service error: ${uploadResponse.statusText}`);
       }
@@ -173,8 +172,7 @@ export const GET: RequestHandler = async ({ url }) => {
         .limit(100);
       return json({ documents: userDocuments });
     }
-    return json({ error: 'Missing required parameters` }, { status: 400 });'`
-  } catch (error: any) {
+    return json({ error: 'Missing required parameters' }, { status: 400 });'` } catch (error: any) {'`
     console.error('Document retrieval error:', error);'
     return json(
       {

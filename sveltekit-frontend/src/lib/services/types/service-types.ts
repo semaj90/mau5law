@@ -18,7 +18,7 @@ export interface GoMicroserviceConfig extends ServiceConfig { fallbackToLocal: b
 // User and Context Types export interface UserContext { id: string;, role: 'attorney' | 'paralegal' | 'investigator' | 'admin'; permissions: string[]; preferences?: { theme?: 'light' | 'dark'; language?: string; aiAssistance?: boolean; }
 } export interface ProcessingContext { userRole?: string; caseId?: string; userId: string; requestId?: string; timestamp: number; }
 // Cache Types export interface CacheOptions { ttl?: number; maxSize?: number; strategy?: 'lru' | 'fifo' | 'lfu'; }
-export interface CacheResult<T = unknown> { hit: boolean; data?: T; metadata?: { createdAt: number;, expiresAt: number; hitCount: number; }
+export interface CacheResult<T = unknown> { hit: boolean; data?: T; metadata?: {, createdAt: number;, expiresAt: number; hitCount: number; }
 } // Document Types export interface DocumentMetadata { id: string;, title: string; type: string; caseId?: string; uploadedBy: string; uploadedAt: number; size: number; mimeType: string; hash?: string; }
 export interface DocumentVector { id: string;, documentId: string; embedding: number[]; content: string; metadata: Record<string, unknown>; }
 // Search Options export interface SearchOptions { query: string; filters?: Record<string, unknown>; limit?: number; offset?: number; sortBy?: string; sortOrder?: 'asc' | 'desc'; }

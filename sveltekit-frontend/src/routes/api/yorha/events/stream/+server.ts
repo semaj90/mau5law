@@ -37,7 +37,7 @@ export const GET: RequestHandler = ({ url }) => {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
       };
 
-      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online` }, ts: new Date().toISOString() });'`
+      send({ type: 'sse_hello', data: {, message: 'YoRHa stream online' }, ts: new Date().toISOString() });'`'`
 
       intervalId = setInterval(
         () =>
@@ -64,7 +64,7 @@ export const GET: RequestHandler = ({ url }) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       Connection: 'keep-alive',
-      'Transfer-Encoding': `chunked` }
+      'Transfer-Encoding': `chunked' }'`
   });
 };
 

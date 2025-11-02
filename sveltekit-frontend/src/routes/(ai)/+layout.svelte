@@ -64,7 +64,7 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>AI Assistant | YoRHa Legal AI</title>
-  <meta name="description" content="Advanced AI-powered legal analysis and chat, interface" />
+  <meta name="description" content="Advanced AI-powered legal analysis and, chat, interface" />
 </svelte:head>
 
 <div, class="ai-layout">

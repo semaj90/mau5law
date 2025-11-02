@@ -128,7 +128,7 @@ export class WorkflowEventStream {
           type: 'SSE_ERROR',
           sessionId: this.sessionId,
           timestamp: new Date().toISOString(),
-          error: 'Max reconnection attempts reached' });
+          error: 'Max reconnection attempts reached` });'`
         this.disconnect();
       }
     };
@@ -175,8 +175,7 @@ export class WorkflowEventStream {
         try {
           callback(event);
         } catch (error) {
-          console.error(`[WorkflowEventStream] Error in ${eventType} callback: ', error);'`
-        }
+          console.error(`[WorkflowEventStream] Error in ${eventType} callback: ', error);'` }
       });
     }
   }

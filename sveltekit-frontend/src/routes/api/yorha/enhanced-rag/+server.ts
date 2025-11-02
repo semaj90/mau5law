@@ -117,8 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
             analysisMode: 'ENHANCED',
             dataIntegrity: 'VERIFIED',
             processingNode: 'YORHA-LEGAL-AI-001',
-            classification: 'CONFIDENTIAL'
-          }
+            classification: 'CONFIDENTIAL` }'`
         : null,
       // Service information
       service: 'yorha-enhanced-rag-api',

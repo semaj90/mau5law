@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     success: true,
     results,
     stats,
-    message: `Processed ${results.length} item(s) for bulk hash operations` });
+    message: `Processed ${results.length} item(s) for bulk hash operations' });'`
 };
 
 export const GET: RequestHandler = async ({ locals }) => {

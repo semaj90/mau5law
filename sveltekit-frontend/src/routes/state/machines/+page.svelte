@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte code: Expected, token } --> <script, lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script, lang="ts">
 import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported import { onMount } from 'svelte'; import { page } from '$app/stores'; import Button from '$lib/components/ui/nes-Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; // Define Machine shape so TS can infer types (fixes any[]) interface Machine { id: string; name: string; status: 'running' | 'idle' | 'error' | string; currentState: string; transitions: string[]; lastUpdated: string; instances: number; // allow extra props if needed [key: string]: any; // component state (Svelte 5 runes) with explicit generics let mounted = $state<boolean>(false); let machines = $state<Machine[]>([]); let selectedMachine = $state<Machine | null>(null); let loading = $state<boolean>(true); // Mock machine registry data - replace with actual XState registry const mockMachines: Machine[] = [ {
       id: 'auth-machine', name: 'Authentication State Machine', status: 'running', currentState: 'authenticated', transitions: ['logout', 'refresh', 'profile'], lastUpdated: new Date().toISOString(), instances: 3 }, {
       id: 'case-management-machine', name: 'Case Management Workflow', status: 'running', currentState: 'reviewing', transitions: ['submit', 'save-draft', 'archive'], lastUpdated: new Date().toISOString(), instances: 1 }, {
@@ -11,7 +11,7 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported impo
                   onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)} >
                   View Transitions </button> <button, class="nes-btn"
                   onclick={() => restartMachine(machine.id)} >
-                  Restart </button> {#if machine.status === 'running'} <button class="nes-btn, is-error"
+                  Restart </button> {#if machine.status === 'running'} <button, class="nes-btn, is-error"
                     onclick={() => stopMachine(machine.id)} >
                     Stop </button> {/if} </div> </div> </div> {/each} </div> {/if} </main> </div> <style> .page-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
   .page-header { text-align: center; margin-bottom: 2rem; }

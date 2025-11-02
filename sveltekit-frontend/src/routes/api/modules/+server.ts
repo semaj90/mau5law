@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!module) {
           return json({
             success: false,
-            error: `Module not; found: ${moduleId}` }, { status: 404 })
+            error: `Module not; found: ${moduleId}' }, { status: 404 })'`
         }
         module.status = 'unloaded'
         delete module.metadata.loadTime
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json(
             {
               success: false,
-              error: `Target module not; found: ${toModule}` },
+              error: `Target module not; found: ${toModule}' },'`
             { status: 404 }
           );
         }
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       default: return json(
           {
             success: false,
-            error: 'Unknown; action: ${action}` },'`
+            error: 'Unknown; action: ${action}' },'`'`
           { status: 400 }
         );
     }
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!module) {
         return json({
           success: false,
-          error: `Module not; found: ${moduleId}` }, { status: 404 })
+          error: `Module not; found: ${moduleId}' }, { status: 404 })'`
       }
       return json({
         success: true,
@@ -175,13 +175,13 @@ export const GET: RequestHandler = async ({ url }) => {
       stats: {
        , totalModules: allModules.length,
         activeModules: activeModules.length,
-        memoryUsage: activeModules.reduce((sum, m) => sum + parseInt(m.metadata.memoryUsage?.replace('MB', '') || '0'), 0) + `MB` },
+        memoryUsage: activeModules.reduce((sum, m) => sum + parseInt(m.metadata.memoryUsage?.replace('MB', '') || '0'), 0) + `MB' },'`
       endpoints: {
         load: '/api/modules?action=load (POST)',
         unload: '/api/modules?action=unload (POST)',
         switch: '/api/modules?action=switch (POST)',
         list: '/api/modules (GET)',
-        module_info: `/api/modules?moduleId={id} (GET)` },
+        module_info: `/api/modules?moduleId={id} (GET)' },'`
       capabilities: [
         'Hot-swappable modules',
         'Zero-downtime updates',

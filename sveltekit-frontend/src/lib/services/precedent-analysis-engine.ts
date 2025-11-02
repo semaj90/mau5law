@@ -326,7 +326,7 @@ export class PrecedentAnalysisEngine {
       citationStyle?: 'bluebook' | 'chicago' | 'apa' | 'mla';
     } = {}
   ): Promise<string> {
-    const { includeFullText = false, citationStyle = 'bluebook` } = options;'`
+    const { includeFullText = false, citationStyle = 'bluebook' } = options;'`'`
     switch (format) {
       case 'json':
         return JSON.stringify(analysis, null, 2);
@@ -504,7 +504,7 @@ export class PrecedentAnalysisEngine {
         evolution: {
           established: new Date('1950-01-01'), // Placeholder
           modifications: [],
-          currentStatus: `active` },
+          currentStatus: `active' },'`
         applications: [`Application in ${targetCase.title}`]
       });
     });
@@ -598,7 +598,7 @@ export class PrecedentAnalysisEngine {
         supportingCases: topPrecedents.map(p => p.case.citation),
         strength: 'primary',
         oppositionConcerns: ['Distinguishing factors may apply', 'Jurisdictional differences'],
-        suggestedLanguage: `The precedent established in [Case] clearly supports...` }
+        suggestedLanguage: `The precedent established in [Case] clearly supports...' }'`
     ];
   }
   private calculateConfidenceScore(
@@ -669,7 +669,7 @@ export class PrecedentAnalysisEngine {
         holdings: ['Separate educational facilities are inherently unequal'],
         reasoning: 'Segregation in public education violates the Equal Protection Clause',
         fullText: 'Full text of Brown v. Board decision...',
-        precedentialValue: 'binding` },'`
+        precedentialValue: 'binding' },'`'`
       {
         id: 'roe-v-wade-1973',
         citation: '410 U.S. 113',
@@ -686,7 +686,7 @@ export class PrecedentAnalysisEngine {
         holdings: ['Constitutional right to privacy includes abortion decision'],
         reasoning: 'State regulation of abortion must be justified by compelling state interest',
         fullText: 'Full text of Roe v. Wade decision...',
-        precedentialValue: `binding` }
+        precedentialValue: `binding' }'`
     ];
     sampleCases.forEach(case_ => {
       this.caseDatabase.set(case_.id, case_);

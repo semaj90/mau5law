@@ -67,7 +67,7 @@ async function callGoService(
     const response = await fetch(url, {
       method,
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: data ? JSON.stringify(data) : undefined
     });
     if (!response.ok) {
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: true,
         data: { services },
         timestamp: new Date().toISOString(),
-        message: `Health check completed` });
+        message: `Health check completed' });'`
     }
     // Route based on entity and action
     switch (req.entity) {
@@ -174,8 +174,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
       return json({
         success: true,
         data: newCase[0],
-        message: 'Case created successfully` });'`
-    }
+        message: 'Case created successfully' });'' }
     case 'read': {
       if (req.id) {
         const caseData = await db.select().from(cases).where(eq(cases.id, req.id));
@@ -201,14 +200,14 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
       return json({
         success: true,
         data: updatedCase[0],
-        message: `Case updated successfully` });
+        message: `Case updated successfully' });'`
     }
     case 'delete': {
       if (!req.id) throw error(400, 'Case ID required for deletion');
       await db.delete(cases).where(eq(cases.id, req.id));
       return json({
         success: true,
-        message: `Case deleted successfully` });
+        message: `Case deleted successfully' });'`
     }
     case 'search': {
       const searchResults = await db
@@ -253,7 +252,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
       return json({
         success: true,
         data: newEvidence[0],
-        message: `Evidence created successfully` });
+        message: `Evidence created successfully' });'`
     }
     case 'read': {
       if (req.id) {
@@ -287,7 +286,7 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
       return json({
         success: true,
         data: analysisResult,
-        message: `Evidence analysis completed` });
+        message: `Evidence analysis completed' });'`
     }
     default:
       throw error(400, `Unknown evidence action: ${req.action}`);
@@ -318,7 +317,7 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
       return json({
         success: true,
         data: newCriminal[0],
-        message: `Criminal record created successfully` });
+        message: `Criminal record created successfully' });'`
     }
     case 'read': {
       if (req.id) {
@@ -359,7 +358,7 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Resp
       return json({
         success: true,
         data: newDocument[0],
-        message: `Document created successfully` });
+        message: `Document created successfully' });'`
     }
     case 'read': {
       if (req.id) {
@@ -401,7 +400,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<Respon
     return json({
       success: true,
       data: searchResults,
-      message: `Search completed successfully` });
+      message: `Search completed successfully' });'`
   } catch (err: any) {
     // Fallback to traditional database search
     const fallbackResults = await db
@@ -426,7 +425,7 @@ async function handleUploadOperations(req: LegalPlatformRequest): Promise<Respon
       data: uploadResult,
       message: `Upload processed successfully` });
   } catch (err: any) {
-    throw error(500, `Upload service error: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `Upload service error: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 }
 // AI Operations (Enhanced RAG, GPU Compute, SOM Training)
@@ -457,7 +456,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
       data: result,
       message: `AI operation ${operation} completed successfully` });
   } catch (err: any) {
-    throw error(500, `AI service error: ${err instanceof Error ? err.message : `Unknown error` }`);
+    throw error(500, `AI service error: ${err instanceof Error ? err.message : `Unknown error' }`);'`
   }
 }
 // Health Check endpoint
@@ -484,5 +483,5 @@ export const OPTIONS: RequestHandler = async () => {
     success: true,
     services,
     timestamp: new Date().toISOString(),
-    message: `Health check completed` });
+    message: `Health check completed' });'`
 };

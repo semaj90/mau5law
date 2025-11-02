@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-GPU-Accelerated': 'true' }
+          'X-GPU-Accelerated': 'true` }'`
       }
     );
   } catch (err: any) {
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };
@@ -150,7 +150,7 @@ async function processCudaOCR(imagePath: string): Promise<{ text: string;, conf
       const response = await fetch(`${cudaServiceUrl}/ocr`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
          , imagePath: imagePath,
           options: {
@@ -187,7 +187,7 @@ async function processCudaOCR(imagePath: string): Promise<{ text: string;, conf
           env: {
             ...process.env,
             CUDA_VISIBLE_DEVICES: '0',
-            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt' }
+            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt` }'`
         }
       );
 

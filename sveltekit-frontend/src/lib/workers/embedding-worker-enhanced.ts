@@ -376,8 +376,7 @@ export class EnhancedEmbeddingWorker {
     const key = `embedding:${modelKey}:${textHash}`;
     await cacheService.set(key, embedding, {
       ttlMs: 24 * 60 * 60 * 1000, // 24 hours
-      compress: true, // Always compress embeddings (they're large arrays)'
-    });
+      compress: true, // Always compress embeddings (they're large arrays)` });'`
   }
   /**
    * Generate embedding - replace with actual embedding service call

@@ -77,7 +77,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
     if (base && typeof fetch !== 'undefined') {
       const resp = await fetch(`${base}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ model, input: texts })
       });
       if (resp.ok) {
@@ -166,7 +166,7 @@ export class QdrantIndexer {
       if (typeof fetch !== 'undefined') {
         await fetch(`${this.baseUrl}/collections/${collection}/points?wait=true`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({, points: vectors })
         });
       }
@@ -181,7 +181,7 @@ export class QdrantIndexer {
       if (typeof fetch !== 'undefined') {
         const resp = await fetch(`${this.baseUrl}/collections/${collection}/points/search`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({ vector, limit: topK })
         });
         if (resp.ok) return await resp.json();
@@ -203,8 +203,7 @@ export class PostgresJSONStore {
       return { success: true };
     }
     // fallback: noop storage
-    return { success: true, note: 'noop` };'`
-  }
+    return { success: true, note: 'noop' };'` }'`
 }
 
 /* Main class */
@@ -273,8 +272,7 @@ export class AutomatedBarrelStoreGenerator {
       } catch (error: any) {
         const fallback = this.createFallbackImplementation(item);
         resolution.fallbacks.set(item, fallback);
-        console.warn(`fetchMissingImplementations fallback for ${item}: ', String(error));'`
-      }
+        console.warn(`fetchMissingImplementations fallback for ${item}: ', String(error));'` }
     }
     return resolution;
   }
@@ -411,8 +409,7 @@ export class AutomatedBarrelStoreGenerator {
       name: item,
       implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return null; };`,
       types: `export type ${item} = any;`,
-      usage: '//; Usage: import { ${item} } from './barrel-store';` };'`
-  }
+      usage: '//; Usage: import { ${item} } from './barrel-store';' };'` }'`
 
   private createFallbackImplementation(item: string): FetchImplementation {
     return {
@@ -463,8 +460,7 @@ export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), 
   navigating: null,
   browser: typeof window !== 'undefined',
   dev: process?.env?.NODE_ENV === 'development` };'`
-`;`
-  }
+`;` }
 
   private async generateDatabaseStore(
     analysis?: MissingImportAnalysis,
@@ -490,8 +486,7 @@ export const svelteKitUtils = { page: {, url: new URL('http://localhost:5173'), 
  * AUTO-GENERATED DATABASE BARREL STORE
  */
 export const drizzleColumns = {
-  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: '${fn}` })`).join(',\n  ')}'`
-};
+  ${drizzleFunctions.map(fn => `${fn}: (...args: any[]) => ({ name: args[0], type: `${fn}` })`).join(',\n  ')}'` };'`
 
 export const drizzleOperators = {
   eq: (c: any, v: any) => ({ op: 'eq', column: c, value: v }),
@@ -504,8 +499,7 @@ export const postgres = (options?: Record<string, unknown>) => ({
   query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
   end: async () => {}
 });
-`;`
-  }
+`;` }
 
   private async generateStateStore(
     _analysis?: MissingImportAnalysis,
@@ -520,8 +514,7 @@ export const xStateUtils = { createMachine: (config: any) => ({, id: config?.id 
   assign: (assigner: any) => ({ type: 'assign', assigner }),
   spawn: (entity: any) => ({ type: 'spawn', entity })
 };
-`;`
-  }
+`;` }
 
   private async generateAPIStore(_analysis?: MissingImportAnalysis, _resolution?: WebFetchResolution): Promise<string> {
     return `/**`
@@ -537,8 +530,7 @@ export const apiClients = { createClient: (baseURL: string) => ({, get: async (
     async del(k: string) { return this.store.delete(k) ? 1 : 0; }
   }
 };
-`;`
-  }
+`;` }
 
   private async generateTypeStore(analysis?: MissingImportAnalysis, _resolution?: WebFetchResolution): Promise<string> {
     const types = Array.from(analysis?.missingTypes ?? []);
@@ -549,8 +541,7 @@ export const apiClients = { createClient: (baseURL: string) => ({, get: async (
 ${types.map(t => `export type ${t} = any;`).join('\n')}
 
 ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join('\n')}
-`;`
-  }
+`;` }
 
   async executeAutomatedResolution(typeScriptErrorOutput: string): Promise<Record<string, string>> {
     const analysis = await this.analyzeTypeScriptErrors(typeScriptErrorOutput);
@@ -571,8 +562,7 @@ ${classes.map(c => `export class ${c} { constructor(..._args: any[]) {} }`).join
     this.errorPatterns.set('missing-function', ["Cannot find name: '", "' is not defined", 'ReferenceError:']);
     this.errorPatterns.set('missing-property', ["Property '", "' does not exist on type"]);
     this.errorPatterns.set('missing-module', ["Cannot find module: '", 'Module not found:']);'
-    this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);'
-  }
+    this.errorPatterns.set('missing-export', ["' has no exported member: '", "' is not exported from module"]);` }'`
 }
 
 /* Export singleton */

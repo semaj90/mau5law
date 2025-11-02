@@ -142,8 +142,7 @@ export async function ensureCollection(dim: number): Promise<void> {
       });
     }
   } catch (err) {
-    console.error('ensureCollection error:', formatError(err));'
-  }
+    console.error('ensureCollection error:', formatError(err));` }`'
 }
 
 /* -------------------------------------------------------------------------- */

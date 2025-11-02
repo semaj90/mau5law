@@ -238,7 +238,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       }
     },
     error: {
-      entry: ['logError'],
+     , entry: ['logError'],
       on: {, RETRY_MESSAGE: {, actions: ['clearError'],
           target: 'processing'
         },
@@ -526,13 +526,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
     }),
     setTimeoutError: assign({
-      errorMessage: 'System initialization timed out` }),'`
+      errorMessage: `System initialization timed out` }),'`'`
     clearError: assign({
       errorMessage: undefined
     }),
     logError: (context) => {
-      console.error('❌ Chat machine error:', context.errorMessage);'
-    }
+      console.error('❌ Chat machine error: `, context.errorMessage);` }'
   },
   // Guards
   guards: {

@@ -10,7 +10,7 @@ export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> 
   if (query.includes("analyze") || query.includes("summary")) { return "analysis"; }
   return "general-inquiry"; }
 export function normalize(vector: number[]): number[] { const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0); return magnitude > 0 ? vector.map(val => val / magnitude): vector; }
-export class SOMGrid { private grid: IntentPoint[][]; private width: number; private height: number; constructor(width: number = 10, height: number = 10) { this.width = width; this.height = height; this.grid = []; // Initialize grid for (let i = 0; i < height; i++) { this.grid[i] = []; for (let j = 0; j < width; j++) { this.grid[i][j] = { x: j, y: i; intent: "unknown"
+export class SOMGrid { private grid: IntentPoint[][]; private width: number; private height: number; constructor(width: number = 10, height: number = 10) { this.width = width; this.height = height; this.grid = []; // Initialize grid for (let i = 0; i < height; i++) { this.grid[i] = []; for (let, j = 0; j < width; j++) { this.grid[i][j] = { x: j, y: i; intent: "unknown"
         } }
     } }
   findBestMatch(vector: number[]): IntentPoint { // Simple implementation - return center point return this.grid[Math.floor(this.height / 2)][Math.floor(this.width / 2)]; }

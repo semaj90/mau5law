@@ -4,7 +4,7 @@
 
 	// UI libraries
 	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte'';
-	import { Badge } from '$lib/components/ui/Badge.svelte';
+	import  Badge  from "$lib/components/ui/Badge.svelte";
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
@@ -17,9 +17,9 @@
 	// App stores & AI
 	import { evidenceStore  } from '$lib/stores/unified';
 	import { aiAssistant  } from '$lib/stores/unified';
-	import { AIAssistantPanel } from '../ai/AIAssistantPanel.svelte';
-	import { EvidenceCard } from './EvidenceCard.svelte';
-	import { UploadZone } from './UploadZone.svelte';
+	import  AIAssistantPanel  from "../ai/AIAssistantPanel.svelte";
+	import  EvidenceCard  from "./EvidenceCard.svelte";
+	import  UploadZone  from "./UploadZone.svelte";
 	import { analyzeEvidence, findEvidenceConnections } from '$lib/ai/ai-service';
 	import { rabbitMQService } from '$lib/services/rabbitmq-service';
 	import { VectorService } from '$lib/services/vector-service';

@@ -66,18 +66,18 @@
     URL.revokeObjectURL(url);
   }
 </script>
-<Card.Root class="nes-container is-rounded, bg-white {className}" {...restProps}>
+<Card.Root class="nes-container, is-rounded, bg-white {className}" {...restProps}>
   <!-- Header -->
-  <div class="yorha-panel-header pb-3, mb-4">
-    <div class="flex items-center, justify-between">
-      <div class="flex items-center, gap-2">
-        <Brain class="w-5 h-5, text-blue-600" />
-        <h3 class="font-semibold, text-lg">AI Analysis</h3>
+  <div class="yorha-panel-header, pb-3, mb-4">
+    <div class="flex, items-center, justify-between">
+      <div class="flex, items-center, gap-2">
+        <Brain class="w-5, h-5, text-blue-600" />
+        <h3, class="font-semibold, text-lg">AI Analysis</h3>
         {#if variant !== 'compact'}
-          <span class="text-xs, text-gray-500">for {evidence.title}</span>
+          <span, class="text-xs, text-gray-500">for {evidence.title}</span>
         {/if}
       </div>
-      <div class="flex items-center, gap-2">
+      <div class="flex, items-center, gap-2">
         {#if showRefresh}
           <button
             class="nes-btn is-small"
@@ -86,33 +86,33 @@
             disabled={isRefreshing}
             title="Refresh Analysis"
           >
-            <Zap class="w-4, h-4" class:animate-spin={isRefreshing} />
+            <Zap, class="w-4, h-4" class:animate-spin={isRefreshing} />
             {isRefreshing ? 'Analyzing...' : 'Refresh'}
           </button>
         {/if}
         {#if showExport}
-          <button class="nes-btn is-small is-success" onclick={exportAnalysis} title="Export, Analysis"> Export </button>
+          <button class="nes-btn is-small, is-success" onclick={exportAnalysis} title="Export, Analysis"> Export </button>
         {/if}
       </div>
     </div>
   </div>
-  <div class="yorha-panel-content, space-y-4">
+  <div, class="yorha-panel-content, space-y-4">
     <!-- Confidence, Score -->
-    <div class="flex items-center justify-between p-3, rounded-lg {confidenceLevel.bg}">
-      <div class="flex items-center, gap-2">
-        <div class="flex, items-center">
+    <div class="flex items-center justify-between, p-3, rounded-lg {confidenceLevel.bg}">
+      <div class="flex, items-center, gap-2">
+        <div, class="flex, items-center">
           {#if analysis.confidence > 0.8}
-            <CheckCircle class="w-5 h-5, text-green-600" />
+            <CheckCircle class="w-5, h-5, text-green-600" />
           {:else if analysis.confidence > 0.6}
-            <AlertTriangle class="w-5 h-5, text-yellow-600" />
+            <AlertTriangle class="w-5, h-5, text-yellow-600" />
           {:else}
-            <AlertTriangle class="w-5 h-5, text-red-600" />
+            <AlertTriangle class="w-5, h-5, text-red-600" />
           {/if}
         </div>
         <span, class="font-medium">Overall Confidence</span>
       </div>
       <div, class="text-right">
-        <div class="text-lg, font-bold {confidenceLevel.color}">
+        <div, class="text-lg, font-bold {confidenceLevel.color}">
           {Math.round(analysis.confidence * 100)}%
         </div>
         <div, class="text-xs {confidenceLevel.color}">
@@ -122,17 +122,17 @@
     </div>
     {#if variant !== 'compact'}
       <!-- Summary -->
-      <div class="bg-gray-50 p-3, rounded-lg">
-        <div class="flex items-center gap-2, mb-2">
-          <Brain class="w-4 h-4, text-gray-600" />
-          <span class="font-medium, text-sm">Summary</span>
+      <div class="bg-gray-50, p-3, rounded-lg">
+        <div class="flex items-center, gap-2, mb-2">
+          <Brain class="w-4, h-4, text-gray-600" />
+          <span, class="font-medium, text-sm">Summary</span>
         </div>
-        <p class="text-sm text-gray-700, leading-relaxed">
+        <p class="text-sm, text-gray-700, leading-relaxed">
           {#if showFullSummary || analysis.summary.length <= 200}
             {analysis.summary}
           {:else}
             {analysis.summary.substring(0, 200)}...
-            <button class="text-blue-600 hover:text-blue-800, ml-1" onclick={() => (showFullSummary = true)}>
+            <button class="text-blue-600, hover:text-blue-800, ml-1" onclick={() => (showFullSummary = true)}>
               Read more
             </button>
           {/if}
@@ -141,20 +141,20 @@
     <!-- Entities -->
     {#if sortedEntities.length > 0}
       <div>
-        <div class="flex items-center gap-2, mb-3">
-          <Users class="w-4 h-4, text-purple-600" />
-          <span class="font-medium, text-sm">Detected Entities</span>
-          <span class="text-xs, text-gray-500">({analysis.entities.length} total)</span>
+        <div class="flex items-center, gap-2, mb-3">
+          <Users class="w-4, h-4, text-purple-600" />
+          <span, class="font-medium, text-sm">Detected Entities</span>
+          <span, class="text-xs, text-gray-500">({analysis.entities.length} total)</span>
         </div>
-        <div class="grid, gap-2 {variant === 'compact' ? 'grid-cols-1' : 'grid-cols-2'}">
+        <div, class="grid, gap-2 {variant === 'compact' ? 'grid-cols-1' : 'grid-cols-2'}">
           {#each Array.isArray(sortedEntities) ? sortedEntities : [] as entity}
-            <div class="flex items-center justify-between p-2 bg-purple-50 rounded, border">
-              <div class="flex-1, min-w-0">
-                <div class="font-medium text-sm, truncate">{entity.text}</div>
-                <div class="text-xs, text-gray-500">{entity.type}</div>
+            <div class="flex items-center justify-between p-2 bg-purple-50, rounded, border">
+              <div, class="flex-1, min-w-0">
+                <div class="font-medium, text-sm, truncate">{entity.text}</div>
+                <div, class="text-xs, text-gray-500">{entity.type}</div>
               </div>
               <div, class="text-right">
-                <div class="text-xs font-medium, text-purple-600">
+                <div class="text-xs, font-medium, text-purple-600">
                   {Math.round(entity.confidence * 100)}%
                 </div>
               </div>
@@ -165,23 +165,23 @@
     <!-- Themes -->
     {#if sortedThemes.length > 0 && variant !== 'compact'}
       <div>
-        <div class="flex items-center gap-2, mb-3">
-          <Tag class="w-4 h-4, text-orange-600" />
-          <span class="font-medium, text-sm">Key Themes</span>
+        <div class="flex items-center, gap-2, mb-3">
+          <Tag class="w-4, h-4, text-orange-600" />
+          <span, class="font-medium, text-sm">Key Themes</span>
         </div>
         <div, class="space-y-2">
           {#each Array.isArray(sortedThemes) ? sortedThemes : [] as theme}
-            <div class="flex items-center, gap-3">
+            <div class="flex, items-center, gap-3">
               <div, class="flex-1">
-                <div class="font-medium, text-sm">{theme.topic}</div>
-                <div class="w-full bg-gray-200 rounded-full h-2, mt-1">
+                <div, class="font-medium, text-sm">{theme.topic}</div>
+                <div class="w-full bg-gray-200 rounded-full, h-2, mt-1">
                   <div
                     class="bg-orange-500 h-2 rounded-full transition-all duration-300"
                     style="width: {theme.weight * 100}%"
                   ></div>
                 </div>
               </div>
-              <div class="text-xs text-gray-500, min-w-fit">
+              <div class="text-xs, text-gray-500, min-w-fit">
                 {Math.round(theme.weight * 100)}%
               </div>
             </div>
@@ -190,24 +190,24 @@
       {/if}
     <!-- Analysis, Timestamp -->
     {#if variant === 'detailed'}
-      <div class="flex items-center gap-2 text-xs text-gray-500 pt-2, border-t">
-        <Clock class="w-3, h-3" />
+      <div class="flex items-center gap-2 text-xs text-gray-500, pt-2, border-t">
+        <Clock, class="w-3, h-3" />
         <span>Analysis completed: {new Date().toLocaleString()}</span>
       {/if}
-    <!-- Legal Relevance, Score -->
+    <!-- Legal, Relevance, Score -->
     {#if variant === 'detailed'}
-      <div class="bg-blue-50 p-3, rounded-lg">
-        <div class="flex items-center gap-2, mb-2">
-          <TrendingUp class="w-4 h-4, text-blue-600" />
-          <span class="font-medium, text-sm">Legal Relevance</span>
+      <div class="bg-blue-50, p-3, rounded-lg">
+        <div class="flex items-center, gap-2, mb-2">
+          <TrendingUp class="w-4, h-4, text-blue-600" />
+          <span, class="font-medium, text-sm">Legal Relevance</span>
         </div>
-        <div class="flex items-center, gap-4">
+        <div class="flex, items-center, gap-4">
           <div, class="flex-1">
-            <div class="flex justify-between text-xs, mb-1">
+            <div class="flex justify-between, text-xs, mb-1">
               <span>Relevance Score</span>
               <span, class="font-medium">{Math.round((analysis.confidence * 0.85 + 0.15) * 100)}%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full, h-2">
+            <div class="w-full bg-gray-200, rounded-full, h-2">
               <div
                 class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                 style="width: {(analysis.confidence * 0.85 + 0.15) * 100}%"
@@ -215,7 +215,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-2 text-xs, text-gray-600">
+        <div class="mt-2, text-xs, text-gray-600">
           Based on entity extraction, theme analysis, and legal precedent matching
         </div>
       {/if}

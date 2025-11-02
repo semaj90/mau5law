@@ -398,7 +398,7 @@ export class InstantSearchEngine extends EventEmitter {
           cacheTimestamp: Date.now(),
           accessCount: (r.payload?.accessCount as number) || 0,
           cacheLocation: 'qdrant', // Indicate source
-          syncStatus: 'synced` },'`
+          syncStatus: 'synced' },'`'`
         score: r.score,
         semanticScore: r.score, // Store semantic score separately
         combinedScore: r.score,
@@ -622,7 +622,7 @@ export class InstantSearchEngine extends EventEmitter {
       const before = highlighted.substring(0, start);
       const matched = highlighted.substring(start, end + 1);
       const after = highlighted.substring(end + 1);
-      highlighted = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1 rounded, font-medium">${matched}</mark>${after}`;
+      highlighted = `${before}<mark class="bg-yellow-200 dark:bg-yellow-900 px-1, rounded, font-medium">${matched}</mark>${after}`;
     }
     return highlighted;
   }

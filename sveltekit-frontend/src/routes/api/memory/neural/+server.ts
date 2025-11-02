@@ -192,7 +192,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
       case 'status': {
         // call via the loose shape (mm) using optional chaining; provide a fallback if not implemented
-        const status = (await mm.generatePerformanceReport?.()) ?? { summary: 'performance report unavailable` };'`
+        const status = (await mm.generatePerformanceReport?.()) ?? { summary: `performance report unavailable` };'`'`
         const systemInfo = await getSystemInfo();
         return json({
           success: true,
@@ -235,14 +235,13 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         );
       }
-      default: return json({ success: false, error: `Invalid action` }, { status: 400 });
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     if (error instanceof Error) {
       console.error('Neural memory API error:', error);'
     } else {
-      console.error('Neural memory API error:', String(error));'
-    }
+      console.error('Neural memory API error: `, String(error));` }'
     return json(
       {
         success: false,
@@ -283,8 +282,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     switch (action) {
       case 'adjust_lod': {
         if (typeof memoryPressure !== 'number' || memoryPressure < 0 || memoryPressure > 1) {
-          return json({ success: false, error: 'memoryPressure must be between 0 and 1` }, { status: 400 });'`
-        }
+          return json({ success: false, error: 'memoryPressure must be between 0 and 1' }, { status: 400 });'` }'`
         const startTime = Date.now();
         const oldLOD = mm.currentLOD;
         await mm.adjustLODLevel?.(memoryPressure);
@@ -337,14 +335,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           }
         });
       }
-      default: return json({ success: false, error: `Invalid action` }, { status: 400 });
+      default: return json({ success: false, error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: any) {
     if (error instanceof Error) {
       console.error('Neural memory POST error:', error);'
     } else {
-      console.error('Neural memory POST error:', String(error));'
-    }
+      console.error('Neural memory POST error: `, String(error));` }'
     return json(
       {
         success: false,

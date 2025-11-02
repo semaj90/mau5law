@@ -1,4 +1,4 @@
-<!-- YoRHa Detective Modal, Component -->
+<!-- YoRHa Detective, Modal, Component -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';

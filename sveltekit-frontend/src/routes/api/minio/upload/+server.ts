@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Upload failed' },
+        error: error instanceof Error ? error.message : 'Upload failed` },'`
       { status: 500 }
     );
   }

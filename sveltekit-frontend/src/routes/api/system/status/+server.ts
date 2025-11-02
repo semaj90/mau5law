@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }: { url: URL }) => {
         'X-Health-Score': summary.overall.healthScore.toString(),
         'X-Services': `${summary.overall.servicesHealthy}/${summary.overall.servicesTotal}`,
         'X-Required-Services': `${summary.overall.requiredHealthy}/${summary.overall.requiredTotal}`,
-        'Cache-Control': 'no-cache, must-revalidate' }
+        'Cache-Control': 'no-cache, must-revalidate` }'`
     });
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown system status error';

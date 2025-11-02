@@ -220,8 +220,7 @@ class TensorRTLLMClient {
     requestId: string
   ): Promise<LegalAIResponse> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'`
-    }
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'' }'`
     // Use optimized JSON parsing
     const result: LegalAIResponse = await this.parseResponseOptimized(response);
 
@@ -249,8 +248,7 @@ class TensorRTLLMClient {
     requestId: string
   ): AsyncGenerator<StreamingResponse, void, unknown> {
     if (!response || !response.ok) {
-      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'`
-    }
+      throw new Error(`HTTP ${response?.status ?? 'ERR'}: ${response?.statusText ?? 'Network error` }`);'` }
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error('Response body is not readable');

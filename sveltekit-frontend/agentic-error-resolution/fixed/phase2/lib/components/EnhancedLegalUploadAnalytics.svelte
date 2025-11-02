@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   // Use named exports for the UI kit components
-  import {
+  import 
     Button,
     Card,
     CardHeader,
@@ -17,7 +17,7 @@
     CardDescription,
     Input,
     Select
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import {
     createUploadAnalyticsActor,
     getContextualPromptsByTiming,
@@ -415,7 +415,7 @@
 <!-- Template: replace div.Root/Header/Content/Title/Description with Card components and ensure explicit closing tags -->
 <div class="legal-upload-analytics yorha-container">
   <!-- Enhanced Header with Legal Context -->
-  <Card.Root class="mb-6 yorha-nier-bits-card nes-container">
+  <Card class="mb-6 yorha-nier-bits-card nes-container">
     <CardHeader class="nes-container">
       <div class="flex justify-between items-start">
         <div>
@@ -460,10 +460,10 @@
         </div>
       </div>
     </CardHeader>
-  </Card.Root>
+  </Card>
   <!-- Enhanced AI Prompts with Legal Context -->
   {#if enableAIPrompts && beforeUploadPrompts.length > 0}
-    <Card.Root class="mb-6 yorha-nier-bits-card ai-prompts before-upload nes-container">
+    <Card class="mb-6 yorha-nier-bits-card ai-prompts before-upload nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="flex items-center gap-2 nes-container">
           🤖 AI Legal Insights
@@ -492,10 +492,10 @@
           </div>
         {/each}
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Enhanced File Upload Zone -->
-  <Card.Root class="mb-6 yorha-nier-bits-card nes-container">
+  <Card class="mb-6 yorha-nier-bits-card nes-container">
     <CardContent class="p-0 nes-container">
       <div
          class="file-drop-zone yorha-drop-zone"
@@ -603,7 +603,7 @@
                {/if}
             <!-- Advanced Settings Panel -->
             {#if showAdvancedSettings}
-              <Card.Root class="mt-4 yorha-settings nes-container">
+              <Card class="mt-4 yorha-settings nes-container">
                 <CardHeader class="nes-container">
                   <CardTitle class="nes-container">Advanced Settings</CardTitle>
                 </CardHeader>
@@ -629,15 +629,15 @@
                      </div>
                    </div>
                 </CardContent>
-              </Card.Root>
+              </Card>
             {/if}
           {/if}
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Enhanced Upload Progress with Legal Context -->
   {#if isUploading}
-    <Card.Root class="mb-6 yorha-nier-bits-card upload-progress nes-container">
+    <Card class="mb-6 yorha-nier-bits-card upload-progress nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="flex items-center gap-2 nes-container">
           ⚡ Processing Legal Documents
@@ -690,11 +690,11 @@
           </button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Enhanced Results with Legal Analysis -->
   {#if isComplete && uploadResults.length > 0}
-    <Card.Root class="mb-6 yorha-nier-bits-card upload-results nes-container">
+    <Card class="mb-6 yorha-nier-bits-card upload-results nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="flex items-center gap-2 nes-container">
           ✅ Legal Analysis Complete
@@ -802,11 +802,11 @@
           {/each}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Post-Upload AI Recommendations -->
   {#if enableAIPrompts && afterUploadPrompts.length > 0 && isComplete}
-    <Card.Root class="mb-6 yorha-nier-bits-card ai-prompts after-upload nes-container">
+    <Card class="mb-6 yorha-nier-bits-card ai-prompts after-upload nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="nes-container">🎯 Recommended Next Steps</CardTitle>
       </CardHeader>
@@ -821,11 +821,11 @@
           </div>
         {/each}
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Enhanced Analytics Dashboard -->
   {#if enableAnalytics && currentUserInsights}
-    <Card.Root class="analytics-dashboard yorha-nier-bits-card nes-container">
+    <Card class="analytics-dashboard yorha-nier-bits-card nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="nes-container">📊 Legal Workflow Analytics</CardTitle>
       </CardHeader>
@@ -852,11 +852,11 @@
           </div>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Error Handling -->
   {#if hasErrors}
-    <Card.Root class="error-section yorha-nier-bits-card error nes-container">
+    <Card class="error-section yorha-nier-bits-card error nes-container">
       <CardHeader class="nes-container">
         <CardTitle class="nes-container">⚠️ Issues Detected</CardTitle>
       </CardHeader>
@@ -871,7 +871,7 @@
           <button class="nes-btn" onclick={resetUpload}>Start Over</button>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Final Actions -->
   {#if isComplete}

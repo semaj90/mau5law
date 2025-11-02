@@ -99,7 +99,7 @@ class ToastService {
   failUpload(toastId: string, message: string, retryCallback?: () => void) {
     this.update(toastId, {
       type: 'error',
-      message: '${message}${retryCallback ? ' Click to retry.' : '` }`,
+      message: '${message}${retryCallback ? ' Click to retry.' : '' }`,'`
       duration: retryCallback ? 0 : 8000
     });
   }

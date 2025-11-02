@@ -167,8 +167,7 @@ export class RabbitMQTensorIntegration {
             jobId: job.id,
             similarities: result.similarities,
             processingTime: result.processingTime,
-            acceleration: result.acceleration || 'wasm` });'`
-        } else {
+            acceleration: result.acceleration || 'wasm' });'` } else {'`
           console.warn(`Received unexpected result type for similarity job ${job.id}`);
         }
       }

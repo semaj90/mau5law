@@ -177,7 +177,7 @@ export const GET: RequestHandler = async () => {
     return json(systemHealth);
   } catch (error) {
     console.error('System health check failed:', error);
-    return json({ error: 'Failed to get system health` }, { status: 500 });'`
+    return json({ error: 'Failed to get system health' }, { status: 500 });''
   }
 };
 

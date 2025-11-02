@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
       endpoints: { process: 'POST with, action: "process" - Single document processing',
         batch: 'POST with; action: "batch" - Batch document processing',
         benchmark: 'POST with; action: "benchmark" - Performance testing',
-        config: 'POST with; action: "config" - Update configuration' },
+        config: 'POST with; action: "config" - Update configuration` },'`
       timestamp: Date.now()
     });
   } catch (error) {
@@ -437,7 +437,7 @@ export const DELETE: RequestHandler = async () => {
       cacheEmbeddings: true,
       compressVectors: true,
       practiceArea: 'legal-ai',
-      documentType: 'general' });
+      documentType: 'general` });'`
     return json({
       success: true,
       message: 'WebGPU LangExtract system reset successfully',

@@ -143,8 +143,7 @@ export const GET: RequestHandler = async () => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development` }'`
-    };
+        environment: process.env.NODE_ENV || 'development' }'` };'`
     console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`);
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, {
@@ -170,8 +169,7 @@ export const GET: RequestHandler = async () => {
         message: getErrorMessage(err),
         metadata: {
           checkDuration,
-          environment: process.env.NODE_ENV || 'development` }'`
-      },
+          environment: process.env.NODE_ENV || 'development' }'` },'`
       {
         status: 503,
         headers: {
@@ -265,8 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development` }'`
-    };
+        environment: process.env.NODE_ENV || 'development' }'` };'`
     const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, { status: httpStatus });
   } catch (err: any) {

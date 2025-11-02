@@ -15,7 +15,7 @@
   import { page } from '$app/state';
   // Headless components from our enhanced architecture
   import { HeadlessDialog } from '$lib/headless';
-  import { OptimisticList, type Item } from '$lib/headless/OptimisticList.svelte';
+  import  OptimisticList, type Item  from "$lib/headless/OptimisticList.svelte";
   import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte';
   import { LoadingButton } from '$lib/headless';
   import { FormField } from '$lib/headless';

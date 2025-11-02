@@ -70,8 +70,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof, unifiedSearchSc
       metadata: {
         source: 'precedent_database',
         court: 'Supreme Court',
-        year: `2023' }'`
-    },
+        year: '2023' }'` }'`
   ];
 
   // 2. Simulate vector search if enabled
@@ -196,7 +195,7 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     const vectorSearch = url.searchParams.get('vector') !== 'false';
     if (!query) {
-      return json({ success: false, error: 'Query parameter (q) required' }, { status: 400 });
+      return json({ success: false, error: 'Query parameter (q) required` }, { status: 400 });'`
     }
     // Build body from GET parameters and validate using the same schema
     const body = {

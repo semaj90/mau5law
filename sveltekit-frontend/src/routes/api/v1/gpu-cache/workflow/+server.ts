@@ -150,8 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } = await request.json();
 
     if (!workflowContext || !workflowContext.type) {
-      return json({ error: 'Missing workflow context or type` }, { status: 400 });'`
-    }
+      return json({ error: 'Missing workflow context or type' }, { status: 400 });'` }'`
 
     // Try to obtain base optimization metadata from the shader cache; fallback if method missing
     const provider = binaryGPUShaderCache as unknown as BinaryOptimizationProvider;

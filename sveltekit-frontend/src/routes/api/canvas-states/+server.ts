@@ -71,7 +71,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<Response> {
         .offset(offset);
       // Get total count for pagination
       const totalCountResult = await db
-        .select({ count: sql<number>`count(*)' })'`
+        .select({ count: sql<number>`count(*)` })'`'`
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined);
       const totalCount = totalCountResult[0]?.count || 0;
@@ -195,7 +195,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       return json({ error: 'Not authenticated' }, { status: 401 });
     }
     if (!db) {
-      return json({ error: 'Database not available' }, { status: 500 });
+      return json({ error: 'Database not available` }, { status: 500 });'`
     }
     const canvasId = url.searchParams.get('id');
     if (!canvasId) {
@@ -237,7 +237,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<Res
       .returning();
     return json(updatedCanvasState);
   } catch (error: any) {
-    console.error('Error patching canvas state: `, formatError(error));'`
+    console.error('Error patching canvas state: ', formatError(error));'`'`
     return json({ error: `Failed to update canvas state` }, { status: 500 });
   }
 }

@@ -4,7 +4,7 @@
   import { frontendRAG } from '$lib/ai/frontend-rag-pipeline';
   	import type { SemanticChunk } from '$lib/ai/frontend-rag-pipeline';
   	import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  	import { Input } from '$lib/components/ui/Input.svelte';
+  	import  Input  from "$lib/components/ui/Input.svelte";
   	import {
     Card,
     CardHeader,

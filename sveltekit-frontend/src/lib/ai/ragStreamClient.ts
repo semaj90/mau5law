@@ -232,8 +232,7 @@ export async function* streamRagGenerator(
           }
         } else if (ev === 'summary') {
           if (evt.data) {
-            queue.push({ type: 'summary', summary: evt.data, source: 'server` });'`
-          }
+            queue.push({ type: 'summary', summary: evt.data, source: 'server' });'` }'`
         } else if (ev === 'error') {
           queue.push({ type: 'error', error: new Error(evt.data), final: false, attempt });
         } else if (ev === 'done') {

@@ -5,7 +5,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // Svelte 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
   import type { Evidence } from '$lib/data/types';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // prefer named import pattern
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
   import * as unified from '$lib/stores/unified';
   import * as Icons from 'lucide-svelte';
   import {
@@ -258,7 +258,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <option value="fileSize">Sort by Size</option>
         </select>
         <!-- Sort direction -->
-        <Button.Root
+        <Button
           class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
@@ -269,9 +269,9 @@ https://svelte.dev/e/attribute_duplicate -->
           {:else}
             <SortDesc class="w-4 h-4" />
           {/if}
-        </Button.Root>
+        </Button>
         <!-- View mode toggle -->
-        <Button.Root
+        <Button
           variant="secondary"
           size="sm"
           onclick={toggleViewMode}
@@ -282,7 +282,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {:else}
             <Grid class="w-4 h-4" />
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Selection controls -->
@@ -292,22 +292,22 @@ https://svelte.dev/e/attribute_duplicate -->
           {selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''} selected
         </span>
         <div class="flex items-center gap-2">
-          <Button.Root
+          <Button
             variant="secondary"
             size="sm"
             onclick={clearSelection}
             class="bits-btn"
           >
             Clear
-          </Button.Root>
-          <Button.Root variant="secondary" size="sm" class="bits-btn flex items-center gap-2">
+          </Button>
+          <Button variant="secondary" size="sm" class="bits-btn flex items-center gap-2">
             <Download class="w-4 h-4" />
             Download
-          </Button.Root>
-          <Button.Root variant="secondary" size="sm" class="bits-btn flex items-center gap-2">
+          </Button>
+          <Button variant="secondary" size="sm" class="bits-btn flex items-center gap-2">
             <Archive class="w-4 h-4" />
             Archive
-          </Button.Root>
+          </Button>
         </div>
       {/if}
   {/if}
@@ -322,14 +322,14 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="text-center py-12">
       <div class="text-red-600 dark:text-red-400 mb-2">Error loading evidence</div>
       <p class="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-      <Button.Root
+      <Button
         class="bits-btn"
         variant="secondary"
         size="sm"
         onclick={() => evidenceActions.loadEvidence(caseId)}
       >
         Try Again
-      </Button.Root>
+      </Button>
     </div>
   {:else if filteredData.length === 0}
     <!-- Empty state -->
@@ -506,9 +506,9 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
               <!-- Actions -->
               <div class="flex-shrink-0">
-                <Button.Root variant="ghost" size="sm" class="bits-btn">
+                <Button variant="ghost" size="sm" class="bits-btn">
                   <MoreHorizontal class="w-5 h-5" />
-                </Button.Root>
+                </Button>
               </div>
             </div>
           {/each}

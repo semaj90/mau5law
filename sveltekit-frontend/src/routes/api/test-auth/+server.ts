@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ request }) => {
     const sessionSchema = sessions._.config;
     // Test simple queries
     const userCount = await db.select({ count: db.sql`count(*)` }).from(users);
-    const sessionCount = await db.select({ count: db.sql`count(*)' }).from(sessions);'`
+    const sessionCount = await db.select({ count: db.sql`count(*)` }).from(sessions);'`'`
     return json({
       success: true,
       message: 'Database connection and schema test successful',
@@ -41,8 +41,7 @@ export const GET: RequestHandler = async ({ request }) => {
         details: {
          , name: error.name,
           code: error.code || 'NO_CODE',
-          cause: error.cause?.message || 'No cause` }'`
-      },
+          cause: error.cause?.message || 'No cause' }'` },'`
       { status: 500 }
     );
   }

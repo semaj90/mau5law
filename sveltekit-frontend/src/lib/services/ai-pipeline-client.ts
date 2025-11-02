@@ -116,8 +116,7 @@ class StorageManager {
         delete (window as any).__memoryStorage?.[key];
       }
     } catch (error) {
-      console.error(`[StorageManager] Failed to remove ${key}: ', error);'`
-    }
+      console.error(`[StorageManager] Failed to remove ${key}: ', error);'' }'`
   }
 
   clear(): void {
@@ -211,7 +210,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ text }),
         signal: AbortSignal.timeout(10000), // 10s timeout
       });
@@ -263,7 +262,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ content, documentType }),
         signal: AbortSignal.timeout(30000), // 30s timeout
       });
@@ -295,7 +294,7 @@ export class AIPs {
     query: string,
     options: { limit?: number; caseId?: string } = {}
   ): Promise<{ results: any[]; cached: boolean }> {
-    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all` }`;'`
+    const cacheKey = `${CACHE_KEYS.SEARCH_CACHE}:${this.hashText(query)}:${options.caseId || 'all' }`;'`'`
     const cached = this.storage.get<any[]>(cacheKey);
 
     if (cached) {
@@ -314,7 +313,7 @@ export class AIPs {
     try {
       const response = await fetch(`${this.baseUrl}/api/ai/rag`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ query, ...options }),
         signal: AbortSignal.timeout(15000), // 15s timeout
       });

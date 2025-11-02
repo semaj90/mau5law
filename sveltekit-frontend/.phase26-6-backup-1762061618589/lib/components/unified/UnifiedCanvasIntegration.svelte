@@ -5,15 +5,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount } from 'svelte';
-  	import { EvidenceCanvas } from '$lib/ui/enhanced/EvidenceCanvas.svelte';
-  	import { DetectiveBoard } from '$lib/components/detective/DetectiveBoard.svelte';
+  	import  EvidenceCanvas  from "$lib/ui/enhanced/EvidenceCanvas.svelte";
+  	import  DetectiveBoard  from "$lib/components/detective/DetectiveBoard.svelte";
   	import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte'';
-  	import { Button } from '$lib/components/ui/Button.svelte';
+  	import  Button  from "$lib/components/ui/Button.svelte";
   	// Badge replaced with span - not available in enhanced-bits
   	import { Activity, Cpu, Database, Zap, Eye, Grid3X3, Canvas } from 'lucide-svelte';
   	// Svelte 5 state management

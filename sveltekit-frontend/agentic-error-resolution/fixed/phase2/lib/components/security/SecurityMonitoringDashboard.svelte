@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { notifications  } from '$lib/stores/unified';
   import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
   import {
@@ -211,18 +211,18 @@
       <p class="container mx-auto px-4">Monitor system security events and health status</p>
     </div>
     <div class="container mx-auto px-4">
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => loadSecurityEvents()} disabled={loading}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => loadSecurityEvents()} disabled={loading}>
         <RefreshCw class={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         Refresh
-      </Button.Root>
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => exportEvents()}>
+      </Button>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => exportEvents()}>
         <Download class="h-4 w-4" />
         Export
-      </Button.Root>
-      <Button.Root class="bits-btn container mx-auto px-4" variant="ghost" size="sm" onclick={() => clearAllEvents()}>
+      </Button>
+      <Button class="bits-btn container mx-auto px-4" variant="ghost" size="sm" onclick={() => clearAllEvents()}>
         <Trash2 class="h-4 w-4" />
         Clear All
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <!-- Security Metrics -->
@@ -431,9 +431,9 @@
                       {/if}
                   </div>
                 </div>
-                <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => toggleEventDetails(index)}>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => toggleEventDetails(index)}>
                   <Eye class="h-4 w-4" />
-                </Button.Root>
+                </Button>
               </div>
             </div>
           {/each}

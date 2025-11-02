@@ -84,8 +84,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           'X-Cache-Status': 'hit',
           'X-Latency-Ms': latency.toString(),
           'X-Result-Count': results.length.toString(),
-          'Cache-Control': 'max-age=30, public'
-        }
+          'Cache-Control': 'max-age=30, public` }'`
       });
     }
     // Return JSON response

@@ -1,18 +1,18 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
-  import { Button } from '$lib/components/ui/bitsbutton.svelte';
+  import  Button  from "$lib/components/ui/bitsbutton.svelte";
   import * as RawDialog from '$lib/components/ui/dialog.svelte'';
   import * as RawSelect from '$lib/components/ui/Select.svelte'';
-  import { Badge } from '$lib/components/ui/Badge.svelte';
-  import { Progress } from '$lib/components/ui/Progress.svelte';
+  import  Badge  from "$lib/components/ui/Badge.svelte";
+  import  Progress  from "$lib/components/ui/Progress.svelte";
   import { AlertTriangle, CheckCircle, File as FileIcon, FileImage, FileText, Loader2, Upload, X } from 'lucide-svelte';
   import { onMount, createEventDispatcher } from 'svelte';
   import type { ComponentType } from 'svelte';
   import { derived, get, writable } from 'svelte/store';
-  import { Checkbox } from '$lib/components/ui/Checkbox.svelte';
-  import { Label } from '$lib/components/ui/Label.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
-  import { Textarea } from '$lib/components/ui/Textarea.svelte';
+  import  Checkbox  from "$lib/components/ui/Checkbox.svelte";
+  import  Label  from "$lib/components/ui/Label.svelte";
+  import  Input  from "$lib/components/ui/Input.svelte";
+  import  Textarea  from "$lib/components/ui/Textarea.svelte";
   // Helper to normalize ESM default vs direct export to a constructor usable by <svelte:component>
   const getCtor = (mod: any) => (mod && (mod as any).default ? (mod as any).default : mod);
   // Constructor-safe aliases for direct components used with <svelte:component>

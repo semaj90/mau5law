@@ -3,7 +3,7 @@
   import { aiAssistant  } from '$lib/stores/unified';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
   import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');
   let testQuery = $state('Analyze the liability clauses in this employment contract');
@@ -269,7 +269,7 @@
           </div>
           <p class="text-xs text-gray-500 mt-1">gemma3:270m in browser</p>
         </CardContent>
-      </Card.Root>
+      </Card>
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm">🚀 CUDA TensorRT</CardTitle>
@@ -287,7 +287,7 @@
           </div>
           <p class="text-xs text-gray-500 mt-1">gemma3:legal-latest GPU</p>
         </CardContent>
-      </Card.Root>
+      </Card>
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm">⚡ WebGPU Support</CardTitle>
@@ -299,7 +299,7 @@
           </div>
           <p class="text-xs text-gray-500 mt-1">Browser WebGPU API</p>
         </CardContent>
-      </Card.Root>
+      </Card>
     </div>
   </div>
   <!-- Test Controls -->
@@ -340,7 +340,7 @@
   </div>
   <!-- Individual Test Buttons -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-    <Card.Root class="border-green-200 bg-green-50">
+    <Card class="border-green-200 bg-green-50">
       <CardHeader class="pb-2">
         <CardTitle class="text-sm text-green-800">🌐 Browser-Local Test</CardTitle>
       </CardHeader>
@@ -364,8 +364,8 @@
           </button>
         </div>
       </CardContent>
-    </Card.Root>
-    <Card.Root class="border-purple-200 bg-purple-50">
+    </Card>
+    <Card class="border-purple-200 bg-purple-50">
       <CardHeader class="pb-2">
         <CardTitle class="text-sm text-purple-800">🚀 CUDA TensorRT Test</CardTitle>
       </CardHeader>
@@ -389,8 +389,8 @@
           </button>
         </div>
       </CardContent>
-    </Card.Root>
-    <Card.Root class="border-blue-200 bg-blue-50">
+    </Card>
+    <Card class="border-blue-200 bg-blue-50">
       <CardHeader class="pb-2">
         <CardTitle class="text-sm text-blue-800">⚡ Unified Assistant Test</CardTitle>
       </CardHeader>
@@ -418,7 +418,7 @@
   </div>
   <!-- Performance Comparison -->
   {#if Object.keys(errors).length > 0}
-    <Card.Root class="mb-6">
+    <Card class="mb-6">
       <CardHeader>
         <CardTitle>📊 Performance Comparison</CardTitle>
       </CardHeader>
@@ -446,7 +446,7 @@
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold">🧪 Test Results</h2>
       {#each Array.isArray(testResults) ? testResults : [] as result}
-        <Card.Root
+        <Card
           class="border-l-4 {result.success
             ? result.type === 'local'
               ? 'border-l-green-500'

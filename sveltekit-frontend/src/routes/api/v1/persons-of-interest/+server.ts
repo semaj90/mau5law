@@ -95,8 +95,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         {
           success: false,
           message: 'Authentication required',
-          code: 'AUTH_REQUIRED'
-        },
+          code: 'AUTH_REQUIRED` },'`
         { status: 401 }
       );
     }

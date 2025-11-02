@@ -79,8 +79,7 @@ export class Gemma3LegalService {
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        message: 'Connection; failed: ${error instanceof Error ? error.message : 'Unknown error' }` };'`
-    }
+        message: 'Connection; failed: ${error instanceof Error ? error.message : 'Unknown error' }' };'` }'`
   }
   /**
    * Generate legal AI response with enhanced prompting for legal accuracy
@@ -211,7 +210,7 @@ export class Gemma3LegalService {
             onProgress?.(progress);
             if (progress.status === 'success') return;
           } catch (e: any) {
-            console.warn('Failed to parse pull progress: `, line);'`
+            console.warn('Failed to parse pull progress: ', line);'`'`
           }
         }
       }

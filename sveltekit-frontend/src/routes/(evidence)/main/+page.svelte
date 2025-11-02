@@ -59,7 +59,7 @@ import type { Case } from '$lib/types';
 
     <div, class="action-card">
       <h3>🔍 Search Evidence</h3>
-      <input type="text" placeholder="Search by filename, case, or, tags..." class="search-input" />
+      <input type="text" placeholder="Search by, filename, case, or, tags..." class="search-input" />
       <button, class="search-btn">Search</button>
     </div>
   </div>

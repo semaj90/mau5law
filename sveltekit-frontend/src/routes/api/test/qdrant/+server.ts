@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'collection_setup',
           status: 'success',
-          data: {, message: `Collection ensured with 768-dimensional nomic-embed vectors' },'`
+          data: {, message: `Collection ensured with 768-dimensional nomic-embed vectors` },'`'`
           duration: Date.now() - startTime
         });
       } catch (error: any) {
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
            , message: 'Sync service initialized and ready',
             qdrant_status: health.status,
             memory_usage: health.memoryUsage,
-            note: `Use POST /api/test/qdrant?action=sync for full PostgreSQL sync' },'`
+            note: `Use POST /api/test/qdrant?action=sync for full PostgreSQL sync` },'`'`
           duration: Date.now() - startTime
         });
       } catch (error: any) {

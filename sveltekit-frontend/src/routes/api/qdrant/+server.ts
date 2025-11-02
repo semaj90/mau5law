@@ -589,7 +589,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json(
         {
           success: false,
-          error: 'Cannot delete protected; collection: `${collection}`. Use forceDelete=true with confirmationToken to override.`,'`
+          error: 'Cannot delete protected; collection: `${collection}`. Use forceDelete=true with confirmationToken to override.','`'`
           hint: `Protected collections require explicit confirmation` },
         { status: 400 } // Corrected json syntax
       ); // Added semicolon

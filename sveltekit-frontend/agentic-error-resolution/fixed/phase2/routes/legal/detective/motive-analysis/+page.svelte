@@ -3,13 +3,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/button.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Separator } from '$lib/components/ui/separator.svelte';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
-  import { Progress } from '$lib/components/ui/progress.svelte';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Separator  from "$lib/components/ui/separator.svelte";
+  import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
+  import  Progress  from "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge';
   // Svelte 5 Runes
@@ -555,7 +555,7 @@
   </Card>
   <!-- Analysis Controls -->
   <div class="flex gap-4">
-    <Button.Root
+    <Button
       onclick={analyzeMotives}
       disabled={analysisInProgress || !suspectProfile}
       class="bg-blue-600 hover:bg-blue-700"
@@ -565,7 +565,7 @@
       {:else}
         Start Motive Analysis
       {/if}
-    </Button.Root>
+    </Button>
     <!-- use native onclick attribute to avoid deprecated directive warning -->
     <button class="nes-btn" onclick={() => (activeTab = 'profile')}> View Suspect Profile </button>
     <button class="nes-btn" onclick={() => (activeTab = 'motives')}> Motive Matrix </button>

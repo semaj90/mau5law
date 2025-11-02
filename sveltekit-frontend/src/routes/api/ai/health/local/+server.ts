@@ -78,13 +78,11 @@ async function testLlamaCppConnection(): Promise<HealthCheckResult> {
       signal: AbortSignal.timeout(5000)
     });
     if (response.ok) {
-      return { success: true, message: `llama.cpp server is running' };'`
-    }
+      return { success: true, message: 'llama.cpp server is running' };'' }
     return { success: false, message: 'llama.cpp server not responding properly' };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'llama.cpp connection; failed: ${msg}` };'`
-  }
+    return { success: false, message: 'llama.cpp connection; failed: ${msg}' };'` }'`
 }
 
 export const GET: RequestHandler = async () => {

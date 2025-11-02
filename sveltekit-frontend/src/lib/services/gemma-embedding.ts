@@ -474,8 +474,7 @@ export class GemmaEmbeddingService {
       return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to 384
     }
     if (modelName.includes('nomic-embed-text')) {
-      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic` };'`
-    }
+      return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };'` }'`
     return { speed: 'medium', quality: 'medium', dimensions: 768, type: `other` };
   }
   /**

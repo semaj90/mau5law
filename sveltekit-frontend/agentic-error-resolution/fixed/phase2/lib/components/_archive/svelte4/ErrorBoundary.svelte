@@ -174,7 +174,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="mx-auto px-4 max-w-7xl">
             <div class="mx-auto px-4 max-w-7xl">
               <span>Technical Details</span>
-              <Button.Root
+              <Button
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
@@ -183,7 +183,7 @@ copyErrorDetails()}
                 aria-label="Copy error details"
               >
                 <Copy class="w-4 h-4" />
-</Button.Root>
+</Button>
             </div>
             <div class="mx-auto px-4 max-w-7xl">
               <div>Severity: {currentError.severity}</div>
@@ -194,7 +194,7 @@ copyErrorDetails()}
       </div>
       <div class="mx-auto px-4 max-w-7xl">
         {#if currentError.canRetry}
-          <Button.Root
+          <Button
             size="sm"
             variant="ghost"
             class={getButtonClass(currentError.severity)}
@@ -209,10 +209,10 @@ retryAction()}
               <RefreshCw class="mx-auto px-4 max-w-7xl" />
             {/if}
             Retry
-</Button.Root>
+</Button>
         {/if}
         {#if currentError.showDetails}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             size="sm"
             variant="ghost"
             onclick={() =>
@@ -224,9 +224,9 @@ retryAction()}
             {:else}
               <ChevronDown class="mx-auto px-4 max-w-7xl" />
             {/if}
-</Button.Root>
+</Button>
         {/if}
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           size="sm"
           variant="ghost"
           onclick={() =>
@@ -234,7 +234,7 @@ clearError()}
           aria-label="Dismiss error"
         >
           <X class="mx-auto px-4 max-w-7xl" />
-</Button.Root>
+</Button>
       </div>
     </div>
   {:else}
@@ -266,7 +266,7 @@ clearError()}
               <div class="mx-auto px-4 max-w-7xl">
                 <div class="mx-auto px-4 max-w-7xl">
                   <h4 class="mx-auto px-4 max-w-7xl">Technical Details</h4>
-                  <Button.Root class="bits-btn"
+                  <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() =>
@@ -276,7 +276,7 @@ copyErrorDetails()}
                   >
                     <Copy class="mx-auto px-4 max-w-7xl" />
                     Copy
-</Button.Root>
+</Button>
                 </div>
                 <div class="mx-auto px-4 max-w-7xl">
                   <div>Severity: {currentError.severity}</div>
@@ -289,7 +289,7 @@ copyErrorDetails()}
         </div>
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={() =>
@@ -298,10 +298,10 @@ reportError()}
             >
               <Bug class="mx-auto px-4 max-w-7xl" />
               Report Issue
-</Button.Root>
+</Button>
           {/if}
           {#if currentError.showDetails}
-            <Button.Root class="bits-btn"
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={() =>
@@ -315,10 +315,10 @@ reportError()}
                 <ChevronDown class="mx-auto px-4 max-w-7xl" />
                 Show Details
               {/if}
-</Button.Root>
+</Button>
           {/if}
           {#if currentError.canRetry}
-            <Button.Root
+            <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
               onclick={() =>
 retryAction()}
@@ -331,15 +331,15 @@ retryAction()}
                 <RefreshCw class="mx-auto px-4 max-w-7xl" />
                 Retry
               {/if}
-</Button.Root>
+</Button>
           {/if}
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
             onclick={() =>
 clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}
-</Button.Root>
+</Button>
         </div>
       </div>
     </div>

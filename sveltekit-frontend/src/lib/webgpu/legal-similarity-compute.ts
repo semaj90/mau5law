@@ -87,7 +87,7 @@ export class LegalSimilarityWebGPU {
           workgroup_size: u32;
           legal_domain_weight: f32;
           risk_assessment_factor: f32;
-          confidence_boost: f32;
+         , confidence_boost: f32;
         };
         struct SimilarityResult {, query_index: u32;, document_index: u32;
          , similarity: f32;
@@ -197,7 +197,7 @@ export class LegalSimilarityWebGPU {
       code: '
         struct SimilarityResult { query_index: u32;, document_index: u32;
           similarity: f32;
-          confidence: f32;
+         , confidence: f32;
          , legal_score: f32;
          , risk_assessment: f32;
         };
@@ -244,11 +244,11 @@ export class LegalSimilarityWebGPU {
     this.bindGroupLayout = this.device.createBindGroupLayout({
       label: 'Legal Similarity Bind Group Layout',
       entries: [
-        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
+        {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
         { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
         { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'storage' } },
-        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform` } },'`
-        { binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `read-only-storage` } }
+        { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform' } },'`'`
+        { binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `read-only-storage' } }'`
       ]
     });
 
@@ -260,7 +260,7 @@ export class LegalSimilarityWebGPU {
       }),
       compute: {
         module: this.cosineSimilarityShader,
-        entryPoint: `main` }
+        entryPoint: `main' }'`
     });
     console.log('✅ WebGPU compute pipeline created');
   }
@@ -354,7 +354,7 @@ export class LegalSimilarityWebGPU {
         label: 'Legal Similarity Bind Group',
         layout: this.bindGroupLayout!,
         entries: [
-          { binding: 0, resource: {, buffer: this.queryBuffer! } },
+          {, binding: 0, resource: {, buffer: this.queryBuffer! } },
           { binding: 1, resource: {, buffer: this.documentBuffer! } },
           { binding: 2, resource: {, buffer: this.resultsBuffer! } },
           { binding: 3, resource: {, buffer: this.uniformsBuffer! } },
@@ -364,7 +364,7 @@ export class LegalSimilarityWebGPU {
 
       // Dispatch compute shader
       const commandEncoder = this.device.createCommandEncoder({ label: `Legal Similarity Command Encoder` });
-      const computePass = commandEncoder.beginComputePass({ label: `Legal Similarity Compute Pass` });
+      const computePass = commandEncoder.beginComputePass({ label: `Legal Similarity Compute Pass' });'`
       computePass.setPipeline(this.computePipeline);
       computePass.setBindGroup(0, bindGroup);
       const workgroupsX = Math.ceil(totalResults / config.workgroupSize[0]);
@@ -492,7 +492,7 @@ export class LegalSimilarityWebGPU {
     const topKPipeline = this.device.createComputePipeline({
       label: 'Legal Top-K Selection Pipeline',
       layout: 'auto',
-      compute: {, module: this.topKShader, entryPoint: `main` }
+      compute: {, module: this.topKShader, entryPoint: `main' }'`
     });
 
     const topKResultsSize = k * 6 * 4;
@@ -546,7 +546,7 @@ export class LegalSimilarityWebGPU {
     });
 
     const commandEncoder = this.device.createCommandEncoder({ label: `Top-K Command Encoder` });
-    const computePass = commandEncoder.beginComputePass({ label: `Top-K Compute Pass` });
+    const computePass = commandEncoder.beginComputePass({ label: `Top-K Compute Pass' });'`
     computePass.setPipeline(topKPipeline);
     computePass.setBindGroup(0, topKBindGroup);
     const workgroupsX = Math.ceil(totalResults / 256);

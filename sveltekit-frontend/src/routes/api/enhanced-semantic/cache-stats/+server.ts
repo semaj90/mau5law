@@ -31,8 +31,7 @@ export const GET: RequestHandler = async () => {
         ]
       },
       timestamp: new Date().toISOString(),
-      source: 'Enhanced Semantic Architecture` });'`
-	} catch (error: any) {
+      source: 'Enhanced Semantic Architecture' });'' } catch (error: any) {
 		console.error('Cache Stats API Error:', error)
 		// Fallback: Mock cache statistics
 		const now = new Date()
@@ -65,7 +64,7 @@ export const GET: RequestHandler = async () => {
 			data: mockStats,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
-			note: `Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.` })
+			note: `Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.' })'`
 	}
 }
 export const POST: RequestHandler = async ({ request }) => {
@@ -75,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const response = await fetch('http://localhost:8095/api/cache-stats', {
 			method: 'POST',
 			headers: {
-				'Content-Type': `application/json` },
+				'Content-Type': `application/json' },'`
 			body: JSON.stringify({
 				action, // clear, optimize, rebuild, etc.
 				options
@@ -125,6 +124,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			action,
 			result,
 			timestamp: new Date().toISOString(),
-			source: `Fallback Cache Manager` })
+			source: `Fallback Cache Manager' })'`
 	}
 }

@@ -120,7 +120,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           ...(cachedResults?.metadata ?? {}),
           fromCache: true,
           cacheKey,
-          totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms` }
+          totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms' }'`
       };
       return cachedJson(augmented, 'VECTOR_SEARCH');
     }
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Wrap in block
       // Temporarily mock these as redisService does not expose them directly
       // Note: redisService needs to be updated to expose getStats() and getRedisInfo()
-      const redisStats = { connected_clients: 0, used_memory_human: `0B` }; // Mocked
+      const redisStats = { connected_clients: 0, used_memory_human: `0B' }; // Mocked'`
       const redisInfo = { memory: {}, keyspace: {} }; // Mocked
       const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
       const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`);
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url }) => {
            , search: 'POST /api/ai/legal-search-cached',
             stats: 'GET /api/ai/legal-search-cached?action=stats',
             health: 'GET /api/ai/legal-search-cached?action=health',
-            clearCache: `GET /api/ai/legal-search-cached?action=clear-cache` }
+            clearCache: `GET /api/ai/legal-search-cached?action=clear-cache' }'`
         },
         { status: 400 }
       );
@@ -308,7 +308,7 @@ async function generateLegalEmbedding(query: string, searchType: string, practic
     try {
       const response = await fetch(`${baseEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           model,
           prompt: legalContextPrompt
@@ -341,7 +341,7 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
     'contracts': 'Contract law and agreement terms: ',
     'regulations': 'Legal regulations and compliance requirements: ',
     'precedents': 'Legal precedents and court decisions: ',
-    'general': `Legal research query: ` };
+    'general': `Legal research query: ' };'`
   let prompt = contextPrefixes[searchType as keyof typeof contextPrefixes] || contextPrefixes.general;
   prompt += query;
   if (practiceArea) {
@@ -406,7 +406,7 @@ async function performLegalSearch(params: {, query: string;, embedding: number[
     relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'],
     practiceAreaInsights: {
       trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
-      recentDevelopments: `Increased focus on hybrid work arrangements` }
+      recentDevelopments: `Increased focus on hybrid work arrangements' }'`
   };
 }
 /**

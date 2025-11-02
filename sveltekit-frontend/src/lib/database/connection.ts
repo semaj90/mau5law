@@ -179,8 +179,7 @@ export async function hybridSemanticSearch(
         (si.entity_type = 'evidence' AND EXISTS (
           SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
         ))
-      )`);`
-    }
+      )`);' }'`
 
     // push limit as last param
     params.push(limit);
@@ -232,7 +231,7 @@ export async function initializeDatabase(): Promise<DBResult> {
     await unsafeQuery('CREATE EXTENSION IF NOT EXISTS vector;');
     console.log('✅ Database extensions created');
     // Run migrations would go here
-    // await migrate(db, { migrationsFolder: './drizzle` })'`
+    // await migrate(db, { migrationsFolder: './drizzle' })'`'`
     const health = await testDatabaseConnection();
     if (health.success) {
       console.log('✅ Database initialization complete');

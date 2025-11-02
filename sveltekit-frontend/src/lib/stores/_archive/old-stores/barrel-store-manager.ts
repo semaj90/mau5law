@@ -283,8 +283,7 @@ export class BarrelStoreManager {
           })
         );
       } catch (error: any) {
-        console.error(`Failed to cache store ${id}: ', error);'`
-      }
+        console.error(`Failed to cache store ${id}: ', error);'' }'`
     });
     // Track unsubscribe so dispose() can clean it up
     if (!this.subscriptions.has(id)) this.subscriptions.set(id, []);

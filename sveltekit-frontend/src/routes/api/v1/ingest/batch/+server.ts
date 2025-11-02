@@ -225,8 +225,7 @@ export const GET: RequestHandler = async ({ url }) => {
         endpoints: {
          , batch_ingest: '/api/v1/ingest/batch',
           single_ingest: '/api/v1/ingest',
-          health: '/api/v1/ingest'
-        }
+          health: '/api/v1/ingest` }'`
       },
       architecture: {
        , frontend: 'sveltekit-2',

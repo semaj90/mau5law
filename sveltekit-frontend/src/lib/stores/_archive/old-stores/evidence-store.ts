@@ -228,8 +228,7 @@ export const evidenceActions = {
       evidenceGrid.update(state => ({
         ...state,
         isLoading: false,
-        error: error instanceof Error ? error.message : `Failed to load evidence' }));'`
-    }
+        error: error instanceof Error ? error.message : 'Failed to load evidence' }));'` }'`
   },
   // Update search query
   setSearchQuery(query: string) {
@@ -263,7 +262,7 @@ export const evidenceActions = {
   async deleteEvidence(evidenceId: string) {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: `DELETE' });'`
+        method: `DELETE` });'`'`
       if (!response.ok) {
         // Simplified response check
         throw new Error(`Failed to delete evidence: ${response.statusText}`);
@@ -315,7 +314,7 @@ export const uploadActions = {
     uploadModal.update(state => ({
       ...state,
       files: [...state.files, ...uploadFiles],
-      step: `preview' }));'`
+      step: `preview` }));'`'`
     // Generate previews for supported file types
     uploadFiles.forEach(uploadFile => {
       if (uploadFile.file.type.startsWith('image/')) {
@@ -426,8 +425,7 @@ export const uploadActions = {
       uploadModal.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : `Upload failed' }));'`
-    }
+        error: error instanceof Error ? error.message : 'Upload failed' }));'` }'`
   }
 };
 export default evidenceActions;

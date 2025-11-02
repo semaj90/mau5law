@@ -4,9 +4,9 @@
   import { writable } from 'svelte/store';
   import { fade, fly } from 'svelte/transition';
   import { AIEvidenceAnalyzer, type EvidenceItem, type EvidenceAnalysis } from '$lib/services/ai-evidence-analyzer';
-  import { EvidenceAnalysisVisualization } from '$lib/components/visualizations/EvidenceAnalysisVisualization.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  EvidenceAnalysisVisualization  from "$lib/components/visualizations/EvidenceAnalysisVisualization.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   let analyzer: AIEvidenceAnalyzer;
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);
@@ -196,7 +196,7 @@
   </header>
   <div class="dashboard-grid">
     <!-- Evidence List Panel -->
-    <Card.Root class="evidence-panel">
+    <Card class="evidence-panel">
       <CardHeader>
         <CardTitle>Evidence Items</CardTitle>
       </CardHeader>
@@ -246,7 +246,7 @@
           {/each}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
     <!-- Analysis Results Panel -->
     <div class="analysis-panel">
       {#if $isAnalyzing}

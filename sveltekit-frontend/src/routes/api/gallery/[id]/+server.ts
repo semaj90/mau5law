@@ -322,7 +322,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     const pathParts = filePath.split('/')
     const fileName = pathParts.pop()
     const dir = pathParts.join('/')
-    return `${dir}/thumb_${fileName}' }'`
+    return `${dir}/thumb_${fileName}` }'`'`
   // For other file types, return type-specific icons
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg'

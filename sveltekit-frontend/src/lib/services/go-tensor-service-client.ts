@@ -87,8 +87,7 @@ export class GoTensorHTTPClient {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'Content-Type': `application/json' }'`
-      });
+          'Content-Type': 'application/json' }'` });'`
       clearTimeout(timeoutId);
       const latency = Date.now() - start;
       if (!response.ok) {
@@ -99,7 +98,7 @@ export class GoTensorHTTPClient {
         status: string; // e.g., "ok", "healthy", "error"
         version?: string;
         connections?: number;
-        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime' }
+        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime` }'`
       const data: GoHealthResponse = await response.json(); // Use specific interface for data
       return {
         status: data.status === 'ok' || data.status === 'healthy' ? 'healthy' : 'degraded', // Map Go status to ServiceHealth status
@@ -127,7 +126,7 @@ export class GoTensorHTTPClient {
         method: 'POST',
         signal: controller.signal,
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , id: request.id,
           documentId: request.documentId,
@@ -168,7 +167,7 @@ export class GoTensorHTTPClient {
       const response = await fetch(`${this.baseUrl}/api/tensor/batch`, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , requests: requests.map(req => ({
             ...req,
@@ -211,8 +210,7 @@ export class GoTensorHTTPClient {
       const response = await fetch(`${this.baseUrl}/metrics`, {
         method: 'GET',
         headers: {
-          'Content-Type': `application/json' }'`
-      });
+          'Content-Type': 'application/json' }'` });'`
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -373,7 +371,7 @@ export const goTensorService = {
 		try {
 			const response = await fetch('/api/tensor', {
 				method: 'POST',
-				headers: { 'Content-Type': `application/json' },'`
+				headers: { 'Content-Type': `application/json` },'`'`
 				body: JSON.stringify({, operation: request.operation, documentId: request.id, data: request.data, options: opts })
 			});
 			if (!response.ok) {

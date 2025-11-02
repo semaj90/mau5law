@@ -244,8 +244,7 @@ class WebAssemblyLlamaService {
           ...cached,
           fromCache: true,
           cacheHit: true,
-          processingPath: 'cache'
-        };
+          processingPath: 'cache` };'`
       }
     }
     if (!this.modelLoaded || !this.module) {
@@ -700,8 +699,7 @@ Provide analysis in structured format:
 <recommendations>[One per line]</recommendations>
 <confidence>[0.0 to 1.0]</confidence>
 </analysis>
-<|assistant|>`;`
-  }
+<|assistant|>`;' }'`
   private parseLegalAnalysisResponse(response: string): any {
     // Similar parsing logic as in the server-side version
     const analysis = {
@@ -756,8 +754,7 @@ Provide analysis in structured format:
             return {
               type: type?.trim() || 'general',
               severity: severity?.trim() || 'medium',
-              description: description?.trim() || '` };'`
-          })
+              description: description?.trim() || '' };'` })'`
           .filter(r => r.description);
       }
       const recommendationsMatch = (response as { ok?: any; statusText?: any; json?: any; match?: any }).match(

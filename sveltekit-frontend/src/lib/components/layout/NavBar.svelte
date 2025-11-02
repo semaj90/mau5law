@@ -1,4 +1,4 @@
-<!-- Gaming-Themed Navigation Bar with Console Theme, Switching -->
+<!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
 <script, lang="ts">
 import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
@@ -76,10 +76,10 @@ import type { User } from '$lib/types';
 </script>
 <nav, class="navbar">
   <div, class="nav-container">
-    <!-- Left section Logo + Sidebar, Toggle -->
+    <!-- Left section, Logo + Sidebar, Toggle -->
     <div, class="nav-left">
       {#if onToggleSidebar}
-        <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle, sidebar">
+        <button, class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle, sidebar">
           <span, class="hamburger" class:open={sidebarOpen}>
             <span></span>
             <span></span>
@@ -94,19 +94,19 @@ import type { User } from '$lib/types';
         </button>
       </div>
     </div>
-    <!-- Center section Main Navigation (if, authenticated) -->
+    <!-- Center section Main, Navigation (if, authenticated) -->
     {#if isAuthenticated}
       <div, class="nav-center">
   <a, href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> 🏠 Dashboard </a>
         <a, href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
         <a, href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
         {#if isAdmin}
-          <a href="/admin" class="nav-link, admin-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
+          <a, href="/admin" class="nav-link, admin-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
         {/if}
       {/if}
-    <!-- Right section Theme + User, Menu -->
+    <!-- Right section, Theme + User, Menu -->
     <div, class="nav-right">
-      <!-- Gaming Theme, Selector -->
+      <!-- Gaming, Theme, Selector -->
       <div, class="theme-selector">
         <button
           class="theme-btn"
@@ -163,7 +163,7 @@ import type { User } from '$lib/types';
             <button, class="profile-item" role="menuitem" onclick={() => goto('/profile')}>Profile</button>
             <button, class="profile-item" role="menuitem" onclick={() => goto('/settings')}>Settings</button>
             <div, class="profile-separator" aria-hidden="true"></div>
-            <button class="profile-item, profile-logout" role="menuitem" onclick={handleLogout}>Sign out</button>
+            <button, class="profile-item, profile-logout" role="menuitem" onclick={handleLogout}>Sign out</button>
           </div>
         </details>
         <div, class="user-menu">

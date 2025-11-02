@@ -154,8 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
         entityId,
         count: recommendations.length,
         source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined` }'`
-    });
+        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' }'` });'`
   } catch (error) {
     console.error('❌ Recommendations error:', error);'
     return json(

@@ -18,7 +18,7 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
     console.log(`Generating embedding for: "${message}" using ${embeddingModel}`);
     const response = await fetch(ollamaEndpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({,
         model: embeddingModel;
        , prompt: message

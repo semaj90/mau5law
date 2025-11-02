@@ -46,8 +46,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl) {
       mockCache.delete(decodedKey);
-      return json({ success: false, error: 'Cache key expired` }, { status: 404 });'`
-    }
+      return json({ success: false, error: 'Cache key expired' }, { status: 404 });'` }'`
 
     return json({
       success: true,

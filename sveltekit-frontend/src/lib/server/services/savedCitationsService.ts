@@ -147,7 +147,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
           } catch {
             tags = [s];
           }
-        } else if (s.startsWith('{') && s.endsWith(` }')) {'`
+        } else if (s.startsWith('{') && s.endsWith(' }')) {'`'`
           // Postgres text[] literal
           try {
             tags = parsePgArray(s);

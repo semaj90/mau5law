@@ -16,7 +16,6 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: true, taskId, message: `${taskType} task queued successfully`, priority });
   } catch (err) {
     console.error('Task queuing failed:', err);
-    return json({ success: false, message: err instanceof Error ? err.message : 'Unknown error` }, { status: 500 });'`
-  }
+    return json({ success: false, message: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });'' }
 };
 

@@ -253,8 +253,7 @@ export class SvelteKitGPUCacheIntegration {
           return data;
         }
       } catch (error: any) {
-        console.warn(`⚠️ Failed to preload route ${route}: ', error);'`
-      }
+        console.warn(`⚠️ Failed to preload route ${route}: ', error);'` }
       return null;
     });
     await Promise.allSettled(preloadPromises);
@@ -439,8 +438,7 @@ export class SvelteKitGPUCacheIntegration {
         }
       }
     } catch (error: any) {
-      console.error('Prefetch scheduling error:', error);'
-    }
+      console.error('Prefetch scheduling error:', error);` }`'
   }
 
   private async executePrefetch(key: string, userId?: string): Promise<void> {
@@ -474,8 +472,7 @@ export class SvelteKitGPUCacheIntegration {
         console.log(`✅ Prefetch successful: ${key}`);
       }
     } catch (error: any) {
-      console.warn(`⚠️ Prefetch failed for ${key}: ', error);'`
-    } finally {
+      console.warn(`⚠️ Prefetch failed for ${key}: ', error);'` } finally {
       this.prefetchQueue.delete(key);
     }
   }
@@ -532,7 +529,7 @@ export class SvelteKitGPUCacheIntegration {
       request.onupgradeneeded = (event: any) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('cache_entries')) {
-          const cacheStore = db.createObjectStore('cache_entries', { keyPath: 'key' });
+          const cacheStore = db.createObjectStore('cache_entries', { keyPath: 'key` });'`
           cacheStore.createIndex('timestamp', 'timestamp');
           cacheStore.createIndex('tags', 'tags', { multiEntry: true });
           cacheStore.createIndex('userId', 'userId');
@@ -606,7 +603,7 @@ export class SvelteKitGPUCacheIntegration {
       const db = new Loki(dbName, {
         autosave: true,
         autosaveInterval: this.config.lokiJS.persistInterval,
-        persistenceMethod: `localStorage` });
+        persistenceMethod: `localStorage' });'`
 
       // Ensure collection exists for quick in-memory lookups
       let cacheColl = db.getCollection('cache_entries') as any;
@@ -666,8 +663,7 @@ export class SvelteKitGPUCacheIntegration {
       this.updateCacheMetrics();
       console.log('🧹 Maintenance tasks completed');
     } catch (error: any) {
-      console.error('Maintenance task error:', error);'
-    }
+      console.error('Maintenance task error:', error);` }`'
   }
 
   private async cleanupExpiredEntries(): Promise<void> {
@@ -728,8 +724,7 @@ export class SvelteKitGPUCacheIntegration {
       console.log(`🚀 Hydrated ${entries.length} entries from SSR`);
     } catch (error: any) {
       // Log unknown errors safely
-      console.error('SSR hydration error:', error);'
-    }
+      console.error('SSR hydration error:', error);` }`'
   }
 
   private async getCurrentCacheState(): Promise<any> {
@@ -895,8 +890,7 @@ export class SvelteKitGPUCacheIntegration {
       await this.rpcClient.disconnect();
       console.log('🛑 SvelteKit GPU Cache Integration shut down');
     } catch (error: any) {
-      console.error('Shutdown error:', error);'
-    }
+      console.error('Shutdown error:', error);` }`'
   }
 
   // Add safe RPC wrappers to avoid calling undefined methods and centralize error handling
@@ -915,8 +909,7 @@ export class SvelteKitGPUCacheIntegration {
     try {
       await this.rpcClient.store(key, data, opts);
     } catch (err) {
-      console.warn(`⚠️ rpcClient.store warning for ${key}: ', err);'`
-    }
+      console.warn(`⚠️ rpcClient.store warning for ${key}: ', err);'` }
   }
 }
 

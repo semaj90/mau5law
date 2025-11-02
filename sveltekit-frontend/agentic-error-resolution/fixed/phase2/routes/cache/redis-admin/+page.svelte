@@ -5,17 +5,17 @@
   import { enhance } from '$app/forms';
   import { invalidateAll } from '$app/navigation';
   // Enhanced-Bits orchestrated components
-  import {
+  import 
     Button,
     Card,
     Input,
     Badge
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-  } from '$lib/components/ui/orchestrated.svelte';
+   from "$lib/components/ui/orchestrated.svelte";
   // Icons for Redis admin
   import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
@@ -147,7 +147,7 @@
         {/if}
       </Badge>
       <!-- Auto Refresh Toggle -->
-      <Button.Root
+      <Button
         variant="ghost"
         size="sm"
         onclick={toggleAutoRefresh}
@@ -313,7 +313,7 @@
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <Button.Root class="nes-btn"
+                  <Button class="nes-btn"
                     variant="ghost"
                     size="sm"
                     onclick={() => viewKeyDetails(key.key)}
@@ -321,7 +321,7 @@
                     <Eye class="w-3 h-3" />
                   <form method="POST" action="?/deleteKey" use:enhance>
                     <input type="hidden" name="key" value={key.key} />
-                    <Button.Root
+                    <Button
                       type="submit"
                       variant="ghost"
                       size="sm"
@@ -366,7 +366,7 @@
                 min="0"
               />
             </div>
-            <Button.Root type="submit" class="gap-2">
+            <Button type="submit" class="gap-2">
               <Plus class="w-4 h-4" />
               Add Key
           </form>
@@ -443,7 +443,7 @@
       </NesCardHeader>
       <div.Content class="space-y-4 nes-container">
         <form method="POST" action="?/flushCache" use:enhance>
-          <Button.Root
+          <Button
             type="submit"
             variant="error"
             class="gap-2"

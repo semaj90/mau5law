@@ -90,7 +90,7 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points`,
       {
         method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
       }
     );
@@ -129,7 +129,7 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points/search`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
       }
     );
@@ -157,7 +157,7 @@ class QdrantVectorService implements IQdrantVectorService {
       `${this.config.url}/collections/${this.config.collectionName}/points/delete`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , points: ids,
           wait: true
@@ -197,7 +197,7 @@ class QdrantVectorService implements IQdrantVectorService {
   async getCollectionInfo(): Promise<any> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: `GET` }
+      { method: `GET' }'`
     );
 
     if (!response.ok) {
@@ -214,12 +214,12 @@ class QdrantVectorService implements IQdrantVectorService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.url}/collections`,
-        { method: 'GET` },'`
+        { method: 'GET' },'`'`
         5000
       );
 
       if (!response.ok) {
-        return { status: `unavailable` };
+        return { status: `unavailable' };'`
       }
 
       const data = await response.json();
@@ -240,7 +240,7 @@ class QdrantVectorService implements IQdrantVectorService {
     try {
       const response = await this.fetchWithTimeout(
         `${this.config.url}/collections/${this.config.collectionName}`,
-        { method: `GET` },
+        { method: `GET' },'`
         5000
       );
       return response.ok;
@@ -272,7 +272,7 @@ class QdrantVectorService implements IQdrantVectorService {
   private async deleteCollection(): Promise<void> {
     const response = await this.fetchWithTimeout(
       `${this.config.url}/collections/${this.config.collectionName}`,
-      { method: `DELETE` }
+      { method: `DELETE' }'`
     );
 
     if (!response.ok) {

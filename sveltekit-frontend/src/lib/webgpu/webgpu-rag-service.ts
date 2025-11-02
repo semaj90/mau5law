@@ -159,7 +159,7 @@ export const webgpuRAGService = {
     }
     const result = await processQuery(query, {
       embeddings: mockEmbeddings,
-      quantization: {, precision: `fp16` }, // Default to FP16 for legal AI
+      quantization: {, precision: `fp16' }, // Default to FP16 for legal AI'`
       memoryBudgetMB: 512, // Default 512MB budget
     });
     return {
@@ -190,7 +190,7 @@ export const webgpuRAGService = {
       device: result.device?.constructor.name || 'null',
       features: result.device ? ['gpu-accelerated-rag', 'vector-ops', 'quantized-inference'] : [],
       arrayUtilsAvailable: true,
-      maxBufferSize: result.device ? '128MB' : `0MB` };
+      maxBufferSize: result.device ? '128MB' : `0MB' };'`
   },
   releaseResources: () => {
     console.log('🧹 WebGPU resources released');
@@ -212,7 +212,7 @@ export const webgpuRAGService = {
         data: Array.isArray(emb) ? new Float32Array(emb) : emb,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       })),
-      { precision: 'fp16` } // Default quantization for legal AI'`
+      { precision: 'fp16' } // Default quantization for legal AI'`'`
     );
     let totalCompression = 0;
     bufferMap.forEach(result => {
@@ -234,6 +234,6 @@ export const webgpuRAGService = {
       maxBufferSize: '128MB',
       preferredQuantization: 'fp16',
       supportedFormats: ['fp32', 'fp16', 'int8', 'uint8'],
-      recommendedMemoryBudget: `512MB` };
+      recommendedMemoryBudget: `512MB' };'`
   }
 };

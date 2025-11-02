@@ -120,8 +120,7 @@ export const GET: RequestHandler = async event => {
         return {
           status: 'OCR service not operational but health endpoint working',
           data: ocrHealthData,
-          note: 'This is expected if OCR service is not running` };'`
-      }
+          note: 'This is expected if OCR service is not running' };'` }'`
     })
   );
   // Step 6: Test Document Processing Simulation (if OCR is available)
@@ -145,8 +144,7 @@ export const GET: RequestHandler = async event => {
         }
         const ocrResult = await procResp.json();
         if (!ocrResult?.success) {
-          throw new Error(`OCR processing failed: ${ocrResult?.message ?? 'unknown` }`);'`
-        }
+          throw new Error(`OCR processing failed: ${ocrResult?.message ?? 'unknown` }`);'' }'`
         return {
           ocrResult,
           message: 'Document OCR processing completed successfully'
@@ -166,7 +164,7 @@ export const GET: RequestHandler = async event => {
           return { simulatedWorkflow: {, step1: 'OCR processing would extract text',
               step2: 'Evidence record would be created in database with OCR metadata',
               step3: 'OCR confidence, word count, and processing time would be stored',
-              step4: 'Content text would be indexed for vector search` },'`
+              step4: `Content text would be indexed for vector search` },'`'`
             message: `Evidence creation workflow validated (simulated)` };
         })
       );

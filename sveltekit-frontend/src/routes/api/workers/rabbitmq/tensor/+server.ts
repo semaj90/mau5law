@@ -280,7 +280,7 @@ export const POST: RequestHandler = async ({ request }) => {
            , jobId: benchmarkJobId,
             vectorCount: benchmarkVectors.length,
             dimensions: benchmarkQuery.length,
-            benchmarkType: 'similarity_performance` }'`
+            benchmarkType: `similarity_performance` }'`'`
         });
       }
       default: {

@@ -84,7 +84,7 @@ export const evidence = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id')
       .notNull()
-      .references(() => cases.id, { onDelete: 'cascade` }),'`
+      .references(() => cases.id, { onDelete: 'cascade' }),'`'`
     // Evidence identification
     evidenceNumber: text('evidence_number').notNull(),
     title: text('title').notNull(),
@@ -176,7 +176,7 @@ export const caseTimeline = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id')
       .notNull()
-      .references(() => cases.id, { onDelete: 'cascade` }),'`
+      .references(() => cases.id, { onDelete: 'cascade' }),'`'`
     // Event details
     eventType: text('event_type', {
       enum: [
@@ -227,7 +227,7 @@ export const citations = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id')
       .notNull()
-      .references(() => cases.id, { onDelete: 'cascade` }),'`
+      .references(() => cases.id, { onDelete: 'cascade' }),'`'`
     // Citation details
     citationType: text('citation_type', {
       enum: [
@@ -295,7 +295,7 @@ export const caseNotes = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id')
       .notNull()
-      .references(() => cases.id, { onDelete: 'cascade` }),'`
+      .references(() => cases.id, { onDelete: 'cascade' }),'`'`
     // Note details
     noteType: text('note_type', {
       enum: [

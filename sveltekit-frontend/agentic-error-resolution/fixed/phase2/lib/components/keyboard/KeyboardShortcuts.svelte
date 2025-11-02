@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
 
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
-  import { Button } from "$lib/components/ui/button/Button.svelte";
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import { notifications } from '$lib/stores/unified';
   import { FocusManager } from "$lib/utils/accessibility";
   // Keep named imports that are exported by the package, and import problematic icons
@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   // These imports reference the individual Svelte icon components.
   // If your installation has icons under a different path (e.g. src/icons or dist/icons),
   // update the paths accordingly.
-  import { HelpCircle } from "lucide-svelte/dist/icons/HelpCircle.svelte";
+  import  HelpCircle  from "lucide-svelte/dist/icons/HelpCircle.svelte";
   import X from "lucide-svelte/dist/icons/X.svelte";
 
   // Svelte 5 $props destructuring

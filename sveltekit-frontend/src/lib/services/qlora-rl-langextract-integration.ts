@@ -416,7 +416,7 @@ export class QLorARLLangExtractOrchestrator {
         } else if (type === 'training_completed') {
           await this.handleFlywheelCompletion(job, (evt.data as Extract<TrainerMessage, { type: `training_completed` }>).data)
         } else if (type === 'training_error') {
-          console.error(`❌ DATA FLYWHEEL training error: ', (evt.data as Extract<TrainerMessage, { type: 'training_error' }>).data.error)'`
+          console.error(`❌ DATA FLYWHEEL training error: ', (evt.data as Extract<TrainerMessage, { type: 'training_error` }>).data.error)'`'`
           job.status = 'failed'
         } else if (type === 'reinforcement_update') {
           await this.handleFlywheelRLUpdate(job, (evt.data as Extract<TrainerMessage, { type: 'reinforcement_update' }>).data)
@@ -424,8 +424,7 @@ export class QLorARLLangExtractOrchestrator {
       }
     } catch (error) {
       console.error('❌ DATA FLYWHEEL training failed:', error)
-      job.status = 'failed` }'`
-  }
+      job.status = 'failed' }'` }'`
   private async handleFlywheelProgress(job: QLorATrainingJob, progressData: TrainingProgress): Promise<void> {
     const { progress } = progressData
     console.log(

@@ -4,7 +4,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
   import {
     Activity,
     Cpu,
@@ -310,7 +310,7 @@
             />
           </div>
           <div class="flex gap-2">
-            <Button.Root
+            <Button
               class="bits-btn flex-1"
               onclick={() => scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
@@ -322,23 +322,23 @@
                 <TrendingUp class="h-4 w-4 mr-2" />
                 Scale
               {/if}
-            </Button.Root>
-            <Button.Root
+            </Button>
+            <Button
               class="bits-btn px-3"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="ghost"
             >
               +1
-            </Button.Root>
-            <Button.Root
+            </Button>
+            <Button
               class="bits-btn px-3"
               onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="ghost"
             >
               -1
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </div>
@@ -349,7 +349,7 @@
           Operations
         </h3>
         <div class="space-y-3">
-          <Button.Root
+          <Button
             onclick={rollingRestart}
             disabled={isRestarting}
             class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn"
@@ -361,11 +361,11 @@
               <RefreshCw class="h-4 w-4 mr-2" />
               Rolling Restart
             {/if}
-          </Button.Root>
-          <Button.Root onclick={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
+          </Button>
+          <Button onclick={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
             <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
-          </Button.Root>
+          </Button>
         </div>
       </div>
       <!-- Health Summary -->

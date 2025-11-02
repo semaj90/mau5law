@@ -15,14 +15,14 @@
     aria-modal="true"
     aria-labelledby={ ariaLabelledby } aria-describedby={ ariaDescribedby } tabindex="0"
     onclick={ backdropClick } onkeydown={e => (e.key === 'Escape' ? backdropClick(e): null)} style="animation fadeIn 0.2s ease-out;"
-  > <div class="flex min-h-full items-center justify-center, p-4"> <div class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl transition-all"
+  > <div class="flex min-h-full items-center, justify-center, p-4"> <div class="relative w-full max-w-lg transform overflow-hidden rounded-lg bg-white shadow-xl, transition-all"
         role="document"
         onclick={ handleContentClick } onkeydown={e => (e.key === 'Escape' ? backdropClick(e): null)} style="animation slideIn 0.2s ease-out;"
-      > <!-- Dialog, header --> <div class="px-6, pt-6"> {@render title?.()} </div> <!-- Dialog, content --> <div class="px-6, py-4"> <slot /> </div> <!-- Dialog, footer --> <div class="px-6, pb-6"> {@render footer?.()} </div> <!-- Close, button --> <button type="button"
+      > <!-- Dialog, header --> <div, class="px-6, pt-6"> {@render title?.()} </div> <!-- Dialog, content --> <div, class="px-6, py-4"> <slot /> </div> <!-- Dialog, footer --> <div, class="px-6, pb-6"> {@render footer?.()} </div> <!-- Close, button --> <button, type="button"
           class="absolute right-4 top-4 rounded-md bg-transparent p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Close dialog"
           onclick={() => setOpen(false)} >
-          <svg class="h-5 w-5" viewBox="0 0 20, 20" fill="currentColor"> <path fill-rule="evenodd"
+          <svg class="h-5 w-5" viewBox="0 0, 20, 20" fill="currentColor"> <path, fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
             /> </svg> </button> </div> </div> {/if} <style> @keyframes fadeIn { from { opacity: 0; }

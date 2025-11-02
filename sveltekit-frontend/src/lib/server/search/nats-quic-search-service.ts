@@ -39,7 +39,7 @@ const SEARCH_TOPICS = {
   SEARCH_RESPONSE: 'legal.search.response',
   SEARCH_SUGGESTIONS: 'legal.search.suggestions',
   SEARCH_ANALYTICS: 'legal.search.analytics',
-  SEARCH_CACHE_INVALIDATE: `legal.search.cache.invalidate' } as const;'`
+  SEARCH_CACHE_INVALIDATE: `legal.search.cache.invalidate` } as const;'`'`
 // Search Request/Response Types
 export interface SearchRequest { id: string;, query: string;
   searchType: 'semantic' | 'text' | 'hybrid';
@@ -312,7 +312,7 @@ export class NatsQuicSearchService {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: fastStringify({
          , model: model || 'embeddinggemma:latest',
           prompt: query.slice(0, 2048)
@@ -340,7 +340,7 @@ export class NatsQuicSearchService {
       options: {
         limit: request.options?.limit,
         threshold: request.options?.threshold,
-        model: request.options?.model || 'unknown' }
+        model: request.options?.model || 'unknown` }'`
     };
     return createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
   }
@@ -429,8 +429,7 @@ export class NatsQuicSearchService {
       }
       this.metrics.suggestionsGenerated++;
     } catch (error) {
-      console.error('❌ Suggestion generation error:', error);'
-    }
+      console.error('❌ Suggestion generation error:', error);` }`'
   }
   /**
    * Public API: Submit async search request

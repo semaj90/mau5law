@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               helpers.or(
                 helpers.ilike(evidence.title, `%${searchQuery}%`),
                 helpers.ilike(evidence.description, `%${searchQuery}%`),
-                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%' }`'`
+                sql`${evidence.tags}::text ILIKE ${`%${searchQuery}%` }`'`'`
               )
             )
           )

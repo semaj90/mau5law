@@ -136,8 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Keys array is required for batch_get operation'
-            },
+              error: 'Keys array is required for batch_get operation` },'`
             { status: 400 }
           );
         }
@@ -273,8 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     logger.error('💥 Cache storage error', {
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
+      error: error instanceof Error ? error.message : 'Unknown error` });'`
     return json(
       {
         success: false,

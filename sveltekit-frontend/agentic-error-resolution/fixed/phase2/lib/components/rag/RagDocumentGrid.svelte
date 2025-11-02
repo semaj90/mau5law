@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Upload, Search, Filter, Grid, List } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { DocumentCard } from './DocumentCard.svelte';
-  import { DocumentModal } from './DocumentModal.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  DocumentCard  from "./DocumentCard.svelte";
+  import  DocumentModal  from "./DocumentModal.svelte";
   // Changed: make embeddingModel required (string) to match other components' expectations
   interface Document {
     id: string;
@@ -137,7 +137,7 @@
         class={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
       >
         <Grid class="w-5 h-5" />
-      </Button.Root>
+      </Button>
       <Button
         onclick={() => (viewMode = 'list')}
         class={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
@@ -166,7 +166,7 @@
           : `Upload documents to get started with RAG`}
       </p>
       {#if searchQuery}
-        <Button.Root
+        <Button
           onclick={handleClearSearch}
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >

@@ -493,9 +493,9 @@ Legal Review: Prosecutor Williams`,`
         },
         neo4j_updates: {
           cypherQueries: [
-            "MERGE, (p:Person {name: 'John Michael Doe` }) SET p.age = 34, p.role = 'suspect'",'`
-            "MERGE (p:Person {name: `Jane Elizabeth Smith` }) SET p.age = 28, p.role = 'witness'",
-            "MATCH (s:Person {name: `John Michael Doe` }), (w:Person {name: `Jane Elizabeth Smith` }) MERGE (w)-[:WITNESSED]->(s)"
+            "MERGE, (p:Person {name: 'John Michael Doe' }) SET p.age = 34, p.role = 'suspect'",'`'`
+            "MERGE (p:Person {name: `Jane Elizabeth Smith' }) SET p.age = 28, p.role = 'witness'",'`
+            "MATCH (s:Person {name: `John Michael Doe` }), (w:Person {name: `Jane Elizabeth Smith' }) MERGE (w)-[:WITNESSED]->(s)"'`
           ],
           nodesCreated: 2,
           relationshipsCreated: 1,
@@ -598,5 +598,4 @@ Charges: Possession with Intent to Distribute; RECOMMENDATIONS:
 4. BOLO for fleeing suspect (Male, Red hoodie, approximately 6'0")'"
 Report Status: Preliminary
 Supervisor Review: Pending
-This is demonstration evidence for testing the multi-agent analysis system.`;`
-}
+This is demonstration evidence for testing the multi-agent analysis system.`;' }'`

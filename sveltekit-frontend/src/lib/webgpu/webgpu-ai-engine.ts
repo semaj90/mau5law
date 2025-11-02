@@ -247,8 +247,7 @@ export class WebGPUAIEngine {
         }
         output[inputOffset] = attentionSum;
       }
-    `;`
-  }
+    `;` }
   /**
    * Process dimensional array with kernel attention
    */
@@ -276,7 +275,7 @@ export class WebGPUAIEngine {
           {, binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
           { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'read-only-storage' } },
           { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'storage' } },
-          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: 'uniform` } }'`
+          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: {, type: `uniform` } }'`'`
         ]
       });
       pipeline = device.createComputePipeline({ layout: device.createPipelineLayout({, bindGroupLayouts: [bindGroupLayout] }),
@@ -469,7 +468,7 @@ export class WebGPUAIEngine {
     cuttingEdge: string[];
   } {
     const recentJobs = computationHistory.filter(
-      job => Date.now() - job.createdAt < 86400000 // Last 24, hours
+      job => Date.now() - job.createdAt < 86400000 // Last, 24, hours
     );
     return {
       pickUpWhereLeftOff:

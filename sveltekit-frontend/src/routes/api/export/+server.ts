@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Check authentication
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
-      return json({ success: false, error: 'Authentication required' }, { status: 401 });
+      return json({ success: false, error: 'Authentication required` }, { status: 401 });'`
     }
     const body = await request.json();
     const validatedData = ExportRequestSchema.parse(body);
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json(
       {
         success: false,
-        error: msg || 'Export failed' },
+        error: msg || 'Export failed` },'`
       { status: 500 }
     );
   }

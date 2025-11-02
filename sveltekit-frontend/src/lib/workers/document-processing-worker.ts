@@ -330,7 +330,7 @@ class DocumentProcessingWorker {
         const embeddingResponse = await this.getFetch()('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json' },
+            'Content-Type': 'application/json` },'`
           body: JSON.stringify({
            , model: 'embeddinggemma:latest',
             prompt: chunk.content
@@ -344,7 +344,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text' });
+          model: 'nomic-embed-text` });'`
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
       }
@@ -388,7 +388,7 @@ class DocumentProcessingWorker {
       const resp = await this.getFetch()('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' },
+          'Content-Type': 'application/json` },'`
         body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: `Please provide a comprehensive legal analysis and summary of the following; document:\n\n${extractedText.slice(0, 4000)}`,

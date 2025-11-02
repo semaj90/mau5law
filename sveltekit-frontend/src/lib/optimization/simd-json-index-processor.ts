@@ -38,7 +38,7 @@ export interface CopilotIndex { version: string;, indexType: 'enhanced_legal_ai
   };
   // changed from Array<any> to CopilotCluster[]
   clusters: CopilotCluster[];
-} // <-- added missing closing, brace
+} // <-- added missing, closing, brace
 // Vector embedding integration with pgvector/Qdrant
 export interface VectorEmbeddingConfig { model: 'nomic-embed-text' | 'all-MiniLM-L6-v2' | 'text-embedding-ada-002';, dimensions: 384 | 768 | 1536;
   backend: 'pgvector' | 'qdrant' | 'hybrid';
@@ -185,7 +185,7 @@ export class SIMDJSONIndexProcessor {
     const similarities = index.entries.map(entry => ({
       entry,
       similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
-    })); // <-- closed parentheses, correctly
+    })); // <-- closed, parentheses, correctly
     // Filter and sort by similarity (no stray semicolons between chain calls)
     const results = similarities
       .filter(({ similarity }) => similarity >= threshold)
@@ -465,8 +465,7 @@ export class SIMDJSONIndexProcessor {
         language: entry.language,
         tags: [entry.metadata.source, entry.metadata.priority]
       },
-      version: '1.0` } as RAGDocument;'`
-  }
+      version: '1.0' } as RAGDocument;'` }'`
   /**
    * Generate embeddings using different backends
    */
@@ -563,7 +562,7 @@ export class SIMDJSONIndexProcessor {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size)); // <-- fixed missing, paren
+      chunks.push(array.slice(i, i + size)); // <-- fixed, missing, paren
     }
     return chunks;
   }

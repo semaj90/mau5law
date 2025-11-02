@@ -193,7 +193,7 @@ export const graphCacheMachine = createMachine(
       revalidated: {
         entry: ['notifyRevalidation', 'updateCaches', 'updateTelemetry'],
         after: {
-          500: 'idle'
+         , 500: 'idle'
         }
       },
       error: {

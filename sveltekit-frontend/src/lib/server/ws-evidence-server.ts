@@ -91,8 +91,7 @@ class EvidenceWebSocketServer {
           const message = JSON.parse(data.toString());
           await this.handleClientMessage(ws, message);
         } catch (error) {
-          console.error('[WS] ❌ Message parse error:', error);'
-        }
+          console.error('[WS] ❌ Message parse error:', error);` }`'
       });
 
       ws.on('close', () => {
@@ -251,8 +250,7 @@ class EvidenceWebSocketServer {
         try {
           messages.push(JSON.parse(cached));
         } catch (error) {
-          console.error('[WS] ❌ Cache parse error:', error);'
-        }
+          console.error('[WS] ❌ Cache parse error:', error);` }`'
       }
     }
 

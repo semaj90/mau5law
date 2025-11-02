@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     await cacheManager.set(cacheKey, componentData, 'enhanced-component', 300);
     setHeaders({
       'cache-control': 'public, max-age=300, stale-while-revalidate=600',
-      'x-cache': `MISS` });
+      'x-cache': `MISS' });'`
     logger.info('Generated enhanced component', { slug, variant });
     return json(componentData);
   } catch (error: any) {
@@ -186,7 +186,7 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     return {
       component: 'semantic-search',
       variant,
-      data: { results: [], query: '` },'`
+      data: { results: [], query: '' },'`'`
       meta: { generated_at: new Date().toISOString() }
     };
   }
@@ -214,7 +214,7 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
     return {
       component: 'case-analysis',
       variant,
-      data: { error: `case_id required` },
+      data: { error: 'case_id required' },
       meta: { generated_at: new Date().toISOString() }
     };
   }
@@ -244,7 +244,7 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     return {
       component: 'document-insights',
       variant,
-      data: { error: `doc_id required` },
+      data: { error: 'doc_id required' },
       meta: { generated_at: new Date().toISOString() }
     };
   }

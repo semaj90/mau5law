@@ -163,7 +163,7 @@ export class QLoRAReinforcementLearningService {
     // Keep only the best examples (data flywheel curation)
     if (categoryExamples.length > 100) {
       categoryExamples.sort((a, b) => b.reward - a.reward);
-      this.dataFlywheel.set(category, categoryExamples.slice(0, 100)); // Corrected: Added; missing: ')' }
+      this.dataFlywheel.set(category, categoryExamples.slice(0, 100)); // Corrected: Added; missing: ')` }'`
     // Persist to Redis
     await this.redis.set( // Changed from setex to set
       `data_flywheel:${category}`,

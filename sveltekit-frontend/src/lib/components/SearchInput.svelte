@@ -54,7 +54,7 @@
     aria-label="Search"
   />
   {#if value}
-    <button class="clear-button" onclick={clearValue} aria-label="Clear, search" type="button">
+    <button, class="clear-button" onclick={clearValue} aria-label="Clear, search" type="button">
       <X, size={16} />
     </button>
   {/if}

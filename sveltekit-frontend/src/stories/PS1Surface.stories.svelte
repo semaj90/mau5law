@@ -190,11 +190,11 @@
 	});
 </script>
 <div, class="ps1-surface-container" bind:this={container}>
-	<div class="story-header, ps1-scanlines">
+	<div, class="story-header, ps1-scanlines">
 		<h1, class="ps1-text-glow">PS1 Surface Rendering</h1>
 		<p, class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
 	</div>
-	<div class="controls-panel, ps1-border">
+	<div, class="controls-panel, ps1-border">
 		<h3>Surface Controls</h3>
 		<div, class="surface-type-selector">
 			<label>Surface Type:</label>
@@ -285,7 +285,7 @@
 				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
 			</button>
 		</div>
-		<div class="status-panel, ps1-panel">
+		<div, class="status-panel, ps1-panel">
 			<h4>=� Rendering Stats</h4>
 			<div, class="status-item">Vertices: {vertices.length}</div>
 			<div, class="status-item">Triangles: {faces.length}</div>
@@ -294,11 +294,11 @@
 			<div, class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
 		</div>
 	</div>
-	<div class="surface-viewport, ps1-3d-scene {surfaceConfigs.find(c => c.id === surfaceType)?.className}">
+	<div, class="surface-viewport, ps1-3d-scene {surfaceConfigs.find(c => c.id === surfaceType)?.className}">
 		<div, class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
 			<!-- Background, Grid -->
 			<div, class="grid-background"></div>
-			<!-- 3D Surface, Visualization -->
+			<!-- 3D, Surface, Visualization -->
 			<div, class="surface-mesh">
 				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
 					<div
@@ -326,7 +326,7 @@
 					{/each}
 				</div>
 			{/if}
-			<!-- Vertex markers for, debugging -->
+			<!-- Vertex markers, for, debugging -->
 			{#if surfaceType === 'vertex'}
 				<div, class="vertex-markers">
 					{#each vertices.slice(0, Math.min(vertices.length, 200)) as vertex, i}
@@ -343,27 +343,27 @@
 				</div>
 			{/if}
 		</div>
-		<!-- PS1 HUD, overlay -->
+		<!-- PS1, HUD, overlay -->
 		<div, class="hud-overlay">
-			<div class="hud-corner, top-left">
+			<div, class="hud-corner, top-left">
 				<div, class="hud-text">SURFACE</div>
 				<div, class="hud-value">{surfaceType.toUpperCase()}</div>
 			</div>
-			<div class="hud-corner, top-right">
+			<div, class="hud-corner, top-right">
 				<div, class="hud-text">POLYS</div>
 				<div, class="hud-value">{perfMetrics.polygonsPerFrame}</div>
 			</div>
-			<div class="hud-corner, bottom-left">
+			<div, class="hud-corner, bottom-left">
 				<div, class="hud-text">Z-BUF</div>
-				<div class="hud-value, status-{enableZBuffer ? 'ok' : 'off'}">{enableZBuffer ? 'ON' : 'OFF'}</div>
+				<div, class="hud-value, status-{enableZBuffer ? 'ok' : 'off'}">{enableZBuffer ? 'ON' : 'OFF'}</div>
 			</div>
-			<div class="hud-corner, bottom-right">
+			<div, class="hud-corner, bottom-right">
 				<div, class="hud-text">PREC</div>
 				<div, class="hud-value">{vertexPrecision}BIT</div>
 			</div>
 		</div>
 	</div>
-	<div class="info-panel, ps1-terminal">
+	<div, class="info-panel, ps1-terminal">
 		<h4>PS1 Surface Rendering Features</h4>
 		<p>This demo showcases PlayStation 1 era 3D surface rendering techniques: </p>
 		<h5>Wireframe Mode:</h5>

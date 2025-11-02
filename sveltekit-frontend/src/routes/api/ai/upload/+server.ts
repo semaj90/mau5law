@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': `application/json` }
     });
   } catch (err) {
-    console.error('Upload failed: `, err);'`
+    console.error('Upload failed: ', err);'`'`
     return new Response(JSON.stringify({ success: false, error: `Upload failed` }), { status: 500 });
   }
 };

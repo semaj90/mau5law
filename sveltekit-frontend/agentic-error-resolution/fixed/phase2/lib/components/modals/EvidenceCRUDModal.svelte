@@ -5,7 +5,7 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, CardContent, CardHeader, CardTitle, Input, Label  from "$lib/components/ui/enhanced-bits.svelte";
   import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte';
   interface Evidence {
     id?: string;
@@ -358,14 +358,14 @@
                  mode === 'edit' ? 'Edit Evidence' : 'View Evidence'}
               </CardTitle>
             </div>
-            <Button.Root
+            <Button
               variant="ghost"
               size="sm"
               onclick={handleClose}
               class="rounded-full"
             >
               <X class="w-4 h-4" />
-            </Button.Root>
+            </Button>
           </div>
         </CardHeader>
         <CardContent class="p-6 overflow-y-auto max-h-[70vh]">

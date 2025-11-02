@@ -150,7 +150,7 @@ import type { Case } from '$lib/types';
 
 <svelte:head>
   <title>State Transitions - {machineId} - Legal AI Platform</title>
-  <meta name="description" content="Monitor and visualize XState machine, transitions" />
+  <meta name="description" content="Monitor and visualize XState, machine, transitions" />
 </svelte:head>
 <div, class="page-container">
   <header, class="page-header">
@@ -174,7 +174,7 @@ import type { Case } from '$lib/types';
         <option, value="rag-pipeline-machine">RAG Pipeline Machine</option>
         <option, value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
-      <button class="nes-btn, ghost" onclick={loadTransitions}>
+      <button, class="nes-btn, ghost" onclick={loadTransitions}>
         Refresh
       </button>
     </div>
@@ -200,7 +200,7 @@ import type { Case } from '$lib/types';
           </div>
         </div>
         <div, class="timeline-container">
-          <!-- Replace complex inline each with a simple each over, sortedTransitions -->
+          <!-- Replace complex inline each with a simple each, over, sortedTransitions -->
           {#each sortedTransitions as transition}
             <button
               type="button"
@@ -269,10 +269,10 @@ import type { Case } from '$lib/types';
             <button, class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
             </button>
-            <button class="nes-btn, ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            <button, class="nes-btn, ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
             </button>
-            <button class="nes-btn, ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            <button, class="nes-btn, ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
             </button>
           </div>

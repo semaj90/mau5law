@@ -316,7 +316,7 @@ async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 		const stagesCompleted: string[] = [];
 
 		await streamingService.synthesizeWithProgress({ input: {, query: 'Streamed synthesis test query',
-				context: {, userId: `test_user` },
+				context: {, userId: `test_user' },'`
 				options: {}
 			},
 			onProgress: (_stage, _progress) => {
@@ -448,7 +448,7 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 			requestId: `test_request_${Date.now()}`,
 			userId: 'test_user',
 			rating: 4,
-			feedback: `Integration feedback` });
+			feedback: `Integration feedback' });'`
 
 		const recommendations =
 			typeof feedbackLoop.getPersonalizedRecommendations === 'function'
@@ -557,8 +557,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 			priority: 'high',
 			category: 'infrastructure',
 			message: 'Ollama is unavailable for local inference.',
-			action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.` });'`
-	}
+			action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.' });'' }
 
 	if (context.cache) {
 		if (!context.cache.redisConnected) {
@@ -566,7 +565,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'medium',
 				category: 'infrastructure',
 				message: 'Redis is not connected; cache is running in memory only.',
-				action: `Configure REDIS_URL or disable Redis-backed cache features where not needed.` });
+				action: `Configure REDIS_URL or disable Redis-backed cache features where not needed.' });'`
 		}
 
 		if (context.cache.hitRate < 0.3) {
@@ -574,7 +573,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'low',
 				category: 'performance',
 				message: 'Cache hit rate is below 30%.',
-				action: `Warm the cache with common queries or review cache invalidation rules.` });
+				action: `Warm the cache with common queries or review cache invalidation rules.' });'`
 		}
 	}
 
@@ -586,8 +585,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 				priority: 'high',
 				category: 'performance',
 				message: `Monitoring reports high P95 latency (${p95.toFixed(0)}ms).`,
-				action: 'Profile slow requests and consider scaling the service or optimising database queries.` });'`
-		}
+				action: 'Profile slow requests and consider scaling the service or optimising database queries.' });'' }
 	}
 
 	if (context.synthesis && context.synthesis.confidence < 0.7) {
@@ -595,7 +593,7 @@ function generateRecommendations(context: RecommendationContext): Recommendation
 			priority: 'medium',
 			category: 'quality',
 			message: 'Synthesis confidence is below the desired threshold.',
-			action: `Improve contextual data or adjust preprocessing to boost confidence.` });
+			action: `Improve contextual data or adjust preprocessing to boost confidence.' });'`
 	}
 
 	return recommendations;
@@ -609,7 +607,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		};
 
 		if (!payload?.query || typeof payload.query !== 'string') {
-			return json({ error: `Query is required` }, { status: 400 });
+			return json({ error: 'Query is required' }, { status: 400 });
 		}
 
 		const contextArray = Array.isArray(payload.context)
@@ -618,7 +616,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		contextArray.push({
 			userId: 'test_user',
-			sessionId: `test_session_${Date.now()}` });
+			sessionId: `test_session_${Date.now()}' });'`
 
 		const synthesis: SynthesizedInput = await aiAssistantSynthesizer.synthesizeInput(
 			payload.query,

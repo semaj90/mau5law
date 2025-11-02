@@ -48,7 +48,7 @@ import type { Case } from '$lib/types';
   		}
   	});
 </script>
-<!-- Gaming HUD, Container -->
+<!-- Gaming, HUD, Container -->
 <div, class="gaming-hud">
   <!-- Top, Bar -->
   <div, class="hud-top-bar">
@@ -65,7 +65,7 @@ import type { Case } from '$lib/types';
         <span, class="exp-text">{experience}/{maxExperience} EXP</span>
       </div>
     </div>
-    <!-- Current Case, Info -->
+    <!-- Current, Case, Info -->
     <div, class="case-section">
       <div, class="case-label">ACTIVE CASE</div>
       <div, class="case-id">{currentCase}</div>

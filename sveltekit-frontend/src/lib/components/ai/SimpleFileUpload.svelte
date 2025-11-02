@@ -1,4 +1,4 @@
-<!-- Enhanced File Upload Component with Full Stack, Integration -->
+<!-- Enhanced File Upload Component with Full, Stack, Integration -->
 <script, lang="ts">
 import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
@@ -497,12 +497,12 @@ import type { Document } from '$lib/types';
   }
 </script>
 <div, class={`space-y-6 ${classNameVar}`}>
-  <!-- Enhanced System Status, Dashboard -->
+  <!-- Enhanced System, Status, Dashboard -->
   {#if systemStatus.services}
-    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4, border">
-      <div class="flex items-center justify-between, mb-4">
-        <h3 class="text-lg font-semibold text-gray-800 flex items-center, gap-2">
-          <Database class="w-5 h-5, text-blue-600" />
+    <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl, p-4, border">
+      <div class="flex items-center, justify-between, mb-4">
+        <h3 class="text-lg font-semibold text-gray-800 flex, items-center, gap-2">
+          <Database class="w-5, h-5, text-blue-600" />
           Full-Stack System Status
         </h3>
         <button
@@ -512,51 +512,51 @@ import type { Document } from '$lib/types';
           Refresh Status
         </button>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6, gap-3">
+      <div class="grid grid-cols-2 md:grid-cols-3, lg:grid-cols-6, gap-3">
         {#each Object.entries(systemStatus.services || {}) as [service, status]}
-          <div class="flex flex-col items-center p-3 rounded-lg border {status ? 'bg-green-50 border-green-200' : 'bg-red-50, border-red-200'}">
-            <div class="flex items-center gap-2, mb-1">
+          <div class="flex flex-col items-center p-3 rounded-lg border {status ? 'bg-green-50, border-green-200' : 'bg-red-50, border-red-200'}">
+            <div class="flex items-center, gap-2, mb-1">
               {#if service === 'postgresql'}
-                <Database class="w-4, h-4" />
+                <Database, class="w-4, h-4" />
               {:else if service === 'minio'}
-                <Cloud class="w-4, h-4" />
+                <Cloud, class="w-4, h-4" />
               {:else if service === 'qdrant'}
-                <Cpu class="w-4, h-4" />
+                <Cpu, class="w-4, h-4" />
               {:else if service === 'redis'}
-                <Zap class="w-4, h-4" />
+                <Zap, class="w-4, h-4" />
               {:else if service === 'webgpu'}
-                <Cpu class="w-4, h-4" />
+                <Cpu, class="w-4, h-4" />
               {:else}
-                <Check class="w-4, h-4" />
+                <Check, class="w-4, h-4" />
               {/if}
-              <span class="text-xs, font-medium {status ? 'text-green-700' : 'text-red-700'}">
+              <span, class="text-xs, font-medium {status ? 'text-green-700' : 'text-red-700'}">
                 {status ? '✓' : '✗'}
               </span>
             </div>
-            <span class="text-xs text-center font-medium, capitalize {status ? 'text-green-600' : 'text-red-600'}">
+            <span class="text-xs text-center, font-medium, capitalize {status ? 'text-green-600' : 'text-red-600'}">
               {service.replace(/([A-Z])/g, ' $1')}
             </span>
           </div>
         {/each}
       </div>
-      <!-- Protocol Status, Indicators -->
-      <div class="mt-4 flex items-center, justify-between">
-        <div class="flex items-center, gap-4">
-          <span class="text-sm font-medium, text-gray-600">Protocols:</span>
-          <div class="flex, gap-2">
-            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full, text-xs">QUIC</span>
-            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full, text-xs">gRPC</span>
-            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full, text-xs">JSON/REST</span>
+      <!-- Protocol, Status, Indicators -->
+      <div class="mt-4 flex, items-center, justify-between">
+        <div class="flex, items-center, gap-4">
+          <span class="text-sm, font-medium, text-gray-600">Protocols:</span>
+          <div, class="flex, gap-2">
+            <span class="px-2 py-1 bg-green-100 text-green-700, rounded-full, text-xs">QUIC</span>
+            <span class="px-2 py-1 bg-blue-100 text-blue-700, rounded-full, text-xs">gRPC</span>
+            <span class="px-2 py-1 bg-purple-100 text-purple-700, rounded-full, text-xs">JSON/REST</span>
           </div>
         </div>
         {#if enableWebGPU && systemStatus.services.webgpu}
-          <div class="flex items-center gap-2, text-green-600">
-            <Zap class="w-4, h-4" />
-            <span class="text-xs, font-medium">WebGPU Accelerated</span>
+          <div class="flex items-center, gap-2, text-green-600">
+            <Zap, class="w-4, h-4" />
+            <span, class="text-xs, font-medium">WebGPU Accelerated</span>
           {/if}
       </div>
     {/if}
-  <!-- Enhanced Upload, Zone -->
+  <!-- Enhanced, Upload, Zone -->
   <div
     class="relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 {isDragOver ? 'border-blue-400 bg-blue-50 scale-102' : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'}"
     ondragover={handleDragOver}
@@ -568,22 +568,22 @@ import type { Document } from '$lib/types';
     onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
-    <div class="flex flex-col, items-center">
-      <div class="mb-4 p-3 bg-gray-100, rounded-full">
-        <Upload class="w-8 h-8, text-gray-600" />
+    <div class="flex, flex-col, items-center">
+      <div class="mb-4 p-3, bg-gray-100, rounded-full">
+        <Upload class="w-8, h-8, text-gray-600" />
       </div>
-      <p class="text-xl font-semibold text-gray-700, mb-2">
+      <p class="text-xl font-semibold, text-gray-700, mb-2">
         Upload Legal Documents
       </p>
-      <p class="text-gray-500, mb-4">
+      <p, class="text-gray-500, mb-4">
         Drop files here or click to browse
       </p>
-      <div class="flex flex-wrap justify-center gap-2, text-xs">
+      <div class="flex flex-wrap justify-center, gap-2, text-xs">
         {#each Array.isArray(accept.split(',')) ? accept.split(',') : [] as fileType}
-          <span class="px-2 py-1 bg-gray-200 text-gray-600, rounded">{fileType.trim()}</span>
+          <span class="px-2 py-1 bg-gray-200, text-gray-600, rounded">{fileType.trim()}</span>
         {/each}
       </div>
-      <p class="text-xs text-gray-400, mt-2">
+      <p class="text-xs, text-gray-400, mt-2">
         Maximum file size: {Math.round(maxSize / 1024 / 1024)}MB each
       </p>
     </div>
@@ -596,22 +596,22 @@ import type { Document } from '$lib/types';
       onchange={handleFileInput}
     />
   </div>
-  <!-- Advanced Processing Pipeline, Display -->
+  <!-- Advanced Processing, Pipeline, Display -->
   {#if uploadStates.size > 0}
     <div, class="space-y-4">
-      <div class="flex items-center, justify-between">
-        <h3 class="text-xl font-semibold text-gray-800 flex items-center, gap-2">
-          <Loader2 class="w-5 h-5, text-blue-600" />
+      <div class="flex, items-center, justify-between">
+        <h3 class="text-xl font-semibold text-gray-800 flex, items-center, gap-2">
+          <Loader2 class="w-5, h-5, text-blue-600" />
           Processing Pipeline
         </h3>
-        <span class="text-sm, text-gray-500">{uploadStates.size} file{uploadStates.size !== 1 ? 's' : ''}</span>
+        <span, class="text-sm, text-gray-500">{uploadStates.size} file{uploadStates.size !== 1 ? 's' : ''}</span>
       </div>
       {#each Array.from(uploadStates.entries()) as [fileId, state]}
-        <div class="bg-white border border-gray-200 rounded-xl p-6, shadow-sm">
+        <div class="bg-white border border-gray-200 rounded-xl, p-6, shadow-sm">
           <!-- File, Header -->
-          <div class="flex items-center justify-between, mb-4">
-            <div class="flex items-center, gap-3">
-              <div class="p-2 bg-gray-100, rounded-lg">
+          <div class="flex items-center, justify-between, mb-4">
+            <div class="flex, items-center, gap-3">
+              <div class="p-2, bg-gray-100, rounded-lg">
                 {#if state.fileType.includes('pdf')}
                   📄
                 {:else if state.fileType.includes('image')}
@@ -623,31 +623,31 @@ import type { Document } from '$lib/types';
                 {/if}
               </div>
               <div>
-                <h4 class="font-semibold text-gray-800 truncate, max-w-md">{state.fileName}</h4>
-                <p class="text-sm, text-gray-500">
+                <h4 class="font-semibold text-gray-800, truncate, max-w-md">{state.fileName}</h4>
+                <p, class="text-sm, text-gray-500">
                   {formatFileSize(state.fileSize)} • {state.fileType}
                 </p>
               </div>
             </div>
-            <div class="flex items-center, gap-2">
+            <div class="flex, items-center, gap-2">
               {#if state.status === 'initializing' || state.status === 'processing'}
-                <Loader2 class="w-5 h-5 animate-spin, text-blue-600" />
-                <span class="text-sm text-blue-600, font-medium">Processing</span>
+                <Loader2 class="w-5 h-5, animate-spin, text-blue-600" />
+                <span class="text-sm, text-blue-600, font-medium">Processing</span>
               {:else if state.status === 'success'}
-                <Check class="w-5 h-5, text-green-600" />
-                <span class="text-sm text-green-600, font-medium">Completed</span>
+                <Check class="w-5, h-5, text-green-600" />
+                <span class="text-sm, text-green-600, font-medium">Completed</span>
               {:else if state.status === 'error'}
-                <X class="w-5 h-5, text-red-600" />
-                <span class="text-sm text-red-600, font-medium">Error</span>
+                <X class="w-5, h-5, text-red-600" />
+                <span class="text-sm, text-red-600, font-medium">Error</span>
               {/if}
             </div>
           </div>
           <!-- Processing, Stages -->
           <div, class="mb-4">
-            <div class="grid grid-cols-4 md:grid-cols-8, gap-2">
+            <div class="grid grid-cols-4, md:grid-cols-8, gap-2">
               {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
                 {@const IconComponent = getStageIcon(stageName)}
-                <div class="flex flex-col items-center" p-2, rounded-lg {
+                <div class="flex flex-col, items-center" p-2, rounded-lg {
                   stageStatus === 'completed' ? 'bg-green-100 border border-green-200' :
                   stageStatus === 'processing' ? 'bg-blue-100 border border-blue-200' :
                   stageStatus === 'error' ? 'bg-red-100 border border-red-200' :
@@ -655,16 +655,16 @@ import type { Document } from '$lib/types';
                   'bg-gray-50 border border-gray-200'
                 }">"
                   {#if stageStatus === 'processing'}
-                    <Loader2 class="w-4 h-4 animate-spin text-blue-600, mb-1" />
+                    <Loader2 class="w-4 h-4 animate-spin, text-blue-600, mb-1" />
                   {:else if stageStatus === 'completed'}
-                    <Check class="w-4 h-4 text-green-600, mb-1" />
+                    <Check class="w-4 h-4, text-green-600, mb-1" />
                   {:else if stageStatus === 'error'}
-                    <X class="w-4 h-4 text-red-600, mb-1" />
+                    <X class="w-4 h-4, text-red-600, mb-1" />
                   {:else}
-                    <div class="w-4 h-4 text-gray-400, mb-1">
+                    <div class="w-4 h-4, text-gray-400, mb-1">
   <IconComponent />
                   {/if}
-                  <span class="text-xs font-medium capitalize, text-center" {
+                  <span class="text-xs font-medium, capitalize, text-center" {
                     stageStatus === 'completed' ? 'text-green-700' :
                     stageStatus === 'processing' ? 'text-blue-700' :
                     stageStatus === 'error' ? 'text-red-700' :
@@ -678,18 +678,18 @@ import type { Document } from '$lib/types';
           </div>
           <!-- Progress, Bar -->
           <div, class="mb-4">
-            <div class="flex justify-between text-sm, mb-1">
+            <div class="flex justify-between, text-sm, mb-1">
               <span, class="text-gray-600">Progress</span>
               <span class="text-gray-600">{state.progress || 0}%</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full, h-2">
-              <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all, duration-300"
+            <div class="w-full bg-gray-200, rounded-full, h-2">
+              <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full, transition-all, duration-300"
                    style="width: {state.progress || 0}%"></div>
             </div>
           </div>
           <!-- Performance, Metrics -->
           {#if state.performance?.totalTime}
-            <div class="flex justify-between text-xs text-gray-500, mb-3">
+            <div class="flex justify-between text-xs, text-gray-500, mb-3">
               <span>Processing time: {formatDuration(state.performance.totalTime)}</span>
               {#if state.results?.documentId}
                 <span>Document ID: {state.results.documentId.substring(0, 8)}...</span>
@@ -697,7 +697,7 @@ import type { Document } from '$lib/types';
             {/if}
           <!-- Results, Display -->
           {#if state.results}
-            <div class="border-t, pt-3">
+            <div, class="border-t, pt-3">
               <button
                 class="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 onclick={() => {
@@ -709,34 +709,34 @@ import type { Document } from '$lib/types';
               >
                 View Processing Results
               </button>
-              <div id="details-{fileId}" class="hidden mt-2 p-3 bg-gray-50, rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3, text-sm">
+              <div id="details-{fileId}" class="hidden mt-2 p-3, bg-gray-50, rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2, gap-3, text-sm">
                   {#if state.results.documentId}
                     <div>
-                      <span class="font-medium, text-gray-700">Document ID:</span>
-                      <span class="text-gray-600, font-mono">{state.results.documentId}</span>
+                      <span, class="font-medium, text-gray-700">Document ID:</span>
+                      <span, class="text-gray-600, font-mono">{state.results.documentId}</span>
                     {/if}
                   {#if state.results.minioPath}
                     <div>
-                      <span class="font-medium, text-gray-700">Storage Path:</span>
-                      <span class="text-gray-600, font-mono">{state.results.minioPath}</span>
+                      <span, class="font-medium, text-gray-700">Storage Path:</span>
+                      <span, class="text-gray-600, font-mono">{state.results.minioPath}</span>
                     {/if}
                   {#if state.results.embeddingId}
                     <div>
-                      <span class="font-medium, text-gray-700">Embedding ID:</span>
-                      <span class="text-gray-600, font-mono">{state.results.embeddingId}</span>
+                      <span, class="font-medium, text-gray-700">Embedding ID:</span>
+                      <span, class="text-gray-600, font-mono">{state.results.embeddingId}</span>
                     {/if}
                   {#if state.results.vectorId}
                     <div>
-                      <span class="font-medium, text-gray-700">Vector ID:</span>
-                      <span class="text-gray-600, font-mono">{state.results.vectorId}</span>
+                      <span, class="font-medium, text-gray-700">Vector ID:</span>
+                      <span, class="text-gray-600, font-mono">{state.results.vectorId}</span>
                     {/if}
                   {#if state.results.tags && state.results.tags.length > 0}
                     <div, class="md:col-span-2">
-                      <span class="font-medium, text-gray-700">Auto-Generated Tags:</span>
-                      <div class="flex flex-wrap gap-1, mt-1">
+                      <span, class="font-medium, text-gray-700">Auto-Generated Tags:</span>
+                      <div class="flex flex-wrap, gap-1, mt-1">
                         {#each Array.isArray(state.results.tags) ? state.results.tags : [] as tag}
-                          <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full, text-xs">{tag}</span>
+                          <span class="px-2 py-1 bg-blue-100 text-blue-700, rounded-full, text-xs">{tag}</span>
                         {/each}
                       </div>
                     {/if}
@@ -745,59 +745,59 @@ import type { Document } from '$lib/types';
             {/if}
           <!-- Error, Display -->
           {#if state.error}
-            <div class="border-t, pt-3">
-              <div class="p-3 bg-red-50 border border-red-200, rounded-lg">
-                <p class="text-sm text-red-700 font-medium, mb-1">Processing Error</p>
-                <p class="text-xs, text-red-600">{state.error}</p>
+            <div, class="border-t, pt-3">
+              <div class="p-3 bg-red-50 border, border-red-200, rounded-lg">
+                <p class="text-sm text-red-700, font-medium, mb-1">Processing Error</p>
+                <p, class="text-xs, text-red-600">{state.error}</p>
               </div>
             {/if}
         </div>
       {/each}
     {/if}
-  <!-- Advanced Feature, Settings -->
-  <div class="bg-white border border-gray-200 rounded-xl, p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center, gap-2">
-      <Zap class="w-5 h-5, text-yellow-600" />
+  <!-- Advanced, Feature, Settings -->
+  <div class="bg-white border border-gray-200, rounded-xl, p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex, items-center, gap-2">
+      <Zap class="w-5, h-5, text-yellow-600" />
       Processing Features
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3, gap-4">
-      <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50, cursor-pointer">
-        <input type="checkbox" bind:checked={enableOCR} class="w-4 h-4, text-blue-600" />
+    <div class="grid grid-cols-1 md:grid-cols-2, lg:grid-cols-3, gap-4">
+      <label class="flex items-center gap-3 p-3 border rounded-lg, hover:bg-gray-50, cursor-pointer">
+        <input type="checkbox" bind:checked={enableOCR} class="w-4, h-4, text-blue-600" />
         <div>
-          <span class="font-medium, text-gray-700">OCR Processing</span>
-          <p class="text-xs, text-gray-500">Extract text from images and PDFs</p>
+          <span, class="font-medium, text-gray-700">OCR Processing</span>
+          <p, class="text-xs, text-gray-500">Extract text from images and PDFs</p>
         </div>
       </label>
-      <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50, cursor-pointer">
-        <input type="checkbox" bind:checked={enableEmbedding} class="w-4 h-4, text-blue-600" />
+      <label class="flex items-center gap-3 p-3 border rounded-lg, hover:bg-gray-50, cursor-pointer">
+        <input type="checkbox" bind:checked={enableEmbedding} class="w-4, h-4, text-blue-600" />
         <div>
-          <span class="font-medium, text-gray-700">Vector Embeddings</span>
-          <p class="text-xs, text-gray-500">Generate semantic embeddings with Ollama</p>
+          <span, class="font-medium, text-gray-700">Vector Embeddings</span>
+          <p, class="text-xs, text-gray-500">Generate semantic embeddings with Ollama</p>
         </div>
       </label>
-      <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50, cursor-pointer">
-        <input type="checkbox" bind:checked={enableRAG} class="w-4 h-4, text-blue-600" />
+      <label class="flex items-center gap-3 p-3 border rounded-lg, hover:bg-gray-50, cursor-pointer">
+        <input type="checkbox" bind:checked={enableRAG} class="w-4, h-4, text-blue-600" />
         <div>
-          <span class="font-medium, text-gray-700">RAG Integration</span>
-          <p class="text-xs, text-gray-500">Enhanced retrieval-augmented generation</p>
+          <span, class="font-medium, text-gray-700">RAG Integration</span>
+          <p, class="text-xs, text-gray-500">Enhanced retrieval-augmented generation</p>
         </div>
       </label>
-      <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50, cursor-pointer">
-        <input type="checkbox" bind:checked={enableAutoTags} class="w-4 h-4, text-blue-600" />
+      <label class="flex items-center gap-3 p-3 border rounded-lg, hover:bg-gray-50, cursor-pointer">
+        <input type="checkbox" bind:checked={enableAutoTags} class="w-4, h-4, text-blue-600" />
         <div>
-          <span class="font-medium, text-gray-700">Auto-Tagging</span>
-          <p class="text-xs, text-gray-500">AI-powered automatic tag generation</p>
+          <span, class="font-medium, text-gray-700">Auto-Tagging</span>
+          <p, class="text-xs, text-gray-500">AI-powered automatic tag generation</p>
         </div>
       </label>
-      <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50, cursor-pointer">
-        <input type="checkbox" bind:checked={enableWebGPU} class="w-4 h-4, text-blue-600" />
+      <label class="flex items-center gap-3 p-3 border rounded-lg, hover:bg-gray-50, cursor-pointer">
+        <input type="checkbox" bind:checked={enableWebGPU} class="w-4, h-4, text-blue-600" />
         <div>
-          <span class="font-medium, text-gray-700">WebGPU Acceleration</span>
-          <p class="text-xs, text-gray-500">Hardware-accelerated processing</p>
+          <span, class="font-medium, text-gray-700">WebGPU Acceleration</span>
+          <p, class="text-xs, text-gray-500">Hardware-accelerated processing</p>
         </div>
       </label>
     </div>
   </div>
 </div>
 <!-- Removed, unused <style> block that targeted `pre` to fix Svelte unused CSS selector warning -->
-<!-- SimpleFileUpload component - Svelte 5, compatible -->
+<!-- SimpleFileUpload component - Svelte, 5, compatible -->

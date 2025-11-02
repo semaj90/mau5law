@@ -118,7 +118,7 @@ File Details:
 Content to analyze:
 ${content.slice(0, enhanced ? 5000 : 2000)}
 Return ONLY the JSON object. No markdown, no explanations, no additional text.`;`
-    const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON:`
+    const basicPrompt = `Extract structured legal metadata from this content. Return ONLY valid JSON: '`
 {
   "tags": ["tag1", "tag2"],
   "title": "Brief title",
@@ -325,7 +325,7 @@ async function parseAndReturnTags(
   if (enhanced) {
     tagsResult = enhanceWithFileMetadata(tagsResult, fileName, fileType);
   }
-  return tagsResult; // <-- return the data object, not, json(Response)
+  return tagsResult; // <-- return the data, object, not, json(Response)
 }
 function validateAndCleanParsedData(parsed: Partial<LegalMetadata>, _enhanced: boolean): Partial<LegalMetadata> {
   // Changed types

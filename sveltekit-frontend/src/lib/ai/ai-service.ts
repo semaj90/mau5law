@@ -97,7 +97,7 @@ class AIService {
       // Add error message to store
       aiAssistant.addMessage(caseId, {
         role: 'system',
-        content: `Error: ${errorMessage}' });'`
+        content: `Error: ${errorMessage}` });'`'`
       aiAssistant.setError(errorMessage);
       throw error;
     } finally {
@@ -258,7 +258,7 @@ export async function sendToAI(caseId: string, prompt: string, evidenceIds?: str
     caseId,
     prompt,
     evidenceIds,
-    context: 'general' });
+    context: 'general` });'`
 }
 export async function analyzeEvidence(
   caseId: string,

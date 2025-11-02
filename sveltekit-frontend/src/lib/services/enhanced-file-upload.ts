@@ -247,7 +247,7 @@ class EnhancedFileUpload {
       return localStorageFiles.deleteFile(fileId);
     } else {
       const response = await fetch(`/api/evidence/${encodeURIComponent(fileId)}`, {
-        method: 'DELETE` });'`
+        method: 'DELETE' });'`'`
       return response.ok;
     }
   }

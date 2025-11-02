@@ -190,8 +190,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
     // Parse request body
@@ -225,7 +224,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           caseId,
           eventId: timelineEventId,
           timestamp: new Date().toISOString(),
-          action: `timeline_event_created` }
+          action: `timeline_event_created' }'`
       },
       { status: 201 }
     );

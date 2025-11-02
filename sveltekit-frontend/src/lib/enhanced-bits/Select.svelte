@@ -17,23 +17,23 @@
   const hasSelectImpl = Boolean(SelectImpl && (typeof SelectImpl === 'function' || typeof SelectImpl === 'object'));
 </script>
 {#if hasSelectImpl}
-  <!-- Svelte 5: Direct component usage instead of, svelte:component -->
+  <!-- Svelte 5: Direct component usage instead, of, svelte:component -->
   <SelectImpl {value} {options} {placeholder} {disabled} {...rest} />
 {:else}
-  <!-- Fallback: native select to avoid runtime errors if the implemented component shape, differs -->
-  <select bind:value, class="compat-select" {disabled} {...rest}>
+  <!-- Fallback: native select to avoid runtime errors if the implemented component, shape, differs -->
+  <select, bind:value, class="compat-select" {disabled} {...rest}>
     {#if placeholder}
       <option value="" disabled={value == null || value === ''}>{placeholder}</option>
     {/if}
     {#each Array.isArray(options) ? options : [] as opt}
-      <!-- support both { value,label } and simple, primitives -->
+      <!-- support both { value,label } and, simple, primitives -->
       <option, value={opt?.value ?? opt?.id ?? opt}>
         {opt?.label ?? opt?.name ?? opt}
       </option>
     {/each}
   </select>
 {/if}
-<!-- Intentionally minimal styles; this file is purely a compatibility, shim -->
+<!-- Intentionally minimal styles; this file is purely a, compatibility, shim -->
 <style>
   /* no-op */
 </style>

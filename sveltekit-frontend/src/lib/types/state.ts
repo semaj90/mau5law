@@ -193,8 +193,8 @@ export type { AIResponse } from './global.js';
 
 // Fix Svelte component types
 export type SvelteComponent = import('svelte').SvelteComponent;
-export type ComponentProps<T extends, SvelteComponent> = any;
-export type ComponentEvents<T extends, SvelteComponent> = any;
+export type ComponentProps<T, extends, SvelteComponent> = any;
+export type ComponentEvents<T, extends, SvelteComponent> = any;
 
 // Fix action types
 export type Action<T = HTMLElement, P = any> = (

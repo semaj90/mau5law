@@ -38,8 +38,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err) {
     console.error('Embedding API error: ', err);'
-    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error' }');'`
-  }
+    throw error(500, `Embedding operation failed: ${err instanceof Error ? err.message : 'Unknown error' }');'' }'`
 };
 async function handleEmbeddings(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
   const startTime = Date.now();
@@ -102,7 +101,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     useCUDA && (processedTexts.length > 10 || textComplexity > 75 || processedTexts.some(text => text.length > 2000));
   if (shouldUseCUDA) {
     // Ask the centralized service to use the CUDA/TensorRT backend
-    const resp = await generateEmbeddings({ texts: processedTexts, model, mode: 'tensorrt` });'`
+    const resp = await generateEmbeddings({ texts: processedTexts, model, mode: `tensorrt` });'`'`
     embeddings = resp.embeddings;
     // Note: gpuTime/parallelWorkers are not returned by the wrapper currently
     cudaTime = 0;

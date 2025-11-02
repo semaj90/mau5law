@@ -28,14 +28,14 @@ type MachineOptions = unknown;
 type StateMachine = unknown;
 
 // Use $-prefixed generic names so unused-generic linter rule is satisfied if they are not referenced
-type CreateMachineFn = <$TContext, $TEvent extends, EventObject = EventObject>(
+type CreateMachineFn = <$TContext, $TEvent, extends, EventObject = EventObject>(
   config: MachineConfig,
   options?: MachineOptions
 ) => StateMachine;
 
 // Safe casts to typed factories (no `any`)
 const createMachineTyped = createMachineRuntime as unknown as CreateMachineFn;
-const assign = assignRuntime as unknown as (<$TContext, $TEvent extends, EventObject = EventObject>(fn: any) => unknown);
+const assign = assignRuntime as unknown as (<$TContext, $TEvent, extends, EventObject = EventObject>(fn: any) => unknown);
 
 import { writable, derived, type Writable, readable, type Readable } from 'svelte/store';
 import { NeuralSpriteEngine } from '$lib/engines/neural-sprite-engine';
@@ -141,7 +141,7 @@ export type Phase13Event =
   | { type: 'ATTENTION_WEIGHTS_UPDATED'; weights: Float32Array; focusAreas: FocusArea[] }
   | { type: 'COMPILER_FEEDBACK_START' }
   | { type: 'COMPILER_FEEDBACK_STOP' }
-  | { type: 'RESET_SYSTEM` }'`
+  | { type: `RESET_SYSTEM` }'`'`
   | { type: `EMERGENCY_SHUTDOWN` };
 // WebGL vertex streaming service
 const webglVertexStreamingService = (context: Phase13Context) => {
@@ -436,7 +436,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             target: 'coordinating'
           },
           ENHANCED_RAG_QUERY: {
-            target: 'enhancedRAG` },'`
+            target: `enhancedRAG` },'`'`
           PAGERANK_UPDATE: {
             actions: ['updatePageRank']
           },
@@ -488,7 +488,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
             })
           },
           API_COORDINATION_STOP: {
-            target: 'webglReady` },'`
+            target: `webglReady` },'`'`
           ENHANCED_RAG_QUERY: {
             target: `enhancedRAG` }
         }
@@ -544,7 +544,7 @@ export const phase13StateMachine = createMachineTyped<Phase13Context, Phase13Eve
         }
       },
       error: { meta: {, description: 'Error state with recovery options',
-          phase: 'Phase 13 Error Recovery` },'`
+          phase: `Phase 13 Error Recovery` },'`'`
         on: { RESET_SYSTEM: {, target: 'initializing',
             actions: assign({
               // Reset critical state

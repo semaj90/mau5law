@@ -224,7 +224,7 @@ class GemmaEmbeddingsService {
           similarity: parseFloat(row.similarity),
           content: row.content,
           metadata: row.metadata || {},
-          document_type: row.document_type || 'unknown` })'`
+          document_type: row.document_type || 'unknown' })'`'`
       );
     } catch (error) {
       console.error('Vector search failed:', error);
@@ -319,7 +319,7 @@ class GemmaEmbeddingsService {
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json` },'`
+        'Content-Type': 'application/json' },'`'`
       body: JSON.stringify(payload),
       signal: controller.signal
     }).finally(() => clearTimeout(timeoutId));
@@ -417,7 +417,7 @@ class GemmaEmbeddingsService {
           ${content},
           ${sql.raw(`'[${embedding.join(',')}]'::vector`)},
           ${request.model || GEMMA_EMBEDDING_MODEL},
-          ${request.document_type || 'unknown` },'`
+          ${request.document_type || 'unknown' },'`'`
           ${JSON.stringify(request.metadata || {})}
         )
         ON CONFLICT (text_hash) DO UPDATE SET
@@ -426,8 +426,7 @@ class GemmaEmbeddingsService {
           document_type = EXCLUDED.document_type,
           metadata = EXCLUDED.metadata,
           updated_at = NOW()
-      `);`
-    } catch (error) {
+      `);' } catch (error) {'`
       console.error('Failed to store embedding:', error);
       throw error;
     }

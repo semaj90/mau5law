@@ -27,8 +27,8 @@ export const analysisResults = pgTable('analysis_results', {
   analysisTypes: json('analysis_types').notNull(), // array or string stored as JSON
   confidence: real('confidence').default(0),
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
-  createdAt: timestamp('created_at', { mode: 'date` }).defaultNow(),'`
-  updatedAt: timestamp('updated_at', { mode: `date` }).defaultNow()
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),'`'`
+  updatedAt: timestamp('updated_at', { mode: `date' }).defaultNow()'`
 });
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -68,8 +68,7 @@ export const sessions = pgTable('sessions', {
     .references(() => users.id),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,
-    mode: 'date` }).notNull()'`
-});
+    mode: 'date' }).notNull()'' });
 // Define the chat_messages table
 export const chatMessages = pgTable('chat_messages', {
   id: varchar('id', { length: 256 }).primaryKey(),
@@ -97,7 +96,7 @@ export const chatEmbeddings = pgTable(
   {
     chatId: varchar('chat_id', { length: 256 })
       .notNull()
-      .references(() => chatMessages.id, { onDelete: `cascade` }),
+      .references(() => chatMessages.id, { onDelete: `cascade' }),'`
     embedding: vector('embedding', { dimensions: 768 }).notNull(), // Gemma embedding size
     // Store quantized embedding as bytea (binary data) or text (base64 encoded)
     // For Float32Array, bytea is more efficient.
@@ -115,7 +114,7 @@ export const chatEmbeddings = pgTable(
   table => {
     return { pk: primaryKey({, columns: [table.chatId] }),
       // Add an index for efficient vector search
-      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);` };
+      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);' };'`
   }
 );
 // 🧠 User Reports Table

@@ -15,7 +15,7 @@ const logger = {
 // Environment fallback (typed)
 const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
 const env = {
-  QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333' };
+  QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333` };'`
 
 // Minimal internal client shape to avoid casting to `any`
 interface QdrantClientLike {
@@ -84,7 +84,7 @@ export class QdrantService {
   private readonly COLLECTIONS = {
     documents: 'legal_documents',
     cases: 'case_embeddings',
-    evidence: 'evidence_vectors' };
+    evidence: 'evidence_vectors` };'`
 
   constructor() {
     const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';

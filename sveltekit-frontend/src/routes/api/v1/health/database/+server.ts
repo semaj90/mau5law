@@ -33,8 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
           health = {
             fallback: true,
             schemaValid,
-            message: 'checkDatabaseHealth not available; returned minimal fallback'
-          };
+            message: 'checkDatabaseHealth not available; returned minimal fallback` };'`
         }
         return json({
           success: true,

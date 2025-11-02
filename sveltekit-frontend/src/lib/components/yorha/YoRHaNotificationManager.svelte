@@ -1,7 +1,7 @@
-<!-- YoRHa Notification Manager, Component -->
+<!-- YoRHa Notification, Manager, Component -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
-  import { YoRHaNotification } from './YoRHaNotification.svelte';
+  import  YoRHaNotification  from "./YoRHaNotification.svelte";
   import { notificationStore, as notificationStoreExport } from '$lib/stores/notifications';
   interface Notification {
     id: string;
@@ -44,9 +44,9 @@
   }
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));
 </script>
-<!-- Render notifications grouped by, position -->
+<!-- Render notifications grouped, by, position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
-  <div class="notification-group, notification-group-{position}">
+  <div, class="notification-group, notification-group-{position}">
     {#each notificationGroup as notification ((notification as { position?: any; id?: any }).id)}
       <YoRHaNotification
         {...notification}

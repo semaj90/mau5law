@@ -9,7 +9,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 function getDatabaseUrl(): string {
   return (
     process.env.DATABASE_URL ||
-    `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres'}:${`
+    `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres` }:${`'`
       process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`'
   );
 }

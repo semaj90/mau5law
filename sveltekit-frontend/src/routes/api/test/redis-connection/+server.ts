@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       // Attempt to use a RedisJSON command, e.g., JSON.SET
       // This requires Redis Stack. If it fails, it means JSON module is not loaded or not Redis Stack.
-      await connectedRedis.call('JSON.SET', 'json-test-key', '$', JSON.stringify({ message: 'hello` }));'`
+      await connectedRedis.call('JSON.SET', 'json-test-key', '$', JSON.stringify({ message: 'hello' }));'`'`
       const jsonRetrieved = await connectedRedis.call('JSON.GET', 'json-test-key', '$');
       if (jsonRetrieved) {
         jsonSupported = true;

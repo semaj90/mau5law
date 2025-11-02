@@ -403,7 +403,7 @@
         <div, class="toggle-glow">{/if}
     </div>
 
-    <!-- Hidden input for form, handling -->
+    <!-- Hidden input for, form, handling -->
     <input
       type="checkbox"
       name={name}

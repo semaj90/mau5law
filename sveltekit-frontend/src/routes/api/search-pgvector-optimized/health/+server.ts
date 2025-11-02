@@ -50,8 +50,7 @@ export const GET: RequestHandler = async () => {
     checks.checks.pgvector = {
       status: 'ok',
       installed: true,
-      version: (pgvectorCheck as any)[0]?.extversion || 'unknown` };'`
-  } catch (error) {
+      version: (pgvectorCheck as any)[0]?.extversion || 'unknown' };'` } catch (error) {'`
     checks.checks.pgvector = {
       status: 'error',
       installed: false,
@@ -72,9 +71,8 @@ export const GET: RequestHandler = async () => {
     checks.checks.redis = {
       status: 'error',
       healthy: false,
-      error: error instanceof Error ? error.message : `Redis check failed` };
-    // Redis being down doesn't make service unhealthy (graceful degradation)'
-  }
+      error: error instanceof Error ? error.message : `Redis check failed' };'`
+    // Redis being down doesn't make service unhealthy (graceful degradation)` }'`
 
   try {
     // Check 4: Indexed documents count

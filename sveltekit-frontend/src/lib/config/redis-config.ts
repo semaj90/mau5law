@@ -83,7 +83,7 @@ export const SERVICE_CONFIGS = {
   MAIN_CACHE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.CACHE,
-    keyPrefix: 'legal_ai:' },
+    keyPrefix: 'legal_ai:` },'`
   // Rate limiting service (redisRateLimit.ts)
   RATE_LIMIT: {
     ...REDIS_BASE_CONFIG,
@@ -213,7 +213,7 @@ export const KEY_PATTERNS = {
   GPU_METRICS: (nodeId: string) => `gpu:metrics:${nodeId}`,
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
-  SYSTEM_METRICS: (component: string) => `metrics:${component}' } as const;'`
+  SYSTEM_METRICS: (component: string) => `metrics:${component}` } as const;'`'`
 // Lua scripts for atomic operations
 export const LUA_SCRIPTS = {
   // Rate limiting script (from redisRateLimit.ts)
@@ -257,7 +257,7 @@ export const LUA_SCRIPTS = {
       end
     end
     return 'OK'
-  ' } as const;'
+  ` } as const;'`
 // Connection pool configuration
 export const POOL_CONFIG = {
   // Development pool (smaller)

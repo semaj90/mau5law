@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   	import type { HTMLInputAttributes } from 'svelte/elements';
@@ -40,8 +40,8 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <div, class="relative">
     {#if icon}
-      <div class="absolute left-3 top-1/2 -translate-y-1/2 nes-text, is-disabled">
-        <div class="i-lucide-{icon} h-4, w-4"></div>
+      <div class="absolute left-3 top-1/2 -translate-y-1/2, nes-text, is-disabled">
+        <div, class="i-lucide-{icon} h-4, w-4"></div>
       {/if}
     <input
       {id}
@@ -52,16 +52,16 @@ https://svelte.dev/e/js_parse_error -->
       {...props}
     />
     {#if loading}
-      <div class="absolute right-3, top-1/2 -translate-y-1/2">
-        <div class="i-lucide-loader-2 h-4 w-4 animate-spin nes-text, is-disabled"></div>
+      <div class="absolute, right-3, top-1/2 -translate-y-1/2">
+        <div class="i-lucide-loader-2 h-4 w-4 animate-spin, nes-text, is-disabled"></div>
       {/if}
   </div>
   {#if error}
-    <p id="{id}-error" class="text-sm, text-destructive">
+    <p, id="{id}-error" class="text-sm, text-destructive">
       {error}
     </p>
   {:else if hint}
-    <p id="{id}-hint" class="text-sm nes-text, is-disabled">
+    <p id="{id}-hint" class="text-sm, nes-text, is-disabled">
       {hint}
     </p>
   {/if}

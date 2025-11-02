@@ -53,7 +53,7 @@
             disabled={option.disabled}
             class="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
           >
-            <div class="absolute left-2 flex h-3.5 w-3.5 items-center, justify-center">
+            <div class="absolute left-2 flex h-3.5 w-3.5, items-center, justify-center">
               {#if value === option.value}
                 ✓
               {/if}

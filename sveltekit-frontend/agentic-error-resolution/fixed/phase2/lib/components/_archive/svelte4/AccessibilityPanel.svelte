@@ -442,7 +442,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <h2 id="accessibility-panel-title" class="mx-auto px-4 max-w-7xl">Accessibility Panel</h2>
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="ghost"
             size="sm"
             onclick={(_event: MouseEvent) => ) =>
@@ -450,7 +450,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             aria-label="Close accessibility panel"
           >
             ✕
-</Button.Root>
+</Button>
         </div>
         <!-- Accessibility Settings -->
         <div class="mx-auto px-4 max-w-7xl">
@@ -507,7 +507,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         <div class="mx-auto px-4 max-w-7xl">
           <div class="mx-auto px-4 max-w-7xl">
             <h3 class="mx-auto px-4 max-w-7xl">Accessibility Audit</h3>
-            <Button.Root
+            <Button
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
               onclick={(_event: MouseEvent) => ) =>
@@ -521,7 +521,7 @@ runAccessibilityAudit(}
                 <RefreshCw class="w-4 h-4" />
                 Run Audit
               {/if}
-</Button.Root>
+</Button>
           </div>
           {#if isAuditing}
             <div class="mx-auto px-4 max-w-7xl">
@@ -558,7 +558,7 @@ runAccessibilityAudit(}
                   <span>{totalIssues} Total</span>
                 </div>
               </div>
-              <Button.Root
+              <Button
                 variant="ghost"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
@@ -567,7 +567,7 @@ exportAuditResults(}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />
                 Export Report
-</Button.Root>
+</Button>
             </div>
             <!-- Audit Results -->
             <div class="mx-auto px-4 max-w-7xl">

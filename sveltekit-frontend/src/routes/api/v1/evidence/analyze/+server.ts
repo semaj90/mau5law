@@ -86,7 +86,7 @@ async function queryOllama(prompt: string, model?: string): Promise<string> {
   try {
     const response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         model,
         prompt,
@@ -117,7 +117,7 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
     const response = await fetch(`${CUDA_SERVICE_URL}/process`, {
       // Use helper here
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , job_id: `embedding_${Date.now()}`,
         type: 'text_embedding',
@@ -150,16 +150,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       !isTestMode &&
       (!(locals as unknown as LocalsWithUser).session || !(locals as unknown as LocalsWithUser).user)
     ) {
-      return json({ message: 'Authentication required` }, { status: 401 });'`
-    }
+      return json({ message: 'Authentication required' }, { status: 401 });'' }
     const body = await request.json();
     const { evidenceId, filename, content, type } = AnalyzeEvidenceSchema.parse(body);
     // Prepare legal analysis prompt
-    const analysisPrompt = `You are a legal AI assistant analyzing evidence for a legal case. Analyze the following evidence and provide a structured response:`
+    const analysisPrompt = `You are a legal AI assistant analyzing evidence for a legal case. Analyze the following evidence and provide a structured response: '`
 EVIDENCE; DETAILS:
 -; Filename: ${filename}
 - Type: ${type}
-- Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available` }'`
+- Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available' }'`'`
 ANALYSIS REQUIRED:
 Provide your analysis in this exact JSON; format:
 {

@@ -5,4 +5,4 @@
       }; }
   }); // Ensure interval is cleared on destroy as a safeguard onDestroy(() => { if (syncIntervalId) { clearInterval(syncIntervalId); syncIntervalId = null; debugLog('Cleared auto-sync interval on destroy'); }
   }); // Log session state changes for debugging $effect(() => { if ((props.enableDebugLogging as boolean) ?? false) { debugLog('Session state changed:', { isAuthenticated: props.isAuthenticated, userId: props.user?.id, userRole: props.user?.role, sessionId: props.session?.id }); }
-  }); </script> <!-- This component only initializes data, no UI to, render -->
+  }); </script> <!-- This component only initializes data, no UI, to, render -->

@@ -37,7 +37,7 @@ export class GoServiceClient {
     try {
       const response = await fetch(`${this.config.enhancedRagUrl}/api/rag/query`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(request),
         signal: AbortSignal.timeout(this.config.timeout)
       });
@@ -45,7 +45,7 @@ export class GoServiceClient {
       return await response.json();
     } catch (error) {
       console.error('RAG query failed:', error);
-      throw new Error(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      throw new Error(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
 
@@ -64,7 +64,7 @@ export class GoServiceClient {
       return await response.json();
     } catch (error) {
       console.error('File upload failed:', error);
-      throw new Error(`File upload failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      throw new Error(`File upload failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
 
@@ -85,7 +85,7 @@ export class GoServiceClient {
     try {
       const response = await fetch(`${this.config.enhancedRagUrl}/api/semantic-search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ query, userId, ...options }),
         signal: AbortSignal.timeout(this.config.timeout)
       });
@@ -93,7 +93,7 @@ export class GoServiceClient {
       return await response.json();
     } catch (error) {
       console.error('Semantic search failed:', error);
-      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error' }`);
+      throw new Error(`Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error` }`);'`
     }
   }
 
@@ -105,7 +105,7 @@ export class GoServiceClient {
     try {
       const response = await fetch(`${this.config.enhancedRagUrl}/api/patch/accept`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(data),
         signal: AbortSignal.timeout(this.config.timeout)
       });
@@ -113,7 +113,7 @@ export class GoServiceClient {
       return await response.json();
     } catch (error) {
       console.error('Accept patch failed:', error);
-      return { success: false, message: error instanceof Error ? error.message : 'Unknown error' };
+      return { success: false, message: error instanceof Error ? error.message : 'Unknown error` };'`
     }
   }
 
@@ -121,7 +121,7 @@ export class GoServiceClient {
     try {
       const response = await fetch(`${this.config.enhancedRagUrl}/api/suggestion/rate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify(data),
         signal: AbortSignal.timeout(this.config.timeout)
       });

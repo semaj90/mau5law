@@ -194,7 +194,7 @@ export async function getVectorStore(): Promise<unknown> {
       // Use `unknown` casts and a guarded constructor to avoid `any`.
       const gemModule = await import('embeddinggemma').catch(err => {
         // Import failed — log and fall back
-        console.debug('embeddinggemma not available, falling back: `, (err as Error)?.message ?? err);'`
+        console.debug('embeddinggemma not available, falling back: ', (err as Error)?.message ?? err);'`'`
         return undefined;
       });
       const GemCtor = (gemModule?.EmbeddingGemma ?? gemModule?.default) as

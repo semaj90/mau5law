@@ -140,12 +140,12 @@ export const POST: RequestHandler = async ({ request }) => {
             ? Math.round(results.reduce((sum, r) => sum + r.speedupFactor, 0) / results.length)
             : 0,
         cacheHitBenefit: 'Up to 240x faster response times',
-        productionImpact: 'Enables real-time legal AI with sub-second responses` },'`
+        productionImpact: 'Enables real-time legal AI with sub-second responses' },'`'`
       redis: redisStats,
       costSavings: {
         computeReduction: '99.6%',
         estimatedSavings: '$1,200/month for 10K daily requests',
-        energyEfficiency: `240x reduction in CPU usage per query` },
+        energyEfficiency: `240x reduction in CPU usage per query' },'`
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async () => {
           fragmentation: memory.mem_fragmentation_ratio
         },
         keys: keyCount,
-        performance: '${responseTime.toFixed(2)}ms` },'`
+        performance: '${responseTime.toFixed(2)}ms' },'`'`
       cacheDemo: {
         endpoint: 'POST /api/demo/redis-performance',
         operations: ['vector-search', 'legal-analysis', 'all'],
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async () => {
           error: error instanceof Error ? error.message : String(error)
         },
         troubleshooting: { dockerCommand: 'docker run -d --name redis-demo -p; 6379:6379, redis:7-alpine',
-          testConnection: `redis-cli ping` },
+          testConnection: `redis-cli ping' },'`
         timestamp: new Date().toISOString()
       },
       { status: 500 }

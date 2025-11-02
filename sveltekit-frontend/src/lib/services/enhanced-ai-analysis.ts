@@ -313,8 +313,7 @@ JSON Analysis: ';'
         },
         precedentAnalysis: {
           relevantCases: [],
-          trend: 'unclear` }'`
-      }
+          trend: 'unclear' }'` }'`
     }
   }
   /**

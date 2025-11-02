@@ -179,10 +179,10 @@ export class CaseManagementService {
     await this.initialize();
     const cacheKey = `case:${caseId}:${JSON.stringify(options)}`;
     const cached = await cache.get(cacheKey);
-    if (cached) return cached; // <-- return cached if, present
+    if (cached) return cached; // <-- return cached, if, present
 
     const [caseData] = await db.select().from(cases).where(eq(cases.id, caseId));
-    if (!caseData) throw new Error(`Case not found: ${caseId}`); // <-- throw if not, found
+    if (!caseData) throw new Error(`Case not found: ${caseId}`); // <-- throw if, not, found
 
     const result: any = { ...caseData };
 
@@ -379,8 +379,7 @@ export class CaseManagementService {
 				try {
 					await cache.set(`forensics:patterns:${ev.id}`, patterns, 60 * 60 * 1000);
 				} catch (err) {
-					console.warn(`forensics patterns cache set failed for ${ev.id}: ', String(err));'`
-				}
+					console.warn(`forensics patterns cache set failed for ${ev.id}: ', String(err));'` }
 			}
 		} catch (e) {
 			console.warn('detectSuspiciousPatterns probe failed:', String(e));
@@ -394,8 +393,7 @@ export class CaseManagementService {
 			try {
 				await cache.set(`forensics:report:${ev.id}`, report, 24 * 60 * 60 * 1000);
 			} catch (err) {
-				console.warn(`forensics report cache set failed for ${ev.id}: ', String(err));'`
-			}
+				console.warn(`forensics report cache set failed for ${ev.id}: ', String(err));'` }
 		} catch (e) {
 			console.warn('performForensicAnalysis probe failed:', String(e));
 		}
@@ -409,8 +407,7 @@ export class CaseManagementService {
 				try {
 					await cache.set(`ocr:text:${ev.id}`, { text: ocrResult.text, engine: ocrResult.engine }, 6 * 60 * 60 * 1000);
 				} catch (err) {
-					console.warn(`ocr cache set failed for ${ev.id}: ', String(err));'`
-				}
+					console.warn(`ocr cache set failed for ${ev.id}: ', String(err));'` }
 			}
 		} catch (e) {
 			console.warn('performOCRAnalysis probe failed:', String(e));
@@ -475,8 +472,7 @@ export class CaseManagementService {
 				confidence: typeof result.confidence === 'number' ? result.confidence : 0,
 				language: result.language ?? 'unknown',
 				processingTime: Number(result.processingTime) || 0,
-				engine: result.engine ?? 'ocrWorker` };'`
-		} catch (err) {
+				engine: result.engine ?? 'ocrWorker' };'` } catch (err) {'`
 			console.error('[OCR, Service] ocrWorker failed:', err);
 		}
 	}
@@ -531,8 +527,7 @@ export class CaseManagementService {
 		return { status: 'fallback-published' };
 	} catch (error) {
 		console.error('[Embedding Service] Error enqueuing job:', error);
-		return { error: (error as Error)?.message ?? 'unknown` };'`
-	}
+		return { error: (error as Error)?.message ?? 'unknown' };'` }'`
   }
 
   private async detectSuspiciousPatterns(evidence: Evidence): Promise<SuspiciousPattern[]>, {
@@ -649,7 +644,7 @@ export class CaseManagementService {
         const third = new Date(sortedByDate[i, + 2].dateCreated!);
         const minutesDiff = (third.getTime() - first.getTime()) / (1000 * 60);
 
-        if (minutesDiff < 30) { // 3 pieces in 30, minutes
+        if (minutesDiff < 30) { // 3 pieces in, 30, minutes
           patterns.push({
             pattern: 'rapid_submission',
             evidenceIds: [sortedByDate[i].id, sortedByDate[i + 1].id, sortedByDate[i, + 2].id],
@@ -1060,8 +1055,7 @@ export class CaseManagementService {
                 confidence: result.score,
                 metadata: {
                  , similarityScore: result.score,
-                  method: 'qdrant_vector_search` }'`
-              });
+                  method: 'qdrant_vector_search' }'` });'`
             }
           }
         } catch (error) {
@@ -1436,8 +1430,7 @@ export class CaseManagementService {
 
     if (client && typeof client.delByPrefix === 'function') {
       // prefer prefix deletion if available
-      await client.delByPrefix(`case:${caseId}: ');'`
-    } else if (client && typeof client.del === 'function') {
+      await client.delByPrefix(`case:${caseId}: ');'` } else if (client && typeof client.del === 'function') {
       // fallback to single-key delete
       await client.del(`case:${caseId}`);
     }

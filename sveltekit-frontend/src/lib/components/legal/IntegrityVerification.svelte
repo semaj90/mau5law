@@ -1,13 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
 Integrity Verification Component
 Displays detailed integrity verification results with AI analysis
 -->
 <script, lang="ts">
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Progress } from '$lib/components/ui/progress/Progress.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from 'lucide-svelte';
   import { SvelteComponent } from 'svelte';
   // Ensure TypeScript sees a constructor/Component type for dynamic usage
@@ -110,75 +110,75 @@ Displays detailed integrity verification results with AI analysis
     return Math.round((score / factors) * 100);
   }
 </script>
-<div class="integrity-verification, space-y-6">
+<div, class="integrity-verification, space-y-6">
   <!-- Overall, Status -->
-  <div class={`rounded-lg border, p-4 ${getStatusColor(integrityStatus)}`}>
-    <div class="flex items-center, space-x-3">
-      <svelte:component this={getStatusIcon(integrityStatus)} class="w-6, h-6" />
+  <div class={`rounded-lg, border, p-4 ${getStatusColor(integrityStatus)}`}>
+    <div class="flex, items-center, space-x-3">
+      <svelte:component, this={getStatusIcon(integrityStatus)} class="w-6, h-6" />
       <div, class="flex-1">
-        <h3 class="font-semibold, text-lg">
+        <h3, class="font-semibold, text-lg">
           Integrity Status: {integrityStatus.toUpperCase().replace('-', ' ')}
         </h3>
-        <p class="text-sm, opacity-90">
+        <p, class="text-sm, opacity-90">
           Overall verification score: {getOverallScore()}%
         </p>
       </div>
       <div, class="text-right">
-        <div class="text-2xl, font-bold">
+        <div, class="text-2xl, font-bold">
           {getOverallScore()}%
         </div>
       </div>
     </div>
-    <!-- Overall Progress, Bar -->
+    <!-- Overall, Progress, Bar -->
     <div, class="mt-3">
       <Progress, value={getOverallScore()} class="h-2" />
     </div>
   </div>
   <!-- Hash, Verification -->
-  <div class="bg-white border border-gray-200 rounded-lg, p-4">
-    <div class="flex items-center space-x-3, mb-4">
-      <Hash class="w-5 h-5, text-gray-600" />
+  <div class="bg-white border border-gray-200, rounded-lg, p-4">
+    <div class="flex items-center, space-x-3, mb-4">
+      <Hash class="w-5, h-5, text-gray-600" />
       <h4, class="font-semibold">Hash Verification</h4>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2, gap-4">
+    <div class="grid grid-cols-1, md:grid-cols-2, gap-4">
       <div>
-        <span class="block text-sm font-medium text-gray-700, mb-2">Original Hash</span>
-        <div class="font-mono text-sm bg-gray-50 p-2 rounded, border">
+        <span class="block text-sm font-medium, text-gray-700, mb-2">Original Hash</span>
+        <div class="font-mono text-sm bg-gray-50 p-2, rounded, border">
           {formatHash(originalHash)}
         </div>
       </div>
       <div>
-        <span class="block text-sm font-medium text-gray-700, mb-2">Current Hash</span>
-        <div class="font-mono text-sm bg-gray-50 p-2 rounded, border">
+        <span class="block text-sm font-medium, text-gray-700, mb-2">Current Hash</span>
+        <div class="font-mono text-sm bg-gray-50 p-2, rounded, border">
           {currentHash ? formatHash(currentHash) : 'Computing...'}
         </div>
       </div>
     </div>
     {#if verificationResults}
-      <div class="mt-4 flex items-center, space-x-2">
+      <div class="mt-4 flex, items-center, space-x-2">
         <svelte:component
           this={getVerificationIcon(verificationResults.hashMatch)}
           class={`w-5 h-5 ${getVerificationColor(verificationResults.hashMatch)}`}
         />
-        <span class={`text-sm, font-medium ${getVerificationColor(verificationResults.hashMatch)}`}>
+        <span, class={`text-sm, font-medium ${getVerificationColor(verificationResults.hashMatch)}`}>
           {verificationResults.hashMatch
             ? 'Hashes match - integrity verified'
             : 'Hash mismatch detected - integrity compromised'}
         </span>
       {/if}
   </div>
-  <!-- Detailed Verification, Results -->
+  <!-- Detailed, Verification, Results -->
   {#if verificationResults && showDetails}
-    <div class="bg-white border border-gray-200 rounded-lg, p-4">
-      <div class="flex items-center space-x-3, mb-4">
-        <Shield class="w-5 h-5, text-gray-600" />
+    <div class="bg-white border border-gray-200, rounded-lg, p-4">
+      <div class="flex items-center, space-x-3, mb-4">
+        <Shield class="w-5, h-5, text-gray-600" />
         <h4, class="font-semibold">Detailed Verification</h4>
       </div>
       <div, class="space-y-3">
         <!-- Hash, Integrity -->
-        <div class="flex items-center justify-between p-3 bg-gray-50, rounded">
-          <span class="text-sm, font-medium">Hash Integrity</span>
-          <div class="flex items-center, space-x-2">
+        <div class="flex items-center justify-between p-3, bg-gray-50, rounded">
+          <span, class="text-sm, font-medium">Hash Integrity</span>
+          <div class="flex, items-center, space-x-2">
             <svelte:component
               this={getVerificationIcon(verificationResults.hashMatch)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.hashMatch)}`}
@@ -189,9 +189,9 @@ Displays detailed integrity verification results with AI analysis
           </div>
         </div>
         <!-- Metadata, Integrity -->
-        <div class="flex items-center justify-between p-3 bg-gray-50, rounded">
-          <span class="text-sm, font-medium">Metadata Integrity</span>
-          <div class="flex items-center, space-x-2">
+        <div class="flex items-center justify-between p-3, bg-gray-50, rounded">
+          <span, class="text-sm, font-medium">Metadata Integrity</span>
+          <div class="flex, items-center, space-x-2">
             <svelte:component
               this={getVerificationIcon(verificationResults.metadataIntact)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.metadataIntact)}`}
@@ -205,9 +205,9 @@ Displays detailed integrity verification results with AI analysis
           </div>
         </div>
         <!-- Timestamp, Validation -->
-        <div class="flex items-center justify-between p-3 bg-gray-50, rounded">
-          <span class="text-sm, font-medium">Timestamp Validation</span>
-          <div class="flex items-center, space-x-2">
+        <div class="flex items-center justify-between p-3, bg-gray-50, rounded">
+          <span, class="text-sm, font-medium">Timestamp Validation</span>
+          <div class="flex, items-center, space-x-2">
             <svelte:component
               this={getVerificationIcon(verificationResults.timestampValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.timestampValid)}`}
@@ -221,9 +221,9 @@ Displays detailed integrity verification results with AI analysis
           </div>
         </div>
         <!-- Digital, Signature -->
-        <div class="flex items-center justify-between p-3 bg-gray-50, rounded">
-          <span class="text-sm, font-medium">Digital Signature</span>
-          <div class="flex items-center, space-x-2">
+        <div class="flex items-center justify-between p-3, bg-gray-50, rounded">
+          <span, class="text-sm, font-medium">Digital Signature</span>
+          <div class="flex, items-center, space-x-2">
             <svelte:component
               this={getVerificationIcon(verificationResults.digitalSignatureValid)}
               class={`w-4 h-4 ${getVerificationColor(verificationResults.digitalSignatureValid)}`}
@@ -236,11 +236,11 @@ Displays detailed integrity verification results with AI analysis
             </svelte:component>
           </div>
         </div>
-        <!-- AI Analysis, Score -->
-        <div class="flex items-center justify-between p-3 bg-gray-50, rounded">
-          <span class="text-sm, font-medium">AI Analysis Score</span>
-          <div class="flex items-center, space-x-2">
-            <div class="text-sm, font-semibold">
+        <!-- AI, Analysis, Score -->
+        <div class="flex items-center justify-between p-3, bg-gray-50, rounded">
+          <span, class="text-sm, font-medium">AI Analysis Score</span>
+          <div class="flex, items-center, space-x-2">
+            <div, class="text-sm, font-semibold">
               {Math.round((verificationResults.aiAnalysisScore ?? 0) * 100)}%
             </div>
             <svelte:component
@@ -253,49 +253,49 @@ Displays detailed integrity verification results with AI analysis
         </div>
       </div>
       {#if verificationResults.riskAssessment}
-        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200, rounded">
+        <div class="mt-4 p-3 bg-yellow-50 border, border-yellow-200, rounded">
           <p, class="text-sm">
             <strong>Risk Assessment:</strong>
             {verificationResults.riskAssessment}
           </p>
         {/if}
     {/if}
-  <!-- AI Analysis, Results -->
+  <!-- AI, Analysis, Results -->
   {#if aiAnalysis && showDetails}
-    <div class="bg-white border border-gray-200 rounded-lg, p-4">
-      <div class="flex items-center space-x-3, mb-4">
-        <Brain class="w-5 h-5, text-gray-600" />
+    <div class="bg-white border border-gray-200, rounded-lg, p-4">
+      <div class="flex items-center, space-x-3, mb-4">
+        <Brain class="w-5, h-5, text-gray-600" />
         <h4, class="font-semibold">AI Analysis Results</h4>
       </div>
       <!-- AI, Scores -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4, mb-4">
+      <div class="grid grid-cols-1 md:grid-cols-3, gap-4, mb-4">
         <div, class="text-center">
-          <div class="text-2xl font-bold, text-blue-600">
+          <div class="text-2xl, font-bold, text-blue-600">
             {Math.round((aiAnalysis.authenticity ?? 0) * 100)}%
           </div>
-          <div class="text-sm, text-gray-600">Authenticity</div>
-          <Progress value={(aiAnalysis.authenticity ?? 0) * 100} class="mt-2, h-2" />
+          <div, class="text-sm, text-gray-600">Authenticity</div>
+          <Progress, value={(aiAnalysis.authenticity ?? 0) * 100} class="mt-2, h-2" />
         </div>
         <div, class="text-center">
-          <div class="text-2xl font-bold, text-green-600">
+          <div class="text-2xl, font-bold, text-green-600">
             {Math.round((aiAnalysis.completeness ?? 0) * 100)}%
           </div>
-          <div class="text-sm, text-gray-600">Completeness</div>
-          <Progress value={(aiAnalysis.completeness ?? 0) * 100} class="mt-2, h-2" />
+          <div, class="text-sm, text-gray-600">Completeness</div>
+          <Progress, value={(aiAnalysis.completeness ?? 0) * 100} class="mt-2, h-2" />
         </div>
         <div, class="text-center">
-          <div class="text-2xl font-bold, text-purple-600">
+          <div class="text-2xl, font-bold, text-purple-600">
             {Math.round((aiAnalysis.relevance ?? 0) * 100)}%
           </div>
-          <div class="text-sm, text-gray-600">Relevance</div>
-          <Progress value={(aiAnalysis.relevance ?? 0) * 100} class="mt-2, h-2" />
+          <div, class="text-sm, text-gray-600">Relevance</div>
+          <Progress, value={(aiAnalysis.relevance ?? 0) * 100} class="mt-2, h-2" />
         </div>
       </div>
       <!-- Risk, Level -->
       <div, class="mb-4">
-        <div class="flex items-center, justify-between">
-          <span class="text-sm, font-medium">Overall Risk Level</span>
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300, text-gray-700">
+        <div class="flex, items-center, justify-between">
+          <span, class="text-sm, font-medium">Overall Risk Level</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border, border-gray-300, text-gray-700">
             {aiAnalysis.riskLevel.toUpperCase()}
           </span>
         </div>
@@ -303,12 +303,12 @@ Displays detailed integrity verification results with AI analysis
       <!-- Recommendations -->
       {#if aiAnalysis.recommendations && aiAnalysis.recommendations.length > 0}
         <div, class="mb-4">
-          <h5 class="font-medium, mb-2">AI Recommendations</h5>
+          <h5, class="font-medium, mb-2">AI Recommendations</h5>
           <ul, class="space-y-2">
             {#each Array.isArray(aiAnalysis.recommendations) ? aiAnalysis.recommendations : [] as recommendation}
-              <li class="flex items-start, space-x-2">
-                <CheckCircle class="w-4 h-4 text-green-600 mt-0.5, shrink-0" />
-                <span class="text-sm, text-gray-700">{recommendation}</span>
+              <li class="flex, items-start, space-x-2">
+                <CheckCircle class="w-4 h-4 text-green-600, mt-0.5, shrink-0" />
+                <span, class="text-sm, text-gray-700">{recommendation}</span>
               </li>
             {/each}
           </ul>
@@ -316,12 +316,12 @@ Displays detailed integrity verification results with AI analysis
       <!-- Flagged, Anomalies -->
       {#if aiAnalysis.flaggedAnomalies && aiAnalysis.flaggedAnomalies.length > 0}
         <div>
-          <h5 class="font-medium mb-2, text-orange-600">Flagged Anomalies</h5>
+          <h5 class="font-medium, mb-2, text-orange-600">Flagged Anomalies</h5>
           <ul, class="space-y-2">
             {#each Array.isArray(aiAnalysis.flaggedAnomalies) ? aiAnalysis.flaggedAnomalies : [] as anomaly}
-              <li class="flex items-start, space-x-2">
-                <AlertTriangle class="w-4 h-4 text-orange-600 mt-0.5, shrink-0" />
-                <span class="text-sm, text-gray-700">{anomaly}</span>
+              <li class="flex, items-start, space-x-2">
+                <AlertTriangle class="w-4 h-4 text-orange-600, mt-0.5, shrink-0" />
+                <span, class="text-sm, text-gray-700">{anomaly}</span>
               </li>
             {/each}
           </ul>

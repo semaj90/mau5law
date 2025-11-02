@@ -101,7 +101,7 @@ export class QLoRAWasmLoader {
       }
       // Check SIMD support for optimized inference
       const simdSupported = await this.checkSIMDSupport();
-      console.log(`🔧 SIMD support: ${simdSupported ? 'enabled' : `disabled` }`);
+      console.log(`🔧 SIMD support: ${simdSupported ? 'enabled' : 'disabled' }`);
       // Load the appropriate WASM binary
       const wasmPath = simdSupported
         ? '/wasm/qlora-simd.wasm'
@@ -177,7 +177,7 @@ export class QLoRAWasmLoader {
       ...this.defaultConfig,
       ...config
     } as QLoRAModelConfig;
-    console.log('🔄 Loading distilled model: `, fullConfig.baseModel.name);'`
+    console.log('🔄 Loading distilled model: ', fullConfig.baseModel.name);'`'`
     console.log(`   • Base model size: ${fullConfig.baseModel.size}MB`);
     console.log(`   • Adapter size: ${fullConfig.adapter.size}MB`);
     console.log(`   • Context length: ${fullConfig.baseModel.contextLength}`);
@@ -405,7 +405,7 @@ export class QLoRAWasmLoader {
         console.log(`Mock: Setting thread count to ${threads}`);
       },
       enableGPU: (enable: boolean) => {
-        console.log(`Mock: GPU acceleration ${enable ? 'enabled' : `disabled` }`);
+        console.log(`Mock: GPU acceleration ${enable ? 'enabled' : 'disabled' }`);
         return enable;
       }
     }

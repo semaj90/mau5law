@@ -38,11 +38,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED` }));'`
-    }
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' }
     const { caseId } = params;
     if (!caseId) {
-      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID` }));
+      return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID' }));'`
     }
 
     // Parse query parameters (fixed missing paren)
@@ -110,7 +109,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 title: evidence.title,
                 evidenceType: evidence.evidenceType,
                 useGemmaEmbeddings: true,
-                analysisType: `comprehensive` })
+                analysisType: `comprehensive' })'`
             });
             if (mcpResponse.ok) {
               const analysisData = (await mcpResponse.json()) as Partial<AiAnalysis> | null;
@@ -140,7 +139,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     embeddingVector: resolveEmbedding(analysisData),
                     confidence: analysisData?.confidence ?? 0,
                     analyzedAt: new Date().toISOString(),
-                    analyzedBy: `embeddinggemma:latest` }
+                    analyzedBy: `embeddinggemma:latest' }'`
                 }
               };
             }

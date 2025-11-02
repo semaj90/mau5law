@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Search failed',
-        details: error instanceof Error ? error.message : 'Unknown error` },'`
+        details: error instanceof Error ? error.message : 'Unknown error' },'`'`
       { status: 500 }
     );
   }
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '5');
 
     if (!query) {
-      return json({ error: `Query, parameter: "q" is required` }, { status: 400 });
+      return json({ error: 'Query, parameter: "q" is required' }, { status: 400 });
     }
 
     const results = await searchSimilarDocuments(query, limit);
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Search failed',
-        details: error instanceof Error ? error.message : `Unknown error` },
+        details: error instanceof Error ? error.message : `Unknown error' },'`
       { status: 500 }
     );
   }

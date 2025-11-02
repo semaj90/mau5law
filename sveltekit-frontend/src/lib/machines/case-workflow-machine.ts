@@ -68,7 +68,7 @@ export type CaseWorkflowEvent =
 export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkflowEvent>({
   id: 'caseWorkflow',
   context: {
-    user_id: '',
+   , user_id: '',
     current_step: 'initial',
     documents: [],
     analysis_results: [],
@@ -445,7 +445,7 @@ export const caseWorkflowMachine = createMachine<CaseWorkflowContext, CaseWorkfl
         },
         onError: {
           target: 'caseReady',
-          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({ error_message: 'AI assistance, failed: ${String((evt as any).data ?? 'unknown error')}' }))
+          actions: assign((_: CaseWorkflowContext, evt: DoneInvokeEvent<unknown>) => ({ error_message: 'AI assistance, failed: ${String((evt as any).data ?? 'unknown error')}` }))'`
         }
       }
     },

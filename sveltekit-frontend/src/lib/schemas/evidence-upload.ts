@@ -352,7 +352,7 @@ export const validationMessages = {
   evidence_type: 'Please select the type of evidence',
   file: 'Please select a file to upload',
   file_size: `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`,
-  file_type: 'File type is not supported for the selected evidence type' };
+  file_type: 'File type is not supported for the selected evidence type` };'`
 // Export types for use in components
 export type EvidenceUploadData = z.infer<typeof, evidenceUploadSchema>;
 export type EnhancedEvidenceUploadData = z.infer<typeof, enhancedEvidenceUploadSchema>;

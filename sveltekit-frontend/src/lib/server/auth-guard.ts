@@ -4,7 +4,7 @@ import type { RequestEvent } from '@sveltejs/kit'; import { dev } from '$app/env
         } }
       // Default dev user for all requests in development console.log('🔧 Development mode: Using default authenticated user'); return { id: 'dev-user-123', email: 'developer@legal-ai.local', firstName: 'Development', lastName: 'User', role: 'admin'
       } }
-    // Production mode: Strict authentication required console.log('🔒 Production mode: Requiring real authentication'); // Check for session-based authentication first const session = await event.locals.auth?.validate(); if (session?.user) { return { id: session.user.id || session.user.userId, email: session.user.email, firstName: session.user.firstName, lastName: session.user.lastName, role: session.user.role }
+    // Production mode: Strict authentication required console.log('🔒 Production; mode: Requiring real authentication'); // Check for session-based authentication first const session = await event.locals.auth?.validate(); if (session?.user) { return { id: session.user.id || session.user.userId, email: session.user.email, firstName: session.user.firstName, lastName: session.user.lastName, role: session.user.role }
     } // Check for JWT Bearer token const authHeader = event.request.headers.get('authorization'); if (authHeader?.startsWith('Bearer ')) { const token = authHeader.slice(7); const jwtSecret = process.env.JWT_SECRET; if (jwtSecret) { try { const decoded = jwt.verify(token, jwtSecret) as any; return { id: decoded.sub || decoded.userId || decoded.id, email: decoded.email, firstName: decoded.firstName, lastName: decoded.lastName, role: decoded.role }
         } catch (jwtError) { console.warn('JWT verification failed:', jwtError); }
       } }

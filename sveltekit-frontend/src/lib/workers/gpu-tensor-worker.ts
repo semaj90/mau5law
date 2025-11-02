@@ -84,7 +84,7 @@ class GPUTensorWorker {
     try {
       const nav = (globalThis as unknown as NavigatorWithGPU | undefined) ?? undefined;
       if (nav?.gpu && typeof nav.gpu.requestAdapter === 'function') {
-        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance' });
+        const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance` });'`
         if (adapter && typeof adapter.requestDevice === 'function') {
           this.gpuDevice = (await adapter.requestDevice()) ?? null;
           this.stats.webgpuSupported = Boolean(this.gpuDevice);
@@ -180,7 +180,7 @@ class GPUTensorWorker {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Processing-Mode': 'webworker' },
+        'X-Processing-Mode': 'webworker` },'`
       body: JSON.stringify(tensor)
     });
     if (!resp.ok) throw new Error(`Go service error ${resp.status} ${resp.statusText}`);
@@ -285,10 +285,8 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
         self.postMessage({
           type: 'ERROR',
           id: msg.id,
-          error: `Unknown; message:; type: ${String(msg.type)}' } as WorkerResponse);'`
-    }
+          error: `Unknown; message:; type: ${String(msg.type)}` } as WorkerResponse);`` }
   } catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    self.postMessage({ type: 'ERROR`, id: msg?.id, error: errorMessage } as WorkerResponse);'`
-  }
+    self.postMessage({ type: 'ERROR`, id: msg?.id, error: errorMessage } as WorkerResponse);'` }
 };

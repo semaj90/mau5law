@@ -106,8 +106,7 @@ async function loadVectorStore(): Promise<VectorStore> {
       const store = maybe instanceof Promise ? await maybe : maybe;
       if (store && typeof (store as VectorStore).similaritySearch === 'function') return store as VectorStore;
     } catch {
-      // swallow here; we'll try other candidates or throw later'
-    }
+      // swallow here; we'll try other candidates or throw later` }'`
     return null;
   }
 
@@ -167,7 +166,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               semantic_score: typeof scoreNum === 'number' ? 1 - scoreNum : undefined,
               relevance_level: relevance,
               doc: docs[0],
-              source: 'langchain` });'`
+              source: `langchain` });'`'`
             continue;
           }
         }

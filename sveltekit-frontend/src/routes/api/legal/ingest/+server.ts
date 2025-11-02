@@ -181,8 +181,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
     // Helpful telemetry for production debugging
     redisClient.on('error', (err: any) => {
       redisConnected = false;
-      console.warn('Redis client error:', err);'
-    });
+      console.warn('Redis client error: `, err);` });'
     redisClient.on('connect', () => console.info('Redis client connecting...'));
     redisClient.on('ready', () => {
       redisConnected = true;
@@ -571,7 +570,7 @@ async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChun
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({ model, input: inputs })
     });
 

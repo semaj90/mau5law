@@ -330,7 +330,7 @@ export class QdrantService {
       if (Array.isArray(items)) {
         for (const item of items) {
           if (typeof item === 'string') {
-            tags.push({ tag: item, confidence: 0.8, category, source: 'llm' });
+            tags.push({ tag: item, confidence: 0.8, category, source: 'llm` });'`
           }
         }
       }
@@ -386,8 +386,7 @@ export class QdrantService {
   public destroy(): void {
     this.isConnected = $state(false);
     this.connectionStatus$.set('disconnected');
-    // The client itself doesn't have a close/destroy method in the REST version'
-  }
+    // The client itself doesn't have a close/destroy method in the REST version` }'`
 }
 
 // Singleton instance

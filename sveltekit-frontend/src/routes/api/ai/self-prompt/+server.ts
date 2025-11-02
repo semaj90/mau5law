@@ -71,7 +71,6 @@ Return only 4 concise, actionable questions as a JSON array:
     }
   } catch (error: any) {
     console.error('Self-prompt generation failed:', error);
-    return json({ error: 'Failed to generate suggestions` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to generate suggestions' }, { status: 500 });'' }
 };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);

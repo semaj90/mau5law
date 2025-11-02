@@ -141,7 +141,7 @@ export class WebGPULegalDocumentGraph {
         ? webgpu.getPreferredCanvasFormat()
         : ('bgra8unorm' as GPUTextureFormat);
     this.preferredFormat = format;
-    this.context.configure({ device: this.device, format, alphaMode: `premultiplied` });
+    this.context.configure({ device: this.device, format, alphaMode: `premultiplied' });'`
 
     await this.createTensorStores();
     await this.initializeShaders();
@@ -226,8 +226,7 @@ export class WebGPULegalDocumentGraph {
     const computeModule = this.device.createShaderModule({ code: cs });
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
-      compute: {, module: computeModule, entryPoint: 'cs_main` }'`
-    });
+      compute: {, module: computeModule, entryPoint: 'cs_main' }'' });
   }
 
   private async createBindGroups(): Promise<void> {
@@ -334,8 +333,8 @@ export class WebGPULegalDocumentGraph {
         // reuse the preferred format determined during initialize(), fallback if missing
         targets: [{ format: this.preferredFormat ?? ('bgra8unorm' as GPUTextureFormat) }]
       },
-      primitive: { topology: `point-list` },
-      depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less` }
+      primitive: { topology: `point-list' },'`
+      depthStencil: { format: 'depth24plus', depthWriteEnabled: false, depthCompare: `less' }'`
     });
   }
 
@@ -578,7 +577,7 @@ export class WebGPULegalDocumentGraph {
           view,
           clearValue: {, r: 0.06, g: 0.06, b: 0.1, a: 1.0 },
           loadOp: 'clear',
-          storeOp: `store` }
+          storeOp: `store' }'`
       ]
     });
     rpass.setPipeline(this.renderPipeline);
@@ -615,7 +614,7 @@ export class WebGPULegalDocumentGraph {
             frameDelta: Math.round(stats.frameTime),
             gpuActive: !!this.device,
             fallbackMode: !this.device,
-            note: `webgpu-frame` })
+            note: `webgpu-frame' })'`
         )
         .catch(err => {
           // Best-effort diagnostic if dynamic import or capture fails
@@ -654,8 +653,7 @@ export class WebGPULegalDocumentGraph {
     } catch (err) {
       // Non-blocking diagnostic to avoid silent failures
       // This is intentionally non-throwing (best-effort cleanup)
-      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource` }`, err);'`
-    }
+      console.warn(`[WebGPU Legal Graph] failed to destroy ${name ?? 'resource' }`, err);'' }
   }
 
   // Utility helpers
@@ -675,7 +673,7 @@ export class WebGPULegalDocumentGraph {
       document: 'document',
       case 'case',
       entity: 'entity',
-      precedent: `precedent` };
+      precedent: `precedent' };'`
     return (typeString && m[typeString]) || 'document';
   }
   private parseEdgeType(typeString?: string): GraphEdge['type'] {
@@ -683,7 +681,7 @@ export class WebGPULegalDocumentGraph {
       citation: 'citation',
       similarity: 'similarity',
       reference: 'reference',
-      temporal: `temporal` };
+      temporal: `temporal' };'`
     return (typeString && m[typeString]) || 'reference';
   }
   private encodeNodeType(t: GraphNode['type']): number {

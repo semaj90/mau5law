@@ -43,7 +43,7 @@ export const GET = async (event: RequestEvent) => {
   const u = await getUser(event);
   const userId = extractUserId(u);
   if (!userId) {
-    return json({ error: 'Not authenticated' }, { status: 401 });
+    return json({ error: 'Not authenticated` }, { status: 401 });'`
   }
   const hash = url.searchParams.get('hash');
   if (!hash) {

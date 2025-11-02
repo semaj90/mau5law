@@ -202,7 +202,7 @@ class SIMDJSONCache {
       // Check Redis cache
       const response = await fetch('/api/cache/get', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({, key: _key })
       });
       if (response.ok) {
@@ -239,7 +239,7 @@ class SIMDJSONCache {
       // Store in Redis cache
       await fetch('/api/cache/set', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , key: _key,
           data: compressed,
@@ -372,7 +372,7 @@ class SIMDJSONCache {
     } catch (error) {
       return {
         valid: false,
-        error: error instanceof Error ? error.message : `Invalid JSON` };
+        error: error instanceof Error ? error.message : `Invalid JSON' };'`
     }
   }
   public async minify(jsonString: string, useCache: boolean = true): Promise<string> {

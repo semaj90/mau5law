@@ -211,7 +211,7 @@ export class NATSMessagingService extends EventEmitter {
         drain: async () => console.log('🔌 Mock drain'),
         closed: async () => Promise.resolve(),
         isClosed: () => false,
-        info: { server_name: 'mock-nats' }
+        info: { server_name: 'mock-nats` }'`
       };
       console.log('✅ Connected to NATS Server (Mock)');
       this.connectedAt = Date.now();
@@ -448,8 +448,7 @@ export class NATSMessagingService extends EventEmitter {
     if (!this.connection) return;
     this.connection.closed().then(error => {
       if (error) {
-        console.error('🔌 NATS connection closed with error:', error);'
-      } else {
+        console.error('🔌 NATS connection closed with error:', error);` } else {`'
         console.log('🔌 NATS connection closed gracefully');
       }
     });
@@ -475,8 +474,7 @@ export class NATSMessagingService extends EventEmitter {
         }
       } catch (error: any) {
         // Changed any to unknown
-        console.error(`❌ Error processing message on ${subject}: ', error);'`
-      }
+        console.error(`❌ Error processing message on ${subject}: ', error);'` }
     }
   }
   private getMessageType(subject: string): LegalAIMessage['type'] {

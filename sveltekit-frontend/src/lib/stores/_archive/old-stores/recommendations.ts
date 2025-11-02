@@ -336,7 +336,7 @@ export const recommendationActions = {
         userId,
         includePerformance: true,
         includeBehavior: true,
-        timeRange: '30d' });
+        timeRange: '30d` });'`
       const resp = isRecord(rawResponse) ? rawResponse : {};
       const analytics = resp['analytics'] ?? undefined;
       const insights = resp['insights'] ?? undefined;

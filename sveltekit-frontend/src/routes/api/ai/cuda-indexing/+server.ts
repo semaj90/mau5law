@@ -158,7 +158,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Request-ID': `idx_${Date.now()}`,
-        'X-Client': `SvelteKit-Legal-AI` },
+        'X-Client': `SvelteKit-Legal-AI' },'`
       body: JSON.stringify(indexRequest),
       signal: AbortSignal.timeout(INDEXING_TIMEOUT)
     });
@@ -179,7 +179,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       gpu_accelerated: true,
       performance_metrics: {
        , vectors_per_second: requestData.vectors.length / (totalProcessingTime / 1000),
-        memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX 3060, Ti
+        memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX, 3060, Ti
         build_successful: result.success
       }
     });
@@ -243,7 +243,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             ivfpq: `${CUDA_SERVICE_URL}/api/v1/index/ivfpq`,
             search: `${CUDA_SERVICE_URL}/api/v1/index/search`,
             optimize: `${CUDA_SERVICE_URL}/api/v1/index/optimize`,
-            simd: `${CUDA_SERVICE_URL}/api/v1/simd` }
+            simd: `${CUDA_SERVICE_URL}/api/v1/simd' }'`
         });
       }
       case 'metrics': {
@@ -265,7 +265,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
            , POST: 'Build GPU index',
             GET: 'Get capabilities/status',
             PATCH: 'Search GPU index',
-            PUT: `Batch operations` }
+            PUT: `Batch operations' }'`
         });
     }
   } catch (error: any) {
@@ -292,7 +292,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `query_vector array is required` },
+          error: 'query_vector array is required' },
         { status: 400 }
       );
     }
@@ -312,7 +312,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Search-Type': `gpu-accelerated` },
+        'X-Search-Type': `gpu-accelerated' },'`
       body: JSON.stringify(cudaSearchRequest),
       signal: AbortSignal.timeout(30000)
     });
@@ -330,8 +330,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       performance_metrics: {
        , gpu_search: true,
         sub_millisecond: result.stats?.search_time_ms < 1,
-        efficiency_score: searchTime < 100 ? 'excellent' : 'good` }'`
-    });
+        efficiency_score: searchTime < 100 ? 'excellent' : 'good' }'' });
   } catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
@@ -362,7 +361,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `Maximum 8 operations per batch for RTX 3060 Ti optimization` },
+          error: 'Maximum 8 operations per batch for RTX 3060 Ti optimization' },
         { status: 400 }
       );
     }
@@ -412,7 +411,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           results.push({
             operation: operation.operation,
             success: false,
-            error: `HTTP ${response.status}` });
+            error: `HTTP ${response.status}' });'`
         }
       } catch (error: any) {
         const errMsg = error instanceof Error ? error.message : String(error);
@@ -481,13 +480,13 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			default: return json(
           {
             success: false,
-            error: `Invalid SIMD operation.; Use: similarity, distance, or batch` },
+            error: 'Invalid SIMD operation.; Use: similarity, distance, or batch' },
           { status: 400 }
         );
 		}
 		const response = await fetch(`${CUDA_SERVICE_URL}${endpoint}`, {
 			method: 'POST',
-			headers: { 'Content-Type': `application/json` },
+			headers: { 'Content-Type': `application/json' },'`
 			body: JSON.stringify(requestBody),
 			signal: AbortSignal.timeout(10000)
 		})
@@ -499,8 +498,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			...result,
 			simd_operation: simdRequest.operation,
 			cpu_accelerated: true,
-			instruction_set: result.instruction_set || 'AVX2/SSE4` })'`
-	} catch (error: any) {
+			instruction_set: result.instruction_set || 'AVX2/SSE4' })'' } catch (error: any) {
 		const errMsg = error instanceof Error ? error.message : String(error)
 		return json(
       {

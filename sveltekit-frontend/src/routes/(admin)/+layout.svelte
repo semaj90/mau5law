@@ -16,7 +16,7 @@
 
 <svelte:head>
   <title>Admin Panel | YoRHa Legal AI</title>
-  <meta name="description" content="System administration and monitoring, dashboard" />
+  <meta name="description" content="System administration and, monitoring, dashboard" />
 </svelte:head>
 
 <div, class="admin-layout">

@@ -290,9 +290,9 @@ export class MemoryPalaceEngine {
   }
   private calculateLOD(distance: number): number {
     // N64-style LOD: closer = higher detail
-    if (distance < 10) return 0; // High, detail
-    if (distance < 25) return 1; // Medium, detail
-    if (distance < 50) return 2; // Low, detail
+    if (distance < 10) return, 0; // High, detail
+    if (distance < 25) return, 1; // Medium, detail
+    if (distance < 50) return, 2; // Low, detail
     return 3; // Minimal detail
   }
   private renderRoomGeometry(_room: MemoryRoom, lodLevel: number): void {

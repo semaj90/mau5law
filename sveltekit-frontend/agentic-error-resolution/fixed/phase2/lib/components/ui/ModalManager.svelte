@@ -1,5 +1,5 @@
 <script lang="ts">
-  	import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { modals } from "../../stores/modal";
@@ -155,13 +155,13 @@
 					{#if builtInModal.actions}
 						<div class="space-y-4">
 							{#each Array.isArray(builtInModal.actions) ? builtInModal.actions : [] as action}
-								<Button.Root class="bits-btn"
+								<Button class="bits-btn"
 									variant={action.variant}
 									onclick={() =>
 action.action()}
 								>
 									{action.label}
-</Button.Root>
+</Button>
 							{/each}
 						{/if}
 				{:else if modal.component}

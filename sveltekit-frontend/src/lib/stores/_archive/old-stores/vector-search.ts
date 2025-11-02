@@ -114,7 +114,7 @@ export const vectorSearchActions = {
         ]
       })); // Fixed closing parenthesis and semicolon
     } catch (error: any) {
-      console.error('Vector search failed: `, error);'`
+      console.error('Vector search failed: ', error);'`'`
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false, // Added comma
@@ -171,7 +171,7 @@ export const vectorSearchActions = {
         ]
       })); // Added missing closing curly brace and parenthesis
     } catch (error: any) {
-      console.error('RAG query failed: `, error);'`
+      console.error('RAG query failed: ', error);'`'`
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false, // Added comma
@@ -244,8 +244,7 @@ export const vectorSearchActions = {
       const data = await response.json(); // Simplified type assertion
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: response.ok && data.status === 'healthy` })); // Fixed closing parenthesis and semicolon'`
-    } catch (error: any) {
+        vectorDbConnected: response.ok && data.status === 'healthy' })); // Fixed closing parenthesis and semicolon'` } catch (error: any) {'`
       vectorSearchStore.update(state => ({
         ...state,
         vectorDbConnected: false

@@ -67,7 +67,7 @@ class Context7MCPIntegration {
 await advancedCache.set('doc_' + documentId, document, {
   ttl: 3600,
   tags: ['legal', 'confidential', caseId],
-  priority: 'high` });`,'
+  priority: 'high' });`,'`
       priority: 'high',
       estimatedEffort: '4-6 hours',
       dependencies: ['advanced-cache-manager', 'legal-security-utils'],
@@ -103,8 +103,7 @@ const observer = new IntersectionObserver(async (entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       const data = await fetch('/api/legal/documents/' + documentId);
-      await advancedCache.set(cacheKey, data, { priority: 'high` });'`
-    }
+      await advancedCache.set(cacheKey, data, { priority: 'high' });'' }
   }
 });`,`
       priority: 'medium',
@@ -148,7 +147,7 @@ await advancedCache.set(cacheKey, encryptedData, {
   class="legal-document"
 >
   <h1, aria-level="1">{document.title}</h1>
-  <section aria-label="Document, content">
+  <section, aria-label="Document, content">
     {document.content}
   </section>
 </div>`,`
@@ -334,8 +333,7 @@ ${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')}
 5. Document integration
 ## Legal Considerations:
 ${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
-    `.trim();`
-  }
+    `.trim();' }'`
   /**
    * Search best practices by criteria
    */

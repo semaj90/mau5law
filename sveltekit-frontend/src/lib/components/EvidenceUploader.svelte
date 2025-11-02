@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte 5 runes are auto-imported // Svelte 5 props interface interface Props { caseId: string; maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: any }) => void; }
+<script, lang="ts"> // Svelte 5 runes are auto-imported // Svelte 5 props interface interface Props { caseId: string; maxFileSize?: number; onuploaded?: (_event: {, file: File;, evidence: any }) => void; }
   // Svelte 5 props with event handlers let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props(); let files: FileList | null = null; let dragActive = $state<boolean>(false); let componentError = $state<Error | null>(null); let uploading = $state<boolean>(false); let uploadProgress = $state<number>(0); let uploadStatus = $state<string>(''); // File type categories for validation and UI const allowedTypes = { images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'], videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'], documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'], audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'] }
   // Flatten safely for TypeScript const allAllowedTypes: string[] = Object.values(allowedTypes).reduce((acc, arr) => acc.concat(arr), [] as string[]); function handleDragOver(e: DragEvent) { e.preventDefault(); dragActive = true; }
   function handleDragLeave(e: DragEvent) { e.preventDefault(); dragActive = false; }
@@ -12,14 +12,14 @@
   } function getEvidenceType(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return 'photograph'; if (allowedTypes.videos.includes(mimeType)) return 'video'; if (allowedTypes.documents.includes(mimeType)) return 'document'; if (allowedTypes.audio.includes(mimeType)) return 'audio'; return 'physical'; }
   function getFileIcon(mimeType: string): string { if (allowedTypes.images.includes(mimeType)) return '🖼️'; if (allowedTypes.videos.includes(mimeType)) return '🎥'; if (allowedTypes.documents.includes(mimeType)) return '📄'; if (allowedTypes.audio.includes(mimeType)) return '🎵'; return '📁'; }
   function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]; }
-</script> {#if componentError} <div class="error-boundary bg-red-900 border border-red-500 rounded-lg p-6, m-4"> <h2 class="text-xl font-bold text-red-300, mb-2">Upload Error</h2> <p class="text-red-200, mb-4">Evidence uploader encountered an error:</p> <p class="text-red-100 font-mono text-sm, mb-4">{componentError.message}</p> <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+</script> {#if componentError} <div class="error-boundary bg-red-900 border border-red-500 rounded-lg, p-6, m-4"> <h2 class="text-xl font-bold, text-red-300, mb-2">Upload Error</h2> <p, class="text-red-200, mb-4">Evidence uploader encountered an error:</p> <p class="text-red-100 font-mono, text-sm, mb-4">{componentError.message}</p> <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2, rounded"
       onclick={() => (componentError = null)} aria-label="Dismiss error and retry"
-    > Retry </button> </div> {:else} <div, class="evidence-uploader"> <div class="upload-zone"
+    > Retry </button> </div> {:else} <div, class="evidence-uploader"> <div, class="upload-zone"
     class:drag-active={ dragActive } class:uploading={ uploading } ondragover={ handleDragOver } ondragleave={ handleDragLeave } ondrop={ handleDrop } role="button"
     aria-label="Upload evidence files - drag and drop or click to browse"
     tabindex="0"
     onclick={() => document.getElementById('file-input')?.click()} onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()} >
-    <input id="file-input"
+    <input, id="file-input"
       type="file"
       multiple accept={allAllowedTypes.join(',')} style="display: none;"
       onchange={ handleFileSelect } /> {#if uploading} <div, class="upload-progress"> <div, class="upload-spinner">⏳</div> <div, class="upload-message"> { uploadStatus } </div> {#if uploadProgress > 0} <div, class="progress-bar"> <div, class="progress-fill" style="width: { uploadProgress }%"></div> {/if} </div> {:else} <div, class="upload-prompt"> <div, class="upload-icon">📤</div> <h3>Upload Evidence</h3> <p>Drag and drop files here or click to browse</p> <div, class="file-types"> <span, class="file-type">🖼️ Images</span> <span, class="file-type">🎥 Videos</span> <span, class="file-type">📄 Documents</span> <span, class="file-type">🎵 Audio</span> </div> <div, class="size-limit"> Max file size: {formatFileSize(maxFileSize)} </div> {/if} </div> <!-- File preview if files selected but not uploaded, yet --> {#if files && files.length > 0 && !uploading} <div, class="file-preview"> <h4>Selected Files ({files.length})</h4> {#each Array.isArray(Array.from(files)) ? Array.from(files): [] as file} <div, class="file-item"> <span, class="file-icon">{getFileIcon(file.type)}</span> <div, class="file-info"> <div, class="file-name">{file.name}</div> <div, class="file-meta"> {formatFileSize(file.size)} • {file.type} </div> </div> </div> {/each} {/if} {/if} <style> .evidence-uploader { width: 100%; }
@@ -47,4 +47,4 @@
   .file-info { flex: 1; }
   .file-name { font-weight: 500; color: var(--text-primary, #333); }
   .file-meta { font-size: 0.875rem; color: var(--text-secondary, #666); margin-top: 0.25rem; }
-</style> <!-- Svelte 5 migration completed - modern patterns, applied -->
+</style> <!-- Svelte 5 migration completed - modern, patterns, applied -->

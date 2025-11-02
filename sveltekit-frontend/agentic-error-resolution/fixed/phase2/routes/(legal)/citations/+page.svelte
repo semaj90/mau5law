@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Button } from '$lib/components/ui/core.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/core.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   import { onMount } from 'svelte';
 
   interface Citation {
@@ -58,7 +58,7 @@
   </div>
 
   <!-- Search and Filters -->
-  <Card.Root class="search-card">
+  <Card class="search-card">
     <CardContent>
       <div class="search-controls">
         <div class="search-input">
@@ -77,10 +77,10 @@
             <option value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button.Root onclick={handleSearch} class="search-button">🔍 Search</Button.Root>
+        <Button onclick={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
-  </Card.Root>
+  </Card>
 
   <!-- Citations Results -->
   {#if loading}
@@ -97,7 +97,7 @@
   {:else}
     <div class="citations-grid">
       {#each Array.isArray(citations) ? citations : [] as citation}
-        <Card.Root class="citation-card">
+        <Card class="citation-card">
           <CardHeader>
             <CardTitle class="citation-type">
               {citation.citationType.toUpperCase()}
@@ -129,12 +129,12 @@
                 Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
               </div>
               <div class="citation-actions">
-                <Button.Root size="sm" class="copy-button">📋 Copy</Button.Root>
-                <Button.Root size="sm" class="edit-button">✏️ Edit</Button.Root>
+                <Button size="sm" class="copy-button">📋 Copy</Button>
+                <Button size="sm" class="edit-button">✏️ Edit</Button>
               </div>
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   {/if}

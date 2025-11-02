@@ -135,7 +135,7 @@ export class PostgreSQLQdrantSyncService {
       const exists = collectionsResponse.collections.some((c: CollectionInfo) => c.name === this.config.collectionName);
       if (!exists) {
         await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
-            distance: 'Cosine` },'`
+            distance: 'Cosine' },'`'`
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000
@@ -275,7 +275,7 @@ export class PostgreSQLQdrantSyncService {
         this.log(`Deleted existing Qdrant collection: ${this.config.collectionName}`);
       }
       await this.qdrant.createCollection(this.config.collectionName, { vectors: {, size: 768, // nomic-embed-text dimensions (corrected)
-          distance: 'Cosine` },'`
+          distance: 'Cosine' },'`'`
         optimizers_config: {
           default_segment_number: 2,
           memmap_threshold: 20000

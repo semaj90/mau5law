@@ -67,14 +67,14 @@
 <div class="case-scoring-nier-bits-card bg-slate-900 border border-slate-700 rounded-lg p-4">
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold text-white">Case AI Scoring</h3>
-    <Button.Root
+    <Button
       size="sm"
       onclick={calculateScore}
       disabled={loading}
       class="text-xs border border-slate-600 hover:bg-slate-700 bits-btn bits-btn"
     >
       {loading ? 'Analyzing...' : 'Rescore'}
-    </Button.Root>
+    </Button>
   </div>
   {#if loading}
     <div class="flex items-center gap-2 text-blue-400">
@@ -164,12 +164,12 @@
     </div>
   {:else}
     <div class="text-slate-400 text-center py-8">
-      <Button.Root
+      <Button
         onclick={calculateScore}
         class="text-sm border border-slate-600 hover:bg-slate-700 bits-btn bits-btn"
       >
         Calculate AI Score
-      </Button.Root>
+      </Button>
     </div>
   {/if}
 </div>

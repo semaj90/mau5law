@@ -58,8 +58,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId,
         timestamp: new Date().toISOString(),
         platform: 'Windows Native',
-        deployment: 'No Docker` }'`
-    } satisfies APIResponse);
+        deployment: 'No Docker' }'` } satisfies APIResponse);'`
   } catch (err: any) {
     console.error('Integration Test Error:', err);
     return error(
@@ -450,7 +449,7 @@ async function testPerformanceBenchmarks(): Promise<TestFunctionResult> {
 async function testWindowsProcesses(): Promise<TestFunctionResult> {
   return {
     success: true,
-    details: { platform: 'Windows Native', processes: 'Validated` }'`
+    details: { platform: 'Windows Native', processes: `Validated` }'`'`
   };
 }
 async function testCacheFunctionality(): Promise<TestFunctionResult> {

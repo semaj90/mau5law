@@ -115,7 +115,7 @@ function createCitationStore() {
       try {
         const query = jurisdiction ? `?jurisdiction=${jurisdiction}` : '';
         const response = await fetch(`/api/citations${query}`, {
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
@@ -152,7 +152,7 @@ function createCitationStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ query }),
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
@@ -182,7 +182,7 @@ function createCitationStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, threshold: threshold || 0.7 }),
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
@@ -307,7 +307,7 @@ function createCitationStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, citations: this._getCurrentCitations() }),
-          credentials: `include' });'`
+          credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();

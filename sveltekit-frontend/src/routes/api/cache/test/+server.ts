@@ -158,12 +158,12 @@ export const POST: RequestHandler = async ({ request }) => {
           compressedTest: compressedPassed,
           uncompressedTest: uncompressedPassed,
           processingTime: endTime - startTime,
-          compressionBenefit: `Large arrays benefit significantly from gzip compression` }
+          compressionBenefit: `Large arrays benefit significantly from gzip compression' }'`
       });
     }
     return json({
       success: false,
-      error: 'Unknown action.; Use: embedding, search, large_payload' });
+      error: 'Unknown action.; Use: embedding, search, large_payload` });'`
   } catch (error: any) {
     console.error('Cache POST test error:', error);'
     return json(

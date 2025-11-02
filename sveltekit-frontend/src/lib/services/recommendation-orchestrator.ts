@@ -119,7 +119,7 @@ export class RecommendationOrchestrator {
       error: null,
       lastUpdate: Date.now(),
       nesRLStats: null,
-      userActivity: 'active` });'`
+      userActivity: 'active' });'`'`
     this.initializeServices();
   }
   /**

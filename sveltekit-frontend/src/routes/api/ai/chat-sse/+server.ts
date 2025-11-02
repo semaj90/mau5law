@@ -81,7 +81,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       const timeout = setTimeout(() => ac.abort(), 5000);
       const ragResp = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, query: message, limit: 5, threshold: 0.7 }),
         signal: ac.signal
       }).catch(err => {
@@ -185,7 +185,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
         try {
           const resp = await fetch('http://localhost:11436/api/generate', {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` },
+            headers: { 'Content-Type': `application/json' },'`
             body: JSON.stringify({
               model,
               prompt,
@@ -262,8 +262,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*` }'`
-  });
+      'Access-Control-Allow-Origin': '*' }'' });
 });
 export const OPTIONS: RequestHandler = async () =>
   new Response(null, {
@@ -271,6 +270,6 @@ export const OPTIONS: RequestHandler = async () =>
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': `Content-Type` }
+      'Access-Control-Allow-Headers': `Content-Type' }'`
   });
 export const POST = redisOptimized.aiChat(originalPOSTHandler);

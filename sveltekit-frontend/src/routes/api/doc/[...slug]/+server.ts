@@ -15,16 +15,14 @@ export const GET: RequestHandler = async ({ params }) => {
     const obj = JSON.parse(raw);
     return json({ ok: true, data: obj });
   } catch (e) {
-    return json({ ok: false, error: 'corrupted-json` }, { status: 500 });'`
-  }
+    return json({ ok: false, error: 'corrupted-json' }, { status: 500 });'' }
 };
 export const POST: RequestHandler = async ({ params, request }) => {
   const slug = Array.isArray(params.slug) ? params.slug.join('/') : String(params.slug ?? 'index');
   const key = `doc:${slug}`;
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') {
-    return json({ ok: false, error: 'invalid-json-body` }, { status: 400 });'`
-  }
+    return json({ ok: false, error: 'invalid-json-body' }, { status: 400 });'' }
   const payload = { updatedAt: new Date().toISOString(), ...body };
   await redis.set(key, JSON.stringify(payload), { EX: 3600 });
   return json({ ok: true, key: key }, { status: 201 });

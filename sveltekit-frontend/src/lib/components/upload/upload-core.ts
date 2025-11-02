@@ -90,7 +90,7 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
         try {
           await fetch('/api/gpu/process', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json` },'`
+            headers: { 'Content-Type': 'application/json' },'`'`
             body: JSON.stringify({, fileName: state.file.name })
           }).catch(() => null);
         } catch {
@@ -101,7 +101,7 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
         try {
           await fetch('/api/embed/process', {
             method: 'POST',
-            headers: { 'Content-Type': `application/json` },
+            headers: { 'Content-Type': `application/json' },'`
             body: JSON.stringify({, fileName: state.file.name })
           }).catch(() => null);
         } catch {

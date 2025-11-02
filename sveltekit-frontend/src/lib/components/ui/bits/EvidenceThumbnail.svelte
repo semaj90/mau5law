@@ -7,7 +7,7 @@
   } // Handle thumbnail click for playable media function handleThumbnailClick() { if (evidence.type === 'video' || evidence.type === 'audio') { isPlaying = !isPlaying; }
   } // Simulate AI analysis highlights (in real implementation, these would come from AI service) function loadAIHighlights() { if (evidence.type === 'image' && showAIOverlay) { // Simulate AI-detected regions of interest aiHighlights = [ { x: 20, y: 30, width: 40, height: 25, confidence: 0.89 }, { x: 60, y: 50, width: 30, height: 35, confidence: 0.76 } ]; }
   } // Load highlights when component mounts and AI overlay is enabled $effect(() => { if (showAIOverlay) { loadAIHighlights(); }
-  }); </script> <div, class={ containerClasses } onclick={ handleThumbnailClick } {...restProps}> {#if evidence.thumbnailUrl} <!-- Image/Video, Thumbnail --> <img src={evidence.thumbnailUrl} alt={evidence.title} class="w-full h-full object-cover"
+  }); </script> <div, class={ containerClasses } onclick={ handleThumbnailClick } {...restProps}> {#if evidence.thumbnailUrl} <!-- Image/Video, Thumbnail --> <img src={evidence.thumbnailUrl} alt={evidence.title} class="w-full h-full, object-cover"
       onload={() => (isLoaded = true)} /> <!-- AI Highlights, Overlay --> {#if showAIOverlay && isLoaded && aiHighlights.length > 0} <div class="absolute, inset-0"> {#each Array.isArray(aiHighlights) ? aiHighlights: [] as highlight} <div class="absolute border-2 border-yellow-400 bg-yellow-400/20"
             style="
               left: {highlight.x}%; top: {highlight.y}%; width: {highlight.width}%; height: {highlight.height}%;

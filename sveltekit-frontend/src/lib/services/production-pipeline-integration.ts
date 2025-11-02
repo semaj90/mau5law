@@ -61,13 +61,13 @@ type ActionArgs<C = PipelineContext, E = PipelineEvent> = { context: C;, event:
 // Provide a few lightweight overloads to better match common `assign` shapes from xstate
 // so that svelte-check / TypeScript produce fewer false positives while keeping a
 // narrow escape hatch for complex cases.
-function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
   mapper: (context: C, event: E) => Partial<C>
 ): ReturnType<typeof, assign>;
-function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
   mapper: Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
 ): ReturnType<typeof, assign>;
-function $unsafeAssign<C extends, Record<string, unknown>, E extends { type?: string }>(
+function $unsafeAssign<C, extends, Record<string, unknown>, E extends { type?: string }>(
   mapper:
     | ((context: C, event: E) => Partial<C>)
     | Partial<{ [K in keyof C]: (context: C, event: E) => C[K] | Partial<C[K]> }>
@@ -202,8 +202,8 @@ const pipelineMachine = createMachine(
         }
       },
       fetching_jobs: {
-        entry: 'fetchJobs',
-        on: {, JOBS_FETCHED: {, target: 'idle', actions: 'updateJobs' },
+       , entry: 'fetchJobs',
+        on: {, JOBS_FETCHED: {, target: 'idle', actions: 'updateJobs` },'`
           FETCH_ERROR: {, target: 'error', actions: `handleError` }
         }
       },

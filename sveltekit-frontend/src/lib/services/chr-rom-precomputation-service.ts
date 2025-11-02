@@ -125,7 +125,7 @@ export const pgJsonStore = {
     try {
       const r = await fetch('/api/postgres/json/upsert', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(doc)
       });
       return r.ok;
@@ -338,8 +338,7 @@ export class CHRROMPrecomputationService {
           self.postMessage({ type: 'computation_error', data: {, error: err && err.message } });
         }
       };
-    `;`
-  }
+    `;` }
 
   /**
    * Start monitoring user activity for prediction
@@ -463,8 +462,7 @@ export class CHRROMPrecomputationService {
       const pattern = await this.generatePattern(task.pattern, task.priority);
       if (pattern) await this.storePatternInCHRROM(pattern);
     } catch (error) {
-      console.warn(`Failed to generate pattern ${task.pattern}: ', error);'`
-    } finally {
+      console.warn(`Failed to generate pattern ${task.pattern}: ', error);'` } finally {
       this.isProcessing = false;
       this.updateCacheStatus();
     }
@@ -546,8 +544,7 @@ export class CHRROMPrecomputationService {
         lastAccessed: Date.now(),
         userContext: 'current_user',
         documentContext: contextId ? [contextId] : [],
-        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown` }'`
-    };
+        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown' }'` };'`
   }
 
   /**

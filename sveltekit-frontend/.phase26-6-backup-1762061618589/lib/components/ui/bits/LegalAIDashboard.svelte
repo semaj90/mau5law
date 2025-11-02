@@ -14,7 +14,7 @@
     initializeEnhancedBits,
     LegalDesignTokens
   } from './index';
-  import { LegalPOICard } from './LegalPOICard.svelte';
+  import  LegalPOICard  from "./LegalPOICard.svelte";
   // Import all three legal systems
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';

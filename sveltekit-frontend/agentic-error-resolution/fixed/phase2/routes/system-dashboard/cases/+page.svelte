@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button, Card, Input } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button, Card, Input  from "$lib/components/ui/enhanced-bits.svelte";
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
@@ -110,7 +110,7 @@
   <div class="cases-grid">
     {#if filteredCases.length > 0}
       {#each filteredCases as case_ (case_.id)}
-        <Card.Root class="case-card">
+        <Card class="case-card">
           <div class="case-header">
             <h3>{case_.title}</h3>
             <span class="status-badge nes-badge">
@@ -143,7 +143,7 @@
             <Button onclick={() => generateReport(case_.id)} variant="ghost" size="sm">📄 Generate Report</Button>
             <Button onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">🗑️ Delete</Button>
           </div>
-        </Card.Root>
+        </Card>
       {/each}
     {:else}
       <div class="nes-container is-dark with-title">

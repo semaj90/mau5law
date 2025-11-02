@@ -605,7 +605,7 @@ class LegalAIOrchestrator {
         {
           name: 'Initial Research Due',
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          type: 'deadline` },'`
+          type: `deadline` },'`'`
         {
           name: 'Discovery Phase',
           date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -646,8 +646,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
        , query: params.caseContext || params.title,
         evidenceItems: params.evidenceItems,
-        analysisDepth: params.analysisDepth || 'comprehensive` })'`
-    });
+        analysisDepth: params.analysisDepth || 'comprehensive' })'` });'`
     if (!response.ok) {
       throw new Error(`Evidence relevance analysis failed: ${response.status}`);
     }

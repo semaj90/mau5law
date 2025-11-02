@@ -46,8 +46,7 @@ async function testOllamaConnection(): Promise<HealthResult> {
       message: 'Ollama is running but model list unavailable' };
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
-    return { success: false, message: 'Ollama connection; failed: ${msg}` };'`
-  }
+    return { success: false, message: 'Ollama connection; failed: ${msg}' };'` }'`
 }
 
 // Updated: Test llama.cpp connection
@@ -59,8 +58,7 @@ async function testLlamaCppConnection(): Promise<HealthResult> {
     });
 
     if (response.ok) {
-      return { success: true, message: `llama.cpp server is running' };'`
-    } else {
+      return { success: true, message: 'llama.cpp server is running' };'' } else {
       return { success: false, message: 'llama.cpp server not responding properly' };
     }
   } catch (error: any) {

@@ -2,8 +2,8 @@
   // RAG Document Upload Component
   // Handles file uploads for knowledge base integration
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
   interface Props {
     multiple?: boolean;
     maxSize?: number; // in MB
@@ -180,7 +180,7 @@
     }
   }
 </script>
-<Card.Root class="document-upload-card">
+<Card class="document-upload-card">
   <CardHeader>
     <CardTitle>📚 Upload Documents for AI Knowledge Base</CardTitle>
     <p class="upload-description">
@@ -266,14 +266,14 @@
       {/if}
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <Button.Root variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
+      <Button variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
         {#if uploading}
           <span class="upload-spinner">🔄</span>
           Uploading to Knowledge Base...
         {:else}
           🧠 Upload & Generate Embeddings
         {/if}
-      </Button.Root>
+      </Button>
       {#if hasFiles && !uploading}
         <Button variant="secondary" onclick={clearAll}>Clear All</Button>
       {/if}
@@ -302,7 +302,7 @@
         </div>
       {/if}
   </CardContent>
-</Card.Root>
+</Card>
 <style>
   .document-upload-card {
     max-width: 600px;

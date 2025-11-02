@@ -1,7 +1,7 @@
 <script lang="ts">
   import X from 'lucide-svelte';
-  // import { Button } from '$lib/components/ui/button/Button.svelte';
-  import { PoiImageUpload } from './PoiImageUpload.svelte';
+  // import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  PoiImageUpload  from "./PoiImageUpload.svelte";
   interface Props {
     open?: boolean;
   }

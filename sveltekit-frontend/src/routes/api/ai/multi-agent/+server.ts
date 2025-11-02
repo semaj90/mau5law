@@ -183,8 +183,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const requestData: MultiAgentRequest = await request.json();
     // Validate request
     if (!requestData.query) {
-      return json({ error: 'Query is required` }, { status: 400 });'`
-    }
+      return json({ error: 'Query is required' }, { status: 400 });'` }'`
     // Initialize AI systems with appropriate memory profile
     initializeAISystems(requestData.memoryProfile, requestData.useVLLM);
     const sessionId = `multi_agent_${Date.now()}_${Math.random().toString(36).slice(2, 8)}';'`
@@ -259,8 +258,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('Multi-agent API error: ', error);'
-    return json({ error: 'Invalid request format` }, { status: 400 });'`
-  }
+    return json({ error: 'Invalid request format' }, { status: 400 });'` }'`
 };
 async function runAutogenAnalysis(request: MultiAgentRequest, _sessionId: string): Promise<AutogenResponse> {
   if (!autogenTeam) {
@@ -444,7 +442,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json(agentInfo);
     }
     default: return json(
-        { error: 'Invalid action. Available, actions: status, memory_profiles, agents` },'`
+        { error: 'Invalid action. Available, actions: status, memory_profiles, agents' },''
         { status: 400 }
       );
   }

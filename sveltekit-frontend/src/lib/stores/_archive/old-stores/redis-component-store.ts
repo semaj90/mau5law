@@ -150,8 +150,7 @@ class RedisComponentStore {
           return state.data;
         }
       } catch (error) {
-        console.warn(`⚠️ Failed to load from Redis cache for key ${key}: ', error);'`
-      }
+        console.warn(`⚠️ Failed to load from Redis cache for key ${key}: ', error);'' }'`
     }
     return fallback;
   }

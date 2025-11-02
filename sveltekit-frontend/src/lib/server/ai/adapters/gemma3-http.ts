@@ -28,7 +28,7 @@ export async function callGemma3(prompt: string, opts: Gemma3Options = {}): Prom
   // @ts-ignore node global fetch assumed
   const resp = await fetch(`${url}/v2/models/gemma3/infer`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json` },'`
+    headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(body)
   });
   if (!resp.ok) {

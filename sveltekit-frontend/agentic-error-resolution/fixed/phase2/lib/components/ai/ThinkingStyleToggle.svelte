@@ -20,7 +20,7 @@
   } = $props();
   import { fade, slide, scale } from 'svelte/transition';
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { cn } from '$lib/utils';
   let showTooltip = $state(false);
   let showConfig = $state(false);
@@ -65,7 +65,7 @@
     role="button"
     tabindex="0"
   >
-    <Button.Root
+    <Button
       variant={enabled ? 'crimson' : 'nier'}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
@@ -97,10 +97,10 @@
       {#if premium && enabled}
         <Crown size={12} class="ml-2 text-harvard-gold opacity-80" />
       {/if}
-    </Button.Root>
+    </Button>
     <!-- Configuration Button -->
     {#if premium}
-      <Button.Root
+      <Button
         variant="ghost"
         size="sm"
         onclick={handleConfigure}
@@ -108,13 +108,13 @@
         disabled={loading}
       >
         <Settings size={14} />
-      </Button.Root>
+      </Button>
     {/if}
     <!-- Info Button for non-premium users -->
     {#if !premium}
-      <Button.Root variant="ghost" size="sm" onclick={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
+      <Button variant="ghost" size="sm" onclick={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
         <Info size={14} class="text-harvard-gold" />
-      </Button.Root>
+      </Button>
     {/if}
     <!-- Tooltip -->
     {#if showTooltip}
@@ -198,8 +198,8 @@
         </div>
       </div>
       <div class="config-actions">
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => (showConfig = false)}>Cancel</Button.Root>
-        <Button.Root class="bits-btn" variant="crimson" size="sm">Save Configuration</Button.Root>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showConfig = false)}>Cancel</Button>
+        <Button class="bits-btn" variant="crimson" size="sm">Save Configuration</Button>
       </div>
     {/if}
   <!-- Premium Upgrade Banner -->
@@ -211,7 +211,7 @@
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button.Root class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>Upgrade Now</Button.Root>
+        <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>Upgrade Now</Button>
       </div>
     {/if}
 </div>

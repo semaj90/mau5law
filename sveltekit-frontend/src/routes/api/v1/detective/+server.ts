@@ -89,7 +89,7 @@ class DetectiveModeService {
           title: 'Person of Interest Connection',
           description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: 'critical` }'`
+          priority: `critical` }'`'`
       ],
       timeline_gap: [
         {,
@@ -137,8 +137,7 @@ function getErrorMessage(err: any): string {
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
-      return json({ success: false, message: 'Authentication required` }, { status: 401 });'`
-    }
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });'` }'`
     const caseId = url.searchParams.get('caseId');
     // Return sample insights for now
     const insights = [

@@ -149,7 +149,7 @@ export const GET: RequestHandler = async () => {
       services: {
        , qloraTopology: 'ready',
         hmmPredictor: 'ready',
-        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback' },
+        webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback` },'`
       metrics: {
        , hmmAccuracy: hmmMetrics.overallAccuracy,
         hmmConfidence: hmmMetrics.modelConfidence,

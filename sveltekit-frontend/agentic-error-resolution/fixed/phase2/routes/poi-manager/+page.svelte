@@ -391,7 +391,7 @@
 
   <!-- Advanced Filters -->
   {#if showFilters}
-    <Card.Root class="mb-6 p-4">
+    <Card class="mb-6 p-4">
       <div class="grid md:grid-cols-3 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
@@ -443,7 +443,7 @@
           />
         </div>
       </div>
-    </Card.Root>
+    </Card>
   {/if}
 
   <!-- Results Count -->
@@ -484,7 +484,7 @@
     <!-- Grid View -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each Array.isArray(filteredPois) ? filteredPois : [] as poi}
-        <Card.Root class="p-6 hover:shadow-lg transition-shadow">
+        <Card class="p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-start justify-between mb-4">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
@@ -529,12 +529,12 @@
               Delete
             </button>
           </div>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   {:else}
     <!-- List View -->
-    <Card.Root class="overflow-hidden">
+    <Card class="overflow-hidden">
       {#each Array.isArray(filteredPois) ? filteredPois : [] as poi}
         <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
           <div class="flex items-center justify-between">
@@ -564,7 +564,7 @@
           </div>
         </div>
       {/each}
-    </Card.Root>
+    </Card>
   {/if}
 </div>
 

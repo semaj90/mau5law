@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       // TODO: enqueue job to background worker (RabbitMQ / Redis stream)
     }
     // Always enqueue for background durability/DB persistence. Prefer RabbitMQ when available.
-    const job = { id, text, model: payload?.model || 'embeddinggemma-300m` };'`
+    const job = { id, text, model: payload?.model || 'embeddinggemma-300m' };'`'`
     try {
       // dynamic import so we don't require amqplib at runtime if not installed'
       const { publishToQueue } = await import('$lib/server/rabbitmq');

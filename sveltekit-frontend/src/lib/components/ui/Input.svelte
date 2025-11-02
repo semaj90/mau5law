@@ -205,7 +205,7 @@ import type { Message } from '$lib/types';
         {...restProps}
       />
     {/if}
-    <!-- Right Icon or, Status -->
+    <!-- Right Icon, or, Status -->
     {#if loading}
       <div, class="space-y-4">
         <div, class="space-y-4"></div>
@@ -224,7 +224,7 @@ import type { Message } from '$lib/types';
       {/if}
     <!-- Clear, Button -->
     {#if showClearButton}
-      <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear, input">
+      <button, type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear, input">
         <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       </button>
     {/if}

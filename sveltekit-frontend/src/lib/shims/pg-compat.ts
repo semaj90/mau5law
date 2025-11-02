@@ -62,8 +62,7 @@ export class Pool {
       try {
         fn(...args);
       } catch (e) {
-        console.warn(`Error in event listener for ${event}: ', e);'`
-      }
+        console.warn(`Error in event listener for ${event}: ', e);'' }'`
     });
   }
 

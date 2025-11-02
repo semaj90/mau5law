@@ -5,7 +5,7 @@
   import { onMount, tick } from 'svelte';
   import { Dialog } from 'bits-ui'; // Changed from MeltDialog to bits-ui
   import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Input } from '$lib/components/ui/Input.svelte';
+  import  Input  from "$lib/components/ui/Input.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
     Card,
@@ -13,7 +13,7 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { ScrollArea } from '$lib/components/ui/scrollarea/ScrollArea.svelte';
+  import  ScrollArea  from "$lib/components/ui/scrollarea/ScrollArea.svelte";
   import {
     Bot,
     User,

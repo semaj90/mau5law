@@ -17,7 +17,7 @@
     } return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium; }
   let variantStyles = $derived(getVariantStyles(variant)); let paddingValue = $derived(getPaddingValue(padding)); let containerClasses = $derived([
     'nes-8bit-container',
-    'nes-container', containerType, containerType === 'is-dark' ? 'is-dark': '', containerType === 'is-rounded' ? 'is-rounded': '', containerType === 'is-centered' ? 'is-centered': '', enableScanlines ? 'enable-scanlines': '', enableCRTEffect ? 'enable-crt': '', disabled ? 'disabled': '', className ].filter(Boolean).join(' ')); </script> <div class={ containerClasses } style="
+    'nes-container', containerType, containerType === 'is-dark' ? 'is-dark': '', containerType === 'is-rounded' ? 'is-rounded': '', containerType === 'is-centered' ? 'is-centered': '', enableScanlines ? 'enable-scanlines': '', enableCRTEffect ? 'enable-crt': '', disabled ? 'disabled': '', className ].filter(Boolean).join(' ')); </script> <div, class={ containerClasses } style="
     --container-bg: {variantStyles.backgroundColor} --container-border: {variantStyles.borderColor} --container-text: {variantStyles.textColor} --container-padding: { paddingValue } {maxWidth ? `--container-max-width: ${ maxWidth }`: ''} {minHeight ? `--container-min-height: ${ minHeight }`: ''} { style }
   "
   onclick={ handleClick } onOnmouseenter={ role } tabindex={onClick && !disabled ? 0: undefined} >

@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount, createEventDispatcher } from "svelte";
   // keep local Button component
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // removed incorrect bits-ui named imports and unused variables
   import { ocrService, type FormField, type FieldType } from '$lib/services/ocrService';
   // removed enhancedRAG (unused)
@@ -270,13 +270,13 @@
             }}
           />
           {#if !uploadedFile}
-            <Button.Root
+            <Button
               variant="ghost"
               class="mt-4 bits-btn"
               onclick={() => fileInput?.click()}
             >
               Browse Files
-            </Button.Root>
+            </Button>
           {/if}
         </div>
         <!-- Processing Status -->
@@ -376,14 +376,14 @@
                   <p class="text-xs text-yorha-text-secondary">Suggestions:</p>
                   <div class="flex flex-wrap gap-1">
                     {#each Array.isArray(activeSuggestions[field.name]) ? activeSuggestions[field.name] : [] as suggestion}
-                      <Button.Root
+                      <Button
                         variant="ghost"
                         size="sm"
                         class="text-xs h-6 px-2 bits-btn"
                         onclick={() => applySuggestion(field.name, suggestion)}
                       >
                         {suggestion}
-                      </Button.Root>
+                      </Button>
                     {/each}
                   </div>
                 {/if}
@@ -410,19 +410,19 @@
             {/if}
           </div>
           <div class="flex items-center space-x-3">
-            <Button.Root class="bits-btn" variant="ghost" onclick={() => {
+            <Button class="bits-btn" variant="ghost" onclick={() => {
               populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
               formErrors.set({});
             }}>
               Clear All
-            </Button.Root>
-            <Button.Root
+            </Button>
+            <Button
               type="submit"
               disabled={!isFormValid}
               class="bg-yorha-primary hover:bg-yorha-primary/80 disabled:opacity-50 bits-btn"
             >
               Submit Form
-            </Button.Root>
+            </Button>
           </div>
         </div>
       </form>
@@ -435,9 +435,9 @@
         <h3 class="nes-text is-primary flex items-center space-x-2">
           <span>🔍</span>
           <span>Extracted Data</span>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
             {showPreview ? 'Hide' : 'Show'}
-          </Button.Root>
+          </Button>
         </h3>
       </div>
       <!-- each extracted item: Badge -> span -->

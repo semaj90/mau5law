@@ -34,7 +34,7 @@ async function getQueryEmbedding(query: string): Promise<number[]> {
   try {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model,
         prompt: query,
@@ -121,8 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
       metadata: {
         modelUsed: 'embeddinggemma:latest',
-        indexType: 'pgvector (cosine distance)` }'`
-    };
+        indexType: 'pgvector (cosine distance)' }'' };
 
     return json(response);
   } catch (err) {
@@ -144,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorResponse: ErrorResponse = {
       success: false,
       error: {
-        message: err instanceof Error ? err.message : `Search failed` },
+        message: err instanceof Error ? err.message : `Search failed' },'`
       timestamp
     };
     return json(errorResponse, { status: 500 });
@@ -171,7 +170,7 @@ export const GET: RequestHandler = async () => {
       success: false,
       error: {
         message: 'Search service unavailable',
-        details: err instanceof Error ? err.message : `Unknown error` },
+        details: err instanceof Error ? err.message : `Unknown error' },'`
       timestamp
     };
     return json(errorResponse, { status: 503 });

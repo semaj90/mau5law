@@ -215,8 +215,7 @@ export const aiStore = {
       // Check local model availability
       const localHealthCheck = await fetch('/api/ai/health/local', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json` }'`
-      });
+        headers: { 'Content-Type': 'application/json' }'` });'`
       const localHealth = await localHealthCheck.json();
       // Check cloud model availability
       const cloudHealthCheck = await fetch('/api/ai/health/cloud', {
@@ -243,7 +242,7 @@ export const aiStore = {
         lastHealthCheck: Date.now()
       }));
     } catch (error: any) {
-      console.error('AI initialization failed: `, error);'`
+      console.error('AI initialization failed: ', error);'`'`
       aiStatus.update(state => ({
         ...state,
         isInitializing: false,
@@ -315,7 +314,7 @@ export const aiStore = {
       aiStatus.update(state => ({ ...state, isLoading: false }));
       return aiResponse;
     } catch (error: any) {
-      console.error('AI message failed: `, error);'`
+      console.error('AI message failed: ', error);'`'`
       aiStatus.update(state => ({
         ...state,
         isLoading: false,
@@ -369,8 +368,7 @@ export const aiStore = {
         timestamp: Date.now(),
         metadata: {
           messageCount: conversation.messages.length,
-          lastModel: conversation.messages[conversation.messages.length - 1]?.metadata?.model || 'unknown` }'`
-      };
+          lastModel: conversation.messages[conversation.messages.length - 1]?.metadata?.model || 'unknown' }'` };'`
       const newHistory = [newConversation, ...history];
       // Limit history length
       const maxLength = get(aiSettings).maxHistoryLength;

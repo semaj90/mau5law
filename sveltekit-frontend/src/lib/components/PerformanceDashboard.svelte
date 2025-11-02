@@ -106,7 +106,7 @@ import type { Case } from '$lib/types';
       <button, class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
     </div>
   </div>
-  <!-- System Health, Cards -->
+  <!-- System, Health, Cards -->
   {#if $health}
     <div, class="space-y-4">
       <div, class="space-y-4">
@@ -170,7 +170,7 @@ import type { Case } from '$lib/types';
         {/each}
       </div>
     </div>
-    <!-- Peak Hours, Chart -->
+    <!-- Peak, Hours, Chart -->
     <div, class="space-y-4">
       <h2>Peak Hours</h2>
       <div, class="space-y-4">
@@ -189,7 +189,7 @@ import type { Case } from '$lib/types';
   <!-- Recent, Logs -->
   <div, class="space-y-4">
     <h2>Recent System Logs</h2>
-    <div class="space-y-4, logs-container">
+    <div, class="space-y-4, logs-container">
       {#each Array.isArray($logs) ? $logs : [] as log}
         <div, class="log-entry {log.level === 'error' ? 'error' : log.level === 'warn' ? 'warn' : 'info'}">
           <div, class="log-timestamp">{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</div>

@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'evidence_id and prompt are required' },
+          error: 'evidence_id and prompt are required` },'`
         { status: 400 }
       );
     }
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: `dimensions must be [width, height] array` },
+          error: 'dimensions must be [width, height] array' },
         { status: 400 }
       );
     }
@@ -89,12 +89,12 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'dimensions must be between 64x64 and 2048x2048' },
+          error: 'dimensions must be between 64x64 and 2048x2048` },'`
         { status: 400 }
       );
     }
     console.log(
-      '🎨 Generating ${hasExtendedThinking ? 'GRPMO-enhanced' : `standard' } glyph for evidence ${glyphRequest.evidence_id}: ','`
+      '🎨 Generating ${hasExtendedThinking ? 'GRPMO-enhanced' : `standard` } glyph for evidence ${glyphRequest.evidence_id}: ','`'`
       {
         prompt: glyphRequest.prompt,
         style: glyphRequest.style,
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
                   : []),
               ],
               risk_assessment: 'low',
-              summary: '${hasExtendedThinking ? 'GRPMO-enhanced ' : `` }AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}' },
+              summary: '${hasExtendedThinking ? 'GRPMO-enhanced ' : '' }AI-generated ${glyphRequest.style} style legal evidence visualization: ${glyphRequest.prompt}` },'`
             neural_sprite_data: {
               compression_ratio: result.neural_sprite_results?.compression_ratio ?? 0,
               tensor_urls: (result.tensor_ids ?? []).map(id => `/api/tensors/${id}`),
@@ -383,12 +383,12 @@ export const GET: RequestHandler = async () => {
         extended_thinking: 'Multi-stage AI reasoning with hot/warm/cold caching',
         reinforcement_learning: 'PPO-based optimization of generation quality',
         contextual_enhancement: 'Similar content integration for improved results',
-        cache_orchestration: `Intelligent cache layer management for performance' },'`
+        cache_orchestration: `Intelligent cache layer management for performance` },'`'`
       neural_sprite_capabilities: {
         tensor_compression: 'AI-powered compression with configurable ratios',
         predictive_frames: 'Generate 0-10 interpolated animation frames',
         ui_layout_compression: 'Demo compression of UI layout states',
-        metadata_embedding: `Legal AI metadata embedded in PNG files` }
+        metadata_embedding: 'Legal AI metadata embedded in PNG files' }
     };
     return json({
       success: true,
@@ -398,7 +398,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: 'Service unavailable' },
+        error: 'Service unavailable` },'`
       { status: 503 }
     );
   }

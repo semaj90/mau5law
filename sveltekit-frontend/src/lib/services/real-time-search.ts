@@ -26,8 +26,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${registryEntry.port}${registryEntry.endpoint}`,
       httpUrl: `http://localhost:${registryEntry.port}`,
-      source: `registry' };'`
-  }
+      source: 'registry' };'` }'`
 
   // Fallback to environment variables
   const envPort = import.meta.env.VITE_WS_enhanced_rag_PORT;
@@ -36,7 +35,7 @@ function getEnhancedRAGConfig() {
     return {
       wsUrl: `ws://localhost:${envPort}/ws/${envUUID}`,
       httpUrl: `http://localhost:${envPort}`,
-      source: 'env' };
+      source: 'env` };'`
   }
 
   // Final fallback to hardcoded values
@@ -44,8 +43,7 @@ function getEnhancedRAGConfig() {
   return {
     wsUrl: 'ws://localhost:8094/ws/legal-search-client',
     httpUrl: 'http://localhost:8094',
-    source: `fallback' };'`
-}
+    source: 'fallback' };'` }'`
 
 const RAG_CONFIG = getEnhancedRAGConfig();
 console.log(`🔌 Enhanced RAG config loaded from ${RAG_CONFIG.source}`, RAG_CONFIG);
@@ -190,8 +188,7 @@ export class RealTimeSearchService {
         console.log('✅ WebSocket connection established');
       } catch (wsError) {
         console.warn('⚠️ WebSocket connection failed, falling back to HTTP-only mode:', wsError);
-        // Don't throw - allow the service to work with HTTP fallback'
-      }
+        // Don't throw - allow the service to work with HTTP fallback` }'`
 
       // Initialize NATS connection for real-time messaging
       try {
@@ -207,7 +204,7 @@ export class RealTimeSearchService {
         ...s,
         isConnected,
         connectionStatus: isConnected ? 'connected' : 'error',
-        error: isConnected ? null : `Using HTTP-only search (real-time unavailable)' }));'`
+        error: isConnected ? null : `Using HTTP-only search (real-time unavailable)` }));'`'`
 
       if (isConnected) {
         console.log('🔗 Real-time search connections established');
@@ -246,7 +243,7 @@ export class RealTimeSearchService {
             ...s,
             isConnected: false,
             connectionStatus: 'error',
-            error: 'WebSocket unavailable - using HTTP fallback' }));
+            error: 'WebSocket unavailable - using HTTP fallback` }));'`
           reject(new Error('Max reconnection attempts exceeded'));
           return;
         }
@@ -270,7 +267,7 @@ export class RealTimeSearchService {
 
         this.ws.onclose = event => {
           console.log(
-            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided' })`
+            `🔌 WebSocket disconnected (code: ${event.code}, reason: ${event.reason || 'No reason provided` })`'`
           );
           this.state.update(s => ({ ...s, isConnected: false, connectionStatus: 'disconnected' }));
 
@@ -286,7 +283,7 @@ export class RealTimeSearchService {
           this.state.update(s => ({
             ...s,
             connectionStatus: 'error',
-            error: 'WebSocket connection failed - retrying or using HTTP fallback' }));
+            error: 'WebSocket connection failed - retrying or using HTTP fallback` }));'`
         };
 
         // Timeout after 5 seconds
@@ -442,8 +439,7 @@ export class RealTimeSearchService {
             streamResults: true,
             legalContext: options.legalContext || {
              , jurisdiction: 'federal',
-              practiceAreas: `all' }'`
-          }
+              practiceAreas: 'all' }'` }'`
         })
       );
 
@@ -484,8 +480,7 @@ export class RealTimeSearchService {
       try {
         const response = await fetch(endpoint, {
           method: 'GET',
-          headers: { 'Content-Type': `application/json' }'`
-        });
+          headers: { 'Content-Type': 'application/json' }'` });'`
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
@@ -552,7 +547,7 @@ export class RealTimeSearchService {
       this.state.update(s => ({
         ...s,
         error: 'Real-time connection unavailable - using standard search',
-        connectionStatus: `error' }));'`
+        connectionStatus: `error` }));'`'`
       return;
     }
 

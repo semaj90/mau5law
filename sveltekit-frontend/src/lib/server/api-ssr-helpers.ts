@@ -25,7 +25,7 @@ export interface BitsUICompatibleData {
  * Creates an SSR-optimized JSON response for Bits UI components
  * Enhanced with GPU-accelerated serialization and thread-safe operations
  */
-export async function createSSRResponse<T extends, BitsUICompatibleData>(
+export async function createSSRResponse<T, extends, BitsUICompatibleData>(
   data: T,
   options?: {
     cached?: boolean;
@@ -144,7 +144,7 @@ export async function createSSRResponse<T extends, BitsUICompatibleData>(
 /**
  * Page data loader helper for Bits UI SSR
  */
-export async function loadWithSSR<T extends, BitsUICompatibleData>(loader: () => Promise<T>, fallback: T): Promise<T> {
+export async function loadWithSSR<T, extends, BitsUICompatibleData>(loader: () => Promise<T>, fallback: T): Promise<T> {
   try {
     const data = await loader();
     return sanitizeForSSR(data);
@@ -212,7 +212,7 @@ export function validateSSRResponse<T>(response: any, validator: (data: any) => 
 /**
  * Enhanced wrapper for API route handlers with GPU and thread-safe support
  */
-export function withSSRHandler<T extends, BitsUICompatibleData>(
+export function withSSRHandler<T, extends, BitsUICompatibleData>(
   handler: (_event: Parameters<RequestHandler>[0]) => Promise<T | Response>,
   options?: {
     gpuAccelerated?: boolean;
@@ -404,6 +404,6 @@ export async function batchSSRRequestsGPU<T, extends { [key: string]: any }>(
       cognitive_cache: { threadSafe: false },
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
-      overall_status: 'unhealthy' };
+      overall_status: 'unhealthy` };'`
   }
 }

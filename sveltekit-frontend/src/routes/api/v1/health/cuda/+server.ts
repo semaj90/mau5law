@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         default:
           // For redis and postgres, we'll assume they're checked by other services
           serviceStatus = 'online'; // Optimistic
-          details = { note: `Status inferred from dependent services' };'`
+          details = { note: `Status inferred from dependent services` };'`'`
           break;
       }
       const responseTime = Date.now() - startTime;
@@ -120,8 +120,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
         url: service.url,
         status: 'offline',
         lastCheck: Date.now(),
-        details: { error: error instanceof Error ? error.message : `Connection failed' }'`
-      });
+        details: { error: error instanceof Error ? error.message : 'Connection failed' }'` });'`
     }
   }
   // Calculate overall system health

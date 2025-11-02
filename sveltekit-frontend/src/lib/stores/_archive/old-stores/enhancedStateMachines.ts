@@ -274,7 +274,7 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
           })
         },
         HEALTH_CHECK: {
-          target: 'monitoring` },'`
+          target: `monitoring` },'`'`
         SYNC_CACHE: {
           target: 'syncing',
           guard: `needsCacheSync` }
@@ -454,8 +454,7 @@ export const evidenceProcessingMachine = setup({ types: {, context: {} as Enhan
         onDone: {
           target: 'idle',
           actions: assign({
-            systemHealth: ({ event }) => event.output.health as: 'healthy' | 'degraded' | 'critical` })'`
-        },
+            systemHealth: ({ event }) => event.output.health as: 'healthy' | 'degraded' | 'critical' })'` },'`
         onError: {
           target: 'idle',
           actions: assign({

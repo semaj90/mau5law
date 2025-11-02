@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
   import { MultiLayerCache } from '$lib/services/multi-layer-cache';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // Props
   let {
     graphData = $bindable(),
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Item Controls -->
         <div class="item-controls">
-          <Button.Root class="bits-btn"
+          <Button class="bits-btn"
             variant="evidence"
             size="small"
             onclick={() =>
@@ -306,7 +306,7 @@ regenerateVisualization(visualization.metadata.algorithm)}
             disabled={$isGenerating}
           >
             🔄 Regenerate
-</Button.Root>
+</Button>
           <div class="item-metrics">
             <span class="nes-text is-disabled">
               ⚡ {visualization.metadata.processingTime}ms
@@ -325,13 +325,13 @@ regenerateVisualization(visualization.metadata.algorithm)}
   {#if filteredVisualizations.length === 0 && !$isGenerating}
     <div class="empty-state nes-container is-rounded">
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="legal"
         onclick={() =>
 generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
-</Button.Root>
+</Button>
     {/if}
   <!-- Real-time Canvas (Hidden, used for generation) -->
   <canva;

@@ -1,7 +1,7 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
   // Props (Svelte 5 runes) - use $props() instead of `export let`
   const {
@@ -382,7 +382,7 @@
       {/if}
     <!-- Controls -->
     <div class="flex gap-2 flex-wrap">
-      <Button.Root
+      <Button
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
@@ -398,8 +398,8 @@
           ></path>
         </svg>
         History
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
@@ -410,13 +410,13 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
         </svg>
         Optimize
-      </Button.Root>
-      <Button.Root size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={resetSession}>
+      </Button>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={resetSession}>
         Reset
-      </Button.Root>
-      <Button.Root size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={exportUsageData}>
+      </Button>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={exportUsageData}>
         Export
-      </Button.Root>
+      </Button>
     </div>
     <!-- Optimization Toggle -->
     <div class="flex items-center justify-between">

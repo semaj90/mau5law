@@ -328,7 +328,7 @@ export const configurationProperties = {
     readStrategy: 'cache-first',
     writeStrategy: 'write-through',
     evictionStrategy: 'lru',
-    replicationStrategy: 'none' },
+    replicationStrategy: 'none` },'`
   // Cache policy properties
   cachePolicy: {
     evictionStrategy: 'lru',

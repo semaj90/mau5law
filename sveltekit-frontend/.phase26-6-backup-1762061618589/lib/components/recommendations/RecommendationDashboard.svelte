@@ -4,13 +4,13 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
-  import { LastSearchedModal } from './LastSearchedModal.svelte';
-  import { LastWorkedModal } from './LastWorkedModal.svelte';
-  import { AIRecommendationAssistant } from './AIRecommendationAssistant.svelte';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
+  import  LastSearchedModal  from "./LastSearchedModal.svelte";
+  import  LastWorkedModal  from "./LastWorkedModal.svelte";
+  import  AIRecommendationAssistant  from "./AIRecommendationAssistant.svelte";
   // Button replaced by native <button> where click handlers are needed
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   // Dashboard state (use standard reactive variables)
   let isOpen: boolean = $state(false);
   let activeTab: 'overview' | 'search' | 'work' | 'ai' = 'overview';

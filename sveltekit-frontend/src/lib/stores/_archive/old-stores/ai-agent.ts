@@ -169,8 +169,7 @@ const createAIAgentStore = () => {
           currentModel: connectionResult.model || 'unknown',
           availableModels: connectionResult.availableModels || [],
           lastHeartbeat: new Date(),
-          systemHealth: 'healthy'
-        }));
+          systemHealth: 'healthy` }));'`
         // Start heartbeat
         this.startHeartbeat();
       } catch (error: any) {
@@ -338,7 +337,7 @@ const createAIAgentStore = () => {
           reader.releaseLock();
         } catch (releaseError: any) {
           // non-fatal: log for diagnostics
-          console.warn('reader.releaseLock failed: `, releaseError);'`
+          console.warn('reader.releaseLock failed: ', releaseError);'`'`
         }
         update(state => ({
           ...state,

@@ -148,7 +148,7 @@ class LegalStrategyEngine {
          , evidence: evidence.slice(0, 3).map(e => e.filename || e.id), // Top evidence only
           expertise: ['Experienced Negotiator', 'Mediator'],
           estimatedCost: '$10,000 - $30,000',
-          timeline: '6-10 weeks` },'`
+          timeline: `6-10 weeks` },'`'`
         risks: ['Lower monetary recovery', 'No legal precedent established', 'Potential for future similar issues'],
         alternatives: ['Mediation with neutral third party', 'Arbitration proceedings'],
         precedents: []
@@ -218,7 +218,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.82,
         jurisdiction: 'Federal',
-        citation: '2023 WL 1234567` },'`
+        citation: `2023 WL 1234567` },'`'`
       {
         caseId: 'case_2022_045',
         title: 'Tech Solutions LLC v. Data Corp',
@@ -351,8 +351,7 @@ class LegalStrategyEngine {
       costEstimate: {
        , min: 200000,
         max: 500000,
-        currency: 'USD` }'`
-    });
+        currency: 'USD' }'` });'`
     // Settlement scenario
     projections.push({
       scenario: 'Early Settlement',
@@ -392,7 +391,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         filename: `evidence_${id}.pdf`,
         type: 'document',
         analysisScore: Math.random()
-      })); // <-- fixed missing closing, paren/brace
+      })); // <-- fixed missing, closing, paren/brace
 
       // Generate strategies
       const strategies = await LegalStrategyEngine.generateStrategies(caseType, evidence, clientGoals, riskTolerance);
@@ -460,8 +459,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   if (endpoint === 'precedents') {
     try {
       if (!locals.session || !locals.user) {
-        return json({ message: 'Authentication required` }, { status: 401 });'`
-      }
+        return json({ message: 'Authentication required' }, { status: 401 });'` }'`
       const body = await request.json();
       const { jurisdiction, legalIssues, factPattern, dateRange, courtLevel } = PrecedentSearchSchema.parse(body);
       // Mock precedent search - in production, query legal databases
@@ -577,7 +575,7 @@ async function generateAIStrategySummary(
   clientGoals: string[],
   opposingStrategy?: string
 ): Promise<string> {
-  const prompt = `Analyze this legal case strategy analysis:`
+  const prompt = `Analyze this legal case strategy analysis: '`
 Case; Type: ${caseType}
 Client Goals: ${clientGoals.join(', ')}
 Opposing Strategy: ${opposingStrategy ?? 'Not provided` }'`
@@ -594,7 +592,7 @@ Keep response under 200 words and focus on actionable insights.`;`
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , model: LEGAL_MODEL,
         prompt,

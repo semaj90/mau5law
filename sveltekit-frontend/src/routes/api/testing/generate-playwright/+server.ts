@@ -97,7 +97,7 @@ function generateTodoSOMFile(testResults: any): string {
    - Optimize Go microservice SIMD processing to <500ms
    - Implement batch processing for multiple documents
    - Add GPU acceleration for vector operations
-   - Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : '🔴 NEEDS, WORK` }'`
+   - Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : `🔴 NEEDS, WORK` }'`'`
 3. [ ] **POSTGRESQL PGAI INTEGRATION**
    - Complete pgai extension setup and testing
    - Implement AI-powered summarization pipeline
@@ -140,7 +140,7 @@ ${
 ### Recommendations Based on SOM Analysis:
 1. **Document Type Clustering**: Identified ${clustering.kmeansClusters || 0} distinct document categories
 2. **Semantic Similarity**: ${clustering.accuracy || 0}% accuracy in grouping similar legal concepts
-3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant anomalies, detected` }
+3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant, anomalies, detected` }
 ### "Did You Mean" Functionality:
 ${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated` }'`
 ## 🔧 TECHNICAL IMPLEMENTATION TODOS
@@ -224,8 +224,7 @@ Completed: ${countCompletedItems()}
 In Progress: ${countInProgressItems()}
 Remaining: ${countRemainingItems()}
 🔄 This file will be automatically updated after each processing pipeline run.
-`;`
-}
+`;` }
 function generatePlaywrightTestFile(testResults: any): string {
   return `{ test, expect, Page } from "@playwright/test"`
 /*
@@ -490,8 +489,7 @@ async function measureProcessingTime(page: Page, operation: () => Promise<void>)
   const startTime = Date.now()
   await operation()
   return Date.now() - startTime
-}`;`
-}
+}`;` }
 function countGeneratedTests(testContent: string): number {
   const testMatches = testContent.match(/test\(/g);
   return testMatches ? testMatches.length : 0;

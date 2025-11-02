@@ -40,12 +40,12 @@ export class QdrantApiWrapper {
       // removed unused response assignment
       logger.debug(`Retrieved collection ${collectionName}`, {
         component: 'QdrantApiWrapper',
-        service: `qdrant` });
+        service: `qdrant' });'`
       return response;
     } catch (error: any) {
       logger.error(`Failed to get collection ${collectionName}`, error, {
         component: 'QdrantApiWrapper',
-        service: `qdrant` });
+        service: `qdrant' });'`
       throw error;
     }
   }
@@ -56,7 +56,7 @@ export class QdrantApiWrapper {
         `Created collection ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         { collection: collectionName, vectorSize: config.vectors?.size,
           distance,: config.vectors?.distance
         }
@@ -68,7 +68,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName, config }
       );
       throw error;
@@ -91,7 +91,7 @@ export class QdrantApiWrapper {
         `Deleted collection ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName }
       );
       return response;
@@ -101,7 +101,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName }
       );
       throw error;
@@ -120,7 +120,7 @@ export class QdrantApiWrapper {
         `Upserted ${options.points.length} points to ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         { collection: collectionName, pointCount: options.points.length
         }
       );
@@ -131,7 +131,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName, pointCount,: options.points.length }
       );
       throw error;
@@ -155,7 +155,7 @@ export class QdrantApiWrapper {
         `Search completed in ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         { collection: collectionName, resultsCount: response.length,
           scoreThreshold,: options.score_threshold
         }
@@ -167,7 +167,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName }
       );
       throw error;
@@ -201,14 +201,14 @@ export class QdrantApiWrapper {
         // Fallback: return empty array if method not available
         logger.warn(`Retrieve method not available, returning empty result for ${collectionName}`, {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         return [];
       }
       logger.debug(
         `Retrieved ${options.ids.length} points from ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         { collection: collectionName, pointCount: options.ids.length
         }
       );
@@ -219,7 +219,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName, ids,: options.ids }
       );
       throw error;
@@ -241,7 +241,7 @@ export class QdrantApiWrapper {
         `Deleted points from ${collectionName}`,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` });
+          service: `qdrant' });'`
         { collection: collectionName, pointCount: options.points?.length || 0
         }
       );
@@ -252,7 +252,7 @@ export class QdrantApiWrapper {
         error,
         {
           component: 'QdrantApiWrapper',
-          service: `qdrant` })
+          service: `qdrant' })'`
         { collection: collectionName }
       );
       throw error;
@@ -274,14 +274,14 @@ export class QdrantApiWrapper {
       // TODO: Implement correct field index creation based on actual API
       // This might be part of collection creation or a separate endpoint
       console.log(`Field index creation for ${fieldName} - check current API documentation`);
-      return { success: true, message: `Field index creation initiated for ${fieldName}` }
+      return { success: true, message: `Field index creation initiated for ${fieldName}' }'`
     } catch (error: any) {
       logger.error(
         `Failed to create field index for ${fieldName}`,
         error,
         {
           component: 'QdrantApiWrapper',
-          service: 'qdrant` })'`
+          service: 'qdrant' })'`'`
         { collection: collectionName, field,: fieldName }
       );
       throw error;
@@ -292,11 +292,11 @@ export class QdrantApiWrapper {
     try {
       // Simple collection list to verify connectivity
       await this.client.getCollections();
-      return { status: 'healthy', service: `qdrant` }
+      return { status: 'healthy', service: `qdrant' }'`
     } catch (error: any) {
       logger.error('Qdrant health check failed', error, {
         component: 'QdrantApiWrapper',
-        service: `qdrant` });
+        service: `qdrant' });'`
       return { status: 'unhealthy', service: 'qdrant', error: error.message }
     }
   }

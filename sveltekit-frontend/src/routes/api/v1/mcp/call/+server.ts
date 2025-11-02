@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log('✅ MCP Tool Success:', {
       tool,
       requestId: requestMetadata.requestId,
-      executionTime: `${executionTime}ms` });
+      executionTime: `${executionTime}ms' });'`
 
     return json(
       {
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       tool,
       requestId: requestMetadata.requestId,
       error: errorMessage,
-      executionTime: `${executionTime}ms` });
+      executionTime: `${executionTime}ms' });'`
 
     return json(
       {

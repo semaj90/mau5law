@@ -4,9 +4,9 @@
   import { tick } from 'svelte';
   import { browser } from '$app/environment';
   import Button from '$lib/components/ui/Button.svelte'; // Corrected casing
-  import { ScrollArea } from '$lib/components/ui/scroll-area.svelte'; // Changed to named import
-  import { Separator } from '$lib/components/ui/separator.svelte';
-  import { Input } from '$lib/components/ui/input.svelte';
+  import  ScrollArea  from "$lib/components/ui/scroll-area.svelte"; // Changed to named import
+  import  Separator  from "$lib/components/ui/separator.svelte";
+  import  Input  from "$lib/components/ui/input.svelte";
   import { Bot, Send, Wifi, WifiOff, Loader2 } from 'lucide-svelte';
   import Root from '$lib/components/ui/sheet/Root.svelte';
   import Trigger from '$lib/components/ui/sheet/Trigger.svelte';
@@ -273,9 +273,9 @@
 <!-- Replace deprecated <svelte:component> usages with direct component tags -->
 <RootAny bind:open={isOpen}>
   <TriggerAny asChild let:builder>
-    <Button.Root {...builder} variant="primary" class="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full p-4 shadow-lg">
+    <Button {...builder} variant="primary" class="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full p-4 shadow-lg">
       <Bot class="h-6 w-6" />
-    </Button.Root>
+    </Button>
   </TriggerAny>
 
   <ContentAny class="flex w-[440px] flex-col p-0 sm:max-w-lg">

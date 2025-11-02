@@ -1,8 +1,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
-  import { Dropdown } from '$lib/components/ui/Dropdown.svelte';
-  import { Checkbox } from '$lib/components/ui/Checkbox.svelte';
+  import  Dropdown  from "$lib/components/ui/Dropdown.svelte";
+  import  Checkbox  from "$lib/components/ui/Checkbox.svelte";
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
   interface AutomationConfig {
     id: string;

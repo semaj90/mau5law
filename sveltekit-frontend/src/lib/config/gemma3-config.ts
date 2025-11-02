@@ -80,7 +80,7 @@ Provide detailed, practical feedback based on legal best practices.`,`
 - Chain of custody considerations
 - Admissibility under evidence rules
 - Impact on case strategy
-Focus on factual analysis and legal implications.' }'
+Focus on factual analysis and legal implications.` }'`
 export const GEMMA3_INFERENCE_SETTINGS = { quick_response: {, temperature: 0.3,
     topP: 0.8,
     topK: 20,

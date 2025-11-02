@@ -430,7 +430,7 @@ function generateSummary(content: string): string {
        }
        // Ensure proper JSON object format
        if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
-       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ` }'`
+       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '}'; // Add trailing: ' }'`
        const doc = parseLegalDocument(docJson);
        globalResult.documents.push(doc);
        globalResult.totalChunks++;

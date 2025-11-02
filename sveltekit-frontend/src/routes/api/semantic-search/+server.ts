@@ -133,7 +133,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${ollamaBaseCandidate.replace(/\/+$/, '')}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: fastStringify({ model, input: text })
       });
       if (!response.ok) {
@@ -191,7 +191,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
         Array.isArray(c.embedding) ? c.embedding : typeof c.embedding === 'string' ? JSON.parse(c.embedding) : null
       ),
       k: candidates.length,
-      precision: `fp64' };'`
+      precision: `fp64` };'`'`
     // typed lookup for gpu base URL
     const gpuBase =
       (services as unknown as { env?: { gpuConfig?: { baseUrl?: string } } })?.env?.gpuConfig?.baseUrl ||
@@ -199,7 +199,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
       'http://localhost:8097';
     const response = await fetch(`${String(gpuBase).replace(/\/+$/, '')}/search`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: fastStringify(bodyObj)
     });
     if (!response.ok) throw new Error(`GPU similarity failed: ${response.statusText}`);
@@ -209,8 +209,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candid
       ...candidate,
       gpu_similarity:
         typeof similarities[idx] === 'number' ? (similarities[idx] as number) : (candidate.similarity ?? null),
-      precision_used: `fp64' }));'`
-  } catch (error) {
+      precision_used: 'fp64' }));'` } catch (error) {'`
     console.error('GPU similarity computation failed:', error);
     return candidates;
   }
@@ -385,5 +384,5 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
   }
 
   // Defensive fallback: ensures the handler always returns a Response (prevents TS from inferring 'undefined')
-  return json({ success: false, error: 'Unhandled semantic-search path' }, { status: 500 });
+  return json({ success: false, error: 'Unhandled semantic-search path` }, { status: 500 });'`
 };

@@ -42,7 +42,7 @@
 
   <!-- Statistics Overview -->
   <div class="stats-grid">
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>📁 Active Cases</CardTitle>
       </CardHeader>
@@ -50,9 +50,9 @@
         <div class="stat-number">{stats.activeCases}</div>
         <div class="stat-label">Currently being processed</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>🔍 Pending Evidence</CardTitle>
       </CardHeader>
@@ -60,9 +60,9 @@
         <div class="stat-number">{stats.pendingEvidence}</div>
         <div class="stat-label">Awaiting analysis</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>📄 Documents</CardTitle>
       </CardHeader>
@@ -70,9 +70,9 @@
         <div class="stat-number">{stats.documentsProcessed}</div>
         <div class="stat-label">AI processed this week</div>
       </CardContent>
-    </Card.Root>
+    </Card>
 
-    <Card.Root class="stat-card">
+    <Card class="stat-card">
       <CardHeader>
         <CardTitle>🧠 AI Analysis</CardTitle>
       </CardHeader>
@@ -80,7 +80,7 @@
         <div class="stat-number">{stats.aiAnalysisCompleted}%</div>
         <div class="stat-label">Completion rate</div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </div>
 
   <!-- Quick Actions -->
@@ -88,22 +88,22 @@
     <h2>🚀 Quick Actions</h2>
     <div class="actions-grid">
       {#each Array.isArray(legalRoutes) ? legalRoutes : [] as route}
-        <Card.Root class="action-card">
+        <Card class="action-card">
           <CardHeader>
             <CardTitle>{route.icon} {route.label}</CardTitle>
           </CardHeader>
           <CardContent>
             <p class="action-description">{route.description}</p>
             <div class="action-footer">
-              <Button.Root href={route.route} class="action-button">
+              <Button href={route.route} class="action-button">
                 Access {route.label}
-              </Button.Root>
+              </Button>
               {#if route.status === 'beta'}
                 <span class="beta-badge">BETA</span>
               {/if}
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </div>
@@ -111,7 +111,7 @@
   <!-- System Status -->
   <div class="status-section">
     <h2>📊 System Status</h2>
-    <Card.Root class="status-card">
+    <Card class="status-card">
       <CardContent>
         <div class="status-indicators">
           <div class="status-item">
@@ -132,7 +132,7 @@
           </div>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </div>
 </div>
 

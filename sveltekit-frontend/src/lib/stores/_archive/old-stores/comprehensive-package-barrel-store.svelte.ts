@@ -90,7 +90,7 @@ const createPackageBarrelStore = () => {
           return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
             id: `result-${i}`,
             score: Math.random(),
-            content: `Mock result ${i} for query: ${query}` }));
+            content: `Mock result ${i} for query: ${query}' }));'`
         }
       }
     },

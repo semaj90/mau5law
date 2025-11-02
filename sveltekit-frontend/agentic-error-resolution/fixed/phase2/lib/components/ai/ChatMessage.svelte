@@ -6,7 +6,7 @@
   // receive props via Svelte 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { chatActions } from '$lib/stores/chat'; // adjusted store path
   import { notifications } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';
@@ -95,7 +95,7 @@
         {formatTime(message.timestamp)}
       </span>
       <div class="actions flex gap-1">
-        <Button.Root
+        <Button
           variant="ghost"
           size="sm"
           class="p-1 h-auto w-auto"
@@ -103,8 +103,8 @@
           title="Copy message"
         >
           <Copy class="w-4 h-4" />
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           variant="ghost"
           size="sm"
           class="p-1 h-auto w-auto"
@@ -116,10 +116,10 @@
           {:else}
             <StarOff class="w-4 h-4" />
           {/if}
-        </Button.Root>
-        <Button.Root variant="ghost" size="sm" class="p-1 h-auto w-auto" title="More options">
+        </Button>
+        <Button variant="ghost" size="sm" class="p-1 h-auto w-auto" title="More options">
           <MoreVertical class="w-4 h-4" />
-        </Button.Root>
+        </Button>
       </div>
     </div>
     <!-- Metadata (for AI messages) -->

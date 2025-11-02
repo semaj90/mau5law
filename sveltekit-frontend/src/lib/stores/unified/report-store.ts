@@ -379,7 +379,7 @@ function createReportStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ userIds }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
@@ -390,8 +390,7 @@ function createReportStore() {
           }));
         }
       } catch (error) {
-        console.error('Share error:', error);'
-      }
+        console.error('Share error:', error);` }`'
     },
 
     // ========== EXPORT ==========
@@ -417,8 +416,7 @@ function createReportStore() {
           URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Export error:', error);'
-      }
+        console.error('Export error:', error);` }`'
     },
 
     // ========== DELETION ==========
@@ -430,7 +428,7 @@ function createReportStore() {
       try {
         const response = await fetch(`/api/reports/${reportId}`, {
           method: 'DELETE',
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
@@ -442,8 +440,7 @@ function createReportStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);'
-      }
+        console.error('Delete error:', error);` }`'
     },
 
     // ========== PRIVATE HELPERS ==========

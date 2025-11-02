@@ -160,8 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(await getModuleInformation());
       case 'metrics':
         return json(await getPerformanceMetrics());
-      default: return json({ error: 'Invalid action parameter` }, { status: 400 });'`
-    }
+      default: return json({ error: 'Invalid action parameter' }, { status: 400 });'' }
   } catch (err: any) {
     console.error('GPU/WASM Integration API error:', getErrorMessage(err));'
     return json(
@@ -193,7 +192,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return await handleWASMCompilation(body as WASMCompilationBody);
       case 'test':
         return await handleIntegrationTest(body as IntegrationTestBody);
-      default: return json({ error: `Invalid action parameter` }, { status: 400 });
+      default: return json({ error: 'Invalid action parameter' }, { status: 400 });
     }
   } catch (err: any) {
     console.error('GPU/WASM Integration API error:', getErrorMessage(err));'
@@ -284,7 +283,7 @@ async function getHealthCheck(): Promise<Record<string, unknown>> {
       gpu: gpuAvailable ? 'operational' : 'unavailable',
       wasm: wasmAvailable ? 'operational' : 'unavailable',
       flashAttention: flashAvailable ? 'operational' : 'unavailable',
-      errorProcessor: errorProcessorAvailable ? 'operational' : `unavailable` },
+      errorProcessor: errorProcessorAvailable ? 'operational' : `unavailable' },'`
     readyForProcessing: Boolean(overall.readyForProcessing),
     integrationScore: Number(overall.integrationScore) || 0,
     timestamp: new Date().toISOString()
@@ -425,7 +424,7 @@ function getErrorMessage(err: any): string {
 async function handleProcessing(body: ProcessingBody): Promise<Response> {
   const { type, data, priority = 'medium', metadata = {} } = body;
   if (!type || data === undefined) {
-    return json({ error: `Missing type or data parameters` }, { status: 400 });
+    return json({ error: 'Missing type or data parameters' }, { status: 400 });
   }
 
   // create a minimal task payload that includes an id so TypeScript won't complain'
@@ -437,7 +436,7 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
     metadata: {
       ...metadata,
       requestTime: new Date().toISOString(),
-      source: `gpu-wasm-integration-api` }
+      source: `gpu-wasm-integration-api' }'`
   };
 
   // cast through unknown to satisfy the compiler when shapes don't fully overlap'
@@ -453,9 +452,9 @@ async function handleProcessing(body: ProcessingBody): Promise<Response> {
 
 async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
   // coerce context to string[] to match downstream expectations
-  const { text, context = [], analysisType = 'legal` } = body;'`
+  const { text, context = [], analysisType = 'legal' } = body;'`'`
   if (!text || typeof text !== 'string') {
-    return json({ error: `Missing or invalid text parameter` }, { status: 400 });
+    return json({ error: 'Missing or invalid text parameter' }, { status: 400 });
   }
   try {
     const ctx: string[] = Array.isArray(context) ? context.map(c => String(c)) : [];
@@ -524,8 +523,7 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
 async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response> {
   const { texts, dimensions = 384 } = body;
   if (!texts || !Array.isArray(texts)) {
-    return json({ error: 'Missing or invalid texts parameter (must be array)` }, { status: 400 });'`
-  }
+    return json({ error: 'Missing or invalid texts parameter (must be array)' }, { status: 400 });'' }
   try {
     let embeddings: Float32Array[] = [];
     let processingTime = 0;
@@ -573,7 +571,7 @@ async function handleEmbeddingGeneration(body: EmbeddingBody): Promise<Response>
 async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Response> {
   const { errorContext } = body;
   if (errorContext === undefined) {
-    return json({ error: `Missing errorContext parameter` }, { status: 400 });
+    return json({ error: 'Missing errorContext parameter' }, { status: 400 });
   }
   try {
     const result = await gpuServiceIntegration.processGPUError(errorContext as GPUErrorContext);
@@ -597,7 +595,7 @@ async function handleErrorProcessing(body: ErrorProcessingBody): Promise<Respons
 async function handleWASMCompilation(body: WASMCompilationBody): Promise<Response> {
   const { moduleId, sources, options = {} } = body;
   if (!moduleId || sources === undefined) {
-    return json({ error: `Missing moduleId or sources parameters` }, { status: 400 });
+    return json({ error: 'Missing moduleId or sources parameters' }, { status: 400 });
   }
   try {
     // typed compile options to avoid: 'any' casts
@@ -647,7 +645,7 @@ type TestResult = {
 };
 
 async function handleIntegrationTest(body: IntegrationTestBody): Promise<Response> {
-  const { testType = 'comprehensive` } = body ?? {};'`
+  const { testType = 'comprehensive' } = body ?? {};'`'`
   try {
     const results: { testType: string; timestamp: string; tests: Record<string, TestResult> } = {
       testType,
@@ -664,7 +662,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     const gpuAvailable = Boolean(gpuStatusRec?.available);
     const gpuTest: TestResult = {
       success: gpuInitialized,
-      details: `initialized=${gpuInitialized}, available=${gpuAvailable}${gpuStatusRec?.error ? `, error=${String(gpuStatusRec.error)}` : `` }` };
+      details: `initialized=${gpuInitialized}, available=${gpuAvailable}${gpuStatusRec?.error ? `, error=${String(gpuStatusRec.error)}` : `` }' };'`
 
     // If embeddings supported, attempt a lightweight embedding call
     const maybeGenerateEmbeddings = gpuServiceIntegration as unknown as {
@@ -693,7 +691,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
       const processedLen = String(wasmRes?.processedText ?? testText).length;
       results.tests.wasmBridge = {
         success: true,
-        details: `Processed ${processedLen} characters in ${processedMs}ms` };
+        details: `Processed ${processedLen} characters in ${processedMs}ms' };'`
     } catch (wasmErr: any) {
       results.tests.wasmBridge = {
         success: false,
@@ -723,7 +721,7 @@ async function handleIntegrationTest(body: IntegrationTestBody): Promise<Respons
     (results as Record<string, unknown>).overall = {
       success: successfulTests === testResults.length,
       successRate: testResults.length ? successfulTests / testResults.length : 0,
-      summary: `${successfulTests}/${testResults.length} tests passed` };
+      summary: `${successfulTests}/${testResults.length} tests passed' };'`
 
     return json(results);
   } catch (err: any) {

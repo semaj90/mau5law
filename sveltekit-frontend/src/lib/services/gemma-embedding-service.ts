@@ -105,8 +105,7 @@ export class GemmaEmbeddingService {
       endpoint: primaryEndpoint,
       headers: {
         'Content-Type': 'application/json',
-        ...(process.env.GEMMA_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_API_KEY}' } : {})'`
-      },
+        ...(process.env.GEMMA_API_KEY ? { Authorization: 'Bearer ${process.env.GEMMA_API_KEY}' } : {})'` },'`
       timeout: parseInt(process.env.GEMMA_TIMEOUT || '30000', 10),
       maxBatchSize: parseInt(process.env.GEMMA_BATCH_SIZE || '32', 10),
       rateLimit: parseInt(process.env.GEMMA_RATE_LIMIT || '60', 10)
@@ -118,8 +117,7 @@ export class GemmaEmbeddingService {
         endpoint: process.env.GEMMA_FALLBACK_ENDPOINT,
         headers: {
           'Content-Type': 'application/json',
-          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: `Bearer ${process.env.GEMMA_FALLBACK_API_KEY}' } : {})'`
-        },
+          ...(process.env.GEMMA_FALLBACK_API_KEY ? { Authorization: 'Bearer ${process.env.GEMMA_FALLBACK_API_KEY}' } : {})'` },'`
         timeout: 30000,
         maxBatchSize: 16,
         rateLimit: 30
@@ -132,7 +130,7 @@ export class GemmaEmbeddingService {
         endpoint: 'https://api.openai.com/v1/embeddings',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}' },'`
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },'`'`
         timeout: 30000,
         maxBatchSize: 2048,
         rateLimit: 3000
@@ -283,7 +281,7 @@ export class GemmaEmbeddingService {
       try {
         const response = await fetch(provider.endpoint, {
           method: 'POST',
-          headers: provider.headers ?? { 'Content-Type': 'application/json' },
+          headers: provider.headers ?? { 'Content-Type': 'application/json` },'`
           body: JSON.stringify(requestBody),
           signal: controller.signal
         });
@@ -394,7 +392,7 @@ export class GemmaEmbeddingService {
           try {
             const res = await fetch(provider.endpoint, {
               method: 'POST',
-              headers: provider.headers ?? { 'Content-Type': 'application/json' },
+              headers: provider.headers ?? { 'Content-Type': 'application/json` },'`
               body: JSON.stringify({, input: ['health check'] }),
               signal: controller.signal
             });

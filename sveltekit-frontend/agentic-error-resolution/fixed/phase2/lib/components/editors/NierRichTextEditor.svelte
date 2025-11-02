@@ -6,13 +6,13 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount, onDestroy } from 'svelte';
-  	import {
+  	import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  	import { Button } from '$lib/components/ui/Button.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
+  	import  Button  from "$lib/components/ui/Button.svelte";
   	// Badge replaced with span - not available in enhanced-bits
   	import {
   		Bold, Italic, Underline, List, ListOrdered,
@@ -245,7 +245,7 @@ https://svelte.dev/e/attribute_duplicate -->
 				<div class="flex items-center gap-1">
 					<!-- Text Formatting -->
 					<div class="flex gap-1 border-r border-muted pr-2">
-						<Button.Root
+						<Button
 							variant={editorState.isBold ? "default" : "ghost"}
 							size="sm"
 							onclick={toggleBold}
@@ -253,8 +253,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 <Bold class="w-4 h-4" />
-						</Button.Root>
-						<Button.Root
+						</Button>
+						<Button
 							variant={editorState.isItalic ? "default" : "ghost"}
 							size="sm"
 							onclick={toggleItalic}
@@ -262,8 +262,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Italic class="w-4 h-4" />
-						</Button.Root>
-						<Button.Root
+						</Button>
+						<Button
 							variant={editorState.isUnderlined ? "default" : "ghost"}
 							size="sm"
 							onclick={toggleUnderline}
@@ -271,11 +271,11 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Underline class="w-4 h-4" />
-						</Button.Root>
+						</Button>
 					</div>
 					<!-- Lists and Structure -->
 					<div class="flex gap-1 border-r border-muted px-2">
-						<Button.Root
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={insertList}
@@ -283,8 +283,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<List class="w-4 h-4" />
-						</Button.Root>
-						<Button.Root
+						</Button>
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={insertOrderedList}
@@ -292,8 +292,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<ListOrdered class="w-4 h-4" />
-						</Button.Root>
-						<Button.Root
+						</Button>
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={insertQuote}
@@ -301,11 +301,11 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Quote class="w-4 h-4" />
-						</Button.Root>
+						</Button>
 					</div>
 					<!-- Media and Links -->
 					<div class="flex gap-1 border-r border-muted px-2">
-						<Button.Root
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={insertLink}
@@ -313,8 +313,8 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Link2 class="w-4 h-4" />
-						</Button.Root>
-						<Button.Root
+						</Button>
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={insertCode}
@@ -322,11 +322,11 @@ https://svelte.dev/e/attribute_duplicate -->
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
 							<Code class="w-4 h-4" />
-						</Button.Root>
+						</Button>
 					</div>
 					<!-- Actions -->
 					<div class="flex gap-1 pl-2">
-						<Button.Root
+						<Button
 							variant="ghost"
 							size="sm"
 							onclick={saveContent}
@@ -335,7 +335,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						>
 							<Save class="w-4 h-4 mr-1" />
 							Save
-						</Button.Root>
+						</Button>
 					</div>
 				</div>
 				<div class="flex items-center gap-2">

@@ -272,8 +272,7 @@ class GRPCGemmaEmbeddingClient {
         const batchTime = performance.now() - startTime;
         const batchStats = this.calculateBatchStatistics(batchRequest.requests, responses, batchTime);
         if (errors.length > 0) {
-          console.warn(`Streaming completed with ${errors.length} error(s). Example: ', errors[0]);'`
-        }
+          console.warn(`Streaming completed with ${errors.length} error(s). Example: ', errors[0]);'` }
         resolve({
           batch_id: batchRequest.batch_id,
           responses,
@@ -510,7 +509,7 @@ class GRPCGemmaEmbeddingClient {
    */ async healthCheck(): Promise<boolean> {
     try {
       const healthRequest = {
-        service: 'GemmaEmbeddingService' };
+        service: 'GemmaEmbeddingService` };'`
       return new Promise(resolve => {
         this.client.Check(
           healthRequest,

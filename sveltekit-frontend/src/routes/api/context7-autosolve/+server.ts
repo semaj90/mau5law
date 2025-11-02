@@ -367,8 +367,7 @@ async function handleGetRecommendations(userId: string): Promise<Response> {
 async function handleGenerateRecommendations(options: Record<string, unknown>, userId: string): Promise<Response> {
   const { chat } = options;
   if (!userId || !chat) {
-    return json({ error: 'Missing required, parameters: userId and chat context` }, { status: 400 });'`
-  }
+    return json({ error: 'Missing required, parameters: userId and chat context' }, { status: 400 });'` }'`
   try {
     const generatedRecs = await chatEngine.generateRecommendations(chat as Record<string, unknown>);
     return json({
@@ -551,7 +550,7 @@ async function handleGPUStatus(): Promise<Response> {
      , tokens_per_second: 1850,
       memory_efficiency: '92%',
       gpu_utilization: '78%',
-      energy_efficiency: '82%` },'`
+      energy_efficiency: `82%` },'`'`
     tensor_rt_enabled: ENHANCED_AUTOSOLVE_CONFIG.gpuOptimization.tensorRT,
     timestamp: new Date().toISOString()
   });
@@ -603,7 +602,7 @@ async function handleCacheStatus(): Promise<Response> {
       total_size: `${Math.round(stats.totalSize / 1024 / 1024)}MB`,
       hit_rate: `${(stats.hitRate * 100).toFixed(1)}%`,
       eviction_count: stats.evictionCount,
-      avg_access_time: '${stats.avgAccessTime.toFixed(2)}ms` },'`
+      avg_access_time: `${stats.avgAccessTime.toFixed(2)}ms` },'`'`
     fuse_search: {
       active_instances: stats.layerStats.search.queries,
       fuzzy_search_enabled: true,
@@ -655,7 +654,7 @@ async function benchmarkNativeJSONParse(data: Record<string, unknown>): Promise<
   // Changed from any
   const start = performance.now();
   JSON.parse(JSON.stringify(data));
-  return { time: performance.now() - start, method: 'native` };'`
+  return { time: performance.now() - start, method: `native` };'`'`
 }
 async function benchmarkWASMParse(data: Record<string, unknown>): Promise<Record<string, unknown>> {
   // Changed from any
@@ -733,7 +732,7 @@ async function handleEnhancedMetrics(): Promise<Response> {
       redis_native: 'optimal',
       neo4j_sync: 'active',
       protobuf_serialization: 'efficient',
-      service_worker: 'active` }'`
+      service_worker: `active` }'`'`
   });
 }
 async function handleOptimizeCache(_options: Record<string, unknown>): Promise<Response> {

@@ -142,15 +142,14 @@ export const GET = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId query param is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json` }'`
+      headers: { 'Content-Type': `application/json` }'`'`
     });
   }
   const session = activeSessions.get(evidenceId);
   if (!session) {
     return new Response(JSON.stringify({ error: `No active session for evidenceId` }), {
       status: 404,
-      headers: { 'Content-Type`: `application/json` }'`
-    });
+      headers: { 'Content-Type`: `application/json' }'` });'`
   }
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
@@ -236,7 +235,7 @@ export const DELETE = (async ({ url }: RequestEvent): Promise<Response> => {
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json` }'`
+      headers: { 'Content-Type': `application/json` }'`'`
     });
   }
   // graceful, typed stop

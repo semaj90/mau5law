@@ -170,8 +170,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     try {
       redis = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis` });'`
-    } catch (e) {
+        password: process.env.REDIS_PASSWORD || 'redis' });'` } catch (e) {'`
       console.warn('Failed to create Redis client:', e);
       redis = null;
     }

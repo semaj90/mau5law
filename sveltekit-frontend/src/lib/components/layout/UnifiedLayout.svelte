@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
-  import { NavBar } from './NavBar.svelte';
+  import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
@@ -54,14 +54,14 @@
 </script>
 <div, class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
-    <!-- bind sidebarOpen so NavBar can toggle, it -->
+    <!-- bind sidebarOpen so NavBar can, toggle, it -->
     <NavBar, bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
-  <!-- Skip Navigation Link for, Accessibility -->
+  <!-- Skip Navigation Link, for, Accessibility -->
   <a, href="#main-content" class="skip-nav">Skip to main content</a>
-  <!-- Main Content, Area -->
+  <!-- Main, Content, Area -->
   <div, class="content-wrapper" class:no-nav={hideNav}>
-    <!-- Sidebar Overlay for, Mobile -->
+    <!-- Sidebar Overlay, for, Mobile -->
     {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
       <!-- svelte-ignore, a11y_no_static_element_interactions -->
@@ -82,19 +82,19 @@
       aria-label="Main content"
     >
       {#if title}
-        <div class="page-header nes-container, with-title">
+        <div class="page-header, nes-container, with-title">
           <p, class="title">{title}</p>
         {/if}
       <div, class="content-container">
         {#if mounted && children}
           {@render children()}
         {:else if mounted}
-          <div class="loading-fallback nes-container, is-rounded">
+          <div class="loading-fallback, nes-container, is-rounded">
             <p, class<script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
-  import { NavBar } from './NavBar.svelte';
+  import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
@@ -146,14 +146,14 @@
 </script>
 <div, class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
-    <!-- bind sidebarOpen so NavBar can toggle, it -->
+    <!-- bind sidebarOpen so NavBar can, toggle, it -->
     <NavBar, bind:sidebarOpen {user} variant={autoVariant} />
   {/if}
-  <!-- Skip Navigation Link for, Accessibility -->
+  <!-- Skip Navigation Link, for, Accessibility -->
   <a, href="#main-content" class="skip-nav">Skip to main content</a>
-  <!-- Main Content, Area -->
+  <!-- Main, Content, Area -->
   <div, class="content-wrapper" class:no-nav={hideNav}>
-    <!-- Sidebar Overlay for, Mobile -->
+    <!-- Sidebar Overlay, for, Mobile -->
     {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
       <!-- svelte-ignore, a11y_no_static_element_interactions -->
@@ -174,14 +174,14 @@
       aria-label="Main content"
     >
       {#if title}
-        <div class="page-header nes-container, with-title">
+        <div class="page-header, nes-container, with-title">
           <p, class="title">{title}</p>
         {/if}
       <div, class="content-container">
         {#if mounted && children}
           {@render children()}
         {:else if mounted}
-          <div class="loading-fallback nes-container, is-rounded">
+          <div class="loading-fallback, nes-container, is-rounded">
             <p, class
   /* Minimal Layout */
   [data-variant='minimal'] .main-content {

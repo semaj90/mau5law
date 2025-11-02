@@ -75,8 +75,7 @@ export class BrowserQwen {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.generator = await pipeline('text-generation', this.modelName, {
-          device: 'wasm` });'`
-      }
+          device: 'wasm' });'' }
       this.isInitialized = true;
       console.log(`✅ [Qwen Browser] Model loaded (${this.device})`);
     } catch (error) {
@@ -100,7 +99,7 @@ export class BrowserQwen {
       topP = 0.9,
       topK = 50,
       repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.` } = options;'`
+      systemPrompt = 'You are a helpful legal AI assistant.' } = options;'`'`
     try {
       const startTime = performance.now();
       // Qwen prompt format
@@ -168,7 +167,7 @@ export class BrowserQwen {
       {
         maxTokens,
         temperature: 0.3,
-        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.` }'`
+        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.' }'`'`
     );
   }
   async answerLegalQuestion(question: string, context: string): Promise<string> {
@@ -177,7 +176,7 @@ export class BrowserQwen {
       {
         maxTokens: 300,
         temperature: 0.5,
-        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.` }'`
+        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.' }'`'`
     );
   }
   getDevice(): string {

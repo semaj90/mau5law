@@ -24,7 +24,7 @@ https://svelte.dev/e/expected_token -->
     type SearchFilters,
   } from '$lib/services/instant-search-engine.js';
   import { Input } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Button } from '$lib/components/ui/nes-button.svelte';
+  import  Button  from "$lib/components/ui/nes-button.svelte";
   import * as Card from '$lib/components/ui/card.svelte'';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import {
@@ -357,7 +357,7 @@ https://svelte.dev/e/expected_token -->
     {#if searchResults.length > 0}
       <div class="space-y-4">
         {#each searchResults as result (result.id)}
-          <Card.Root
+          <Card
             class="hover:shadow-md transition-shadow cursor-pointer nes-container"
             onclick={() => handleResultClick(result)}
           >
@@ -438,12 +438,12 @@ https://svelte.dev/e/expected_token -->
                   {/if}
               </div>
             </Card.Content>
-          </Card.Root>
+          </Card>
         {/each}
       </div>
     {:else if searchQuery && !isSearching}
       <!-- No Results -->
-      <Card.Root>
+      <Card>
         <Card.Content class="py-12 text-center">
           <AlertTriangle class="h-12 w-12 mx-auto nes-text is-disabled mb-4" />
           <h3 class="font-medium mb-2">No results found</h3>
@@ -460,16 +460,16 @@ https://svelte.dev/e/expected_token -->
             </ul>
           </div>
         </Card.Content>
-      </Card.Root>
+      </Card>
     {:else if searchQuery && isSearching}
       <!-- Loading State -->
-      <Card.Root>
+      <Card>
         <Card.Content class="py-12 text-center">
           <Loader2 class="h-12 w-12 mx-auto nes-text is-disabled animate-spin mb-4" />
           <h3 class="font-medium mb-2">Searching...</h3>
           <p class="nes-text is-disabled text-sm">Searching across legal documents, cases, and evidence...</p>
         </Card.Content>
-      </Card.Root>
+      </Card>
     {/if}
   </div>
 </div>

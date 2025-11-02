@@ -425,7 +425,7 @@ function createAIAssistantStore() {
           body: JSON.stringify({
            , messages: state.messages
           }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
@@ -434,8 +434,7 @@ function createAIAssistantStore() {
           }));
         }
       } catch (error) {
-        console.error('Save conversation error:', error);'
-      }
+        console.error('Save conversation error: `, error);` }'
     },
 
     /**
@@ -445,7 +444,7 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/conversations/${conversationId}`, {
           method: 'DELETE',
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
@@ -455,8 +454,7 @@ function createAIAssistantStore() {
           }));
         }
       } catch (error) {
-        console.error('Delete error:', error);'
-      }
+        console.error('Delete error: `, error);` }'
     },
 
     /**
@@ -484,15 +482,14 @@ function createAIAssistantStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, context: {} }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
           return data.analysis;
         }
       } catch (error) {
-        console.error('Analysis error:', error);'
-      } finally {
+        console.error('Analysis error: `, error);` } finally {'
         update(s => ({ ...s, isProcessing: false }));
       }
     },
@@ -506,17 +503,16 @@ function createAIAssistantStore() {
       try {
         const response = await fetch(`/api/ai/generate-report/${scope}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({, context: {} }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
           return data.report;
         }
       } catch (error) {
-        console.error('Report generation error:', error);'
-      } finally {
+        console.error('Report generation error: `, error);` } finally {'
         update(s => ({ ...s, isProcessing: false }));
       }
     },
@@ -527,7 +523,7 @@ function createAIAssistantStore() {
     async getSuggestedQueries() {
       try {
         const response = await fetch('/api/ai/suggestions', {
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -539,8 +535,7 @@ function createAIAssistantStore() {
           return data.suggestions;
         }
       } catch (error) {
-        console.error('Suggestions error:', error);'
-      }
+        console.error('Suggestions error: `, error);` }'
     }
   };
 }

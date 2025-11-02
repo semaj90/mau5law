@@ -3,20 +3,20 @@ import type { SearchResult } from '$lib/types';
 import type { Message } from '$lib/types'; import { onMount } from 'svelte'; interface SearchResult { id: string; title: string; content: string; metadata: Record<string, any>; similarity: number; processingTimeMs: number; }
   interface SearchResponse { success: boolean; query: string; results: SearchResult[]; stats: { totalResults: number; limit: number; threshold: number; timings: { embeddingGenerationMs: number; pgvectorSearchMs: number; totalMs: number; }; filters: number; }; metadata: { userId: string; timestamp: string; embeddingModel: string; indexType: string; }; }
   let query = $state<string>(''); let results: SearchResult[] = $state([]); let isLoading = $state<boolean>(false); let error = $state<string | null>(null); let stats = $state<SearchResponse['stats'] | null>(null); let limit = $state<number>(10); let threshold = $state(0.5); async function handleSearch(): Promise<any> { if (!query.trim()) { error = 'Please enter a search query'; return; }
-    isLoading = true; error = null; results = []; stats = null; try { const response = await fetch('/api/search-pgvector-optimized', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: query.trim(), limit, threshold, useContentEmbedding: true }) }); if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'Search failed'); }
+    isLoading = true; error = null; results = []; stats = null; try { const response = await fetch('/api/search-pgvector-optimized', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, query: query.trim(), limit, threshold, useContentEmbedding: true }) }); if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'Search failed'); }
       const data: SearchResponse = await response.json(); results = data.results; stats = data.stats; if (results.length === 0) { error = 'No results found. Try adjusting your query or threshold.'; }
     } catch (err) { error = err instanceof Error ? err.message: 'Search failed'; console.error('Search error:', err); } finally { isLoading = false; }'
   } function handleKeydown(e: KeyboardEvent) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSearch(); }
-  } </script> <div, class="pgvector-search-container"> <div, class="search-panel"> <h2, class="search-title">🔍 pgvector Semantic Search</h2> <!-- Query, Input --> <div, class="search-input-group"> <input type="text"
+  } </script> <div, class="pgvector-search-container"> <div, class="search-panel"> <h2, class="search-title">🔍 pgvector Semantic Search</h2> <!-- Query, Input --> <div, class="search-input-group"> <input, type="text"
         bind:value={ query } onkeydown={ handleKeydown } placeholder="Enter your legal search query..."
         disabled={ isLoading } class="search-input"
       /> <button onclick={ handleSearch } disabled={isLoading || !query.trim()} class="search-button"
-      > {#if isLoading} <span, class="spinner"></span> Searching... {:else} Search {/if} </button> </div> <!-- Controls --> <div, class="controls"> <div, class="control-group"> <label, for="limit">Results Limit:</label> <input type="number"
+      > {#if isLoading} <span, class="spinner"></span> Searching... {:else} Search {/if} </button> </div> <!-- Controls --> <div, class="controls"> <div, class="control-group"> <label, for="limit">Results Limit:</label> <input, type="number"
           id="limit"
           bind:value={ limit } min="1"
           max="100"
           disabled={ isLoading } class="control-input"
-        /> </div> <div, class="control-group"> <label, for="threshold">Similarity Threshold:</label> <input type="range"
+        /> </div> <div, class="control-group"> <label, for="threshold">Similarity Threshold:</label> <input, type="range"
           id="threshold"
           bind:value={ threshold } min="0"
           max="1"

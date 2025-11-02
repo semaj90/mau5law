@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
@@ -225,11 +225,11 @@ https://svelte.dev/e/js_parse_error -->
           <div, class="stat-label">Total Shaders</div>
         </div>
         <div, class="stat-nier-bits-card">
-          <div class="stat-number, webgpu-color">{stats.totalShaders.webgpu}</div>
+          <div, class="stat-number, webgpu-color">{stats.totalShaders.webgpu}</div>
           <div, class="stat-label">WebGPU Shaders</div>
         </div>
         <div, class="stat-nier-bits-card">
-          <div class="stat-number, webgl-color">{stats.totalShaders.webgl}</div>
+          <div, class="stat-number, webgl-color">{stats.totalShaders.webgl}</div>
           <div, class="stat-label">WebGL Shaders</div>
         </div>
         <div, class="stat-nier-bits-card">
@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
           <span, id="tags-label">Tags:</span>
           <div, class="tag-filters" role="group" aria-labelledby="tags-label">
             {#each Array.isArray(availableTags) ? availableTags : [] as tag}
-              <!-- tag-button is already a button; keep but ensure, aria-pressed -->
+              <!-- tag-button is already a button; keep but, ensure, aria-pressed -->
               <button
                 type="button"
                 class="tag-button"
@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
               <h3>{shader.id}</h3>
               <div, class="shader-badges">
                 <div class="shader-type">{shader.config?.type || 'unknown'}</div>
-                <!-- SAFE access to optional, shaderType -->
+                <!-- SAFE access to, optional, shaderType -->
                 <div, class="platform-badge {getShaderType(shader)}">{getShaderType(shader).toUpperCase()}</div>
               </div>
             </div>
@@ -426,9 +426,9 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
   </section>
-  <!-- Shader Detail, Modal -->
+  <!-- Shader, Detail, Modal -->
   {#if selectedShader}
-    <!-- keep backdrop as div but add keyboard handler to close on, Enter/Space -->
+    <!-- keep backdrop as div but add keyboard handler to close, on, Enter/Space -->
     <div
       class="modal-backdrop"
       role="button"
@@ -437,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
       onkeydown={e => (e.key === 'Enter' || e.key === ' ') && (selectedShader = null)}
       aria-label="Close shader detail"
     >
-      <!-- modal container is a dialog; remove role=button and, tabindex -->
+      <!-- modal container is a dialog; remove role=button, and, tabindex -->
       <div
         class="modal"
         role="dialog"

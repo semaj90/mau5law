@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to process files',
-        detail: error instanceof Error ? error.message : 'Unknown error` },'`
+        detail: error instanceof Error ? error.message : 'Unknown error' },'`'`
       { status: 500 }
     );
   }
@@ -109,7 +109,7 @@ async function generateEmbeddings(text: string, fileName: string): Promise<numbe
       // Limit to first 10 chunks
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: 'embeddinggemma:latest',
           prompt: chunk
@@ -144,7 +144,7 @@ async function storeInVectorDB(data: any): Promise<any> {
         port: 5432,
         user: 'legal_admin',
         password: '123456',
-        database: `legal_ai_db` });
+        database: `legal_ai_db' });'`
 
       await client.connect();
 

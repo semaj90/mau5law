@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     });
   } catch (error) {
-    console.error('❌ Full-text search failed: `, error);'`
+    console.error('❌ Full-text search failed: ', error);'`'`
     return json({ error: `Full-text search failed` }, { status: 500 });
   }
 };

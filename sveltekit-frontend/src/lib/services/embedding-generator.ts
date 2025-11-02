@@ -322,7 +322,7 @@ export class GemmaEmbeddingService {
     const min = Math.min(...sample);
     const max = Math.max(...sample);
     const range = max - min || 1;
-    let svg = `<svg width="64" height="64" viewBox="0 0 64, 64" style="image-rendering: pixelated;">`;
+    let svg = `<svg width="64" height="64" viewBox="0 0, 64, 64" style="image-rendering: pixelated;">`;
 
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {

@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       .update(users)
       .set({
         emailVerified: true,
-        updatedAt: sql`now()' })'`
+        updatedAt: sql`now()` })'`'`
       .where(eq(users.id, verificationRecord.userId));
 
     // Delete used verification code
@@ -83,8 +83,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
-      }
+          'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -101,7 +100,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };
@@ -176,8 +175,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
-      }
+          'X-Processing-Time': '${Math.round(processingTime)}ms' }'` }'`
     );
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -194,7 +192,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };

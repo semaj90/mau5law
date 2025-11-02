@@ -15,7 +15,7 @@
   import { toast } from 'svelte-sonner';
   import { FileText, Upload, Search, Users, Scale, FileSearch, Sparkles, CheckCircle2, AlertTriangle } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
 
   // ============================================================================
   // Svelte 5 State Management
@@ -332,7 +332,7 @@
 
     <!-- Upload Section -->
     {#if !analysisResult}
-      <Card.Root class="bg-slate-800/50 border-slate-700 mb-6">
+      <Card class="bg-slate-800/50 border-slate-700 mb-6">
         <CardHeader>
           <CardTitle class="flex items-center gap-2 text-white">
             <Upload class="w-5 h-5" />
@@ -442,7 +442,7 @@
             </div>
 
             <!-- Submit Button -->
-            <Button.Root
+            <Button
               onclick={submitReport}
                disabled={!canSubmit}
                class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
@@ -461,7 +461,7 @@
                   Analyze with AI
                 </span>
               {/if}
-            </Button.Root>
+            </Button>
 
             <!-- Progress Bar -->
             {#if isUploading}
@@ -474,25 +474,25 @@
             {/if}
           </div>
         </CardContent>
-      </Card.Root>
+      </Card>
     {/if}
 
     <!-- Analysis Results -->
     {#if analysisResult}
       <div class="space-y-6">
         <!-- Results Header -->
-        <Card.Root class="bg-slate-800/50 border-slate-700">
+        <Card class="bg-slate-800/50 border-slate-700">
           <CardContent class="pt-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-2xl font-bold text-white">
                 Analysis Results
               </h2>
-              <Button.Root
+              <Button
                 onclick={resetForm}
                 class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
               >
                 Upload New Report
-              </Button.Root>
+              </Button>
             </div>
 
             <div class="grid grid-cols-4 gap-4 text-center">
@@ -531,7 +531,7 @@
               Text extracted: {analysisResult.extractedTextLength.toLocaleString()} characters
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
 
         <!-- Analysis Tabs -->
         <div class="flex gap-2 flex-wrap">
@@ -566,7 +566,7 @@
         </div>
 
         <!-- Tab Content -->
-        <Card.Root class="bg-slate-800/50 border-slate-700">
+        <Card class="bg-slate-800/50 border-slate-700">
           <CardContent class="pt-6">
             {#if activeTab === 'who'}
               <!-- WHO Section -->
@@ -869,13 +869,13 @@
               {/if}
             {/if}
           </CardContent>
-        </Card.Root>
+        </Card>
       </div>
     {/if}
 
     <!-- Error Display -->
     {#if analysisError}
-      <Card.Root class="bg-red-900/20 border-red-500/50 mt-6">
+      <Card class="bg-red-900/20 border-red-500/50 mt-6">
         <CardContent class="pt-6">
           <div class="flex items-center gap-2 text-red-400">
             <AlertTriangle class="w-5 h-5" />
@@ -883,7 +883,7 @@
           </div>
           <p class="text-red-300 mt-2">{analysisError}</p>
         </CardContent>
-      </Card.Root>
+      </Card>
     {/if}
   </div>
 </div>

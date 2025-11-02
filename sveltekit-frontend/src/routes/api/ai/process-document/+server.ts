@@ -79,7 +79,7 @@ async function generateEmbeddingsWithOllama(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , model: 'embeddinggemma:latest',
         prompt: text
@@ -105,7 +105,7 @@ async function processCudaAccelerated(content: string, options: any): Promise<an
     if (embedding.length > 0) {
       const indexResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/index/hnsw`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , vectors: [embedding],
           dimensions: embedding.length,
@@ -140,7 +140,7 @@ async function analyzeLegalDocument(content: string): Promise<any> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({
         model: 'gemma3:legal-latest',
         prompt: `Analyze this legal document and; provide:`
@@ -261,8 +261,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       metadata = {}
     } = body;
     if (!documentId && !content && !document_text) {
-      return json({ error: 'Document ID or content is required` }, { status: 400 });'`
-    }
+      return json({ error: 'Document ID or content is required' }, { status: 400 });'' }
     const documentContent = content || document_text || '';
     const docId = documentId || `doc_${Date.now()}`;
     let cudaResult: any = {};
@@ -306,7 +305,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       try {
         const summaryResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
           method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify({
            , model: 'gemma3:legal-latest',
             prompt: `Provide a concise summary of this legal document (max 200 words):\n\n${documentContent.substring(0, 2000)}`,
@@ -416,8 +415,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('documentId');
     if (!documentId) {
-      return json({ error: 'Document ID parameter required` }, { status: 400 });'`
-    }
+      return json({ error: 'Document ID parameter required' }, { status: 400 });'' }
     return json({
       success: true,
       status: 'completed',
@@ -431,7 +429,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         status: 'mock_completed',
         documentId: documentId || 'mock-document-id',
         mockData: true,
-        details: `Document processing status check failed, providing mock status` },
+        details: `Document processing status check failed, providing mock status' },'`
       { status: 500 }
     );
   }

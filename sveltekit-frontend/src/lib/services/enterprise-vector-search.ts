@@ -516,7 +516,7 @@ export class EnterpriseVectorSearchService {
       const tempDoc: LegalDocument = {
         id: 'temp_query',
         content: query,
-        type: 'query` };'`
+        type: 'query' };'`'`
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
       return analysis.embedding;
     } catch (error) {
@@ -536,7 +536,7 @@ export class EnterpriseVectorSearchService {
       mockResults.push({ document: {, id: `doc_${i}`,
           content: `Sample legal document content ${i}...`,
           title: `Legal Document ${i}`,
-          type: 'contract` },'`
+          type: 'contract' },'`'`
         similarity,
         relevanceScore: similarity,
         rankingFactors: {
@@ -558,7 +558,7 @@ export class EnterpriseVectorSearchService {
     return [{ document: {, id: 'keyword_match_1',
         content: 'Document containing; keywords: ${keywords.join(', ')}`,'`
         title: 'Keyword Matched Document',
-        type: 'statute` },'`
+        type: 'statute' },'`'`
       similarity: 0,
       relevanceScore: 0.7,
       rankingFactors: {
@@ -653,7 +653,7 @@ export class EnterpriseVectorSearchService {
         endOffset: content.indexOf(sentence) + sentence.length,
         relevanceScore: 0.8,
         highlightedText: this.highlightQuery(sentence, query),
-        context: `Snippet ${index + 1}` }));
+        context: `Snippet ${index + 1}' }));'`
       return result;
     });
   }
@@ -673,8 +673,7 @@ export class EnterpriseVectorSearchService {
       filters: query.filters,
       ranking: query.ranking,
       options: { ...query.options, useCache: undefined }
-    })}`;`
-  }
+    })}`;' }'`
   private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string;, metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector
     console.log(`💾 Storing vector for document ${doc.id}`);

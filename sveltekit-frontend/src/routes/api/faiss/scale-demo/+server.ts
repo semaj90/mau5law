@@ -125,7 +125,7 @@ async function performScalingAnalysis(targetCount: number): Promise<any> {
 async function comparePerformanceAtScale(documentCount: number): Promise<any> {
   const scenarios = [
     { name: 'pgvector_only', description: 'PostgreSQL pgvector (baseline)' },
-    { name: 'hybrid_cached', description: 'pgvector + Redis cache` },'`
+    { name: 'hybrid_cached', description: `pgvector + Redis cache` },'`'`
     { name: 'faiss_hybrid', description: `pgvector + FAISS hybrid` },
     { name: 'faiss_primary', description: `🚀 FAISS GPU primary (100K+ optimized)` }
   ];
@@ -170,8 +170,7 @@ async function comparePerformanceAtScale(documentCount: number): Promise<any> {
             speed_multiplier: Math.round(50 + (documentCount - 100000) / 10000),
             memory_savings_percent: 75,
             gpu_utilization_percent: 95,
-            sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"'
-          }
+            sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"` }'`
         : {
             enabled: false,
             threshold: 100000,
@@ -236,7 +235,7 @@ async function assessEnterpriseReadiness(documentCount: number): Promise<any> {
     },
     capability_matrix: { search_performance: {, status: documentCount >= 100000 ? '✅ Enterprise Ready' : '⚠️ Scaling Needed',
         current: simulateSearchPerformance(documentCount),
-        target: '< 5ms search, latency',
+        target: '< 5ms, search, latency',
         meets_target: documentCount >= 100000
       },
       scalability: {
@@ -260,8 +259,7 @@ async function assessEnterpriseReadiness(documentCount: number): Promise<any> {
       infrastructure_cost: calculateInfrastructureCost(documentCount),
       performance_benefit: `${Math.min(100, documentCount / 1000)}x ROI on search performance`,
       tco_optimization:
-        documentCount >= 100000 ? 'FAISS provides optimal TCO' : 'pgvector cost-effective for current scale` }'`
-  };
+        documentCount >= 100000 ? 'FAISS provides optimal TCO' : 'pgvector cost-effective for current scale' }'` };'`
 }
 // Helper functions for realistic simulation
 function getArchitectureRecommendation(documentCount: number) {
@@ -270,7 +268,7 @@ function getArchitectureRecommendation(documentCount: number) {
       primarySystem: 'PostgreSQL pgvector',
       indexType: 'HNSW',
       configuration: { ef_construction: 200, m: 16 },
-      reasoning: `Small dataset, exact search with pgvector HNSW provides optimal accuracy` };
+      reasoning: `Small dataset, exact search with pgvector HNSW provides optimal accuracy' };'`
   }
   if (documentCount < 100000) {
     return {
@@ -310,7 +308,7 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: (documentCount * 768 * 4) / (1024 * 1024 * 1024),
       accuracy: 99,
       relativeSpeed: 1,
-      recommendedFor: '< 10K, documents` },'`
+      recommendedFor: `< 10K, documents` },'`'`
     hybrid_cached: {
       latency: Math.max(5, documentCount / 2000),
       throughput: Math.max(20, 200 - documentCount / 20000),
@@ -373,7 +371,7 @@ function generateFAISSTrainingConfig(documentCount: number) {
 function simulateFAISSTraining(documentCount: number) {
   // Use documentCount to avoid: "defined but never used" lint errors and
   // to make step durations scale with dataset size.
-  const multiplier = Math.max(1, Math.round(documentCount / 100000)); // 1x for <=100k, grows for larger, datasets
+  const multiplier = Math.max(1, Math.round(documentCount / 100000)); // 1x for <=100k, grows for, larger, datasets
   return [
     {,
       step: 1,

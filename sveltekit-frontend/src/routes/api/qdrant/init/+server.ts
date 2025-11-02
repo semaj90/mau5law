@@ -127,8 +127,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: 'Collection deleted successfully',
-      collectionName: collectionName || 'default` });'`
-  } catch (error: any) {
+      collectionName: collectionName || 'default' });'` } catch (error: any) {'`
     console.error('Qdrant deletion error:', error);'
     return json(
       {

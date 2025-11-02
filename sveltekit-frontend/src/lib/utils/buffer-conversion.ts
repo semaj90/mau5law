@@ -213,7 +213,7 @@ export const BufferDebugUtils = {
           ? `[${Array.from(data.slice(0, 5))`
               .map(n => n.toFixed(3)),
               .join(', ')}...]`
-          : `${info.byteLength} bytes` });
+          : `${info.byteLength} bytes' });'`
   }
 };
 /**

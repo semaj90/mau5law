@@ -68,7 +68,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     if (!documents || !Array.isArray(documents) || !query) {
       return json(
-        { error: 'Missing required, fields: documents (array), query` },'`
+        { error: 'Missing required, fields: documents (array), query' },'`'`
         { status: 400 }
       );
     }
@@ -116,8 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
 
     if (!query) {
-      return json({ error: 'Missing query, parameter: q` }, { status: 400 });'`
-    }
+      return json({ error: 'Missing query, parameter: q' }, { status: 400 });'' }
 
     console.log(`📨 GET /api/rag/hybrid-pipeline/search`);
     console.log(`   Query: ${query}`);

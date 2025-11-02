@@ -18,16 +18,16 @@ and AI-powered verification features.
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
   import { evidenceCustodyMachine, type EvidenceCustodyContext, type EvidenceCustodyEvent } from '$lib/state/evidenceCustodyMachine';
-  import { CustodyTimeline } from './CustodyTimeline.svelte';
-  import { IntegrityVerification } from './IntegrityVerification.svelte';
-  import { CollaborationPanel } from './CollaborationPanel.svelte';
-  import { WorkflowProgress } from './WorkflowProgress.svelte';
+  import  CustodyTimeline  from "./CustodyTimeline.svelte";
+  import  IntegrityVerification  from "./IntegrityVerification.svelte";
+  import  CollaborationPanel  from "./CollaborationPanel.svelte";
+  import  WorkflowProgress  from "./WorkflowProgress.svelte";
   // Use named imports for UI kit components
-  import { Button, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte';
+  import  Button, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Alert, AlertDescription, AlertTitle  from "$lib/components/ui/alert.svelte";
   import { AlertTriangle, CheckCircle, Clock, Users, FileCheck, Shield } from 'lucide-svelte';
-  import { toast } from '$lib/components/ui/toast.svelte';
+  import  toast  from "$lib/components/ui/toast.svelte";
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());
@@ -285,9 +285,9 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button.Root onclick={startWorkflow} class="w-full bits-btn bits-btn">
+            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
               Start Custody Workflow
-            </Button.Root>
+            </Button>
           </div>
         {/if}
       <!-- Integrity Verification -->
@@ -299,7 +299,7 @@ and AI-powered verification features.
                 <FileCheck class="w-5 h-5 mr-2" />
                 Integrity Verification
               </div>
-              <Button.Root class="bits-btn"
+              <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
                 onclick={() =>
@@ -344,37 +344,37 @@ showIntegrityDetails = !showIntegrityDetails}
           <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button.Root class="bits-btn" onclick={approveWorkflow} variant="success">
+                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
                   Approve Custody
-                </Button.Root>
-                <Button.Root class="bits-btn" onclick={rejectWorkflow} variant="error">
+                </Button>
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
                   Reject Custody
-                </Button.Root>
+                </Button>
               {/if}
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button.Root class="bits-btn" onclick={() =>
+                <Button class="bits-btn" onclick={() =>
 showTransferDialog = true} variant="ghost">
                   Transfer Custody
-                </Button.Root>
+                </Button>
                 {#if !activeCollaborators.includes(userId)}
-                  <Button.Root class="bits-btn" onclick={joinCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="ghost">
                     Join Collaboration
-                  </Button.Root>
+                  </Button>
                 {:else}
-                  <Button.Root class="bits-btn" onclick={leaveCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="ghost">
                     Leave Collaboration
-                  </Button.Root>
+                  </Button>
                 {/if}
               {/if}
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button.Root class="bits-btn" onclick={retryWorkflow}>
+                <Button class="bits-btn" onclick={retryWorkflow}>
                   Retry Workflow
-                </Button.Root>
-                <Button.Root class="bits-btn" onclick={cancelWorkflow} variant="error">
+                </Button>
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
                   Cancel Workflow
-                </Button.Root>
+                </Button>
               {/if}
           </div>
         {/if}
@@ -414,21 +414,21 @@ showTransferDialog = true} variant="ghost">
           class="w-full p-3 border rounded-lg mb-4 h-24 resize-none"
         ></textarea>
         <div class="flex space-x-3">
-          <Button.Root
+          <Button
             onclick={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
             Transfer
-          </Button.Root>
-          <Button.Root class="bits-btn"
+          </Button>
+          <Button class="bits-btn"
             onclick={() =>
 showTransferDialog = false}
             variant="ghost"
             class="flex-1"
           >
             Cancel
-          </Button.Root>
+          </Button>
         </div>
       </div>
     {/if}

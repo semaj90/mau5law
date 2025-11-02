@@ -14,7 +14,7 @@
   import KeyboardShortcutProvider from '$lib/components/KeyboardShortcutProvider.svelte';
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
-  // import { sessionActions, user, isAuthenticated } from "$lib/stores/sessionStore.svelte";
+  // import  sessionActions, user, isAuthenticated  from "$lib/stores/sessionStore.svelte";
   import {
     formatRelativeTime,
     formatDetailedTimestamp,

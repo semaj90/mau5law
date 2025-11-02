@@ -62,7 +62,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const res = await fetch(`${endpoint}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({, model: 'embeddinggemma:latest', prompt: text.slice(0, 2000) })
     });
     if (!res.ok) throw new Error(`Ollama responded ${res.status}`);
@@ -196,8 +196,7 @@ async function storeDocument(
       chunksCount: 0,
       embeddingsGenerated: 0,
       stored: false,
-      error: err instanceof Error ? err.message : 'Unknown error` };'`
-  }
+      error: err instanceof Error ? err.message : 'Unknown error' };'' }
 }
 
 // ===== MAIN HANDLER =====
@@ -237,7 +236,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunkSize: params.chunkSize,
         chunkOverlap: params.chunkOverlap,
         embeddingModel: 'embeddinggemma:latest',
-        indexType: `pgvector (HNSW)` }
+        indexType: `pgvector (HNSW)' }'`
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -253,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Batch ingestion failed',
-        detail: err instanceof Error ? err.message : `Unknown error` },
+        detail: err instanceof Error ? err.message : `Unknown error' },'`
       { status: 500 }
     );
   }
@@ -286,13 +285,13 @@ export const GET: RequestHandler = async () => {
         maxDocumentsPerBatch: 100,
         semanticChunking: true,
         embeddingGeneration: 'embeddinggemma:latest',
-        vectorStorage: `pgvector (HNSW)` }
+        vectorStorage: `pgvector (HNSW)' }'`
     });
   } catch (err) {
     return json(
       {
         message: 'Ingest service unavailable',
-        detail: err instanceof Error ? err.message : `Unknown error` },
+        detail: err instanceof Error ? err.message : `Unknown error' },'`
       { status: 503 }
     );
   }

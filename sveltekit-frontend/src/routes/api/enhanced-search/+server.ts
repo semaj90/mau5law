@@ -28,8 +28,7 @@ export async function POST({ request }): Promise<any> {
       }
     } catch (cacheError) {
       console.error('Redis cache read error:', cacheError);'
-      // Continue without cache if there's an error'
-    }
+      // Continue without cache if there's an error` }'`
 
     console.log(`CACHE MISS for enhanced search: "${query}"`);
 
@@ -58,6 +57,5 @@ export async function POST({ request }): Promise<any> {
     return json({ results: searchResults });
   } catch (error) {
     console.error('Error in enhanced search API:', error);
-    return json({ error: 'Internal server error during enhanced search` }, { status: 500 });'`
-  }
+    return json({ error: 'Internal server error during enhanced search' }, { status: 500 });'` }'`
 }

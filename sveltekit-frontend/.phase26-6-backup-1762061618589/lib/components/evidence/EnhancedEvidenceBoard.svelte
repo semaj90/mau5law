@@ -7,7 +7,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
-  import { FabricEvidenceCanvas } from '../canvas/FabricEvidenceCanvas.svelte';
+  import  FabricEvidenceCanvas  from "../canvas/FabricEvidenceCanvas.svelte";
   // Types
   interface EvidenceItem {
     id: string;

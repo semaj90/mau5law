@@ -12,14 +12,14 @@ Features:
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 import { onMount } from 'svelte';
-import { Button } from './Button.svelte';
-import { Card } from './Card.svelte';
-import { CardContent } from './CardContent.svelte';
-import { CardHeader } from './CardHeader.svelte';
-import { CardTitle } from './CardTitle.svelte';
-import { Input } from './Input.svelte';
-import { Alert } from './Alert.svelte';
-import { AlertDescription } from './AlertDescription.svelte';
+import  Button  from "./Button.svelte";
+import  Card  from "./Card.svelte";
+import  CardContent  from "./CardContent.svelte";
+import  CardHeader  from "./CardHeader.svelte";
+import  CardTitle  from "./CardTitle.svelte";
+import  Input  from "./Input.svelte";
+import  Alert  from "./Alert.svelte";
+import  AlertDescription  from "./AlertDescription.svelte";
 interface ServiceStatus {
 	cuda_service_8097: boolean;
 	legal_extraction_8098: boolean;
@@ -253,7 +253,7 @@ $effect(() => {
 </script>
 <div class="full-stack-legal-ai max-w-6xl mx-auto p-6 space-y-6">
   <!-- Header with Service Status -->
-  <Card.Root class="yorha-card">
+  <Card class="yorha-card">
     <CardHeader>
       <CardTitle class="flex items-center justify-between text-yorha-text-primary">
         <div class="flex items-center gap-3">
@@ -279,9 +279,9 @@ $effect(() => {
           {/if}
       </CardTitle>
     </CardHeader>
-  </Card.Root>
+  </Card>
   <!-- Search Interface -->
-  <Card.Root class="yorha-card">
+  <Card class="yorha-card">
     <CardContent class="p-6">
       <form onsubmit={handleSubmit} class="space-y-4">
         <div class="relative">
@@ -328,13 +328,13 @@ $effect(() => {
                 ⚡ Client Fallback
               {/if}
           </div>
-          <Button.Root type="submit" disabled={isSearching || !query.trim()} class="yorha-btn yorha-btn-primary px-6">
+          <Button type="submit" disabled={isSearching || !query.trim()} class="yorha-btn yorha-btn-primary px-6">
             {#if isSearching}
               Processing...
             {:else}
               Search Legal AI
             {/if}
-          </Button.Root>
+          </Button>
         </div>
       </form>
       {#if errorMessage}
@@ -347,10 +347,10 @@ $effect(() => {
           </Alert>
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
   <!-- Performance Metrics -->
   {#if showPerformanceMetrics && (performance || gpuMetrics.vram_usage > 0)}
-    <Card.Root class="yorha-card">
+    <Card class="yorha-card">
       <CardHeader>
         <CardTitle class="text-yorha-text-primary">Performance Metrics</CardTitle>
       </CardHeader>
@@ -396,11 +396,11 @@ $effect(() => {
             {/if}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
   <!-- Search Results -->
   {#if results.length > 0}
-    <Card.Root class="yorha-card">
+    <Card class="yorha-card">
       <CardHeader>
         <CardTitle class="flex items-center justify-between text-yorha-text-primary">
           <span>Legal AI Results ({results.length})</span>
@@ -461,9 +461,9 @@ $effect(() => {
           {/each}
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {:else if query && !isSearching}
-    <Card.Root class="yorha-card">
+    <Card class="yorha-card">
       <CardContent class="text-center py-12">
         <div class="text-yorha-text-muted text-lg mb-2">
           No results found for: "{query}"
@@ -472,7 +472,7 @@ $effect(() => {
           Try adjusting your search terms or check service status above
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   {/if}
 </div>
 <style>

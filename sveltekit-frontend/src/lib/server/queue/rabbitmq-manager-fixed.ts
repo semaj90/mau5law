@@ -155,8 +155,7 @@ export class RabbitMQManager extends EventEmitter {
       {
         queue: this.queues.document_embed,
         exchange: this.exchanges.document_processing,
-        routingKey: 'document.embed'
-      },
+        routingKey: 'document.embed` },'`
       {
         queue: this.queues.evidence_process,
         exchange: this.exchanges.document_processing,
@@ -281,8 +280,7 @@ export class RabbitMQManager extends EventEmitter {
         console.log(`📤 Published to ${exchange}:${routingKey}`);
       }
     } catch (error: any) {
-      console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));'`
-    }
+      console.error(`❌ Publish failed for ${exchange}:${routingKey}: ', this.formatError(error));'` }
   }
   // helper to format unknown errors
   private formatError(err: any): string {
@@ -643,8 +641,7 @@ export class RabbitMQManager extends EventEmitter {
       this.channel.ack(msg as any);
     } catch (error: any) {
       console.error('❌ Analytics tracking error:', this.formatError(error));'
-      this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics'
-    }
+      this.channel?.nack?.(msg as any, false, false); // Don't requeue analytics` }'`
   }
   // Helper methods
   private parseMessage(msg: AmqpMessage): Record<string, any> | null {
@@ -664,8 +661,7 @@ export class RabbitMQManager extends EventEmitter {
       try {
         await (this.redisService as any).del(key);
       } catch (error: any) {
-        console.warn(`Failed to delete key ${key}: ', this.formatError(error));'`
-      }
+        console.warn(`Failed to delete key ${key}: ', this.formatError(error));'` }
     }
   }
   private async invalidateByPattern(type: string, id: string): Promise<void> {
@@ -684,8 +680,7 @@ export class RabbitMQManager extends EventEmitter {
         }
         console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`);
       } catch (error: any) {
-        console.warn(`Pattern invalidation failed for ${pattern}: ', this.formatError(error));'`
-      }
+        console.warn(`Pattern invalidation failed for ${pattern}: ', this.formatError(error));'` }
     }
   }
   private getCachePatterns(type: string, id: string): string[] {
@@ -738,7 +733,7 @@ export class RabbitMQManager extends EventEmitter {
         this.reconnectAttempts = 0;
         console.log('✅ RabbitMQ reconnected successfully');
       } catch (error: any) {
-        console.error('❌ Reconnection failed: `, this.formatError(error));'`
+        console.error('❌ Reconnection failed: ', this.formatError(error));'`'`
         this.attemptReconnect();
       }
     }, delay);

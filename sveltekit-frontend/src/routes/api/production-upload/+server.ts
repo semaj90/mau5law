@@ -92,8 +92,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Validation
     if (!file) {
       logger.error('No file provided in upload');
-      return json({ success: false, error: 'No file provided` }, { status: 400 });'`
-    }
+      return json({ success: false, error: 'No file provided' }, { status: 400 });'` }'`
     if (!caseId) {
       logger.error('No case ID provided');
       return json({ success: false, error: `Case ID is required` }, { status: 400 });
@@ -104,8 +103,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     }
     if (file.size > MAX_FILE_SIZE) {
       logger.error(`File too large: ${file.size} bytes');'`
-      return json({ success: false, error: 'File too large (max 50MB)` }, { status: 400 });'`
-    }
+      return json({ success: false, error: 'File too large (max 50MB)' }, { status: 400 });'` }'`
     // Verify case exists
     const existingCase = await db
       .select()
@@ -115,8 +113,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       .catch(() => [] as Record<string, unknown>[]); // avoid `any[]`
     if (existingCase.length === 0) {
       logger.error(`Case not found: ${caseId}');'`
-      return json({ success: false, error: 'Case not found` }, { status: 404 });'`
-    }
+      return json({ success: false, error: 'Case not found' }, { status: 404 });'` }'`
     // Create unique IDs
     const documentId = randomUUID();
     const evidenceId = randomUUID();
@@ -283,14 +280,13 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             riskScore: Math.round(((legalAnalysis?.sentiment?.confidence ?? 0.5) as number) * 100),
             confidenceScore: legalAnalysis?.sentiment?.confidence ?? 0.5,
             legalPrecedent: false,
-            processingStatus: `completed` });
+            processingStatus: `completed' });'`
           logger.info('Embeddings stored in Qdrant successfully');
         }
       }
     } catch (vectorError) {
       logger.error('Vector storage failed', vectorError);
-      // Continue - vector storage failure shouldn't fail the entire upload'
-    }
+      // Continue - vector storage failure shouldn't fail the entire upload` }'`
     // Generate AI summary using Gemma3
     let aiSummary = '';
     try {
@@ -382,7 +378,7 @@ export const GET: RequestHandler = async () => {
     // Test Ollama connection
     const ollamaHealth = await checkOllamaHealth().catch(() => false);
     // Test LegalBERT
-    const legalBertHealth = await legalBERT.healthCheck().catch(() => ({ status: 'error` }));'`
+    const legalBertHealth = await legalBERT.healthCheck().catch(() => ({ status: `error` }));'`'`
     const healthStatus = {
       status: 'healthy',
       timestamp: new Date().toISOString(),

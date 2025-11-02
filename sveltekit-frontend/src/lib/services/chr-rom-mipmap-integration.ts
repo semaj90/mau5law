@@ -218,8 +218,7 @@ export class CHRROMMipmapIntegration {
           this.getThumbnailPattern(docId),
         ]);
       } catch (error) {
-        console.warn(`Prefetch failed for ${docId}: ', error);'`
-      }
+        console.warn(`Prefetch failed for ${docId}: ', error);'` }
     });
     await Promise.allSettled(prefetchPromises);
     console.log('✅ Mipmap pattern prefetch completed');
@@ -387,8 +386,7 @@ export class CHRROMMipmapIntegration {
         confidence: 0,
         timestamp: Date.now(),
         version: '2.0',
-        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: 'auto'
-      }
+        // removed unknown: 'format' field — keep only known metadata properties; renderingHint: 'auto` }'`
     };
   }
 

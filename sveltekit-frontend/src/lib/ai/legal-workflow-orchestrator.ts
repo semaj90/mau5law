@@ -459,7 +459,7 @@ export class LegalWorkflowOrchestrator {
       case 'document_viewer':
         return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
       case 'evidence_canvas':
-        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0` } };'`
+        return { ...baseData, canvasConfig: { collaboration: true, version: '2.0' } };'`'`
       case 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default: return baseData;

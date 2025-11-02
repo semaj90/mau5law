@@ -149,8 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive` }'`
-    });
+        'Connection': 'keep-alive' }'' });
   } catch (err: any) {
     console.error('RAG streaming API error:', err);'
 

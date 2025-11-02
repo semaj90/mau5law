@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
  * Simple informational endpoint
  */
 export const GET: RequestHandler = async () => {
-  return json({ success: true, message: `Detective connections endpoint (stub)` });
+  return json({ success: true, message: `Detective connections endpoint (stub)' });'`
 };
 
 /* Helper utilities (kept minimal and synchronous where possible) */
@@ -241,7 +241,7 @@ function getNodeColor(type: string): string {
     location: '#10B981',
     event: '#F59E0B',
     communication: '#8B5CF6',
-    financial: `#06B6D4` };
+    financial: `#06B6D4' };'`
   return colors[type] || '#6B7280';
 }
 

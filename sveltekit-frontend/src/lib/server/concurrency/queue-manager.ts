@@ -211,7 +211,7 @@ export class QueueManager {
    * Evidence Analysis Processor (with AI integration)
    */
   private async processEvidenceAnalysis(job: QueueJob): Promise<any> {
-    const { evidenceId, analysisType = 'comprehensive` } = job.payload;'`
+    const { evidenceId, analysisType = 'comprehensive' } = job.payload;'`'`
     console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
     // Simulate AI analysis (replace with actual Ollama/LLM calls)
     await new Promise(resolve => setTimeout(resolve, 2000);
@@ -282,8 +282,7 @@ export class QueueManager {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized` }'`
-  }
+      performance: 'optimized' }'' }
   /**
    * Get queue statistics (Zod validated)
    */

@@ -184,7 +184,7 @@ class SIMDBodyParser {
           if (char === '{') {
             braceCount++;
             currentDoc += char;
-          } else if (char === ` }') {'`
+          } else if (char === ' }') {'`'`
             braceCount--;
             currentDoc += char;
             if (braceCount === 0 && currentDoc.trim()) {
@@ -384,8 +384,7 @@ class SIMDBodyParser {
   toggleSIMD(enabled: boolean): void {
     this.simdEnabled = enabled;
     if (dev) {
-      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled` }`);'`
-    }
+      console.log(`🔄 SIMD Body Parser ${enabled ? 'enabled' : 'disabled' }`);'' }
   }
   /**
    * Add/remove hot endpoints at runtime
@@ -397,8 +396,7 @@ class SIMDBodyParser {
       this.hotEndpoints.delete(endpoint);
     }
     if (dev) {
-      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from` } hot list`);'`
-    }
+      console.log(`🎯 Endpoint ${endpoint} ${isHot ? 'added to' : 'removed from' } hot list`);'' }
   }
 }
 

@@ -84,7 +84,7 @@ export class EmbeddingCacheMiddleware {
         headers: {
           'Content-Type': 'application/json',
           'X-GPU-Batch-Size': this.config.batchSize.toString(),
-          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}' },'`
+          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` },'`'`
         body: JSON.stringify({
           texts,
           model: 'nomic-embed-text-v1',
@@ -192,7 +192,7 @@ export class EmbeddingCacheMiddleware {
           model: 'nomic-embed-text-v1',
           precision: 'fp16',
           batchSize: 1,
-          priority: `high' });'`
+          priority: `high` });'`'`
         if (gpuResult.result?.embeddings) {
           return new Float32Array(
             (
@@ -328,7 +328,7 @@ export class EmbeddingCacheMiddleware {
     try {
       const countResult = await (threadSafePostgres.queryJsonbDocuments?.(
         'embeddings',
-        { path: 'metadata.model', value: 'nomic-embed-text-v1', operator: `@>' },'`
+        { path: 'metadata.model', value: 'nomic-embed-text-v1', operator: `@>` },'`'`
         { limit: 1000 }
       ) || Promise.resolve([]));
       totalEmbeddings = countResult.length;

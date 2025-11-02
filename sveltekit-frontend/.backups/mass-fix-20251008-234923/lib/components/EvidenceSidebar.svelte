@@ -9,10 +9,10 @@
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import {
+  import 
     user as currentUser,
     isAuthenticated
-  } from "$lib/stores/sessionStore.svelte";
+   from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
   import {
     FileText, Folder, Clock, User, Settings, Search,

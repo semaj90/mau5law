@@ -67,7 +67,7 @@ class PgVectorService {
   async testConnection(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, details: { error: 'No DB client available` } };'`
+      if (!clientWrapper) return { success: false, details: { error: 'No DB client available' } };'`'`
       try {
         const res = await clientWrapper.query('SELECT NOW() as current_time');
         return { success: true, details: { connection: res?.rows?.[0] ?? null } };
@@ -94,13 +94,12 @@ class PgVectorService {
       // Basic validation
       if (!Array.isArray(embedding)) throw new Error('Invalid embedding');
       if (embedding.length !== 768 && embedding.length !== 1536) {
-        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}` };
+        return { success: false, error: `Invalid embedding; dimension: ${embedding.length}' };'`
       }
       const embeddingStr = `[${embedding.join(',')}]`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.` };'`
-      }
+        return { success: false, error: 'No DB client available. Ensure poolShim or pg client is configured.' };'' }
       // Use metadata column consistently (JSON) and store embedding as ::vector
       const insertQuery = '
         INSERT INTO legal_documents (document_id, title, content, document_type, metadata, embedding, created_at)
@@ -184,8 +183,7 @@ class PgVectorService {
       query += ` ORDER BY distance ASC LIMIT $${params.length}`;
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available` };'`
-      }
+        return { success: false, error: 'No DB client available' };'' }
       const startTime = Date.now();
       try {
         const result = await clientWrapper.query(query, params);
@@ -329,7 +327,7 @@ class PgVectorService {
     } = {}
   ): Promise<any> {
     try {
-      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding` } = options;'`
+      const { lists = 100, metric = 'cosine', tableName = 'vector_embeddings', columnName = 'embedding' } = options;'`'`
       const safeTable = String(tableName).replace(/[^\w]/g, '_');
       const safeColumn = String(columnName).replace(/[^\w]/g, '_');
       const safeMetric =
@@ -338,8 +336,7 @@ class PgVectorService {
       const start = Date.now();
       const clientWrapper = await this.getQueryClient();
       if (!clientWrapper) {
-        return { success: false, error: 'No DB client available for index creation` };'`
-      }
+        return { success: false, error: 'No DB client available for index creation' };'' }
       try {
         await clientWrapper.query('DROP INDEX IF EXISTS ${indexName}');
         const opClass =
@@ -382,7 +379,7 @@ class PgVectorService {
   async getDatabaseStats(): Promise<any> {
     try {
       const clientWrapper = await this.getQueryClient();
-      if (!clientWrapper) return { success: false, error: 'No DB client available` };'`
+      if (!clientWrapper) return { success: false, error: 'No DB client available' };'`'`
       try {
         const vectorStats = await clientWrapper.query(`
           SELECT

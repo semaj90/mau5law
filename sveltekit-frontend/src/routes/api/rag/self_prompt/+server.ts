@@ -80,15 +80,14 @@ function composePrompt(
 export const POST: RequestHandler = async ({ request }) => {
   const t0 = performance.now();
   const { query, k = 5, neighborK = 12, useCache = true } = await request.json();
-  if (!query) return new Response(JSON.stringify({ error: 'query required` }), { status: 400 });'`
+  if (!query) return new Response(JSON.stringify({ error: 'query required' }), { status: 400 });'`'`
   const redis = getRedisService();
   const cacheKey = `selfp:v1:${query.toLowerCase()}:${k}:${neighborK}';'`
   if (useCache) {
     const cached = await redis.getCache(cacheKey);
     if (cached) {
       return new Response(JSON.stringify({ ...cached, cached: true, took_ms: Math.round(performance.now() - t0) }), {
-        headers: { 'Content-Type': 'application/json` }'`
-      });
+        headers: { 'Content-Type': 'application/json' }'' });
     }
   }
   const core = await initialVectorSearch(query, k);
@@ -110,6 +109,6 @@ export const POST: RequestHandler = async ({ request }) => {
   };
   await redis.setCache(cacheKey, payload, REDIS_TTL_SECONDS);
   return new Response(JSON.stringify({ ...payload, took_ms: Math.round(performance.now() - t0) }), {
-    headers: { 'Content-Type': `application/json` }
+    headers: { 'Content-Type': `application/json' }'`
   });
 };

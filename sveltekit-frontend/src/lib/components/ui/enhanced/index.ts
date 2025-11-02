@@ -28,8 +28,7 @@ export const animationClasses = {
   slideUp: 'animate-slide-up',
   processing: 'animate-processing',
   pulseSlow: 'animate-pulse-slow',
-  bounceSubtle: 'animate-bounce-subtle'
-} as const;
+  bounceSubtle: 'animate-bounce-subtle` } as const;'`
 // NieR styling shortcuts
 export const nierClasses = {
   button: 'yorha-button',

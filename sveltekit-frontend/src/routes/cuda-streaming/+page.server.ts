@@ -155,7 +155,7 @@ async function getRecentProcessingResults(): Promise<any> {
       gpuAccelerated: true,
       throughput: 667, // docs/sec,
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago,
-      status: 'completed` },'`
+      status: `completed` },'`'`
     {
       sessionId: 'stream_1234567891',
       operation: 'similarity_search',

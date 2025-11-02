@@ -321,8 +321,7 @@ class EnhancedAIService {
       prompt += `
 You are a specialized legal AI assistant with expertise in legal document analysis, case law, and legal procedures.
 Provide accurate, professional responses and cite relevant authorities when appropriate. Clarify jurisdiction if needed.
-`;`
-    }
+`;' }'`
     return prompt.trim();
   }
 

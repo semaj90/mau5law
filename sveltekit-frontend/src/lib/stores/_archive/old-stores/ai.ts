@@ -69,8 +69,7 @@ export const aiGlobalMachine = setup({
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
       saving: false,
-      error: ((event as any).error as Error)?.message || 'Failed to save summary.` }))'`
-  },
+      error: ((event as any).error as Error)?.message || 'Failed to save summary.' }))'` },'`
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
       // Memoization: check cache first
@@ -178,8 +177,7 @@ export const aiGlobalMachine = setup({
         },
         onError: {
           target: 'success',
-          actions: 'setSaveError` }'`
-      }
+          actions: 'setSaveError' }'` }'`
     }
   }
 });

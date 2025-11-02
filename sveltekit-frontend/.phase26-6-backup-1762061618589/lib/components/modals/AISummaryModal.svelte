@@ -7,10 +7,10 @@ https://svelte.dev/e/js_parse_error -->
   import * as Dialog from '$lib/components/ui/dialog.svelte'';
   import { Button } from '$lib/components/ui/button.svelte'';
   // use icon components from the icons subpath (lucide-svelte exports individual files)
-  import { Copy } from 'lucide-svelte/icons/copy.svelte';
+  import  Copy  from "lucide-svelte/icons/copy.svelte";
   import X from 'lucide-svelte/icons/x.svelte';
-  import { AlertCircle } from 'lucide-svelte/icons/alert-circle.svelte';
-  import { Check } from 'lucide-svelte/icons/check.svelte';
+  import  AlertCircle  from "lucide-svelte/icons/alert-circle.svelte";
+  import  Check  from "lucide-svelte/icons/check.svelte";
   // relax strict typing for our local UI components (prevents TS errors about unknown props/events)
   declare module: '$lib/components/ui/dialog' {
     export const Root: any;

@@ -459,7 +459,7 @@ class CrewAILegalTeam {
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: 'gemma3-legal',
           prompt,
@@ -493,8 +493,7 @@ CONTEXT:
 ${JSON.stringify(context, null, 2)}
 AVAILABLE TOOLS: ${agent.tools.join(', ')}
 Please complete this task according to your role and expertise. Provide detailed, actionable output that meets the expected deliverable. Be thorough but concise.
-Your response: ';'
-  }
+Your response: `;` }
   private async synthesizeResults(
     crew: CrewConfig,
     results: WorkflowResult['results'],
@@ -522,7 +521,7 @@ Final synthesis:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: 'gemma3-legal',
           prompt: synthesisPrompt,
@@ -585,7 +584,7 @@ Consensus output:`;`
     try {
       const response = await fetch(`${this.aiEndpoint}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: 'gemma3-legal',
           prompt: consensusPrompt,

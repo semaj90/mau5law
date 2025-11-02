@@ -11,7 +11,7 @@
     type RAGQuery,
     type RAGResponse,
   } from '$lib/services/enhanced-rag-semantic-analyzer';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
   import { webgpuRAGEngine } from '$lib/webgpu/webgpu-rag-engine';
   import { cudaRAG } from '$lib/cuda/cuda-rag-bindings';

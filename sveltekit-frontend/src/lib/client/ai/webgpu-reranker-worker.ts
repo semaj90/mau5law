@@ -191,7 +191,7 @@ self.addEventListener('message', async (event: MessageEvent) => {
     device.queue.writeBuffer(candidatesBuffer, 0, flattened.buffer, flattened.byteOffset, flattened.byteLength);
     device.queue.writeBuffer(metaBuffer, 0, new Uint32Array([dim]));
     const module = device.createShaderModule({ code: RERANKER_WGSL });
-    const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main` } });'`
+    const pipeline = device.createComputePipeline({ layout: 'auto', compute: { module, entryPoint: 'main' } });'`'`
     // some runtimes/types are not present in TS build; cast pipeline to any for these calls
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     const bindGroup = device.createBindGroup({ layout: (pipeline as unknown as {, getBindGroupLayout: (n: number) => unknown }).getBindGroupLayout(0),

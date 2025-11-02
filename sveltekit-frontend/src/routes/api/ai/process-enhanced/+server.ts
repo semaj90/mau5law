@@ -161,7 +161,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       pipeline.stages.graphDiscovery.status = 'processing';
       const graphResponse = await fetch(`/api/graph/discover/${evidence.id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , content: evidence.content,
           tags: taggingResult?.tags || [],

@@ -5,23 +5,23 @@
   } function handleClose() { // ondispatch removed; }
   function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape') { handleClose(); }
   } $effect(() => { if (isOpen && modalElement) { modalElement.focus(); }
-  }); </script> {#if isOpen} <!-- Final Fantasy Style, Backdrop --> <div class="fixed inset-0 z-50 flex items-center justify-center p-4"
+  }); </script> {#if isOpen} <!-- Final Fantasy, Style, Backdrop --> <div class="fixed inset-0 z-50 flex items-center justify-center, p-4"
     style="background: rgba(0, 0, 20, { backgroundOpacity })"
     transitifade={{ duration 300 }} role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
     onclick={ handleClose } keydown={ handleKeydown } tabindex="-1"
     ; bind:this={ modalElement } >
-    <!-- FF-Style Modal, Container --> <div class="relative" {sizeClasses[size]} bg-gradient-to-br {typeColors[type]} border-2 border-amber-400/80 shadow-2xl overflow-hidden {cornerClasses[cornerStyle]}"
+    <!-- FF-Style, Modal, Container --> <div class="relative" {sizeClasses[size]} bg-gradient-to-br {typeColors[type]} border-2 border-amber-400/80 shadow-2xl, overflow-hidden {cornerClasses[cornerStyle]}"
       transitiscale={{ duration 400, easing: quintOut, start: 0.8 }} bind:this={ contentElement } >
-      <!-- FF-Style Corner, Decorations --> {#if showBorder} <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2, border-yellow-300"></div> <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2, border-yellow-300"></div> <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2, border-yellow-300"></div> <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2, border-yellow-300">{/if} <!-- FF-Style Title, Bar --> {#if title} <div class="relative px-6 py-3" bg-gradient-to-r from-amber-600/90 to-yellow-500/90 border-b border-amber-400/50"
-        > <h2 id="modal-title"
+      <!-- FF-Style, Corner, Decorations --> {#if showBorder} <div class="absolute top-0 left-0 w-4 h-4 border-t-2, border-l-2, border-yellow-300"></div> <div class="absolute top-0 right-0 w-4 h-4 border-t-2, border-r-2, border-yellow-300"></div> <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2, border-l-2, border-yellow-300"></div> <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2, border-r-2, border-yellow-300">{/if} <!-- FF-Style, Title, Bar --> {#if title} <div class="relative px-6 py-3" bg-gradient-to-r from-amber-600/90 to-yellow-500/90 border-b, border-amber-400/50"
+        > <h2, id="modal-title"
             class="text-lg font-bold text-white" tracking-wider uppercase text-shadow-lg shadow-black/50"
-          > { title } </h2> <button class="absolute top-2 right-2" w-6 h-6 text-white hover:text-red-300 transition-colors duration-200 font-bold text-xl leading-none"
+          > { title } </h2> <button class="absolute top-2 right-2" w-6 h-6 text-white hover:text-red-300 transition-colors duration-200 font-bold text-xl, leading-none"
             onclick={ handleClose } aria-label="Close modal"
           > ×
-          </button> {/if} <!-- Modal Content, Area --> <div class="flex-1 p-6 overflow-y-auto, custom-scrollbar"> <slot /> </div> <!-- FF-Style Action Bar (if actions snippet, provided) --> {#if actions} <div class="px-6 py-4 bg-gradient-to-r" from-slate-800/90 to-slate-700/90 border-t border-amber-400/30"
-        > <div class="flex justify-end, space-x-3"> {@render actions()} </div> {/if} </div> {/if} <style> /* Final Fantasy Corner Styles */ {} .ff-corner-classic { clip-path: polygon( {} 0% 8px, {} 8px 0%, {} calc(100% - 8px) 0%, {} 100% 8px, {} 100% calc(100% - 8px), {} calc(100% - 8px) 100%, {} 8px 100%, {} 0% calc(100% - 8px) {} ); }
+          </button> {/if} <!-- Modal, Content, Area --> <div class="flex-1 p-6, overflow-y-auto, custom-scrollbar"> <slot /> </div> <!-- FF-Style Action Bar (if actions, snippet, provided) --> {#if actions} <div class="px-6 py-4 bg-gradient-to-r" from-slate-800/90 to-slate-700/90 border-t, border-amber-400/30"
+        > <div class="flex, justify-end, space-x-3"> {@render actions()} </div> {/if} </div> {/if} <style> /* Final Fantasy Corner Styles */ {} .ff-corner-classic { clip-path: polygon( {} 0% 8px, {} 8px 0%, {} calc(100% - 8px) 0%, {} 100% 8px, {} 100% calc(100% - 8px), {} calc(100% - 8px) 100%, {} 8px 100%, {} 0% calc(100% - 8px) {} ); }
   .ff-corner-modern { border-radius: 0.5rem; position: relative; }
   .ff-corner-modern::before { content: ''; position: absolute; inset: -2px; background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #92400e); border-radius: 0.5rem; z-index: -1; }
   .ff-corner-hybrid { clip-path: polygon( {} 0% 12px, {} 12px 0%, {} calc(100% - 12px) 0%, {} 100% 12px, {} 100% calc(100% - 12px), {} calc(100% - 12px) 100%, {} 12px 100%, {} 0% calc(100% - 12px) {} ); border-radius: 0.25rem; }

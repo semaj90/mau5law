@@ -62,8 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
           const stat = await minioClient.statObject(bucketName, obj.name);
           obj.metadata = stat.metaData;
         } catch (err) {
-          console.warn(`Could not get metadata for ${obj.name}: ', err);'`
-        }
+          console.warn(`Could not get metadata for ${obj.name}: ', err);'' }'`
       }
     }
     // Group by folder structure if not recursive
@@ -96,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'List operation failed' },
+        error: error instanceof Error ? error.message : 'List operation failed` },'`
       { status: 500 }
     );
   }

@@ -58,8 +58,8 @@ import type { Message } from '$lib/types';
     }
   }
 </script>
-<div class="flex items-center justify-center, space-x-3">
-  <!-- Spinner: use explicit class expression and ring-style spinner (top border, transparent) -->
+<div class="flex items-center, justify-center, space-x-3">
+  <!-- Spinner: use explicit class expression and ring-style spinner (top, border, transparent) -->
   <div
     class={
       `animate-spin rounded-full border-4 ${getSpinnerSize(size)} ${getSpinnerColor(color)} border-t-transparent`
@@ -68,7 +68,7 @@ import type { Message } from '$lib/types';
     aria-live="polite"
     aria-label="Loading"
   >
-    <!-- screen-reader only, text -->
+    <!-- screen-reader, only, text -->
     <span, class="sr-only">{message}</span>
   </div>
   <!-- Loading, Message -->

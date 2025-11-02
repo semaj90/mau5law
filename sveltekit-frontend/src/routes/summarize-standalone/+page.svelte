@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
   Legal Document Summarization Interface
   Advanced UI for LangChain-powered document summarization with:
@@ -177,7 +177,7 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Legal Document Summarization - Legal AI Platform</title>
-  <meta name="description" content="AI-powered legal document summarization using advanced language, models" />
+  <meta name="description" content="AI-powered legal document summarization using advanced, language, models" />
 </svelte:head>
 <div, class="summarization-container">
   <header, class="page-header">
@@ -190,8 +190,8 @@ import type { Document } from '$lib/types';
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
       <div, class="actions">
-        <button class="btn nes-btn, btn-outline" onclick={loadSampleDocument}> Load Sample </button>
-        <button class="btn nes-btn, btn-outline" onclick={clearAll}> Clear All </button>
+        <button class="btn, nes-btn, btn-outline" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn, nes-btn, btn-outline" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
@@ -222,7 +222,7 @@ import type { Document } from '$lib/types';
       <div, class="input-panel">
         <div, class="input-controls">
           <div, class="file-upload">
-            <label for="file-input" class="btn, nes-btn"> 📁 Upload Document </label>
+            <label, for="file-input" class="btn, nes-btn"> 📁 Upload Document </label>
             <input, id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
           </div>
           <div, class="options-grid">
@@ -239,13 +239,13 @@ import type { Document } from '$lib/types';
               <input, id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
               <span, class="range-value">{temperature}</span>
             </div>
-            <div class="option-group, checkbox-group">
+            <div, class="option-group, checkbox-group">
               <label>
                 <input, type="checkbox" bind:checked={includeKeyTerms} />
                 Extract Key Legal Terms
               </label>
             </div>
-            <div class="option-group, checkbox-group">
+            <div, class="option-group, checkbox-group">
               <label>
                 <input, type="checkbox" bind:checked={includeLegalAnalysis} />
                 Include Risk Analysis
@@ -295,7 +295,7 @@ import type { Document } from '$lib/types';
             <div, class="result-header">
               <h3>📋 Document Summary</h3>
               <div, class="result-actions">
-                <button id="copy-btn" class="btn nes-btn, btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
+                <button id="copy-btn" class="btn, nes-btn, btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
             <div, class="summary-content">
@@ -341,7 +341,7 @@ import type { Document } from '$lib/types';
           <div, class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn, is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn, nes-btn, is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
           <div, class="empty-state">

@@ -87,8 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` }'`
-    });
+        'X-Error': 'true' }'' });
   }
 };
 /**
@@ -129,7 +128,7 @@ export const GET: RequestHandler = async () => {
         },
         endpoints: {
           generate: 'POST /api/v1/embeddings',
-          status: `GET /api/v1/embeddings` },
+          status: `GET /api/v1/embeddings' },'`
         models: {
           primary: 'embeddinggemma:latest',
           fallback: 'nomic-embed-text:latest',
@@ -149,7 +148,7 @@ export const GET: RequestHandler = async () => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms` }
+          'X-Processing-Time': `${Math.round(processingTime)}ms' }'`
       }
     );
   } catch (error) {
@@ -167,8 +166,7 @@ export const GET: RequestHandler = async () => {
         headers: {
           'Content-Type': 'application/json',
           'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-Error': 'true` }'`
-      }
+          'X-Error': 'true' }'' }
     );
   }
 };
@@ -183,7 +181,7 @@ async function generateEmbedding(text: string, model: string, retries: number = 
     try {
       const response = await fetch(getOllamaEndpoint('api/embeddings'), {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           model: model,
           prompt: text

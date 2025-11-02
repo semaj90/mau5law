@@ -646,7 +646,7 @@ export class UnifiedAIService {
         const dd = d as DocLike;
         const title = dd.title ?? '(untitled)';
         const snippet = (dd.content ?? dd.text ?? '').toString().slice(0, 240).replace(/\s+/g, ' ');
-        return `${title}: ${snippet ? snippet : `` }`.trim();
+        return `${title}: ${snippet ? snippet : `' }`.trim();'`
       })
       .join('\n\n');
   }
@@ -660,7 +660,7 @@ export class UnifiedAIService {
   private getLangChainModelName(): string {
     const m = this.config.langChainConfig?.model;
     if (typeof m === 'string') return m;
-    // common shapes: { name: `model-name` } or { id: `model-id` }
+    // common shapes: { name: `model-name` } or { id: `model-id' }'`
     if (m && typeof m === 'object') {
       const obj = m as Record<string, unknown>;
       const name = obj['name'];

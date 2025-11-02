@@ -164,7 +164,7 @@ export class Context7Phase13Integration {
      memoryGraph: 'IDLE',
      agentOrchestration: 'IDLE',
      bestPractices: 'IDLE',
-     overall: 'HEALTHY' });
+     overall: 'HEALTHY` });'`
    public performanceStats = writable({
      averageSemanticSearchTime: 0,
      averageMemoryGraphTime: 0,
@@ -305,8 +305,7 @@ export class Context7Phase13Integration {
         }
       }
     } catch (err: any) {
-      console.warn('semanticSearchSafe error:', String(err));'
-    }
+      console.warn('semanticSearchSafe error:', String(err));` }`'
     return [];
   }
 

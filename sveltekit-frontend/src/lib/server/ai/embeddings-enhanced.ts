@@ -39,7 +39,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: model,
           prompt: text
@@ -349,7 +349,7 @@ export async function processDocumentWithChunking(
   // Split document into overlapping chunks
   for (let i = 0; i < document.length; i += chunkSize - chunkOverlap) {
     const chunk = document.slice(i, i + chunkSize);
-    if (chunk.trim().length < 50) continue; // Skip very small, chunks
+    if (chunk.trim().length < 50) continue; // Skip very, small, chunks
     const embedding = await generateNomicEmbedding(chunk);
     chunks.push({
       text: chunk,

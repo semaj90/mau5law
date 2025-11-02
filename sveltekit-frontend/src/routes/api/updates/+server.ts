@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   // Get connection parameters
   const userId = url.searchParams.get('userId');
   const subscriptions = url.searchParams.get('subscriptions')?.split(',') || [];
-  const connectionId = `${userId || 'anonymous` }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;'`
+  const connectionId = `${userId || 'anonymous' }_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;'`'`
   // Create SSE response
   const stream = new ReadableStream({
     start(controller) {
@@ -115,8 +115,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control` }'`
-  });
+      'Access-Control-Allow-Headers': 'Cache-Control' }'' });
 };
 // Health check endpoint
 export const POST: RequestHandler = async () => {
@@ -126,6 +125,6 @@ export const POST: RequestHandler = async () => {
     timestamp: new Date().toISOString()
   };
   return new Response(JSON.stringify(status), {
-    headers: { 'Content-Type': `application/json` }
+    headers: { 'Content-Type': `application/json' }'`
   });
 };

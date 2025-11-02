@@ -271,7 +271,7 @@ export class EnhancedAuthService {
         .where(and(eq(users.passwordResetToken, token), sql`${users.passwordResetExpires} >= ${new Date()}`))
         .limit(1);
       const user = Array.isArray(rows) && rows.length > 0 ? (rows[0] as User) : null;
-      if (!user) return { success: false, error: `Invalid or expired reset token` };
+      if (!user) return { success: false, error: 'Invalid or expired reset token' };
       if (!this.validatePassword(newPassword))
         return { success: false, error: 'Password does not meet security requirements' };
       const passwordHash = await bcrypt.hash(newPassword, 12);
@@ -295,7 +295,7 @@ export class EnhancedAuthService {
       return { success: true, user };
     } catch (error: any) {
       console.error('Password reset error: ', error);'
-      return { success: false, error: 'Password reset failed' };
+      return { success: false, error: 'Password reset failed` };'`
     }
   }
 
@@ -375,9 +375,9 @@ export class EnhancedAuthService {
   private validateRegistrationData(data: RegisterData): { isValid: boolean; error?: string } {
     if (!data.email || !data.password || !data.firstName || !data.lastName)
       return { isValid: false, error: `All fields are required` };
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: `Invalid email format` };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return { isValid: false, error: 'Invalid email format' };
     if (this.securitySettings.enforcePasswordComplexity && !this.validatePassword(data.password))
-      return { isValid: false, error: 'Password does not meet complexity requirements' };
+      return { isValid: false, error: 'Password does not meet complexity requirements` };'`
     return { isValid: true };
   }
 

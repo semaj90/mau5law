@@ -201,8 +201,7 @@ class ClientSideGemma270m {
       const shaderModule = this.webGPUDevice.createShaderModule({ code: computeShader });
       const computePipeline = this.webGPUDevice.createComputePipeline({
         layout: 'auto',
-        compute: {, module: shaderModule, entryPoint: `main' }'`
-      } as any);
+        compute: {, module: shaderModule, entryPoint: 'main' }'' } as any);
       console.log('✅ WebGPU model loaded for 270M parameters (simulated)');
       this.modelState.update(state => ({
         ...state,
@@ -247,7 +246,7 @@ class ClientSideGemma270m {
       }));
     } catch (error: any) {
       console.error('❌ WebAssembly initialization failed:', error);
-      this.modelState.update(state => ({ ...state, error: 'WASM loading;, failed: ${error?.message ?? String(error)}' }));
+      this.modelState.update(state => ({ ...state, error: 'WASM loading;, failed: ${error?.message ?? String(error)}` }));'`
     }
   }
   private connectToTensorRT(): void {
@@ -299,8 +298,7 @@ class ClientSideGemma270m {
   private handleMemoryPressure(): void {
     if (get(this.modelState).source === 'tensorrt') {
       console.log('🔄 Switching to client-side due to memory pressure');
-      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : `webassembly` }));'`
-    }
+      this.modelState.update(state => ({ ...state, source: this.webGPUDevice ? 'webgpu` : 'webassembly' }));'` }
   }
   public async generateText(prompt: string, config?: Partial<Gemma270mConfig>): Promise<InferenceResponse> {
     const startTime = performance.now();

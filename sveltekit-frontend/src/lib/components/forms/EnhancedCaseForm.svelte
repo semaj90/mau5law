@@ -1,4 +1,4 @@
-<!-- Enhanced Case Form with proper schema, mapping -->
+<!-- Enhanced Case Form with proper, schema, mapping -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
@@ -171,12 +171,12 @@
   }
 </script>
 <form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
-  <div class="container mx-auto, px-4">
+  <div class="container, mx-auto, px-4">
     <!-- Basic, Information -->
-    <section class="container mx-auto, px-4">
+    <section class="container, mx-auto, px-4">
       <h3>Basic Information</h3>
-      <div class="container mx-auto, px-4">
-        <label for="title" class="container mx-auto px-4, required">Case Title</label>
+      <div class="container, mx-auto, px-4">
+        <label for="title" class="container mx-auto, px-4, required">Case Title</label>
         <input
           id="title"
           type="text"
@@ -186,11 +186,11 @@
           required
         />
         {#if errors.title}
-          <span class="container mx-auto px-4, field-error">{errors.title}</span>
+          <span class="container mx-auto, px-4, field-error">{errors.title}</span>
         {/if}
       </div>
-      <div class="container mx-auto, px-4">
-        <label for="caseNumber" class="container mx-auto, px-4">Case Number</label>
+      <div class="container, mx-auto, px-4">
+        <label for="caseNumber" class="container, mx-auto, px-4">Case Number</label>
         <input
           id="caseNumber"
           type="text"
@@ -200,10 +200,10 @@
           required
         />
         {#if errors.caseNumber}
-          <span class="container mx-auto, px-4">{errors.caseNumber}</span>
+          <span class="container, mx-auto, px-4">{errors.caseNumber}</span>
         {/if}
       </div>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="name">Case Name (Optional)</label>
         <input
           id="name"
@@ -212,7 +212,7 @@
           placeholder="Alternative case name"
         />
       </div>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="description">Description</label>
         <textarea
           id="description"
@@ -223,10 +223,10 @@
       </div>
     </section>
     <!-- Case, Details -->
-    <section class="container mx-auto, px-4">
+    <section class="container, mx-auto, px-4">
       <h3>Case Details</h3>
-      <div class="container mx-auto, px-4">
-        <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
+        <div class="container, mx-auto, px-4">
           <label, for="priority">Priority</label>
           <select, id="priority" bind:value={formData.priority}>
             <option, value="low">Low</option>
@@ -235,7 +235,7 @@
             <option, value="urgent">Urgent</option>
           </select>
         </div>
-        <div class="container mx-auto, px-4">
+        <div class="container, mx-auto, px-4">
           <label, for="status">Status</label>
           <select, id="status" bind:value={formData.status}>
             <option, value="open">Open</option>
@@ -246,7 +246,7 @@
           </select>
         </div>
       </div>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="category">Category</label>
         <input
           id="category"
@@ -255,8 +255,8 @@
           placeholder="e.g., Criminal, Civil, Administrative"
         />
       </div>
-      <div class="container mx-auto, px-4">
-        <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
+        <div class="container, mx-auto, px-4">
           <label, for="dangerScore">Danger Score (0-10)</label>
           <input
             id="dangerScore"
@@ -267,10 +267,10 @@
             class:error={errors.dangerScore}
           />
           {#if errors.dangerScore}
-            <span class="container mx-auto, px-4">{errors.dangerScore}</span>
+            <span class="container, mx-auto, px-4">{errors.dangerScore}</span>
           {/if}
         </div>
-        <div class="container mx-auto, px-4">
+        <div class="container, mx-auto, px-4">
           <label, for="estimatedValue">Estimated Value ($)</label>
           <input
             id="estimatedValue"
@@ -281,15 +281,15 @@
             class:error={errors.estimatedValue}
           />
           {#if errors.estimatedValue}
-            <span class="container mx-auto, px-4">{errors.estimatedValue}</span>
+            <span class="container, mx-auto, px-4">{errors.estimatedValue}</span>
           {/if}
         </div>
       </div>
     </section>
     <!-- Location & Timeline -->
-    <section class="container mx-auto, px-4">
+    <section class="container, mx-auto, px-4">
       <h3>Location & Timeline</h3>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="incidentDate">Incident Date</label>
         <input
           id="incidentDate"
@@ -297,7 +297,7 @@
           bind:value={formData.incidentDate}
         />
       </div>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="location">Location</label>
         <input
           id="location"
@@ -306,7 +306,7 @@
           placeholder="Incident location"
         />
       </div>
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="jurisdiction">Jurisdiction</label>
         <input
           id="jurisdiction"
@@ -317,12 +317,12 @@
       </div>
     </section>
     <!-- Team & Tags -->
-    <section class="container mx-auto, px-4">
+    <section class="container, mx-auto, px-4">
       <h3>Team & Tags</h3>
       <!-- Assigned, Team -->
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="new-member">Assigned Team</label>
-        <div class="container mx-auto, px-4">
+        <div class="container, mx-auto, px-4">
           <input
             id="new-member"
             type="text"
@@ -332,9 +332,9 @@
           <button, type="button" onclick={() => addTeamMember()}>Add</button>
         </div>
         {#if formData.assignedTeam.length > 0}
-          <div class="container mx-auto, px-4">
+          <div class="container, mx-auto, px-4">
             {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
-              <span class="container mx-auto px-4, tag">
+              <span class="container mx-auto, px-4, tag">
                 {member}
                 <button, type="button" onclick={() => removeTeamMember(member)}>×</button>
               </span>
@@ -342,9 +342,9 @@
           {/if}
       </div>
       <!-- Tags -->
-      <div class="container mx-auto, px-4">
+      <div class="container, mx-auto, px-4">
         <label, for="new-tag">Tags</label>
-        <div class="container mx-auto px-4, tag-input">
+        <div class="container mx-auto, px-4, tag-input">
           <input
             id="new-tag"
             type="text"
@@ -354,9 +354,9 @@
           <button, type="button" onclick={() => addTag()}>Add</button>
         </div>
         {#if formData.tags.length > 0}
-          <div class="container mx-auto px-4, tags-list">
+          <div class="container mx-auto, px-4, tags-list">
             {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
-              <span class="container mx-auto px-4, tag">
+              <span class="container mx-auto, px-4, tag">
                 {tag}
                 <button, type="button" onclick={() => removeTag(tag)}>×</button>
               </span>
@@ -366,7 +366,7 @@
     </section>
   </div>
   <!-- Form, Actions -->
-  <div class="form-actions container mx-auto, px-4">
+  <div class="form-actions container, mx-auto, px-4">
     <button, type="button" onclick={() => dispatch('cancel')}>Cancel</button>
     <button, type="submit" disabled={loading} class="primary">
       {#if loading}
@@ -545,4 +545,4 @@
     }
   }
 </style>
-<!-- TODO: migrate export lets to $props(); CommonProps, assumed. -->
+<!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->

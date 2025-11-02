@@ -2,11 +2,11 @@
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Textarea } from "$lib/components/ui/textarea/Textarea.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
-  import { AIChatMessage } from "./AIChatMessage.svelte";
+  import  AIChatMessage  from "./AIChatMessage.svelte";
   import { tick } from "svelte";
   import { enhancedEmbeddingService } from "$lib/services/enhanced-embedding-service";
   import type { EmbeddedDocument, SemanticSearchResult } from "$lib/services/enhanced-embedding-service";
@@ -389,7 +389,7 @@
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={() =>
@@ -405,9 +405,9 @@ useAdvancedRAG = !useAdvancedRAG}
             Quick Mode
           {/if}
         {/snippet}
-</Button.Root>
+</Button>
       {#if showDocumentAnalysis}
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           variant="ghost"
           size="sm"
           onclick={analyzeDocuments}
@@ -417,9 +417,9 @@ useAdvancedRAG = !useAdvancedRAG}
             <Search class="w-4 h-4 mr-1" />
             Analyze Docs
           {/snippet}
-</Button.Root>
+</Button>
       {/if}
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={checkServiceHealth}
@@ -433,8 +433,8 @@ useAdvancedRAG = !useAdvancedRAG}
           }`} />
           Health
         {/snippet}
-</Button.Root>
-      <Button.Root class="bits-btn"
+</Button>
+      <Button class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={queueEmbeddingJobs}
@@ -444,7 +444,7 @@ useAdvancedRAG = !useAdvancedRAG}
           <Database class="w-4 h-4 mr-1" />
           Queue Jobs
         {/snippet}
-</Button.Root>
+</Button>
     </div>
   </div>
   <!-- Document Management Panel (when RAG is enabled) -->
@@ -455,12 +455,12 @@ useAdvancedRAG = !useAdvancedRAG}
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length: availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button.Root class="bits-btn" variant="ghost" size="xs" onclick={addDocument}>
+          <Button class="bits-btn" variant="ghost" size="xs" onclick={addDocument}>
 {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
             {/snippet}
-</Button.Root>
+</Button>
           <label class="text-xs text-gray-600 flex items-center gap-1">
             Threshold:
             <input
@@ -553,7 +553,7 @@ useAdvancedRAG = !useAdvancedRAG}
           disabled={isLoading}
         />
       </div>
-      <Button.Root class="bits-btn"
+      <Button class="bits-btn"
         variant="default"
         size="default"
         onclick={sendMessage}
@@ -566,7 +566,7 @@ useAdvancedRAG = !useAdvancedRAG}
             <Send class="w-4 h-4" />
           {/if}
         {/snippet}
-</Button.Root>
+</Button>
     </div>
     <!-- Status Bar -->
     <div class="flex items-center justify-between mt-2 text-xs text-gray-500">

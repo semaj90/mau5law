@@ -88,13 +88,13 @@ export const POST: RequestHandler = redisOptimized(
   { cacheKey: (request: Request) => `rl-rag:${JSON.stringify({, url: request.url })}`,
     ttl: REDIS_CACHE_TTL,
     memoryBank: 'PRG_ROM',
-    category: 'conservative` },'`
+    category: 'conservative' },'`'`
   async ({ request }) => {
     const startTime = performance.now();
     try {
       const body = (await request.json()) as RAGRequest;
       if (!body?.query || body.query.trim().length === 0) {
-        return json({ error: `Query is required` }, { status: 400 });
+        return json({ error: 'Query is required' }, { status: 400 });
       }
       const {
         query,
@@ -157,7 +157,7 @@ export const POST: RequestHandler = redisOptimized(
       return json(
         {
           message: 'Internal server error during RAG processing',
-          details: dev ? String(err) : `Contact support if this persists` },
+          details: dev ? String(err) : `Contact support if this persists' },'`
         { status: 500 }
       );
     }
@@ -188,7 +188,7 @@ async function performCudaVectorSearch(params: {, query: string;, context: stri
     const embeddingResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/search`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , query: params.query,
         model: EMBEDDING_MODEL,
@@ -221,7 +221,7 @@ async function performCudaVectorSearch(params: {, query: string;, context: stri
     const extractionResponse = await fetch('http://localhost:8098/api/v1/extract', {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , id: `search_${Date.now()}`,
         title: 'Search Query',
@@ -265,7 +265,7 @@ async function fallbackKnowledgeGraphSearch(params: {, query: string;, context:
     const kgResponse = await fetch('http://localhost:8099/api/v1/knowledge-graph', {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify({
        , id: `kg_search_${Date.now()}`,
         title: 'Knowledge Graph Search',
@@ -406,7 +406,7 @@ export const GET: RequestHandler = async () => {
       models: {
         primary: GEMMA_MODEL,
         embedding: EMBEDDING_MODEL,
-        client_parser: `gemma:270m-simd` },
+        client_parser: `gemma:270m-simd' },'`
       services: {
         cuda_service_8097: cudaAvailable,
         legal_extraction_8098: extractionAvailable,
@@ -450,7 +450,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'error',
         message: 'Health check failed',
-        error: dev ? String(err) : `Service temporarily unavailable` },
+        error: dev ? String(err) : `Service temporarily unavailable' },'`
       { status: 500 }
     );
   }

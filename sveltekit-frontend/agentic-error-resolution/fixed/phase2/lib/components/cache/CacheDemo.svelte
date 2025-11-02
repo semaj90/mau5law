@@ -373,7 +373,7 @@
               />
             </div>
             <div class="flex flex-wrap gap-2">
-              <Button.Root
+              <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
                 onclick={setCacheValue}
                 disabled={$isLoading}
@@ -388,11 +388,11 @@
               >
 <Database class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Database icon" />
                 Set Value
-</Button.Root>
+</Button>
               <div id="set-cache-help" class="sr-only">
                 Store the entered key-value pair in the multi-layer cache system with specified TTL and priority
               </div>
-              <Button.Root
+              <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
                 variant="ghost"
                 onclick={getCacheValue}
@@ -408,11 +408,11 @@
               >
 <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh icon" />
                 Get Value
-</Button.Root>
+</Button>
               <div id="get-cache-help" class="sr-only">
                 Retrieve the value associated with the entered key from the cache layers
               </div>
-              <Button.Root
+              <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant"
                 variant="error"
                 onclick={deleteCacheValue}
@@ -428,11 +428,11 @@
               >
 <Trash2 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Delete icon" />
                 Delete
-</Button.Root>
+</Button>
               <div id="delete-cache-help" class="sr-only">
                 Remove the specified cache entry from all cache layers permanently
               </div>
-              <Button.Root
+              <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant critical-action"
                 variant="error"
                 onclick={clearCache}
@@ -449,7 +449,7 @@
               >
 <XCircle class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Clear all icon" />
                 Clear All
-</Button.Root>
+</Button>
               <div id="clear-cache-help" class="sr-only">
                 WARNING: This will permanently remove ALL cached data from all cache layers. This action cannot be undone.
               </div>
@@ -461,7 +461,7 @@
           <div class="yorha-panel-header">
             <h3 class="nes-text is-primary flex items-center justify-between">
               Test Results
-              <Button.Root
+              <Button
                 class="enhanced-bits-btn nes-cache-control n64-enhanced lod-optimized retro-control-btn"
                 variant="ghost"
                 size="sm"
@@ -475,7 +475,7 @@ testResults.set([])}
                 data-operation="clear-results"
               >
                 Clear
-</Button.Root>
+</Button>
               <div id="clear-results-help" class="sr-only">
                 Clear the test results display panel
               </div>
@@ -681,7 +681,7 @@ testResults.set([])}
           </div>
           <div class="yorha-panel-content space-y-4">
             <div class="space-y-2">
-              <Button.Root
+              <Button
                 onclick={runPerformanceTest}
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
@@ -696,7 +696,7 @@ testResults.set([])}
               >
 <Zap class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Performance test icon" />
                 Run Batch Performance Test
-</Button.Root>
+</Button>
               <div id="perf-test-help" class="sr-only">
                 Execute a comprehensive performance test using 100 cache entries across all cache layers
               </div>
@@ -705,7 +705,7 @@ testResults.set([])}
               </p>
             </div>
             <div class="space-y-2">
-              <Button.Root
+              <Button
                 variant="ghost"
                 onclick={testCacheHitMiss}
                 disabled={$isLoading}
@@ -721,7 +721,7 @@ testResults.set([])}
               >
 <BarChart3 class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Analytics icon" />
                 Test Cache Hit/Miss
-</Button.Root>
+</Button>
               <div id="hitmiss-test-help" class="sr-only">
                 Validate proper cache hit and miss behavior across the cache layer hierarchy
               </div>
@@ -730,7 +730,7 @@ testResults.set([])}
               </p>
             </div>
             <div class="space-y-2">
-              <Button.Root
+              <Button
                 variant="ghost"
                 onclick={refreshStats}
                 disabled={$isLoading}
@@ -746,7 +746,7 @@ testResults.set([])}
               >
 <RefreshCw class="mr-2" size={16} aria-hidden="true" role="img" aria-label="Refresh statistics icon" />
                 Refresh Statistics
-</Button.Root>
+</Button>
               <div id="refresh-stats-help" class="sr-only">
                 Update all cache layer statistics, health status, and performance monitoring data
               </div>

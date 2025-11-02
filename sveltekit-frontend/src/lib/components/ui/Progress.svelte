@@ -8,13 +8,13 @@
               ? 'bg-black nes-progress is-dark': variant === 'legal'
                 ? 'bg-indigo-600 nes-progress is-pattern': 'bg-gray-600 nes-progress'
   ); let sizeClasses = $derived(size === 'sm' ? 'h-1.5': size === 'lg' ? 'h-4': 'h-2.5'); let containerClasses = $derived( variant === 'yorha' ? 'nes-container is-dark with-title': variant === 'legal' ? 'nes-container with-title': ''
-  ); </script> <div class="relative, w-full { containerClasses }"> <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full, overflow-hidden { sizeClasses } { className }"> <div class="h-full transition-all duration-300 ease-out { variantClasses }"
+  ); </script> <div, class="relative, w-full { containerClasses }"> <div class="w-full bg-gray-200 dark:bg-gray-700, rounded-full, overflow-hidden { sizeClasses } { className }"> <div class="h-full transition-all duration-300, ease-out { variantClasses }"
       style="width: { percentage }%"
       role="progressbar"
       aria-valuenow={ value } aria-valuemin="0"
       aria-valuemax={ max } aria-label="Upload progress"
-    > {#if variant === 'yorha'} <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"
-        >{/if} </div> </div> {#if showPercentage} <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 text-right, nes-text"> {Math.round(percentage)}% {/if} </div> <style> @keyframes shimmer { 0% { transform: translateX(-100%); }
+    > {#if variant === 'yorha'} <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent, animate-shimmer"
+        >{/if} </div> </div> {#if showPercentage} <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1, text-right, nes-text"> {Math.round(percentage)}% {/if} </div> <style> @keyframes shimmer { 0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   } .animate-shimmer { animation: shimmer 2s infinite; }
   /* NES.css integration for legal/yorha variants */ .nes-progress { position: relative; border-radius: 0; }

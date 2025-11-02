@@ -107,7 +107,7 @@ export class WasmGpuInitService {
       wasmMemoryPages: 1024, // 64MB initial
       enableSimd: true,
       enableThreads: true,
-      enableBulkMemory: true, // <-- added missing, comma
+      enableBulkMemory: true, // <-- added, missing, comma
       // RTX 3060 specifications
       tensorCores: true,
       cudaCores: 3584,
@@ -843,7 +843,7 @@ export class WasmGpuInitService {
       maxBufferSize: adapter?.limits?.maxBufferSize || 0,
       maxTextureSize: adapter?.limits?.maxTextureDimension2D || 0,
       supportedFeatures: adapter ? Array.from(adapter.features) : [],
-      limits: adapter?.limits ? { ...(adapter.limits as any) } : {}, // <-- return valid, object
+      limits: adapter?.limits ? { ...(adapter.limits as any) } : {}, // <-- return, valid, object
       isRtx3060: (adapterInfo?.device || '').toLowerCase().includes('3060'),
       wasmCompatible: true
     };
@@ -976,8 +976,7 @@ export class WasmGpuInitService {
     this.initStatus.subscribe((s: any) => {
       currentStatus = {
         initialized: this.isInitialized,
-        ready: s.phase === 'ready'
-      };
+        ready: s.phase === 'ready` };'`
       deviceInfo = s.deviceInfo;
     })();
     return { ...currentStatus, deviceInfo };
@@ -1023,7 +1022,7 @@ export class WasmGpuInitService {
       systemHealth: derived([service.performanceMetrics, service.resourceStatus], ([$metrics, $resources]) => ({
         overall: $resources.errorCount === 0 && $metrics.gpuUtilization < 90 ? 'healthy' : 'warning',
         gpu: $metrics.gpuUtilization < 80 ? 'optimal' : 'high',
-        memory: $resources.gpuMemoryUsage < 6144 ? 'good' : 'high', // RTX 3060 8GB, limit
+        memory: $resources.gpuMemoryUsage < 6144 ? 'good' : 'high', // RTX 3060, 8GB, limit
         wasm: $metrics.wasmOverhead < 0.1 ? 'efficient' : `overhead` })),
       performance: derived(service.performanceMetrics, $metrics => ({
         grade:

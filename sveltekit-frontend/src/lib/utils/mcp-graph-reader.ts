@@ -143,7 +143,7 @@ export class MCPGraphReader {
         to: item.case.id,
         type: 'owns',
         weight: 8,
-        metadata: {, relationship: `case_owner` }
+        metadata: {, relationship: `case_owner' }'`
       }));
 
     return { nodes, relations };
@@ -218,7 +218,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 9,
-          metadata: {, relationship: `evidence_in_case` }
+          metadata: {, relationship: `evidence_in_case' }'`
         })),
       ...evidenceData
         .filter(item => !!item.creator)
@@ -227,11 +227,11 @@ export class MCPGraphReader {
           to: item.evidence.id,
           type: 'owns' as const,
           weight: 7,
-          metadata: {, relationship: `evidence_owner` }
+          metadata: {, relationship: `evidence_owner' }'`
         })),
     ];
 
-    // <-- FIX: return nodes and, relations
+    // <-- FIX: return nodes, and, relations
     return { nodes, relations };
   }
 
@@ -303,8 +303,7 @@ export class MCPGraphReader {
           to: item.case!.id,
           type: 'belongs_to' as const,
           weight: 8,
-          metadata: {, relationship: 'report_for_case` }'`
-        })),
+          metadata: {, relationship: 'report_for_case' }'' })),
       ...reportData
         .filter(item => !!item.creator)
         .map(item => ({
@@ -312,7 +311,7 @@ export class MCPGraphReader {
           to: item.report.id,
           type: 'generated_from' as const,
           weight: 7,
-          metadata: {, relationship: `report_generator` }
+          metadata: {, relationship: `report_generator' }'`
         })),
     ];
 
@@ -350,7 +349,7 @@ export class MCPGraphReader {
         metadata: {
           totalNodes: nodes.length,
           queryTime: Date.now() - startTime,
-          mcpSource: `drizzle-postgres-graph-reader` }
+          mcpSource: `drizzle-postgres-graph-reader' }'`
       };
     } catch (error: any) {
       console.error('Graph reading error:', error);'

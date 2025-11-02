@@ -337,7 +337,7 @@ Features:
       <div class="grid lg:grid-cols-3 gap-8">
         <!-- File Upload -->
         <div class="lg:col-span-2">
-          <Card.Root>
+          <Card>
             <Card.Header>
               <Card.Title class="flex items-center">
                 <FileText class="w-5 h-5 mr-2" />
@@ -393,12 +393,12 @@ Features:
                 {/if}
               </div>
             </Card.Content>
-          </Card.Root>
+          </Card>
         </div>
 
         <!-- Analysis Configuration -->
         <div>
-          <Card.Root>
+          <Card>
             <Card.Header>
               <Card.Title class="flex items-center">
                 <Brain class="w-5 h-5 mr-2" />
@@ -481,7 +481,7 @@ Features:
                 {/if}
               </Button>
             </Card.Content>
-          </Card.Root>
+          </Card>
         </div>
       </div>
     {:else if currentTab === 'results'}
@@ -490,45 +490,45 @@ Features:
         <div class="space-y-6">
           <!-- Summary Cards -->
           <div class="grid md:grid-cols-4 gap-4">
-            <Card.Root>
+            <Card>
               <Card.Content class="p-4">
                 <div class="text-2xl font-bold text-blue-600">
                   {batchAnalysisResults.processing_summary.total_files}
                 </div>
                 <div class="text-sm text-gray-600">Total Files</div>
               </Card.Content>
-            </Card.Root>
+            </Card>
 
-            <Card.Root>
+            <Card>
               <Card.Content class="p-4">
                 <div class="text-2xl font-bold text-green-600">
                   {batchAnalysisResults.processing_summary.successful_analyses}
                 </div>
                 <div class="text-sm text-gray-600">Successful</div>
               </Card.Content>
-            </Card.Root>
+            </Card>
 
-            <Card.Root>
+            <Card>
               <Card.Content class="p-4">
                 <div class="text-2xl font-bold text-orange-600">
                   {batchAnalysisResults.cross_document_analysis?.correlation_analysis.common_entities.length || 0}
                 </div>
                 <div class="text-sm text-gray-600">Correlations</div>
               </Card.Content>
-            </Card.Root>
+            </Card>
 
-            <Card.Root>
+            <Card>
               <Card.Content class="p-4">
                 <div class="text-2xl font-bold text-purple-600">
                   {Math.round(batchAnalysisResults.processing_summary.processing_time_ms / 1000)}s
                 </div>
                 <div class="text-sm text-gray-600">Processing Time</div>
               </Card.Content>
-            </Card.Root>
+            </Card>
           </div>
 
           <!-- Individual File Results -->
-          <Card.Root>
+          <Card>
             <Card.Header>
               <Card.Title>Individual File Analysis</Card.Title>
             </Card.Header>
@@ -567,11 +567,11 @@ Features:
                 {/each}
               </div>
             </Card.Content>
-          </Card.Root>
+          </Card>
 
           <!-- Cross-Document Analysis -->
           {#if batchAnalysisResults.cross_document_analysis}
-            <Card.Root>
+            <Card>
               <Card.Header>
                 <Card.Title class="flex items-center">
                   <Network class="w-5 h-5 mr-2" />
@@ -609,7 +609,7 @@ Features:
                   </div>
                 </div>
               </Card.Content>
-            </Card.Root>
+            </Card>
           {/if}
         </div>
       {:else}
@@ -622,7 +622,7 @@ Features:
     {:else if currentTab === 'timeline'}
       <!-- Timeline Tab -->
       {#if timelineData}
-        <Card.Root>
+        <Card>
           <Card.Header>
             <Card.Title class="flex items-center">
               <Clock class="w-5 h-5 mr-2" />
@@ -673,7 +673,7 @@ Features:
               </div>
             </div>
           </Card.Content>
-        </Card.Root>
+        </Card>
       {:else}
         <div class="text-center py-12">
           <Clock class="w-16 h-16 mx-auto text-gray-400 mb-4" />
@@ -684,7 +684,7 @@ Features:
       {/if}
     {:else if currentTab === 'citations'}
       <!-- Citations Tab -->
-      <Card.Root>
+      <Card>
         <Card.Header>
           <Card.Title class="flex items-center">
             <Link class="w-5 h-5 mr-2" />
@@ -700,10 +700,10 @@ Features:
             <Button onclick={discoverCitations}>Discover Citations</Button>
           </div>
         </Card.Content>
-      </Card.Root>
+      </Card>
     {:else if currentTab === 'canvas'}
       <!-- Evidence Canvas Tab -->
-      <Card.Root>
+      <Card>
         <Card.Header>
           <Card.Title class="flex items-center">
             <Eye class="w-5 h-5 mr-2" />
@@ -714,7 +714,7 @@ Features:
         <Card.Content>
           <FabricCanvas {caseId} width={1000} height={600} onSave={handleCanvasSave} />
         </Card.Content>
-      </Card.Root>
+      </Card>
     {/if}
   </main>
 </div>

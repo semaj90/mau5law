@@ -163,7 +163,7 @@ export class HybridRAGSIMDBridge {
     const totalTime = performance.now() - startTime;
     const throughput = (ragDocuments.length / totalTime) * 1000; // docs per second
 
-    console.log('\n📊 Hybrid Pipeline Summary: `);'`
+    console.log('\n📊 Hybrid Pipeline Summary: ');'`'`
     console.log(`   - SIMD Time: ${simdTime.toFixed(2)}ms`);
     console.log(`   - RAG Time: ${ragTime.toFixed(2)}ms`);
     console.log(`   - Total Time: ${totalTime.toFixed(2)}ms`);
@@ -291,7 +291,7 @@ export class HybridRAGSIMDBridge {
       },
       rag: {
         available: true,
-        embeddingModel: this.config.rag?.embeddingModel || 'embeddinggemma:latest' },
+        embeddingModel: this.config.rag?.embeddingModel || 'embeddinggemma:latest` },'`
       mcp: {
         available: this.config.mcp?.enableMulticore || false,
         workers: this.config.mcp?.workerCount || 4

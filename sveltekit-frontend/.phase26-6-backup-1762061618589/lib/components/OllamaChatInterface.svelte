@@ -1,12 +1,12 @@
 <!-- OllamaChatInterface.svelte - Svelte 5 + SvelteKit 2.0 Enhanced AI Chat -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { TokenUsageManager } from "$lib/components/TokenUsageManager.svelte";
+  import  TokenUsageManager  from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from '$lib/components/ui/badge.svelte'";
   // explicit default imports for UI primitives
-  import { Button } from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits/Button.svelte";
+  import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
+  import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
   // removed broken remote type import (module wasn't found)
   // import type { ChatRequest, ChatResponse } from "$routes/api/ai/chat/+server";
   // removed lucide-svelte named import (caused type/export errors)

@@ -7,6 +7,6 @@
   }
   let { children, class: className = '' }: Props = $props();
 </script>
-<caption class={cn('mt-4 text-sm, text-muted-foreground', className)}>
+<caption class={cn('mt-4, text-sm, text-muted-foreground', className)}>
   <slot />
 </caption>

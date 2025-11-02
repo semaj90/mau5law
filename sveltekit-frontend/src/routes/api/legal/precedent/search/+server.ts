@@ -247,7 +247,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
       bindingCount > 0,
         ? 'Emphasize binding precedent in primary arguments'
         : 'Build strong persuasive authority foundation',
-      avgSimilarity < 0.7 ? 'Address factual distinctions proactively' : 'Highlight strong factual, parallels',
+      avgSimilarity < 0.7 ? 'Address factual distinctions proactively' : 'Highlight strong, factual, parallels',
       'Consider alternative legal theories for comprehensive coverage',
       recentCount < matches.length * 0.3
         ? 'Research more recent authority for current trends'
@@ -394,8 +394,7 @@ function generateMockKeyFacts(searchTerm: string): string[] {
   ];
 }
 function generateMockHolding(searchTerm: string): string {
-  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;'
-}
+  return `The court held that in cases involving ${searchTerm}, the applicable legal standard requires a balance of equitable considerations with strict adherence to contractual terms, taking into account the parties' reasonable expectations and the underlying policy objectives of the relevant statutory framework.`;` }'`
 function generateMockReasoningChain(): string[] {
   return [
     'Legal precedent establishes foundational framework',

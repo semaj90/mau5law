@@ -110,8 +110,7 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
     logger.error('Qdrant search failed', error instanceof Error ? error : undefined, {
       component: 'QdrantService',
       service: 'qdrant',
-      // removed arbitrary `topK` field to match logger's expected meta shape'
-    });
+      // removed arbitrary `topK` field to match logger's expected meta shape` });'`
     return [];
   }
 }
@@ -192,7 +191,7 @@ export async function getCollection(collection: string): Promise<QdrantCollectio
   if (!wrapper) {
     logger.error('Qdrant not configured', undefined, {
       component: 'QdrantService',
-      service: 'qdrant` });'`
+      service: `qdrant` });'`'`
     throw new Error('Qdrant not configured');
   }
   return wrapper.getCollection(collection);

@@ -303,8 +303,7 @@ export const POST: RequestHandler = async (event) => {
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,
-        embeddingModel: 'embeddinggemma:latest` }'`
-    });
+        embeddingModel: 'embeddinggemma:latest' }'' });
   } catch (error) {
     console.error('Error uploading document:', error);
     return json(

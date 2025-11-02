@@ -239,8 +239,7 @@ export class YoRHaWebGPUMath {
       this.device.createComputePipeline({
         layout: 'auto',
         compute: {, module: this.device.createShaderModule({, code: matrixOpsShader }),
-          entryPoint: 'main'
-        }
+          entryPoint: 'main` }'`
       })
     );
     this.computePipelines.set(

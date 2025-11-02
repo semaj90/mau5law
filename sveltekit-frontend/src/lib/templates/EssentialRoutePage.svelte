@@ -11,7 +11,7 @@ Use this template for all essential routes
 	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
 	import Button from '$lib/components/ui/enhanced-bits.svelte';
 	import * as Card from '$lib/components/ui/Card.svelte';
-	import { ButtonBits, CardBits, DialogBits } from '$lib/components/ui/bits-ui.svelte';
+	import  ButtonBits, CardBits, DialogBits  from "$lib/components/ui/bits-ui.svelte";
 	// Props
 	interface Props {
 		pageTitle: string;
@@ -45,12 +45,12 @@ Use this template for all essential routes
 <ProductionLayout>
 	<div, class="essential-route-page {className}">
 		<!-- Header -->
-		<Card.Root class="mb-6 nes-container, is-rounded">
+		<Card.Root class="mb-6, nes-container, is-rounded">
 			<CardHeader>
-				<div class="flex justify-between, items-center">
-					<div class="flex items-center, gap-4">
+				<div class="flex, justify-between, items-center">
+					<div class="flex, items-center, gap-4">
 						{#if showBackButton}
-							<Button.Root
+							<Button
 								variant="ghost"
 								size="sm"
 								onclick={goBack}
@@ -59,19 +59,19 @@ Use this template for all essential routes
 								← Back
 						{/if}
 						<div>
-							<CardTitle class="nes-text is-primary, text-2xl">
+							<CardTitle class="nes-text, is-primary, text-2xl">
 								{pageTitle}
 							</div.Title>
 							{#if description}
-								<CardDescription class="nes-text is-disabled, mt-1">
+								<CardDescription class="nes-text, is-disabled, mt-1">
 									{description}
 								</div.Description>
 							{/if}
 						</div>
 					</div>
-					<div class="flex items-center, gap-2">
-						<span class="nes-badge, is-success">Active</span>
-						<div class="nes-text is-disabled, text-sm">
+					<div class="flex, items-center, gap-2">
+						<span, class="nes-badge, is-success">Active</span>
+						<div class="nes-text, is-disabled, text-sm">
 							{$page.url.pathname}
 						</div>
 					</div>
@@ -84,23 +84,23 @@ Use this template for all essential routes
 				{#if children}
 					{@render children()}
 				{:else}
-					<!-- Default placeholder, content -->
-					<Card.Root class="nes-container, is-rounded">
-						<CardContent class="p-8, text-center">
+					<!-- Default, placeholder, content -->
+					<Card.Root, class="nes-container, is-rounded">
+						<CardContent, class="p-8, text-center">
 							<div, class="mb-4">
-								<div class="text-6xl, mb-4">🚧</div>
-								<h2 class="nes-text is-primary text-xl, mb-2">
+								<div, class="text-6xl, mb-4">🚧</div>
+								<h2 class="nes-text is-primary, text-xl, mb-2">
 									Page Under Development
 								</h2>
-								<p class="nes-text, is-disabled">
+								<p, class="nes-text, is-disabled">
 									This essential route needs implementation.
 									Current path: {$page.url.pathname}
 								</p>
 							</div>
-							<div class="flex justify-center gap-4, mt-6">
-								<Button.Root class="nes-btn, is-primary" onclick={goBack}>
+							<div class="flex justify-center, gap-4, mt-6">
+								<Button, class="nes-btn, is-primary" onclick={goBack}>
 									Go Back
-								<Button.Root
+								<Button
 									variant="ghost"
 									class="nes-btn"
 									onclick={() => window.location.href = '/'}
@@ -112,9 +112,9 @@ Use this template for all essential routes
 				{/if}
 			{:else}
 				<!-- Loading, state -->
-				<Card.Root class="nes-container, is-rounded">
-					<CardContent class="p-8, text-center">
-						<div class="nes-text, is-disabled">
+				<Card.Root, class="nes-container, is-rounded">
+					<CardContent, class="p-8, text-center">
+						<div, class="nes-text, is-disabled">
 							<div, class="animate-pulse">Loading...</div>
 						</div>
 					</div.Content>

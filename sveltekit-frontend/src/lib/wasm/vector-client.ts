@@ -154,7 +154,7 @@ class VectorWasmClient {
     const startTime = performance.now();
     const response = await fetch('/api/v1/vector/embeddings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         texts,
         model: options.model || 'embeddinggemma:latest',
@@ -187,7 +187,7 @@ class VectorWasmClient {
   }> {
     const response = await fetch('/api/v1/vector/matrix', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         operation,
         matrixA,
@@ -229,7 +229,7 @@ class VectorWasmClient {
   }> {
     const response = await fetch('/api/v1/vector/search', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
         query,
         limit: options.limit ?? 100,
@@ -300,7 +300,7 @@ class VectorWasmClient {
     };
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify(request)
     });
     if (!response.ok) {

@@ -167,8 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
         {
           status: 503,
-          headers: { 'Content-Type': 'application/json` }'`
-        }
+          headers: { 'Content-Type': 'application/json' }'` }'`
       );
     }
     const files = await minioService.listFiles(bucket, fileId, 1);

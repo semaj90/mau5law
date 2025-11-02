@@ -217,7 +217,7 @@ export class JobOrchestrator extends EventEmitter {
           // Update average processing time
           const totalProcessingTime = Array.from(this.results.values()).reduce((sum, r) => sum + r.processingTime, 0);
           this.stats.averageProcessingTime = this.results.size > 0 ? totalProcessingTime / this.results.size : 0;
-          console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : `FAILED' }`);'`
+          console.log(`📥 Job ${result.jobId} completed: ${result.success ? 'SUCCESS' : `FAILED` }`);'`'`
           this.emit('jobCompleted', result);
           this.channel?.ack(msg);
         } catch (error: any) {
@@ -234,7 +234,7 @@ export class JobOrchestrator extends EventEmitter {
       'GET_CASE_LAW': 'case_law_jobs',
       'GENERATE_EMBEDDING': 'embedding_jobs',
       'ANALYZE_EVIDENCE': 'analysis_jobs',
-      'LEGAL_RESEARCH': `research_jobs' };'`
+      'LEGAL_RESEARCH': `research_jobs` };'`'`
     return queueMap[type];
   }
 
@@ -479,7 +479,7 @@ export class CaseLawWorker extends SpecializedWorker {
         relevanceScore,
         summary: `A sample legal case generated for; query: "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
-        precedentialValue: `binding' }'`
+        precedentialValue: `binding` }'`'`
     ];
   }
 }

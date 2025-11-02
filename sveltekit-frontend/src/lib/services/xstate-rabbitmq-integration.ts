@@ -333,7 +333,7 @@ export class RabbitMQXStateConsumer {
     };
 
     // Broadcast via WebSocket (implement in backend)
-    console.log('📡 Broadcasting state change: `, message);'`
+    console.log('📡 Broadcasting state change: ', message);'`'`
   }
 
   /**
@@ -365,7 +365,7 @@ async function uploadToStorage(context: Partial<DocumentWorkflowContext>): Promi
   // TODO: Implement with your MinIO/S3 upload service
   return {
     s3Key: `documents/${context.documentId}/${context.originalName}`,
-    s3Bucket: `legal-documents` };
+    s3Bucket: 'legal-documents' };
 }
 
 async function storeProcessingResults(context: DocumentWorkflowContext): Promise<any> {
@@ -409,7 +409,7 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
  *
  * actor.send({
  *   type: 'OCR_COMPLETED',
- *   data: {, text: `Extracted text...` }
+ *   data: {, text: 'Extracted text...' }
  * });
  *
  * actor.send({
@@ -419,7 +419,7 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
  *
  * actor.send({
  *   type: 'SUMMARIZATION_COMPLETED',
- *   data: {, summary: `Contract summary...` }
+ *   data: {, summary: 'Contract summary...' }
  * });
  *
  * // Final state: completed

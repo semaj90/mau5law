@@ -419,10 +419,10 @@
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button.Root class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button.Root>
-        <Button.Root class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
-        </Button.Root>
+        </Button>
       </div>
     </footer>
   </div>
@@ -539,14 +539,14 @@
               </p>
             </div>
             <div>
-              <Button.Root
+              <Button
                 class="bits-btn"
                 variant="outline"
                 onclick={() => viewDetailedResults(results.analysisResults)}
                 disabled={analyzing}
               >
                 View Detailed Results
-              </Button.Root>
+              </Button>
             </div>
           </div>
           <div class="mt-4">

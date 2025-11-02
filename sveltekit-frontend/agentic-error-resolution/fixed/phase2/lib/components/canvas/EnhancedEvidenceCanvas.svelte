@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { notifications  } from '$lib/stores/unified';
   import {
     Circle,
@@ -364,7 +364,7 @@
     <div class="space-y-4">
       <!-- Tool Selection -->
       <div class="space-y-4">
-        <Button.Root
+        <Button
           class="bits-btn"
           variant={selectedTool === 'select' ? 'primary' : 'outline'}
           size="sm"
@@ -372,8 +372,8 @@
           disabled={readonly}
         >
           <Move />
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           variant={selectedTool === 'draw' ? 'primary' : 'outline'}
           size="sm"
@@ -381,8 +381,8 @@
           disabled={readonly}
         >
           ✏️
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           variant={selectedTool === 'text' ? 'primary' : 'outline'}
           size="sm"
@@ -390,21 +390,21 @@
           disabled={readonly}
         >
           <Type />
-        </Button.Root>
+        </Button>
       </div>
       <!-- Shapes -->
       {#if !readonly}
         <div class="space-y-4">
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('rectangle')}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('rectangle')}>
             <Square />
-          </Button.Root>
-          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('circle')}>
+          </Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('circle')}>
             <Circle />
-          </Button.Root>
+          </Button>
         {/if}
       <!-- History -->
       <div class="space-y-4">
-        <Button.Root
+        <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
@@ -412,8 +412,8 @@
           disabled={readonly || historyIndex <= 0}
         >
           <Undo />
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
@@ -421,35 +421,35 @@
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo />
-        </Button.Root>
+        </Button>
       </div>
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => zoomOut()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomOut()}>
           <ZoomOut />
-        </Button.Root>
+        </Button>
         <span>{Math.round(zoom * 100)}%</span>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => zoomIn()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomIn()}>
           <ZoomIn />
-        </Button.Root>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => resetZoom()}>Reset</Button.Root>
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => resetZoom()}>Reset</Button>
       </div>
     </div>
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => deleteSelected()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deleteSelected()}>
           <Trash2 />
-        </Button.Root>
-        <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => saveCanvas()}>
+        </Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => saveCanvas()}>
           <Save />
           Save
-        </Button.Root>
+        </Button>
       {/if}
-      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => exportCanvas()}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => exportCanvas()}>
         <Download />
         Export
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <!-- Canvas Container -->

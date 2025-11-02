@@ -1,7 +1,7 @@
 /**
  * CHR-ROM Pattern API Endpoint
  * Ultra-fast access to pre-computed UI patterns
- * Target latency: <5ms for cache, hits
+ * Target latency: <5ms for, cache, hits
  */
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
@@ -113,8 +113,7 @@ async function handleSinglePattern(data: any, startTime: number): Promise<any> {
     {
       headers: {
         'X-CHR-ROM-Source': result.source,
-        'X-CHR-ROM-Latency': '${result.latency.toFixed(2)}ms` }'`
-    }
+        'X-CHR-ROM-Latency': '${result.latency.toFixed(2)}ms' }'' }
   );
 }
 /**
@@ -167,8 +166,7 @@ async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
     {
       headers: {
         'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
-        'X-CHR-ROM-Hit-Rate': '${((cacheHits / batchResults.length) * 100).toFixed(1)}%` }'`
-    }
+        'X-CHR-ROM-Hit-Rate': '${((cacheHits / batchResults.length) * 100).toFixed(1)}%' }'` }'`
   );
 }
 /**

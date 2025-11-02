@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Test pgvector
         const vectorTest = await db.execute(sql`SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector as distance`);
         // Test document count
-        const docCount = await db.select({ count: sql<number>`COUNT(*)` }).from(schema.legalDocuments);
+        const docCount = await db.select({ count: sql<number>`COUNT(*)' }).from(schema.legalDocuments);'`
         results.results.database = {
           status: 'connected',
           version: (dbVersion[0] as { version: string }).version,
@@ -228,8 +228,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await runEndToEndTest(data);
       case 'cleanup':
         return await cleanupTestData();
-      default: return json({ success: false, error: 'Unknown action` }, { status: 400 });'`
-    }
+      default: return json({ success: false, error: 'Unknown action' }, { status: 400 });'' }
   } catch (error: any) {
     const msg = error instanceof Error ? error.message : 'Unknown request error';
     return json({ success: false, error: msg }, { status: 500 });

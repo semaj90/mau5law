@@ -85,7 +85,7 @@ async function seed(): Promise<any> {
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
       [
-        'Summary: `,'`
+        'Summary: ','`'`
         `  users: ${insertedUsers.length}`,
         '',
         'Login Credentials:',

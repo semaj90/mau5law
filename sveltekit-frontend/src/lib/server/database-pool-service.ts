@@ -100,7 +100,7 @@ class DatabasePoolService {
       ssl: this.config.ssl,
       timeout: this.config.connect_timeout * 1000,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development' } as any);
+      debug: process.env.NODE_ENV === 'development` } as any);'`
     this.pools.set(poolKey, pool);
     await this.recordConnectionStats(context, 'created');
     console.log(`🔗 Database pool created for context: ${context} (size: ${dynamicConfig.max ?? this.config.max})`);
@@ -194,8 +194,7 @@ class DatabasePoolService {
         console.log(`🗑️ Invalidated ${keys.length} cached queries`);
       }
     } catch (error) {
-      console.warn('Cache invalidation error:', (error as Error).message);'
-    }
+      console.warn('Cache invalidation error:', (error as Error).message);` }`'
   }
 
   /**
@@ -304,8 +303,7 @@ class DatabasePoolService {
         results[key] = true;
       } catch (error) {
         results[key] = false;
-        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);'`
-      }
+        console.error(`❌ Health check failed for pool ${key}: ', (error as Error).message);'' }'`
     }
     return results;
   }
@@ -325,7 +323,7 @@ class DatabasePoolService {
     };
     for (const [key /*, pool*/] of this.pools) {
       (stats.pools as Record<string, any>)[key] = {
-        status: 'active' };
+        status: 'active` };'`
     }
     return stats;
   }

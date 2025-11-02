@@ -52,8 +52,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err) {
     console.error('Matrix API error:', err);'
-    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  }
+    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` }'`
 };
 async function handleMatrixOperation(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
   const startTime = Date.now();
@@ -265,7 +264,7 @@ async function processCUDAMatrixOperation(params: {, operation: string;, matrix
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': `application/json' },'`
+      'Content-Type': `application/json` },'`'`
     body: JSON.stringify(payload)
   });
   if (!response.ok) {
@@ -304,7 +303,7 @@ async function processCUDABatchOperation(params: {, operation: string;, matrice
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': `application/json' },'`
+      'Content-Type': `application/json` },'`'`
     body: JSON.stringify(payload)
   });
   if (!response.ok) {
@@ -547,7 +546,7 @@ function generateMatrixClientHints(operation: string, rows: number, cols: number
       texture_format: totalElements > 1000 ? 'RGBA32F' : 'RGBA16F',
       framebuffer_optimization: true,
       vertex_array_streaming: operation === 'multiply',
-      fragment_precision: complexity > 75 ? 'highp' : `mediump' },'`
+      fragment_precision: complexity > 75 ? 'highp' : `mediump` },'`'`
     wasm_simd_hints: {
       vector_width: 128, // 4x float32
       loop_unrolling: Math.min(8, Math.max(2, Math.floor(cols / 16))),

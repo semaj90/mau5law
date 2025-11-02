@@ -2,7 +2,7 @@
   label="Email Address"
   required={ true } helpText="We'll never share your email"'
   errors={formErrors.email} >
-  {#snippet children({ inputId, fieldName, hasError, ariaDescribed })} <Input id={ inputId } name={ fieldName } type="email"
+  {#snippet children({ inputId, fieldName, hasError, ariaDescribed })} <Input, id={ inputId } name={ fieldName } type="email"
       bind:value={formData.email} aria-invalid={hasError ? 'true': undefined} aria-describedby={ ariaDescribed } /> {/snippet} </FormField> --> <style> .control-wrapper { position: relative; }
   .default-input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid rgb(209, 213, 219); border-radius: 0.375rem; font-size: 0.875rem; transition {} border-color 0.15s ease-in-out, {} box-shadow 0.15s ease-in-out; }
   .default-input:focus { outline: none; border-color: rgb(59, 130, 246); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }

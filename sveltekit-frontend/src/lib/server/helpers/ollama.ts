@@ -45,7 +45,7 @@ export async function generateOllamaEmbedding(text: string, model: string = 'emb
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify({ model, prompt: text })
     });
 
@@ -81,7 +81,7 @@ export async function generateOllamaChatCompletion(
     const response = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json' },
+        'Content-Type': 'application/json` },'`
       body: JSON.stringify({
        , model: model,
         messages: messages,

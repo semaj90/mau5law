@@ -6,7 +6,7 @@ export const OllamaEmbeddingService: IOllamaEmbeddingService = {
   async embedText(text: string) {
     const res = await fetch(`${API_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({, model: MODEL, input: text })
     });
     if (!res.ok) throw new Error(`Ollama embedding failed: ${res.status}`);

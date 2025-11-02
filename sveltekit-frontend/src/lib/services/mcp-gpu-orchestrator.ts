@@ -358,8 +358,7 @@ class MCPGPUOrchestrator {
     return `You are a TypeScript/SvelteKit expert. Fix this error using best practices:; Error: ${error}`
 Available documentation:
 ${context7Docs}
-Provide a complete, working fix with explanation.`;`
-  }
+Provide a complete, working fix with explanation.`;' }'`
 
   // --- Helpers: safe extraction and protocol normalization ---
   private normalizeProtocol(protocol?: GPUTaskConfig['protocol']): 'http' | 'grpc' | 'quic' {
@@ -533,7 +532,7 @@ Email: ${email}
 Role: ${role}
 Department: ${department}
 Jurisdiction: ${jurisdiction}
-Badge Number: ${badgeNumber ?? 'Not provided` }'`
+Badge Number: ${badgeNumber ?? 'Not provided' }'`'`
 Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recommendations": []}`;`
         try {
           const aiResponse = await productionServiceClient.callService(
@@ -607,7 +606,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       const response = await productionServiceClient.callService('/api/context7', {
         query: errorContext,
         libraries: ['svelte5', 'sveltekit', 'typescript', 'drizzle'],
-        format: 'typescript` });'`
+        format: 'typescript' });'`'`
       return response?.success ? (response.data?.content ?? '') : '';
     } catch {
       return '';
@@ -677,8 +676,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
         useGPU: true,
         useRAG: options.includeRAG !== false,
         model: 'gemma3-legal',
-        protocol: 'grpc` }'`
-    };
+        protocol: 'grpc' }'' };
     return this.dispatchGPUTask(task);
   }
 
@@ -704,8 +702,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       config: {
         useGPU: false,
         useContext7: true,
-        protocol: 'http` }'`
-    };
+        protocol: 'http' }'' };
     return this.dispatchGPUTask(task);
   }
 
@@ -735,8 +732,7 @@ Respond with JSON: {"verified": true, "confidence": 0.0, "concerns": [], "recomm
       config: {
         useGPU: true,
         useRAG: true,
-        protocol: 'quic` }'`
-    };
+        protocol: 'quic' }'' };
     return this.dispatchGPUTask(task);
   }
 

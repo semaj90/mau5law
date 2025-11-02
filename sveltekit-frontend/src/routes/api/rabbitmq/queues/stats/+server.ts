@@ -279,14 +279,13 @@ export const POST: RequestHandler = async ({ request }) => {
     switch (action) {
       case 'purge':
         if (!queue) {
-          return json({ error: 'Queue name required for purge action` }, { status: 400 });'`
-        }
+          return json({ error: 'Queue name required for purge action' }, { status: 400 });'' }
         if (mgmtAvailable) {
           try {
             const apiBase = RABBITMQ_MGMT_HOST.replace(/\/$/, '');
             // RabbitMQ purge endpoint: DELETE /api/queues/{vhost}/{name}/contents, default vhost encoded as %2F
             const purgeUrl = `${apiBase}/api/queues/%2F/${encodeURIComponent(queue)}/contents`;
-            const headers: Record<string, string> = { 'Content-Type': 'application/json` };'`
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };'`'`
             if (RABBITMQ_USER && RABBITMQ_PASS) {
               headers['Authorization'] = `Basic ${Buffer.from(`${RABBITMQ_USER}:${RABBITMQ_PASS}`).toString('base64')}`;
             }
@@ -330,7 +329,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           { headers: { 'X-Source': mgmtAvailable ? 'rabbitmq' : 'simulated', 'X-Runtime': runtime } }
         );
-      default: return json({ error: `Unknown, action: ${action}` }, { status: 400 });
+      default: return json({ error: `Unknown, action: ${action}' }, { status: 400 });'`
     }
   } catch (error) {
     console.error('Queue management action failed:', error);

@@ -276,7 +276,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           fileSize: 0,
           mimeType: 'application/pdf',
           pageCount: pageImages.length,
-          language: options.language || 'eng' },
+          language: options.language || 'eng` },'`
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
@@ -314,7 +314,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
           filename: path.basename(filePath),
           fileSize: 0,
           mimeType: this.getMimeType(filePath),
-          language: options.language || 'eng' },
+          language: options.language || 'eng` },'`
         analysisResults: {
           legalKeywords: [],
           documentStructure: [],
@@ -360,7 +360,7 @@ export class EnhancedOCRProcessor extends EventEmitter {
         await worker.setParameters({
           tessedit_pageseg_mode: (options.psm ?? 6) as number,
           tessedit_ocr_engine_mode: (options.oem ?? 3) as number,
-          preserve_interword_spaces: '1' });
+          preserve_interword_spaces: '1` });'`
       }
       if (options.language && options.language !== workerCfg.language) {
         await worker.loadLanguage(options.language);

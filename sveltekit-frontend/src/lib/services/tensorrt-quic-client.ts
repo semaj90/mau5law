@@ -80,7 +80,7 @@ class TensorRTQuicClient {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Connection': `keep-alive` }
+          'Connection': `keep-alive' }'`
       });
       const isHttp3 = response.headers.get('alt-svc')?.includes('h3');
       connectionStatus.update(status => ({
@@ -90,7 +90,7 @@ class TensorRTQuicClient {
         quicEnabled: isHttp3 || false,
         lastPing: Date.now()
       }));
-      console.log(`🚀 TensorRT client connected via ${isHttp3 ? 'HTTP/3 (QUIC)' : `HTTP/2` }`);
+      console.log(`🚀 TensorRT client connected via ${isHttp3 ? 'HTTP/3 (QUIC)' : `HTTP/2' }`);'`
     } catch (error) {
       console.error('Failed to initialize connection pool:', error);
       connectionStatus.update(status => ({
@@ -113,7 +113,7 @@ class TensorRTQuicClient {
           'X-Legal-Domain': request.legalDomain || 'general',
           'X-Session-ID': request.sessionId || this.generateSessionId(),
           'X-Request-ID': crypto.randomUUID(),
-          'Connection': 'keep-alive` },'`
+          'Connection': 'keep-alive' },'`'`
         body: JSON.stringify({
           prompt: request.prompt,
           max_tokens: request.maxTokens || 512,
@@ -126,7 +126,7 @@ class TensorRTQuicClient {
         // Performance optimizations
         keepalive: true,
         cache: 'no-store',
-        priority: `high` });
+        priority: `high' });'`
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -157,7 +157,7 @@ class TensorRTQuicClient {
           'Accept': 'text/plain',
           'X-Stream': 'true',
           'X-Legal-Domain': request.legalDomain || 'general',
-          'Cache-Control': `no-cache` },
+          'Cache-Control': `no-cache' },'`
         body: JSON.stringify({
           ...request,
           stream: true
@@ -272,7 +272,7 @@ class TensorRTQuicClient {
       const response = await this.optimizedFetch('/v1/metrics', {
         method: 'GET',
         headers: {
-          'Accept': `application/json` }
+          'Accept': `application/json' }'`
       });
       if (!response.ok) {
         throw new Error(`Failed to fetch metrics: ${response.status}`);
@@ -298,7 +298,7 @@ class TensorRTQuicClient {
       },
       // Performance hints
       cache: options.cache || 'no-store',
-      priority: `high` };
+      priority: `high' };'`
     return fetch(url, optimizedOptions);
   }
   /**
@@ -337,7 +337,7 @@ class TensorRTQuicClient {
         const start = performance.now();
         const response = await fetch(`${this.baseUrl}/health`, {
           method: 'GET',
-          cache: `no-store` });
+          cache: `no-store' });'`
         const ping = performance.now() - start;
         connectionStatus.update(status => ({
           ...status,

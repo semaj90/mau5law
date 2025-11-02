@@ -223,7 +223,7 @@ export const errorSimilarity = pgTable('error_similarity', {
   /** First error ID */
   errorId1: uuid('error_id_1')
     .notNull()
-    .references(() => viteErrors.id, { onDelete: 'cascade` }),'`
+    .references(() => viteErrors.id, { onDelete: `cascade` }),'`'`
   /** Second error ID */
   errorId2: uuid('error_id_2')
     .notNull()

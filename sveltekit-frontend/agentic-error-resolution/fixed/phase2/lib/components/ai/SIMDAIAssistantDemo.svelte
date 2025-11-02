@@ -2,13 +2,13 @@
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   import { aiAssistantMachine } from '$lib/machines/aiAssistantMachine.js';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
     initialContext?: any;
     enableSIMD?: boolean;
@@ -280,9 +280,9 @@
           </div>
         </div>
         <div class="flex items-end">
-          <Button.Root onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
+          <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
             {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
-          </Button.Root>
+          </Button>
         </div>
       </div>
       <!-- Query Input -->
@@ -296,22 +296,22 @@
             disabled={isProcessing}
             onkeydown={(e) => e.key === 'Enter' && submitQuery()}
           />
-          <Button.Root
+          <Button
             onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
             {isProcessing ? 'Processing...' : 'Submit'}
-          </Button.Root>
+          </Button>
         </div>
         <!-- Sample Queries -->
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
-            <Button.Root class="bits-btn text-xs" onclick={() => loadSampleQuery(index)} variant="ghost" size="sm" disabled={isProcessing}>
+            <Button class="bits-btn text-xs" onclick={() => loadSampleQuery(index)} variant="ghost" size="sm" disabled={isProcessing}>
               Sample {index + 1}
-            </Button.Root>
+            </Button>
           {/each}
-          <Button.Root class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">Clear All</Button.Root>
+          <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">Clear All</Button>
         </div>
       </div>
     </div>
@@ -463,7 +463,7 @@
     <div class="nes-container">
       <div class="yorha-panel-header flex justify-between items-center">
         <h3 class="nes-text is-primary">📝 System Logs</h3>
-        <Button.Root class="bits-btn" onclick={() => (processingLogs = [])} variant="ghost" size="sm">Clear Logs</Button.Root>
+        <Button class="bits-btn" onclick={() => (processingLogs = [])} variant="ghost" size="sm">Clear Logs</Button>
       </div>
       <div class="yorha-panel-content">
         <div class="bg-black text-green-400 p-4 rounded-lg font-mono text-xs max-h-48 overflow-y-auto">

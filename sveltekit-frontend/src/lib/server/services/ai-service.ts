@@ -316,7 +316,7 @@ Format your response as JSON with the following structure:
   private async logQuery(data: {
     userId: string;
     caseId?: string;
-    query: string;
+   , query: string;
    , response: string;
    , model: string;
    , confidence: number;
@@ -396,7 +396,7 @@ Format your response as JSON with the following structure:
       await db.insert(autoTags).values(tagData);
     } catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
-      console.error('Auto-tag generation failed: `, msg);'`
+      console.error('Auto-tag generation failed: ', msg);'`'`
       throw error;
     }
   }

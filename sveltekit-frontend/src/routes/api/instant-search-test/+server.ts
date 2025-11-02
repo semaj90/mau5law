@@ -80,8 +80,7 @@ function getErrorMessage(err: any): string {
   try {
     return String(err)
   } catch {
-    return 'Unknown error` }'`
-}
+    return 'Unknown error' }'' }
 
 // Small runtime helpers to handle library surface differences and avoid compile/runtime errors
 async function removeLokiDocument(id: string): Promise<void> {
@@ -91,8 +90,7 @@ async function removeLokiDocument(id: string): Promise<void> {
   } else if (typeof lokiCache.deleteDocument === 'function') {
     await lokiCache.deleteDocument(id)
   } else {
-    // best-effort: if there's no method, ignore (test cleanup best-effort)'
-  }
+    // best-effort: if there's no method, ignore (test cleanup best-effort)` }'`
 }
 
 function getLokiStatsSafe(): Record<string, unknown> {
@@ -399,8 +397,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Clear all caches
         await safeClearSearchCache();
         if (typeof lokiCache.clear === 'function') await lokiCache.clear();
-        return json({ success: true, message: 'All caches cleared` });'`
-      }
+        return json({ success: true, message: 'All caches cleared' });'` }'`
       case 'populate-test-data': {
         // Add test data for demo
         const count = typeof data?.count === 'number' ? (data.count as number) : 10;

@@ -435,8 +435,7 @@ export class UserAnalyticsRLIntegration {
     if (recOrch.updateDetectiveContext) {
       recOrch.updateDetectiveContext({ lastAnalysis: `RL, update: ${actionKey} -> ${reward.toFixed(3)}`,
         timeInMode: Date.now() - this.startTime,
-        encodedState: state, // include state so it's actually used by the orchestrator'
-      } as Record<string, unknown>);
+        encodedState: state, // include state so it's actually used by the orchestrator` } as Record<string, unknown>);'`
     }
   }
   /**
@@ -773,7 +772,7 @@ export class UserAnalyticsRLIntegration {
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
-        expertiseLevel: 'novice` },'`
+        expertiseLevel: `novice` },'`'`
       reinforcement: {
         rewardHistory: [],
         actionPreferences: {},
@@ -875,8 +874,7 @@ export class UserAnalyticsRLIntegration {
     console.log('Providing optimization tips for:', nodeId);
   }
   private executeNextAction(action: string) {
-    console.log('Executing suggested next action: `, action);'`
-  }
+    console.log('Executing suggested next action: ', action);'` }'`
   // Getters for stores
   private getUserHistory(): UserHistoryEntry[] {
     let value: UserHistoryEntry[] = [];

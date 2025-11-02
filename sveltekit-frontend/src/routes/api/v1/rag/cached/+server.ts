@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleCacheMetrics();
       case 'warmup':
         return await handleCacheWarmup();
-      default: return json({ error: `Invalid action., Supported: query, ingest, test, metrics, warmup` }, { status: 400 });
+      default: return json({ error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Cached RAG API error:', error);'
@@ -105,13 +105,13 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
     // If the runtime-resolved function isn't available, return a clear error response.'
     if (typeof enhancedRAGQueryWithCache !== 'function') {
       console.error(
-        'enhancedRAGQueryWithCache not available on $lib/services/enhanced-rag-semantic-analyzer. Available keys: `,'`
+        'enhancedRAGQueryWithCache not available on $lib/services/enhanced-rag-semantic-analyzer. Available keys: ','`'`
         Object.keys(EnhancedRagModule as Record<string, unknown>)
       );
       return json(
         {
           success: false,
-          error: `Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer` },
+          error: 'Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer' },
         { status: 500 }
       );
     }
@@ -123,7 +123,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       !('query' in (queryData as Record<string, unknown>)) ||
       (queryData as Record<string, unknown>).query == null
     ) {
-      return json({ error: `Query is required` }, { status: 400 });
+      return json({ error: 'Query is required' }, { status: 400 });
     }
 
     // Narrowed shape for incoming query payload
@@ -132,7 +132,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
     // Coerce/validate query string
     const queryStr = String(qd.query ?? '').trim();
     if (!queryStr) {
-      return json({ error: `Query must be a non-empty string` }, { status: 400 });
+      return json({ error: 'Query must be a non-empty string' }, { status: 400 });
     }
 
     console.log(`🔍 Processing cached RAG query: "${queryStr.substring(0, 50)}..."`);
@@ -186,7 +186,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('RAG query failed: `, error);'`
+    console.error('RAG query failed: ', error);'`'`
     return json(
       {
         success: false,
@@ -204,7 +204,7 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
 async function handleDocumentIngestion(documents: any, _options: any): Promise<any> {
   try {
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
-      return json({ error: `Documents array is required` }, { status: 400 });
+      return json({ error: 'Documents array is required' }, { status: 400 });
     }
     const docsArray = documents as unknown[];
     console.log(`📚 Ingesting ${docsArray.length} documents with caching...`);
@@ -239,7 +239,7 @@ async function handleDocumentIngestion(documents: any, _options: any): Promise<a
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {
-    console.error('Document ingestion failed: `, error);'`
+    console.error('Document ingestion failed: ', error);'`'`
     return json(
       {
         success: false,
@@ -262,7 +262,7 @@ async function handleCacheTest(_options: any): Promise<any> {
     let results;
     if (testType === 'smoke') {
       const success = await cachingTester.runSmokeTest();
-      results = { success, type: `smoke` };
+      results = { success, type: 'smoke' };
     } else {
       results = await cachingTester.runAllTests();
     }
@@ -296,7 +296,7 @@ async function handleCacheMetrics(): Promise<any> {
     const metrics = maybeMetrics instanceof Promise ? await maybeMetrics : maybeMetrics;
 
     // Provide a clear fallback if no metrics are exposed
-    const finalMetrics = metrics ?? { message: `metrics not available from enhancedCachingService` };
+    const finalMetrics = metrics ?? { message: 'metrics not available from enhancedCachingService' };
 
     return json({
       success: true,
@@ -369,7 +369,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const testType = url.searchParams.get('type') || 'smoke';
         return await handleCacheTest({ type: testType } as unknown);
       }
-      default: return json({ error: `Invalid action for GET request` }, { status: 400 });
+      default: return json({ error: 'Invalid action for GET request' }, { status: 400 });
     }
   } catch (error: any) {
     console.error('Cached RAG API GET error:', error);'

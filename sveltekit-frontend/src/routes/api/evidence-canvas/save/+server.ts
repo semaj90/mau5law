@@ -27,6 +27,5 @@ export async function POST({ request }): Promise<any> {
 
     return json({ success: true, canvas: savedCanvas }, { status: 201 });
   } catch (err) {
-    return json({ error: 'Unable to parse JSON or process request` }, { status: 400 });'`
-  }
+    return json({ error: 'Unable to parse JSON or process request' }, { status: 400 });'' }
 }

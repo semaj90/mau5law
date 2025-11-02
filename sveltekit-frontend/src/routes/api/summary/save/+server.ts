@@ -68,12 +68,12 @@ export const POST: RequestHandler = async event => {
     // Verify case exists and user has access
     const caseRecord = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (caseRecord.length === 0) {
-      return json({ error: 'Case not found' }, { status: 404 });
+      return json({ error: 'Case not found` }, { status: 404 });'`
     }
     // Check if effectiveUser has access to this case
     const userCase = caseRecord[0];
     if (userCase.userId !== effectiveUser.id && effectiveUser.role !== 'admin') {
-      return json({ error: `Access denied` }, { status: 403 });
+      return json({ error: 'Access denied' }, { status: 403 });
     }
     // Save AI analysis to database
     const analysisRecord = await db

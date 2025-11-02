@@ -1,6 +1,6 @@
 <script lang="ts">
   import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   interface Document {
     id: string;
     filename: string;
@@ -120,20 +120,20 @@
   </div>
   <!-- Card Footer / Actions -->
   <div class="flex gap-2 p-3 bg-gray-50 border-t border-gray-200">
-    <Button.Root
+    <Button
       onclick={handleView}
       class="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
     >
       <Eye class="w-4 h-4" />
       View
-    </Button.Root>
-    <Button.Root
+    </Button>
+    <Button
       onclick={handleDelete}
       disabled={deleting}
       class="flex items-center justify-center px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 transition-colors"
     >
       <Trash2 class="w-4 h-4" />
-    </Button.Root>
+    </Button>
   </div>
   <!-- Hover Overlay Badge -->
   <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">

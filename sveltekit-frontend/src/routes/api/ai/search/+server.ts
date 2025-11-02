@@ -110,8 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     );
   } catch (error: any) {
     console.error('Vector search POST API error:', error);'
-    return json({ error: 'Vector search failed` }, { status: 500 });'`
-  }
+    return json({ error: 'Vector search failed' }, { status: 500 });'' }
 };
 
 // GET handler: accepts query params
@@ -150,8 +149,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     );
   } catch (error: any) {
     console.error('Vector search GET API error:', error);'
-    return json({ error: 'Vector search failed` }, { status: 500 });'`
-  }
+    return json({ error: 'Vector search failed' }, { status: 500 });'' }
 };
 
 // use the: 'search' wrapper (redisOptimized exposes search)

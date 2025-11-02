@@ -373,7 +373,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                     cond: 'allServicesConnected'
                   },
                   {
-                    target: 'waiting_for_services` }'`
+                    target: `waiting_for_services` }'`'`
                 ]
               },
               waiting_for_services: {

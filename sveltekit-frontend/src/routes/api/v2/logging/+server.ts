@@ -70,7 +70,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}` },
+          'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}' },'`
         body: JSON.stringify(entry)
       });
     }

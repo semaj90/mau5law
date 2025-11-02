@@ -109,7 +109,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       body: JSON.stringify({
        , message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
-        model: `gemma3-legal:latest` })
+        model: `gemma3-legal:latest' })'`
     });
     let aiAnalysis: AIAnalysisResult | null = null; // Typed aiAnalysis
     if (aiResponse.ok) {

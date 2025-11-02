@@ -61,8 +61,7 @@ export class TransactionManager {
           try {
             await tx`SET statement_timeout = ${timeout}`;
           } catch {
-            // If the client doesn't support direct template execution here, ignore - caller should implement.'
-          }
+            // If the client doesn't support direct template execution here, ignore - caller should implement.` }'`
         }
         try {
           const result = await fn(context);
@@ -107,8 +106,7 @@ export class TransactionManager {
         try {
           await advisoryLocks.releaseLock(entityType, entityId, mode);
         } catch (err) {
-          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);'`
-        }
+          console.warn(`Warning: releaseLock failed for ${entityType}:${entityId}: ', err);'` }
       }
     }, options);
   }

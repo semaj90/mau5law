@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from '$lib/types'; // Import local UI components (paths updated during migration) import { ButtonBitsRaw } from '$lib/components/ui/button/Button.svelte'; import { CardBitsRaw } from '$lib/components/ui/Card.svelte'; import { InputBitsRaw } from '$lib/components/ui/input/InputBits.svelte'; import { SelectBitsRaw } from '$lib/components/ui/select/SelectBits.svelte'; import { TabsBitsRaw } from '$lib/components/ui/tabs/TabsBits.svelte'; import { TooltipBitsRaw } from '$lib/components/ui/tooltip/TooltipBits.svelte'; import { addToast } from '$lib/components/ui/toast/ToastProvider.svelte'; // Import addToast for notifications import { getBackendApiUrl } from '$lib/utils/api-endpoints'; // Import API endpoint utility // Form state using Svelte 5 runes let formData = $state({ caseTitle: '', caseNumber: '', clientName: '', practiceArea: '', jurisdiction: '', // Fixed typo courtLevel: '', priority: '', description: '', // Fixed typo assignedAttorney: '', estimatedHours: '', budget: '', deadline: ''
+import type { Case } from '$lib/types'; // Import local UI components (paths updated during migration) import  ButtonBitsRaw  from "$lib/components/ui/button/Button.svelte"; import  CardBitsRaw  from "$lib/components/ui/Card.svelte"; import  InputBitsRaw  from "$lib/components/ui/input/InputBits.svelte"; import  SelectBitsRaw  from "$lib/components/ui/select/SelectBits.svelte"; import  TabsBitsRaw  from "$lib/components/ui/tabs/TabsBits.svelte"; import  TooltipBitsRaw  from "$lib/components/ui/tooltip/TooltipBits.svelte"; import  addToast  from "$lib/components/ui/toast/ToastProvider.svelte"; // Import addToast for notifications import { getBackendApiUrl } from '$lib/utils/api-endpoints'; // Import API endpoint utility // Form state using Svelte 5 runes let formData = $state({ caseTitle: '', caseNumber: '', clientName: '', practiceArea: '', jurisdiction: '', // Fixed typo courtLevel: '', priority: '', description: '', // Fixed typo assignedAttorney: '', estimatedHours: '', budget: '', deadline: ''
   }); let formErrors = $state<Record<string, string>>({}); let isSubmitting = $state<boolean>(false); let activeTab = $state<string>('basic'); // Form validation function validateForm(): boolean { const errors: Record<string, string> = {}; if (!formData.caseTitle.trim()) { errors.caseTitle = 'Case title is required'; }
     if (!formData.clientName.trim()) { errors.clientName = 'Client name is required'; }
     if (!formData.practiceArea) { errors.practiceArea = 'Practice area must be selected'; }
@@ -15,40 +15,40 @@ import type { Case } from '$lib/types'; // Import local UI components (paths upd
   } // Sample data for select options const practiceAreas = [ { value: 'corporate', label: '🏢 Corporate Law' }, { value: 'litigation', label: '⚖️ Litigation' }, { value: 'intellectual-property', label: '🧠 Intellectual Property' }, { value: 'real-estate', label: '🏠 Real Estate' }, { value: 'employment', label: '👥 Employment Law' }, { value: 'criminal', label: '🚔 Criminal Law' }, { value: 'family', label: '👨‍👩‍👧‍👦 Family Law' }, { value: 'tax', label: '💰 Tax Law' }, ]; const jurisdictions = [ { value: 'federal', label: '🇺🇸 Federal' }, { value: 'state-ca', label: '🐻 California' }, { value: 'state-ny', label: '🗽 New York' }, { value: 'state-tx', label: '🤠 Texas' }, { value: 'state-fl', label: '🌴 Florida' }, { value: 'international', label: '🌍 International' }, ]; const courtLevels = [ { value: 'district', label: '🏛️ District Court' }, { value: 'appellate', label: '⚖️ Appellate Court' }, { value: 'supreme', label: '🏛️ Supreme Court' }, { value: 'administrative', label: '📋 Administrative' }, ]; const priorities = [ { value: 'low', label: '🟢 Low Priority' }, { value: 'medium', label: '🟡 Medium Priority' }, { value: 'high', label: '🟠 High Priority' }, { value: 'urgent', label: '🔴 Urgent' }, ]; const attorneys = [ { value: 'attorney-1', label: '👨‍💼 John Smith, Esq.' }, { value: 'attorney-2', label: '👩‍💼 Sarah Johnson, Esq.' }, { value: 'attorney-3', label: '👨‍💼 Michael Brown, Esq.' }, { value: 'attorney-4', label: '👩‍💼 Emily Davis, Esq.' }, ]; const tabItems = [ { value: 'basic', label: '📋 Basic Info' }, { value: 'details', label: '📝 Case Details' }, { value: 'assignment', label: '👥 Assignment' }, { value: 'review', label: '✅ Review' }, ]; // Computed validation status let isFormValid = $derived(() => { return ( formData.caseTitle.trim() && formData.clientName.trim() && formData.practiceArea && formData.jurisdiction && formData.deadline ); }); let formProgress = $derived(() => { const totalFields = 5; // caseTitle, clientName, practiceArea, jurisdiction, deadline let completedFields = 0; if (formData.caseTitle.trim()) completedFields++; if (formData.clientName.trim()) completedFields++; if (formData.practiceArea) completedFields++; if (formData.jurisdiction) completedFields++; if (formData.deadline) completedFields++; return Math.floor((completedFields / totalFields) * 100); }); // Correct constructor typing for Svelte components to satisfy TypeScript // Svelte 5 runes handle component typing differently; SvelteComponentTyped is deprecated. // Casting to: 'any' bypasses the need for explicit constructor types here. // import type { SvelteComponentTyped } from 'svelte'; // type ComponentConstructor< // Props = Record<string, any>, // Events = Record<string, any>, // Slots = Record<string, any>, // > = new (...args: any[]) => SvelteComponentTyped<Props, Events, Slots>; // Cast the raw imports to constructor types (keeps runtime import the same) const CardBits = CardBitsRaw as any; const InputBits = InputBitsRaw as any; const SelectBits = SelectBitsRaw as any; const ButtonBits = ButtonBitsRaw as any; const TooltipBits = TooltipBitsRaw as any; const TabsBits = TabsBitsRaw as any; </script> <CardBits, variant="interactive" padding="lg"> <div, class="legal-case-form"> <div, class="form-header"> <h2, class="form-title">⚖️ Create New Legal Case</h2> <div, class="form-progress"> <div, class="progress-bar"> <div, class="progress-fill" style="width: { formProgress }%"></div> </div> <span, class="progress-text">{ formProgress }% Complete</span> </div> </div> <div, class="form-tabs"> <TabsBits, tabs={ tabItems } bind:value={ activeTab } variant="underline" size="md"> {#if activeTab === 'basic'} <div, class="tab-content"> <div, class="form-grid"> <div, class="form-field"> <InputBits label="📋 Case Title"
                   placeholder="Enter case title..."
                   bind:value={formData.caseTitle} error={!!formErrors.caseTitle} errorMessage={formErrors.caseTitle} description="A descriptive title for the legal case"
-                  required /> </div> <div, class="form-field"> <InputBits label="🔢 Case Number"
+                  required /> </div> <div, class="form-field"> <InputBits label="🔢 Case, Number"
                   placeholder="CASE-2024-001"
                   bind:value={formData.caseNumber} description="Optional internal case tracking number"
-                /> </div> <div, class="form-field"> <InputBits label="👤 Client Name"
+                /> </div> <div, class="form-field"> <InputBits label="👤 Client, Name"
                   placeholder="Enter client name..."
                   bind:value={formData.clientName} error={!!formErrors.clientName} errorMessage={formErrors.clientName} description="Primary client or organization name"
-                  required /> </div> <div, class="form-field"> <SelectBits label="⚖️ Practice Area"
+                  required /> </div> <div, class="form-field"> <SelectBits label="⚖️ Practice, Area"
                   placeholder="Select practice area..."
                   options={ practiceAreas } bind:selected={formData.practiceArea} error={!!formErrors.practiceArea} errorMessage={formErrors.practiceArea} description="Primary area of law for this case"
-                /> </div> </div> </div> {:else if activeTab === 'details'} <div, class="tab-content"> <div, class="form-grid"> <div, class="form-field"> <SelectBits label="🏛️ Jurisdiction"
+                /> </div> </div> </div> {:else if activeTab === 'details'} <div, class="tab-content"> <div, class="form-grid"> <div, class="form-field"> <SelectBits, label="🏛️ Jurisdiction"
                   placeholder="Select jurisdiction..."
                   options={ jurisdictions } bind:selected={formData.jurisdiction} error={!!formErrors.jurisdiction} errorMessage={formErrors.jurisdiction} description="Legal jurisdiction for the case"
-                /> </div> <div, class="form-field"> <SelectBits label="⚖️ Court Level"
+                /> </div> <div, class="form-field"> <SelectBits label="⚖️ Court, Level"
                   placeholder="Select court level..."
                   options={ courtLevels } bind:selected={formData.courtLevel} description="Court level if applicable"
-                /> </div> <div, class="form-field"> <SelectBits label="🚨 Priority Level"
+                /> </div> <div, class="form-field"> <SelectBits label="🚨 Priority, Level"
                   placeholder="Select priority..."
                   options={ priorities } bind:selected={formData.priority} description="Case priority and urgency level"
-                /> </div> <div class="form-field, full-width"> <label, for="description" class="field-label">📄 Case Description</label> <textarea id="description"
+                /> </div> <div, class="form-field, full-width"> <label, for="description" class="field-label">📄 Case Description</label> <textarea, id="description"
                   bind:value={formData.description} placeholder="Provide a detailed description of the case..."
                   class="form-textarea"
                   rows="4"
-                ></textarea> <p, class="field-description">Comprehensive description of the legal matter</p> </div> </div> </div> {:else if activeTab === 'assignment'} <div, class="tab-content"> <div, class="form-grid"> <div, class="form-field"> <SelectBits label="👨‍💼 Assigned Attorney"
+                ></textarea> <p, class="field-description">Comprehensive description of the legal matter</p> </div> </div> </div> {:else if activeTab === 'assignment'} <div, class="tab-content"> <div, class="form-grid"> <div, class="form-field"> <SelectBits label="👨‍💼 Assigned, Attorney"
                   placeholder="Select attorney..."
                   options={ attorneys } bind:selected={formData.assignedAttorney} description="Primary attorney responsible for the case"
-                /> </div> <div, class="form-field"> <InputBits label="⏱️ Estimated Hours"
+                /> </div> <div, class="form-field"> <InputBits label="⏱️ Estimated, Hours"
                   placeholder="Enter estimated hours..."
                   bind:value={formData.estimatedHours} type="number"
                   description="Estimated total hours for case completion"
-                /> </div> <div, class="form-field"> <InputBits label="💰 Budget"
+                /> </div> <div, class="form-field"> <InputBits, label="💰 Budget"
                   placeholder="Enter budget amount..."
                   bind:value={formData.budget} type="number"
                   description="Total budget allocated for the case"
-                /> </div> <div, class="form-field"> <InputBits label="📅 Deadline"
+                /> </div> <div, class="form-field"> <InputBits, label="📅 Deadline"
                   bind:value={formData.deadline} type="date"
                   error={!!formErrors.deadline} errorMessage={formErrors.deadline} description="Final deadline for case completion"
                   required /> </div> </div> </div> {:else if activeTab === 'review'} <div, class="tab-content"> <div, class="review-section"> <h3, class="review-title">📋 Case Summary</h3> <div, class="review-grid"> <div, class="review-item"> <strong>Case Title:</strong> <span>{formData.caseTitle || 'Not specified'}</span> </div> <div, class="review-item"> <strong>Client:</strong> <span>{formData.clientName || 'Not specified'}</span> </div> <div, class="review-item"> <strong>Practice Area:</strong> <span >{practiceAreas.find(area => area.value === formData.practiceArea)?.label || 'Not selected'}</span >
@@ -56,7 +56,7 @@ import type { Case } from '$lib/types'; // Import local UI components (paths upd
             onclick={() => { if (confirm('Are you sure you want to clear all form data?')) { formData = { caseTitle: '', caseNumber: '', clientName: '', practiceArea: '', jurisdiction: '', // Fixed typo courtLevel: '', priority: '', description: '', // Fixed typo assignedAttorney: '', estimatedHours: '', budget: '', deadline: ''
                 }; formErrors = {}; activeTab = 'basic'; // Reset to basic tab }
             }} >
-            🗑️ Clear Form </ButtonBits> </TooltipBits> <TooltipBits content={isFormValid ? 'Submit the legal case': 'Complete required fields, first'}> <ButtonBits variant="primary"
+            🗑️ Clear Form </ButtonBits> </TooltipBits> <TooltipBits content={isFormValid ? 'Submit the legal case': 'Complete required, fields, first'}> <ButtonBits, variant="primary"
             loading={ isSubmitting } disabled={!isFormValid || isSubmitting} onclick={ handleSubmit } >
             {isSubmitting ? '⏳ Creating Case...': '⚖️ Create Case'} </ButtonBits> </TooltipBits> </div> </div> </div> </CardBits> <style> .legal-case-form { max-width: 800px; margin: 0 auto; }
   .form-header { display: flex; justify-content: space-between; /* Fixed typo */ align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }

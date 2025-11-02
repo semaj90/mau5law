@@ -193,7 +193,7 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: data.text?.length || 0,
-        device: 'cuda' }
+        device: 'cuda` }'`
     };
   }
 
@@ -222,8 +222,7 @@ class UnifiedOCRService {
         filename: file.name,
         fileType: file.type,
         textLength: result.text.length,
-        device: `cpu' }'`
-    };
+        device: 'cpu' }'` };'`
   }
 
   /**

@@ -206,7 +206,7 @@ if (!caseId) {
   </div>
 {:else if caseData}
   <div, class="evidence-organization-page">
-    <!-- Page header with case info and, actions -->
+    <!-- Page header with case info, and, actions -->
     <header, class="page-header">
       <div, class="header-content">
         <div, class="case-info">
@@ -214,7 +214,7 @@ if (!caseId) {
           <div, class="case-details">
             <span, class="case-title">{caseData.title}</span>
             <span, class="case-number">Case #{caseData.case_number}</span>
-            <span class="case-status, status-{caseData.status}">{caseData.status}</span>
+            <span, class="case-status, status-{caseData.status}">{caseData.status}</span>
           </div>
         </div>
         <div, class="page-actions">
@@ -251,7 +251,7 @@ if (!caseId) {
         </div>
       {/if}
     </header>
-    <!-- Main evidence organizer, component -->
+    <!-- Main evidence, organizer, component -->
     <main, class="organizer-main">
       <CaseEvidenceOrganizer
         {caseId}
@@ -263,9 +263,9 @@ if (!caseId) {
         onorganizationChanged={handleOrganizationChanged}
       />
     </main>
-    <!-- Sidebar with organization history and selected, evidence -->
+    <!-- Sidebar with organization history and, selected, evidence -->
     <aside, class="sidebar">
-      <!-- Selected evidence, panel -->
+      <!-- Selected, evidence, panel -->
       {#if selectedEvidence.length > 0}
         <div, class="sidebar-panel">
           <h3>Selected Evidence ({selectedEvidence.length})</h3>
@@ -296,7 +296,7 @@ if (!caseId) {
           </div>
         </div>
       {/if}
-      <!-- Organization history, panel -->
+      <!-- Organization, history, panel -->
       {#if organizationHistory.length > 0}
         <div, class="sidebar-panel">
           <h3>Organization History</h3>
@@ -312,13 +312,13 @@ if (!caseId) {
                     {attempt.evidenceCount} items
                   </span>
                 </div>
-                <button type="button" class="restore-btn" title="Restore this, organization"> ↺ </button>
+                <button type="button" class="restore-btn" title="Restore, this, organization"> ↺ </button>
               </div>
             {/each}
           </div>
         </div>
       {/if}
-      <!-- Quick stats, panel -->
+      <!-- Quick, stats, panel -->
       <div, class="sidebar-panel">
         <h3>Quick Stats</h3>
         <div, class="quick-stats">

@@ -5,19 +5,19 @@
   import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   // Enhanced-Bits orchestrated components
-  import {
+  import 
     Button,
     Card,
     Input,
     Badge
-  } from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import 
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
     getConfidenceClass,
     formatAnalysisDate
-  } from '$lib/components/ui/orchestrated.svelte';
+   from "$lib/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
   import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
@@ -338,7 +338,7 @@
                 Stop
               </button>
             {:else}
-              <Button.Root
+              <Button
                 variant="ghost"
                 onclick={processSingleDocument}
                 disabled={!inputText.trim()}
@@ -346,7 +346,7 @@
               >
 <Zap class="w-4 h-4" />
                 Single Process
-              </Button.Root>
+              </Button>
             {/if}
           </div>
           <!-- Processing Progress -->

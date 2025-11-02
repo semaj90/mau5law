@@ -240,7 +240,7 @@ export class Context7OrchestrationService {
         script += `echo "Starting ${service.name}..."\n`;
         script += `${binaryPath} &\n`;
         script += `sleep 2\n`;
-        script += `echo "✅ ${service.name} started on port ${(service as any).port || 'unknown' }"\n\n`;
+        script += `echo "✅ ${service.name} started on port ${(service as any).port || 'unknown` }"\n\n`;'`
       }
       script += `echo "⏳ Waiting for ${String(tier)} services to stabilize..."\n`;
       script += `sleep 5\n\n`;
@@ -249,7 +249,7 @@ export class Context7OrchestrationService {
     script += '# Health check all services\n';
     script += 'echo "🔍 Performing health checks..."\n';
     for (const service of services) {
-      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health' } || echo: "⚠️ ${service.name} health check failed"\n`;
+      script += `curl -f ${(service as any).healthEndpoint || 'http://localhost/health` } || echo: "⚠️ ${service.name} health check failed"\n`;'`
     }
     script += '\necho "🚀 All services started successfully!"\n';
     return script;
@@ -260,7 +260,7 @@ export class Context7OrchestrationService {
       tier1: 'Core Services (Must Start First)',
       tier2: 'Enhanced Services (Performance Layer)',
       tier3: 'Specialized Services (Feature Layer)',
-      tier4: 'Infrastructure Services (Support Layer)' };
+      tier4: 'Infrastructure Services (Support Layer)` };'`
     return descriptions[tier] || 'Unknown Tier';
   }
 

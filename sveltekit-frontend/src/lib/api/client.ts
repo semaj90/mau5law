@@ -118,7 +118,7 @@ class EnhancedApiClient {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: `HTTP ${response.status}: ${response.statusText}`,
-            code: 'HTTP_ERROR' }));
+            code: 'HTTP_ERROR` }));'`
           throw new ApiClientError(
             errorData.message || `HTTP ${response.status}`,
             response.status,

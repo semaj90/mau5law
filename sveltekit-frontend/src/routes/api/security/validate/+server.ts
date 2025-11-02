@@ -28,11 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
       progress: {
         stage: 'initializing',
         percentage: 0,
-        message: `Starting security validation process...` },
+        message: `Starting security validation process...' },'`
       riskLevel: 'low',
       warnings: [],
       recommendations: [],
-      wsEndpoint: `ws://localhost:5173/api/security/validate/ws/${validationId}` };
+      wsEndpoint: `ws://localhost:5173/api/security/validate/ws/${validationId}' };'`
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -68,12 +68,12 @@ export const POST: RequestHandler = async ({ request }) => {
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
-      message: 'Running AI-powered security analysis...` };'`
+      message: 'Running AI-powered security analysis...' };'`'`
     // Check against Enhanced RAG service for threat intelligence
     try {
       const ragResponse = await fetch('http://localhost:8094/api/security/check', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
           email,
           domain: email.split('@')[1],
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
     response.progress = {
       stage: 'completed',
       percentage: 100,
-      message: `Security validation completed successfully` };
+      message: `Security validation completed successfully' };'`
     // Add context-specific recommendations
     if (validationType === 'registration') {
       response.recommendations.push('Enable two-factor authentication after registration');
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     const errMessage =
       error instanceof Error
-        ? `${error.message}${error.stack ? `\n${error.stack}` : `` }`
+        ? `${error.message}${error.stack ? `\n${error.stack}` : `' }`'`
         : String(error ?? 'Unknown error');
     console.error('Security validation error:', errMessage);'
     return json(
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         progress: {
          , stage: 'error',
           percentage: 0,
-          message: `Security validation failed` },
+          message: `Security validation failed' },'`
         riskLevel: 'critical',
         warnings: ['Validation service temporarily unavailable'],
         recommendations: ['Please try again later']

@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           error: 'Failed to queue document processing job.',
           details: 'RabbitMQ unavailable or connection error',
-          retry: 'Please try again in a few seconds' },
+          retry: 'Please try again in a few seconds` },'`
         { status: 500 }
       );
     }
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async () => {
       {
         healthy: false,
         error: error instanceof Error ? error.message : String(error),
-        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672' },
+        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672` },'`
       { status: 503 } // 503 Service Unavailable
     );
   }

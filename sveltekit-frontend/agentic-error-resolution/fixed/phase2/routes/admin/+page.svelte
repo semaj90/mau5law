@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
+  import  Badge  from "$lib/components/ui/badge.svelte";
   // Icons
   import {
     Users,
@@ -173,10 +173,10 @@
         <Clock class="w-3 h-3" />
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
-      <Button.Root variant="ghost" onclick={refreshData} disabled={isLoading} class="gap-2">
+      <Button variant="ghost" onclick={refreshData} disabled={isLoading} class="gap-2">
         <RefreshCw class={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
         Refresh
-      </Button.Root>
+      </Button>
     </div>
   </div>
   <!-- Quick Actions -->

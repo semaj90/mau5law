@@ -75,7 +75,7 @@ export const userWorkflowMachine = createMachine({
   },
   initial: 'idle',
   context: {
-    caseId: undefined,
+   , caseId: undefined,
     userId: '',
     currentStep: 'idle',
     progress: 0,
@@ -148,7 +148,7 @@ export const userWorkflowMachine = createMachine({
         workflowActive: {
           initial: 'executingStep',
           entry: assign({
-            currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown` }),'`
+            currentStep: ({ context }) => context.workflow.steps[context.workflow.currentStepIndex] || 'unknown' }),'`'`
           states: { executingStep: {, on: { COMPLETE_STEP: {, target: 'stepCompleted',
                   actions: assign({
                     data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
@@ -176,7 +176,7 @@ export const userWorkflowMachine = createMachine({
                       completedAt: new Date()
                     }),
                     progress: 100,
-                    currentStep: `workflow_completed` })
+                    currentStep: `workflow_completed' })'`
                 },
                 {
                   target: 'executingStep',
@@ -237,7 +237,7 @@ export const userWorkflowMachine = createMachine({
                   ...context.workflow,
                   status: 'cancelled' as const
                 }),
-                currentStep: `workflow_cancelled` })
+                currentStep: `workflow_cancelled' })'`
             }
           }
         },

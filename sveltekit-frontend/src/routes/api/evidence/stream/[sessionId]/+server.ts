@@ -149,8 +149,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 			if (!type || !payload) {
 				return new Response(JSON.stringify({ error: 'Type and payload required for publish action', code: 400 }), {
 					status: 400,
-					headers: { 'Content-Type': 'application/json` }'`
-				});
+					headers: { 'Content-Type': 'application/json' }'` });'`
 			}
 			const message: StoredMessage = {
 				id: nowId(),

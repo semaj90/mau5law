@@ -333,7 +333,7 @@ export class OptimizedQdrantService {
           ...(filter?.must || []),
           {
             key: 'som_cluster',
-            match: { value: `${clusterResult.x},${clusterResult.y}` }
+            match: { value: `${clusterResult.x},${clusterResult.y}' }'`
           },
         ]
       }

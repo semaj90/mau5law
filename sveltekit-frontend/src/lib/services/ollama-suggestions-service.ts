@@ -171,7 +171,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -205,7 +205,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -338,7 +338,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
           model: this.model,
           reportType,
           index: i + 1,
-          parseMethod: `text_fallback` }
+          parseMethod: `text_fallback' }'`
       });
     }
     return suggestions;
@@ -386,7 +386,7 @@ Provide practical, implementable suggestions that would genuinely improve the le
    */
   public async getAvailableModels(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/models`, { method: `GET` });
+      const response = await fetch(`${this.baseUrl}/api/models`, { method: `GET' });'`
       if (!response.ok) throw new Error('Failed to fetch models');
       const data: any = await response.json();
       if (!data || typeof data !== 'object') return [];

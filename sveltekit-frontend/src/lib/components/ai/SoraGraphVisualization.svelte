@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
@@ -352,9 +352,9 @@ https://svelte.dev/e/js_parse_error -->
         onclick={e => handleCanvasClick(e, false)}
       ></canvas>
       <div, class="canvas-controls">
-        <button class="control-btn" title="Zoom, In">🔍+</button>
-        <button class="control-btn" title="Zoom, Out">🔍-</button>
-        <button class="control-btn" title="Reset, View">⟲</button>
+        <button, class="control-btn" title="Zoom, In">🔍+</button>
+        <button, class="control-btn" title="Zoom, Out">🔍-</button>
+        <button, class="control-btn" title="Reset, View">⟲</button>
         <button, class="control-btn" title="Export">💾</button>
       </div>
     {/if}
@@ -370,8 +370,8 @@ https://svelte.dev/e/js_parse_error -->
       <div, class="canvas-controls">
         <button, class="control-btn" title="Rotate">🔄</button>
         <button, class="control-btn" title="Pan">👆</button>
-        <button class="control-btn" title="LOD, Toggle">📊</button>
-        <button class="control-btn" title="Mesh, Export">📦</button>
+        <button, class="control-btn" title="LOD, Toggle">📊</button>
+        <button, class="control-btn" title="Mesh, Export">📦</button>
       </div>
     {/if}
   {#if mode === 'both' && !$loading}

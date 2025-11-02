@@ -168,13 +168,13 @@ export async function submitForm<T>(
 /**
  * Batch data loader for complex Bits UI components
  */
-export async function loadBatchData<T extends, Record<string, unknown>>(
+export async function loadBatchData<T, extends, Record<string, unknown>>(
   endpoints: Record<keyof, T, string>
 ): Promise<Record<keyof, T, unknown>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
       // treat fetched payload as unknown and preserve success/data shape
-      const response = await fetchSSRData<unknown>(endpoint, { method: 'GET` });'`
+      const response = await fetchSSRData<unknown>(endpoint, { method: 'GET' });'`'`
       return [key, response && response.success ? response.data : null] as const;
     } catch {
       return [key, null] as const;

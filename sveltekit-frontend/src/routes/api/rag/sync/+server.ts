@@ -73,6 +73,5 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ id, embedding })
   } catch (err) {
     console.error('rag sync handler error', err)
-    return json({ error: 'server_error` }, { status: 500 })'`
-  }
+    return json({ error: 'server_error' }, { status: 500 })'` }'`
 }

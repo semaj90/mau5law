@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
           queries_tested: searchQueries.length,
           results_summary: searchResults,
           redis_caching: 'enabled',
-          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A' },
+          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A` },'`
         // System performance
         system_performance: systemStats,
         // Component status
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
           pgvector_indexing: 'operational',
           redis_caching: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: `operational' },'`
+          cognitive_cache: `operational` },'`'`
         // Hardware utilization
         hardware_stats: {
           rtx_3060_ti_utilization: systemStats.gpu_utilization,
@@ -161,8 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
         healthCheck.services = {
           ...healthCheck.services,
           documents_indexed: stats.total_documents,
-          gpu_utilization: `${Math.round(stats.gpu_utilization * 100)}%' };'`
-      } catch (error) {
+          gpu_utilization: '${Math.round(stats.gpu_utilization * 100)}%' };'` } catch (error) {'`
         healthCheck.overall_status = 'degraded';
         healthCheck.services.unified_processor = 'degraded';
       }
@@ -260,7 +259,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Invalid request',
-        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search' },
+        expected_fields: 'Either (content, title, documentType) for processing or (searchQuery) for search` },'`
       { status: 400 }
     );
   } catch (error) {
@@ -269,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Custom test failed',
-        message: error instanceof Error ? error.message : `Unknown error' },'`
+        message: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

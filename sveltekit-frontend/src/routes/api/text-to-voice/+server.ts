@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       try {
         const resp = await fetch(`${TTS_SERVICE_URL}/synthesize`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({ text }),
           signal: controller.signal
         }).catch(() => null);

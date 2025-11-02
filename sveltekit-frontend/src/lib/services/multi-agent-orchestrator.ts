@@ -39,8 +39,7 @@ export const multiAgentOrchestrator = {
     }
   },
   async createWorkflow(data: any) {
-    return { success: true, workflowId: `workflow_${Date.now()}' }'`
-  },
+    return { success: true, workflowId: 'workflow_${Date.now()}' }'` },'`
   async executeWorkflow(workflowId: string, data?: any) {
     return { success: true, results: { [key,: strin,g]: any } }
   },

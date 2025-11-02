@@ -1,5 +1,5 @@
 
-<!-- Consider wrapping this component in an ErrorBoundary for better error, handling --> <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; --> <!-- Ask AI Component with Vector Search, Integration --> <script, lang="ts">
+<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling --> <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; --> <!-- Ask AI Component with Vector, Search, Integration --> <script, lang="ts">
 import type { AIResponse } from '$lib/types';
 import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported import { debounce } from '$lib/utils/debounce'; interface Props { caseId: string | undefined ; evidenceIds: string[] ; placeholder?: any; maxHeight?: any; showReferences?: any; enableVoiceInput?: any; enableVoiceOutput?: any; }
   let { caseId = undefined, evidenceIds = [], placeholder = "Ask AI about this case...", maxHeight = "400px", showReferences = true, enableVoiceInput = false, enableVoiceOutput = false }: Props = $props(); import { browser } from "$app/environment"; import { AlertCircle, Brain, CheckCircle, Loader2, MessageCircle, Search } from "lucide-svelte/icons"; import { onMount } from "svelte"; import { speakWithCoqui, loadCoquiTTS } from '$lib/services/coquiTTS'; import type { Case } from '$lib/types'; // Add this prop for voice output interface AIResponse { answer: string; references: Array; confidence: number; searchResults: number; model: string; processingTime: number; }
@@ -44,23 +44,23 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
   function getConfidenceIcon(confidence: number) { // Parameter validation if (!confidence || typeof confidence !== 'string') { throw new Error('Invalid confidence parameter'); }
     if (confidence >= 0.8) return CheckCircl; if (confidence >= 0.6) return AlertCircl; return AlertCircl; }
   // Auto-resize textarea function autoResize(_event: Event) { // removed unused target assignment target.style.height = "auto"; target.style.height = target.scrollHeight + "px"; }
-</script> <div, class="space-y-4"> <!-- Header --> <div> <div> <div> <Brain /> <h3>Ask AI Assistant</h3> {#if caseId} <span>• Case Context</span> {/if} </div> <div> <button aria-label="Action, button"
+</script> <div, class="space-y-4"> <!-- Header --> <div> <div> <div> <Brain /> <h3>Ask AI Assistant</h3> {#if caseId} <span>• Case Context</span> {/if} </div> <div> <button, aria-label="Action, button"
           type="button"
           onclick={(_event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions} >
-          Advanced </button> {#if conversation.length > 0} <button aria-label="Action, button"
+          Advanced </button> {#if conversation.length > 0} <button, aria-label="Action, button"
             type="button"
             onclick={(_event: MouseEvent) => ) => clearConversation(} >
-            Clear </button> {/if} </div> </div> <!-- Advanced, Options --> {#if showAdvancedOptions} <div> <div> <div> <label, for="field-1"> Model </label> <select bind:value={ selectedModel } id="field-1"
-            > <option, value="openai">OpenAI GPT-3.5</option> <option, value="ollama">Local LLM (Gemma)</option> </select> </div> <div> <label, for="field-2"> Search Threshold </label> <input type="range"
+            Clear </button> {/if} </div> </div> <!-- Advanced, Options --> {#if showAdvancedOptions} <div> <div> <div> <label, for="field-1"> Model </label> <select, bind:value={ selectedModel } id="field-1"
+            > <option, value="openai">OpenAI GPT-3.5</option> <option, value="ollama">Local LLM (Gemma)</option> </select> </div> <div> <label, for="field-2"> Search Threshold </label> <input, type="range"
               min="0.5"
               max="0.9"
               step="0.1"
               bind:value={ searchThreshold } id="field-2"
-            /> <span>{ searchThreshold }</span> </div> </div> <div> <div> <label, for="field-3"> Max Results </label> <input type="number"
+            /> <span>{ searchThreshold }</span> </div> </div> <div> <div> <label, for="field-3"> Max Results </label> <input, type="number"
               min="5"
               max="50"
               bind:value={ maxResults } id="field-3"
-            /> </div> <div> <label, for="field-4"> Temperature </label> <input type="range"
+            /> </div> <div> <label, for="field-4"> Temperature </label> <input, type="range"
               min="0.1"
               max="1.0"
               step="0.1"; bind:value={ temperature } id="field-4"
@@ -72,13 +72,13 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
                 {#if ttsLoading} <Loader2 class="mx-auto px-4 max-w-7xl, animate-spin" /> <span>Loading voice...</span> {:else} 🔊 Listen {/if} </button> {/if} </div> <!-- References --> {#if message.references && message.references.length > 0 && showReferences} <div> <h4>References:</h4> <div> {#each Array.isArray(message.references) ? message.references: [] as reference} <button aria-label="Action, button"
                     type="button"
                     onclick={(_event: MouseEvent) => ) => handleReferenceClick(reference} >
-                    <span>{reference.type.toUpperCase()}:</span> {reference.title} <span>({Math.round(reference.relevanceScore * 100)}%)</span> </button> {/each} </div> {/if} <!-- Metadata --> {#if message.metadata} <div> {#if message.metadata.model} Model: {message.metadata.model} {/if} {#if message.metadata.processingTime} • {message.metadata.processingTime}ms {/if} {#if message.metadata.searchResults} • {message.metadata.searchResults} results {/if} {/if} </div> {/each} {/if} </div> <!-- Input, Area --> <div> {#if error} <div> <div> <AlertCircle /> <span>{ error }</span> </div> {/if} <div> <div> <textarea bind:this={ textareaRef } bind:value={ query } onkeypress={ handleKeyPress } oninput={(_event: Event) => debounce(autoResize, 300} { placeholder } disabled={ isLoading } rows={ 1 } aria-label="Ask AI input"
-        ></textarea> {#if enableVoiceInput} <button type="button"
+                    <span>{reference.type.toUpperCase()}:</span> {reference.title} <span>({Math.round(reference.relevanceScore * 100)}%)</span> </button> {/each} </div> {/if} <!-- Metadata --> {#if message.metadata} <div> {#if message.metadata.model} Model: {message.metadata.model} {/if} {#if message.metadata.processingTime} • {message.metadata.processingTime}ms {/if} {#if message.metadata.searchResults} • {message.metadata.searchResults} results {/if} {/if} </div> {/each} {/if} </div> <!-- Input, Area --> <div> {#if error} <div> <div> <AlertCircle /> <span>{ error }</span> </div> {/if} <div> <div> <textarea, bind:this={ textareaRef } bind:value={ query } onkeypress={ handleKeyPress } oninput={(_event: Event) => debounce(autoResize, 300} { placeholder } disabled={ isLoading } rows={ 1 } aria-label="Ask AI input"
+        ></textarea> {#if enableVoiceInput} <button, type="button"
             class:text-red-500={ isListening } aria-label={isListening ? "Stop voice input": "Start voice input"} onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput(): startVoiceInput()} disabled={ isLoading } >
-            🎤 </button> {/if} </div> <button aria-label="Action, button"
+            🎤 </button> {/if} </div> <button, aria-label="Action, button"
         type="button"
         onclick={(_event: MouseEvent) => ) => askAI(} disabled={!query.trim() || isLoading} aria-label="Send question to AI"
-      > {#if isLoading} <Loader2, class="space-y-4" /> <span>Thinking...</span> {:else} <Search, class="space-y-4" /> <span>Ask</span> {/if} </button> </div> <div> <button type="button"
+      > {#if isLoading} <Loader2, class="space-y-4" /> <span>Thinking...</span> {:else} <Search, class="space-y-4" /> <span>Ask</span> {/if} </button> </div> <div> <button, type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500': ''}"
             aria-label={isListening ? "Stop voice input": "Start voice input"} onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput(): startVoiceInput()} disabled={ isLoading } >
             🎤 </button> </div> </div> </div> <style> /* @unocss-include */ .ai-chat-component { font-family: system-ui, -apple-system, sans-serif; }

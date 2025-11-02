@@ -362,7 +362,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
           recommendations.push(`Prefetch data pattern: "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
           break;
         case 'evict':
-          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru' } strategy`);
+          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru` } strategy`);'`
           break;
         case 'compress':
           recommendations.push(`Apply compression level ${action.parameters.compressionLevel ?? 1} to save GPU memory`);
@@ -568,7 +568,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
         new Float32Array(32),
         new Float32Array(outputSize)
       ],
-      activationFunction: `relu' };'`
+      activationFunction: `relu` };'`'`
     // shallow copy for target network
     this.targetNetwork = JSON.parse(JSON.stringify(this.neuralNetwork)) as NeuralNetwork;
     console.log('🧠 Neural network initialized with architecture:', this.neuralNetwork.layers);
@@ -652,7 +652,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     const actions: CacheAction[] = [];
     // Generate context-aware actions based on state
     if (state.cacheUtilization > 0.9) {
-      actions.push({ type: 'evict', target: 'lru_candidates', priority: 0.9, parameters: {, evictionStrategy: 'lru' } });
+      actions.push({ type: 'evict', target: 'lru_candidates', priority: 0.9, parameters: {, evictionStrategy: 'lru` } });'`
       actions.push({ type: 'compress', target: 'large_entries', priority: 0.8, parameters: {, compressionLevel: 7 } });
     }
     if (state.hitRatio < 0.7) {
@@ -661,8 +661,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
     }
     if (state.gpuMemoryUsage > 0.8) {
       actions.push({ type: 'compress', target: 'memory_intensive', priority: 0.9, parameters: {, compressionLevel: 8 } });
-      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: {, evictionStrategy: `lfu' } });'`
-    }
+      actions.push({ type: 'evict', target: 'memory_heavy', priority: 0.8, parameters: {, evictionStrategy: 'lfu' } });'` }'`
     return actions;
   }
   private scoreAction(stateVector: Float32Array, action: CacheAction): number {

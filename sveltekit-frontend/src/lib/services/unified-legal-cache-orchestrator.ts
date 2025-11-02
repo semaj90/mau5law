@@ -391,8 +391,7 @@ export class UnifiedLegalCacheOrchestrator {
         });
         console.log(`✅ Preloaded embeddings for document ${docId}`);
       } catch (error) {
-        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);'`
-      }
+        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);'` }
     }
   }
 
@@ -535,8 +534,7 @@ export class UnifiedLegalCacheOrchestrator {
         return new Float32Array(arr.map(Number));
       }
     } catch (err) {
-      console.warn('Ollama embedding call error:', err);'
-    }
+      console.warn('Ollama embedding call error:', err);` }`'
 
     // Deterministic fallback embedding (safe non-zero values based on hash)
     const dims = this.config.embedding.dimensions;

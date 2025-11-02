@@ -130,6 +130,5 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   } catch (error) {
     console.error('Load case memory error: ', error);'
-    return json({ error: 'Failed to load case memory` }, { status: 500 });'`
-  }
+    return json({ error: 'Failed to load case memory' }, { status: 500 });'` }'`
 };

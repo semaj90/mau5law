@@ -227,7 +227,7 @@ export class LegalAIApiClient {
    */
   async deleteCase(caseId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/cases/${caseId}`, {
-      method: 'DELETE' });
+      method: 'DELETE` });'`
   }
   // ==== EVIDENCE API ====
   /**
@@ -282,7 +282,7 @@ export class LegalAIApiClient {
    */
   async deleteEvidence(evidenceId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/evidence/${evidenceId}`, {
-      method: 'DELETE' });
+      method: 'DELETE` });'`
   }
   // ==== REPORTS API ====
   /**
@@ -337,7 +337,7 @@ export class LegalAIApiClient {
    */
   async deleteReport(reportId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/reports/${reportId}`, {
-      method: 'DELETE' });
+      method: 'DELETE` });'`
   }
   // ==== PERSONS OF INTEREST API ====
   /**
@@ -395,7 +395,7 @@ export class LegalAIApiClient {
    */
   async deletePersonOfInterest(personId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/persons-of-interest/${personId}`, {
-      method: 'DELETE' });
+      method: 'DELETE` });'`
   }
 
   // ==== AI & VECTOR SERVICES ====
@@ -462,7 +462,7 @@ export class LegalAIApiClient {
    */
   async invalidateCache(key: string): Promise<APIResponse<{ key: string; success: boolean }>> {
     return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
-      method: 'DELETE' });
+      method: 'DELETE` });'`
   }
 
   // ==== UTILITY METHODS ====
@@ -497,7 +497,7 @@ export class LegalAIApiClient {
     if (!response.ok) {
       // normalize error into APIResponse shape for OCRResult
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR service error' };
+      return { success: false, message: err?.message || 'OCR service error` };'`
     }
 
     return (await response.json()) as APIResponse<OCRResult>;
@@ -514,7 +514,7 @@ export class LegalAIApiClient {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR batch service error' } as APIResponse<OCRBatchResult>;
+      return { success: false, message: err?.message || 'OCR batch service error` } as APIResponse<OCRBatchResult>;'`
     }
 
     return (await response.json()) as APIResponse<OCRBatchResult>;
@@ -525,7 +525,7 @@ export class LegalAIApiClient {
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ message: response.statusText }));
-      return { success: false, message: err?.message || 'OCR health check failed' } as APIResponse<OCRHealthStatus>;
+      return { success: false, message: err?.message || 'OCR health check failed` } as APIResponse<OCRHealthStatus>;'`
     }
 
     return (await response.json()) as APIResponse<OCRHealthStatus>;

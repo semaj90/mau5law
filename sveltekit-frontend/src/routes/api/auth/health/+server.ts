@@ -62,7 +62,7 @@ export const GET: RequestHandler = async () => {
   try {
     const [{ value: uCount }] = await db.select({ value: sql<number>`count(*)` }).from(users);
     userCount = uCount;
-    const [{ value: sCount }] = await db.select({ value: sql<number>`count(*)' }).from(sessions);'`
+    const [{ value: sCount }] = await db.select({ value: sql<number>`count(*)` }).from(sessions);'`'`
     sessionCount = sCount;
     recentSessions = await db
       .select({

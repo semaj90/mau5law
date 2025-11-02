@@ -3,13 +3,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Tooltip } from '$lib/components/ui/Tooltip.svelte';
-  import { Accessibility } from 'lucide-svelte/icons/accessibility.svelte';
-  import { Keyboard } from 'lucide-svelte/icons/keyboard.svelte';
-  import { Maximize2 } from 'lucide-svelte/icons/maximize-2.svelte';
-  import { Minimize2 } from 'lucide-svelte/icons/minimize-2.svelte';
-  import { AccessibilityPanel } from './AccessibilityPanel.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
+  import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";
+  import  Keyboard  from "lucide-svelte/icons/keyboard.svelte";
+  import  Maximize2  from "lucide-svelte/icons/maximize-2.svelte";
+  import  Minimize2  from "lucide-svelte/icons/minimize-2.svelte";
+  import  AccessibilityPanel  from "./AccessibilityPanel.svelte";
   // local state (simple, compatible with Svelte 5 migration)
   let showShortcuts = $state(false);
   let showAccessibilityPanel = $state(false);
@@ -109,7 +109,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <div>
               <Button size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
                 Test
-              </Button.Root>
+              </Button>
             </div>
           </li>
         {/each}
@@ -120,7 +120,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <div class="mx-auto px-4 max-w-7xl floating-actions">
   <!-- Accessibility Panel Toggle -->
   <Tooltip content="Accessibility panel (Ctrl+Alt+A)" placement="left">
-    <Button.Root
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"
@@ -128,11 +128,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Toggle accessibility panel"
     >
       <Accessibility />
-    </Button.Root>
+    </Button>
   </Tooltip>
   <!-- Keyboard Shortcuts Toggle -->
   <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
-    <Button.Root
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"
@@ -140,11 +140,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard />
-    </Button.Root>
+    </Button>
   </Tooltip>
   <!-- Fullscreen Toggle -->
   <Tooltip content={isFullscreen ? 'Exit fullscreen (F11)' : 'Enter fullscreen (F11)'} placement="left">
-    <Button.Root
+    <Button
       variant="ghost"
       size="sm"
       class="bits-btn"

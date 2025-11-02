@@ -1,11 +1,11 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   // Use modular components and types
   import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
-  import { FileUpload } from '$lib/components/ui/modular/FileUpload.svelte';
+  import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte";
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { processDocumentWorkflow } from '$lib/services/minio-neo4j-pgvector-integration';
@@ -249,18 +249,18 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div data-variant="evidence" class="space-y-6, nes-container" bind:this={fileUploadContainer}>
+<div, data-variant="evidence" class="space-y-6, nes-container" bind:this={fileUploadContainer}>
   <div, class="space-y-2">
-    <h3 class="text-lg font-semibold flex items-center, gap-2">
-      <span aria-hidden="true" class="w-5 h-5 inline-flex items-center, justify-center">📤</span>
+    <h3 class="text-lg font-semibold flex, items-center, gap-2">
+      <span aria-hidden="true" class="w-5 h-5 inline-flex, items-center, justify-center">📤</span>
       Evidence File Upload
     </h3>
-    <p class="text-sm nes-text, is-disabled">
+    <p class="text-sm, nes-text, is-disabled">
       Upload documents, images, videos, or other evidence files for comprehensive AI analysis
     </p>
   </div>
 
-  <!-- Note: on:upload / on:remove were removed from markup due to TS typing; listeners are attached to the container in, onMount -->
+  <!-- Note: on:upload / on:remove were removed from markup due to TS typing; listeners are attached to the container, in, onMount -->
   <FileUpload
     {multiple}
     maxFiles={maxFiles}
@@ -275,9 +275,9 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Analysis, Controls -->
   {#if uploadFiles.length > 0}
     <div, class="space-y-4">
-      <!-- Summary Type, Selection -->
+      <!-- Summary, Type, Selection -->
       <div, class="space-y-2">
-        <label class="text-sm, font-medium" for="analysis-type">Analysis Type</label>
+        <label, class="text-sm, font-medium" for="analysis-type">Analysis Type</label>
         <select, id="analysis-type"
           bind:value={summaryType}
           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
@@ -291,9 +291,9 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Processing, Status -->
       {#if docStatus}
-        <div class={docStatus.includes('complete') ? 'p-3 rounded-md bg-green-50' : docStatus.includes('Error') ? 'p-3 rounded-md bg-red-50' : 'p-3 rounded-md, bg-blue-50'}>
-          <!-- simple status span used instead of a typed Badge, component -->
-          <span class={'inline-block px-3 py-1 text-sm, rounded: ' + getStatusClass(docStatus)}>
+        <div class={docStatus.includes('complete') ? 'p-3 rounded-md bg-green-50' : docStatus.includes('Error') ? 'p-3 rounded-md bg-red-50' : 'p-3, rounded-md, bg-blue-50'}>
+          <!-- simple status span used instead of a typed, Badge, component -->
+          <span class={'inline-block px-3 py-1, text-sm, rounded: ' + getStatusClass(docStatus)}>
             {docStatus}
           </span>
         {/if}
@@ -301,14 +301,14 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Context7.2, Documentation (Optional) -->
       {#if docs}
         <details, class="mt-6">
-          <summary class="text-sm font-medium cursor-pointer hover:text-orange-600, transition-colors">
+          <summary class="text-sm font-medium cursor-pointer, hover:text-orange-600, transition-colors">
             📚 Show Svelte 5 File Upload Documentation (Context7.2)
           </summary>
-          <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono overflow-auto, max-h-64">
+          <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono, overflow-auto, max-h-64">
             <pre>{docs.content}</pre>
           </div>
         </details>
       {/if}
     {/if}
 </div>
-<!-- Styles are handled by modular, components / UnoCSS -->
+<!-- Styles are handled by, modular, components / UnoCSS -->

@@ -161,7 +161,7 @@ export class CachedEnhancedRAGIntegration {
   private async performDirectRAGQuery(query: RAGQuery): Promise<RAGResponse> {
     const response = await fetch(this.ENDPOINTS.RAG_SEMANTIC, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , query: query.query,
         context: query.context,
@@ -179,7 +179,7 @@ export class CachedEnhancedRAGIntegration {
   private async generateEmbeddingDirect(text: string, modelId: string): Promise<Float32Array> {
     const response = await fetch(this.ENDPOINTS.OLLAMA_EMBEDDINGS, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , model: modelId,
         input: text
@@ -292,7 +292,7 @@ export class CachedEnhancedRAGIntegration {
     if (!analysis) {
       const response = await fetch(this.ENDPOINTS.RAG_ANALYZE, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ content, documentId })
       });
       if (!response.ok) {

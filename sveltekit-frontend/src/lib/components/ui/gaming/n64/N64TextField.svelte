@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected, token -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = ''  }: { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' : any } = $props();
   function onInput(e: Event) {

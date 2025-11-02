@@ -147,10 +147,10 @@
   class:yorha-table-loading={loading}
   class:yorha-glitch-effect={glitchEffect}
 >
-  <!-- Table Header with, Search -->
+  <!-- Table Header, with, Search -->
   <div, class="yorha-table-header">
     <div, class="yorha-table-search">
-      <input type="text" placeholder="SEARCH, RECORDS..." bind:value={searchQuery} class="yorha-search-input" />
+      <input, type="text" placeholder="SEARCH, RECORDS..." bind:value={searchQuery} class="yorha-search-input" />
       <div, class="yorha-search-icon">⚡</div>
     </div>
     {#if selectable && selectedRows.size > 0}
@@ -172,7 +172,7 @@
       <thead, class="yorha-table-head">
         <tr, class="yorha-table-head-row">
           {#if selectable}
-            <th class="yorha-table-cell, yorha-select-cell">
+            <th, class="yorha-table-cell, yorha-select-cell">
               <input
                 type="checkbox"
                 class="yorha-checkbox"
@@ -234,7 +234,7 @@
               class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}
-                <td class="yorha-table-cell, yorha-select-cell">
+                <td, class="yorha-table-cell, yorha-select-cell">
                   <input
                     type="checkbox"
                     class="yorha-checkbox"
@@ -254,7 +254,7 @@
                       {#if actionsSnippet}
                         {@render actionsSnippet(row, index)}
                       {:else}
-                        <!-- Default action, buttons -->
+                        <!-- Default, action, buttons -->
                         <button, class="yorha-action-btn-sm">VIEW</button>
                         <button, class="yorha-action-btn-sm">EDIT</button>
                       {/if}

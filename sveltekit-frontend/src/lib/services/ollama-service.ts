@@ -118,7 +118,7 @@ class OllamaService {
       try {
         const response = await fetch(`${this.baseUrl}/api/version`, {
           method: 'GET',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           signal
         });
         if (response.ok) {
@@ -145,7 +145,7 @@ class OllamaService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: { 'Content-Type': `application/json` }
+        headers: { 'Content-Type': `application/json' }'`
       });
       if (response.ok) {
         // parse as unknown and validate shape instead of using `any`
@@ -220,7 +220,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
 `;`
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , name: modelName,
           modelfile,
@@ -272,7 +272,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(requestBody)
     });
     if (!response.ok) {
@@ -311,7 +311,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
     };
     const response = await fetch(`${this.baseUrl}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': `application/json` },
+      headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify(requestBody)
     });
     if (!response.ok) {
@@ -390,7 +390,7 @@ SYSTEM: """You are a specialized legal AI assistant with expertise in case law a
     try {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({ model, prompt: text })
       });
       if (!response.ok) {
@@ -497,7 +497,7 @@ ${snippet}
       models: this.availableModels.map(m => ({
         name: m.name,
         sizeMB: Math.round((m.size || 0) / (1024 * 1024)),
-        family: m.details?.family || 'unknown` })),'`
+        family: m.details?.family || 'unknown' })),'`'`
       capabilities: {
         textGeneration: this.isAvailable && !!this.gemma3Model,
         embeddings: true,
@@ -534,7 +534,7 @@ ${snippet}
       try {
         const response = await fetch(`${this.baseUrl}/api/version`, {
           method: 'GET',
-          headers: { 'Content-Type': `application/json` },
+          headers: { 'Content-Type': `application/json' },'`
           signal
         });
         return response.ok;
@@ -550,7 +550,7 @@ ${snippet}
     try {
       const response = await fetch(`${this.baseUrl}/api/pull`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, name: modelName })
       });
       return response.ok;
@@ -564,7 +564,7 @@ ${snippet}
     try {
       const response = await fetch(`${this.baseUrl}/api/delete`, {
         method: 'DELETE',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({, name: modelName })
       });
       return response.ok;

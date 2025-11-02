@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     try {
       const resp = await fetch(`${FASTAPI_LEGALBERT_URL}/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ text, options: analysisOptions })
       });
       if (resp.ok) {
@@ -126,7 +126,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     try {
       const ollamaResp = await fetch(`${OLLAMA_API_URL}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           model: 'gemma3:270m',
           prompt: `Analyze the following legal text; comprehensively:\n\n${text}`,

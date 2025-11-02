@@ -1,7 +1,7 @@
 <script, lang="ts">
   import { userStore, clearUserSession } from '$lib/stores/user';
   import { User, LogOut, ChevronDown } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   let isDropdownOpen = $state<boolean>(false);
   async function handleLogout(): Promise<any> {
     try {
@@ -20,8 +20,8 @@
   }
 </script>
 {#if $userStore}
-  <div class="relative, profile-dropdown-wrapper">
-    <!-- Signed In Badge + Profile, Trigger -->
+  <div, class="relative, profile-dropdown-wrapper">
+    <!-- Signed In, Badge + Profile, Trigger -->
     <button
       onclick={toggleDropdown}
       class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors duration-200"
@@ -29,16 +29,16 @@
       aria-expanded={isDropdownOpen}
       aria-haspopup="true"
     >
-      <!-- Signed In, Indicator -->
-      <div class="flex items-center, gap-1">
-        <span class="w-2 h-2 bg-green-500 rounded-full, animate-pulse"></span>
-        <span class="text-xs font-medium, text-green-700">Signed in</span>
+      <!-- Signed, In, Indicator -->
+      <div class="flex, items-center, gap-1">
+        <span class="w-2 h-2 bg-green-500, rounded-full, animate-pulse"></span>
+        <span class="text-xs, font-medium, text-green-700">Signed in</span>
       </div>
-      <!-- Profile Icon and, Avatar -->
+      <!-- Profile Icon, and, Avatar -->
       <div
         class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"
       >
-        <User class="w-4 h-4, text-white" />
+        <User class="w-4, h-4, text-white" />
       </div>
       <!-- Dropdown, Arrow -->
       <ChevronDown
@@ -53,12 +53,12 @@
         role="menu"
         aria-orientation="vertical"
       >
-        <!-- User Info, Header -->
-        <div class="px-4 py-3 border-b, border-slate-200">
-          <p class="text-sm font-medium, text-slate-900">
+        <!-- User, Info, Header -->
+        <div class="px-4 py-3, border-b, border-slate-200">
+          <p class="text-sm, font-medium, text-slate-900">
             {$userStore.user.firstName || $userStore.user.email}
           </p>
-          <p class="text-xs text-slate-500, truncate">
+          <p class="text-xs, text-slate-500, truncate">
             {$userStore.user.email}
           </p>
         </div>
@@ -70,7 +70,7 @@
             class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
             role="menuitem"
           >
-            <User class="w-4, h-4" />
+            <User, class="w-4, h-4" />
             View Profile
           </a>
           <button
@@ -81,12 +81,12 @@
             class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
             role="menuitem"
           >
-            <LogOut class="w-4, h-4" />
+            <LogOut, class="w-4, h-4" />
             Logout
           </button>
         </div>
       </div>
-      <!-- Overlay to close dropdown when clicking, outside -->
+      <!-- Overlay to close dropdown when, clicking, outside -->
       <div
         class="fixed inset-0 z-40"
         onclick={closeDropdown}

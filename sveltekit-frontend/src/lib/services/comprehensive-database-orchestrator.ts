@@ -134,8 +134,7 @@ class StubOrchestrator extends EventEmitter {
           return { ...(inserted?.[0] ?? {}), _table: table, persisted: true };
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);'`
-        }
+          console.warn(`[orchestrator] DB insert failed for table ${table}: ', msg);'` }
       }
     }
     // In-memory fallback
@@ -215,8 +214,7 @@ class StubOrchestrator extends EventEmitter {
           }
         } catch (err: any) {
           const msg = err instanceof Error ? err.message : String(err);
-          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);'`
-        }
+          console.warn(`[orchestrator] DB access pattern failed for table ${table}: ', msg);'` }
       }
     }
     // In-memory fallback
@@ -400,8 +398,7 @@ export async function createPatchStream(
       }
     }
   } catch (err: any) {
-    console.warn('[orchestrator] Patch streaming unavailable, using fallback: `, String(err));'`
-  }
+    console.warn('[orchestrator] Patch streaming unavailable, using fallback: ', String(err));'` }'`
 
   // fallback simple stream
   return {
@@ -587,7 +584,7 @@ export async function synthesizeAIInput(
       confidence: 0.3,
       category: 'general',
       urgency: 'medium',
-      scope: 'substantive` },'`
+      scope: `substantive` },'`'`
     embedding: [],
     metadata: {
       userRole: context?.userRole,
@@ -742,7 +739,7 @@ export async function processAIAssistantQuery(
     };
     return result;
   } catch (err: any) {
-    console.error('[orchestrator] AI assistant pipeline failed: `, String(err));'`
+    console.error('[orchestrator] AI assistant pipeline failed: ', String(err));'`'`
     return { synthesizedInput: {, originalQuery: query,
         enhancedPrompt: query,
         legalContext: { complexity: 0.5, domain: `general` }

@@ -40,8 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } else {
       console.error('Upload error:', error);'
     }
-    return json({ error: 'Upload failed` }, { status: 500 });'`
-  }
+    return json({ error: 'Upload failed' }, { status: 500 });'` }'`
 };
 
 // Authenticated upload handler

@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Explicitly type as Response
         method: 'POST',
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , document_id: documentId,
           content: body.content,
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json(
         {
           error: 'Processing failed',
-          details: fetchError instanceof Error ? fetchError.message : 'Unknown error' },
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error` },'`
         { status: 503 }
       );
     }
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : `Unknown error' },'`
+        details: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -214,8 +214,7 @@ export const GET: RequestHandler = async () => {
       // Explicitly type as Response
       method: 'GET',
       headers: {
-        'Content-Type': `application/json' }'`
-    });
+        'Content-Type': 'application/json' }'` });'`
     if (!response.ok) {
       // Access properties directly from Response
       return json(

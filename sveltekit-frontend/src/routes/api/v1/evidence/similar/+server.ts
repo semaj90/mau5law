@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };

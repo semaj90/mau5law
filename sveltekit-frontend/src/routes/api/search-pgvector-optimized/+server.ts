@@ -175,7 +175,7 @@ export const GET: RequestHandler = async event => {
     const db = getDb();
 
     // Quick health check: count documents
-    const count = await db.select({ count: sql<number>`count(*)' }).from(legalDocumentsJsonb);'`
+    const count = await db.select({ count: sql<number>`count(*)` }).from(legalDocumentsJsonb);'`'`
 
     return json({
       success: true,

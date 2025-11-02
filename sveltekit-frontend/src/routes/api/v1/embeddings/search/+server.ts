@@ -164,9 +164,8 @@ export const GET: RequestHandler = async () => {
     parameters: { query: {, type: 'string', required: true, description: 'Search query text' },
       documents: { type: 'string[]', required: true, description: 'Array of documents to search' },
       threshold: { type: 'number', required: false, default: 0.3, description: 'Minimum similarity threshold' },
-      topK: { type: 'number', required: false, default: 10, description: 'Maximum number of results' },
-      useGPU: {, type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration` }'`
-    },
+      topK: {, type: 'number', required: false, default: 10, description: 'Maximum number of results' },
+      useGPU: {, type: 'boolean', required: false, default: true, description: 'Enable GPU acceleration' }'` },'`
     response: {
      , success: 'boolean',
       query: 'string',

@@ -83,7 +83,7 @@ import type { Document } from '$lib/types';
 </script>
 
 <div, class="ai-dashboard-container">
-	<header class="header flex, flex-col">
+	<header class="header, flex, flex-col">
 		<h1, class="title">AI Dashboard</h1>
 		<p, class="subtitle">Cluster overview · quick actions · service health</p>
 	</header>
@@ -139,7 +139,7 @@ import type { Document } from '$lib/types';
 				</CardContent>
 			</Card.Root>
 
-			<!-- Future: metrics, recent jobs, ingestion, status -->
+			<!-- Future: metrics, recent, jobs, ingestion, status -->
 			<Card.Root, class="mt">
 				<CardHeader>
 					<CardTitle>Quick Insights</CardTitle>
@@ -160,7 +160,7 @@ import type { Document } from '$lib/types';
 					<CardTitle>Health Matrix</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<table class="health-table" aria-label="Service health, matrix">
+					<table class="health-table" aria-label="Service, health, matrix">
 						<thead>
 							<tr><th>Service</th><th>Status</th></tr>
 						</thead>

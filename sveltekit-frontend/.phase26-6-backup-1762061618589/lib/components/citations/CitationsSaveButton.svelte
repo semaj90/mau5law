@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // @ts-ignore - some components may not have perfect constructor typings
-  import { ButtonBits } from '$lib/components/ui/bits-ui.svelte';
+  import  ButtonBits  from "$lib/components/ui/bits-ui.svelte";
   // Cast the imported component to a constructor so TypeScript/Svelte recognizes it as a component constructor
   const ButtonCtor = ButtonBits as unknown as new (...args: any[]) => import('svelte').SvelteComponent;
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';

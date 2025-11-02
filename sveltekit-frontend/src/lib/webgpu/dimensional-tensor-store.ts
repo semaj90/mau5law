@@ -599,7 +599,7 @@ class CompressionPipeline {
       layout: 'auto',
       compute: {
        , module: shaderModule,
-        entryPoint: 'compress' }
+        entryPoint: 'compress` }'`
     });
   }
   /**

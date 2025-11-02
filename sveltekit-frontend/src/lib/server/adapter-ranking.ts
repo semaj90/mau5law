@@ -66,6 +66,5 @@ export async function recordAdapterUsage(
     }
     await session.close();
   } catch (e) {
-    console.warn('recordAdapterUsage neo4j error:', e);'
-  }
+    console.warn('recordAdapterUsage neo4j error:', e);` }`'
 }

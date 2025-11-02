@@ -142,7 +142,7 @@ const originalGETHandler: RequestHandler = async () => {
     metadata: {
       response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit' }
+      cache_status: 'hit` }'`
   });
 };
 const originalPOSTHandler: RequestHandler = async ({ request }) => {

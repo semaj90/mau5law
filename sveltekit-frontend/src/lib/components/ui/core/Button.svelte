@@ -18,28 +18,28 @@ import type { User } from '$lib/types'; // Svelte 5 runes are auto-imported impo
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedby,
     'aria-expanded': ariaExpanded,
-    'aria-controls': ariaControls, srOnlyText, ...restProps }: Props = $props(); // Build proper aria-describedby string including loading announcement let finalAriaDescribedby = $derived(() => { const ids = []; if (ariaDescribedby) ids.push(ariaDescribedby); if (loading) ids.push(loadingAnnouncementId); return ids.join(' ') || undefined; }); // Generate unique ID for loading announcement const loadingAnnouncementId = `loading-${ id }`; // className is already destructured; no need to remove it from restProps let isDisabled = $derived(disabled || loading); let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className)); // Lightweight manual event callbacks (avoids deprecated createEventDispatcher) let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null; let onCache: ((p: { key: string;, action: string }) => void) | null = null; let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null; // Enhanced click handler with analytics and XState integration function handleClick(event: MouseEvent) { if (isDisabled || loading) return; // Analytics tracking const analyticsEvent: ButtonAnalyticsEvent = { id, category: analyticsCategory, action: analyticsAction, label: analyticsLabel || (event.target as HTMLElement)?.textContent || '', timestamp: Date.now(), context: xstateContext, variant: variant ?? undefined, size: size ?? undefined }; // Store analytics if (browser) { userAnalyticsStore.trackButtonClick(analyticsEvent); onAnalytics?.(analyticsEvent); }
+    'aria-controls': ariaControls, srOnlyText, ...restProps }: Props = $props(); // Build proper aria-describedby string including loading announcement let finalAriaDescribedby = $derived(() => { const ids = []; if (ariaDescribedby) ids.push(ariaDescribedby); if (loading) ids.push(loadingAnnouncementId); return ids.join(' ') || undefined; }); // Generate unique ID for loading announcement const loadingAnnouncementId = `loading-${ id }`; // className is already destructured; no need to remove it from restProps let isDisabled = $derived(disabled || loading); let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className)); // Lightweight manual event callbacks (avoids deprecated createEventDispatcher) let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null; let onCache: ((p: {, key: string;, action: string }) => void) | null = null; let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null; // Enhanced click handler with analytics and XState integration function handleClick(event: MouseEvent) { if (isDisabled || loading) return; // Analytics tracking const analyticsEvent: ButtonAnalyticsEvent = { id, category: analyticsCategory, action: analyticsAction, label: analyticsLabel || (event.target as HTMLElement)?.textContent || '', timestamp: Date.now(), context: xstateContext, variant: variant ?? undefined, size: size ?? undefined }; // Store analytics if (browser) { userAnalyticsStore.trackButtonClick(analyticsEvent); onAnalytics?.(analyticsEvent); }
     // Cache interaction if cacheKey provided if (cacheKey && browser) { lokiButtonCache.recordInteraction(cacheKey, analyticsEvent); onCache?.({ key: cacheKey, action: 'click' }); }
     onClickAnalytics?.(analyticsEvent); // Call the onclick prop if provided if (onclick) { onclick(event); }
   } // Register with searchable index on mount $effect(() => { if (browser && searchKeywords.length > 0) { searchableButtonIndex.addButton({ id, keywords: searchKeywords, variant, size, label: analyticsLabel, element: document.getElementById(id) }); }
   }); </script> {#if href} <a { href } { target } class={ buttonClass } role="button"
     tabindex="0"
     aria-disabled={ isDisabled } aria-label={ ariaLabel } aria-describedby={ finalAriaDescribedby } aria-expanded={ ariaExpanded } aria-controls={ ariaControls } aria-busy={ loading } data-testid={testId || 'button'} {...restProps} >
-    {#if loading} <svg class="mr-2 h-4 w-4 animate-spin"
+    {#if loading} <svg class="mr-2 h-4 w-4, animate-spin"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         aria-hidden="true"
-      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path class="opacity-75"
+      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path, class="opacity-75"
           fill="currentColor"
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span, class="sr-only">{ srOnlyText }</span> {/if} </a> {:else} <button { type } disabled={ isDisabled } class={ buttonClass } aria-label={ ariaLabel } aria-describedby={ finalAriaDescribedby } aria-expanded={ ariaExpanded } aria-controls={ ariaControls } aria-busy={ loading } data-testid={testId || 'button'} onclick={ handleClick } {...restProps} >
-    {#if loading} <svg class="mr-2 h-4 w-4 animate-spin"
+    {#if loading} <svg class="mr-2 h-4 w-4, animate-spin"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         aria-hidden="true"
-      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path class="opacity-75"
+      > <circle, class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /> <path, class="opacity-75"
           fill="currentColor"
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span, class="sr-only">{ srOnlyText }</span> {/if} </button> {/if} <!-- Screen reader loading, announcement --> {#if loading} <div, id={ loadingAnnouncementId } class="sr-only" aria-live="polite"> { loadingText } {/if}
+        /> </svg> { loadingText } {:else} <slot /> {/if} {#if srOnlyText} <span, class="sr-only">{ srOnlyText }</span> {/if} </button> {/if} <!-- Screen reader, loading, announcement --> {#if loading} <div, id={ loadingAnnouncementId } class="sr-only" aria-live="polite"> { loadingText } {/if}

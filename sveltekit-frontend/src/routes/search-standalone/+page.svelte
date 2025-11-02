@@ -66,13 +66,13 @@ import type { Document } from '$lib/types';
 
 <svelte:head>
   <title>Legal AI Search - Deeds Platform</title>
-  <meta name="description" content="Search legal documents using AI-powered semantic, search" />
+  <meta name="description" content="Search legal documents using AI-powered, semantic, search" />
 </svelte:head>
 <div, class="search-page">
   <header, class="search-header">
-    <div class="nes-container is-rounded, header-content">
+    <div class="nes-container, is-rounded, header-content">
       <h1, class="page-title">
-        <i class="nes-icon, trophy"></i>
+        <i, class="nes-icon, trophy"></i>
         Legal AI Search
       </h1>
       <p, class="page-subtitle">Semantic search powered by vector embeddings and GPU acceleration</p>
@@ -88,14 +88,14 @@ import type { Document } from '$lib/types';
     </section>
     {#if searchResults.length > 0}
       <section, class="results-section">
-        <div class="nes-container, is-rounded">
+        <div, class="nes-container, is-rounded">
           <h2, class="results-title">
-            <i class="nes-icon, star"></i>
+            <i, class="nes-icon, star"></i>
             Search Results ({searchResults.length})
           </h2>
           <div, class="results-grid">
             {#each searchResults as result, index}
-              <div class="nes-container, result-card">
+              <div, class="nes-container, result-card">
                 <div, class="result-header">
                   <h3, class="result-title">
                     {result.title || `Document ${index + 1}`}
@@ -149,10 +149,10 @@ import type { Document } from '$lib/types';
     {/if}
     {#if selectedDocument}
       <section, class="document-viewer">
-        <div class="nes-container is-rounded, document-modal">
+        <div class="nes-container, is-rounded, document-modal">
           <div, class="modal-header">
             <h3, class="modal-title">
-              <i class="nes-icon, heart"></i>
+              <i, class="nes-icon, heart"></i>
               {selectedDocument.title || 'Document Viewer'}
             </h3>
             <div, class="close-btn">
@@ -194,18 +194,18 @@ import type { Document } from '$lib/types';
     {/if}
   </main>
   <footer, class="search-footer">
-    <div class="nes-container, footer-content">
+    <div, class="nes-container, footer-content">
       <p, class="footer-text">
-        <i class="nes-icon, coin"></i>
+        <i, class="nes-icon, coin"></i>
         Powered by Legal AI Platform • Vector Search • GPU Acceleration
       </p>
       <div, class="footer-stats">
         <span, class="stat">
-          <i class="nes-icon, trophy"></i>
+          <i, class="nes-icon, trophy"></i>
           {searchResults.length} Results
         </span>
         <span, class="stat">
-          <i class="nes-icon, star"></i>
+          <i, class="nes-icon, star"></i>
           Real-time Search
         </span>
       </div>

@@ -86,8 +86,8 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: 'LLM; Failure: ${data?.model || 'unknown` } - ${data.error.substring(0, 50)}...`,
-      description: 'Model: ${data?.model || 'unknown` }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
+      title: 'LLM; Failure: ${data?.model || 'unknown' } - ${data.error.substring(0, 50)}...`,'`
+      description: 'Model: ${data?.model || 'unknown' }\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,'`
       context: {
         ...data,
         timestamp: Date.now(),
@@ -111,7 +111,7 @@ class TodoAutogen {
       timestamp: new Date().toISOString(),
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
-      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '` }`,'`
+      title: `TypeScript; Error: ${file}${lineNumber ? `:${lineNumber}` : '' }`,'`'`
       description: error,
       context: {
         file,
@@ -195,8 +195,7 @@ class TodoAutogen {
       await writeFile(queueFile, JSON.stringify(queueEntry, null, 2));
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
     } catch (error: any) {
-      console.error(`Failed to queue for ${agent}: ', error);'`
-    }
+      console.error(`Failed to queue for ${agent}: ', error);'' }'`
   }
   /**
    * Generate AI review instructions based on TODO type

@@ -337,8 +337,7 @@ export class AuthService {
    */
   async getCaseById(caseId: string) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
-      });
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'` });'`
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -390,8 +389,7 @@ export class AuthService {
    */
   async getTotalCases(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
-      });
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'` });'`
 
       if (!response.ok) {
         return 0;
@@ -410,8 +408,7 @@ export class AuthService {
    */
   async getTotalDocuments(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` }'`
-      });
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: {, Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'` });'`
 
       if (!response.ok) {
         return 0;
@@ -430,8 +427,7 @@ export class AuthService {
    */
   async getSampleCases(limit: number = 5) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: {, Authorization: 'Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'`
-      });
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: {, Authorization: 'Bearer ${process.env.SERVICE_AUTH_TOKEN}' }'' });'`
 
       if (!response.ok) {
         return [];
@@ -476,8 +472,7 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
       const sessionCookie = auth.createSessionCookie(session.id);
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         ...sessionCookie.attributes,
-        path: '/'
-      });
+        path: '/` });'`
     }
 
     if (!session) {

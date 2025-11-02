@@ -471,10 +471,9 @@ export const PATCH: RequestHandler = async ({ request }) => {
           return json({
             success: true,
             analysis: analysisResult,
-            status: 'completed'
-          });
+            status: `completed` });
         } catch (err: any) {
-          console.error('Analysis action failed:', err);
+          console.error('Analysis action failed: `, err);'`
           return json(
             {
               success: false,
@@ -490,7 +489,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             return json(
               {
                 success: false,
-                error: `Update data is required` },
+                error: 'Update data is required' },
               { status: 400 }
             );
           }
@@ -505,7 +504,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: 'Update failed' },
+              error: `Update failed` },
             { status: 500 }
           );
         }

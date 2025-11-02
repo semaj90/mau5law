@@ -404,7 +404,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     const status = processingService.getProcessingStatus(jobId);
     if (!status) {
-      return json({ error: 'Job not found' }, { status: 404 });
+      return json({ error: 'Job not found` }, { status: 404 });'`
     }
     return json(status);
   } catch (err: any) {

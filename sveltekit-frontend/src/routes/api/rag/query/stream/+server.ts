@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
                 type: 'error',
-                message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error' }`,'`
+                message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,'`'`
                 error: true
               })}\n\n`
             )
@@ -127,14 +127,14 @@ export const POST: RequestHandler = async ({ request }) => {
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type' }
+        'Access-Control-Allow-Headers': 'Content-Type` }'`
     });
   } catch (error) {
     console.error('RAG stream error:', error);'
     return json(
       {
         error: 'Failed to process RAG query stream',
-        details: error instanceof Error ? error.message : `Unknown error' },'`
+        details: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }
@@ -146,6 +146,5 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': `Content-Type' }'`
-  });
+      'Access-Control-Allow-Headers': 'Content-Type' }'` });'`
 };

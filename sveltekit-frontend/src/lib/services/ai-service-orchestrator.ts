@@ -143,8 +143,7 @@ export class AIServiceOrchestrator {
     this.currentProvider = this.selectOptimalProvider();
     console.log(`🎯 Active provider: ${this.currentProvider}`);
     console.log(`📚 Context7 MCP integration: ENABLED`);
-    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED' }`);'`
-  }
+    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED` }`);'` }'`
 
   /**
    * Agentic inference with Context7 MCP documentation enrichment
@@ -322,8 +321,7 @@ export class AIServiceOrchestrator {
         // Push enriched doc to the result array
         docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
       } catch (error: any) {
-        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);'`
-      }
+        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);'` }
     }
 
     return docs;
@@ -355,8 +353,7 @@ export class AIServiceOrchestrator {
           });
         }
       } catch (error: any) {
-        console.error(`❌ Failed to parse function call: ', (error as Error).message);'`
-      }
+        console.error(`❌ Failed to parse function call: ', (error as Error).message);'` }
     }
 
     return functionCalls;
@@ -392,8 +389,7 @@ export class AIServiceOrchestrator {
       })),
       embedding: {
         model: 'embeddinggemma:latest',
-        provider: `ollama' }'`
-    };
+        provider: 'ollama' }'` };'`
   }
 }
 

@@ -11,10 +11,10 @@
   } function handleSuggestionClick(tag: string) { addTag(tag); inputElement?.focus(); }
   function handleClickOutside(event: MouseEvent) { // Check if the click was outside both the suggestions container and the input element if ( suggestionsContainer && !suggestionsContainer.contains(event.target as Node) && inputElement && !inputElement.contains(event.target as Node) ) { showSuggestions = false; activeIndex = -1; }
   } function handleFocus() { if (inputValue.length > 0) { showSuggestions = true; debouncedSearch(inputValue); // Call debounced search on focus if there's input }'
-  } onMount(() => { document.addEventListener('click', handleClickOutside); }); onDestroy(() => { document.removeEventListener('click', handleClickOutside); }); </script> <div, class="tag-list" class:readonly={ readonly }> <div, class="tag-container"> {#each _tags as tag (tag)} <div, class="tag" transition:scale> <span, class="tag-text">{ tag }</span> {#if !readonly} <button type="button"
+  } onMount(() => { document.addEventListener('click', handleClickOutside); }); onDestroy(() => { document.removeEventListener('click', handleClickOutside); }); </script> <div, class="tag-list" class:readonly={ readonly }> <div, class="tag-container"> {#each _tags as tag (tag)} <div, class="tag" transition:scale> <span, class="tag-text">{ tag }</span> {#if !readonly} <button, type="button"
             class="tag-remove"
             onclick={() => removeTag(tag)} aria-label={`Remove ${ tag } tag`} >
-            <X, size={ 12 } /> </button> {/if} </div> {/each} <input bind:this={ inputElement } bind:value={ inputValue } oninput={ handleInput } onkeydown={ handleKeyDown } onfocus={ handleFocus } class="tag-input"
+            <X, size={ 12 } /> </button> {/if} </div> {/each} <input, bind:this={ inputElement } bind:value={ inputValue } oninput={ handleInput } onkeydown={ handleKeyDown } onfocus={ handleFocus } class="tag-input"
       type="text"
       placeholder={ placeholder } aria-label="Add new tag"
     /> {#if showSuggestions && suggestions.length > 0} <div, class="suggestions" role="listbox" bind:this={ suggestionsContainer }> {#each suggestions as suggestion, index (suggestion)} <button type="button"

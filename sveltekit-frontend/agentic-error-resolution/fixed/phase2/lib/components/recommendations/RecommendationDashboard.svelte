@@ -4,13 +4,13 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
-  import { LastSearchedModal } from './LastSearchedModal.svelte';
-  import { LastWorkedModal } from './LastWorkedModal.svelte';
-  import { AIRecommendationAssistant } from './AIRecommendationAssistant.svelte';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
+  import  LastSearchedModal  from "./LastSearchedModal.svelte";
+  import  LastWorkedModal  from "./LastWorkedModal.svelte";
+  import  AIRecommendationAssistant  from "./AIRecommendationAssistant.svelte";
   // Button replaced by native <button> where click handlers are needed
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   // Dashboard state (use standard reactive variables)
   let isOpen: boolean = $state(false);
   let activeTab: 'overview' | 'search' | 'work' | 'ai' = 'overview';
@@ -223,33 +223,33 @@
       <div class="space-y-6">
         <!-- Quick Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card.Root class="bg-slate-800/60 border-slate-600">
+          <Card class="bg-slate-800/60 border-slate-600">
             <CardContent class="p-4 text-center">
               <div class="text-2xl font-bold text-blue-400">{stats.recentCases}</div>
               <div class="text-sm text-slate-300">Recent Cases</div>
             </CardContent>
-          </Card.Root>
-          <Card.Root class="bg-slate-800/60 border-slate-600">
+          </Card>
+          <Card class="bg-slate-800/60 border-slate-600">
             <CardContent class="p-4 text-center">
               <div class="text-2xl font-bold text-green-400">{stats.activeSearches}</div>
               <div class="text-sm text-slate-300">Active Searches</div>
             </CardContent>
-          </Card.Root>
-          <Card.Root class="bg-slate-800/60 border-slate-600">
+          </Card>
+          <Card class="bg-slate-800/60 border-slate-600">
             <CardContent class="p-4 text-center">
               <div class="text-2xl font-bold text-orange-400">{stats.workInProgress}</div>
               <div class="text-sm text-slate-300">Work in Progress</div>
             </CardContent>
-          </Card.Root>
-          <Card.Root class="bg-slate-800/60 border-slate-600">
+          </Card>
+          <Card class="bg-slate-800/60 border-slate-600">
             <CardContent class="p-4 text-center">
               <div class="text-2xl font-bold text-purple-400">{stats.aiRecommendations}</div>
               <div class="text-sm text-slate-300">AI Insights</div>
             </CardContent>
-          </Card.Root>
+          </Card>
         </div>
         <!-- Quick Actions -->
-        <Card.Root class="bg-slate-800/60 border-slate-600">
+        <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
             <CardTitle class="text-white flex items-center gap-2">⚡ Quick Actions</CardTitle>
           </CardHeader>
@@ -278,9 +278,9 @@
               </button>
             </div>
           </CardContent>
-        </Card.Root>
+        </Card>
         <!-- Recent Activity -->
-        <Card.Root class="bg-slate-800/60 border-slate-600">
+        <Card class="bg-slate-800/60 border-slate-600">
           <CardHeader>
             <CardTitle class="text-white flex items-center gap-2">📈 Recent Activity</CardTitle>
           </CardHeader>
@@ -317,11 +317,11 @@
                 {/each}
               {/if}
           </CardContent>
-        </Card.Root>
+        </Card>
       {/if}
     <!-- Individual Tab Content -->
     {#if activeTab === 'search'}
-      <Card.Root class="bg-slate-800/60 border-slate-600">
+      <Card class="bg-slate-800/60 border-slate-600">
         <CardContent class="p-6">
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🔍 Search History & Insights</h3>
@@ -335,10 +335,10 @@
             </button>
           </div>
         </CardContent>
-      </Card.Root>
+      </Card>
     {/if}
     {#if activeTab === 'work'}
-      <Card.Root class="bg-slate-800/60 border-slate-600">
+      <Card class="bg-slate-800/60 border-slate-600">
         <CardContent class="p-6">
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">💼 Work Activity Tracker</h3>
@@ -354,10 +354,10 @@
             </button>
           </div>
         </CardContent>
-      </Card.Root>
+      </Card>
     {/if}
     {#if activeTab === 'ai'}
-      <Card.Root class="bg-slate-800/60 border-slate-600">
+      <Card class="bg-slate-800/60 border-slate-600">
         <CardContent class="p-6">
           <div class="text-center">
             <h3 class="text-xl font-bold text-white mb-4">🤖 AI Recommendation Assistant</h3>
@@ -373,7 +373,7 @@
             </button>
           </div>
         </CardContent>
-      </Card.Root>
+      </Card>
     {/if}
   </div>
   <div slot="footer" class="flex justify-between">

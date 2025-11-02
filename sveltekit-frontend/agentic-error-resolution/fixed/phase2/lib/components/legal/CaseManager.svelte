@@ -10,8 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   // import named UI components (avoid namespace import)
-  import { Dialog } from '$lib/components/ui/dialog.svelte';
-  import { Button, Input, Textarea, Label, Separator } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Dialog  from "$lib/components/ui/dialog.svelte";
+  import  Button, Input, Textarea, Label, Separator  from "$lib/components/ui/enhanced-bits.svelte";
 
   import * as legalPlatformClient from '$lib/services/legal-platform-client';
   import type { CaseData, ApiResponse } from '$lib/services/legal-platform-client';
@@ -219,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
       <div slot="trigger">
         <Button onclick={() => isCreateDialogOpen.set(true)} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
           Create New Case
-        </Button.Root>
+        </Button>
       </div>
 
       <!-- replace DialogContent/DialogHeader/DialogTitle with plain markup -->
@@ -306,13 +306,13 @@ https://svelte.dev/e/js_parse_error -->
           </div>
 
           <div class="flex justify-end space-x-2 pt-4">
-            <Button.Root class="bits-btn" type="button" onclick={() => isCreateDialogOpen.set(false)}>
+            <Button class="bits-btn" type="button" onclick={() => isCreateDialogOpen.set(false)}>
               Cancel
-            </Button.Root>
+            </Button>
 
-            <Button.Root type="submit" disabled={$loading} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
+            <Button type="submit" disabled={$loading} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
               {$loading ? 'Creating...' : 'Create Case'}
-            </Button.Root>
+            </Button>
           </div>
         </form>
       </div>
@@ -352,12 +352,12 @@ https://svelte.dev/e/js_parse_error -->
               <p class="text-sm text-gray-500 mt-1">#{caseData.id?.slice(-8)}</p>
             </div>
             <div class="flex space-x-2">
-              <Button.Root class={getPriorityClass(caseData.priority || 'medium')}>
+              <Button class={getPriorityClass(caseData.priority || 'medium')}>
                 {caseData.priority?.toUpperCase()}
-              </Button.Root>
-              <Button.Root class={getStatusClass(caseData.status || 'open')}>
+              </Button>
+              <Button class={getStatusClass(caseData.status || 'open')}>
                 {caseData.status?.toUpperCase()}
-              </Button.Root>
+              </Button>
             </div>
           </div>
         </div>
@@ -381,13 +381,13 @@ https://svelte.dev/e/js_parse_error -->
             </p>
 
             <div class="flex space-x-2">
-              <Button.Root class="bits-btn" size="sm" onclick={() => openEditDialog(caseData)}>
+              <Button class="bits-btn" size="sm" onclick={() => openEditDialog(caseData)}>
                 Edit
-              </Button.Root>
+              </Button>
 
-              <Button.Root class="bits-btn" size="sm" onclick={() => deleteCase(caseData.id!)}>
+              <Button class="bits-btn" size="sm" onclick={() => deleteCase(caseData.id!)}>
                 Delete
-              </Button.Root>
+              </Button>
             </div>
           </div>
         </div>
@@ -405,9 +405,9 @@ https://svelte.dev/e/js_parse_error -->
         </p>
 
         {#if !$searchQuery}
-          <Button.Root class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn" onclick={() => isCreateDialogOpen.set(true)}>
+          <Button class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn" onclick={() => isCreateDialogOpen.set(true)}>
             Create First Case
-          </Button.Root>
+          </Button>
         {/if}
       </div>
     {/if}
@@ -497,11 +497,11 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="flex justify-end space-x-2 pt-4">
-          <Button.Root class="bits-btn" type="button" onclick={() => isEditDialogOpen.set(false)}>
+          <Button class="bits-btn" type="button" onclick={() => isEditDialogOpen.set(false)}>
             Cancel
-          </Button.Root>
+          </Button>
 
-          <Button.Root type="submit" disabled={$loading} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
+          <Button type="submit" disabled={$loading} class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn">
             {$loading ? 'Updating...' : 'Update Case'}
           </Button>
         </div>

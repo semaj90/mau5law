@@ -1,4 +1,4 @@
-<!-- Public Layout - Gaming-Inspired Legal AI, Platform -->
+<!-- Public Layout - Gaming-Inspired Legal, AI, Platform -->
 <script, lang="ts">
   import type { Snippet } from 'svelte';
   import NavBar from '$lib/components/layout/NavBar.svelte';
@@ -32,10 +32,10 @@
 </script>
 
 <div, class="public-layout">
-  <!-- Navigation Bar for Public, Pages -->
+  <!-- Navigation Bar for, Public, Pages -->
   <NavBar {user} sidebarOpen={false} />
 
-  <!-- Main Content, Area -->
+  <!-- Main, Content, Area -->
   <main, class="public-content">
     <div, class="content-container">
       {#if children}

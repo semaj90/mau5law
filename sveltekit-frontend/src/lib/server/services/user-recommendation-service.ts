@@ -190,7 +190,7 @@ export class UserRecommendationService {
           totalQueries: count(userAiQueries.id),
           successfulQueries: sql<number>`COUNT(CASE WHEN is_successful = true THEN 1 END)`,
           avgProcessingTime: sql<number>`AVG(processing_time_ms)`,
-          totalTokens: sql<number>`SUM(tokens_used)` })
+          totalTokens: sql<number>`SUM(tokens_used)' })'`
         .from(userAiQueries)
         .where(whereCondition);
       const successRate = stats.totalQueries > 0 ? (stats.successfulQueries / stats.totalQueries) * 100 : 0;

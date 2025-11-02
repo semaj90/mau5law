@@ -259,7 +259,7 @@ export const GET: RequestHandler = async () => {
       endpoints: {
         process: 'POST - Process text with SIMD tiling and vertex caching',
         benchmark: 'POST with; benchmark: true - Performance testing',
-        batch: 'POST with; texts: [] - Batch processing` },'`
+        batch: 'POST with; texts: [] - Batch processing' },'`'`
       timestamp: Date.now()
     };
 
@@ -268,7 +268,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: `Failed to get SIMD LangExtract status` },
+        error: 'Failed to get SIMD LangExtract status' },
       { status: 500 }
     );
   }
@@ -304,7 +304,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: `Failed to update SIMD configuration` },
+        error: 'Failed to update SIMD configuration' },
       { status: 500 }
     );
   }
@@ -319,7 +319,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
     if (fastApiUrl) {
       const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
-        headers: { 'content-type': `application/json` },
+        headers: { 'content-type': `application/json' },'`
         body: JSON.stringify({ text, model })
       });
       if (resp.ok) {
@@ -334,7 +334,7 @@ async function getStandardEmbedding(text: string, model: string, fetch: typeof g
     type GoTensorResp = { data?: { result?: { embeddings?: number[] } } };
     const goResp = await fetch('/api/tensor', {
       method: 'POST',
-      headers: { 'content-type': `application/json` },
+      headers: { 'content-type': `application/json' },'`
       body: JSON.stringify({
        , operation: 'vectorize',
         documentId: `temp-${Date.now()}`,
@@ -489,7 +489,7 @@ async function handleBenchmarkTesting(
       // First cast to unknown then to our SimdProcessResult type to avoid unsafe direct conversions
       const result = (await simdTextTilingEngine.processText(text, {
         type: 'legal',
-        context: `benchmark-${target}:1` })) as unknown as SimdProcessResult;
+        context: `benchmark-${target}:1' })) as unknown as SimdProcessResult;'`
       compressionResults.push(result);
       allResults.push(result);
     }

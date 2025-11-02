@@ -1,6 +1,6 @@
 <script lang="ts">
   import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   interface Document {
     id: string;
     filename: string;

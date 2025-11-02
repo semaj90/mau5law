@@ -85,7 +85,7 @@ const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisR
   // Call glyph generation API
   const response = await fetch('/api/glyph/generate', {
     method: 'POST',
-    headers: { 'Content-Type': `application/json' },'`
+    headers: { 'Content-Type': `application/json` },'`'`
     body: JSON.stringify({,
       evidence_id: input.evidenceId,
       prompt: `Legal evidence; visualization: ${input.analysisResults.summary}`,
@@ -100,7 +100,7 @@ const generateGlyphService = fromPromise(async ({ input }: { input: {, analysisR
   }
   return (result as { success?: any; error?: any; data?: any }).data;
 });
-const embedPNGService = fromPromise(async ({ input }: { input: { glyphResult: GlyphResponse; analysisResults: any;, evidenceId: string }
+const embedPNGService = fromPromise(async ({ input }: { input: {, glyphResult: GlyphResponse; analysisResults: any;, evidenceId: string }
 }) => {
   // PNG embedding with metadata happens in the glyph generation API
   // This service represents additional processing if needed
@@ -115,7 +115,7 @@ const embedPNGService = fromPromise(async ({ input }: { input: { glyphResult: Gl
     } as LegalAIMetadata
   }
 });
-const storeInMinIOService = fromPromise(async ({ input }: { input: { enhancedPngUrl: string; metadata: LegalAIMetadata;, evidenceId: string }
+const storeInMinIOService = fromPromise(async ({ input }: { input: {, enhancedPngUrl: string; metadata: LegalAIMetadata;, evidenceId: string }
 }) => {
   // Store in MinIO and index in PostgreSQL
   // This would call the Go artifact indexing service
@@ -211,8 +211,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: `cancelled' }'`
-      },
+          CANCEL_PROCESSING: 'cancelled' }'` },'`
       analyzing: { invoke: {, src: analyzeEvidenceService; input: ({ context }) => ({
             file: context.file!,
             evidenceId: context.evidenceId;
@@ -286,8 +285,7 @@ export const evidenceProcessingMachine = createMachine();
               })
             })
           },
-          CANCEL_PROCESSING: `cancelled' }'`
-      },
+          CANCEL_PROCESSING: 'cancelled' }'` },'`
       generatingGlyph: { invoke: {, src: generateGlyphService; input: ({ context }) => ({
             analysisResults: context.analysisResults!,
             evidenceId: context.evidenceId,
@@ -352,8 +350,7 @@ export const evidenceProcessingMachine = createMachine();
               ]
             })
           },
-          CANCEL_PROCESSING: `cancelled' }'`
-      },
+          CANCEL_PROCESSING: 'cancelled' }'` },'`
       embeddingPNG: { invoke: {, src: embedPNGService; input: ({ context }) => ({
             glyphResult: context.glyphGeneration!.result!,
             analysisResults: context.analysisResults!,
@@ -407,8 +404,7 @@ export const evidenceProcessingMachine = createMachine();
           }
         },
         on: {
-          CANCEL_PROCESSING: `cancelled' }'`
-      },
+          CANCEL_PROCESSING: 'cancelled' }'` },'`
       storingInMinIO: { invoke: {, src: storeInMinIOService; input: ({ context }) => ({
             enhancedPngUrl: context.portableArtifact!.enhancedPngUrl,
             metadata: context.portableArtifact!.metadata,
@@ -473,8 +469,7 @@ export const evidenceProcessingMachine = createMachine();
           RESET: 'idle';
         }
       },
-      cancelled: { on: {, RESET: `idle' }'`
-      }
+      cancelled: { on: {, RESET: 'idle' }'` }'`
     }
   }
 );

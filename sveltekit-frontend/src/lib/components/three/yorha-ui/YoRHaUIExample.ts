@@ -290,7 +290,7 @@ export class YoRHaUIExample {
     const confirmButton = new YoRHaButton3D({
       text: 'Confirm Execution',
       variant: 'primary',
-      size: 'medium` });'`
+      size: `medium` });'`'`
     const cancelButton = new YoRHaButton3D({
       text: 'Cancel',
       variant: 'secondary',

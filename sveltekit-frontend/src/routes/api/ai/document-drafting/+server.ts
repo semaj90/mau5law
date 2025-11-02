@@ -427,7 +427,7 @@ Provide specific language suggestions and alternatives for key sections: ';'
     return typeof aiResult === 'string' ? aiResult : JSON.stringify(aiResult);
   } catch (error: any) {
     console.warn('AI content suggestions failed:', error);
-    return `Content Suggestions for ${request.documentType}:`
+    return `Content Suggestions for ${request.documentType}: '`
 Key Language Recommendations:
 • Use clear, unambiguous terms throughout
 • Define technical or legal terms in a definitions section
@@ -435,8 +435,7 @@ Key Language Recommendations:
 • Consider alternative dispute resolution mechanisms
 For ${request.parties.length} parties: Ensure balanced obligations and mutual considerations.
 Jurisdiction (${request.jurisdiction}): Review applicable local law requirements.
-Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : 'Focus on essential terms and clear obligations.` }`;'
-  }
+Complexity (${request.complexity}): ${request.complexity === 'complex' ? 'Consider phased implementation and detailed specifications.' : `Focus on essential terms and clear obligations.` }`;` }
 }
 async function generateComplianceAnalysis(request: DocumentDraftingRequest): Promise<string> {
   const analysisPoints = [];

@@ -238,7 +238,7 @@ export class EnhancedEmbeddingService {
 
         const response = await fetch(apiEndpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(requestBody)
         });
 
@@ -375,7 +375,7 @@ export class EnhancedEmbeddingService {
     try {
       const response = await fetch('/api/workers/embedding?action=queue-job', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , entity_type: entityType,
           entity_id: entityId,
@@ -399,8 +399,7 @@ export class EnhancedEmbeddingService {
       return {
         jobId: 'failed',
         queued: false,
-        message: error instanceof Error ? error.message : 'Unknown error` };'`
-    }
+        message: error instanceof Error ? error.message : 'Unknown error' };'` }'`
   }
   /**
    * Get embedding service health and statistics

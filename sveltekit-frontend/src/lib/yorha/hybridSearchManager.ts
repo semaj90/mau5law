@@ -99,8 +99,7 @@ export async function reRankWithPgVector(
         const raw = scoreMap.get((item as { id?: any; source?: any }).id);
         if (raw == null) return item;
         const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
-        return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid` };'`
-      })
+        return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };'` })'`
       .sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {
     console.warn('[HybridSearch] re-rank failed', e);

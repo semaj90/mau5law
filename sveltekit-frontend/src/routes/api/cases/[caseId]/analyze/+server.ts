@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ params }) => {
         {
           event: `Evidence Review (${evidenceData.length} items)`,
           date: new Date().toISOString(),
-          importance: evidenceData.length > 5 ? 'high' : 'medium` },'`
+          importance: evidenceData.length > 5 ? 'high' : `medium` },'`'`
         {
           event: 'Vector Similarity Analysis Completed',
           date: new Date().toISOString(),

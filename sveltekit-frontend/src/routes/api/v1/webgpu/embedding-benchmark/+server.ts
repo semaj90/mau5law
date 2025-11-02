@@ -298,8 +298,7 @@ async function runStressTestBenchmark(config: BenchmarkConfig): Promise<Benchmar
           await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
         } catch (error) {
           errors++;
-          console.warn(`Worker ${workerId} error: ', error);'`
-        }
+          console.warn(`Worker ${workerId} error: ', error);'` }
       }
     })();
     workers.push(p);

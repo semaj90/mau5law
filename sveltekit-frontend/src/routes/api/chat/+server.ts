@@ -790,7 +790,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     await db.delete(chatSessions).where(eq(chatSessions.id, sessionId));
     return json({ success: true, sessionId });
   } catch (error) {
-    console.error('Error deleting chat session: `, error);'`
+    console.error('Error deleting chat session: ', error);'`'`
     return json({ error: `Failed to delete chat session` }, { status: 500 });
   }
 };

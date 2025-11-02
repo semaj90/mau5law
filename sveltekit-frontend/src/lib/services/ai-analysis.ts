@@ -53,7 +53,7 @@ export class AIAnalysisService {
       const response = await fetch('/api/ai/analyze-text', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json` },'`
+          'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ text })
       });
       if (!response.ok) {

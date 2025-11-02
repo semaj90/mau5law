@@ -202,8 +202,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           intent: prediction.predicted_intent,
           topology_score: Math.random() * 0.3 + 0.7, // Would extract from topology data
           source: 'predictive',
-          reasoning: 'Predictive analytics suggests this based on ${prediction.predicted_intent ?? 'intent' }` });'`
-      }
+          reasoning: 'Predictive analytics suggests this based on ${prediction.predicted_intent ?? 'intent' }' });'` }'`
     }
     // Add query completion suggestions
     for (const completion of queryCompletions) {
@@ -288,7 +287,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         lod_cache_size: 0,
         analytics_accuracy: 0,
         user_satisfaction_score: 0,
-        machine_state: 'error` },'`
+        machine_state: `error` },'`'`
       error: msg
     };
     return json(errorResponse, { status: 500 });

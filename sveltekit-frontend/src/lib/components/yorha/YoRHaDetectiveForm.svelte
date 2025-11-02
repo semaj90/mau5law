@@ -1,4 +1,4 @@
-<!-- YoRHa Detective Form Component - Fixed dynamic type, binding -->
+<!-- YoRHa Detective Form Component - Fixed dynamic, type, binding -->
 <script, lang="ts">
   // Svelte 5 runes are auto-imported
   interface FormField {

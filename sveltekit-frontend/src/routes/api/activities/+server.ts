@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const orderedQuery = finalQuery.orderBy(sortOrder === 'asc' ? orderColumn : desc(orderColumn));
     const activityResults = await orderedQuery.limit(limit).offset(offset);
     // Get total count for pagination
-    const baseCountQuery = db.select({ count: sql<number>`count(*)' }).from(caseActivities);'`
+    const baseCountQuery = db.select({ count: sql<number>`count(*)` }).from(caseActivities);'`'`
     let finalCountQuery = baseCountQuery;
     if (filters.length > 0) {
       finalCountQuery = baseCountQuery.where(...filters);
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user) {
-      return json({ error: 'Not authenticated' }, { status: 401 });
+      return json({ error: 'Not authenticated` }, { status: 401 });'`
     }
     if (!db) {
       return json({ error: `Database not available` }, { status: 500 });
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const [newActivity] = await db.insert(caseActivities).values(activityData).returning();
     return json(newActivity, { status: 201 });
   } catch (error: any) {
-    console.error('Error creating activity: `, error instanceof Error ? error : String(error));'`
+    console.error('Error creating activity: ', error instanceof Error ? error : String(error));'`'`
     return json({ error: `Failed to create activity` }, { status: 500 });
   }
 };

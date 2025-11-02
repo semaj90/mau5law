@@ -41,12 +41,12 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
         deadline: Date.now() + (query.includes('urgent') ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000)
       });
       // Compare results
-      console.log('🔍 Heuristic Analysis: `);'`
+      console.log('🔍 Heuristic Analysis: ');'`'`
       console.log(`   Category: ${heuristicIntent.intentCategory}`);
       console.log(`   Confidence: ${(heuristicIntent.confidence * 100).toFixed(1)}%`);
       console.log(`   Domain Specificity: ${(heuristicIntent.domainSpecificity * 100).toFixed(1)}%`);
       console.log(`   Urgency: ${heuristicIntent.urgency}`);
-      console.log('\n🧠 Neural Network Analysis: `);'`
+      console.log('\n🧠 Neural Network Analysis: ');'`'`
       console.log(`   Category: ${nnIntent.intentCategory}`);
       console.log(`   Confidence: ${(nnIntent.confidence * 100).toFixed(1)}%`);
       console.log(`   Domain Specificity: ${(nnIntent.domainSpecificity * 100).toFixed(1)}%`);
@@ -62,7 +62,7 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
   // Show optimizer statistics
   try {
     const stats = await cudaCacheOptimizer.getOptimizerStats();
-    console.log('📊 Optimizer Statistics: `);'`
+    console.log('📊 Optimizer Statistics: ');'`'`
     console.log(`   Memory Usage: ${(stats.memoryUsageRatio * 100).toFixed(1)}%`);
     console.log(`   Model Count: ${stats.modelCount}`);
     console.log(`   Intent History: ${stats.intentHistory} queries`);
@@ -71,7 +71,7 @@ export async function demonstrateIntentAnalysis(): Promise<void> {
     console.log(`   Most Active Neuron: ${stats.mostActiveNeuron}`);
     console.log(`   Recent Categories: ${stats.recentIntentCategories.slice(-5).join(', ')}`);
     const memoryState = cudaCacheOptimizer.getMemoryState();
-    console.log('\n💾 GPU Memory State: `);'`
+    console.log('\n💾 GPU Memory State: ');'`'`
     console.log(`   Total: ${memoryState.totalMemoryMB} MB`);
     console.log(`   Used: ${memoryState.usedMemoryMB} MB`);
     console.log(`   Available: ${memoryState.availableMemoryMB} MB`);
@@ -98,12 +98,12 @@ export async function demonstrateSOMClustering(): Promise<void> {
     'trademark dispute analysis',
   ];
   const chatQueries = ['hello there', 'how are you doing', 'thanks for the help', 'have a great day'];
-  console.log('📋 Testing Legal Queries: `);'`
+  console.log('📋 Testing Legal Queries: ');'`'`
   for (const query of legalQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
     console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);
   }
-  console.log('\n💬 Testing Chat Queries: `);'`
+  console.log('\n💬 Testing Chat Queries: ');'`'`
   for (const query of chatQueries) {
     const intent = await cudaCacheOptimizer.analyzeIntentWithNN(query);
     console.log(`   "${query}" → ${intent.intentCategory} (${(intent.confidence * 100).toFixed(1)}%)`);

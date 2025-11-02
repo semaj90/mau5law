@@ -106,7 +106,7 @@ type RecommendationEvent =
   | { type: 'CACHE_MISS'; key: string }
   | { type: 'PROCESSING_COMPLETE'; result: ProcessingResult }
   | { type: 'ERROR_OCCURRED'; error: string }
-  | { type: 'RETRY` }'`
+  | { type: `RETRY` }'`'`
   | { type: `RESET` };
 // Smart routing recommendation engine with RabbitMQ
 export const recommendationRoutingMachine = setup({
@@ -183,7 +183,7 @@ export const recommendationRoutingMachine = setup({
         const { cacheKeys } = input;
         const response = await fetch('/api/cache/check', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json` },'`
+          headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify({
            , keys: cacheKeys,
             operation: 'mget', // Multi-get for efficiency
@@ -284,7 +284,7 @@ export const recommendationRoutingMachine = setup({
     sessionId: '',
     userId: '',
     rabbitMQRouting: {
-      exchange: 'legal-ai-exchange',
+     , exchange: 'legal-ai-exchange',
       routingKeys: [],
       queues: {
        , highPriority: 'legal.priority.high',
@@ -398,8 +398,7 @@ export const recommendationRoutingMachine = setup({
             onError: {
               target: '#recommendation-routing.error',
               actions: assign({
-                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })'`
-            }
+                error: ({ event }) => `RabbitMQ routing failed: ${(event.error as Error)?.message}' })'' }'`
           }
         },
         cache_check: { invoke: {, id: 'checkRedisCache',

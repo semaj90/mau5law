@@ -192,7 +192,7 @@ class SSRLegalAPICache {
         tier: this.selectOptimalTier(endpoint, processedResponse),
         ttl: cacheEntry.ttl,
         priority: this.determinePriority(endpoint), // Removed incorrect type assertion syntax
-        type: 'ssr_legal_api' });
+        type: 'ssr_legal_api` });'`
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
     } catch (error) {
       console.error('SSR cache store failed:', error);
@@ -290,7 +290,7 @@ class SSRLegalAPICache {
     const invalidated = matchedPatterns.length;
     // Note: actual invalidation would call parallelCacheOrchestrator if supported.
     console.log(
-      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any' }) — matched ${invalidated} known pattern(s)`
+      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any` }) — matched ${invalidated} known pattern(s)`'`
     );
     return invalidated;
   }

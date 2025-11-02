@@ -265,8 +265,7 @@ export class UserAuthService {
       return { success: true };
     } catch (error: any) {
       console.error('Logout error: ', error instanceof Error ? error.message : String(error));'
-      return { success: false, error: error instanceof Error ? error.message : `Logout failed' };'`
-    }
+      return { success: false, error: error instanceof Error ? error.message : 'Logout failed' };'` }'`
   }
 }
 // ============================================================================
@@ -415,8 +414,7 @@ export class UserProfileService {
       console.error('Update profile error:', error);'
       return {
         success: false,
-        error: error instanceof Error ? error.message : `Profile update failed' };'`
-    }
+        error: error instanceof Error ? error.message : 'Profile update failed' };'` }'`
   }
   /**
    * Delete user account (soft delete)
@@ -444,7 +442,7 @@ export class UserProfileService {
           action: 'user_deleted',
           resource: 'user',
           resourceId: userId.toString(),
-          context: { deletionType: `soft_delete' },'`
+          context: { deletionType: `soft_delete` },'`'`
           success: true,
           timestamp: new Date()
         });
@@ -474,7 +472,7 @@ export class UserProfileService {
       const similarRows = await db
         .select({
           user: users, // Select the full user object
-          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})' })'`
+          similarity: sql<number>`1 - (${users.profileEmbedding} <=> ${embeddingPgVector})` })'`'`
         .from(users)
         .where(
           and(
@@ -507,8 +505,7 @@ export class UserActivityService {
         timestamp: new Date()
       });
     } catch (error: any) {
-      console.error('Log activity error:', error instanceof Error ? error.message : String(error));'
-    }
+      console.error('Log activity error:', error instanceof Error ? error.message : String(error));` }`'
   }
   /**
    * Get user activity history
@@ -537,7 +534,7 @@ export class UserActivityService {
       const stats = (await db
         .select({
           totalActions: count(),
-          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)' })'`
+          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)` })'`'`
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql`${userActivityLog.timestamp} >= ${dateThreshold}`))) as StatsRow[];
 
@@ -554,7 +551,7 @@ export class UserActivityService {
 
       const uniqueActionsResult = (await db
         .select({
-          uniqueActions: sql<number>`COUNT(DISTINCT action)' })'`
+          uniqueActions: sql<number>`COUNT(DISTINCT action)` })'`'`
         .from(userActivityLog)
         .where(and(eq(userActivityLog.userId, userId), sql'${userActivityLog.timestamp} >= ${dateThreshold}'))) as UniqueActionsRow[];
 

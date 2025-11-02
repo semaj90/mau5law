@@ -205,8 +205,7 @@ ${autoFixResult.fixes.imports.length > 0 ? `Import fixes: ${autoFixResult.fixes.
 ${autoFixResult.fixes.svelte5.length > 0 ? `Svelte 5 fixes: ${autoFixResult.fixes.svelte5.length}` : `` }
 ${autoFixResult.fixes.typeScript.length > 0 ? `TypeScript fixes: ${autoFixResult.fixes.typeScript.length}` : `` }
 Orchestrator Analysis:
-${orchestratorResult.selfPrompt}`;`
-      } else {
+${orchestratorResult.selfPrompt}`;` } else {
         return `Auto-Fix Complete: No issues found. Codebase follows best practices.`;
       }
     } catch (error: any) {
@@ -263,8 +262,7 @@ ${Object.entries(result.fixes)
 Recommendations:
 ${result.recommendations.join('\n')}
 Config Improvements:
-${result.configImprovements?.join('\n') || 'None` }`;'
-    } catch (error: any) {
+${result.configImprovements?.join('\n') || 'None` }`;` } catch (error: any) {'`
       return `Auto-Fix Failed for ${todoId}: ${error}`;
     }
   }
@@ -274,8 +272,7 @@ ${result.configImprovements?.join('\n') || 'None` }`;'
     const memoryGraph = await mcpMemoryReadGraph();
     return `Analysis Completed for ${todoId}:\nStack: ${JSON.stringify(`
       stackAnalysis
-    )}\nMemory: ${JSON.stringify(memoryGraph)}`;`
-  }
+    )}\nMemory: ${JSON.stringify(memoryGraph)}`;` }
   private async performSummarization(todoId: string): Promise<string> {
     // Use semantic search to gather relevant information
     const searchResults = await performContext7Search({

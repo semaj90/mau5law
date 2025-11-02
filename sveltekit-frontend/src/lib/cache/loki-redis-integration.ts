@@ -71,7 +71,7 @@ const CACHE_CONFIG = {
     autosaveInterval: 5000, // 5 seconds
     autoload: true,
     throttledSaves: true,
-    serializationMethod: 'pretty' },
+    serializationMethod: 'pretty` },'`
   // Redis settings
   redis: {
     host: 'localhost',
@@ -270,8 +270,7 @@ export class LokiRedisCache extends EventEmitter {
             if (channel === 'legal_ai:search:invalidate') {
               this.invalidateSearchCache(JSON.parse(message)).catch(error => {
                 const errMessage = error instanceof Error ? error.message : String(error);
-                console.error('Search invalidation error:', errMessage);'
-              });
+                console.error('Search invalidation error:', errMessage);` });`'
             }
           });
         }
@@ -322,7 +321,7 @@ export class LokiRedisCache extends EventEmitter {
         accessCount: 1,
         cacheLocation: 'loki',
         compressed: false,
-        syncStatus: 'synced' };
+        syncStatus: 'synced` };'`
       // Store in Loki.js first (fastest access)
       await this.storeLokiDocument(cachedDoc);
       // Store in Redis for distribution
@@ -382,8 +381,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis storage failed for ${document.id}: ', message);'`
-    }
+      console.error(`❌ Redis storage failed for ${document.id}: ', message);'` }
   }
   private shouldUseNESMemory(document: CachedDocument): boolean {
     if (!CACHE_CONFIG.memory.nesIntegration || !this.nesMemory) return false;
@@ -408,8 +406,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ NES storage failed for ${document.id}: ', message);'`
-    }
+      console.error(`❌ NES storage failed for ${document.id}: ', message);'` }
   }
   private selectNESBank(document: CachedDocument): string {
     // Select NES bank based on document characteristics
@@ -490,8 +487,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis get error for ${documentId}: ', message);'`
-    }
+      console.error(`❌ Redis get error for ${documentId}: ', message);'' }'`
     return null;
   }
   private async getNESDocument(documentId: string): Promise<CachedDocument | null> {
@@ -506,12 +502,11 @@ export class LokiRedisCache extends EventEmitter {
           accessCount: nesDoc.accessCount || 1,
           cacheLocation: 'nes',
           compressed: nesDoc.compressed || false,
-          syncStatus: 'synced' } as CachedDocument;
+          syncStatus: 'synced` } as CachedDocument;'`
       }
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ NES get error for ${documentId}: ', message);'`
-    }
+      console.error(`❌ NES get error for ${documentId}: ', message);'` }
     return null;
   }
   async searchDocuments(
@@ -818,8 +813,7 @@ export class LokiRedisCache extends EventEmitter {
       this.stats.redis.operations++;
     } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error(`❌ Redis set error for ${key}: ', message);'`
-    }
+      console.error(`❌ Redis set error for ${key}: ', message);'` }
   }
   async clear(): Promise<void> {
     try {

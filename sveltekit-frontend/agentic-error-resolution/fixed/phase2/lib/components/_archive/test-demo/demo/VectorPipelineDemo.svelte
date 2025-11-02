@@ -3,12 +3,12 @@
   // Svelte 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import {
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Using Svelte 4 store pattern instead of conflicting $state runes
   let machineState = $vectorPipelineStat;
   // Sample job data
@@ -80,23 +80,23 @@
       </div>
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Button.Root class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
+        <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+        </Button>
+        <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
           Submit Batch
-        </Button.Root>
-        <Button.Root class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button.Root>
-        <Button.Root class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button.Root>
-        <Button.Root class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button.Root>
-        <Button.Root class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button.Root>
-        <Button.Root
+        </Button>
+        <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
+        <Button class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
+        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
+        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
+        <Button
           class="bits-btn"
           onclick={retryFailedJobs}
           disabled={!batchInfo?.failedJobs || batchInfo.failedJobs === 0}
         >
           Retry Failed
-        </Button.Root>
+        </Button>
       </div>
       <!-- Pipeline Status Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -267,7 +267,7 @@
           <p class="text-sm text-gray-600 mb-4">
             Test connectivity to backend services that the vector pipeline depends on:
           </p>
-          <Button.Root
+          <Button
             class="bits-btn mr-2"
             onclick={async () => {
               try {
@@ -281,8 +281,8 @@
             variant="ghost"
           >
             Test Enhanced RAG (8094)
-          </Button.Root>
-          <Button.Root
+          </Button>
+          <Button
             class="bits-btn"
             onclick={async () => {
               try {
@@ -299,7 +299,7 @@
             variant="ghost"
           >
             Test Qdrant (6333)
-          </Button.Root>
+          </Button>
         </div>
       </div>
     </div>

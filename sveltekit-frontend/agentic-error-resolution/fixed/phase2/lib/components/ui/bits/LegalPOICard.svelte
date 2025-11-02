@@ -87,7 +87,7 @@
     }
   }
 </script>
-<Card.Root class="poi-card {compact ? 'compact' : ''} {poi.status}" style="border-left: 4px solid {riskColor}">
+<Card class="poi-card {compact ? 'compact' : ''} {poi.status}" style="border-left: 4px solid {riskColor}">
   <CardHeader>
     <div class="poi-header">
       <div class="poi-identity">
@@ -212,7 +212,7 @@
         </div>
       {/if}
   </CardContent>
-</Card.Root>
+</Card>
 <style>
   .poi-card {
     position: relative;

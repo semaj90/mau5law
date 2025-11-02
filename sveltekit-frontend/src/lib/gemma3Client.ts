@@ -224,7 +224,7 @@ export class Gemma3Client {
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string, // <-- fixed: comma instead of, semicolon; type: string = 'general'
+    content: string, // <-- fixed: comma instead, of, semicolon; type: string = 'general'
   ): Promise<string> {
     const messages: ChatMessage[] = [
       {
@@ -283,8 +283,7 @@ export async function detectAvailableServer(): Promise<{ url: string; backend?: 
         };
       }
     } catch (error: any) {
-      console.debug(`Server ${server.url} not available: ', errorToString(error));'`
-    }
+      console.debug(`Server ${server.url} not available: ', errorToString(error));'' }'`
   }
   return null;
 }
@@ -299,8 +298,7 @@ export function createGemma3Store() {
       askQuestion: async () => '',
       analyzeDocument: async () => '',
       reviewContract: async () => '',
-      generateTemplate: async () => '` };'`
-  }
+      generateTemplate: async () => '' };'` }'`
   let client = new Gemma3Client();
   let serverInfo: ServerInfo | null = null;
   return {

@@ -2,7 +2,7 @@
   // removed bits-ui Dialog import (module types didn't export Dialog.*). Using a local modal markup below.'
   // cast helper type to satisfy sveltekit-superforms zod adapter typing
   import type { ZodTypeAny } from 'zod';
-  import { Button } from '$lib/components/ui/button/Button.svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   import X from 'lucide-svelte';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -50,7 +50,7 @@
   }
 </script>
 {#if open}
-  <!-- Overlay: click or keyboard to, close -->
+  <!-- Overlay: click or keyboard, to, close -->
   <button
     type="button"
     class="fixed inset-0 bg-black/80 z-50"
@@ -66,24 +66,24 @@
     tabindex="-1"
     onclick={(e) => e.stopPropagation()}
   >
-    <div class="flex items-center justify-between, mb-4">
-      <h2 class="text-xl font-bold, text-slate-900">Create Account</h2>
+    <div class="flex items-center, justify-between, mb-4">
+      <h2 class="text-xl, font-bold, text-slate-900">Create Account</h2>
       <button
         type="button"
         class="p-1 hover:bg-slate-100 rounded"
         onclick={closeModal}
         aria-label="Close"
       >
-        <X class="w-5, h-5" />
+        <X, class="w-5, h-5" />
       </button>
     </div>
     {#if $message}
-      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700, text-sm">
+      <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded, text-red-700, text-sm">
         {$message}
       {/if}
     <form, class="space-y-4" method="POST" action="/api/auth/register" use:enhance>
       <div>
-        <label for={emailId} class="block text-sm font-medium text-slate-700, mb-1">Email</label>
+        <label for={emailId} class="block text-sm font-medium, text-slate-700, mb-1">Email</label>
         <input
           type="email"
           name="email"
@@ -93,11 +93,11 @@
           placeholder="you@example.com"
         />
         {#if $errors.email}
-          <p class="text-red-600 text-xs, mt-1">{$errors.email}</p>
+          <p class="text-red-600, text-xs, mt-1">{$errors.email}</p>
         {/if}
       </div>
       <div>
-        <label for={passwordId} class="block text-sm font-medium text-slate-700, mb-1">Password</label>
+        <label for={passwordId} class="block text-sm font-medium, text-slate-700, mb-1">Password</label>
         <input
           type="password"
           name="password"
@@ -107,11 +107,11 @@
           placeholder="••••••••"
         />
         {#if $errors.password}
-          <p class="text-red-600 text-xs, mt-1">{$errors.password}</p>
+          <p class="text-red-600, text-xs, mt-1">{$errors.password}</p>
         {/if}
       </div>
       <div>
-        <label for={confirmPasswordId} class="block text-sm font-medium text-slate-700, mb-1">Confirm Password</label>
+        <label for={confirmPasswordId} class="block text-sm font-medium, text-slate-700, mb-1">Confirm Password</label>
         <input
           type="password"
           name="confirmPassword"
@@ -121,10 +121,10 @@
           placeholder="••••••••"
         />
         {#if $errors.confirmPassword}
-          <p class="text-red-600 text-xs, mt-1">{$errors.confirmPassword}</p>
+          <p class="text-red-600, text-xs, mt-1">{$errors.confirmPassword}</p>
         {/if}
       </div>
-      <div class="flex items-start, gap-2">
+      <div class="flex, items-start, gap-2">
         <input
           type="checkbox"
           id={termsId}
@@ -132,24 +132,24 @@
           bind:checked={$form.termsAccepted}
           class="mt-1 w-4 h-4 border-slate-300 rounded focus:ring-2 focus:ring-blue-500"
         />
-        <label for={termsId} class="text-sm, text-slate-600">
-          I agree to the <a href="/terms" class="text-blue-600, hover:underline">Terms of Service</a> and
-          <a href="/privacy" class="text-blue-600, hover:underline">Privacy Policy</a>
+        <label, for={termsId} class="text-sm, text-slate-600">
+          I agree to the <a, href="/terms" class="text-blue-600, hover:underline">Terms of Service</a> and
+          <a, href="/privacy" class="text-blue-600, hover:underline">Privacy Policy</a>
         </label>
       </div>
       {#if $errors.termsAccepted}
-        <p class="text-red-600 text-xs, mt-1">{$errors.termsAccepted}</p>
+        <p class="text-red-600, text-xs, mt-1">{$errors.termsAccepted}</p>
       {/if}
-      <div class="flex gap-3 justify-end, pt-4">
-        <Button.Root
+      <div class="flex gap-3, justify-end, pt-4">
+        <Button
           type="button"
           onclick={closeModal}
           variant="secondary"
           class="px-4 py-2 bg-slate-200 text-slate-900 rounded hover:bg-slate-300"
         >
           Cancel
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           type="submit"
           disabled={$submitting || !$form.termsAccepted}
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
@@ -159,7 +159,7 @@
           {:else}
             Register
           {/if}
-        </Button.Root>
+        </Button>
       </div>
     </form>
   {/if}

@@ -16,8 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const finalFilePath = join(finalDirPath, filename);
     await mkdir(finalDirPath, { recursive: true });
     await rename(tempFilePath, finalFilePath); // Move the assembled file
-    return json({ url: `/${finalFilePath}' });'`
-  } catch (err: any) {
+    return json({ url: '/${finalFilePath}' });'` } catch (err: any) {'`
     console.error(err);
     throw error(500, 'Failed to finalize upload.');
   }

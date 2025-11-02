@@ -70,12 +70,11 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
       const langchainUrl = `http://localhost:8106/api/summarize`;
       const summaryResponse = await fetch(langchainUrl, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json` },
+        headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , text: 'FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,'`
           context: 'professional network analysis',
-          style: 'brief` })'`
-      });
+          style: 'brief' })'' });
       if (summaryResponse.ok) {
         const summaryData = await summaryResponse.json();
         foafData.summary = summaryData.summary;
@@ -110,7 +109,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         confidence: rec.connectionStrength,
         relationshipPath: rec.relationshipPath
       })),
-      summary: 'Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : `general` } relevance`,'`
+      summary: 'Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : `general' } relevance`,'`'`
       totalFound: foafRecommendations.length,
       processingTimeMs: Date.now() - startTime
     };
@@ -239,8 +238,8 @@ async function generateDatabaseFOAFRecommendations(
           connectionStrength,
           relationshipPath: `Legal Network → Shared Cases → ${conn.role}`,
           sharedCases: conn.sharedCases || 0,
-          reasoning: 'Collaborated on ${conn.sharedCases} shared case${(conn.sharedCases || 0) > 1 ? 's' : `` }`,'`
-          metadata: { connectionType: `case_collaboration` }
+          reasoning: 'Collaborated on ${conn.sharedCases} shared case${(conn.sharedCases || 0) > 1 ? 's' : `' }`,'`'`
+          metadata: { connectionType: `case_collaboration' }'`
         });
       }
     }
@@ -255,7 +254,7 @@ async function generateDatabaseFOAFRecommendations(
         );
         recommendations[existingIndex].sharedEvidence = conn.sharedEvidence || 0;
         recommendations[existingIndex].reasoning +=
-          ` and ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `` }`;
+          ` and ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `' }`;'`
       } else if (evidenceScore >= minConnectionStrength) {
         recommendations.push({
           id: conn.userId,
@@ -267,8 +266,8 @@ async function generateDatabaseFOAFRecommendations(
           connectionStrength: evidenceScore,
           relationshipPath: `Legal Network → Evidence Collaboration → ${conn.role}`,
           sharedEvidence: conn.sharedEvidence || 0,
-          reasoning: 'Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `` }`,'`
-          metadata: { connectionType: `evidence_collaboration` }
+          reasoning: 'Worked with ${conn.sharedEvidence} shared evidence item${(conn.sharedEvidence || 0) > 1 ? 's' : `' }`,'`'`
+          metadata: { connectionType: `evidence_collaboration' }'`
         });
       }
     }
@@ -358,8 +357,7 @@ async function enhanceRecommendationsWithEmbeddings(
           }
         }
       } catch (error: any) {
-        console.warn(`Failed to enhance recommendation ${rec.id} with embedding: ', error);'`
-      }
+        console.warn(`Failed to enhance recommendation ${rec.id} with embedding: ', error);'' }'`
     }
   } catch (error: any) {
     console.warn('Failed to enhance recommendations with embeddings:', error);

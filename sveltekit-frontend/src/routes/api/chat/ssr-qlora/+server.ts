@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId or message' },
+        error: 'Missing sessionId or message` },'`
       { status: 400 }
     );
   }
@@ -111,7 +111,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: 'Missing required parameters' },
+        error: 'Missing required parameters` },'`
       { status: 400 }
     );
   }
@@ -151,7 +151,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId parameter' },
+        error: 'Missing sessionId parameter` },'`
       { status: 400 }
     );
   }
@@ -210,7 +210,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: 'Missing sessionId parameter' },
+        error: 'Missing sessionId parameter` },'`
       { status: 400 }
     );
   }

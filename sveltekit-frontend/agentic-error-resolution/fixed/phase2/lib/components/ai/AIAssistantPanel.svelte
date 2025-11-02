@@ -1,13 +1,13 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // Use existing lowercase: 'card' folder to avoid casing conflicts on disk
-  import { Card } from '$lib/components/ui/card/Card.svelte';
-  import { CardContent } from '$lib/components/ui/card/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/card/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/card/CardTitle.svelte';
-  import { AIChatMessage } from '$lib/components/ai/AIChatMessage.svelte';
-  import { AISearchBar } from '$lib/components/ui/enhanced-bits/AISearchBar.svelte';
+  import  Card  from "$lib/components/ui/card/Card.svelte";
+  import  CardContent  from "$lib/components/ui/card/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/card/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/card/CardTitle.svelte";
+  import  AIChatMessage  from "$lib/components/ai/AIChatMessage.svelte";
+  import  AISearchBar  from "$lib/components/ui/enhanced-bits/AISearchBar.svelte";
   import { aiAssistant  } from '$lib/stores/unified';
   import { acceleratedLegalAssistant } from '$lib/ai/accelerated-legal-assistant';
   import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
@@ -153,7 +153,7 @@
   const AISearchBarComponent: any = AISearchBar as unknown as any;
 </script>
 <div class="ai-assistant-panel" class:hidden={!isVisible}>
-  <Card.Root class="h-full flex flex-col">
+  <Card class="h-full flex flex-col">
     <CardHeader class="pb-3">
       <div class="flex items-center justify-between">
         <CardTitle class="flex items-center gap-2 text-lg">
@@ -199,7 +199,7 @@
           class="text-xs"
         >
           General
-        </Button.Root>
+        </Button>
         <Button
           size="sm"
           variant={currentContext === 'analysis' ? 'default' : 'outline'}
@@ -207,7 +207,7 @@
           class="text-xs"
         >
           Analysis
-        </Button.Root>
+        </Button>
         <Button
           size="sm"
           variant={currentContext === 'connection' ? 'default' : 'outline'}
@@ -270,7 +270,7 @@
       <!-- Quick Actions -->
       <div class="quick-actions">
         <div class="flex gap-2 mb-2">
-          <Button.Root
+          <Button
             size="sm"
             variant="ghost"
             onclick={analyzeSelectedEvidence}
@@ -280,7 +280,7 @@
             <FileText class="w-3 h-3 mr-1" />
             Analyze Selected
           </Button>
-          <Button.Root size="sm" variant="ghost" onclick={suggestNextSteps} disabled={isLoading} class="text-xs">
+          <Button size="sm" variant="ghost" onclick={suggestNextSteps} disabled={isLoading} class="text-xs">
             <Search class="w-3 h-3 mr-1" />
             Next Steps
           </Button>
@@ -368,7 +368,7 @@
             {/if}
         {/if}
     </CardContent>
-  </Card.Root>
+  </Card>
 </div>
 <style>
   .ai-assistant-panel {

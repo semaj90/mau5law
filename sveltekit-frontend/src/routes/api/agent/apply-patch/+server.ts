@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Missing patchId',
-          message: 'patchId is required to apply a patch' },
+          message: 'patchId is required to apply a patch` },'`
         { status: 400 }
       );
     }
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not found',
-          message: `Failed to retrieve or create patch ${patchId}' },'`
+          message: `Failed to retrieve or create patch ${patchId}` },'`'`
         { status: 500 }
       );
     }
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch not applicable',
-          message: `Patch ${patchId} is in, status: ${patch.status}. Only pending patches can be applied.' },'`
+          message: `Patch ${patchId} is in, status: ${patch.status}. Only pending patches can be applied.` },'`'`
         { status: 400 }
       );
     }
@@ -161,7 +161,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'Patch ID already exists',
-          message: `A demo patch with id ${patch.id} already exists.' },'`
+          message: `A demo patch with id ${patch.id} already exists.` },'`'`
         { status: 409 }
       );
     }
@@ -191,7 +191,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       patch: demoPatch,
-      message: 'Demo patch created successfully' });
+      message: 'Demo patch created successfully` });'`
   } catch (error: any) {
     const message = getErrorMessage(error);
     console.error('Error creating demo patch:', message);
@@ -214,8 +214,7 @@ function generateSampleDiff(): string {
  		<a, href="/cases" class="nav-link">Cases</a>
  		<a, href="/documents" class="nav-link">Documents</a>
 +		{#if $user}
-+			<button onclick={logout} class="nav-link, logout-btn">Logout</button>
++			<button, onclick={logout} class="nav-link, logout-btn">Logout</button>
 +		{/if}
  	</nav>
- </div>`;`
-}
+ </div>`;` }

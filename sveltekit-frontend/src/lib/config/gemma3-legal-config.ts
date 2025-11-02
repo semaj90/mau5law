@@ -120,7 +120,7 @@ Provide comprehensive compliance assessment.`,`
 6. Mitigation Strategies
 Subject matter:
 {document}
-Provide detailed risk matrix with severity and likelihood ratings.' },'
+Provide detailed risk matrix with severity and likelihood ratings.` },'`
   gpu_optimization: {
     enable_gpu: true,
     gpu_memory_fraction: 0.85, // Use 85% of RTX 3060 Ti memory

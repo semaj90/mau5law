@@ -22,8 +22,7 @@ const libraryDocs: Record<
 <button>Click</button>
 \`\`\``,
     metadata: { library: 'melt-ui', version: '0.39.0', topic: 'builders', tokenCount: 120 },
-    snippets: [{ title: 'Button', code: '<button>Click</button>', description: 'Melt button example` }]'`
-  },
+    snippets: [{ title: 'Button', code: '<button>Click</button>', description: 'Melt button example' }]'' },
   '/bits-ui/bits-ui': {
     content: `# Bits UI v2`
 \`\`\`svelte`

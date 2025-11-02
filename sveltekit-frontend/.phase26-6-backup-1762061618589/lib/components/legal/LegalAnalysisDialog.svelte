@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     onAnalysisComplete = > void = () => } = $props();
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Dialog } from '$lib/components/Dialog.svelte';
+  import  Dialog  from "$lib/components/Dialog.svelte";
   interface LegalAnalysis {
     sessionId: string
     analysis: string;

@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, slide, fly } from 'svelte/transition';
   import { elasticOut } from 'svelte/easing';
-  import { DiamondModal } from '$lib/components/ui/DiamondModal.svelte';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string;

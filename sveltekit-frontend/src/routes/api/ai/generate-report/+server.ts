@@ -136,16 +136,15 @@ function generateReportContent(template: ReportTemplate, caseId: string, reportI
   template.sections.forEach((section: string, index: number) => {
     content += `
       <div, style="margin-bottom: 32px;">
-        <h2 style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px, solid #e5e7eb; padding-bottom: 8px;">
+        <h2, style="color: #374151; font-size: 20px; font-weight: 600; margin-bottom: 16px; border-bottom: 2px, solid #e5e7eb; padding-bottom: 8px;">
           ${index + 1}. ${section}
         </h2>
         ${generateSectionContent(section, template.title)}
       </div>
-    `;`
-  });
+    `;` });
   // Add AI disclaimer
   content += `
-    <div style="background: #f9fafb; border: 1px, solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
+    <div, style="background: #f9fafb; border: 1px, solid #e5e7eb; border-radius: 8px; padding: 16px; margin-top: 40px;">
       <p, style="margin: 0; font-size: 14px; color: #6b7280; font-style: italic;">
         <strong>AI Disclaimer:</strong> This report was generated using AI assistance. Please review all content for accuracy and completeness.
         Legal analysis should be verified by qualified legal professionals before use in official proceedings.
@@ -187,26 +186,26 @@ function generateSectionContent(section: string, reportType: string): string {
     `,`
     'Evidence Summary': `
       <p>Evidence collected and analyzed includes:</p>
-      <table style="width: 100%; border-collapse: collapse; margin: 16px, 0;">
+      <table, style="width: 100%; border-collapse: collapse; margin: 16px, 0;">
         <tr, style="background: #f9fafb;">
-          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Evidence Type</th>
-          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Description</th>
-          <th style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Status</th>
+          <th, style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Evidence Type</th>
+          <th, style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Description</th>
+          <th, style="border: 1px, solid #e5e7eb; padding: 12px; text-align: left;">Status</th>
         </tr>
         <tr>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Physical Evidence</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Items collected from scene</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Under analysis</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Physical Evidence</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Items collected from scene</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Under analysis</td>
         </tr>
         <tr>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Digital Evidence</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Electronic records and data</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Reviewed</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Digital Evidence</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Electronic records and data</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Reviewed</td>
         </tr>
         <tr>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Witness Statements</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Testimonial evidence</td>
-          <td style="border: 1px, solid #e5e7eb; padding: 12px;">Documented</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Witness Statements</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Testimonial evidence</td>
+          <td, style="border: 1px, solid #e5e7eb; padding: 12px;">Documented</td>
         </tr>
       </table>
     `,`

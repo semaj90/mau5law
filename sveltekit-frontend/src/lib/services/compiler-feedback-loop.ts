@@ -312,7 +312,7 @@ export class CompilerFeedbackLoop {
           return {
             content: doc?.content ?? result?.content ?? '',
             relevance: result?.finalScore ?? result?.score ?? 0,
-            source: (doc?.metadata && doc.metadata.source) || 'unknown' };
+            source: (doc?.metadata && doc.metadata.source) || 'unknown` };'`
         });
       }
       // Fallback: empty results
@@ -485,7 +485,7 @@ export class CompilerFeedbackLoop {
             metadata: {
               component: 'TypeScript',
               phase: 'type-checking',
-              category: 'type' }
+              category: 'type` }'`
           },
         ],
         performance: {
@@ -509,8 +509,7 @@ export class CompilerFeedbackLoop {
             metadata: {
               component: 'Module Resolver',
               phase: 'bundling',
-              category: `import' }'`
-          },
+              category: 'import' }'` }'`
         ],
         performance: {
           compilationTime: 800,

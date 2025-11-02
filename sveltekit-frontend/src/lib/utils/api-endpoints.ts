@@ -36,8 +36,7 @@ export function getGpuMetricsEndpoint(params?: string): string {
   // its Docker service name should be used.
   // For now, we'll assume it's an internal SvelteKit API route that might proxy to a Go service.
   const baseUrl = getFrontendApiBaseUrl();
-  return `${baseUrl}/api/gpu/metrics${params ? `?${params}` : '` }`;'`
-}
+  return `${baseUrl}/api/gpu/metrics${params ? `?${params}` : '' }`;'' }
 
 // Example for a Go service endpoint if needed directly from client/server
 export function getGoServiceBaseUrl(serviceName: string, defaultPort: number): string {

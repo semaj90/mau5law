@@ -46,8 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(health, {
           headers: {
             'X-Worker-Health': health.status,
-            'Cache-Control': 'no-cache` }'`
-        });
+            'Cache-Control': 'no-cache' }'` });'`
       }
       case 'stats': {
         const stats = rabbitmqServiceWorker.getStats();
@@ -306,8 +305,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json(
           {
             status: 'error',
-            error: {, message: 'Unknown, action: ${action}` }'`
-          },
+            error: {, message: 'Unknown, action: ${action}' }'` },'`
           { status: 400 }
         );
       }

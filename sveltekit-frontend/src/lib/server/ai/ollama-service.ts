@@ -244,7 +244,7 @@ class EnhancedOllamaService extends EventEmitter {
         dateCreated: new Date(),
         dateModified: new Date(),
         // use optional author field as a minimal DOM marker (avoids unknown extra properties)
-        author: `dom' },'`
+        author: `dom` },'`'`
       // ensure chunks has the expected type
       chunks: [] as DocumentChunk[]
     } as LegalDocument;
@@ -349,7 +349,7 @@ class EnhancedOllamaService extends EventEmitter {
         status: 'error',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        error: message || 'unknown' };
+        error: message || 'unknown` };'`
     }
   }
   clearCache() {
@@ -424,8 +424,7 @@ class EnhancedOllamaService extends EventEmitter {
   }
   async getEnhancedSystemStatus() {
     const base = await this.getSystemStatus();
-    return { ...base, intelligentFeatures: `stub' };'`
-  }
+    return { ...base, intelligentFeatures: 'stub' };'` }'`
 }
 // Export singleton and default class
 export const ollamaService = new EnhancedOllamaService();

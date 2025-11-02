@@ -56,7 +56,7 @@
       </p>
     </div>
     <div class="flex flex-wrap gap-2 items-center">
-    <Button.Root class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
+    <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="ghost"
         size="sm"
   onclick={() =>
@@ -64,7 +64,7 @@
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
-    <Button.Root class="bits-btn"
+    <Button class="bits-btn"
         variant="ghost"
         size="sm"
   onclick={() =>
@@ -75,7 +75,7 @@
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
-      <Button.Root class="bits-btn">
+      <Button class="bits-btn">
 <Plus class="w-4 h-4 mr-2" />
         Add Person
     </div>
@@ -116,7 +116,7 @@
           </select>
         </div>
         <div class="flex items-end">
-          <Button.Root variant="ghost" size="sm" class="w-full bits-btn bits-btn">
+          <Button variant="ghost" size="sm" class="w-full bits-btn bits-btn">
 Clear Filters
         </div>
       </div>
@@ -139,7 +139,7 @@ Clear Filters
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button.Root class="bits-btn">
+        <Button class="bits-btn">
 <Plus class="w-4 h-4 mr-2" />
           Add First Person
       {/if}
@@ -174,10 +174,10 @@ Clear Filters
             <div><strong>Cases:</strong> {person.caseIds.join(', ')}</div>
           </div>
           <div class="flex gap-2">
-            <Button.Root size="sm" class="flex-1 bits-btn bits-btn">
+            <Button size="sm" class="flex-1 bits-btn bits-btn">
 <Eye class="w-3 h-3 mr-1" />
               View
-            <Button.Root variant="ghost" size="sm" class="flex-1 bits-btn bits-btn">
+            <Button variant="ghost" size="sm" class="flex-1 bits-btn bits-btn">
 <Edit class="w-3 h-3 mr-1" />
               Edit
           </div>
@@ -204,10 +204,10 @@ Clear Filters
               </div>
             </div>
             <div class="flex gap-2">
-              <Button.Root class="bits-btn" size="sm">
+              <Button class="bits-btn" size="sm">
 <Eye class="w-3 h-3 mr-1" />
                 View
-              <Button.Root class="bits-btn" variant="ghost" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-3 h-3 mr-1" />
                 Edit
             </div>

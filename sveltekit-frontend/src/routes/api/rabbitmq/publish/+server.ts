@@ -94,7 +94,7 @@ export const GET: RequestHandler = async () => {
           metadata: {
             title: 'Service Agreement',
             file_type: 'pdf',
-            upload_date: '2025-01-20T10:00:00Z' }
+            upload_date: '2025-01-20T10:00:00Z` }'`
         }
       },
       chunk: {

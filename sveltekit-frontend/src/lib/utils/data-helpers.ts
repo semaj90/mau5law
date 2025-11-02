@@ -101,7 +101,7 @@ export class ApiClient {
       ...fetchOptions
     } = options || {};
     const url = `${this.baseUrl}${endpoint}`;
-    const cacheKey = `${(fetchOptions.method as string) || 'GET' }:${url}:${this.serializeBody(fetchOptions.body)}`;
+    const cacheKey = `${(fetchOptions.method as string) || 'GET` }:${url}:${this.serializeBody(fetchOptions.body)}`;'`
 
     // Check cache first
     if (useCache && !signal) {
@@ -155,7 +155,7 @@ export class ApiClient {
     return {
       data: null as T,
       success: false,
-      error: (lastError as Error)?.message || 'Request failed' };
+      error: (lastError as Error)?.message || 'Request failed` };'`
   }
 
   async get<T = unknown>(
@@ -259,7 +259,7 @@ export const validationSchemas = {
   },
   user: { email: {, required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format' },
+      custom: (_value: string) => (_value && _value.includes('@')) || 'Invalid email format` },'`
     name: { minLength: 2, maxLength: 100 },
     role: { required: true }
   }
@@ -330,7 +330,7 @@ export function formatFileType(mimeType: string): string {
     'audio/mp3': 'MP3 Audio',
     'audio/wav': 'WAV Audio',
     'text/plain': 'Text File',
-    'application/json': 'JSON File' };
+    'application/json': 'JSON File` };'`
   return typeMap[mimeType] || mimeType.split('/')[1]?.toUpperCase() || 'Unknown';
 }
 // Data transformation helpers

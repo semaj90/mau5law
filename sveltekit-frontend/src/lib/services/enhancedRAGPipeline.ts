@@ -475,7 +475,7 @@ export class EnhancedRAGPipeline {
           const ollamaApiUrl = getOllamaEndpoint();
           const r = await fetch(`${ollamaApiUrl}/api/generate`, {
             method: 'POST',
-            headers: { 'Content-Type': `application/json' },'`
+            headers: { 'Content-Type': `application/json` },'`'`
             body: JSON.stringify({
              , model: 'gemma3-legal:latest',
               prompt,
@@ -559,8 +559,7 @@ export class EnhancedRAGPipeline {
           title: `Memory: ${key}`,
           content: JSON.stringify(value),
           relevance: 0.6,
-          type: `document' });'`
-      }
+          type: 'document' });'` }'`
     }
     return results;
   }
@@ -680,7 +679,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -749,7 +748,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -816,7 +815,7 @@ export class EnhancedRAGPipeline {
       const timer = setTimeout(() => controller.abort(), 10_000);
       const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(payload),
         signal: controller.signal
       });
@@ -862,7 +861,7 @@ export class EnhancedRAGPipeline {
       const ollamaApiUrl = getOllamaEndpoint(); // Use the imported utility
       const r = await fetch(`${ollamaApiUrl}/api/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({, model: 'embeddinggemma:latest', text }), // Changed model
       });
       if (r.ok) {

@@ -227,8 +227,7 @@ export class QuicAuthClient {
     if (this.useHttp3) {
       options.headers = {
         ...options.headers,
-        'Alt-Svc': 'h3=":4433"; ma=86400` };'`
-    }
+        'Alt-Svc': 'h3=":4433"; ma=86400' };'` }'`
     return fetch(url, options);
   }
 }

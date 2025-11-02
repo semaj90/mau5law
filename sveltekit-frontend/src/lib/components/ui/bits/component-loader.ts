@@ -122,8 +122,7 @@ export interface NesGPUBridge {
    * @param element - The canvas element to render on.
    * @param options - Rendering options.
    */
-  renderContainer(element: HTMLCanvasElement, options: {, theme: 'dark' | 'light` }): Promise<void>;'`
-}
+  renderContainer(element: HTMLCanvasElement, options: {, theme: 'dark' | 'light' }): Promise<void>;'' }
 // --- Server-Side Integration Helpers (Stubs) ---
 /**
  * Helper for generating embeddings using the Ollama API.
@@ -191,7 +190,7 @@ export async function indexInQdrant(document: QdrantPoint): Promise<boolean> {
  *   This stub does not actually persist data or propagate errors.
  *   If an error occurs, it will be logged to the console but not thrown.
  */
-export async function persistJsonbData<T extends, Record<string, unknown>>(
+export async function persistJsonbData<T, extends, Record<string, unknown>>(
   table: string,
   id: string,
   _data: T

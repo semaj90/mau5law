@@ -345,7 +345,7 @@ class RedisGPUChatOptimizationService {
     try {
       const response = await fetch(`${this.config.ollamaApiBase}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: this.config.embeddingModel,
           prompt: text

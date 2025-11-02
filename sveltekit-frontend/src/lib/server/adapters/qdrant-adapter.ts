@@ -11,7 +11,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
     };
     const res = await fetch(`${base}/collections/${encodeURIComponent(name)}/points`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}' } : {}) },'`
+      headers: { 'Content-Type': 'application/json', ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}) },'`'`
       body: JSON.stringify(body)
     });
     if (!res.ok) {
@@ -26,7 +26,7 @@ export function createQdrantAdapter(config: QdrantConfig = {}): QdrantClient {
     };
     const res = await fetch(`${base}/collections/${encodeURIComponent(collection)}/points/search`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}' } : {}) },'`
+      headers: { 'Content-Type': 'application/json', ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}) },'`'`
       body: JSON.stringify(body)
     });
     if (!res.ok) {

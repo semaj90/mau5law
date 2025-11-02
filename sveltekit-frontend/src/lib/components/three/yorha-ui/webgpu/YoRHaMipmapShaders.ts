@@ -472,8 +472,7 @@ export class YoRHaMipmapShaders {
           textureStore(mipLevel4, baseCoord, color4 / 16.0);
         }
       }
-    `;`
-  }
+    `;` }
   /**
    * Cleanup resources
    */

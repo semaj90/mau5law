@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
         enable_kv_reuse: true,
-        compression_type: 'float16` },'`
+        compression_type: 'float16' },'`'`
       legal_context: {
         case_id: requestData.case_id,
         case_type: requestData.legal_context?.case_type || 'general',
@@ -100,12 +100,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
       workflow_config: requestData.workflow_config || null,
       store_embeddings: true,
-      cache_strategy: `rl_optimized` };
+      cache_strategy: `rl_optimized' };'`
     // Submit job to MCP server
     const mcpResponse = await fetch(`${MCP_ENDPOINT}/api/legal/job`, {
       method: 'POST',
       headers: {
-        'Content-Type': `application/json` },
+        'Content-Type': `application/json' },'`
       body: JSON.stringify(jobPayload)
     });
     if (!mcpResponse.ok) {
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       status: 'submitted',
       estimated_completion_ms: mcpResult.estimated_completion - Date.now(),
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
-      result_url: `/api/legal/result/${mcpResult.job_id}` });
+      result_url: `/api/legal/result/${mcpResult.job_id}' });'`
   } catch (err: any) {
     console.error('Legal API error: ', err);'
     // If the error is already a SvelteKit 'error' object (has status and message properties),
@@ -207,4 +207,4 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 function generateMessageId(): string {
-  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}` }
+  return `msg_${Date.now()}_${Math.random().toString(36).substring(7)}' }'`

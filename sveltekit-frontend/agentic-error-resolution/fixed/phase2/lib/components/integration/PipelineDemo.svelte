@@ -6,13 +6,13 @@ https://svelte.dev/e/unexpected_reserved_word -->
   // Svelte 5 runes are auto-imported
   import { pipelineManager, type PipelineType, type PipelineResult } from '$lib/services/pipeline-manager';
   import { PipelineVisualizer } from '$lib/services/pipeline-visualizer';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import {
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   // Reactive state using Svelte 5 runes
   let isProcessing = $state(false);
   let results = $state<PipelineResult[]>([]);
@@ -195,7 +195,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           />
         </div>
         <div class="flex items-end">
-          <Button.Root
+          <Button
             onclick={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
@@ -205,29 +205,29 @@ https://svelte.dev/e/unexpected_reserved_word -->
       </div>
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="ghost"
         >
 🧠 Auto-Select Optimal
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={batchProcess}
           disabled={isProcessing}
           variant="ghost"
         >
 📦 Batch Process
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={checkSystemHealth}
           variant="ghost"
         >
 🏥 Health Check
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={generateReport}
           variant="ghost"
         >
 📈 Performance Report
-        <Button.Root class="bits-btn"
+        <Button class="bits-btn"
           onclick={cleanup}
           variant="error"
         >
@@ -249,7 +249,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button.Root class="bits-btn" onclick={searchPipelines}>
+        <Button class="bits-btn" onclick={searchPipelines}>
 🔍 Search
       </div>
       {#if searchResults}

@@ -24,7 +24,7 @@
   disabled={disabled}
 >
   <span, class="sr-only">{ariaLabel}</span>
-  <span class="w-9 h-5 flex items-center bg-muted rounded-full relative, transition-colors" class:opacity-50={disabled}>
+  <span class="w-9 h-5 flex items-center bg-muted rounded-full, relative, transition-colors" class:opacity-50={disabled}>
     <span
       class="inline-block w-4 h-4 bg-white rounded-full transform transition-transform"
       style="transform: translateX({checked ? 16 : 0}px);"

@@ -32,8 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: `healthy` },
       meta: {
         requestId: `nes_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        version: '1.0.0'
-      }
+        version: '1.0.0` }'`
     };
     // Simulate processing delay (Nintendo-style timing)
     await new Promise(resolve => setTimeout(resolve, 50));

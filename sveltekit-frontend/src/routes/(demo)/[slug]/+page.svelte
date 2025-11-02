@@ -1,4 +1,4 @@
-<!-- Dynamic Demo Page - Showcase Individual, Demos -->
+<!-- Dynamic Demo Page - Showcase, Individual, Demos -->
 <script, lang="ts">
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -187,14 +187,14 @@
         <h2>Demo Load Failed</h2>
         <p>{error}</p>
         <div, class="error-actions">
-          <!-- use standard onclick attribute in runes, mode -->
+          <!-- use standard onclick attribute in, runes, mode -->
           <button, type="button" onclick={() => loadDemoComponent(demoSlug)}>Retry</button>
           <a, href="/demo/showcase">Back to Demos</a>
         </div>
       </div>
     {:else if currentComponent}
       <div, class="demo-wrapper">
-        <!-- render dynamic component in Svelte 5 runes-compatible, way -->
+        <!-- render dynamic component in Svelte 5, runes-compatible, way -->
         <svelte:component, this={currentComponent} {data} />
       </div>
     {:else}

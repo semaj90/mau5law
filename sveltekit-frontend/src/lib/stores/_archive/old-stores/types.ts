@@ -7,7 +7,7 @@ export interface VectorSearchResult { id: string;, content: string; similarity:
   capabilities?: { streaming?: boolean; functionCalling?: boolean; multimodal?: boolean; }
 } export interface ContextInjection { enabled: boolean;, documents: string[]; vectorResults: VectorSearchResult[]; strategy: "semantic" | "keyword" | "hybrid"; maxResults?: number; threshold?: number; }
 export interface StreamingResponse { id: string;, chunk: string; isComplete: boolean; metadata?: { tokenCount?: number; confidence?: number; }
-} export interface ApiResponse { response: string; conversationId?: string; metadata?: { model: string;, tokensUsed: number; processingTime: number; confidence?: number; references?: string[]; vectorResults?: VectorSearchResult[]; }
+} export interface ApiResponse { response: string; conversationId?: string; metadata?: {, model: string;, tokensUsed: number; processingTime: number; confidence?: number; references?: string[]; vectorResults?: VectorSearchResult[]; }
   error?: string; }
 export interface ServiceStatus { ollama: "connected" | "disconnected" | "error" | "unknown";, qdrant: "connected" | "disconnected" | "error" | "unknown"; database: "connected" | "disconnected" | "error" | "unknown"; gemma3: "ready" | "loading" | "error" | "unknown"; }
 // Legal-specific types export interface LegalContext { caseType?: "criminal" | "civil" | "administrative"; jurisdiction?: string; caseNumber?: string; parties?: string[]; relevantStatutes?: string[]; precedentCases?: string[]; }

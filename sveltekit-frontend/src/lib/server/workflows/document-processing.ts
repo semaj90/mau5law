@@ -19,7 +19,7 @@ export const documentProcessingMachine = createMachine({
   id: 'documentProcessing',
   initial: 'idle',
   context: {
-    documentId: '',
+   , documentId: '',
     content: '',
     metadata: {},
     chunks: [],

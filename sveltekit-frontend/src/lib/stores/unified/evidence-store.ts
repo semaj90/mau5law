@@ -142,7 +142,7 @@ function createEvidenceStore() {
       update(s => ({ ...s, activeCaseId: caseId, isLoading: true, error: null }));
       try {
         const response = await fetch(`/api/cases/${caseId}/evidence`, {
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -194,7 +194,7 @@ function createEvidenceStore() {
         const response = await fetch('/api/evidence/upload', {
           method: 'POST',
           body: formData,
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -261,7 +261,7 @@ function createEvidenceStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({, type: analysisType }),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -360,7 +360,7 @@ function createEvidenceStore() {
     async getChainOfCustody(evidenceId: string): Promise<ChainOfCustodyEntry[]> {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -392,7 +392,7 @@ function createEvidenceStore() {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
           body: JSON.stringify(entry),
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -424,7 +424,7 @@ function createEvidenceStore() {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
           method: 'DELETE',
-          credentials: `include` });
+          credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({

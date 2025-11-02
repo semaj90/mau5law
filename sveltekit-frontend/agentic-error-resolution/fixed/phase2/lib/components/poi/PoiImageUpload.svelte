@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Upload, Camera, X } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button.svelte';
+  import  Button  from "$lib/components/ui/button.svelte";
   interface Props {
     poiId: string;
     poiName?: string;
@@ -110,22 +110,22 @@
         Upload a photo (JPEG or PNG, max 5MB)
       </p>
       <div class="flex gap-2">
-        <Button.Root
+        <Button
           onclick={triggerUpload}
           disabled={uploading}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
         >
           <Upload class="w-4 h-4" />
           {uploading ? 'Uploading...' : 'Upload Photo'}
-        </Button.Root>
+        </Button>
         {#if preview}
-          <Button.Root
+          <Button
             onclick={clearPreview}
             disabled={uploading}
             class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
           >
             <X class="w-4 h-4" />
-          </Button.Root>
+          </Button>
         {/if}
       </div>
     </div>

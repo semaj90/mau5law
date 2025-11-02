@@ -55,7 +55,7 @@
     aria-haspopup="true"
     aria-expanded={open}
   >
-    <!-- named slot for trigger; parent can, receive `let:open` -->
+    <!-- named slot for trigger; parent, can, receive `let:open` -->
     <slot, name="trigger" {open}></slot>
   </button>
   {#if open}
@@ -70,7 +70,7 @@
       style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
       transitionfly={{ y: -6, duration: 140 }}
     >
-      <!-- default slot used for menu, items -->
+      <!-- default slot used for, menu, items -->
       <slot></slot>
     {/if}
 </div>

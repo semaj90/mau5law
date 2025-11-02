@@ -270,7 +270,7 @@ export class HMMStateMachine {
       [LegalConversationState.RISK_ASSESSMENT]: 'Risk Assessment',
       [LegalConversationState.RECOMMENDATION]: 'Recommendation',
       [LegalConversationState.FOLLOW_UP]: 'Follow-up',
-      [LegalConversationState.CONCLUSION]: 'Conclusion` };'`
+      [LegalConversationState.CONCLUSION]: 'Conclusion' };'`'`
     return names[state] || 'Unknown';
   }
   /**

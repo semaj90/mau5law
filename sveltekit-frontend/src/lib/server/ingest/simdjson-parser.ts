@@ -34,12 +34,12 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
           textFields.push(obj);
         }
       } else if (Array.isArray(obj)) {
-        for (let i = 0; i < Math.min(obj.length, 100); i++) { // Limit array, processing
+        for (let i = 0; i < Math.min(obj.length, 100); i++) { // Limit, array, processing
           extractTextFields(obj[i], maxDepth, currentDepth + 1);
         }
       } else if (typeof obj === 'object') {
         const keys = Object.keys(obj);
-        for (let i = 0; i < Math.min(keys.length, 50); i++) { // Limit object key, processing
+        for (let i = 0; i < Math.min(keys.length, 50); i++) { // Limit object, key, processing
           const key = keys[i];
           extractTextFields(obj[key], maxDepth, currentDepth + 1);
         }

@@ -8,13 +8,13 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import {
+  import 
     Button,
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte';
+   from "$lib/components/ui/enhanced-bits.svelte";
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type {
     VectorSearchResult,
@@ -351,7 +351,7 @@ await loadSystemHealth();
   </div>
   <!-- Tab Navigation -->
   <div class="flex items-center justify-center space-x-1 bg-muted p-1 rounded-lg w-fit mx-auto">
-    <Button.Root class="bits-btn"
+    <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
   onclick={() =>
@@ -360,8 +360,8 @@ activeTab = 'search'}
     >
       <Search class="h-4 w-4" />
       Search
-</Button.Root>
-    <Button.Root class="bits-btn"
+</Button>
+    <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
   onclick={() =>
@@ -370,8 +370,8 @@ activeTab = 'recommendations'}
     >
       <Lightbulb class="h-4 w-4" />
       Recommendations
-</Button.Root>
-    <Button.Root class="bits-btn"
+</Button>
+    <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
   onclick={() =>
@@ -380,8 +380,8 @@ activeTab = 'analysis'}
     >
       <BarChart3 class="h-4 w-4" />
       Analysis
-</Button.Root>
-    <Button.Root class="bits-btn"
+</Button>
+    <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
   onclick={() =>
@@ -390,7 +390,7 @@ activeTab = 'health'}
     >
       <Activity class="h-4 w-4" />
       Health
-</Button.Root>
+</Button>
   </div>
   <!-- Processing Indicator -->
   {#if isProcessing}
@@ -436,7 +436,7 @@ activeTab = 'health'}
               </div>
             {/if}
           <div class="flex items-center gap-2">
-            <Button.Root
+            <Button
               onclick={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default bits-btn bits-btn"
@@ -448,15 +448,15 @@ activeTab = 'health'}
                 <Search class="h-4 w-4 mr-2" />
                 Search
               {/if}
-</Button.Root>
-            <Button.Root class="bits-btn"
+</Button>
+            <Button class="bits-btn"
               variant="ghost"
               size="sm"
               onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
-</Button.Root>
+</Button>
           </div>
         </div>
       </div>
@@ -469,9 +469,9 @@ showAdvancedOptions = !showAdvancedOptions}
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
-              <Button.Root class="bits-btn" variant="ghost" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="h-4 w-4" />
-</Button.Root>
+</Button>
             </h3>
           </div>
           <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>
@@ -561,7 +561,7 @@ showAdvancedOptions = !showAdvancedOptions}
               </Select>
             </div>
           </div>
-          <Button.Root
+          <Button
             onclick={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default bits-btn bits-btn"
@@ -573,7 +573,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <Zap class="h-4 w-4 mr-2" />
               Generate Recommendations
             {/if}
-</Button.Root>
+</Button>
         </div>
       </div>
       <!-- Recommendations Results -->
@@ -586,12 +586,12 @@ showAdvancedOptions = !showAdvancedOptions}
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
-                <Button.Root class="bits-btn" variant="ghost" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Share class="h-4 w-4" />
-</Button.Root>
-                <Button.Root class="bits-btn" variant="ghost" size="sm">
+</Button>
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="h-4 w-4" />
-</Button.Root>
+</Button>
               </div>
             </h3>
           </div>
@@ -658,7 +658,7 @@ showAdvancedOptions = !showAdvancedOptions}
               class="vector-search-input min-h-[150px]"
             />
           </div>
-          <Button.Root
+          <Button
             onclick={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default bits-btn bits-btn"
@@ -670,7 +670,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <BarChart3 class="h-4 w-4 mr-2" />
               Analyze Document
             {/if}
-</Button.Root>
+</Button>
         </div>
       </div>
       <!-- Analysis Results -->
@@ -828,9 +828,9 @@ showAdvancedOptions = !showAdvancedOptions}
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={loadSystemHealth}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={loadSystemHealth}>
 <RefreshCw class="h-4 w-4" />
-</Button.Root>
+</Button>
           </h3>
         </div>
         <div class="yorha-panel-content bits-nier-bits-yorha-panel-content" variant="default" legal={true}>

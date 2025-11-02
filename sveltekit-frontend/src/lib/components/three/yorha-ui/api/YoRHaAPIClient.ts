@@ -189,7 +189,7 @@ export class YoRHaAPIClient {
     // Stop existing streams if reloading
     this.stopDataStreams();
     const url = layoutUrl.startsWith('http') ? layoutUrl : layoutUrl;
-    const res = await fetch(url, { headers: { 'Accept': 'application/json` } });'`
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });'`'`
     if (!res.ok) throw new Error(`Failed to load layout: ${res.status}`);
     this.layout = (await res.json()) as YoRHaLayout;
     this.notifySubscribers('layout:loaded', this.layout);
@@ -216,7 +216,7 @@ export class YoRHaAPIClient {
           const endpoint = ds.endpoint as string;
           const interval = setInterval(async () => {
             try {
-              const res = await fetch(endpoint, { headers: { 'Accept': 'application/json` } });'`
+              const res = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });'`'`
               if (res.ok) {
                 const data = await res.json();
                 this.pushData(ds.name, data);
@@ -539,7 +539,7 @@ export class YoRHaAPIClient {
   // New helper: centralized typed API call with timeout + retry
   private async apiCall<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
     const makeUrl = (p: string) =>
-      p.startsWith('http') ? p : '${this.config.baseURL.replace(/\/$/, '')}${p.startsWith('/') ? '' : '/` }${p}`;
+      p.startsWith('http') ? p : '${this.config.baseURL.replace(/\/$/, '')}${p.startsWith('/') ? '' : '/' }${p}`;'`
     const maxAttempts = Math.max(1, this.config.retryAttempts ?? 0);
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       // create a fresh AbortController per attempt
@@ -558,8 +558,7 @@ export class YoRHaAPIClient {
         clearTimeout(timeoutId);
         if (!res.ok) {
           const text = await res.text().catch(() => '');
-          throw new Error(`API request failed ${res.status} ${res.statusText}${text ? ' - ' + text : '` }`);'`
-        }
+          throw new Error(`API request failed ${res.status} ${res.statusText}${text ? ' - ' + text : '' }`);'' }
         // handle empty response bodies
         const text = await res.text().catch(() => '');
         if (!text) return undefined as unknown as T;

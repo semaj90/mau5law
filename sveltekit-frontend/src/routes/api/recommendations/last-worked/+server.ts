@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: 'Missing required; fields: itemId, action` },'`
+          error: 'Missing required; fields: itemId, action' },''
         { status: 400 }
       );
     }
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error recording work activity: `, error);'`
+    console.error('Error recording work activity: ', error);'`'`
     return json(
       {
         success: false,

@@ -215,7 +215,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json(
         {
           success: false,
-          error: 'Configuration ID is required` },'`
+          error: 'Configuration ID is required' },''
         { status: 400 }
       );
     }

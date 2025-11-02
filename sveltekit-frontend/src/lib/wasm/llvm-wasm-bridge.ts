@@ -180,8 +180,7 @@ double get_processing_time() {
   // Mock timing
   return 42.5;
 }
-}`;`
-  }
+}`;` }
   private generateFunctionForModule(baseName: string, moduleName: string): string {
     if (baseName === 'legal_text_processor') {
       return `
@@ -208,8 +207,7 @@ int32_t extractCitations(const char* text, int32_t length, char* citations, int3
   strncpy(citations, found_citations, citations_length);
   citations[citations_length] = '\\0';
   return citations_length;
-}`;`
-    }
+}`;` }
     if (baseName === 'vector_engine') {
       return `
 int32_t computeEmbedding(const float* input, int32_t input_size, float* output, int32_t output_size) {
@@ -239,8 +237,7 @@ float calculateSimilarity(const float* vec1, const float* vec2, int32_t size) {
   }
   float magnitude = sqrtf(norm1) * sqrtf(norm2);
   return magnitude > 0.0f ? dot_product / magnitude : 0.0f;
-}`;`
-    }
+}`;` }
     // Default function generation
     return `
 int32_t ${baseName}_process(const char* input, int32_t input_length, char* output, int32_t output_length) {
@@ -254,8 +251,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   strncpy(output, result, result_length);
   output[result_length] = '\\0';
   return result_length;
-}`;`
-  }
+}`;` }
   private async compileToWASM(
     sources: Array<{, name: string; content: string }>,
     options: LLVMCompileOptions
@@ -290,7 +286,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         memoryUsage: 0,
         optimizations: [],
         warnings: [],
-        error: error instanceof Error ? error.message : 'Unknown compilation error' };
+        error: error instanceof Error ? error.message : 'Unknown compilation error` };'`
     }
   }
   private generateMockWASMBinary(
@@ -391,8 +387,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       // Instantiate the WASM module
       const wasmModule = await WebAssembly.instantiate(module.compiledWasm, { env: {, memory: module.memory,
           abort: (msg: number, file: number, line: number, column: number) => {
-            console.error(`WASM abort in ${module.name}: ', { msg, file, line, column });'`
-          },
+            console.error(`WASM abort in ${module.name}: ', { msg, file, line, column });'` },
           console_log: (ptr: number) => {
             // Read string from WASM memory
             const memory = new Uint8Array(module.memory!.buffer);

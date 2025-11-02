@@ -41,8 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(1);
         if (found && found.length > 0) {
           const c = found[0];
-          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A` }\n`;'`
-        }
+          contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A` }\n`;'' }'`
       } catch (e) {
         // keep chat functional even if DB is unavailable
         contextPrefix = '';
@@ -64,8 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await ollamaChat([sys, ...userAugmented], { model: model || 'gemma3-legal:latest' });
     const reply = response?.choices?.[0]?.message?.content ?? '';
 
-    return json({ success: true, reply, model: model || 'gemma3-legal:latest` });'`
-  } catch (err) {
+    return json({ success: true, reply, model: model || 'gemma3-legal:latest' });'` } catch (err) {'`
     const message = err instanceof Error ? err.message : String(err);
     console.error('[AI Chat] Error:', message);
     return json({ success: false, error: message }, { status: 500 });

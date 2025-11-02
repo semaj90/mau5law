@@ -356,7 +356,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, cacheData, {
       ttl: options.ttl || 600000, // 10 minutes default for search results
       tags: ['search', 'legal-ai', ...(options.tags || [])],
-      priority: options.priority || 'medium' });
+      priority: options.priority || 'medium` });'`
   }
   async getCachedSearchResults(query: string, options: SearchCacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `search:${this.hashQuery(query)}`;
@@ -371,7 +371,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, analysis, {
       ttl: options.ttl || 3600000, // 1 hour default for document analysis
       tags: ['analysis', 'document', documentId, ...(options.tags || [])],
-      priority: options.priority || 'high' });
+      priority: options.priority || 'high` });'`
   }
   async getCachedDocumentAnalysis(documentId: string, options: CacheOptions = {}): Promise<unknown | null> {
     const cacheKey = `analysis:${documentId}`;
@@ -382,7 +382,7 @@ class EnhancedCachingService {
     await this.set(cacheKey, results, {
       ttl: options.ttl || 1800000, // 30 minutes default for vector results
       tags: ['vector', 'similarity', ...(options.tags || [])],
-      priority: options.priority || 'high' });
+      priority: options.priority || 'high` });'`
   }
   async getCachedVectorSimilarity(queryHash: string, options: CacheOptions = {}): Promise<unknown[] | null> {
     const cacheKey = `vector:${queryHash}`;
@@ -508,7 +508,7 @@ export function getNESCacheStats(): Record<string, unknown> {
       initialized: true,
       memoryUsage: memFn ? memFn.call(nesOrchestrator) : 'N/A',
       cacheHierarchy: hierFn ? hierFn.call(nesOrchestrator) : 'N/A',
-      performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A' };
+      performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A` };'`
   }
   return { initialized: false };
 }

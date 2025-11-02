@@ -2,18 +2,18 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
-  import { Database } from 'lucide-svelte/dist/icons/database.svelte';
-	import { Zap } from 'lucide-svelte/dist/icons/zap.svelte';
-	import { TrendingUp } from 'lucide-svelte/dist/icons/trending-up.svelte';
-	import { DollarSign } from 'lucide-svelte/dist/icons/dollar-sign.svelte';
-	import { Clock } from 'lucide-svelte/dist/icons/clock.svelte';
-	import { BarChart3 } from 'lucide-svelte/dist/icons/bar-chart-3.svelte';
-	import { RefreshCw } from 'lucide-svelte/dist/icons/refresh-cw.svelte';
-	import { AlertTriangle } from 'lucide-svelte/dist/icons/alert-triangle.svelte';
-	import { CheckCircle } from 'lucide-svelte/dist/icons/check-circle.svelte';
-	import { Target } from 'lucide-svelte/dist/icons/target.svelte';
-	import { Cpu } from 'lucide-svelte/dist/icons/cpu.svelte';
-	import { HardDrive } from 'lucide-svelte/dist/icons/hard-drive.svelte';
+  import  Database  from "lucide-svelte/dist/icons/database.svelte";
+	import  Zap  from "lucide-svelte/dist/icons/zap.svelte";
+	import  TrendingUp  from "lucide-svelte/dist/icons/trending-up.svelte";
+	import  DollarSign  from "lucide-svelte/dist/icons/dollar-sign.svelte";
+	import  Clock  from "lucide-svelte/dist/icons/clock.svelte";
+	import  BarChart3  from "lucide-svelte/dist/icons/bar-chart-3.svelte";
+	import  RefreshCw  from "lucide-svelte/dist/icons/refresh-cw.svelte";
+	import  AlertTriangle  from "lucide-svelte/dist/icons/alert-triangle.svelte";
+	import  CheckCircle  from "lucide-svelte/dist/icons/check-circle.svelte";
+	import  Target  from "lucide-svelte/dist/icons/target.svelte";
+	import  Cpu  from "lucide-svelte/dist/icons/cpu.svelte";
+	import  HardDrive  from "lucide-svelte/dist/icons/hard-drive.svelte";
   // Sample cache metrics - replace with real data
   let cacheMetrics = $state({
     retrieval: {

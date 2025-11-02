@@ -44,8 +44,7 @@ export const GET: RequestHandler = async () => {
       try {
         vectorTest = await sql`
           SELECT: '[1,0,1]'::vector <-> '[1,0,0]'::vector as cosine_distance
-        `;`
-      } catch (err: any) {
+        `;' } catch (err: any) {'`
         console.warn('Vector test failed:', err.message);
         vectorTest = { error: err.message };
       }
@@ -98,8 +97,7 @@ export const GET: RequestHandler = async () => {
         status: isHealthy ? 200 : 503,
         headers: {
           'Content-Type': 'application/json',
-          ...(dev && { 'Access-Control-Allow-Origin': '*` })'`
-        }
+          ...(dev && { 'Access-Control-Allow-Origin': '*' })'` }'`
       }
     );
   } catch (err: any) {

@@ -203,7 +203,7 @@ class WebASMRankingCache {
         this.serviceWorker = null;
         return;
       }
-      const reg = await swContainer.register('/webasm-ranking-worker.js', { scope: `/webasm/' });'`
+      const reg = await swContainer.register('/webasm-ranking-worker.js', { scope: `/webasm/` });'`'`
       this.serviceWorker = reg;
 
       // If the worker is installing, wait for activation (best-effort)
@@ -538,8 +538,7 @@ class WebASMRankingCache {
         return (await response.json()) as Record<string, number>;
       }
     } catch (error) {
-      console.warn('Failed to get QUIC metrics: `, error);'`
-    }
+      console.warn('Failed to get QUIC metrics: ', error);'` }'`
     return null;
   }
 } // end of class WebASMRankingCache
@@ -581,8 +580,7 @@ if (typeof window !== 'undefined') {
   webASMRankingCache.initialize().catch(err => {
     // keep initialization errors visible but avoid crashing builds
     // eslint-disable-next-line no-console
-    console.error('Initialization error:', err);'
-  });
+    console.error('Initialization error:', err);` });`'
 }
 
 export default webASMRankingCache;

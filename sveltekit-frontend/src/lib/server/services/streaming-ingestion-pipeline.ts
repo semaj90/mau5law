@@ -271,8 +271,7 @@ export class StreamingIngestionPipeline {
         } as any)
         .where(eq(embeddingCache512.textHash, textHash));
     } catch (error) {
-      console.error('Cache access update error:', error);'
-    }
+      console.error('Cache access update error: `, error);` }'
   }
 
   // Utility functions
@@ -332,7 +331,7 @@ class EmbeddingService {
     try {
       const response = await fetch(`${this.serviceUrl}/embed`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ text, model })
       });
       if (!response.ok) {

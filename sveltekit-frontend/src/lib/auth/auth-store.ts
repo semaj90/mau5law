@@ -317,7 +317,7 @@ export class AuthStore {
     try {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ currentPassword, newPassword }),
         credentials: `include` });
       const result = await this.parseApiResponse(response);

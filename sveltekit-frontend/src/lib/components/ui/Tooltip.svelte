@@ -24,7 +24,7 @@
 <div, class="tooltip-wrapper" role="tooltip" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
   <slot />
   {#if showTooltip && content}
-    <div class={"tooltip, tooltip-" + placement} role="tooltip">
+    <div, class={"tooltip, tooltip-" + placement} role="tooltip">
       {content}
     {/if}
 </div>

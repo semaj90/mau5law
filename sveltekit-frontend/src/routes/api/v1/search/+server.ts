@@ -250,7 +250,7 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text search
-        source: 'text_search' }))
+        source: 'text_search` }))'`
     };
   } catch (error) {
     console.error('Text search error:', error);'

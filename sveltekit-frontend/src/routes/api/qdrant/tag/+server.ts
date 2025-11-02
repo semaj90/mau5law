@@ -119,7 +119,7 @@ class MockQdrantClient {
     return {
       points_count: coll?.points?.length || 0,
       config: coll?.config || {},
-      status: 'green` };'`
+      status: `green` };'`'`
   }
   async createPayloadIndex(_collection: string, _config?: any) {
     return { status: `ok` };
@@ -260,7 +260,7 @@ async function tagDocument(data: Record<string, unknown>, userId: string): Promi
     const vector = Array.isArray(data.vector) ? (data.vector as number[]) : undefined;
     const payload = data.payload as Payload | undefined;
     if (!id || !vector || !payload) {
-      return json({ error: 'Missing required, fields: id, vector, payload` }, { status: 400 });'`
+      return json({ error: 'Missing required, fields: id, vector, payload' }, { status: 400 });''
     }
     const documentPayload = { ...payload, userId, timestamp: new Date().toISOString() } as Payload;
     const response = (await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
@@ -605,7 +605,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get('limit') || '20');
     switch (action) {
       case 'get_document':
-        if (!documentId) return json({ error: 'Document ID required` }, { status: 400 });'`
+        if (!documentId) return json({ error: 'Document ID required' }, { status: 400 });''
         // coerce sessionId to string here to satisfy functions that expect string userId
         return await getDocument(documentId, String(sessionId));
       case 'list_documents':

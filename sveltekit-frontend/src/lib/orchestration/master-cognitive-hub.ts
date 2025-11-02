@@ -865,8 +865,7 @@ export class MasterCognitiveHub {
             priority: request.priority ?? 5,
             constraints: request.context?.constraints as Record<string, unknown> | undefined
           })) as GPUWorkloadResult;
-          insights.push(`GPU workload queued: ${gpuResult?.workloadId ?? 'unknown` }`);'`
-        } else {
+          insights.push(`GPU workload queued: ${gpuResult?.workloadId ?? 'unknown' }`);'' } else {
           insights.push('GPU orchestrator unavailable; skipped GPU work.');
         }
       } catch (err) {
@@ -1012,7 +1011,7 @@ type $EmergentBehavior = { detected: boolean;, type: string;
   details?: Record<string, unknown>;
 };
 
-type ProcessingRequest<Data = unknown, Context extends, Record<string, unknown> = Record<string, unknown>> = {
+type ProcessingRequest<Data = unknown, Context, extends, Record<string, unknown> = Record<string, unknown>> = {
   type: 'search' | 'analyze' | 'generate' | 'optimize' | 'transcend';
   data?: Data;
   context?: Context;

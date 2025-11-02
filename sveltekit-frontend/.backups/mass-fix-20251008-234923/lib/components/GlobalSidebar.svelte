@@ -5,14 +5,14 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import {
+  import 
     userCases,
     userEvidence,
     userCitations,
     userReports,
     userAIConversations,
     userStats,
-  } from '$lib/stores/userDataStore.svelte';
+   from "$lib/stores/userDataStore.svelte";
   import {
     formatRelativeTime,
     formatDetailedTimestamp,

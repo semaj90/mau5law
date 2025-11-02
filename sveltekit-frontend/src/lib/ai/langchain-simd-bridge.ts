@@ -477,7 +477,7 @@ export class LangChainSIMDBridge {
         }
       };
     } catch (error) {
-      console.error('Pipeline test failed: `, error);'`
+      console.error('Pipeline test failed: ', error);'`'`
       return {
         success: false,
         performance: {},

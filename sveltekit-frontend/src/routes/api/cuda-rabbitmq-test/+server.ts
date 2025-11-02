@@ -166,8 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json(
             {
               success: false,
-              error: {, message: 'embeddings array is required` }'`
-            },
+              error: {, message: 'embeddings array is required' }'` },'`
             { status: 400 }
           );
         }
@@ -180,8 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
             embeddingCount: embeddings.length,
             batchSize,
             dimensions: embeddings[0]?.length || 0,
-            processing_mode: getBridgeStatus().cudaHealthy ? 'cuda' : `webassembly' }'`
-        });
+            processing_mode: getBridgeStatus().cudaHealthy ? 'cuda' : 'webassembly' }'' });
       }
       case 'benchmark': {
         console.log('🚀 Running RabbitMQ-CUDA benchmark...');
@@ -221,8 +219,7 @@ export const POST: RequestHandler = async ({ request }) => {
               embedding_count: 500,
               expected_cuda_acceleration: getBridgeStatus().cudaHealthy
             },
-            estimated_total_time: getBridgeStatus().cudaHealthy ? '500-800ms' : '2-5s` }'`
-        });
+            estimated_total_time: getBridgeStatus().cudaHealthy ? '500-800ms' : '2-5s' }'` });'`
       }
       case 'stress_test': {
         console.log('💥 Running RabbitMQ-CUDA stress test...');

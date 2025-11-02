@@ -94,6 +94,6 @@ export const GET: RequestHandler = withErrorHandling(async event => {
     message:
       overallStatus === 'healthy'
         ? `All systems operational (${availableModels.length} models available)`
-        : 'Ollama service not available' };
+        : 'Ollama service not available` };'`
   return apiSuccess(healthData, undefined, requestId);
 });

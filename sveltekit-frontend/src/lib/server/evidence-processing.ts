@@ -93,8 +93,7 @@ const evidenceProcessingMachine = createMachine({
           target: 'failed',
           actions: assign({
             error: ({ event }) => (event.error as Error).message,
-            stage: 'complete` })'`
-        }
+            stage: 'complete' })'` }'`
       }
     },
     storing: { invoke: {, src: 'storeVectors',

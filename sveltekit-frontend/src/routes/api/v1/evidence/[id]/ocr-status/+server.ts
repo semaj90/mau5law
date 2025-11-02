@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true' }
+        'X-Error': 'true` }'`
     });
   }
 };

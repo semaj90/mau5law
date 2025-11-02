@@ -342,7 +342,7 @@ export class LegalAIWorkflowOrchestrator {
         title: 'Case Created',
         date: now,
         type: 'milestone',
-        description: '${request.caseType} case "${request.title}" created' },
+        description: '${request.caseType} case "${request.title}" created` },'`
       {
         id: '2',
         title: 'Initial Research',

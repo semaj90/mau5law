@@ -328,8 +328,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json(
             {
               status: 'error',
-              message: 'Query parameter is required'
-            },
+              message: 'Query parameter is required` },'`
             { status: 400 }
           );
         }

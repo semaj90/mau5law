@@ -230,7 +230,7 @@ class WebGPUCudaBridge {
         {,
          , binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: {, type: 'read-only-storage` }'`
+          buffer: {, type: `read-only-storage` }'`'`
         },
         {
           binding: 1,

@@ -254,8 +254,7 @@ class UnifiedClientLLMOrchestrator {
         type: 'LOAD_MODEL',
         data: {
          , modelUrl: '/wasm/gemma-models/gemma-270m.bin',
-          config: {, contextLength: 2048, quantization: 'int8` }'`
-        }
+          config: {, contextLength: 2048, quantization: 'int8' }'` }'`
       });
       const model: ModelInstance = {
         id: 'gemma270m',
@@ -552,8 +551,7 @@ class UnifiedClientLLMOrchestrator {
         temperature: 0.4,
         legalContext: {
          , domain: request.context.legalDomain ?? 'general',
-          documentType: request.context.documentType ?? 'generic` }'`
-      }
+          documentType: request.context.documentType ?? 'generic' }'` }'`
     })) as WorkerResult;
 
     return {

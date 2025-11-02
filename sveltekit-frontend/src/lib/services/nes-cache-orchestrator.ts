@@ -42,12 +42,12 @@ export interface WebGPUCacheEntry { shaderCode: string;, pipeline: GPUComputePi
 export class NESCacheOrchestrator {
   private advancedCache: AdvancedCacheManager;
   private basicCache = cachingService;
-  private nesMemory: Map<keyof typeof, NES_CACHE_CONSTRAINTS, NESCacheState[]> = new Map();
+  private nesMemory: Map<keyof, typeof, NES_CACHE_CONSTRAINTS, NESCacheState[]> = new Map();
   private gpuDevice: GPUDevice | null = null;
   private webgpuCache: Map<string, WebGPUCacheEntry> = new Map();
   private animationCache: Map<string, any> = new Map();
   private yorhaUICache: Map<string, YoRHaUICache> = new Map();
-  private memoryUsage: Record<keyof typeof, NES_CACHE_CONSTRAINTS, number>;
+  private memoryUsage: Record<keyof, typeof, NES_CACHE_CONSTRAINTS, number>;
   private predictionEngine: NESCachePredictionEngine;
   private spritesheetCache: Map<string, CanvasState[]> = new Map();
   constructor() {
@@ -290,8 +290,7 @@ export class NESCacheOrchestrator {
       strategy: 'adaptive',
       ttl: 300000, // 5 minutes (animations are transient)
       layers: ['memory', 'webgpu'],
-      compress: false, // Don't compress GPU data'
-    });
+      compress: false, // Don't compress GPU data` });'`
     console.log(`✅ Cached GPU animation: ${animationData.id}`);
   }
   // =============================================================================
@@ -444,8 +443,7 @@ export class NESCacheOrchestrator {
       // Create LOD levels if requested
       if (options.lodLevels && options.lodLevels > 1) {
         // This would generate multiple resolution versions
-        // For now, we'll just return the original'
-      }
+        // For now, we'll just return the original` }'`
       return {
         ...state,
         fabricJSON: optimizedFabricJSON,
@@ -507,8 +505,7 @@ export class NESCacheOrchestrator {
         let glow = sin(processed * yorhaParams[2]) * yorhaParams[3];
         outputBuffer[index] = processed + glow * 0.1;
       }
-    `;`
-  }
+    `;` }
   private createGPUBufferFromProps(props: { [key: string]: any }): { buffer: ArrayBuffer } | null {
     if (!this.gpuDevice) return null;
     try {

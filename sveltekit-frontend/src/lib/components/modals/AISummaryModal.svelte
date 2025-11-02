@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
@@ -6,12 +6,12 @@ https://svelte.dev/e/js_parse_error -->
   const { onclose } = $props<{ onclose: ((event?: any) }>()
   import { aiService } from '$lib/services/aiService';
   import * as Dialog from '$lib/components/ui/Dialog.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // use icon components from the icons subpath (lucide-svelte exports individual files)
-  import { Copy } from 'lucide-svelte/icons/copy.svelte';
+  import  Copy  from "lucide-svelte/icons/copy.svelte";
   import X from 'lucide-svelte/icons/x.svelte';
-  import { AlertCircle } from 'lucide-svelte/icons/alert-circle.svelte';
-  import { Check } from 'lucide-svelte/icons/check.svelte';
+  import  AlertCircle  from "lucide-svelte/icons/alert-circle.svelte";
+  import  Check  from "lucide-svelte/icons/check.svelte";
   // relax strict typing for our local UI components (prevents TS errors about unknown props/events)
   declare module: '$lib/components/ui/dialog' {
     export const Root: any;
@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
       {:else if $error}
         <!-- Error, State -->
         <div, class="space-y-4">
-          <div class="flex items-center, gap-2">
+          <div class="flex, items-center, gap-2">
             <AlertCircle />
             <span>AI Error</span>
           </div>
@@ -70,20 +70,20 @@ https://svelte.dev/e/js_parse_error -->
       {:else if $summary}
         <!-- Summary, Content -->
         <div, class="space-y-4">
-          <div class="flex items-center, justify-between">
-            <div class="flex items-center, gap-2">
-              <Button.Root
+          <div class="flex, items-center, justify-between">
+            <div class="flex, items-center, gap-2">
+              <Button
                 class="bits-btn"
                 onclick={copyToClipboard}
                 variant="ghost"
                 size="sm"
                 aria-label="Copy summary to clipboard"
               >
-                <Copy class="w-4, h-4" />
+                <Copy, class="w-4, h-4" />
                 <span>Copy</span>
-              </Button.Root>
+              </Button>
               {#if copied}
-                <span class="inline-flex items-center, gap-1"><Check class="w-4, h-4" />Copied!</span>
+                <span class="inline-flex, items-center, gap-1"><Check, class="w-4, h-4" />Copied!</span>
               {/if}
             </div>
           </div>
@@ -99,11 +99,11 @@ https://svelte.dev/e/js_parse_error -->
       {:else}
         <div>No summary available.{/if}
     </div>
-    <div class="dialog-footer mt-4 flex, justify-end">
-      <Button.Root class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close summary, modal">
+    <div class="dialog-footer mt-4, flex, justify-end">
+      <Button class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close, summary, modal">
         <X />
         <span>Close</span>
-      </Button.Root>
+      </Button>
     </div>
   </Dialog.Content>
 </Dialog.Root>

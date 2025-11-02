@@ -248,7 +248,7 @@ export class RAGKnowledgePipeline {
             type: 'object',
             properties: { people: {, type: 'array', items: { type: 'string' } },
               organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: 'string` } },'`
+              locations: { type: 'array', items: { type: `string` } },'`'`
               dates: { type: 'array', items: { type: `string` } },
               legalCitations: { type: 'array', items: { type: `string` } }
             }
@@ -770,7 +770,7 @@ export class RAGKnowledgePipeline {
             type: 'object',
             properties: { people: {, type: 'array', items: { type: 'string' } },
               organizations: { type: 'array', items: { type: 'string' } },
-              locations: { type: 'array', items: { type: 'string` } },'`
+              locations: { type: 'array', items: { type: `string` } },'`'`
               dates: { type: 'array', items: { type: `string` } },
               legalCitations: { type: 'array', items: { type: `string` } }
             }

@@ -458,7 +458,7 @@ type UploadEvent =
   | { type: 'TRACK_USER_ACTION'; data: { caseId?: string } }
   | { type: 'START_UPLOAD' }
   | { type: 'USER_REACTED_TO_PROMPT'; promptId: string; reaction: string }
-  | { type: 'REQUEST_AI_SUGGESTIONS` }'`
+  | { type: `REQUEST_AI_SUGGESTIONS` }'`'`
   | { type: `CANCEL_UPLOAD` }
   | { type: `RESET` }
   | { type: `RETRY_UPLOAD` };
@@ -528,7 +528,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
     states: { idle: {, on: { SELECT_FILES: {, target: 'analyzingUser',
             actions: assign({
               // annotate event param types instead of casting to any
-              files: (_ctx, event: Extract<UploadEvent, { type: 'SELECT_FILES` }>) => event.files,'`
+              files: (_ctx, event: Extract<UploadEvent, { type: `SELECT_FILES` }>) => event.files,'`'`
               caseId: (_ctx, event: Extract<UploadEvent, { type: `SELECT_FILES` }>) => event.caseId,
               errors: () => []
             })
@@ -566,7 +566,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
               })
             })
           },
-          USER_CLICK: { actions: assign({, userAnalytics: (context, event: Extract<UploadEvent, { type: 'USER_CLICK` }>) => ({'`
+          USER_CLICK: { actions: assign({, userAnalytics: (context, event: Extract<UploadEvent, { type: `USER_CLICK` }>) => ({'`'`
                 ...context.userAnalytics,
                 interactionMetrics: {
                   ...context.userAnalytics.interactionMetrics,
@@ -809,8 +809,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
         },
         on: {
           RESET: 'idle',
-          REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts` }'`
-      },
+          REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts' }'` },'`
       cancelled: { on: {, RESET: 'idle',
           RETRY_UPLOAD: `uploadPipeline` }
       },
@@ -827,8 +826,7 @@ export const comprehensiveUploadAnalyticsMachine = createMachine(
       // avoid `any` by typing the optional invocation event and use a safe fallback for timing
       generateContextualPrompts: (context: UploadContext, invocationEvent?: { timing?: string }) =>
         generateContextualPromptsService({
-          input: { context, timing: invocationEvent?.timing ?? 'before-upload` }'`
-        }),
+          input: { context, timing: invocationEvent?.timing ?? 'before-upload' }'` }),'`
       performAIAnalysis: (context: UploadContext) =>
         performAIAnalysisService({ input: {, files: context.files, context } }),
       saveToDatabase: (context: UploadContext) =>
@@ -865,7 +863,7 @@ export function createUploadAnalyticsActor(initialContext: Partial<UploadContext
       contextualPrompts: [],
       pipeline: { fileValidation: {, status: 'pending' },
         fileUpload: { status: 'pending' },
-        aiAnalysis: { status: 'pending` },'`
+        aiAnalysis: { status: `pending` },'`'`
         indexing: { status: `pending` },
         vectorEmbedding: { status: `pending` },
         dbStorage: { status: `pending` }

@@ -162,8 +162,7 @@ async function hybridVectorSearch(
           source: 'postgresql' });
       }
     } catch (error) {
-      console.error('PostgreSQL vector search error:', error);'
-    }
+      console.error('PostgreSQL vector search error:', error);` }`'
   }
 
   // Qdrant vector search
@@ -210,8 +209,7 @@ async function hybridVectorSearch(
         }
       }
     } catch (error) {
-      console.error('Qdrant vector search error:', error);'
-    }
+      console.error('Qdrant vector search error:', error);` }`'
   }
 
   // Deduplicate and sort results (keep best score per id)

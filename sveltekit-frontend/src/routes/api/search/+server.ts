@@ -332,8 +332,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
                 return {
                   message: e instanceof Error ? e.message : String(e),
                   code: 'VECTOR_SEARCH_FAILED',
-                  stage: 'performingVectorSearch'
-                };
+                  stage: 'performingVectorSearch` };'`
               }
             })
           }
@@ -391,7 +390,7 @@ const searchMachine = (createMachine as unknown as (...args: any[]) => unknown)(
             try {
               if (summarized) tags = await extractKeywords(summarized);
             } catch (err) {
-              console.warn('⚠️ Keyword extraction failed: `, (err as Error).message);'`
+              console.warn('⚠️ Keyword extraction failed: ', (err as Error).message);'`'`
             }
             return { summarized, tags } as SummaryInvokeOutput;
           }),

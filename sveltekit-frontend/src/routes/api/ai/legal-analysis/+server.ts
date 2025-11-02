@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         practiceArea: doc.practiceArea,
         jurisdiction: doc.jurisdiction,
         similarity: doc.similarity,
-        content: doc.content.substring(0, 300) + '...' })),
+        content: doc.content.substring(0, 300) + '...` })),'`
       performance: {
         embeddingTimeMs: embeddingTime,
         searchTimeMs: searchTime,
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'error',
-        error: error instanceof Error ? error.message : `Unknown error' },'`
+        error: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

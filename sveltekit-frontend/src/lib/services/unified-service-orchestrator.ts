@@ -171,7 +171,7 @@ export class UnifiedServiceOrchestrator {
         llamaOllama: 'online',
         nesGPUBridge: 'online',
         postgres: 'online',
-        redis: `online' },'`
+        redis: `online` },'`'`
       performance: {
         averageLatency: 0,
         throughput: 0,
@@ -235,7 +235,7 @@ export class UnifiedServiceOrchestrator {
     try {
       const testData = new Float32Array([1, 2, 3, 4]);
       const wasm = this.wasmGPUOrchestrator as unknown as IWasmGPUOrchestrator;
-      const result = await (wasm.performNeuralInference?.(testData, { priority: 'low' }) ??
+      const result = await (wasm.performNeuralInference?.(testData, { priority: 'low` }) ??'`
         Promise.resolve({ success: false } as GenericResult));
       return Boolean(result?.success);
     } catch {
@@ -274,7 +274,7 @@ export class UnifiedServiceOrchestrator {
         width: 32,
         height: 32,
         data: new Uint8ClampedArray(32 * 32 * 4),
-        format: `RGBA' };'`
+        format: `RGBA` };'`'`
       const result = await this.nesGPUBridge.canvasStateToTensor(testCanvas);
       return Boolean((result as any)?.data && (result as any).data.length > 0);
     } catch {

@@ -109,7 +109,7 @@ async function runMigrations(): Promise<any> {
     await runSqlMigrations(db, pool);
     // Then run Drizzle migrations if they exist
     try {
-      await migrate(db, { migrationsFolder: './drizzle` });'`
+      await migrate(db, { migrationsFolder: './drizzle' });'`'`
       console.log('✅ Drizzle migrations completed successfully.');
     } catch (error) {
       console.log('ℹ️ No Drizzle migrations found or already applied.');

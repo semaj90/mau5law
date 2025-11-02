@@ -107,5 +107,4 @@ Services:
 Collections:
 ${Object.entries(VECTOR_CONFIG.COLLECTIONS).map(([k, v]) => `  • ${k}: ${v}`).join('\n')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  `.trim();`
-}
+  `.trim();' }'`

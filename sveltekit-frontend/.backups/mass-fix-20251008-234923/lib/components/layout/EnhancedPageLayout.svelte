@@ -67,7 +67,7 @@ https://svelte.dev/e/expected_token -->
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
     <div class="gpu-status-overlay">
-      <Card.Root class="gpu-status-nier-bits-card">
+      <Card class="gpu-status-nier-bits-card">
         <Card.Header>
           <Card.Title class="gpu-title">🚀 {gpuStatus.gpu}</Card.Title>
         </Card.Header>
@@ -87,14 +87,14 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
         </Card.Content>
-      </Card.Root>
+      </Card>
     </div>
   {/if}
 
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
-      <Card.Root class="welcome-nier-bits-card animate-slide-in">
+      <Card class="welcome-nier-bits-card animate-slide-in">
         <Card.Header>
           <Card.Title>✨ {title}</Card.Title>
           {#if description}
@@ -117,7 +117,7 @@ https://svelte.dev/e/expected_token -->
             </div>
           </div>
         </Card.Content>
-      </Card.Root>
+      </Card>
     </div>
   {/if}
 

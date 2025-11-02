@@ -20,7 +20,7 @@ export interface MachineService<TContext = any> { state: Readable<MachineState<T
  * XState v5 Service Adapter
  * Wraps XState v5 actors and provides Svelte-friendly reactive state
  */
-export class XStateServiceAdapter<TMachine extends, AnyStateMachine> {
+export class XStateServiceAdapter<TMachine, extends, AnyStateMachine> {
   private actor: Actor<TMachine> | null = null;
   private stateStore = writable<MachineState>();
   private runningStore = writable<boolean>(false);

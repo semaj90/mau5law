@@ -123,8 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
          , simd_parser: 'operational',
           pgvector: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational'
-        },
+          cognitive_cache: 'operational` },'`
         timestamp: new Date().toISOString()
       });
     }

@@ -51,8 +51,7 @@ export class QdrantManager {
         console.log(`✅ Qdrant collection created: ${config.name}`);
       } catch (error: any) {
         if (!error.message.includes('already exists')) {
-          console.error(`❌ Failed to create collection ${config.name}: ', error);'`
-        }
+          console.error(`❌ Failed to create collection ${config.name}: ', error);'' }'`
       }
     }
   }
@@ -155,8 +154,7 @@ export class QdrantManager {
         totalUpserted += batch.length;
         console.log(`📝 Upserted ${batch.length} points to ${collectionName}`);
       } catch (error: any) {
-        console.error(`❌ Batch upsert failed for ${collectionName}: ', error);'`
-      }
+        console.error(`❌ Batch upsert failed for ${collectionName}: ', error);'' }'`
     }
     return { upserted: totalUpserted }
   }

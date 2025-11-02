@@ -142,15 +142,15 @@ function waitForEvent(obj: RedisLike, event: string, timeoutMs = 5000): Promise<
       clearTimeout(to);
       // prefer off/removeListener if available
       try {
-        (obj as RedisLike).off?.(event, onEvent);       // <--- use RedisLike instead of, any
-        (obj as RedisLike).off?.('error', onError);     // <--- use RedisLike instead of, any
+        (obj as RedisLike).off?.(event, onEvent);       // <--- use RedisLike instead, of, any
+        (obj as RedisLike).off?.('error', onError);     // <--- use RedisLike instead, of, any
       } catch {
         // ignore cleanup errors
       }
     }
 
-    (obj as RedisLike).on?.(event, onEvent);           // <--- use RedisLike instead of, any
-    (obj as RedisLike).on?.('error', onError);         // <--- use RedisLike instead of, any
+    (obj as RedisLike).on?.(event, onEvent);           // <--- use RedisLike instead, of, any
+    (obj as RedisLike).on?.('error', onError);         // <--- use RedisLike instead, of, any
   });
 }
 

@@ -42,11 +42,11 @@ export const GET: RequestHandler = async () => {
           // Large object to trigger GPU acceleration
           complexData: Array.from({ length: 100 }, (_, j) => ({
             field: `value_${i}_${j}`,
-            nested: {, deep: {, data: 'nested_${i}_${j}' } }
-          })), // <-- closed Array.from callback and the outer, call
+            nested: {, deep: {, data: 'nested_${i}_${j}` } }'`
+          })), // <-- closed Array.from callback and the, outer, call
         }
       }
-    })); // <-- closed outer, Array.from
+    })); // <-- closed, outer, Array.from
     // Concurrent storage operations
     console.log('⚡ Testing concurrent document storage...');
     const storagePromises = testDocuments.map(doc => cognitiveCache.storeJsonbDocument(doc.id, doc.content));
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
       thread_safety: {
         mutex_protected: true,
         concurrent_access: 'tested',
-        race_conditions: `prevented' },'`
+        race_conditions: `prevented` },'`'`
       performance: {
         total_operations: testDocuments.length * 2 + queryPromises.length,
         operations_per_second: Math.round((testDocuments.length * 2 + queryPromises.length) / 2)
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Stress test failed',
-        message: error instanceof Error ? error.message : `Unknown error' },'`
+        message: error instanceof Error ? error.message : `Unknown error` },'`'`
       { status: 500 }
     );
   }

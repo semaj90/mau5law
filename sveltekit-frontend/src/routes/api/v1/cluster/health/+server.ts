@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function checkExternalServices(): Promise<Record<string, boolean>> {
   const externalChecks = [
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
-    { name: 'upload_service', url: 'http://localhost:8093/health` },'`
+    { name: 'upload_service', url: `http://localhost:8093/health` },'`'`
     { name: 'ollama', url: `http://localhost:11434/api/tags` },
     { name: 'sveltekit', url: `http://localhost:5173/` }
   ];

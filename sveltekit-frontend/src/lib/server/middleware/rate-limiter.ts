@@ -30,8 +30,7 @@ class RateLimiter {
     // Default: use IP address or user-agent as key
     const forwarded = request.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
-    return `${ip}:${request.headers.get('user-agent') || 'unknown` }`;'`
-  }
+    return `${ip}:${request.headers.get('user-agent') || 'unknown' }`;'' }
   check(request: Request): { allowed: boolean; resetTime?: number; remaining?: number } {
     const key = this.getKey(request);
     const now = Date.now();

@@ -100,7 +100,7 @@ const services = { neo4j: {, uri: process.env.NEO4J_URI || 'bolt://neo4j:7687',
       process.env.BINARY_VECTOR_ENGINE_URL ||
       `http://binary-vector-engine:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
     quicServer:
-      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}' },'`
+      process.env.QUIC_SERVER_URL || `quic://quic-gateway:${getServicePortWithFallback('quic-gateway', 8443)}` },'`'`
   ollama: {
     baseUrl: getOllamaEndpoint(), // Use the centralized helper
     models: {
@@ -265,7 +265,7 @@ export class EnhancedAISynthesisOrchestrator {
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.legal,
         temperature: 0.3,
-        format: 'json` } as any);'`
+        format: `json` } as any);'`'`
       this.embeddings = new OllamaEmbeddings({
         baseUrl: services.ollama.baseUrl, // Use the centralized helper
         model: services.ollama.models.embedding
@@ -310,8 +310,7 @@ export class EnhancedAISynthesisOrchestrator {
           CREATE INDEX IF NOT EXISTS idx_legal_documents_embedding
           ON legal_documents USING ivfflat (embedding vector_cosine_ops)
           WITH (lists = 100);
-        `;`
-      } catch (e: unknown) {
+        `;' } catch (e: unknown) {'`
         logger.debug('[Orchestrator] ensure index failed', e);
       }
       this.initialized = true;
@@ -777,8 +776,7 @@ function buildEnhancedPrompt(input: EnhancedPromptInput): string {
 - Legal Concepts: ${conceptsStr}
 - Complexity Score: ${complexity}
 - Jurisdiction: ${jurisdiction}
-`;`
-  }
+`;` }
   if (Array.isArray(input?.rankedResults) && input.rankedResults.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:\n`;
     (input.rankedResults as RankedSource[]).slice(0, 5).forEach((source, i) => {

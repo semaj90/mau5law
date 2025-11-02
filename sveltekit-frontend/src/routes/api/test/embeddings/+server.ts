@@ -129,8 +129,7 @@ export const GET: RequestHandler = async ({ url }) => {
             chunks: chunks.map(c => ({
              , index: c.index,
               length: c.length,
-              preview: c.content.substring(0, 50) + '...` }))'`
-          },
+              preview: c.content.substring(0, 50) + '...' }))'` },'`
           duration: Date.now() - startTime
         });
       } catch (err: any) {
@@ -240,8 +239,7 @@ export const GET: RequestHandler = async ({ url }) => {
           memory_usage: '128MB for 10,000 cached embeddings',
           gpu_utilization: '85% RTX 3060 Ti',
           model_loading_time: '2.3 seconds',
-          average_embedding_time: '6.7ms per text'
-        };
+          average_embedding_time: '6.7ms per text` };'`
         results.push({
           test: 'performance_metrics',
           status: 'success',

@@ -1,7 +1,7 @@
 // removed unused Node: 'crypto' import — the store uses globalThis.crypto.randomUUID at runtime
 // Real-time evidence store with WebSocket/SSE integration and local undo
 import { writable, derived, get } from 'svelte/store';
-import { browser } from '$app/environment'; // <- ensure browser check, works
+import { browser } from '$app/environment'; // <- ensure browser, check, works
 
 export interface Evidence { id: string;, title: string;
   description: string;
@@ -159,8 +159,7 @@ class RealTimeEvidenceStore {
             const message = JSON.parse(event.data);
             this.handleRealtimeUpdate(message);
           } catch (err: any) {
-            console.error('WebSocket message parse error:', getErrorMessage(err));'
-          }
+            console.error('WebSocket message parse error:', getErrorMessage(err));` }`'
         };
         this.websocket.onclose = () => {
           console.log('WebSocket disconnected');
@@ -200,8 +199,7 @@ class RealTimeEvidenceStore {
           const message = JSON.parse(event.data);
           this.handleRealtimeUpdate(message);
         } catch (err: any) {
-          console.error('SSE message parse error:', getErrorMessage(err));'
-        }
+          console.error('SSE message parse error:', getErrorMessage(err));` }`'
       };
       this.eventSource.onerror = () => {
         console.log('SSE disconnected');
@@ -324,7 +322,7 @@ class RealTimeEvidenceStore {
       // Send to server
       const res: Response = await fetch('/api/evidence', {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(newEvidence)
       });
       if (!res.ok) {
@@ -371,7 +369,7 @@ class RealTimeEvidenceStore {
     try {
       // Send to server
       const res: Response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: `DELETE' });'`
+        method: `DELETE` });'`'`
       if (!res.ok) {
         throw new Error(`Failed to delete evidence: ${res.statusText}`);
       }

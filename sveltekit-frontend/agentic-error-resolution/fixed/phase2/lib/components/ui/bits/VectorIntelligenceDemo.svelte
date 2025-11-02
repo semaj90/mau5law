@@ -284,7 +284,7 @@
         disabled={isSearching}
         class="flex-1"
       />
-      <Button.Root
+      <Button
         class="bits-btn"
         variant="primary"
         legal
@@ -299,9 +299,9 @@
           <Search class="w-4 h-4 mr-2" />
           Search
         {/if}
-      </Button.Root>
+      </Button>
       {#if searchResults.length > 0}
-        <Button.Root class="bits-btn" variant="ghost" onclick={clearResults}>Clear</Button.Root>
+        <Button class="bits-btn" variant="ghost" onclick={clearResults}>Clear</Button>
       {/if}
     </div>
     <!-- Search Status -->
@@ -397,8 +397,8 @@
                   {/each}
                 </div>
                 <div class="flex gap-2">
-                  <Button.Root class="bits-btn" size="sm" variant="ghost">View Full</Button.Root>
-                  <Button.Root class="bits-btn" size="sm" variant="primary">Add to Case</Button.Root>
+                  <Button class="bits-btn" size="sm" variant="ghost">View Full</Button>
+                  <Button class="bits-btn" size="sm" variant="primary">Add to Case</Button>
                 </div>
               </div>
             </div>
@@ -415,13 +415,13 @@
         Enter a search query to demonstrate advanced semantic analysis and vector similarity matching.
       </p>
       <div class="flex justify-center gap-2">
-        <Button.Root
+        <Button
           class="bits-btn"
           variant="ghost"
           onclick={() => (searchQuery = 'contract breach non-disclosure agreement')}
         >
           Try Sample Query
-        </Button.Root>
+        </Button>
       </div>
     {/if}
   <!-- Performance Metrics -->

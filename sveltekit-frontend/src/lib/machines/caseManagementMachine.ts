@@ -67,7 +67,7 @@ const caseManagementServices = {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'cases.createCase',
         args: {
@@ -87,7 +87,7 @@ const caseManagementServices = {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'cases.updateCase',
         args: {
@@ -105,7 +105,7 @@ const caseManagementServices = {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'cases.addEvidence',
         args: {
@@ -123,7 +123,7 @@ const caseManagementServices = {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'cases.searchCases',
         args: {
@@ -142,7 +142,7 @@ const caseManagementServices = {
     const { context, event } = input;
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      headers: { 'Content-Type': `application/json` },'`'`
       body: JSON.stringify({
        , tool: 'cases.getUserCases',
         args: {
@@ -166,7 +166,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
   id: 'caseManagement',
   initial: 'idle',
   context: {
-    currentCase: null,
+   , currentCase: null,
     cases: [],
     evidence: [],
     searchQuery: '',
@@ -323,7 +323,7 @@ export const caseManagementMachine = createMachine<CaseManagementContext, CaseMa
     },
     searchingCases: { entry: assign({, isLoading: true,
         error: null,
-        searchQuery: ({ event }) => event.query || '' }),
+        searchQuery: ({ event }) => event.query || '` }),'`
       invoke: {
         src: 'searchCases',
         input: ({ context, event }) => ({ context, event }),

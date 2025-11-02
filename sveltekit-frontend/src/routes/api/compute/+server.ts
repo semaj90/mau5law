@@ -96,8 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: errorMessage,
-        message: 'Failed to enqueue compute job'
-      },
+        message: 'Failed to enqueue compute job` },'`
       { status: 500 }
     );
   }

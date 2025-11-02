@@ -74,8 +74,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<CheckRes
   } catch (err: any) {
     const responseTime = Date.now() - startTime;
     if ((err as { name?: string })?.name === 'AbortError') {
-      return { status: 'unhealthy', responseTime, details: { error: 'Request timeout` } };'`
-    }
+      return { status: 'unhealthy', responseTime, details: { error: 'Request timeout' } };'` }'`
     return { status: 'unhealthy', responseTime, details: { error: getErrorMessage(err) } };
   }
 }

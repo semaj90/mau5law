@@ -35,8 +35,7 @@ export async function logUserEvent(event: UserEvent): Promise<any> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
        , user_id: event.payload.userId || 'anonymous',
-        message: event.payload.text || event.payload.message || '` })'`
-    });
+        message: event.payload.text || event.payload.message || '' })'` });'`
     if (!response.ok) {
       console.warn('Analytics backend returned non-ok:', response.status);
       return null;

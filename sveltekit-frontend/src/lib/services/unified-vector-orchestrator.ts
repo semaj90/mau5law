@@ -1214,7 +1214,7 @@ export class UnifiedVectorOrchestrator {
       const res = await fn(...args);
       return res as T;
     } catch (e) {
-      console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: `, e);'`
+      console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: ', e);'`'`
       return undefined;
     }
   }

@@ -164,7 +164,7 @@ class TauriLLMService {
 				options: {
 				, batchSize: options.batchSize ?? 10,
 					normalize: options.normalize !== false,
-					poolingStrategy: options.poolingStrategy ?? 'mean' }
+					poolingStrategy: options.poolingStrategy ?? 'mean` }'`
 			});
 			// result expected as number[]
 			return Array.isArray(text) ? (result as number[][]) : (result as number[][])[0];
@@ -336,8 +336,7 @@ Guidelines:
 - Cite specific sources when making legal references
 - Indicate confidence levels in your analysis
 - Distinguish between facts and legal interpretations
-- Provide clear, professional language suitable for legal professionals`;`
-	}
+- Provide clear, professional language suitable for legal professionals`;` }
 
 	async getModelMetrics(modelId: string): Promise<any> {
 		const invoke = await this.getInvoke();

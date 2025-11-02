@@ -12,20 +12,20 @@
       }); xhr.onreadystatechange = () => { if (xhr.readyState === 4) { if (xhr.status >= 200 && xhr.status < 300) { try { const json = JSON.parse(xhr.responseText); resolve({ url: json.url, id: json.id }); } catch { resolve( ) } } else { reject(Object.assign(new Error(`Upload failed (${xhr.status})`), { statusCode: xhr.status })); }
         } }
       xhr.onerror = () => reject(new Error('Network error')); xhr.onabort = () => reject(new Error('Upload aborted')); const form = new FormData(); form.append('file', file); const q = bucket ? `?bucket=${encodeURIComponent(bucket)}`: ''; xhr.open('POST', `/api/v1/minio/upload${ q }`); xhr.send(form); }); }
-</script> <input type="file"
+</script> <input, type="file"
   bind:this={ fileInput } onchange={ handleFileSelect } multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
   class="hidden"
-/> {#if lastError} <p class="text-red-500 text-sm, mt-2" role="alert">{ lastError }</p> {/if} {#if minimal} <button class="upload-zone px-3 py-2 border rounded text-sm"
+/> {#if lastError} <p class="text-red-500, text-sm, mt-2" role="alert">{ lastError }</p> {/if} {#if minimal} <button class="upload-zone px-3 py-2 border rounded, text-sm"
     onclick={ openFileDialog } title="Upload Evidence"
     aria-label="Upload Evidence"
     tabindex={ 0 } disabled={ isUploading } >
-    {#if isUploading} ⏳ Uploading... {:else} 📤 Upload {/if} </button> {:else} <div class="upload-zone border-2 border-dashed" rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100 border-gray-400': 'border-gray-300'}"
+    {#if isUploading} ⏳ Uploading... {:else} 📤 Upload {/if} </button> {:else} <div class="upload-zone border-2 border-dashed" rounded p-6 text-center transition-colors select-none {isDragOver ? 'bg-gray-100, border-gray-400': 'border-gray-300'}"
     ondragover={ handleDragOver } ondragleave={ handleDragLeave } ondrop={ handleDrop } role="button"
     aria-label="Upload Evidence Dropzone"
     tabindex={ 0 } onclick={ openFileDialog } onkeydown={e => e.key === 'Enter' && openFileDialog()} >
-    {#if isUploading} <div class="flex flex-col items-center, gap-3"> <p class="text-sm, font-mono">Uploading {Math.round(uploadProgress)}%</p> <div class="w-full h-2 bg-gray-200 rounded, overflow-hidden"> <div class="h-full bg-blue-500, transition-all" style="width: { uploadProgress }%"></div> </div> <div class="flex gap-2, items-center"> <button class="text-xs px-2 py-1 border rounded hover:bg-gray-100"
+    {#if isUploading} <div class="flex flex-col, items-center, gap-3"> <p, class="text-sm, font-mono">Uploading {Math.round(uploadProgress)}%</p> <div class="w-full h-2 bg-gray-200, rounded, overflow-hidden"> <div class="h-full, bg-blue-500, transition-all" style="width: { uploadProgress }%"></div> </div> <div class="flex, gap-2, items-center"> <button class="text-xs px-2 py-1 border rounded, hover:bg-gray-100"
             onclick={e => { e.stopPropagation(); cancelUpload(); }}>Cancel</button >
-        </div> </div> {:else} <div class="flex flex-col items-center gap-2, text-sm"> <p><strong>Drop files</strong> or click to browse</p> <p class="text-xs, text-gray-500">Images, Video, Audio, PDF, DOC, TXT (≤100MB each)</p> <p class="text-xs, text-gray-400"> Retries: {maxRetries + 1} attempts{enableEmbedding ? ' • Embeddings on': ''} </p> {/if} {/if} <div, class="sr-only" aria-live="polite">{ statusMessage }</div> <!-- Telemetry markers (kept, minimal) --> <!-- Events, emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error --> <style> .upload-zone { cursor: pointer; }
+        </div> </div> {:else} <div class="flex flex-col items-center, gap-2, text-sm"> <p><strong>Drop files</strong> or click to browse</p> <p, class="text-xs, text-gray-500">Images, Video, Audio, PDF, DOC, TXT (≤100MB each)</p> <p, class="text-xs, text-gray-400"> Retries: {maxRetries + 1} attempts{enableEmbedding ? ' • Embeddings on': ''} </p> {/if} {/if} <div, class="sr-only" aria-live="polite">{ statusMessage }</div> <!-- Telemetry, markers (kept, minimal) --> <!-- Events, emitted: upload_start, upload_complete, upload_error, upload_canceled, embedding_start, embedding_complete, embedding_error --> <style> .upload-zone { cursor: pointer; }
   .upload-zone:hover { background-color: rgba(0, 0, 0, 0.03); }
   .hidden { display: none; }
   button[disabled] { opacity: 0.6; cursor: not-allowed; }

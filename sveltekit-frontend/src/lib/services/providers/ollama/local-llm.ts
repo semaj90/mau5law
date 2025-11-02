@@ -69,7 +69,7 @@ export class OllamaLocalLLM {
   }
 
   private buildUrl(path: string): string {
-    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}` }`;
+    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}' }`;'`
   }
 
   constructor(baseUrl = OLLAMA_CONFIG.baseUrl) {
@@ -138,7 +138,7 @@ export class OllamaLocalLLM {
       const model = this.selectBestModel(options.model);
       const resp = await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model, prompt: options.prompt, ...options.options })
       });
       if (!resp.ok) throw new Error(`Generation failed: ${resp.status}`);
@@ -156,7 +156,7 @@ export class OllamaLocalLLM {
       const m = model || 'nomic-embed-text';
       const resp = await fetch(this.resolveEndpoint('embeddings'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model: m, input: text })
       });
       if (!resp.ok) throw new Error(`Embedding failed: ${resp.status}`);
@@ -177,7 +177,7 @@ export class OllamaLocalLLM {
       const m = this.selectBestModel(model);
       const resp = await fetch(this.resolveEndpoint('chat'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model: m, messages, stream: false })
       });
       if (!resp.ok) throw new Error(`Chat failed: ${resp.status}`);
@@ -201,7 +201,7 @@ export class OllamaLocalLLM {
     try {
       await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           model,
           prompt: '',
@@ -214,8 +214,7 @@ export class OllamaLocalLLM {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to unload model ${model}:`, error.message);
       } else {
-        logger.error(`[OllamaLLM] Failed to unload model ${model}: ', error);'`
-      }
+        logger.error(`[OllamaLLM] Failed to unload model ${model}: ', error);'' }'`
     }
   }
   /**
@@ -225,7 +224,7 @@ export class OllamaLocalLLM {
     try {
       const response = await fetch(this.buildUrl('/api/show'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ name: model })
       });
       if (!(response as FetchResponseCommon).ok) {
@@ -249,7 +248,7 @@ export class OllamaLocalLLM {
       logger.info(`[OllamaLLM] Pulling model ${model}...`);
       const response = await fetch(this.resolveEndpoint('pull'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ name: model, stream: true }) // Explicitly request streaming
       });
       if (!(response as FetchResponseCommon).ok) {
@@ -308,8 +307,7 @@ export class OllamaLocalLLM {
       if (error instanceof Error) {
         logger.error(`[OllamaLLM] Failed to pull model ${model}:`, error.message);
       } else {
-        logger.error(`[OllamaLLM] Failed to pull model ${model}: ', error);'`
-      }
+        logger.error(`[OllamaLLM] Failed to pull model ${model}: ', error);'' }'`
       return false;
     }
   }

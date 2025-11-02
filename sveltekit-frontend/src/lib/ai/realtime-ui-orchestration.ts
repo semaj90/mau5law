@@ -142,8 +142,7 @@ export class LegalCanvasManager {
         console.warn(`⚠️ Slow frame: ${renderTime.toFixed(2)}ms (target: 16.67ms)`);
       }
     } catch (error) {
-      console.error('❌ Render frame error:', error);'
-    }
+      console.error('❌ Render frame error:', error);` }`'
   }
   /**
    * Update progress indicator animations
@@ -883,8 +882,7 @@ export const realTimeUIMachine = createMachine(
             actions: 'applyRemoteCanvasUpdate'
           },
           USER_CURSOR_MOVE: {
-            actions: 'broadcastCursorPosition'
-          },
+            actions: 'broadcastCursorPosition` },'`
           DISABLE_COLLABORATION: {
             target: 'idle',
             actions: `disableCollaborativeMode` }
@@ -941,8 +939,7 @@ export const realTimeUIMachine = createMachine(
         }
       },
       logError: (context, event) => {
-        console.error('❌ Real-time UI error:', event);'
-      },
+        console.error('❌ Real-time UI error:', event);` },`'
       resetState: assign((context, event) => {
         console.log('🔄 Resetting UI state');
         return {

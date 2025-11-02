@@ -34,8 +34,8 @@ https://svelte.dev/e/attribute_duplicate -->
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
   // ======================================================================
   // COMPONENT STATE
   // ======================================================================

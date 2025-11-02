@@ -28,7 +28,7 @@
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
 <svelte:component, this={RootComp} class={mergedClassWithRest} {...rest}>
-  <svelte:component this={ViewportComp} class="h-full w-full, rounded-[inherit]">
+  <svelte:component this={ViewportComp} class="h-full, w-full, rounded-[inherit]">
     <slot />
   </svelte:component>
   <svelte:component, this={ScrollbarComp} orientation="vertical" />

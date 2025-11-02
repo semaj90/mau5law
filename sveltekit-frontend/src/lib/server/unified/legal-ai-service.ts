@@ -320,7 +320,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'evidence',
-              source: 'qdrant+postgresql' });
+              source: 'qdrant+postgresql` });'`
           }
         }
         sources.push('qdrant', 'postgresql');
@@ -344,8 +344,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...(dbRecord[0] || {}),
               type: 'document',
-              source: `qdrant+postgresql' });'`
-          }
+              source: 'qdrant+postgresql' });'` }'`
         }
         sources.push('qdrant', 'postgresql');
       }

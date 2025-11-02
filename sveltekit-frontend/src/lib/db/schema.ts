@@ -280,7 +280,7 @@ export const messages = pgTable('messages', {
     .notNull(),
   content: text('content').notNull(),
   role: text('role').notNull(), // e.g., 'user', 'assistant'
-  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date` }).defaultNow().notNull(),'`
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: `date` }).defaultNow().notNull(),'`'`
   embedding: jsonb('embedding'), // Store as JSONB for vector data
   metadata: jsonb('metadata'), // For additional message metadata
   model: text('model').default('gemma3-legal').notNull(),

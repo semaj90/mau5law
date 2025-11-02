@@ -496,8 +496,7 @@ export class Phase13IntegrationManager {
       return {
         success: false,
         action: `Failed to apply ${suggestion.type} suggestion`,
-        result: error instanceof Error ? error.message: 'Unknown error` }'`
-    }
+        result: error instanceof Error ? error.message: 'Unknown error' }'' }
   }
 }
 /**

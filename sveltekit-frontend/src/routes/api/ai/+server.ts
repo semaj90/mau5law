@@ -42,7 +42,7 @@ class LegalAIService {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json' },'`
+          'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , model: request.model || this.defaultModel,
           prompt: fullPrompt,
@@ -77,9 +77,8 @@ class LegalAIService {
         }
       };
     } catch (error) {
-      console.error('Legal AI Service Error: `, error);'`
-      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error' }`);'`
-    }
+      console.error('Legal AI Service Error: ', error);'`'`
+      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error` }`);'` }'`
   }
   private buildLegalSystemPrompt(context: string): string {
     const basePrompt = `You are an expert legal AI assistant with deep knowledge of legal procedures, evidence analysis, and case investigation. You specialize in helping legal professionals analyze complex cases, identify evidence patterns, and provide actionable insights.`
@@ -264,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body: AIRequest = await request.json();
     // Validate required fields
     if (!body.caseId || !body.prompt) {
-      return json({ error: 'Missing required, fields: caseId and prompt' }, { status: 400 });
+      return json({ error: 'Missing required, fields: caseId and prompt` }, { status: 400 });'`
     }
     // Generate AI response
     const response = await legalAI.generateResponse(body);
@@ -275,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : `Unknown error occurred' },'`
+        message: error instanceof Error ? error.message : `Unknown error occurred` },'`'`
       { status: 500 }
     );
   }

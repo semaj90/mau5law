@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
           payload: {
             title: `Legal Document ${i + 1}`,
             type: 'evidence',
-            caseId: 'case_${Math.floor(Math.random() * 3) + 1}' }
+            caseId: 'case_${Math.floor(Math.random() * 3) + 1}` }'`
         }));
         results.push({
           test: 'vector_operations',
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
           usage_percentage: 26.5,
           cache_entries: 1247,
           som_clusters: 12,
-          status: `optimal' };'`
+          status: `optimal` };'`'`
         results.push({
           test: 'memory_efficiency',
           status: 'success',

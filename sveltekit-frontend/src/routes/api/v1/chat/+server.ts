@@ -215,8 +215,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         session_id,
         message: response.content || response.message,
         embedding: Array.isArray(response.embedding) ? response.embedding : [],
-        context_type: 'new` });'`
-    }
+        context_type: 'new' });'` }'`
 
     return json({
       success: true,
@@ -307,7 +306,7 @@ async function handleParallelChatExecution({
   clientIP,
   startTime
 }: { message: string;, userId: string;
-  sessionId: string;
+ , sessionId: string;
   caseId?: string;
  , model: string;
  , temperature: number;
@@ -437,7 +436,7 @@ async function handleParallelChatExecution({
 
     // Log performance in development
     if (dev) {
-      console.log('🚀 Parallel Chat Execution Complete: `, {'`
+      console.log('🚀 Parallel Chat Execution Complete: ', {'`'`
         totalLatency: executionMetrics.totalLatency,
         parallelEfficiency: executionMetrics.parallelEfficiency,
         servicesExecuted: Object.keys(serviceResults || {}).length,

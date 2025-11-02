@@ -152,7 +152,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
 `;`
       const response = await fetch(`${this.baseUrl}/api/create`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , name: targetName,
           modelfile: modelfile
@@ -166,8 +166,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
         throw new Error(`Failed to create model: ${response.statusText} - ${errorText}`);
       }
     } catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);'`
-    }
+      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);'' }'`
   }
   /**
    * Select the best model from available options
@@ -194,7 +193,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
       logger.info(`[OllamaLLM] Generating with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           ...options,
           model,
@@ -230,7 +229,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
       logger.info(`[OllamaLLM] Streaming generation with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
           ...options,
           model,
@@ -284,7 +283,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
       const embeddingModel = model || 'nomic-embed-text';
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: embeddingModel,
           prompt: text
@@ -309,7 +308,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
       const selectedModel = this.selectBestModel(model);
       const response = await fetch(`${this.baseUrl}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
          , model: selectedModel,
           messages,
@@ -332,7 +331,7 @@ TEMPLATE: """{{ if .System }}<|system|>"
   async processLegalDocument(
     document: string,
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: { format?: 'json` }'`
+    options?: { format?: 'json' }'`'`
   ): Promise<string | JsonObject | null> {
     try {
       let prompt = '';

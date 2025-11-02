@@ -94,7 +94,7 @@ class EvidenceGraphVisualizer {
         context.configure({
           device,
           format: presentationFormat,
-          alphaMode: 'premultiplied' });
+          alphaMode: 'premultiplied` });'`
 
         this.context = context;
         this.isWebGPU = true;

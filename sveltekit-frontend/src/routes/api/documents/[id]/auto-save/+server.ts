@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           .returning();
 
         if (!updatedRows || updatedRows.length === 0) {
-          return json({ success: false, error: 'Document not found' }, { status: 404 });
+          return json({ success: false, error: 'Document not found` }, { status: 404 });'`
         }
 
         const row = updatedRows[0];
@@ -147,8 +147,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
       }
     });
   } catch (err: any) {
-    console.error('Error auto-saving document: `, extractErrorMessage(err));'`
-    return json({ success: false, error: `Failed to auto-save document` }, { status: 500 });
+    console.error('Error auto-saving document: ', extractErrorMessage(err));'`'`
+    return json({ success: false, error: 'Failed to auto-save document' }, { status: 500 });
   }
 };
 
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
-      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
+      return json({ success: false, error: 'Document ID is required` }, { status: 400 });'`
     }
 
     if (legalDocuments) {
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ params }) => {
           .limit(1);
 
         if (!docs || docs.length === 0) {
-          return json({ success: false, error: 'Document not found' }, { status: 404 });
+          return json({ success: false, error: 'Document not found` }, { status: 404 });'`
         }
 
         const doc = docs[0];
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ params }) => {
       }
     });
   } catch (err: any) {
-    console.error('Error fetching auto-save status: `, extractErrorMessage(err));'`
-    return json({ success: false, error: 'Failed to fetch auto-save status' }, { status: 500 });
+    console.error('Error fetching auto-save status: ', extractErrorMessage(err));'`'`
+    return json({ success: false, error: 'Failed to fetch auto-save status` }, { status: 500 });'`
   }
 };

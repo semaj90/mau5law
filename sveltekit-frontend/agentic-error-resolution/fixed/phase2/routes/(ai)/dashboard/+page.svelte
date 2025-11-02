@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte';
-  import { Button } from '$lib/components/ui/core.svelte';
+  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Button  from "$lib/components/ui/core.svelte";
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -217,7 +217,7 @@
 
   <!-- User Profile Card -->
   <section class="user-profile-section">
-    <Card.Root class="user-card">
+    <Card class="user-card">
       <CardContent class="user-card-content">
         <div class="user-avatar">
           <div class="avatar-circle">{getUserInitial(data.user)}</div>
@@ -228,11 +228,11 @@
           <p class="user-role-info">{getUserRole(data.user) || 'User'} • {data.user?.email}</p>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </section>
 
   <section class="status-section">
-    <Card.Root class="status-card">
+    <Card class="status-card">
       <CardHeader>
         <CardTitle>System Health</CardTitle>
       </CardHeader>
@@ -264,35 +264,35 @@
           </div>
         </div>
       </CardContent>
-    </Card.Root>
+    </Card>
   </section>
 
   <section class="stats-section">
     <div class="stats-grid">
-      <Card.Root class="stat-card">
+      <Card class="stat-card">
         <CardContent>
           <div class="stat-value">{stats.activeCases || 0}</div>
           <div class="stat-label">Active Cases</div>
         </CardContent>
-      </Card.Root>
-      <Card.Root class="stat-card">
+      </Card>
+      <Card class="stat-card">
         <CardContent>
           <div class="stat-value">{aiStats.activeChats}</div>
           <div class="stat-label">Active Chats</div>
         </CardContent>
-      </Card.Root>
-      <Card.Root class="stat-card">
+      </Card>
+      <Card class="stat-card">
         <CardContent>
           <div class="stat-value">{aiStats.ragQueries}</div>
           <div class="stat-label">RAG Queries</div>
         </CardContent>
-      </Card.Root>
-      <Card.Root class="stat-card">
+      </Card>
+      <Card class="stat-card">
         <CardContent>
           <div class="stat-value">{aiStats.documentsAnalyzed}</div>
           <div class="stat-label">Documents Analyzed</div>
         </CardContent>
-      </Card.Root>
+      </Card>
     </div>
   </section>
 
@@ -351,7 +351,7 @@
 
     <div class="services-grid">
       {#each Array.isArray(aiServices) ? aiServices : [] as service}
-        <Card.Root class="service-card">
+        <Card class="service-card">
           <CardHeader>
             <CardTitle>
               <span class="service-icon">{service.icon}</span>
@@ -368,7 +368,7 @@
               Open {service.name}
             </Button>
           </CardContent>
-        </Card.Root>
+        </Card>
       {/each}
     </div>
   </section>

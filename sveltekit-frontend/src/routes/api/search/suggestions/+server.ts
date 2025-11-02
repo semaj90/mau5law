@@ -105,7 +105,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/suggestions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
           query,
           category,
@@ -129,8 +129,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/trending`,
       {
         method: 'GET',
-        headers: { 'Content-Type': `application/json' }'`
-      },
+        headers: { 'Content-Type': 'application/json' }'` },'`
       [8095, 8096]
     )
       .then(r => r.json())
@@ -145,7 +144,7 @@ class SuggestionsService {
       `${ENHANCED_RAG_URL}/api/completions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
          , partial: partialQuery,
           category,
@@ -255,8 +254,7 @@ export const GET: RequestHandler = async ({ url }) => {
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
         fallbackMode: true,
-        error: error instanceof Error ? error.message : `Unknown error' }'`
-    });
+        error: error instanceof Error ? error.message : 'Unknown error' }'` });'`
   }
 };
 // Enhanced utility functions for suggestion processing

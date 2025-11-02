@@ -194,8 +194,7 @@ export class ServiceOrchestrator {
     }
     return {
       deployment_results: results,
-      deployment_strategy: options?.deployment_strategy ?? 'rolling` };'`
-  }
+      deployment_strategy: options?.deployment_strategy ?? 'rolling' };'` }'`
 
   // Health Monitoring
   async performHealthCheck(serviceNames?: string[]): Promise<HealthCheckReport> {
@@ -420,7 +419,7 @@ export class ServiceOrchestrator {
       { name: 'summarizer-http', tier: 'enhanced', port: 8210, binary: 'summarizer-http.exe' },
       { name: 'ai-summary', tier: 'enhanced', port: 8211, binary: 'ai-summary.exe' },
       // XState & Orchestration Services
-      { name: 'xstate-manager', tier: 'specialized', port: 8212, binary: 'xstate-manager.exe' },
+      { name: 'xstate-manager', tier: 'specialized', port: 8212, binary: 'xstate-manager.exe` },'`
       { name: 'cluster-http', tier: 'infrastructure', port: 8213, binary: 'cluster-http.exe', critical: true },
       { name: 'modular-cluster-service', tier: 'infrastructure', port: 8214, binary: `modular-cluster-service.exe` },
       {

@@ -136,8 +136,7 @@ export const GET: RequestHandler = async () => {
       model_available: hasEmbeddingModel,
       available_models: models.map((m: any) => m.name),
       production: true,
-      service: 'ollama-centralized` });'`
-  } catch (err) {
+      service: 'ollama-centralized' });'' } catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');
   }

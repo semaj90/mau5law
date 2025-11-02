@@ -172,12 +172,12 @@ async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
       if (document.length === 0) continue;
       const docData = document[0];
       const textContent = docData.textContent || docData.aiAnalysis?.summary || '';
-      if (textContent.length < 10) continue; // Skip documents with minimal, content
+      if (textContent.length < 10) continue; // Skip documents with, minimal, content
       // Generate embeddings using Ollama
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': `application/json` },
+          'Content-Type': `application/json' },'`
         body: JSON.stringify({
          , model: 'mxbai-embed-large',
           prompt: textContent.slice(0, 2000), // Limit content for embedding

@@ -162,8 +162,7 @@ export async function setupRedisFromConfig(): Promise<boolean> {
       const info = await getRedisInfo();
       if (info.connected && info.info) {
         console.log(`📊 Redis version: ${info.info.redis_version}`);
-        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown` }`);'`
-      }
+        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown' }`);'' }
     } else {
       console.error('❌ Redis setup failed - connection unhealthy');
       console.error('💡 Try running: npm run;, redis:start');

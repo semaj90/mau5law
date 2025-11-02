@@ -50,12 +50,10 @@ export const POST: RequestHandler = async ({ request }) => {
       duration_ms: Date.now() - start,
       model: chatModel,
       production: true,
-      service: `ollama-centralized' });'`
-  } catch (err) {
+      service: 'ollama-centralized' });'` } catch (err) {'`
     console.error('❌ ollama/generate POST error: ', err);'
     if (err instanceof Response) throw err;
-    return json({ error: err instanceof Error ? err.message : `Unknown error' }, { status: 500 });'`
-  }
+    return json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });'` }'`
 };
 
 /**
@@ -87,8 +85,7 @@ export const GET: RequestHandler = async () => {
       available_models: modelNames,
       gemma_available: hasGemma,
       production: true,
-      service: `ollama-centralized' });'`
-  } catch (err) {
+      service: 'ollama-centralized' });'` } catch (err) {'`
     console.error('❌ [Ollama API] Health check failed:', err);
     throw error(503, 'Ollama service unavailable');
   }

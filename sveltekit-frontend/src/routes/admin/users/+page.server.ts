@@ -152,7 +152,7 @@ export const actions: Actions = {
       return { success: true, deletedUser: deleteResult[0] };
     } catch (err) {
       console.error('Error deleting user:', err);
-      return { success: false, error: 'Failed to delete user' };
+      return { success: false, error: 'Failed to delete user` };'`
     }
   },
   toggleUserStatus: async ({ request, locals }) => {
@@ -169,7 +169,7 @@ export const actions: Actions = {
       // This is a placeholder for user status management
       return { success: true, message: `User status updated` };
     } catch (err) {
-      console.error('Error updating user status: `, err);'`
+      console.error('Error updating user status: ', err);'`'`
       return { success: false, error: `Failed to update user status` };
     }
   }

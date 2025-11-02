@@ -172,7 +172,7 @@ export class UnifiedInferenceEngine {
       cluster: request.priority === 'high` };'`
     const response = await fetch(`${this.fastApiEndpoint}${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json` },'`
       body: JSON.stringify(payload)
     });
     const data = await response.json().catch(() => ({}));
@@ -392,8 +392,7 @@ export class UnifiedInferenceEngine {
             continue;
         }
       } catch (error) {
-        console.warn(`⚠️ Fallback ${engine} also failed: ', error);'`
-      }
+        console.warn(`⚠️ Fallback ${engine} also failed: ', error);'` }
     }
     throw new Error('All inference engines failed');
   }
@@ -402,8 +401,7 @@ export class UnifiedInferenceEngine {
    */
   private generateCacheKey(request: UnifiedInferenceRequest): string {
     const textHash = this.hashString(request.text);
-    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'`
-  }
+    return `inference:${request.operation}:${request.caseId ?? 'nocase` }:${textHash}`;'` }
   private selectGemmaModel(operation: string): string {
     switch (operation) {
       case 'embedding':

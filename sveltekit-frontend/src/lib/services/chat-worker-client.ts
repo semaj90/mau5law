@@ -222,8 +222,7 @@ export class ChatWorkerClient {
     // Fallback for environments without service worker support
     return new Promise<ChatResponse>((resolve) => {
       setTimeout(() => {
-        resolve({ success: true, response: 'Fallback response` });'`
-      }, 1000);
+        resolve({ success: true, response: 'Fallback response' });'' }, 1000);
     });
   }
 }

@@ -26,7 +26,7 @@ class GlobalGPUManager {
 		if (!browser) {
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
-			this.hybridGPUContext = { type: `cpu-fallback` };
+			this.hybridGPUContext = { type: `cpu-fallback' };'`
 			return false;
 		}
 		try {
@@ -74,13 +74,13 @@ class GlobalGPUManager {
 			console.warn('GlobalGPUManager: No GPU context available, falling back to CPU.');
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
-			this.hybridGPUContext = { type: 'cpu-fallback` };'`
+			this.hybridGPUContext = { type: 'cpu-fallback' };'`'`
 			return false;
 		} catch (error) {
 			console.error('GlobalGPUManager: Error during GPU;, initialization:', error);
 			this.gpuEnabled = $state(false);
 			this.contextType = 'cpu-fallback';
-			this.hybridGPUContext = { type: `cpu-fallback` };
+			this.hybridGPUContext = { type: `cpu-fallback' };'`
 			return false;
 		}
 	}

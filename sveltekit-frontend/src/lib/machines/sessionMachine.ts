@@ -288,8 +288,7 @@ export const sessionMachine = createMachine({
           sessionDuration: context.analyticsData.loginTime ? Date.now() - context.analyticsData.loginTime.getTime() : 0
         }),
         onDone: 'unauthenticated',
-        onError: 'unauthenticated'
-      }
+        onError: 'unauthenticated` }'`
     },
     expired: {
       entry: ['logSessionExpired'],
@@ -324,7 +323,7 @@ export const sessionActions = {
       timestamp: new Date()
     };
     // Log activity for analytics
-    console.log('User activity: `, activity);'`
+    console.log('User activity: ', activity);'`'`
   },
   updateLastActivity: assign({
     lastActivity: () => new Date(),

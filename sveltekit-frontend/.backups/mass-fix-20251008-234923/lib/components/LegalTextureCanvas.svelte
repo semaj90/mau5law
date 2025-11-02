@@ -5,8 +5,8 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 	import { onDestroy } from 'svelte';
-	import { useLegalTextureStreaming } from '$lib/components/headless/texture-streaming.svelte';
-	import { useEvidenceCanvas } from '$lib/components/headless/evidence-canvas.svelte';
+	import  useLegalTextureStreaming  from "$lib/components/headless/texture-streaming.svelte";
+	import  useEvidenceCanvas  from "$lib/components/headless/evidence-canvas.svelte";
 	import type { EvidencePhoto, DocumentScan, CaseVisualization, CourtroomDisplay } from '$lib/gpu/legal-texture-pipeline';
 	interface Props {
 		width?: number;

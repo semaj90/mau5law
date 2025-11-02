@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
+<!-- import  ErrorBoundary  from "$lib/components/ErrorBoundary.svelte"; -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
   import { getContext, onMount } from 'svelte';
   import { get, readable } from 'svelte/store';
   // Simplified Button import (avoid casting workaround)
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // Import the whole module namespace to avoid named-export mismatch errors
   import * as unified from '$lib/stores/unified';
   // Resolve exports at runtime (supports named or default re-export shapes)
@@ -134,39 +134,39 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <!-- replaced <svelte:component> usages with direct Button component and Svelte 5 event attribute -->
-      <Button.Root
+      <Button
         onclick={handleSummarize}
         disabled={!user || aiLoading()}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
         {!user ? 'Sign in to Summarize' : aiLoading() ? 'Summarizing...' : 'Summarize Evidence'}
-      </Button.Root>
-      <Button.Root
+      </Button>
+      <Button
         onclick={saveSummary}
         disabled={!aiSummary() || aiLoading()}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
       >
         Save Summary
-      </Button.Root>
+      </Button>
       {#if evidenceText}
-        <Button.Root
+        <Button
           onclick={handleGenerateEmbedding}
           disabled={!user || lcGeneratingEmbedding()}
           variant="secondary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {lcGeneratingEmbedding() ? 'Generating...' : 'Find Related Evidence'}
-        </Button.Root>
-        <Button.Root
+        </Button>
+        <Button
           onclick={handleSearchRelatedEvidence}
           disabled={!user || lcSearchingRelated()}
           variant="ghost"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {lcSearchingRelated() ? 'Searching...' : 'Semantic Search'}
-        </Button.Root>
+        </Button>
       {/if}
     </div>
   </div>

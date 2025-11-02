@@ -2,13 +2,13 @@
   // Svelte 5 runes are auto-imported
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
-  import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
-  import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
-  import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
-  import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
+  import  Card  from "$lib/components/ui/enhanced-bits.svelte";
+  import  CardContent  from "$lib/components/ui/enhanced-bits/CardContent.svelte";
+  import  CardHeader  from "$lib/components/ui/enhanced-bits/CardHeader.svelte";
+  import  CardTitle  from "$lib/components/ui/enhanced-bits/CardTitle.svelte";
+  import  Input  from "$lib/components/ui/enhanced-bits/Input.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
   import { Search, ExternalLink, Sparkles, FileText, Scale } from 'lucide-svelte';
   import { legalDocuments, type LegalDocument } from '$lib/data/legal-documents';
   // Props
@@ -144,7 +144,7 @@
             oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button.Root class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
 {#if isSearching}
             Searching...
           {:else}
@@ -220,14 +220,14 @@
                 {/if}
               {/if}
             <div class="flex gap-2">
-              <Button.Root class="bits-btn" size="sm" variant="ghost">
+              <Button class="bits-btn" size="sm" variant="ghost">
 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
-              <Button.Root class="bits-btn" size="sm" variant="ghost">
+              <Button class="bits-btn" size="sm" variant="ghost">
 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
               {#if (result as { item?: any; matches?: any; score?: any }).item.url}
-                <Button.Root class="bits-btn" size="sm" variant="ghost">
+                <Button class="bits-btn" size="sm" variant="ghost">
 <a
                     href={(result as { item?: any; matches?: any; score?: any }).item.url}
                     target="_blank"
@@ -265,7 +265,7 @@
       <div class="yorha-panel-content">
         <div class="flex flex-wrap gap-2">
           {#each Array.isArray(['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law']) ? ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] : [] as suggestion}
-              <Button.Root class="bits-btn"
+              <Button class="bits-btn"
               variant="ghost"
               size="sm"
                 onclick={() =>

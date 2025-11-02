@@ -133,8 +133,7 @@ export const caseCreationMachine = createMachine(
       },
       retrying: {
         after: {
-          1000: 'submitting'
-        },
+          1000: 'submitting` },'`
         on: {
           RETRY: `submitting` }
       },

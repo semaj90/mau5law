@@ -124,7 +124,7 @@ export async function extractEntities(text: string): Promise<{ persons: string[]
   try {
     const response = await fetch('http://localhost:8099/api/extract', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
        , text: text.slice(0, 10000), // Limit to 10k chars for performance
         extract_entities: true,
@@ -168,7 +168,7 @@ export async function processPDF(
   } = {}
 ): Promise<PDFProcessingResult> {
   const startTime = Date.now();
-  const { performOCR: forceOCR = false, extractNLP = true, lang = 'eng` } = options;'`
+  const { performOCR: forceOCR = false, extractNLP = true, lang = 'eng' } = options;'`'`
   console.log(`📄 Processing PDF: ${filePath}`);
   // Step 1: Extract text from PDF
   const pdfData = await extractPDFText(filePath);

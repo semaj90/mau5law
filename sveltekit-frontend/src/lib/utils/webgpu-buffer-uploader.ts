@@ -185,8 +185,7 @@ export class WebGPUBufferUploader {
         size: `${(quantizedData.byteLength / 1024).toFixed(2)} KB`,
         downloadTime: `${downloadTime.toFixed(2)}ms`,
         dequantizationTime: `${dequantizationTime.toFixed(2)}ms`,
-        totalTime: `${(downloadTime + dequantizationTime).toFixed(2)}ms' });'`
-    }
+        totalTime: '${(downloadTime + dequantizationTime).toFixed(2)}ms' });'` }'`
     return result;
   }
   /**
@@ -242,8 +241,7 @@ export class WebGPUBufferUploader {
         bufferCount: results.length,
         totalOriginalSize: `${(totalOriginalSize / 1024).toFixed(2)} KB`,
         totalUploadedSize: `${(totalUploadedSize / 1024).toFixed(2)} KB`,
-        averageCompressionRatio: `${(totalOriginalSize / totalUploadedSize).toFixed(2)}x' });'`
-    }
+        averageCompressionRatio: '${(totalOriginalSize / totalUploadedSize).toFixed(2)}x' });'` }'`
     return results;
   }
   /**
@@ -328,7 +326,7 @@ export class WebGPUBufferUploader {
         legal_critical: 'fp32',
         legal_standard: 'fp16',
         legal_compressed: 'int8_symmetric',
-        legal_storage: 'int8_asymmetric' } as const;
+        legal_storage: 'int8_asymmetric` } as const;'`
       return profileModes[quantization as LegalAIProfile] as QuantizationMode;
     }
     return quantization as QuantizationMode;

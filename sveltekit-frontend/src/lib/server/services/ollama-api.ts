@@ -9,7 +9,7 @@ export async function getEmbeddingFromOllama(text: string, model = DEFAULT_EMBED
   try {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ model, prompt: text })
     });
     if (!res.ok) {
@@ -29,7 +29,7 @@ export async function generateTextFromOllama(prompt: string, model = process.env
   try {
     const res = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json` },'`
+      headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ model, prompt, stream: false })
     });
     if (!res.ok) return null;

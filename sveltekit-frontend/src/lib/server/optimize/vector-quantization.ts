@@ -234,8 +234,7 @@ export class BatchVectorQuantizer {
     return {
       ...this.batchMetrics,
       compressionRatio: this.batchMetrics.totalOriginalSize / this.batchMetrics.totalQuantizedSize,
-      memoryReduction: `${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%' };'`
-  }
+      memoryReduction: '${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%' };'` }'`
 }
 /**
  * Utility functions for integration
@@ -328,7 +327,7 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
 export const INTEGRATION_EXAMPLE = `
 // 1. QUANTIZE EMBEDDING FOR STORAGE
 import { VectorQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
-const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax' });'`
+const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax` });'`'`
 const embedding = new Float32Array([0.123, -0.456, 0.789, ...]); // From Gemma
 const quantized = quantizer.quantize(embedding);
 const base64 = quantizedToBase64(quantized);
@@ -360,4 +359,4 @@ console.log(\`Average MSE: \${metrics.averageMSE.toFixed(6)}\`);
 // Export singleton instance for common use
 export const defaultQuantizer = new VectorQuantizer({
   dimensions: 768,
-  method: `minmax' });'`
+  method: `minmax` });'`'`

@@ -226,8 +226,7 @@ export const POST: RequestHandler = async ({ request, fetch: fetchFn }) => {
         comparison: comparisonResult,
         processingTime: totalTime
       },
-      message: 'Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s` });'`
-  } catch (err: any) {
+      message: 'Legal document analyzed successfully in ${(totalTime / 1000).toFixed(2)}s' });'` } catch (err: any) {'`
     console.error('❌ Legal report analysis failed:', err);
     console.error('Stack:', err.stack);
 

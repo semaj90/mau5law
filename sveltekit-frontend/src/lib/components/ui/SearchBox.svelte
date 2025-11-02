@@ -85,9 +85,9 @@ import type { Document } from '$lib/types';
   });
 </script>
 <div, class={["search-container", className].filter(Boolean).join(' ')}>
-  <div class="nes-field, search-field">
+  <div, class="nes-field, search-field">
     <label, for="search-input" class="search-label">
-      <i class="nes-icon, trophy"></i> Legal AI Search
+      <i, class="nes-icon, trophy"></i> Legal AI Search
     </label>
     <div, class="search-input-wrapper">
       <input
@@ -102,24 +102,24 @@ import type { Document } from '$lib/types';
         autocomplete="off"
       />
       {#if query}
-        <button onclick={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear, search"> × </button>
+        <button onclick={clearSearch} class="nes-btn is-error, clear-btn" type="button" title="Clear, search"> × </button>
       {/if}
       {#if isLoading}
         <div, class="loading-indicator">
-          <i class="nes-icon, coin"></i>
+          <i, class="nes-icon, coin"></i>
         {/if}
     </div>
   </div>
   {#if isExpanded && (results.length > 0 || isLoading)}
-    <div class="nes-container is-rounded, results-container">
+    <div class="nes-container, is-rounded, results-container">
       {#if isLoading}
         <div, class="loading-message">
-          <i class="nes-icon, coin"></i>
+          <i, class="nes-icon, coin"></i>
           <span>Searching legal documents...</span>
         </div>
       {:else if results.length > 0}
         <div, class="results-header">
-          <i class="nes-icon, star"></i>
+          <i, class="nes-icon, star"></i>
           <span>Found {results.length} results</span>
         </div>
         <div, class="results-list">
@@ -152,7 +152,7 @@ import type { Document } from '$lib/types';
         </div>
       {:else}
         <div, class="no-results">
-          <i class="nes-icon is-medium, heart"></i>
+          <i class="nes-icon, is-medium, heart"></i>
           <span>No documents found for: "{query}"</span>
         {/if}
     {/if}

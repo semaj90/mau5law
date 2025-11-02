@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button, Input, Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge/Badge.svelte';
-  import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
-  import { Switch } from '$lib/components/ui/switch/Switch.svelte';
-  import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte";
+  import  Switch  from "$lib/components/ui/switch/Switch.svelte";
+  import  Dialog  from "$lib/components/ui/MeltDialog.svelte";
   import {
     aiAssistantManager,
     isAIActive,

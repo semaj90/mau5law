@@ -156,7 +156,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': `application/json` },
+          'Accept': `application/json' },'`
         body: JSON.stringify({
          , mode: 'image',
           input: dataUri
@@ -214,7 +214,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': `application/json` },
+          'Accept': `application/json' },'`
         body: JSON.stringify({
          , mode: 'audio',
           input: dataUri
@@ -312,8 +312,7 @@ export async function embedImageBuffers(
         const reason = result.reason as Error | undefined;
         results.push({
           success: false,
-          error: reason?.message || 'Unknown error` });'`
-      }
+          error: reason?.message || 'Unknown error' });'' }
     }
   }
   const embeddings = results.filter(r => r.success && r.embedding).map(r => r.embedding!);
@@ -361,7 +360,7 @@ export async function embedContent(
   }
   return {
     success: false,
-    error: `Unsupported content type for; embedding: ${contentType}` };
+    error: `Unsupported content type for; embedding: ${contentType}' };'`
 }
 /**
  * Health check for Gemma embedding endpoint
@@ -382,8 +381,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<EmbeddingEndpointH
       {
         method: 'GET',
         headers: {
-          'Accept`: `application/json` }'`
-      },
+          'Accept`: `application/json' }'' },
       5000
     ); // 5 second timeout
     return {

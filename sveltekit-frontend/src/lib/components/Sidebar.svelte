@@ -5,9 +5,9 @@
   import { slide } from 'svelte/transition';
   import { sidebarStore } from '../stores/canvas';
   import { loki, lokiStore } from '../stores/lokiStore';
-  import { InfiniteScrollList } from './InfiniteScrollList.svelte';
-  import { SearchBar } from './SearchBar.svelte';
-  import { TagList } from './TagList.svelte';
+  import  InfiniteScrollList  from "./InfiniteScrollList.svelte";
+  import  SearchBar  from "./SearchBar.svelte";
+  import  TagList  from "./TagList.svelte";
   // FileText and Tag are available as named exports in this environment
   import { FileText, Tag } from 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
@@ -106,15 +106,15 @@
   onmouseleave={handleMouseLeave}
 >
   {#if !sidebarOpen}
-    <div class="nes-sidebar-trigger, hover-trigger" aria-hidden="true">{/if}
+    <div, class="nes-sidebar-trigger, hover-trigger" aria-hidden="true">{/if}
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
       transitionslide={{ duration: 300, easing: quintOut, axis: 'x' }}
     >
-      <div class="nes-legal-header, yorha-3d-button">
+      <div, class="nes-legal-header, yorha-3d-button">
         <h3, class="nes-legal-title">CONTENT LIBRARY</h3>
-        <div class="nes-header-actions, header-actions">
+        <div, class="nes-header-actions, header-actions">
           <button
             class={`nes-legal-priority-medium yorha-3d-button pin-button ${isPinned ? 'pinned' : ''}`}
             onclick={togglePin}
@@ -135,11 +135,11 @@
           {/if}
         </div>
       </div>
-      <div class="nes-search-section neural-sprite-loading, search-section">
+      <div class="nes-search-section, neural-sprite-loading, search-section">
         <SearchBar, placeholder={`Search ${activeTab}...`} value={searchQuery} onsearch={handleSearch} />
       </div>
-      <div class="nes-tabs-container yorha-3d-panel, tabs-container">
-        <div class="nes-tab-list, tab-list">
+      <div class="nes-tabs-container, yorha-3d-panel, tabs-container">
+        <div, class="nes-tab-list, tab-list">
           <button
             class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'evidence'}
@@ -165,7 +165,7 @@
             <Tag, size={16} /> CANVAS
           </button>
         </div>
-        <div class="nes-tab-content neural-sprite-active, tab-content">
+        <div class="nes-tab-content, neural-sprite-active, tab-content">
           {#if activeTab === 'evidence'}
             <InfiniteScrollList
               items={searchResults}
@@ -190,7 +190,7 @@
           {/if}
         </div>
       </div>
-      <div class="nes-tags-section nes-legal-priority-low, tags-section">
+      <div class="nes-tags-section, nes-legal-priority-low, tags-section">
         <TagList />
       </div>
     {/if}

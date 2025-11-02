@@ -194,7 +194,7 @@ export class MinIOService {
        , Bucket: bucket,
         Key: key,
         Body: content,
-        ContentType: contentType || 'application/octet-stream' }
+        ContentType: contentType || 'application/octet-stream` }'`
     });
     await upload.done();
     return `minio://${bucket}/${key}`;

@@ -67,7 +67,7 @@ export class OllamaService {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
          , model: this.embedModel,
-          input: text.slice(0, 8192), // Ollama embeddings expect: 'input' })
+          input: text.slice(0, 8192), // Ollama embeddings expect: 'input` })'`
       });
       if (!response.ok) {
         throw new Error(`Embedding generation failed: ${response.statusText}`);
@@ -327,8 +327,7 @@ export class OllamaService {
                   try {
                     onChunk(decoded);
                   } catch (cbErr) {
-                    console.warn('OllamaService: onChunk callback;, error:', cbErr);'
-                  }
+                    console.warn('OllamaService: onChunk callback;, error:', cbErr);` }`'
                 }
                 if (cacheKey) {
                   // fire-and-forget append to avoid blocking the stream
@@ -424,7 +423,7 @@ export class OllamaService {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
         method: 'GET',
-        headers: {, Accept: 'application/json' }
+        headers: {, Accept: 'application/json` }'`
       });
       if (!response.ok) return false;
 

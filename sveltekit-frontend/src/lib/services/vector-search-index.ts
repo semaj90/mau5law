@@ -221,7 +221,7 @@ class VectorSearchIndex {
     try {
       const response = await fetch('/api/embeddings/gemma?action=generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ text })
       });
       if (!response.ok) {

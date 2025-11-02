@@ -452,8 +452,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID` }));'`
-    }
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` }'`
     // Parse and validate request body
     const body = await request.json();
     // narrow the validatedData type for TypeScript
@@ -629,8 +628,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     const { user } = await getAuthenticatedUser(locals);
     const caseId = url.searchParams.get('id');
     if (!caseId) {
-      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID` }));'`
-    }
+      throw error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));'` }'`
     // Check if user has permission to delete this case
     const assignedCol = getCasesAssignedColumn();
     const existingCase = await db
@@ -684,8 +682,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         },
         deletedBy: user.id,
         deletedByEmail: user.email,
-        isAdmin: user.role === 'admin` }'`
-    });
+        isAdmin: user.role === 'admin' }'` });'`
     // Delete related data in proper order (maintain referential integrity)
     // Resolve tables at runtime to perform deletions (avoid missing-export compile errors)
     const caseTimelineDel = await resolveSchemaTable<Record<string, unknown>>(
@@ -713,8 +710,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     deleteResults.forEach((result, index) => {
       if (result.status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
-        console.warn(`Failed to delete ${tableName} for case ${caseId}: ', result.reason);'`
-      }
+        console.warn(`Failed to delete ${tableName} for case ${caseId}: ', result.reason);'` }
     });
     // Delete the case itself
     const deletedCase = await db.delete(cases).where(eq(cases.id, caseId)).returning();
@@ -762,8 +758,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         relatedDataDeleted: {
           timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
-          documents: deleteResults[2].status === 'fulfilled` }'`
-      }
+          documents: deleteResults[2].status === 'fulfilled' }'` }'`
     });
   } catch (err: any) {
     if (isHttpError(err)) {

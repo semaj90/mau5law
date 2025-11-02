@@ -64,8 +64,7 @@ class DocumentUpdateNotificationManager {
         documentUpdateNotifications.update((state: any) => ({
           ...state,
           connected: true,
-          connectionStatus: 'connected'
-        });
+          connectionStatus: 'connected` });'`
         // Send periodic pings to keep connection alive
         this.pingInterval = setInterval(() => {
           if (this.ws?.readyState === WebSocket.OPEN) {
@@ -102,7 +101,7 @@ class DocumentUpdateNotificationManager {
           connectionStatus: `error` });
       }
     } catch (error: any) {
-      console.error('❌ Failed to create WebSocket connection: `, error);'`
+      console.error('❌ Failed to create WebSocket connection: ', error);'`'`
       documentUpdateNotifications.update((state: any) => ({
         ...state,
         connectionStatus: `error` });
@@ -226,12 +225,12 @@ export function formatNotificationTime(timestamp: string): string {
   const date = new Date(timestamp);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  if (diff < 60000) { // Less than 1, minute>
+  if (diff < 60000) { // Less than, 1, minute>
     return 'Just now';
-  } else if (diff < 3600000) { // Less than 1, hour>
+  } else if (diff < 3600000) { // Less than, 1, hour>
     const minutes = Math.floor(diff / 60000);
     return `${minutes} minute${minutes > 1 ? 's' : `` } ago`;
-  } else if (diff < 86400000) { // Less than 1, day>
+  } else if (diff < 86400000) { // Less than, 1, day>
     const hours = Math.floor(diff / 3600000);
     return `${hours} hour${hours > 1 ? 's' : `` } ago`;
   } else {

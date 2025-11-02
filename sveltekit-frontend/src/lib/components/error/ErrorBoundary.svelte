@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
     children?: any;
     fallback?: any;
@@ -80,7 +80,7 @@
   <div, class="error-boundary-container">
     <div, class="error-boundary-content">
       <div, class="error-icon">
-        <svg width="64" height="64" viewBox="0 0 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="64" height="64" viewBox="0 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle, cx="12" cy="12" r="10" />
           <line, x1="12" y1="8" x2="12" y2="12" />
           <line, x1="12" y1="16" x2="12.01" y2="16" />
@@ -102,7 +102,7 @@
       {/if}
       <div, class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn, is-primary" onclick={refreshPage}> Try Again </button>
+          <button, class="nes-btn, is-primary" onclick={refreshPage}> Try Again </button>
         {/if}
         <button, class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
         {#if showReportButton}

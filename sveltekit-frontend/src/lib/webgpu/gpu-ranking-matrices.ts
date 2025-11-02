@@ -99,7 +99,7 @@ export class GPURankingMatrices {
           storageTexture: {
            , access: 'write-only',
             format: 'rgba32float' as GPUTextureFormat,
-            viewDimension: '2d' }
+            viewDimension: '2d` }'`
         },
         {
           binding: 1,
@@ -119,8 +119,7 @@ export class GPURankingMatrices {
       }),
       compute: {
         module: shaderModule,
-        entryPoint: `main' }'`
-    });
+        entryPoint: 'main' }'` });'`
   }
   private generateRankingComputeShader(): string {
     const optimization = this.config.computeShaderOptimization;
@@ -202,11 +201,10 @@ export class GPURankingMatrices {
               ? `// Accurate optimization: Normalized values`
            pixelValue = normalize(pixelValue);`
               : `// Balanced optimization: Clamped values`
-           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));' }'
+           pixelValue = clamp(pixelValue, vec4<f32>(0.0), vec4<f32>(1.0));` }'`
         textureStore(rankingTexture, texCoord, pixelValue);
       }
-    `;`
-  }
+    `;` }
   async updateRankingMatrices(documents: LegalDocument[]): Promise<void> {
     if (!this.isInitialized) await this.initialize();
     if (!this.device || !this.computePipeline || !this.bindGroupLayout) {
