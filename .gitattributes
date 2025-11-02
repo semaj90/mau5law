@@ -1,0 +1,5 @@
+# Enforce LF line endings for Node scripts used cross-platform
+scripts/tag-legacy-go-files.mjs eol=lf
+# Avoid tracking binaries via LFS by default; build artifacts should not be committed
+# If you truly need LFS for specific assets, scope them narrowly by path, not extension.
+# Previously: '*.exe' and '*.zip' were forced into LFS, inflating repo size.
