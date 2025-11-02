@@ -7,10 +7,10 @@
   }>();
   // forward any other props via rest
 </script>
-<!-- cast RealButton to any to bypass strict prop checks from sveltets -->
-<svelte:component this={RealButton as any} {type} {disabled} {...rest}>
+<!-- Svelte 5: Direct component usage instead of svelte:component -->
+<RealButton {type} {disabled} {...rest}>
   <slot />
-</svelte:component>
+</RealButton>
 <style>
   /* shim - no styles */
 </style>

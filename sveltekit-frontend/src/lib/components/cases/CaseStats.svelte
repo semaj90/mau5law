@@ -1,4 +1,5 @@
 <script lang="ts">
+
   // Svelte 5 runes are auto-imported
   interface Props {
     cases: Case[] ;
@@ -33,18 +34,19 @@
   //   overdueCount: number
   // }
   // Basic stats (computed reactively)
-  $: stats = {
+  const stats = $derived({
     total: cases.length,
     // adjust these status strings if your Case type uses different values/names
     active: cases.filter(c => c.status === 'ACTIVE').length,
     pending: cases.filter(c => c.status === 'PENDING').length,
     closed: cases.filter(c => c.status === 'CLOSED').length,
     recentlyUpdated: cases.filter(c => {
-      const weekAgo = new Date();
+      const weekAgo = new Date());
       weekAgo.setDate(weekAgo.getDate() - 7);
       return c.updatedAt && new Date(c.updatedAt) > weekAgo;
     }).length,
   };
+
 </script>
 <div class="case-stats container mx-auto px-4">
   <div class="stat-card">

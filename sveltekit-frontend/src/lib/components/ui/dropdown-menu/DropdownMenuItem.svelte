@@ -36,25 +36,25 @@
 {#if href}
   {#if ItemCtor}
     <svelte:component this={ItemCtor} asChild>
-      <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...$$restProps}>
+      <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...rest}>
         <slot />
       </a>
     </svelte:component>
   {:else}
     <!-- Fallback while ItemCtor is loading -->
-    <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...$$restProps}>
+    <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...rest}>
       <slot />
     </a>
   {/if}
 {:else if ItemCtor}
-  <svelte:component this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...$$restProps}>
+  <svelte:component this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...rest}>
     <button type="button" class="flex w-full items-center gap-2 text-left" onclick={handleClick} {disabled}>
       <slot />
     </button>
   </svelte:component>
 {:else}
   <!-- Fallback while ItemCtor is loading -->
-  <button type="button" class={itemClasses} onclick={handleClick} {disabled} {...$$restProps}>
+  <button type="button" class={itemClasses} onclick={handleClick} {disabled} {...rest}>
     <slot />
   </button>
 {/if}

@@ -14,10 +14,10 @@
   export let value: any = undefined;
   export let placeholder: string = 'Select an option';
   export let options: { value: string; label: string }[] = [];
-  // pass-through rest props are spread into the root component via {...$$restProps}
+  // pass-through rest props are spread into the root component via {...rest}
 </script>
 
-<Select bind:value={value} {...$$restProps}>
+<Select bind:value={value} {...rest}>
   <SelectTrigger
     class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
   >

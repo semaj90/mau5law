@@ -2,6 +2,7 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
 
@@ -13,7 +14,7 @@ https://svelte.dev/e/props_duplicate -->
   let dragOver = $state(false);
 
   // reactive avatarSize based on size prop
-  $: avatarSize = size === 'small' ? '32px' : size === 'large' ? '80px' : '48px';
+  const avatarSize = $derived(size === 'small' ? '32px' : size === 'large' ? '80px' : '48px');
 
   onMount(() => {
     avatarStore.loadAvatar();
@@ -75,6 +76,7 @@ https://svelte.dev/e/props_duplicate -->
       avatarStore.removeAvatar();
     }
   }
+
 </script>
 
 <div class="avatar-wrapper" class:clickable class:drag-over={dragOver}>

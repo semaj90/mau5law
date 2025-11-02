@@ -1,4 +1,5 @@
 <script lang="ts">
+
   import { tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
   import { Input } from '$lib/components/ui/enhanced-bits/Input.svelte';
@@ -29,10 +30,11 @@
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null);
   }
   // safe reactive defaults if store.state is missing
-  $: ragState = store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } };
-  $: intelligentSuggestions = store?.intelligentSuggestions ?? [];
-  $: optimizedResults = store?.results ?? [];
-  $: searchDuration = lastDuration;
+  const ragState = $derived(store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } });
+  const intelligentSuggestions = $derived(store?.intelligentSuggestions ?? []);
+  const optimizedResults = $derived(store?.results ?? []);
+  const searchDuration = $derived(lastDuration);
+
 </script>
 <div class="enhanced-rag-interface nes-container">
   <div class="search-bar bits-row">

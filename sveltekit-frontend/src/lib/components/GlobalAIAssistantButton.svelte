@@ -1,4 +1,5 @@
 <script lang="ts">
+
   // Import the potentially problematic stores and the action function
   import { aiAssistant as rawAIAssistant, user as rawUser, sendToAIAssistant } from '$lib/stores/unified';
   import { writable, type Readable } from 'svelte/store'; // Import Readable type
@@ -30,7 +31,7 @@
   // The user store's value can be null, so its type should reflect that.
   const user: Readable<UserStoreValue | null> = (rawUser as Readable<UserStoreValue | null> | undefined) || writable<UserStoreValue | null>(null);
   const isOpen = writable(false);
-  $: showButton = $user !== null; // This now correctly checks the value of the: 'user' store
+  const showButton = $derived($user !== null); // This now correctly checks the value of the: 'user' store
   function toggle() {
     isOpen.update(v => !v);
   }
@@ -55,6 +56,7 @@
       input.value = '';
     }
   }
+
 </script>
 {#if showButton}
   <button

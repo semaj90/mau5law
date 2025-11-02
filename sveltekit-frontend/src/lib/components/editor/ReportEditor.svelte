@@ -4,6 +4,7 @@ https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+
   // Removed unused imports: onDestroy, quintOut, Modal, Component
   import { onMount } from 'svelte';
   import { AdvancedSearch } from "../search/AdvancedSearch.svelte";
@@ -113,9 +114,9 @@ https://svelte.dev/e/js_parse_error -->
     editorHeight = $reportUI?.fullscreen ? window.innerHeight - 200 : 500;
   }
   // NEW: derive layout class in script to avoid complex expressions in markup
-  $: layoutClass = $report?.settings
+  const layoutClass = $derived($report?.settings
     ? ({ single: 'layout-single', dual: 'layout-dual', masonry: 'layout-masonry' }[$report.settings.layout] ?? 'layout-single')
-    : 'layout-single';
+    : 'layout-single');
   // Consolidated onMount: resize listener, autosave, cache stats
   onMount(() => {
     updateEditorHeight();
@@ -350,6 +351,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
   }
+
 </script>
 <svelte:window onkeydown={handleKeydown} />
 <div

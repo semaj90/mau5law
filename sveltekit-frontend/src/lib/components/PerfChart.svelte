@@ -1,4 +1,5 @@
 <script lang="ts">
+
   // Svelte 5 runes are auto-imported
   interface Props {
     points?: number[];
@@ -12,10 +13,10 @@
   export let height = 50;
   export let color = '#2563eb';
   // reactive derived values with guards
-  $: capped = points ? points.slice(-60) : [];
-  $: max = capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1;
-  $: d = (() => {
-    if (!capped.length) return '';
+  const capped = $derived(points ? points.slice(-60) : []);
+  const max = $derived(capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1);
+  const d = $derived((() => {
+    if (!capped.length) return '');
     const denom = capped.length > 1 ? capped.length - 1 : 1;
     return capped
       .map((v, i) => {
@@ -29,6 +30,7 @@
       })
       .join(' ');
   })();
+
 </script>
 <svg {width} {height} viewBox={`0 0 ${width} ${height}`} class="overflow-visible" role="img" aria-label="performance chart">
   <polyline points={d} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />

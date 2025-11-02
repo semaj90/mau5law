@@ -1,5 +1,6 @@
 <!-- YoRHa Terminal Navigation Component -->
 <script lang="ts">
+
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   type Link = { href: string; label: string; icon?: string };
@@ -14,10 +15,11 @@
   ];
   // Reactive derived current path from the page store
   let currentPath: string = '/';
-  $: currentPath = $page.url?.pathname ?? '/';
+  const currentPath = $derived($page.url?.pathname ?? '/');
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href));
   }
+
 </script>
 <nav class="yorha-nav">
   <div class="yorha-nav-container">

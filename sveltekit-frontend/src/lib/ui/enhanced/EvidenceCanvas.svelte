@@ -1085,7 +1085,7 @@
     <button onclick={analyzeCanvas} disabled={analyzing} class="analyze-btn" class:n64-btn={enableN64Style}>
       {#if analyzing}
         <Loader2 class="w-4 h-4 animate-spin" />
-        {enableN64Style ? '🎮 ANALYZING...' : 'Analyzing…'}
+        {enableN64Style ? '🎮 ANALYzing...' : 'Analyzing…'}
       {:else}
         <Zap class="w-4 h-4" />
         {enableN64Style ? '🎮 ANALYZE CANVAS' : 'Analyze Canvas'}
@@ -1183,7 +1183,7 @@
       </div>
       <div class="files-grid">
         {#each uploadedFiles as file (file.id)}
-          <div class="file-item" class:n64-file={enableN64Style} class={"status-" + file.status}>
+          <div class:n64-file={enableN64Style} class="file-item status-{file.status}">
             <div class="file-icon">
               {#if file.file.type.startsWith('image/')}
                 <ImageIcon class="w-4 h-4" />

@@ -1,4 +1,5 @@
 <script lang="ts">
+
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   // replaced prop/runtime handling with standard Svelte exports and dispatcher
@@ -37,7 +38,8 @@
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onKeydown);
   });
-  $: menuPosition = align === 'right' ? 'right: 0;' : 'left: 0;';
+  const menuPosition = $derived(align === 'right' ? 'right: 0);' : 'left: 0;';
+
 </script>
 <div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button

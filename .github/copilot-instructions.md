@@ -512,9 +512,56 @@ export const xstateIntegration = {
     </script>
     ```
 
-- Dynamic components & looping
-  - `svelte:component` usage is replaced by derived/dynamic tag names and direct dynamic tags.
-  - If you must pick one of several components:
+- Dynamic components & looping — CRITICAL PATTERN
+  - **When to use `<svelte:component>`** (decision tree):
+    - **Is component reference known at compile time?**
+      - YES → Use direct component tag: `<Component {...props} />`
+      - NO → Use `<svelte:component this={dynamicComponent} />`
+
+  - **✅ VALID uses** of `<svelte:component>`:
+    1. **Dynamic icons** (selected at runtime):
+       ```svelte
+       <svelte:component this={icon} size={28} />
+       <svelte:component this={getFileIcon(file)} />
+       ```
+    2. **Conditional components** (varies by condition):
+       ```svelte
+       <svelte:component this={currentComponent} {data} />
+       ```
+    3. **Component from array/object**:
+       ```svelte
+       {#each components as comp}
+         <svelte:component this={comp.component} {...comp.props} />
+       {/each}
+       ```
+
+  - **❌ DEPRECATED uses** (remove `<svelte:component>`):
+    - Static imports (component always the same)
+    - Wrapper/shim components (enhanced-bits pattern)
+    - Compile-time known components
+
+  - **Static component forwarding** (shims/wrappers):
+    - Before (deprecated):
+      ```svelte
+      <script>
+        import RealButton from './Button.svelte';
+      </script>
+      <svelte:component this={RealButton} {...$$props}>
+        <slot />
+      </svelte:component>
+      ```
+    - After (Svelte 5 correct):
+      ```svelte
+      <script lang="ts">
+        import RealButton from './Button.svelte';
+        let props = $props();
+      </script>
+      <RealButton {...props}>
+        <slot />
+      </RealButton>
+      ```
+
+  - **Derived components** (conditional selection):
     - Before:
       ```svelte
       <script>
@@ -535,7 +582,8 @@ export const xstateIntegration = {
       </script>
       <Component />
       ```
-  - Looping over components (fixes "Unknown tool or toolset 'each' when using dynamic svelte:component"):
+
+  - **Looping over components** (fixes "Unknown tool or toolset 'each'"):
     - Before (problematic pattern):
       ```svelte
       {#each cards as card}
@@ -548,6 +596,8 @@ export const xstateIntegration = {
         <card.component {...card.props} />
       {/each}
       ```
+
+  - **Key insight**: `<svelte:component>` adds runtime overhead. Use direct component tags when the component is known at compile time. Reserve `<svelte:component>` for truly dynamic scenarios (icons, conditional rendering, data-driven components).
 
 - UI kit named exports
   - Most modern UI kits export named components. Prefer named imports:

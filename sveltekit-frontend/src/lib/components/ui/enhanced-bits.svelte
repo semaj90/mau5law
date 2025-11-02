@@ -17,7 +17,7 @@
   onclick={handleClick}
   disabled={disabled}
   class={`bits-btn ${variant ?? ''} ${size ?? ''} ${className ?? ''}`}
-  {...$$restProps}>
+  {...rest}>
   <slot />
 </button>
 <style>

@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected toke;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+
   export let onclose: ((event?: any) => void) | undefined;
   import { aiService } from '$lib/services/aiService';
   import * as Dialog from '$lib/components/ui/dialog.svelte'';
@@ -25,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
   const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as any;
   let copied = $state(false);
   // reactive derived open state
-  $: isOpen = $isLoading || $summary != null || $error != null;
+  const isOpen = $derived($isLoading || $summary != null || $error != null);
   async function copyToClipboard() {
     if ($summary) {
       try {
@@ -42,6 +43,7 @@ https://svelte.dev/e/js_parse_error -->
     if (typeof reset === 'function') reset();
     onclose?.();
   }
+
 </script>
 <Dialog.Root open={isOpen} on:close={closeModal}>
   <Dialog.Content class="max-w-5xl">

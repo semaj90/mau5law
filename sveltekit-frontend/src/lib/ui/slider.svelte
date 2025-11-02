@@ -28,7 +28,7 @@
   {orientation}
   {disabled}
   class="relative flex w-full touch-none select-none items-center"
-  {...$$restProps}
+  {...rest}
 >
   <SliderTrack
     class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
