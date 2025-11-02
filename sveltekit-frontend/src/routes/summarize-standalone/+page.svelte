@@ -10,7 +10,7 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with your existing legal AI platform
 -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
 

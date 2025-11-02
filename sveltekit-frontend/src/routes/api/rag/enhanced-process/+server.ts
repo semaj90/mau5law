@@ -1,7 +1,7 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltekit/kit';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltekit/kit';
 
 // Define interfaces for complex types to avoid: 'any'
 interface Section {

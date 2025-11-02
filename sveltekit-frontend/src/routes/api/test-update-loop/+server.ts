@@ -1,15 +1,15 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types'; // changed from, './$types.js' to: './$types'
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/db';
-import { eq, sql } from, 'drizzle-orm';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types'; // changed from './$types.js' to: './$types'
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/db';
+import { eq, sql } from 'drizzle-orm';
 
 // Test Full Re-embed + Re-rank Loop
 // End-to-end testing of document changes, re-embedding, and re-ranking
-import { DocumentUpdateLoop } from, '$lib/services/documentUpdateLoop';
-import { documents, cases, users } from, '$lib/db/schema'; // Removed document_chunks
-import { documentVectors, queryVectors } from, '$lib/db/schema/vectors';
+import { DocumentUpdateLoop } from '$lib/services/documentUpdateLoop';
+import { documents, cases, users } from '$lib/db/schema'; // Removed document_chunks
+import { documentVectors, queryVectors } from '$lib/db/schema/vectors';
 
 // --- ADJUSTED: lightweight types and adapter to satisfy TS/linter ---
 type UpdateResult = { chunksUpdated: number; processingTime: number };

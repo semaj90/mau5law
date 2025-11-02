@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import type { OptimizedFixRequest, OptimizedFixResponse, BatchProcessingStats } from, '$lib/types/typescript-optimizer';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import type { OptimizedFixRequest, OptimizedFixResponse, BatchProcessingStats } from '$lib/types/typescript-optimizer';
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 /* POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */
 export const, POST: RequestHandler = async ({ request }) => {

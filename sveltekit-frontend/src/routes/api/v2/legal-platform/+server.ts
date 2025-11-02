@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * Legal AI Platform API Router v2
  * Centralized endpoint routing to Go microservices for the full-stack legal AI platform
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
-import { json, error } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/unified-client';
-import { cases, evidence, criminals, legalDocuments } from, '$lib/server/db/schema-postgres';
-import { eq, or, desc, ilike, and, SQL, sql } from, 'drizzle-orm';
-import { createId } from, '@paralleldrive/cuid2';
+import { json, error } from '@sveltejs/kit';
+import { db } from '$lib/server/db/unified-client';
+import { cases, evidence, criminals, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq, or, desc, ilike, and, SQL, sql } from 'drizzle-orm';
+import { createId } from '@paralleldrive/cuid2';
 
 // Go Microservice Configuration
 const GO_SERVICES = { enhanced_rag: {, url: 'http://localhost:8094',

@@ -9,17 +9,17 @@
  *
  * Achieves 400x performance improvements through unified architecture
  */
-import type { EnhancedCachingService, EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from, './enhanced-caching-service.js';
-import { WebGPUVertexStreamer } from, '$lib/gpu/webgpu-vertex-streaming'; // Import the class directly
-import type { LegalVisualizationVertex, StreamingConfig } from, '$lib/gpu/webgpu-vertex-streaming';
-import { simdJSONAccelerator } from, '$lib/wasm/simd-json-wrapper'; // Import the instance directly
-import type { SIMDJSONAccelerator, LegalDocumentJSON, SIMDParsingMetrics } from, '$lib/wasm/simd-json-wrapper';
-import { chrRomPatternCache } from, '$lib/cache/chr-rom-pattern-cache'; // Import the instance directly
-import type { CHRROMPatternCache, CHRROMPattern, PatternGenerationOptions } from, '$lib/cache/chr-rom-pattern-cache';
-import { visualMemoryPalace } from, '$lib/memory/visual-memory-palace-integration'; // Import the instance directly
-import type { VisualMemoryPalaceManager, MemoryPalace, MemoryPalaceRoom, MemoryQuery, MemoryRetrievalResult } from, '$lib/memory/visual-memory-palace-integration';
-import { enhancedCachingService } from, './enhanced-caching-service.js'; // Import the instance directly
-import { getGemmaEmbeddingService } from, '$lib/services/gemma-embedding'; // For embedding generation
+import type { EnhancedCachingService, EmbeddingCacheResult, QueryCacheResult, CacheMetrics } from './enhanced-caching-service.js';
+import { WebGPUVertexStreamer } from '$lib/gpu/webgpu-vertex-streaming'; // Import the class directly
+import type { LegalVisualizationVertex, StreamingConfig } from '$lib/gpu/webgpu-vertex-streaming';
+import { simdJSONAccelerator } from '$lib/wasm/simd-json-wrapper'; // Import the instance directly
+import type { SIMDJSONAccelerator, LegalDocumentJSON, SIMDParsingMetrics } from '$lib/wasm/simd-json-wrapper';
+import { chrRomPatternCache } from '$lib/cache/chr-rom-pattern-cache'; // Import the instance directly
+import type { CHRROMPatternCache, CHRROMPattern, PatternGenerationOptions } from '$lib/cache/chr-rom-pattern-cache';
+import { visualMemoryPalace } from '$lib/memory/visual-memory-palace-integration'; // Import the instance directly
+import type { VisualMemoryPalaceManager, MemoryPalace, MemoryPalaceRoom, MemoryQuery, MemoryRetrievalResult } from '$lib/memory/visual-memory-palace-integration';
+import { enhancedCachingService } from './enhanced-caching-service.js'; // Import the instance directly
+import { getGemmaEmbeddingService } from '$lib/services/gemma-embedding'; // For embedding generation
 
 export interface RevolutionaryAIQuery { query: string;, type: 'semantic' | 'visual' | 'spatial' | 'temporal';
   options?: {

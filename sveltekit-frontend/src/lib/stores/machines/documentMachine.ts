@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Document Processing XState Machine
  * Manages document lifecycle, AI analysis, and processing workflows
  */
-import { createMachine, assign, type ActorRefFrom } from, 'xstate';
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
 // Local fallback interfaces to satisfy type references during checks
 // Prefer real types from $lib/types when available.
 interface _FallbackLegalDocument {

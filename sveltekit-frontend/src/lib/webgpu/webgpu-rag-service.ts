@@ -4,7 +4,7 @@ import {
   adaptiveQuantization,
   type QuantizationConfig,
   type ArrayConversionResult
-} from, '$lib/utils/webgpu-array-utils';
+} from '$lib/utils/webgpu-array-utils';
 
 // --- Type Definitions ---
 

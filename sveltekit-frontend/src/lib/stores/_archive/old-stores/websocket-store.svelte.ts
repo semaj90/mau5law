@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Enhanced WebSocket Real-time Dashboard Integration
  * Provides live updates for the Legal AI Dashboard with Svelte, 5 runes
  */
-import { browser } from, '$app/environment';
-import { getWebSocketClient } from, '$lib/services/websocket-service';
+import { browser } from '$app/environment';
+import { getWebSocketClient } from '$lib/services/websocket-service';
 
 // WebSocket client instance
 let wsClient: ReturnType<typeof getWebSocketClient> | null = null;

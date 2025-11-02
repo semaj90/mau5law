@@ -3,10 +3,10 @@
  * Direct pgvector database operations for semantic search
  * Optimized for legal document retrieval with Gemma embeddings
  */
-import { db } from, './connection.js';
-import { sql } from, 'drizzle-orm';
-import type { VectorSearchOptions, VectorSearchResult } from, '$lib/types/vector-search.js';
-import { performance } from, 'perf_hooks';
+import { db } from './connection.js';
+import { sql } from 'drizzle-orm';
+import type { VectorSearchOptions, VectorSearchResult } from '$lib/types/vector-search.js';
+import { performance } from 'perf_hooks';
 interface EmbeddingVector { id: string;, content: string;
   embedding: number[];
   metadata: { [key: string]: any }

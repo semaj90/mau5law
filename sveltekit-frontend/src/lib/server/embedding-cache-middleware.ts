@@ -1,12 +1,12 @@
 // GPU-Accelerated Embedding Cache Middleware
 // Integrates with existing thread synchronization and RTX, 3060 Ti optimization
 // Flow: Node.js → Redis Cache → Postgres → Python GPU Worker
-import crypto from, 'crypto';
-import { threadSafePostgres } from, './thread-safe-postgres.js';
-// import { concurrentSerializer } from, './concurrent-json-serializer.js'
-import { gpuCoordinator } from, './gpu-thread-coordinator.js';
-import { cacheEmbedding, getCachedEmbedding } from, './cache/redis.js';
-import { optimizedCache } from, './webgpu-redis-optimizer.js';
+import crypto from 'crypto';
+import { threadSafePostgres } from './thread-safe-postgres.js';
+// import { concurrentSerializer } from './concurrent-json-serializer.js'
+import { gpuCoordinator } from './gpu-thread-coordinator.js';
+import { cacheEmbedding, getCachedEmbedding } from './cache/redis.js';
+import { optimizedCache } from './webgpu-redis-optimizer.js';
 interface EmbeddingCacheConfig {
   redisUrl?: string;
   pythonWorkerUrl?: string;

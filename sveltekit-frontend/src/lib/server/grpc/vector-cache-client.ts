@@ -1,7 +1,7 @@
-import { credentials, ServiceError } from, "@grpc/grpc-js";
-import { VectorCacheServiceClient } from, "$lib/proto/vector_cache_grpc_pb";
-import { EmbedLookupRequest, EmbedStoreRequest, EmbedLookupResponse, EmbedStoreResponse } from, "$lib/proto/vector_cache_pb";
-import { env } from, '$env/dynamic/private'; // For GRPC_VECTORCACHE_URL
+import { credentials, ServiceError } from "@grpc/grpc-js";
+import { VectorCacheServiceClient } from "$lib/proto/vector_cache_grpc_pb";
+import { EmbedLookupRequest, EmbedStoreRequest, EmbedLookupResponse, EmbedStoreResponse } from "$lib/proto/vector_cache_pb";
+import { env } from '$env/dynamic/private'; // For GRPC_VECTORCACHE_URL
 const GRPC_VECTORCACHE_URL = env.GRPC_VECTORCACHE_URL || "localhost:50051";
 const client = new VectorCacheServiceClient(
   GRPC_VECTORCACHE_URL,

@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import type { HTMLButtonAttributes } from, 'svelte/elements'; import type { Snippet } from, 'svelte'; import { getContext } from, 'svelte'; interface ButtonProps extends HTMLButtonAttributes { children?: Snippet; variant?: | 'default'
+<script, lang="ts"> // Svelte, 5 runes are auto-imported import type { HTMLButtonAttributes } from 'svelte/elements'; import type { Snippet } from 'svelte'; import { getContext } from 'svelte'; interface ButtonProps extends HTMLButtonAttributes { children?: Snippet; variant?: | 'default'
       | 'primary'
       | 'success'
       | 'warning'

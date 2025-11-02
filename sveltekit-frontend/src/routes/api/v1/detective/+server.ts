@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import { cuidSchema } from, '$lib/server/z-schemas';
+import type { Case } from '$lib/types';
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Detective Mode API Routes
  *
@@ -7,9 +7,9 @@ import { cuidSchema } from, '$lib/server/z-schemas';
  * GET    /api/v1/detective - Get detective insights for cases
  * POST   /api/v1/detective - Run detective analysis
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { db, sql } from, '$lib/server/db';
-import { z } from, 'zod';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { z } from 'zod';
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),

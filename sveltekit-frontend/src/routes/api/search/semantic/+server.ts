@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { defaultQueryCache } from, '$lib/server/optimize/query-cache';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { defaultQueryCache } from '$lib/server/optimize/query-cache';
 
 // Go inference service search endpoint
 const GO_SEARCH_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/search';

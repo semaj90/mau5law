@@ -2,7 +2,7 @@
  * Ollama Service for local LLM integration
  * Provides lightweight, typed wrappers for the local Ollama HTTP API.
  */
-import { logger } from, '../logger.js';
+import { logger } from '../logger.js';
 export interface OllamaModel {
   name: string;
   size?: string;

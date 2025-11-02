@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Production Pipeline Database Schema
  * Optimized for crawl → OCR → embed → index → cache → serve workflow
@@ -18,8 +18,8 @@ import {
   index,
   uniqueIndex,
   primaryKey
-} from, 'drizzle-orm/pg-core';
-import { sql } from, 'drizzle-orm';
+} from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 // Enable pgvector extension
 export const enableVectorExtension = sql`CREATE EXTENSION IF NOT EXISTS vector`;
 // ===== CRAWL & INGESTION TABLES =====

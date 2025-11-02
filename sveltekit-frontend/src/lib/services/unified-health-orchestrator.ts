@@ -1,10 +1,10 @@
 // Unified Health Monitoring and Job Orchestration Service
 // Coordinates CUDA, WebGPU, WASM LLM, Redis Streams, and PostgreSQL components
-import { createMachine, assign, type ActorRefFrom } from, 'xstate';
-import { fromPromise } from, 'xstate/actors'; // Corrected import for fromPromise
-import type { VectorServiceMetrics, VectorHealthStatus, VectorProcessingError } from, '$lib/types/vector-jobs';
-import webgpuPolyfillInstance from, '$lib/webgpu/webgpu-polyfill'; // Changed to default import
-import { wasmLLMService } from, '$lib/wasm/wasm-llm-service';
+import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { fromPromise } from 'xstate/actors'; // Corrected import for fromPromise
+import type { VectorServiceMetrics, VectorHealthStatus, VectorProcessingError } from '$lib/types/vector-jobs';
+import webgpuPolyfillInstance from '$lib/webgpu/webgpu-polyfill'; // Changed to default import
+import { wasmLLMService } from '$lib/wasm/wasm-llm-service';
 
 // New interface for alert thresholds
 export interface AlertThresholds { errorRate: number;, latency: number;

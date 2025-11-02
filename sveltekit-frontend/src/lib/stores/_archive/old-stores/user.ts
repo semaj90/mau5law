@@ -1,6 +1,6 @@
 // Global user authentication store
-import type { User as UserType } from, '$lib/types/user';
-import { writable } from, 'svelte/store';
+import type { User as UserType } from '$lib/types/user';
+import { writable } from 'svelte/store';
 
 // 1. User Class Model
 // Provides a structured, typed: object for user data with default values.

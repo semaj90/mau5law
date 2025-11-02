@@ -2,8 +2,8 @@
  * Unified Inference Integration
  * Connects your, 3 custom inference systems with the tensor cache
  */
-import { gpuTensorCacheService } from, '$lib/services/gpu-tensor-cache-worker';
-import { webASMInferenceService } from, '$lib/services/webasm-inference-service';
+import { gpuTensorCacheService } from '$lib/services/gpu-tensor-cache-worker';
+import { webASMInferenceService } from '$lib/services/webasm-inference-service';
 
 interface InferenceConfig { preferredEngine: 'fastapi' | 'go-gpu' | 'webasm';, fallbackOrder: string[];
   cacheStrategy: 'aggressive' | 'balanced' | 'minimal';

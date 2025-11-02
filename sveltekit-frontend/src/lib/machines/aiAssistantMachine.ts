@@ -43,7 +43,7 @@
  * - Security and audit logging
  * - Resource management and throttling
  */
-import { createMachine, assign, fromPromise } from, '../shims/xstate';
+import { createMachine, assign, fromPromise } from '../shims/xstate';
 // runtime browser flag used during focused checks
 const browser = typeof window !== 'undefined';
 
@@ -867,8 +867,8 @@ export const aiAssistantMachine = createMachine({ types: {, context: {} as AIAs
  *
  * Usage:
  * ```typescript`
- * import { createActor } from, 'xstate';
- * import { aiAssistantMachine, aiAssistantProvider } from, './aiAssistantMachine';
+ * import { createActor } from 'xstate';
+ * import { aiAssistantMachine, aiAssistantProvider } from './aiAssistantMachine';
  *
  * const actor = createActor(aiAssistantMachine, {
  *   ...aiAssistantProvider

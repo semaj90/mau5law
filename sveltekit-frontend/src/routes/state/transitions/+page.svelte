@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported — do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
 
@@ -437,7 +437,7 @@ import type { Case } from, '$lib/types';
     align-items: center;
    , gap: 1rem;
   }
-  .state-from,
+  .state-from 
   .state-to {
     padding: 0.25rem 0.75rem;
     border-radius: 6px;

@@ -4,10 +4,10 @@ Automatically handles server upload with localStorage fallback
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import enhancedFileUpload from, '$lib/services/enhanced-file-upload.js';
-  import type { UploadResponse } from, '$lib/services/enhanced-file-upload.js';
-  import localStorageFiles from, '$lib/services/localStorage-file-fallback.js';
+  import { onMount } from 'svelte';
+  import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
+  import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
+  import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
   // Props (use Svelte exports)
   const { caseId } = $props<{ caseId: string | undefined }>()
   const { description } = $props<{ description: string | undefined }>()

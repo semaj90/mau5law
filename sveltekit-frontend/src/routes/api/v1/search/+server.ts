@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import { orchestrator } from, '$lib/services/unified-legal-orchestrator';
-import { qdrant } from, '$lib/server/vector/qdrant-manager';
-import { db, vectorSearch } from, '$lib/server/database/connection';
-import { natsQuicSearchService } from, '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { orchestrator } from '$lib/services/unified-legal-orchestrator';
+import { qdrant } from '$lib/server/vector/qdrant-manager';
+import { db, vectorSearch } from '$lib/server/database/connection';
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
+import type { RequestHandler } from './$types.js';
 
 type OrchestratorResponse = {
   _metadata?: {

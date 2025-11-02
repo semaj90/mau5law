@@ -2,8 +2,8 @@
  * Enhanced Embedding Cache Service
  * Redis-based caching for embeddings and frequently accessed data
  */
-import { redisService } from, './redis-service.js';
-import { dbPool } from, './database-pool-service.js';
+import { redisService } from './redis-service.js';
+import { dbPool } from './database-pool-service.js';
 
 interface EmbeddingCacheEntry { text: string;, embedding: number[] | string;
   model: string;

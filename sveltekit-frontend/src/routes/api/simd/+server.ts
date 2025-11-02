@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import { simdRedisClient } from, '$lib/services/simd-redis-client';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { z } from 'zod';
+import { simdRedisClient } from '$lib/services/simd-redis-client';
 
 const SIMDProcessSchema = z.object({
   data: z.any(),

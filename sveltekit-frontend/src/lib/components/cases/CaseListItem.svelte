@@ -11,10 +11,10 @@
     isActive = false,
     disabled = false
   : any } = $props();
-  import  Badge  from, "$lib/components/ui/index.svelte";
-  import type { Case as CaseType } from, '$lib/types';
-  import { formatDistanceToNow } from, "date-fns";
-  import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from, "lucide-svelte";
+  import  Badge  from "$lib/components/ui/index.svelte";
+  import type { Case as CaseType } from '$lib/types';
+  import { formatDistanceToNow } from "date-fns";
+  import { Archive, Calendar, CheckCircle, Clock, FileText, User as UserIcon } from "lucide-svelte";
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -68,7 +68,7 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-import type {Case} from, '$lib/types';
+import type {Case} from '$lib/types';
 <div
   class="space-y-4"
   class:active={isActive}

@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { AdvancedMemoryOptimizer } from, '$lib/optimization/advanced-memory-optimizer';
+import type { RequestHandler } from '@sveltejs/kit';
+import { AdvancedMemoryOptimizer } from '$lib/optimization/advanced-memory-optimizer';
 
 const optimizer = new AdvancedMemoryOptimizer();
 

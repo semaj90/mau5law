@@ -1,17 +1,17 @@
-import type { AIResponse } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * CrewAI Multi-Agent Service
  * Handles role-based agent crews for specialized legal workflows
  */
-import crypto from, "crypto";
+import crypto from "crypto";
 import type {
   AgentDefinition,
   AgentWorkflow,
   WorkflowStep,
   AITask,
   AIResponse
-} from, "$lib/types/ai-worker.js";
+} from "$lib/types/ai-worker.js";
 
 export interface CrewAIAgent { id: string;, role: string;
   goal: string;

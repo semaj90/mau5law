@@ -3,13 +3,13 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { fade, fly } from, 'svelte/transition';
+  import { onMount } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
   // Add named component imports used in the template.
   // Adjust paths if your UI components live elsewhere (e.g. '$lib/components/ui' index).
-  import  Button  from, "$lib/components/ui/Button.svelte";
-  import  Progress  from, "$lib/components/ui/progress.svelte";
-  import  Alert, AlertDescription  from, "$lib/components/ui/alert.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Progress  from "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)'
   let processEvidenceFn: ((file: File, evidenceId: string, caseId?: string) => Promise<any>) | undefined;
   let retryProcessingFn: (() => void) | undefined;

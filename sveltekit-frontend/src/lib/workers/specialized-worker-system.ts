@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Specialized Worker System - Event-Driven, "Hive Programming"
  * Implements RabbitMQ-based job distribution for AI services
  * Jobs: SUMMARIZE_DOCUMENT, GET_CASE_LAW, GENERATE_EMBEDDING
  */
-import { EventEmitter } from, 'events';
+import { EventEmitter } from 'events';
 
 // Define minimal local types matching the amqplib surface we use
 type AmqpConnectionLike = {

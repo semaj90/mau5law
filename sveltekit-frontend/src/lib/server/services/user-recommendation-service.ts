@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // User Recommendation Service with PostgreSQL Integration
 // Predictive Analytics & Self-Prompting AI Chat History
-import { db } from, '../db/index.js';
-import { userAiQueries, ragMessages, ragSessions } from, '../db/schema-postgres.js';
-import { eq, and, sql, count, desc } from, 'drizzle-orm';
+import { db } from '../db/index.js';
+import { userAiQueries, ragMessages, ragSessions } from '../db/schema-postgres.js';
+import { eq, and, sql, count, desc } from 'drizzle-orm';
 
 // User behavior pattern interfaces
 export interface UserPattern { userId: string;, commonQueries: string[];

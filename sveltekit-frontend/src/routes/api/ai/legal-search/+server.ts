@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit'; // Changed import to @sveltejs/kit
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed import to @sveltejs/kit
 
 // Define an interface for a basic legal document
 interface Law { title: string;, code: string;

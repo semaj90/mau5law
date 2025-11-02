@@ -3,12 +3,12 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte, code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import  Dialog  from, "bits-ui/Dialog.svelte";
-  import  Button  from, "bits-ui/Button.svelte";
-  import { onMount } from, 'svelte';
-  import { superValidate } from, 'sveltekit-superforms/client';
-  import { evidenceSchema } from, '$lib/schemas/client';
-  import { createMachine } from, 'xstate';
+  import  Dialog  from "bits-ui/Dialog.svelte";
+  import  Button  from "bits-ui/Button.svelte";
+  import { onMount } from 'svelte';
+  import { superValidate } from 'sveltekit-superforms/client';
+  import { evidenceSchema } from '$lib/schemas/client';
+  import { createMachine } from 'xstate';
   // Props
   let { item,
     open = $bindable(false)
@@ -42,7 +42,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Use initialState property for xstate v5+ or .initialState for v4
   let state = evidenceMachine.initialStat;
   // Use zod adapter for superValidate
-  import { zod } from, 'sveltekit-superforms/adapters';
+  import { zod } from 'sveltekit-superforms/adapters';
   $effect(() => {
     (async () => {
 form = await superValidate(zod(evidenceSchema), { initialValues: item

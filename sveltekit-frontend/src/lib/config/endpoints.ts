@@ -1,5 +1,5 @@
-import type { Message } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Production Service Endpoints Configuration
  * 

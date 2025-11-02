@@ -14,7 +14,7 @@ import {
   BufferTypeGuards,
   type BufferLike,
   BufferDebugUtils
-} from, '../utils/buffer-conversion.js';
+} from '../utils/buffer-conversion.js';
 // Memory constraints (Nintendo NES inspired)
 const MEMORY_CONSTRAINTS = {
   RAM: 2048, // 2KB for active textures (like NES)

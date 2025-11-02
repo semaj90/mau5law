@@ -1,7 +1,7 @@
-import type { AIResponse } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-/** * Service Integration Types - SvelteKit, 2 + Svelte, 5 Compatible * Following FULL_STACK_INTEGRATION_COMPLETE.md architecture */ import type { Writable } from, 'svelte/store'; // Core AI Service Types export interface AITask { id: string; taskId?: string; type: 'embedding' | 'summarization' | 'analysis' | 'search' | 'classification' | 'generate' | 'analyze' | 'embed';, priority: 'low' | 'medium' | 'high' | 'critical'; data?: Record<string, unknown>; context?: { userId?: string; caseId?: string; documentId?: string; }
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+/** * Service Integration Types - SvelteKit, 2 + Svelte, 5 Compatible * Following FULL_STACK_INTEGRATION_COMPLETE.md architecture */ import type { Writable } from 'svelte/store'; // Core AI Service Types export interface AITask { id: string; taskId?: string; type: 'embedding' | 'summarization' | 'analysis' | 'search' | 'classification' | 'generate' | 'analyze' | 'embed';, priority: 'low' | 'medium' | 'high' | 'critical'; data?: Record<string, unknown>; context?: { userId?: string; caseId?: string; documentId?: string; }
   timestamp: number; retries?: number; maxRetries?: number; providerId?: string; model?: string; prompt?: string; }
 export interface AIResponse<T = unknown> {, id: string;, taskId: string; success: boolean; data?: T; error?: {, code: string;, message: string; details?: Record<string, unknown>; }
   metadata?: { processingTime: number;, model: string; confidence?: number; }

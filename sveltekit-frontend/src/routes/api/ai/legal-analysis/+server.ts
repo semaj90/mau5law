@@ -1,9 +1,9 @@
 // SvelteKit, 2 API Route - Legal AI Analysis
 // Integration with TensorRT-LLM gemma3-legal:latest and pgvector database
-import { json } from, '@sveltejs/kit';
-import { legalVectorService } from, '$lib/db/vector-operations.js';
-import { TensorRTLegalClient } from, '$lib/ai/tensorrt-client.js';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { legalVectorService } from '$lib/db/vector-operations.js';
+import { TensorRTLegalClient } from '$lib/ai/tensorrt-client.js';
+import type { RequestHandler } from './$types';
 const tensorrtClient = new TensorRTLegalClient(process.env.TENSORRT_URL || 'http://localhost:8100');
 export const POST: RequestHandler = async ({ request, url: _url }) => {
   try {

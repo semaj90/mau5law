@@ -3,8 +3,8 @@
  * These utilities expose a stable and well-typed interface that mirrors the intent of the
  * original (but syntactically corrupted) implementation.
  */
-import { onDestroy, onMount } from, 'svelte';
-import { get } from, 'svelte/store';
+import { onDestroy, onMount } from 'svelte';
+import { get } from 'svelte/store';
 import {
   redisOrchestratorClient,
   redisStats,
@@ -12,7 +12,7 @@ import {
   queuedTasks,
   type RedisOptimizationResult,
   type QueuedTask
-} from, '$lib/stores/unified';
+} from '$lib/stores/unified';
 type QueryContext = {
   endpoint?: string;
   caseId?: string;

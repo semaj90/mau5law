@@ -1,8 +1,8 @@
 <!-- YoRHa Detective, Modal, Component -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import type {     Snippet     } from, 'svelte';
+  import { onMount } from 'svelte';
+  import type {     Snippet     } from 'svelte';
   let {
     showModal = false,
     title = '',

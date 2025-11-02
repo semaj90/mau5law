@@ -9,10 +9,10 @@
  * - Integration with HMM-SOM predictor for enhanced accuracy
  * - WebGPU acceleration for training compute
  */
-import { BitmapHMMSOMPredictor } from, '$lib/ai/bitmap-hmm-som-predictor.js';
-import type { CachePerformanceMeta } from, '$lib/server/summarizeCache.js';
-import { createRedisInstance } from, '$lib/server/redis.js';
-import type IORedis from, 'ioredis';
+import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
+import type { CachePerformanceMeta } from '$lib/server/summarizeCache.js';
+import { createRedisInstance } from '$lib/server/redis.js';
+import type IORedis from 'ioredis';
 
 // Define a specific interface for the context passed to recordInteraction
 export interface InteractionContext { userAction: string;, route: string;

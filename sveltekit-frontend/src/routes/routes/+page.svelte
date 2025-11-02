@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { goto } from, '$app/navigation';
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   $effect(() => {
     // client-side fallback if server redirect isn't available in dev'
     goto('/all-routes');

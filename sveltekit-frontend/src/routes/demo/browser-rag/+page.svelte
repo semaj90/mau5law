@@ -9,10 +9,10 @@
   NO DATA LEAVES THE BROWSER!
 -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
-  import { browserRAG } from, '$lib/ai/browser-rag-chain';
-  import { onMount } from, 'svelte';
-  import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from, 'lucide-svelte';
+import type { Document } from '$lib/types';
+  import { browserRAG } from '$lib/ai/browser-rag-chain';
+  import { onMount } from 'svelte';
+  import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
 
   // State
   let isInitialized = $state<boolean>(false);

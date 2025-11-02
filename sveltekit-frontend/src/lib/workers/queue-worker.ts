@@ -1,15 +1,15 @@
 import, 'dotenv/config';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import pgClient from, '$lib/server/db-shim';
-import { document_chunks } from, '$lib/db/schema';
-import { cache } from, '$lib/server/cache/redis';
-import { globalLoki } from, '$lib/stores/global-loki';
-import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
-import { jobMachine } from, '$lib/workers/job-state';
-import { sql } from, 'drizzle-orm';
-import { redis } from, '$lib/server/redis';
-import { closeRabbitMQ } from, '$lib/server/rabbitmq';
-import { emitCacheEvent } from, '$lib/server/cache/cache-events';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import pgClient from '$lib/server/db-shim';
+import { document_chunks } from '$lib/db/schema';
+import { cache } from '$lib/server/cache/redis';
+import { globalLoki } from '$lib/stores/global-loki';
+import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
+import { jobMachine } from '$lib/workers/job-state';
+import { sql } from 'drizzle-orm';
+import { redis } from '$lib/server/redis';
+import { closeRabbitMQ } from '$lib/server/rabbitmq';
+import { emitCacheEvent } from '$lib/server/cache/cache-events';
 // Use postgres-js client from db-shim for Drizzle
 const db = drizzle(pgClient as: any);
 let shuttingDown = $state<boolean>(false);

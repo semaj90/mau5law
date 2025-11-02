@@ -9,7 +9,7 @@
     SelectTrigger,
     SelectValue,
     SelectViewport
-  } from, 'bits-ui';
+  } from 'bits-ui';
 
   const { value } = $props<{ value: any }>()
   const { placeholder } = $props<{ placeholder: string }>()

@@ -1,9 +1,9 @@
-import { users } from, '$lib/server/db/index';
-import { eq } from, 'drizzle-orm';
-import { transformUserForFrontend } from, '$lib/utils/case-transform';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import type { RequestHandler } from, './$types.js';
+import { users } from '$lib/server/db/index';
+import { eq } from 'drizzle-orm';
+import { transformUserForFrontend } from '$lib/utils/case-transform';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types.js';
 
 // Add a module-level alias with a narrow shape so TypeScript knows users.id exists
 const usersTable = users as: unknown as {

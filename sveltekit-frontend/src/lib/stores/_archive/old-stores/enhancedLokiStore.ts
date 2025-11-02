@@ -1,10 +1,10 @@
-import { randomUUID } from, "crypto";
-import { browser } from, "$app/environment";
+import { randomUUID } from "crypto";
+import { browser } from "$app/environment";
 // ======================================================================
 // ENHANCED LOKI.JS STORE WITH ADVANCED CACHING & REAL-TIME SYNC
 // Building on existing lokiStore.ts with sophisticated data pipeline patterns
 // ======================================================================
-import { writable, derived } from, "svelte/store";
+import { writable, derived } from "svelte/store";
 // TODO: Replace with proper import once types file restored.
 // Temporary minimal Evidence shape to satisfy references below.
 interface Evidence {
@@ -922,5 +922,5 @@ export const enhancedLoki = {
   }
 };
 // Export the original API for backward compatibility
-export { loki } from, './lokiStore.js';
+export { loki } from './lokiStore.js';
 export const lokiStore = enhancedLokiStore;

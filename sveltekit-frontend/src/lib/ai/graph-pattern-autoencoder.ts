@@ -2,7 +2,7 @@
  * Graph Pattern Auto-Encoder for Graph Compression and Feature Learning
  * Integrates with GPU tensor tiling system and reinforcement learning cache
  */
-import type { LayersModel, SymbolicTensor, Tensor } from, '@tensorflow/tfjs';
+import type { LayersModel, SymbolicTensor, Tensor } from '@tensorflow/tfjs';
 import {
   model,
   layers,
@@ -16,11 +16,11 @@ import {
   mean,
   mul,
   expandDims
-} from, '@tensorflow/tfjs';
+} from '@tensorflow/tfjs';
 import, '@tensorflow/tfjs-backend-webgl';
 import, '@tensorflow/tfjs-backend-webgpu';
-import { MultiLayerCache } from, '../services/multiLayerCache.js';
-import { reinforcementLearningCache } from, '../caching/reinforcement-learning-cache.server.js';
+import { MultiLayerCache } from '../services/multiLayerCache.js';
+import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.server.js';
 export interface AutoEncoderConfig { inputDimension: number;, hiddenLayers: number[];
   activationFunction: 'relu' | 'tanh' | 'sigmoid' | 'elu';
   learningRate: number;

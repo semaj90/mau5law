@@ -3,13 +3,13 @@
   Rich metadata support with type-safe validation
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { superForm } from, 'sveltekit-superforms/client';
-  import { zod } from, 'sveltekit-superforms/adapters';
-  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from, '$lib/schemas/evidence-upload.js';
-  import type { PageData } from, './$types.js';
+  import { superForm } from 'sveltekit-superforms/client';
+  import { zod } from 'sveltekit-superforms/adapters';
+  import { evidenceUploadSchema, validateFileSize, validateFileType, getFileTypeFromMime, generateMetadataFromFile } from '$lib/schemas/evidence-upload.js';
+  import type { PageData } from './$types.js';
   const { data }: { data: PageData } = $props();
   // Initialize Superform with Zod validation
   const { form, errors, enhance, submitting, message } = superForm(data.form, {

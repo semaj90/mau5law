@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Common component types for better type safety
  */

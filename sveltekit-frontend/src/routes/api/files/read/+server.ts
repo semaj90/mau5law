@@ -1,7 +1,7 @@
-import { readFile } from, 'fs/promises';
-import { existsSync } from, 'fs';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   // Validate request body shape to avoid implicit: any

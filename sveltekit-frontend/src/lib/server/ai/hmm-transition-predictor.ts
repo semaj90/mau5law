@@ -1,4 +1,4 @@
-import { redisService } from, '$lib/server/redis-service';
+import { redisService } from '$lib/server/redis-service';
 // Add a narrow interface describing the redis client surface we use.
 interface RedisClientLike {
   // hash get-all variations
@@ -128,13 +128,13 @@ export class HMMTransitionPredictor {
     const current = this.transitionCounts.get(key) ?? 0;
     this.transitionCounts.set(key, current + weight);
     const total = this.outgoingTotals.get(observation.from) ?? 0;
-    this.outgoingTotals.set(observation.from, total + weight);
+    this.outgoingTotals.set(observation.from total + weight);
   }
   observeSequence(sequence: string[]): void {
     for (let i = 0; i < sequence.length - 1; i++) {
       const from = sequence[i];
       const to = sequence[i + 1];
-      this.observe({ from, to });
+      this.observe({ from to });
     }
   }
   // synchronous in-memory prediction
@@ -175,9 +175,9 @@ export class HMMTransitionPredictor {
   snapshot(): HMMPredictorSnapshot {
     const transitions: HMMPredictorSnapshot['transitions'] = [];
     Array.from(this.transitionCounts.entries()).forEach(([key, count]) => {
-      const [from, to] = key.split('->');
+      const [from to] = key.split('->');
       const total = this.outgoingTotals.get(from) ?? 1;
-      transitions.push({ from, to, probability: count / total, count });
+      transitions.push({ from to, probability: count / total, count });
     });
     const states = Array.from(this.outgoingTotals.keys());
     return { states, transitions };

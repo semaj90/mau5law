@@ -2,7 +2,7 @@
  * AI Service Worker Manager
  * Handles multi-threaded AI processing with load balancing and task distribution
  */
-import { writable, type Writable } from, 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 
 // Minimal external/provider types
 export type LLMProvider = string;

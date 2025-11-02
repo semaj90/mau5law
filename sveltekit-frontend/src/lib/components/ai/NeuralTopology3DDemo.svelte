@@ -2,11 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-  import { onMount, onDestroy, createEventDispatcher } from, 'svelte';
-  import { reinforcementLearningCache } from, '$lib/caching/reinforcement-learning-cache';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
   // import entire modules to be robust against named vs default exports
-  import * as nesGPUBridgeModule from, '$lib/gpu/nes-gpu-memory-bridge';
-  import * as chrRomModule from, '$lib/services/chr-rom-precomputation-service';
+  import * as nesGPUBridgeModule from '$lib/gpu/nes-gpu-memory-bridge';
+  import * as chrRomModule from '$lib/services/chr-rom-precomputation-service';
   // Normalize exports: prefer named export, then default, then the module itself.
   // This preserves existing usage in the file: nesGPUBridge.storeCHRROMPattern(...), nesGPUBridge.getCHRROMPattern(...)
   const nesGPUBridge: any =

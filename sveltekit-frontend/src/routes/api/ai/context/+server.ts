@@ -15,11 +15,11 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
 
-import { ContextService } from, "$lib/services/context-service"
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
+import { ContextService } from "$lib/services/context-service"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 // Environment variables fallback
 const env = process.env || {}
 /*

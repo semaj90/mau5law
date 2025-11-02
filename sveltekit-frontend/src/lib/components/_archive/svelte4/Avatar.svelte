@@ -2,10 +2,10 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 
-  import { onMount } from, 'svelte';
-  import { avatarStore } from, '../stores/avatarStore';
+  import { onMount } from 'svelte';
+  import { avatarStore } from '../stores/avatarStore';
 
   const { size } = $props<{ size: 'small' | 'medium' | 'large' }>()
   const { clickable } = $props<{ clickable: boolean }>()

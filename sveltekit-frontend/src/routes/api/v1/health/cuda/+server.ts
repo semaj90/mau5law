@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export interface CudaHealthCheck { service: string;, timestamp: number;
   status: 'healthy' | 'degraded' | 'unhealthy';

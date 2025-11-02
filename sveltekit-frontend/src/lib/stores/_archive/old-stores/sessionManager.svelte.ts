@@ -1,10 +1,10 @@
 // Session Management Store with XState Integration
 // Bridges authentication and session management using Svelte, 5 runes
-import { browser } from, '$app/environment';
-import { goto } from, '$app/navigation';
-import { createActor } from, 'xstate';
-import { sessionMachine, sessionServices, sessionActions } from, '$lib/machines/sessionMachine.js';
-import { authService, type User } from, './auth.svelte.js';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import { createActor } from 'xstate';
+import { sessionMachine, sessionServices, sessionActions } from '$lib/machines/sessionMachine.js';
+import { authService, type User } from './auth.svelte.js';
 // Session state interface
 export interface SessionState { isActive: boolean;, user: User | null;
   sessionId: string | null;

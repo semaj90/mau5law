@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { db } from, '$lib/db';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import { db } from '$lib/db';
 // Use namespace import to avoid hard failure if schema export names differ
-import * as schema from, '$lib/database/schema';
-import { ollamaService } from, './ollamaService.js';
-import { sql, eq, and, desc } from, 'drizzle-orm';
+import * as schema from '$lib/database/schema';
+import { ollamaService } from './ollamaService.js';
+import { sql, eq, and, desc } from 'drizzle-orm';
 
 // runtime-safe table references (fall back to: any if names differ)
 const tables = {

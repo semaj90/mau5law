@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { createRedisConnection } from, '$lib/server/redis';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { createRedisConnection } from '$lib/server/redis';
 
 export const GET: RequestHandler = async () => {
   // Helper: safely extract a message: string, from: unknown error values

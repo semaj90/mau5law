@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
-import { EventEmitter } from, 'events';
+import type { Document } from '$lib/types';
+import { EventEmitter } from 'events';
 // lib/server/ai/streaming-service.ts
 // Real-time streaming service for AI synthesis with progressive updates
-import { logger } from, './logger.js';
-import { aiAssistantSynthesizer } from, './ai-assistant-input-synthesizer.js';
+import { logger } from './logger.js';
+import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
 // Helper to safely format: unknown errors
 const getErrorMessage = (err: any): string => {
   if (err instanceof Error) return err.message;

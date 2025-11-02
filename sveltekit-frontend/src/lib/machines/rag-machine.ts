@@ -2,7 +2,7 @@
  * RAG State Machine - XState Implementation
  * Manages complex RAG system states and transitions
  */
-import { createMachine, assign } from, 'xstate';
+import { createMachine, assign } from 'xstate';
 export interface RAGResult { id: string;, score: number;
   source: string;
  , content: string;

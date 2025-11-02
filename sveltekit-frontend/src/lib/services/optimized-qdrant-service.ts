@@ -3,7 +3,7 @@
  * Integrates SOM clustering, NES cache orchestrator, and PostgreSQL sync
  * Low memory usage with intelligent caching and batch processing
  */
-import { QdrantClient, type Filter } from, '@qdrant/js-client-rest';
+import { QdrantClient, type Filter } from '@qdrant/js-client-rest';
 // Attempt dynamic import of optional SOM implementation, fallback to a lightweight stub.
 // This prevents startup/import-time crashes if: './som-clustering.js' is not present.
 type LegalDocumentSOM = {
@@ -17,10 +17,10 @@ class FallbackLegalDocumentSOM implements LegalDocumentSOM {
   }
 }
 
-import { NESCacheOrchestrator } from, './nes-cache-orchestrator.js';
-import { db } from, '$lib/server/db/index.js';
-import { evidence, cases, legalDocuments } from, '$lib/server/db/unified-schema.js';
-import { sql, inArray, desc, type InferSelectModel } from, 'drizzle-orm';
+import { NESCacheOrchestrator } from './nes-cache-orchestrator.js';
+import { db } from '$lib/server/db/index.js';
+import { evidence, cases, legalDocuments } from '$lib/server/db/unified-schema.js';
+import { sql, inArray, desc, type InferSelectModel } from 'drizzle-orm';
 
 // Local type definitions to avoid import issues
 interface CollectionInfo {

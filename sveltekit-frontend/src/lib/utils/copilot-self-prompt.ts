@@ -1,12 +1,12 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference, types="vite/client" />
-import crypto from, 'crypto';
+import crypto from 'crypto';
 /**
  * Enhanced Copilot Self-Prompt Wrapper Utility
  * Integrates semantic search, memory MCP servers, multi-agent orchestration,
  * and autonomous engineering for comprehensive problem-solving
  */
-import { autonomousEngineeringSystem } from, '../services/autonomous-engineering-system.js';
+import { autonomousEngineeringSystem } from '../services/autonomous-engineering-system.js';
 
 export interface SemanticSearchResult {
   relevance_score?: number;
@@ -115,7 +115,7 @@ export interface AITask { id: string;, type: string;
 }
 
 // Import Redis client
-import { createClient, type RedisClientType } from, 'redis';
+import { createClient, type RedisClientType } from 'redis';
 // Singleton Redis client for connection reuse
 let redisClient: RedisClientType | null = null;
 async function getRedisClient(): Promise<RedisClientType> {

@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-// import type { PointStruct, SearchRequest } from, '@qdrant/js-client-rest'; // Commented out due to namespace issues
-import { analytics } from, '../database/connection.js';
+import type { Document } from '$lib/types';
+import { QdrantClient } from '@qdrant/js-client-rest';
+// import type { PointStruct, SearchRequest } from '@qdrant/js-client-rest'; // Commented out due to namespace issues
+import { analytics } from '../database/connection.js';
 // Enhanced Qdrant integration for legal AI platform
 export class QdrantManager {
   private client: InstanceType<typeof, QdrantClient>;

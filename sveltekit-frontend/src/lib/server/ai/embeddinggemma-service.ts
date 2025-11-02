@@ -7,13 +7,13 @@
  * - Entity-specific embedding optimization
  * - Integration with PostgreSQL and Qdrant
  */
-import { createHash } from, 'crypto';
-import { db } from, '../db';
-import { contextualEmbeddings } from, '../db/schema-postgres';
-import { eq, and } from, 'drizzle-orm';
-import { qdrantVectorStore } from, './qdrant-vector-store';
-import { cognitiveCache } from, '../cache';
-import type { LegalEntity } from, '$lib/types/sharedTypes';
+import { createHash } from 'crypto';
+import { db } from '../db';
+import { contextualEmbeddings } from '../db/schema-postgres';
+import { eq, and } from 'drizzle-orm';
+import { qdrantVectorStore } from './qdrant-vector-store';
+import { cognitiveCache } from '../cache';
+import type { LegalEntity } from '$lib/types/sharedTypes';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 const EMBEDDING_DIM = 768;

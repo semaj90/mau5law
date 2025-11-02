@@ -5,7 +5,7 @@ and performance monitoring across N64 and YoRHa gaming components
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, tick } from, 'svelte';
+  import { onMount, tick } from 'svelte';
   import type {
     EnhancedGPUCacheEntry,
     TextureCacheEntry,
@@ -13,13 +13,13 @@ and performance monitoring across N64 and YoRHa gaming components
     N64RenderingOptions,
     AntiAliasingConfig,
     CachePerformanceTracker
-  } from, '$lib/types/gpu-cache-integration';
-  import { enhancedGPUCacheService } from, '$lib/services/enhanced-gpu-cache-service';
-  import { gpuCacheInvalidationSystem } from, '$lib/services/gpu-cache-invalidation-system';
-  import { wasmCacheOps } from, '$lib/services/wasm-accelerated-cache-ops';
-  import N64TextureFilteringCache from, '$lib/components/ui/gaming/n64/N64TextureFilteringCache.svelte';
-  import YoRHaAAShaderCache from, '$lib/components/three/yorha-ui/YoRHaAAShaderCache.svelte';
-  import CachePerformanceMonitor from, '$lib/components/dashboard/CachePerformanceMonitor.svelte';
+  } from '$lib/types/gpu-cache-integration';
+  import { enhancedGPUCacheService } from '$lib/services/enhanced-gpu-cache-service';
+  import { gpuCacheInvalidationSystem } from '$lib/services/gpu-cache-invalidation-system';
+  import { wasmCacheOps } from '$lib/services/wasm-accelerated-cache-ops';
+  import N64TextureFilteringCache from '$lib/components/ui/gaming/n64/N64TextureFilteringCache.svelte';
+  import YoRHaAAShaderCache from '$lib/components/three/yorha-ui/YoRHaAAShaderCache.svelte';
+  import CachePerformanceMonitor from '$lib/components/dashboard/CachePerformanceMonitor.svelte';
   // Demo state
   let activeDemo = $state<'overview' | 'n64' | 'yorha' | 'performance' | 'wasm' | 'analytics'>('overview');
   let demoStarted = $state<boolean>(false);

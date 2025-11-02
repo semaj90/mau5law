@@ -1,4 +1,4 @@
-import crypto from, 'crypto';
+import crypto from 'crypto';
 export async function embedText(text: string): Promise<number[]> {
   // Try to use @xenova/transformers or transformers.js if available
   try {

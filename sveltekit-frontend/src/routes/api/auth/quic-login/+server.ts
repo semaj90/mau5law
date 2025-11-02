@@ -1,9 +1,9 @@
-import type { RequestHandler } from, '@sveltejs/kit'; // Changed: Import RequestHandler only
-import { json } from, '@sveltejs/kit';
-import { quicAuthClient, setSessionCookie } from, '$lib/services/quic-auth-client';
-import { db } from, '$lib/server/db';
-import { sessions, as sessionsTable, users as usersTable } from, '$lib/server/db/unified-schema';
-import { eq } from, 'drizzle-orm';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed: Import RequestHandler only
+import { json } from '@sveltejs/kit';
+import { quicAuthClient, setSessionCookie } from '$lib/services/quic-auth-client';
+import { db } from '$lib/server/db';
+import { sessions, as sessionsTable, users as usersTable } from '$lib/server/db/unified-schema';
+import { eq } from 'drizzle-orm';
 /**
  * POST /api/auth/quic-login
  * Authenticate user via QUIC server and sync with Lucia session

@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import { Queue } from, "bullmq";
-import Redis from, "ioredis";
+import type { Document } from '$lib/types';
+import { Queue } from "bullmq";
+import Redis from "ioredis";
 
 // Lightweight local typings to avoid depending on exported Job/JobCounts types
 // (match only the fields used in this module)
@@ -65,7 +65,7 @@ export interface LegalEntity {, text: string;, type: string; // e.g., 'PERSON',
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
   confidence?: number;  //, Optional: confidence score of the detection
-  metadata?: Record<string, unknown>; // <-- changed, from, Record<string, any>
+  metadata?: Record<string, unknown>; // <-- changed, from Record<string, any>
 }
 
 export interface DocumentProcessingJobResult { success: boolean;, documentId: string;

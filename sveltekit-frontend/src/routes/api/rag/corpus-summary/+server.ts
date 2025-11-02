@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { sql } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { sql } from 'drizzle-orm';
+import type { RequestHandler } from './$types.js';
 // Fallback raw query (table created dynamically by summarization script)
 export const GET: RequestHandler = async () => {
   try {

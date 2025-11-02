@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Comprehensive Multi-Layer Caching Architecture for Legal AI Platform
  *
@@ -26,13 +26,13 @@ import type { Case } from, '$lib/types';
  * @version 3.2.0
  * @lastModified 2025-01-20
  */
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { Pool } from, 'pg';
-import Loki from, 'lokijs';
-import Fuse from, 'fuse.js';
-import { createClient, as createRedisClient } from, 'redis';
-import amqp, { Connection, Channel } from, 'amqplib';
-import { writable, type Writable } from, 'svelte/store';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { Pool } from 'pg';
+import Loki from 'lokijs';
+import Fuse from 'fuse.js';
+import { createClient, as createRedisClient } from 'redis';
+import amqp, { Connection, Channel } from 'amqplib';
+import { writable, type Writable } from 'svelte/store';
 
 // Neo4j type definitions (fallback for environments without neo4j-driver)
 export interface Neo4jDriver {

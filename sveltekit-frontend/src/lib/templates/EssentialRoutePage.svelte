@@ -3,15 +3,15 @@ Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
 <script, lang="ts">
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   // Svelte, 5 runes are auto-imported
-	import { onMount } from, 'svelte';
-	import { browser } from, '$app/environment';
-	import { page } from, '$app/stores';
-	import ProductionLayout from, '$lib/components/layout/ProductionLayout.svelte';
-	import Button from, '$lib/components/ui/enhanced-bits.svelte';
-	import * as Card from, '$lib/components/ui/Card.svelte';
-	import  ButtonBits, CardBits, DialogBits  from, "$lib/components/ui/bits-ui.svelte";
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
+	import ProductionLayout from '$lib/components/layout/ProductionLayout.svelte';
+	import Button from '$lib/components/ui/enhanced-bits.svelte';
+	import * as Card from '$lib/components/ui/Card.svelte';
+	import  ButtonBits, CardBits, DialogBits  from "$lib/components/ui/bits-ui.svelte";
 	// Props
 	interface Props {
 		pageTitle: string;

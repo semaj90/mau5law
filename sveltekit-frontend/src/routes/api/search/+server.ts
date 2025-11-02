@@ -1,17 +1,17 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler, RequestEvent } from, './$types';
-import { z } from, 'zod';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler, RequestEvent } from './$types';
+import { z } from 'zod';
 // db/sql/QueryResult removed — using enhancedVectorSearchService instead
-import { createMachine, fromPromise, assign } from, 'xstate';
+import { createMachine, fromPromise, assign } from 'xstate';
 
 // --- Configuration ---
-import { OLLAMA_BASE_URL } from, '$env/static/private';
-import { redis } from, '$lib/server/cache/redis';
-import { generateEmbedding, summarizeText } from, '$lib/server/ollama-client'; // EMBEDDING_MODEL removed (unused)
-import { extractKeywords } from, '$lib/server/langextract/google-langextract';
+import { OLLAMA_BASE_URL } from '$env/static/private';
+import { redis } from '$lib/server/cache/redis';
+import { generateEmbedding, summarizeText } from '$lib/server/ollama-client'; // EMBEDDING_MODEL removed (unused)
+import { extractKeywords } from '$lib/server/langextract/google-langextract';
 // qdrantClient unused — enhancedVectorSearchService handles Qdrant calls
-import { enhancedVectorSearchService } from, '$lib/server/ai/vector-search-service-instance';
-import { securityService } from, '$lib/services/security.js';
+import { enhancedVectorSearchService } from '$lib/server/ai/vector-search-service-instance';
+import { securityService } from '$lib/services/security.js';
 
 // --- Constants ---
 const CACHE_TTL = 60 * 5; // 5 minutes

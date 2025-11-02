@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * T5 Transformer API
  * Sequence-to-sequence processing for legal document transformation
  * Integrates with t5-transformer Go service on port, 8122
  */
-import { productionServiceClient } from, '$lib/api/production-service-client';
+import { productionServiceClient } from '$lib/api/production-service-client';
 
 interface T5TransformRequest { input: string;, task: 'summarize' | 'translate' | 'paraphrase' | 'generate' | 'analyze' | 'extract';
   parameters?: {

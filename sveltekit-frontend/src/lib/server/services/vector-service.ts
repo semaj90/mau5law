@@ -2,7 +2,7 @@
  * Production Vector Service - Real Implementation
  * Integrates Redis Vector DB, Qdrant, and Ollama for production use
  */
-// { redisVectorService } from, '../../../services/redis-vector-service.js'
+// { redisVectorService } from '../../../services/redis-vector-service.js'
 // TODO: Fix import - // Orphaned;, content: import {  // Temporary stub for redis vector service
 export interface EmbeddingOptions {
   contentType?: string;

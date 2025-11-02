@@ -3,12 +3,12 @@
  * Integrates NES-RL Agent, Detective Mode, XState Idle Detection, and RabbitMQ
  * Provides intelligent recommendations in retro gaming CSS modals
  */
-import { writable, derived, get } from, 'svelte/store';
-import type { Writable, Readable } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, get } from 'svelte/store';
+import type { Writable, Readable } from 'svelte/store';
+import { browser } from '$app/environment';
 // Import your existing services
-import { rabbitMQService } from, './rabbitmq-service.js';
-import { vectorService } from, './postgresql-vector-service.js';
+import { rabbitMQService } from './rabbitmq-service.js';
+import { vectorService } from './postgresql-vector-service.js';
 
 // Add/adjusted types for incoming messages
 type Priority = 'low' | 'medium' | 'high' | 'critical';

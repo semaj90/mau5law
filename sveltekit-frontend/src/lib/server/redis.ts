@@ -1,6 +1,6 @@
-import { createClient } from, 'redis';
-import type { RedisClientType } from, 'redis';
-import { CONFIG } from, '$lib/config/env.server';
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
+import { CONFIG } from '$lib/config/env.server';
 
 const REDIS_URL = CONFIG.REDIS_URL;
 const REDIS_PASSWORD = CONFIG.REDIS_PASSWORD;

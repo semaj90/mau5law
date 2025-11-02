@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { readTokenStream } from, '$lib/server/redis-streams';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { readTokenStream } from '$lib/server/redis-streams';
 
 // GET /api/realtime/resume?requestId=...&from=0-0
 export const GET: RequestHandler = async ({ url }) => {
@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const limit = Number(url.searchParams.get('limit') || '1000');
   if (!requestId) return json({ ok: false, error: 'missing_requestId' }, { status: 400 });
   try {
-    const entries = await readTokenStream(requestId, from, limit);
+    const entries = await readTokenStream(requestId, from limit);
     const lastId = entries && entries.length > 0 ? entries[entries.length - 1].id : from;
     return json({ ok: true, entries, lastId }, { status: 200 });
   } catch (err) {

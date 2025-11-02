@@ -1,5 +1,5 @@
 /// <reference, types="vite/client" />
-import { normalizePerformanceProfile, clampMemoryMB } from, '$lib/gpu/types';
+import { normalizePerformanceProfile, clampMemoryMB } from '$lib/gpu/types';
 // Raw environment (unvalidated)
 const RAW_ENV = {
   OLLAMA_URL: import.meta.env.OLLAMA_URL,

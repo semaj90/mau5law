@@ -1,8 +1,8 @@
 // XState Machine for Vector Job Status Tracking
 // Manages lifecycle of vector processing jobs through Redis Streams + CUDA worker
-import { createMachine, assign, type ActorRefFrom, type DoneInvokeEvent } from, 'xstate';
-import interpret from, 'xstate'; // corrected import (default)
-import type { VectorJobResult } from, '$lib/types/vector-jobs';
+import { createMachine, assign, type ActorReffrom type DoneInvokeEvent } from 'xstate';
+import interpret from 'xstate'; // corrected import (default)
+import type { VectorJobResult } from '$lib/types/vector-jobs';
 
 export interface VectorJobContext { jobId: string | null;, ownerType: 'evidence' | 'report' | 'case' | 'document' | null;
   ownerId: string | null;

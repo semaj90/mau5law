@@ -3,12 +3,12 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { onMount } from, 'svelte';
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from, "$lib/components/ui/badge.svelte";
-  import  Textarea  from, "$lib/components/ui/textarea.svelte";
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { onMount } from 'svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   import {
     Cpu,
     Brain,
@@ -21,10 +21,10 @@ import type { Document } from, '$lib/types';
     Activity,
     Users,
     Workflow
-  } from, 'lucide-svelte';
-  import LLMSelector from, '$lib/components/ai/LLMSelector.svelte';
-  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from, '$lib/services/ai-worker-manager.js';
-  import type { AITask, LLMModel } from, '$lib/types/ai-worker.js';
+  } from 'lucide-svelte';
+  import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
+  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
+  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent: any = null;
   onMount(async () => {

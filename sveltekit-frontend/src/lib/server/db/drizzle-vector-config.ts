@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support
@@ -11,12 +11,12 @@ import type { Document } from, '$lib/types';
  * TODO: Add indexes for vector similarity search performance
  *, TODO: Implement JSONB for memory storage with proper indexing
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from, 'drizzle-orm/pg-core';
-import { sql } from, 'drizzle-orm';
-import { relations } from, 'drizzle-orm/relations';
-import { customType } from, 'drizzle-orm/pg-core';
-import postgres from, 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm/relations';
+import { customType } from 'drizzle-orm/pg-core';
+import postgres from 'postgres';
 // Custom vector type for pgvector (512-dim embeddinggemma:latest)
 const vector = customType({
   dataType(config: { dimensions?: number } = {}) {

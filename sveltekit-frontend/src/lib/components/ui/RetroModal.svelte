@@ -3,7 +3,7 @@
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
+  import type { Snippet } from 'svelte';
   interface Props {
     open?: boolean;
     title?: string;

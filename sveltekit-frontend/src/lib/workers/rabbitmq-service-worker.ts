@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Advanced experimental service
 /**
  * RabbitMQ Service Worker - simplified, syntactically-correct version
  */
-import { rabbitmqService } from, '$lib/server/messaging/rabbitmq-service.js';
-import { publishToQueue } from, '$lib/server/rabbitmq.js';
+import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+import { publishToQueue } from '$lib/server/rabbitmq.js';
 // Removed problematic `import type ...` which caused parser errors in the build.
 // Added a local MessageHandler type so we don't rely on a type-only import.'
 type MessageHandler = (message: any, originalMessage?: any) => Promise<void> | void;

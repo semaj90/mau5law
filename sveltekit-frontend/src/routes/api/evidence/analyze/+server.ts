@@ -1,6 +1,6 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { AIEvidenceAnalyzer, type EvidenceItem } from, '$lib/services/ai-evidence-analyzer';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer';
 export interface AnalyzeRequest extends EvidenceItem {
   // Extends EvidenceItem with: any additional fields if needed
 }

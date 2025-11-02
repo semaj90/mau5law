@@ -5,9 +5,9 @@
  * This service provides the solid foundation that feeds real data
  * to the CHR-ROM pre-computation system for pattern generation
  */
-import type { LegalDocument, ProcessingResult, EntityExtraction } from, '../types/legal.js';
-import { chrROMPrecomputation } from, './chr-rom-precomputation.js';
-import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument, ProcessingResult, EntityExtraction } from '../types/legal.js';
+import { chrROMPrecomputation } from './chr-rom-precomputation.js';
+import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
 // Drizzle schema interfaces (based on your legal AI database structure)
 export interface DrizzleLegalDocument { id: string;, title: string;
   content: string;

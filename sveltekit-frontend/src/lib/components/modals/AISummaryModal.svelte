@@ -1,17 +1,17 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
 https://svelte.dev/e/js_parse_error -->
 <script, lang="ts">
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from, '$lib/components/ui/dialog';
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
 
   const { onclose } = $props<{ onclose: ((event?: any) }>()
-  import { aiService } from, '$lib/services/aiService';
-  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
-  import  Button  from, "$lib/components/ui/Button.svelte";
+  import { aiService } from '$lib/services/aiService';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
+  import  Button  from "$lib/components/ui/Button.svelte";
   // use icon components from the icons subpath (lucide-svelte exports individual files)
-  import  Copy  from, "lucide-svelte/icons/copy.svelte";
-  import X from, 'lucide-svelte/icons/x.svelte';
-  import  AlertCircle  from, "lucide-svelte/icons/alert-circle.svelte";
-  import  Check  from, "lucide-svelte/icons/check.svelte";
+  import  Copy  from "lucide-svelte/icons/copy.svelte";
+  import X from 'lucide-svelte/icons/x.svelte';
+  import  AlertCircle  from "lucide-svelte/icons/alert-circle.svelte";
+  import  Check  from "lucide-svelte/icons/check.svelte";
   // relax strict typing for our local UI components (prevents TS errors about: unknown props/events)
   declare module: '$lib/components/ui/dialog' {
     export const Root: any;

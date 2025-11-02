@@ -1,8 +1,8 @@
 <!-- Context menu, content, component -->
 <script, lang="ts">
-  import { getContext, onMount, onDestroy } from, 'svelte';
-  import type { Writable } from, 'svelte/store';
-  import type { Snippet } from, 'svelte';
+  import { getContext, onMount, onDestroy } from 'svelte';
+  import type { Writable } from 'svelte/store';
+  import type { Snippet } from 'svelte';
   // Use a safe prop name instead of the reserved word `class`
   let { className = '', children }: { className?: string; children?: Snippet } = $props();
   type Position = { x: number; y: number };

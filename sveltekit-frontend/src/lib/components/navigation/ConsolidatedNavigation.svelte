@@ -1,7 +1,7 @@
 <!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script, lang="ts">
-  import { routeGroups } from, '$lib/data/route-groups-config';
-  import { page } from, '$app/stores';
+  import { routeGroups } from '$lib/data/route-groups-config';
+  import { page } from '$app/stores';
   let isExpanded = $state<boolean>(false);
   // Get current route group based on pathname
   const currentGroup = $derived(() => {

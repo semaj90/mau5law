@@ -1,26 +1,26 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema
  */
-import { fail, redirect } from, '@sveltejs/kit';
-import { superValidate } from, 'sveltekit-superforms/server';
-import { zod } from, 'sveltekit-superforms/adapters';
-import { writeFile, mkdir } from, 'fs/promises';
-import path from, 'path';
-import crypto from, 'node:crypto';
+import { fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
+import crypto from 'node:crypto';
 import {
   evidenceUploadSchema,
   getFileTypeFromMime,
   validateFileSize,
   validateFileType
-} from, '$lib/schemas/evidence-upload';
-import { db } from, '$lib/server/db'; // Adjust the import based on your project structure
-import { evidence, cases } from, '$lib/server/db/schema'; // Adjust the import based on your project structure
-import { eq, type InferInsertModel } from, 'drizzle-orm';
-import { resolveUser, getUserId, getMetaEnv } from, '$lib/server/auth/utils';
-import type { PageServerLoad, Actions } from, './$types.js';
-import { dev } from, '$app/environment';
+} from '$lib/schemas/evidence-upload';
+import { db } from '$lib/server/db'; // Adjust the import based on your project structure
+import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
+import { eq, type InferInsertModel } from 'drizzle-orm';
+import { resolveUser, getUserId, getMetaEnv } from '$lib/server/auth/utils';
+import type { PageServerLoad, Actions } from './$types.js';
+import { dev } from '$app/environment';
 
 // Get typed environment access
 const metaEnv = getMetaEnv();

@@ -8,8 +8,8 @@ import type {
   HealthAPI,
   StandardApiResponse,
   RequestOf
-} from, '../types/api-contracts.js';
-import { browser } from, '$app/environment';
+} from '../types/api-contracts.js';
+import { browser } from '$app/environment';
 // API Client Configuration
 export interface ApiClientConfig {
   baseUrl?: string;

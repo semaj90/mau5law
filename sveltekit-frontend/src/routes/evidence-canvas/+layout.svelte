@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/state';
-  import { browser } from, '$app/environment';
-  import type { Snippet } from, 'svelte';
+  import { page } from '$app/state';
+  import { browser } from '$app/environment';
+  import type { Snippet } from 'svelte';
   // Add: any layout-specific state or logic here
   let mounted = $state<boolean>(false);
   if (browser) {

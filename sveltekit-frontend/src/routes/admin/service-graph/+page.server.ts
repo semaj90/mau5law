@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Service Graph Dashboard Page Server
  * src/routes/admin/service-graph/+page.server.ts
  */
 
-import type { PageServerLoad } from, './$types';
+import type { PageServerLoad } from './$types';
 
 interface ServiceStats { totalServices: number;, healthyCount: number;
   degradedCount: number;

@@ -4,12 +4,12 @@
     report: Report;
   }
   let { report }: Props = $props();
-  import { onMount } from, 'svelte';
-  import type { Report } from, '$lib/data/types';
+  import { onMount } from 'svelte';
+  import type { Report } from '$lib/data/types';
   // UI Components
-  import * as ContextMenu from, '$lib/components/ui/context-menu.svelte';
+  import * as ContextMenu from '$lib/components/ui/context-menu.svelte';
   // Icons
-  import { Link, Sparkles } from, 'lucide-svelte';
+  import { Link, Sparkles } from 'lucide-svelte';
   let nodeElement: HTMLDivElement | null = null;
   let isDragging = $state<boolean>(false);
   let dragStartX = $state<number>(0);

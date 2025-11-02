@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Simple test endpoint to verify relay auth works without: any imports
 export const, POST: RequestHandler = async ({ cookies }) => {
   try {

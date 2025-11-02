@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import legalRAG from, '$lib/ai/langchain-rag';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import legalRAG from '$lib/ai/langchain-rag';
 /**
  * Enhanced document upload endpoint with LangChain RAG integration
  * Provides immediate text extraction and semantic indexing

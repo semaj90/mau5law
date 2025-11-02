@@ -2,10 +2,10 @@
  * Database Migration API Endpoint
  * Provides REST interface for migration operations
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types'
-import { DatabaseMigrator } from, '$lib/database/migrations/migration-system';
-import { env } from, '$env/dynamic/private'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { DatabaseMigrator } from '$lib/database/migrations/migration-system';
+import { env } from '$env/dynamic/private'
 const migrator = new DatabaseMigrator(
   env.DATABASE_URL || 'postgresql://localhost:5432/legal_ai'
 )

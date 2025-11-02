@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * XState Machine for Predictive Typing with Topology-Aware Analytics
  *
@@ -6,12 +6,12 @@ import type { User } from, '$lib/types';
  * real-time typing predictions, user intent analysis, and contextual suggestions
  * using compressed glyph patterns and LOD caching for sub-millisecond responses.
  */
-import { setup, assign, fromPromise, type ActorRefFrom } from, 'xstate';
+import { setup, assign, fromPromise, type ActorRefFrom } from 'xstate';
 import {
   topologyPredictiveAnalyticsEngine,
   type PredictiveAnalyticsResult
-} from, '$lib/ai/topology-predictive-analytics-engine.js';
-import { enhancedRAGGlyphSystem, type GlyphContext } from, '$lib/ai/enhanced-rag-glyph-system.js';
+} from '$lib/ai/topology-predictive-analytics-engine.js';
+import { enhancedRAGGlyphSystem, type GlyphContext } from '$lib/ai/enhanced-rag-glyph-system.js';
 // removed unused `lodCacheEngine` import
 // Local minimal DoneInvokeEvent type to avoid relying on a removed xstate export.
 // The file only needs `type` and `output` so keep the alias intentionally small.

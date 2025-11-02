@@ -2,9 +2,9 @@
  * Database Setup API Endpoint
  * Initializes all required tables, indexes, and sample data for the unified vector system
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { setupDatabase, checkDatabaseHealth, getDatabaseStats } from, '$lib/server/db/setup-database';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { setupDatabase, checkDatabaseHealth, getDatabaseStats } from '$lib/server/db/setup-database';
 
 export const GET: RequestHandler = async () => {
   try {

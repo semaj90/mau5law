@@ -1,5 +1,5 @@
 // Embeddings service - manages WASM web workers for high-performance embedding generation
-import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from, '../types/embeddings';
+import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from '../types/embeddings';
 
 interface WorkerMessage {
   type: string;

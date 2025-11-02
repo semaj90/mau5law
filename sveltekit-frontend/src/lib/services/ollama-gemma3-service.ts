@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from, './get-ollama-endpoint';
+import { getOllamaEndpoint } from './get-ollama-endpoint';
 
 // Enhanced Ollama Gemma3-Legal Service for Native Windows Integration
 // Optimized for gemma3-legal:latest model with Windows-native setup

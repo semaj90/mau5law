@@ -1,5 +1,5 @@
 // @ts-nocheck - Temporarily disable TypeScript checks for build stability
-import * as concurrentSearch from, './concurrent-indexeddb-search.js';
+import * as concurrentSearch from './concurrent-indexeddb-search.js';
 
 export interface FlashAttentionConfig { gpu_device: number;, memory_limit: number;
   attention_heads: number;

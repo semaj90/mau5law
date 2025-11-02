@@ -8,8 +8,8 @@
  * - Memory efficient streaming
  * - Auto-vectorization optimizations
  */
-import { Worker } from, 'worker_threads';
-import { performance } from, 'perf_hooks';
+import { Worker } from 'worker_threads';
+import { performance } from 'perf_hooks';
 // SIMD instruction sets we can leverage
 type SIMDInstructionSet = 'SSE2' | 'SSE4' | 'AVX' | 'AVX2' | 'AVX512';
 interface SIMDParserConfig { vectorDimensions: number;, batchSize: number;

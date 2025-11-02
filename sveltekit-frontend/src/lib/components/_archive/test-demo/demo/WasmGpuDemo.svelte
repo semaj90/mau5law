@@ -3,13 +3,13 @@
   Real-time monitoring and testing interface for the WASM GPU system
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { createWasmGpuService, WasmGpuHelpers } from, '$lib/wasm/gpu-wasm-init';
-  import { WebGPUBufferUtils_Extended } from, '$lib/utils/webgpu-buffer-uploader.js';
-  import { quantizeWithStats, type LegalAIProfile } from, '$lib/utils/typed-array-quantization.js';
+  import { onMount } from 'svelte';
+  import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
+  import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
+  import { quantizeWithStats, type LegalAIProfile } from '$lib/utils/typed-array-quantization.js';
   // Initialize WASM GPU service with RTX, 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
   // Reactive stores

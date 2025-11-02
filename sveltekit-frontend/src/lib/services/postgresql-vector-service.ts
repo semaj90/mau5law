@@ -1,6 +1,6 @@
 // PostgreSQL Vector Service - Stub Implementation
 // Provides fallback functionality when vector database is not available
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 export interface VectorSearchResult { id: string;, content: string;
   similarity: number;
   metadata?: { [key: string]: any };

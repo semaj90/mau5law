@@ -10,9 +10,9 @@
  * - Integration with NES memory architecture and Loki.js cache
  * - GPU acceleration for batch processing
  */
-import { lokiRedisCache } from, '../cache/loki-redis-integration.js';
-import { nesMemory } from, '../memory/nes-memory-architecture.js';
-import { EventEmitter } from, 'events';
+import { lokiRedisCache } from '../cache/loki-redis-integration.js';
+import { nesMemory } from '../memory/nes-memory-architecture.js';
+import { EventEmitter } from 'events';
 // Legal-BERT model configurations
 const LEGAL_BERT_CONFIG = { models: {, classification: {
      , name: 'nlpaueb/legal-bert-base-uncased',

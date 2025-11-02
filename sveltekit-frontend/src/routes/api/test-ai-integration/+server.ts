@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * AI Integration Test Suite
  * Comprehensive testing of all AI/MCP API endpoints
@@ -11,7 +11,7 @@ import {
   commonMCPQueries,
   generateMCPPrompt,
   copilotOrchestrator
-} from, '$lib/utils/mcp-helpers';
+} from '$lib/utils/mcp-helpers';
 
 // Helper type for AI/API responses to reduce repetition
 type AiApiResponse = {

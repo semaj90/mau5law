@@ -1,4 +1,4 @@
-import type { LLMOutput } from, '$lib/types/sharedTypes';
+import type { LLMOutput } from '$lib/types/sharedTypes';
 const DEFAULT_URLS = {
   GEMMA3: process.env.GEMMA3_URL || process.env.TRITON_URL || 'http://localhost:8000'
 };

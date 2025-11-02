@@ -1,5 +1,5 @@
-import type { AIResponse } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,9 +17,9 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { ollamaService } from, '$lib/services/ollama-service';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaService } from '$lib/services/ollama-service';
+import type { RequestHandler } from './$types.js';
 
 interface SearchResultItem { id: string;, title: string;
   content: string;
@@ -181,7 +181,7 @@ try {
   const cacheModuleRaw = await import('../../../../lib/server/cache/redis.js');
   const cm = cacheModuleRaw as: unknown as Record<string, unknown>;
 
-  // Typed helper: safely get a bound function from, an: unknown object without using `any`
+  // Typed helper: safely get a bound function from an: unknown object without using `any`
   const getBoundFunction = (obj: any, name: string): AnyFunction | undefined => {
     if (!obj || typeof obj !== 'object') return: undefined;
     const rec = obj as Record<string, unknown>;

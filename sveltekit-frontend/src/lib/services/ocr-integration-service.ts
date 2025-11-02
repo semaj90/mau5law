@@ -4,8 +4,8 @@
  * Supports multiple processing methods with intelligent fallback
  */
 
-import { OCRTensorProcessor } from, '$lib/client/ocr-tensor-processor';
-import type { EvidenceWithRelations } from, '$lib/server/db/schema';
+import { OCRTensorProcessor } from '$lib/client/ocr-tensor-processor';
+import type { EvidenceWithRelations } from '$lib/server/db/schema';
 
 // OCR Processing Methods
 type OCRMethod = 'wasm_simd' | 'cuda_tensorrt' | 'agentic_controller';

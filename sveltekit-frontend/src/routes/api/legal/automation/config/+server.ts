@@ -2,8 +2,8 @@
  * Legal Automation Configuration API
  * Handles automation setup and batch processing orchestration
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 interface AutomationConfig { id: string, type: string; source: string; autoProcessing: boolean; gpuAcceleration: boolean; batchSize: number; confidenceThreshold: number; processingOptions: string[]; createdAt: string
 }
 interface ProcessingJob {, id: string, configId: string;, status: 'pending' | 'processing' | 'completed' | 'failed',

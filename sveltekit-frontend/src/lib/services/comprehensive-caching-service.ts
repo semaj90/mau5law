@@ -4,9 +4,9 @@
  * Clean rebuild after corruption: provides typed multi-layer caching with pluggable strategies.
  * Implemented, layers: memory, IndexedDB (browser), LokiJS (optional), Redis (server), stubs for PostgreSQL & vector.
  */
-import { writable, type Writable, get as getStore } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { set, as idbSet, get as idbGet, del as idbDel } from, 'idb-keyval';
+import { writable, type Writable, get as getStore } from 'svelte/store';
+import { browser } from '$app/environment';
+import { set, as idbSet, get as idbGet, del as idbDel } from 'idb-keyval';
 
 // LokiJS is optional; wrap dynamic import & define minimal types to avoid build break if absent.
 // Provide a small, explicit interface for the collection so we avoid `any`.
@@ -349,7 +349,7 @@ class ComprehensiveCachingService {
       try {
         await this.deleteFromLayer(key, layer);
       } catch (err: any) {
-        console.warn(`Failed to delete key: "${key}" from, layer: "${layer}": ', err);'' }'`
+        console.warn(`Failed to delete key: "${key}" from layer: "${layer}": ', err);'' }'`
     });
     await Promise.allSettled(promises);
   }

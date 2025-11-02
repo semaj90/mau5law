@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * JSONB Legal Service
  *
@@ -14,9 +14,9 @@ import type { Case } from, '$lib/types';
  * - Chain of custody verification for evidence
  * - Citation network analysis
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { eq, sql, and, gt, desc, inArray } from, 'drizzle-orm';
-import postgres from, 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { eq, sql, and, gt, desc, inArray } from 'drizzle-orm';
+import postgres from 'postgres';
 import {
   legalDocumentsJsonb,
   evidenceJsonb,
@@ -28,8 +28,8 @@ import {
   type Evidence,
   type NewEvidence,
   type EvidenceMetadata
-} from, '$lib/server/db/jsonb-legal-schema.js';
-import { logger } from, '$lib/logging/structured-logger.js';
+} from '$lib/server/db/jsonb-legal-schema.js';
+import { logger } from '$lib/logging/structured-logger.js';
 
 // Local type definitions
 interface VectorEmbedding { id: string;, vector: number[];
@@ -550,7 +550,7 @@ export class JsonbLegalService {
       const result = verificationResult[0] as: any;
       const evidence = result as Evidence;
       const chain = (evidence.metadata as EvidenceMetadata)?.chainOfCustody || [];
-      const gaps: Array<{ from, string; to: string;, durationHours: number }> = [];
+      const gaps: Array<{ from string; to: string;, durationHours: number }> = [];
 
       for (let i = 1; i < chain.length; i++) {
         const prevTime = new Date(chain[i - 1].timestamp);

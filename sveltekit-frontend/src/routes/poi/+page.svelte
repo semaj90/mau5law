@@ -1,9 +1,9 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from, 'lucide-svelte';
-  import Button from, '$lib/components/ui/enhanced-bits.svelte';
+  import { onMount } from 'svelte';
+  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List } from 'lucide-svelte';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   // State
   let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list' >('grid');

@@ -1,4 +1,4 @@
-import { WSRegistry } from, './ws-registry';
+import { WSRegistry } from './ws-registry';
 
 /**
  * Dynamic WebSocket client for legal AI platform

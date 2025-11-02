@@ -6,9 +6,9 @@ https://svelte.dev/e/js_parse_error -->
   Shows neural memory prediction, ML caching, performance monitoring, and worker system
 -->
 <script, lang="ts">
-  import { onMount } from, 'svelte';
-  import { enhancedRAGStore } from, '$lib/stores/enhanced-rag-store.js';
-  import type { WorkerStats } from, '$lib/workers/specialized-worker-system.js';
+  import { onMount } from 'svelte';
+  import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
+  import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
 
   type PerfPoint = { time: Date;, value: number };
 

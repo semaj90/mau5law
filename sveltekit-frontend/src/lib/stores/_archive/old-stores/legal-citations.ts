@@ -1,14 +1,14 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Citations Management System
  * AI-powered citation extraction, validation, and relationship mapping
  */
-import { writable, derived } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { fastParse, fastStringify, createSIMDJSONCache } from, '$lib/utils/simd-json-cache';
-import { createWorkerPool } from, '$lib/workers/legal-ai-worker-pool';
+import { writable, derived } from 'svelte/store';
+import { browser } from '$app/environment';
+import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
+import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
 // Citation Types and Interfaces
 export interface LegalCitation { id: string;, type: 'case_law' | 'statute' | 'regulation' | 'constitution' | 'treaty' | 'law_review' | 'secondary_source' | 'custom';
  , citation: string; // Full citation text (e.g., "Brown v. Board of Education, 347 U.S. 483 (1954)")

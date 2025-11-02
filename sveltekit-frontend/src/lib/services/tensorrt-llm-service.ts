@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { Case } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * TensorRT-LLM Service with Ollama Fallback
  * High-performance inference service for legal AI
  */
-import { redisConfig, redisKeys, createServiceConfig } from, '$lib/config/redis-config';
-import { env } from, '$env/dynamic/private';
+import { redisConfig, redisKeys, createServiceConfig } from '$lib/config/redis-config';
+import { env } from '$env/dynamic/private';
 // Configuration optimized for RTX, 3060 Ti
 const TENSORRT_ENDPOINT = env.TENSORRT_ENDPOINT || 'http://localhost:8100';
 const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434';

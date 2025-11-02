@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified llama.cpp Bridge
  * Intelligently routes inference across, 4 execution paths:
@@ -8,8 +8,8 @@ import type { Document } from, '$lib/types';
  * 4. Remote QUIC/HTTP3 (TensorRT streaming) - Ultra-low latency, ~300-600 tok/s
  */
 
-import { browser } from, '$app/environment';
-import type { InferenceRequest, InferenceResponse } from, '$lib/webgpu/unified-runtime-abstraction';
+import { browser } from '$app/environment';
+import type { InferenceRequest, InferenceResponse } from '$lib/webgpu/unified-runtime-abstraction';
 
 // Lazy imports for tree-shaking
 let llamaWasmEngine: any = null;

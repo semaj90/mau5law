@@ -1,5 +1,5 @@
-import { Buffer } from, 'node:buffer';
-import { Embeddings } from, '@langchain/core/embeddings';
+import { Buffer } from 'node:buffer';
+import { Embeddings } from '@langchain/core/embeddings';
 export interface TensorRtEmbeddingsConfig {
   endpoint?: string;
   model?: string;

@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import { env } from, "$env/dynamic/private";
-import { tauriLLM } from, './tauri-llm.js';
+import type { Case } from '$lib/types';
+import { env } from "$env/dynamic/private";
+import { tauriLLM } from './tauri-llm.js';
 
 // Define a more specific type for models returned by Tauri
 interface TauriModel {

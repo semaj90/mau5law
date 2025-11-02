@@ -1,4 +1,4 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * gRPC Protobuf Pipeline for Gemma Embeddings
  * High-performance streaming embeddings with PostgreSQL JSONB optimization
@@ -10,11 +10,11 @@ import { redis, ensureRedisReady } from, '$lib/server/redis-client';
  * - Connection pooling and multiplexing
  * - Automatic retry and circuit breaker
  */
-import * as grpc from, '@grpc/grpc-js';
-import protoLoader from, '@grpc/proto-loader';
-import { poolShim } from, '$lib/server/db-shim';
-import { performance } from, 'perf_hooks';
-import Redis, { type RedisOptions } from, 'ioredis';
+import * as grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import { poolShim } from '$lib/server/db-shim';
+import { performance } from 'perf_hooks';
+import Redis, { type RedisOptions } from 'ioredis';
 // Load protobuf definitions
 const PROTO_PATH = __dirname + '/protos/gemma_embeddings.proto';
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {

@@ -4,7 +4,7 @@
  * Features: Multi-level generation, NVIDIA RTX optimization, memory streaming
  */
 /// <reference, types="@webgpu/types" />
-import { yorhaWebGPU } from, './YoRHaWebGPUMath.js';
+import { yorhaWebGPU } from './YoRHaWebGPUMath.js';
 
 // Add a typed interface for the external helper instead of using `any`
 interface YoRHaWebGPUHelper {

@@ -5,10 +5,10 @@
  * - langextract for NLP entity extraction
  * - Sharp for image optimization
  */
-import { createWorker } from, 'tesseract.js';
-import pdfParse from, 'pdf-parse';
-import sharp from, 'sharp';
-import { readFile } from, 'fs/promises';
+import { createWorker } from 'tesseract.js';
+import pdfParse from 'pdf-parse';
+import sharp from 'sharp';
+import { readFile } from 'fs/promises';
 export interface PDFProcessingResult { text: string;, pageCount: number;
   metadata: {
     title?: string;

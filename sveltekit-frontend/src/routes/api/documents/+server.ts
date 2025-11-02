@@ -2,15 +2,15 @@
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/connection';
-import { documents, cases } from, '$lib/server/schema/documents';
-import { eq, desc, and, sql } from, 'drizzle-orm';
-import { createEmbedding } from, '$lib/services/embedding-service';
-import { redis } from, '$lib/server/redis';
-import type { Document, NewDocument } from, '$lib/server/schema/documents';
-import type { SQL } from, 'drizzle-orm'; // <-- added, type, import
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db/connection';
+import { documents, cases } from '$lib/server/schema/documents';
+import { eq, desc, and, sql } from 'drizzle-orm';
+import { createEmbedding } from '$lib/services/embedding-service';
+import { redis } from '$lib/server/redis';
+import type { Document, NewDocument } from '$lib/server/schema/documents';
+import type { SQL } from 'drizzle-orm'; // <-- added, type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)

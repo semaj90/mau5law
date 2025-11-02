@@ -8,7 +8,7 @@
  * 4. Progressive enhancement
  */
 
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 
 // Service availability tracking
 interface ServiceStatus { ollama: boolean;, embedding: boolean;

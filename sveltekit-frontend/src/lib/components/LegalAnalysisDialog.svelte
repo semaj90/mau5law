@@ -8,8 +8,8 @@
 -->
 // Svelte, 5 runes are auto-imported
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // add props via Svelte, 5 $props()
   let {
     open = false,
@@ -17,8 +17,8 @@ import type { Document } from, '$lib/types';
   } = $props();
   // Replace named import that caused TS error with a safe namespace import,
   // and provide a minimal runtime fallback if the module shape differs.
-  import * as unified from, '$lib/stores/unified';
-  import  Badge  from, "$lib/components/ui/badge.svelte";
+  import * as unified from '$lib/stores/unified';
+  import  Badge  from "$lib/components/ui/badge.svelte";
   // Minimal local type for the parts we use (keeps TS happy)
   type MinimalLegalCaseStore = {
     filteredCases: () => Array<{ id: string; title: string; caseNumber?: string; status?: string }>;

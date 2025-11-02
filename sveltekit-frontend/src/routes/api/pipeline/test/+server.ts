@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } from, '$lib/server/db';
-import { createClient } from, 'redis';
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { nanoid } from, 'nanoid';
+import { db } from '$lib/server/db';
+import { createClient } from 'redis';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
 
 // A small compatibility type for clients that may expose convenience helpers
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

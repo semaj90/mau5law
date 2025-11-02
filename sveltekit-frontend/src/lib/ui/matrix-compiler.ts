@@ -1,6 +1,6 @@
 // JSON UI Compiler with Matrix Transforms
 // Builds on UnoCSS + Svelte, 5 for GPU-accelerated layouts
-import { mat4 } from, 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 export interface MatrixUINode { type: 'button' | 'card' | 'input' | 'dialog' | 'grid' | 'evidence-item' | 'panel' | 'text' | 'image' | 'container';, id: string;
   matrix: number[]; // 4x4 transform matrix
   styles: {

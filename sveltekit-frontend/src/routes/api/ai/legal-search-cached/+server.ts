@@ -20,12 +20,12 @@
  * High-performance legal document search with Redis caching
  * Optimized for legal research queries and case law searches
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { getEmbeddingCache, setEmbeddingCache } from, '$lib/server/vector-cache';
-import { cachedJson } from, '$lib/server/http-cache-headers';
-import { redisService } from, '$lib/server/redis-service';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { getEmbeddingCache, setEmbeddingCache } from '$lib/server/vector-cache';
+import { cachedJson } from '$lib/server/http-cache-headers';
+import { redisService } from '$lib/server/redis-service';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Legal search specialization cache keys
 const LEGAL_CACHE_PREFIX = 'legal-search:';
 const CASE_LAW_CACHE_PREFIX = 'case-law:';

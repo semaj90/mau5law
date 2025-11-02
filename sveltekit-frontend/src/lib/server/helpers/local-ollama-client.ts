@@ -1,4 +1,4 @@
-import ollama from, 'ollama'; // if available locally
+import ollama from 'ollama'; // if available locally
 
 export default {
   async embedText(text: string) {

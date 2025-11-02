@@ -3,7 +3,7 @@
  * WebGPU Tensor Acceleration System
  * Client-side GPU acceleration for legal AI operations
  */
-import { simdGPUTilingEngine } from, '$lib/evidence/simd-gpu-tiling-engine.js';
+import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
 export interface WebGPUTensorConfig { deviceType: 'discrete' | 'integrated' | 'auto';, powerPreference: 'high-performance' | 'low-power';
 	enableDebug: boolean;
 	maxBufferSize: number;

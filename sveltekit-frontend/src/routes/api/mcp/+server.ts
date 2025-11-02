@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { fetchMcpServerData } from, '$lib/services/mcp-registry';
-import { aiOrchestrator } from, '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { randomUUID } from, 'node:crypto';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { fetchMcpServerData } from '$lib/services/mcp-registry';
+import { aiOrchestrator } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
+import { randomUUID } from 'node:crypto';
 
 const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
 const OLLAMA_URL = process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL, as: string | undefined) ?? FALLBACK_OLLAMA_URL;

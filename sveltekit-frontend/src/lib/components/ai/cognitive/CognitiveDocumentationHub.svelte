@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: {, title: '🎯 Strategic Development Guide', icon: '🎯', content: [ {, title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any; achievements: string[]; consciousness: { level: number; experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: {, title: '🎯 Strategic Development Guide', icon: '🎯', content: [ {, title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
             'Initialize the Master Cognitive Hub with optimal parameters',
             'Configure reinforcement learning cache for maximum efficiency',
             'Implement multidimensional routing for complex legal queries',

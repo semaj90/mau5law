@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import { getOllamaEndpoint } from, '$lib/server/utils/ollama-client';
-import { enhancedVectorSearchService } from, '$lib/server/services/enhanced-vector-search-service';
-import { getRedisClient } from, '$lib/server/cache/redis';
+import { json } from '@sveltejs/kit';
+import { getOllamaEndpoint } from '$lib/server/utils/ollama-client';
+import { enhancedVectorSearchService } from '$lib/server/services/enhanced-vector-search-service';
+import { getRedisClient } from '$lib/server/cache/redis';
 
 /**
  * Handles POST requests for enhanced search, combining fuzzy and semantic search.

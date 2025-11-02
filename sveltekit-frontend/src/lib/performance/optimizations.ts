@@ -1,15 +1,15 @@
 
 // Phase 3: Performance Optimization - Complete File
 // #get-library-docs sveltekit2 #memory #create_entities
-// import { db } from, "$lib/server/db"
+// import { db } from "$lib/server/db"
 // Mock db for TypeScript compatibility
 const db = {
   execute: async (query: any) => [] as: any[]
 }
-import { sql } from, "drizzle-orm";
-import type { Redis } from, 'ioredis';
-import { getRedisConfig } from, '$lib/config/redis-config';
-import { createRedisInstance } from, '$lib/server/redis';
+import { sql } from "drizzle-orm";
+import type { Redis } from 'ioredis';
+import { getRedisConfig } from '$lib/config/redis-config';
+import { createRedisInstance } from '$lib/server/redis';
 // 1. Database Query Optimization
 export class OptimizedQueries {
   // Paginated cases with efficient counting

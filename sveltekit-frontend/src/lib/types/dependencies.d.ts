@@ -37,7 +37,7 @@ declare global {
 }
 
 // Lightweight Svelte component typed alias for UI libs
-import type { SvelteComponentTyped } from, 'svelte';
+import type { SvelteComponentTyped } from 'svelte';
 // Use `unknown` generic parameters to avoid `any` in declaration files
 type SvelteLibComponent = typeof SvelteComponentTyped<unknown>;
 

@@ -1,6 +1,6 @@
 <script, lang="ts">
 	// updated imports & typed animation id
-	import { onMount, onDestroy } from, 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import, '../lib/components/yorha/ps1.css';
 	let container;
 	let surfaceType = $state<string>('wireframe');

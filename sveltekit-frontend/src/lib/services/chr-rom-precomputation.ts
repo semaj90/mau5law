@@ -5,8 +5,8 @@
  * This service transforms raw legal data into tiny, pre-formatted patterns
  * stored in Redis L1 cache for instant UI rendering
  */
-import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
-import type { LegalDocument } from, '../types/legal.js';
+import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument } from '../types/legal.js';
 
 // CHR-ROM Pattern Types - tiny, optimized UI representations
 export type PatternType = 'icon' | 'badge' | 'summary' | 'gauge' | 'graph' | 'heatmap';

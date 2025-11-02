@@ -1,10 +1,10 @@
 <script, lang="ts">
-  import { onMount, onDestroy } from, 'svelte';
-  import  Button  from, "$lib/components/ui/button/Button.svelte";
-  import  LoginModal  from, "$lib/components/auth/LoginModal.svelte";
-  import  RegisterModal  from, "$lib/components/auth/RegisterModal.svelte";
-  import  UserProfileDropdown  from, "$lib/components/auth/UserProfileDropdown.svelte";
-  import { userStore } from, '$lib/stores/user';
+  import { onMount, onDestroy } from 'svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
+  import  LoginModal  from "$lib/components/auth/LoginModal.svelte";
+  import  RegisterModal  from "$lib/components/auth/RegisterModal.svelte";
+  import  UserProfileDropdown  from "$lib/components/auth/UserProfileDropdown.svelte";
+  import { userStore } from '$lib/stores/user';
   let showLoginModal = $state<boolean>(false);
   let showRegisterModal = $state<boolean>(false);
   // component refs (typed as: any to avoid strict typing issues)

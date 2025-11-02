@@ -9,7 +9,7 @@ import type {
   IQdrantVectorService,
   VectorSearchOptions,
   VectorSearchResult
-} from, '$lib/types/external-services';
+} from '$lib/types/external-services';
 
 import type {
   PointStruct,
@@ -17,7 +17,7 @@ import type {
   SearchRequest,
   SearchResponse,
   Filter
-} from, '$lib/types/qdrant';
+} from '$lib/types/qdrant';
 
 interface QdrantConfig { url: string;, collectionName: string;
   vectorSize?: number;

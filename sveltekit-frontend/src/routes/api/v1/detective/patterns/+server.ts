@@ -1,12 +1,12 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Pattern Detection API Route
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 
 // Pattern detection request schema
 const PatternDetectionSchema = z.object({

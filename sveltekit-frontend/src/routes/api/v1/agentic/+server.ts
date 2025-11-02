@@ -1,7 +1,7 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { spawn } from, 'child_process';
-import { join } from, 'path';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { spawn } from 'child_process';
+import { join } from 'path';
 
 /**
  * API endpoint for Agentic Controller integration

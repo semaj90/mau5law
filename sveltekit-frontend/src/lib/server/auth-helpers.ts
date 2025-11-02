@@ -2,8 +2,8 @@
  * Authentication Helpers with Test Fallback
  * Provides conditional authentication for development and testing
  */
-import type { RequestEvent } from, '@sveltejs/kit';
-import { error } from, '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 export interface AuthResult { user: {, id: string;
     email: string;

@@ -1,8 +1,8 @@
-import type { User } from, '$lib/types';
-import { db, pool } from, './drizzle';
-import { users, cases, evidence } from, './schema';
-import bcrypt from, 'bcryptjs';
-import { eq } from, 'drizzle-orm';
+import type { User } from '$lib/types';
+import { db, pool } from './drizzle';
+import { users, cases, evidence } from './schema';
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 // Sample embeddings (normally produced by an AI model)
 const sampleEmbeddings = { financial: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.1),
   legal: Array.from({, length: 768 }, () => Math.random() * 0.1 + 0.2),

@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * SSR Chat AI Assistant with User Dictionary, QLoRA Cache, and GPU Acceleration
  *
@@ -9,11 +9,11 @@ import type { User } from, '$lib/types';
  * - NES memory architecture for instant response patterns
  * - Real-time streaming with chunked tokenization
  */
-import { qloraRLOrchestrator } from, '$lib/services/qlora-rl-langextract-integration';
-import { NESMemoryArchitecture } from, '../../memory/nes-memory-architecture.js';
-import { WebGPUSOMCache } from, '../../webgpu/som-webgpu-cache.js';
-import { lokiRedisCache } from, '$lib/cache/loki-redis-integration';
-import type { RequestEvent } from, '@sveltejs/kit';
+import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
+import { NESMemoryArchitecture } from '../../memory/nes-memory-architecture.js';
+import { WebGPUSOMCache } from '../../webgpu/som-webgpu-cache.js';
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
+import type { RequestEvent } from '@sveltejs/kit';
 
 // --- ADDED: missing type declarations to fix TS errors ---
 type GPUCache = {

@@ -1,6 +1,6 @@
-import { json } from, "@sveltejs/kit"
-import { loki  } from, '$lib/stores/unified'
-import type { RequestHandler } from, './$types.js'
+import { json } from "@sveltejs/kit"
+import { loki  } from '$lib/stores/unified'
+import type { RequestHandler } from './$types.js'
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvasState, reportId } = await request.json()

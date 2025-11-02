@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -21,9 +21,9 @@ import type { Document } from, '$lib/types';
  * Document Templates API
  * GET /api/ai/document-drafting/templates - Get available document templates
  */
-import { json } from, '@sveltejs/kit'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const documentType = url.searchParams.get('type')

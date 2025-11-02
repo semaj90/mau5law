@@ -3,9 +3,9 @@
  * Supports CBOR, MessagePack, and JSON with intelligent format selection
  * Optimized for shader caching, legal document processing, and high-performance data transfer
  */
-import * as CBOR from, 'cbor';
-import { encode, as msgpackEncode, decode as msgpackDecode } from, '@msgpack/msgpack';
-import type { RequestEvent } from, '@sveltejs/kit';
+import * as CBOR from 'cbor';
+import { encode, as msgpackEncode, decode as msgpackDecode } from '@msgpack/msgpack';
+import type { RequestEvent } from '@sveltejs/kit';
 
 // Add a narrow type for event.locals to avoid `any`
 type LocalsWithDecodedBody = {

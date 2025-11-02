@@ -3,9 +3,9 @@
  * Advanced neural pattern recognition for legal document prediction
  * Combines HMM state transitions with SOM spatial clustering
  */
-import { LegalDocumentSOM } from, './som-clustering.js';
-import type { SOMConfig } from, '$lib/api/enhanced-rest-architecture';
-import { reinforcementLearningCache } from, '$lib/caching/reinforcement-learning-cache';
+import { LegalDocumentSOM } from './som-clustering.js';
+import type { SOMConfig } from '$lib/api/enhanced-rest-architecture';
+import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 
 export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
   bitmapHeight: number;

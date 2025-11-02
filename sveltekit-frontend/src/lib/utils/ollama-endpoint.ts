@@ -1,5 +1,5 @@
 // Centralized Ollama endpoint helpers
-import { getOllamaBaseUrlFromConfig, resolveOllamaConfig } from, '$lib/config/ollama-config';
+import { getOllamaBaseUrlFromConfig, resolveOllamaConfig } from '$lib/config/ollama-config';
 
 export function getOllamaBaseUrl(): string {
   // Prefer explicit project config first

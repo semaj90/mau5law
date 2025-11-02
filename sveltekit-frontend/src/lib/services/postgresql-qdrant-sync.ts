@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * PostgreSQL to Qdrant Sync Service
  *
@@ -8,15 +8,15 @@ import type { Document } from, '$lib/types';
  * - This service ensures Qdrant stays in sync with PostgreSQL
  * - Can rebuild Qdrant index entirely from PostgreSQL data
  */
-import { db } from, '$lib/server/db/index.js';
-import { evidence, documentEmbeddings, documentMetadata } from, '$lib/server/db/schema-unified.js';
-import { eq, sql, desc, and, isNotNull } from, '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
-import { QdrantClient } from, '@qdrant/js-client-rest';
+import { db } from '$lib/server/db/index.js';
+import { evidence, documentEmbeddings, documentMetadata } from '$lib/server/db/schema-unified.js';
+import { eq, sql, desc, and, isNotNull } from '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
+import { QdrantClient } from '@qdrant/js-client-rest';
 import type {
   CollectionInfo,
   ScoredPoint, // Added ScoredPoint
   Filter, // Added Filter
-} from, '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
+} from '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
 
 export interface SyncConfig {
   qdrantUrl?: string;

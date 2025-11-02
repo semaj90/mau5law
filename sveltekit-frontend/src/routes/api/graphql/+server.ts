@@ -1,12 +1,12 @@
-import { mcpContext72GetLibraryDocs } from, '$lib/mcp-context72-get-library-docs';
-import { enhancedSearchWithNeo4j, type UserContext } from, '$lib/ai/custom-reranker'; // Import UserContext
-import { createSchema, createYoga } from, 'graphql-yoga';
-import { qdrant } from, '$lib/server/vector/qdrant-service';
-import { langChainOllamaService } from, '$lib/ai/langchain-ollama-service';
-import { db } from, '$lib/server/db/client'; // Drizzle client
-import { vectors } from, '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
-import { inArray } from, 'drizzle-orm'; // Imported inArray from drizzle-orm
-import { sql } from, '$lib/server/db/utils'; // Drizzle expressions for query building
+import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
+import { enhancedSearchWithNeo4j, type UserContext } from '$lib/ai/custom-reranker'; // Import UserContext
+import { createSchema, createYoga } from 'graphql-yoga';
+import { qdrant } from '$lib/server/vector/qdrant-service';
+import { langChainOllamaService } from '$lib/ai/langchain-ollama-service';
+import { db } from '$lib/server/db/client'; // Drizzle client
+import { vectors } from '$lib/server/db/schema-postgres'; // Assuming: 'vectors' table schema
+import { inArray } from 'drizzle-orm'; // Imported inArray from drizzle-orm
+import { sql } from '$lib/server/db/utils'; // Drizzle expressions for query building
 
 // Define the expected return type for mcpContext72GetLibraryDocs
 // The error message suggests that the type: 'LibraryDocsResponse' itself is problematic.

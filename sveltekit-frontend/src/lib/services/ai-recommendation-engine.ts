@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /*
   NOTE: This module contained many complex implementations that caused parse errors during
   automated fixes. For now we've replaced the file with a compact, well-typed stub that'
@@ -6,18 +6,18 @@ import type { Case } from, '$lib/types';
   if needed.
 */
 
-import { writable, get, type Writable } from, 'svelte/store';
-import type { FeedbackRecommendation, UserFeedbackContext } from, '$lib/types/feedback';
-import { RunnableSequence } from, '@langchain/core/runnables';
-import type { RunnableLike } from, '@langchain/core/runnables'; // <-- ADDED
-import { PromptTemplate } from, '@langchain/core/prompts';
-import { StringOutputParser } from, '@langchain/core/output_parsers';
-import { ChatOllama } from, '@langchain/ollama'; // Fix: Updated import path for ChatOllama
-import { createActor, type Actor, type AnyStateMachine, type StateMachine } from, 'xstate'; // Fix: Added StateMachine type, will use createActor
-import { safeStart, safeStop } from, '$lib/utils/xstate-compat';
+import { writable, get, type Writable } from 'svelte/store';
+import type { FeedbackRecommendation, UserFeedbackContext } from '$lib/types/feedback';
+import { RunnableSequence } from '@langchain/core/runnables';
+import type { RunnableLike } from '@langchain/core/runnables'; // <-- ADDED
+import { PromptTemplate } from '@langchain/core/prompts';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import { ChatOllama } from '@langchain/ollama'; // Fix: Updated import path for ChatOllama
+import { createActor, type Actor, type AnyStateMachine, type StateMachine } from 'xstate'; // Fix: Added StateMachine type, will use createActor
+import { safeStart, safeStop } from '$lib/utils/xstate-compat';
 // The following imports are guesses based on usage. The user might need to adjust paths.
-import { recommendationMachine } from, '$lib/machines/recommendation-routing-machine'; // Fix: Corrected machine import path
-import { advancedCache } from, '$lib/services/advanced_cache_manager.js'; // Fix: Using enterprise production cache implementation
+import { recommendationMachine } from '$lib/machines/recommendation-routing-machine'; // Fix: Corrected machine import path
+import { advancedCache } from '$lib/services/advanced_cache_manager.js'; // Fix: Using enterprise production cache implementation
 
 const RECOMMENDATION_WORKER_PATH = '/workers/recommendation-worker.ts'; // Fix: Added worker path
 

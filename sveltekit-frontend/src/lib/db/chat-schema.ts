@@ -1,6 +1,6 @@
 // Database schema for chat functionality with pgvector support
-import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } from, 'drizzle-orm/pg-core';
-import { sql } from, 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 export const chatSessions = pgTable('chat_sessions', {
   id: uuid('id').primaryKey(),
   model: text('model').notNull().default('gemma3-legal'),

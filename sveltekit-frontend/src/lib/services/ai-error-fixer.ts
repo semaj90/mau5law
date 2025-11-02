@@ -2,10 +2,10 @@
 // AI-POWERED ERROR FIXING PIPELINE
 // Automated TypeScript error resolution with LLM assistance
 // ======================================================================
-import { gpuLokiErrorAPI } from, './gpu-loki-error-orchestrator.js';
-import { parallelAnalysisAPI } from, './parallel-error-analyzer.js';
-// import { browser } from, '$app/environment'; // removed: unused
-import { writable, derived } from, 'svelte/store';
+import { gpuLokiErrorAPI } from './gpu-loki-error-orchestrator.js';
+import { parallelAnalysisAPI } from './parallel-error-analyzer.js';
+// import { browser } from '$app/environment'; // removed: unused
+import { writable, derived } from 'svelte/store';
 
 export interface FixAttempt { id: string;, errorId: string;
   strategy: string;

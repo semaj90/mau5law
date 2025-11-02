@@ -1,5 +1,5 @@
 // Lightweight realtime pipeline store subscribing to ws-fanout events
-import { writable, derived } from, "svelte/store";
+import { writable, derived } from "svelte/store";
 // Define types locally to avoid import issues
 export type PipelineStage = 'gpu' | 'wasm' | 'embedding' | 'retrieval' | 'llm' | 'final';
 // Mock performance monitoring function

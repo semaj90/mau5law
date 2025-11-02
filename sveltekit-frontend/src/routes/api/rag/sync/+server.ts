@@ -1,10 +1,10 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import type { RequestHandler } from, '@sveltejs/kit'
-import { json } from, '@sveltejs/kit'
-import { ollamaClient } from, '$lib/server/ollama-client'
-import { db } from, '$lib/server/db'
-import { embeddings } from, '$lib/server/db/schema-embeddings'
-import type { NewEmbedding } from, '$lib/server/db/schema-embeddings'
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import type { RequestHandler } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
+import { ollamaClient } from '$lib/server/ollama-client'
+import { db } from '$lib/server/db'
+import { embeddings } from '$lib/server/db/schema-embeddings'
+import type { NewEmbedding } from '$lib/server/db/schema-embeddings'
 const DATABASE_URL = process.env.DATABASE_URL || ''
 
 interface RedisLike {

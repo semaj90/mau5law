@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from, '$lib/utils/api-endpoints';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints';
 
 export interface EmbeddingService {
   generateEmbedding(text: string): Promise<number[]>;

@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // onMount was unused — removed
   // Use a namespace import to safely access public env vars without TS named-export errors
-  import * as env from, '$env/static/public';
+  import * as env from '$env/static/public';
   interface Props {
     placeholder?: string;
     searchEndpoint?: string;

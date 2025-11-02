@@ -1,8 +1,8 @@
 // Repaired imports (file previously had fragmented: 'type { RequestEvent }, { json }')
-import { json, type RequestEvent } from, '@sveltejs/kit';
-import { aiReports, canvasStates, reports } from, '$lib/server/db/schema-postgres';
-import { db } from, '$lib/server/db/index';
-import { eq, and, or, like, desc, sql, type SQL } from, 'drizzle-orm';
+import { json, type RequestEvent } from '@sveltejs/kit';
+import { aiReports, canvasStates, reports } from '$lib/server/db/schema-postgres';
+import { db } from '$lib/server/db/index';
+import { eq, and, or, like, desc, sql, type SQL } from 'drizzle-orm';
 
 // Define types for Drizzle schema inference
 type AiReport = typeof aiReports.$inferSelect;

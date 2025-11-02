@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types'; import  ThemeProvider  from, "./ThemeProvider.svelte"; import  ThemeToggle  from, "./ThemeToggle.svelte"; import  Sidebar  from, "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from, "./DocumentCard.svelte"; // Changed to named import import  Button  from, "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
+import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProvider.svelte"; import  ThemeToggle  from "./ThemeToggle.svelte"; import  Sidebar  from "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from "./DocumentCard.svelte"; // Changed to named import import  Button  from "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
   let { theme = 'default'
   }: SidebarDemoProps = $props(); let currentPage = $state<string>('dashboard'); // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused // Sample navigation items const navigationItems = [ {, id: 'dashboard', label: 'Dashboard', icon: '📊', // Fixed syntax badge: '3'
     }, {

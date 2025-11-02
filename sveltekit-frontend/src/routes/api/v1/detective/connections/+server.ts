@@ -1,6 +1,6 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { cuidSchema } from '$lib/server/z-schemas';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 
 // Connection mapping request schema (defaults applied)
 const ConnectionMappingSchema = z.object({

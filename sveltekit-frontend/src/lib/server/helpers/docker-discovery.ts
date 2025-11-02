@@ -13,7 +13,7 @@
  *
  *, Usage:
  * ```typescript`
- * import { discoverServiceEndpoint } from, '$lib/server/helpers/docker-discovery';
+ * import { discoverServiceEndpoint } from '$lib/server/helpers/docker-discovery';
  *
  * // Try env var first, then Docker discovery, then fallback
  * const qdrantUrl = await discoverServiceEndpoint(
@@ -23,7 +23,7 @@
  * );
  * ```
  */
-import Docker from, 'dockerode';
+import Docker from 'dockerode';
 interface DiscoveryOptions {
   // Pattern to match container name or image (case-insensitive)
   containerPattern: string;

@@ -1,9 +1,9 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Chat Machine - XState v5 Compatible
  * Handles chat conversation state with streaming support
  */
-import { createMachine, assign, fromPromise, createActor, type StateFrom } from, 'xstate';
+import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate';
 // Message types
 export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
   timestamp?: string;

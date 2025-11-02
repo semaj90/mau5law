@@ -2,7 +2,7 @@
  * Gemma Configuration Test Script
  * Run this to verify Gemma models are properly configured
  */
-import { validateGemmaModels, getGemmaConfigSummary, generateGemmaEmbedding, LEGAL_FUNCTIONS } from, './gemma-config';
+import { validateGemmaModels, getGemmaConfigSummary, generateGemmaEmbedding, LEGAL_FUNCTIONS } from './gemma-config';
 export async function testGemmaConfiguration(): Promise<any> {
   console.log('🧪 Testing Gemma Configuration...\n');
   // 1. Validate models are available

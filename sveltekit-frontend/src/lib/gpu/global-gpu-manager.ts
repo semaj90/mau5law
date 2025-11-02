@@ -1,5 +1,5 @@
-import type { HybridGPUContext } from, './hybrid-gpu-context';
-import { browser } from, '$app/environment';
+import type { HybridGPUContext } from './hybrid-gpu-context';
+import { browser } from '$app/environment';
 // --- added local minimal WebGPU-like types to avoid `any` casts ---
 type GPUAdapterLike = {
 	requestDevice?: () => Promise<unknown | null>;

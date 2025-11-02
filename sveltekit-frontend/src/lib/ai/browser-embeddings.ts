@@ -11,7 +11,7 @@
  *   await embedder.initialize();
  *   const vector = await embedder.embed('legal document text');
  */
-import { pipeline, env } from, '@huggingface/transformers';
+import { pipeline, env } from '@huggingface/transformers';
 // Configure Transformers.js environment
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -159,8 +159,8 @@ export const browserEmbeddings = new BrowserEmbeddings();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserEmbeddings } from, '$lib/ai/browser-embeddings';
- *   import { onMount } from, 'svelte';
+ *   import { browserEmbeddings } from '$lib/ai/browser-embeddings';
+ *   import { onMount } from 'svelte';
  *
  *   let isReady = $state<boolean>(false);
  *   let searchResults = $state<any[]>([]);

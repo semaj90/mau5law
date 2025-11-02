@@ -1,6 +1,6 @@
 // Slider Component Barrel Export
 // Note: Slider may not be available in bits-ui v2, using fallback approach
-// import { Slider } from, "bits-ui"
+// import { Slider } from "bits-ui"
 // Fallback implementation for missing Slider
 export const SliderRoot = null; // Slider?.Root
 export const SliderRange = null; // Slider?.Range

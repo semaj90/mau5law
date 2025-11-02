@@ -1,8 +1,8 @@
-import { writeFile, mkdir, readFile } from, 'fs/promises';
-import { dirname, extname } from, 'path';
-import { existsSync } from, 'fs';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { writeFile, mkdir, readFile } from 'fs/promises';
+import { dirname, extname } from 'path';
+import { existsSync } from 'fs';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -11,12 +11,12 @@
  * tsx --test src/lib/server/helpers/service-discovery.test.ts
  * ```
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from, 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   getServiceDiscovery,
   ServiceDiscovery,
   COMMON_SERVICES
-} from, './service-discovery';
+} from './service-discovery';
 describe('ServiceDiscovery', () => {
   let discovery: ServiceDiscovery;
   beforeEach(() => {

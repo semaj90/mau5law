@@ -1,7 +1,7 @@
-import { pipeline } from, '@xenova/transformers';
-import { LLMChain, PromptTemplate } from, 'langchain';
-import { TransformersLLM } from, 'langchain/llms/transformers';
-import { cudaServiceWorker } from, '$lib/ai/cuda-service-worker'; // Corrected import path
+import { pipeline } from '@xenova/transformers';
+import { LLMChain, PromptTemplate } from 'langchain';
+import { TransformersLLM } from 'langchain/llms/transformers';
+import { cudaServiceWorker } from '$lib/ai/cuda-service-worker'; // Corrected import path
 
 let pipe: any | null = null;
 

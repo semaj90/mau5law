@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 
 // Complete Vector Search Service - Production Ready
 // Combines PostgreSQL pgvector + Qdrant + Local caching + Loki.js + Fuse.js
 const browser = false; // Server-side only
-import { db, isPostgreSQL } from, '../db/index.js';
-import { ollamaService } from, '../services/OllamaService.js';
+import { db, isPostgreSQL } from '../db/index.js';
+import { ollamaService } from '../services/OllamaService.js';
 import {
   and,
   eq,
   or,
   sql
-} from, "drizzle-orm";
+} from "drizzle-orm";
 // Import dependencies with fallbacks
 let qdrant: any = null;
 let generateEmbedding: any = null;

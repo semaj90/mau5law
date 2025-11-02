@@ -16,10 +16,10 @@
  * @module vector-search-errors
  */
 
-import { db } from, '$lib/server/db';
-import { viteErrors, errorClusters, errorSimilarity, type ViteError } from, '$lib/db/vite-error-schema';
-import { qdrantAutoTagger, type QdrantSearchResult } from, '$lib/services/qdrant-auto-tagger';
-import { eq, sql, and, desc, gte } from, 'drizzle-orm';
+import { db } from '$lib/server/db';
+import { viteErrors, errorClusters, errorSimilarity, type ViteError } from '$lib/db/vite-error-schema';
+import { qdrantAutoTagger, type QdrantSearchResult } from '$lib/services/qdrant-auto-tagger';
+import { eq, sql, and, desc, gte } from 'drizzle-orm';
 
 /**
  * Vector search result with similarity score

@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,8 +17,8 @@ import type { Document } from, '$lib/types';
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 export interface GoMicroserviceConfig { baseUrl: string;, timeout: number;
   retries: number;

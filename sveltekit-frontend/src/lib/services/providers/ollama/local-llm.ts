@@ -1,7 +1,7 @@
 // providers/ollama/local-llm.ts
 // Clean, minimal Ollama local LLM adapter
-import { logger } from, './logger.js';
-import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from, './config';
+import { logger } from './logger.js';
+import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from './config';
 
 export interface OllamaModel {
   name: string;

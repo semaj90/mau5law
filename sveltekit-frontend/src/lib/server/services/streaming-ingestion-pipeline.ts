@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { Document } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Streaming ingestion pipeline with MinIO for legal document processing
 // Supports: PDF → Text extraction → Chunking → Embedding → pgvector storage
-import * as Minio from, 'minio';
-import { createHash } from, 'crypto';
-import { Readable } from, 'stream';
-import { db } from, '../db/connection';
+import * as Minio from 'minio';
+import { createHash } from 'crypto';
+import { Readable } from 'stream';
+import { db } from '../db/connection';
 import {
   legalDocumentChunks,
   embeddingCache512,
@@ -16,9 +16,9 @@ import {
   type NewCaseEmbedding,
   type NewEvidenceEmbedding,
   EMBEDDING_MODELS
-} from, '../db/schema-pgvector-512';
-import { eq, and, lt } from, 'drizzle-orm';
-import Redis from, 'ioredis';
+} from '../db/schema-pgvector-512';
+import { eq, and, lt } from 'drizzle-orm';
+import Redis from 'ioredis';
 
 interface DocumentMetadata { documentId: string;, documentType: 'contract' | 'evidence' | 'brief' | 'citation' | 'statute' | 'case_law';
   caseId?: string;

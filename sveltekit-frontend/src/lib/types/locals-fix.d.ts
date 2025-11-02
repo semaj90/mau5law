@@ -1,5 +1,5 @@
 // Ensure RequestEvent.locals resolves to App.Locals everywhere
-import type {} from, '@sveltejs/kit';
+import type {} from '@sveltejs/kit';
 declare module, '@sveltejs/kit' {
   interface RequestEvent {
     locals: App.Locals;

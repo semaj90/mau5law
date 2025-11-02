@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /* Automated barrel store generator - corrected, typed, and production-ready.
    - Adds typed interfaces for external services (UltraJSONParser, WasmClusteringService, NESGPUBridge).
    - Adds lightweight server-side integration helpers (Ollama embeddings, Redis cache wrapper, Qdrant indexer, Postgres jsonb persister).
@@ -409,7 +409,7 @@ export class AutomatedBarrelStoreGenerator {
       name: item,
       implementation: `// Auto-generated implementation for ${item}\nexport const ${item} = (...args: any[]) => { return: null; };`,
       types: `export type ${item} = any;`,
-      usage: '//;, Usage: import { ${item} } from, './barrel-store';' };'` }'`
+      usage: '//;, Usage: import { ${item} } from './barrel-store';' };'` }'`
 
   private createFallbackImplementation(item: string): FetchImplementation {
     return {

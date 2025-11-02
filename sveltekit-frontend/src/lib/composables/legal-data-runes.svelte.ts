@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Legal Data Composables using Svelte, 5 Runes
  * Reusable state management for legal entities, cases, evidence, and POIs

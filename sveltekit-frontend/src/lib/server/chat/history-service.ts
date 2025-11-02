@@ -1,7 +1,7 @@
-import { db } from, '$lib/server/db/client';
-import { chatSessions, chatMessages } from, '$lib/server/db/schema-unified';
-import { desc, eq, sql } from, 'drizzle-orm';
-import { randomUUID } from, 'crypto';
+import { db } from '$lib/server/db/client';
+import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
+import { desc, eq, sql } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 // Use InferModel or define types directly for better compatibility
 type NewChatSession = typeof chatSessions.$inferInsert;
 type NewChatMessage = typeof chatMessages.$inferInsert;

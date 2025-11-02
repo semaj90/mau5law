@@ -2,9 +2,9 @@
  * @endpoint  GET /api/vector/status
  * @desc      Returns health + configuration of the vector stack
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { env } from, '$env/dynamic/private';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
 export const GET: RequestHandler = async () => {
   return json({

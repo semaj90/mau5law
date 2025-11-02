@@ -1,13 +1,13 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * RAG Chunking API - Optimized text chunking for legal documents
  * Handles semantic chunking, paragraph-aware splitting, and CUDA-accelerated processing
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getCudaServiceUrl, getEmbeddingModel } from, '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from, '$lib/server/minio-service';
-import { generateEmbeddings } from, '$lib/server/services/embedding-service';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from '$lib/server/minio-service';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 interface ChunkingRequest {
   text?: string;
   minioUrl?: string;

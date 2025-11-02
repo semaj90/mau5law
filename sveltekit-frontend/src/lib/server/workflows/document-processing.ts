@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // XState v5 Document Processing Workflow - Minimal Stub
-import { createMachine } from, 'xstate';
+import { createMachine } from 'xstate';
 
 export interface DocumentProcessingContext { documentId: string;, content: string;
  , metadata: Record<string, unknown>;

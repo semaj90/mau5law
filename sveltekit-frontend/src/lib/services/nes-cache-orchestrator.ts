@@ -2,12 +2,12 @@
 // [stub-removed]
 // NES-Style Cache Orchestrator - Advanced Multi-Layer Caching System
 // Integrates YoRHa UI, GPU animations, and WebGPU processing with NES-inspired memory efficiency
-import { AdvancedCacheManager } from, '$lib/caching/advanced-cache-manager';
-import type { CacheConfiguration, CacheLayerInterface } from, '$lib/caching/advanced-cache-manager';
-import { gpuAnimations } from, '$lib/animations/gpu-animations';
-import { cachingService } from, '$lib/services/caching-service';
-import type { InteractiveCanvasState } from, '$lib/types/canvas';
-import { dev } from, '$app/environment';
+import { AdvancedCacheManager } from '$lib/caching/advanced-cache-manager';
+import type { CacheConfiguration, CacheLayerInterface } from '$lib/caching/advanced-cache-manager';
+import { gpuAnimations } from '$lib/animations/gpu-animations';
+import { cachingService } from '$lib/services/caching-service';
+import type { InteractiveCanvasState } from '$lib/types/canvas';
+import { dev } from '$app/environment';
 // NES-inspired memory constraints for cache management
 const NES_CACHE_CONSTRAINTS = {
   PRG_ROM: 32768, // Program ROM - Templates & Components (32KB)

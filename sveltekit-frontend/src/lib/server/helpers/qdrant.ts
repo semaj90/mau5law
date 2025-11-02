@@ -1,5 +1,5 @@
 // sveltekit-frontend/src/lib/server/helpers/qdrant.ts
-import { QDRANT_CONFIG } from, '$lib/server/config'; // Assuming this config exists
+import { QDRANT_CONFIG } from '$lib/server/config'; // Assuming this config exists
 
 /**
  * Retrieves the base URL for the Qdrant service.

@@ -1,5 +1,5 @@
-import type { Readable } from, 'svelte/store';
-import { writable, get } from, 'svelte/store';
+import type { Readable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 /**
  * RAG Streaming Client Helper (SSE)
  * ---------------------------------
@@ -22,7 +22,7 @@ import { writable, get } from, 'svelte/store';
  *  }) => Promise<{ traceparent?: string } | object>
  *
  * Usage (Svelte component):
- *  import { streamRag } from, '$lib/ai/ragStreamClient';
+ *  import { streamRag } from '$lib/ai/ragStreamClient';
  *  let tokens: string[] = [];
  *  let, abortCtrl: AbortController;
  *  function start(query: string) {

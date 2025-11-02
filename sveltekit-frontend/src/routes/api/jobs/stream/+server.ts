@@ -4,10 +4,10 @@
  * Provides real-time job status updates via Server-Sent Events
  * Integrates with GlobalLokiStore for cross-worker state visibility
  */
-import type { RequestHandler, RequestEvent } from, './$types.js';
-import { globalLoki } from, '$lib/stores/global-loki-store.js';
-import { cacheService } from, '$lib/api/services/cache-service.js';
-import type { RedisClientType } from, 'redis';
+import type { RequestHandler, RequestEvent } from './$types.js';
+import { globalLoki } from '$lib/stores/global-loki-store.js';
+import { cacheService } from '$lib/api/services/cache-service.js';
+import type { RedisClientType } from 'redis';
 
 export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
   const jobIds = url.searchParams.get('jobIds')?.split(',') || [];

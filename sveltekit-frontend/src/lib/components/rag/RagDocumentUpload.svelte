@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
-  import { Upload, X, CheckCircle, AlertCircle } from, 'lucide-svelte';
-  import  Button  from, "$lib/components/ui/button/Button.svelte";
+import type { Document } from '$lib/types';
+  import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
+  import  Button  from "$lib/components/ui/button/Button.svelte";
   interface UploadResult {
     success: boolean;
     message: string;

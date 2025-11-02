@@ -2,14 +2,14 @@
  * YoRHa 3D UI Component Library Example
  * Comprehensive demonstration of the 3D UI system with YoRHa aesthetic
  */
-import * as THREE from, 'three';
-import { YoRHaButton3D } from, './components/YoRHaButton3D.js';
-import { YoRHaPanel3D } from, './components/YoRHaPanel3D.js';
-import { YoRHaInput3D } from, './components/YoRHaInput3D.js';
-import { YoRHaModal3D } from, './components/YoRHaModal3D.js';
-import { YoRHaLayout3D, YoRHaLayoutPresets } from, './YoRHaLayout3D.js';
-import { YORHA_COLORS } from, './YoRHaUI3D.js';
-import { EventEmitter } from, "events";
+import * as THREE from 'three';
+import { YoRHaButton3D } from './components/YoRHaButton3D.js';
+import { YoRHaPanel3D } from './components/YoRHaPanel3D.js';
+import { YoRHaInput3D } from './components/YoRHaInput3D.js';
+import { YoRHaModal3D } from './components/YoRHaModal3D.js';
+import { YoRHaLayout3D, YoRHaLayoutPresets } from './YoRHaLayout3D.js';
+import { YORHA_COLORS } from './YoRHaUI3D.js';
+import { EventEmitter } from "events";
 export class YoRHaUIExample {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;

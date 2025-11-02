@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Move/import Drizzle pg-core symbols near the top of the file
 import {
   pgTable,
@@ -12,13 +12,13 @@ import {
   real,
   integer,
   vector
-} from, 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
 // If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
-import { users } from, './schema-postgres';
-import { sql } from, 'drizzle-orm';
+import { users } from './schema-postgres';
+import { sql } from 'drizzle-orm';
 // Re-export the PostgreSQL schema as the main schema
-export * from, './schema-postgres';
-export * from, './schema-gpu-cache';
+export * from './schema-postgres';
+export * from './schema-gpu-cache';
 // Exported table definition used by the advanced-analysis endpoint
 export const analysisResults = pgTable('analysis_results', {
   analysisId: varchar('analysis_id', { length: 128 }).primaryKey(),

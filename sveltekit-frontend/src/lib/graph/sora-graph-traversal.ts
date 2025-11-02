@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * SORA Graph Traversal System
  * High-performance graph traversal with Neo4j integration

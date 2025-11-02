@@ -1,6 +1,6 @@
-import { db } from, './client.js'; // Changed import path for db
-import { legalDocuments, userAiQueries, embeddingCache } from, './schema-postgres.ts'; // Import specific schema objects
-import { sql, type PgTable } from, 'drizzle-orm'; // Added type PgTable
+import { db } from './client.js'; // Changed import path for db
+import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.ts'; // Import specific schema objects
+import { sql, type PgTable } from 'drizzle-orm'; // Added type PgTable
 // GRPMO imports
 interface GRPMOConfig { hotCacheThreshold: number;, warmCacheThreshold: number;
   coldCacheThreshold: number;

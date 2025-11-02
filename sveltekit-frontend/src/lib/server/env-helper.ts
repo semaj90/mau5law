@@ -80,4 +80,4 @@ export function getOllamaUrl(): string {
   return getOllamaEndpoint();
 }
 
-export type { EnhancedEnv } from, '$lib/types/env-enhanced';
+export type { EnhancedEnv } from '$lib/types/env-enhanced';

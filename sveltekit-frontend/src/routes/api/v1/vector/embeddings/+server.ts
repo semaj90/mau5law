@@ -2,11 +2,11 @@
  * Vector Embeddings API - RAG Chunking with CUDA Parallel Processing
  * Handles text embedding, batch processing, and document chunking for legal AI
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from, '$lib/config/pgvector-gpu-config.js';
-import { MinIOService } from, '$lib/server/minio-service';
-import { generateEmbeddings } from, '$lib/server/services/embedding-service';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
+import { MinIOService } from '$lib/server/minio-service';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 interface EmbeddingRequest {
   texts: string[];
   model?: string;

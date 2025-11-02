@@ -1,5 +1,5 @@
-import EventEmitter from, 'events';
-import { redis } from, '$lib/server/redis';
+import EventEmitter from 'events';
+import { redis } from '$lib/server/redis';
 export type JobState = 'queued' | 'running' | 'succeeded' | 'failed' | 'retrying' | 'cancelled';
 export type JobRecord = { id: string;, state: JobState;
   payload?: any;

@@ -2,7 +2,7 @@
  * Dynamic Component Loader for Enhanced-Bits
  * Supports lazy loading and error boundaries
  */
-import type { SvelteComponent } from, 'svelte';
+import type { SvelteComponent } from 'svelte';
 // Use `typeof SvelteComponent` for a modern, correct Svelte component constructor type.
 export type ComponentConstructor = typeof SvelteComponent;
 export interface ComponentModule {

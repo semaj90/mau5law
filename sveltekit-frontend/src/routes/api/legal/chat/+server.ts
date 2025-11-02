@@ -1,10 +1,10 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Legal AI Chat API - Context7 Enhanced with Gemma3 Legal
-import { db } from, '$lib/server/db/index';
+import { db } from '$lib/server/db/index';
 
 // Add schema / query helper imports (adjust path if your project exports them elsewhere)
-import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, desc } from, '$lib/server/db/schema';
+import { legalAnalysisSessions, legalDocuments, legalPrecedents, eq, like, and, desc } from '$lib/server/db/schema';
 
 // Replace loose types with strict ones
 type DBCondition = unknown;

@@ -2,11 +2,11 @@
  * Galbert Service
  * Comprehensive NLP service integrating Legal-BERT, Gemma, RAG/KAG, OCR, and Redis caching
  */
-import { EventEmitter } from, "events";
-import { createClient, as createRedisClient } from, '$lib/server/cache/redis'; // Import Redis client
-import { enhancedVectorSearchService } from, '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
-import { createWorkerPool, getWorkerPool, type OcrPayload } from, '$lib/workers/legal-ai-worker-pool'; // Import worker pool
-import { AutoTokenizer } from, "@xenova/transformers"; // New import for tokenizer
+import { EventEmitter } from "events";
+import { createClient, as createRedisClient } from '$lib/server/cache/redis'; // Import Redis client
+import { enhancedVectorSearchService } from '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
+import { createWorkerPool, getWorkerPool, type OcrPayload } from '$lib/workers/legal-ai-worker-pool'; // Import worker pool
+import { AutoTokenizer } from "@xenova/transformers"; // New import for tokenizer
 
 // Initialize Redis client
 const redisClient = createRedisClient();

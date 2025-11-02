@@ -1,7 +1,7 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import Redis from, 'ioredis';
-import type { RedisClient, RedisConnectionOptions } from, '$lib/types/redis';
-import { REDIS_URL } from, '$env/static/private';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import Redis from 'ioredis';
+import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
+import { REDIS_URL } from '$env/static/private';
 let redisInstance: RedisClient | null = null;
 const env = process.env ?? {};
 const REDIS_PASSWORD = env.REDIS_PASSWORD ?? '';

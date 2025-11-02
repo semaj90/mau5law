@@ -4,9 +4,9 @@
  * Get/update conversation state with HMM predictions
  */
 
-import { json } from, '@sveltejs/kit';
-import { contextualUnderstanding } from, '$lib/server/ai/contextual-understanding-service';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service';
+import type { RequestHandler } from './$types';
 
 /**
  * GET: Retrieve contextual state

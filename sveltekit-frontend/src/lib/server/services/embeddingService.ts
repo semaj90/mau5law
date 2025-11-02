@@ -1,5 +1,5 @@
-import axios from, "axios";
-import { getOptimalModel } from, '../ai/ollama-config';
+import axios from "axios";
+import { getOptimalModel } from '../ai/ollama-config';
 
 // This function calls your local Ollama server to get an embedding
 export async function getEmbedding(text: string): Promise<number[]> {

@@ -3,10 +3,10 @@
  * Ultra-fast access to pre-computed UI patterns
  * Target latency: <5ms for, cache, hits
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { chrROMCacheReader } from, '$lib/services/chr-rom-cache-reader.js'
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader.js'
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js'
 // GET: Single pattern retrieval (for URL-based access)
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now()

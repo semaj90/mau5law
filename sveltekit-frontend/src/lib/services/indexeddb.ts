@@ -1,8 +1,8 @@
-import type { SearchResult } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { browser } from, "$app/environment";
-import type { DataType, RAGObject } from, "$lib/types/shared";
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
+import { browser } from "$app/environment";
+import type { DataType, RAGObject } from "$lib/types/shared";
 
 // Types
 export interface CachedDocument extends RAGObject {

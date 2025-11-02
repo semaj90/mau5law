@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import crypto from, "crypto";
-import { getOllamaEndpoint } from, '$lib/server/ollama'; // Import getOllamaEndpoint
+import type { Document } from '$lib/types';
+import crypto from "crypto";
+import { getOllamaEndpoint } from '$lib/server/ollama'; // Import getOllamaEndpoint
 
 // Define a basic chat message interface
 export interface ChatMessage { role: 'user' | 'assistant' | 'system';, content: string;

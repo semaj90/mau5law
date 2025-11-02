@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { ollamaService } from, '$lib/services/ollama-service';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaService } from '$lib/services/ollama-service';
 
 // Added local types
 type OllamaModel = { name?: string };

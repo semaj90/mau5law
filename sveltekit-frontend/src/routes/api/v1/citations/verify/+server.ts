@@ -1,14 +1,14 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Citation Verification API Route
  * POST /api/v1/citations/verify - Verify citation validity and accuracy
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { db } from, '$lib/server/db/unified-client';
-import { citations } from, '$lib/server/db/schemas/cases-schema';
-import { eq } from, 'drizzle-orm';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { db } from '$lib/server/db/unified-client';
+import { citations } from '$lib/server/db/schemas/cases-schema';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
 
 /* Add a concrete type for citation records used in this module */
 type CitationRecord = {

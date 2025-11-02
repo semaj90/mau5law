@@ -1,15 +1,15 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * AI Auto-Tagging Service
  * GPU-accelerated document analysis with Ollama + nomic-embed
  * Stores embeddings in PostgreSQL pgvector, auto-tags with gemma3-legal
  */
-import { db } from, '$lib/server/db/drizzle-client';
-import { evidence } from, '$lib/server/db/schema';
+import { db } from '$lib/server/db/drizzle-client';
+import { evidence } from '$lib/server/db/schema';
 // Replace modularized Drizzle imports
-import { eq } from, 'drizzle-orm/expressions';
-import { sql } from, 'drizzle-orm/sql';
-import { getOllamaEndpoint } from, '$lib/utils/ollama';
+import { eq } from 'drizzle-orm/expressions';
+import { sql } from 'drizzle-orm/sql';
+import { getOllamaEndpoint } from '$lib/utils/ollama';
 
 export interface EvidenceMetadata { aiTags: string[];, entities: ExtractedEntity[];
   summary: string;

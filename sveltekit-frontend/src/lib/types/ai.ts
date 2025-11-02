@@ -1,4 +1,4 @@
-import type { AIResponse } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
 export interface AIResponse {
   confidence?: number;
   keyTerms?: string[];
@@ -39,7 +39,7 @@ export interface EnhancedRAGEngine {
   analyze: (content: string) => Promise<SemanticEntity[]>;
 }
 // Chat related types for AI Assistant
-import type { ChatMessage as ApiChatMessage } from, './api-contracts.js';
+import type { ChatMessage as ApiChatMessage } from './api-contracts.js';
 export interface ChatRequest {
   message: string;
   model?: string;

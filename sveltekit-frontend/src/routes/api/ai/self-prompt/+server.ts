@@ -15,8 +15,8 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 /*
  * Self-Prompting AI System for Prosecutors
  * Generates contextual suggestions based on case data and workflow

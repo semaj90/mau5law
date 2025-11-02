@@ -3,9 +3,9 @@
  * OCR.js → Text Extraction → Node API → Embeddings → Multi-dimensional Tensors
  * SIMD parsing via Service Worker for streaming performance
  */
-import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager.js';
-import { browser } from, '$app/environment';
-import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from, '$lib/components/ui/gaming/constants/gaming-constants.js';
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
+import { browser } from '$app/environment';
+import { ENHANCED_MEMORY_CACHING, GAMING_ERA_SPECS } from '$lib/components/ui/gaming/constants/gaming-constants.js';
 // replace loose `any` types with stricter input shapes
 type RecognizeInput = ImageBitmap | ImageData | HTMLCanvasElement | HTMLImageElement | string | Blob | OffscreenCanvas;
 type BBox = { x0: number; y0: number; x1: number; y1: number } | number[];

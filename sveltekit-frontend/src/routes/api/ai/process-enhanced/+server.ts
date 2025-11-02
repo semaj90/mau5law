@@ -15,13 +15,13 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js'
+import type { RequestHandler } from './$types.js'
 // ======================================================================
 // ENHANCED AI PROCESSING API ENDPOINT
 // Integrating XState workflows with multi-model AI pipeline
 // ======================================================================
-import { json } from, "@sveltejs/kit"
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import { json } from "@sveltejs/kit"
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Import AI services
 
 // Define the expected structure for the embedding result

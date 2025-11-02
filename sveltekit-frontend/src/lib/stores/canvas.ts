@@ -1,5 +1,5 @@
-import { writable } from, 'svelte/store';
-import { cubicOut } from, 'svelte/easing';
+import { writable } from 'svelte/store';
+import { cubicOut } from 'svelte/easing';
 
 export const sidebarStore = writable<{ open: boolean }>({, open: false });
 

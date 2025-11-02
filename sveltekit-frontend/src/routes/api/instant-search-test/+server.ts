@@ -1,5 +1,5 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Instant Search Test API - Redis + Loki.js + Fuse.js Integration Test
  *
@@ -11,11 +11,11 @@ import type { Document } from, '$lib/types';
  *
  * @module InstantSearchTestAPI
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { redisService } from, '$lib/server/redis-service.js'
-import { lokiRedisCache } from, '$lib/cache/loki-redis-integration.js'
-import { instantSearchEngine } from, '$lib/services/instant-search-engine.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { redisService } from '$lib/server/redis-service.js'
+import { lokiRedisCache } from '$lib/cache/loki-redis-integration.js'
+import { instantSearchEngine } from '$lib/services/instant-search-engine.js'
 
 /*
   Type stubs and local typed wrappers to avoid runtime type errors without changing external modules.
@@ -348,7 +348,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // For production, use centralized logging or remove debug logs.
     // Example: logEvent('instant-search-test-completed', results.summary);
     // Centralized logging for production
-    // import { logEvent } from, '$lib/server/logging-service.js'
+    // import { logEvent } from '$lib/server/logging-service.js'
     // await logEvent('instant-search-test-completed', results.summary)
     return json(results);
   } catch (err: any) {

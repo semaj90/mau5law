@@ -2,7 +2,7 @@
 // This fixes errors where the compiler thinks an instance type is being used where a constructor is required.
 
 declare module, '$lib/components/ui/enhanced-bits/*' {
-  import type { SvelteComponentTyped } from, 'svelte';
+  import type { SvelteComponentTyped } from 'svelte';
   const Component: new (...args: any[]) => SvelteComponentTyped<
     Record<string, any>,
     Record<string, any>,
@@ -12,7 +12,7 @@ declare module, '$lib/components/ui/enhanced-bits/*' {
 }
 
 declare module, '*.svelte' {
-  import type { SvelteComponentTyped } from, 'svelte';
+  import type { SvelteComponentTyped } from 'svelte';
   const Component: new (...args: any[]) => SvelteComponentTyped<any, any, any>;
   export default Component;
 }

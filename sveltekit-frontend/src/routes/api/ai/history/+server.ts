@@ -15,13 +15,13 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiHistory } from, '$lib/db/schema/aiHistory';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { eq } from, 'drizzle-orm/pg-core'; // Changed from, 'drizzle-orm'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, '@sveltejs/kit'; // Changed from, './$types.js'
-import { getUserId } from, '$lib/server/auth/utils';
+import { aiHistory } from '$lib/db/schema/aiHistory';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { eq } from 'drizzle-orm/pg-core'; // Changed from 'drizzle-orm'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from '@sveltejs/kit'; // Changed from './$types.js'
+import { getUserId } from '$lib/server/auth/utils';
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {

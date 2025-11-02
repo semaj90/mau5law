@@ -1,5 +1,5 @@
-import type { WebGPUComputeShader } from, '$lib/types/vector-jobs';
-import { shaderCacheManager } from, './shader-cache-manager.js';
+import type { WebGPUComputeShader } from '$lib/types/vector-jobs';
+import { shaderCacheManager } from './shader-cache-manager.js';
 
 export class WebGPUPolyfillService {
   // Types for GPU device info and compute shader management

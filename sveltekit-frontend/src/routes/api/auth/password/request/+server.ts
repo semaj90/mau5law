@@ -1,7 +1,7 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { authService } from, '$lib/server/auth';
-import { isAuthError, formatErrorResponse } from, '$lib/server/errors';
-import { logStructuredError, captureAndFormat } from, '$lib/server/logger';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { authService } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse } from '$lib/server/errors';
+import { logStructuredError, captureAndFormat } from '$lib/server/logger';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Self-prompting endpoint: expands user query into enriched prompt using passages + graph context.
-import type { RequestHandler } from, '@sveltejs/kit';
-import { getRedisService } from, '$lib/server/redis/redis-service';
-import { db } from, '$lib/server/database';
-import { getEmbedding } from, '$lib/server/services/embedding-service';
-import postgres from, 'postgres';
+import type { RequestHandler } from '@sveltejs/kit';
+import { getRedisService } from '$lib/server/redis/redis-service';
+import { db } from '$lib/server/database';
+import { getEmbedding } from '$lib/server/services/embedding-service';
+import postgres from 'postgres';
 interface Passage { id: string;, text: string;
   pagerank?: number;
 }

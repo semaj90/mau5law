@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Test endpoint for Gemma3 local LLM integration
-import { json } from, '@sveltejs/kit';
-import { tauriLLM } from, '$lib/services/tauri-llm';
-import type { TauriLLMService, InferenceResult } from, '$lib/services/tauri-llm-types'; // New import
+import { json } from '@sveltejs/kit';
+import { tauriLLM } from '$lib/services/tauri-llm';
+import type { TauriLLMService, InferenceResult } from '$lib/services/tauri-llm-types'; // New import
 
 const typedTauriLLM = tauriLLM as: unknown as TauriLLMService; // Cast tauriLLM, to: unknown first, then to the defined interface
 

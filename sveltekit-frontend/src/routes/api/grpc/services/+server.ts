@@ -3,9 +3,9 @@
  * Enables high-performance communication with, 37 Go microservices
  * Integrates with existing Redis and XState infrastructure
  */
-import type { RequestHandler } from, '@sveltejs/kit'
-import { json } from, '@sveltejs/kit'
-import { logger } from, '$lib/server/production-logger'
+import type { RequestHandler } from '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
+import { logger } from '$lib/server/production-logger'
 
 // gRPC Service Interface for Legal AI Platform
 interface GRPCServiceEndpoint { name: string, host: string; port: number;, protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date;, capabilities: string[]

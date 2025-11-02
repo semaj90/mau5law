@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedLegalProcessor } from, '$lib/services/unified-legal-simd-pgvector';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { unifiedLegalProcessor } from '$lib/services/unified-legal-simd-pgvector';
 /*
  * SIMD GPU + PGVector Legal Document Processing API
  * Handles high-performance legal document parsing and semantic indexing

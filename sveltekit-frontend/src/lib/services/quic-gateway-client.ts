@@ -1,4 +1,4 @@
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 // Browser detection
 const browser = typeof window !== 'undefined';
 

@@ -1,4 +1,4 @@
-import type { PageLoad } from, './$types.js';
+import type { PageLoad } from './$types.js';
 export const load: PageLoad = async ({ params, url, fetch }) => {
   // Load: any canvas-specific data here
   return {, meta: {, title: 'Detective Canvas - Evidence Visualization',

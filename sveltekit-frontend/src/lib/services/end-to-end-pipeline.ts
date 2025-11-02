@@ -3,10 +3,10 @@
  * Demonstrates: Redis → Array Processing → LokiJS → Fuse.js → Service Worker → Storage
  *, Features: nomic-embed-text, compression, batch processing, offline-first
  */
-import { cache } from, '$lib/server/cache/redis';
-import { vectorService } from, '$lib/server/vector/EnhancedVectorService';
-import { LokiEvidenceService } from, '$lib/utils/loki-evidence';
-import Fuse from, 'fuse.js';
+import { cache } from '$lib/server/cache/redis';
+import { vectorService } from '$lib/server/vector/EnhancedVectorService';
+import { LokiEvidenceService } from '$lib/utils/loki-evidence';
+import Fuse from 'fuse.js';
 
 export interface SearchPipelineResult { id: string;, content: string;
   embedding: number[];

@@ -6,7 +6,7 @@
  * into instantaneous UI components with near-zero latency. Leverages GPU compute shaders
  * for parallel text processing and rendering pipeline optimization.
  */
-import { simdTextTilingEngine, type CompressedTextTile } from, '$lib/ai/simd-text-tiling-engine.js';
+import { simdTextTilingEngine, type CompressedTextTile } from '$lib/ai/simd-text-tiling-engine.js';
 
 export interface TextTileRenderConfig { canvasWidth: number;, canvasHeight: number;
   tileSize: number;

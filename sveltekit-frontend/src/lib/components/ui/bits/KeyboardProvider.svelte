@@ -2,11 +2,11 @@
 <!-- Global keyboard shortcut management for the, entire, application -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { setContext, onMount } from, 'svelte';
-  import { writable, type Writable } from, 'svelte/store';
-  import { browser } from, '$app/environment';
-  import  KeyboardMapping  from, "./KeyboardMapping.svelte";
-  import  KeyboardHelp  from, "./KeyboardHelp.svelte";
+  import { setContext, onMount } from 'svelte';
+  import { writable, type Writable } from 'svelte/store';
+  import { browser } from '$app/environment';
+  import  KeyboardMapping  from "./KeyboardMapping.svelte";
+  import  KeyboardHelp  from "./KeyboardHelp.svelte";
   // Types
   interface KeyboardShortcut {
     id: string;

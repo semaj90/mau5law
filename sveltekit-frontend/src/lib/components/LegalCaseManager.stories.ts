@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from, '@storybook/svelte';
-import { LegalCaseManager } from, './LegalCaseManager.svelte';
+import type { Meta, StoryObj } from '@storybook/svelte';
+import { LegalCaseManager } from './LegalCaseManager.svelte';
 // Add explicit props interface to match story args (avoids, 'unknown property' errors)
 interface LegalCaseManagerProps {
   caseId?: string | null;

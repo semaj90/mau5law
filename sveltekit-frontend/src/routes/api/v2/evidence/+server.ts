@@ -24,11 +24,11 @@
  * - /api/search/evidence
  */
 
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { eq, and, or, ilike, desc } from, 'drizzle-orm';
-import { randomUUID } from, 'node:crypto';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { eq, and, or, ilike, desc } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
 
 // ======================
 // PYTHON AI BACKEND CLIENT

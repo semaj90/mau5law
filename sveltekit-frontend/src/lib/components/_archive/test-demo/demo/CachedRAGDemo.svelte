@@ -3,7 +3,7 @@
   Demonstrates the new caching functionality with embeddinggemma and gemma3:legal-latest
 -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   let query = $state<string>('What constitutes breach of contract?');
   let loading = $state<boolean>(false);

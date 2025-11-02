@@ -1,16 +1,16 @@
-import type { Message } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified API Endpoint
  * Orchestrates embed, vector, cache, shader, evidence, file document upload storage
  * All searchable, cached, with Neo4j recommendations
  * Ready for gRPC, Caddy, QUIC, Vite, parallelism integration
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Use default imports for services that don't provide named exports'
-import unifiedSearchService from, '$lib/server/services/unified-search-service.js';
-import * as neo4jServiceModule from, '$lib/server/services/neo4j-service.js';
+import unifiedSearchService from '$lib/server/services/unified-search-service.js';
+import * as neo4jServiceModule from '$lib/server/services/neo4j-service.js';
 
 // Add a typed shape for the Neo4j bulk sync result to avoid `unknown` property access
 type SyncResult = {
@@ -63,8 +63,8 @@ const neo4jService: Neo4jServiceType = _neo4jModule.default ??
       console.warn('Neo4j service not provided; using fallback noop implementation.');
     }
   };
-import { ingestionService } from, '$lib/server/workflows/ingestion-service.js';
-import { cache } from, '$lib/server/cache/redis.js';
+import { ingestionService } from '$lib/server/workflows/ingestion-service.js';
+import { cache } from '$lib/server/cache/redis.js';
 
 // Initialize all services (guard optional `initialize` functions to avoid calling: undefined)
 await Promise.all([

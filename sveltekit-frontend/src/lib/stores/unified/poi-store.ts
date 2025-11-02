@@ -8,13 +8,13 @@
  * - poi-timeline.ts
  *
  *, Usage:
- *   import { poiStore } from, '$lib/stores/unified';
+ *   import { poiStore } from '$lib/stores/unified';
  *
  *   poiStore.createPOI({ name: 'John Doe' });
  *   $: pois = $poiStore.personOfInterest;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -490,9 +490,9 @@ export const relationships = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { personOfInterest, createPOI } from, '$lib/stores/legal-poi'
- *   import { poiNetwork } from, '$lib/stores/poi-network'
+ *   import { personOfInterest, createPOI } from '$lib/stores/legal-poi'
+ *   import { poiNetwork } from '$lib/stores/poi-network'
  *
  * New imports:
- *   import { poiStore, pois, activePOI, relationships } from, '$lib/stores/unified'
+ *   import { poiStore, pois, activePOI, relationships } from '$lib/stores/unified'
  */

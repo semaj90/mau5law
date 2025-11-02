@@ -1,15 +1,15 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services
  * POST /api/v1/evidence/analyze - Analyze evidence with AI
  * POST /api/v1/evidence/similar - Find similar evidence using vector search
  * POST /api/v1/evidence/suggest - Get AI suggestions for evidence
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
-import { getUserId, type LocalsWithUser } from, '$lib/server/auth/utils';
-import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
-import { getCudaServiceUrl } from, '$lib/utils/cuda-endpoint'; // Import new helper
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
+import { getUserId, type LocalsWithUser } from '$lib/server/auth/utils';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getCudaServiceUrl } from '$lib/utils/cuda-endpoint'; // Import new helper
 
 // Configuration for running services
 const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('/api/generate');

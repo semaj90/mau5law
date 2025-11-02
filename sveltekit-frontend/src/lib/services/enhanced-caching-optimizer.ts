@@ -5,8 +5,8 @@
  * Replace the placeholder/simulated implementations (e.g., executeQueryForCache, getRecentDocumentsByType)
  * with real integration logic as needed.
  */
-import { EventEmitter } from, 'events';
-import { createClient } from, 'redis';
+import { EventEmitter } from 'events';
+import { createClient } from 'redis';
 // Use the concrete return type from createClient instead of RedisClientType (some redis versions don't export RedisClientType)'
 
 // Minimal RequestBatcher implementation (simple concurrency control + batch-size adjusters)

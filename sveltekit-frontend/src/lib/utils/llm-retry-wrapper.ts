@@ -2,7 +2,7 @@
  * LLM Retry Wrapper with TODO Auto-generation
  * Handles Ollama GPU throttling, token limits, and failure logging
  */
-import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } from, "$lib/constants/local-llm-config";
+import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } from "$lib/constants/local-llm-config";
 
 // --- NEW / TIGHTENED TYPES ---
 type LogDetails = Record<string, unknown>;

@@ -1,12 +1,12 @@
 // Document Update Loop Service
 // Auto re-embed and re-rank on document changes with intelligent diff detection
-import { db } from, '$lib/server/db';
-import { legalDocuments, as documents, documentVectors, queryVectors } from, '$lib/server/db/schema-unified';
-import { eq, sql, desc } from, 'drizzle-orm';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
-import { OllamaEmbeddings } from, '@langchain/ollama';
-import crypto from, 'crypto';
-import { VectorSearchService } from, '$lib/server/db/drizzle-vector-config';
+import { db } from '$lib/server/db';
+import { legalDocuments, as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
+import { eq, sql, desc } from 'drizzle-orm';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { OllamaEmbeddings } from '@langchain/ollama';
+import crypto from 'crypto';
+import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
 
 // ============================================================================
 // CONFIGURATION & TYPES

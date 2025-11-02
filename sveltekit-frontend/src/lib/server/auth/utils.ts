@@ -1,11 +1,11 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Server-Side Authentication Utilities
  *
  * Provides shared helpers for authentication, user resolution,
  * and development bypass functionality across API endpoints.
  */
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 /**
  * Typed environment access for import.meta.env
  */

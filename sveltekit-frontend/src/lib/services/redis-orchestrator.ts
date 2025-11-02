@@ -1,8 +1,8 @@
 const redisOrchestrator: any = {};
 export default redisOrchestrator;
-import IORedis from, 'ioredis';
-import { createRedisInstance } from, '$lib/server/redis.js';
-import { createHash } from, 'crypto'; // Import createHash for hashing
+import IORedis from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis.js';
+import { createHash } from 'crypto'; // Import createHash for hashing
 
 // Defensive Redis client wrapper: try to create a real client, but fall back to a no-op proxy
 let redisClient: IORedis | null = null;

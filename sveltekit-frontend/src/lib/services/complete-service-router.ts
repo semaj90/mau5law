@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Complete Service Router & Integration Layer
  * Routes all, 33 Go microservices with error handling and fallback
  */
 // Removed unused import of `dev` which caused lint/parse confusion in some TS setups.
-// (import { dev } from, '$app/environment';)
+// (import { dev } from '$app/environment';)
 
 export interface ServiceEndpoint { name: string;, port: number;
   protocols: string[];

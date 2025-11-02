@@ -1,10 +1,10 @@
 <!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
-  import { goto } from, '$app/navigation';
-  import { page } from, '$app/stores';
-  import { toastStore } from, '$lib/stores/toast';
-  import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from, '$lib/themes/retro-console-palettes';
+import type { User } from '$lib/types';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { toastStore } from '$lib/stores/toast';
+  import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
   interface User {
     name?: string;
     email?: string;

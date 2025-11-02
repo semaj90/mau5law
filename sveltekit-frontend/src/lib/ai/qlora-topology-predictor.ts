@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * QLoRA Topology Reinforcement Learning Predictor
  *
@@ -12,12 +12,12 @@ import type { User } from, '$lib/types';
  * This system learns legal document processing patterns and predicts
  * optimal QLoRA configurations before they're needed.'
  */
-import { WebGPUSOMCache } from, '../webgpu/som-webgpu-cache.js';
-import { fastStringify, fastParse } from, '../utils/fast-json.js';
-import { lokiRedisCache } from, '../cache/loki-redis-integration.js';
-import { searchCacheNeuralEngine } from, '../gpu/search-cache-neural-engine.js';
-import type { LegalDocument } from, '../memory/nes-memory-architecture.js';
-import type { QLorATrainingJob } from, '../services/qlora-rl-langextract-integration.js';
+import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
+import { fastStringify, fastParse } from '../utils/fast-json.js';
+import { lokiRedisCache } from '../cache/loki-redis-integration.js';
+import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine.js';
+import type { LegalDocument } from '../memory/nes-memory-architecture.js';
+import type { QLorATrainingJob } from '../services/qlora-rl-langextract-integration.js';
 // Enhanced HiddenMarkovModel for QLoRA topology prediction
 class HiddenMarkovModel {
   private stateCount: number;

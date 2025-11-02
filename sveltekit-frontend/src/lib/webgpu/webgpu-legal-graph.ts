@@ -1,6 +1,6 @@
 // Minimal WebGPU scaffold for the WebGPULegalDocumentGraph interface
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
-import { captureLatency, type LatencyEntry } from, '$lib/services/latency-logger';
+import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
 
 export type PerformanceStats = { fps: number;, frameTime: number;
   gpuMemoryUsage: number; // best-effort estimate

@@ -1,7 +1,7 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
-  import type { Snippet } from, 'svelte';
-  import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from, 'lucide-svelte';
+import type { Document } from '$lib/types';
+  import type { Snippet } from 'svelte';
+  import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
   interface Props {
     class?: string;
     children?: Snippet;

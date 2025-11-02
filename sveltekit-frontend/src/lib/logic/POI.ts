@@ -1,4 +1,4 @@
-import { writable, type Writable } from, 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 // Interface for the structured profile data (Who, What, Why, How)
 export interface POIProfile {
   who: string; // Biography, background, identity

@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,14 +17,14 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Document Drafting Assistant API Endpoint
  * Provides AI-powered legal document drafting assistance with templates and guidance
  */
-import { synthesizeAIInput, processAIAssistantQuery } from, '$lib/services/comprehensive-database-orchestrator';
-import redisOptimized from, '$lib/middleware/redis-orchestrator-middleware';
-import { json } from, '@sveltejs/kit';
+import { synthesizeAIInput, processAIAssistantQuery } from '$lib/services/comprehensive-database-orchestrator';
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit';
 export interface DocumentDraftingRequest {
   documentType: string;
   jurisdiction?: string;

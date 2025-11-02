@@ -2,13 +2,13 @@
  * Vector Search API with pgvector integration
  * Semantic similarity search across documents, cases, and chunks
  */
-import { json, type RequestHandler, type RequestEvent } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { documents, document_chunks, cases } from, '$lib/server/schema/documents';
-import { eq, and, sql } from, 'drizzle-orm';
-import { createEmbedding } from, '$lib/services/embedding-service';
-import { getCachedSearchResults, cacheSearchResults } from, '$lib/server/cache/redis';
-import { createHash } from, 'crypto';
+import { json, type RequestHandler, type RequestEvent } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { documents, document_chunks, cases } from '$lib/server/schema/documents';
+import { eq, and, sql } from 'drizzle-orm';
+import { createEmbedding } from '$lib/services/embedding-service';
+import { getCachedSearchResults, cacheSearchResults } from '$lib/server/cache/redis';
+import { createHash } from 'crypto';
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
 const DEFAULT_LIMIT = 10;
 interface VectorSearchRequest {

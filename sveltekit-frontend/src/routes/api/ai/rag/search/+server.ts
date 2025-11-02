@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { requireAuth } from, '$lib/server/auth-helpers';
-import { legalRAG } from, '$lib/ai/langchain-rag';
-import { z } from, 'zod';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { requireAuth } from '$lib/server/auth-helpers';
+import { legalRAG } from '$lib/ai/langchain-rag';
+import { z } from 'zod';
 
 // Validation schema for RAG search requests
 const ragSearchSchema = z.object({

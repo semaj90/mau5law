@@ -1,7 +1,7 @@
 // Enhanced Case API Client
 // Integrates REST architecture with PostgreSQL-first workers and clustering
-import { restClient, type APIResponse } from, './enhanced-rest-architecture.js';
-import type { CaseForm } from, '../schemas/forms.js';
+import { restClient, type APIResponse } from './enhanced-rest-architecture.js';
+import type { CaseForm } from '../schemas/forms.js';
 export interface CaseCreationRequest {
   // Core case fields from CaseForm
   caseNumber: string;

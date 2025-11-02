@@ -1,15 +1,15 @@
-import type { Message } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import * as orchestrator from, '$lib/services/unified-legal-orchestrator';
-import { contextualMemoryChatService } from, '$lib/services/contextual-memory-chat-service';
-import { parallelOrchestrationMaster } from, '$lib/services/parallel-orchestration-master';
-import type { ParallelRequest } from, '$lib/services/parallel-orchestration-master';
-import { natsQuicSearchService } from, '$lib/server/search/nats-quic-search-service';
-import { analytics } from, '$lib/server/database/connection';
-import { dev } from, '$app/environment';
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration';
-import { fastStringify } from, '$lib/utils/fast-json';
-import type { RequestHandler } from, './$types.js';
+import type { Message } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import * as orchestrator from '$lib/services/unified-legal-orchestrator';
+import { contextualMemoryChatService } from '$lib/services/contextual-memory-chat-service';
+import { parallelOrchestrationMaster } from '$lib/services/parallel-orchestration-master';
+import type { ParallelRequest } from '$lib/services/parallel-orchestration-master';
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
+import { analytics } from '$lib/server/database/connection';
+import { dev } from '$app/environment';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
+import { fastStringify } from '$lib/utils/fast-json';
+import type { RequestHandler } from './$types.js';
 
 // --- Added: lightweight types for parallel execution results ---
 type MultiEmbeddingResult = {

@@ -1,4 +1,4 @@
-/** * Route Guards for Dynamic Route Protection * Implements authentication, authorization, and validation guards */ import { redirect, error } from, '@sveltejs/kit'; import type { Load, ServerLoad, ServerLoadEvent } from, '@sveltejs/kit'; import type { RouteDefinition } from, '$lib/data/routes-config'; import type { GeneratedRoute } from, './dynamic-route-generator.js'; ;
+/** * Route Guards for Dynamic Route Protection * Implements authentication, authorization, and validation guards */ import { redirect, error } from '@sveltejs/kit'; import type { Load, ServerLoad, ServerLoadEvent } from '@sveltejs/kit'; import type { RouteDefinition } from '$lib/data/routes-config'; import type { GeneratedRoute } from './dynamic-route-generator.js'; ;
 export interface RouteGuardContext { event: ServerLoadEvent;, route: RouteDefinition | GeneratedRoute;, params: Record<string, string>; user?: any; session?: string; }
 export interface GuardResult { allowed: boolean; redirect?: string; error?: {, status: number;, message: string; }
   data?: { [key: string]: any } }

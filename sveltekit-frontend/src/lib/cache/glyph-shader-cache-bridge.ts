@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Glyph Shader Cache Bridge
  * Optimizes glyph rendering with GPU shader caching for legal AI visualization
  * Bridges quantized text processing with WebGPU shader compilation
  */
-import { shaderCacheManager } from, '$lib/webgpu/shader-cache-manager.js';
-import { parallelCacheOrchestrator } from, './parallel-cache-orchestrator.js';
-import { browser } from, '$app/environment';
+import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
+import { parallelCacheOrchestrator } from './parallel-cache-orchestrator.js';
+import { browser } from '$app/environment';
 export interface GlyphRenderingRequest { glyphData: Uint8Array | Float32Array;, textContent: string;
   renderingHints: {, quantizationLevel: 1 | 4 | 8 | 16; // bit precision, compressionMethod: 'chr-rom' | 'simd' | 'texture';
    , targetResolution: [number, number];

@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /** * Type definitions for vector operations and API interfaces */ export interface VectorSimilarityRequest { operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';, vectorA: Float32Array | number[]; vectorB?: Float32Array | number[]; vectors?: Array<Float32Array | number[]>; // For batch operations algorithm?: 0 | 1 | 2 | 3; // Algorithm selector for batch ops useCUDA?: boolean; parallel?: boolean; }
 export interface VectorSimilarityResponse {, success: boolean;, result: number | number[]; metadata: {, operation: string;, vectorDimensions: number; vectorCount: number; usedCUDA: boolean; gpuTime?: number; parallelWorkers: number; memoryUsed: number; timestamp: string; }
 } export interface EmbeddingRequest { texts: string[]; model?: string; normalize?: boolean; useCUDA?: boolean; chunkSize?: number; chunkOverlap?: number; batchSize?: number; minioUrl?: string; // For large document processing }

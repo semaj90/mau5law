@@ -1,4 +1,4 @@
-import pool from, '$lib/server/db/drizzle';
+import pool from '$lib/server/db/drizzle';
 
 export type Citation = { id: string;, title: string;
   content: string;

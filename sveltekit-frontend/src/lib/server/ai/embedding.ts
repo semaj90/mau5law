@@ -1,4 +1,4 @@
-import type { DocumentItem, VisionItem } from, '$lib/types/sharedTypes';
+import type { DocumentItem, VisionItem } from '$lib/types/sharedTypes';
 // Lightweight GPU inference stub (replace with real Gemma3/Triton adapter)
 export async function runGPUInference(text: string): Promise<number[]> {
   // deterministic pseudo-embedding for tests: hash chars

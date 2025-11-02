@@ -1,4 +1,4 @@
-import type * as Kit from, '@sveltejs/kit';
+import type * as Kit from '@sveltejs/kit';
 
 type RouteParams = Record<string, never>;
 

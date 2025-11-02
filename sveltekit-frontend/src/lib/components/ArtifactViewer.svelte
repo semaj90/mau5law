@@ -2,23 +2,23 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
-  import { onMount } from, 'svelte';
-  import { fade, scale } from, 'svelte/transition';
-  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from, '$lib/stores/unified';
-  import type { LegalAIMetadata } from, '$lib/types/legal-ai-metadata';
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
+  import { onMount } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
+  import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
+  import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
-   from, "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from, "$lib/components/ui/badge.svelte";
-  import  Tabs, TabsContent, TabsList, TabsTrigger  from, "$lib/components/ui/tabs.svelte";
-  import  Alert, AlertDescription  from, "$lib/components/ui/alert.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
+  import  Badge  from "$lib/components/ui/badge.svelte";
+  import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte";
+  import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
   import {
     Download,
     Eye,
@@ -31,7 +31,7 @@ import type { User } from, '$lib/types';
     AlertTriangle,
     CheckCircle,
     Info
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
   // Props
   // Component state
   let artifact: any = null;

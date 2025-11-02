@@ -1,8 +1,8 @@
-import crypto from, 'crypto';
-import Loki from, 'lokijs';
-import Fuse from, 'fuse.js'; // Removed FuseResult from here
-import { browser } from, '$app/environment';
-import type { SearchResult } from, './aiPipeline.js';
+import crypto from 'crypto';
+import Loki from 'lokijs';
+import Fuse from 'fuse.js'; // Removed FuseResult from here
+import { browser } from '$app/environment';
+import type { SearchResult } from './aiPipeline.js';
 
 // Replace usage of Loki.Collection (not exported in some type setups) with a minimal local interface
 type Collection<T, extends, object> = {

@@ -1,10 +1,10 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Database CRUD Test API
 // Tests PostgreSQL, pgvector, and Drizzle ORM integration
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { users, cases, reports, evidence, criminals, personsOfInterest } from, '$lib/server/db/unified-schema';
-import { sql } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { users, cases, reports, evidence, criminals, personsOfInterest } from '$lib/server/db/unified-schema';
+import { sql } from 'drizzle-orm';
 
 export interface TestResult { test: string;, status: 'success' | 'error';
   data?: any;

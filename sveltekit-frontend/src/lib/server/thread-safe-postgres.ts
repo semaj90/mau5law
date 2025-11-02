@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Thread-Safe PostgreSQL Integration with JSONB and GPU Acceleration
  * Ensures proper synchronization for concurrent database operations
  * Integrates with cognitive cache and WebGPU processing
  */
 
-import { Pool, type PoolClient } from, '$lib/shims/pg-compat';
-import { cognitiveCache } from, '../services/cognitive-cache-integration.js';
+import { Pool, type PoolClient } from '$lib/shims/pg-compat';
+import { cognitiveCache } from '../services/cognitive-cache-integration.js';
 
 // Add explicit JSON types to avoid `any` in JSONB parameter construction
 type JsonPrimitive = string | number | boolean | null;

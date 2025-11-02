@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Clean minimal RAG ingestion worker
 
 // Use centralized environment config for service endpoints
-import { CONFIG } from, '$lib/config/env.server';
+import { CONFIG } from '$lib/config/env.server';
 
 // Replace loose types with explicit definitions
 type ProcessOptions = {
@@ -192,7 +192,7 @@ class RAGIngestionWorker {
     return { name: String(item), type: `unknown` };
   }
 
-  // Helper to safely extract an id from, an: unknown message without using `any`
+  // Helper to safely extract an id from an: unknown message without using `any`
   public extractMsgId(m: any): string | null {
     const candidate = m as Partial<IngestionWorkerMessage> | undefined;
     return candidate && typeof candidate.id === 'string' ? candidate.id : null;

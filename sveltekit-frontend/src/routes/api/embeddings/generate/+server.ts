@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { generateEmbeddings, generateEmbedding } from, '$lib/server/services/embedding-service';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { generateEmbeddings, generateEmbedding } from '$lib/server/services/embedding-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

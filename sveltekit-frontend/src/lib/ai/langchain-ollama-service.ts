@@ -1,10 +1,10 @@
 // LangChain + Ollama Integration with CUDA Support
 // Production-ready AI service for legal document processing
-import { ChatOllama } from, '@langchain/ollama';
-import { OllamaEmbeddings } from, '@langchain/ollama';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
-import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
-import { Document, as LangChainDocument } from, 'langchain/document';
+import { ChatOllama } from '@langchain/ollama';
+import { OllamaEmbeddings } from '@langchain/ollama';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { Document, as LangChainDocument } from 'langchain/document';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================

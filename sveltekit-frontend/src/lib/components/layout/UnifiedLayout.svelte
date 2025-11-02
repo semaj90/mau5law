@@ -1,8 +1,8 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/state'; // replaced deprecated $app/stores import
-  import { browser } from, '$app/environment';
-  import  NavBar  from, "./NavBar.svelte";
+  import { page } from '$app/state'; // replaced deprecated $app/stores import
+  import { browser } from '$app/environment';
+  import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
@@ -92,9 +92,9 @@
           <div class="loading-fallback, nes-container, is-rounded">
             <p, class<script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { page } from, '$app/state'; // replaced deprecated $app/stores import
-  import { browser } from, '$app/environment';
-  import  NavBar  from, "./NavBar.svelte";
+  import { page } from '$app/state'; // replaced deprecated $app/stores import
+  import { browser } from '$app/environment';
+  import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any;
     variant?: 'full' | 'minimal' | 'demo' | 'admin';

@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import { cacheManager } from, '$lib/services/cache-layer-manager';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { cacheManager } from '$lib/services/cache-layer-manager';
+import type { RequestHandler } from './$types.js';
 
 // Simple console logger fallback
 const logger = {

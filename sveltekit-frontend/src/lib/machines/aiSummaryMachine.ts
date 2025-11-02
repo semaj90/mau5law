@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * XState Machine for AI Summary Reading and Analysis
  * Handles evidence reports, document summaries, and synthesis workflows
  */
-import { createMachine, assign } from, '$lib/shims/xstate';
+import { createMachine, assign } from '$lib/shims/xstate';
 // Local minimal types to avoid hard dependency on external xstate type packages during edit/CI
 type DoneInvokeEvent<T> = { output: T };
 type AnyEventObject = Record<string, unknown>;

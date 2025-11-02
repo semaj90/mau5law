@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Multi-File Evidence Batch Analysis API
  *
@@ -9,10 +9,10 @@ import type { Document } from, '$lib/types';
  * - Batch citation verification
  * - Evidence relationship mapping
  */
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 
-import { getUserId } from, '$lib/server/auth/utils';
+import { getUserId } from '$lib/server/auth/utils';
 // Batch analysis schemas
 const BatchAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),

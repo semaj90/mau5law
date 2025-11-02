@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Integration Test Setup
  * Global setup and mocks for integration tests
  */
-import { vi, beforeAll, afterAll, beforeEach } from, 'vitest';
+import { vi, beforeAll, afterAll, beforeEach } from 'vitest';
 import, '@testing-library/jest-dom';
-import stream from, "stream";
-import { URL } from, "url";
+import stream from "stream";
+import { URL } from "url";
 // Mock SvelteKit environment
 vi.mock('$app/environment', () => ({
   dev: true,

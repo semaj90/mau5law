@@ -1,6 +1,6 @@
 <script, lang="ts">
-	import { onMount } from, 'svelte';
-	import { detectGPUSupport } from, '$lib/utils/gpu-capabilities';
+	import { onMount } from 'svelte';
+	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
 	const { bucket } = $props<{ bucket: string }>()
 	const { accept } = $props<{ accept: string }>()
 	let file: File | null = null;

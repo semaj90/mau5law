@@ -1,9 +1,9 @@
 // Legal Document Workflow API - RabbitMQ + XState Integration
 // Demonstrates enterprise-grade message queuing with state machines
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { rabbitmqService, type LegalDocumentMessage } from, '$lib/server/messaging/rabbitmq-service';
-import { logger } from, '$lib/server/ai/logger';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { rabbitmqService, type LegalDocumentMessage } from '$lib/server/messaging/rabbitmq-service';
+import { logger } from '$lib/server/ai/logger';
 let isInitialized = $state<boolean>(false);
 // Initialize RabbitMQ on first request
 async function ensureRabbitMQInitialized(): Promise<void> {

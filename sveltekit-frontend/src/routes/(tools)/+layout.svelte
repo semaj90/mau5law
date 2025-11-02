@@ -1,7 +1,7 @@
 <!-- Tools & Utilities Layout - Legal AI Development Tools -->
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import { page } from, '$app/stores';
+  import type { Snippet } from 'svelte';
+  import { page } from '$app/stores';
 
   interface Props {
     children?: Snippet;

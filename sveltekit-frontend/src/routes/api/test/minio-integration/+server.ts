@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /**
  * MinIO Integration Test API
  * Basic functionality test for Phase 1: upload, AI analysis, storage

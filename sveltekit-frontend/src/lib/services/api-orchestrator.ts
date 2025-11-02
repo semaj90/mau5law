@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Comprehensive API Orchestration System - SvelteKit, 2 Production
  * Integrates all, 37 Go microservices with multi-protocol support

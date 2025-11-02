@@ -1,4 +1,4 @@
-import { Locator } from, '@playwright/test';
+import { Locator } from '@playwright/test';
 declare global {
   namespace PlaywrightTest {
     interface Matchers<R> {

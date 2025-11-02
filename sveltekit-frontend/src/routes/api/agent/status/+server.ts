@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 // Mock agent system status (in production, this would be real system monitoring)
 const systemStatus = {

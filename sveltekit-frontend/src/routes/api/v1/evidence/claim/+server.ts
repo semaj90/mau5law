@@ -1,8 +1,8 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { evidence } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { evidence } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   // Only authenticated users can claim

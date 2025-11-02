@@ -1,18 +1,18 @@
 // PgVector-backed implementation of EmbeddingRepository with Gemma embeddings priority.
-import { db } from, '../db/index.js';
-import { legalDocuments, documentChunks } from, '../db/schema-postgres.js';
-import { sql } from, 'drizzle-orm';
-import { splitText } from, './text-splitter.js';
+import { db } from '../db/index.js';
+import { legalDocuments, documentChunks } from '../db/schema-postgres.js';
+import { sql } from 'drizzle-orm';
+import { splitText } from './text-splitter.js';
 // Use the higher-level embedder which includes Redis/L1 caching and provider fallbacks
-import { embedText } from, '../ai/embedder.js';
+import { embedText } from '../ai/embedder.js';
 import type {
   EmbeddingRepository,
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
   IngestionJobStatus
-} from, './embedding-repository.js';
-import { enqueue, processNext as queueProcessNext, getStatus } from, './ingestion-queue.js';
+} from './embedding-repository.js';
+import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
 const DEFAULT_MODEL = 'embeddinggemma:latest';
 async function embedContent(text: string, model: string): Promise<number[]> {
   // Try Gemma embeddings first, with fallback chain

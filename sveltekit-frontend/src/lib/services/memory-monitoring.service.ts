@@ -1,5 +1,5 @@
 
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 export class MemoryMonitoringService {
   private intervalId: NodeJS.Timeout | null = null;
   private, callbacks: Array<(data: any) => void> = [];

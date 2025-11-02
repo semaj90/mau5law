@@ -1,6 +1,6 @@
 // Client-side utility for storing unsynced upload metadata and syncing when online/authenticated
-import { browser } from, '$app/environment';
-import { isAuthenticated } from, '$lib/stores/authStore';
+import { browser } from '$app/environment';
+import { isAuthenticated } from '$lib/stores/authStore';
 
 const STORAGE_KEY = 'deeds_unsynced_uploads';
 const useIndexedDB = true; // toggle to enable IndexedDB storage for larger payloads

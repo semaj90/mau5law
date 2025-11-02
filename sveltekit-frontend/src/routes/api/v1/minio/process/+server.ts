@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { minioService } from, '$lib/server/storage/minio-service';
-import { MinIOService, as MinIOUtility } from, '$lib/server/minio-service';
+import type { RequestHandler } from './$types.js';
+import { minioService } from '$lib/server/storage/minio-service';
+import { MinIOService, as MinIOUtility } from '$lib/server/minio-service';
 /**
  * MinIO File Processing API - Upload + AI Analysis
  * POST: Upload file to MinIO and trigger AI processing pipeline

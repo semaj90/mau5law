@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * OCR Service with Auto-Population
  * Handles document OCR, field extraction, and form auto-population
  */
-import { writable, type Writable } from, 'svelte/store';
-import { createWorker } from, 'tesseract.js';
-import { z } from, 'zod';
+import { writable, type Writable } from 'svelte/store';
+import { createWorker } from 'tesseract.js';
+import { z } from 'zod';
 
 // Types
 export interface OCRResult { id: string;, text: string;

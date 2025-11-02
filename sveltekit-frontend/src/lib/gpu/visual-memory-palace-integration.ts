@@ -1,4 +1,4 @@
-import { topKSimilar } from, './webgl-shader-cache';
+import { topKSimilar } from './webgl-shader-cache';
 export interface PalaceNode { id: string;, position: { x: number; y: number; z?: number };
  , embedding: Float32Array;
   metadata?: Record<string, unknown>;

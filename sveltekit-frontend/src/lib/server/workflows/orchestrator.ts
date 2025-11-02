@@ -1,9 +1,9 @@
 // XState v5 Workflow Orchestrator - Manages multiple workflows and coordinates between them
-import { createActor, type Actor, type SnapshotFrom } from, 'xstate';
-import { documentProcessingMachine, type DocumentProcessingContext } from, './document-processing.js';
-import { legalCaseManagementMachine, type LegalCaseContext } from, './legal-case-management.js';
-import { cache } from, '$lib/server/cache/redis';
-import type { WorkflowActor, WorkflowSnapshot } from, './shared-types.js';
+import { createActor, type Actor, type SnapshotFrom } from 'xstate';
+import { documentProcessingMachine, type DocumentProcessingContext } from './document-processing.js';
+import { legalCaseManagementMachine, type LegalCaseContext } from './legal-case-management.js';
+import { cache } from '$lib/server/cache/redis';
+import type { WorkflowActor, WorkflowSnapshot } from './shared-types.js';
 
 // Types for workflow orchestration
 export interface WorkflowInstance { id: string;, type: 'document-processing' | 'legal-case-management' | 'evidence-analysis' | 'research';

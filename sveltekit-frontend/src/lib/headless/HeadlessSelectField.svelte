@@ -1,7 +1,7 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import * as Select from, '$lib/components/ui/select/index.js';
-  import  FormField  from, "./FormField.svelte";
+  import * as Select from '$lib/components/ui/select/index.js';
+  import  FormField  from "./FormField.svelte";
   // Using custom wrapper and bits-ui re-exports; some may be: undefined if not provided
   const SelectRoot = (Select, as: any).Select || (Select as: any).Root || Select.default || (Select as: any);
   const SelectTrigger = (Select as: any).SelectTrigger || (Select as: any).Trigger || (Select as: any).SelectTrigger || (Select as: any).Select?.Trigger;

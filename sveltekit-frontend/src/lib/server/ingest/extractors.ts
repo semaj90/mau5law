@@ -10,10 +10,10 @@
  *
  * All extractors are designed to work in worker threads for CPU parallelization.
  */
-import fs from, 'fs/promises';
-import path from, 'path';
-import { spawn } from, 'child_process';
-import { tmpdir } from, 'os';
+import fs from 'fs/promises';
+import path from 'path';
+import { spawn } from 'child_process';
+import { tmpdir } from 'os';
 // Type imports for extractors
 export interface ExtractionResult {
   success: boolean;

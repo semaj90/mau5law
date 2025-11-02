@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 
 import {
   pgTable,
@@ -12,8 +12,8 @@ import {
   real,
   index,
   vector
-} from, "drizzle-orm/pg-core";
-import { sql } from, "drizzle-orm";
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 // Using standard drizzle-orm pgvector support
 // Document vectors table for semantic search
 export const documentVectors = pgTable("document_vectors", {
@@ -107,7 +107,7 @@ export const recommendationCache = pgTable("recommendation_cache", {
   userTypeIdx: index("recommendation_cache_user_type_idx").on(table.userId, table.recommendationType)
 }));
 // Import required types from main schema
-import { documents, cases, evidence, users } from, '../schema';
+import { documents, cases, evidence, users } from '../schema';
 // Helper functions for vector operations
 export const vectorOperations = {
   // Calculate cosine similarity

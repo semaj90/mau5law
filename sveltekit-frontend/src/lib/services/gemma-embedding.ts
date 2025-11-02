@@ -1,4 +1,4 @@
-import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 type Metadata = Record<string, unknown>;
 
@@ -449,8 +449,8 @@ export class GemmaEmbeddingService {
     };
     // Check specific model names first
     if (modelName) {
-      if (modelName.includes('embeddinggemma')) return 384; // Changed from, 1536 to, 384
-      if (modelName.includes('gemma3-legal')) return 384; // Changed from, 1536 to, 384
+      if (modelName.includes('embeddinggemma')) return 384; // Changed from 1536 to, 384
+      if (modelName.includes('gemma3-legal')) return 384; // Changed from 1536 to, 384
       if (modelName.includes('nomic-embed-text')) return 768;
     }
     // Check by family
@@ -468,10 +468,10 @@ export class GemmaEmbeddingService {
    , type: 'gemma' | 'nomic' | 'other';
   } {
     if (modelName.includes('embeddinggemma')) {
-      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from, 1536 to, 384
+      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to, 384
     }
     if (modelName.includes('gemma3-legal')) {
-      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from, 1536 to, 384
+      return { speed: 'fast', quality: 'high', dimensions: 384, type: 'gemma' }; // Changed from 1536 to, 384
     }
     if (modelName.includes('nomic-embed-text')) {
       return { speed: 'medium', quality: 'good', dimensions: 768, type: 'nomic' };'` }'`

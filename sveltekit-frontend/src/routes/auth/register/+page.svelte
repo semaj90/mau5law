@@ -4,7 +4,7 @@
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { enhance } from, '$app/forms';
+  import { enhance } from '$app/forms';
   interface Props {
     data?: any;
     form?: any;

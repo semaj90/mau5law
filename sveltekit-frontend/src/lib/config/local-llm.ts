@@ -1,8 +1,8 @@
 /// <reference, types="vite/client" />
 // Local LLM Configuration for Ollama and llama.cpp integration
 // Manages local model paths and configurations for the legal AI assistant
-import { existsSync } from, "fs";
-import { join } from, "path";
+import { existsSync } from "fs";
+import { join } from "path";
 // Base paths for local LLM installations (relative to project root)
 const projectRoot = process.cwd().includes("sveltekit-frontend")
   ? join(process.cwd(), "..", "..") // If running from sveltekit-frontend

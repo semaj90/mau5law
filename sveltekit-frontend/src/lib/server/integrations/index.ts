@@ -6,7 +6,7 @@
  *
  * @example Basic usage
  * ```ts`
- * import { getLegalAIPipeline } from, '$lib/server/integrations';
+ * import { getLegalAIPipeline } from '$lib/server/integrations';
  *
  * const pipeline = getLegalAIPipeline();
  * await pipeline.initialize();
@@ -26,7 +26,7 @@
  *
  * @example Individual services
  * ```ts`
- * import { getOllamaService, getRedisCache, getQdrantService } from, '$lib/server/integrations';
+ * import { getOllamaService, getRedisCache, getQdrantService } from '$lib/server/integrations';
  *
  * const ollama = getOllamaService();
  * const redis = getRedisCache();
@@ -39,12 +39,12 @@
  * ```
  */
 // Primary Pipeline
-export { LegalAIPipeline, getLegalAIPipeline } from, './pipeline';
+export { LegalAIPipeline, getLegalAIPipeline } from './pipeline';
 // Individual Services
-export { OllamaService, getOllamaService } from, './ollama';
-export { RedisCacheService, getRedisCache } from, './redis';
-export { QdrantVectorService, getQdrantService } from, './qdrant';
-export { MinIOStorageService, getMinIOStorage } from, './minio';
+export { OllamaService, getOllamaService } from './ollama';
+export { RedisCacheService, getRedisCache } from './redis';
+export { QdrantVectorService, getQdrantService } from './qdrant';
+export { MinIOStorageService, getMinIOStorage } from './minio';
 // Type re-exports for convenience
 export type {
   IOllamaEmbeddingService,
@@ -58,4 +58,4 @@ export type {
   CacheSetOptions,
   VectorSearchOptions,
   VectorSearchResult
-} from, '$lib/types/external-services';
+} from '$lib/types/external-services';

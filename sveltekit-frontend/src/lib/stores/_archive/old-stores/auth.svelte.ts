@@ -1,9 +1,9 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Modern authentication store using Svelte, 5 runes
 // Integrates with Lucia, MCP GPU orchestrator, and legal AI features
-import { browser } from, '$app/environment';
-import { goto } from, '$app/navigation';
-import { mcpGPUOrchestrator } from, '$lib/services/mcp-gpu-orchestrator.js';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
+import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
 
 // New: typed response and result shapes to avoid `any` casts
 type ResponseLike<T = unknown> = { ok: boolean;, json: () => Promise<T> };
@@ -368,7 +368,7 @@ export const isLoading = () => authState.loading;
 export const authError = () => authState.error;
 
 // ===== Context API Utilities (merged from auth.ts) =====
-import { setContext, getContext } from, 'svelte';
+import { setContext, getContext } from 'svelte';
 
 const AUTH_CONTEXT_KEY = Symbol('auth');
 

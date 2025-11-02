@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db/index.js';
-import { chatSessions, chatMessages, chatRecommendations, users } from, '$lib/server/db/schema-unified.js';
-import { eq } from, 'drizzle-orm';
-import { v4, as uuidv4 } from, 'uuid';
-import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced.js';
-import { insertChatMessageWithEmbedding, searchSimilarMessages } from, '$lib/server/db/pgvector-utils.js';
+import type { User } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/index.js';
+import { chatSessions, chatMessages, chatRecommendations, users } from '$lib/server/db/schema-unified.js';
+import { eq } from 'drizzle-orm';
+import { v4, as uuidv4 } from 'uuid';
+import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
+import { insertChatMessageWithEmbedding, searchSimilarMessages } from '$lib/server/db/pgvector-utils.js';
 
 /*
  * Database Persistence Test for AI Recommendations

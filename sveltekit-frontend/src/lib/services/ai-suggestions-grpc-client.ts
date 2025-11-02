@@ -1,4 +1,4 @@
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 
 // Types & enums (fixed unmatched braces / typos)
 export interface ServiceError extends Error {

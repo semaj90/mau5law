@@ -1,5 +1,5 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
-<!-- import  ErrorBoundary, from, "$lib/components/ErrorBoundary.svelte"; -->
+<!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {

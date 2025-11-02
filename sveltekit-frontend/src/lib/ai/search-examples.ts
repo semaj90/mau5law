@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Search Examples for Multi-Core MCP Vector Server
  * Demonstrates various search capabilities and usage patterns
  */
-import { MultiCoreMCPVectorServer } from, './multi-core-mcp-vector-server';
+import { MultiCoreMCPVectorServer } from './multi-core-mcp-vector-server';
 // Example usage of the search functionality
 export class SearchExamples {
   private server: MultiCoreMCPVectorServer;

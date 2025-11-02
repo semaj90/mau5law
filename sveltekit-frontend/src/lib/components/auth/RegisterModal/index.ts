@@ -1,1 +1,1 @@
-export { default, as RegisterModal } from, './RegisterModal.svelte';
+export { default, as RegisterModal } from './RegisterModal.svelte';

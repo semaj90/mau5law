@@ -1,4 +1,4 @@
-import { json } from, '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 const BASE = process.env.PUBLIC_ANALYTICS_API || 'http://localhost:8001';
 export async function postAnalytics(event: any): Promise<any> {
   const res = await fetch(`${BASE}/analytics`, {
@@ -13,7 +13,7 @@ export async function fetchIntent(userId: string): Promise<Response> {
   if (!res.ok) return: null;
   return res.json();
 }
-import type { IntentPrediction, UserAnalyticsEvent } from, "$types/ai-bridge";
+import type { IntentPrediction, UserAnalyticsEvent } from "$types/ai-bridge";
 const ANALYTICS_API = process.env.PUBLIC_ANALYTICS_API ?? "http://localhost:8001";
 export async function recordAnalytics(ev: UserAnalyticsEvent): Promise<void> {
   const payload = {

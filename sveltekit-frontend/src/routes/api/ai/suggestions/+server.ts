@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,30 +17,30 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestEvent } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index.js';
-import { chatMessages, chatRecommendations } from, '$lib/server/db/schema-unified.js';
-import { generateEnhancedEmbedding } from, '$lib/server/ai/embeddings-enhanced.js';
-import { eq } from, 'drizzle-orm';
-import { v4, as uuidv4 } from, 'uuid';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index.js';
+import { chatMessages, chatRecommendations } from '$lib/server/db/schema-unified.js';
+import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
+import { eq } from 'drizzle-orm';
+import { v4, as uuidv4 } from 'uuid';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 // Import our new AI suggestion services
-import { generateOllamaSuggestions, type OllamaSuggestion } from, '$lib/services/ollama-suggestions-service.js';
+import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/ollama-suggestions-service.js';
 import {
   generateVectorContextualSuggestions,
   type ContextualSuggestion
-} from, '$lib/services/vector-suggestions-service.js';
+} from '$lib/services/vector-suggestions-service.js';
 import {
   generateEnhancedRAGSuggestions,
   type RAGSuggestionResponse
-} from, '$lib/services/enhanced-rag-suggestions-service.js';
+} from '$lib/services/enhanced-rag-suggestions-service.js';
 import {
   aiSuggestionsClient,
   ReportTypeUtils,
   type SuggestionResponse
-} from, '$lib/services/ai-suggestions-grpc-client.js';
+} from '$lib/services/ai-suggestions-grpc-client.js';
 export interface EnhancedSuggestionRequest {
   content: string;
   reportType?:

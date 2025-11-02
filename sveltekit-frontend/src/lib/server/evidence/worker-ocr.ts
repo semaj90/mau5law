@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import path from, 'path';
-import fs from, 'fs';
-import { consume, publish } from, './rabbitmq';
-import { runOcrFromFile } from, './services/ocr';
+import path from 'path';
+import fs from 'fs';
+import { consume, publish } from './rabbitmq';
+import { runOcrFromFile } from './services/ocr';
 const OCR_QUEUE = 'evidence.ocr';
 const EMBED_QUEUE = 'evidence.embed';
 async function start(): Promise<any> {

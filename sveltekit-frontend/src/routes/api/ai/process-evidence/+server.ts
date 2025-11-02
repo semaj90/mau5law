@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -17,11 +17,11 @@ import type { Document } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
-import { getUser } from, '$lib/server/auth';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import { getOllamaEndpoint, getEnhancedRagEndpoint } from, '$lib/server/endpoints';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { getUser } from '$lib/server/auth';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint, getEnhancedRagEndpoint } from '$lib/server/endpoints';
 
 // --- Types added to replace `any` usages ---
 type EvidenceItem = Record<string, unknown>;

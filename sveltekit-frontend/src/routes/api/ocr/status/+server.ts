@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   const ocrBase = process.env.OCR_SERVICE_URL || 'http://localhost:8601';
   try {

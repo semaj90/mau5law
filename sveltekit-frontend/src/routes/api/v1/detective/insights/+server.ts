@@ -1,12 +1,12 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import makeHttpErrorPayload from, '$lib/server/api/makeHttpError';
-import { CasesCRUDService, EvidenceCRUDService } from, '$lib/server/services/user-scoped-crud';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
+import { z } from 'zod';
 // Query schema
 const InsightsQuerySchema = z.object({
   caseId: cuidSchema,

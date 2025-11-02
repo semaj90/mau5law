@@ -2,8 +2,8 @@
  * WebAssembly Inference Service for Vector Search Workflow
  * High-performance WASM-based inference with SIMD acceleration
  */
-import type { VectorSearchMetrics } from, '$lib/stores/gpu-summary-store.svelte';
-import { gpuSummaryStore } from, '$lib/stores/gpu-summary-store.svelte';
+import type { VectorSearchMetrics } from '$lib/stores/gpu-summary-store.svelte';
+import { gpuSummaryStore } from '$lib/stores/gpu-summary-store.svelte';
 
 // Add a small typed view of the store so we avoid: "any"
 type GPUSummaryStoreShape = {

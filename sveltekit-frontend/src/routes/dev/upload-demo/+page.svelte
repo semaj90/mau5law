@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import UploadProgress from, '$lib/components/upload/UploadProgress.svelte';
-  import { submitWithProgress } from, '$lib/api/submitWithProgress';
+  import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
+  import { submitWithProgress } from '$lib/api/submitWithProgress';
 
   let last = '';
   let metadata = { title: 'My upload', tags: ['demo'] };

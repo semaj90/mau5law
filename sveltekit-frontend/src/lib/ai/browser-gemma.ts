@@ -22,7 +22,7 @@
  *   await gemma.initialize();
  *   const response = await gemma.generate('Summarize this legal document...');
  */
-import { pipeline, env, TextStreamer } from, '@huggingface/transformers';
+import { pipeline, env, TextStreamer } from '@huggingface/transformers';
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -312,8 +312,8 @@ export const browserGemma = new BrowserGemma();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { browserGemma } from, '$lib/ai/browser-gemma';
- *   import { onMount } from, 'svelte';
+ *   import { browserGemma } from '$lib/ai/browser-gemma';
+ *   import { onMount } from 'svelte';
  *
  *   let response = $state<string>('');
  *   let isGenerating = $state<boolean>(false);

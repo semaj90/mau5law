@@ -4,8 +4,8 @@
 -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { enhance } from, '$app/forms';
-  import DemoLoginButton from, '$lib/components/auth/DemoLoginButton.svelte';
+  import { enhance } from '$app/forms';
+  import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
   interface Props {
     data?: any;
     form?: any;

@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { ollamaChatStream } from, '$lib/services/ollamaChatStream';
+import type { Message } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats,
   type VectorSearchResult
-} from, '$lib/server/services/vectorDBService';
+} from '$lib/server/services/vectorDBService';
 // Initialize database on startup
 let dbInitialized = $state<boolean>(false);
 async function ensureDbInitialized(): Promise<void> {

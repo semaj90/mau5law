@@ -1,31 +1,31 @@
 <script, lang="ts">
-  import { Input } from, '$lib/components/ui/input';
-  import { Button } from, '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
   // Svelte, 5 runes are auto-imported
-  import type { PageData, ActionData } from, './$types.js';
-  import { onMount, onDestroy } from, 'svelte';
-  import { enhance } from, '$app/forms';
-  import { goto } from, '$app/navigation';
+  import type { PageData, ActionData } from './$types.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { enhance } from '$app/forms';
+  import { goto } from '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from, "$lib/components/ui/enhanced-bits.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     type LegalEvidenceItem,
     getConfidenceClass,
     formatAnalysisDate
-   from, "$lib/components/ui/orchestrated.svelte";
+   from "$lib/components/ui/orchestrated.svelte";
   // Icons for CUDA streaming
   import {
     Cpu, Zap, Play, Square, Settings, TrendingUp, Activity,
     Database, Clock, BarChart3, Thermometer, Power, Memory,
     CheckCircle, AlertCircle, Eye, Download, Upload, Layers
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
   let { data, form }: { data: PageData;, form: ActionData } = $props();
   // Svelte, 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');

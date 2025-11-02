@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import { setup, assign, createActor, fromPromise, type DoneActorEvent } from, 'xstate';
+import type { User } from '$lib/types';
+import { setup, assign, createActor, fromPromise, type DoneActorEvent } from 'xstate';
 // Define User and Session types for clarity and reuse
 export type User = {
   id?: string;

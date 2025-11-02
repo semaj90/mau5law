@@ -9,15 +9,15 @@
  *
  * Updated: Migrated to use centralized service adapters
  */
-import { json } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { randomUUID } from, 'crypto';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/client';
-import { chatSessions, chatMessages } from, '$lib/server/db/schema-unified';
-import { eq, desc } from, 'drizzle-orm';
-import { buildUserContextPrompt } from, '$lib/server/prompt/contextual-engine';
-import { services, generateChatResponse } from, '$lib/server/services';
+import { json } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { randomUUID } from 'crypto';
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db/client';
+import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
+import { eq, desc } from 'drizzle-orm';
+import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
+import { services, generateChatResponse } from '$lib/server/services';
 
 // Minimal DB insert shapes (only fields used by this endpoint)
 type NewChatSession = { id: string;, userId: string;
@@ -476,7 +476,7 @@ const, chatHandler: RequestHandler = async ({ request, locals }) => {
 };
 
 // Import validation + rate middleware and apply conservative limits for chat
-import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
 // No strict chat schema available here; use: null schema to only rate-limit if desired
 export const POST = withValidationAndRate(chatHandler, null, {
   capacity: 20,

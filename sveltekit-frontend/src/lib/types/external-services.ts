@@ -1,4 +1,4 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 // Production TODO block should be copied into service files /** * ============================ * 🚧 PRODUCTION TODO (Phase H) * ============================ * 1️⃣ Authentication / API key validation middleware * 2️⃣ Input sanitization + Zod schema validation * 3️⃣ Request-rate limiting per user/session (Redis token-bucket) * 4️⃣ Structured telemetry (Prometheus + Loki or OpenTelemetry) * 5️⃣ Retry / exponential-backoff for Qdrant + MinIO + Redis * 6️⃣ Query-size + embedding-dimension enforcement * 7️⃣ Secure env-aware config (Docker / Caddy / QUIC) */ export interface IOllamaEmbeddingService { embedText(text: string): Promise<number[]>; embedBatch(texts: string[]): Promise<number[][]>; }
 
 export interface IOllamaChatService { chat(messages: {, role: 'user' | 'system' | 'assistant';, content: string }[]): Promise<string>; }

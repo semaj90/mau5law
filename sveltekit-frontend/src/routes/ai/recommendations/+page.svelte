@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { onMount } from, 'svelte';
+  import { onMount } from 'svelte';
 
   let recommendations = $state<any[]>([]);
   let loading = $state<boolean>(true);

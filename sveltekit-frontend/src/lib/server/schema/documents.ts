@@ -1,13 +1,13 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Documents Schema with pgvector for Legal AI Platform
  * Supports vector embeddings for semantic search and RAG
  */
-import { pgTable, text, varchar, timestamp, integer, boolean, jsonb, uuid } from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-import { relations } from, 'drizzle-orm';
+import { pgTable, text, varchar, timestamp, integer, boolean, jsonb, uuid } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+import { relations } from 'drizzle-orm';
 // Main documents table with vector embeddings
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),

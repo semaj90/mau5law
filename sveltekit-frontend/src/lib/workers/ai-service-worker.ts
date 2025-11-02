@@ -3,8 +3,8 @@
  * Handles parallel AI tasks across multiple LLM providers
  */
 /// <reference, lib="webworker" />
-import type { AITask, AIResponse, WorkerMessage } from, '$lib/types/ai-worker.js';
-import { getOllamaEndpoint } from, '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
+import type { AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
+import { getOllamaEndpoint } from '$lib/utils/endpoints'; // Assumed utility, create if it doesn't exist'
 declare const self: DedicatedWorkerGlobalScope;
 
 export interface AIProviderConfig {, id: string;, type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';

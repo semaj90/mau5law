@@ -2,12 +2,12 @@
  * Startup Flag API Endpoint
  * Provides service readiness status for automation and monitoring
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { startupFlagService, type StartupServiceSummary } from, '$lib/services/startup-flag-service';
-import { readFile } from, 'fs/promises';
-import { existsSync } from, 'fs';
-import { join } from, 'path';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { startupFlagService, type StartupServiceSummary } from '$lib/services/startup-flag-service';
+import { readFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { join } from 'path';
 const logsDir = join(process.cwd(), 'logs');
 /*
  * GET /api/v1/startup

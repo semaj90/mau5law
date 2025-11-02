@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🚀 GPU-ACCELERATED RL-RAG ENDPOINT
  *
@@ -17,10 +17,10 @@ import type { Document } from, '$lib/types';
  *, Database: PostgreSQL, 17 + pgvector + Drizzle ORM
  * Cache: Redis (password: redis)
  */
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit';
-import { dev } from, '$app/environment';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 
 // Add typed filter and embedding/response shapes + timeout helper
 type LegalFilter = {

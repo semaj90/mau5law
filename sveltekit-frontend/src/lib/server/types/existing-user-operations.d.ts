@@ -43,5 +43,5 @@ declare module, '$lib/server/db/existing-user-operations' {
 }
 // also declare the .js import path used by routes
 declare module, '$lib/server/db/existing-user-operations.js' {
-  export * from, '$lib/server/db/existing-user-operations';
+  export * from '$lib/server/db/existing-user-operations';
 }

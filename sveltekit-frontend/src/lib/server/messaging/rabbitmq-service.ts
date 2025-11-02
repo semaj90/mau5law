@@ -1,10 +1,10 @@
-import type { Message } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 // RabbitMQ Message Queue Service for Legal Document Processing
 // Provides reliable message queuing with dead letter exchanges and retry logic
-import * as amqp from, 'amqplib';
-import type { Channel } from, 'amqplib';
-import { logger } from, '../ai/logger.js';
+import * as amqp from 'amqplib';
+import type { Channel } from 'amqplib';
+import { logger } from '../ai/logger.js';
 // Define specific event types for RabbitMQService
 interface RabbitMQServiceEvents {
   // Index signature to satisfy `Record<string, any[]>` constraint on CustomEventEmitter

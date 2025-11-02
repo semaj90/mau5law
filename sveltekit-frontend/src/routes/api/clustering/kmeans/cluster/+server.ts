@@ -1,15 +1,15 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { LegalKMeansClusterer } from, '$lib/services/kmeans-clustering';
-import type { Redis } from, 'ioredis';
-import { db } from, '$lib/server/db';
-import { inArray } from, 'drizzle-orm';
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { legalDocuments } from, '$lib/server/schema';
-import { wasmClusteringService } from, '$lib/services/wasm-clustering-service';
-import { Buffer } from, 'buffer';
-import { randomUUID } from, 'crypto';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { LegalKMeansClusterer } from '$lib/services/kmeans-clustering';
+import type { Redis } from 'ioredis';
+import { db } from '$lib/server/db';
+import { inArray } from 'drizzle-orm';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { legalDocuments } from '$lib/server/schema';
+import { wasmClusteringService } from '$lib/services/wasm-clustering-service';
+import { Buffer } from 'buffer';
+import { randomUUID } from 'crypto';
 
 // Optional amqp for message queue integration
 // Initialize connections

@@ -21,10 +21,10 @@
  * - Fresh embeddings: 50-100ms (GPU processing)
  * - Batch processing supported
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { generateEmbedding, services } from, '$lib/server/services';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateEmbedding, services } from '$lib/server/services';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

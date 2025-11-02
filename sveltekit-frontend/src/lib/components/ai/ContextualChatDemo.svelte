@@ -8,16 +8,16 @@
   - Redis contextual caching
 -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { onMount } from, 'svelte';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { onMount } from 'svelte';
   import type {
     ContextualState,
     NextStepPrediction,
     LegalEntity,
     ConversationTurn
-  } from, '$lib/types/sharedTypes';
+  } from '$lib/types/sharedTypes';
   // Props
   interface Props {
     sessionId?: string;

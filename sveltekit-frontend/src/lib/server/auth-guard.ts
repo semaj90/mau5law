@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { RequestEvent } from, '@sveltejs/kit'; import { dev } from, '$app/environment'; import jwt from, 'jsonwebtoken'; export interface AuthenticatedUser { id: string;, email: string; firstName?: string; lastName?: string; role?: string; }
+import type { User } from '$lib/types';
+import type { RequestEvent } from '@sveltejs/kit'; import { dev } from '$app/environment'; import jwt from 'jsonwebtoken'; export interface AuthenticatedUser { id: string;, email: string; firstName?: string; lastName?: string; role?: string; }
 /** * Enhanced authentication guard for storage operations * Supports both session-based and JWT authentication */ export async function requireAuthentication(_event: RequestEvent): Promise<AuthenticatedUser | null> { try { // Development mode: Always authenticate with a default dev user const isDevelopment = dev || process.env.DEV_MODE === 'true'; if (isDevelopment) { // Check if there's a specific dev user override const devUserId = event.request.headers.get('x-dev-user-id'); const devUserEmail = event.request.headers.get('x-dev-user-email'); if (devUserId || devUserEmail) { return { id: devUserId || 'dev-user-custom', email: devUserEmail || 'dev-user@legal-ai.local', firstName: 'Dev', lastName: 'User', role: 'admin'
         } }
       // Default dev user for all requests in development console.log('🔧 Development, mode: Using default authenticated user'); return { id: 'dev-user-123', email: 'developer@legal-ai.local', firstName: 'Development', lastName: 'User', role: 'admin'

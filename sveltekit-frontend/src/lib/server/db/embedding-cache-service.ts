@@ -1,8 +1,8 @@
 // High-level service for embedding_cache persistence with packed embedding support.
 // Assumes there is a db client exported from ./client (adjust import if located elsewhere)
-import { embeddingCache } from, './schema-postgres.js';
-import { packEmbedding } from, './embedding-cache-utils.js';
-import { eq } from, 'drizzle-orm';
+import { embeddingCache } from './schema-postgres.js';
+import { packEmbedding } from './embedding-cache-utils.js';
+import { eq } from 'drizzle-orm';
 // Lazy import pattern to avoid circular imports if db client pulls schema
 
 // Derive the DB client type from the ./client module export named `db`

@@ -1,5 +1,5 @@
-import type { LayoutServerLoad } from, './$types';
-import { redirect } from, '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
+import { redirect } from '@sveltejs/kit';
 export const load: LayoutServerLoad = async ({ url, locals, _cookies }) => {
   const path = url.pathname;
   // Check if user is already authenticated and trying to access login/register

@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * SearchStore - Unified Search & Filtering
  *
@@ -9,13 +9,13 @@ import type { SearchResult } from, '$lib/types';
  * - search-filters.ts
  *
  *, Usage:
- *   import { searchStore } from, '$lib/stores/unified';
+ *   import { searchStore } from '$lib/stores/unified';
  *
  *   await searchStore.search('statute, 42 USC');
  *   $: results = $searchStore.results;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -466,9 +466,9 @@ export const activeFilters = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { search, vectorSearch } from, '$lib/stores/search-store'
- *   import { commandSearch } from, '$lib/stores/command-search'
+ *   import { search, vectorSearch } from '$lib/stores/search-store'
+ *   import { commandSearch } from '$lib/stores/command-search'
  *
  * New imports:
- *   import { searchStore, searchResults, isSearching, activeFilters } from, '$lib/stores/unified'
+ *   import { searchStore, searchResults, isSearching, activeFilters } from '$lib/stores/unified'
  */

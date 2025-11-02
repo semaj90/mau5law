@@ -1,8 +1,8 @@
 <script, lang="ts">
-	import { onMount, onDestroy } from, 'svelte';
-	import { writable, get } from, 'svelte/store';
+	import { onMount, onDestroy } from 'svelte';
+	import { writable, get } from 'svelte/store';
 	// prefer the module entry (no .js) and avoid importing TS types from a .js file
-	import { coordinatorStatus, masterServiceCoordinator } from, '$lib/services/master-service-coordinator';
+	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator';
 	// local lightweight ServiceStatus shape (keeps TS happy without importing types from a .js module)
 	type ServiceStatus = {
 		status?: string;

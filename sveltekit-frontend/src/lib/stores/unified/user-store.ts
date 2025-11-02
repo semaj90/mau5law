@@ -9,7 +9,7 @@
  * - userDataStore.svelte.ts
  *
  *, Usage:
- *   import { userStore } from, '$lib/stores/unified';
+ *   import { userStore } from '$lib/stores/unified';
  *
  *   // Subscribe to user state
  *   $: user = $userStore.currentUser;
@@ -21,8 +21,8 @@
  *   await userStore.updateProfile({ name: 'New Name' });
  */
 
-import { writable, derived } from, 'svelte/store';
-import type { User } from, '$lib/data/types';
+import { writable, derived } from 'svelte/store';
+import type { User } from '$lib/data/types';
 
 /**
  * User Store State
@@ -324,13 +324,13 @@ export const userError = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { user  } from, '$lib/stores/unified'
- *   import { profile } from, '$lib/stores/user-profile'
- *   import { isLoading  } from, '$lib/stores/unified'
- *   import { sessionToken } from, '$lib/stores/auth.svelte'
+ *   import { user  } from '$lib/stores/unified'
+ *   import { profile } from '$lib/stores/user-profile'
+ *   import { isLoading  } from '$lib/stores/unified'
+ *   import { sessionToken } from '$lib/stores/auth.svelte'
  *
  * New imports:
- *   import { userStore, isAuthenticated, currentUser, userLoading } from, '$lib/stores/unified'
+ *   import { userStore, isAuthenticated, currentUser, userLoading } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ;, Old: $user?.id, $profile?.name

@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /** Minimal mock API sync module — clean and syntactically valid. */
 
 export const mockDataGenerators = {

@@ -1,4 +1,4 @@
-import { env } from, '$env/dynamic/private';
+import { env } from '$env/dynamic/private';
 
 /**
  * Retrieves the Ollama API endpoint from environment variables or provides a default.

@@ -1,4 +1,4 @@
-<script, lang="ts"> import  NESButton  from, "./NESButton.svelte"; import  NESCard  from, "./NESCard.svelte"; import  NESModal  from, "./NESModal.svelte"; interface NESGamingShowcaseProps { title?: string; showStats?: boolean; }
+<script, lang="ts"> import  NESButton  from "./NESButton.svelte"; import  NESCard  from "./NESCard.svelte"; import  NESModal  from "./NESModal.svelte"; interface NESGamingShowcaseProps { title?: string; showStats?: boolean; }
   let { title = 'NES Gaming UI Showcase', showStats = true }: NESGamingShowcaseProps = $props(); let showModal = $state<boolean>(false); let selectedCard = $state<string | null>(null); let score = $state<number>(1337); let level = $state<number>(42); let lives = $state<number>(3); let isPlaying = $state<boolean>(false); const gameFeatures = [ {, id: 'legal-ai', title: 'Legal AI System', description: 'Advanced neural networks for legal analysis', status: 'online', icon: '⚖️'
     }, {
       id: 'evidence', title: 'Evidence Processing', description: 'Blockchain-verified evidence management', status: 'processing', icon: '🔍'

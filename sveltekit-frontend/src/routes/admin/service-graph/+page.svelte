@@ -5,7 +5,7 @@
   Usage: Add to src/routes/admin/service-graph/+page.svelte
 -->
 <script, lang="ts">
-  import { onMount } from, 'svelte';
+  import { onMount } from 'svelte';
 
   interface Service {
     id: string;

@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * ⚖️ Neo4j Client for Legal Entity Graphs
  * --------------------------------------------------
  * Adds or updates entities and relationships from
  * WASM / AI-parsed legal documents.
  */
-import neo4j, { Driver, Session } from, 'neo4j-driver';
-import { env } from, '$env/dynamic/private';
+import neo4j, { Driver, Session } from 'neo4j-driver';
+import { env } from '$env/dynamic/private';
 type LegalEntity = {
   name?: string;
   type?: string;

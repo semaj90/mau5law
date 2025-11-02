@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from, '$lib/server/embedding-cache-middleware.js';
-import { webgpuRedisOptimizer } from, '$lib/server/webgpu-redis-optimizer.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { embeddingCache, getLegalEmbedding, getBatchLegalEmbeddings } from '$lib/server/embedding-cache-middleware.js';
+import { webgpuRedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
 /**
  * Legal AI Embedding Benchmark with WebGPU Optimization
  * Real-world performance testing with legal document processing

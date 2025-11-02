@@ -3,10 +3,10 @@
  * Provides authentication, authorization, data protection, and security monitoring
  * Enhanced for legal document handling and attorney-client privilege protection
  */
-import { browser } from, "$app/environment";
-import type { User } from, "$lib/types/user";
-import crypto from, "crypto";
-import { EventEmitter } from, "events";
+import { browser } from "$app/environment";
+import type { User } from "$lib/types/user";
+import crypto from "crypto";
+import { EventEmitter } from "events";
 // Security configuration
 export interface SecurityConfig { maxFileSize: number;, allowedFileTypes: string[];
   sessionTimeout: number;

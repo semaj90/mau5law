@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import BitsUI from, 'bits-ui';
+  import type { Snippet } from 'svelte';
+  import BitsUI from 'bits-ui';
   // Support both shapes: BitsUI.ContextMenu.{Root, Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
   // Prefer the nested ContextMenu namespace if present, otherwise fall back to flat BitsUI exports.
   const _ns = (BitsUI as: any).ContextMenu ?? (BitsUI as: any);

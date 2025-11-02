@@ -2,11 +2,11 @@
  * Database Connection Test Endpoint
  * GET /api/test-db - Test PostgreSQL, Redis, and basic CRUD
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/db/index.js'; // Corrected import path
-import { sql } from, 'drizzle-orm';
-import { users } from, '$lib/server/db/schema-unified.js'; // Import users schema for connection test
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/index.js'; // Corrected import path
+import { sql } from 'drizzle-orm';
+import { users } from '$lib/server/db/schema-unified.js'; // Import users schema for connection test
 
 // Define types for better type safety
 type TestResultDetail = { success: boolean;, message: string;
@@ -34,7 +34,7 @@ interface TestResults {, timestamp: string;, tests: {
 export const, GET: RequestHandler = async () => {
   // Changed: 'url';, to: '_url' was incorrect, now destructuring nothing as it's unused.'
   const results: TestResults = {
-    // Changed type from, 'any' to: 'TestResults';, timestamp: new Date().toISOString(),
+    // Changed type from 'any' to: 'TestResults';, timestamp: new Date().toISOString(),
     tests: {}, // Corrected initialization
   };
   try {

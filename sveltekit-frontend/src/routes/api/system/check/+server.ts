@@ -1,6 +1,6 @@
 /// <reference, types="vite/client" />
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Environment variables for Ollama configuration
 const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434';

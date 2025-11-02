@@ -4,7 +4,7 @@ export const redisService: any = {};
  * Handles connection pooling, reconnection, and distributed caching
  * Integrates Redis Stack with JSON, Search, and TimeSeries modules
  */
-import IORedis, { type Redis as IORedisClass } from, 'ioredis';
+import IORedis, { type Redis as IORedisClass } from 'ioredis';
 
 // Define IORedisPipeline type by accessing the Pipeline type from the IORedisClass
 type IORedisPipeline = IORedisClass['Pipeline'];
@@ -14,7 +14,7 @@ type IORedisPipeline = IORedisClass['Pipeline'];
 // adds the: 'call' method for Redis Stack commands, and explicitly defines: 'set' overloads.
 interface AugmentedIORedisClient extends IORedisClass {
   exists(key: string | string[]): Promise<number>;
-  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from, 'any' to: 'unknown'
+  call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed from 'any' to: 'unknown'
   // Explicitly add the set overloads if they are not being picked up correctly by default types
   set(key: string, value: string | number): Promise<'OK' | null>;
   set(key: string, value: string | number, expiryMode: 'EX', ttl: number): Promise<'OK' | null>;

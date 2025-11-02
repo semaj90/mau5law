@@ -1,9 +1,9 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { glyphDiffusionService, type GlyphRequest } from, '$lib/services/glyph-diffusion-service.js';
-import { simdGPUTilingEngine } from, '$lib/evidence/simd-gpu-tiling-engine.js';
-import { PNGEmbedExtractor, type LegalAIMetadata } from, '$lib/services/png-embed-extractor.js';
-import sharp from, 'sharp';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { glyphDiffusionService, type GlyphRequest } from '$lib/services/glyph-diffusion-service.js';
+import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
+import { PNGEmbedExtractor, type LegalAIMetadata } from '$lib/services/png-embed-extractor.js';
+import sharp from 'sharp';
 /*
  * SIMD-Enhanced Glyph Generation API
  *

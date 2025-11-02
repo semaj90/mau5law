@@ -1,8 +1,8 @@
 
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-  import * as ContextMenu from, 'bits-ui';
-  import { fly, scale } from, 'svelte/transition';
+import type { Case } from '$lib/types';
+  import * as ContextMenu from 'bits-ui';
+  import { fly, scale } from 'svelte/transition';
   import {
     FileText,
     Users,
@@ -15,10 +15,10 @@ import type { Case } from, '$lib/types';
     AlertTriangle,
     Clock,
     CheckCircle
-  } from, 'lucide-svelte';
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import * as Card from, '$lib/components/ui/Card.svelte';
-  import  Badge  from, "$lib/components/ui/badge.svelte";
+  } from 'lucide-svelte';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import * as Card from '$lib/components/ui/Card.svelte';
+  import  Badge  from "$lib/components/ui/badge.svelte";
   interface CaseData {
     id: string;
     title: string

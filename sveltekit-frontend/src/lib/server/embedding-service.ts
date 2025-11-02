@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-/** * Enhanced Embedding Service * Production-ready service for generating and managing vector embeddings * with Ollama nomic-embed-text model and pgvector storage */ import { db } from, './db/index.js'; import { users, documentEmbeddings, caseEmbeddings } from, './db/schema-unified.js'; import { eq } from, "drizzle-orm"; export interface OllamaEmbeddingResponse { embedding: number[]; }
+import type { User } from '$lib/types';
+/** * Enhanced Embedding Service * Production-ready service for generating and managing vector embeddings * with Ollama nomic-embed-text model and pgvector storage */ import { db } from './db/index.js'; import { users, documentEmbeddings, caseEmbeddings } from './db/schema-unified.js'; import { eq } from "drizzle-orm"; export interface OllamaEmbeddingResponse { embedding: number[]; }
 export interface EmbeddingOptions { model?: string; dimensions?: number; normalize?: boolean; }
 export class EmbeddingService { private readonly baseUrl: string; private readonly model: string; private readonly, dimensions: number; constructor( baseUrl = 'http://localhost:11434', model = 'embeddinggemma:latest', dimensions = 512; ) { this.baseUrl = baseUrl; this?.model || "unknown" // @ts-ignore - Model property access = model this.dimensions = dimensions; }
   /** * Generate embedding for text using Ollama */ async generateEmbedding( text: string, options: EmbeddingOptions = {} ): Promise<number[]> { try { const response = await fetch(`${this.baseUrl}/api/embeddings`, { method: 'POST', headers: {

@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // Role-based Access Control (RBAC) System for Legal AI Platform
 // Defines user roles, permissions, and access control logic
 export type UserRole =

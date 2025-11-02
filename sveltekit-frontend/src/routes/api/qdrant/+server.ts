@@ -1,13 +1,13 @@
-import { json } from, '@sveltejs/kit';
-import { qdrant } from, '$lib/server/vector/qdrant';
-import { redisRateLimit, createRateLimitConfig } from, '$lib/server/redisRateLimit';
-import { productionLogger, as logger } from, '$lib/server/production-logger';
-import { dev } from, '$app/environment';
-import type { RequestHandler } from, './$types.js';
-import { getUserId } from, '$lib/server/auth/utils';
-import os from, 'os'; // Import the: 'os' module
+import { json } from '@sveltejs/kit';
+import { qdrant } from '$lib/server/vector/qdrant';
+import { redisRateLimit, createRateLimitConfig } from '$lib/server/redisRateLimit';
+import { productionLogger, as logger } from '$lib/server/production-logger';
+import { dev } from '$app/environment';
+import type { RequestHandler } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
+import os from 'os'; // Import the: 'os' module
 
-// Removed import of CollectionInfo from, '@qdrant/qdrant-js' because it's exported as a namespace in the package.'
+// Removed import of CollectionInfo from '@qdrant/qdrant-js' because it's exported as a namespace in the package.'
 // Define a minimal local type for collection info to avoid the: "Cannot use namespace as a type" error.
 type QdrantCollectionInfo = {
  , name: string;

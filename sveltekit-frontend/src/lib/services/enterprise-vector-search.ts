@@ -16,10 +16,10 @@
  * - Connection pooling and query optimization
  * - GPU acceleration for embedding generation
  */
-import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from, './enhanced-ai-analysis.js';
-import { precedentAnalysisEngine } from, './precedent-analysis-engine.js';
-import { db } from, '../server/db/drizzle-vector-config.js';
-import { getOptimalEmbeddingModel } from, '../ai/embedding-config.js';
+import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from './enhanced-ai-analysis.js';
+import { precedentAnalysisEngine } from './precedent-analysis-engine.js';
+import { db } from '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
 // Search Query Types
 export interface VectorSearchQuery {
   text: string;

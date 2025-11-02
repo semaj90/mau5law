@@ -4,8 +4,8 @@
  * Uses: XState, RabbitMQ, Redis, QUIC/gRPC
  */
 
-import { setup, assign, fromPromise, createActor, type StateFrom } from, 'xstate';
-import { hybridVectorSearch } from, './hybrid-vector-search';
+import { setup, assign, fromPromise, createActor, type StateFrom } from 'xstate';
+import { hybridVectorSearch } from './hybrid-vector-search';
 
 // RAG Ingestion Types
 export interface RAGDocument { id: string;, filename: string;

@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * WebSocket endpoint for real-time security validation progress updates
  * This handles WebSocket upgrade requests for the registration form

@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { user } from, '$lib/stores/unified';
-  import { ContextService } from, '$lib/services/context-service'; // Import ContextService
+  import { user } from '$lib/stores/unified';
+  import { ContextService } from '$lib/services/context-service'; // Import ContextService
 
   let cases = $state([
     { id: 'case-1', name: 'State v. John Doe' },

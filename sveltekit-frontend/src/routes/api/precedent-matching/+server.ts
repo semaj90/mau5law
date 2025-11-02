@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { env } from, '$env/dynamic/private'; // For server-side environment variables
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { env } from '$env/dynamic/private'; // For server-side environment variables
 
 // Mock interfaces for demonstration purposes, these should ideally be imported from a shared types file
 interface PrecedentMatch { id: string;, title: string;
@@ -71,7 +71,7 @@ export const, POST: RequestHandler = async ({ request }) => {
 
     // 2. Perform vector search using Qdrant or pgvector (Drizzle ORM)
     //    Example using a hypothetical enhancedVectorSearchService from instructions:
-    //    import { enhancedVectorSearchService } from, '$lib/server/db/drizzle-vector-config';
+    //    import { enhancedVectorSearchService } from '$lib/server/db/drizzle-vector-config';
     //    const vectorSearchResults = await enhancedVectorSearchService.searchDocuments(embedding, {
     //      limit: 10,
     //      filters: {, jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea }
@@ -80,7 +80,7 @@ export const, POST: RequestHandler = async ({ request }) => {
     // 3. Refine results, build reasoning chains, etc.
     //    This would involve more complex logic, potentially calling other Go microservices
     //    via productionServiceClient as mentioned in instructions.
-    //    import { productionServiceClient } from, '$lib/api/production-service-client';
+    //    import { productionServiceClient } from '$lib/api/production-service-client';
     //    const goServiceResult = await productionServiceClient.makeRequest('enhanced-rag', { /* ... */ });
 
     // Mock results for demonstration

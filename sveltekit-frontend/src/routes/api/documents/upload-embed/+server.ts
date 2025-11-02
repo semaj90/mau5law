@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit'
-import { writeFile, mkdir } from, 'fs/promises'
-import { join } from, 'path'
-import { existsSync } from, 'fs'
-import crypto from, 'node:crypto'
-import type { RequestHandler } from, './$types.js'
+import type { Document } from '$lib/types';
+import { json, error } from '@sveltejs/kit'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { existsSync } from 'fs'
+import crypto from 'node:crypto'
+import type { RequestHandler } from './$types.js'
 
 // Function to determine the correct Ollama endpoint based on environment
 function getOllamaEndpoint(): string {

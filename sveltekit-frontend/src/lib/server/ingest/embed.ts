@@ -9,9 +9,9 @@
  * Designed to work with configurable HTTP endpoints for easy swapping
  * between local and remote Gemma instances.
  */
-import fetch, { type Response, type RequestInit } from, 'node-fetch';
-import fs from, 'fs/promises';
-import { getGemmaEmbedEndpoint } from, '$lib/server/integrations/gemma'; // Import the new helper
+import fetch, { type Response, type RequestInit } from 'node-fetch';
+import fs from 'fs/promises';
+import { getGemmaEmbedEndpoint } from '$lib/server/integrations/gemma'; // Import the new helper
 
 // Helper for fetch with timeout, as, 'timeout' is not a standard RequestInit property
 async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs: number): Promise<Response> {

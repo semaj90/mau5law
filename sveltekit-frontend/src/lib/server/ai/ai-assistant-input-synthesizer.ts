@@ -1,17 +1,17 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // lib/server/ai/ai-assistant-input-synthesizer.ts
 // Comprehensive AI Assistant Input Synthesizer integrating all enhanced components
-import { logger } from, './logger.js';
-import { enhancedRAGPipeline } from, './rag-pipeline-enhanced.js';
-import Redis from, 'ioredis'; // Import ioredis
-import { createClient } from, '@qdrant/js-client-rest'; // Import Qdrant client
-import { MMR, crossEncoderRerank, embedTextServer } from, '$lib/server/ai-utils'; // Import new AI utilities
-import type { Candidate, RerankRequest } from, '$lib/types'; // Import new types
-import type { EmbeddingItem, SearchResult } from, '$lib/types/sharedTypes'; // Import shared types
-import { parallelVectorSearch, cosineSimilarity } from, '$lib/utils/fastSearch'; // Import fast search utilities
+import { logger } from './logger.js';
+import { enhancedRAGPipeline } from './rag-pipeline-enhanced.js';
+import Redis from 'ioredis'; // Import ioredis
+import { createClient } from '@qdrant/js-client-rest'; // Import Qdrant client
+import { MMR, crossEncoderRerank, embedTextServer } from '$lib/server/ai-utils'; // Import new AI utilities
+import type { Candidate, RerankRequest } from '$lib/types'; // Import new types
+import type { EmbeddingItem, SearchResult } from '$lib/types/sharedTypes'; // Import shared types
+import { parallelVectorSearch, cosineSimilarity } from '$lib/utils/fastSearch'; // Import fast search utilities
 
 // Initialize Redis and Qdrant clients
 const redisConfig: any = {
@@ -168,7 +168,7 @@ interface RetrievalResult {, sources: SourceItem[];, summary: { abstractive: st
   totalSources: number;
  , searchStrategies: string[];
 }
-import { generateEmbedding } from, './embeddings-simple.js';
+import { generateEmbedding } from './embeddings-simple.js';
 // Input types for the synthesizer
 export interface SynthesizerInput {
   query: string;

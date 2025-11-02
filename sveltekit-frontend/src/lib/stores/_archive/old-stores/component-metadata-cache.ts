@@ -2,7 +2,7 @@
  * Enhanced-Bits Component Metadata Caching System
  * Caches component metadata, dependencies, and performance stats
  */
-import { redisComponentStore } from, './redis-component-store.js';
+import { redisComponentStore } from './redis-component-store.js';
 export interface ComponentMetadata { name: string;, category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
  , size: number; // Bundle size in bytes,
   dependencies: string[];

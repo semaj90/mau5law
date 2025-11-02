@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Citations Manager Module
  * Authentication-aware citation saving and importing system

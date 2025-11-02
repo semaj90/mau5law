@@ -3,10 +3,10 @@
   Real-time monitoring and control of the multi-model AI system
 -->
 <script, lang="ts">
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import { writable, derived } from, 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';
+  import { writable, derived } from 'svelte/store';
   import {
     intelligentOrchestrator,
     currentModelInfo,
@@ -14,7 +14,7 @@ import type { User } from, '$lib/types';
     performanceMetrics,
     memoryOptimization,
     type SelfPromptingSuggestion
-  } from, '$lib/ai/intelligent-model-orchestrator';
+  } from '$lib/ai/intelligent-model-orchestrator';
   // Component state
   let mounted = $state<boolean>(false);
   let queryInput = $state<string>('');

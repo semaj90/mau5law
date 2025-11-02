@@ -1,22 +1,22 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { ollamaCudaService, type ModelMetrics } from, './ollama-cuda-service.js';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { ollamaCudaService, type ModelMetrics } from './ollama-cuda-service.js';
 /**
  * LangChain Configuration Service
  * Advanced configuration and orchestration for LangChain with local LLMs
  * Supports multiple model providers, chains, and advanced workflows
  */
-import { ChatOllama, OllamaEmbeddings } from, "@langchain/ollama";
-import { ConversationChain } from, "langchain/chains";
-import { BufferMemory, ConversationSummaryMemory } from, "langchain/memory";
-import { PromptTemplate, ChatPromptTemplate, MessagesPlaceholder } from, "@langchain/core/prompts";
-import { RunnableSequence, RunnablePassthrough } from, "@langchain/core/runnables";
-import { StringOutputParser } from, "@langchain/core/output_parsers";
-import { HumanMessage, AIMessage, SystemMessage } from, "@langchain/core/messages";
-import type { BaseLanguageModel } from, "@langchain/core/language_models/base";
-import type { BaseMemory } from, 'langchain/memory';
-import type { BasePromptTemplate } from, '@langchain/core/prompts'; // Corrected import
-import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Import the utility
+import { ChatOllama, OllamaEmbeddings } from "@langchain/ollama";
+import { ConversationChain } from "langchain/chains";
+import { BufferMemory, ConversationSummaryMemory } from "langchain/memory";
+import { PromptTemplate, ChatPromptTemplate, MessagesPlaceholder } from "@langchain/core/prompts";
+import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { HumanMessage, AIMessage, SystemMessage } from "@langchain/core/messages";
+import type { BaseLanguageModel } from "@langchain/core/language_models/base";
+import type { BaseMemory } from 'langchain/memory';
+import type { BasePromptTemplate } from '@langchain/core/prompts'; // Corrected import
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
 
 // Define interfaces for specific chain inputs
 interface DocumentQAInput { document: string;, question: string;

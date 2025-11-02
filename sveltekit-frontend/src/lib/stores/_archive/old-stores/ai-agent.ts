@@ -1,7 +1,7 @@
-import type { ChatMessage } from, "$lib/types/api";
-import crypto from, "crypto";
-import { writable } from, 'svelte/store';
-import { realAIService } from, "$lib/services/real-ai-service";
+import type { ChatMessage } from "$lib/types/api";
+import crypto from "crypto";
+import { writable } from 'svelte/store';
+import { realAIService } from "$lib/services/real-ai-service";
 
 // Add minimal type definitions to avoid repeated `any` casts
 type Nullable<T> = T | null | undefined;

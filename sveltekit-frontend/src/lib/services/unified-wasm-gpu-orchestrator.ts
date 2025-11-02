@@ -4,8 +4,8 @@
  * Production-ready orchestration layer with multi-tier fallbacks and performance optimization
  */
 // Commented out problematic imports due to module resolution issues
-// import type { CanvasState } from, '$lib/stores/canvas-states'
-// import type { MultiDimArray, GPUProcessingStats } from, '$lib/workers/gpu-tensor-worker'
+// import type { CanvasState } from '$lib/stores/canvas-states'
+// import type { MultiDimArray, GPUProcessingStats } from '$lib/workers/gpu-tensor-worker'
 // Define interfaces locally
 export interface CanvasState { width: number;, height: number;
   data?: Uint8ClampedArray;
@@ -19,9 +19,9 @@ export interface GPUProcessingStats {, totalProcessingTime: number;, gpuUtiliza
   memoryUsage: number;
  , operationsCompleted: number;
 }
-import { NESStyleGPUBridge } from, './nes-gpu-bridge.js';
-import { gpuServiceIntegration } from, './gpu-service-integration.js';
-import { writable } from, 'svelte/store';
+import { NESStyleGPUBridge } from './nes-gpu-bridge.js';
+import { gpuServiceIntegration } from './gpu-service-integration.js';
+import { writable } from 'svelte/store';
 // Browser detection
 const browser = typeof window !== 'undefined';
 

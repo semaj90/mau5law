@@ -143,7 +143,7 @@ export class BrowserLocalAI {
   private async loadModels(): Promise<void> {
     console.log('📦 Loading local AI models...');
     // Simulate model loading - in real implementation would use:
-    // import { pipeline } from, '@xenova/transformers'
+    // import { pipeline } from '@xenova/transformers'
     // this.textModel = await pipeline('text-generation', this.config.modelId, {
     //   device: this.config.device,
     //   quantized: this.config.quantized

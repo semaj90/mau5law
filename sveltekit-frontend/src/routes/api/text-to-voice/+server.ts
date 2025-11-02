@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 const ENABLE_TTS = String(process.env.ENABLE_TTS || 'false').toLowerCase() === 'true';
 const TTS_SERVICE_URL = process.env.TTS_SERVICE_URL || 'http://localhost:8098';

@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Kernel Splicing Attention API
  * Advanced CUDA attention mechanism with kernel splicing
  * Optimized for RTX, 3060 Ti with <1ms, processing
  */
-import { productionServiceClient } from, '$lib/services/productionServiceClient';
-import { dimensionalCache } from, '$lib/ai/dimensional-cache-engine';
+import { productionServiceClient } from '$lib/services/productionServiceClient';
+import { dimensionalCache } from '$lib/ai/dimensional-cache-engine';
 interface AttentionRequest { jobId: string;, text: string;
   type: 'attention' | 'multi-head' | 'flash-attention' | 'kernel-splicing';
   useCache?: boolean;

@@ -1,15 +1,15 @@
 // src/lib/search/instant-search-engine.ts
 
-import Fuse, { type IFuseOptions, type FuseResult } from, 'fuse.js';
-import { EventEmitter } from, 'events';
+import Fuse, { type IFuseOptions, type FuseResult } from 'fuse.js';
+import { EventEmitter } from 'events';
 // Assuming lokiRedisCache is configured to use REDIS_URL environment variable as per instructions.
-import { lokiRedisCache, type CachedDocument } from, '../cache/loki-redis-integration.js';
+import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integration.js';
 // Assuming getOllamaEmbedding is configured to use OLLAMA_URL environment variable and specified models (gemma3-legal:latest, embeddinggemma:latest).
-import { getOllamaEmbedding } from, '$lib/llm/gemma';
+import { getOllamaEmbedding } from '$lib/llm/gemma';
 // Assuming optimizedQdrantService is configured to use QDRANT_URL environment variable.
-import { optimizedQdrantService, as qdrant } from, '$lib/services/optimized-qdrant-service'; // Updated import path and alias
+import { optimizedQdrantService, as qdrant } from '$lib/services/optimized-qdrant-service'; // Updated import path and alias
 // Assuming lookupSemanticCache and storeSemanticCache (gRPC client) are configured to use appropriate environment variables for their endpoint.
-import { lookupSemanticCache, storeSemanticCache } from, '$lib/server/grpc/vector-cache-client'; // New gRPC client import
+import { lookupSemanticCache, storeSemanticCache } from '$lib/server/grpc/vector-cache-client'; // New gRPC client import
 
 // Minimal interface for Qdrant search results
 interface QdrantSearchResult { id: string | number;, score: number;
@@ -345,7 +345,7 @@ export class InstantSearchEngine extends EventEmitter {
 
   private async performSemanticSearch(query: string, filters: SearchFilters): Promise<InstantSearchResult[]> {
     try {
-      // It is assumed that getOllamaEmbedding (from, '$lib/llm/gemma') internally
+      // It is assumed that getOllamaEmbedding (from '$lib/llm/gemma') internally
       // resolves the Ollama endpoint using process.env.OLLAMA_URL or a similar
       // centralized utility (e.g., getOllamaEndpoint()) as per project guidelines
       // for Docker-aware production deployments.

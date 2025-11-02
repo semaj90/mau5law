@@ -1,5 +1,5 @@
-import type { AIResponse } from, '$lib/types';
-import type { SearchResult } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Vector search types and interfaces
 export interface SearchResult { id: string;, score: number;
   payload?: any;

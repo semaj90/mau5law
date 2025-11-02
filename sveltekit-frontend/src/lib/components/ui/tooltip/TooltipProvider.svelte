@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Props } from, '$lib/types/global';
+  import type { Props } from '$lib/types/global';
   let { children }: Props = $props();
 </script>
 <div, class="tooltip-provider" style="display: contents">

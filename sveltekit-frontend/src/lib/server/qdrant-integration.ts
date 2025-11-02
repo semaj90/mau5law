@@ -1,12 +1,12 @@
 // sveltekit-frontend/src/lib/server/qdrant-integration.ts
-import { QDRANT_URL, QDRANT_API_KEY } from, '$env/static/private';
+import { QDRANT_URL, QDRANT_API_KEY } from '$env/static/private';
 import type {
   PointStruct,
   SearchRequest,
   SearchResponse,
   UpsertPoints,
   UpsertResponse
-} from, '$lib/types/qdrant'; // Assuming these types will be defined
+} from '$lib/types/qdrant'; // Assuming these types will be defined
 
 const QDRANT_COLLECTION_NAME = 'legal_documents'; // Example collection name
 

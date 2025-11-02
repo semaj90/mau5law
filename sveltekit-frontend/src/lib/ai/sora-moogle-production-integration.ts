@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Production-Ready Sora & Moogle Integration
  * Native Windows deployment with existing stack compatibility
  */
-import { browser } from, '$app/environment';
-import { writable, type Writable } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { writable, type Writable } from 'svelte/store';
 // Production-compatible types without external dependencies
 export interface SoraGraphNode { id: string;, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
   properties: { [key: string]: any };

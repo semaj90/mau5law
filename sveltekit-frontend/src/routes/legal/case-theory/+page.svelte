@@ -1,19 +1,19 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { page } from, '$app/stores';
-  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
-  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
-  import OptimisticList from, '$lib/headless/OptimisticList.svelte';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
+  import LoadingButton from '$lib/headless/LoadingButton.svelte';
+  import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons
   import {
     Brain, Scale, FileText, Users, Target, Lightbulb,
     TrendingUp, AlertTriangle, CheckCircle, Clock,
     Layers, Network, Eye, Plus, Edit, Trash, Save,
     ArrowRight, BarChart3, Zap, Search, Link2
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
 
   // Type Definitions
   interface Theory {
@@ -380,19 +380,19 @@ import type { Case } from, '$lib/types';
         title: 'Medical Examiner Report',
        <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { page } from, '$app/stores';
-  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
-  import * as Dialog from, '$lib/components/ui/Dialog.svelte';
-  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
-  import OptimisticList from, '$lib/headless/OptimisticList.svelte';
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
+  import * as Dialog from '$lib/components/ui/Dialog.svelte';
+  import LoadingButton from '$lib/headless/LoadingButton.svelte';
+  import OptimisticList from '$lib/headless/OptimisticList.svelte';
   // Icons
   import {
     Brain, Scale, FileText, Users, Target, Lightbulb,
     TrendingUp, AlertTriangle, CheckCircle, Clock,
     Layers, Network, Eye, Plus, Edit, Trash, Save,
     ArrowRight, BarChart3, Zap, Search, Link2
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
 
   // Type Definitions
   interface Theory {

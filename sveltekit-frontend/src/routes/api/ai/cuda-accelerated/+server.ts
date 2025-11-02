@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -18,11 +18,11 @@ import type { User } from, '$lib/types';
  */
 // Enhanced CUDA-Accelerated Legal AI API
 // Bridges SvelteKit frontend with Go CUDA server for maximum performance
-import { json } from, '@sveltejs/kit'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
 
-import { getCudaServerEndpoint } from, '$lib/server/api/endpoints';
+import { getCudaServerEndpoint } from '$lib/server/api/endpoints';
 
 // Use centralized endpoint helper for CUDA server URL
 const CUDA_SERVER_URL = getCudaServerEndpoint();

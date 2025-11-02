@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import type { PageServerLoad, Actions } from, './$types.js';
-import { error, fail, json } from, '@sveltejs/kit';
-import { getUserId } from, '$lib/server/auth/utils';
+import type { Document } from '$lib/types';
+import type { PageServerLoad, Actions } from './$types.js';
+import { error, fail, json } from '@sveltejs/kit';
+import { getUserId } from '$lib/server/auth/utils';
 export const load: PageServerLoad = async ({ locals }) => {
   try {
     // Get CUDA/GPU system information

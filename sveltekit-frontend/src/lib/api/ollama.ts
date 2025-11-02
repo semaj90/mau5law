@@ -34,7 +34,7 @@ export interface OllamaEmbeddingsRequest {, model: string;, prompt: string;
 export interface OllamaEmbeddingsResponse {
  , embedding: number[];
 }
-import { getOllamaEndpoint } from, '$lib/services/get-ollama-endpoint';
+import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint';
 function getDefaultHost(): string {
   // Delegate host resolution to the centralized helper which prefers Vite env,
   // Node env and falls back to localhost. This keeps client/server behavior consistent.

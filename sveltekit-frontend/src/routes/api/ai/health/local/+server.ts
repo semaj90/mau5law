@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { ollamaService } from, '$lib/services/ollama-service';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { ollamaService } from '$lib/services/ollama-service';
 
 // New/updated types
 type HealthCheckResult = { success: boolean; message: string; models?: string[] };

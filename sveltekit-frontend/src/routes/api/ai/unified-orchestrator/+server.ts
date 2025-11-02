@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -21,12 +21,12 @@ import type { Document } from, '$lib/types';
  * Routes requests through the LLM Orchestrator Bridge to optimal processing
  * Supports both local and server-side orchestrators with MCP multi-core integration
  */
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
-import { llmOrchestratorBridge } from, '$lib/server/ai/llm-orchestrator-bridge.js'
-import type { LLMBridgeRequest } from, '$lib/server/ai/llm-orchestrator-bridge.js'
-import { logger } from, '$lib/server/ai/logger.js'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js'
+import { logger } from '$lib/server/ai/logger.js'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 // Health check endpoint
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
@@ -172,7 +172,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
         enableStreaming: true,
         priority: `realtime` },
       metadata: {
-       , source: 'api', // Changed from, 'streaming_api' to: 'api';, timestamp: Date.now()
+       , source: 'api', // Changed from 'streaming_api' to: 'api';, timestamp: Date.now()
       }
     }
     // Create a readable stream for SSE

@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * FlatBuffers Schema for Legal Documents
  * Ultra-fast binary serialization eliminating JSON bottlenecks

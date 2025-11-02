@@ -1,10 +1,10 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { chat, as ollamaChat, type ChatMessage } from, '$lib/server/ai/ollama-client';
-import { db } from, '$lib/server/db';
-import { cases } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { chat, as ollamaChat, type ChatMessage } from '$lib/server/ai/ollama-client';
+import { db } from '$lib/server/db';
+import { cases } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
 
 type IncomingMessage = { role: 'system' | 'user' | 'assistant'; content: string };
 

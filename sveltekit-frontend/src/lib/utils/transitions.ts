@@ -1,7 +1,7 @@
 // Transition utilities for Melt UI components
 // Compatible with Pico CSS + UnoCSS setup
-import { cubicOut } from, 'svelte/easing';
-import type { TransitionConfig } from, 'svelte/transition';
+import { cubicOut } from 'svelte/easing';
+import type { TransitionConfig } from 'svelte/transition';
 // Restored TransitionConfig type import
 export function flyAndScale(
   node: Element,

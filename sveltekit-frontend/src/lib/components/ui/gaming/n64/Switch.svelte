@@ -12,9 +12,9 @@
 <script, lang="ts">
 
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from, 'svelte';
-  import type { N64RenderingOptions } from, '../types/gaming-types.js';
-  import { N64_TEXTURE_PRESETS } from, '../constants/gaming-constants.js';
+  import { onMount, onDestroy } from 'svelte';
+  import type { N64RenderingOptions } from '../types/gaming-types.js';
+  import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
   // Exported props (clean, explicit)
   const { era } = $props<{ era: string }>()

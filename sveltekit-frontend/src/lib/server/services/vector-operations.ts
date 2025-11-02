@@ -1,8 +1,8 @@
-import { OllamaEmbeddingService } from, './ollama-embeddings';
-import { upsertVector, searchVector } from, './qdrant-adapter';
-import { setEmbedding } from, './redis-adapter';
-import { saveJsonbDocument } from, './pg-jsonb';
-import { validateEmbedding, validatePositiveInt } from, '../utils/service-error';
+import { OllamaEmbeddingService } from './ollama-embeddings';
+import { upsertVector, searchVector } from './qdrant-adapter';
+import { setEmbedding } from './redis-adapter';
+import { saveJsonbDocument } from './pg-jsonb';
+import { validateEmbedding, validatePositiveInt } from '../utils/service-error';
 
 /** see PRODUCTION TODO block above **/
 

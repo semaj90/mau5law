@@ -4,7 +4,7 @@
 </svelte:head>
 
 <script, lang="ts">
-  import { onMount } from, 'svelte'
+  import { onMount } from 'svelte'
 
   type RegistryServer = {
     name: string

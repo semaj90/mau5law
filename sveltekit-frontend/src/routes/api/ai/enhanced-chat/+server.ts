@@ -15,13 +15,13 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Enhanced AI Chat API Endpoint
  * Integrates AI input synthesis, LegalBERT middleware, RAG pipeline, and streaming responses
  */
-import { json } from, '@sveltejs/kit';
-import redisOptimized from, '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit';
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 // Enhanced request interface
 export interface EnhancedChatRequest {
   query: string;

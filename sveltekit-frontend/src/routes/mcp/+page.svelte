@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { goto } from, '$app/navigation'; import { mcpApi } from, '$lib/api/mcp-client.js'; import { writable } from, 'svelte/store'; // Server status const serverStatus = writable({ status: 'checking', workers: 0, uptime: 0, version: 'Unknown'
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { goto } from '$app/navigation'; import { mcpApi } from '$lib/api/mcp-client.js'; import { writable } from 'svelte/store'; // Server status const serverStatus = writable({ status: 'checking', workers: 0, uptime: 0, version: 'Unknown'
   }); // Quick stats let totalProcessed = 1247; let avgProcessingTime = 2.3; let successRate = 97.8; let gpuAcceleration = true; // Feature cards data const features = [ {, title: 'Document Analysis', description: 'AI-powered legal document processing with entity extraction, risk assessment, and compliance checking', icon: '📄', href: '/mcp/demo', stats: {, processed: '450+ docs', accuracy: '95%' }, color: 'blue'
     }, {
       title: 'Legal Processor', description: 'Batch document processing with parallel worker threads and real-time progress tracking', icon: '⚖️', href: '/mcp/processor', stats: {, workers: '4 cores', speed: '2.3s avg' }, color: 'purple'

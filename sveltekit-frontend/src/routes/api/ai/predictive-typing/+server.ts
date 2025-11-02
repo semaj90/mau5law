@@ -22,13 +22,13 @@
  * and XState machine coordination for real-time typing predictions with
  * 7-bit glyph compression and sub-millisecond response times.
  */
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
-import { topologyPredictiveAnalyticsEngine } from, '$lib/ai/topology-predictive-analytics-engine.js'
-import { enhancedRAGGlyphSystem } from, '$lib/ai/enhanced-rag-glyph-system.js'
-import { lodCacheEngine } from, '$lib/ai/lod-cache-engine.js'
-import { vectorMetadataAutoEncoder } from, '$lib/ai/vector-metadata-auto-encoder.js'
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
+import { topologyPredictiveAnalyticsEngine } from '$lib/ai/topology-predictive-analytics-engine.js'
+import { enhancedRAGGlyphSystem } from '$lib/ai/enhanced-rag-glyph-system.js'
+import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js'
+import { vectorMetadataAutoEncoder } from '$lib/ai/vector-metadata-auto-encoder.js'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 
 // Replace broad `any` usage with focused types
 interface Suggestion { text: string;, confidence: number;

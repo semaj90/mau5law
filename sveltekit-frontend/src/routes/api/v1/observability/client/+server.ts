@@ -2,9 +2,9 @@
  * Client-side metrics collection endpoint
  * Integrates with server-side observability infrastructure
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from, '$lib/types/metrics';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics';
 // In-memory metrics store for development (replace with database/Redis in production)
 const metricsStore = {
   clientMetrics: [] as ClientMetricsPayload[],

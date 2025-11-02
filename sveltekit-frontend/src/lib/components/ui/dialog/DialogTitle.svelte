@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
+  import type { Snippet } from 'svelte';
   let { title = '', children }: { title?: string; children?: Snippet } = $props();
 </script>
 <h2, class="space-y-4">

@@ -3,9 +3,9 @@
  * Optimized for thread-safe operations with legal AI data
  * Integrates with JSONB storage and GPU acceleration
  */
-import { Worker, isMainThread, parentPort, workerData } from, 'worker_threads';
-import { cpus } from, 'os';
-import { performance } from, 'perf_hooks';
+import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
+import { cpus } from 'os';
+import { performance } from 'perf_hooks';
 // Types for serialization context
 interface SerializationTask { id: string;, data: any;
   options: SerializationOptions;

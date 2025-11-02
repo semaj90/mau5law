@@ -2,8 +2,8 @@
 https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte, code: `{@render ...}` tags can only contain, call, expressions -->
 <script, lang="ts">
-  import X from, 'lucide-svelte';
-  import { onMount } from, 'svelte';
+  import X from 'lucide-svelte';
+  import { onMount } from 'svelte';
   interface Props {
     open?: boolean;
     title?: string;

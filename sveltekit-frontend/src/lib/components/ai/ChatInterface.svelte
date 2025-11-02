@@ -2,10 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Replaced script to fix Svelte, 5 runes, imports, types and logic typos
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte";
-  import  Textarea  from, "$lib/components/ui/textarea.svelte";
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+  import  Textarea  from "$lib/components/ui/textarea.svelte";
   import {
     aiPersonality,
     chatActions,
@@ -14,14 +14,14 @@ import type { Case } from, '$lib/types';
     isTyping,
     showProactivePrompt,
     notifications
-  } from, '$lib/stores/unified';
-  import type { ApiResponse, ChatRequest, ChatResponse } from, '$lib/types/api';
-  import { Bot, Loader2, Send } from, 'lucide-svelte';
-  import { onDestroy, tick } from, 'svelte';
-  import  ChatMessage  from, "./ChatMessage.svelte";
-  import  ProactivePrompt  from, "./ProactivePrompt.svelte";
-  import  ThinkingStyleToggle  from, "./ThinkingStyleToggle.svelte";
-  import { ThinkingProcessor } from, '$lib/ai/thinking-processor';
+  } from '$lib/stores/unified';
+  import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
+  import { Bot, Loader2, Send } from 'lucide-svelte';
+  import { onDestroy, tick } from 'svelte';
+  import  ChatMessage  from "./ChatMessage.svelte";
+  import  ProactivePrompt  from "./ProactivePrompt.svelte";
+  import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
+  import { ThinkingProcessor } from '$lib/ai/thinking-processor';
   // props (Svelte, 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
   // reactive state

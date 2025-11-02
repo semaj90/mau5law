@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import path from, 'node:path';
-import os from, 'node:os';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import path from 'node:path';
+import os from 'node:os';
 
 export const, POST: RequestHandler = async ({ request }) => {
   const { input } = (await request.json()) as { input: number[] };

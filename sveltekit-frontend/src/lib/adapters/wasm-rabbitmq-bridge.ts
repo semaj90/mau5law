@@ -3,9 +3,9 @@
  * Connects RabbitMQ message processing with WebAssembly vector operations
  * Enables high-performance tensor processing within RabbitMQ workflows
  */
-import { rabbitmqServiceWorker } from, '$lib/workers/rabbitmq-service-worker.js';
-import type { MessageHandler } from, '$lib/server/messaging/rabbitmq-service';
-import { enhanceRabbitMQMessage, parseVectorData } from, '$lib/simd/simd-json-integration.js';
+import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
+import type { MessageHandler } from '$lib/server/messaging/rabbitmq-service';
+import { enhanceRabbitMQMessage, parseVectorData } from '$lib/simd/simd-json-integration.js';
 // WebAssembly module cache
 let wasmModule: WebAssembly.WebAssemblyInstantiatedSource | null = null;
 let wasmReady = $state<boolean>(false);

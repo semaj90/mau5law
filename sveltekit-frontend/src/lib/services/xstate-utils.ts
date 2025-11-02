@@ -1,4 +1,4 @@
-import { createActor } from, 'xstate';
+import { createActor } from 'xstate';
 
 // Minimal shape for machines we can adapt
 type MachineLike = {

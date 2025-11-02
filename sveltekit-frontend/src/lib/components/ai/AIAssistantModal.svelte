@@ -1,4 +1,4 @@
-<script, lang="ts"> import { getContext } from, 'svelte'; import  Button, Card, CardHeader, CardTitle, CardContent  from, "$lib/components/ui/enhanced-bits.svelte"; import { aiGlobalStore, aiGlobalActions } from, '$lib/stores/unified'; // Interface definitions interface EvidenceItem { id: string; title: string; description?: string; type: string;, createdAt: string; metadata?: Record<string, unknown>; }
+<script, lang="ts"> import { getContext } from 'svelte'; import  Button, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import { aiGlobalStore, aiGlobalActions } from '$lib/stores/unified'; // Interface definitions interface EvidenceItem { id: string; title: string; description?: string; type: string;, createdAt: string; metadata?: Record<string, unknown>; }
   interface CaseData { id: string; title: string; status: string; evidence?: EvidenceItem[]; createdAt: string; }
   interface UserData { id: string; name: string; email?: string; role?: string; }
   interface AIStoreContext { loading?: boolean; error?: string; summary?: string; stream?: string; sources?: Array<{ id?: string; title?: string; [k: string]: any }>; }

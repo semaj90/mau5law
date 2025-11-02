@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Drizzle ORM Enhanced Type Definitions
  * Fixes: "Untyped function calls may not accept type arguments" errors
@@ -105,7 +105,7 @@ declare module, 'drizzle-orm' {
   export function innerProduct<T = unknown, U = unknown>(vector1: T, vector2: U): any;
 }
 declare module, 'drizzle-orm/node-postgres' {
-  import type { PostgresJsDatabase } from, 'drizzle-orm/node-postgres';
+  import type { PostgresJsDatabase } from 'drizzle-orm/node-postgres';
   export function drizzle<T = unknown>(
     client: any,
     config?: {

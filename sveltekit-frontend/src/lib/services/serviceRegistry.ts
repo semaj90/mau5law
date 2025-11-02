@@ -1,5 +1,5 @@
-import http from, 'http';
-import { EventEmitter } from, 'events';
+import http from 'http';
+import { EventEmitter } from 'events';
 // Auto-generated Service Registry for Go, gRPC, QUIC, HTTP, WebSocket endpoints
 // Source: gonet12grpcquic3.txt, GO_BINARIES_CATALOG.md, FULL_STACK_INTEGRATION_COMPLETE.md
 export const ServiceRegistry = { http: {, enhancedRAG: 'http://localhost:8094',

@@ -2,9 +2,9 @@
  * YoRHa Quantum Visual Effects 3D
  * Advanced quantum field visualization and reality manipulation effects
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from, '../YoRHaUI3D.js';
-import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from, '../webgpu/YoRHaWebGPUMath.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent, YORHA_COLORS, type YoRHaAnimation } from '../YoRHaUI3D.js';
+import { yorhaWebGPU, type Vector3GPU, type YoRHaComputeResult } from '../webgpu/YoRHaWebGPUMath.js';
 export interface QuantumFieldOptions { particleCount: number;, fieldSize: Vector3GPU;
   quantumCoherence: number;
   entanglementStrength: number;

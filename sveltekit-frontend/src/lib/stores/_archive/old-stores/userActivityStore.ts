@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * User Activity Detection Store for GPU Lifecycle Management
  * Tracks user interactions to trigger GPU memory optimization
  */
-import { writable, derived, get } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment';
 interface UserActivityMetrics { lastActivity: number;, idleTimeMs: number;
   interactionCount: number;
   activityScore: number;

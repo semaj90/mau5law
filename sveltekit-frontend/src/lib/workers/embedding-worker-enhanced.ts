@@ -9,11 +9,11 @@
  * - Comprehensive error handling and recovery
  * - Batch processing with micro-batching optimization
  */
-import { cacheService } from, '$lib/api/services/cache-service.js';
-import { globalLoki } from, '$lib/stores/global-loki-store.js';
-import type { Redis } from, 'ioredis'; // Changed from, 'import type Redis from, 'ioredis';'
-import { db } from, '$lib/server/db/unified-client.js';
-import { sql } from, 'drizzle-orm';
+import { cacheService } from '$lib/api/services/cache-service.js';
+import { globalLoki } from '$lib/stores/global-loki-store.js';
+import type { Redis } from 'ioredis'; // Changed from 'import type Redis from 'ioredis';'
+import { db } from '$lib/server/db/unified-client.js';
+import { sql } from 'drizzle-orm';
 // Enhanced job interface
 export interface EmbeddingJob { id: string;, text: string;
   model?: string;

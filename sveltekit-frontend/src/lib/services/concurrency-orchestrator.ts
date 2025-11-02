@@ -2,15 +2,15 @@
 // Multi-Core Integration: Loki.js + Fuse.js + Fabric.js + XState + Redis + RabbitMQ
 //, Platform: Native Windows (No Docker) with SvelteKit, 2 + Svelte, 5
 // dynamic xstate import to avoid compile-time dependency on xstate types
-import Fuse from, 'fuse.js';
-import os from, 'os'; // added for server-side CPU count fallback
+import Fuse from 'fuse.js';
+import os from 'os'; // added for server-side CPU count fallback
 // Fabric will be loaded dynamically when needed
 // Dynamic imports for server-side only - prevents browser leakage
-// import Loki from, 'lokijs'
-// import Redis from, 'ioredis'
-// import { publishToQueue, consumeFromQueue, setupQueues } from, '$lib/server/rabbitmq'
+// import Loki from 'lokijs'
+// import Redis from 'ioredis'
+// import { publishToQueue, consumeFromQueue, setupQueues } from '$lib/server/rabbitmq'
 // remove the static import to avoid SSR/bundle issues
-/* import { gemma3LegalService } from, '$lib/services/ollama-gemma3-service'; */
+/* import { gemma3LegalService } from '$lib/services/ollama-gemma3-service'; */
 
 // Types and Interfaces
 export interface ConcurrencyTask { id: string;, type: 'search' | 'analysis' | 'canvas' | 'ai' | 'database';

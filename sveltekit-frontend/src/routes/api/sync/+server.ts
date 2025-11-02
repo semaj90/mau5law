@@ -2,10 +2,10 @@
  * API Sync & Wire-up Endpoints
  * RESTful endpoints for neural topology mock data synchronization
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, '@sveltejs/kit'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 // Replace fragile named imports with a namespace import and safe fallbacks
-import * as syncModule from, '$lib/server/sync/mock-api-sync-simple'
+import * as syncModule from '$lib/server/sync/mock-api-sync-simple'
 
 // --- added: lightweight types to avoid `any` casts ---
 type SyncOrchestrator = {

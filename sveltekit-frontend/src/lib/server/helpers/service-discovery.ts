@@ -8,7 +8,7 @@
  *
  * Usage:
  * ```typescript`
- * import { ServiceDiscovery } from, '$lib/server/helpers/service-discovery';
+ * import { ServiceDiscovery } from '$lib/server/helpers/service-discovery';
  *
  * const discovery = new ServiceDiscovery();
  *
@@ -28,7 +28,7 @@
  * });
  * ```
  */
-import { discoverServiceEndpoint, verifyServiceEndpoint } from, './docker-discovery';
+import { discoverServiceEndpoint, verifyServiceEndpoint } from './docker-discovery';
 export interface ServiceConfig {
   // Environment variable name to check first
   envVar: string;

@@ -1,8 +1,8 @@
 // Advanced Recommendation Engine with Temporal Scoring and Multi-factor Ranking
 // Integrates with PostgreSQL + pgvector for semantic search and user preference learning
-import { db } from, '$lib/db/connection';
-import { aiResponses, recommendationScores, grpoFeedback, similarityCache } from, '$lib/db/enhanced-ai-schema';
-import { eq, desc, and, gte, sql, inArray } from, 'drizzle-orm';
+import { db } from '$lib/db/connection';
+import { aiResponses, recommendationScores, grpoFeedback, similarityCache } from '$lib/db/enhanced-ai-schema';
+import { eq, desc, and, gte, sql, inArray } from 'drizzle-orm';
 
 // Recommendation types and interfaces
 export interface RecommendationRequest {

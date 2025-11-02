@@ -1,4 +1,4 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 export interface GPUProcessingStatus { stage: string;, progress: number;
   services: {, ollama: boolean;, flashattention: boolean;
     concurrentSearch: boolean;

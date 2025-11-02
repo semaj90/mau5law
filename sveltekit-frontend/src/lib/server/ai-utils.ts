@@ -1,4 +1,4 @@
-import type { Candidate } from, '$lib/types';
+import type { Candidate } from '$lib/types';
 
 // Placeholder for a server-side embedding function (e.g., calling a TensorRT/Gemma3 service)
 export async function embedTextServer(text: string): Promise<number[]> {

@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { vectorEmbeddingService } from, '$lib/services/vector-embedding-service';
+import type { RequestHandler } from '@sveltejs/kit';
+import { vectorEmbeddingService } from '$lib/services/vector-embedding-service';
 
 export const GET: RequestHandler = async () => {
   try {

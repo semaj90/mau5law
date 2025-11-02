@@ -1,5 +1,5 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Define types for Ollama API responses
 interface OllamaModel {

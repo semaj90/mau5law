@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Search System Type Definitions // Enhanced search with Fuse.js integration export type SearchCategory = | 'component'
   | 'service'
   | 'documentation'

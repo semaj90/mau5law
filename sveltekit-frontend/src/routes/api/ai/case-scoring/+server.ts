@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,10 +16,10 @@ import type { Case } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { qdrantService } from, '$lib/server/services/qdrant-service';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { qdrantService } from '$lib/server/services/qdrant-service';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 interface ScoreFactor { category: string;, weight: number;
  , impact: number; // 0-1 scaled,
   description: string;

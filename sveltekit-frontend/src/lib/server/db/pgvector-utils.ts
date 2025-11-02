@@ -2,7 +2,7 @@
  * PostgreSQL pgvector utilities for vector operations
  * Provides proper vector similarity search and embedding operations
  */
-import { db } from, './index.js';
+import { db } from './index.js';
 
 /**
  * Safely escape a JS value as a SQL literal.

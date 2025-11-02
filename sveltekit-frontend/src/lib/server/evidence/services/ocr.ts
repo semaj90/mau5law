@@ -1,5 +1,5 @@
-import fs from, 'fs';
-import path from, 'path';
+import fs from 'fs';
+import path from 'path';
 export async function runOcrFromFile(filePath: string): Promise<{ text: string }> {
   // Try to dynamically require tesseract if available.
   try {

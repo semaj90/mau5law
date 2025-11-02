@@ -1,9 +1,9 @@
-import { reports } from, '$lib/server/db/schema';
-import { db } from, '$lib/server/db/index';
-import type { RequestHandler } from, './$types.js';
+import { reports } from '$lib/server/db/schema';
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types.js';
 // import { citationPoints
-import { and, eq } from, 'drizzle-orm';
-import { getUserId } from, '$lib/server/auth/utils';
+import { and, eq } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {

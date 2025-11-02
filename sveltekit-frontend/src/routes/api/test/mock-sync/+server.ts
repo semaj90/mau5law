@@ -1,8 +1,8 @@
 // Mock Data Sync API - Test integration with PostgreSQL, pgvector, and Drizzle ORM
 // This endpoint provides test data and verifies database connectivity
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { initializeMockDataWithEmbeddings, mockApiResponses } from, '$lib/data/mock-legal-data.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { initializeMockDataWithEmbeddings, mockApiResponses } from '$lib/data/mock-legal-data.js'
 
 // Define a type for the database client based on its observed usage.
 // The: 'db' object is expected to have; an: 'execute' method that takes a SQL: string

@@ -1,7 +1,7 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
-// NOTE: Do NOT import from, '@webgpu/types' at runtime — it's a .d.ts-only module and can cause'
+// NOTE: Do NOT import from '@webgpu/types' at runtime — it's a .d.ts-only module and can cause'
 // "is not a module" errors. If you want compile-time WebGPU types, install the package as a
 // devDependency and add it to tsconfig: "types": ["@webgpu/types"] instead of importing it here.
 

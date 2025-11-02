@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 export type SearchResult = { id: string;, title: string;
   snippet: string;
  , documentType: string;
@@ -40,6 +40,6 @@ export async function advancedSearch(
   return handleJsonResponse<{ results: SearchResult[];, count: number }>(res);
 }
 // Example usage hint (not executed):
-// import { search, advancedSearch } from, '$lib/api/search-client';
+// import { search, advancedSearch } from '$lib/api/search-client';
 // const { results } = await search('contract breach', 10);
 // const adv = await advancedSearch({ query: 'contract', filters: {, riskLevel: `high' } });'`

@@ -3,8 +3,8 @@
  * Comprehensive evidence management with chain of custody, encryption, and legal compliance
  * Supports digital forensics, case management, and audit trail requirements
  */
-import { writable, get, derived } from, 'svelte/store';
-import { selectedCase } from, './case-store.js';
+import { writable, get, derived } from 'svelte/store';
+import { selectedCase } from './case-store.js';
 // Core Evidence Interface
 export interface Evidence { id: string;, caseId: string;
   title: string;

@@ -1,4 +1,4 @@
-import { redis } from, '$lib/server/redis-client';
+import { redis } from '$lib/server/redis-client';
 
 declare global {
   interface GlobalThis {
@@ -25,7 +25,7 @@ export interface ShimmedRedisClient { connect: () => Promise<void>;, disconnect
 }
 
 // Minimal compatibility, shim: expose a createClient function that returns an ioredis client
-// This lets existing code that imports from, 'redis' continue to work while we standardize on ioredis.
+// This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
 export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { // Specify return type here
   // The: 'url';, and: 'password' variables are not used here as the shim directly uses the pre-configured, 'redis' instance.
 
@@ -151,7 +151,7 @@ export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { //
   };
 }
 
-// Provide the old-style default export for modules that expect `import redis from, 'redis'`
+// Provide the old-style default export for modules that expect `import redis from 'redis'`
 
 // Compatibility wrapper: async factory named `redis` to match some consumers.
 export async function redis(opts?: string | { url?: string; password?: string }): Promise<any> {

@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
+  import type { Snippet } from 'svelte';
   type BadgeVariant = 'default' | 'success' | 'destructive' | 'warning' | 'info' | 'outline';
   type BadgeSize = 'sm' | 'md' | 'lg';
   interface Props {

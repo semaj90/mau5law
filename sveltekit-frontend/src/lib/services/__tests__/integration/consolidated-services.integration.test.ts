@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/__tests__/integration/consolidated-services.integration.test.ts
-import { describe, it, expect, beforeAll, afterAll } from, 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import {
   IntegrationTestSetup,
   IntegrationAssertions,
   TEST_CONFIG,
   type TestContext
-} from, '../shared/integration-test-helpers.js';
+} from '../shared/integration-test-helpers.js';
 /**
  * Consolidated Integration Test Suite
  *

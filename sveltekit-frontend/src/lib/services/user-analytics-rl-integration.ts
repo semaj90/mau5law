@@ -1,15 +1,15 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * User Analytics & Reinforcement Learning Integration Service
  * Combines user.history and user.analytics with QLorA training and Moogle Graph Synthesizer
  * Provides concurrent data parallelism with caching for enhanced user productivity
  */
-import { writable, derived } from, 'svelte/store';
-import type { Writable, Readable } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { qloraTrainingService, userAnalytics as qloraAnalytics } from, './qlora-training-service.js';
-import { recommendationOrchestrator } from, './recommendation-orchestrator.js';
-import { MoogleGraphSynthesizer } from, '../ai/moogle-graph-synthesizer.js';
+import { writable, derived } from 'svelte/store';
+import type { Writable, Readable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { qloraTrainingService, userAnalytics as qloraAnalytics } from './qlora-training-service.js';
+import { recommendationOrchestrator } from './recommendation-orchestrator.js';
+import { MoogleGraphSynthesizer } from '../ai/moogle-graph-synthesizer.js';
 
 export interface UserHistoryEntry { id: string;, userId: string;
   sessionId: string;

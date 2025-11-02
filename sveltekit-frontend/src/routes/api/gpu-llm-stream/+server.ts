@@ -2,9 +2,9 @@
  * SvelteKit API endpoint for GPU-accelerated LLM streaming
  * Handles chunked responses and VRAM management
  */
-import type { RequestHandler } from, './$types.js'
-import { GPULLMStreamingPipeline } from, '$lib/services/gpu-llm-streaming-pipeline'
-import { error } from, '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { GPULLMStreamingPipeline } from '$lib/services/gpu-llm-streaming-pipeline'
+import { error } from '@sveltejs/kit'
 
 // Add a local StreamConfig type with explicit fields instead of `any`
 type StreamConfig = {

@@ -1,4 +1,4 @@
-<script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from, 'svelte'; import { redisOrchestratorClient } from, '$lib/stores/unified'; let endpointMetrics = $state<any[]>([]); let isLoading = $state<boolean>(true); const endpoints = [ {, name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts', complexity: 'medium'
+<script, lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { redisOrchestratorClient } from '$lib/stores/unified'; let endpointMetrics = $state<any[]>([]); let isLoading = $state<boolean>(true); const endpoints = [ {, name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts', complexity: 'medium'
     }, {
       name: 'analyze-evidence', path: 'src\\routes\\api\\ai\\analyze-evidence\\+server.ts', complexity: 'medium'
     }, {

@@ -1,9 +1,9 @@
-import neo4j from, 'neo4j-driver';
-import { CONFIG } from, '$lib/config/env.server';
-import { appPool } from, '$lib/server/db/connections';
-import { ensureRedisReady, redis } from, '$lib/server/redis-client';
-import { LokiHybridStore } from, '$lib/server/lokiHybridStore';
-import { qdrant, EVIDENCE_COLLECTION_NAME } from, '$lib/server/services/qdrant-client';
+import neo4j from 'neo4j-driver';
+import { CONFIG } from '$lib/config/env.server';
+import { appPool } from '$lib/server/db/connections';
+import { ensureRedisReady, redis } from '$lib/server/redis-client';
+import { LokiHybridStore } from '$lib/server/lokiHybridStore';
+import { qdrant, EVIDENCE_COLLECTION_NAME } from '$lib/server/services/qdrant-client';
 type GlobalRegistry = typeof globalThis & {
   knowledgeCache?: LokiHybridStore;
   knowledgeCacheReady?: Promise<void>;

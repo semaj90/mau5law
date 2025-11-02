@@ -2,8 +2,8 @@
  * Compiles, caches, and serves WGSL shaders with logging
  * Integrates with centralized Redis cache and Loki.js logging
  */
-import { cache, cacheShader, getCachedShader } from, '$lib/server/cache/redis.js';
-import { browser } from, '$app/environment';
+import { cache, cacheShader, getCachedShader } from '$lib/server/cache/redis.js';
+import { browser } from '$app/environment';
 export interface ShaderConfig { type: 'compute' | 'vertex' | 'fragment';, entryPoint: string;
   workgroupSize?: [number, number, number];
   bindingLayout?: GPUBindGroupLayoutDescriptor[];

@@ -3,9 +3,9 @@
  *
  * Provides comprehensive health status for all legal AI processing systems
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { unifiedLegalOrchestrationService } from, '$lib/services/unified-legal-orchestration-service.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { unifiedLegalOrchestrationService } from '$lib/services/unified-legal-orchestration-service.js';
 export const GET: RequestHandler = async () => {
   try {
     // Initialize service if needed

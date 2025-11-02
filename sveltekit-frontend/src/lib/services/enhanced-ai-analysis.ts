@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced AI Analysis Service - Phase 2: Advanced NLP & Semantic Analysis
  *
@@ -15,15 +15,15 @@ import type { Document } from, '$lib/types';
  * - PostgreSQL with pgvector for embeddings
  * - CUDA acceleration via discovered workers
  */
-import { getOptimalEmbeddingModel } from, '../ai/embedding-config.js';
-import { OllamaService } from, '../server/ai/ollama-service.js';
-import { drizzleVectorConfig } from, '../server/db/drizzle-vector-config.js';
+import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
+import { OllamaService } from '../server/ai/ollama-service.js';
+import { drizzleVectorConfig } from '../server/db/drizzle-vector-config.js';
 import type {
   LegalDocument,
   DocumentChunk,
   AnalysisResult,
   UserQuery
-} from, '../server/ai/types.js';
+} from '../server/ai/types.js';
 // Legal Entity Types
 export interface LegalEntity { type: 'case' | 'statute' | 'precedent' | 'regulation' | 'contract' | 'person' | 'organization';, name: string;
   citation?: string;

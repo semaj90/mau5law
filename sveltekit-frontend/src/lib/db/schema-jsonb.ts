@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Enhanced Drizzle ORM Schema with JSONB Support
 // File: schema-jsonb.ts
 import {
@@ -15,10 +15,10 @@ import {
   varchar,
   customType,
   serial
-} from, 'drizzle-orm/pg-core';
+} from 'drizzle-orm/pg-core';
 import {
   sql
-} from, "drizzle-orm";
+} from "drizzle-orm";
 // Custom vector type for pgvector
 const vector = customType({
   dataType() {

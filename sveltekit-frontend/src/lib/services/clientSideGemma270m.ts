@@ -2,12 +2,12 @@
  * Client-Side Gemma3:270m Integration with GPU Lifecycle Management
  * Optimized for browser execution with WebAssembly + WebGPU acceleration
  */
-import { browser } from, '$app/environment';
-import { writable, derived, get } from, 'svelte/store';
-import { forceUserActivity } from, '$lib/stores/userActivityStore';
-import { webLlamaService } from, '../ai/webasm-llamacpp.js';
-import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from, '../adapters/webasm-ai-adapter.js';
-import type { ConversationEntry } from, '../stores/aiAssistant.svelte.js';
+import { browser } from '$app/environment';
+import { writable, derived, get } from 'svelte/store';
+import { forceUserActivity } from '$lib/stores/userActivityStore';
+import { webLlamaService } from '../ai/webasm-llamacpp.js';
+import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from '../adapters/webasm-ai-adapter.js';
+import type { ConversationEntry } from '../stores/aiAssistant.svelte.js';
 interface Gemma270mConfig { preferredMethod: 'server' | 'webassembly' | 'webgpu' | 'tensorrt' | 'auto';, maxTokens: number;
   temperature: number;
   topP: number;

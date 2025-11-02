@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { caseActivities } from, '$lib/server/db/schema-postgres';
-import db from, '$lib/server/db/index';
-import { sql, desc } from, 'drizzle-orm';
-import { eq, or as orExpr } from, '$lib/server/db/utils';
-import type { RequestHandler } from, './$types.js';
-import { getUserId } from, '$lib/server/auth/utils';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { caseActivities } from '$lib/server/db/schema-postgres';
+import db from '$lib/server/db/index';
+import { sql, desc } from 'drizzle-orm';
+import { eq, or as orExpr } from '$lib/server/db/utils';
+import type { RequestHandler } from './$types.js';
+import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user) {

@@ -4,8 +4,8 @@
  * Features Autoencoder compression and Self-Organizing Map clustering
  * for advanced user intent recognition and model optimization.
  */
-import { browser } from, '$app/environment';
-import { euclideanDistance, feedForward, normalize, generateRandomWeights } from, './helpers/vector-math';
+import { browser } from '$app/environment';
+import { euclideanDistance, feedForward, normalize, generateRandomWeights } from './helpers/vector-math';
 export type IntentCategory = 'legal_analysis' | 'document_review' | 'research' | 'chat' | 'search' | 'unknown';
 export type Urgency = 'low' | 'medium' | 'high' | 'critical';
 export type UserBehaviorPattern = 'explorer' | 'focused' | 'repetitive' | 'learning';

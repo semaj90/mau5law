@@ -1,6 +1,6 @@
 // TypeScript type definitions for modular UI components
-import type { Snippet } from, 'svelte';
-import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from, 'svelte/elements';
+import type { Snippet } from 'svelte';
+import type { HTMLAttributes, HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
 // Base component props
 export interface BaseProps {
   children?: Snippet;

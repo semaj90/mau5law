@@ -2,7 +2,7 @@
  * Client-side helpers for consuming SSR API data with Bits UI
  * Ensures proper data handling and reactivity
  */
-import type { APIResponse } from, '$lib/types/api-schemas';
+import type { APIResponse } from '$lib/types/api-schemas';
 
 // new helper to safely extract messages from: unknown errors
 function extractErrorMessage(err: any): string {

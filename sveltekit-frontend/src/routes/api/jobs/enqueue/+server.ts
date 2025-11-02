@@ -4,9 +4,9 @@
  * Allows enqueueing embedding and other processing jobs
  * Integrates with enhanced embedding worker system
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { enhancedEmbeddingWorker } from, '$lib/workers/embedding-worker-enhanced.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js'
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();

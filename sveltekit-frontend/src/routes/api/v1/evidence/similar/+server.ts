@@ -1,9 +1,9 @@
-import type { Case } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { evidence, cases } from, '$lib/server/db/schema';
-import { sql, desc, and, ne } from, 'drizzle-orm';
+import type { Case } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { evidence, cases } from '$lib/server/db/schema';
+import { sql, desc, and, ne } from 'drizzle-orm';
 
 /**
  * POST /api/v1/evidence/similar - Find similar evidence using OCR embeddings

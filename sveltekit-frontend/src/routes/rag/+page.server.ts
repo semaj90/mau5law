@@ -1,10 +1,10 @@
-import type { Actions, PageServerLoad } from, './$types';
-import { Client, as MinioClient } from, 'minio';
-import { Buffer } from, 'buffer';
-import { db } from, '$lib/server/db';
-import { documents } from, '$lib/server/db/enhanced-embedding-schema';
-import { DocumentUploadSchema, type UploadData } from, './schema';
-import { fail } from, '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+import { Client, as MinioClient } from 'minio';
+import { Buffer } from 'buffer';
+import { db } from '$lib/server/db';
+import { documents } from '$lib/server/db/enhanced-embedding-schema';
+import { DocumentUploadSchema, type UploadData } from './schema';
+import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
   // Provide a minimal initial form: object instead of calling superValidate with a Zod schema.

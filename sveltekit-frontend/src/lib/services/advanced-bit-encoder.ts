@@ -698,7 +698,7 @@ class AutoEncoder {
 // ============================================================================
 // Example usage in a Svelte, component:
 /*
-import { AdvancedBitEncoder } from, './advanced-bit-encoder.js';
+import { AdvancedBitEncoder } from './advanced-bit-encoder.js';
 const encoder = new AdvancedBitEncoder({
 	bitDepth: 24,
 	colorSpace: 'RGB',

@@ -2,7 +2,7 @@
  * Console Palette Animation System
  * Smooth transitions between gaming themes with easing and effects
  */
-import { CONSOLE_PALETTES, type ConsolePaletteName } from, './retro-console-palettes';
+import { CONSOLE_PALETTES, type ConsolePaletteName } from './retro-console-palettes';
 export interface AnimationOptions { duration: number;, easing: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
   effects: AnimationEffect[];
 }
@@ -78,12 +78,12 @@ export class PaletteAnimationController {
       const toColor = toColors[key as keyof typeof toColors];
       if (Array.isArray(fromColor) && Array.isArray(toColor)) {
         // Handle accent color arrays
-        fromColor.forEach((from, index) => {
+        fromColor.forEach((from index) => {
           const to = toColor[index] || toColor[0];
           this.transitions.set(`${key}[${index}]`, {
-            from,
+            from 
             to,
-            current: from, // Changed from semicolon to comma
+            current: from // Changed from semicolon to comma
             progress: 0
           });
         });
@@ -101,7 +101,7 @@ export class PaletteAnimationController {
     for (const [$, transition] of this.transitions) {
       // Renamed: 'key';, to: '$'
       transition.progress = progress;
-      transition.current = this.interpolateColor(transition.from, transition.to, progress);
+      transition.current = this.interpolateColor(transition.from transition.to, progress);
     }
   }
   private interpolateColor(from: string, to: string, progress: number): string {

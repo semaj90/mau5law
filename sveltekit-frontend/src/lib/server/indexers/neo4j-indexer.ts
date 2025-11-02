@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Minimal Neo4j indexer with lazy driver import
 export async function indexNeo4j(doc: {, id: string;, text: string;, embedding: number[] }): Promise<any> {
   try {

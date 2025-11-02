@@ -1,7 +1,7 @@
-import type { User } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { databaseOrchestrator } from, '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator
+import type { User } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { databaseOrchestrator } from '$lib/server/db/database-orchestrator'; // Added import for databaseOrchestrator
 // Context7 MCP Server endpoints
 const MCP_ENDPOINTS = {
   wrapper: 'http://localhost:4000', // mcp-context7-wrapper.js

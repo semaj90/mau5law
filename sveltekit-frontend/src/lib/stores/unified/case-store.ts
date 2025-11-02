@@ -8,14 +8,14 @@
  * - case-navigation.ts
  *
  *, Usage:
- *   import { caseStore } from, '$lib/stores/unified';
+ *   import { caseStore } from '$lib/stores/unified';
  *
  *   await caseStore.loadCases();
  *   caseStore.selectCase(caseId);
  *   $: activeCase = $caseStore.activeCase;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -472,11 +472,11 @@ export const activeCase = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { cases, selectCase } from, '$lib/stores/cases'
- *   import { casesStore } from, '$lib/stores/casesStore'
+ *   import { cases, selectCase } from '$lib/stores/cases'
+ *   import { casesStore } from '$lib/stores/casesStore'
  *
  * New imports:
- *   import { caseStore, cases, filteredCases, activeCase } from, '$lib/stores/unified'
+ *   import { caseStore, cases, filteredCases, activeCase } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ;, Old: $cases, $casesStore

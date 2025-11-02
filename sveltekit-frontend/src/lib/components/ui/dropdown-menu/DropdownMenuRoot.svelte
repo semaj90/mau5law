@@ -1,8 +1,8 @@
 <script, lang="ts">
-  import { getBitsNamespace } from, '$lib/utils/bits-ui-adapter';
+  import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps'
-  import { cn } from, '$lib/utils.js';
-  import type { Snippet } from, 'svelte';
+  import { cn } from '$lib/utils.js';
+  import type { Snippet } from 'svelte';
   // Minimal, permissive props shape used at runtime by the dropdown creator.
   type Props = {
     // arbitrary runtime props that the bits-ui factory may accept

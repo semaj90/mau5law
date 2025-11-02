@@ -1,8 +1,8 @@
 // sveltekit-frontend/src/routes/api/ollama/generate/+server.ts
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { generateChatResponse, services } from, '$lib/server/services';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse, services } from '$lib/server/services';
 
 // Add a small explicit type for the Ollama config to avoid `any`
 type OllamaConfig = {

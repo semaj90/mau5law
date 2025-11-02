@@ -2,11 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { writable } from, 'svelte/store';
-  import { legalDB } from, '$lib/db/client-db.js';
+  import { writable } from 'svelte/store';
+  import { legalDB } from '$lib/db/client-db.js';
   // Correct prop destructuring and types for Svelte, 5
   let {
     documentId = '',

@@ -3,8 +3,8 @@
  * Routes to QUIC /tensor/store → TensorManager.StoreTensor()
  * NO MOCKS - Full production implementation per apparch913.txt
  */
-import { json, error, type RequestHandler } from, '@sveltejs/kit';
-import { z } from, 'zod';
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
 // Tensor storage schema per architecture docs
 const TensorStoreSchema = z.object({
   tensor_id: z.string(),

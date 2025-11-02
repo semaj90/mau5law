@@ -1,17 +1,17 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json, error } from, '@sveltejs/kit';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
 /*
  * Comprehensive Integration Test API - SvelteKit, 2 Production
  * Tests all, 37 Go microservices and unified API system
  * Validates Windows-native deployment and multi-protocol communication
  */
-import { ensureError } from, '$lib/utils/ensure-error';
-import { dev } from, '$app/environment';
-import { APIOrchestrator } from, '$lib/services/api-orchestrator.js';
-import { embeddingService } from, '$lib/server/embedding-service.js';
-import type { APIResponse, APIRequestContext } from, '$lib/types/api.js';
-import crypto from, 'crypto';
+import { ensureError } from '$lib/utils/ensure-error';
+import { dev } from '$app/environment';
+import { APIOrchestrator } from '$lib/services/api-orchestrator.js';
+import { embeddingService } from '$lib/server/embedding-service.js';
+import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
+import crypto from 'crypto';
 export interface IntegrationTestResult { testName: string;, status: 'passed' | 'failed' | 'skipped';
   duration: number;
   details?: any;

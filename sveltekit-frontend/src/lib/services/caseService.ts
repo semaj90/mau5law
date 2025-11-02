@@ -1,6 +1,6 @@
 // Add missing imports so the file is a module and Writable/Readable are defined
-import type { Writable, Readable } from, 'svelte/store';
-import { get, writable } from, 'svelte/store';
+import type { Writable, Readable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 
 // remove Node default crypto import (can break ESM/browser parsing)
 // provide a cross-runtime id generator that prefers crypto.randomUUID when available

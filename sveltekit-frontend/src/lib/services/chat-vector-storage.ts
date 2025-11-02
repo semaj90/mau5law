@@ -1,16 +1,16 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Chat Vector Storage with Temporal Indexing
  * Stores user chats in pgvector with timestamp-based semantic search
  * Implements self-prompting intent guessing and: "did you mean" functionality
  */
-import { base64FP32Quantizer } from, '../text/base64-fp32-quantizer.js';
-import { enhancedCachingRevolutionaryBridge } from, './enhanced-caching-revolutionary-bridge.js';
-import { db } from, '$lib/server/db/drizzle-client'; // Import the Drizzle client
-import { chatMessages, chatEmbeddings } from, '$lib/server/db/schema'; // Import the Drizzle schema
-import { sql, desc } from, 'drizzle-orm'; // Import sql for raw queries and operators, and desc
-import { eq, and, gte, lte } from, 'drizzle-orm'; // Import Drizzle operators
-import type { QuantizationResult as Base64QuantizationResult } from, '../text/base64-fp32-quantizer';
+import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
+import { enhancedCachingRevolutionaryBridge } from './enhanced-caching-revolutionary-bridge.js';
+import { db } from '$lib/server/db/drizzle-client'; // Import the Drizzle client
+import { chatMessages, chatEmbeddings } from '$lib/server/db/schema'; // Import the Drizzle schema
+import { sql, desc } from 'drizzle-orm'; // Import sql for raw queries and operators, and desc
+import { eq, and, gte, lte } from 'drizzle-orm'; // Import Drizzle operators
+import type { QuantizationResult as Base64QuantizationResult } from '../text/base64-fp32-quantizer';
 
 // Define interfaces for external service responses and modules
 interface CachedEmbeddingResult {

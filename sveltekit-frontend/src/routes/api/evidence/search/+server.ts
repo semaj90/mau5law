@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import { evidence } from, '$lib/server/db/schema-postgres-enhanced';
-import { ilike, or } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import { evidence } from '$lib/server/db/schema-postgres-enhanced';
+import { ilike, or } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
 
 // deterministic text scoring fallback (Jaccard-like)
 function textScore(query: string, text: string): number {

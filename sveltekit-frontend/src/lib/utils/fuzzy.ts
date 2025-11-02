@@ -1,5 +1,5 @@
-import Fuse from, 'fuse.js';
-import Loki from, 'lokijs'; // Correct import for LokiJS
+import Fuse from 'fuse.js';
+import Loki from 'lokijs'; // Correct import for LokiJS
 
 // 1. Initialize LokiJS Database
 const db = new Loki('legal-ai-db.db'); // Initialize Loki database

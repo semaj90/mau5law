@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Reports Generation and Management System
  * AI-powered report generation with templates, automation, and collaboration
  */
-import { writable, derived } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { fastParse, fastStringify, createSIMDJSONCache } from, '$lib/utils/simd-json-cache';
-import { createWorkerPool } from, '$lib/workers/legal-ai-worker-pool';
-import type { LegalCitation } from, './legal-citations';
-import type { LegalNote } from, './enhanced-saved-notes';
+import { writable, derived } from 'svelte/store';
+import { browser } from '$app/environment';
+import { fastParse, fastStringify, createSIMDJSONCache } from '$lib/utils/simd-json-cache';
+import { createWorkerPool } from '$lib/workers/legal-ai-worker-pool';
+import type { LegalCitation } from './legal-citations';
+import type { LegalNote } from './enhanced-saved-notes';
 // Report Types and Interfaces
 export interface LegalReport { id: string;, type: 'case_summary' | 'legal_brief' | 'motion' | 'discovery_response' | 'settlement_demand' |
         'legal_memo' | 'court_filing' | 'evidence_summary' | 'expert_report' | 'investigation_report' |

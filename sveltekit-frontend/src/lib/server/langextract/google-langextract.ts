@@ -10,7 +10,7 @@
  * - TypeScript native
  * - Fully controllable with custom prompts
  */
-import { OLLAMA_BASE_URL } from, '$env/static/private';
+import { OLLAMA_BASE_URL } from '$env/static/private';
 /**
  * Extract keywords from text using Ollama Gemma 3:270m
  * Returns top keywords relevant to the legal document

@@ -1,5 +1,5 @@
-import Loki from, 'lokijs';
-import { browser } from, '$app/environment';
+import Loki from 'lokijs';
+import { browser } from '$app/environment';
 
 // Define a base interface for documents stored in LokiJS
 export interface LokiDocument {
@@ -22,7 +22,7 @@ export interface LokiDocument {
 }
 
 // Corrected imports for LokiJS types
-// import type { Collection, Query, Chain, PersistenceMethod } from, 'lokijs'; // Removed this line
+// import type { Collection, Query, Chain, PersistenceMethod } from 'lokijs'; // Removed this line
 
 export interface SyncOperation { operation: 'insert' | 'update' | 'delete';, collection: string;
   document: LokiDocument | { id?: string | number };

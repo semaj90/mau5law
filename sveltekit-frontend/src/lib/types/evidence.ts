@@ -1,9 +1,9 @@
-import type { AIResponse } from, '$lib/types';
-import type { Message } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
+import type { Message } from '$lib/types';
 // Evidence Management Types for SvelteKit, 2 AI Platform
 // Optimized for PostgreSQL + PGVector + Qdrant + MinIO + Redis
 
-import type { ActorRef } from, 'xstate';
+import type { ActorRef } from 'xstate';
 
 /**
  * Defines the structure for an evidence item used in the legal AI platform.

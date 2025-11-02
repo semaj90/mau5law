@@ -1,12 +1,12 @@
-import type { SearchResult } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
-import { evidence } from, '$lib/server/db/schema-postgres';
-import { and, desc, ilike, or, sql } from, 'drizzle-orm';
-import { db } from, '$lib/server/db/index';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { and, desc, ilike, or, sql } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
 
 export const GET: RequestHandler = async ({ url }) => {
   // declare here so catch() can access them

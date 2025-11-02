@@ -1,7 +1,7 @@
 // Enhanced Search Service with Fuse.js + Go Binaries Catalog Integration
 // Real-time search across components, documentation, and services
-import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from, 'fuse.js';
-import type { SearchResult, SearchCategory } from, '$lib/types/search.types';
+import Fuse, { type IFuseOptions, type FuseResult, type FuseResultMatch } from 'fuse.js';
+import type { SearchResult, SearchCategory } from '$lib/types/search.types';
 // ===== SEARCH INTERFACES =====
 export interface SearchableItem { id: string;, title: string;
   description: string;

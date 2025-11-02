@@ -1,6 +1,6 @@
 // TensorRT inference service for SvelteKit
-import { spawn } from, 'child_process';
-import { env } from, '$env/dynamic/private';
+import { spawn } from 'child_process';
+import { env } from '$env/dynamic/private';
 export interface LegalAIRequest {
   prompt: string;
   context?: string;

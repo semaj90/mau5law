@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
-import { rabbitMQService } from, '../services/rabbitmq-service.js';
-import { db } from, '$lib/server/db';
-import * as schema from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { v4, as uuidv4 } from, 'uuid';
+import type { Document } from '$lib/types';
+import { rabbitMQService } from '../services/rabbitmq-service.js';
+import { db } from '$lib/server/db';
+import * as schema from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { v4, as uuidv4 } from 'uuid';
 // Add: LangChain text splitter for semantic chunking
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // New imports for real download/temp file handling
-import { promises, as fs } from, 'fs';
-import path from, 'path';
-import os from, 'os';
+import { promises, as fs } from 'fs';
+import path from 'path';
+import os from 'os';
 
 export interface DocumentProcessingJob { documentId: string | number;, s3Key: string;
   s3Bucket: string;

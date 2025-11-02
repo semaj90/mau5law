@@ -1,6 +1,6 @@
-import { createActor } from, 'xstate';
-import { legalCaseMachine } from, '$lib/state/legal-case-machine';
-import { browser } from, '$app/environment';
+import { createActor } from 'xstate';
+import { legalCaseMachine } from '$lib/state/legal-case-machine';
+import { browser } from '$app/environment';
 // Create the XState actor for legal case management
 const legalCaseActor = browser ? createActor(legalCaseMachine).start() : null;
 const initialSnapshot = legalCaseActor?.getSnapshot();

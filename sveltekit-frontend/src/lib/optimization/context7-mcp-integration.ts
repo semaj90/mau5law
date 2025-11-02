@@ -1,9 +1,9 @@
 /**
  * Context7 MCP Integration with Enhanced Resource Optimization (cleaned)
  */
-import { EventEmitter } from, 'events';
-import type { EnhancedOptimizationSuite, EnhancedPerformanceMetrics } from, './index.js';
-import { createEnhancedOptimizationSuite } from, './index.js';
+import { EventEmitter } from 'events';
+import type { EnhancedOptimizationSuite, EnhancedPerformanceMetrics } from './index.js';
+import { createEnhancedOptimizationSuite } from './index.js';
 export interface Context7MCPRequest {
   tool: 'analyze-stack' | 'generate-best-practices' | 'suggest-integration' | 'get-library-docs' | 'resolve-library-id';
   component?: string;
@@ -153,7 +153,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Use WebAssembly for memory-efficient JSON processing',
         ],
         expected_benefit: 'Reduce memory usage by 20-30%',
-        code_example: '// Enable memory optimization\nimport { optimizeForLegalAIProduction } from, '$lib/optimization';\nconst suite = await optimizeForLegalAIProduction();\nawait suite.docker.optimizeMemoryUsage();' });
+        code_example: '// Enable memory optimization\nimport { optimizeForLegalAIProduction } from '$lib/optimization';\nconst suite = await optimizeForLegalAIProduction();\nawait suite.docker.optimizeMemoryUsage();' });
     }
     if (context.cache_efficiency < 70) {
       recommendations.push({
@@ -260,7 +260,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
           'Consider WebAssembly acceleration if applicable',
         ],
         expected_benefit: 'Optimized integration with minimal performance impact',
-        code_example: '// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from, '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness' }
+        code_example: '// Optimized feature integration\nimport { createEnhancedOptimizationSuite } from '$lib/optimization';\nconst suite = createEnhancedOptimizationSuite();\n// Integrate ${feature} with optimization awareness' }
     ];
   }
   private async generateLibraryOptimizationTips(
@@ -280,7 +280,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
         ],
         expected_benefit: 'Improve page load times by 40-70%',
         code_example: '// SvelteKit optimization'
-import { preloadData } from, '$app/navigation';
+import { preloadData } from '$app/navigation';
 export const load = (async ({ depends }): Promise<any> => {
   depends('app:data');
   return await loadOptimizedData();

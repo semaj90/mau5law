@@ -2,9 +2,9 @@
 /**
  * Redis Vector Service for caching and vector operations
  */
-import type { RedisOptions } from, 'ioredis';
+import type { RedisOptions } from 'ioredis';
 // Use centralized Redis factory for consistent configuration across server code
-import { createRedisInstance } from, '$lib/server/redis';
+import { createRedisInstance } from '$lib/server/redis';
 
 // Minimal shape used from ioredis in this module. Keep small and explicit to avoid depending on exact ioredis types.
 interface RedisLike {
@@ -20,7 +20,7 @@ interface RedisLike {
   del(key: string): Promise<number>;
   quit(): Promise<void>;
 }
-import { logger } from, '$lib/utils/logger';
+import { logger } from '$lib/utils/logger';
 export interface VectorSearchResult { id: string;, score: number;
   payload: any;
   vector?: number[];

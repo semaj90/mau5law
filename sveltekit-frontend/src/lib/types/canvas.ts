@@ -1,4 +1,4 @@
-import type { Case as LegalCase, Evidence as EvidenceType } from, './database'; // ensure database.ts exports these types
+import type { Case as LegalCase, Evidence as EvidenceType } from './database'; // ensure database.ts exports these types
 
 // Define specific interfaces for node data
 export interface Person { id: string;, name: string;

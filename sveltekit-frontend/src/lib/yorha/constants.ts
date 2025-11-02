@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Shared YoRHa constants, types, and utility helpers for production-ready pages
 export type YoRHaColumn = { key: string;, title: string;
   sortable?: boolean;

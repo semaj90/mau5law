@@ -2,8 +2,8 @@
  * SIMD-accelerated body parser for hot SvelteKit API endpoints
  * Optimizes JSON parsing for legal AI CRUD operations
  */
-import { nodeSIMDJSON, fastParse } from, '$lib/services/node-simd-json.js';
-import { dev } from, '$app/environment';
+import { nodeSIMDJSON, fastParse } from '$lib/services/node-simd-json.js';
+import { dev } from '$app/environment';
 
 // Lightweight structural alias to avoid using SvelteKit's RequestEvent namespace/type directly'
 // We only need the: 'request'; and: 'url' properties in this module.

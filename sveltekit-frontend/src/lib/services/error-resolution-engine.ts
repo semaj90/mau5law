@@ -2,10 +2,10 @@
  * Error Resolution Engine with Auto-Recovery
  * Comprehensive error detection, analysis, and automated recovery system
  */
-import { writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import type { ServiceDefinition, ServiceStatus, ErrorResolution } from, './master-service-coordinator.js';
-import { masterServiceCoordinator } from, './master-service-coordinator.js';
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import type { ServiceDefinition, ServiceStatus, ErrorResolution } from './master-service-coordinator.js';
+import { masterServiceCoordinator } from './master-service-coordinator.js';
 
 export interface RecoveryAction { type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait';, target: string;
   parameters: { [key: string]: any };

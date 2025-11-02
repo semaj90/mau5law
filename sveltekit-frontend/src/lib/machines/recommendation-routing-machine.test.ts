@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Integration Tests for Recommendation Routing Machine
  * Tests XState v5 state machine for recommendation workflow orchestration
  */
-import { describe, it, expect, beforeEach, afterEach } from, 'vitest';
-import { createActor } from, 'xstate';
-import { recommendationRoutingMachine } from, './recommendation-routing-machine';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { createActor } from 'xstate';
+import { recommendationRoutingMachine } from './recommendation-routing-machine';
 describe('Recommendation Routing Machine', () => {
   let actor: ReturnType<typeof, createActor<typeof, recommendationRoutingMachine>>;
   beforeEach(() => {

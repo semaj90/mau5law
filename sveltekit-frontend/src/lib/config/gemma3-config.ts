@@ -1,7 +1,7 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 
-import { join } from, "path";
+import { join } from "path";
 // Gemma3 Model Configuration for Legal AI Assistant
 // Optimized configurations for your local Gemma3 model
 

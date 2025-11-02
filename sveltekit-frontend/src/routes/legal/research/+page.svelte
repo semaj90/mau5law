@@ -1,26 +1,26 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import { nesGPUBridge } from, '$lib/gpu/nes-gpu-memory-bridge';
-  import HeadlessDialog from, '$lib/headless/HeadlessDialog.svelte';
-  import LoadingButton from, '$lib/headless/LoadingButton.svelte';
-  import FormField from, '$lib/headless/FormField.svelte';
+  import { onMount } from 'svelte';
+  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
+  import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
+  import LoadingButton from '$lib/headless/LoadingButton.svelte';
+  import FormField from '$lib/headless/FormField.svelte';
   // Icons (import only icons actually used to avoid type errors)
-  import Search from, 'lucide-svelte/icons/search';
-  import BookOpen from, 'lucide-svelte/icons/book-open';
-  import Brain from, 'lucide-svelte/icons/brain';
-  import Filter from, 'lucide-svelte/icons/filter';
-  import FileText from, 'lucide-svelte/icons/file-text';
-  import Bookmark from, 'lucide-svelte/icons/bookmark';
-  import Star from, 'lucide-svelte/icons/star';
-  import Clock from, 'lucide-svelte/icons/clock';
-  import Library from, 'lucide-svelte/icons/library';
-  import Gavel from, 'lucide-svelte/icons/gavel';
-  import Calendar from, 'lucide-svelte/icons/calendar';
-  import Link from, 'lucide-svelte/icons/link';
-  import ExternalLink from, 'lucide-svelte/icons/external-link';
-  import Eye from, 'lucide-svelte/icons/eye';
+  import Search from 'lucide-svelte/icons/search';
+  import BookOpen from 'lucide-svelte/icons/book-open';
+  import Brain from 'lucide-svelte/icons/brain';
+  import Filter from 'lucide-svelte/icons/filter';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Bookmark from 'lucide-svelte/icons/bookmark';
+  import Star from 'lucide-svelte/icons/star';
+  import Clock from 'lucide-svelte/icons/clock';
+  import Library from 'lucide-svelte/icons/library';
+  import Gavel from 'lucide-svelte/icons/gavel';
+  import Calendar from 'lucide-svelte/icons/calendar';
+  import Link from 'lucide-svelte/icons/link';
+  import ExternalLink from 'lucide-svelte/icons/external-link';
+  import Eye from 'lucide-svelte/icons/eye';
   // Svelte, 5 runes
 
   // --- ADDED: explicit types to avoid `never` / `unknown` inference errors ---

@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import { redis } from, '$lib/server/redis';
+import { json } from '@sveltejs/kit';
+import { redis } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
   let redisOk = $state<boolean>(false);

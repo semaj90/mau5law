@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import type { Snippet } from, 'svelte';
-  import { onMount } from, 'svelte';
-  import { getBitsOverrides } from, './bits-overrides';
+  import type { Snippet } from 'svelte';
+  import { onMount } from 'svelte';
+  import { getBitsOverrides } from './bits-overrides';
   let { children }: { children?: Snippet } = $props();
   let DialogContent = $state<any>(null);
   const overrides = getBitsOverrides();

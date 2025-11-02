@@ -8,9 +8,9 @@
  * - MinIO (object storage)
  */
 
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getLegalAIPipeline } from, '$lib/server/integrations';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getLegalAIPipeline } from '$lib/server/integrations';
 
 export const GET: RequestHandler = async () => {
   try {

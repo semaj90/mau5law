@@ -1,12 +1,12 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
-	import { onMount } from, 'svelte';
+import type { Document } from '$lib/types';
+	import { onMount } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
-	import Card from, '$lib/components/ui/card/Card.svelte';
-	import CardHeader from, '$lib/components/ui/card/CardHeader.svelte';
-	import CardTitle from, '$lib/components/ui/card/CardTitle.svelte';
-	import CardContent from, '$lib/components/ui/card/CardContent.svelte';
-	import Button from, '$lib/components/ui/button/Button.svelte';
+	import Card from '$lib/components/ui/card/Card.svelte';
+	import CardHeader from '$lib/components/ui/card/CardHeader.svelte';
+	import CardTitle from '$lib/components/ui/card/CardTitle.svelte';
+	import CardContent from '$lib/components/ui/card/CardContent.svelte';
+	import Button from '$lib/components/ui/button/Button.svelte';
 
 	// Svelte, 5 runes
 	let systemStatus = $state({

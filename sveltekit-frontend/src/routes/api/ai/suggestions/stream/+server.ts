@@ -15,9 +15,9 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestEvent } from, '@sveltejs/kit'
-import { ollamaSuggestionsService } from, '$lib/services/ollama-suggestions-service.js'
-import { enhancedRAGSuggestionsService } from, '$lib/services/enhanced-rag-suggestions-service.js';
+import type { RequestEvent } from '@sveltejs/kit'
+import { ollamaSuggestionsService } from '$lib/services/ollama-suggestions-service.js'
+import { enhancedRAGSuggestionsService } from '$lib/services/enhanced-rag-suggestions-service.js';
 
 /*
  * Server-Sent Events endpoint for streaming AI suggestions

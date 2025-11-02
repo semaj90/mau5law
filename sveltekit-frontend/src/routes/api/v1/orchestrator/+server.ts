@@ -1,5 +1,5 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Minimal, valid orchestrator endpoint to restore route integrity
 const GET_ENDPOINTS = ['health', 'metrics', 'tasks'] as const;
 const POST_OPERATIONS = [

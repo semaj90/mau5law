@@ -1,14 +1,14 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * SvelteKit GPU Cache Integration - SSR + Client Cache Orchestration
  * Provides seamless integration between server-side GPU caching and client-side caching
  * Integrates: IndexedDB, LokiJS, User History, Predictive Prefetch
  */
-import { browser } from, '$app/environment';
-import { page } from, '$app/stores';
-import { writable, derived } from, 'svelte/store';
-import * as rpcModule from, './gpu-cache-rpc-client.js';
-import { reinforcementLearningCacheOptimizer } from, './reinforcement-learning-cache-optimizer.js';
+import { browser } from '$app/environment';
+import { page } from '$app/stores';
+import { writable, derived } from 'svelte/store';
+import * as rpcModule from './gpu-cache-rpc-client.js';
+import { reinforcementLearningCacheOptimizer } from './reinforcement-learning-cache-optimizer.js';
 
 // === Client Cache Configuration ===
 export interface ClientCacheConfig { indexedDB: {, dbName: string;

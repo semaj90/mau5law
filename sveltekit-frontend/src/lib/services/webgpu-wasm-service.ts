@@ -1,8 +1,8 @@
 // src/lib/services/webgpu-wasm-service.ts
 // WebGPU polyfill with WASM fallback for gemma3-legal:latest
 // Integrated with SvelteKit, 2 + Svelte, 5 + PostgreSQL + pgvector
-import { browser } from, '$app/environment';
-import { writable } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { writable } from 'svelte/store';
 
 type DeviceLike = { createShaderModule: (init: { label?: string;, code: string }) => GPUShaderModule | unknown;
   createComputePipeline: (desc: GPUComputePipelineDescriptor | Record<string, unknown>) => GPUComputePipeline | unknown;

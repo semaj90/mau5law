@@ -2,8 +2,8 @@
  * YoRHa 3D Layout Management System
  * Advanced CSS-like layout system for 3D UI components
  */
-import * as THREE from, 'three';
-import { YoRHa3DComponent } from, './YoRHaUI3D.js';
+import * as THREE from 'three';
+import { YoRHa3DComponent } from './YoRHaUI3D.js';
 
 export interface YoRHaLayoutOptions {
   type: 'flex' | 'grid' | 'absolute' | 'stack' | 'flow';

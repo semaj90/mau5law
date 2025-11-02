@@ -13,10 +13,10 @@
  *
  * @module vite-error-schema
  */
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-import { sql } from, 'drizzle-orm';
-import type { ErrorMetadata, ErrorCategory } from, '$lib/services/mcp-simd-parser';
+import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+import { sql } from 'drizzle-orm';
+import type { ErrorMetadata, ErrorCategory } from '$lib/services/mcp-simd-parser';
 /**
  * Vite/TypeScript errors with embeddings
  *

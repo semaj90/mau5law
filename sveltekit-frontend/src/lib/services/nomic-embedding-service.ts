@@ -4,15 +4,15 @@
  * - Fallback: nomic-embed-text:latest
  * - Fixed TypeScript/logic issues from original file
  */
-import { OllamaEmbeddings } from, '@langchain/ollama';
-import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
-import type { Readable } from, 'svelte/store';
-import { db } from, '$lib/server/db';
-import { evidence, cases, legalDocuments } from, '$lib/server/db/unified-schema';
-import { eq, sql } from, 'drizzle-orm';
+import { OllamaEmbeddings } from '@langchain/ollama';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import type { Readable } from 'svelte/store';
+import { db } from '$lib/server/db';
+import { evidence, cases, legalDocuments } from '$lib/server/db/unified-schema';
+import { eq, sql } from 'drizzle-orm';
 // lightweight stub for external legalNLP module (keep import path same as original)
-import { legalNLP } from, './sentence-transformer.js';
+import { legalNLP } from './sentence-transformer.js';
 
 export interface EmbeddingConfig { model: string;, dimensions: number;
   batchSize: number;

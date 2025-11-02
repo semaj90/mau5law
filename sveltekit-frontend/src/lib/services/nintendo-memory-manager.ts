@@ -7,8 +7,8 @@
  * L2 (System RAM): 2MB - Recent queries & document chunks (Node.js)
  * L3 (Redis): 1MB budget of 8GB - Persistent cache with strict limits
  */
-import { Redis } from, 'ioredis';
-import type { Pool } from, 'pg';
+import { Redis } from 'ioredis';
+import type { Pool } from 'pg';
 // NES-style memory constraints
 const MEMORY_BANKS = {
   L1_CHR_ROM: 1 * 1024 * 1024,      // 1MB GPU memory

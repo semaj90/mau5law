@@ -1,13 +1,13 @@
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types';
-import { json, error } from, '@sveltekit/kit';
-import { poolShim } from, '$lib/server/db-shim';
+import type { RequestHandler } from './$types';
+import { json, error } from '@sveltekit/kit';
+import { poolShim } from '$lib/server/db-shim';
 /*
  * Auto-Complete API Endpoint
  * Provides real-time legal phrase suggestions using semantic search
  */
-import { createRedisInstance } from, '$lib/server/redis';
-import { z } from, 'zod';
+import { createRedisInstance } from '$lib/server/redis';
+import { z } from 'zod';
 // Configuration
 const CONFIG = { redis: {, url: process.env.REDIS_URL || 'redis://localhost:6379'
   },

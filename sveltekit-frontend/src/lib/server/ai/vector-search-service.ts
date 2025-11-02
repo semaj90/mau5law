@@ -14,8 +14,8 @@
  * - Similarity threshold filtering
  * - Comprehensive error handling
  */
-import Redis from, 'ioredis';
-import type { Sql } from, 'postgres';
+import Redis from 'ioredis';
+import type { Sql } from 'postgres';
 // Type for postgres client
 type PostgresClient = Sql<Record<string, unknown>>;
 /**

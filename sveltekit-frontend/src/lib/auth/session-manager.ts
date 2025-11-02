@@ -1,10 +1,10 @@
 // Enhanced Session Management with Redis Integration
 // Handles secure session storage, management, and cleanup
-import { dev } from, '$app/environment';
-import { redis } from, '$lib/server/redis-service';
-import { randomBytes } from, 'crypto';
-import type { AuthUser } from, './auth-store.js';
-import type { UserRole } from, './roles.js';
+import { dev } from '$app/environment';
+import { redis } from '$lib/server/redis-service';
+import { randomBytes } from 'crypto';
+import type { AuthUser } from './auth-store.js';
+import type { UserRole } from './roles.js';
 
 // Minimal redis client & pipeline interfaces used by this module
 type RedisPipeline = {

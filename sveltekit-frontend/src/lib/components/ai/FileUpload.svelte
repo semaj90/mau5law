@@ -2,14 +2,14 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import  Button  from, "$lib/components/ui/Button.svelte";
-  import  Label  from, "$lib/components/ui/label.svelte";
-  import  Progress  from, "$lib/components/ui/progress.svelte";
-  import  Alert, AlertDescription, AlertTitle  from, "$lib/components/ui/alert.svelte";
-  import { FileUp, BrainCircuit, Search, Loader2 } from, "lucide-svelte";
-  import  FeedbackIntegration  from, "$lib/components/feedback/FeedbackIntegration.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
+  import  Label  from "$lib/components/ui/label.svelte";
+  import  Progress  from "$lib/components/ui/progress.svelte";
+  import  Alert, AlertDescription, AlertTitle  from "$lib/components/ui/alert.svelte";
+  import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
+  import  FeedbackIntegration  from "$lib/components/feedback/FeedbackIntegration.svelte";
 
   // Replace Svelte, 5 $state runes with plain typed local variables to avoid parsing issues during migration.
   let files: FileList | null = null;

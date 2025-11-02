@@ -1,13 +1,13 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import crypto from, 'crypto';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import crypto from 'crypto';
 /**
  * XState State Machine for Document Upload Workflow
  * Handles file upload, validation, processing, and search indexing
  */
-import { createMachine, assign, fromPromise } from, 'xstate';
-// TODO: Fix import - // Orphaned;, content: import { import, type { EvidenceProcessingContext } from, './evidenceProcessingMachine.js'
+import { createMachine, assign, fromPromise } from 'xstate';
+// TODO: Fix import - // Orphaned;, content: import { import, type { EvidenceProcessingContext } from './evidenceProcessingMachine.js'
 // Types for document upload
 export interface DocumentUploadContext {
   // File information

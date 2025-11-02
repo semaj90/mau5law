@@ -2,8 +2,8 @@
  * PostgreSQL + pgvector Integration Test Suite
  * Best Practices Implementation for Vector Similarity Search
  */
-import pgClient, { poolShim } from, '$lib/server/db-shim';
-import { drizzle } from, 'drizzle-orm/postgres-js';
+import pgClient, { poolShim } from '$lib/server/db-shim';
+import { drizzle } from 'drizzle-orm/postgres-js';
 // Add types to replace `any`
 type DrizzleDB = ReturnType<typeof, drizzle>;
 // Replaced invalid interface with a concrete class implementation

@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🚀 Production-Ready Unified Legal SIMD + PGVector Integration
  *
@@ -13,7 +13,7 @@ import type { Case } from, '$lib/types';
  * All mocks replaced with production-ready adapters.
  */
 
-import { getServiceAdapters, type ServiceEnvironment } from, '$lib/server/adapters/service-integrations';
+import { getServiceAdapters, type ServiceEnvironment } from '$lib/server/adapters/service-integrations';
 import type {
 	OllamaClient,
 	QdrantClient,
@@ -21,7 +21,7 @@ import type {
 	PgVectorClient,
 	QdrantVectorPayload,
 	QdrantSearchResult
-} from, '$lib/types/external-services';
+} from '$lib/types/external-services';
 
 // ===== Type Definitions =====
 

@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -16,9 +16,9 @@ import type { Case } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } from, '@sveltejs/kit';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 
 // --- New Interfaces for AI Tagging Results ---
 interface OllamaGenerateResponse { response: string;, model: string;

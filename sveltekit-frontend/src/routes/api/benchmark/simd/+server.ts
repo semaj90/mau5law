@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * SIMD JSON Performance Benchmark Endpoint
  * Quantifies performance gains across the legal AI data pipeline
  */
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { simdBodyParser } from, '$lib/server/simd-body-parser.js'
-import { nodeSIMDJSON } from, '$lib/services/node-simd-json.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { simdBodyParser } from '$lib/server/simd-body-parser.js'
+import { nodeSIMDJSON } from '$lib/services/node-simd-json.js'
 interface BenchmarkRequest {
   iterations?: number
   documentSize?: 'small' | 'medium' | 'large'

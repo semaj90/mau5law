@@ -14,9 +14,9 @@
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import fetch from, 'node-fetch';
-import type { GemmaEmbeddingService } from, './gemma-embedding-service';
-import type { PgVectorIndexingService } from, './pgvector-indexing-service';
+import fetch from 'node-fetch';
+import type { GemmaEmbeddingService } from './gemma-embedding-service';
+import type { PgVectorIndexingService } from './pgvector-indexing-service';
 /**
  * MCP Context7 Configuration
  */

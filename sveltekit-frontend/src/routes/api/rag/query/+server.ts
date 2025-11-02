@@ -9,12 +9,12 @@
  *
  * @route POST /api/rag/query
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
-import type { RAGQuery, RAGResponse } from, '$lib/services/enhanced-rag-pipeline';
-import { rateLimiter } from, '$lib/server/rate-limiter'; // Assuming rate limiting exists
-import { requireAuth } from, '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
+import type { RAGQuery, RAGResponse } from '$lib/services/enhanced-rag-pipeline';
+import { rateLimiter } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
+import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 export const POST: RequestHandler = async event => {
   const { request, getClientAddress } = event;
   const startTime = Date.now();

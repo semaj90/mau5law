@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { building } from, '$app/environment';
-import * as schema from, '$lib/server/db/schema-postgres';
-import { drizzle, type PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-import { Pool } from, 'pg';
+import { building } from '$app/environment';
+import * as schema from '$lib/server/db/schema-postgres';
+import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { Pool } from 'pg';
 let _db: PostgresJsDatabase<typeof schema> | null = null;
 let, _pool: Pool | null = null;
 function initializeDatabase(): PostgresJsDatabase<typeof schema> | null {
@@ -31,7 +31,7 @@ export const db: PostgresJsDatabase<typeof, schema> = new Proxy({} as: any, {
 });
 export const isPostgreSQL = true;
 export const isSQLite = false;
-export * from, '$lib/server/db/schema-postgres';
+export * from '$lib/server/db/schema-postgres';
 export function closeDatabase() {
   if (_pool) {
     _pool.end();

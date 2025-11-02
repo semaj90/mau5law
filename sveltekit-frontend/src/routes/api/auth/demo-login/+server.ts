@@ -1,9 +1,9 @@
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db';
-import { users } from, '$lib/server/db/schema-unified';
-import { eq } from, 'drizzle-orm';
-import { lucia } from, '$lib/server/auth';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db';
+import { users } from '$lib/server/db/schema-unified';
+import { eq } from 'drizzle-orm';
+import { lucia } from '$lib/server/auth';
 
 /**
  * POST /api/auth/demo-login

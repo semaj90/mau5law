@@ -1,6 +1,6 @@
 <script, lang="ts">
-  import { CaseLogic } from, '$lib/core/logic/case-logic';
-  import type { CaseFile } from, '$lib/core/logic/case-logic';
+  import { CaseLogic } from '$lib/core/logic/case-logic';
+  import type { CaseFile } from '$lib/core/logic/case-logic';
   // Replace unsupported optional prop syntax with an explicit union + default
   const { caseFile } = $props<{ caseFile: CaseFile | undefined }>()
   // Reactive derived values (recompute when caseFile changes)

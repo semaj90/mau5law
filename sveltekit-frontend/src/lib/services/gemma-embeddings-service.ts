@@ -2,13 +2,13 @@
  * Gemma Embeddings Service with PostgreSQL pgvector Integration
  * High-performance embedding generation and vector indexing
  */
-import { createServiceConfig } from, '$lib/config/redis-config';
-import { db } from, '$lib/server/db/connection';
-import createRedisInstance from, '$lib/server/redis';
-import { sql } from, 'drizzle-orm';
-import { env } from, '$env/dynamic/private';
-import { createHash } from, 'crypto';
-import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { createServiceConfig } from '$lib/config/redis-config';
+import { db } from '$lib/server/db/connection';
+import createRedisInstance from '$lib/server/redis';
+import { sql } from 'drizzle-orm';
+import { env } from '$env/dynamic/private';
+import { createHash } from 'crypto';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 // Configuration
 const OLLAMA_ENDPOINT = getOllamaEndpoint();
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';

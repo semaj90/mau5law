@@ -1,6 +1,6 @@
-import crypto from, "crypto";
-import { writable, type Writable } from, "svelte/store";
-import { HistoryManager } from, './HistoryManager.js';
+import crypto from "crypto";
+import { writable, type Writable } from "svelte/store";
+import { HistoryManager } from './HistoryManager.js';
 // Simple content type for now - will expand when Slate is properly integrated
 export interface ContentNode {
   type: string;

@@ -1,4 +1,4 @@
-import { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask } from, '../services/context7-multicore.js';
+import { getContext7MulticoreService, type RecommendationRequest, type ProcessingTask } from '../services/context7-multicore.js';
 /**
  * Comprehensive Agent Orchestration with Context7 Multicore Integration
  * Wires together all agents (Claude, CrewAI, AutoGen) with the Context7 multicore service

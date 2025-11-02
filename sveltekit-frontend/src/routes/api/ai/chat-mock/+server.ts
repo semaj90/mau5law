@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * 🎮 NES-STYLE AI CHAT + RAG ENDPOINT - CHR_ROM Pattern-Based Retrieval
  *
@@ -28,12 +28,12 @@ import type { User } from, '$lib/types';
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { randomUUID } from, 'node:crypto'
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, '@sveltejs/kit';
-import { withErrorHandling } from, '$lib/server/api/standard-response';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware'
-import { services, generateChatResponse, searchSimilarDocuments } from, '$lib/server/services';
+import { randomUUID } from 'node:crypto'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit';
+import { withErrorHandling } from '$lib/server/api/standard-response';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { services, generateChatResponse, searchSimilarDocuments } from '$lib/server/services';
 
 /**
  * Safe resolver for Ollama chat model name.

@@ -2,8 +2,8 @@
  * Database Setup Script for Unified Vector Systems
  * Ensures all required tables, indexes, and extensions are properly configured
  */
-import { db } from, './client.js'; // Corrected: Use central db client
-import { sql } from, 'drizzle-orm';
+import { db } from './client.js'; // Corrected: Use central db client
+import { sql } from 'drizzle-orm';
 export interface DatabaseSetupResult { success: boolean;, steps: Array<any>;
  , timestamp: string;
 }

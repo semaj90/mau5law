@@ -1,5 +1,5 @@
 // Evidence Service - Production Implementation for Legal AI Platform
-import { getAuthHeaders } from, './auth-service.js';
+import { getAuthHeaders } from './auth-service.js';
 export interface Evidence { id: string;, caseId: string;
   title: string;
   description?: string;

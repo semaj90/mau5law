@@ -1,9 +1,9 @@
-import type { TextChunk } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { TextChunk } from '$lib/types';
+import type { Document } from '$lib/types';
 /* Unified Document Processor - simplified, fixed syntax version */
-import { legalNLP } from, '$lib/services/sentence-transformer';
-import { EventEmitter } from, 'events';
-import { Pool } from, 'pg';
+import { legalNLP } from '$lib/services/sentence-transformer';
+import { EventEmitter } from 'events';
+import { Pool } from 'pg';
 
 const pgPool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/deeds'
@@ -905,7 +905,7 @@ export const redisCacheService: RedisCacheService = {
   }
 };
 
-import createQdrantAdapter from, '$lib/server/adapters/qdrant-adapter';
+import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
 
 // Qdrant indexer helper (HTTP) - minimal typed wrapper
 export interface QdrantIndexer {

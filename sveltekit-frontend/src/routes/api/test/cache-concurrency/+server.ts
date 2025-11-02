@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { cognitiveCache } from, '$lib/services/cognitive-cache-integration'
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { cognitiveCache } from '$lib/services/cognitive-cache-integration'
 /*
  * Test endpoint for thread-safe JSONB operations and GPU acceleration
  * Tests concurrent access patterns and race condition prevention

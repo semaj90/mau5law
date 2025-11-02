@@ -9,8 +9,8 @@
  * 5. MinIO storage fallback - If file already processed
  */
 
-import { extractTextFromImage, type OCRResult, type ImageSource } from, '$lib/ocr/ocr-client';
-import { browser } from, '$app/environment';
+import { extractTextFromImage, type OCRResult, type ImageSource } from '$lib/ocr/ocr-client';
+import { browser } from '$app/environment';
 
 export interface UnifiedOCRResult { success: boolean;, text: string;
   confidence?: number;

@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Complete Legal AI Case Workflow Demo
  *
  * This demonstrates the full workflow using your existing infrastructure:
  * 1. Create case → 2. Upload evidence → 3. Canvas positioning → 4. Timeline reconstruction → 5. RAG chat
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { db } from, '$lib/server/index.js';
-import * as schema from, '$lib/server/db/schema.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/index.js';
+import * as schema from '$lib/server/db/schema.js';
 
 // --- Reworked schema bindings with clearer fallbacks & runtime guards ---
 // Try common export names, prefer explicit: undefined rather than a silent {} fallback.
@@ -54,10 +54,10 @@ interface UserDocumentRow { id: string | number;, source: string;
   [key: string]: any;
 }
 
-import { sharedWorkerPool } from, '$lib/server/ingest/worker-pool-simple.js';
-import { embedText } from, '$lib/server/ingest/embed.js';
+import { sharedWorkerPool } from '$lib/server/ingest/worker-pool-simple.js';
+import { embedText } from '$lib/server/ingest/embed.js';
 // Add missing query helpers used below
-import { eq, like } from, 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 
 // Add a specific payload type to avoid `any` (defined once near the top)
 type UpdateCanvasPositionsPayload = { caseId: string;, evidencePositions: Record<string, { x: number;, y: number }>;

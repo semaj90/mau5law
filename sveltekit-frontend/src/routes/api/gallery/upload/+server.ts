@@ -1,18 +1,18 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /*
  * Gallery Upload API - File Upload Handler
  * Handles file uploads for all media types in the gallery system
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { writeFile, mkdir } from, 'fs/promises';
-import { existsSync } from, 'fs';
-import path from, 'path';
-import { db } from, '$lib/server/database';
-import { evidence, cases } from, '$lib/server/db/schema';
-import { eq, sql } from, 'drizzle-orm';
-import { randomUUID } from, 'node:crypto';
-import crypto from, 'crypto';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { writeFile, mkdir } from 'fs/promises';
+import { existsSync } from 'fs';
+import path from 'path';
+import { db } from '$lib/server/database';
+import { evidence, cases } from '$lib/server/db/schema';
+import { eq, sql } from 'drizzle-orm';
+import { randomUUID } from 'node:crypto';
+import crypto from 'crypto';
 
 const UPLOAD_DIR = 'uploads';
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB

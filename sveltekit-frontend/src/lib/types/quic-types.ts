@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 // Type definitions for QUIC/HTTP3 integration
 // Supporting tensor processing, streaming, and real-time operations
 export interface TensorOperation { id: string;, type: 'embedding' | 'attention' | 'som_update' | 'interpolation' | 'tricubic';

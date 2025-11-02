@@ -1,29 +1,29 @@
 <script, lang="ts">
-  import { Button } from, '$lib/components/ui/button';
-  import { Input } from, '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
+  import { Input } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
-  import type { PageData, ActionData } from, './$types.js';
-  import { onMount, onDestroy } from, 'svelte';
-  import { enhance } from, '$app/forms';
-  import { invalidateAll } from, '$app/navigation';
+  import type { PageData, ActionData } from './$types.js';
+  import { onMount, onDestroy } from 'svelte';
+  import { enhance } from '$app/forms';
+  import { invalidateAll } from '$app/navigation';
   // Enhanced-Bits orchestrated components
   import 
     Button,
     Card,
     Input,
     Badge
-   from, "$lib/components/ui/enhanced-bits.svelte";
+   from "$lib/components/ui/enhanced-bits.svelte";
   import 
     OrchestratedCard,
     OrchestratedButton,
     getConfidenceClass
-   from, "$lib/components/ui/orchestrated.svelte";
+   from "$lib/components/ui/orchestrated.svelte";
   // Icons for Redis admin
   import {
     Database, HardDrive, Activity, Zap, Trash2, Plus,
     RefreshCw, AlertCircle, CheckCircle, Clock, BarChart3,
     Settings, Eye, Key, Server, Cpu, Memory
-  } from, 'lucide-svelte';
+  } from 'lucide-svelte';
   let { data, form }: { data: PageData;, form: ActionData } = $props();
   // Svelte, 5 runes for admin interface state
   let selectedTab = $state<'overview' | 'keys' | 'performance' | 'tools'>('overview');

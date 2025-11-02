@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Production Monitoring Dashboard - Enterprise Legal AI Operations
  *
@@ -19,9 +19,9 @@ import type { Case } from, '$lib/types';
  * - Export capabilities for compliance reporting
  * - Integration with external monitoring systems (Grafana, DataDog, etc.)
  */
-import { grpcAIOrchestrator } from, './grpc-ai-orchestrator.js';
-import { legalDocumentStream } from, './legal-document-stream.js';
-import { enterpriseVectorSearch } from, './enterprise-vector-search.js';
+import { grpcAIOrchestrator } from './grpc-ai-orchestrator.js';
+import { legalDocumentStream } from './legal-document-stream.js';
+import { enterpriseVectorSearch } from './enterprise-vector-search.js';
 
 // Monitoring Data Types
 export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'degraded';, services: ServiceHealth[]; infrastructure: InfrastructureHealth;

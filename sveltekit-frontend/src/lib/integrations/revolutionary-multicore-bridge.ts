@@ -3,11 +3,11 @@
  * Connects Nintendo-inspired Revolutionary AI with FlashAttention2 Multicore
  * Provides unified 400x performance optimization across all systems
  */
-import { enhancedCachingRevolutionaryBridge, processUnifiedLegalQuery } from, '../services/enhanced-caching-revolutionary-bridge.js';
-import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from, './comprehensive-agent-orchestration.js';
-import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from, '../services/flashattention2-rtx3060.js';
-import { getContext7MulticoreService, type ProcessingTask } from, '../services/context7-multicore.js';
-import type { RevolutionaryAIResponse } from, '../services/revolutionary-ai-integration.js';
+import { enhancedCachingRevolutionaryBridge, processUnifiedLegalQuery } from '../services/enhanced-caching-revolutionary-bridge.js';
+import { comprehensiveOrchestrator, type ComprehensiveAgentRequest } from './comprehensive-agent-orchestration.js';
+import { flashAttention2Service, type AttentionResult, type LegalContextAnalysis } from '../services/flashattention2-rtx3060.js';
+import { getContext7MulticoreService, type ProcessingTask } from '../services/context7-multicore.js';
+import type { RevolutionaryAIResponse } from '../services/revolutionary-ai-integration.js';
 
 // --- Added/changed types (tighten previously `any`) ---
 type CacheMetrics = Record<string, number | string | undefined>;

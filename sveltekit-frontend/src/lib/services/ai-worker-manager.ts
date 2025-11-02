@@ -1,6 +1,6 @@
-import type { AIResponse } from, '$lib/types';
-import crypto from, 'crypto';
-import type { AITask, WorkerStatus } from, '$lib/services/types/service-types.js';
+import type { AIResponse } from '$lib/types';
+import crypto from 'crypto';
+import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
 
 // Stub interfaces for missing types
 export interface WorkerConfiguration { maxConcurrentTasks: number;, enableLogging: boolean;

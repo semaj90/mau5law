@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // FlatBuffer utilities for legal document processing
 // Integrates with Go microservices for high-performance data exchange
-import { Builder } from, 'flatbuffers';
+import { Builder } from 'flatbuffers';
 // Mock FlatBuffer types until we can generate from schemas
 // In production, these would be auto-generated from legal_data.fbs
 interface DocumentContent { id: string;, title: string;

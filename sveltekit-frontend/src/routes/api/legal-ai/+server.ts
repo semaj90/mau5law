@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types'
-import { tensorrtService } from, '$lib/server/tensorrt-service'
-import { db } from, '$lib/server/db'
-import { sql } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { tensorrtService } from '$lib/server/tensorrt-service'
+import { db } from '$lib/server/db'
+import { sql } from 'drizzle-orm';
 export const POST: RequestHandler = async ({ request, url: _url }) => {
   try {
     const { prompt, context, max_tokens = 256, temperature = 0.3, use_vector_search = true } = await request.json();

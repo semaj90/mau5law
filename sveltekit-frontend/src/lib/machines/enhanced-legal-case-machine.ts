@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Simplified Enhanced Legal Case Machine
  * This replacement is intentionally compact and syntactically correct to restore buildability.
  * It provides lightweight service stubs that can be expanded later with DB logic.
  */
-import { createMachine, assign } from, 'xstate';
-import { fromPromise } from, 'xstate/actors'; // Correct import for fromPromise in XState v5
+import { createMachine, assign } from 'xstate';
+import { fromPromise } from 'xstate/actors'; // Correct import for fromPromise in XState v5
 export type CaseForm = {
   caseNumber?: string;
   title: string;

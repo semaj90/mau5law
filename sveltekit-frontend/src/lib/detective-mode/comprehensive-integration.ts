@@ -3,10 +3,10 @@
  * Enhanced for Phase 5-7 implementation with gRPC optimizations
  * Handles integration between various detective mode components
  */
-import { caseScoringServiceGrpc } from, '../server/services/CaseScoringServiceGrpc.js';
-import { evidenceStore } from, '../stores/evidence-unified';
-import type { Case, Evidence } from, '../types/api';
-import type { CaseScoringRequest, CaseScoringResult } from, '../types/scoring.js';
+import { caseScoringServiceGrpc } from '../server/services/CaseScoringServiceGrpc.js';
+import { evidenceStore } from '../stores/evidence-unified';
+import type { Case, Evidence } from '../types/api';
+import type { CaseScoringRequest, CaseScoringResult } from '../types/scoring.js';
 interface DetectiveSystemStatus { grpc: {, connected: boolean;
     caseScoringAvailable: boolean;
     streamingActive: boolean;

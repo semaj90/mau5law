@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { building } from, '$app/environment';
-import * as schema from, '$lib/server/db/schema-postgres';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-import pgClient from, '$lib/server/db-shim';
+import { building } from '$app/environment';
+import * as schema from '$lib/server/db/schema-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import pgClient from '$lib/server/db-shim';
 let _db: PostgresJsDatabase<typeof schema> | null = null;
 export function getPostgreSQLDatabase(): PostgresJsDatabase<typeof schema> | null {
   // Skip database initialization during SvelteKit build

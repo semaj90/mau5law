@@ -1,7 +1,7 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { SvelteComponent } from, 'svelte'; // Add this import
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { SvelteComponent } from 'svelte'; // Add this import
 /**
  * Complete Routes Configuration for YoRHa Navigation
  * Comprehensive mapping of all available demo routes and features

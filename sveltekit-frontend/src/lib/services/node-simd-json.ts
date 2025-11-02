@@ -2,7 +2,7 @@
  * Node.js SIMD JSON Acceleration Service
  * Optimizes JSON operations for legal AI data pipeline
  */
-import { dev } from, '$app/environment';
+import { dev } from '$app/environment';
 // SIMD acceleration detection and optimization
 class NodeSIMDJSONService {
   private isOptimized: boolean = $state(false);

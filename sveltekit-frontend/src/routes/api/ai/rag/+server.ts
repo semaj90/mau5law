@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { enhancedRAGPipeline } from, '$lib/server/ai/rag-pipeline-enhanced';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { enhancedRAGPipeline } from '$lib/server/ai/rag-pipeline-enhanced';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

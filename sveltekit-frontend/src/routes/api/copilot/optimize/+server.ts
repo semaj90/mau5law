@@ -1,6 +1,6 @@
 
-import type { RequestHandler } from, './$types.js'
-import { json, error as kitError } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js'
+import { json, error as kitError } from '@sveltejs/kit';
 
 /*
  * Simple Copilot Optimization API for Testing

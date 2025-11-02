@@ -1,4 +1,4 @@
-import { RedisCacheService } from, './redis-cache';
+import { RedisCacheService } from './redis-cache';
 
 // Simple helper to persist an embedding under a key.
 // Uses hset (field-per-dimension) if available, otherwise stores JSON via set.

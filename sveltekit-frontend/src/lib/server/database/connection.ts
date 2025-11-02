@@ -1,5 +1,5 @@
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres from, 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import {
   casesTable,
   documentsTable,
@@ -8,7 +8,7 @@ import {
   analyticsEvents,
   vectorSimilarityView,
   queryCache as queryCacheTable
-} from, './schema.js';
+} from './schema.js';
 // Enhanced PostgreSQL connection with pgvector support
 const connectionString =
   process.env.DATABASE_URL ||
@@ -197,4 +197,4 @@ export async function checkDatabaseHealth(): Promise<any> {
   }
 }
 // Import sql helper for complex queries
-import { sql } from, 'drizzle-orm';
+import { sql } from 'drizzle-orm';

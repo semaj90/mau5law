@@ -1,13 +1,13 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit'
-import { db, testConnection, healthCheck } from, '$lib/server/db'
-import { users, cases, evidence, documentChunks } from, '$lib/server/db/schema-postgres'
-import { eq, sql } from, 'drizzle-orm'
-import type { RequestHandler } from, './$types.js'
-// import { mcpTools } from, '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
-import bcrypt from, 'bcrypt'
-import crypto from, "crypto"
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit'
+import { db, testConnection, healthCheck } from '$lib/server/db'
+import { users, cases, evidence, documentChunks } from '$lib/server/db/schema-postgres'
+import { eq, sql } from 'drizzle-orm'
+import type { RequestHandler } from './$types.js'
+// import { mcpTools } from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
+import bcrypt from 'bcrypt'
+import crypto from "crypto"
 
 // --- ADDED HELPERS: safer error/id handling (replace uses of `any`) ---
 function getErrorMessage(err: any): string {

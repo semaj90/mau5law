@@ -8,22 +8,22 @@
   - Entity extraction visualization
 -->
 <script, lang="ts">
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from, '$lib/components/ui/dialog';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { superForm } from, 'sveltekit-superforms';
-  import { zodClient } from, 'sveltekit-superforms/adapters';
-  import { chatMessageSchema } from, '$lib/forms/contextual-chat-schema';
-  import * as Dialog from, 'bits-ui/Dialog'; // Corrected import
-  import * as Accordion from, 'bits-ui/accordion'; // Corrected import
-  import * as Tooltip from, 'bits-ui/tooltip'; // Corrected import
+  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { superForm } from 'sveltekit-superforms';
+  import { zodClient } from 'sveltekit-superforms/adapters';
+  import { chatMessageSchema } from '$lib/forms/contextual-chat-schema';
+  import * as Dialog from 'bits-ui/Dialog'; // Corrected import
+  import * as Accordion from 'bits-ui/accordion'; // Corrected import
+  import * as Tooltip from 'bits-ui/tooltip'; // Corrected import
   import type {
     ContextualState,
     NextStepPrediction,
     LegalEntity,
     ConversationTurn
-  } from, '$lib/types/sharedTypes';
-  import { onMount } from, 'svelte';
+  } from '$lib/types/sharedTypes';
+  import { onMount } from 'svelte';
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
   // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
   // Drizzle-ORM, and Docker environment variables for production readiness

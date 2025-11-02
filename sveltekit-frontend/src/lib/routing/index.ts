@@ -2,10 +2,10 @@
  * Dynamic Routing System - Main Export
  * Complete routing solution for SvelteKit with dynamic generation
  */
-import type { DynamicRouteConfig, GeneratedRoute } from, './dynamic-route-generator.js';
-import type { RouteDefinition } from, '$lib/data/routes-config';
-import { getAllDynamicRoutes } from, './dynamic-route-generator.js';
-import { registerDynamicRoute, getRoute } from, './route-registry.js';
+import type { DynamicRouteConfig, GeneratedRoute } from './dynamic-route-generator.js';
+import type { RouteDefinition } from '$lib/data/routes-config';
+import { getAllDynamicRoutes } from './dynamic-route-generator.js';
+import { registerDynamicRoute, getRoute } from './route-registry.js';
 // Core route generation
 export {
   DynamicRouteGenerator,
@@ -19,7 +19,7 @@ export {
   createDynamicRouteHandler,
   type DynamicRouteConfig,
   type GeneratedRoute
-} from, './dynamic-route-generator.js';
+} from './dynamic-route-generator.js';
 // Route registry and management
 export {
   RouteRegistry,
@@ -41,7 +41,7 @@ export {
   isFavorite,
   type RouteRegistryState,
   type RouteRegistryOptions
-} from, './route-registry.js';
+} from './route-registry.js';
 // Route guards and protection
 export {
   RouteGuards,
@@ -57,7 +57,7 @@ export {
   type GuardResult,
   type RouteGuard,
   type RouteGuardConfig
-} from, './route-guards.js';
+} from './route-guards.js';
 // Dynamic navigation
 export {
   DynamicNavigation,
@@ -85,11 +85,11 @@ export {
   type BreadcrumbItem,
   type NavigationOptions,
   type NavigationGuard
-} from, './dynamic-navigation.js';
+} from './dynamic-navigation.js';
 // Re-export route configuration types
 export type {
   RouteDefinition
-} from, '$lib/data/routes-config';
+} from '$lib/data/routes-config';
 /**
  * Main routing utilities and helpers
  */

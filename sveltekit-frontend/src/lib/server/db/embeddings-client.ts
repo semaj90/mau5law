@@ -1,10 +1,10 @@
 // Enhanced database client for embeddings with pgvector
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import { Pool } from, 'pg';
-import { embeddings, legalDocumentEmbeddings, searchQueries } from, './schema-embeddings';
-import { sql } from, 'drizzle-orm';
-import { eq } from, '$lib/server/db/utils';
-import type { NewEmbedding, Embedding, NewSearchQuery } from, './schema-embeddings';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { Pool } from 'pg';
+import { embeddings, legalDocumentEmbeddings, searchQueries } from './schema-embeddings';
+import { sql } from 'drizzle-orm';
+import { eq } from '$lib/server/db/utils';
+import type { NewEmbedding, Embedding, NewSearchQuery } from './schema-embeddings';
 // Database connection pool
 const pool = new Pool({
   host: 'localhost',

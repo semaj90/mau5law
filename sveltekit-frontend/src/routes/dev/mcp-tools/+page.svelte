@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import MCPToolsDemo from, '$lib/components/dev/MCPToolsDemo.svelte';
+  import MCPToolsDemo from '$lib/components/dev/MCPToolsDemo.svelte';
 </script>
 
 <svelte:head>

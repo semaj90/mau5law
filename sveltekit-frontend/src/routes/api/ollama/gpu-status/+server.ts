@@ -1,7 +1,7 @@
 /// <reference, types="vite/client" />
-import { ollamaService } from, '$lib/server/services/OllamaService'
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit'
+import { ollamaService } from '$lib/server/services/OllamaService'
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 // Configurable via env
 const GO_BASE = (import.meta.env.GO_SERVICE_URL as: string) || 'http://localhost:8084'
 const TIMEOUT_MS = Number(import.meta.env.GPU_FETCH_TIMEOUT_MS) || 2500

@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * AI Summarization Service with Embeddings Generation
  * Comprehensive document processing and analysis pipeline
  */
-import { ollamaCudaService } from, './ollama-cuda-service.js';
-import { db } from, "$lib/server/db/index";
-import { evidence, cases } from, '$lib/server/db/schema';
-import { eq, sql, and, desc } from, 'drizzle-orm';
-import type { AiAnalysisResult } from, '$lib/schemas/file-upload';
-import { createHash } from, 'crypto';
+import { ollamaCudaService } from './ollama-cuda-service.js';
+import { db } from "$lib/server/db/index";
+import { evidence, cases } from '$lib/server/db/schema';
+import { eq, sql, and, desc } from 'drizzle-orm';
+import type { AiAnalysisResult } from '$lib/schemas/file-upload';
+import { createHash } from 'crypto';
 
 export interface SummarizationOptions {
   maxLength?: number;

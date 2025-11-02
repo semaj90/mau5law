@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🚀 PostgreSQL pgvector + FAISS GPU Bridge
  * Ultimate vector search performance combining:
@@ -8,9 +8,9 @@ import type { Document } from, '$lib/types';
  *
  *, Performance: 100x faster similarity search with GPU acceleration
  */
-import { PGVECTOR_CONFIG, getDatabaseUrl } from, '../config/pgvector-gpu-config.js';
-import { indexPgVector } from, '../server/indexers/pgvector-indexer.js';
-import { headlessUICache, type CacheEntry } from, '../cache/headless-ui-cache.js';
+import { PGVECTOR_CONFIG, getDatabaseUrl } from '../config/pgvector-gpu-config.js';
+import { indexPgVector } from '../server/indexers/pgvector-indexer.js';
+import { headlessUICache, type CacheEntry } from '../cache/headless-ui-cache.js';
 // FAISS GPU interface types
 export interface FAISSIndex { dimension: number;, ntotal: number;
   is_trained: boolean;

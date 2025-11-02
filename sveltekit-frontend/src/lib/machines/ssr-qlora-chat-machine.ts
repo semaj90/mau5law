@@ -4,8 +4,8 @@
  * XState Machine for SSR QLoRA Chat Assistant
  * Manages the complete chat flow with user dictionary, GPU caching, and Gemma3 integration
  */
-import { createMachine, assign, spawn } from, 'xstate';
-import type { ActorRefFrom } from, 'xstate';
+import { createMachine, assign, spawn } from 'xstate';
+import type { ActorRefFrom } from 'xstate';
 // Types for the chat machine
 export interface ChatContext { userId: string;, sessionId: string;
   messages: ChatMessage[];

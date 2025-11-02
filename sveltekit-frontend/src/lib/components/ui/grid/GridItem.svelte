@@ -24,7 +24,7 @@ https: //svelte.dev/e/js_parse_error -->
     class = '',
     children
   }: Props = $props();
-  import { cn } from, '$lib/utils';
+  import { cn } from '$lib/utils';
   // Build grid classes dynamically
   let spanClasses = $derived(
     responsive

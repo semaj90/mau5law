@@ -1,4 +1,4 @@
-import { CONFIG } from, '$lib/config/env.server';
+import { CONFIG } from '$lib/config/env.server';
 
 /**
  * Determines the correct Ollama endpoint based on environment configuration.

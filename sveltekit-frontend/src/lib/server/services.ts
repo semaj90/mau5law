@@ -4,7 +4,7 @@
  * Import this file from: any API endpoint to access production, services:
  *
  * ```typescript`
- * import { services } from, '$lib/server/services';
+ * import { services } from '$lib/server/services';
  *
  * // Use Ollama for embeddings
  * const embedding = await services.ollama.embed('legal text');
@@ -19,8 +19,8 @@
  * All services are pre-configured from environment variables.
  */
 
-import { getServiceAdapters, getUnifiedLegalSystem } from, './adapters/service-integrations';
-import type { UnifiedLegalSIMDPGVector } from, '$lib/services/unified-legal-simd-pgvector-production';
+import { getServiceAdapters, getUnifiedLegalSystem } from './adapters/service-integrations';
+import type { UnifiedLegalSIMDPGVector } from '$lib/services/unified-legal-simd-pgvector-production';
 
 // ===== Singleton Service Instances =====
 
@@ -310,4 +310,4 @@ export async function cleanupServices(): Promise<any> {
 
 // ===== Type Exports for Convenience =====
 
-export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } from, '$lib/types/external-services';
+export type { OllamaClient, QdrantClient, RedisCacheService, PgVectorClient, MinIOClient, Neo4jClient, RabbitMQClient } from '$lib/types/external-services';

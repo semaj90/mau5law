@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { logger } from, './logger.js';
-import * as crypto from, 'crypto';
-// import { ENV_CONFIG } from, '$lib/config/environment.js'; // removed - not used
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { logger } from './logger.js';
+import * as crypto from 'crypto';
+// import { ENV_CONFIG } from '$lib/config/environment.js'; // removed - not used
 // lib/server/ai/legalbert-middleware.ts
 // LegalBERT middleware for specialized legal embeddings and analysis
-import { generateEmbedding } from, './embeddings-simple.js';
-import { getOllamaUrl } from, '$lib/server/services/docker-env';
+import { generateEmbedding } from './embeddings-simple.js';
+import { getOllamaUrl } from '$lib/server/services/docker-env';
 export interface LegalEmbeddingResult { embedding: number[];, dimensions: number;
   model: string;
   processingTime: number;

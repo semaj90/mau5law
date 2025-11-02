@@ -1,18 +1,18 @@
-import type { User } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { User } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * Enhanced GPU Cache API Endpoint - Full Stack Integration
  * Provides RESTful interface with Binary Encoding + NES Cache + WebGPU + SOM Clustering
  * Integrates: Binary encoding, NES cache orchestrator, WebGPU RAG, SOM clustering, PostgreSQL+pgvector, Qdrant, Neo4j
  */
-import { gpuCacheOrchestrator } from, '$lib/services/gpu-cache-orchestrator';
-import gpuShaderCacheOrchestrator from, '$lib/services/gpu-shader-cache-orchestrator';
-import { binaryGPUShaderCache } from, '$lib/services/gpu-shader-cache-binary-extension';
-import { nesCacheOrchestrator } from, '$lib/services/nes-cache-orchestrator-bridge';
-import { webgpuRAGService } from, '$lib/webgpu/webgpu-rag-service';
-import { binaryEncoder } from, '$lib/middleware/binary-encoding';
-import { dev } from, '$app/environment';
+import { gpuCacheOrchestrator } from '$lib/services/gpu-cache-orchestrator';
+import gpuShaderCacheOrchestrator from '$lib/services/gpu-shader-cache-orchestrator';
+import { binaryGPUShaderCache } from '$lib/services/gpu-shader-cache-binary-extension';
+import { nesCacheOrchestrator } from '$lib/services/nes-cache-orchestrator-bridge';
+import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
+import { binaryEncoder } from '$lib/middleware/binary-encoding';
+import { dev } from '$app/environment';
 /* new typed shapes to avoid `any` and satisfy the linter */
 type ShaderData = {
   sourceCode?: string;

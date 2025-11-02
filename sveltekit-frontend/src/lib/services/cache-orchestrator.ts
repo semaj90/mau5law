@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Cache Orchestrator Service
  * Coordinates Redis + WebGPU + SIMD + SOM cache warming and synchronization
  */
-import { redisWebGPUIntegration } from, '../integrations/redis-webgpu-simd-integration.js';
-import { initializeSOMCache } from, '../webgpu/som-webgpu-cache.js';
-import type { WebGPUSOMCache } from, '../webgpu/som-webgpu-cache.js';
+import { redisWebGPUIntegration } from '../integrations/redis-webgpu-simd-integration.js';
+import { initializeSOMCache } from '../webgpu/som-webgpu-cache.js';
+import type { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
 
 // --- CHANGES START ---
 // Align integration types with implementation and reduce `any` usage

@@ -1,8 +1,8 @@
 // Enhanced Legal NLP Service using Transformers.js
 // Implements sentence transformers for YoRHa Legal AI Platform
-import { pipeline, env, type Pipeline } from, '@xenova/transformers';
+import { pipeline, env, type Pipeline } from '@xenova/transformers';
 // Lightweight in-memory LRU + optional Redis cache + metrics hooks
-import type { Redis } from, 'ioredis';
+import type { Redis } from 'ioredis';
 
 export interface CacheLayer {
   get(_key: string): Promise<EmbeddingResult | undefined> | EmbeddingResult | undefined;

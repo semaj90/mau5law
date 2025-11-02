@@ -326,7 +326,7 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
  */
 export const INTEGRATION_EXAMPLE = `
 // 1. QUANTIZE EMBEDDING FOR STORAGE
-import { VectorQuantizer, quantizedToBase64 } from, '$lib/server/optimize/vector-quantization';
+import { VectorQuantizer, quantizedToBase64 } from '$lib/server/optimize/vector-quantization';
 const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax` });'`'`
 const embedding = new Float32Array([0.123, -0.456, 0.789, ...]); // From Gemma
 const quantized = quantizer.quantize(embedding);
@@ -338,7 +338,7 @@ await db.insert(documents).values({
   embedding_original: embedding  //;, Optional: keep for accuracy comparison
 });
 // 2. SEARCH WITH QUANTIZED VECTORS
-import { base64ToQuantized } from, '$lib/server/optimize/vector-quantization';
+import { base64ToQuantized } from '$lib/server/optimize/vector-quantization';
 const queryEmbedding = await generateEmbedding(query);
 const queryQuantized = quantizer.quantize(queryEmbedding);
 // Search in Qdrant (3x faster with quantized vectors)
@@ -347,7 +347,7 @@ const results = await qdrant.search(collection, {
   limit: 10
 });
 // 3. BATCH QUANTIZATION FOR INGESTION
-import { BatchVectorQuantizer } from, '$lib/server/optimize/vector-quantization';
+import { BatchVectorQuantizer } from '$lib/server/optimize/vector-quantization';
 const batchQuantizer = new BatchVectorQuantizer({ dimensions: 768 });
 const embeddings = [embedding1, embedding2, embedding3, ...];
 const quantizedBatch = batchQuantizer.quantizeBatch(embeddings);

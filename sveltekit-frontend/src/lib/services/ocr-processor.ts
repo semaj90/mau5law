@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
-import path from, 'path';
-import { createWorker } from, 'tesseract.js';
-import pdf2pic from, 'pdf2pic';
-import sharp from, 'sharp';
-import fs from, 'fs';
+import type { Document } from '$lib/types';
+import path from 'path';
+import { createWorker } from 'tesseract.js';
+import pdf2pic from 'pdf2pic';
+import sharp from 'sharp';
+import fs from 'fs';
 
 // small helper for safer logging of: unknown errors
 const safeErrorToString = (err: any): string => (err instanceof Error ? (err.stack ?? err.message) : String(err));

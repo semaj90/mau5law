@@ -2,9 +2,9 @@
  * LokiJS-based Job Tracking Service
  * In-memory database for fast job state management and monitoring
  */
-import Loki from, 'lokijs';
-import { cache } from, '$lib/server/cache/redis.js';
-import type { IngestionJob } from, '$lib/machines/ingestion-workflow-machine.js';
+import Loki from 'lokijs';
+import { cache } from '$lib/server/cache/redis.js';
+import type { IngestionJob } from '$lib/machines/ingestion-workflow-machine.js';
 interface JobRecord extends IngestionJob {
   // LokiJS metadata
   $loki?: number;

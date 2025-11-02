@@ -1,5 +1,5 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Chat Store - Central state management for AI chat system
  *
@@ -11,8 +11,8 @@ import type { User } from, '$lib/types';
  * - Analysis results and RAG context
  * - Session management
  */
-import { writable, derived, readable, get } from, "svelte/store";
-import { browser } from, "$app/environment";
+import { writable, derived, readable, get } from "svelte/store";
+import { browser } from "$app/environment";
 import type {
   ChatMessage,
   ChatSession,
@@ -23,7 +23,7 @@ import type {
   UserActivity,
   AttentionData,
   ConnectionStatus
-} from, "$lib/types";
+} from "$lib/types";
 // Core chat state
 export const chatMessages = writable<ChatMessage[]>([]);
 export const currentSession = writable<ChatSession | null>(null);

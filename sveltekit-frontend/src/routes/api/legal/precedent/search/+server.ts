@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 interface PrecedentSearchRequest {
   query?: string
   factPattern?: string

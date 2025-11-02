@@ -1,8 +1,8 @@
 <script, lang="ts">
-	import * as CanvasStore from, '../stores/canvas';
-	import  Dialog  from, "./Dialog.svelte";
-	import { onDestroy } from, 'svelte';
-	import { writable } from, 'svelte/store';
+	import * as CanvasStore from '../stores/canvas';
+	import  Dialog  from "./Dialog.svelte";
+	import { onDestroy } from 'svelte';
+	import { writable } from 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
 	const aiStore = (CanvasStore as: any).aiStore ?? (CanvasStore as: any).default ?? writable({
 		dialogOpen: false,

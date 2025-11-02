@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from, 'vitest';
-import * as cache from, './server/cache';
+import { describe, it, expect, beforeEach } from 'vitest';
+import * as cache from './server/cache';
 
 describe('cache module (relative imports)', () => {
   beforeEach(() => {

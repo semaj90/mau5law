@@ -5,10 +5,10 @@
  * Production-ready LLVM integration for compiling C++ legal processing modules
  * to WebAssembly at runtime with SvelteKit, 2 compatibility
  */
-import type { LLVMCompileOptions, WASMModule, CompilationResult } from, '../types/wasm-types.js';
-// // import { webgpuPolyfill } from, '../webgpu/webgpu-polyfill.js'; // Disabled for now
-// import { wasmLLMService } from, './wasm-llm-service.js'; // Disabled for now
-import { gpuServiceIntegration } from, '../services/gpu-service-integration.js';
+import type { LLVMCompileOptions, WASMModule, CompilationResult } from '../types/wasm-types.js';
+// // import { webgpuPolyfill } from '../webgpu/webgpu-polyfill.js'; // Disabled for now
+// import { wasmLLMService } from './wasm-llm-service.js'; // Disabled for now
+import { gpuServiceIntegration } from '../services/gpu-service-integration.js';
 // LLVM toolchain configuration for legal AI modules
 const LLVM_CONFIG = {
   wasmTarget: 'wasm32-unknown-unknown',

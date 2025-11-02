@@ -1,4 +1,4 @@
-import type { LayoutServerLoad } from, './$types.js';
+import type { LayoutServerLoad } from './$types.js';
 // Server-side layout load for proxy routes
 export const load: LayoutServerLoad = async ({ fetch, url }) => {
   return {

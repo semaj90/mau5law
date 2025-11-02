@@ -1,8 +1,8 @@
 <!-- Simple test homepage to verify, routing, works -->
 <script, lang="ts">
-  import { goto } from, '$app/navigation';
-  import { browser } from, '$app/environment';
-  import { onMount } from, 'svelte';
+  import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   // client-only values to avoid SSR window access
   let currentUrl = 'SSR - Not available';

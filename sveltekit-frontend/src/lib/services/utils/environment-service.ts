@@ -3,9 +3,9 @@
  * Environment Service - SvelteKit, 2 + Svelte, 5 Compatible
  * Provides environment detection, LLM endpoint health, and client utilities
  */
-import { browser } from, '$app/environment';
-import { env } from, '$env/dynamic/public';
-import type { LLMEndpoint, ClientEnvironment } from, '../types/service-types.js';
+import { browser } from '$app/environment';
+import { env } from '$env/dynamic/public';
+import type { LLMEndpoint, ClientEnvironment } from '../types/service-types.js';
 
 /**
  * Client Environment Detection

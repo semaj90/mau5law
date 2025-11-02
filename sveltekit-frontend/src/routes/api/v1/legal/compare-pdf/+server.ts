@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { OLLAMA_CONFIG } from, '$lib/services/providers/ollama/config';
-import { searchQdrantFiltered, searchQdrant } from, '$lib/server/vector/qdrant';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config';
+import { searchQdrantFiltered, searchQdrant } from '$lib/server/vector/qdrant';
 
 async function tryExtractPdfText(file: File): Promise<string> {
   try {

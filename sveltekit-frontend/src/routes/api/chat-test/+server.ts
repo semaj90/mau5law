@@ -1,7 +1,7 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // Simple chat test without database dependencies
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 const CUDA_SERVER_URL = 'http://localhost:8096';
 interface ChatRequest {
   messages: Array<any>;

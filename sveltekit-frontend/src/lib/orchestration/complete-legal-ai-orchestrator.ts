@@ -1,6 +1,6 @@
-import type { Message } from, '$lib/types';
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Complete Legal AI Orchestrator - The Ultimate Integration
  *
@@ -22,12 +22,12 @@ import type { Document } from, '$lib/types';
  * ✅ RabbitMQ Message Queue
  * ✅ MinIO Object Storage
  */
-import { ssrQloraChatMachine } from, '../server/chat/ssr-qlora-gpu-chat-assistant.js';
-import { qloraRLOrchestrator } from, '../services/qlora-rl-langextract-integration.js';
-import { unifiedVectorOrchestrator } from, '../services/unified-vector-orchestrator.js';
-import { createActor } from, 'xstate';
-import { NESMemoryArchitecture } from, '../memory/nes-memory-architecture.js';
-import { WebGPUSOMCache } from, '../webgpu/som-webgpu-cache.js';
+import { ssrQloraChatMachine } from '../server/chat/ssr-qlora-gpu-chat-assistant.js';
+import { qloraRLOrchestrator } from '../services/qlora-rl-langextract-integration.js';
+import { unifiedVectorOrchestrator } from '../services/unified-vector-orchestrator.js';
+import { createActor } from 'xstate';
+import { NESMemoryArchitecture } from '../memory/nes-memory-architecture.js';
+import { WebGPUSOMCache } from '../webgpu/som-webgpu-cache.js';
 // Comprehensive system status
 export interface CompleteLegalAIStatus {
   // Core AI Systems
@@ -234,7 +234,7 @@ export class CompleteLegalAIOrchestrator {
       streamResponse?: boolean;
     } = {}
   ): Promise<ProcessResult> {
-    // <-- changed, from, Promise<any> to Promise<ProcessResult>
+    // <-- changed, from Promise<any> to Promise<ProcessResult>
     const startTime = Date.now();
     const systemPath: string[] = [];
     let cachingStrategy = 'none';

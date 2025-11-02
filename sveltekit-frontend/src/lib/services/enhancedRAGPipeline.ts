@@ -3,11 +3,11 @@
  * Self-organizing map integration, SIMD JSON parsing, Redis caching
  * XState workflow integration for legal AI processing
  */
-import { ollamaService } from, './ollamaService';
-import { aiAutoTaggingService } from, './ai-auto-tagging-service';
-import { createMachine, assign } from, 'xstate';
-import Fuse from, 'fuse.js';
-import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Import the utility
+import { ollamaService } from './ollamaService';
+import { aiAutoTaggingService } from './ai-auto-tagging-service';
+import { createMachine, assign } from 'xstate';
+import Fuse from 'fuse.js';
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Import the utility
 
 // Add missing external/internal types referenced in the file
 type SemanticSearchResultRow = {

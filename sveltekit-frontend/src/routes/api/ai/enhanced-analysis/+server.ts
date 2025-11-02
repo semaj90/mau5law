@@ -24,9 +24,9 @@
  * }
  *** Usage (unchanged):* POST /api/ai/enhanced-analysis
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { grpcAIOrchestrator } from, '$lib/services/grpc-ai-orchestrator';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { grpcAIOrchestrator } from '$lib/services/grpc-ai-orchestrator';
 
 interface LegalDocument { id: string;, content: string;
   type?: string;

@@ -1,4 +1,4 @@
-import { EventEmitter } from, "events";
+import { EventEmitter } from "events";
 /**
  * Neural Network-Based Memory Management System
  * Advanced LOD (Level of Detail) resource management with k-means clustering

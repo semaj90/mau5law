@@ -1,11 +1,11 @@
 // Enhanced SvelteKit API routes for legal AI integration
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { lucia } from, '$lib/auth/lucia';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { lucia } from '$lib/auth/lucia';
 // Requires node-redis v4+ for createClient and RedisClientType (legacy v3 uses different API)
-import { createClient } from, 'redis';
-import type { RedisClientType } from, 'redis';
-import { REDIS_URL } from, '$env/static/private'; // Use SvelteKit's env module for server-side variables'
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
+import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables'
 
 // Redis client for coordination with MCP server (node-redis)
 // Use non-null assertion (!) on createClient to satisfy TypeScript, assuming: 'redis' package is correctly installed and exports it.

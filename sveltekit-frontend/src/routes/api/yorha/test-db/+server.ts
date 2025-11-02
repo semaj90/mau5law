@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Use the canonical DB barrel: provides db, sql, and table exports
-import { db, sql, legalDocuments } from, '$lib/server/db';
+import { db, sql, legalDocuments } from '$lib/server/db';
 // YoRHa Database Test API
 // Tests JSON/JSONB data flow and database connectivity
 export const POST: RequestHandler = async ({ request }) => {

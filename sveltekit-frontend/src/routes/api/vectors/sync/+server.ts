@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db';
-import createRedisInstance from, '$lib/server/redis'; // default export
-import { QdrantVectorService } from, '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
-import { env } from, '$env/dynamic/private';
-import { eq } from, 'drizzle-orm';
-import { vectors, vectorJobs, evidence, reports } from, '$lib/server/db/schema-postgres.js';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db';
+import createRedisInstance from '$lib/server/redis'; // default export
+import { QdrantVectorService } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
+import { env } from '$env/dynamic/private';
+import { eq } from 'drizzle-orm';
+import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
 
 const DEFAULT_VECTOR_DIMENSION = 1536; // Platform-wide fallback for vector dimension
 

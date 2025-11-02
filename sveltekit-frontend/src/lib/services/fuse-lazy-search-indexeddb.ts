@@ -1,10 +1,10 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Fuse.js Lazy Search with IndexedDB Integration
  * High-performance keyword and embedding search with persistence
  */
-import Fuse from, '$lib/utils/fuse-import';
-// import type { FuseResult } from, 'fuse.js'; // Changed IFuseResult to FuseResult
+import Fuse from '$lib/utils/fuse-import';
+// import type { FuseResult } from 'fuse.js'; // Changed IFuseResult to FuseResult
 
 // Define FuseJsResult type based on the actual Fuse instance's search method'
 // Fix: Derive the return type of the search method from the prototype,
@@ -266,7 +266,7 @@ export class FuseLazySearchService {
   private async generateEmbedding(text: string): Promise<Float32Array> {
     // This is a mock/fallback. In a real app, this would call an embedding service.
     // For example, using the gpuEmbeddingService from another file:
-    // import { gpuEmbeddingService } from, '$lib/services/gpu-semantic-embedding-service';
+    // import { gpuEmbeddingService } from '$lib/services/gpu-semantic-embedding-service';
     // const response = await gpuEmbeddingService.generateEmbeddings({ text });
     // return new Float32Array(response.embedding);
     console.warn('Using fallback embedding generation. Integrate with a proper embedding service.');

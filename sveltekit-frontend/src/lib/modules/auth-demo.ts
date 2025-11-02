@@ -3,7 +3,7 @@
  * This is a placeholder that you can replace with your real auth system
  * once authentication is fully built out
  */
-import { citationsManager, type AuthUser } from, './citations-manager.js';
+import { citationsManager, type AuthUser } from './citations-manager.js';
 export class AuthDemo {
   private static instance: AuthDemo;
   private demoUsers: AuthUser[] = [

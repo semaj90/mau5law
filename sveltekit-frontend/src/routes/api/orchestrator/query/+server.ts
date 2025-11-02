@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 // Legal AI Orchestrator Query Processing API
 // Nintendo-Style Multi-Model Query Router
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 interface QueryRequest {
   query: string;
   context?: any[]; // tightened from: any[] to: unknown[]

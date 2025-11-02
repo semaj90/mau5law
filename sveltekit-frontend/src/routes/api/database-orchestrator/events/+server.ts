@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { databaseOrchestrator, type EventData } from, '$lib/server/database-orchestrator';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { databaseOrchestrator, type EventData } from '$lib/server/database-orchestrator';
 
 // Provide an underscore-prefixed export for compatibility with SvelteKit's export rules'
 export const _databaseOrchestrator = databaseOrchestrator;

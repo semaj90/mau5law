@@ -1,7 +1,7 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { optimizedQdrantService } from, '$lib/services/optimized-qdrant-service';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service';
 
 // --- NEW: Stronger local types to satisfy TypeScript / lint rules ---
 type HealthInfo = {

@@ -1,12 +1,12 @@
 <!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import  BitsDialog  from, "./dialog/BitsDialog.svelte";
-  import  BitsSelect  from, "./select/BitsSelect.svelte";
-  import  BitsInput  from, "./input/BitsInput.svelte";
-  import  Button  from, "./button/Button.svelte";
-  import { Search, FileText, Users, Scale, Plus, Edit, Eye } from, 'lucide-svelte';
+  import  BitsDialog  from "./dialog/BitsDialog.svelte";
+  import  BitsSelect  from "./select/BitsSelect.svelte";
+  import  BitsInput  from "./input/BitsInput.svelte";
+  import  Button  from "./button/Button.svelte";
+  import { Search, FileText, Users, Scale, Plus, Edit, Eye } from 'lucide-svelte';
   // Demo state
   let showDialog = $state<boolean>(false);
   let selectedCaseType = $state<string>('');

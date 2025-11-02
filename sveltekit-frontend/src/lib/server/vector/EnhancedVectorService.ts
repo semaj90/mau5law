@@ -1,16 +1,16 @@
-import type { Document } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-// Enhanced Vector Service - Auto-generated from, 11 files
+import type { Document } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+// Enhanced Vector Service - Auto-generated from 11 files
 // Generated: 2025-07-25T03:29:35.246Z
 // Features, detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
-import { createQdrantWrapper, QdrantApiWrapper } from, './qdrant-api-wrapper.js';
+import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
 // Replaced createRedisInstance import with default Redis class import to match instance type
-import Redis from, 'ioredis';
+import Redis from 'ioredis';
 // Only import `cases` (others were unused)
-import { cases } from, '../db/schema-postgres-enhanced.js';
+import { cases } from '../db/schema-postgres-enhanced.js';
 // Removed unused `eq` import, keep `sql`
-import { sql } from, 'drizzle-orm';
-import { db } from, '../db.js';
+import { sql } from 'drizzle-orm';
+import { db } from '../db.js';
 
 interface DocumentMetadata {
   // Allow arbitrary properties for metadata but avoid `any`

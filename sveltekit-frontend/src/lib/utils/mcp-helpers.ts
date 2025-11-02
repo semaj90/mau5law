@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference, types="vite/client" />
 // Removed unused fs import to satisfy lint/tsc.
 

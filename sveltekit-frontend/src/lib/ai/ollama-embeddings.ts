@@ -247,7 +247,7 @@ export const ollamaEmbeddings = new OllamaEmbeddings();
  * USAGE EXAMPLES:
  *
  * // Server-side (API route):
- * import { ollamaEmbeddings } from, '$lib/ai/ollama-embeddings';
+ * import { ollamaEmbeddings } from '$lib/ai/ollama-embeddings';
  *
  * export const POST = async ({ request }) => {
  *   const { text } = await request.json();

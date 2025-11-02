@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Node.js Multi-Core Orchestration Service - Gemma3-Legal GGUF Only
  * Manages worker clusters with ONLY gemma3-legal and nomic-embed-text models
  * Optimized for Windows RTX, 3060 Ti GPU coordination + FlashAttention2
  */
-import { writable, derived, type Writable } from, "svelte/store";
-import { browser } from, "$app/environment";
-import { flashAttention2Service } from, './flashattention2-rtx3060.js';
+import { writable, derived, type Writable } from "svelte/store";
+import { browser } from "$app/environment";
+import { flashAttention2Service } from './flashattention2-rtx3060.js';
 // Worker Types - ONLY gemma3-legal GGUF and nomic-embed supported
 export type WorkerType = 'GEMMA3_LEGAL_GGUF' | 'NOMIC_EMBED' | 'DOCUMENT_PROCESSING' | 'WEB_GPU_RTX3060' | 'SERVICE_WORKER';
 // Worker Configuration - Enforces specific models

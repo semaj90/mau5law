@@ -1,8 +1,8 @@
-import { cuidSchema } from, '$lib/server/z-schemas';
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { db, sql } from, '$lib/server/db';
-import { personsOfInterest } from, '$lib/server/db/schema-postgres';
-import { z } from, 'zod';
+import { cuidSchema } from '$lib/server/z-schemas';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { personsOfInterest } from '$lib/server/db/schema-postgres';
+import { z } from 'zod';
 // Query parameters schema for GET requests
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),

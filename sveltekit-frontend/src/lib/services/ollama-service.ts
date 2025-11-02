@@ -1,8 +1,8 @@
 // Ollama service for Gemma3 Q4_K_M integration
 // Handles local LLM inference with proper error handling and streaming support
-import { browser } from, '$app/environment';
-import { LOCAL_LLM_PATHS, checkLocalInstallations } from, '../config/local-llm.js';
-import type { LegalDocument } from, '$lib/types/legal-types';
+import { browser } from '$app/environment';
+import { LOCAL_LLM_PATHS, checkLocalInstallations } from '../config/local-llm.js';
+import type { LegalDocument } from '$lib/types/legal-types';
 
 // Type definitions for Ollama service
 interface DocumentAnalysisResult {

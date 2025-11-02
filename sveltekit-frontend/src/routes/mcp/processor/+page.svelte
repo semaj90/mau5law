@@ -1,8 +1,8 @@
 <script, lang="ts">
   // This is an illustrative example based on the Svelte, 5 migration notes.
   // In a real application, 'CardA' and, 'CardB' would be imported components.
-  import CardA from, '$lib/components/ui/CardA.svelte';
-  import CardB from, '$lib/components/ui/CardB.svelte';
+  import CardA from '$lib/components/ui/CardA.svelte';
+  import CardB from '$lib/components/ui/CardB.svelte';
 
   // Example data for dynamic components
   let cards = $state([

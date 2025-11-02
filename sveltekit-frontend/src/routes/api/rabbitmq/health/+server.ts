@@ -3,8 +3,8 @@
  *
  * Provides health status for RabbitMQ service and queues
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Import the actual RabbitMQ service

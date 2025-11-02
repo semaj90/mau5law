@@ -3,17 +3,17 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy, createEventDispatcher } from, "svelte";
-  import { writable, type Writable, get } from, 'svelte/store';
-  import { SoraGraphTraversal, type SoraTraversalPath } from, '$lib/ai/sora-graph-traversal.js';
-  import { MoogleGraphSynthesizer, type Moogle2DOutput, type Moogle3DMesh } from, '$lib/ai/moogle-graph-synthesizer.js';
-  import { NESGPUIntegration } from, '$lib/gpu/nes-gpu-integration.js';
-  import { NESMemoryArchitecture } from, '$lib/memory/nes-memory-architecture.js';
-  import { SemanticAnalysisPipeline } from, '$lib/ai/semantic-analysis-pipeline.js';
-  import { DimensionalTensorStore } from, '$lib/webgpu/dimensional-tensor-store.js';
-  import { SOMWebGPUCache } from, '$lib/webgpu/som-webgpu-cache.js';
-  import { GPUTensorWorker } from, '$lib/workers/gpu-tensor-worker.js';
-  import { LegalAIReranker } from, '$lib/ai/custom-reranker.js';
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
+  import { writable, type Writable, get } from 'svelte/store';
+  import { SoraGraphTraversal, type SoraTraversalPath } from '$lib/ai/sora-graph-traversal.js';
+  import { MoogleGraphSynthesizer, type Moogle2DOutput, type Moogle3DMesh } from '$lib/ai/moogle-graph-synthesizer.js';
+  import { NESGPUIntegration } from '$lib/gpu/nes-gpu-integration.js';
+  import { NESMemoryArchitecture } from '$lib/memory/nes-memory-architecture.js';
+  import { SemanticAnalysisPipeline } from '$lib/ai/semantic-analysis-pipeline.js';
+  import { DimensionalTensorStore } from '$lib/webgpu/dimensional-tensor-store.js';
+  import { SOMWebGPUCache } from '$lib/webgpu/som-webgpu-cache.js';
+  import { GPUTensorWorker } from '$lib/workers/gpu-tensor-worker.js';
+  import { LegalAIReranker } from '$lib/ai/custom-reranker.js';
   // Props type
   interface Props {
     query?: string;

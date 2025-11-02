@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getRedisMetricsCache } from, '$lib/server/cache/redis-metrics';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getRedisMetricsCache } from '$lib/server/cache/redis-metrics';
 
 /**
  * GET /api/admin/cache-metrics

@@ -1,4 +1,4 @@
-import { WebGPUBufferUtils, toFloat32Array, type BufferLike } from, '../utils/buffer-conversion.js';
+import { WebGPUBufferUtils, toFloat32Array, type BufferLike } from '../utils/buffer-conversion.js';
 
 export interface WebGPUCapabilities {
   isSupported: boolean;

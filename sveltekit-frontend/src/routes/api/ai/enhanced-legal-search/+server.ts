@@ -15,13 +15,13 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Enhanced Legal AI Search API with LangChain.js, Nomic Embed, and Vector Search
 // Provides advanced semantic search with multiple strategies and intelligent ranking
-import { enhancedLegalSearch, type LegalSearchResult } from, '../../../../lib/server/ai/enhanced-legal-search.js';
+import { enhancedLegalSearch, type LegalSearchResult } from '../../../../lib/server/ai/enhanced-legal-search.js';
 
-import redisOptimized from, '$lib/middleware/redis-orchestrator-middleware';
+import redisOptimized from '$lib/middleware/redis-orchestrator-middleware';
 // Rate limiting configuration
 // Simple rate limiter stub that returns the expected format
 const rateLimiter = { check: (_ip: string | undefined) => Promise.resolve({, allowed: true, retryAfter: null }),

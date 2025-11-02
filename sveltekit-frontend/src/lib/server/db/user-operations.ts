@@ -1,16 +1,16 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * User Management Database Operations
  * Complete CRUD with PostgreSQL + pgvector + Drizzle ORM
  */
-// Removed: import { drizzle, type PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-// Removed: import postgres from, 'postgres';
-import { eq, and, isNull, count, desc } from, 'drizzle-orm';
-import { sql } from, '../db/utils.js'; // Use sql from utils.js
-import { db } from, './client.js'; // Import central db client
-import { arrayToPgVector } from, './vector-operations.ts'; // Import for pgvector conversion
-import bcrypt from, 'bcryptjs';
-import { nanoid } from, 'nanoid';
+// Removed: import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+// Removed: import postgres from 'postgres';
+import { eq, and, isNull, count, desc } from 'drizzle-orm';
+import { sql } from '../db/utils.js'; // Use sql from utils.js
+import { db } from './client.js'; // Import central db client
+import { arrayToPgVector } from './vector-operations.ts'; // Import for pgvector conversion
+import bcrypt from 'bcryptjs';
+import { nanoid } from 'nanoid';
 import type {
   NewUser,
   UserProfile,
@@ -19,7 +19,7 @@ import type {
   UserActivity,
   NewUserActivity,
   FullUserProfile
-} from, './schema/user-management';
+} from './schema/user-management';
 import {
   users,
   userProfiles,
@@ -29,7 +29,7 @@ import {
   updateUserSchema,
   insertProfileSchema,
   updateProfileSchema
-} from, './schema/user-management';
+} from './schema/user-management';
 
 // ============================================================================
 // MISSING TYPES

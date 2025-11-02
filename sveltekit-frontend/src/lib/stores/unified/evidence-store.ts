@@ -9,13 +9,13 @@
  * - chain-of-custody.ts
  *
  *, Usage:
- *   import { evidenceStore } from, '$lib/stores/unified';
+ *   import { evidenceStore } from '$lib/stores/unified';
  *
  *   await evidenceStore.uploadEvidence(file, metadata);
  *   $: evidence = $evidenceStore.evidence;
  */
 
-import { writable, derived } from, 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 /**
  * Types
@@ -478,9 +478,9 @@ export const filteredEvidence = derived(
  * MIGRATION NOTES:
  *
  * Old imports to, replace:
- *   import { evidence, uploadEvidence  } from, '$lib/stores/unified'
- *   import { evidenceStore  } from, '$lib/stores/unified'
+ *   import { evidence, uploadEvidence  } from '$lib/stores/unified'
+ *   import { evidenceStore  } from '$lib/stores/unified'
  *
  * New imports:
- *   import { evidenceStore, evidence, filteredEvidence } from, '$lib/stores/unified'
+ *   import { evidenceStore, evidence, filteredEvidence } from '$lib/stores/unified'
  */

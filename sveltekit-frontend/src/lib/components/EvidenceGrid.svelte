@@ -4,15 +4,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
-  import type { Evidence } from, '$lib/data/types';
-  import  Button  from, "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
-  import * as unified from, '$lib/stores/unified';
-  import * as Icons from, 'lucide-svelte';
+  import type { Evidence } from '$lib/data/types';
+  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // prefer named import pattern
+  import * as unified from '$lib/stores/unified';
+  import * as Icons from 'lucide-svelte';
   import {
     formatFileSize,
     getFileCategory,
     isImageFile
-  } from, '$lib/utils/file-utils';
+  } from '$lib/utils/file-utils';
 
   // safe fallbacks if the unified store doesn't export expected members'
   const evidenceActions = (unified as: any).evidenceActions ?? {

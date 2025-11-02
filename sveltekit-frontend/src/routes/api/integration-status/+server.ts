@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 // Full-Stack Integration Status Endpoint
 export const GET: RequestHandler = async ({ fetch }) => {
   try {

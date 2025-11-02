@@ -1,6 +1,6 @@
 <!-- Demo, Navigation, Component --> <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from, '$app/state'; import { goto } from, '$app/navigation'; interface NavItem { label: string; href: string; description: string; icon: string; external?: boolean; }
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from '$app/state'; import { goto } from '$app/navigation'; interface NavItem { label: string; href: string; description: string; icon: string; external?: boolean; }
   const navItems: NavItem[] = [ {
      , label: 'AI Document Demo', href: '/demo/document-ai', description: 'Document upload with AI processing', icon: '🤖'
     }, {

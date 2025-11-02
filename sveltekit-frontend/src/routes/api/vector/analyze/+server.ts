@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 /*
  * Vector Intelligence Semantic Analysis API
  * Provides advanced semantic analysis of legal documents and content
  */
-import { json, error } from, '@sveltejs/kit';
-import { vectorIntelligenceService } from, '$lib/services/vector-intelligence-service.js';
+import { json, error } from '@sveltejs/kit';
+import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
 
 // Add explicit local types to avoid: 'any' and implicit: any
 type AnalysisResult = unknown;

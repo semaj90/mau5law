@@ -1,7 +1,7 @@
 // removed unused import to avoid unused-symbol diagnostics
-import { phase13Integration, initializePhase13, getSystemHealth } from, './phase13-full-integration.js';
+import { phase13Integration, initializePhase13, getSystemHealth } from './phase13-full-integration.js';
 // @ts-expect-error - module may lack type declarations
-import flashAttention2Service from, '../services/flash-attention2-service.js';
+import flashAttention2Service from '../services/flash-attention2-service.js';
 // New explicit types to avoid repeated `any` casts and unexpected-any errors
 type Phase13Health = { phase13: { level: number; status: string };
   services?: any;

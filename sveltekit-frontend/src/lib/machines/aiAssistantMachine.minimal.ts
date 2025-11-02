@@ -3,7 +3,7 @@
  * Stripped down working version for production startup
  * Full feature version to be restored after Phase, 3 stabilization
  */
-import { createMachine, assign, fromPromise } from, 'xstate';
+import { createMachine, assign, fromPromise } from 'xstate';
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean };

@@ -1,13 +1,13 @@
 // Bits UI + Enhanced-Bits Integration Layer
 // Combines bits-ui headless components with enhanced-bits custom styling
 // Provides unified component API with custom design system support
-import type { ComponentType } from, 'svelte';
+import type { ComponentType } from 'svelte';
 import {
   createCustomTheme,
   applyCustomDesign,
   type CustomDesignTokens,
   type ComponentBarrelConfig
-} from, '$lib/components/ui/enhanced-bits.svelte';
+} from '$lib/components/ui/enhanced-bits.svelte';
 // Bits UI re-exports with enhanced styling
 export {
   Dialog,
@@ -23,14 +23,14 @@ export {
   Combobox,
   Toolbar,
   Resizable
-} from, 'bits-ui';
+} from 'bits-ui';
 // Enhanced-bits styling utilities
 export {
   createCustomTheme,
   applyCustomDesign,
   NESDesignSystem,
   MinimalDesignSystem
-} from, '$lib/components/ui/enhanced-bits.svelte';
+} from '$lib/components/ui/enhanced-bits.svelte';
 // Integration helpers
 export interface BitsUIEnhancedConfig { theme: CustomDesignTokens;, component: ComponentType;
   variant?: 'nes' | 'minimal' | 'custom';

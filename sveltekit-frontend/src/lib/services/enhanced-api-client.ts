@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility
  */
-import { z } from, 'zod';
-import { goto } from, '$app/navigation';
-import { browser } from, '$app/environment';
+import { z } from 'zod';
+import { goto } from '$app/navigation';
+import { browser } from '$app/environment';
 // Base API configuration
 const API_BASE_URL = '/api/v1';
 // API Response types

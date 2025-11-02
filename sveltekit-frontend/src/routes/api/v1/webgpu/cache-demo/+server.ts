@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { webgpuRedisOptimizer, optimizedCache } from, '$lib/server/webgpu-redis-optimizer.js';
-import { embeddingCache } from, '$lib/server/embedding-cache-middleware.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { webgpuRedisOptimizer, optimizedCache } from '$lib/server/webgpu-redis-optimizer.js';
+import { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
 /**
  * WebGPU Redis Cache Optimization Demo API
  * Demonstrates GPU-accelerated caching with thread optimization and data parallelism

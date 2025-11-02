@@ -1,4 +1,4 @@
-import type { StateMachine } from, 'xstate';
+import type { StateMachine } from 'xstate';
 export interface AIAssistantContext {
   response?: string;
   ollamaClusterHealth?: { primary?: boolean; [k: string]: any };

@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
+import type { Case } from '$lib/types';
+import type { RequestHandler } from './$types.js';
 // Optimized case search API endpoint
 // Supports multiple search strategies with automatic fallbacks
-import { json } from, '@sveltejs/kit';
-import { and, desc, ilike, or, sql } from, 'drizzle-orm';
-import { db } from, '$lib/server/db/index';
-import { cases } from, '$lib/server/db/schema/cases'; // Import the cases schema
+import { json } from '@sveltejs/kit';
+import { and, desc, ilike, or, sql } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import { cases } from '$lib/server/db/schema/cases'; // Import the cases schema
 
 // Define types for better type safety
 interface CaseFilters {

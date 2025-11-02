@@ -1,7 +1,7 @@
 
-import type { RequestHandler } from, './$types.js'
+import type { RequestHandler } from './$types.js'
 // Cloud AI health check endpoint for fallback AI services
-import { json } from, "@sveltejs/kit"
+import { json } from "@sveltejs/kit"
 export const GET: RequestHandler = async () => {
   try {
     // Check if cloud AI service is available

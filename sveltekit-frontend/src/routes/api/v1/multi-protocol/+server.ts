@@ -1,11 +1,11 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * Multi-Protocol API Gateway Integration
  * SvelteKit frontend integration with enhanced multi-protocol gateway
  * Provides intelligent routing and fallback capabilities
  */
-import { json, error } from, '@sveltejs/kit';
-import { ensureError } from, '$lib/utils/ensure-error';
+import { json, error } from '@sveltejs/kit';
+import { ensureError } from '$lib/utils/ensure-error';
 
 // Protocol types and priorities
 type ProtocolType = 'quic' | 'grpc' | 'http' | 'websocket';

@@ -4,8 +4,8 @@
 </script>
 <script, lang="ts">
   // Use namespace import and resolve components at runtime to avoid brittle typings
-  import * as BitsUI from, 'bits-ui';
-  import { cn } from, '$lib/utils.js';
+  import * as BitsUI from 'bits-ui';
+  import { cn } from '$lib/utils.js';
   // accept a className prop
   const { className } = $props<{ className: string }>()
   // runtime-safe resolution with fallbacks to plain elements

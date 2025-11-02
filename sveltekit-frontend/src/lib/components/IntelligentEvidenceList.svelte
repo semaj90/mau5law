@@ -1,7 +1,7 @@
 <script, lang="ts">
-  import  EvidenceCard  from, "$lib/components/ui/evidence/EvidenceCard.svelte";
-  import  EvidenceCanvas  from, "$lib/components/canvas/EvidenceCanvas.svelte";
-  import type { CaseFile } from, '$lib/core/logic/case-logic';
+  import  EvidenceCard  from "$lib/components/ui/evidence/EvidenceCard.svelte";
+  import  EvidenceCanvas  from "$lib/components/canvas/EvidenceCanvas.svelte";
+  import type { CaseFile } from '$lib/core/logic/case-logic';
   let { caseFiles = [], threshold = 100 }: { caseFiles: CaseFile[]; threshold?: number } = $props();
   // replace legacy reactive declaration with Svelte, 5 runes: use $effect
   let useCanvas = $state<boolean>(false);

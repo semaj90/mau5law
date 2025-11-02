@@ -3,29 +3,29 @@
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import UnifiedCanvasIntegration from, '$lib/components/unified.svelte';
-  import NierRichTextEditor from, '$lib/components/editors.svelte';
-  import EnhancedAIAssistant from, '$lib/components/ai.svelte';
-  import CitationsManager from, '$lib/components/citations.svelte';
+  import UnifiedCanvasIntegration from '$lib/components/unified.svelte';
+  import NierRichTextEditor from '$lib/components/editors.svelte';
+  import EnhancedAIAssistant from '$lib/components/ai.svelte';
+  import CitationsManager from '$lib/components/citations.svelte';
   // UI components are imported via barrel files for consistency and SSR compatibility.
-  import Button from, '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from, '$lib/components/ui/badge';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from, '$lib/components/ui/Card';
-  import { Tabs, TabsList, TabsTrigger, TabsContent } from, '$lib/components/ui/tabs';
-  import FileText from, 'lucide-svelte/icons/file-text';
-  import Search from, 'lucide-svelte/icons/search';
-  import Brain from, 'lucide-svelte/icons/brain';
-  import Zap from, 'lucide-svelte/icons/zap';
-  import MessageSquare from, 'lucide-svelte/icons/message-square';
-  import Camera from, 'lucide-svelte/icons/camera';
-  import Shield from, 'lucide-svelte/icons/shield';
-  import Database from, 'lucide-svelte/icons/database';
-  import Cpu from, 'lucide-svelte/icons/cpu';
-  import Save from, 'lucide-svelte/icons/save';
-  import Upload from, 'lucide-svelte/icons/upload';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/Card';
+  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
+  import FileText from 'lucide-svelte/icons/file-text';
+  import Search from 'lucide-svelte/icons/search';
+  import Brain from 'lucide-svelte/icons/brain';
+  import Zap from 'lucide-svelte/icons/zap';
+  import MessageSquare from 'lucide-svelte/icons/message-square';
+  import Camera from 'lucide-svelte/icons/camera';
+  import Shield from 'lucide-svelte/icons/shield';
+  import Database from 'lucide-svelte/icons/database';
+  import Cpu from 'lucide-svelte/icons/cpu';
+  import Save from 'lucide-svelte/icons/save';
+  import Upload from 'lucide-svelte/icons/upload';
 
   interface Case {
     id: string;

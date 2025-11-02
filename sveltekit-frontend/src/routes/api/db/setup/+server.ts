@@ -1,7 +1,7 @@
-import type { User } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db/client';
+import type { User } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/client';
 
 export const POST: RequestHandler = async () => {
   try {

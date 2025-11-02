@@ -21,12 +21,12 @@
 // - Schema dependency: vector-schema-simple.ts → vector-schema.ts
 // - Database migration required for vector columns
 // - Performance testing needed for similarity thresholds
-import { getOllamaEndpoint } from, '$lib/server/utils/endpoints'; // Centralized endpoint utility
-import { db } from, '$lib/server/db/client'; // Drizzle DB client
-import { sql } from, 'drizzle-orm';
-import { documentEmbeddings } from, '$lib/server/db/schema-postgres'; // Assuming this schema exists
-import { createHash } from, 'crypto';
-import { redisClient } from, '$lib/server/cache/redis'; // Redis client for caching
+import { getOllamaEndpoint } from '$lib/server/utils/endpoints'; // Centralized endpoint utility
+import { db } from '$lib/server/db/client'; // Drizzle DB client
+import { sql } from 'drizzle-orm';
+import { documentEmbeddings } from '$lib/server/db/schema-postgres'; // Assuming this schema exists
+import { createHash } from 'crypto';
+import { redisClient } from '$lib/server/cache/redis'; // Redis client for caching
 
 // Utility to create a stable hash for caching
 async function hashText(text: string): Promise<string> {

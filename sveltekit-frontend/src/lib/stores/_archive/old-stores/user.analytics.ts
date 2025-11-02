@@ -1,5 +1,5 @@
-import { writable } from, 'svelte/store';
-import { createMachine, interpret } from, 'xstate';
+import { writable } from 'svelte/store';
+import { createMachine, interpret } from 'xstate';
 
 export interface UserEvent { type: 'CLICK' | 'TYPING' | 'NAVIGATE' | 'MESSAGE';, payload: Record<string, any>;
 }

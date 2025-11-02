@@ -3,8 +3,8 @@
  * Client-side caching layer that bridges server-side Redis tensor cache
  * with XState Neural Sprite frontend for maximum performance
  */
-import { vectorWasm } from, '../wasm/vector-wasm-wrapper.js';
-import { browser } from, '$app/environment';
+import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
+import { browser } from '$app/environment';
 export interface CacheEntry<T = any> { key: string;, data: T;
   timestamp: number;
   ttl: number;

@@ -2,9 +2,9 @@
  * QUIC-Go Integration Test API
  * Tests the integration between SvelteKit QUIC endpoints and Go microservices
  */
-import { json, error } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { ensureError } from, '$lib/utils/ensure-error'
+import { json, error } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { ensureError } from '$lib/utils/ensure-error'
 
 // --- New Interfaces for Mock Responses ---
 interface EnhancedRAGResult { id: string;, content: string;

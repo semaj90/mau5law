@@ -31,8 +31,8 @@ import type {
 	RabbitMQClient,
 	ServiceEnvironment,
 	ServiceUrls
-} from, '$lib/types/external-services';
-import { dev } from, '$app/environment';
+} from '$lib/types/external-services';
+import { dev } from '$app/environment';
 // ===== Environment Configuration Loader =====
 /**
  * Load service configuration from environment variables

@@ -1,17 +1,17 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 /*
  * QUIC Vector Proxy API - High-Performance Vector Operations
  * Provides vector search with intelligent caching and multi-backend routing
  * Port: 8445 (QUIC), 8446 (HTTP/2 fallback)
  * Backends: Qdrant (6333), pgvector via Enhanced RAG (8094)
  */
-import { json, error } from, '@sveltejs/kit';
-import { randomUUID } from, 'node:crypto';
-import { ensureError } from, '$lib/utils/ensure-error';
+import { json, error } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import { ensureError } from '$lib/utils/ensure-error';
 // Use canonical VectorSearchQuery type
-import type { VectorSearchQuery } from, '$lib/types/ai-assistant';
+import type { VectorSearchQuery } from '$lib/types/ai-assistant';
 // Use the real vector search service singleton (Qdrant + Ollama)
-import { RealVectorSearchService } from, '$lib/services/real-vector-search-service';
+import { RealVectorSearchService } from '$lib/services/real-vector-search-service';
 
 let vectorSearchService: RealVectorSearchService | null = null;
 

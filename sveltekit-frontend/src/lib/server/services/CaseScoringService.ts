@@ -1,13 +1,13 @@
 // CaseScoringService.ts - AI-Powered Case Scoring System
 // Implements 0-100 scoring with multi-criteria analysis
-import { eq } from, 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 // Insertable is a Drizzle ORM utility type that ensures type-safe inserts into a table schema.
-import type { InferInsertModel } from, 'drizzle-orm';
-import { db } from, '../db/index.js';
-import { caseScores } from, '../db/schema.js';
-import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from, '../../types/scoring.js';
-import { ollamaService } from, '$lib/server/ai/ollama-adapter';
-import { cognitiveCache } from, '$lib/server/ai/cache';
+import type { InferInsertModel } from 'drizzle-orm';
+import { db } from '../db/index.js';
+import { caseScores } from '../db/schema.js';
+import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
+import { ollamaService } from '$lib/server/ai/ollama-adapter';
+import { cognitiveCache } from '$lib/server/ai/cache';
 // Simple logger implementation
 // Tighten logger arg typing
 const logger = {

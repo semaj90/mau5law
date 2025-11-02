@@ -1,8 +1,8 @@
-import { db } from, '$lib/db/connection';
-import { eq } from, 'drizzle-orm';
-import type { RequestHandler } from, './$types.js';
-import { sessions, messages } from, '$lib/db/schema'; // Ensure: 'messages' is exported from, '$lib/db/schema'.
-import { json } from, '@sveltejs/kit'; // Add this import
+import { db } from '$lib/db/connection';
+import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types.js';
+import { sessions, messages } from '$lib/db/schema'; // Ensure: 'messages' is exported from '$lib/db/schema'.
+import { json } from '@sveltejs/kit'; // Add this import
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

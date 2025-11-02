@@ -25,8 +25,8 @@ interface RedisClientLike {
   // optional helpers if present
   expire?: (key: string, seconds: number) => Promise<number>;
 }
-import fetch from, 'node-fetch';
-import { createHash } from, 'crypto';
+import fetch from 'node-fetch';
+import { createHash } from 'crypto';
 /**
  * Gemma Embedding Configuration
  */

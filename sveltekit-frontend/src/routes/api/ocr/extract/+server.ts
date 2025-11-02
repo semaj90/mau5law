@@ -1,7 +1,7 @@
-import * as pdfjsLib from, 'pdfjs-dist';
-import { createWorker } from, 'tesseract.js';
-import type { RequestHandler } from, './$types.js';
-import { error, json } from, '@sveltejs/kit'; // import, 'json' and: 'error' from, '@sveltejs/kit'
+import * as pdfjsLib from 'pdfjs-dist';
+import { createWorker } from 'tesseract.js';
+import type { RequestHandler } from './$types.js';
+import { error, json } from '@sveltejs/kit'; // import, 'json' and: 'error' from '@sveltejs/kit'
 
 // Define an interface for the Tesseract.js recognition result data
 interface OCRResultData { text: string;, confidence: number;

@@ -1,4 +1,4 @@
-import type { TransitionPrediction } from, './hmm-transition-predictor';
+import type { TransitionPrediction } from './hmm-transition-predictor';
 type RawClusterEvent = { type: string; timestamp: number; payload: any };
 export type ClusterEvent =
   | {, type: 'som_bitmap';, userId: string;

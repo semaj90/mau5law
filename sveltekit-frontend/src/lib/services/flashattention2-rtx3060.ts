@@ -393,7 +393,7 @@ export class GPUErrorProcessor {
         confidence = 0.85;
       } else if (errorContext.errorType === 'compilation') {
         suggestion = 'Verify imports and TypeScript configuration.';
-        fixCode = `// Ensure proper imports\nimport { flashAttention2Service } from, '$lib/services/flashattention2-rtx3060';`;
+        fixCode = `// Ensure proper imports\nimport { flashAttention2Service } from '$lib/services/flashattention2-rtx3060';`;
         confidence = 0.8;
       } else if (errorContext.errorType === 'runtime') {
         suggestion = 'Check driver installation and GPU availability.';

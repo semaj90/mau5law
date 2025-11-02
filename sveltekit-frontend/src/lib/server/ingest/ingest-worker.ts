@@ -7,23 +7,23 @@
  * - Generates embeddings with Gemma multimodal
  * - Inserts directly into Postgres with pgvector
  */
-import { parentPort } from, "worker_threads";
-import { fetchMinioObject } from, './minio.js';
+import { parentPort } from "worker_threads";
+import { fetchMinioObject } from './minio.js';
 import {
   extractTextFromImage,
   extractTextFromPDF,
   extractAudioFromBuffer,
   sampleFramesFromVideo,
   parseJsonWithSimd
-} from, './extractors.js';
+} from './extractors.js';
 import {
   embedText,
   embedImageBuffer,
   embedAudioFilePath
-} from, './embed.js';
-import { db } from, '../db/client.js';
-import { userDocuments } from, '../db/unified-schema.js';
-import fs from, "fs/promises";
+} from './embed.js';
+import { db } from '../db/client.js';
+import { userDocuments } from '../db/unified-schema.js';
+import fs from "fs/promises";
 interface Job {
   id: string;
   minioUrl?: string;

@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 
 // Real-time Document Update Notifications
 // WebSocket-based notifications for document re-embedding and re-ranking progress
-import { writable } from, "svelte/store";
+import { writable } from "svelte/store";
 // TODO: Fix import - // Orphaned; content: import {  // ============================================================================
 // TYPES
 // ============================================================================

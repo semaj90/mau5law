@@ -1,4 +1,4 @@
-import type { ChatMessage, RAGContext } from, "$lib/types/ai-chat"; export interface RankedChunk { id: string;, text: string; score: number; documentId?: string; sectionId?: string; }
+import type { ChatMessage, RAGContext } from "$lib/types/ai-chat"; export interface RankedChunk { id: string;, text: string; score: number; documentId?: string; sectionId?: string; }
 export interface IntentPoint {, x: number;, y: number; intent: string; }
 export interface RAGInputs {, context: RAGContext | undefined | null;, history: ChatMessage[];, embeddings: (text: string) => Promise<number[]>; // embedding fn (e.g., Ollama endpoint) search: (queryVec: number[], limit: number) => Promise<RankedChunk[]>; // pgvector/Qdrant }
 export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> { const { context, history, embeddings, search } = input; const recent = history.slice(-20); // light window const lastUser = [...recent].reverse().find((m) => m.role === "user"); const queryText = lastUser?.content || ""; if (!queryText.trim()) { return { chunks: [], confidence: 0, intent: "unknown" } }

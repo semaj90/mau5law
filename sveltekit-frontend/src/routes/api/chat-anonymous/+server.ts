@@ -1,4 +1,4 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Anonymous Chat API - Production Ready
  *
@@ -18,10 +18,10 @@ import type { Message } from, '$lib/types';
  * - YoRHa-themed system prompts
  * - Intelligent fallback for service failures
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, '@sveltejs/kit';
-import { readBodyFast } from, '$lib/server/utils/json-fast';
-import { generateChatResponse } from, '$lib/server/services';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse } from '$lib/server/services';
 
 type ChatMessage = { role: 'user' | 'assistant' | 'system';, content: string };
 

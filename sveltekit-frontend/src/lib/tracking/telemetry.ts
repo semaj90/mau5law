@@ -1,4 +1,4 @@
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 export type TelemetryPayload = {
   session_id: string;
   user_id?: string;

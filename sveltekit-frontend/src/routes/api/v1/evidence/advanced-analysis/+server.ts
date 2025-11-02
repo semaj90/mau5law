@@ -1,15 +1,15 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Advanced Evidence Analysis API Endpoint
  * Integrates with AdvancedEvidenceAnalyzer for comprehensive AI-powered analysis
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { AdvancedEvidenceAnalyzer } from, '$lib/services/ai/advanced-evidence-analyzer';
-import { websocketBroadcast } from, '$lib/services/websocket-manager';
-import { dbClient } from, '$lib/server/db/drizzle-config';
-import { evidence, analysisResults } from, '$lib/server/db/schema';
-import { eq } from, 'drizzle-orm';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { AdvancedEvidenceAnalyzer } from '$lib/services/ai/advanced-evidence-analyzer';
+import { websocketBroadcast } from '$lib/services/websocket-manager';
+import { dbClient } from '$lib/server/db/drizzle-config';
+import { evidence, analysisResults } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 const analyzer = new AdvancedEvidenceAnalyzer();
 
 // Add typed request/row shapes to avoid `any`

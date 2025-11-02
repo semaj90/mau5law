@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types'
-import { listMcpServers } from, '$lib/services/mcp-registry'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { listMcpServers } from '$lib/services/mcp-registry'
 
 export const GET: RequestHandler = async () => {
   const servers = await listMcpServers()

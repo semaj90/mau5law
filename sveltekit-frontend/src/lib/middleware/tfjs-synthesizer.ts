@@ -1,14 +1,14 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Temporary triage: disable TS checks in this file to reduce noise (remove when types are fixed)
 // @ts-nocheck
 // TensorFlow.js Synthesizer Middleware
 // Advanced NLP pipeline combining Legal-BERT, Language Extraction, and WebAssembly AI
-import { legalBERTMiddleware, type LegalBERTAnalysis } from, '../services/legal-bert-middleware.js';
-import { langExtractTensorFlow, type AdvancedExtractionResult } from, '../services/langextract-tfjs.js';
-import { webAssemblyAIAdapter } from, '../adapters/webasm-ai-adapter.js';
-import { webAssemblyLangChainBridge, type HybridRAGResult } from, '../services/webasm-langchain-bridge.js';
-import * as tf from, '@tensorflow/tfjs';
-import { browser } from, '$app/environment';
+import { legalBERTMiddleware, type LegalBERTAnalysis } from '../services/legal-bert-middleware.js';
+import { langExtractTensorFlow, type AdvancedExtractionResult } from '../services/langextract-tfjs.js';
+import { webAssemblyAIAdapter } from '../adapters/webasm-ai-adapter.js';
+import { webAssemblyLangChainBridge, type HybridRAGResult } from '../services/webasm-langchain-bridge.js';
+import * as tf from '@tensorflow/tfjs';
+import { browser } from '$app/environment';
 export interface SynthesizerConfig { enableLegalBERT: boolean;, enableLanguageExtraction: boolean;
   enableSemanticSynthesis: boolean;
   enableMultiModalAnalysis: boolean;

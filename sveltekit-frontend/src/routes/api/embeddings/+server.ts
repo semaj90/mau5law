@@ -1,7 +1,7 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { getOllamaEndpoint, getOllamaEmbeddingModel } from, '$lib/server/ai/ollama-utils';
-import type { EmbeddingResponse } from, '$lib/types/unified-types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getOllamaEndpoint, getOllamaEmbeddingModel } from '$lib/server/ai/ollama-utils';
+import type { EmbeddingResponse } from '$lib/types/unified-types';
 
 /**
  * Handles POST requests to generate embeddings for a given text using Ollama.

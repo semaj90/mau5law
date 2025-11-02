@@ -3,11 +3,11 @@
  * Advanced document processing with OCR, PDF conversion, and legal document optimization
  * Integrates with Tesseract.js, Sharp, and custom legal document analysis
  */
-import sharp from, "sharp";
-import fs from, "fs/promises";
-import path from, "path";
-import { EventEmitter } from, "events";
-import { createWorker } from, "tesseract.js"; // only import factory; avoid importing conflicting Worker type
+import sharp from "sharp";
+import fs from "fs/promises";
+import path from "path";
+import { EventEmitter } from "events";
+import { createWorker } from "tesseract.js"; // only import factory; avoid importing conflicting Worker type
 
 // Concrete extended worker interface declaring the runtime methods we call.
 // Do not extend a potentially conflicting: 'Worker' DOM type — declare the useful API surface explicitly.

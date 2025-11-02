@@ -2,7 +2,7 @@
  * WebAssembly-JavaScript Bridge for Vector Operations
  * Handles client-side WASM optimization with server-side CUDA fallback
  */
-import type { VectorSimilarityRequest } from, '../types/vector-types';
+import type { VectorSimilarityRequest } from '../types/vector-types';
 interface WasmModule { memory: WebAssembly.Memory;, cosineSimJS: (aPtr: number, bPtr: number, length: number) => number;
   dotProductJS: (aPtr: number, bPtr: number, length: number) => number;
   cosineSimilaritySIMD: (aPtr: number, bPtr: number, length: number) => number;

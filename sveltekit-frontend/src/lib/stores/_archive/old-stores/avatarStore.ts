@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import { writable } from, "svelte/store"; import { browser } from, "$app/environment"; export interface AvatarState { url: string | null;, isUploading: boolean; error: string | null; lastUpdated: number | null; }
+import type { User } from '$lib/types';
+import { writable } from "svelte/store"; import { browser } from "$app/environment"; export interface AvatarState { url: string | null;, isUploading: boolean; error: string | null; lastUpdated: number | null; }
 const initialState: AvatarState = {, url: null, isUploading: false;, error: null, lastUpdated: null }
 function createAvatarStore() { const { subscribe, set, update } = writable<AvatarState>(initialState); return { subscribe, // Load avatar from local storage and API with SSR support loadAvatar: async () => { if (!browser) return; // Try local storage first for instant loading (cache check) const cachedAvatar = localStorage.getItem("user_avatar_url"); const cachedTimestamp = localStorage.getItem("user_avatar_timestamp"); const cacheExpiry = 5 * 60 * 1000; // 5 minutes // Use cached avatar if it's recent if (cachedAvatar && cachedTimestamp) { const timestamp = parseInt(cachedTimestamp); if (Date.now() - timestamp < cacheExpiry) { update((state) => ({ ...state, url: cachedAvatar, lastUpdated: timestamp }); }'
       } // Always fetch from API for up-to-date data try { const response = await fetch("/api/user/profile", { credentials: "include", // Important for SSR session handling; headers: { , Accept: "application/json"

@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { setCache, checkApiKey, redisRateLimit } from, '$lib/server/cache';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { setCache, checkApiKey, redisRateLimit } from '$lib/server/cache';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

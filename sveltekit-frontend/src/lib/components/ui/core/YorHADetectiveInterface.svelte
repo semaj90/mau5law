@@ -1,5 +1,5 @@
 <!-- YoRHa Detective Interface - Enhanced-Bits, Gaming, UI --> <script, lang="ts">
-import type { User } from, '$lib/types'; import { onMount } from, 'svelte'; import { fade, fly } from, 'svelte/transition'; import { browser } from, '$app/environment'; import  Card, CardContent, Button, Input  from, "$lib/components/ui/enhanced-bits.svelte"; interface ChatMessage { id: string; sender: 'assistant' | 'detective' | 'system'; content: string; timestamp: string; isTyping?: boolean; }
+import type { User } from '$lib/types'; import { onMount } from 'svelte'; import { fade, fly } from 'svelte/transition'; import { browser } from '$app/environment'; import  Card, CardContent, Button, Input  from "$lib/components/ui/enhanced-bits.svelte"; interface ChatMessage { id: string; sender: 'assistant' | 'detective' | 'system'; content: string; timestamp: string; isTyping?: boolean; }
   interface SidebarItem { icon: string; label: string; count?: number; active?: boolean; }
   // Gaming-style state let messages: ChatMessage[] = $state([ {
      , id: '1', sender: 'assistant', content: 'YoRHa AI Assistant Online - Detective Support System Active', timestamp: '19:02:52'

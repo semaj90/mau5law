@@ -3,7 +3,7 @@
  * Systematic resolution of database type mismatches and missing methods
  */
 
-import type { Sql } from, 'postgres';
+import type { Sql } from 'postgres';
 
 // Lightweight DB types to avoid `any`
 export type DBRow = Record<string, unknown>;

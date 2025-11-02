@@ -3,11 +3,11 @@
  * Fetches initial state from database for server-side rendering
  * Integrates with our decoupled architecture
  */
-import type { PageServerLoad } from, './$types.js';
-import { db } from, '$lib/server/db/index.js';
-import { legalDocuments, ragSessions } from, '$lib/server/db/schema-postgres.js';
-import { desc, eq } from, 'drizzle-orm';
-import { langExtractService } from, '$lib/services/langextract-ollama-service.js';
+import type { PageServerLoad } from './$types.js';
+import { db } from '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
+import { desc, eq } from 'drizzle-orm';
+import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 // Types for page data
 export interface LegalAIPageData { initialState: {, langchainService: {, isAvailable: boolean;, models: string[];
       error: string | null;

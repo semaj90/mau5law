@@ -3,7 +3,7 @@
  * Basic fetch-based implementation with required methods
  */
 
-import type { VideoMetadata } from, '$lib/schemas/evidence-upload';
+import type { VideoMetadata } from '$lib/schemas/evidence-upload';
 
 export type ProtocolType = 'http' | 'grpc' | 'quic' | 'ws';
 

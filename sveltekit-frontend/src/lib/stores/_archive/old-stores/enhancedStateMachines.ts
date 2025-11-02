@@ -1,4 +1,4 @@
-import crypto from, 'crypto';
+import crypto from 'crypto';
 // TODO: Replace with proper import once types file is restored.
 // Temporary minimal Evidence shape to satisfy references below.
 export interface Evidence {
@@ -9,9 +9,9 @@ export interface Evidence {
 // ENHANCED STATE MACHINES FOR LEGAL AI SYSTEM - FIXED VERSION
 // Building on existing autoTaggingMachine with advanced capabilities
 // ======================================================================
-import { assign, setup, fromPromise, createActor } from, 'xstate';
-import { writable, derived } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { assign, setup, fromPromise, createActor } from 'xstate';
+import { writable, derived } from 'svelte/store';
+import { browser } from '$app/environment';
 // ======================================================================
 // ENHANCED TYPES
 // ======================================================================

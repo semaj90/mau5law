@@ -1,6 +1,6 @@
 /// <reference, types="vite/client" />
-import { randomUUID } from, 'crypto';
-import type { RequestHandler } from, './$types.js';
+import { randomUUID } from 'crypto';
+import type { RequestHandler } from './$types.js';
 // Types for upload handling
 export interface PresignRequest { filename: string;, fileSize: number;
   caseId: string;

@@ -1,8 +1,8 @@
-import type { AIResponse } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import { setup, assign, createActor, fromPromise, type DoneActorEvent, type ErrorActorEvent } from, 'xstate';
-import { writable } from, 'svelte/store';
-import { productionServiceClient } from, '$lib/services/production-service-client.js';
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
+import { setup, assign, createActor, fromPromise, type DoneActorEvent, type ErrorActorEvent } from 'xstate';
+import { writable } from 'svelte/store';
+import { productionServiceClient } from '$lib/services/production-service-client.js';
 // Legal AI Application State Machine - XState v5
 export interface Case { id: string;, title: string;
   status: string;

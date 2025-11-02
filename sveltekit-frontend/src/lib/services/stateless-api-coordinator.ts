@@ -1,5 +1,5 @@
-import { browser } from, '$app/environment';
-import { writable } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { writable } from 'svelte/store';
 // Task coordination types
 export interface TaskMessage { id: string;, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_PROCESSING' | 'AI_INFERENCE' | 'VECTOR_SEARCH' | 'REPORT_GENERATION';
   payload: any;

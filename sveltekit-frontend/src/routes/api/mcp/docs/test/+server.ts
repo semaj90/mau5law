@@ -1,13 +1,13 @@
-import type { Message } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import type { Message } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   getMessageQueueRedisBestPractices,
   getRabbitMQDocs,
   getAllRedisDocs,
   getRedisErrorHandling,
   getNodeRedisAdvancedFeatures
-} from, '$lib/mcp-rabbitmq-redis-docs.js';
+} from '$lib/mcp-rabbitmq-redis-docs.js';
 export const GET: RequestHandler = async ({ url, fetch }) => {
   try {
     console.log('🔍 Testing MCP library documentation access...');

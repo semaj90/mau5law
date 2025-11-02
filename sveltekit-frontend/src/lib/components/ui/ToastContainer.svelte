@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { toastStore } from, '$lib/stores/toast';
+  import { toastStore } from '$lib/stores/toast';
   // helper: build, class: string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
     return [

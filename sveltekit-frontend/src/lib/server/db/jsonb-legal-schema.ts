@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * JSONB Legal Metadata Schema Optimization
  *
@@ -12,11 +12,11 @@ import type { Document } from, '$lib/types';
  * - Optimized query patterns for common operations
  * - Integration with vector embeddings and graph data
  */
-import { sql } from, 'drizzle-orm';
-import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-// import { createInsertSchema, createSelectSchema } from, 'drizzle-zod'
-import { z } from, 'zod';
+import { sql } from 'drizzle-orm';
+import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+// import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { z } from 'zod';
 // ============================================================================
 // LEGAL METADATA SCHEMA DEFINITIONS
 // ============================================================================

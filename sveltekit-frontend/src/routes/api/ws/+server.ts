@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference, types="vite/client" />
-import { Server } from, 'socket.io';
-import { dev } from, '$app/environment';
-import { createRedisInstance } from, '$lib/server/redis';
-import { createPubSubHelper } from, '$lib/server/redisPubSub';
-import { registerCleanup } from, '$lib/server/shutdown';
-import type { RequestHandler } from, './$types.js';
+import { Server } from 'socket.io';
+import { dev } from '$app/environment';
+import { createRedisInstance } from '$lib/server/redis';
+import { createPubSubHelper } from '$lib/server/redisPubSub';
+import { registerCleanup } from '$lib/server/shutdown';
+import type { RequestHandler } from './$types.js';
 // WebSocket server for real-time updates
 let io: Server | null = null;
 // Legacy single redis client usage replaced by dedicated pub/sub helper set.

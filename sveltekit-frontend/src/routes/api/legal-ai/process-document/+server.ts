@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /// <reference, types="vite/client" />
 
 import {
@@ -6,9 +6,9 @@ import {
   getJobStatus,
   getQueueStats,
   type DocumentProcessingJobData
-} from, '$lib/services/queue-service';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit'; // Import json helper
+} from '$lib/services/queue-service';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit'; // Import json helper
 // Types for Go server integration (kept for compatibility)
 export interface DocumentProcessRequest { document_id: string;, content: string;
   document_type: string;

@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import { EventEmitter } from, 'events';
+import type { User } from '$lib/types';
+import { EventEmitter } from 'events';
 /**
  * Ultra-High Performance WebAssembly JSON Processor
  * 10x faster than RapidJSON with neural network optimization

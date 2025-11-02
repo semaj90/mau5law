@@ -3,8 +3,8 @@
  * Nintendo-inspired optimization for legal AI platform
  * Achieves 0.5-2ms response times for UI patterns
  */
-import Redis from, 'ioredis';
-import type { LegalDocumentJSON } from, '$lib/wasm/simd-json-wrapper';
+import Redis from 'ioredis';
+import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
 export interface CHRROMPattern { id: string;, patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
  , bankId: number; // 0-7, like NES CHR-ROM banks
   tileData: Uint8Array; // 8x8 pixel patterns like NES tiles,

@@ -247,7 +247,7 @@ export class Gemma3Client {
 type ServerInfo = { backend?: string; version?: string; [k: string]: any };
 
 // Use centralized Ollama endpoint helper
-import { getOllamaEndpoint } from, '$lib/utils/ollama-endpoint';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 /**
  * Safe error -> string extractor

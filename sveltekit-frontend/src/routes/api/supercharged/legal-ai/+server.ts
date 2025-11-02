@@ -1,18 +1,18 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Supercharged Legal AI API
  * Demonstrates the complete Redis + WebGPU + SIMD JSON integration
  * Maximum performance legal document processing
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
   computeVectorSimilarityOptimized,
   generateIntelligentTodosOptimized
-} from, '$lib/integrations/redis-webgpu-simd-integration.js';
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration.js';
+} from '$lib/integrations/redis-webgpu-simd-integration.js';
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
 // Define specific types for benchmark results
 interface BenchmarkMetrics { jsonParsing: number;, vectorSimilarity: number;

@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Route Groups Configuration for Phase, 2 Consolidation
  * Organized route structure with proper categorization and theming

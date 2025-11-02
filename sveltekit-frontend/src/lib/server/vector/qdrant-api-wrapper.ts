@@ -2,8 +2,8 @@
  * Qdrant API Wrapper - Handles version compatibility and method mapping
  * Compatible with @qdrant/js-client-rest ^1.15.1
  */
-import { QdrantClient } from, "@qdrant/js-client-rest";
-import { productionLogger, as logger } from, '../production-logger.js';
+import { QdrantClient } from "@qdrant/js-client-rest";
+import { productionLogger, as logger } from '../production-logger.js';
 export class QdrantApiWrapper {
   private client: InstanceType<typeof, QdrantClient>;
   constructor(config: {, url: string; apiKey?: string }) {

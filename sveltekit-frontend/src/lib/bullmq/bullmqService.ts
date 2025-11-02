@@ -1,14 +1,14 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 
-import { Queue, Worker, Job, QueueEvents } from, "bullmq";
-import Redis from, "ioredis";
+import { Queue, Worker, Job, QueueEvents } from "bullmq";
+import Redis from "ioredis";
 // Mock imports for missing modules
 const aiPipeline = { process: async (content: string) => ({, processed: true }) };
 const ollamaService = { analyze: async (content: string) => ({, analysis: 'completed' }) };
 const multiLayerCache = { invalidate: async (pattern: string) => ({, invalidated: true }) };
-import { db } from, "$lib/server/db";
-import { eq } from, 'drizzle-orm';
-import { documentEmbeddings } from, "$lib/server/db/schema-unified";
+import { db } from "$lib/server/db";
+import { eq } from 'drizzle-orm';
+import { documentEmbeddings } from "$lib/server/db/schema-unified";
 // Mock types for missing interfaces
 export interface DocumentProcessingOptions {
   extractEntities?: boolean;
@@ -16,7 +16,7 @@ export interface DocumentProcessingOptions {
   analyzeContent?: boolean;
   generateEmbeddings?: boolean;
 }
-import { EventEmitter } from, "events";
+import { EventEmitter } from "events";
 // Job types
 export interface DocumentProcessingJob { documentId: string;, content: string;
   options: DocumentProcessingOptions;

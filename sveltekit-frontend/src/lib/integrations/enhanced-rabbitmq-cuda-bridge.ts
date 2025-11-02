@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 /**
  * Enhanced RabbitMQ-CUDA Bridge Integration (fixed)
  * - uses namespace import for amqplib and amqp.* types
  * - safe consumer wrapper with ack/nack
  * - fixed shutdown syntax and runtime guards
  */
-import { writable } from, 'svelte/store';
-import * as amqp from, 'amqplib';
+import { writable } from 'svelte/store';
+import * as amqp from 'amqplib';
 
 // Replace problematic amqplib type aliases with lightweight local interfaces
 // so we don't rely on non-exported symbol names from the amqplib package.'

@@ -1,5 +1,5 @@
 
-import { writable } from, "svelte/store";
+import { writable } from "svelte/store";
 // Orphaned content: import type { Evidence
 // Sidebar state
 export const sidebarStore = writable({

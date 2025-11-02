@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import RedisService from, './redis-service'; // Your RedisService class above
-import { z } from, 'zod'; // z is imported but not used in the provided snippet, keeping it as per prompt.
-import type { CachedEmbedding, CachedSearch } from, './redis-service'; // Import types for clarity
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import RedisService from './redis-service'; // Your RedisService class above
+import { z } from 'zod'; // z is imported but not used in the provided snippet, keeping it as per prompt.
+import type { CachedEmbedding, CachedSearch } from './redis-service'; // Import types for clarity
 
 // Placeholder for embedding model
 // In a real scenario, this would integrate with Ollama, Gemma3-Legal, etc.

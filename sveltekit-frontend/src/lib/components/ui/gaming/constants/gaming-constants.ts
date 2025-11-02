@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Gaming UI Constants and Color Palettes
  * Authentic retro gaming colors and presets
  */
-import type { NESColorPalette, SNESColorPalette, N64RenderingOptions } from, '../types/gaming-types.js';
+import type { NESColorPalette, SNESColorPalette, N64RenderingOptions } from '../types/gaming-types.js';
 // NES Color Palette (hardware accurate)
 export const NES_COLOR_PALETTE: NESColorPalette & {, success: string;, warning: string;
   error: string;

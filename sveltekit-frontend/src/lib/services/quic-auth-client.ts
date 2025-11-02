@@ -1,5 +1,5 @@
 // QUIC Authentication Client for Lucia v3 integration
-import type { RequestEvent } from, '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 interface AuthRequest { email: string;, password: string;
   ipAddress?: string;
   userAgent?: string;

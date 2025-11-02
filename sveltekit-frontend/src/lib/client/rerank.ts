@@ -1,4 +1,4 @@
-import type { Candidate } from, '$lib/types/sharedTypes';
+import type { Candidate } from '$lib/types/sharedTypes';
 // Lightweight client-side rerank + cache using simple in-memory Map for tests
 const clientCache = new Map<string, Candidate[]>();
 export function heuristicRerank(query: string, candidates: Candidate[]): Candidate[] {

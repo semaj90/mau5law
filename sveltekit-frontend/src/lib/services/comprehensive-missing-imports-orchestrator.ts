@@ -8,14 +8,14 @@
  * - Automated barrel store generation
  * - Svelte, 5 best practices application
  */
-import { automatedBarrelGenerator } from, './automated-barrel-store-generator.js';
-import { context7Fetcher } from, './context7-missing-imports-fetcher.js';
-import { webFetcher } from, './web-fetch-missing-implementations.js';
+import { automatedBarrelGenerator } from './automated-barrel-store-generator.js';
+import { context7Fetcher } from './context7-missing-imports-fetcher.js';
+import { webFetcher } from './web-fetch-missing-implementations.js';
 import type {
   MissingImportAnalysis,
   AutomatedResolutionResult,
   BarrelStoreFile
-} from, '$lib/types/automated-resolution';
+} from '$lib/types/automated-resolution';
 
 export class ComprehensiveMissingImportsOrchestrator {
   private performanceMetrics: { [key: string]: number } = {};

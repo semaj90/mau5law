@@ -6,10 +6,10 @@ Integrity Verification Component
 Displays detailed integrity verification results with AI analysis
 -->
 <script, lang="ts">
-  import  Badge  from, "$lib/components/ui/badge/Badge.svelte";
-  import  Progress  from, "$lib/components/ui/progress/Progress.svelte";
-  import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from, 'lucide-svelte';
-  import { SvelteComponent } from, 'svelte';
+  import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+  import  Progress  from "$lib/components/ui/progress/Progress.svelte";
+  import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from 'lucide-svelte';
+  import { SvelteComponent } from 'svelte';
   // Ensure TypeScript sees a constructor/Component type for dynamic usage
   const BadgeComponent = Badge as: unknown as typeof SvelteComponent;
   // Types

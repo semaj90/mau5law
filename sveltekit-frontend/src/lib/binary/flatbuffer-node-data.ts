@@ -9,7 +9,7 @@
  * - NES memory architecture integration
  * - WebGPU texture upload optimization
  */
-import type { GPUNodeDataFB } from, '../gpu/nes-gpu-memory-bridge.js';
+import type { GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
 // Binary field offsets and sizes (bytes)
 const FLATBUFFER_SCHEMA = { HEADER: {, MAGIC: 0, // 4 bytes - "FBND" magic: number
    , VERSION: 4, // 2 bytes - schema version
@@ -87,7 +87,7 @@ export class FlatBufferNodeSerializer {
       riskLevel: string;
      , position: {, x: number;, y: number; z?: number };
       embedding?: Float32Array;
-      metadata?: Record<string, unknown>; // Changed from, 'any'
+      metadata?: Record<string, unknown>; // Changed from 'any'
     }>
   ): Promise<ArrayBuffer> {
     const startTime = performance.now();
@@ -177,7 +177,7 @@ export class FlatBufferNodeSerializer {
       this.addToCache(cacheKey, buffer);
       return buffer;
     } catch (error: any) {
-      // Changed from, 'any'
+      // Changed from 'any'
       console.error('❌ FlatBuffer serialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }
@@ -273,7 +273,7 @@ export class FlatBufferNodeSerializer {
         totalSize: buffer.byteLength
       };
     } catch (error: any) {
-      // Changed from, 'any'
+      // Changed from 'any'
       console.error('❌ FlatBuffer deserialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }

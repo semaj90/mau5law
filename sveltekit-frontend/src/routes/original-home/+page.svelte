@@ -2,13 +2,13 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount } from, 'svelte';
-  import Typewriter from, '$lib/components/Typewriter.svelte';
-  import UploadArea from, '$lib/components/UploadArea.svelte';
-  import { browser } from, '$app/environment';
+  import { onMount } from 'svelte';
+  import Typewriter from '$lib/components/Typewriter.svelte';
+  import UploadArea from '$lib/components/UploadArea.svelte';
+  import { browser } from '$app/environment';
   let recentCases: any[] = $state([]);
   let heroText = $state<string>('Advanced Legal Case Management');
   $effect(() => {

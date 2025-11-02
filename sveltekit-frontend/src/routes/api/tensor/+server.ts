@@ -2,13 +2,13 @@
  * SvelteKit API Route - Go Tensor Service Bridge
  * Bridges SvelteKit frontend with Go microservice on port, 8095
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from, '$lib/services/go-tensor-service-client'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+// import { goTensorService, type TensorRequest, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client'
 
 // --- Start of local stubs for missing exports ---
 // NOTE: These are temporary stubs to resolve compilation errors.
-// The actual implementations should be correctly exported from, '$lib/services/go-tensor-service-client'.
+// The actual implementations should be correctly exported from '$lib/services/go-tensor-service-client'.
 
 export interface TensorRequest { id: string;, documentId: string;
   data: Float32Array;

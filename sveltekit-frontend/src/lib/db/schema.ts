@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal AI Database Schema with Drizzle ORM
  * Optimized for pgvector embeddings and gemma3-legal:latest integration
@@ -16,10 +16,10 @@ import {
   numeric,
   real,
   index
-} from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-import { relations, type Relations } from, 'drizzle-orm';
-import { createSelectSchema, createUpdateSchema, createInsertSchema } from, 'drizzle-zod';
+} from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+import { relations, type Relations } from 'drizzle-orm';
+import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 // TODO: Ensure there is a dedicated `case_memories` table for storing serialized
 // case-level AI memory blobs (case_id uuid -> memory_json jsonb, updated_at timestamp).
 // This file currently does not declare `case_memories`. Add it when migrating

@@ -3,8 +3,8 @@
  * Thread-safe JSONB/JSON operations with GPU acceleration support
  * Handles concurrent access patterns for legal AI database operations
  */
-import { writable, type Writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
 // Thread synchronization primitives
 interface ThreadSafeCache { mutex: AsyncMutex;, data: Map<string, any>;
   jsonbIndex: Map<string, JsonbDocument>;

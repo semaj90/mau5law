@@ -1,6 +1,6 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/__tests__/shared/unified-test-utilities.ts
 /**
  * Unified Test Utilities
@@ -8,7 +8,7 @@ import type { Document } from, '$lib/types';
  * Consolidates all test helpers, mocks, and utilities into a single module
  * Replaces fragmented helper files throughout the codebase
  */
-import { vi } from, 'vitest';
+import { vi } from 'vitest';
 // ============================================================================
 // MOCK DATA GENERATORS
 // ============================================================================

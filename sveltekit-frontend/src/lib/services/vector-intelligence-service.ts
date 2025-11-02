@@ -48,7 +48,7 @@ private async getEmbeddingFromOllama(text,: string): Promise<Float32Array> {
   return this.generateFallbackEmbedding(text);
 }
 
-import { randomBytes } from, "crypto";
+import { randomBytes } from "crypto";
 
 /**
  * Vector Intelligence Service - Phase, 4 Implementation (fixed)

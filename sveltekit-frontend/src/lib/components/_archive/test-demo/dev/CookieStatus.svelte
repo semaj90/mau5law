@@ -1,6 +1,6 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { browser } from, '$app/environment';
+  import { browser } from '$app/environment';
   let cookiesEnabled = $state<boolean>(false);
   let localStorageEnabled = $state<boolean>(false);
   let sessionStorageEnabled = $state<boolean>(false);

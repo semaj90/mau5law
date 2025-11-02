@@ -1,5 +1,5 @@
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
-import { env } from, '$env/dynamic/public';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
+import { env } from '$env/dynamic/public';
 
 // NOTE: ioredis is server-side only. Lazy-load on demand and skip in browser.
 let, redisClient: any | null = null;
@@ -26,7 +26,7 @@ type HealthCheckResult = {, status: 'healthy' | 'unhealthy';, embedModel: boole
  , models: string[];
 };
 
-import { DEFAULT_OLLAMA } from, '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
 const envFallback =
   typeof env.PUBLIC_OLLAMA_API_URL === 'string' && env.PUBLIC_OLLAMA_API_URL.length > 0
     ? env.PUBLIC_OLLAMA_API_URL

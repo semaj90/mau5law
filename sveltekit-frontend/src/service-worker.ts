@@ -3,9 +3,9 @@
  * Comprehensive Service Worker - Redis + WebGPU + SIMD Integration
  * Background processing for legal AI with distributed caching
  */
-import { somWebGPUCache } from, './lib/webgpu/som-webgpu-cache.js';
-import { redisWebGPUIntegration } from, './lib/integrations/redis-webgpu-simd-integration.js';
-import { simdJSONClient } from, './lib/simd/simd-json-worker-client.js';
+import { somWebGPUCache } from './lib/webgpu/som-webgpu-cache.js';
+import { redisWebGPUIntegration } from './lib/integrations/redis-webgpu-simd-integration.js';
+import { simdJSONClient } from './lib/simd/simd-json-worker-client.js';
 // Service Worker Global State
 let isRedisConnected = $state<boolean>(false);
 let webgpuInitialized = $state<boolean>(false);

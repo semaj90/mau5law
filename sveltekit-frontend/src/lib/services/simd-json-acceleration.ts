@@ -3,7 +3,7 @@
  * Integrates high-performance JSON parsing across the data pipeline
  */
 // Import WASM SIMD parser
-import type { LegalDocumentWASM, SIMDJSONParser } from, '../../wasm/simd-json-parser.js';
+import type { LegalDocumentWASM, SIMDJSONParser } from '../../wasm/simd-json-parser.js';
 // Legal document interfaces
 export interface LegalDocument { id: string;, title: string;
   content: string;

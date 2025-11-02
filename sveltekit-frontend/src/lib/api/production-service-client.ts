@@ -3,7 +3,7 @@
  * Production Service Client for Integration Testing
  * Simplified wrapper around the main production client for testing purposes
  */
-import type { ServiceResponse } from, './production-client.js';
+import type { ServiceResponse } from './production-client.js';
 export interface IntegrationServiceRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;

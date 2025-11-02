@@ -4,42 +4,42 @@
  * Replaces shadcn-ui for consistent gaming aesthetic
  */
 // Core Enhanced-Bits Components
-export { default, as Button } from, './Button.svelte';
-export { default, as Card } from, './Card.svelte';
-export { default, as CardContent } from, './CardContent.svelte';
-export { default, as CardDescription } from, './CardDescription.svelte';
-export { default, as CardFooter } from, './CardFooter.svelte';
-export { default, as CardHeader } from, './CardHeader.svelte';
-export { default, as CardTitle } from, './CardTitle.svelte';
-export { default, as Dialog } from, './Dialog.svelte';
-export { default, as DialogWrapper } from, './DialogWrapper.svelte';
-export { default, as Input } from, './Input.svelte';
-export { default, as Label } from, './Label.svelte';
-export { default, as Select } from, './Select.svelte';
+export { default, as Button } from './Button.svelte';
+export { default, as Card } from './Card.svelte';
+export { default, as CardContent } from './CardContent.svelte';
+export { default, as CardDescription } from './CardDescription.svelte';
+export { default, as CardFooter } from './CardFooter.svelte';
+export { default, as CardHeader } from './CardHeader.svelte';
+export { default, as CardTitle } from './CardTitle.svelte';
+export { default, as Dialog } from './Dialog.svelte';
+export { default, as DialogWrapper } from './DialogWrapper.svelte';
+export { default, as Input } from './Input.svelte';
+export { default, as Label } from './Label.svelte';
+export { default, as Select } from './Select.svelte';
 // NES.css Enhanced Components
-export { default, as NESButton } from, './NESButton.svelte';
-export { default, as NESCard } from, './NESCard.svelte';
-export { default, as NESModal } from, './NESModal.svelte';
+export { default, as NESButton } from './NESButton.svelte';
+export { default, as NESCard } from './NESCard.svelte';
+export { default, as NESModal } from './NESModal.svelte';
 // AI & Legal Components
-export { default, as AIDialog } from, './AIDialog.svelte';
-export { default, as AIChatMessage } from, './AIChatMessage.svelte';
-export { default, as AISearchBar } from, './AISearchBar.svelte';
-export { default, as DocumentCard } from, './DocumentCard.svelte';
-export { default, as EvidenceBoard } from, './EvidenceBoard.svelte';
-export { default, as LegalAIDashboard } from, './LegalAIDashboard.svelte';
+export { default, as AIDialog } from './AIDialog.svelte';
+export { default, as AIChatMessage } from './AIChatMessage.svelte';
+export { default, as AISearchBar } from './AISearchBar.svelte';
+export { default, as DocumentCard } from './DocumentCard.svelte';
+export { default, as EvidenceBoard } from './EvidenceBoard.svelte';
+export { default, as LegalAIDashboard } from './LegalAIDashboard.svelte';
 // Theme & Layout Components
-export { default, as ThemeProvider } from, './ThemeProvider.svelte';
-export { default, as ThemeToggle } from, './ThemeToggle.svelte';
-export { default, as Sidebar } from, './Sidebar.svelte';
-export { default, as Toolbar } from, './Toolbar.svelte';
+export { default, as ThemeProvider } from './ThemeProvider.svelte';
+export { default, as ThemeToggle } from './ThemeToggle.svelte';
+export { default, as Sidebar } from './Sidebar.svelte';
+export { default, as Toolbar } from './Toolbar.svelte';
 // Gaming Components
-export { default, as NESGamingShowcase } from, './NESGamingShowcase.svelte';
+export { default, as NESGamingShowcase } from './NESGamingShowcase.svelte';
 // YoRHa Harvard Gaming Components
-export { default, as YoRHaHarvardButton } from, './YoRHaHarvardButton.svelte';
-export { default, as YoRHaHarvardCard } from, './YoRHaHarvardCard.svelte';
+export { default, as YoRHaHarvardButton } from './YoRHaHarvardButton.svelte';
+export { default, as YoRHaHarvardCard } from './YoRHaHarvardCard.svelte';
 // Utility Components
-export { default, as Tooltip } from, './Tooltip.svelte';
-export { default, as Tabs } from, './Tabs.svelte';
+export { default, as Tooltip } from './Tooltip.svelte';
+export { default, as Tabs } from './Tabs.svelte';
 // Enhanced-Bits CSS Classes and Utilities
 export const EnhancedBitsClasses = {
   // Fonts

@@ -1,12 +1,12 @@
-import type { User } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { db } from, '$lib/server/db/connection';
-import { passwordResetTokens, users } from, '../../../../../drizzle/schema';
-import { eq, and, sql } from, 'drizzle-orm';
-import { z } from, 'zod';
-import { hash } from, '@node-rs/argon2';
-import crypto from, 'crypto';
+import type { User } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/connection';
+import { passwordResetTokens, users } from '../../../../../drizzle/schema';
+import { eq, and, sql } from 'drizzle-orm';
+import { z } from 'zod';
+import { hash } from '@node-rs/argon2';
+import crypto from 'crypto';
 
 // Password reset request schema
 const ResetPasswordRequestSchema = z.object({

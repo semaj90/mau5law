@@ -54,7 +54,7 @@ export const mcpUtils = {
   // Memory management prompts
   createEntity: (name, type, observations) =>
     `#memory #create_entities name:"${name}" type:"${type}" observations:${JSON.stringify(observations)}`,
-  createRelation: (from, to, type) => `#memory #create_relations from:"${from}" to:"${to}" type:"${type}"`,
+  createRelation: (from to, type) => `#memory #create_relations from:"${from}" to:"${to}" type:"${type}"`,
   // Codebase exploration
   exploreCode: pattern => `#codebase #read_multiple_files pattern:"${pattern}"`,
   showStructure: () => '#directory_tree',

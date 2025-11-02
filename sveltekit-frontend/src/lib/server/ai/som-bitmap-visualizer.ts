@@ -1,5 +1,5 @@
-import { Buffer } from, 'node:buffer';
-import { createHash } from, 'node:crypto';
+import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
 export type SOMBitmapPalette = 'viridis' | 'magma' | 'blueprint' | 'legal' | 'grayscale';
 export interface SOMBitmapOptions {
   width?: number;

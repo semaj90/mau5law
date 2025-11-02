@@ -1,4 +1,4 @@
-import type { PageServerLoad } from, './$types.js';
+import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ fetch }) => {
   try {
     const res = await fetch('/api/yorha/system/status');

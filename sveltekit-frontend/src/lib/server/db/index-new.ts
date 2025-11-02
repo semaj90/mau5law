@@ -1,11 +1,11 @@
-import { building } from, '$app/environment';
-import * as schema from, '$lib/server/db/schema-postgres';
-import type { Collection } from, 'lokijs';
-import dotenv from, 'dotenv';
-import { drizzle, type PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-import { migrate } from, 'drizzle-orm/postgres-js/migrator';
-import pgClient, { poolShim } from, '$lib/server/db-shim';
-import postgres from, 'postgres'; // added: import to derive client type
+import { building } from '$app/environment';
+import * as schema from '$lib/server/db/schema-postgres';
+import type { Collection } from 'lokijs';
+import dotenv from 'dotenv';
+import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import pgClient, { poolShim } from '$lib/server/db-shim';
+import postgres from 'postgres'; // added: import to derive client type
 // Load environment-specific variables
 const envFile = `.env.${process.env.NODE_ENV || 'development` }`;'`
 dotenv.config({, path: envFile });
@@ -108,7 +108,7 @@ export function getPool() {
   return _pool ?? (poolShim as PoolLike) ?? null;
 }
 // Schema exports
-export * from, '$lib/server/db/schema-postgres';
+export * from '$lib/server/db/schema-postgres';
 // Graceful shutdown
 export async function closeDatabase(): Promise<any> {
   if (_pool) {

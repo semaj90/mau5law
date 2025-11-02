@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
-import { db } from, "$lib/server/database";
+import type { Document } from '$lib/types';
+import { db } from "$lib/server/database";
 import {
   legalDocuments as documents,
   embeddingCache
-} from, "$lib/db/schema";
-import { eq, sql } from, "drizzle-orm";
-import crypto from, "crypto";
+} from "$lib/db/schema";
+import { eq, sql } from "drizzle-orm";
+import crypto from "crypto";
 export interface VectorSearchOptions {
   threshold?: number;
   limit?: number;

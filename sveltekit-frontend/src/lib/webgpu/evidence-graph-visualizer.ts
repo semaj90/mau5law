@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 export function isWebGPUAvailable(): boolean {
   try {
     // Feature-detect in browsers

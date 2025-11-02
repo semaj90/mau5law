@@ -1,4 +1,4 @@
-import { apiFetch } from, '../clients/api-client.js';
+import { apiFetch } from '../clients/api-client.js';
 export async function getHealth(): Promise<any> {
   return apiFetch('/health');
 }

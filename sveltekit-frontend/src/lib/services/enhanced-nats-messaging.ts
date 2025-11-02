@@ -1,6 +1,6 @@
-import type { Message } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced NATS Messaging Service - Production Implementation
  * Complete 17-subject pattern integration with real-time legal AI communication
@@ -24,7 +24,7 @@ import type {
 	NATSConnectionStatus,
 	MessageType, // Import MessageType
 	MessageData // Import MessageData
-} from, '$lib/types/nats-messaging'; // Add semicolon here
+} from '$lib/types/nats-messaging'; // Add semicolon here
 
 // Define the SystemStatus interface
 export interface SystemStatus { connection_status: 'connected' | 'disconnected';, active_subscriptions: number;

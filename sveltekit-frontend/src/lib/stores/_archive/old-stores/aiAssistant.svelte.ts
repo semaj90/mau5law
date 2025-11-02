@@ -1,12 +1,12 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 // AI Assistant Store with XState + Svelte, 5 Integration
 // Bridges AI Assistant machine with reactive Svelte components
-import { browser } from, '$app/environment';
-import { createActor } from, 'xstate';
-import { aiAssistantMachine, aiAssistantServices, aiAssistantActions } from, '$lib/machines/aiAssistantMachine.js';
-import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from, '$lib/adapters/webasm-ai-adapter.js';
-import { webAssemblyLangChainBridge, type: any } from, '$lib/services/webasm-langchain-bridge.js';
+import { browser } from '$app/environment';
+import { createActor } from 'xstate';
+import { aiAssistantMachine, aiAssistantServices, aiAssistantActions } from '$lib/machines/aiAssistantMachine.js';
+import { webAssemblyAIAdapter, type WebAssemblyAIResponse } from '$lib/adapters/webasm-ai-adapter.js';
+import { webAssemblyLangChainBridge, type: any } from '$lib/services/webasm-langchain-bridge.js';
 // AI Assistant reactive state interface
 export interface AIAssistantState { isActive: boolean;, isProcessing: boolean;
   currentQuery: string;

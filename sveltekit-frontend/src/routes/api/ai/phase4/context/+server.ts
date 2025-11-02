@@ -1,11 +1,11 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * API Endpoint: Context-Aware AI Chat
  * Phase, 4 - AI Memory Integration
  */
-import type { RequestHandler } from, '@sveltejs/kit';
-import { contextAwareMemory } from, '$lib/services/context-aware-ai-memory';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { contextAwareMemory } from '$lib/services/context-aware-ai-memory';
+import { json } from '@sveltejs/kit';
 
 // Local expected shape for the contextual AI response (safe guards)
 type ExpectedAIResponse = {

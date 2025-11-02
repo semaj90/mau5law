@@ -1,15 +1,15 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 // Production-ready Enhanced Chat API v3
 // Features: Rate limiting, structured logging, vector embeddings, service worker support
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { ollamaChatStream } from, '$lib/services/ollamaChatStream';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream';
 import {
   initializeChatEmbeddingsTable,
   searchSimilarChats as _searchSimilarChats, // Rename the problematic import
   type VectorSearchResult
-} from, '$lib/server/services/vectorDBService';
-import { chatRateLimiter } from, '$lib/server/middleware/rate-limiter';
+} from '$lib/server/services/vectorDBService';
+import { chatRateLimiter } from '$lib/server/middleware/rate-limiter';
 
 // Define the expected signature for searchSimilarChats.
 // The actual function in $lib/server/services/vectorDBService.ts needs to be updated
@@ -69,7 +69,7 @@ const logger: Logger = {
     return createChildLoggerInstance(this, bindings);
   }
 };
-import { createHash } from, 'node:crypto';
+import { createHash } from 'node:crypto';
 
 // New interface for recommendations
 export interface Recommendation {

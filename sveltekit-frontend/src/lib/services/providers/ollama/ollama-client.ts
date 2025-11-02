@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import { EventEmitter } from, 'events';
-import { OLLAMA_CONFIG, isLegalTask } from, './ollama-config';
+import type { Document } from '$lib/types';
+import { EventEmitter } from 'events';
+import { OLLAMA_CONFIG, isLegalTask } from './ollama-config';
 import type {
   OllamaGenerateRequest,
   OllamaResponse,
@@ -8,8 +8,8 @@ import type {
   LegalDocument,
   AnalysisResult,
   UserQuery
-} from, './types.js';
-import type { SelfPromptingSuggestion } from, '../../ai/intelligent-model-orchestrator.js';
+} from './types.js';
+import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
 /**
  * Clean, single-definition EnhancedOllamaService that preserves the public API surface
  * and provides deterministic stub implementations so the codebase can compile and run.

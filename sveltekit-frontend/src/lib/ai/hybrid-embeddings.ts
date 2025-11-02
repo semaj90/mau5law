@@ -14,8 +14,8 @@
  *   const embedder = new HybridEmbeddings();
  *   const vector = await embedder.embed('text'); // Auto-selects best option
  */
-import { BrowserEmbeddings } from, './browser-embeddings';
-import type { EmbeddingOptions } from, './browser-embeddings';
+import { BrowserEmbeddings } from './browser-embeddings';
+import type { EmbeddingOptions } from './browser-embeddings';
 export type EmbeddingStrategy = 'ollama' | 'browser' | 'auto';
 export interface HybridEmbeddingOptions extends EmbeddingOptions {
   strategy?: EmbeddingStrategy;
@@ -250,8 +250,8 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *
  * // In a Svelte, component:
  * <script, lang="ts">
- *   import { hybridEmbeddings } from, '$lib/ai/hybrid-embeddings';
- *   import { onMount } from, 'svelte';
+ *   import { hybridEmbeddings } from '$lib/ai/hybrid-embeddings';
+ *   import { onMount } from 'svelte';
  *
  *   onMount(async () => {
  *     await hybridEmbeddings.initialize();

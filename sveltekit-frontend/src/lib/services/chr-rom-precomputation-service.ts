@@ -1,11 +1,11 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * CHR-ROM Pre-computation Service
  * Proactive background service that anticipates user actions and pre-computes UI patterns
  * Inspired by Nintendo NES Character ROM for instant 0ms UI responses
  */
-import { browser } from, '$app/environment';
-import { writable, get } from, 'svelte/store';
+import { browser } from '$app/environment';
+import { writable, get } from 'svelte/store';
 
 // --- Typed interfaces for external services (requested) ---
 export type UltraJSONParser = { parse: (s: string) => unknown;, stringify: (v: any) => string;

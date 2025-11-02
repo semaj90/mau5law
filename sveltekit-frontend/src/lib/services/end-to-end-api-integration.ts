@@ -1,12 +1,12 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * End-to-End API Integration Service
  * Wires together all legal AI platform components for seamless end-to-end workflows
  * Svelte, 5 + SvelteKit 2.0 + TypeScript integration layer
  */
-import { writable, derived, type Writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
 // Central API Client with automatic failover and health monitoring
 export class LegalAIIntegrationClient {
   private baseUrl: string;

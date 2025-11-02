@@ -1,25 +1,25 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /// <reference, types="vite/client" />
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 // Production-Quality Document Upload API
 // Integrates PostgreSQL, Qdrant, OCR, Gemma3, XState, RabbitMQ, Neo4j
-import { db } from, '$lib/server/db/index';
-import { enhancedEvidence } from, '$lib/server/db/enhanced-legal-schema';
-import { randomUUID } from, 'node:crypto';
-import path from, 'path';
-import { qdrantService } from, '$lib/services/qdrantService';
-import { checkQdrantHealth } from, '$lib/server/helpers/qdrant';
+import { db } from '$lib/server/db/index';
+import { enhancedEvidence } from '$lib/server/db/enhanced-legal-schema';
+import { randomUUID } from 'node:crypto';
+import path from 'path';
+import { qdrantService } from '$lib/services/qdrantService';
+import { checkQdrantHealth } from '$lib/server/helpers/qdrant';
 // Placeholder services to avoid compile errors if originals missing
-import { cases, legalDocuments } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
-import { writeFile, mkdir } from, 'fs/promises';
-import pdf from, 'pdf-parse';
-import { createWorker } from, 'tesseract.js';
-import { legalBERT } from, '$lib/server/ai/legalbert-middleware';
-import { checkOllamaHealth, generateOllamaChatCompletion } from, '$lib/server/helpers/ollama';
+import { cases, legalDocuments } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { writeFile, mkdir } from 'fs/promises';
+import pdf from 'pdf-parse';
+import { createWorker } from 'tesseract.js';
+import { legalBERT } from '$lib/server/ai/legalbert-middleware';
+import { checkOllamaHealth, generateOllamaChatCompletion } from '$lib/server/helpers/ollama';
 // import { interpret
-// import { documentUploadMachine } from, '$lib/state/documentUploadMachine'
+// import { documentUploadMachine } from '$lib/state/documentUploadMachine'
 // Production logging
 const logger = {
   info: (msg: string, data?: any) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data || ''),

@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types'; import { onMount } from, 'svelte'; import  ModernButton  from, "$lib/components/ui/Button.svelte"; interface UploadResponse { success?: boolean; error?: string; data?: any; }
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import  ModernButton  from "$lib/components/ui/Button.svelte"; interface UploadResponse { success?: boolean; error?: string; data?: any; }
   let fileInput: HTMLInputElement; let selectedFile = $state<File | null>(null); let uploading = $state<boolean>(false); let uploadResult = $state<any>(null); let errorMessage = $state<string>(''); let uploadConfig = $state<any>(null); // Form fields let caseId = $state<string>(''); let documentType = $state<string>(''); let title = $state<string>(''); onMount(async () => { // Load upload configuration from an endpoint (placeholder) try { const cfgRes = await fetch('/api/documents/upload-config').catch(() => null); if (cfgRes && cfgRes.ok) { uploadConfig = await cfgRes.json(); }
     } catch (error) { console.warn('Upload config unavailable:', error); }
   }); function handleFileSelect(event: Event) { const input = event.currentTarget as HTMLInputElement | null; selectedFile = input?.files?.[0] || null; errorMessage = ''; uploadResult = null; if (selectedFile) { // Auto-generate title from filename if not provided if (!title) { title = selectedFile.name.replace(/[-_]/g, ' '); }

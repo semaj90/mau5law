@@ -1,6 +1,6 @@
 // Server-Sent Events endpoint for real-time workflow updates
-import type { RequestHandler } from, './$types.js'
-import { workflowOrchestrator } from, '$lib/server/workflows/orchestrator'
+import type { RequestHandler } from './$types.js'
+import { workflowOrchestrator } from '$lib/server/workflows/orchestrator'
 export const GET: RequestHandler = async ({ url, request }) => {
   console.log('📡 SSE client connected to workflow updates')
   const workflowId = url.searchParams.get('workflowId')

@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 📊 Visual Pipeline Architecture Diagram
  * Shows complete flow: Redis → SIMD → GPU → Streaming → Storage

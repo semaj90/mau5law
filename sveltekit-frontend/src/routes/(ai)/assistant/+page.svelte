@@ -1,6 +1,6 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types'; // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat) import  Button  from, "$lib/components/ui/core.svelte"; import  Card, CardContent, CardHeader, CardTitle  from, "$lib/components/ui/Card.svelte"; interface ChatMessage { id: string; role: 'user' | 'assistant'; content: string;, timestamp: Date; }
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types'; // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat) import  Button  from "$lib/components/ui/core.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; interface ChatMessage { id: string; role: 'user' | 'assistant'; content: string;, timestamp: Date; }
 
   let messages = $state<ChatMessage[]>([]); let currentMessage = $state<string>(''); let isStreaming = $state<boolean>(false); let error = $state<string>(''); async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isStreaming) return; const userMessage: ChatMessage = {, id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() }; messages = [...messages, userMessage]; const messageToSend = currentMessage; currentMessage = ''; isStreaming = true; error = ''; try { // Use the consolidated AI chat endpoint const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({, message: messageToSend, model: 'gemma3-legal:latest', useRAG: true }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}`); }
 

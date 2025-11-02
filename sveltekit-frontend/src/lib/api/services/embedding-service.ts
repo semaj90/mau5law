@@ -1,4 +1,4 @@
-import { apiFetch } from, '../clients/api-client.js';
+import { apiFetch } from '../clients/api-client.js';
 export async function embed(text: string): Promise<any> {
   return apiFetch('http://localhost:11434/api/embeddings', 'POST', { body: {, model: 'nomic-embed-text', prompt: text, stream: false }
   });

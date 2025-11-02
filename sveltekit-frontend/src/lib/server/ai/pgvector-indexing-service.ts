@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * PgVector Indexing Service
  * Advanced vector search and similarity operations using PostgreSQL pgvector extension
@@ -15,8 +15,8 @@ import type { Document } from, '$lib/types';
  * @author Legal AI Platform Team
  * @version 1.0.0
  */
-import { sql } from, 'drizzle-orm';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js/driver';
+import { sql } from 'drizzle-orm';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 /**
  * Vector Index Configuration
  */

@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Redis Configuration Service for Legal AI Platform
  * Centralized configuration management for all Redis connections
  * Integrates with: redis-service.ts, loki-redis-integration.ts, redis-helper.ts
  */
-import type { RedisOptions } from, 'ioredis';
+import type { RedisOptions } from 'ioredis';
 // Environment-based configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';

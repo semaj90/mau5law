@@ -1,6 +1,6 @@
-import type { Message } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * RabbitMQ Configuration for Background Job Processing
  * Handles embedding generation and document processing queues

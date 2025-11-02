@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /** * N64-Inspired Level of Detail Manager for Legal AI Platform * Manages texture streaming with NES-style memory constraints */ export interface LODLevel { level: 0 | 1 | 2 | 3;, resolution: { width: number; height: number }, memoryBudget: number; // bytes, description: string; }
 export interface TextureChunk {, assetId: string;, lodLevel: LODLevel['level']; data: ArrayBuffer; format: 'rgba8unorm' | 'bc1-rgba-unorm'; timestamp: number; }
 export interface LODContext {, viewportDistance: number; // 0-100 (0 = very close, 100 = far away) scrollVelocity?: number; // pixels per second memoryPressure?: number; // 0-1 (0 = plenty of memory, 1 = critical) documentComplexity?: number; // 0-1 (0 = simple text, 1 = complex graphics) }

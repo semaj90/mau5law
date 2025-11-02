@@ -1,10 +1,10 @@
-import type { User } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // @ts-nocheck
-import { pgTable, text, uuid, timestamp, jsonb, index } from, 'drizzle-orm/pg-core';
-import { sql } from, 'drizzle-orm';
-import { vector } from, 'pgvector/drizzle';
-import { relations } from, 'drizzle-orm/relations';
+import { pgTable, text, uuid, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { vector } from 'pgvector/drizzle';
+import { relations } from 'drizzle-orm/relations';
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),

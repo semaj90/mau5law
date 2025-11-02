@@ -1,4 +1,4 @@
-import type { LayoutServerLoad } from, './$types';
+import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies }) => {
   const path = url.pathname;
   // Public routes are accessible to everyone

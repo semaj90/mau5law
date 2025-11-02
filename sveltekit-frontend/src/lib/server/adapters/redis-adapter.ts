@@ -1,4 +1,4 @@
-import type { RedisCacheService } from, '../../types/external-services';
+import type { RedisCacheService } from '../../types/external-services';
 // Lightweight wrapper that adapts a redis-like client to our RedisCacheService interface.
 // Uses `unknown` for the client type and narrows with guards to avoid `any`.
 export function createRedisAdapter(client: any): RedisCacheService {

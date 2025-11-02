@@ -1,9 +1,9 @@
-import type { Case } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import { canvasStates } from, '$lib/server/db/schema-postgres';
-import { eq } from, 'drizzle-orm';
+import type { Case } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import { canvasStates } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
 
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { caseId, canvasState, timestamp } = await request.json();

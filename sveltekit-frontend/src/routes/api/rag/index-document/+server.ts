@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * RAG Document Indexing API Endpoint
  *
@@ -10,14 +10,14 @@ import type { Document } from, '$lib/types';
  *
  * @route POST /api/rag/index-document
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { randomUUID } from, 'crypto';
-import { enhancedRAGPipeline } from, '$lib/services/enhanced-rag-pipeline';
-import { db } from, '$lib/server/db/drizzle';
-import { sql } from, 'drizzle-orm';
-import * as schema from, '$lib/server/db/schema-postgres';
-import { requireAuth } from, '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { randomUUID } from 'crypto';
+import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline';
+import { db } from '$lib/server/db/drizzle';
+import { sql } from 'drizzle-orm';
+import * as schema from '$lib/server/db/schema-postgres';
+import { requireAuth } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 
 // Define document interfaces locally since schema doesn't export them'
 interface LegalDocumentData {

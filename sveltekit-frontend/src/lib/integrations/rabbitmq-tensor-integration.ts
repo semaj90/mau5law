@@ -3,13 +3,13 @@
  * Connects RabbitMQ job processing with tensor SIMD worker and WASM operations
  * Provides seamless routing between message queues and WebAssembly acceleration
  */
-import { rabbitmqServiceWorker } from, '$lib/workers/rabbitmq-service-worker.js';
+import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
 import {
   initializeWASMBridge,
   registerWASMAcceleratedHandlers,
   getBridgeStatus
-} from, '$lib/adapters/wasm-rabbitmq-bridge.js';
-import type { JobType } from, '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
+} from '$lib/adapters/wasm-rabbitmq-bridge.js';
+import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
 // Port configuration for WebAssembly services
 export const WASM_SERVICE_PORTS = {
   TENSOR_WORKER: 5173, // SvelteKit dev server port
@@ -55,7 +55,7 @@ interface TensorProcessingJob {, id: string;, type: JobType;
   };
 }
 interface TensorWorkerMessage {, type: 'PROCESS_TENSOR' | 'TENSOR_PROCESSED' | 'TENSOR_ERROR';, id: string;
-  data?: TensorProcessingJob['data']; // Changed from, 'any'
+  data?: TensorProcessingJob['data']; // Changed from 'any'
   result?: TensorProcessingResult;
   error?: string;
 }
@@ -206,7 +206,7 @@ export class RabbitMQTensorIntegration {
    * Process a tensor job using the appropriate acceleration method
    */
   private async processTensorJob(job: TensorProcessingJob): Promise<TensorProcessingResult> {
-    // Changed from, 'any'
+    // Changed from 'any'
     this.processingJobs.set(job.id, job);
     try {
       console.log(`🔄 Processing tensor job: ${job.type} (${job.id})`);
@@ -228,7 +228,7 @@ export class RabbitMQTensorIntegration {
    * Process job using tensor service worker
    */
   private async processWithTensorWorker(job: TensorProcessingJob): Promise<TensorProcessingResult> {
-    // Changed from, 'any'
+    // Changed from 'any'
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error('Tensor worker processing timeout'));
@@ -271,7 +271,7 @@ export class RabbitMQTensorIntegration {
    * Process job using direct WASM operations (fallback)
    */
   private async processWithDirectWASM(job: TensorProcessingJob): Promise<TensorProcessingResult> {
-    // Changed from, 'any'
+    // Changed from 'any'
     console.log(`🔧 Using direct WASM processing for ${job.id}`);
     // Import WASM bridge functions for direct processing
     const { computeVectorSimilarityWASM } = await import('$lib/adapters/wasm-rabbitmq-bridge.js');

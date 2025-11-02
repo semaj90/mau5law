@@ -10,7 +10,7 @@ import {
   commonMCPQueries,
   type MCPContextAnalysis,
   type AutoMCPSuggestion
-} from, '$lib/utils/mcp-helpers';
+} from '$lib/utils/mcp-helpers';
 // Integration Guide Implementation
 export interface IntegrationConfig { enableRealTimeServices: boolean;, enableProductionDatabase: boolean;
   enableAdvancedAI: boolean;

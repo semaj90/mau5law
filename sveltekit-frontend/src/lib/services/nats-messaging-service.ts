@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // /**
 //  * NATS Messaging Service for Legal AI Platform
 //  * Real-time messaging integration with NATS Server
@@ -12,7 +12,7 @@ import type { Document } from, '$lib/types';
 //  * - AI analysis completion events
 //  */
 //, Note: nats.ws types - using generic types for compatibility
-// { connect, StringCodec, JSONCodec } from, 'nats.ws'
+// { connect, StringCodec, JSONCodec } from 'nats.ws'
 // Orphaned content: // import type { NatsConnection, Subscription, Msg
 
 // Define a type for raw NATS messages, similar to nats.ws.Msg

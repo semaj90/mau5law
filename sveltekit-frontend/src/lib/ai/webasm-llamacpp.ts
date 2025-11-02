@@ -1,8 +1,8 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // WebAssembly llama.cpp with WebGPU acceleration for client-side AI
 // Supports Gemma, 3 Legal models in browser with hardware acceleration
 import, '../types/index.js';
-import type { WebASMRankingCache } from, '../webgpu/webasm-ranking-cache.js';
+import type { WebASMRankingCache } from '../webgpu/webasm-ranking-cache.js';
 // Use the ranking cache metrics only for reporting (kept separate from our local metrics)
 type RankingCacheMetrics = import('../webgpu/webasm-ranking-cache').CacheMetrics;
 // Define missing types locally

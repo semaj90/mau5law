@@ -1,5 +1,5 @@
-import { writeFile } from, 'fs/promises';
-import path from, 'path';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 // Simple analytics logger for API endpoints
 // In production, replace with a real analytics/event system
 const LOG_PATH = path.resolve(process.cwd(), 'analytics-log.jsonl');

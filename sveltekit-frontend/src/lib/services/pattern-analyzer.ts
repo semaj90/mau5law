@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Enhanced Pattern Analyzer with Production-Ready Features
  *
@@ -13,18 +13,18 @@ import type { User } from, '$lib/types';
  * - Cross-modal pattern detection
  * - Advanced clustering and trend analysis
  */
-import { db } from, '$lib/server/db/index.js';
-import { sql } from, 'drizzle-orm';
-import { MinIOService } from, '$lib/server/minio-service.js';
-import { GemmaEmbeddingService } from, './gemma-embedding-service.js';
+import { db } from '$lib/server/db/index.js';
+import { sql } from 'drizzle-orm';
+import { MinIOService } from '$lib/server/minio-service.js';
+import { GemmaEmbeddingService } from './gemma-embedding-service.js';
 const gemmaEmbeddingService = new GemmaEmbeddingService();
 import {
   embedText,
   embedImageBuffer
-} from, '$lib/server/index.js';
-import { createMachine, assign, fromPromise, type ActorRefFrom } from, 'xstate';
-import { browser } from, '$app/environment';
-import Fuse from, 'fuse.js';
+} from '$lib/server/index.js';
+import { createMachine, assign, fromPromise, type ActorRefFrom } from 'xstate';
+import { browser } from '$app/environment';
+import Fuse from 'fuse.js';
 
 // RabbitMQ integration (conditionally loaded for server-side)
 let rabbitmq: any = null;

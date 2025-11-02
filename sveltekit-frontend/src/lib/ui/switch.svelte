@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { createEventDispatcher } from, 'svelte';
+  import { createEventDispatcher } from 'svelte';
   let { checked = false, disabled = false, ariaLabel = 'Toggle' } = $props<{
     checked?: boolean;
     disabled?: boolean;

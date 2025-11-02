@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import  Button  from, "$lib/components/ui/Button.svelte";
+  import  Button  from "$lib/components/ui/Button.svelte";
   interface Props {
     position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
     show?: boolean;

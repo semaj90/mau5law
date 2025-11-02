@@ -1,18 +1,18 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * LangChain.js Integration with Ollama and llama.cpp GPU Parsing
  * Complete AI pipeline with Go microservice integration
  */
-import { Ollama } from, '@langchain/ollama';
-import { ChatOllama } from, '@langchain/ollama';
-import { OllamaEmbeddings } from, '@langchain/ollama';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
-import { MemoryVectorStore } from, 'langchain/vectorstores/memory';
-import { RetrievalQAChain } from, 'langchain/chains';
-import { StringOutputParser } from, '@langchain/core/output_parsers';
-import type { Document } from, 'langchain/document';
-import { PromptTemplate } from, '@langchain/core/prompts';
-import crypto from, 'crypto';
+import { Ollama } from '@langchain/ollama';
+import { ChatOllama } from '@langchain/ollama';
+import { OllamaEmbeddings } from '@langchain/ollama';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { RetrievalQAChain } from 'langchain/chains';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import type { Document } from 'langchain/document';
+import { PromptTemplate } from '@langchain/core/prompts';
+import crypto from 'crypto';
 
 export interface LangChainConfig { ollamaBaseUrl: string;, models: {, chat: 'gemma3-legal';, embedding: 'embeddinggemma' | 'nomic-embed-text';
   };
@@ -610,4 +610,4 @@ if (typeof window !== 'undefined') {
 }
 // Export types and utilities
 export type { LangChainConfig, ProcessingResult, SearchResult };
-export { SearchableItem, SearchOptions } from, './fuse-lazy-search-indexeddb.js';
+export { SearchableItem, SearchOptions } from './fuse-lazy-search-indexeddb.js';

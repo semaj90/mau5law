@@ -1,8 +1,8 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
-import { logger } from, './logger.js';
+import { logger } from './logger.js';
 export type JsonObject = Record<string, unknown>;
 export interface OllamaModel { name: string;, size: string;
   digest: string;

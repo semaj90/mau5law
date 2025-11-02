@@ -3,11 +3,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-	import type { Snippet } from, 'svelte';
+	import type { Snippet } from 'svelte';
 </script>
-  import { tweened } from, 'svelte/motion';
-  import { cubicInOut } from, 'svelte/easing';
-  import { slide } from, 'svelte/transition';
+  import { tweened } from 'svelte/motion';
+  import { cubicInOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
   // Props
   interface Props {
     status?: 'idle' | 'model-loading' | 'inference' | 'complete' | 'error';

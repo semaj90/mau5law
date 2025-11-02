@@ -3,9 +3,9 @@
  * Integrates with Enhanced RAG system and Context7 MCP for high-performance index parsing
  */
 // Remove invalid/malformed import token line that caused the parsing error
-// -import { createActor } from, 'xstate';
-import type { RAGDocument, RAGSearchResult, TextChunk } from, '$lib/types/rag';
-import { enhancedRAGStore } from, '$lib/stores/unified';
+// -import { createActor } from 'xstate';
+import type { RAGDocument, RAGSearchResult, TextChunk } from '$lib/types/rag';
+import { enhancedRAGStore } from '$lib/stores/unified';
 // SIMD JSON Parser using structured cloning for performance
 export interface SIMDJSONParser { parse: (buffer: ArrayBuffer) => Promise<RawIndex>;, parseString: (jsonString: string) => Promise<RawIndex>;
   parseWithStreaming: (buffer: ArrayBuffer, chunkSize?: number) => AsyncGenerator<RawIndex>;

@@ -1,8 +1,8 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 // @ts-nocheck
 // Production PostgreSQL schema with pgvector for vector search
-import { createId } from, '@paralleldrive/cuid2';
-import { relations } from, 'drizzle-orm';
+import { createId } from '@paralleldrive/cuid2';
+import { relations } from 'drizzle-orm';
 import {
   boolean,
   decimal,
@@ -15,9 +15,9 @@ import {
   timestamp,
   uuid,
   varchar
-} from, 'drizzle-orm/pg-core';
-import { vector } from, 'pgvector/drizzle-orm';
-import { z } from, 'zod';
+} from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
+import { z } from 'zod';
 // Zod schemas for type-safe JSON fields
 export const UserSettingsExtSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']).default('system'),

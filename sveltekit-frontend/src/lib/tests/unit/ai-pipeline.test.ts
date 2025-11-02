@@ -1,6 +1,6 @@
-import { describe, it, expect } from, 'vitest';
-import { parallelVectorSearch } from, '$lib/utils/fastSearch';
-import { synthesizeNextSteps } from, '$lib/server/ai/synthesizer';
+import { describe, it, expect } from 'vitest';
+import { parallelVectorSearch } from '$lib/utils/fastSearch';
+import { synthesizeNextSteps } from '$lib/server/ai/synthesizer';
 
 describe('fastSearch.parallelVectorSearch', () => {
   it('returns topK closest vectors', async () => {

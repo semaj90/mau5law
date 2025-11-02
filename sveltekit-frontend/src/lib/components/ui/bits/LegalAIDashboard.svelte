@@ -1,11 +1,11 @@
 <!-- Enhanced-Bits Legal, AI, Dashboard -->
 <!-- Complete integration of Citations, Reports, and, POI, systems -->
 <script, lang="ts">
-  import { Input } from, '$lib/components/ui/input';
-  import { Button } from, '$lib/components/ui/button';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from, '$lib/components/ui/card';
-import type { Case } from, '$lib/types';
-  import { onMount } from, 'svelte';
+  import { Input } from '$lib/components/ui/input';
+  import { Button } from '$lib/components/ui/button';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
+import type { Case } from '$lib/types';
+  import { onMount } from 'svelte';
   import {
     Button,
     Card,
@@ -17,13 +17,13 @@ import type { Case } from, '$lib/types';
     Select,
     initializeEnhancedBits,
     LegalDesignTokens
-  } from, './index';
-  import  LegalPOICard  from, "./LegalPOICard.svelte";
+  } from './index';
+  import  LegalPOICard  from "./LegalPOICard.svelte";
   // Import all three legal systems
-  import { citationsStore } from, '$lib/stores/legal-citations.js';
-  import { reportsStore } from, '$lib/stores/legal-reports.js';
-  import { poiStore } from, '$lib/stores/legal-poi.js';
-  import { legalPlatformStore, unifiedSearch } from, '$lib/stores/legal-platform-integration.js';
+  import { citationsStore } from '$lib/stores/legal-citations.js';
+  import { reportsStore } from '$lib/stores/legal-reports.js';
+  import { poiStore } from '$lib/stores/legal-poi.js';
+  import { legalPlatformStore, unifiedSearch } from '$lib/stores/legal-platform-integration.js';
   // Component state using Svelte, 5 runes
   let activeTab = $state<string>('dashboard');
   let searchQuery = $state<string>('');

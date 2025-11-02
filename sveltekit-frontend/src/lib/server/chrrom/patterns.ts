@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // CHR-ROM UI Pattern schema and generators // Tiny, ready-to-render UI blocks: text, svg, or component state export type CHRPatternType = 'text' | 'svg' | 'state'; export interface CHRPatternBase { key: string; // stable lookup key (e.g., doc:<id>:summary), type: CHRPatternType; ttlMs?: number; // default TTL on client createdAt: string; // ISO timestamp meta?: { [key: string]: any } }
 export interface CHRTextPattern extends CHRPatternBase {, type: 'text';, payload: { text: string; style?: 'mono' | 'body' | 'small' | 'title'; }
 } export interface CHRSVGPattern extends CHRPatternBase {, type: 'svg';, payload: { svg: string; // tiny inline SVG path/group viewBox?: string; }

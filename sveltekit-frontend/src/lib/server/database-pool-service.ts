@@ -2,10 +2,10 @@
  * Enhanced Database Pool Service with Redis Coordination
  * Implements Redis-based connection pooling and distributed caching
  */
-import postgres from, 'postgres';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import type { PostgresJsDatabase } from, 'drizzle-orm/postgres-js';
-import { redisService } from, './redis-service.js';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { redisService } from './redis-service.js';
 interface DatabasePoolConfig { host: string;, port: number;
   database: string;
   username: string;

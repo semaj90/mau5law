@@ -1,4 +1,4 @@
-import crypto from, 'crypto';
+import crypto from 'crypto';
 /**
  * WebGPU Multi-Core Vector Processing for Legal AI
  * Provides GPU acceleration for vector operations in the browser

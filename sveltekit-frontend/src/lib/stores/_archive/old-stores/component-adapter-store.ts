@@ -1,11 +1,11 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Svelte, 5 Component Adapter Logic Layer
  * Converts complex stateful components into simple: "dumb" prop receivers
  * following the decoupled architecture pattern
  */
-import { writable, get, type Readable } from, 'svelte/store'; // Removed: 'derived'
-import type { DeepPartial } from, '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
+import { writable, get, type Readable } from 'svelte/store'; // Removed: 'derived'
+import type { DeepPartial } from '$lib/stores/comprehensive-types'; // Import DeepPartial for better type safety
 
 // Simple interfaces for UI consumption
 export interface ComponentState<TData = unknown> {

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
-import { parentPort, workerData } from, 'worker_threads';
-import type { ChunkJob, EmbedResult } from, '$lib/types/pipeline';
-import { getEmbeddingViaGate } from, '$lib/server/embedding-gateway';
+import { parentPort, workerData } from 'worker_threads';
+import type { ChunkJob, EmbedResult } from '$lib/types/pipeline';
+import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
 async function run(): Promise<any> {
   const job = workerData as ChunkJob;
   try {

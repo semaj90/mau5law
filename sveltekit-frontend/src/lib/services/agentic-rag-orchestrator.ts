@@ -1,4 +1,4 @@
-import type { User } from, '$lib/types';
+import type { User } from '$lib/types';
 /**
  * 🤖 Agentic RAG Orchestrator
  *
@@ -22,10 +22,10 @@ import type { User } from, '$lib/types';
  * 7. mcp_call - Call MCP server tools (VS Code extension)
  */
 
-import { hybridBridge } from, './hybrid-rag-simd-bridge';
-import { ragKnowledgePipeline } from, './rag-knowledge-pipeline';
-import type { RAGDocument, RankedDocument } from, './rag-knowledge-pipeline';
-import { cache } from, '$lib/server/cache/redis';
+import { hybridBridge } from './hybrid-rag-simd-bridge';
+import { ragKnowledgePipeline } from './rag-knowledge-pipeline';
+import type { RAGDocument, RankedDocument } from './rag-knowledge-pipeline';
+import { cache } from '$lib/server/cache/redis';
 
 // ============================================================================
 // Types & Interfaces

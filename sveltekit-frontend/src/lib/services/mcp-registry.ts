@@ -1,10 +1,10 @@
 export type McpServerRecord = unknown;
 const registry: Record<string, unknown> = {};
 export default registry;
-import fs from, 'fs/promises';
-import path from, 'path';
-import Redis from, 'ioredis';
-import { performance } from, 'node:perf_hooks';
+import fs from 'fs/promises';
+import path from 'path';
+import Redis from 'ioredis';
+import { performance } from 'node:perf_hooks';
 
 export type McpServerRecord = {, name: string;, description: string;
   region?: string;

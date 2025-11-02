@@ -1,5 +1,5 @@
-import type { Document } from, '$lib/types';
-import { QdrantClient } from, '@qdrant/js-client-rest';
+import type { Document } from '$lib/types';
+import { QdrantClient } from '@qdrant/js-client-rest';
 
 /**
  * Real Vector Search Service - No Mocks

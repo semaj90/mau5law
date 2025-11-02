@@ -1,10 +1,10 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { lucia } from, '$lib/server/auth/lucia'; // Corrected import path
-import { db } from, '$lib/server/db/drizzle';
-import { users, sessions } from, '$lib/server/db/schema-postgres';
-import { sql, desc } from, 'drizzle-orm';
-import type { Lucia } from, 'lucia'; // Import Lucia type directly
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { lucia } from '$lib/server/auth/lucia'; // Corrected import path
+import { db } from '$lib/server/db/drizzle';
+import { users, sessions } from '$lib/server/db/schema-postgres';
+import { sql, desc } from 'drizzle-orm';
+import type { Lucia } from 'lucia'; // Import Lucia type directly
 
 // Declare global types for HMR detection
 // Using declare global to augment globalThis for HMR checks

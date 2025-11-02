@@ -1,5 +1,5 @@
-import { writable } from, 'svelte/store';
-import type { Evidence } from, '../types/api';
+import { writable } from 'svelte/store';
+import type { Evidence } from '../types/api';
 
 type EvidenceState = {
 	/* primary shape used by consumers */

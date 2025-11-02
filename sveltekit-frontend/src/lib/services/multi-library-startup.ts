@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Multi-Library Startup Service
 // Initializes all integrated libraries: Loki.js + Fuse.js + Fabric.js + XState + Redis + RabbitMQ
 //, Platform: Native Windows (No Docker) with SvelteKit, 2 + Svelte, 5
-import { browser } from, '$app/environment';
-import { concurrencyOrchestrator } from, './concurrency-orchestrator.js';
-import { gemma3LegalService } from, './ollama-gemma3-service.js';
+import { browser } from '$app/environment';
+import { concurrencyOrchestrator } from './concurrency-orchestrator.js';
+import { gemma3LegalService } from './ollama-gemma3-service.js';
 
 // New: minimal local types to avoid `any` everywhere
 type Constructor<T = unknown> = new (...args: any[]) => T;

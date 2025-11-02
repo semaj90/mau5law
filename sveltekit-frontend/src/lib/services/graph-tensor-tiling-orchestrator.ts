@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🧠 Graph Tensor Tiling Orchestrator
  *
@@ -9,18 +9,18 @@ import type { Case } from, '$lib/types';
  * for vector storage, and Redis for caching.
  */
 
-import { getOllamaEndpoint } from, '$lib/utils/api-endpoints'; // Assuming this utility exists
-import { OllamaEmbeddingService, type EmbeddingService } from, './ollama-embedding-client'; // Centralized Ollama service
+import { getOllamaEndpoint } from '$lib/utils/api-endpoints'; // Assuming this utility exists
+import { OllamaEmbeddingService, type EmbeddingService } from './ollama-embedding-client'; // Centralized Ollama service
 import {
   QdrantClient,
   type QdrantPoint,
   type VectorSearchResult,
   type HybridSearchOptions
-} from, './hybrid-vector-operations'; // Reusing Qdrant client and types
-import { db } from, '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
-import { sql } from, 'drizzle-orm'; // Drizzle SQL utilities
-import * as schema from, '$lib/server/db/schema'; // Main Drizzle schema
-import { redis } from, '$lib/server/cache/redis'; // Redis client for caching
+} from './hybrid-vector-operations'; // Reusing Qdrant client and types
+import { db } from '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
+import { sql } from 'drizzle-orm'; // Drizzle SQL utilities
+import * as schema from '$lib/server/db/schema'; // Main Drizzle schema
+import { redis } from '$lib/server/cache/redis'; // Redis client for caching
 
 // NOTE: This service assumes;, a: 'graphNodes' table exists in your Drizzle schema
 // (e.g., src/lib/server/db/schema.ts) with columns like:

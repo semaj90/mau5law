@@ -15,10 +15,10 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { cache, cacheEmbedding, cacheSearchResults } from, '$lib/server/cache/redis';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Accept text and return embedding tensor with caching and indexing hooks
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {

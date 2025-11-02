@@ -1,8 +1,8 @@
-import type { User } from, '$lib/types';
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { ensureError } from, '$lib/utils/ensure-error';
-import { getOllamaEndpoint } from, '$lib/server/ollama';
+import type { User } from '$lib/types';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { ensureError } from '$lib/utils/ensure-error';
+import { getOllamaEndpoint } from '$lib/server/ollama';
 
 // Unified AI Chat Endpoint - Consolidates all chat variants
 // Supports multiple models, streaming, and backends

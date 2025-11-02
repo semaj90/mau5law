@@ -1,9 +1,9 @@
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  	import { tweened } from, 'svelte/motion';
-  import { cubicInOut, elasticOut } from, 'svelte/easing';
-  	// import * as Progress from, 'bits-ui'; // Removed - not needed for this component
-  	import { onMount } from, 'svelte';
+  	import { tweened } from 'svelte/motion';
+  import { cubicInOut, elasticOut } from 'svelte/easing';
+  	// import * as Progress from 'bits-ui'; // Removed - not needed for this component
+  	import { onMount } from 'svelte';
   	// Props
   	interface Props {
   		status?: 'loading' | 'processing' | 'success' | 'error';

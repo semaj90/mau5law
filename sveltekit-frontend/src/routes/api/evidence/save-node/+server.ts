@@ -1,7 +1,7 @@
-import { json } from, "@sveltejs/kit"
-import { z } from, "zod"
-import type { RequestHandler } from, './$types';
-import crypto from, "crypto"
+import { json } from "@sveltejs/kit"
+import { z } from "zod"
+import type { RequestHandler } from './$types';
+import crypto from "crypto"
 
 // Validation schemas
 const evidenceNodeSchema = z.object({

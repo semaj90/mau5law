@@ -1,18 +1,18 @@
 // LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
-import type { Document as LangChainDocumentType } from, '@langchain/core/documents';
-import { ChatPromptTemplate, PromptTemplate } from, '@langchain/core/prompts';
-import { RunnableMap, RunnablePassthrough, RunnableSequence } from, '@langchain/core/runnables';
-import { StringOutputParser } from, '@langchain/core/output_parsers';
-import { ChatOpenAI, OpenAIEmbeddings } from, '@langchain/openai';
-import { RecursiveCharacterTextSplitter } from, 'langchain/text_splitter';
+import type { Document as LangChainDocumentType } from '@langchain/core/documents';
+import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
+import { RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables';
+import { StringOutputParser } from '@langchain/core/output_parsers';
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 // Note: formatDocumentsAsString may need to be implemented locally
 const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
   return documents.map(doc => doc.pageContent).join('\n\n');
 };
 // Note: QdrantVectorStore and QdrantClient may need to be installed separately
-// import { QdrantVectorStore } from, "@langchain/community/vectorstores/qdrant"
-// import { QdrantClient } from, "@qdrant/js-client-rest"
+// import { QdrantVectorStore } from "@langchain/community/vectorstores/qdrant"
+// import { QdrantClient } from "@qdrant/js-client-rest"
 // Temporary type placeholders until proper imports are available
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
 // Replace loose: any with a small typed interface for the parts we use

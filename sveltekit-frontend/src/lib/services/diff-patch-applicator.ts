@@ -3,9 +3,9 @@
  * Safely applies unified diff patches to files with validation and rollback
  * Used by the agentic system for precise code modifications
  */
-import { readFileSync, writeFileSync, existsSync } from, 'fs';
-import { createHash } from, 'crypto';
-import { join, dirname } from, 'path';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { createHash } from 'crypto';
+import { join, dirname } from 'path';
 
 export interface DiffPatch { id: string;, filePath: string;
   originalHash: string;

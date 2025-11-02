@@ -1,4 +1,4 @@
-import { DEFAULT_OLLAMA } from, '$lib/services/get-ollama-endpoint';
+import { DEFAULT_OLLAMA } from '$lib/services/get-ollama-endpoint';
 
 // default embedding model per project instructions
 export const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text';

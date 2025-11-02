@@ -1,10 +1,10 @@
-import { cache } from, '$lib/server/cache/redis'; // Assuming this is the main Redis cache service
-import { getOllamaEmbedding } from, '$lib/llm/gemma'; // For server-side embedding generation
-import { cosineSimilarity } from, '$lib/ai/browser-embeddings'; // For similarity calculation
-import crypto from, 'crypto';
+import { cache } from '$lib/server/cache/redis'; // Assuming this is the main Redis cache service
+import { getOllamaEmbedding } from '$lib/llm/gemma'; // For server-side embedding generation
+import { cosineSimilarity } from '$lib/ai/browser-embeddings'; // For similarity calculation
+import crypto from 'crypto';
 
 // Define an interface for the Redis cache client to remove: 'any' casts
-import type IORedis from, 'ioredis';
+import type IORedis from 'ioredis';
 
 interface RedisCacheClient {
   get<T>(key: string): Promise<T | null>;

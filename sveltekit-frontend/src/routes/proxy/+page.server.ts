@@ -1,4 +1,4 @@
-import type { PageServerLoad } from, './$types.js';
+import type { PageServerLoad } from './$types.js';
 // Simple server load that proxies (placeholder) or returns diagnostic
 export const load: PageServerLoad = async ({ fetch, url }) => {
   // Placeholder: ensure page exists to prevent, 404

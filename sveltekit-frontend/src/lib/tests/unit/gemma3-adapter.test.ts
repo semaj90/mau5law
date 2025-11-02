@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from, 'vitest';
-import { callGemma3 } from, '$lib/server/ai/adapters/gemma3-http';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { callGemma3 } from '$lib/server/ai/adapters/gemma3-http';
 
 describe('callGemma3 adapter', () => {
   const originalEnv = { ...process.env };

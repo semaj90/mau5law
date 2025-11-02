@@ -1,6 +1,6 @@
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import * as os from, 'os'; // Import the: 'os' module
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import * as os from 'os'; // Import the: 'os' module
 
 export const, GET: RequestHandler = async () => {
   try {

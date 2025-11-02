@@ -1,4 +1,4 @@
-import type { RequestHandler } from, '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
 
 const LANGEXTRACT_BASE = process.env.LANGEXTRACT_URL
   ? process.env.LANGEXTRACT_URL.replace(/\/analyze$/, '')

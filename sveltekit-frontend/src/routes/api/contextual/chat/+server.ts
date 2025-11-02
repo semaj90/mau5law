@@ -8,10 +8,10 @@
  * - Next-step predictions
  */
 
-import { json } from, '@sveltejs/kit';
-import { agenticGemma3 } from, '$lib/server/ai/gemma3-agentic-functions';
-import { transcribeBuffer } from, '$lib/server/ai/voice/recognizer';
-import type { RequestHandler } from, '@sveltejs/kit'; // Corrected import path
+import { json } from '@sveltejs/kit';
+import { agenticGemma3 } from '$lib/server/ai/gemma3-agentic-functions';
+import { transcribeBuffer } from '$lib/server/ai/voice/recognizer';
+import type { RequestHandler } from '@sveltejs/kit'; // Corrected import path
 
 export const POST: RequestHandler = async ({ request, cookies: _cookies }) => { // Renamed: 'cookies';, to: '_cookies'
   try {

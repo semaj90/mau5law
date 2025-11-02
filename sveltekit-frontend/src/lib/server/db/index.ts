@@ -1,8 +1,8 @@
-import { Pool } from, 'pg';
-import type { PoolClient } from, 'pg';
-import { drizzle } from, 'drizzle-orm/node-postgres';
-import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from, 'drizzle-orm/pg-core';
-import { v4, as uuidv4 } from, 'uuid';
+import { Pool } from 'pg';
+import type { PoolClient } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { pgTable, uuid, text, integer, real, jsonb, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { v4, as uuidv4 } from 'uuid';
 // Pool + Drizzle initialization (reads DATABASE_URL from env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -176,8 +176,8 @@ export async function closeDbPool(): Promise<void> {
 // Context7 MCP: Expose DB pool for vector store and semantic search
 // (Already exported above)
 // Enhanced vector store with error handling
-import { PGVectorStore } from, '@langchain/community/vectorstores/pgvector';
-import { OpenAIEmbeddings } from, '@langchain/openai';
+import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
+import { OpenAIEmbeddings } from '@langchain/openai';
 // Local lightweight typings to avoid `any`
 type EmbeddingsLike = {
   embedDocuments?: (texts: string[]) => Promise<number[][]>;

@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Alert Center - Legal AI Platform
  *
@@ -20,16 +20,16 @@ import type { Document } from, '$lib/types';
  * @version 3.2.0
  * @lastModified 2025-01-20
  */
-import fs from, 'fs';
-import path from, 'path';
-import type { NATSMessagingService } from, './nats-messaging-service.js';
+import fs from 'fs';
+import path from 'path';
+import type { NATSMessagingService } from './nats-messaging-service.js';
 import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   getStageBaselineSnapshot,
   resetBudgetCounters,
   getBudgetCounters
-} from, './pipeline-metrics.js';
+} from './pipeline-metrics.js';
 
 // Add a typed alias for QUIC metrics to avoid `any`
 type QUICMetrics = ReturnType<typeof, getQUICMetrics>;

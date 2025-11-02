@@ -1,4 +1,4 @@
-import type { LegalDocument, Evidence } from, "$lib/types/legal-types";
+import type { LegalDocument, Evidence } from "$lib/types/legal-types";
 // New: typed worker message shapes and memory stats
 type MemoryStats = {
   rss?: number;

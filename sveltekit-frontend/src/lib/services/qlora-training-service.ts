@@ -1,18 +1,18 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * QLorA Training Service - Enhanced with GPU-Aware Cache
  * Low-Rank Adaptation training integration for legal document fine-tuning
  * Supports checkbox toggle for .case files and reinforcement learning analytics
  * Now with RTX Tensor Core optimization and multi-tier caching
  */
-import { writable, derived } from, 'svelte/store';
-import type { Writable, Readable } from, 'svelte/store';
-import { browser } from, '$app/environment';
+import { writable, derived } from 'svelte/store';
+import type { Writable, Readable } from 'svelte/store';
+import { browser } from '$app/environment';
 // Import existing services
-import { recommendationOrchestrator } from, './recommendation-orchestrator.js';
-import { vectorService } from, './postgresql-vector-service.js';
+import { recommendationOrchestrator } from './recommendation-orchestrator.js';
+import { vectorService } from './postgresql-vector-service.js';
 // Import GPU-aware cache system
-import { gpuAwareCache, type LegalGPUAwareCache } from, './gpu-aware-legal-cache.js';
+import { gpuAwareCache, type LegalGPUAwareCache } from './gpu-aware-legal-cache.js';
 
 // Define an interface for the recommendation orchestrator to avoid using: 'any'
 interface IRecommendationOrchestrator {

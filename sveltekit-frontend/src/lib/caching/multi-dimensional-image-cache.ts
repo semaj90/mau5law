@@ -3,15 +3,15 @@
  * Integrates with NES-GPU Memory Bridge, SOM Neural Networks, Auto-Encoders, and Tensor Tiling
  * for optimal graph traversal visualization image generation and caching
  */
-import { SOMNeuralNetwork, type SOMDecomposition } from, '../ai/som-neural-network.js';
-import { GraphPatternAutoEncoder, type EncodedGraphPattern } from, '../ai/graph-pattern-autoencoder.js';
+import { SOMNeuralNetwork, type SOMDecomposition } from '../ai/som-neural-network.js';
+import { GraphPatternAutoEncoder, type EncodedGraphPattern } from '../ai/graph-pattern-autoencoder.js';
 // ADDED: import the autoencoder's GraphNode/GraphData types for correct mapping'
 import type {
   GraphEdge as AEGraphEdge,
   GraphData as AEGraphData
-} from, '../ai/graph-pattern-autoencoder.js';
+} from '../ai/graph-pattern-autoencoder.js';
 // Import the GPU bridge as a namespace (module doesn't export `nesGPUBridge` named symbol)'
-import * as nesGPUBridge from, '../gpu/nes-gpu-memory-bridge.js';
+import * as nesGPUBridge from '../gpu/nes-gpu-memory-bridge.js';
 
 // --- CHANGED: define local GPUTextureMatrix type (module doesn't export it) ---'
 type GPUTextureMatrix = {

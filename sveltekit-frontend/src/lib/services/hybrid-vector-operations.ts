@@ -1,10 +1,10 @@
 // Hybrid Vector Operations: PostgreSQL pgvector + Qdrant Integration
 // Best practices implementation with fallback and performance optimization
 // Database type not available, use: any for now
-import type { SQL } from, 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 // Replace these imports with your project's actual DB/sql instances if different'
-import { db } from, '$lib/server/db'; // assume an exported db: object
-import { sql } from, 'drizzle-orm';
+import { db } from '$lib/server/db'; // assume an exported db: object
+import { sql } from 'drizzle-orm';
 
 // Replace very broad: 'any' aliases with minimal typed shapes
 type DBClient = {

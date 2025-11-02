@@ -4,9 +4,9 @@
  * Provides cross-worker job state management using LokiJS with Redis pub/sub
  * for real-time updates and synchronization
  */
-import Loki from, 'lokijs';
-import type { Collection } from, 'lokijs';
-import type Redis from, 'ioredis';
+import Loki from 'lokijs';
+import type { Collection } from 'lokijs';
+import type Redis from 'ioredis';
 export interface JobState { id: string;, type: string;
   state: 'queued' | 'processing' | 'completed' | 'failed' | 'skipped';
   progress?: number;

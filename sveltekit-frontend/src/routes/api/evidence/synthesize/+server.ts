@@ -1,20 +1,20 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { eq, and, inArray } from, 'drizzle-orm';
-import { createClient, type RedisClientType } from, 'redis';
-import { randomUUID } from, 'crypto';
-import { createActor, createMachine, fromPromise, assign, type ActorRefFrom, type SnapshotFrom } from, 'xstate'; // Added SnapshotFrom
-import { REDIS_URL } from, '$env/static/private';
-import { getOllamaEndpoint } from, '$lib/server/endpoints';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { eq, and, inArray } from 'drizzle-orm';
+import { createClient, type RedisClientType } from 'redis';
+import { randomUUID } from 'crypto';
+import { createActor, createMachine, fromPromise, assign, type ActorReffrom type SnapshotFrom } from 'xstate'; // Added SnapshotFrom
+import { REDIS_URL } from '$env/static/private';
+import { getOllamaEndpoint } from '$lib/server/endpoints';
 
 // Import proper schemas - adjust paths based on your actual schema location
-import { cases, evidence } from, '$lib/server/db/schema';
+import { cases, evidence } from '$lib/server/db/schema';
 
 // Import enhanced RAG service (matches pattern from search API)
-import { enhancedVectorSearchService } from, '$lib/server/vector/enhanced-vector-search-service';
+import { enhancedVectorSearchService } from '$lib/server/vector/enhanced-vector-search-service';
 
 // Type definitions
 interface EvidenceItem { id: string;, title: string;

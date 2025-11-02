@@ -1,8 +1,8 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
-import { PDFDocument } from, 'pdf-lib'
-import { ollamaConfig } from, '$lib/services/ollama-config-service.js'
-import { ENV_CONFIG } from, '$lib/config/environment.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
+import { PDFDocument } from 'pdf-lib'
+import { ollamaConfig } from '$lib/services/ollama-config-service.js'
+import { ENV_CONFIG } from '$lib/config/environment.js'
 const MINIO_ENDPOINT = ENV_CONFIG.minioEndpoint;
 const MINIO_ACCESS_KEY = ENV_CONFIG.minioAccessKey;
 const MINIO_SECRET_KEY = ENV_CONFIG.minioSecretKey;

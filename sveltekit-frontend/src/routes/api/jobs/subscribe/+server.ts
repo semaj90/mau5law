@@ -1,5 +1,5 @@
-import type { RequestHandler } from, '@sveltejs/kit';
-import { jobStore /*, jobMachine */ } from, '$lib/workers/job-state';
+import type { RequestHandler } from '@sveltejs/kit';
+import { jobStore /*, jobMachine */ } from '$lib/workers/job-state';
 
 // Define a basic interface for a job item
 interface JobItem { id: string;, status: string;

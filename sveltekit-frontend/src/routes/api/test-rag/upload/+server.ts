@@ -1,12 +1,12 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { withValidationAndRate } from, '$lib/server/middleware/validate-and-rate';
-import { db } from, '$lib/server/database';
-import { sql } from, 'drizzle-orm';
-import { testRagDocuments, testRagEmbeddings } from, '$lib/server/db/schema-test-rag';
-import { gpuRAGService } from, '$lib/services/gpu-rag-service';
-import { QdrantVectorService } from, '$lib/server/services';
-import { env } from, '$env/dynamic/private';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
+import { db } from '$lib/server/database';
+import { sql } from 'drizzle-orm';
+import { testRagDocuments, testRagEmbeddings } from '$lib/server/db/schema-test-rag';
+import { gpuRAGService } from '$lib/services/gpu-rag-service';
+import { QdrantVectorService } from '$lib/server/services';
+import { env } from '$env/dynamic/private';
 
 // Define the structure for entities extracted by OCR/langextract
 interface OcrExtractedEntities {
@@ -25,7 +25,7 @@ interface UploadResult {
   documentId?: string;
   filename?: string;
   textExtracted?: string;
-  entities?: OcrExtractedEntities; // Changed from, 'Record<string, unknown>' to: 'OcrExtractedEntities'
+  entities?: OcrExtractedEntities; // Changed from 'Record<string, unknown>' to: 'OcrExtractedEntities'
   embeddingGenerated?: boolean;
   pgvectorStored?: boolean;
   qdrantStored?: boolean;

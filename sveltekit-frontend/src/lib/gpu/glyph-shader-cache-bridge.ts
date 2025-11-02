@@ -1,4 +1,4 @@
-import shaderCache from, './webgl-shader-cache';
+import shaderCache from './webgl-shader-cache';
 // Bridge for glyph shader generation and cached programs
 export function getGlyphProgram(gl: WebGL2RenderingContext, styleKey: string) {
   const vert = `#version, 300 es`

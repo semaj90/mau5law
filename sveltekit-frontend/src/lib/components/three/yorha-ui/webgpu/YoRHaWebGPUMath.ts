@@ -4,7 +4,7 @@
  */
 // Import WebGPU types
 /// <reference, types="@webgpu/types" />
-import type { LegalDocument as MemoryLegalDocument } from, '$lib/memory/nes-memory-architecture';
+import type { LegalDocument as MemoryLegalDocument } from '$lib/memory/nes-memory-architecture';
 export interface WebGPUMathConfig { preferWebGPU: boolean;, fallbackToWebGL: boolean;
   enableProfiling: boolean;
   maxBufferSize: number;

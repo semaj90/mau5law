@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * WebAssembly Inference RAG Integration
  * Integrates WebAssembly inference capabilities with the Enhanced RAG pipeline
@@ -10,10 +10,10 @@ import type { Document } from, '$lib/types';
  * - Auto-tagging worker coordination
  * - Vertex buffer image analysis integration
  */
-import { createMachine, assign } from, 'xstate';
-import { rabbitMQIntegration, type LegalAIMessage } from, '../messaging/rabbitmq-xstate-integration.js';
-import { postgresqlQdrantSync } from, './postgresql-qdrant-sync.js';
-import { vertexBufferImageAnalyzer } from, './vertex-buffer-image-analyzer.js';
+import { createMachine, assign } from 'xstate';
+import { rabbitMQIntegration, type LegalAIMessage } from '../messaging/rabbitmq-xstate-integration.js';
+import { postgresqlQdrantSync } from './postgresql-qdrant-sync.js';
+import { vertexBufferImageAnalyzer } from './vertex-buffer-image-analyzer.js';
 
 // WebAssembly inference types
 export interface WASMInferenceConfig { modelPath: string; // Path to the .wasm model file, threads: number;

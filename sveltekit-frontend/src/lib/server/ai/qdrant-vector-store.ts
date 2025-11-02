@@ -7,22 +7,22 @@
  * - Entity clustering and pattern detection
  * - Integration with PostgreSQL for metadata
  */
-import { QdrantClient, type QdrantClientParams } from, '@qdrant/js-client-rest';
+import { QdrantClient, type QdrantClientParams } from '@qdrant/js-client-rest';
 import type {
   ContextualState,
   ConversationTurn,
   LegalEntity,
   NextStepPrediction
-} from, '$lib/types/sharedTypes';
-import { db } from, '../db';
+} from '$lib/types/sharedTypes';
+import { db } from '../db';
 import {
   conversationSessions,
   conversationTurns,
   contextualEmbeddings,
   extractedEntities
-} from, '../db/schema-postgres';
-import { eq, and, desc } from, 'drizzle-orm';
-import { createHash } from, 'crypto';
+} from '../db/schema-postgres';
+import { eq, and, desc } from 'drizzle-orm';
+import { createHash } from 'crypto';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
 // Collection names

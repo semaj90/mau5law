@@ -1,18 +1,18 @@
-import type { SearchResult } from, '$lib/types';
-import { redis, ensureRedisReady } from, '$lib/server/redis-client';
+import type { SearchResult } from '$lib/types';
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Integrated RAG Service - Full-Stack Implementation
  * Upload → embeddinggemma → pgvector → Qdrant → Redis → CUDA
  */
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres from, 'postgres';
-import { sql } from, 'drizzle-orm';
-import { documents } from, '$lib/db/schema';
-import Loki from, 'lokijs';
-import Fuse from, 'fuse.js';
-import type { RedisClientType } from, 'redis';
-import type { Client as MinioClient } from, 'minio';
-import type { QdrantClient as QdrantClientType } from, '@qdrant/js-client-rest';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { sql } from 'drizzle-orm';
+import { documents } from '$lib/db/schema';
+import Loki from 'lokijs';
+import Fuse from 'fuse.js';
+import type { RedisClientType } from 'redis';
+import type { Client as MinioClient } from 'minio';
+import type { QdrantClient as QdrantClientType } from '@qdrant/js-client-rest';
 const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';

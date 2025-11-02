@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * Comprehensive TypeScript Types for LangChain-Ollama Integration
  * Production-ready types for legal AI system with advanced features

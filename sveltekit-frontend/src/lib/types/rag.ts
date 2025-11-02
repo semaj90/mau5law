@@ -1,5 +1,5 @@
-import type { TextChunk } from, '$lib/types';
-import type { SearchResult } from, '$lib/types'; /** * RAG (Retrieval Augmented Generation) Types * Standardized types for document processing and search */ export interface DocumentType { id: string;, title: string; content: string; type: 'legal' | 'case' | 'evidence' | 'research' | 'document'; metadata?: { [key: string]: any } }
+import type { TextChunk } from '$lib/types';
+import type { SearchResult } from '$lib/types'; /** * RAG (Retrieval Augmented Generation) Types * Standardized types for document processing and search */ export interface DocumentType { id: string;, title: string; content: string; type: 'legal' | 'case' | 'evidence' | 'research' | 'document'; metadata?: { [key: string]: any } }
 export interface RAGSearchResult {, id: string;, content: string; score: number; metadata: { [key: string]: any } type: DocumentType['type']; // Additional properties expected by optimization files document?: RAGDocument; explanation?: string; relevantChunks?: TextChunk[]; highlights?: string[]; legalRelevance?: {, overall: number;, factual: number; procedural: number; precedential: number; jurisdictional: number; confidence: number; }
   relevanceScore?: number; rank?: number; snippet?: string; }
 export interface RAGQuery { query: string; type?: DocumentType['type']; limit?: number; threshold?: number; }

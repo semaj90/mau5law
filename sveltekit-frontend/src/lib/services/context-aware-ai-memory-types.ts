@@ -1,4 +1,4 @@
-import type { AIResponse } from, '$lib/types';
+import type { AIResponse } from '$lib/types';
 export interface CaseContextMemory { caseId: string;, contextVersion: number;
   lastUpdated: string;
   caseProfile: CaseProfile;

@@ -1,14 +1,14 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Loki.js Caching Layer with VS Code Task Integration
  * High-performance in-memory database with VS Code automation
  */
-import Loki from, 'lokijs';
+import Loki from 'lokijs';
 // avoid fragile generic Collection typing from lokijs in this file
 // we'll treat collections as `any` at runtime to keep TypeScript robust'
 // (lokijs Collection types are often non-generic in various versions)
-// import type { Collection } from, 'lokijs';
+// import type { Collection } from 'lokijs';
 export interface CacheableItem { id: string;, type: 'document' | 'search' | 'embedding' | 'analysis' | 'task' | 'config';
   key: string;
   data: any;

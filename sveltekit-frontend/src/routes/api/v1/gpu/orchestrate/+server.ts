@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
-import { mcpGPUOrchestrator } from, '$lib/services/mcp-gpu-orchestrator.js';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -9,10 +9,10 @@
  * - WebGPU compute shaders for parallel processing
  * - RTX, 3060 Ti tensor core optimization
  */
-import { simdRedisClient } from, '$lib/services/simd-redis-client.js';
-import { webgpuTextureStreaming } from, '$lib/services/webgpu-texture-streaming.js';
-import { textureStreamer } from, '$lib/webgpu/texture-streaming.js';
-import type { embeddingCache } from, '$lib/server/embedding-cache-middleware.js';
+import { simdRedisClient } from '$lib/services/simd-redis-client.js';
+import { webgpuTextureStreaming } from '$lib/services/webgpu-texture-streaming.js';
+import { textureStreamer } from '$lib/webgpu/texture-streaming.js';
+import type { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
 // GPU Tiling Configuration for RTX, 3060 Ti
 const GPU_TILING_CONFIG = {
   // Tensor Core Optimization

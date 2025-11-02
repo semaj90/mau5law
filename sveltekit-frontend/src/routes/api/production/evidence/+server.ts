@@ -1,6 +1,6 @@
-import type { Document } from, '$lib/types';
-import type { RequestHandler } from, './$types.js'
-import { json } from, '@sveltejs/kit/server'; // Import json helper
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit/server'; // Import json helper
 /*
  * Production Evidence Processing API
  * Smart detection and analysis pipeline

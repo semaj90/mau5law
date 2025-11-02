@@ -1,10 +1,10 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // Enhanced Evidence API with pgvector Integration
 // Production-ready evidence management with AI analysis
-import { json } from, '@sveltejs/kit';
-import { caseManagementService } from, '$lib/services/case-management-service.js';
-import { enhancedEmbeddingWorker } from, '$lib/workers/embedding-worker-enhanced.js';
-import { randomUUID } from, 'node:crypto';
+import { json } from '@sveltejs/kit';
+import { caseManagementService } from '$lib/services/case-management-service.js';
+import { enhancedEmbeddingWorker } from '$lib/workers/embedding-worker-enhanced.js';
+import { randomUUID } from 'node:crypto';
 // Enhanced AI analysis service
 // Local types used by the AI service
 export interface Entity {, type: string;, value: string;

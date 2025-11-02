@@ -3,8 +3,8 @@
  * Supports multiple providers: Stable Diffusion WebUI, ComfyUI, Ollama
  * Production-ready with Windows native support
  */
-import { json, error } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 interface ImageGenerationRequest {
   prompt: string;

@@ -1,8 +1,8 @@
 <script, lang="ts">
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import SearchBox from, '$lib/components/ui/SearchBox.svelte';
-  import Button from, '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
+  import SearchBox from '$lib/components/ui/SearchBox.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
   import, 'uno.css'; // Add uno.css import
   import, 'nes.css/css/nes.min.css'; // Add nes.css import
 

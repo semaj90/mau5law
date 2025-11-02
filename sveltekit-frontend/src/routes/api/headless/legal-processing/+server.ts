@@ -1,17 +1,17 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🎯 Headless Legal Processing API
  *
  * Server-side API endpoint for headless WebGPU legal document processing
  * Integrates YoRHa Mipmap Shaders + LOD Cache + Ollama AI analysis
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 import {
   headlessLegalProcessorFactory,
   DEFAULT_HEADLESS_CONFIG
-} from, '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
-import type { HeadlessProcessingConfig } from, '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+} from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+import type { HeadlessProcessingConfig } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
 
 interface ProcessingRequest {
   text: string;

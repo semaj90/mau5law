@@ -1,8 +1,8 @@
 <!-- YoRHa Notification, Manager, Component -->
 <script, lang="ts">
   // Svelte, 5 runes are auto-imported
-  import  YoRHaNotification  from, "./YoRHaNotification.svelte";
-  import { notificationStore, as notificationStoreExport } from, '$lib/stores/notifications';
+  import  YoRHaNotification  from "./YoRHaNotification.svelte";
+  import { notificationStore, as notificationStoreExport } from '$lib/stores/notifications';
   interface Notification {
     id: string;
     type: 'info' | 'success' | 'warning' | 'error' | 'system';

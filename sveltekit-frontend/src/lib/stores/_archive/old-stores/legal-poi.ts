@@ -1,6 +1,6 @@
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-import { writable, derived, get } from, 'svelte/store'; import { createMachine, assign, createActor, fromPromise } from, 'xstate'; import type { StateFrom } from, 'xstate'; // POI Types and Interfaces export interface PersonOfInterest { id: string;, name: string; aliases: string[]; role:; | 'plaintiff'
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { writable, derived, get } from 'svelte/store'; import { createMachine, assign, createActor, fromPromise } from 'xstate'; import type { StateFrom } from 'xstate'; // POI Types and Interfaces export interface PersonOfInterest { id: string;, name: string; aliases: string[]; role:; | 'plaintiff'
     | 'defendant'
     | 'witness'
     | 'attorney'

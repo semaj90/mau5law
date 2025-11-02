@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-// src/lib/services/__tests__/shared/integration-test-helpers.ts import { productionServiceClient } from, '../../../api/production-service-client.js'; // Shared integration test configuration and utilities export const TEST_CONFIG = { auth: {, email: 'test@legalai.com', password: 'testPassword123'
+import type { Case } from '$lib/types';
+// src/lib/services/__tests__/shared/integration-test-helpers.ts import { productionServiceClient } from '../../../api/production-service-client.js'; // Shared integration test configuration and utilities export const TEST_CONFIG = { auth: {, email: 'test@legalai.com', password: 'testPassword123'
   }, timeouts: {, auth: 5000, request: 10000, cleanup: 3000 }
 } as const; export interface TestContext { authToken: string; testSessionId?: string; testCanvasId?: string; createdResources: string[]; }
 /** * Shared integration test setup - handles authentication and common initialization */ export class IntegrationTestSetup { private context: TestContext = {, authToken: '', createdResources: [] }

@@ -1,10 +1,10 @@
-import type { RequestHandler } from, './$types.js';
-import { json } from, '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 /*
  * System Information API
  */
 // Dynamic import for server-side os module to prevent browser leakage
-// import os from, "os"
+// import os from "os"
 export const GET: RequestHandler = async () => {
   // Server-side only check to prevent browser polyfill issues
   if (typeof window !== 'undefined') {

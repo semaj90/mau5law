@@ -1,5 +1,5 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -19,10 +19,10 @@ import type { Case } from, '$lib/types';
  */
 // Behavior Analysis API Endpoint
 // Analyzes user patterns and generates insights for legal workflows
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import { validateAuthSession } from, '$lib/server/auth';
-import { redisOptimized } from, '$lib/middleware/redis-orchestrator-middleware';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { validateAuthSession } from '$lib/server/auth';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const session = await validateAuthSession(request);

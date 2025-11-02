@@ -1,5 +1,5 @@
 <script, lang="ts">
-  import { speak } from, './speak';
+  import { speak } from './speak';
   let isSupported = $state<boolean>(false);
   let isListening = $state<boolean>(false);
   let finalTranscript = $state<string>('');

@@ -1,8 +1,8 @@
-import type { RequestHandler } from, './$types.js';
+import type { RequestHandler } from './$types.js';
 // src/routes/api/webgpu/test/+server.ts
 // WebGPU test endpoint for browser-side testing
 // Tests WebGPU compute with WASM fallback integration
-import { json } from, '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
   try {
@@ -78,7 +78,7 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     confidence: 0.85 + Math.random() * 0.1
   };
 }
-interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from, 384 to, 768 to match implementation
+interface EmbeddingGenerationResult { embedding: number[];, dimensions: number; // Changed from 384 to, 768 to match implementation
   device: 'webgpu' | 'wasm';
   processingTimeMs: number;
  , model: string;

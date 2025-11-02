@@ -1,4 +1,4 @@
-import type { Case } from, '$lib/types';
+import type { Case } from '$lib/types';
 /*
  * Mock LegalStrategyEngine for unified analysis route.
  * Generates deterministic pseudo strategies for provided evidence IDs.

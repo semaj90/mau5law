@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 
 // Define a type for canvas objects, specifically for properties used in analysis
 interface CanvasObject {

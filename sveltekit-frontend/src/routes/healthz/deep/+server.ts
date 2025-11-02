@@ -1,5 +1,5 @@
-import { json, type RequestHandler } from, '@sveltejs/kit';
-import { createRedisInstance, createRedisClientSet } from, '$lib/server/redis';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { createRedisInstance, createRedisClientSet } from '$lib/server/redis';
 
 // Define types for the health check results
 type PubSubCheckResult = { ok: boolean; error: string } | { ok: boolean; latencyMs: number };

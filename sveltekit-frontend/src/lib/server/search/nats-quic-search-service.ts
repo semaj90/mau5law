@@ -1,4 +1,4 @@
-import type { SearchResult } from, '$lib/types';
+import type { SearchResult } from '$lib/types';
 /**
  * NATS + QUIC High-Performance Async Search Service
  *
@@ -9,10 +9,10 @@ import type { SearchResult } from, '$lib/types';
  * - Real-time search suggestions
  * - Distributed search load balancing
  */
-import { connect } from, 'nats';
-import { redisService } from, '../redis-service.js';
-import { createHash } from, 'crypto';
-import { fastStringify, fastParse } from, '../../utils/fast-json.js';
+import { connect } from 'nats';
+import { redisService } from '../redis-service.js';
+import { createHash } from 'crypto';
+import { fastStringify, fastParse } from '../../utils/fast-json.js';
 // Minimal connection interface to avoid depending on specific: 'nats' typings in this module.
 type MinimalNatsSubscription<T = {, data: Uint8Array; reply?: string }> = AsyncIterable<T> & {
   unsubscribe?: () => void;

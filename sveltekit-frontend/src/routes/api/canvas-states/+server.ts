@@ -1,9 +1,9 @@
-import { canvasLayouts } from, '$lib/server/db/schema-canvas';
-import type { RequestEvent } from, '@sveltejs/kit';
-import { json } from, '@sveltejs/kit';
-import { db } from, '$lib/server/db/index';
-import { eq, and, like, desc, sql } from, 'drizzle-orm';
-import { getUserId } from, '$lib/server/auth/utils';
+import { canvasLayouts } from '$lib/server/db/schema-canvas';
+import type { RequestEvent } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { eq, and, like, desc, sql } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 
 // Small helper to safely format: unknown errors for logging
 function formatError(e: any): string {

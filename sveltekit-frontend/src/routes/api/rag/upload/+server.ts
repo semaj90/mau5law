@@ -1,12 +1,12 @@
-import type { Document } from, '$lib/types';
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types';
-import { createHash } from, 'crypto';
-import { db, legal_documents } from, '$lib/server/db';
-import { documents, documentChunks } from, '$lib/server/db/enhanced-embedding-schema';
-import { eq, sql } from, 'drizzle-orm';
-import { ensureBucket, putObject } from, '$lib/server/minio/client';
-import { createClient, type RedisClientType } from, 'redis';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { createHash } from 'crypto';
+import { db, legal_documents } from '$lib/server/db';
+import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
+import { eq, sql } from 'drizzle-orm';
+import { ensureBucket, putObject } from '$lib/server/minio/client';
+import { createClient, type RedisClientType } from 'redis';
 
 // Initialize Redis client with proper error handling
 // Use REDIS_PASSWORD environment variable, default to: 'redis' if not set
@@ -125,7 +125,7 @@ async function initializeRAGServices(): Promise<void> {
     // Don't throw - allow graceful degradation with localStorage` }'`
 }
 
-import { generateEmbedding, as serverGenerateEmbedding } from, '$lib/server/services/embedding-service';
+import { generateEmbedding, as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {

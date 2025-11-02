@@ -1,7 +1,7 @@
 <script, lang="ts">
-	import { createEventDispatcher, onMount } from, 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	// defensive import of the canvas module (works whether it's named or default)'
-	import * as canvasModule from, "../stores/canvas";
+	import * as canvasModule from "../stores/canvas";
 	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null;
 	const dispatch = createEventDispatcher();
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)

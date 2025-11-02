@@ -1,12 +1,12 @@
 <!-- 🤖 AI Recommendation Assistant with, Gemma3, Integration -->
 <script, lang="ts">
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
-  import { onMount } from, 'svelte';
-  import { fade, slide, fly } from, 'svelte/transition';
-  import { elasticOut } from, 'svelte/easing';
-  import  DiamondModal  from, "$lib/components/ui/DiamondModal.svelte";
-  import { getCurrentPalette } from, '$lib/themes/retro-console-palettes';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+  import { onMount } from 'svelte';
+  import { fade, slide, fly } from 'svelte/transition';
+  import { elasticOut } from 'svelte/easing';
+  import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte";
+  import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string;
     type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';

@@ -16,13 +16,13 @@
  * @module vite-error-tracker
  */
 
-import { mcpSIMDParser, type ErrorMetadata } from, '$lib/services/mcp-simd-parser';
-import { qdrantAutoTagger, type QdrantSearchResult } from, '$lib/services/qdrant-auto-tagger';
-import { db } from, '$lib/server/db';
-import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory } from, '$lib/db/vite-error-schema';
-import { eq, desc, and, gte, sql } from, 'drizzle-orm';
-import { execSync } from, 'child_process';
-import { watchFile, unwatchFile } from, 'fs';
+import { mcpSIMDParser, type ErrorMetadata } from '$lib/services/mcp-simd-parser';
+import { qdrantAutoTagger, type QdrantSearchResult } from '$lib/services/qdrant-auto-tagger';
+import { db } from '$lib/server/db';
+import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory } from '$lib/db/vite-error-schema';
+import { eq, desc, and, gte, sql } from 'drizzle-orm';
+import { execSync } from 'child_process';
+import { watchFile, unwatchFile } from 'fs';
 
 /**
  * Error tracking configuration

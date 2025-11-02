@@ -1,11 +1,11 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Enhanced Ingest Integration Service
  * Integrates with your existing ai-agent.ts store and production service architecture
  * Follows your established patterns and conventions
  */
-import { aiAgentStore } from, '$lib/stores/ai-agent';
-import { get } from, 'svelte/store';
+import { aiAgentStore } from '$lib/stores/ai-agent';
+import { get } from 'svelte/store';
 import type {
   DocumentIngestRequest,
   BatchIngestRequest,
@@ -15,7 +15,7 @@ import type {
   ChunkedDocument,
   LegalSection,
   SimilarDocument
-} from, '$lib/types/ingest';
+} from '$lib/types/ingest';
 
 // Define types for jobs and errors in the AI agent store
 interface AiAgentJob { id: string;, type: string;

@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import { writable, derived, type Writable } from, 'svelte/store'; export interface TableState { id: string;, sortColumn: string | null; sortDirection: 'asc' | 'desc'; selectedRows: Set<string | number>; currentPage: number; pageSize: number; searchQuery: string;, columnFilters: Map<string, string>; columnWidths: Map<string, number>; expandedRows: Set<string | number>; }
+import type { Case } from '$lib/types';
+import { writable, derived, type Writable } from 'svelte/store'; export interface TableState { id: string;, sortColumn: string | null; sortDirection: 'asc' | 'desc'; selectedRows: Set<string | number>; currentPage: number; pageSize: number; searchQuery: string;, columnFilters: Map<string, string>; columnWidths: Map<string, number>; expandedRows: Set<string | number>; }
 export interface TableNotification {, id: string;, type: 'info' | 'success' | 'warning' | 'error'; title?: string; message: string; timestamp: Date; duration?: number; persistent?: boolean; }
 class TableManager { private, tables: Map<string, Writable<TableState>, = new Map(); private notifications = writable<TableNotification[]>([]); createTable(id: string, initialState?: Partial<TableState>): Writable<TableState> { if (this.tables.has(id)) { return this.tables.get(id)!; }
     const defaultState: TableState = { id, sortColumn: null, sortDirection: 'asc', selectedRows: new Set(), currentPage: 1, pageSize: 10, searchQuery: '', columnFilters: new Map(), columnWidths: new Map(), expandedRows: new Set(), ...initialState }

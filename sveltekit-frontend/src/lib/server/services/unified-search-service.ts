@@ -1,9 +1,9 @@
-import type { SearchResult } from, '$lib/types';
-import pgClient from, '$lib/server/db-shim';
-import { cache } from, '$lib/server/cache/redis';
-import { publishToQueue } from, '$lib/server/rabbitmq';
-import { jobTracker } from, '$lib/services/job-tracker';
-import { createHash } from, 'crypto';
+import type { SearchResult } from '$lib/types';
+import pgClient from '$lib/server/db-shim';
+import { cache } from '$lib/server/cache/redis';
+import { publishToQueue } from '$lib/server/rabbitmq';
+import { jobTracker } from '$lib/services/job-tracker';
+import { createHash } from 'crypto';
 // Type definitions for unified service
 export interface UnifiedDocument { id: string;, title: string;
   content: string;

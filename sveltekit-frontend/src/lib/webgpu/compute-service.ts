@@ -2,7 +2,7 @@
 //  * WebGPU Compute Service - Unified interface for WebGPU operations
 //  * Provides a service layer for the unified-legal-orchestrator
 //  */
-import type { LegalAIRequest } from, '../services/unified-legal-orchestrator.js';
+import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
 
 // Define a specific type for the data returned by the compute service
 export interface WebGPUComputeData { message: string;, requestType: string;

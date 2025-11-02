@@ -4,7 +4,7 @@
  * Includes automatic fallback to NATS QUIC on RabbitMQ failure
  */
 
-import type { ActorRefFrom, AnyEventObject } from, 'xstate';
+import type { ActorReffrom AnyEventObject } from 'xstate';
 
 // Define queue message type
 export interface QueueMessage { id: string;, type: string;

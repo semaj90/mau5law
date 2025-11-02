@@ -1,4 +1,4 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /** * WebAssembly and LLVM Integration Types * Type definitions for WASM compilation and execution */ // WebGPU type declarations for environments without native WebGPU support declare global { interface GPUDevice { [key: string]: any; }
   interface GPUCommandQueue { [key: string]: any; }
   interface GPUAdapter { [key: string]: any; }

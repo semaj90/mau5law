@@ -3,8 +3,8 @@
  * Production-grade vector encoding with adaptive scaling and GPU acceleration
  * Integrates with Nintendo memory architecture and ShaderBundle system
  */
-import { telemetryBus, measureAsync } from, '$lib/telemetry/event-bus';
-import { validateVectorDimensions, adaptiveScalingDecision } from, '$lib/gpu/types';
+import { telemetryBus, measureAsync } from '$lib/telemetry/event-bus';
+import { validateVectorDimensions, adaptiveScalingDecision } from '$lib/gpu/types';
 
 export interface VectorMetadata { id: string;, originalDimensions: number;
   encodedDimensions: number;

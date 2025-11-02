@@ -1,5 +1,5 @@
 <script, lang="ts">
-import type { Case } from, '$lib/types'; import  ThemeProvider  from, "./ThemeProvider.svelte"; import  ThemeToggle  from, "./ThemeToggle.svelte"; import  DocumentCard  from, "./DocumentCard.svelte"; import  Button  from, "./Button.svelte"; import  Select  from, "./Select.svelte"; import  Tabs  from, "./Tabs.svelte"; import { getContext } from, 'svelte'; interface ThemeDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
+import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProvider.svelte"; import  ThemeToggle  from "./ThemeToggle.svelte"; import  DocumentCard  from "./DocumentCard.svelte"; import  Button  from "./Button.svelte"; import  Select  from "./Select.svelte"; import  Tabs  from "./Tabs.svelte"; import { getContext } from 'svelte'; interface ThemeDemoProps { theme?: 'default' | 'legal' | 'gaming'; }
   let { theme = 'default'
   }: ThemeDemoProps = $props(); // Sample document data const sampleDocuments = [ {, title: 'Employment Agreement - Johnson vs TechCorp', fileType: 'contract' as const, fileSize: '2.4 MB', lastModified: '2024-01-15', tags: ['employment', 'contract', 'tech'], confidentialityLevel: 'confidential' as const, description: 'Standard employment agreement with non-compete clauses and intellectual property assignments.'
     }, {

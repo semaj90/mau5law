@@ -1,18 +1,18 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Supercharged Legal AI API
  * Demonstrates the complete Redis + WebGPU + SIMD JSON integration
  * Maximum performance legal document processing
  */
-import { json, type RequestHandler } from, '@sveltejs/kit'; // Updated RequestHandler import
+import { json, type RequestHandler } from '@sveltejs/kit'; // Updated RequestHandler import
 import {
   redisWebGPUIntegration,
   processLegalDocumentOptimized,
   computeVectorSimilarityOptimized,
   generateIntelligentTodosOptimized
-} from, '$lib/integrations/redis-webgpu-simd-integration'; // Updated import path
-import type { JobType } from, '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Corrected import path for JobType
-import { readBodyFastWithMetrics } from, '$lib/simd/simd-json-integration';
+} from '$lib/integrations/redis-webgpu-simd-integration'; // Updated import path
+import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js'; // Corrected import path for JobType
+import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration';
 // Extend the global Performance interface to include the non-standard, 'memory' property
 // This declare global block is likely redundant and conflicting with lib.dom.d.ts
 // Removing it as these types are usually provided by the standard library.

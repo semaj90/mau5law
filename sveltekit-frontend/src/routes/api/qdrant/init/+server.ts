@@ -1,6 +1,6 @@
-import type { RequestHandler } from, './$types';
-import { json } from, '@sveltejs/kit';
-import { qdrantService } from, '$lib/services/qdrant-vector-service';
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { qdrantService } from '$lib/services/qdrant-vector-service';
 
 /**
  * Qdrant Initialization API

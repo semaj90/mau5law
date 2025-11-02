@@ -1,4 +1,4 @@
-import type {     ComponentType     } from, 'svelte';
+import type {     ComponentType     } from 'svelte';
 /**
  * Performance Optimizations for Enhanced Bits UI Components
  *

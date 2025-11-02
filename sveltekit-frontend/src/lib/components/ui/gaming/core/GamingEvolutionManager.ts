@@ -8,8 +8,8 @@
  * - Device capability detection
  * - Memory and CPU optimization
  */
-import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from, '../types/gaming-types.js';
-import { N64_TEXTURE_PRESETS } from, '../constants/gaming-constants-minimal.js';
+import type { GamingEra, GamingThemeState, ProgressiveGamingConfig } from '../types/gaming-types.js';
+import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants-minimal.js';
 interface DeviceCapabilities {
   memory: number; // GB,
   cores: number;

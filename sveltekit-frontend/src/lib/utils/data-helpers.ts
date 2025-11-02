@@ -1,10 +1,10 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Data Management Utilities
  * API integration, caching, validation, and state management helpers
  * Supporting global components and user session persistence
  */
-import { browser } from, '$app/environment';
+import { browser } from '$app/environment';
 // Cache management for performance
 class DataCache<T = unknown> {
   // changed: avoid `any` by using a generic T (default: unknown)

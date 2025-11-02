@@ -2,12 +2,12 @@
  * Qdrant Vector Database Integration with PostgreSQL Sync
  * Seamless vector operations between PostgreSQL pgvector and Qdrant
  */
-import { QdrantClient } from, '@qdrant/js-client-rest';
-import { drizzle } from, 'drizzle-orm/postgres-js';
-import postgres from, 'postgres';
-import { eq, and, sql } from, 'drizzle-orm';
-import crypto from, 'crypto';
-import { legalDocuments, cases, vectorMetadata, type Case, type LegalDocument } from, './schema-postgres.js';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { eq, and, sql } from 'drizzle-orm';
+import crypto from 'crypto';
+import { legalDocuments, cases, vectorMetadata, type Case, type LegalDocument } from './schema-postgres.js';
 // ============================================================================
 // CONFIGURATION
 // ============================================================================

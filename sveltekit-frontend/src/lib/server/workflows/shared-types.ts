@@ -1,9 +1,9 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 // Shared types for Legal AI Platform
 // SvelteKit, 2 + PostgreSQL/pgvector + Qdrant + Redis + XState v5
-import type { Actor, SnapshotFrom } from, 'xstate';
-import type { documentProcessingMachine } from, './document-processing.js';
-import type { legalCaseManagementMachine } from, './legal-case-management.js';
+import type { Actor, SnapshotFrom } from 'xstate';
+import type { documentProcessingMachine } from './document-processing.js';
+import type { legalCaseManagementMachine } from './legal-case-management.js';
 
 // ============================================================================
 // Vector Database Types (PostgreSQL pgvector + Qdrant compatible)

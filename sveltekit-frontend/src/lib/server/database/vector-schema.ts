@@ -1,9 +1,9 @@
-import type { User } from, '$lib/types';
-import type { Case } from, '$lib/types';
-import type { Document } from, '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 
 // Enhanced Drizzle schema with pgvector support
-import { sql } from, "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   index,
   jsonb,
@@ -13,7 +13,7 @@ import {
   uuid,
   varchar,
   customType
-} from, "drizzle-orm/pg-core";
+} from "drizzle-orm/pg-core";
 // Custom pgvector column type for Drizzle
 const vector = (name: string, dimensions: number) =>;
   customType({

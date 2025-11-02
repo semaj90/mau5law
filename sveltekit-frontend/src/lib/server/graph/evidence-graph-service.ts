@@ -1,5 +1,5 @@
-import type { Case } from, '$lib/types';
-import neo4j from, 'neo4j-driver'
+import type { Case } from '$lib/types';
+import neo4j from 'neo4j-driver'
 const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687'
 const NEO4J_USER = process.env.NEO4J_USER ?? 'neo4j'
 const NEO4J_PASS = process.env.NEO4J_PASS ?? 'neo4j'
@@ -56,7 +56,7 @@ export async function evidenceGraphService(meta: {, id: string;, summary: string
     }
     // Additional explicit edges passed in
     for (const ed of edges) {
-      await tx.run('MERGE (a {id:$from}) MERGE (b {id:$to}) MERGE (a)-[r:'+String(ed.relation)+' ]->(b)', { from ed.from, to: ed.to })
+      await tx.run('MERGE (a {id:$from}) MERGE (b {id:$to}) MERGE (a)-[r:'+String(ed.relation)+' ]->(b)', { from ed.from to: ed.to })
     }
     await tx.commit()
   } catch (err) {
@@ -92,7 +92,7 @@ export async function createSimilarityLinks(evidenceId: string, neighbors: Array
 // Initialize schema if requested
 ensureSchema().catch((e) => console.debug('neo4j schema init failed', e))
 export default { evidenceGraphService, createSimilarityLinks }
-import neo4j, { Driver } from, 'neo4j-driver';
+import neo4j, { Driver } from 'neo4j-driver';
 interface EvidenceGraphConfig { url: string;, user: string;
   password: string;
   initSchema: boolean;

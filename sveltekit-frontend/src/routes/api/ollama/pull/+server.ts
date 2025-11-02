@@ -1,5 +1,5 @@
-import { json } from, '@sveltejs/kit'
-import type { RequestHandler } from, './$types.js'
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js'
 const OLLAMA_BASE = "http://localhost:11434"
 export const, GET: RequestHandler = async () => {
   return json({

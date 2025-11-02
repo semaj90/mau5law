@@ -1,10 +1,10 @@
-import type { Message } from, '$lib/types';
+import type { Message } from '$lib/types';
 // SSR-safe AI store for Gemma3 Q4_K_M GGUF integration
 // Manages LLM state, conversation history, and settings with proper hydration
-import { writable, derived, get } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import type { AIResponse } from, '$lib/data/types';
-import type { ConversationHistory } from, '$lib/types';
+import { writable, derived, get } from 'svelte/store';
+import { browser } from '$app/environment';
+import type { AIResponse } from '$lib/data/types';
+import type { ConversationHistory } from '$lib/types';
 
 // Define a type for supported Ollama Gemma models
 export type OllamaGemmaModel = 'gemma3:12b' | 'gemma3:9b' | 'gemma3:2b' | 'gemma3:7b';

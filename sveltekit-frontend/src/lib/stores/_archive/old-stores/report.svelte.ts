@@ -1,5 +1,5 @@
-import crypto from, 'crypto';
-import { writable, derived, type Writable } from, 'svelte/store';
+import crypto from 'crypto';
+import { writable, derived, type Writable } from 'svelte/store';
 // Evidence types
 export interface Evidence { id: string;, type: 'document' | 'image' | 'video' | 'audio' | 'link';
  , title: string;

@@ -5,8 +5,8 @@
  * automatic serialization, TTL management, and health checks.
  */
 
-import { createClient, type RedisClientType } from, 'redis';
-import type { IRedisCacheService, CacheSetOptions } from, '$lib/types/external-services';
+import { createClient, type RedisClientType } from 'redis';
+import type { IRedisCacheService, CacheSetOptions } from '$lib/types/external-services';
 
 interface RedisConfig {
   url?: string;

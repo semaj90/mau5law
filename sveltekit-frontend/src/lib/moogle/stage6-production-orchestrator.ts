@@ -13,12 +13,12 @@
  * - WebGPU RAG Service (FP32/FP16/INT8 quantization)
  * - CHR-ROM Memory Patterns (127:1 compression)
  */
-import { writable, derived, type Writable } from, 'svelte/store';
-import { browser } from, '$app/environment';
-import { headlessUICache, type CacheEntry } from, '../cache/headless-ui-cache.js';
-import { webgpuRAGService } from, '../webgpu/webgpu-rag-service.js';
-import { createEnhancedNeo4jReranker, type RerankingResult } from, '../ai/enhanced-neo4j-reranker.js';
-import type { UniversalGPURuntime } from, '../gpu/universal-runtime.js';
+import { writable, derived, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { headlessUICache, type CacheEntry } from '../cache/headless-ui-cache.js';
+import { webgpuRAGService } from '../webgpu/webgpu-rag-service.js';
+import { createEnhancedNeo4jReranker, type RerankingResult } from '../ai/enhanced-neo4j-reranker.js';
+import type { UniversalGPURuntime } from '../gpu/universal-runtime.js';
 // 🎯 Stage, 6 Component Types
 export interface MoogleComponent { id: string;, type: ComponentType;
   status: ComponentStatus;

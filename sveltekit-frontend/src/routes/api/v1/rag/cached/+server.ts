@@ -1,15 +1,15 @@
-import type { Document } from, '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Cached RAG API Endpoint
  * Provides cached RAG functionality with embeddinggemma and gemma3:legal-latest
  */
-import { json } from, '@sveltejs/kit';
-import type { RequestHandler } from, './$types.js';
-import * as EnhancedRagModule from, '$lib/services/enhanced-rag-semantic-analyzer';
-import { cachedRAGService } from, '$lib/services/cached-rag-service';
-import { enhancedCachingService } from, '$lib/services/enhanced-caching-service';
-import { cachingTester } from, '$lib/services/test-caching-integration';
-import type { RAGQuery } from, '$lib/services/enhanced-rag-semantic-analyzer';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
+import { cachedRAGService } from '$lib/services/cached-rag-service';
+import { enhancedCachingService } from '$lib/services/enhanced-caching-service';
+import { cachingTester } from '$lib/services/test-caching-integration';
+import type { RAGQuery } from '$lib/services/enhanced-rag-semantic-analyzer';
 
 // --- Added: typed ingestion result and helper for errors ---
 type IngestResultItem = {, success: boolean;, chunksProcessed: number;
