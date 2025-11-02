@@ -67,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   async function runStreaming(body: any) {
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e) {
       if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
     } finally {
-      streaming = $state(false);
+      streaming = false;
       loading = $state(false);
     }
   }

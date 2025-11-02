@@ -197,7 +197,7 @@
       errorMessage = errorMsg;
       ondispatch?.(errorMsg);
     } finally {
-      uploading = $state(false);
+      uploading = false;
       uploadProgress = 0;
     }
   }

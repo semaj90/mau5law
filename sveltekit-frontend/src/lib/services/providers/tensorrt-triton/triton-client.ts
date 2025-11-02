@@ -30,7 +30,7 @@ export class TritonInferenceClient implements AIProvider {
       this.isHealthy = res.ok;
       return res.ok;
     } catch {
-      this.isHealthy = $state(false);
+      this.isHealthy = false;
       return false;
     }
   }

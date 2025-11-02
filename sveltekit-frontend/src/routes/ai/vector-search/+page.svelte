@@ -22,7 +22,7 @@
     } catch (error) {
       console.error('Search error:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 </script>

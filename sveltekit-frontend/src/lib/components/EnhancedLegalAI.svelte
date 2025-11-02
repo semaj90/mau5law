@@ -1,9 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import { Button } from '$lib/components/ui/button.svelte'';
-  import { Label } from '$lib/components/ui/label.svelte'';
-  import { Textarea } from '$lib/components/ui/textarea.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte';
+  import { Label } from '$lib/components/ui/label.svelte';
+  import { Textarea } from '$lib/components/ui/textarea.svelte';
   // lucide-svelte exports some icons as default; import Loader2 as the default export
   import Loader2 from 'lucide-svelte';
   import { onMount } from 'svelte';
@@ -177,7 +177,7 @@
       console.error("Document processing error:", error);
       processResult = { success: false, message: error instanceof Error ? error.message : "Unknown error" };
     } finally {
-      processing = $state(false);
+      processing = false;
     }
     showProcessDialog = true;
   }
@@ -215,7 +215,7 @@
       console.error('Vector search error:', error);
       alert(`Search failed: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
-      searching = $state(false);
+      searching = false;
       showSearchDialog = true;
     }
   }

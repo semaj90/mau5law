@@ -11,15 +11,15 @@
   import { Button } from '$lib/components/ui/Button.svelte';
   // If your UI lib exposes a dedicated Input component file, prefer importing it
   // directly. Keep this change minimal for now.
-  import { Input } from '$lib/components/ui/enhanced-bits.svelte''; // import as default to match typical Bits-UI exports
+  import { Input } from '$lib/components/ui/enhanced-bits.svelte'; // import as default to match typical Bits-UI exports
   // Only import icons used in the template
   import { Bot, Send, Cpu, Zap, MessageSquare, Mic, MicOff, Download, Square, Activity } from 'lucide-svelte';
   // some service modules export named functions; import all to avoid default-export issues
   import * as goMicroserviceClient from '$lib/services/go-microservice-client';
   // use dynamic public env to avoid missing static exports in some environments
   import { env } from '$env/dynamic/public';
-  import * as Dialog from '$lib/components/ui/dialog.svelte'';
-  import * as Tooltip from '$lib/components/ui/tooltip.svelte'';
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
+  import * as Tooltip from '$lib/components/ui/tooltip.svelte';
   // Svelte 5 state management
   let messages = $state<any[]>([]);
   let currentMessage = $state('');
@@ -80,7 +80,7 @@
       aiBackends.vllm.available = vllmResponse.ok;
       aiBackends.vllm.status = vllmResponse.ok ? 'healthy' : 'error';
     } catch {
-      aiBackends.vllm.available = $state(false);
+      aiBackends.vllm.available = false;
       aiBackends.vllm.status = 'unavailable';
     }
     // Check Ollama
@@ -92,7 +92,7 @@
       aiBackends.ollama.available = ollamaResponse.ok;
       aiBackends.ollama.status = ollamaResponse.ok ? 'healthy' : 'error';
     } catch {
-      aiBackends.ollama.available = $state(false);
+      aiBackends.ollama.available = false;
       aiBackends.ollama.status = 'unavailable';
     }
     // Check WebASM LLaMA.cpp support
@@ -104,7 +104,7 @@
         // which is not part of this initial browser capability check.
       }
     } catch {
-      aiBackends.webasm.available = $state(false);
+      aiBackends.webasm.available = false;
       aiBackends.webasm.status = 'unsupported';
     }
     // Check WebGPU support
@@ -114,7 +114,7 @@
         aiBackends.webgpu.available = !!adapter;
         aiBackends.webgpu.status = adapter ? 'supported' : 'unavailable';
       } catch {
-        aiBackends.webgpu.available = $state(false);
+        aiBackends.webgpu.available = false;
         aiBackends.webgpu.status = 'error';
       }
     }
@@ -124,7 +124,7 @@
       aiBackends.goMicroservice.available = !!initialized;
       aiBackends.goMicroservice.status = initialized ? 'healthy' : 'error';
     } catch {
-      aiBackends.goMicroservice.available = $state(false);
+      aiBackends.goMicroservice.available = false;
       aiBackends.goMicroservice.status = 'unavailable';
     }
     console.log('📊 Backend Status:', aiBackends);
@@ -226,7 +226,7 @@
       messages = [...messages, errorMessage];
       await scrollToBottom();
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       // focus management for UX
       await tick();
       try { messageInput?.focus?.(); } catch {}

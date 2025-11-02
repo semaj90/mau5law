@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // Changed from default to named import
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // Changed from default to named import
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import ArrowRight from 'lucide-svelte/icons/arrow-right';
   import Book from 'lucide-svelte/icons/book';

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, Dialog, Input, Label, Select } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, Dialog, Input, Label, Select } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge/index.js';
   import { toast } from 'svelte-sonner';
   import { Plus, Save, Trash2, Edit, Link } from 'lucide-svelte';
@@ -60,7 +60,7 @@
       console.error('Error loading board:', error);
       toast.error('Failed to load evidence board');
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Load available evidence and POIs

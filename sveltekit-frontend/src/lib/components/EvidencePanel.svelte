@@ -52,7 +52,7 @@
     } catch (error) {
       console.error("Upload error:", error);
     } finally {
-      isUploading = $state(false);
+      isUploading = false;
       input.value = "";
     }
   }

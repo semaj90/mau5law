@@ -38,7 +38,7 @@
     } catch (error) {
       analyticsLog({ event: 'ai_recommendations_error', error: error.message, timestamp: Date.now() });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   $effect(fetchRecommendations);

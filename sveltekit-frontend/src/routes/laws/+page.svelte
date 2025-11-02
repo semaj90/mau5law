@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   // enhanced-bits exports components as default exports — import only what's used.
   // Remove problematic Input import (it exposed an object/instance type that TypeScript rejected).
-  // import Input from '$lib/components/ui/enhanced-bits.svelte'';
+  // import Input from '$lib/components/ui/enhanced-bits.svelte';
 
   import { Search, BookOpen, ExternalLink, Bot, MessageSquare } from 'lucide-svelte';
   // In Svelte 5 (runes mode) don't use `export let` for page props — use $props()
@@ -61,7 +61,7 @@
       console.error('Search error:', error);
       searchResults = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   function handleKeydown(event: KeyboardEvent) {

@@ -59,7 +59,7 @@
       error = 'Network error occurred';
       console.error('Prediction loading error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function getProbabilityColor(probability: number): string {

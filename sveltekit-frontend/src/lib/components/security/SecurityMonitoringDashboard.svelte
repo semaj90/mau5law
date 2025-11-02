@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { notifications  } from '$lib/stores/unified';
   import { getSecurityEvents, type SecurityEvent } from '$lib/utils/security';
   import {
@@ -75,7 +75,7 @@
         message: 'Unable to retrieve security monitoring data.',
       });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function filterEvents() {

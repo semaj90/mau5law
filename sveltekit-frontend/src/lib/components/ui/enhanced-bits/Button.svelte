@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let onclick: (() => void) | undefined;
-  export let disabled: boolean = $state(false);
-  export let variant: string | undefined;
-  export let size: string | undefined;
-  export let class: string = '';
+  const { onclick } = $props<{ onclick: (() }>()
+  const { disabled } = $props<{ disabled: boolean }>()
+  const { variant } = $props<{ variant: string | undefined }>()
+  const { size } = $props<{ size: string | undefined }>()
+  const { class } = $props<{ class: string }>()
 </script>
 <button
   onclick={() => onclick && onclick()}

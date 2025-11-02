@@ -226,7 +226,7 @@
         } as UIMessage,
       ];
     } finally {
-      isTyping = $state(false);
+      isTyping = false;
     }
   }
   async function sendMessage() {

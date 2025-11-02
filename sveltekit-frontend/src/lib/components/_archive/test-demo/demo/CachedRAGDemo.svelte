@@ -54,7 +54,7 @@
       error = `Request failed: ${err.message}`;
       console.error('❌ Cached RAG query failed:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   async function loadCacheMetrics() {
@@ -81,7 +81,7 @@
     } catch (err: any) {
       alert(`Cache test error: ${err.message}`);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   async function warmupCache() {
@@ -102,7 +102,7 @@
     } catch (err: any) {
       alert(`Cache warmup error: ${err.message}`);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Load metrics on component mount

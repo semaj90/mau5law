@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let r: any;
+  const { r } = $props<{ r: any }>()
 </script>
 <div class="vector-card">
   <div class="title">{r?.meta?.title ?? r?.id ?? 'Document'}</div>

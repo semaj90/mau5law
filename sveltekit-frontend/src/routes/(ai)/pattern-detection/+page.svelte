@@ -3,7 +3,7 @@
   Testing the PatternDetectionInterface with Enhanced-Bits UI components
 -->
 <script lang="ts">
-  import { PatternDetectionInterface } from '$lib/components/ai/PatternDetectionInterface.svelte'';
+  import { PatternDetectionInterface } from '$lib/components/ai/PatternDetectionInterface.svelte';
 </script>
 
 <svelte:head>

@@ -98,7 +98,7 @@ https://svelte.dev/e/component_invalid_directive -->
       console.error('❌ Failed to load feedback analytics:', err);
       error = err.message || 'Failed to load analytics data';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       refreshing = $state(false);
     }
   }

@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeTextureCache(): Promise<void> {
     try {
       isLoading = true;
-      hasError = $state(false);
+      hasError = false;
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
@@ -159,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
       errorMessage = error.message || 'Failed to initialize texture cache';
       console.error('Texture cache initialization error:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**

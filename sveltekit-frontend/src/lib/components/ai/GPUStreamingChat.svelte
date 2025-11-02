@@ -114,7 +114,7 @@
         content: `Error: ${error.message}`
       });
     } finally {
-      isStreaming = $state(false);
+      isStreaming = false;
       currentStreamContent = '';
       streamController = null;
     }

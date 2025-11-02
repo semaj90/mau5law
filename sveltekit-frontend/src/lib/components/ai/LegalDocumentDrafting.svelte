@@ -203,7 +203,7 @@
     } catch (error) {
       console.error('Error starting document:', error);
     } finally {
-      isDrafting = $state(false);
+      isDrafting = false;
     }
   }
   async function generateContent(prompt: string) {
@@ -238,7 +238,7 @@
     } catch (error) {
       console.error('Error generating content:', error);
     } finally {
-      isGenerating = $state(false);
+      isGenerating = false;
     }
   }
   function handlePromptKeydown(e: KeyboardEvent) {

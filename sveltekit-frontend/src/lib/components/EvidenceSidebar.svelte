@@ -12,7 +12,7 @@
   } from "$lib/stores/sessionStore.svelte";
   import { cn } from '$lib/utils';
   // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   // lightweight inline icon map (emoji placeholders) — avoids lucide type/export issues
   const ICON_EMOJI: Record<string, string> = {
     FileText: '📄',
@@ -290,7 +290,7 @@
       console.error('Failed to load user data:', err);
       error = 'Failed to load data. Please try again.';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function navigateToItem(item: any) {

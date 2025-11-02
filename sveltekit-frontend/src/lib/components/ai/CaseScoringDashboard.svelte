@@ -337,7 +337,7 @@
       cases = generateMockCases();
       errorMessage = error instanceof Error ? error.message : 'An error occurred';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {

@@ -227,7 +227,7 @@ if (!browser) return;
       // Use demo data for development
       await loadDemoTimelineData();
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function calculateEventImportance(): void {

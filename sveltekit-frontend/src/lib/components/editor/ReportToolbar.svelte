@@ -1,6 +1,6 @@
 <script lang="ts">
   import { get } from 'svelte/store';
-  import { EnhancedBits } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { EnhancedBits } from '$lib/components/ui/enhanced-bits.svelte';
   const { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator } =
     (EnhancedBits as any) || {};
   import {

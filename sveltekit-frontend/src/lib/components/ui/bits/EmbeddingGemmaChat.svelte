@@ -2,7 +2,7 @@
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Textarea } from "$lib/components/ui/textarea/Textarea.svelte";
   import { notifications  } from '$lib/stores/unified";
   import { Bot, Send, Loader2, Brain, Zap, FileText, Search, Activity, Database } from "lucide-svelte";
@@ -229,7 +229,7 @@
         message: "Failed to get response from AI assistant",
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       isTyping = $state(false);
     }
   }
@@ -288,7 +288,7 @@
         message: error instanceof Error ? error.message: "Failed to analyze documents",
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function checkServiceHealth() {
@@ -345,7 +345,7 @@
         message: "Failed to queue embedding jobs",
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function addDocument() {

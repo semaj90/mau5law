@@ -131,7 +131,7 @@
       // Update user message status
       messages = messages.map(msg => (msg.id === userMessage.id ? { ...msg, status: 'error' } : msg));
     } finally {
-      isTyping = $state(false);
+      isTyping = false;
       aiMode = 'idle';
       inputValue = '';
     }

@@ -251,7 +251,7 @@
     } catch (error) {
       console.error('Failed to generate connection map:', error);
     } finally {
-      isGeneratingMap = $state(false);
+      isGeneratingMap = false;
     }
   }
   /**

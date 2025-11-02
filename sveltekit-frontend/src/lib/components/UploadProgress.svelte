@@ -3,10 +3,10 @@
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
   import { writable, type Writable } from 'svelte/store';
   // Props (exported to avoid $props() compile issues in this environment)
-  export let caseId: string = '';
-  export let uploadId: string = '';
-  export let showTensorMetrics: boolean = $state(false);
-  export let enableAttentionTracking: boolean = true;
+  const { caseId } = $props<{ caseId: string }>()
+  const { uploadId } = $props<{ uploadId: string }>()
+  const { showTensorMetrics } = $props<{ showTensorMetrics: boolean }>()
+  const { enableAttentionTracking } = $props<{ enableAttentionTracking: boolean }>()
   // Socket instance - don't import socket.io-client at module-level (SSR safe)
   let socket: any = null;
   // local optional reference for uploadStore (populated via dynamic import in onMount)

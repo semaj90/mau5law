@@ -4,8 +4,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // use default export for Button component
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // use default export for Button component
+  import { Badge } from '$lib/components/ui/badge.svelte';
   import {
     Bot,
     Brain,

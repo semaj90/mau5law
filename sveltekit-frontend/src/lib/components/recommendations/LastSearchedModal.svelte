@@ -92,7 +92,7 @@
       ];
       await generateAISuggestions();
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       // Display fallback notice if using mock data
       if (usingMockData) {
         const notice = document.createElement('div');

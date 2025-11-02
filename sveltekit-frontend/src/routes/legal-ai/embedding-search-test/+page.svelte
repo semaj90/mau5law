@@ -87,7 +87,7 @@ await checkSystemHealth();
       errorMessage = `Embedding failed: ${(error as any)?.message ?? String(error)}`;
       embeddingStatus = 'error';
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function performSearch() {
@@ -109,7 +109,7 @@ await checkSystemHealth();
       console.error('Search failed:', error);
       errorMessage = `Search failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function performAdvancedSearch() {
@@ -135,7 +135,7 @@ await checkSystemHealth();
       console.error('Advanced search failed:', error);
       errorMessage = `Advanced search failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function testCUDAEmbedding() {
@@ -172,7 +172,7 @@ await checkSystemHealth();
       console.error('CUDA embedding test failed:', error);
       errorMessage = `CUDA test failed: ${(error as any)?.message ?? String(error)}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Add typed interfaces

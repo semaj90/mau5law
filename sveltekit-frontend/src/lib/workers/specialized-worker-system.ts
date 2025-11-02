@@ -357,7 +357,7 @@ export abstract class SpecializedWorker extends EventEmitter {
           console.error(`❌ Worker ${this.workerId} failed to process job:`, errorResult.error);
           this.emit('jobFailed', { error: errorResult.error, processingTime });
         } finally {
-          this.isProcessing = $state(false);
+          this.isProcessing = false;
         }
       }
     });

@@ -9,15 +9,15 @@ Manages AutoGen and CrewAI multi-agent workflows
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
   import { CardContent } from '$lib/components/ui/CardContent.svelte';
   import { CardHeader } from '$lib/components/ui/CardHeader.svelte';
   import { CardTitle } from '$lib/components/ui/CardTitle.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { mcpGPUOrchestrator } from '$lib/services/mcp-gpu-orchestrator';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select/index.ts';
@@ -159,7 +159,7 @@ if (autoStartServices) {
       console.error('Workflow execution failed:', error);
       lastUpdate = `Error: ${(error as Error).message}`;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       executionProgress = 100;
     }
   }

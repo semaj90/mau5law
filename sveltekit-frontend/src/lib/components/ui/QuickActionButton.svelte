@@ -43,7 +43,7 @@
       errorMessage = error.message || 'An unknown error occurred.';
       onActionError?.(error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 </script>

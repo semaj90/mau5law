@@ -531,7 +531,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       }
     } finally {
       flushBatch();
-      running = $state(false);
+      running = false;
     }
   }
   async function interrupt(mode: 'graceful' | 'force' = 'graceful') {

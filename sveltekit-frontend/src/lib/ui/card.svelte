@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let className = '';
+  const { className = '' } = $props()
 </script>
 
 <div class={`rounded-2xl shadow-sm border border-gray-200 bg-white ${className}`}>

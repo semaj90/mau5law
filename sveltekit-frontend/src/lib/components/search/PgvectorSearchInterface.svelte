@@ -71,7 +71,7 @@
       error = err instanceof Error ? err.message : 'Search failed';
       console.error('Search error:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleKeydown(e: KeyboardEvent) {

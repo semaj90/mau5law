@@ -10,7 +10,7 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
 
   // System status and results
   const systemHealth = writable<any | null>(null);
@@ -181,7 +181,7 @@ Both parties acknowledge they have read and agree to these terms.`,
       errorMessage = `Error: ${err?.message ?? String(err)}`;
       console.error('Operation failed:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       updateSystemHealth();
       updateMetrics();
     }

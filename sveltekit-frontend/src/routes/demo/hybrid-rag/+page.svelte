@@ -131,7 +131,7 @@
       error = err.message || 'Processing failed';
       processingStage = '';
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
 
@@ -169,7 +169,7 @@
       error = err.message || 'Search failed';
       processingStage = '';
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
 

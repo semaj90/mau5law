@@ -71,7 +71,7 @@
       message = error instanceof Error ? error.message : 'Upload failed';
       messageType = 'error';
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   }
   function clearFiles() {

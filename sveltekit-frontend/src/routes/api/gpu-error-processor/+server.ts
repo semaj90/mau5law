@@ -256,7 +256,7 @@ async function handleSystemTest(): Promise<SystemTestResponse> {
       const ollamaResponse = await fetch('http://localhost:11434/api/tags');
       testResults.ollama = ollamaResponse.ok;
     } catch {
-      testResults.ollama = $state(false);
+      testResults.ollama = false;
     }
     // Test API endpoints
     testResults.apiEndpoints = true;

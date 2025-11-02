@@ -7,7 +7,7 @@
   import StatsCard from '$lib/components/ui/StatsCard.svelte';
   import Dialog from '$lib/components/ui/Dialog.svelte';
   // Enhanced-Bits UI Components
-  import Button from '$lib/components/ui/enhanced-bits.svelte''; // ADDED
+  import Button from '$lib/components/ui/enhanced-bits.svelte'; // ADDED
   // Using built-in dialog since N64Modal might be incomplete
   import QuickActionButton from '$lib/components/ui/QuickActionButton.svelte';
   // Global Components

@@ -13,7 +13,7 @@
     } catch (error) {
       console.error('Error loading recommendations:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   });
 </script>

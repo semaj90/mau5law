@@ -82,7 +82,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Failed to load state machines:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

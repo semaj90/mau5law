@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   // Card components removed - using native HTML elements
   import {
     ensureFloat32Array,

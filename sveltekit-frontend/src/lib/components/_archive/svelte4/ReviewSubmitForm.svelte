@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Submission failed:', error);
       alert('Submission failed. Please try again.');
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   function handlePrevious() {

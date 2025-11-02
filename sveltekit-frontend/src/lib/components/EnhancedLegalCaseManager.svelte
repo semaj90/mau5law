@@ -285,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
 				duration: 5000,
 			});
 		} finally {
-			isProcessing = $state(false);
+			isProcessing = false;
 		}
 	}
 	async function previousStep(): Promise<void> {
@@ -363,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
 			console.error('Case submission failed:', error);
 			notify({ type: 'error', title: 'Submission Error', message: 'Failed to submit case. Please try again.', duration: 5000 });
 		} finally {
-			isProcessing = $state(false);
+			isProcessing = false;
 		}
 	}
 	// Safe navigation helper: prefer SPA-style history navigation, fallback to full navigation
@@ -420,7 +420,7 @@ https://svelte.dev/e/js_parse_error -->
 		if (!Rec) return;
 		try {
 			recognition = new Rec();
-			recognition.continuous = $state(false);
+			recognition.continuous = false;
 			recognition.interimResults = $state(false);
 			recognition.lang = 'en-US';
 			recognition.onresult = (event: any) => {

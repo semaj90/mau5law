@@ -53,7 +53,7 @@
     } catch (err) {
       error = 'Network error occurred. Please try again.';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function toggleMode() {

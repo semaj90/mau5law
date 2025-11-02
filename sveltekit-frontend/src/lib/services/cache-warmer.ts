@@ -128,7 +128,7 @@ export class LegalCacheWarmer {
       console.log(`🎮 Loaded ${result.texturesLoaded} textures, using ${(result.memoryUsed / 1024).toFixed(1)}KB`);
       return result;
     } finally {
-      this.isWarming = $state(false);
+      this.isWarming = false;
     }
   }
   /**

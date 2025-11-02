@@ -37,7 +37,7 @@
       error = err instanceof Error ? err.message : 'Login failed';
       console.error('[Demo Login Error]', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Only show in development with demo auth enabled

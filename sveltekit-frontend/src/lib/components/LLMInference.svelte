@@ -26,7 +26,7 @@
     } catch (e) {
       error = 'Inference failed.';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 </script>

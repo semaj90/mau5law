@@ -53,7 +53,7 @@
       error = err instanceof Error ? err.message : 'Search failed';
       similarDocuments = [];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Reactive search when query changes

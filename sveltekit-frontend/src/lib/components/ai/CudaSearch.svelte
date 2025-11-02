@@ -11,7 +11,7 @@ Usage:
 <CudaSearch bind:results {onSearchComplete} />
 -->
 <script lang="ts">
-  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   import { createEventDispatcher, onMount } from 'svelte';
 
   interface SearchResult {
@@ -41,14 +41,14 @@ Usage:
   }
 
   // Props (standard Svelte exports)
-  export let placeholder: string = 'Search legal documents...';
-  export let maxResults: number = 10;
-  export let enableGpuAcceleration: boolean = true;
-  export let enableSIMD: boolean = true;
-  export let legalDomain: string = 'general';
-  export let searchType: 'semantic' | 'keyword' | 'hybrid' = 'semantic';
-  export let results: SearchResult[] = [];
-  export let onSearchComplete: ((r: SearchResult[]) => void) | undefined;
+  const { placeholder } = $props<{ placeholder: string }>()
+  const { maxResults } = $props<{ maxResults: number }>()
+  const { enableGpuAcceleration } = $props<{ enableGpuAcceleration: boolean }>()
+  const { enableSIMD } = $props<{ enableSIMD: boolean }>()
+  const { legalDomain } = $props<{ legalDomain: string }>()
+  const { searchType } = $props<{ searchType: 'semantic' | 'keyword' | 'hybrid' }>()
+  const { results } = $props<{ results: SearchResult[] }>()
+  const { onSearchComplete } = $props<{ onSearchComplete: ((r: SearchResult[]) }>()
 
   const dispatch = createEventDispatcher();
 
@@ -224,7 +224,7 @@ Usage:
       errorMessage = error instanceof Error ? error.message : 'Search failed';
       results = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
 

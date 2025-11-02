@@ -143,7 +143,7 @@ async function disconnectHandler() {
     if (redisClient && redisConnected) {
       console.info('Disconnecting Redis client due to shutdown signal...');
       await redisClient.disconnect().catch(e => console.warn('Redis disconnect error during shutdown:', e));
-      redisConnected = $state(false);
+      redisConnected = false;
     }
   } catch (e) {
     console.warn('Error during Redis disconnect in shutdown handler:', e);
@@ -192,7 +192,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 
     // Helpful telemetry for production debugging
     redisClient.on('error', (err: any) => {
-      redisConnected = $state(false);
+      redisConnected = false;
       console.warn('Redis client error:', err);
     });
     redisClient.on('connect', () => console.info('Redis client connecting...'));

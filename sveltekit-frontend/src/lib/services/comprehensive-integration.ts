@@ -404,28 +404,28 @@ class ComprehensiveIntegrationService {
       const respPg = await fetch('http://localhost:8094/api/database/postgres/health');
       this.systemStatus.databases.postgresql = respPg.ok;
     } catch {
-      this.systemStatus.databases.postgresql = $state(false);
+      this.systemStatus.databases.postgresql = false;
     }
 
     try {
       const respRedis = await fetch('http://localhost:8094/api/database/redis/health');
       this.systemStatus.databases.redis = respRedis.ok;
     } catch {
-      this.systemStatus.databases.redis = $state(false);
+      this.systemStatus.databases.redis = false;
     }
 
     try {
       const respQ = await fetch('http://localhost:6333/collections');
       this.systemStatus.databases.qdrant = respQ.ok;
     } catch {
-      this.systemStatus.databases.qdrant = $state(false);
+      this.systemStatus.databases.qdrant = false;
     }
 
     try {
       const respNeo = await fetch('http://localhost:7474/');
       this.systemStatus.databases.neo4j = respNeo.ok;
     } catch {
-      this.systemStatus.databases.neo4j = $state(false);
+      this.systemStatus.databases.neo4j = false;
     }
 
     console.log('🗄️ Database connection status checked');

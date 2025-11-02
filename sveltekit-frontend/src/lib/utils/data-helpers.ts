@@ -494,7 +494,7 @@ export class DataSync {
         })
       );
     } finally {
-      this.syncing = $state(false);
+      this.syncing = false;
       // Process any items that were queued during sync
       if (this.syncQueue.size > 0) {
         setTimeout(() => this.processQueue(), 1000);

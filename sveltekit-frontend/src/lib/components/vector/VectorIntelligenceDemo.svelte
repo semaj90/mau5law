@@ -14,7 +14,7 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type {
     VectorSearchResult,
@@ -145,7 +145,7 @@ await loadSystemHealth();
       console.error('Search failed:', error);
       processingStage = `Search failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function generateRecommendations() {
@@ -178,7 +178,7 @@ await loadSystemHealth();
       console.error('Recommendation generation failed:', error);
       processingStage = `Failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function performSemanticAnalysis() {
@@ -194,7 +194,7 @@ await loadSystemHealth();
       console.error('Semantic analysis failed:', error);
       processingStage = `Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function loadDemoQuery(query: string) {

@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   // @ts-nocheck
   import { onMount } from 'svelte';
   import { browser } from "$app/environment";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
   ArrowLeft,
   ArrowRight,

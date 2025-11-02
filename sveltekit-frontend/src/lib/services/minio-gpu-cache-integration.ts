@@ -324,7 +324,7 @@ export class MinIOGPUCacheService {
       // Convert data to Uint8Array
       const dataBytes = this.toUint8Array(data);
       let finalData = dataBytes; // Corrected
-      let compressed = $state(false); // Corrected
+      let compressed = false; // Corrected
       let compressionRatio = 1.0; // Corrected
       // Apply compression if enabled and beneficial
       if (this.config.compressionEnabled && dataBytes.length > 1024) {

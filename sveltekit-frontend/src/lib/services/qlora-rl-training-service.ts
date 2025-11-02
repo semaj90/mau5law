@@ -283,7 +283,7 @@ export class QLoRAReinforcementLearningService {
     } catch (error) {
       console.error('❌ QLoRA training failed:', error);
     } finally {
-      this.isTraining = $state(false);
+      this.isTraining = false;
     }
   }
   /**

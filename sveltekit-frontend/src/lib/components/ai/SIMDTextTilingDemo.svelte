@@ -4,13 +4,13 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   let isProcessing = $state(false);
   let results = $state([]);
   let selectedMode = $state('langchain-simd');
@@ -129,7 +129,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Error: ${error.message}`);
       alert(`Processing failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function processBatchTexts() {
@@ -145,7 +145,7 @@ https://svelte.dev/e/expected_token -->
       }
       addLog(`✅ Batch processing complete: ${results.length} texts processed`);
     } finally {
-      batchMode = $state(false);
+      batchMode = false;
       isProcessing = $state(false);
     }
   }
@@ -166,7 +166,7 @@ https://svelte.dev/e/expected_token -->
       compressionTarget = originalTarget;
       addLog('✅ Compression benchmark complete');
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function updateSystemStats(result) {

@@ -7,11 +7,11 @@ https://svelte.dev/e/js_parse_error -->
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
 
   // Props (use simple export lets to be Svelte-compatible)
-  export let targetElementSelector: string = '[data-legal-id]';
-  export let interactionType: 'hover' | 'click' | 'focus' = 'hover';
-  export let patternPrefix: string = 'summary';
-  export let fallbackApiEndpoint: string = '/api/legal/summary';
-  export let enableDebugMode: boolean = $state(false);
+  const { targetElementSelector } = $props<{ targetElementSelector: string }>()
+  const { interactionType } = $props<{ interactionType: 'hover' | 'click' | 'focus' }>()
+  const { patternPrefix } = $props<{ patternPrefix: string }>()
+  const { fallbackApiEndpoint } = $props<{ fallbackApiEndpoint: string }>()
+  const { enableDebugMode } = $props<{ enableDebugMode: boolean }>()
 
   // State
   let isInitialized = $state(false);

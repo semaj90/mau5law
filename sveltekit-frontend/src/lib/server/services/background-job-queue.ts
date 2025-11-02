@@ -198,7 +198,7 @@ export class LegalAIJobQueue {
     } catch (error) {
       console.error('[JobQueue] Error processing job:', error);
     } finally {
-      this.processingLock = $state(false);
+      this.processingLock = false;
     }
   }
   /**

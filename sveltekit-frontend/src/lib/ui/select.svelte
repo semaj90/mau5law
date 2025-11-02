@@ -11,9 +11,9 @@
     SelectViewport
   } from 'bits-ui';
 
-  export let value: any = undefined;
-  export let placeholder: string = 'Select an option';
-  export let options: { value: string; label: string }[] = [];
+  const { value } = $props<{ value: any }>()
+  const { placeholder } = $props<{ placeholder: string }>()
+  const { options } = $props<{ options: { value: string }>() label: string }[] = [];
   // pass-through rest props are spread into the root component via {...rest}
 </script>
 

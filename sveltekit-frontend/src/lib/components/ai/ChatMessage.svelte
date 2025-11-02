@@ -6,7 +6,7 @@
   // receive props via Svelte 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { chatActions } from '$lib/stores/chat'; // adjusted store path
   import { notifications } from '$lib/stores/unified';
   import { Bot, Clock, Copy, Heart, MoreVertical, Star, StarOff, ThumbsUp, Users } from 'lucide-svelte';

@@ -241,7 +241,7 @@ export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
       console.error('DQN training error:', err);
       this.emit('trainingError', err);
     } finally {
-      this.isTraining = $state(false);
+      this.isTraining = false;
     }
   }
   /**

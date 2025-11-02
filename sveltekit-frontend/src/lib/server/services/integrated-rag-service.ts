@@ -40,7 +40,7 @@ export async function initializeIntegratedRAG() {
     cudaAvailable = cudaCheck?.ok || false;
     console.log(`🎮 CUDA: ${cudaAvailable ? '✅' : '⚠️ CPU'}`);
   } catch {
-    cudaAvailable = $state(false);
+    cudaAvailable = false;
   }
   if (!redisClient) {
     try {

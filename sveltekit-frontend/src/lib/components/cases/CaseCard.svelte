@@ -15,9 +15,9 @@
     Clock,
     CheckCircle
   } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import * as Card from '$lib/components/ui/card.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import * as Card from '$lib/components/ui/card.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   interface CaseData {
     id: string
     title: string

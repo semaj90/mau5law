@@ -19,7 +19,7 @@
       }
     } finally {
       lastDuration = Math.round(performance.now() - t0);
-      isLoading = $state(false);
+      isLoading = false;
       await tick();
       if (typeof document !== 'undefined') {
         document.querySelector('#search-results')?.scrollIntoView({ behavior: 'smooth' });

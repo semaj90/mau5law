@@ -227,7 +227,7 @@ export class LokiRedisCache extends EventEmitter {
     try {
       if (!this.redis) {
         console.warn('⚠️ Redis service not available, running in memory-only mode');
-        this.stats.redis.connected = $state(false);
+        this.stats.redis.connected = false;
         return;
       }
       // Initialize Redis if it has an initialize method

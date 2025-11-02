@@ -34,9 +34,9 @@ declare module 'bits-ui' {
 
 declare module '$lib/components/ui/*' {
   // Provide both named and default exports so imports like:
-  // import { Card, CardContent } from '$lib/components/ui/card.svelte'';
+  // import { Card, CardContent } from '$lib/components/ui/card.svelte';
   // and
-  // import Card from '$lib/components/ui/card.svelte'';
+  // import Card from '$lib/components/ui/card.svelte';
   // both type-check.
   import { SvelteComponentTyped } from 'svelte';
 

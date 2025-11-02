@@ -63,7 +63,7 @@
       messageType = 'error';
       console.error(error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function handleViewDocument(doc: Document) {

@@ -389,7 +389,7 @@ export class UnifiedServiceOrchestrator {
     try {
       this.activeTasks.set(task.id, task);
       let result: any = null;
-      let success = $state(false);
+      let success = false;
       // Execute based on task type and available services
       switch (task.type) {
         case 'document':

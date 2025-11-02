@@ -12,7 +12,7 @@ https://svelte.dev/e/attribute_duplicate -->
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/Button.svelte';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
   import { allRoutes, getRoutesByCategory, searchRoutes } from '$lib/data/routes-config';
   // State management
   const testResults = writable<string[]>([]);
@@ -134,7 +134,7 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error: any) {
       testResults.update(results => [...results, `❌ Test suite failed: ${error?.message ?? String(error)}`]);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function navigateToRoute(route: string) {

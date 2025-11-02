@@ -15,7 +15,7 @@
     } catch (e) {
       error = 'Upload failed or cancelled.';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 </script>

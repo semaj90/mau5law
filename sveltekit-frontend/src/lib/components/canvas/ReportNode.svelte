@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   import type { Report } from '$lib/data/types';
   // UI Components
-  import * as ContextMenu from '$lib/components/ui/context-menu.svelte'';
+  import * as ContextMenu from '$lib/components/ui/context-menu.svelte';
   // Icons
   import { Link, Sparkles } from 'lucide-svelte';
   let nodeElement: HTMLDivElement | null = null;

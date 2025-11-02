@@ -5,7 +5,7 @@
   import { gpuAIService } from '$lib/services/gpu-ai-service';
   import { evidenceStore  } from '$lib/stores/unified';
   import { showSuccess, showError  } from '$lib/stores/unified';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits.svelte';
   import { Bot, Send, Zap, Brain, TrendingUp, AlertTriangle, Loader2, Cpu, Signal } from 'lucide-svelte';
   interface ChatMessage {
     id: string;
@@ -203,7 +203,7 @@ await initializeAssistant();
       }
       showError('AI chat failed');
     } finally {
-      isStreaming = $state(false);
+      isStreaming = false;
       streamingMessageId = null;
     }
   }

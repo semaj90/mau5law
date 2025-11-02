@@ -6,14 +6,14 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import {
     Play,
@@ -132,7 +132,7 @@ if (autoStart) {
     } catch (error) {
       console.error('Failed to initialize orchestrator:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function refreshStatus() {

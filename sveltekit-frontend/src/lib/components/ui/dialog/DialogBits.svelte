@@ -2,13 +2,13 @@
 
   import { fade, scale } from 'svelte/transition';
   import { cn } from '$lib/utils';
-  export let open: boolean = $state(false);
-  export let onOpenChange: ((open: boolean) => void) | undefined;
-  export let size: 'sm' | 'md' | 'lg' | 'xl' | 'full' = 'md';
-  export let closeOnEscape: boolean = true;
-  export let closeOnOutsideClick: boolean = true;
-  export let className: string = '';
-  export let title: string | undefined = undefined;
+  const { open } = $props<{ open: boolean }>()
+  const { onOpenChange } = $props<{ onOpenChange: ((open: boolean) }>()
+  const { size } = $props<{ size: 'sm' | 'md' | 'lg' | 'xl' | 'full' }>()
+  const { closeOnEscape } = $props<{ closeOnEscape: boolean }>()
+  const { closeOnOutsideClick } = $props<{ closeOnOutsideClick: boolean }>()
+  const { className } = $props<{ className: string }>()
+  const { title } = $props<{ title: string | undefined }>()
   export let description string | undefined = undefined;
   const sizeClasses: Record<'sm' | 'md' | 'lg' | 'xl' | 'full', string> = {
     sm: 'max-w-sm',

@@ -64,7 +64,7 @@
         if (!webgpuSupported) {
           console.log('🎮 WebGPU not supported, using CPU fallback');
           textureData = generateFallbackPattern();
-          isLoading = $state(false);
+          isLoading = false;
           return;
         }
         // Initialize NES texture streaming

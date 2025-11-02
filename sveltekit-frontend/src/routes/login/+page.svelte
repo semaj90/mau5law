@@ -5,7 +5,7 @@
   import { loginSchema } from '$lib/schemas/auth';
   import type { PageData } from './$types';
   // SvelteKit page data is provided via exported prop
-  export let data: PageData;
+  const { data } = $props<{ data: PageData }>()
   const { form, errors, enhance, message } = superForm(data.form, {
     validators: zodClient(loginSchema),
     resetForm: true,

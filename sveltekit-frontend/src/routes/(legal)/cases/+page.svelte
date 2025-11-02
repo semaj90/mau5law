@@ -104,7 +104,7 @@
       console.error('Failed to load cases:', err);
       error = err instanceof Error ? err.message : 'Error loading cases';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

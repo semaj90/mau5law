@@ -1,7 +1,7 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
 
   // Props (Svelte 5 runes) - use $props() instead of `export let`
   const {

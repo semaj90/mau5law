@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import Fuse from 'fuse.js';
   // Use direct component imports to avoid broken barrels
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
   import { CardContent } from '$lib/components/ui/enhanced-bits/CardContent.svelte';
   import { CardHeader } from '$lib/components/ui/enhanced-bits/CardHeader.svelte';
   import { CardTitle } from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
@@ -64,7 +64,7 @@
       console.error('Fuse search error:', error);
       searchResults = [];
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Real-time search as user types (debounced)

@@ -148,7 +148,7 @@ export function createLegalCaseStore() {
       ];
       cases.splice(0, cases.length, ...mockCases);
     } finally {
-      loading.cases = $state(false);
+      loading.cases = false;
     }
   }
   async function selectCase(legalCase: LegalCase): Promise<any> {
@@ -203,7 +203,7 @@ export function createLegalCaseStore() {
       });
       throw error;
     } finally {
-      loading.analysis = $state(false);
+      loading.analysis = false;
     }
   }
   async function analyzeDocument(documentId: string): Promise<void> {
@@ -245,7 +245,7 @@ export function createLegalCaseStore() {
       });
       throw error;
     } finally {
-      loading.analysis = $state(false);
+      loading.analysis = false;
     }
   }
   async function updateCaseStatus(caseId: string, newStatus: "active" | "pending" | "closed" | "archived"): Promise<any> {

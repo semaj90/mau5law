@@ -22,15 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // export prop (safe default provided)
-  export let formData: FormData = {
-    title: '',
-    client_name: '',
-    case_type: '',
-    jurisdiction: '',
-    priority: 'low',
-    description: '',
-    key_dates: [],
-  };
+  const { formData } = $props<{ formData: FormData }>()
 
   const dispatch = createEventDispatcher();
   let validationErrors: Record<string, string> = {};

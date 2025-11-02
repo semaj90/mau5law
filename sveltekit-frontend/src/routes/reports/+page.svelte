@@ -68,7 +68,7 @@
       console.error('Error loading reports:', err);
       error = 'Error loading reports';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   });
 

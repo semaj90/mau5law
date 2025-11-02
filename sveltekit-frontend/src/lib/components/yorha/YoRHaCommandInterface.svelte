@@ -255,7 +255,7 @@
       result.status = 'ERROR';
       result.output = error instanceof Error ? error.message : 'Unknown error';
     } finally {
-      isProcessingCommand = $state(false);
+      isProcessingCommand = false;
       commandHistory.update(history => history.map(cmd => (cmd.id === result.id ? result : cmd)));
     }
   }

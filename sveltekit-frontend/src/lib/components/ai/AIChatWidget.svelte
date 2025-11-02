@@ -141,7 +141,7 @@
       };
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function handleKeydown(event: KeyboardEvent) {

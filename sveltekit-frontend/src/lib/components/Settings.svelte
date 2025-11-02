@@ -28,8 +28,8 @@
     fontSize: '16px',
   };
   // --- Fix: expose props via standard Svelte exports (avoid $props / $bindable) ---
-  export let isOpen: boolean = $state(false);
-  export let settings: Settings = defaultSettings;
+  const { isOpen } = $props<{ isOpen: boolean }>()
+  const { settings } = $props<{ settings: Settings }>()
   const dispatch = createEventDispatcher();
   function saveSettings(event: Event) {
     // prevent default if used without preventDefault modifier

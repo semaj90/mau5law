@@ -3,8 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Replaced script to fix Svelte 5 runes, imports, types and logic typos
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Textarea } from '$lib/components/ui/textarea.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Textarea } from '$lib/components/ui/textarea.svelte';
   import {
     aiPersonality,
     chatActions,

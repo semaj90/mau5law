@@ -65,7 +65,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Check CUDA/SIMD service availability with timeout
-    let cudaAvailable = $state(false);
+    let cudaAvailable = false;
     let cudaStats: CudaStats = null;
     try {
       const controller = new AbortController();

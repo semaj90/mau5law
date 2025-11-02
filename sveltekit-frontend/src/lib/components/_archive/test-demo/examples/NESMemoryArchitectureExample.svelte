@@ -172,7 +172,7 @@
     } catch (error) {
       console.error('❌ Cache warming failed:', error);
     } finally {
-      isWarming = $state(false);
+      isWarming = false;
     }
   }
   function getMemoryBankColor(bank: string): string {

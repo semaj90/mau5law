@@ -38,7 +38,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message : 'Error creating case';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 </script>

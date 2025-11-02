@@ -17,6 +17,6 @@ export { default as CardHeader } from './CardHeader.svelte';
 export { default as CardTitle } from './CardTitle.svelte';
 export { default as LoadingButton } from '../headless/LoadingButton.svelte';
 // Component usage guide:
-// import { Button, Card } from '$lib/components/ui.svelte'';           // Core components
-// import { NES } from '$lib/components/ui.svelte'';                    // NES gaming style
-// import { Bits } from '$lib/components/ui.svelte'';                   // bits-ui based
+// import { Button, Card } from '$lib/components/ui.svelte';           // Core components
+// import { NES } from '$lib/components/ui.svelte';                    // NES gaming style
+// import { Bits } from '$lib/components/ui.svelte';                   // bits-ui based

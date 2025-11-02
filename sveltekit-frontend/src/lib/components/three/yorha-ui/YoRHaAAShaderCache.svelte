@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeShaderCache(): Promise<void> {
     try {
       isCompiling = true;
-      hasError = $state(false);
+      hasError = false;
       if (!navigator.gpu) {
         throw new Error('WebGPU not supported');
       }
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Shader cache initialization error:', error);
       onShaderError?.(msg);
     } finally {
-      isCompiling = $state(false);
+      isCompiling = false;
     }
   }
   /**
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Hot reload failed:', error);
       onShaderError?.(error.message);
     } finally {
-      isCompiling = $state(false);
+      isCompiling = false;
     }
   }
   /**

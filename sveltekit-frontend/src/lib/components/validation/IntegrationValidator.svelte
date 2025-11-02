@@ -101,7 +101,7 @@
       overallStatus = 'failed';
     } finally {
       totalDuration = Date.now() - startTime;
-      isRunning = $state(false);
+      isRunning = false;
     }
   }
   // Run individual validation suite

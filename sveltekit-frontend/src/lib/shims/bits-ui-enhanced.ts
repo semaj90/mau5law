@@ -7,7 +7,7 @@ import {
   applyCustomDesign,
   type CustomDesignTokens,
   type ComponentBarrelConfig,
-} from '$lib/components/ui/enhanced-bits.svelte'';
+} from '$lib/components/ui/enhanced-bits.svelte';
 // Bits UI re-exports with enhanced styling
 export {
   Dialog,
@@ -30,7 +30,7 @@ export {
   applyCustomDesign,
   NESDesignSystem,
   MinimalDesignSystem,
-} from '$lib/components/ui/enhanced-bits.svelte'';
+} from '$lib/components/ui/enhanced-bits.svelte';
 // Integration helpers
 export interface BitsUIEnhancedConfig {
   theme: CustomDesignTokens;

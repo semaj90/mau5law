@@ -73,7 +73,7 @@
         message: 'Vector search service unavailable',
       });
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
 

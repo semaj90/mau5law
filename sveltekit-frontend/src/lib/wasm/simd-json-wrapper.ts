@@ -386,7 +386,7 @@ export interface WasmExports {
   // add other exports as needed
 }
 
-export let isWASMReady = $state(false);
+const { isWASMReady = $state(false) } = $props()
 
 /**
  * Singleton instance for global use

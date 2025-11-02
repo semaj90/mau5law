@@ -408,7 +408,7 @@ export class UnifiedLokiFuzzySearch extends EventEmitter {
       console.log(`✅ Reindexing complete: ${totalIndexed} items in ${indexTime}ms`);
       this.emit('reindexComplete', { totalIndexed, indexTime });
     } finally {
-      this.indexingInProgress = $state(false);
+      this.indexingInProgress = false;
     }
   }
   private async indexCacheEntry(entry,: any): Promise<void> {

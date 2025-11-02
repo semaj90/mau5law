@@ -133,7 +133,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message: 'Unknown error occurred',
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Execute common query

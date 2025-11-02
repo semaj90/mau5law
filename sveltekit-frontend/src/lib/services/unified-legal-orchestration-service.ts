@@ -355,7 +355,7 @@ export class UnifiedLegalOrchestrationService {
     try {
       const orch = this.orchestrator as unknown as OrchestratorLike;
       await Promise.all([orch.shutdown?.(), this.queueManager.shutdown?.(), this.stateManager.shutdown?.()]);
-      this.initialized = $state(false);
+      this.initialized = false;
       console.log('Unified Legal Orchestration Service shutdown completed');
     } catch (error) {
       console.error('Error during shutdown:', error);

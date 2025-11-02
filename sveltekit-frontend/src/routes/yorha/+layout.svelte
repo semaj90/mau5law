@@ -4,7 +4,7 @@
   // Svelte 5 runes are auto-imported
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';
-    import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
+    import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   // If you have centralized API clients, prefer:
   // import yorhaAPI from '$lib/api/YoRHaAPIClient';
 

@@ -64,7 +64,7 @@
       messageType = 'error';
       preview = currentAvatar || '';
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   }
   function triggerUpload() {

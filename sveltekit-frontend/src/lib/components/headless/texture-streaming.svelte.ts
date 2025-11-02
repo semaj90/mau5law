@@ -103,7 +103,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load evidence photo';
       throw err;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       currentDocument = null;
     }
   }
@@ -129,7 +129,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load document scan';
       throw err;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       currentDocument = null;
     }
   }
@@ -152,7 +152,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load case visualization';
       throw err;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       currentDocument = null;
     }
   }
@@ -177,7 +177,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       error = err instanceof Error ? err.message : 'Failed to load courtroom display';
       throw err;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       currentDocument = null;
     }
   }

@@ -143,7 +143,7 @@
         }
       ];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       // Display fallback notice if using mock data
       if (usingMockData) {
         const notice = document.createElement('div');
@@ -275,7 +275,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // In real app, this would navigate to the work item
       console.log('Opening work item:', workItem.title);
       // Close modal
-      open = $state(false);
+      open = false;
     } catch (error) {
       // Show fallback notice for navigation failure
       const notice = document.createElement('div');

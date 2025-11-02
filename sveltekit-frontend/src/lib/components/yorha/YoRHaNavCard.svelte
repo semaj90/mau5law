@@ -5,11 +5,11 @@ https://svelte.dev/e/js_parse_error -->
   import { SvelteComponent } from 'svelte';
   import { goto } from '$app/navigation';
   // export props with safe defaults and concrete constructor typing for icon
-  export let title: string = '';
+  const { title } = $props<{ title: string }>()
   export let description string = '';
-  export let path: string = '';
+  const { path } = $props<{ path: string }>()
   export let icon typeof SvelteComponent | null = null;
-  export let ariaLabel: string = '';
+  const { ariaLabel } = $props<{ ariaLabel: string }>()
   // ensure ariaLabel defaults to title if not provided
   $: if (!ariaLabel) ariaLabel = title;
   // Svelte component constructor

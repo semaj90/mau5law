@@ -5,7 +5,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // Svelte 5 runes are auto-imported
   // Replace problematic imports with safe module imports + fallbacks
   import type { Evidence } from '$lib/data/types';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte''; // prefer named import pattern
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte'; // prefer named import pattern
   import * as unified from '$lib/stores/unified';
   import * as Icons from 'lucide-svelte';
   import {

@@ -12,16 +12,16 @@ export default ;
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Label } from "$lib/components/ui/label/Label.svelte";
   // Badge replaced with span - not available in enhanced-bits
   import {
@@ -222,7 +222,7 @@ export default ;
     } catch (err) {
       console.error("Upload failed:", err);
     } finally {
-      isUploading = $state(false);
+      isUploading = false;
       currentUploadFile = "";
     }
   }

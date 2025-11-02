@@ -92,7 +92,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Processing failed: ${error}`);
       console.error('Processing error:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   async function processBulkDocuments() {
@@ -142,7 +142,7 @@ https://svelte.dev/e/expected_token -->
       addLog(`❌ Bulk processing failed: ${error}`);
       console.error('Bulk processing error:', error);
     } finally {
-      isBulkProcessing = $state(false);
+      isBulkProcessing = false;
     }
   }
   function clearLogs() {

@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // onMount not used; Svelte 5 runes are used instead
-  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
+  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   import * as THREE from 'three';
   let layout = $state(null) as any;
   // --- added types to make node/link shapes explicit ---

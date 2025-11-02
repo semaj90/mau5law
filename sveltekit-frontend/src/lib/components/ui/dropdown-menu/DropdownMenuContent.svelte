@@ -4,15 +4,15 @@
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   import { cn } from '$lib/utils';
   // Use slot instead of a: 'children' prop; avoid exporting: 'class' (reserved) — use className
-  export let className = '';
-  export let side: 'top' | 'right' | 'bottom' | 'left' = 'bottom';
-  export let align: 'start' | 'center' | 'end' = 'start';
-  export let sideOffset: number = 4;
-  export let alignOffset: number = 0;
-  export let avoidCollisions: boolean = true;
-  export let collisionBoundary: Element | Element[] | undefined;
-  export let collisionPadding: number = 8;
-  export let sticky: 'partial' | 'always' = 'partial';
+  const { className = '' } = $props()
+  const { side } = $props<{ side: 'top' | 'right' | 'bottom' | 'left' }>()
+  const { align } = $props<{ align: 'start' | 'center' | 'end' }>()
+  const { sideOffset } = $props<{ sideOffset: number }>()
+  const { alignOffset } = $props<{ alignOffset: number }>()
+  const { avoidCollisions } = $props<{ avoidCollisions: boolean }>()
+  const { collisionBoundary } = $props<{ collisionBoundary: Element | Element[] | undefined }>()
+  const { collisionPadding } = $props<{ collisionPadding: number }>()
+  const { sticky } = $props<{ sticky: 'partial' | 'always' }>()
   // Compute classes reactively
   const contentClasses = $derived(cn(
     'legal-ai-dropdown-content z-50 min-w-48 overflow-hidden rounded-xl border bg-slate-900/95 backdrop-blur-md shadow-2xl',

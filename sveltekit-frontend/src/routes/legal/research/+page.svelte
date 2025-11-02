@@ -179,7 +179,7 @@
       searchResults = generateMockResults(searchQuery);
       totalResults = searchResults.length;
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   function generateMockResults(query: string) {

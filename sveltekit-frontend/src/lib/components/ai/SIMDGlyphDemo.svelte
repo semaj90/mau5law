@@ -5,13 +5,13 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   let isGenerating = $state(false);
   let results = $state([]);
   let selectedFormat = $state('webgpu');
@@ -91,7 +91,7 @@ https://svelte.dev/e/expected_token -->
       console.error('SIMD glyph generation failed:', error);
       alert(`Generation failed: ${error.message}`);
     } finally {
-      isGenerating = $state(false);
+      isGenerating = false;
     }
   }
   function updateProcessingStats(result) {

@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte''; // Adjusted import
-  import * as Card from '$lib/components/ui/card.svelte''; // Adjusted import
+  import { Button } from '$lib/components/ui/button.svelte'; // Adjusted import
+  import * as Card from '$lib/components/ui/card.svelte'; // Adjusted import
   // GRPMO Extended Thinking Integration
   import { grpmoOrchestrator, type ExtendedThinkingStage } from '$lib/server/db/vector-operations';
   import type { SimilarityResult } from '$lib/server/db/vector-operations';
@@ -97,7 +97,7 @@
       console.error('Glyph generation error:', err);
       error = 'Network error occurred';
     } finally {
-      generating = $state(false);
+      generating = false;
       currentStage = null;
     }
   }

@@ -1301,7 +1301,7 @@ export class RabbitMQXStateIntegration {
       // ensure internal flags are reset even if errors occurred
       this.channel = null;
       this.connection = null;
-      this.isInitialized = $state(false);
+      this.isInitialized = false;
       console.log('🧹 RabbitMQ connections cleaned up');
     }
   }

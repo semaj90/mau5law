@@ -89,7 +89,7 @@
       searchResults = { cases: [], evidence: [], documents: [], people: [] }
       totalResults = 0;
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   function handleQueryChange(newQuery: string) {

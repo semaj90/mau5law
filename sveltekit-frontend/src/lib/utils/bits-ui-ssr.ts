@@ -101,7 +101,7 @@ export function createSSRStore<T>(
       error = extractErrorMessage(err) || 'Unknown error';
       console.error('SSR Store Error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   };
   // Auto-refresh setup
@@ -216,7 +216,7 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
         console.error('Search error:', error);
         results = [];
       } finally {
-        searching = $state(false);
+        searching = false;
       }
     }, delay);
   };
@@ -270,7 +270,7 @@ export function createOptimisticStore<T>(initialData: T) {
       error = extractErrorMessage(err) || 'Update failed';
       throw err;
     } finally {
-      pending = $state(false);
+      pending = false;
     }
   };
   return {

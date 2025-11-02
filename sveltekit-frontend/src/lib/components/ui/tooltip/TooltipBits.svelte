@@ -51,7 +51,7 @@
       console.warn('Failed to fetch documentation', error);
       documentationContent = content; // Fallback to original content
     } finally {
-      isLoadingDocs = $state(false);
+      isLoadingDocs = false;
     }
   }
   // Auto-fetch documentation when docKey changes

@@ -296,7 +296,7 @@ class G0llamaService {
       // Use the standard Fetch Response type and read .ok directly (no `any`)
       this.isAvailable = (response as Response).ok === true;
     } catch {
-      this.isAvailable = $state(false);
+      this.isAvailable = false;
     }
   }
   async generate(

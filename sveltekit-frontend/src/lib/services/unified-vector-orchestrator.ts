@@ -1062,7 +1062,7 @@ export class UnifiedVectorOrchestrator {
     try {
       health.webgpuSOM = this.webgpuSOM.isInitialized();
     } catch {
-      health.webgpuSOM = $state(false);
+      health.webgpuSOM = false;
     }
 
     // Check Hybrid Vector Search (NEW - 512-dim embeddinggemma + Qdrant)
@@ -1072,7 +1072,7 @@ export class UnifiedVectorOrchestrator {
       health.pgvector = Boolean(hybridHealth.services?.pgvector);
       health.hybridVectorSearch = Boolean(hybridHealth.healthy);
     } catch {
-      health.qdrant = $state(false);
+      health.qdrant = false;
       health.pgvector = $state(false);
       health.hybridVectorSearch = $state(false);
     }
@@ -1081,7 +1081,7 @@ export class UnifiedVectorOrchestrator {
     try {
       health.fuseSearch = this.fuseIndex !== null;
     } catch {
-      health.fuseSearch = $state(false);
+      health.fuseSearch = false;
     }
 
     // Check Lokijs
@@ -1089,7 +1089,7 @@ export class UnifiedVectorOrchestrator {
       const docs = this.lokiDb.getCollection('documents');
       health.lokiDb = docs !== null;
     } catch {
-      health.lokiDb = $state(false);
+      health.lokiDb = false;
     }
 
     // Check Vector Service (legacy) - call defensive
@@ -1102,21 +1102,21 @@ export class UnifiedVectorOrchestrator {
         health.vectorService = !!this.hybrid;
       }
     } catch {
-      health.vectorService = $state(false);
+      health.vectorService = false;
     }
 
     // Check RAG Engine - coerce to boolean
     try {
       health.ragEngine = !!(this.ragEngine && this.ragEngine.engine);
     } catch {
-      health.ragEngine = $state(false);
+      health.ragEngine = false;
     }
 
     // Check Recommendation Engine
     try {
       health.recommendationEngine = this.recommendationEngine !== null;
     } catch {
-      health.recommendationEngine = $state(false);
+      health.recommendationEngine = false;
     }
 
     // Check Neo4j / Database connectivity
@@ -1124,7 +1124,7 @@ export class UnifiedVectorOrchestrator {
       await db.execute('SELECT 1');
       health.database = true;
     } catch {
-      health.database = $state(false);
+      health.database = false;
     }
 
     // Check Redis
@@ -1132,7 +1132,7 @@ export class UnifiedVectorOrchestrator {
       await this.redisClient.ping();
       health.redis = true;
     } catch {
-      health.redis = $state(false);
+      health.redis = false;
     }
 
     // return the assembled health object

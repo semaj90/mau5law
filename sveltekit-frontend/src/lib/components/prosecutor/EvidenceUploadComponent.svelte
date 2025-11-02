@@ -9,7 +9,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
   // Use concrete component modules used elsewhere in the project
-  import { Input } from '$lib/components/ui/input.svelte'';
+  import { Input } from '$lib/components/ui/input.svelte';
   import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import { webGPUProcessor } from '$lib/services/webgpu-vector-processor';
@@ -227,7 +227,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
       console.error('Upload failed:', error);
       alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
-      uploading = $state(false);
+      uploading = false;
     }
   };
   // YOLO object detection preview (placeholder)

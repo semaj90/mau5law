@@ -37,20 +37,24 @@
   import { cn } from '$lib/utils';
 
   // Use standard prop exports (clear and compatible with Svelte)
-  export let evidence: EvidenceItem;
-  export let showFullHistory = true;
-  export let interactive = true;
-  export let onTransferEvidence: ((e: EvidenceItem) => void) | undefined;
-  export let onViewDetails: ((t: CustodyTransfer) => void) | undefined;
-  export let className = '';
+  const { evidence } = $props<{ evidence: EvidenceItem }>()
+  const { showFullHistory = true } = $props()
+  const { interactive = true } = $props()
+  const { onTransferEvidence } = $props<{ onTransferEvidence: ((e: EvidenceItem) }>()
+  const { onViewDetails } = $props<{ onViewDetails: ((t: CustodyTransfer) }>()
+  const { className = '' } = $props()
 
   // Sort transfers by date (newest first) reactively
-  $: sortedTransfers = [...(evidence?.chainOfCustody ?? [])].sort((a, b) =>
+  $effect(() => {
+
+    sortedTransfers = [...(evidence?.chainOfCustody ?? [])].sort((a, b) =>
     b.timestamp.getTime() - a.timestamp.getTime()
   );
 
+  })
+
   // Get the most recent transfer
-  $: latestTransfer = sortedTransfers[0];
+  let latestTransfer = $derived(sortedTransfers[0])
 
   // Evidence category configurations (no icon components to avoid lucide import issues)
   const categoryConfig = {

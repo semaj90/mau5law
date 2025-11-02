@@ -101,7 +101,7 @@ export class CompleteGPUErrorPipeline {
       console.error('❌ Error processing pipeline failed:', error);
       throw error;
     } finally {
-      this.isRunning = $state(false);
+      this.isRunning = false;
     }
   }
 

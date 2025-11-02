@@ -149,7 +149,7 @@ try {
       console.error('[Graph Viewer] Failed to load graph data:', err);
       throw new Error('Failed to load graph data from database');
     } finally {
-      $isLoading = $state(false);
+      $isLoading = false;
     }
   }
   /**

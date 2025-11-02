@@ -294,7 +294,7 @@ export class CUDATensorService {
         this.handleBatchResults(results);
       }
     } finally {
-      this.isProcessing = $state(false);
+      this.isProcessing = false;
     }
   }
   private handleBatchResults(results: CUDAResult[]): void {

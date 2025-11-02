@@ -92,7 +92,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Failed to load persisted states:', error);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 
@@ -107,7 +107,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to restore state:', error);
       alert('Failed to restore state');
     } finally {
-      restoring = $state(false);
+      restoring = false;
     }
   }
 

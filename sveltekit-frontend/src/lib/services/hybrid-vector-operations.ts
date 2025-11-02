@@ -404,7 +404,7 @@ export class HybridVectorService {
       await (dbClient.execute ? dbClient.execute(sql`SELECT 1`) : (dbClient.query ? dbClient.query(sql`SELECT 1`) : Promise.resolve([])));
       health.pgvector = true;
     } catch {
-      health.pgvector = $state(false);
+      health.pgvector = false;
     }
 
     try {
@@ -414,7 +414,7 @@ export class HybridVectorService {
         (health.collections as Record<string, unknown>)[this.defaultCollection] = await this.qdrantClient.collectionInfo(this.defaultCollection);
       }
     } catch {
-      health.qdrant = $state(false);
+      health.qdrant = false;
     }
 
     health.hybrid = Boolean(health.pgvector) || Boolean(health.qdrant);

@@ -164,7 +164,7 @@
     } catch (error) {
       console.error('Failed to load case evidence:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -237,7 +237,7 @@
     } catch (error) {
       console.error('Failed to reorganize evidence:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -364,7 +364,7 @@
       // Fallback to category organization
       await organizeByCategory();
     } finally {
-      isGeneratingClusters = $state(false);
+      isGeneratingClusters = false;
       clusteringProgress = 0;
     }
   }

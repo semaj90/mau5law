@@ -11,8 +11,8 @@ https://svelte.dev/e/js_parse_error -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   // Props
   interface Props {
     maxConcurrent?: number;
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Semantic processing failed:', error);
       results = { error: 'Processing failed - check console for details' }
     } finally {
-      processing = $state(false);
+      processing = false;
     }
   }
   async function simulateSemanticAnalysis() {

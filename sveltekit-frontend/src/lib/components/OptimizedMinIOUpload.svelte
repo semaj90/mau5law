@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
-	export let bucket: string = 'legal-documents';
-	export let accept: string = '.pdf,.docx,.txt';
+	const { bucket } = $props<{ bucket: string }>()
+	const { accept } = $props<{ accept: string }>()
 	let file: File | null = null;
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
 	// fixed: proper TypeScript type + valid object literal

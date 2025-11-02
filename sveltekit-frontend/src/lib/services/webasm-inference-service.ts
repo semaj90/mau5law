@@ -228,7 +228,7 @@ export class WebASMInferenceService {
         }
       }
     } finally {
-      this.isProcessing = $state(false);
+      this.isProcessing = false;
     }
   }
 

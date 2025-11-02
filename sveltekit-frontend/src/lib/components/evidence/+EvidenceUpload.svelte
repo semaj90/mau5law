@@ -5,7 +5,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   import type { Evidence } from '$lib/data/types';
   import { createEventDispatcher } from 'svelte';
   // optional callback prop (keeps compatibility with existing callers)
-  export let ondispatch: ((payload: any) => void) | undefined = undefined;
+  const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
   const dispatch = createEventDispatcher();
   let dragActive = $state(false);
   let files: FileList | null = null;

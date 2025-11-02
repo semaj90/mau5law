@@ -5,14 +5,9 @@
   import { page } from '$app/stores';
   type Link = { href: string; label: string; icon?: string };
   // Exported props with proper types
-  export let brand: string = 'YORHA LEGAL AI';
-  export let version: string = 'v4.0.0';
-  export let links: Link[] = [
-    { href: '/cases', label: 'CASES', icon: '📁' },
-    { href: '/evidence', label: 'EVIDENCE', icon: '📋' },
-    { href: '/reports', label: 'REPORTS', icon: '📊' },
-    { href: '/analytics', label: 'ANALYTICS', icon: '📈' },
-  ];
+  const { brand } = $props<{ brand: string }>()
+  const { version } = $props<{ version: string }>()
+  const { links } = $props<{ links: Link[] }>()
   // Reactive derived current path from the page store
   let currentPath: string = '/';
   const currentPath = $derived($page.url?.pathname ?? '/');

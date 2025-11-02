@@ -145,7 +145,7 @@ if (!browser) return;
     } catch (error: any) {
       console.error('Evidence analysis failed:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
       setTimeout(() => textureStreamingProgress = 0, 2000);
     }
   }

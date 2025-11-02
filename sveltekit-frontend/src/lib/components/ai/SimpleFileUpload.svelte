@@ -44,16 +44,16 @@
   };
 
   // Props (exported for Svelte)
-  export let onUploadComplete: (doc: any) => void = () => {};
-  export let accept: string = '.pdf,.docx,.txt,.jpg,.png,.tiff,.json,.csv,.xml,.html';
-  export let maxSize: number = 100 * 1024 * 1024; // 100MB
-  export let enableOCR: boolean = true;
-  export let enableEmbedding: boolean = true;
-  export let enableRAG: boolean = true;
-  export let enableAutoTags: boolean = true;
-  export let enableWebGPU: boolean = $state(false);
-  export let classNameVar: string = '';
-  export let caseId: string | null = null;
+  const { onUploadComplete } = $props<{ onUploadComplete: (doc: any) }>()
+  const { accept } = $props<{ accept: string }>()
+  const { maxSize } = $props<{ maxSize: number }>() // 100MB
+  const { enableOCR } = $props<{ enableOCR: boolean }>()
+  const { enableEmbedding } = $props<{ enableEmbedding: boolean }>()
+  const { enableRAG } = $props<{ enableRAG: boolean }>()
+  const { enableAutoTags } = $props<{ enableAutoTags: boolean }>()
+  const { enableWebGPU } = $props<{ enableWebGPU: boolean }>()
+  const { classNameVar } = $props<{ classNameVar: string }>()
+  const { caseId } = $props<{ caseId: string | null }>()
 
   // Local state
   let files: File[] = [];

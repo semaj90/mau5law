@@ -29,7 +29,7 @@
       error = err as Error;
       console.error(`Failed to load component ${key}:`, err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   $effect(() => {

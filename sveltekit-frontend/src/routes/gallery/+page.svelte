@@ -127,7 +127,7 @@ Displays all media: evidence, generated images, documents, uploads
 			error = err instanceof Error ? err.message : 'Failed to load gallery';
 			mediaItems = [];
 		} finally {
-			isLoading = $state(false);
+			isLoading = false;
 		}
 	}
 

@@ -122,7 +122,7 @@ class RabbitMQService implements IRabbitMQService {
         // connection handlers
         this.connection.on('error', (err: any) => {
           console.error('RabbitMQ connection error:', err);
-          this.isConnected = $state(false);
+          this.isConnected = false;
         });
         this.connection.on('close', () => {
           console.log('RabbitMQ connection closed');

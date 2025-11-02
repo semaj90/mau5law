@@ -8,10 +8,10 @@
     color?: string;
   }
   // exported props (idiomatic Svelte)
-  export let points: number[] = [];
-  export let width = 160;
-  export let height = 50;
-  export let color = '#2563eb';
+  const { points } = $props<{ points: number[] }>()
+  const { width = 160 } = $props()
+  const { height = 50 } = $props()
+  const { color = '#2563eb' } = $props()
   // reactive derived values with guards
   const capped = $derived(points ? points.slice(-60) : []);
   const max = $derived(capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1);

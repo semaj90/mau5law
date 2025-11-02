@@ -163,7 +163,7 @@ class EnhancedAuthStore {
       console.error('Login error:', error);
       return { success: false, error: this._error };
     } finally {
-      this._state.isLoading = $state(false);
+      this._state.isLoading = false;
     }
   }
   async register(data: RegisterData): Promise<{ success: boolean; requiresVerification?: boolean; error?: string }> {
@@ -202,7 +202,7 @@ class EnhancedAuthStore {
       console.error('Registration error:', error);
       return { success: false, error: this._error };
     } finally {
-      this._state.isLoading = $state(false);
+      this._state.isLoading = false;
     }
   }
   async logout(): Promise<void> {
@@ -401,7 +401,7 @@ class EnhancedAuthStore {
       console.error('Auth initialization error:', error);
       this.clearAuthState();
     } finally {
-      this._state.isLoading = $state(false);
+      this._state.isLoading = false;
     }
   }
   private setupActivityTracking(): void {

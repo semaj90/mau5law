@@ -49,7 +49,7 @@
       message = 'Failed to download document';
       messageType = 'error';
     } finally {
-      downloading = $state(false);
+      downloading = false;
     }
   }
   async function deleteDocument() {
@@ -71,7 +71,7 @@
       message = 'Failed to delete document';
       messageType = 'error';
     } finally {
-      deleting = $state(false);
+      deleting = false;
     }
   }
 </script>

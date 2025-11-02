@@ -102,7 +102,7 @@
       uploadStatus = `Upload error: ${errorMsg}`;
       componentError = error instanceof Error ? error : new Error(errorMsg);
     } finally {
-      uploading = $state(false);
+      uploading = false;
       files = null;
     }
   }

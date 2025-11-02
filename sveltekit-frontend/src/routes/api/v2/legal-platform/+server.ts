@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const req: LegalPlatformRequest = await request.json();
     // Handle health check
     if (req.action === ('health' as any)) {
-      let dbHealthy = $state(false);
+      let dbHealthy = false;
       try {
         // Simple query to check database connectivity
         await db.execute(sql`SELECT 1`);

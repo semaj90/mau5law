@@ -45,7 +45,7 @@ if (open && personId && !foafData) {
       } catch (err) {
         error = err instanceof Error ? err.message: 'Unknown error',
       } finally {
-        loading = $state(false);
+        loading = false;
       }
     }
     })();

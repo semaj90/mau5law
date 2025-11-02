@@ -9,8 +9,8 @@
     CardTitle,
     CardContent,
     Button
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { createEnhancedEvidenceCard } from '$lib/components/ui/enhanced-bits/builders.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { createEnhancedEvidenceCard } from '$lib/components/ui/enhanced-bits/builders.svelte';
   interface EvidenceItem {
     id: string;
     title: string;

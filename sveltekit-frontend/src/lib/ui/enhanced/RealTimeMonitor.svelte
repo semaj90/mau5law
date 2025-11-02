@@ -11,8 +11,8 @@
     details?: Record<string, any>;
   };
 
-  export let apiEndpoint: string = '/api/go/health'; // configurable endpoint (server route recommended)
-  export let pollingInterval = 5000; // ms
+  const { apiEndpoint } = $props<{ apiEndpoint: string }>() // configurable endpoint (server route recommended)
+  const { pollingInterval = 5000 } = $props() // ms
 
   let services: ServiceHealth[] = [];
   let lastUpdated: Date | null = null;
@@ -73,7 +73,7 @@
     } catch (err: any) {
       error = err?.message ?? String(err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

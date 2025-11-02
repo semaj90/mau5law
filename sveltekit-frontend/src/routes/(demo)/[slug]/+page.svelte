@@ -56,7 +56,7 @@
       error = `Failed to load demo: ${message}`;
       currentComponent = null;
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

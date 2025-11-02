@@ -276,7 +276,7 @@
       addSystemMessage(`Error: ${message}`, 'system');
       errorMessage = message;
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function addSystemMessage(content: string, type: 'user' | 'ai' | 'system' = 'system') {

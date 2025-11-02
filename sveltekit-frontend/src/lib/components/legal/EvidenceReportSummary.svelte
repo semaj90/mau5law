@@ -65,7 +65,7 @@
   export let evidenceId!: string;
   export let caseId!: string;
   export let reportData!: EvidenceReport;
-  export let allowExport: boolean = true;
+  const { allowExport } = $props<{ allowExport: boolean }>()
   const { state, send } = useMachine(aiSummaryMachine);
   // reactive derived content so it updates when reportData changes
   const analysisContent = $derived(generateAnalysisContent(reportData));

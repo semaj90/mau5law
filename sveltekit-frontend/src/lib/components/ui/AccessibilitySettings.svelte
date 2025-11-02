@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { Settings, Eye, Type } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/bits/button.svelte'';
+  import { Button } from '$lib/components/ui/bits/button.svelte';
   // Props (runes style)
   let { isOpen = $bindable(false) } = $props();
   // Local reactive state wrapper of service config

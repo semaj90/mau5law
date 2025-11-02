@@ -10,9 +10,9 @@ https://svelte.dev/e/js_parse_error -->
     CardTitle,
     CardContent,
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
-  import type { UploadFile } from '$lib/components/ui/modular/types.svelte'';
+  import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
   import { Alert } from '$lib/components/ui/alert/Alert.svelte';
   import { AlertDescription } from '$lib/components/ui/alert/AlertDescription.svelte';
   import { Label } from '$lib/components/ui/label/Label.svelte';
@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
     SelectItem,
     SelectTrigger,
     SelectValue,
-  } from '$lib/components/ui/select.svelte'';
+  } from '$lib/components/ui/select.svelte';
   import { Switch } from '$lib/components/ui/switch/Switch.svelte';
   import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import { fileUploadSchema } from '$lib/schemas/upload';

@@ -90,7 +90,7 @@
     } catch (error) {
       console.error('Failed to generate AI suggestions:', error);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }, suggestionDelay);
   // Generate AI suggestions using multiple techniques

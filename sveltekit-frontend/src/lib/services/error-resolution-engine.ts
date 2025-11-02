@@ -575,7 +575,7 @@ export class ErrorResolutionEngine {
       try {
         const maxRetries = Math.max(1, action.retries ?? 1);
         let attempt = 0;
-        let actionSuccess = $state(false);
+        let actionSuccess = false;
 
         while (attempt < maxRetries && !actionSuccess) {
           attempt++;

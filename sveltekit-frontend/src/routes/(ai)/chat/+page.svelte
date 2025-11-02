@@ -139,7 +139,7 @@
       };
       messages = [...messages, mockMessage];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       typingIndicator = $state(false);
       setTimeout(() => {
         chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });

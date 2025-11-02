@@ -54,7 +54,7 @@
         }
       ];
     } finally {
-      $isRunning = $state(false);
+      $isRunning = false;
       $currentTest = '';
     }
   }
@@ -97,7 +97,7 @@
         }
       ];
     } finally {
-      $isRunning = $state(false);
+      $isRunning = false;
       $currentTest = '';
     }
   }
@@ -138,7 +138,7 @@
         }
       ];
     } finally {
-      $isRunning = $state(false);
+      $isRunning = false;
       $currentTest = '';
     }
   }

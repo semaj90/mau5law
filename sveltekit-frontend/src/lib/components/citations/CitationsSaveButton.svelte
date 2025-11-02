@@ -72,7 +72,7 @@
         error: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   async function handleRemove() {
@@ -81,7 +81,7 @@
     try {
       const success = citationsManager.removeSavedCitation(citation.id);
       if (success) {
-        isSaved = $state(false);
+        isSaved = false;
         ondispatch?.({ citation, success: false });
       }
     } catch (error) {
@@ -90,7 +90,7 @@
         error: error instanceof Error ? error.message : 'Failed to remove citation',
       });
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   async function handleSaveToCollection(collectionId: string) {

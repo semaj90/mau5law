@@ -52,7 +52,7 @@
       error = `Failed to fetch status: ${err.message}`;
       console.error('Status fetch error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Fetch recent errors
@@ -85,7 +85,7 @@
       error = `Fix query failed: ${err.message}`;
       console.error('Fix query error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // Upload screenshot
@@ -113,7 +113,7 @@
       error = `Upload failed: ${err.message}`;
       console.error('Upload error:', err);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   // File drop handling

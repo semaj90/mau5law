@@ -581,7 +581,7 @@ export class OptimizedQdrantService {
       const result = await this.upsertBatch(batch);
       return result;
     } finally {
-      this.processingBatch = $state(false);
+      this.processingBatch = false;
     }
   }
   private generateCacheKey(

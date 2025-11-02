@@ -135,7 +135,7 @@
       console.error('Search error:', err);
       error = err instanceof Error ? err.message : 'Search failed';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 

@@ -8,9 +8,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   import { onMount } from 'svelte';
 
   // Expose simple props that the component previously assumed
-  export let caseId: string | undefined;
-  export let readOnly = $state(false);
-  export let ondispatch: ((payload: any) => void) | undefined;
+  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { readOnly = $state(false) } = $props()
+  const { ondispatch } = $props<{ ondispatch: ((payload: any) }>()
 
   const { snapshot, send } = useMachine(autoTaggingMachine);
   let state: any = null;
@@ -633,7 +633,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     } catch (error) {
       console.error('Auto-save failed:', error);
     } finally {
-      isAutoSaving = $state(false);
+      isAutoSaving = false;
     }
   }
 

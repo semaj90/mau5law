@@ -13,7 +13,7 @@ import {
   Dialog as EnhancedDialog,
   Select as EnhancedSelect,
   Input
-} from '$lib/components/ui/enhanced-bits.svelte'';
+} from '$lib/components/ui/enhanced-bits.svelte';
 // Legal AI specific components
 export interface LegalEvidenceItem {
   id: string;

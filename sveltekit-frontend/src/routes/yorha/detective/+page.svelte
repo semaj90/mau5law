@@ -105,7 +105,7 @@
   });
 
   // standard Svelte prop (page data)
-  export let data: DetectiveData = {} as DetectiveData;
+  const { data } = $props<{ data: DetectiveData }>()
 
   let selectedSection: SectionId = 'command-center';
   let showNewCaseModal = $state(false);

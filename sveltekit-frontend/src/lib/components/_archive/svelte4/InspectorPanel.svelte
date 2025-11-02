@@ -257,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Auto-population failed:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 
@@ -526,7 +526,7 @@ https://svelte.dev/e/js_parse_error -->
         message: 'Failed to save evidence',
       });
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
   async function reanalyzeWithAI() {
@@ -548,7 +548,7 @@ https://svelte.dev/e/js_parse_error -->
         message: 'AI re-analysis failed',
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function formatDate(dateStr: string) {

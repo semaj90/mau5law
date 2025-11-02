@@ -328,7 +328,7 @@ class EvidenceGlobalStore {
     } finally {
       // Reset after delay to show processing state
       setTimeout(() => {
-        this.ui.aiProcessing = $state(false);
+        this.ui.aiProcessing = false;
       }, 1000);
     }
   }
@@ -361,7 +361,7 @@ class EvidenceGlobalStore {
     } catch (error) {
       console.error('AI connection generation failed:', error);
     } finally {
-      this.ui.aiProcessing = $state(false);
+      this.ui.aiProcessing = false;
     }
   }
   private initializeAIWorker() {

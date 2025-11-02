@@ -280,7 +280,7 @@ export class N64LegalAIOrchestrator {
       const adapter = await navigator.gpu?.requestAdapter();
       if (!adapter) {
         console.warn('⚠️ WebGPU adapter not available, falling back to CPU');
-        this.config.webgpu.enabled = $state(false);
+        this.config.webgpu.enabled = false;
         return;
       }
       const device = await adapter.requestDevice();

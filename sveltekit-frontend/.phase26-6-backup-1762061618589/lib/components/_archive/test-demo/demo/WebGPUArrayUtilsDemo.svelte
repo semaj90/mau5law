@@ -1,0 +1,45 @@
+<!-- @migration-task Error while migrating Svelte code: Expected token }
+https://svelte.dev/e/expected_token -->
+<!-- @migration-task Error while migrating Svelte code: Expected token } -->
+<!--
+  WebGPU Array Utils Demo Component
+  Demonstrates Float32Array vs ArrayBuffer handling and quantization
+  Author: Claude Code Integration
+-->
+<script lang="ts">
+  // Svelte 5 runes are auto-imported
+</script>
+  import { onMount } from 'svelte';
+  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  // Card components removed - using native HTML elements
+  import {
+    ensureFloat32Array,
+    quantizeToFP16,
+    quantizeToINT8,
+    analyzeMemoryUsage,
+    type ArrayConversionResult,
+    type SupportedArrayTypes
+  } from '$lib/utils/webgpu-array-utils';
+  import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
+  // Component state
+  let webgpuSupported = $state(false);
+  let isProcessing = $state(false);
+  let results: {
+    original?: { type: string; size: number, }
+    normalized?: { type: string; size: number, }
+    fp16?: ArrayConversionResult;
+    int8?: ArrayConversionResult;
+    memoryAnalysis?: Array( );
+  // Sample data demonstrating the mismatch problem
+  // Melt UI component creation removed - replace with bits-ui declarative components
+        </code>
+      </div>
+    </div.Content>
+  </div.Root>
+</div>
+<style>
+  .webgpu-array-demo {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>

@@ -305,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
         return updated;
       });
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       isStreaming = $state(false);
       await tick();
       scrollToBottom();

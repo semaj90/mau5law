@@ -17,43 +17,43 @@
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
   // Exported props (clean, explicit)
-  export let era: string = 'n64';
-  export let variant: string = 'primary';
-  export let size: string = 'medium'; // normalized to: 'small'|'medium'|'large'|'xl'
-  export let disabled: boolean = $state(false);
-  export let loading: boolean = $state(false);
-  export let animationStyle: string = 'smooth';
-  export let renderOptions: Partial<N64RenderingOptions> = {};
-  export let checked: boolean = $state(false);
-  export let name: string | undefined = undefined;
-  export let id: string | undefined = undefined;
-  export let value: string | undefined = undefined;
-  export let required: boolean = $state(false);
-  export let readonly: boolean = $state(false);
-  export let label: string | undefined = undefined;
-  export let description: string | undefined = undefined;
-  export let meshComplexity: 'low' | 'medium' | 'high' | 'ultra' = 'medium';
-  export let materialType: 'basic' | 'phong' | 'pbr' = 'phong';
-  export let enableTextureFiltering: boolean = true;
-  export let enableMipMapping: boolean = $state(false);
-  export let enableFog: boolean = true;
-  export let enableLighting: boolean = true;
-  export let enableReflections: boolean = $state(false);
-  export let enableMechanicalAnimation: boolean = true;
-  export let depth: number = 6;
-  export let perspective: number = 1000;
-  export let switchWidth: number = 56;
-  export let switchHeight: number = 32;
-  export let enableParticles: boolean = $state(false);
-  export let glowIntensity: number = 0.4;
-  export let enableSpatialAudio: boolean = true;
-  export let enableToggleGlow: boolean = true;
-  export let enableSpringPhysics: boolean = true;
-  export let animationDuration: number = 300;
-  export let springTension: number = 0.8;
-  export let ondispatch: ((_event: { checked: boolean; value?: string }) => void) | undefined;
+  const { era } = $props<{ era: string }>()
+  const { variant } = $props<{ variant: string }>()
+  const { size } = $props<{ size: string }>() // normalized to: 'small'|'medium'|'large'|'xl'
+  const { disabled } = $props<{ disabled: boolean }>()
+  const { loading } = $props<{ loading: boolean }>()
+  const { animationStyle } = $props<{ animationStyle: string }>()
+  const { renderOptions } = $props<{ renderOptions: Partial<N64RenderingOptions> }>()
+  const { checked } = $props<{ checked: boolean }>()
+  const { name } = $props<{ name: string | undefined }>()
+  const { id } = $props<{ id: string | undefined }>()
+  const { value } = $props<{ value: string | undefined }>()
+  const { required } = $props<{ required: boolean }>()
+  const { readonly } = $props<{ readonly: boolean }>()
+  const { label } = $props<{ label: string | undefined }>()
+  const { description } = $props<{ description: string | undefined }>()
+  const { meshComplexity } = $props<{ meshComplexity: 'low' | 'medium' | 'high' | 'ultra' }>()
+  const { materialType } = $props<{ materialType: 'basic' | 'phong' | 'pbr' }>()
+  const { enableTextureFiltering } = $props<{ enableTextureFiltering: boolean }>()
+  const { enableMipMapping } = $props<{ enableMipMapping: boolean }>()
+  const { enableFog } = $props<{ enableFog: boolean }>()
+  const { enableLighting } = $props<{ enableLighting: boolean }>()
+  const { enableReflections } = $props<{ enableReflections: boolean }>()
+  const { enableMechanicalAnimation } = $props<{ enableMechanicalAnimation: boolean }>()
+  const { depth } = $props<{ depth: number }>()
+  const { perspective } = $props<{ perspective: number }>()
+  const { switchWidth } = $props<{ switchWidth: number }>()
+  const { switchHeight } = $props<{ switchHeight: number }>()
+  const { enableParticles } = $props<{ enableParticles: boolean }>()
+  const { glowIntensity } = $props<{ glowIntensity: number }>()
+  const { enableSpatialAudio } = $props<{ enableSpatialAudio: boolean }>()
+  const { enableToggleGlow } = $props<{ enableToggleGlow: boolean }>()
+  const { enableSpringPhysics } = $props<{ enableSpringPhysics: boolean }>()
+  const { animationDuration } = $props<{ animationDuration: number }>()
+  const { springTension } = $props<{ springTension: number }>()
+  const { ondispatch } = $props<{ ondispatch: ((_event: { checked: boolean }>() value?: string }) => void) | undefined;
   // avoid using the reserved word `class` as an exported identifier
-  export let className: string = '';
+  const { className } = $props<{ className: string }>()
 
   // Local state
   let isFocused = $state(false);

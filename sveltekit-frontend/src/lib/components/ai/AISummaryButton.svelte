@@ -63,7 +63,7 @@
         }
       }
     } finally {
-      loading = $state(false);
+      loading = false;
       // clear only if current controller is the one we created
       if (currentController === controller) currentController = null;
     }

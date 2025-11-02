@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Use modular components and types
-  import type { UploadFile } from '$lib/components/ui/modular/types.svelte'';
+  import type { UploadFile } from '$lib/components/ui/modular/types.svelte';
   import { FileUpload } from '$lib/components/ui/modular/FileUpload.svelte';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
@@ -14,14 +14,14 @@ https://svelte.dev/e/js_parse_error -->
   import loki from '$lib/services/loki-client';
 
   // Props (use standard Svelte exports)
-  export let reportId: string = '';
-  export let acceptedTypes: string[] = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.txt', '.doc', '.docx'];
-  export let maxFileSize: number = 10 * 1024 * 1024;
-  export let maxFiles: number = 5;
-  export let multiple: boolean = true;
-  export let onupload: ((data: { files: File[]; tags: string[] }) => void) | undefined;
-  export let onfilesChanged: ((files: any[]) => void) | undefined;
-  export let onerror: ((error: string) => void) | undefined;
+  const { reportId } = $props<{ reportId: string }>()
+  const { acceptedTypes } = $props<{ acceptedTypes: string[] }>()
+  const { maxFileSize } = $props<{ maxFileSize: number }>()
+  const { maxFiles } = $props<{ maxFiles: number }>()
+  const { multiple } = $props<{ multiple: boolean }>()
+  const { onupload } = $props<{ onupload: ((data: { files: File[] }>() tags: string[] }) => void) | undefined;
+  const { onfilesChanged } = $props<{ onfilesChanged: ((files: any[]) }>()
+  const { onerror } = $props<{ onerror: ((error: string) }>()
 
   // Local state
   let uploadFiles: UploadFile[] = [];

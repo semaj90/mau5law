@@ -3,7 +3,7 @@
   import { aiAssistant  } from '$lib/stores/unified';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
   import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
   // Test state
   let selectedTest = $state<'local' | 'cuda' | 'unified' | 'all'>('unified');
   let testQuery = $state('Analyze the liability clauses in this employment contract');
@@ -61,7 +61,7 @@
     } catch (error) {
       console.error('Test failed:', error);
     } finally {
-      isRunning = $state(false);
+      isRunning = false;
     }
   }
   async function runAllTests() {

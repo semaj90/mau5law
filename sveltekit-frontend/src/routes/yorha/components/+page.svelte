@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
-  import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
+  import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   const yorhaAPI: any = (YoRHaClient as any).yorhaAPI ?? (YoRHaClient as any).default ?? YoRHaClient;
 
   // Import types only (keep types import if they exist)
@@ -11,7 +11,7 @@
     YoRHaPanel3DOptions,
     YoRHaInput3DOptions,
     YoRHaModal3DOptions
-  } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'';
+  } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
 
   // Use a minimal icon map instead of relying on lucide-svelte package exports
   const IconMap: Record<string, string> = {
@@ -125,7 +125,7 @@
     } catch (error) {
       console.error('Failed to load component configs:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function updatePreview() {

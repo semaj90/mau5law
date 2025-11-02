@@ -249,7 +249,7 @@
       console.error('Search failed:', err);
       toast.error(`Search failed: ${err?.message ?? 'Unknown error'}`);
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // Helper functions

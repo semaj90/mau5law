@@ -178,7 +178,7 @@ await initializeSearchServices();
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Fuse.js fuzzy search

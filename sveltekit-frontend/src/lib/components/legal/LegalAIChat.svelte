@@ -3,7 +3,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   interface LegalQuery {
     id?: number;
     prompt: string;
@@ -78,7 +78,7 @@
       error = 'Network error: Failed to connect to legal AI service';
       console.error('Legal AI error:', err);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function useSamplePrompt(sample: string) {

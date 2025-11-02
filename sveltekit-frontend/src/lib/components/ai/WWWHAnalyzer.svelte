@@ -26,7 +26,7 @@
     } catch (e) {
       error = String(e);
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
 </script>

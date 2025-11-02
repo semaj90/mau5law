@@ -199,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
         // removed: timestamp
       });
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   // ========================================================================

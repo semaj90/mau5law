@@ -276,7 +276,7 @@ export const POST = withValidationAndRate(handler, null, {
 export const GET: RequestHandler = async () => {
   try {
     // probe Qdrant by performing a lightweight search for an empty vector (should not error)
-    let qdrantHealthy = $state(false);
+    let qdrantHealthy = false;
     try {
       const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
       qdrantHealthy = Array.isArray(probe);

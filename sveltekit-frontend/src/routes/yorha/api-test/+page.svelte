@@ -168,7 +168,7 @@
         await runEndpoint(endpoint);
       }
     } finally {
-      isRunning = $state(false);
+      isRunning = false;
     }
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { enhancedUploadStore, type EnhancedUploadState  } from '$lib/stores/unified';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte'';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
   import { Badge } from '$lib/components/ui/badge/Badge.svelte';
   import { Button } from '$lib/components/ui/button/Button.svelte';

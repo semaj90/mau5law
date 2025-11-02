@@ -126,7 +126,7 @@ await initializeWebGPU();
       errorMessage = `Demo failed: ${error.message}`;
       console.error('Demo error:', error);
     } finally {
-      demoRunning = $state(false);
+      demoRunning = false;
     }
   }
   async function runBasicDemo() {

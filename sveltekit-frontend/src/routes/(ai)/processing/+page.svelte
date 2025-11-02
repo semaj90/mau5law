@@ -213,7 +213,7 @@
       console.error('Failed to submit job:', error);
       newJobForm.errors = { general: ['Failed to submit processing job'] };
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function cancelJob(jobId: string) {

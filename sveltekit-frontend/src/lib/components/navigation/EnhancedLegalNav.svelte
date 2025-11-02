@@ -70,7 +70,7 @@
     } catch (error) {
       console.error('Failed to load recent cases:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function getCaseBadgeColor(status: string): string {

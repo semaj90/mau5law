@@ -247,7 +247,7 @@ https://svelte.dev/e/props_duplicate -->
       console.error("Save failed:", error);
       // Show error message to user
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
   }}
   let aiSuggestionTimer = $state<NodeJS.Timeout | null >(null);
   function debounceAiSuggestions() {
@@ -280,7 +280,7 @@ https://svelte.dev/e/props_duplicate -->
     } catch (error) {
       console.error("Failed to generate AI suggestions:", error);
     } finally {
-      isGeneratingAi = $state(false);
+      isGeneratingAi = false;
   }}
   function insertAiSuggestion(suggestion: string) {
     if (readOnly) return;

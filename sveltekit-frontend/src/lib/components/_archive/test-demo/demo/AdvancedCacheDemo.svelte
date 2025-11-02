@@ -106,7 +106,7 @@
   		} catch (error) {
   			console.error('Failed to generate recommendations:', error);
   		} finally {
-  			isLoading = $state(false);
+  			isLoading = false;
   		}
   	}
   	function generateSampleActivity() {

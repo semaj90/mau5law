@@ -164,7 +164,7 @@
       } catch (error) {
         console.error('Profile hydration failed', error);
       } finally {
-        isHydrating = $state(false);
+        isHydrating = false;
       }
     })();
 
@@ -339,7 +339,7 @@
         'error'
       );
     } finally {
-      isSaving = $state(false);
+      isSaving = false;
     }
   }
 

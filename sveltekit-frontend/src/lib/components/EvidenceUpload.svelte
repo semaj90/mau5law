@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       const msg = (err as Error)?.message || 'Processing failed';
       errorMsg = msg;
     } finally {
-      processing = $state(false);
+      processing = false;
     }
   }
   function handleRetry() {

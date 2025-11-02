@@ -15,7 +15,7 @@ declare global {
       props: { [key: string]: any };
     }
     interface ElementChildrenAttribute {
-       { [key: string]: any };
+      children: { [key: string]: any };
     }
   }
 }

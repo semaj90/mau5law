@@ -582,7 +582,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     } catch (error: any) {
       console.error('❌ Batch processing failed:', error);
     } finally {
-      this.batchProcessor.processing = $state(false);
+      this.batchProcessor.processing = false;
     }
   }
   private async getCachedAnalysis(documentId: string): Promise<SemanticAnalysis | null> {

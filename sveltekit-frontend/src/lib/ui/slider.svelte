@@ -9,12 +9,12 @@
   type $$Props = Slider.Props;
   type $$Events = Slider.Events;
 
-  export let value: $$Props['value'] = [0]; // Default to a single value slider
-  export let min: $$Props['min'] = 0;
-  export let max: $$Props['max'] = 100;
-  export let step: $$Props['step'] = 1;
-  export let orientation: $$Props['orientation'] = 'horizontal';
-  export let disabled: $$Props['disabled'] = $state(false);
+  const { value } = $props<{ value: $$Props['value'] }>() // Default to a single value slider
+  const { min } = $props<{ min: $$Props['min'] }>()
+  const { max } = $props<{ max: $$Props['max'] }>()
+  const { step } = $props<{ step: $$Props['step'] }>()
+  const { orientation } = $props<{ orientation: $$Props['orientation'] }>()
+  const { disabled } = $props<{ disabled: $$Props['disabled'] }>()
 
   // Pass through all other props to the primitive root
   let { ...$$restProps } = $$props;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  export let caseId: string | undefined;
-  export let enableRealtimeUpdates = true;
-  export let showMetrics = true;
-  export let enableClusterMode = true;
+  const { caseId } = $props<{ caseId: string | undefined }>()
+  const { enableRealtimeUpdates = true } = $props()
+  const { showMetrics = true } = $props()
+  const { enableClusterMode = true } = $props()
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment'; // Import browser environment check
@@ -217,7 +217,7 @@
         ].slice(0, 20)
       );
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
       mcpTools.update(tools => tools.map(t => (t.id === toolId ? { ...t, status: 'available' } : t)));
     }
   }

@@ -9,19 +9,19 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits.svelte'';
+  import Button from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
   import {
     Input
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   import Label from '$lib/components/ui/label/Label.svelte';
   import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   // Test results state
@@ -58,7 +58,7 @@ https://svelte.dev/e/expected_token -->
       connectionStatus = 'failed';
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -78,7 +78,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -98,7 +98,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -118,7 +118,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -149,7 +149,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**
@@ -193,7 +193,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       lastError = error.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   /**

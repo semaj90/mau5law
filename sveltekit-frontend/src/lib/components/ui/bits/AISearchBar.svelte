@@ -38,7 +38,7 @@
     } catch (error) {
       analyticsLog({ event: 'ai_search_error', query, error: error.message, timestamp: Date.now() });
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   function handleKeyDown(e: KeyboardEvent) {

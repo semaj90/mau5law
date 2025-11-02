@@ -796,7 +796,7 @@ export class RabbitMQManager extends EventEmitter {
   // Graceful shutdown
   async close(): Promise<void> {
     try {
-      this.isInitialized = $state(false);
+      this.isInitialized = false;
       if (this.channel) {
         await this.channel.close();
         this.channel = null;

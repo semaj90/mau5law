@@ -45,11 +45,12 @@ export interface RAGConfig {
  * Database Configuration
  */
 export interface DatabaseConfig {
-  host: string;
-  port: number;
-  database: string;
-  username: string;
-  password: string;
+  host?: string; // Make optional
+  port?: number; // Make optional
+  database?: string; // Make optional
+  username?: string; // Make optional
+  password?: string; // Make optional
+  databaseUrl: string; // New: Connection string
   max: number;
   idle_timeout: number;
   // narrowed ssl type to match postgres options
@@ -60,9 +61,10 @@ export interface DatabaseConfig {
  * Redis Configuration
  */
 export interface RedisConfig {
-  host: string;
-  port: number;
-  db: number;
+  host?: string; // Make optional
+  port?: number; // Make optional
+  db?: number; // Make optional
+  redisUrl: string; // New: Connection string
   maxRetriesPerRequest: number;
   cacheTtl: number;
   enableReadyCheck: boolean;
@@ -119,28 +121,34 @@ export interface SecuritySettings {
  */
 const createDefaultConfig = (): RAGConfig => ({
   database: {
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: parseInt(process.env.DATABASE_PORT || '5432'),
-    database: process.env.DATABASE_NAME || 'legal_ai_db',
-    username: process.env.DATABASE_USER || 'legal_admin',
-    password: process.env.DATABASE_PASSWORD || '123456',
+    // Prioritize DATABASE_URL for Docker compatibility, fallback to individual components
+    databaseUrl:
+      process.env.DATABASE_URL ||
+      `postgresql://${process.env.DATABASE_USER || 'legal_admin'}:${process.env.DATABASE_PASSWORD || '123456'}@${process.env.DATABASE_HOST || 'localhost'}:${process.env.DATABASE_PORT || '5432'}/${process.env.DATABASE_NAME || 'legal_ai_db'}`,
     max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
     idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
-    // produce a narrowed literal when in production
-    ssl: (process.env.NODE_ENV === 'production' ? 'require' : false) as boolean | 'require' | 'allow' | 'prefer' | 'verify-full',
+    // Simplified SSL handling for postgres-js with connection string
+    ssl: (process.env.NODE_ENV === 'production' ? 'require' : false) as
+      | boolean
+      | 'require'
+      | 'allow'
+      | 'prefer'
+      | 'verify-full',
     connect_timeout: parseInt(process.env.DATABASE_CONNECT_TIMEOUT || '10'),
   },
   redis: {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    db: parseInt(process.env.REDIS_DB || '0'),
+    // Prioritize REDIS_URL for Docker compatibility, fallback to individual components
+    redisUrl:
+      process.env.REDIS_URL ||
+      `redis://:${process.env.REDIS_PASSWORD || 'redis'}@${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || '6379'}/${process.env.REDIS_DB || '0'}`,
     maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '3'),
     cacheTtl: parseInt(process.env.RAG_CACHE_TTL || '86400'),
     enableReadyCheck: true,
     lazyConnect: false,
   },
   ollama: {
-    baseUrl: OLLAMA_CONFIG.baseUrl,
+    // Prioritize OLLAMA_URL for Docker compatibility
+    baseUrl: process.env.OLLAMA_URL || OLLAMA_CONFIG.baseUrl,
     embeddingModel: OLLAMA_CONFIG.embeddingModel,
     llmModel: OLLAMA_CONFIG.llmModel,
     embeddingDimensions: OLLAMA_CONFIG.embeddingDimensions,
@@ -571,7 +579,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
  * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.
  * Provides an: 'invoke' method compatible with LangChain's Runnable interface.
  */
-class OllamaHTTPLLM {
+class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutput> {
   constructor(
     private baseUrl: string,
     private model: string,
@@ -641,8 +649,7 @@ export class EnhancedLegalRAGPipeline {
   private db?: ReturnType<typeof drizzle>;
   private redis?: Redis;
   private embeddings?: EmbeddingsProvider; // changed type
-  // change llm to Runnable for compatibility with RunnableSequence
-  private llm?: Runnable;
+  private llm?: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // changed type
   private validator: InputValidator;
   private rateLimiter: RateLimiter;
   private metrics: MetricsCollector;
@@ -685,19 +692,13 @@ export class EnhancedLegalRAGPipeline {
    */ private async initializeDatabase(): Promise<void> {
     try {
       // build options with explicit typing for ssl branch to satisfy overload
-      const sslOption =
-        this.config.database.ssl === 'require'
-          ? { rejectUnauthorized: false }
-          : (this.config.database.ssl as boolean | undefined);
-      this.sql = postgres({
-        host: this.config.database.host,
-        port: this.config.database.port,
-        database: this.config.database.database,
-        username: this.config.database.username,
-        password: this.config.database.password,
+      // postgres-js handles sslmode via connection string, so we just pass the URL
+      this.sql = postgres(this.config.database.databaseUrl, {
         max: this.config.database.max,
         idle_timeout: this.config.database.idle_timeout,
-        ssl: sslOption,
+        // If ssl is 'require', postgres-js will add sslmode=require if not in URL
+        // If ssl is false, it will ensure sslmode=disable
+        ssl: this.config.database.ssl,
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
         // use unknown instead of any for callbacks
@@ -720,10 +721,8 @@ export class EnhancedLegalRAGPipeline {
    * Initialize Redis connection
    */ private async initializeRedis(): Promise<void> {
     try {
-      this.redis = new Redis({
-        host: this.config.redis.host,
-        port: this.config.redis.port,
-        db: this.config.redis.db,
+      this.redis = new Redis(this.config.redis.redisUrl, {
+        // Use redisUrl directly
         maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest,
         enableReadyCheck: this.config.redis.enableReadyCheck,
         lazyConnect: this.config.redis.lazyConnect,
@@ -746,17 +745,17 @@ export class EnhancedLegalRAGPipeline {
    */ private async initializeOllama(): Promise<void> {
     try {
       // Initialize embeddings adapter (HTTP) instead of deprecated SDK class
-      this.embeddings = new OllamaHTTPEmbeddings(OLLAMA_CONFIG.baseUrl, this.config.ollama.embeddingModel);
+      this.embeddings = new OllamaHTTPEmbeddings(this.config.ollama.baseUrl, this.config.ollama.embeddingModel);
 
       // Initialize LLM adapter (HTTP) instead of deprecated SDK class
       // cast to Runnable for use in RunnableSequence (adapter implements invoke)
       this.llm = new OllamaHTTPLLM(
-        OLLAMA_CONFIG.baseUrl,
+        this.config.ollama.baseUrl,
         this.config.ollama.llmModel,
         this.config.ollama.temperature,
         this.config.ollama.numCtx, // Pass numCtx
         this.config.ollama.numPredict // Pass numPredict
-      ) as unknown as Runnable;
+      );
 
       // Note: callbacks used previously are now handled around the RunnableSequence calls.
       console.log('[RAG] Ollama adapters initialized successfully');
@@ -993,8 +992,10 @@ export class EnhancedLegalRAGPipeline {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
       await this.ensureInitialized();
+
       // Generate query embedding with caching
       const queryEmbedding = await this.generateEmbedding(query);
+
       // Build SQL conditions using template literals
       let vectorWhereClause = `1 - (dc.embedding::vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
       let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;
@@ -1177,7 +1178,7 @@ Instructions:
 Answer:
       `);
       // Create chain and generate answer
-      const chain = RunnableSequence.from([promptTemplate, this.llm as unknown as Runnable, new StringOutputParser()]);
+      const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
         chain.invoke({ context, question }),
         new Promise<never>((_, reject) =>
@@ -1343,34 +1344,6 @@ Provide specific clause references and line numbers where applicable. Focus on p
       console.error('[RAG] Contract analysis error:', error);
       this.metrics.incrementCounter('contract_analysis_errors');
       throw error;
-    }
-  }
-  // ===== HELPERS & other occurrences: replace `any` usage in callbacks =====
-  private async generateEmbedding(text: string): Promise<number[]> {
-    const textHash = this.hashText(text);
-    try {
-      // Check cache first if enabled
-      if (this.config.rag.enableCaching && this.redis) {
-        const cached = await this.redis.get(`embedding:${textHash}`);
-        if (cached) {
-          this.metrics.incrementCounter('cache_hits');
-          return JSON.parse(cached) as number[];
-        }
-      }
-      this.metrics.incrementCounter('cache_misses');
-      // Generate new embedding
-      const embedding = await this.embeddings!.embedQuery(text);
-      // Cache for configured TTL if enabled
-      if (this.config.rag.enableCaching && this.redis) {
-        await this.redis.set(`embedding:${textHash}`, JSON.stringify(embedding));
-      }
-      this.metrics.incrementCounter('embeddings_generated');
-      return embedding;
-    } catch (error: any) {
-      const e = error instanceof Error ? error : new Error(String(error));
-      console.error('Embedding generation failed:', e);
-      this.metrics.incrementCounter('embedding_errors');
-      throw e;
     }
   }
   /**
@@ -1739,7 +1712,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
         : Promise.resolve();
 
       await Promise.allSettled([redisClosePromise, this.sql?.end()]);
-      this.initialized = $state(false);
+      this.initialized = false; // Corrected: Assign directly, do not re-declare with $state
       console.log('[RAG] Pipeline closed successfully');
     } catch (err: any) {
       const error = err instanceof Error ? err : new Error(String(err));

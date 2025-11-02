@@ -241,7 +241,7 @@ export async function getServicesHealth() {
 		await redis.get('health-check');
 		health.redis = true;
 	} catch {
-		health.redis = $state(false);
+		health.redis = false;
 	}
 
 	// PostgreSQL
@@ -249,7 +249,7 @@ export async function getServicesHealth() {
 		await pgvector.query('SELECT 1');
 		health.postgres = true;
 	} catch {
-		health.postgres = $state(false);
+		health.postgres = false;
 	}
 
 	// Ollama
@@ -257,7 +257,7 @@ export async function getServicesHealth() {
 		await ollama.embed('test', { model: env.ollamaConfig.embeddingModel });
 		health.ollama = true;
 	} catch {
-		health.ollama = $state(false);
+		health.ollama = false;
 	}
 
 	// Qdrant
@@ -265,7 +265,7 @@ export async function getServicesHealth() {
 		await qdrant.search('legal_documents', Array(768).fill(0), 1);
 		health.qdrant = true;
 	} catch {
-		health.qdrant = $state(false);
+		health.qdrant = false;
 	}
 
 	// MinIO
@@ -273,7 +273,7 @@ export async function getServicesHealth() {
 		await minio.bucketExists?.('legal-evidence');
 		health.minio = true;
 	} catch {
-		health.minio = $state(false);
+		health.minio = false;
 	}
 
 	// Neo4j
@@ -281,7 +281,7 @@ export async function getServicesHealth() {
 		await neo4j.verifyConnectivity?.();
 		health.neo4j = true;
 	} catch {
-		health.neo4j = $state(false);
+		health.neo4j = false;
 	}
 
 	// RabbitMQ

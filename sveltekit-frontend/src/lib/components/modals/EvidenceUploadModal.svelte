@@ -1,8 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte'';
-  import * as Dialog from '$lib/components/ui/dialog.svelte'';
+  import { Button } from '$lib/components/ui/button.svelte';
+  import * as Dialog from '$lib/components/ui/dialog.svelte';
   import { uploadStore } from '$lib/stores/unified';
   import { formatFileSize } from '$lib/utils/file-utils';
   import AlertCircle from 'lucide-svelte/icons/alert-circle';

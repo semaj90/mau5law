@@ -148,7 +148,7 @@
       confidence = 0.75;
       relatedTopics = ['Employment Law', 'Wrongful Termination', 'Precedent Analysis'];
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
       isThinking = $state(false);
       // Display fallback notice if using mock data
       if (usingMockData) {
@@ -208,7 +208,7 @@
       await new Promise(resolve => setTimeout(resolve, 800));
       alert(`✅ Mock: Action: "${action.action}" simulated successfully.`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   function getTypeIcon(type: AIRecommendation['type']): string {

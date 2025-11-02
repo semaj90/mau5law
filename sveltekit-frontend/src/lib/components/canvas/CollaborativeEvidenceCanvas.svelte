@@ -9,7 +9,7 @@
   import { websocketStore  } from '$lib/stores/unified';
   import { createPubSubHelper } from '$lib/server/redisPubSub';
   import { KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits.svelte';
   // Dynamic fabric import to avoid SSR issues
   let _fabricModule: any = null;
   async function getFabric(): Promise<any> {
@@ -744,7 +744,7 @@
     } catch (err) {
       console.error('Failed to generate AI layout:', err);
     } finally {
-      isGeneratingLayout = $state(false);
+      isGeneratingLayout = false;
     }
   }
   async function applyLayout(positions: any) {

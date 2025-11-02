@@ -12,19 +12,19 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service';
   import { enhancedRAGService } from '$lib/services/enhanced-rag-service';
   import { natsMessaging } from '$lib/services/nats-messaging-service';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Textarea } from '$lib/components/ui/textarea/Textarea.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
   import { N64ProgressBar } from '$lib/components/ui/gaming/n64/N64ProgressBar.svelte';
   import { N64LoadingRing } from '$lib/components/ui/gaming/n64/N64LoadingRing.svelte';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
   import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   import { Loader2, Send, Cpu, Zap, Database, Brain, FileText, Search } from 'lucide-svelte';
   interface Props {

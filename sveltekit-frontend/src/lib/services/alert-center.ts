@@ -771,7 +771,7 @@ export class AlertCenter {
       const msg = error instanceof Error ? error.message : String(error);
       console.error(`Auto-remediation failed for alert ${alert.id}:`, msg);
     } finally {
-      this.autosolveInFlight = $state(false);
+      this.autosolveInFlight = false;
     }
   }
   /**

@@ -235,7 +235,7 @@
         importResults = { success: false, message: unexpectedErrorMsg, error: unexpectedErrorMsg }; // Populate importResults for display
       }
     } finally {
-      isImporting = $state(false);
+      isImporting = false;
     }
   }
   function clearImport() {

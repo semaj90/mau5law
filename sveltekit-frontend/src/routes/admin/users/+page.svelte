@@ -109,7 +109,7 @@
     } catch (error) {
       console.error('Error loading users:', error);
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function createUser(_event: Event) {

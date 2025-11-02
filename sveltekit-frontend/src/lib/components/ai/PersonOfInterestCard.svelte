@@ -23,7 +23,7 @@
   }
 </script>
 <script lang="ts">
-  import { Badge } from '$lib/components/ui/badge.svelte'';
+  import { Badge } from '$lib/components/ui/badge.svelte';
   interface Props {
     person?: Perso;
     relationships?: Relationship[];

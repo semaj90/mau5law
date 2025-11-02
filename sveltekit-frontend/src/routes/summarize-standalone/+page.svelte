@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
       errorMessage = 'Network error: Could not connect to summarization service.';
       processingSteps.push('❌ Network error');
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   // Copy summary to clipboard

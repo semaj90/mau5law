@@ -5,16 +5,16 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte'';
-  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte'';
-  import { yorhaTextureManager } from '$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager.svelte'';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath.svelte';
+  import { yorhaMipmapShaders } from '$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte';
+  import { yorhaTextureManager } from '$lib/components/three/yorha-ui/webgpu/YoRHaOptimizedTextureManager.svelte';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
   let isInitialized = $state(false);
   let isProcessing = $state(false);
@@ -93,7 +93,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Failed to initialize system:', error);
       alert(`System initialization failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Create mock GPU texture for demonstration
@@ -151,7 +151,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Document processing failed:', error);
       alert(`Processing failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Batch process all documents
@@ -199,7 +199,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Batch processing failed:', error);
       alert(`Batch processing failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Generate single mipmap chain demonstration
@@ -233,7 +233,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.error('Mipmap demo failed:', error);
       alert(`Mipmap demo failed: ${error.message}`);
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
   // Update performance metrics

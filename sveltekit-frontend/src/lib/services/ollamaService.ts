@@ -240,7 +240,7 @@ export class OllamaService {
       // Prefer WHATWG ReadableStream reader when available
       if (stream && typeof (stream as any).getReader === 'function') {
         reader = (stream as any).getReader();
-        let readerDone = $state(false);
+        let readerDone = false;
         while (!readerDone) {
           const { value, done: d } = await reader.read();
           readerDone = !!d;

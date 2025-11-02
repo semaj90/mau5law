@@ -86,7 +86,7 @@ class Logger {
       });
       this.logQueue.unshift(...retriableLogs);
     } finally {
-      this.isProcessing = $state(false);
+      this.isProcessing = false;
     }
   }
   private async storeLogs(logs: LogEntry[]): Promise<void> {

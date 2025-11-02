@@ -8,16 +8,16 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Badge } from '$lib/components/ui/badge.svelte'';
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte'';
-  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte'';
+  } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Badge } from '$lib/components/ui/badge.svelte';
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs.svelte';
+  import { Alert, AlertDescription } from '$lib/components/ui/alert.svelte';
   import {
     Download,
     Eye,
@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err: any) {
       error = err.message || 'Failed to load artifact';
     } finally {
-      loading = $state(false);
+      loading = false;
     }
   }
   const extractMetadata = async () => {

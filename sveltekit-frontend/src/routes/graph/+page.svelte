@@ -61,7 +61,7 @@ await loadEngineData();
         }
       }
     } finally {
-      isExecuting = $state(false);
+      isExecuting = false;
     }
   }
   async function useHotQuery(query) {

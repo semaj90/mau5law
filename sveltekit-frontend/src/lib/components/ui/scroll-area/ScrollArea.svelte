@@ -7,7 +7,7 @@
   import * as BitsUI from 'bits-ui';
   import { cn } from '$lib/utils.js';
   // accept a className prop
-  export let className: string = '';
+  const { className } = $props<{ className: string }>()
   // runtime-safe resolution with fallbacks to plain elements
   const RootComp = (BitsUI as any).Root ?? (BitsUI as any).ScrollArea ?? (BitsUI as any).ScrollAreaRoot ?? 'div';
   const ViewportComp =

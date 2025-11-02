@@ -107,7 +107,7 @@
         }
       ];
     } finally {
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   }
 

@@ -27,7 +27,7 @@
     } catch (error) {
       testResult = `❌ Network error: ${(error as Error).message}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function testCaseList() {
@@ -44,7 +44,7 @@
     } catch (error) {
       testResult = `❌ Network error: ${(error as Error).message}`;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 </script>

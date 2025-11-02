@@ -90,7 +90,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       }
       console.error('AI Analysis loading error:', error);
     } finally {
-      isAnalyzing = $state(false);
+      isAnalyzing = false;
     }
   }
   function updateProgress(progress: number, step: string) {

@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('❌ Training failed:', error);
     } finally {
-      isTraining = $state(false);
+      isTraining = false;
     }
   }
   function startVisualizationLoop(): void {

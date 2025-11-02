@@ -35,7 +35,7 @@ if (browser) {
       console.error('Failed to load memory data:', err);
       error = err.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   async function triggerOptimization() {
@@ -53,7 +53,7 @@ if (browser) {
       console.error('Optimization failed:', err);
       error = err.messag;
     } finally {
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
   function getHealthColor(_value: number): string {

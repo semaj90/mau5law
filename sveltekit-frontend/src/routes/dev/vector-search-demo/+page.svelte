@@ -120,7 +120,7 @@ https://svelte.dev/e/script_duplicate -->
     } catch (err) {
       error = err instanceof Error ? err.message: 'Network error',
     } finally {
-      isSearching = $state(false);
+      isSearching = false;
     }
   }
   async function indexSampleDocument() {

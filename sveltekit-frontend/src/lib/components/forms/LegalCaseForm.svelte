@@ -106,7 +106,7 @@
         duration: 0, // Don't auto-dismiss errors
       });
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
     }
   }
   // Sample data for select options

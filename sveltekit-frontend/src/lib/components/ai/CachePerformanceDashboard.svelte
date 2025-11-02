@@ -163,7 +163,7 @@
       console.error('Failed to refresh metrics:', error);
       systemHealth = 'error';
     } finally {
-      isRefreshing = $state(false);
+      isRefreshing = false;
       performance.mark('refresh-end');
       try {
         performance.measure('refreshMetrics', 'refresh-start', 'refresh-end');

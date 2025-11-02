@@ -4,8 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { goto } from "$app/navigation";
-  import { Button } from '$lib/components/ui/enhanced-bits.svelte'';
-  import { Card } from '$lib/components/ui/enhanced-bits.svelte'';
+  import { Button } from '$lib/components/ui/enhanced-bits.svelte';
+  import { Card } from '$lib/components/ui/enhanced-bits.svelte';
   import { Form } from '$lib/components/ui/Form.svelte';
   import { Input } from '$lib/components/ui/Input.svelte';
   import { notifications  } from '$lib/stores/unified';
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
         "Unable to create case. Please check your connection and try again."
       );
     } finally {
-      isSubmitting = $state(false);
+      isSubmitting = false;
   }}
   function addTag() {
     const currentTags = formApi.getValues.tags || "";
