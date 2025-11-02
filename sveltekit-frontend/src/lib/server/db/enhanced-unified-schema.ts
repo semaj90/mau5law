@@ -1,2 +1,1 @@
-// Schema placeholder — no runtime exports here yet.
-export {};
+// Schema placeholder — no runtime exports here yet. export {}; 
